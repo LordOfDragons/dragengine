@@ -52,6 +52,7 @@ deoglPRenderDownScale::deoglPRenderDownScale( deGraphicOpenGl &ogl ) : deoglPara
 		{ "8", "8x", "Render at 1/8 resolution then up-scale to full resolution." }
 	};
 	AddSelectionEntries( entries, 4 );
+	SetDefaultValue( "1" );
 }
 
 deoglPRenderDownScale::~deoglPRenderDownScale(){

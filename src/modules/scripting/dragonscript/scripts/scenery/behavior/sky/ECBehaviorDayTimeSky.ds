@@ -33,7 +33,7 @@ pin Dragengine.TriggerSystem
  * \brief Behavior element behavior adding day time sky support.
  * 
  * Updates day time controller of a day time supporting sky assigned to ECBehaviorSky.
- * To use ass ECBehaviorSky and ECBehaviorDayTimeSky to behavior element then call
+ * To use add ECBehaviorSky and ECBehaviorDayTimeSky to behavior element then call
  * setDayTime() to adjust the day time to show.
  * 
  * This behavior can be present only once in the behavior element.
@@ -186,21 +186,21 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorSky getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorSky
-		end ) cast ECBehaviorSky
+	static public func ECBehaviorDayTimeSky getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehaviorDayTimeSky each
+			return true
+		end ) cast ECBehaviorDayTimeSky
 	end
 	
 	/**
 	 * \brief Get instance in element or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorSky.Instance .
+	 * of type ECBehaviorDayTimeSky.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

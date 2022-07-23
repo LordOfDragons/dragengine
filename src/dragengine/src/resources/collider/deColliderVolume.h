@@ -38,7 +38,13 @@
  * list of Collision Volume objects. The final test volume is
  * considered to be the boolean union of all the volumes.
  */
-class deColliderVolume : public deCollider{
+class DE_DLL_EXPORT deColliderVolume : public deCollider{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderVolume> Ref;
+	
+	
+	
 private:
 	decShapeList pShapes;
 	

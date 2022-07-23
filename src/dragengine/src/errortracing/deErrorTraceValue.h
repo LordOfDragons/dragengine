@@ -22,6 +22,8 @@
 #ifndef _DEAERRORTRACEVALUE_H_
 #define _DEAERRORTRACEVALUE_H_
 
+#include "../common/string/decString.h"
+
 
 /**
  * \brief Error Trace Value.
@@ -29,10 +31,10 @@
  * Error Trace Value objects contain additional information about the values in
  * use by the failing function.
  */
-class deErrorTraceValue{
+class DE_DLL_EXPORT deErrorTraceValue{
 private:
-	char *pName;
-	char *pValue;
+	decString pName;
+	decString pValue;
 	deErrorTraceValue **pSubValues;
 	int pSubValueCount, pSubValueSize;
 	
@@ -53,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the value. */
-	inline const char *GetName() const{ return ( const char * )pName; }
+	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Value. */
-	inline const char *GetValue() const{ return ( const char * )pValue; }
+	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
 	void SetValue( const char *value );
@@ -102,11 +104,6 @@ public:
 	/** \brief Adds a new trace value with the given information. */
 	deErrorTraceValue *AddSubValueBool( const char *name, bool value );
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

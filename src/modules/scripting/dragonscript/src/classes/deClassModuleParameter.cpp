@@ -191,6 +191,16 @@ void deClassModuleParameter::nfGetDisplayName::RunFunction( dsRunTime *rt, dsVal
 	rt->PushString( param.GetDisplayName() );
 }
 
+// public func String getDefaultValue()
+deClassModuleParameter::nfGetDefaultValue::nfGetDefaultValue( const sInitData &init ) :
+dsFunction( init.clsMP, "getDefaultValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassModuleParameter::nfGetDefaultValue::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deModuleParameter &param = *( ( ( sMPNatDat* )p_GetNativeData( myself ) )->param );
+	rt->PushString( param.GetDefaultValue() );
+}
+
 
 
 // Class deClassModuleParameter
@@ -250,6 +260,7 @@ void deClassModuleParameter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetSelectionEntryDescriptionAt( init ) );
 	AddFunction( new nfGetCategory( init ) );
 	AddFunction( new nfGetDisplayName( init ) );
+	AddFunction( new nfGetDefaultValue( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

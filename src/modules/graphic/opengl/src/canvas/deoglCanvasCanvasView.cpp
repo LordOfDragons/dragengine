@@ -52,7 +52,7 @@ pCanvasView( NULL ){
 
 deoglCanvasCanvasView::~deoglCanvasCanvasView(){
 	if( pCanvasView ){
-		pCanvasView->GetNotifyCanvas().Remove( this );
+		pCanvasView->RemoveListener( this );
 	}
 }
 
@@ -81,12 +81,12 @@ void deoglCanvasCanvasView::SyncContentToRender(){
 	pRCanvasCanvasView->SetTCClampMaximum( decVector2( repeatScaleU, repeatScaleV ) );
 }
 
-void deoglCanvasCanvasView::CanvasViewRequiresSync(){
-	SetDirtyParentPaint();
+void deoglCanvasCanvasView::CanvasViewDestroyed(){
+	pCanvasView = NULL;
 }
 
-void deoglCanvasCanvasView::DropCanvasView(){
-	pCanvasView = NULL;
+void deoglCanvasCanvasView::CanvasViewRequiresSync(){
+	SetDirtyParentPaint();
 }
 
 
@@ -96,12 +96,12 @@ void deoglCanvasCanvasView::DropCanvasView(){
 
 void deoglCanvasCanvasView::ContentChanged(){
 	if( pCanvasView ){
-		pCanvasView->GetNotifyCanvas().Remove( this );
+		pCanvasView->RemoveListener( this );
 	}
 	
 	if( pCanvasCanvasView.GetCanvasView() ){
 		pCanvasView = ( deoglCanvasView* )pCanvasCanvasView.GetCanvasView()->GetPeerGraphic();
-		pCanvasView->GetNotifyCanvas().Add( this );
+		pCanvasView->AddListener( this );
 		
 	}else{
 		pCanvasView = NULL;

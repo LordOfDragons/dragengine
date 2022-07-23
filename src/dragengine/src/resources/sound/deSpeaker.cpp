@@ -60,6 +60,7 @@ pPlaySpeed( 1.0f ),
 pVolume( 1.0f ),
 pRange( 1.0f ),
 pRollOff( 1.0f ),
+pDistanceOffset( 0.0f ),
 
 pPeerAudio( NULL ),
 pPeerScripting( NULL ),
@@ -294,6 +295,20 @@ void deSpeaker::SetRollOff( float rollOff ){
 	
 	if( pPeerAudio ){
 		pPeerAudio->RollOffChanged();
+	}
+}
+
+void deSpeaker::SetDistanceOffset( float distanceOffset ){
+	distanceOffset = decMath::max( distanceOffset, 0.0f );
+	
+	if( fabsf( distanceOffset - pDistanceOffset ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pDistanceOffset = distanceOffset;
+	
+	if( pPeerAudio ){
+		pPeerAudio->DistanceOffsetChanged();
 	}
 }
 

@@ -130,6 +130,16 @@ void deoglDebugInformation::ClearCounter(){
 	pHasCounter = false;
 }
 
+void deoglDebugInformation::CopyResults( const deoglDebugInformation &info ){
+	pElapsedTime = info.pElapsedTime;
+	pElapsedTimeAccum = info.pElapsedTimeAccum;
+	pCounter = info.pCounter;
+	pHasElapsedTime = info.pHasElapsedTime;
+	pHasCounter = info.pHasCounter;
+	pLastElapsedTime = info.pLastElapsedTime;
+	pSlidingElapsedTimeFactor = info.pSlidingElapsedTimeFactor;
+}
+
 
 
 // Rendering

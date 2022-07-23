@@ -4,11 +4,17 @@ precision highp int;
 uniform vec4 pOptions; // exposure, 1/(lwhite^2), overbrightLimit, overbrightFactor
 uniform vec2 pTCBloomClamp; // clampU, clampV
 
-uniform mediump sampler2D texColor;
+uniform mediump sampler2DArray texColor;
 uniform mediump sampler2D texToneMapParams;
-uniform mediump sampler2D texBloom;
+uniform mediump sampler2DArray texBloom;
 
 in vec2 vTCBloom;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec4 outColor;
 
@@ -83,7 +89,7 @@ float uchimura(float x) {
 }
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	vec3 params = texelFetch( texToneMapParams, tcParams, 0 ).rgb; // r=avgLum, g=scaleLum, b=lwhite, a=n/a
 	vec4 color = texelFetch( texColor, tc, 0 );
@@ -93,7 +99,7 @@ void main( void ){
 //	luminance = luminance / ( 1.0 + luminance );
 	
 	// enhanced reinhard
-// 	color.rgb += textureLod( texBloom, min( vTCBloom, pTCBloomClamp ), 0.0 ).rgb * vec3( pOptions.x );
+// 	color.rgb += textureLod( texBloom, vec3( min( vTCBloom, pTCBloomClamp ), vLayer ), 0 ).rgb * vec3( pOptions.x );
 // 	
 // 	float luminance = dot( color.rgb, lumiFactors );
 // 	float adjLum = luminance * params.g;
@@ -108,7 +114,7 @@ void main( void ){
 	outColor.a = color.a;
 	
 	// bloom
-	outColor.rgb += textureLod( texBloom, min( vTCBloom, pTCBloomClamp ), 0.0 ).rgb * vec3( pOptions.x );
+	outColor.rgb += textureLod( texBloom, vec3( min( vTCBloom, pTCBloomClamp ), vLayer ), 0 ).rgb * vec3( pOptions.x );
 	
 	// NOTE nice comparison of curves: https://www.shadertoy.com/view/WdjSW3
 	//      the uchimura curve is the only one which has a linear left side. all others try

@@ -36,7 +36,7 @@ class deSynthesizerInstance;
 /**
  * \brief Base synthesizer module.
  */
-class deBaseSynthesizerModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseSynthesizerModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

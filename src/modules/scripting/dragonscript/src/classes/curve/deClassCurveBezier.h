@@ -79,12 +79,15 @@ private:
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC( nfNew );
+	DEF_NATFUNC( nfNewCopy );
 	DEF_NATFUNC( nfNewDefaultLinear );
 	DEF_NATFUNC( nfNewDefaultBezier );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetPointCount );
 	DEF_NATFUNC( nfGetPointAt );
+	DEF_NATFUNC( nfGetHandle1At );
+	DEF_NATFUNC( nfGetHandle2At );
 	DEF_NATFUNC( nfFindPointPriorTo );
 	DEF_NATFUNC( nfAddPoint );
 	DEF_NATFUNC( nfAddPoint2 );

@@ -28,7 +28,6 @@ import bgl
 import os
 import re
 import math
-import time
 import struct
 import mathutils
 
@@ -40,12 +39,13 @@ from .de_math import vector_by_matrix, matrixToEuler, vecLength, vecSub, quatDot
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
+from .de_helpers import ProgressDisplay, Timer
 
 
 class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 	def exportActionList( self, context ):
 		actionFilters = []
-		if context.scene.dragengine_movesetidx == -1:
+		if context.scene.dragengine_movesetidx == -1 or not context.scene.dragengine_movesets:
 			actionFilters.append( re.compile( "^.+$" ) )
 		else:
 			for f in context.scene.dragengine_movesets[ context.scene.dragengine_movesetidx ].filters:
@@ -55,8 +55,9 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for action in bpy.data.actions.values():
 			if len( action.groups ) == 0:
 				continue
-			
 			if not action.dragengine_export:
+				continue
+			if action.library: # linked actions can cause lots of troubles
 				continue
 			
 			exportAction = False
@@ -75,19 +76,19 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 	bl_label = "Animations (.deanim)"
 	__doc__ = """Export as Drag[en]gine Animation Resource"""
 	filename_ext = ".deanim"
-	filter_glob = bpy.props.StringProperty( default="*.deanim", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.deanim", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),
 		( '3', "Debug", "Output very large amount of debug messages." ),
 		), name = "Logging", description = "Choose amount of logging", default = '1' )
-	export_mode = bpy.props.EnumProperty( items = (
+	export_mode: bpy.props.EnumProperty( items = (
 		( '0', "Export All", "Export all moves. File is completely overwritten." ),
 		( '1', "Update Single", "Export single move. File is updated with exported move." ),
 		), name = "Export Mode", description = "Export mode", default = '0' )
-	#export_move = bpy.props.EnumProperty( items=exportActionList )
-	export_move = bpy.props.StringProperty( default="" )
+	#export_move: bpy.props.EnumProperty( items=exportActionList )
+	export_move: bpy.props.StringProperty( default="" )
 	
 	def __init__( self ):
 		self.mesh = None
@@ -144,7 +145,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		self.animLimitVarScale = configuration.getValueFor( "animation.limits.variable.scale", 0.01 )
 		
 		self.actionFilters = []
-		if context.scene.dragengine_movesetidx == -1:
+		if context.scene.dragengine_movesetidx == -1 or not context.scene.dragengine_movesets:
 			if self.debugLevel > 0:
 				print( "animation actions: add filter '.+'" )
 			self.actionFilters.append( re.compile( "^.+$" ) )
@@ -166,9 +167,11 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		return { 'FINISHED' }
 	
 	def export( self, context ):
+		self.timer = Timer()
 		self.initExporterObjects( context )
 		if not self.checkInitState( context ):
 			return False
+		self.timer.log("prepare export", peek=True)
 		
 		retainContent = None
 		if self.exportMode == 1:
@@ -180,13 +183,16 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 					f.close()
 			else:
 				retainContent = []
+			self.timer.log("load retained actions", peek=True)
 		
 		f = open( self.filepath, "wb" )
 		try:
 			result = self.safeExport( context, f, retainContent )
 		finally:
 			f.close()
+		self.timer.log("finished", peek=True)
 		self.printInfos( context )
+		bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
 		return result
 	
 	def initFindMeshArmRef( self, context ):
@@ -299,6 +305,8 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		if not self.scanMoves():
 			return False
 		
+		self.prepareProgress(context)
+		
 		if not self.writeHeader( f ):
 			return False
 		
@@ -311,6 +319,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			if not self.writeBones( f ):
 				return False
+		self.timer.log("prepare and write up to moves", peek=True)
 		
 		if not self.writeMoves( f, retainContent ):
 			return False
@@ -354,8 +363,9 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for action in bpy.data.actions.values():
 			if len( action.groups ) == 0:
 				continue
-			
 			if not action.dragengine_export:
+				continue
+			if action.library: # linked actions can cause lots of troubles
 				continue
 			
 			if self.exportMode == 1 and action != self.exportMove.action:
@@ -376,6 +386,11 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 				return False
 			self.moves.append( Armature.Move( action ) )
 		return True
+	
+	def prepareProgress(self, context):
+		self.progress = ProgressDisplay(len(self.moves) + 1, self)
+		self.progress.show()
+		self.progress.update(0, "Preparations...")
 	
 	def writeHeader( self, f ):
 		f.write( bytes( "Drag[en]gine Animation  ", 'UTF-8' ) )
@@ -477,6 +492,10 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for move in self.moves:
 			self.report( { 'INFO' }, "%i/%i (%.2f%%): Writing Move %s..." % ( progressCounter, \
 				len( self.moves ), float( progressCounter ) / float( countMoves ), move.name ) )
+			self.timer.log("{}/{} ({:.2f}): Writing Move {}...".format(progressCounter, len(self.moves),
+				float(progressCounter) / float(countMoves), move.name), peek=True)
+			self.progress.advance("Export {}...".format(move.name))
+			
 			"""bgl.glColor3f( 0.34, 0.50, 0.76 )
 			blf.position( 0, 0, 0, 0 )
 			blf.draw( 0, move.name )"""
@@ -568,10 +587,12 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			# fix flipping for example when constraint bones cause negated quaterions
 			#self.fixQuaternionFlipping( moveBones )
+			self.timer.log("- build keyframe list", peek=True)
 			
 			# optimize the keyframes by dropping keyframes inside linear changes
 			#for DUMMY in moveBone.keyframes: print( DUMMY )
 			self.optimizeKeyframes( moveBones )
+			self.timer.log("- optimize keyframe list", peek=True)
 			
 			if self.debugLevel > 0:
 				print( "- move", move.name, "playtime", float( playtime ) * self.timeScale )
@@ -656,6 +677,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			# next round
 			progressCounter = progressCounter + 1
+			self.timer.log("- write keyframes", peek=True)
 		return True
 	
 	# write trailer

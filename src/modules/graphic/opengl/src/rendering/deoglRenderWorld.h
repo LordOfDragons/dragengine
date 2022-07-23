@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;
@@ -37,13 +36,14 @@ class deoglSPBlockUBO;
 
 
 /**
- * \brief World renderer.
+ * World renderer.
  */
 class deoglRenderWorld : public deoglRenderBase{
 private:
 	deoglSPBlockUBO *pRenderPB;
 	deoglSPBlockUBO *pRenderLuminancePB;
 	deoglSPBlockUBO *pRenderCubePB;
+	deoglSPBlockUBO *pRenderStereoPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
@@ -59,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderWorld( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderWorld();
 	/*@}*/
 	
@@ -70,68 +70,71 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Debug info. */
+	/** Debug info. */
 	inline deoglRenderWorldInfo &GetDebugInfo(){ return pDebugInfo; }
 	
-	/** \brief Render parameter block. */
+	/** Render parameter block. */
 	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
 	
-	/** \brief Render luminance parameter block. */
+	/** Render luminance parameter block. */
 	inline deoglSPBlockUBO *GetRenderLuminancePB() const{ return pRenderLuminancePB; }
 	
-	/** \brief Render parameter block cube map. */
+	/** Render parameter block cube map. */
 	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }
 	
-	/** \brief Render task. */
+	/** Render parameter block dual view. */
+	inline deoglSPBlockUBO *GetRenderStereoPB() const{ return pRenderStereoPB; }
+	
+	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }
 	
-	/** \brief Render task for particles. */
+	/** Render task for particles. */
 	inline deoglRenderTaskParticles *GetRenderTaskParticles() const{ return pRenderTaskParticles; }
 	
-	/** \brief Add to render task. */
+	/** Add to render task. */
 	inline deoglAddToRenderTask *GetAddToRenderTask() const{ return pAddToRenderTask; }
 	
-	/** \brief Add to render task particles. */
+	/** Add to render task particles. */
 	inline deoglAddToRenderTaskParticles *GetAddToRenderTaskParticles() const{ return pAddToRenderTaskParticles; }
 	
-	/** \brief Particle sorter. */
+	/** Particle sorter. */
 	inline deoglParticleSorter *GetParticleSorter() const{ return pParticleSorter; }
 	
 	
 	
-	/** \brief Render black screen. */
+	/** Render black screen. */
 	void RenderBlackScreen( deoglRenderPlan &plan );
 	
-	/** \brief Render world. */
-	void RenderWorld( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	/** Render world. */
+	void RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Prepare render parameter shader parameter block. */
-	void PrepareRenderParamBlock( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	/** Prepare render parameter shader parameter block. */
+	void PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Render masked pass. */
+	/** Render masked pass. */
 	void RenderMaskedPass( deoglRenderPlan &plan );
 	
-	/** \brief Render debug drawers. */
+	/** Render debug drawers. */
 	void RenderDebugDrawers( deoglRenderPlan &plan );
 	
-	/** \brief Render effects. */
+	/** Render effects. */
 	void RenderEffects( deoglRenderPlan &plan );
 	
-	/** \brief Render anti aliasing pass. */
+	/** Render anti aliasing pass. */
 	void RenderAntiAliasingPass();
 	
-	/** \brief Render finalize pass to an FBO without color correction. */
-	void RenderFinalizeFBO( deoglRenderPlan &plan );
+	/** Render finalize pass to an FBO without color correction. */
+	void RenderFinalizeFBO( deoglRenderPlan &plan, bool withColorCorrection, bool withGammaCorrection );
 	
-	/** \brief Render finalize pass to active graphics context with color correction. */
+	/** Render finalize pass to active graphics context with color correction. */
 	void RenderFinalizeContext( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

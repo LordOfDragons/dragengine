@@ -167,12 +167,7 @@ void debpGhostObject::pCreateGhostObject(){
 		SetDirtyAABB( true );
 		
 		pGhostObject = new btGhostObject;
-		if( ! pGhostObject ){
-			DETHROW( deeOutOfMemory );
-		}
-		
 		pGhostObject->setUserPointer( ( debpCollisionObject* )this );
-		
 		pGhostObject->setCollisionFlags( btCollisionObject::CF_NO_CONTACT_RESPONSE );
 		pGhostObject->setCollisionShape( pShape->GetShape() );
 		pGhostObject->forceActivationState( 0 ); // ensure the ghost object is in deactivated state

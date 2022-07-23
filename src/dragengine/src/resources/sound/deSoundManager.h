@@ -33,7 +33,7 @@ class deSoundDecoder;
 /**
  * \brief Sound Resource Manager.
  */
-class deSoundManager : public deFileResourceManager{
+class DE_DLL_EXPORT deSoundManager : public deFileResourceManager{
 private:
 	deFileResourceList pSounds;
 	

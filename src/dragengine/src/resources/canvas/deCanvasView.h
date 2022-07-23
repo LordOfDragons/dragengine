@@ -28,7 +28,13 @@
 /**
  * \brief Canvas containing other canvas.
  */
-class deCanvasView : public deCanvas{
+class DE_DLL_EXPORT deCanvasView : public deCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvasView> Ref;
+	
+	
+	
 private:
 	deCanvas *pCanvasRoot;
 	deCanvas *pCanvasTail;

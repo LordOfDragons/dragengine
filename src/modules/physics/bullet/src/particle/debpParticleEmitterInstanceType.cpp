@@ -116,7 +116,7 @@ void debpParticleEmitterInstanceType::SetType( int type ){
 
 
 
-void debpParticleEmitterInstanceType::PrepareParticles( float elapsed, float travelledDistance ){
+void debpParticleEmitterInstanceType::PrepareParticles( bool casting, float elapsed, float travelledDistance ){
 	debpParticleEmitter * const emitter = pInstance->GetParticleEmitter();
 	
 	if( emitter ){
@@ -146,7 +146,7 @@ void debpParticleEmitterInstanceType::PrepareParticles( float elapsed, float tra
 		}
 		
 		// cast new particles if enabled until the cast timer runs out
-		if( pInstance->GetInstance()->GetEnableCasting() ){
+		if( casting ){
 			// for beams and ribbons emit just one particle. for particles as many as requested
 			const bool castMultipleParticles = ( engType.GetSimulationType() == deParticleEmitterType::estParticle );
 			deParticleEmitterInstance &instance = *pInstance->GetInstance();
@@ -1219,13 +1219,12 @@ bool debpParticleEmitterInstanceType::ParticleSimulate( sParticle &particle, flo
 
 class cClosestParticleCallback : public btCollisionWorld::ClosestConvexResultCallback{
 private:
-	const decCollisionFilter &pCollisionFilter;
+	const deParticleEmitterInstance &pInstance;
 	
 public:
 	cClosestParticleCallback( const btVector3 &rayFromWorld, const btVector3 &rayToWorld,
-	const decCollisionFilter &collisionFilter ) :
-	ClosestConvexResultCallback( rayFromWorld, rayToWorld ),
-	pCollisionFilter( collisionFilter ){
+	const deParticleEmitterInstance &instance ) :
+	ClosestConvexResultCallback( rayFromWorld, rayToWorld ), pInstance( instance ){
 	}
 	
 	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const {
@@ -1237,11 +1236,13 @@ public:
 		const debpCollisionObject &colObj = *( ( debpCollisionObject* )collisionObject.getUserPointer() );
 		
 		if( colObj.IsOwnerCollider() ){
-			return pCollisionFilter.Collides( colObj.GetOwnerCollider()->GetCollider().GetCollisionFilter() );
+			deCollider &collider = colObj.GetOwnerCollider()->GetCollider();
+			return pInstance.GetCollisionFilter().Collides( collider.GetCollisionFilter() )
+				&& ! pInstance.HasIgnoreCollider( &collider );
 			
 		}else if( colObj.IsOwnerHTSector() ){
-			return pCollisionFilter.Collides( colObj.GetOwnerHTSector()->GetHeightTerrain()
-				->GetHeightTerrain()->GetCollisionFilter() );
+			return pInstance.GetCollisionFilter().Collides( colObj.GetOwnerHTSector()
+				->GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter() );
 		}
 		
 		return false;
@@ -1252,7 +1253,6 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision( sParticle &particle
 	// pBullet->LogInfoFormat( "step particle %i: elapsed=%g displacement=(%g,%g,%g)", p, elapsed, displacement.getX(), displacement.getY(), displacement.getZ() );
 	const deParticleEmitterType &engType = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt( pType );
 	debpCollisionWorld &dynamicsWorld = *pInstance->GetParentWorld()->GetDynamicsWorld();
-	const decCollisionFilter &collisionFilter = pInstance->GetInstance()->GetCollisionFilter();
 	btVector3 displacement = particle.linearVelocity * elapsed;
 	int loop;
 	
@@ -1280,7 +1280,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision( sParticle &particle
 		//pBullet->LogInfoFormat( "rayTest: pos=(%g,%g,%g) to(%g,%g,%g) time=%g", particle.position.getX(), particle.position.getY(),
 		//	particle.position.getZ(), rayToWorld.getX(), rayToWorld.getY(), rayToWorld.getZ(), elapsed );
 		
-		cClosestParticleCallback rayResult( particle.position, rayToWorld, collisionFilter );
+		cClosestParticleCallback rayResult( particle.position, rayToWorld, *pInstance->GetInstance() );
 		{
 		//sphereShape.setUnscaledRadius( ... );
 		const btQuaternion btQuaterion( ( btScalar )0.0, ( btScalar )0.0, ( btScalar )0.0, ( btScalar )1.0 );

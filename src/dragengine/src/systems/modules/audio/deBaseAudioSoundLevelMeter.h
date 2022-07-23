@@ -29,7 +29,7 @@
 /**
  * \brief Audio module sound level meter peer.
  */
-class deBaseAudioSoundLevelMeter{
+class DE_DLL_EXPORT deBaseAudioSoundLevelMeter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

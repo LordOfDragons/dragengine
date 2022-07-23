@@ -60,6 +60,7 @@ private:
 	igdeButtonReference pBtnGesture;
 	igdeTextFieldReference pEditGestureAnimator;
 	igdeCheckBoxReference pChkGestureHold;
+	igdeTextFieldReference pEditGestureDuration;
 	
 	igdeComboBoxFilterReference pCBFacePose;
 	igdeButtonReference pBtnFacePose;
@@ -131,6 +132,9 @@ public:
 	
 	/** \brief Update conversation. */
 	void UpdateConversation();
+	
+	/** \brief Conversation path changed. */
+	void OnConversationPathChanged();
 	
 	
 	

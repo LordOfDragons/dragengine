@@ -30,6 +30,9 @@
  * \brief Animator rule state manipulator.
  */
 class aeRuleStateManipulator : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleStateManipulator> Ref;
+	
 private:
 	decVector pMinPosition;
 	decVector pMaxPosition;
@@ -124,12 +127,15 @@ public:
 	
 	/** \brief Position target. */
 	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** \brief Rotation target. */
 	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
+	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
 	
 	/** \brief Size target. */
 	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
+	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
 	
 	
 	

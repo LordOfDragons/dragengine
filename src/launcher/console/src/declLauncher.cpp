@@ -31,9 +31,9 @@
 #include "action/declActionPatches.h"
 #include "action/declListProfiles.h"
 #include "config/declConfiguration.h"
-#include "engine/declEngine.h"
-#include "game/declGameManager.h"
 #include "logger/declLoggerFiltered.h"
+
+#include <delauncher/engine/delEngineInstanceDirect.h>
 
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -64,13 +64,12 @@
 ////////////////////////////
 
 declLauncher::declLauncher() :
-pConfiguration( NULL ),
-pEngine( NULL ),
-pGameManager( NULL ),
-pPatchManager( *this )
-{
-	pLogger.TakeOver( new deLoggerConsoleColor );
-	pEngineLogger.TakeOver( new deLoggerConsoleColor );
+pConfiguration( NULL ){
+	// also log to "/logs/delauncher-console.log"
+	AddFileLogger( "delauncher-console.log" );
+	
+	// set launcher to use direct engine instance
+	SetEngineInstanceFactory( new delEngineInstanceDirect::Factory );
 }
 
 declLauncher::~declLauncher(){
@@ -96,39 +95,21 @@ void declLauncher::PrintSyntax(){
 	printf( "   <action> can be one or more of the following:\n" );
 	printf( "      help       Print syntax of an action.\n" );
 	printf( "      run        Run games.\n" );
-	printf( "      delga      Manage DELGA files (view content, install).\n" );
-	printf( "      games      Manage games (list, uninstall).\n" );
-	printf( "      profiles   Manage profiles (list).\n" );
-	printf( "      patches    Manage patches (list, uninstall).\n" );
+	printf( "      delga      Manage DELGA files.\n" );
+	printf( "      games      Manage games.\n" );
+	printf( "      profiles   Manage profiles.\n" );
+	printf( "      patches    Manage patches.\n" );
 	printf( "\n" );
 }
 
 
 
 void declLauncher::Init(){
-	// create configuration and locate path
-	pConfiguration = new declConfiguration( this );
-	pConfiguration->LocatePath();
+	pConfiguration = new declConfiguration( *this );
 	
-	// create virtual file system
-	pFileSystem.TakeOver( new deVirtualFileSystem );
-	pConfiguration->InitVirtualFileSystem();
-	
-	// init the logger. this has to wait until the virtual file system is
-	// created as the log file is obtained from there
 	pInitLogger();
 	
-	// now we can log the information we found so far
-	pConfiguration->LogImportantValues();
-	
-	// load configuration
 	pConfiguration->LoadConfiguration();
-	
-	// create engine
-	pEngine = new declEngine( this );
-	
-	// create game manager
-	pGameManager = new declGameManager( this );
 }
 
 int declLauncher::Run(){
@@ -140,11 +121,15 @@ int declLauncher::Run(){
 	const decString actionName( pArgList.GetArgumentAt( 0 )->ToUTF8() );
 	
 	if( actionName == "help" ){
-		declActionHelp( this ).Run();
+		declActionHelp( *this ).Run();
+		
+	}else if( actionName == "version" ){
+		printf( "%s", DE_VERSION );
+		return 0;
 		
 	}else if( actionName == "run" ){
 		Init();
-		declRunGame( this ).Run();
+		declRunGame( *this ).Run();
 		
 	}else if( actionName == "games" ){
 		Init();
@@ -156,14 +141,14 @@ int declLauncher::Run(){
 		
 	}else if( actionName == "profiles" ){
 		Init();
-		declListProfiles( this ).Run();
+		declListProfiles( *this ).Run();
 		
 	}else if( actionName == "patches" ){
 		Init();
 		declActionPatches( *this ).Run();
 		
 	}else{
-		pLogger->LogErrorFormat( LOGSOURCE, "Unknown action '%s'", actionName.GetString() );
+		GetLogger()->LogErrorFormat( LOGSOURCE, "Unknown action '%s'", actionName.GetString() );
 		PrintSyntax();
 	}
 	
@@ -175,15 +160,6 @@ void declLauncher::CleanUp(){
 		//pConfiguration->SaveConfiguration();
 	}
 	
-	if( pGameManager ){
-		delete pGameManager;
-		pGameManager = NULL;
-	}
-	
-	if( pEngine ){
-		delete pEngine;
-		pEngine = NULL;
-	}
 	if( pConfiguration ){
 		delete pConfiguration;
 		pConfiguration = NULL;
@@ -223,50 +199,43 @@ int declLauncher::ReadInputSelection() const{
 //////////////////////
 
 void declLauncher::pInitLogger(){
-	pLogger.TakeOver( new declLoggerFiltered );
-	declLoggerFiltered &loggerLauncher = ( declLoggerFiltered& )( deLogger& )pLogger;
+	// clear logger chain set up by the shared launcher. we want a custom one
+	GetLogger()->RemoveAllLoggers();
 	
-	deLoggerReference refLoggerLauncherError;
-	refLoggerLauncherError.TakeOver( new deLoggerChain );
-	loggerLauncher.SetLoggerError( refLoggerLauncherError );
-	deLoggerChain &loggerLauncherError = ( deLoggerChain& )( deLogger& )refLoggerLauncherError;
+	const declLoggerFiltered::Ref loggerLauncher( declLoggerFiltered::Ref::New( new declLoggerFiltered ) );
+	GetLogger()->AddLogger( loggerLauncher );
 	
-	deLoggerReference refLoggerLauncherWarn;
-	refLoggerLauncherWarn.TakeOver( new deLoggerChain );
-	loggerLauncher.SetLoggerWarning( refLoggerLauncherWarn );
-	deLoggerChain &loggerLauncherWarn = ( deLoggerChain& )( deLogger& )refLoggerLauncherWarn;
+	const deLoggerChain::Ref loggerLauncherError( deLoggerChain::Ref::New( new deLoggerChain ) );
+	loggerLauncher->SetLoggerError( loggerLauncherError );
 	
-	deLoggerReference refLoggerLauncherInfo;
-	refLoggerLauncherInfo.TakeOver( new deLoggerChain );
-	loggerLauncher.SetLoggerInfo( refLoggerLauncherInfo );
-	deLoggerChain &loggerLauncherInfo = ( deLoggerChain& )( deLogger& )refLoggerLauncherInfo;
+	const deLoggerChain::Ref loggerLauncherWarn( deLoggerChain::Ref::New( new deLoggerChain ) );
+	loggerLauncher->SetLoggerWarning( loggerLauncherWarn );
 	
-	pEngineLogger.TakeOver( new declLoggerFiltered );
-	declLoggerFiltered &loggerEngine = ( declLoggerFiltered& )( deLogger& )pEngineLogger;
-	loggerEngine.SetLoggerError( refLoggerLauncherError );
-	loggerEngine.SetLoggerWarning( refLoggerLauncherWarn );
+	const deLoggerChain::Ref loggerLauncherInfo( deLoggerChain::Ref::New( new deLoggerChain ) );
+	loggerLauncher->SetLoggerInfo( loggerLauncherInfo );
 	
-	pEngineLoggerDebug.TakeOver( new deLoggerChain );
-	deLoggerChain &loggerEngineDebug = ( deLoggerChain& )( deLogger& )pEngineLoggerDebug;
+	declLoggerFiltered::Ref loggerEngine( declLoggerFiltered::Ref::New( new declLoggerFiltered ) );
+	loggerEngine->SetLoggerError( loggerLauncherError );
+	loggerEngine->SetLoggerWarning( loggerLauncherWarn );
+	pEngineLogger = loggerEngine;
+	
+	const deLoggerChain::Ref loggerEngineDebug( deLoggerChain::Ref::New( new deLoggerChain ) );
+	pEngineLoggerDebug = loggerEngineDebug;
 	
 	// console
-	deLoggerReference loggerConsole;
-	loggerConsole.TakeOver( new deLoggerConsoleColor );
-	loggerLauncherError.AddLogger( loggerConsole );
-	loggerEngineDebug.AddLogger( loggerConsole );
+	const deLoggerConsoleColor::Ref loggerConsole( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
+	loggerLauncherError->AddLogger( loggerConsole );
+	loggerEngineDebug->AddLogger( loggerConsole );
 	
 	// file
-	decBaseFileWriterReference writer;
-	writer.TakeOver( pFileSystem->OpenFileForWriting(
-		decPath::CreatePathUnix( "/logs/delauncher-console.log" ) ) );
+	const deLoggerFile::Ref loggerFile( deLoggerFile::Ref::New( new deLoggerFile(
+		decBaseFileWriter::Ref::New( GetVFS()->OpenFileForWriting(
+			decPath::CreatePathUnix( "/logs/delauncher-console.log" ) ) ) ) ) );
 	
-	deLoggerReference loggerFile;
-	loggerFile.TakeOver( new deLoggerFile( writer ) );
+	loggerLauncherError->AddLogger( loggerFile );
+	loggerLauncherWarn->AddLogger( loggerFile );
+	loggerLauncherInfo->AddLogger( loggerFile );
 	
-	loggerLauncherError.AddLogger( loggerFile );
-	loggerLauncherWarn.AddLogger( loggerFile );
-	loggerLauncherInfo.AddLogger( loggerFile );
-	
-	loggerEngine.SetLoggerInfo( loggerFile );
-	loggerEngineDebug.AddLogger( loggerFile );
+	loggerEngine->SetLoggerInfo( loggerFile );
+	loggerEngineDebug->AddLogger( loggerFile );
 }

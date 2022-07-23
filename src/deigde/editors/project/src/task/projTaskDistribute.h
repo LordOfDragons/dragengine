@@ -33,6 +33,7 @@
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/systems/deModuleSystem.h>
 
 class projWindowMain;
 class projProject;
@@ -40,6 +41,7 @@ class projProfile;
 
 class decMemoryFile;
 class decXmlWriter;
+
 
 
 /**
@@ -161,13 +163,15 @@ private:
 	void pScanDirectory( const decPath &path );
 	void pProcessFiles();
 	void pProcessFile( const decPath &path );
+	decString pGetFileExtension( const decPath &path ) const;
+	deLoadableModule *pGetMatchingModule( const decString &extension ) const;
+	const char *pGetModuleTypeName( deModuleSystem::eModuleTypes type ) const;
 	void pCopyFile( const decPath &path );
-	void pZipBeginFile( const decPath &path );
+	void pZipBeginFile( const decPath &path, bool compress );
 	void pZipWriteFile( const void *buffer, long size );
 	void pZipCloseFile();
 	void pZipWriteMemoryFile( const decMemoryFile &memoryFile );
 	void pCloseDirectory();
-	void pAddUsedFileExtension( const decPath &path );
 	void pWriteGameXml();
 	void pWriteGameXml( decXmlWriter &writer );
 	void pWriteGameXmlRequiredFormats( decXmlWriter &writer );

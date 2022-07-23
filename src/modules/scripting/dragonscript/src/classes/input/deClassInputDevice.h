@@ -26,7 +26,7 @@
 
 class deScriptingDragonScript;
 
-class deInputDevice;
+class dedsInputDevice;
 
 
 
@@ -37,6 +37,9 @@ class deClassInputDevice : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsInputDeviceType;
+	dsClass *pClsInputDeviceBoneConfiguration;
+	dsClass *pClsInputEventSource;
+	dsClass *pClsInputEventKeyLocation;
 	
 	
 	
@@ -61,12 +64,15 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	/** \brief InputDevice or \em NULL if myself is \em NULL. */
-	deInputDevice *GetInputDevice( dsRealObject *myself ) const;
+	dedsInputDevice *GetInputDevice( dsRealObject *myself ) const;
 	
 	/** \brief Push input device which can be \em NULL. */
-	void PushInputDevice( dsRunTime *rt, deInputDevice *device, int index );
+	void PushInputDevice( dsRunTime *rt, dedsInputDevice *device );
 	
 	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
+	inline dsClass *GetClassInputDeviceBoneConfiguration() const{ return pClsInputDeviceBoneConfiguration; }
+	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	
@@ -78,6 +84,7 @@ private:
 		dsClass *clsVoid;
 		dsClass *clsBool;
 		dsClass *clsInteger;
+		dsClass *clsFloat;
 		dsClass *clsString;
 		dsClass *clsObject;
 		
@@ -87,7 +94,15 @@ private:
 		dsClass *clsIDAxis;
 		dsClass *clsIDButton;
 		dsClass *clsIDFeedback;
+		dsClass *clsIDComponent;
 		dsClass *clsInputDeviceType;
+		dsClass *clsInputDeviceBoneConfiguration;
+		dsClass *clsInputEventSource;
+		dsClass *clsInputEventKeyLocation;
+		dsClass *clsVector;
+		dsClass *clsQuaternion;
+		dsClass *clsMatrix;
+		dsClass *clsRig;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -97,6 +112,7 @@ private:
 	}
 	DEF_NATFUNC( nfDestructor );
 	
+	DEF_NATFUNC( nfGetSource );
 	DEF_NATFUNC( nfGetIndex );
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName );
@@ -119,10 +135,37 @@ private:
 	DEF_NATFUNC( nfGetFeedbackCount );
 	DEF_NATFUNC( nfGetFeedbackAt );
 	
+	DEF_NATFUNC( nfGetComponentCount );
+	DEF_NATFUNC( nfGetComponentAt );
+	
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
+	DEF_NATFUNC( nfButtonMatchingKeyCode2 );
+	DEF_NATFUNC( nfButtonMatchingKeyChar2 );
+	
+	DEF_NATFUNC( nfGetBoneConfiguration );
+	DEF_NATFUNC( nfGetFingerTipOffset );
+	DEF_NATFUNC( nfGetSupportsFaceEyeExpressions );
+	DEF_NATFUNC( nfGetSupportsFaceMouthExpressions );
+	DEF_NATFUNC( nfGetHandRig );
+	DEF_NATFUNC( nfGetVRModel );
+	DEF_NATFUNC( nfGetVRSkin );
 	
 	DEF_NATFUNC( nfIsPresent );
+	
+	DEF_NATFUNC( nfGetDevicePosePosition );
+	DEF_NATFUNC( nfGetDevicePoseOrientation );
+	DEF_NATFUNC( nfGetDevicePoseLinearVelocity );
+	DEF_NATFUNC( nfGetDevicePoseAngularVelocity );
+	DEF_NATFUNC( nfGetDevicePoseMatrix );
+	
+	DEF_NATFUNC( nfGetDeviceBonePoseCount );
+	DEF_NATFUNC( nfGetDeviceBonePosePosition );
+	DEF_NATFUNC( nfGetDeviceBonePoseOrientation );
+	DEF_NATFUNC( nfGetDeviceBonePoseMatrix );
+	
+	DEF_NATFUNC( nfGetDeviceFaceExpressionCount );
+	DEF_NATFUNC( nfGetDeviceFaceExpressionAt );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

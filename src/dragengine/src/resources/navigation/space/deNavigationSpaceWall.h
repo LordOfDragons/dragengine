@@ -22,11 +22,13 @@
 #ifndef _DENAVIGATIONSPACEWALL_H_
 #define _DENAVIGATIONSPACEWALL_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Navigation Space Wall.
  */
-class deNavigationSpaceWall{
+class DE_DLL_EXPORT deNavigationSpaceWall{
 private:
 	unsigned short pFace;
 	unsigned short pType;

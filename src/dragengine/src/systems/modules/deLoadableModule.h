@@ -45,7 +45,7 @@ class deBaseModule;
  * Provided are two ways to work with subclasses one being a visitor and
  * the other safe casting.
  */
-class deLoadableModule : public deObject{
+class DE_DLL_EXPORT deLoadableModule : public deObject{
 public:
 	/** \brief Error Codes. */
 	enum eErrorCodes{
@@ -74,7 +74,10 @@ private:
 	decStringList pPatternList;
 	decString pDefaultExtension;
 	
+	int pPriority;
 	bool pFallback;
+	bool pNoSaving;
+	bool pNoCompress;
 	
 	bool pEnabled;
 	
@@ -159,11 +162,43 @@ public:
 	/** \brief Set directory name for this module. */
 	void SetDirectoryName( const char *dirName );
 	
+	/**
+	 * \brief Priority of module.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	inline int GetPriority() const{ return pPriority; }
+	
+	/**
+	 * \brief Set module priority.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	void SetPriority( int priority );
+	
 	/** \brief Determines if this module is a fallback module. */
 	inline bool GetIsFallback() const{ return pFallback; }
 	
 	/** \brief Sets if this module is a fallback module. */
 	void SetIsFallback( bool fallback );
+	
+	/** \brief Module does not support saving. */
+	inline bool GetNoSaving() const{ return pNoSaving; }
+	
+	/** \brief Set if module does not support saving. */
+	void SetNoSaving( bool noSaving );
+	
+	/**
+	 * \brief Files are compressed.
+	 * \version 1.12
+	 */
+	inline bool GetNoCompress() const{ return pNoCompress; }
+	
+	/**
+	 * \brief Set if files are compressed.
+	 * \version 1.12
+	 */
+	void SetNoCompress( bool noCompress );
 	
 	/**
 	 * \brief Determines if the module is enabled.

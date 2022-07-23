@@ -232,14 +232,14 @@ class FormLayout implements Layout
 		
 		if this.pStretchRightColumn
 			cxNonStretch = container.getPadding().getLeft()
-			cxStretch = cxNonStretch + this.pGapColumns + columnNonStretchWidth
-			columnStretchWidth = newSizeX - cxStretch
+			cxStretch = cxNonStretch + columnNonStretchWidth + this.pGapColumns
+			columnStretchWidth = cxNonStretch + newSizeX - cxStretch
 			refSizeLeft = columnNonStretchWidth
 			refSizeRight = columnStretchWidth
 			
 		else
 			cxStretch = container.getPadding().getLeft()
-			cxNonStretch = newSizeX - columnNonStretchWidth
+			cxNonStretch = cxStretch + newSizeX - columnNonStretchWidth
 			columnStretchWidth = cxNonStretch - this.pGapColumns - cxStretch
 			refSizeLeft = columnStretchWidth
 			refSizeRight = columnNonStretchWidth
@@ -288,7 +288,7 @@ class FormLayout implements Layout
 				continue
 			end
 			
-			// sotre row right widget parameters
+			// store row right widget parameters
 			rightWidget = child
 			rightSettings = this.pWidgetSettings.getAt( rightWidget, null ) cast LayoutSettings
 			rightChildSize = rightWidget.getMinimumSizeForWidth( refSizeRight )
@@ -381,8 +381,8 @@ class FormLayout implements Layout
 	/** \brief Minimum size required for child widgets. */
 	protected func Point getMinimumSizeFor( Container container, int width )
 		var int count = container.getWidgetCount()
-		var Point minSize = Point.new( 1, 1 )
 		var bool side = this.pStretchRightColumn
+		var bool usePadding = false
 		var bool nextRow = false
 		var Point childSize
 		var Widget child
@@ -399,6 +399,7 @@ class FormLayout implements Layout
 			end
 			
 			childSize = child.getMinimumSizeWithBorderForWidth( width )
+			usePadding = true
 			
 			if side
 				cxNonStretch = DEMath.max( cxNonStretch, childSize.getX() )
@@ -427,14 +428,18 @@ class FormLayout implements Layout
 			cy += DEMath.max( cyRow, childSize.getY() )
 		end
 		
-		return Point.new( cxNonStretch + this.pGapColumns + cxStretch, cy ).largest( minSize ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cxNonStretch + this.pGapColumns + cxStretch, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	/** \brief Minimum size required for the non-stretching column widgets. */
 	protected func int getNoStretchColumnWidth( Container container, int width )
 		var int count = container.getWidgetCount()
 		var bool side = this.pStretchRightColumn
-		var int minWidth = 1
+		var int minWidth = 0
 		var Widget child
 		var int i
 		

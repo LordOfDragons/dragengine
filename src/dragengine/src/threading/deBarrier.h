@@ -22,6 +22,7 @@
 #ifndef _DEBARRIER_H_
 #define _DEBARRIER_H_
 
+#include "../dragengine_export.h"
 #include "../dragengine_configuration.h"
 
 #if defined OS_UNIX || defined OS_BEOS
@@ -53,7 +54,7 @@
  * barriers can be open at each time. This ensures all threads run through a code
  * path exactly once before all are allowed to enter the section again. 
  */
-class deBarrier{
+class DE_DLL_EXPORT deBarrier{
 private:
 	int pThreshold;
 	int pCounter;

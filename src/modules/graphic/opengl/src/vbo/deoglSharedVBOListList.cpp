@@ -38,18 +38,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBOListList::deoglSharedVBOListList( deoglRenderThread &renderThread, int maxSize ) :
+deoglSharedVBOListList::deoglSharedVBOListList( deoglRenderThread &renderThread,
+int maxSize, int maxIndexSize ) :
 pRenderThread( renderThread ),
-pMaxSize( maxSize ){
-	if( maxSize < 0 ){
+pMaxSize( maxSize ),
+pMaxIndexSize( maxIndexSize )
+{
+	if( maxSize < 0 || maxIndexSize < 0 ){
 		DETHROW( deeInvalidParam );
 	}
 }
 
 deoglSharedVBOListList::~deoglSharedVBOListList(){
-	int i, count;
-	
-	count = pLists.GetCount();
+	const int count = pLists.GetCount();
+	int i;
 	for( i=0; i<count; i++ ){
 		delete ( ( deoglSharedVBOList* )pLists.GetAt( i ) );
 	}
@@ -74,9 +76,7 @@ bool deoglSharedVBOListList::HasWith( const deoglVBOLayout &layout, GLenum drawT
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const deoglSharedVBOList &list = *( ( deoglSharedVBOList* )pLists.GetAt( i ) );
-		
-		if( list.Matches( layout, drawType ) ){
+		if( ( ( deoglSharedVBOList* )pLists.GetAt( i ) )->Matches( layout, drawType ) ){
 			return true;
 		}
 	}
@@ -91,7 +91,6 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith( const deoglVBOLayout &layou
 	
 	for( i=0; i<count; i++ ){
 		list = ( deoglSharedVBOList* )pLists.GetAt( i );
-		
 		if( list->Matches( layout, drawType ) ){
 			return list;
 		}
@@ -100,13 +99,14 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith( const deoglVBOLayout &layou
 	list = NULL;
 	
 	try{
-		list = new deoglSharedVBOList( pRenderThread, layout, drawType, pMaxSize );
+		list = new deoglSharedVBOList( pRenderThread, layout, drawType, pMaxSize, pMaxIndexSize );
 		pLists.Add( list );
 		
 	}catch( const deException & ){
 		if( list ){
 			delete list;
 		}
+		throw;
 	}
 	
 	return list;
@@ -117,7 +117,6 @@ deoglSharedVBOList *deoglSharedVBOListList::GetWith( const deoglVBOLayout &layou
 void deoglSharedVBOListList::PrepareAllLists(){
 	const int count = pLists.GetCount();
 	int i;
-	
 	for( i=0; i<count; i++ ){
 		( ( deoglSharedVBOList* )pLists.GetAt( i ) )->PrepareVBOs();
 	}

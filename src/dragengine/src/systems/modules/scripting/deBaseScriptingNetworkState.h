@@ -22,6 +22,8 @@
 #ifndef _DEBASESCRIPTINGNETWORKSTATE_H_
 #define _DEBASESCRIPTINGNETWORKSTATE_H_
 
+#include "../../../dragengine_export.h"
+
 class deNetworkProperty;
 
 
@@ -29,7 +31,7 @@ class deNetworkProperty;
  * \brief Scripting Module Network State Peer.
  *
  */
-class deBaseScriptingNetworkState{
+class DE_DLL_EXPORT deBaseScriptingNetworkState{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

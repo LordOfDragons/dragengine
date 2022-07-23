@@ -22,6 +22,8 @@
 #ifndef _DECOBJECTORDEREDSET_H_
 #define _DECOBJECTORDEREDSET_H_
 
+#include "../../dragengine_export.h"
+
 class deObject;
 
 
@@ -31,7 +33,7 @@ class deObject;
  * All objects including NULL are allowed. Objects can be included
  * only once in the set.
  */
-class decObjectOrderedSet{
+class DE_DLL_EXPORT decObjectOrderedSet{
 private:
 	deObject **pObjects;
 	int pObjectCount;

@@ -1,0 +1,209 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Basic VR actor class.
+ * \version 1.6
+ * 
+ * Extends BaseActor with VR behaviors.
+ */
+class BaseVRActor extends BaseActor
+	private var ECBehaviorVRPlayspace.Instance pVRPlayspace
+	private var ECBehaviorVRHMD.Instance pVRHMD
+	private var ECBehaviorVRHand.Instance pVRRightHand
+	private var ECBehaviorVRHand.Instance pVRLeftHand
+	private var ECBehaviorVRHandPointAt.Instance pVRRightHandPointAt
+	private var ECBehaviorVRHandPointAt.Instance pVRLeftHandPointAt
+	private var ECBehaviorVRHandLaserPointer.Instance pVRRightHandLaserPointer
+	private var ECBehaviorVRHandLaserPointer.Instance pVRLeftHandLaserPointer
+	private var ECBehaviorAttachSlot.Instance pVRRightHandAttachSlot
+	private var ECBehaviorAttachSlot.Instance pVRLeftHandAttachSlot
+	private var ECBehaviorGrabber.Instance pVRRightHandGrabber
+	private var ECBehaviorGrabber.Instance pVRLeftHandGrabber
+	private var ECBehaviorVRHandPose.Instance pVRRightHandPose
+	private var ECBehaviorVRHandPose.Instance pVRLeftHandPose
+	private var ECBehaviorActorAnimated.Instance pVRRightHandAnimated
+	private var ECBehaviorActorAnimated.Instance pVRLeftHandAnimated
+	private var ECBehaviorVRHandAction.Instance pVRRightHandAction
+	private var ECBehaviorVRHandAction.Instance pVRLeftHandAction
+	
+	
+	
+	/** \brief Create element. */
+	public func new(BaseVRActorClass eclass) super(eclass)
+		pVRPlayspace = eclass.getVRPlayspace().instance(this)
+		pVRHMD = eclass.getVRHMD().instance(this)
+		pVRRightHand = eclass.getVRRightHand().instance(this)
+		pVRLeftHand = eclass.getVRLeftHand().instance(this)
+		pVRRightHandPointAt = eclass.getVRRightHandPointAt().instance(this)
+		pVRLeftHandPointAt = eclass.getVRLeftHandPointAt().instance(this)
+		pVRRightHandLaserPointer = eclass.getVRRightHandLaserPointer().instance(this)
+		pVRLeftHandLaserPointer = eclass.getVRLeftHandLaserPointer().instance(this)
+		pVRRightHandAttachSlot = eclass.getVRRightHandAttachSlot().instance(this)
+		pVRLeftHandAttachSlot = eclass.getVRLeftHandAttachSlot().instance(this)
+		pVRRightHandGrabber = eclass.getVRRightHandGrabber().instance(this)
+		pVRLeftHandGrabber = eclass.getVRLeftHandGrabber().instance(this)
+		pVRRightHandPose = eclass.getVRRightHandPose().instance(this)
+		pVRLeftHandPose = eclass.getVRLeftHandPose().instance(this)
+		pVRRightHandAnimated = eclass.getVRRightHandAnimated().instance(this)
+		pVRLeftHandAnimated = eclass.getVRLeftHandAnimated().instance(this)
+		pVRRightHandAction = eclass.getVRRightHandAction().instance(this)
+		pVRLeftHandAction = eclass.getVRLeftHandAction().instance(this)
+	end
+	
+	
+	
+	/** \brief VR Playspace behavior instance. */
+	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+		return pVRPlayspace
+	end
+	
+	/** \brief VR HMD. */
+	public func ECBehaviorVRHMD.Instance getVRHMD()
+		return pVRHMD
+	end
+	
+	/** \brief VR Right Hand Controller. */
+	public func ECBehaviorVRHand.Instance getVRRightHand()
+		return pVRRightHand
+	end
+	
+	/** \brief VR Left Hand Controller. */
+	public func ECBehaviorVRHand.Instance getVRLeftHand()
+		return pVRLeftHand
+	end
+	
+	/** \brief VR Right Hand Controller Point-At. */
+	public func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
+		return pVRRightHandPointAt
+	end
+	
+	/** \brief VR Left Hand Controller Point-At. */
+	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
+		return pVRLeftHandPointAt
+	end
+	
+	/** \brief VR Right Hand Controller Laser Pointer. */
+	public func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
+		return pVRRightHandLaserPointer
+	end
+	
+	/** \brief VR Left Hand Controller Laser Pointer. */
+	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
+		return pVRLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
+		return pVRRightHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
+		return pVRLeftHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber.Instance getVRRightHandGrabber()
+		return pVRRightHandGrabber
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
+		return pVRLeftHandGrabber
+	end
+	
+	/**
+	 * \brief VR Right Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose.Instance getVRRightHandPose()
+		return pVRRightHandPose
+	end
+	
+	/**
+	 * \brief VR Left Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose.Instance getVRLeftHandPose()
+		return pVRLeftHandPose
+	end
+	
+	/**
+	 * \brief VR Right Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated.Instance getVRRightHandAnimated()
+		return pVRRightHandAnimated
+	end
+	
+	/**
+	 * \brief VR Left Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated.Instance getVRLeftHandAnimated()
+		return pVRLeftHandAnimated
+	end
+	
+	/**
+	 * \brief VR Right Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction.Instance getVRRightHandAction()
+		return pVRRightHandAction
+	end
+	
+	/**
+	 * \brief VR Left Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction.Instance getVRLeftHandAction()
+		return pVRLeftHandAction
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit(ElementVisitor visitor)
+		visitor.visitBaseVRActor(this)
+	end
+end

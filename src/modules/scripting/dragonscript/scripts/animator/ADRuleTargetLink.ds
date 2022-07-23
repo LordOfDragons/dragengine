@@ -27,7 +27,7 @@ pin Dragengine.Scenery
 
 
 /**
- * Defines a link to add to a rule target.
+ * \brief Link to add to a rule target.
  */
 class ADRuleTargetLink
 	private var Enumeration pTarget
@@ -35,25 +35,28 @@ class ADRuleTargetLink
 	
 	
 	
-	/** Creates a new rule target link definition. */
-	public func new( Enumeration target, ADLink link )
+	/** \brief Create rule target link definition. */
+	public func new(Enumeration target, ADLink link)
+		if target == null
+			throw ENullPointer.new("target")
+		end
 		if link == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("link")
 		end
 		
-		this.pTarget = target
-		this.pLink = link
+		pTarget = target
+		pLink = link
 	end
 	
 	
 	
-	/** Target. */
+	/** \brief Target. */
 	public func Enumeration getTarget()
-		return this.pTarget
+		return pTarget
 	end
 	
-	/** Retrieves the link */
+	/** \brief Link */
 	public func ADLink getLink()
-		return this.pLink
+		return pLink
 	end
 end

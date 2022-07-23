@@ -37,7 +37,7 @@ class deColliderCollisionTest;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deColliderCollisionTestReference : protected deObjectReference {
+class DE_DLL_EXPORT deColliderCollisionTestReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

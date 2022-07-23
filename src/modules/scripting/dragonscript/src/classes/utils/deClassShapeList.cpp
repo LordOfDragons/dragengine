@@ -1247,7 +1247,6 @@ void deClassShapeList::nfReadFromFile::RunFunction( dsRunTime *rt, dsValue* ){
 					shape = shapeHull;
 					const int pointCount = reader->ReadUShort();
 					shapeHull->SetPointCount( pointCount );
-					int i;
 					for( i=0; i<pointCount; i++ ){
 						shapeHull->SetPointAt( i, reader->ReadVector() );
 					}

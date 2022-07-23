@@ -56,39 +56,39 @@ FXIMPLEMENT( igdeNativeFoxLabel, FXLabel, igdeNativeFoxLabelMap, ARRAYNUMBER( ig
 
 igdeNativeFoxLabel::igdeNativeFoxLabel(){ }
 
-igdeNativeFoxLabel::igdeNativeFoxLabel( igdeLabel &owner, FXComposite *parent,
+igdeNativeFoxLabel::igdeNativeFoxLabel( igdeLabel &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXLabel( parent, owner.GetText().GetString(), LabelIcon( owner ),
-	layoutFlags | LabelFlags( owner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( LabelFont( owner, guitheme ) )
+FXLabel( pparent, powner.GetText().GetString(), LabelIcon( powner ),
+	layoutFlags | LabelFlags( powner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
+pFont( LabelFont( powner, guitheme ) )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 }
 
 igdeNativeFoxLabel::~igdeNativeFoxLabel(){
 }
 
-igdeNativeFoxLabel *igdeNativeFoxLabel::CreateNativeWidget( igdeLabel &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxLabel *igdeNativeFoxLabel::CreateNativeWidget( igdeLabel &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxLabel( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxLabel( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxLabel::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -122,45 +122,45 @@ void igdeNativeFoxLabel::UpdateIcon(){
 
 
 
-FXIcon *igdeNativeFoxLabel::LabelIcon( const igdeLabel &owner ){
-	if( owner.GetIcon() ){
-		return ( FXIcon* )owner.GetIcon()->GetNativeIcon();
+FXIcon *igdeNativeFoxLabel::LabelIcon( const igdeLabel &powner ){
+	if( powner.GetIcon() ){
+		return ( FXIcon* ) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
 		return NULL;
 	}
 }
 
-int igdeNativeFoxLabel::LabelFlags( const igdeLabel &owner ){
-	const int alignment = owner.GetAlignment();
-	int flags = ICON_BEFORE_TEXT;
+int igdeNativeFoxLabel::LabelFlags( const igdeLabel &powner ){
+	const int alignment = powner.GetAlignment();
+	int fflags = ICON_BEFORE_TEXT;
 	
 	if( ( alignment & igdeLabel::eaLeft ) == igdeLabel::eaLeft ){
-		flags |= JUSTIFY_LEFT;
+		fflags |= JUSTIFY_LEFT;
 		
 	}else if( ( alignment & igdeLabel::eaRight ) == igdeLabel::eaRight ){
-		flags |= JUSTIFY_RIGHT;
+		fflags |= JUSTIFY_RIGHT;
 		
 	}else{
-		flags |=  JUSTIFY_CENTER_X;
+		fflags |=  JUSTIFY_CENTER_X;
 	}
 	
 	if( ( alignment & igdeLabel::eaTop ) == igdeLabel::eaTop ){
-		flags |= JUSTIFY_TOP;
+		fflags |= JUSTIFY_TOP;
 		
 	}else if( ( alignment & igdeLabel::eaBottom ) == igdeLabel::eaBottom ){
-		flags |= JUSTIFY_BOTTOM;
+		fflags |= JUSTIFY_BOTTOM;
 		
 	}else{
-		flags |=  JUSTIFY_CENTER_Y;
+		fflags |=  JUSTIFY_CENTER_Y;
 	}
 	
-	return flags;
+	return fflags;
 }
 
-igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -179,7 +179,7 @@ igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &owner, const igdeGuiTh
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 #endif

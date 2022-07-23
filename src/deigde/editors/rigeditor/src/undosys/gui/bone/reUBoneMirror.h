@@ -34,7 +34,7 @@ class reRigConstraintList;
 
 
 /**
- * \brief Undo Mirror Bone.
+ * Undo Mirror Bone.
  *
  * Undo action to mirror bones. This includes the physics parameters,
  * shapes and constraints but not the geometry information like the
@@ -54,6 +54,10 @@ private:
 		bool oldDynamic;
 		reRigShapeList *oldShapes;
 		reRigConstraintList *oldConstraints;
+		decVector oldIKLimitsLower;
+		decVector oldIKLimitsUpper;
+		decVector oldIKResistance;
+		bool oldIKLocked[ 3 ];
 	};
 	
 	
@@ -69,11 +73,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new undo. */
+	/** Create a new undo. */
 	reUBoneMirror( reRig *rig );
 	
 protected:
-	/** \brief Clean up the undo. */
+	/** Clean up the undo. */
 	virtual ~reUBoneMirror();
 	/*@}*/
 	
@@ -82,10 +86,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
 	

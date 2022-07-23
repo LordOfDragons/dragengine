@@ -38,7 +38,6 @@
 #include "../../texture/deoglRImage.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -62,49 +61,14 @@ enum eSPEffect{
 
 deoglREffectDistortImage::deoglREffectDistortImage( deoglRenderThread &renderThread ) :
 deoglREffect( renderThread ),
-pImage( NULL ),
-pShader( NULL ){
+pImage( NULL ){
 	LEAK_CHECK_CREATE( renderThread, EffectDistortImage );
 }
-
-class deoglREffectDistortionImageDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	
-	deoglREffectDistortionImageDeletion() :
-	shader( NULL ){
-	}
-	
-	virtual ~deoglREffectDistortionImageDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
 
 deoglREffectDistortImage::~deoglREffectDistortImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectDistortImage );
 	if( pImage ){
 		pImage->FreeReference();
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectDistortionImageDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectDistortionImageDeletion;
-		delayedDeletion->shader = pShader;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
 	}
 }
 
@@ -182,7 +146,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// swap render texture
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	tsmgr.EnableTexture( 1, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
 	// set states

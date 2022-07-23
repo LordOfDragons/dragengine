@@ -118,6 +118,9 @@ public:
 	/** \brief Set emitter. */
 	void SetEmitter( peeEmitter *emitter );
 	
+	/** \brief Emitter path changed. */
+	void OnEmitterPathChanged();
+	
 	/** \brief Active type. */
 	peeType *GetType() const;
 	

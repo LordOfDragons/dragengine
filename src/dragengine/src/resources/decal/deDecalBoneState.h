@@ -33,7 +33,7 @@
  * static. The bone state stores the state of a component bone
  * at the time the decal has been attached to the component.
  */
-class deDecalBoneState{
+class DE_DLL_EXPORT deDecalBoneState{
 private:
 	decVector pPosition;
 	decQuaternion pRotation;

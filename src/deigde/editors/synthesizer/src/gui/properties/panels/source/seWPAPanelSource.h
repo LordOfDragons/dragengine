@@ -116,6 +116,9 @@ public:
 	/** \brief Synthesizer changed. */
 	virtual void SetSynthesizer( seSynthesizer *synthesizer );
 	
+	/** \brief Synthesizer path changed. */
+	virtual void OnSynthesizerPathChanged();
+	
 	/** \brief Panel has been activated. */
 	virtual void OnActivated();
 	

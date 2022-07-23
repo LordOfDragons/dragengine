@@ -37,7 +37,7 @@ class deSky;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deSkyReference : protected deObjectReference {
+class DE_DLL_EXPORT deSkyReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -37,7 +37,7 @@
 /**
  * \brief Windows Operating System.
  */
-class deOSWindows : public deOS{
+class DE_DLL_EXPORT deOSWindows : public deOS{
 private:
 	HINSTANCE pInstApp;
 	int pScreenWidth;
@@ -267,6 +267,9 @@ public:
 	 * If not present returns default value.
 	 */
 	static decString GetRegistryValue( const char *key,
+		const char *entry, const char *defaultValue );
+	
+	static decString GetRegistryValueCurrentUser( const char *key,
 		const char *entry, const char *defaultValue );
 	
 	/** \brief Set registry value. */

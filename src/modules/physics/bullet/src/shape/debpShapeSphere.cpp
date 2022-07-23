@@ -38,9 +38,6 @@
 
 debpShapeSphere::debpShapeSphere( decShapeSphere *shape ) : debpShape( estSphere, shape ){
 	pSSphere = shape;
-	
-	pCSphere.SetRadius( shape->GetRadius() );
-	
 	SetCollisionVolume( &pCSphere );
 }
 
@@ -52,9 +49,12 @@ debpShapeSphere::~debpShapeSphere(){
 // Management
 ///////////////
 
-void debpShapeSphere::UpdateWithMatrix( const decDMatrix &transformation ){
+void debpShapeSphere::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
 	pCSphere.SetCenter( transformation * pSSphere->GetPosition() );
 // 	pCSphere.SetRadius( pSSphere->GetRadius() * UniformScale( transformation ) );
+	
+	float scaleRadius = ( float )( ( scale.x + scale.y + scale.z ) / 3.0 );
+	pCSphere.SetRadius( pSSphere->GetRadius() * scaleRadius );
 }
 
 void debpShapeSphere::PrintDebug( dePhysicsBullet &module ){

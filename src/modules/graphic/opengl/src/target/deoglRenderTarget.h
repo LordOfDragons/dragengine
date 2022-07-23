@@ -23,6 +23,7 @@
 #define _DEOGLRRENDERTARGET_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglFramebuffer;
@@ -32,16 +33,20 @@ class deoglRenderbuffer;
 
 
 /**
- * \brief Render target.
+ * Render target.
  */
 class deoglRenderTarget : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deoglRenderTarget> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
-	int pWidth;
-	int pHeight;
-	int pTextureWidth;
-	int pTextureHeight;
+	decPoint pSize;
+	decPoint pTextureSize;
 	float pAspectRatio;
 	int pBitCount;
 	int pComponentCount;
@@ -55,10 +60,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render render target. */
-	deoglRenderTarget( deoglRenderThread &renderThread, int width, int height, int componentCount, int bitCount );
+	/** Create render render target. */
+	deoglRenderTarget( deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount );
 	
-	/** \brief Clean up render render target. */
+	/** Clean up render render target. */
 	virtual ~deoglRenderTarget();
 	/*@}*/
 	
@@ -66,44 +71,43 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Width. */
-	inline int GetWidth() const{ return pWidth; }
+	/** Size. */
+	inline const decPoint &GetSize() const{ return pSize; }
 	
-	/** \brief Height. */
-	inline int GetHeight() const{ return pHeight; }
-	
-	/** \brief Aspect ratio. */
+	/** Aspect ratio. */
 	inline float GetAspectRatio() const{ return pAspectRatio; }
 	
-	/** \brief Bit count. */
+	/** Bit count. */
 	inline int GetBitCount() const{ return pBitCount; }
 	
-	/** \brief Set size. */
-	void SetSize( int width, int height );
+	/** Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
+	
+	/** Set size. */
+	void SetSize( const decPoint &size );
 	
 	
 	
-	/** \brief Framebuffer or \em NULL if not existing. */
+	/** Framebuffer or \em NULL if not existing. */
 	inline deoglFramebuffer *GetFBO() const{ return pFBO; }
 	
-	/** \brief Prepare framebuffer for rendering. */
+	/** Prepare framebuffer for rendering. */
 	void PrepareFramebuffer();
 	
-	/** \brief Release framebuffer after rendering. */
+	/** Release framebuffer after rendering. */
 	void ReleaseFramebuffer();
 	
 	
 	
-	/** \brief Texture is dirty. */
+	/** Texture is dirty. */
 	inline bool GetTextureDirty() const{ return pDirtyTexture; }
 	
-	/** \brief Set texture dirty. */
+	/** Set texture dirty. */
 	void SetTextureDirty( bool dirty );
 	
 	// texture management
 	inline deoglTexture *GetTexture() const{ return pTexture; }
-	inline int GetTextureWidth() const{ return pTextureWidth; }
-	inline int GetTextureHeight() const{ return pTextureHeight; }
+	inline const decPoint &GetTextureSize() const{ return pTextureSize; }
 	/*@}*/
 };
 

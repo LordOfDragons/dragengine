@@ -119,12 +119,12 @@
 debpTouchSensor::debpTouchSensor( dePhysicsBullet &bullet, deTouchSensor &touchSensor ) :
 pBullet( bullet ),
 pTouchSensor( touchSensor ),
-pParentWorld( NULL ),
+pParentWorld( nullptr ),
 pDirtyMatrix( true ),
 pDirtyExtends( true ),
-pGhostObject( NULL ),
-pDebugDrawer( NULL ),
-pDDSShape( NULL )
+pGhostObject( nullptr ),
+pDebugDrawer( nullptr ),
+pDDSShape( nullptr )
 {
 	try{
 		pGhostObject = new debpGhostObject;
@@ -248,14 +248,18 @@ void debpTouchSensor::ApplyChanges(){
 	
 	// NOTE it is possible the user removes touch sensors during tracking changes. to avoid problems
 	//      touch sensors are keeping a fake reference while applying changes to not vanish underneath
-	deTouchSensorReference guard( &pTouchSensor );
+	const deTouchSensorReference guard( &pTouchSensor );
 	
 	// this function is only called if tracking enter-leave is enabled
 	if( pGhostObject->GetGhostObject() ){
 		// check all collision pairs in the ghost collider for touching the sensor
 		const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
 		const int count = ghostObject.getNumOverlappingObjects();
-		int i;
+		
+		int i, touchingCount = pTouchingColliders.GetCount();
+		for( i=0; i<touchingCount; i++ ){
+			( ( debpCollider* )pTouchingColliders.GetAt( i ) )->SetTouchSensorMarked( false );
+		}
 		
 		for( i=0; i<count; i++ ){
 			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject( i );
@@ -268,6 +272,8 @@ void debpTouchSensor::ApplyChanges(){
 // 				if( collider->GetCollider().GetResponseType() == deCollider::ertDynamic ){
 // 					collider->UpdateShapes();
 // 				}
+				
+				collider->SetTouchSensorMarked( true );
 				
 				if( TestCollider( collider ) ){
 					if( ! pTouchingColliders.Has( collider ) ){
@@ -299,6 +305,17 @@ void debpTouchSensor::ApplyChanges(){
 			//}else if( colObj.IsOwnerHTSector() ){
 			//	// TODO
 			}
+		}
+		
+		// add all non-marked colliders to leaving list
+		for( i=pTouchingColliders.GetCount()-1; i>=0; i-- ){
+			debpCollider * const collider = ( debpCollider* )pTouchingColliders.GetAt( i );
+			if( collider->GetTouchSensorMarked() ){
+				continue;
+			}
+			
+			pTouchingColliders.Remove( collider );
+			pLeavingColliders.Add( collider );
 		}
 		
 		// send a notification for all leaving colliders. if we have been removed from the
@@ -466,12 +483,13 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 		}
 		
 	}else{
+		const decDVector scale( transformation.GetScale() );
 		const int count = pShape.GetShapeCount();
 		int i;
 		
 		for( i=0; i<count; i++ ){
 			debpShape &shape = *pShape.GetShapeAt( i );
-			shape.UpdateWithMatrix( transformation );
+			shape.UpdateWithMatrix( transformation, scale );
 			if( shape.GetCollisionVolume()->BoxHitsVolume( &approxColliderBox ) ){
 				return true;
 			}
@@ -579,6 +597,7 @@ void debpTouchSensor::ShapeChanged(){
 	for( i=0; i<count; i++ ){
 		shapeList.GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	pGhostObject->SetShape( createBulletShape.GetBulletShape() );
 	
 	pCalculateBasicExtends();

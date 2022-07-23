@@ -115,13 +115,19 @@ void decBaseFileWriter::WriteString( const char *string ){
 
 void decBaseFileWriter::WriteString8( const char *string ){
 	const int len = ( int )strlen( string );
-	WriteByte( len );
+	if ( len > 255 ) {
+		DETHROW_INFO( deeInvalidParam, "string length > 255" );
+	}
+	WriteByte( ( uint8_t )len );
 	Write( string, len );
 }
 
 void decBaseFileWriter::WriteString16( const char *string ){
 	const int len = ( int )strlen( string );
-	WriteUShort( len );
+	if ( len > 65535 ) {
+		DETHROW_INFO( deeInvalidParam, "string length > 65535" );
+	}
+	WriteUShort( ( uint16_t )len );
 	Write( string, len );
 }
 

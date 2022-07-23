@@ -114,7 +114,7 @@ void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
 			}else{
 				const decDateTime datetime( pFileModificationTime );
 				format.format( "%02i:%02i %02i.%02i.%04i", datetime.GetHour(), datetime.GetMinute(),
-					datetime.GetDay(), datetime.GetMonth(), datetime.GetYear() );
+					datetime.GetDay() + 1, datetime.GetMonth() + 1, datetime.GetYear() );
 				text.append( format );
 			}
 			

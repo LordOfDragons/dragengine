@@ -23,13 +23,15 @@
 #ifndef _DEBASEAUDIOMODEL_H_
 #define _DEBASEAUDIOMODEL_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Audio Module Model Peer.
  *
  */
-class deBaseAudioModel{
+class DE_DLL_EXPORT deBaseAudioModel{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

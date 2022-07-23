@@ -40,7 +40,13 @@
  * write the compressed file content. This way pointers are handled properly and the
  * z-writer can be transparently used everywhere a file writer is used.
  */
-class decZFileWriter : public decBaseFileWriter{
+class DE_DLL_EXPORT decZFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decZFileWriter> Ref;
+	
+	
+	
 private:
 	decBaseFileWriter *pWriter;
 	

@@ -24,16 +24,17 @@
 
 #include "../../foxtoolkit.h"
 
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/profile/delGameProfile.h>
+
 class deglWindowMain;
-class deglGameProfile;
-class deglGame;
 class deglDGPPanelSystem;
 class deglDGPPanelFileFormats;
 
 
 
 /**
- * @brief Game Problems Dialog.
+ * Game Problems Dialog.
  * Dialog showing problems preventing a game from being run. Provides also
  * support to solve the problems.
  */
@@ -51,9 +52,9 @@ public:
 	
 private:
 	deglWindowMain *pWindowMain;
-	deglGameProfile *pProfileOrg;
-	deglGameProfile *pProfileWork;
-	deglGame *pGame;
+	const delGameProfile::Ref pProfileOrg;
+	const delGameProfile::Ref pProfileWork;
+	const delGame::Ref pGame;
 	bool pStatusWorking;
 	
 	FXColor pClrValidBack;
@@ -77,53 +78,64 @@ private:
 	FXButton *pBtnRunGame;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new dialog. */
-	deglDialogGameProblems( deglWindowMain *windowMain, deglGame *game, deglGameProfile *profile, FXWindow *owner );
-	/** Cleans up the dialog. */
+	/** Create dialog. */
+	deglDialogGameProblems( deglWindowMain *windowMain,
+		delGame *game, delGameProfile *profile, FXWindow *owner );
+	
+	/** Clean up dialog. */
 	virtual ~deglDialogGameProblems();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the main window. */
+	/** Main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
-	/** Retrieves the game. */
-	inline deglGame *GetGame() const{ return pGame; }
-	/** Retrieves the original game profile. */
-	inline deglGameProfile *GetOriginalProfile() const{ return pProfileOrg; }
-	/** Retrieves the working game profile. */
-	inline deglGameProfile *GetWorkingProfile() const{ return pProfileWork; }
-	/** Determines if the game is working. */
+	
+	/** Game. */
+	inline delGame *GetGame() const{ return pGame; }
+	
+	/** Original game profile. */
+	inline delGameProfile *GetOriginalProfile() const{ return pProfileOrg; }
+	
+	/** Working game profile. */
+	inline delGameProfile *GetWorkingProfile() const{ return pProfileWork; }
+	
+	/** Game is working. */
 	inline bool GetStatusWorking() const{ return pStatusWorking; }
 	
-	/** Retrieves the background color for valid elements. */
+	/** Background color for valid elements. */
 	inline FXColor GetBackColorValid() const{ return pClrValidBack; }
-	/** Retrieves the background color for problem elements. */
+	
+	/** Background color for problem elements. */
 	inline FXColor GetBackColorProblem() const{ return pClrProblemBack; }
-	/** Retrieves the text color for valid elements. */
+	
+	/** Text color for valid elements. */
 	inline FXColor GetTextColorValid() const{ return pClrValidText; }
-	/** Retrieves the text color for problem elements. */
+	
+	/** Text color for problem elements. */
 	inline FXColor GetTextColorProblem() const{ return pClrProblemText; }
 	
 	/** Update modules. */
 	void UpdateSystemModuleLists();
+	
 	/** Verify game and profile. */
 	void VerifyGameAndProfile();
+	
 	/** Update panels. */
 	void UpdatePanels();
+	
 	/** Update game panel. */
 	void UpdatePanelGame();
 	/*@}*/
 	
-	/** @name Events */
-	/*@{*/
-	/*@}*/
+	
 	
 private:
 	void pCreateTabGame();
 };
 
-// end of include only once
 #endif

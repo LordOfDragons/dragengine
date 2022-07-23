@@ -22,14 +22,23 @@
 #ifndef _DEBNADDRESS_H_
 #define _DEBNADDRESS_H_
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <dragengine/common/string/decString.h>
+
 #ifdef OS_UNIX
 #	include <arpa/inet.h>
 #	include <sys/types.h>
 #	include <sys/socket.h>
 #	include <netinet/in.h>
 #endif
+
 #ifdef OS_W32
+#	ifdef _WIN32_WINNT
+#		undef _WIN32_WINNT
+#	endif
+#	define _WIN32_WINNT _WIN32_WINNT_WIN7
+#	include <ws2tcpip.h>
 #	include <dragengine/app/include_windows.h>
 #endif
 
@@ -59,8 +68,8 @@ public:
 	
 	
 private:
-	int pType;
-	unsigned char pValues[ 4 ];
+	eAddressType pType;
+	unsigned char pValues[ 16 ];
 	int pValueCount;
 	int pPort;
 	
@@ -81,10 +90,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline int GetType() const{ return pType; }
+	inline eAddressType GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( int type );
+	void SetType( eAddressType type );
 	
 	/**
 	 * \brief Number of address values.
@@ -126,20 +135,45 @@ public:
 	/** \brief Set address to an IPv4 loopback address. */
 	void SetIPv4Loopback();
 	
-	/**
-	 * \brief Set address to an IPv4 address using the provided string.
-	 * 
-	 * The string can contain a valid IPv4 address or a valid domain name with
-	 * an optional port. If specified the port follows the address separated
-	 * by a semicolon.
-	 */
-	void SetIPv4FromString( const char *address );
-	
 	/** \brief Set address to an IPv4 address from a socket address. */
-	void SetIPv4FromSocket( const struct sockaddr_in &address );
+	void SetIPv4FromSocket( const sockaddr_in &address );
 	
 	/** \brief Set address in a socket address. */
-	void SetSocketIPv4( struct sockaddr_in &address ) const;
+	void SetSocketIPv4( sockaddr_in &address ) const;
+	
+	/**
+	 * \brief Set IPv6 address.
+	 * 
+	 * The values represent the address values with 0 being the left most value.
+	 */
+	void SetIPv6( int values[ 16 ], int port );
+	
+	/** \brief Set IPv6 any address. */
+	void SetIPv6Any();
+	
+	/** \brief Set IPv6 loopback address. */
+	void SetIPv6Loopback();
+	
+	/** \brief Set address to an IPv6 address from a socket address. */
+	void SetIPv6FromSocket( const sockaddr_in6 &address );
+	
+	/** \brief Set address in a socket address. */
+	void SetSocketIPv6( sockaddr_in6 &address ) const;
+	
+	/**
+	 * \brief Set address to an IPv4/IPv6 address using the provided string.
+	 * 
+	 * The string can contain a valid IPv4 address, a valid IPv6 address or a valid domain
+	 * name with an optional port. If specified the port follows the address separated by
+	 * a semicolon. Supported formats are these:
+	 * - "[IPv6]:port"
+	 * - "IPv6"
+	 * - "IPv4:port"
+	 * - "IPv4"
+	 * - "hostname:port"
+	 * - "hostname"
+	 */
+	void SetFromString( const char *address );
 	
 	/** \brief Address in string form. */
 	decString ToString() const;

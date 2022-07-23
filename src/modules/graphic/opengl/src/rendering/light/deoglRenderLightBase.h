@@ -25,8 +25,9 @@
 #include "../deoglRenderBase.h"
 #include "../../collidelist/deoglCollideList.h"
 
-class deoglComponentList;
+class deoglComponentSet;
 class deoglRenderPlan;
+class deoglGIState;
 
 
 
@@ -58,25 +59,7 @@ public:
 	inline const deoglCollideList &GetCollideList() const{ return pColList; }
 	
 	/** \brief Populate collider list with components from a component list. */
-	void AddComponentsToColliderList( const deoglComponentList &list );
-	
-	/**
-	 * \brief Update VBOs for all components in the collide list.
-	 * 
-	 * \warning After this call the active FBO, OpengGL states and other rendering configuration
-	 *          like viewport and scissoring can be undefined. Do not call after setting up
-	 *          rendering parameters.
-	 */
-	void UpdateComponentVBO( const deoglCollideList &list );
-	
-	/**
-	 * \brief Update renderables of all components in the collide list.
-	 * 
-	 * \warning After this call the active FBO, OpengGL states and other rendering configuration
-	 *          like viewport and scissoring can be undefined. Do not call after setting up
-	 *          rendering parameters.
-	 */
-	void UpdateComponentRenderables( deoglRenderPlan &plan, const deoglCollideList &list );
+	void AddComponentsToColliderList( const deoglComponentSet &list );
 	
 	/** \brief Transform color by matrix. */
 	decColor TransformColor( const decMatrix &matrix, const decColor &color ) const;
@@ -89,6 +72,9 @@ public:
 	
 	/** \brief Restore depth texture binding from the deferred rendering pass using linear interpolation. */
 	void RestoreDRTextureDepthSmooth();
+	
+	/** \brief Restore GI Rays frame buffer configuration. */
+	void RestoreFBOGITraceRays( deoglGIState &giState );
 	
 	
 	

@@ -22,12 +22,14 @@
 #ifndef _DEBASEANIMATORANIMATORINSTANCE_H_
 #define _DEBASEANIMATORANIMATORINSTANCE_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Animator module animator instance peer.
  */
-class deBaseAnimatorAnimatorInstance{
+class DE_DLL_EXPORT deBaseAnimatorAnimatorInstance{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

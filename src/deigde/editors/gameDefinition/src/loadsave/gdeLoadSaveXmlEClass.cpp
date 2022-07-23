@@ -37,6 +37,8 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decPointerDictionary.h>
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decPath.h>
@@ -92,10 +94,11 @@ gdeObjectClass *gdeLoadSaveXmlEClass::LoadXmlEClass( decBaseFileReader &reader )
 	return pReadElementClass( *root );
 }
 
-void gdeLoadSaveXmlEClass::SaveXmlEClass( const gdeObjectClass &objectClass, decBaseFileWriter &writer ){
+void gdeLoadSaveXmlEClass::SaveXmlEClass( const gdeGameDefinition &gameDefinition,
+const gdeObjectClass &objectClass, decBaseFileWriter &writer ){
 	decXmlWriter xmlWriter( &writer );
 	xmlWriter.WriteXMLDeclaration();
-	pWriteElementClass( xmlWriter, objectClass );
+	pWriteElementClass( xmlWriter, gameDefinition, objectClass );
 }
 
 
@@ -177,7 +180,8 @@ gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass( const decXmlElementTag 
 
 
 
-void gdeLoadSaveXmlEClass::pWriteElementClass( decXmlWriter &writer, const gdeObjectClass &objectClass ){
+void gdeLoadSaveXmlEClass::pWriteElementClass( decXmlWriter &writer,
+const gdeGameDefinition &gameDefinition, const gdeObjectClass &objectClass ){
 	// element class tag
 	writer.WriteOpeningTagStart( "elementClass" );
 	
@@ -212,31 +216,62 @@ void gdeLoadSaveXmlEClass::pWriteElementClass( decXmlWriter &writer, const gdeOb
 		pWritePropertyValue( writer, objectClass, false, name, properties.GetAt( name ) );
 	}
 	
-	// write texture replacements. we assume the default texture replacement element class
-	// property is used as provided by scripting modules. for all this we use the first
-	// child compnent if present. a better solution would be to look at all components
-	// and build a unique list of textures across all of them
-	const gdeOCComponentList &components = objectClass.GetComponents();
-	if( components.GetCount() > 0 ){
-		const gdeOCComponent &component = *components.GetAt( 0 );
-		const gdeOCComponentTextureList &textures = component.GetTextures();
-		const int textureCount = textures.GetCount();
+	// write texture replacements
+	gdeOCComponentTextureList textures;
+	pCollectTextures( gameDefinition, objectClass, textures );
+	
+	const int textureCount = textures.GetCount();
+	if( textureCount > 0 ){
+		writer.WriteOpeningTagStart( "map" );
+		writer.WriteAttributeString( "name", "textureReplacements" );
+		writer.WriteOpeningTagEnd();
 		
-		if( textureCount > 0 ){
-			writer.WriteOpeningTagStart( "map" );
-			writer.WriteAttributeString( "name", "textureReplacements" );
-			writer.WriteOpeningTagEnd();
-			
-			for( i=0; i<textureCount; i++ ){
-				pWritePropertyTextureReplacement( writer, objectClass, *textures.GetAt( i ) );
-			}
-			
-			writer.WriteClosingTag( "map" );
+		for( i=0; i<textureCount; i++ ){
+			pWritePropertyTextureReplacement( writer, objectClass, *textures.GetAt( i ) );
 		}
+		
+		writer.WriteClosingTag( "map" );
 	}
 	
 	// end of element class tag
 	writer.WriteClosingTag( "elementClass" );
+}
+
+void gdeLoadSaveXmlEClass::pCollectTextures( const gdeGameDefinition &gameDefinition,
+const gdeObjectClass &objectClass, gdeOCComponentTextureList &list ){
+	const gdeOCComponentTextureList &textures = objectClass.GetTextures();
+	const int textureCount = textures.GetCount();
+	int i;
+	
+	for( i=0; i<textureCount; i++ ){
+		gdeOCComponentTexture * const texture = textures.GetAt( i );
+		if( ! list.HasNamed( texture->GetName() ) ){
+			list.Add( texture );
+		}
+	}
+	
+	const gdeOCComponentList &components = objectClass.GetComponents();
+	const int componentCount = components.GetCount();
+	
+	for( i=0; i<componentCount; i++ ){
+		const gdeOCComponentTextureList &textures2 = components.GetAt( i )->GetTextures();
+		const int textureCount2 = textures2.GetCount();
+		for( i=0; i<textureCount2; i++ ){
+			gdeOCComponentTexture * const texture = textures2.GetAt( i );
+			if( ! list.HasNamed( texture->GetName() ) ){
+				list.Add( texture );
+			}
+		}
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int inheritCount = inherits.GetCount();
+	for( i=0; i<inheritCount; i++ ){
+		const gdeObjectClass * const resolvedClass = gameDefinition.FindObjectClass( inherits.GetAt( i )->GetName() );
+		if( resolvedClass ){
+			pCollectTextures( gameDefinition, *resolvedClass, list );
+		}
+	}
 }
 
 void gdeLoadSaveXmlEClass::pWritePropertyValue( decXmlWriter &writer, const gdeObjectClass &objectClass,

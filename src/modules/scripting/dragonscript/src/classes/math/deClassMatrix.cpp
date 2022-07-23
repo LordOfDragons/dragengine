@@ -710,6 +710,17 @@ void deClassMatrix::nfGetInverse::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsMatrix.PushMatrix( rt, matrix.QuickInvert() );
 }
 
+// public func Matrix getRotation()
+deClassMatrix::nfGetRotation::nfGetRotation( const sInitData &init ) :
+dsFunction( init.clsMatrix, "getRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMatrix ){
+}
+void deClassMatrix::nfGetRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	deClassMatrix &clsMatrix = *( ( deClassMatrix* )GetOwnerClass() );
+	
+	clsMatrix.PushMatrix( rt, matrix.GetRotationMatrix() );
+}
+
 // public func Matrix normalize()
 deClassMatrix::nfNormalize::nfNormalize( const sInitData &init ) :
 dsFunction( init.clsMatrix, "normalize", DSFT_FUNCTION,
@@ -979,10 +990,46 @@ void deClassMatrix::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
 	decString str;
 	
-	str.Format( "[[%g,%g,%g,%g],[%g,%g,%g,%g],[%g,%g,%g,%g]]",
+	str.Format( "[[%g,%g,%g,%g],[%g,%g,%g,%g],[%g,%g,%g,%g],[%g,%g,%g,%g]]",
 		matrix.a11, matrix.a12, matrix.a13, matrix.a14,
 		matrix.a21, matrix.a22, matrix.a23, matrix.a24,
-		matrix.a31, matrix.a32, matrix.a33, matrix.a34 );
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34,
+		matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
+	
+	rt->PushString( str );
+}
+
+// public func String toString()
+deClassMatrix::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsMatrix, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 90 ];
+	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
+		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
+	
+	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13, matrix.a14,
+		matrix.a21, matrix.a22, matrix.a23, matrix.a24,
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34,
+		matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
 	
 	rt->PushString( str );
 }
@@ -1081,6 +1128,7 @@ void deClassMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfTransformNormal( init ) );
 	AddFunction( new nfGetEulerAngles( init ) );
 	AddFunction( new nfGetInverse( init ) );
+	AddFunction( new nfGetRotation( init ) );
 	AddFunction( new nfNormalize( init ) );
 	AddFunction( new nfToQuaternion( init ) );
 	AddFunction( new nfToDMatrix4( init ) );
@@ -1100,6 +1148,7 @@ void deClassMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decMatrix &deClassMatrix::GetMatrix( dsRealObject *myself ) const{

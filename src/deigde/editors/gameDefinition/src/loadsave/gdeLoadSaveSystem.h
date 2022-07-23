@@ -89,7 +89,8 @@ public:
 	gdeObjectClass *LoadXmlEClass( const char *filename );
 	
 	/** \brief Save xml element class to file. */
-	void SaveXmlEClass( const gdeObjectClass &objectClass, const char *filename );
+	void SaveXmlEClass( const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass, const char *filename );
 	
 	/** \brief XML element class file pattern list. */
 	inline const igdeFilePatternList &GetXmlEClassFilePatterns() const{ return pFPXmlEClass; }

@@ -31,7 +31,6 @@
 #include "../deoglCaches.h"
 #include "../deGraphicOpenGl.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../imposter/deoglImposterBillboard.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -125,10 +124,6 @@ pSharedSPBListUBO( NULL )
 		pInitBoneNames( model );
 		pInitTextureNames( model );
 		
-		// TODO this only prepares the vbo block of each lod level. with render threads this is
-		//      not the biggest issue anymore. remove this some time later to make it all simpler
-		renderThread.GetDelayedOperations().AddInitModel( this );
-		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -150,6 +145,9 @@ deoglRModel::~deoglRModel(){
 ///////////////
 
 deoglModelLOD &deoglRModel::GetLODAt( int index ) const{
+	if( index < 0 ){
+		index += pLODCount;
+	}
 	if( index < 0 || index >= pLODCount ){
 		DETHROW( deeInvalidParam );
 	}
@@ -290,65 +288,23 @@ void deoglRModel::DebugVCOptimize(){
 // Private functions
 //////////////////////
 
-class deoglRModelDeletion : public deoglDelayedDeletion{
-public:
-	deoglModelLOD **lods;
-	int lodCount;
-	deoglImposterBillboard *imposterBillboard;
-	deoglSharedSPBListUBO *sharedSPBListUBO;
-	
-	deoglRModelDeletion() :
-	lods( NULL ),
-	lodCount( 0 ),
-	imposterBillboard( NULL ),
-	sharedSPBListUBO( NULL ){
-	}
-	
-	virtual ~deoglRModelDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( sharedSPBListUBO ){
-			delete sharedSPBListUBO;
-		}
-		if( imposterBillboard ){
-			delete imposterBillboard;
-		}
-		if( lods ){
-			int i;
-			for( i=0; i<lodCount; i++ ){
-				delete lods[ i ];
-			}
-			delete [] lods;
-		}
-	}
-};
-
 void deoglRModel::pCleanUp(){
-	pRenderThread.GetDelayedOperations().RemoveInitModel( this );
-	
 	if( pBoneExtends ){
 		delete [] pBoneExtends;
 		pBoneExtends = NULL;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRModelDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRModelDeletion;
-		delayedDeletion->imposterBillboard = pImposterBillboard;
-		delayedDeletion->sharedSPBListUBO = pSharedSPBListUBO;
-		delayedDeletion->lods = pLODs;
-		delayedDeletion->lodCount = pLODCount;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
+	if( pSharedSPBListUBO ){
+		delete pSharedSPBListUBO;
+	}
+	if( pImposterBillboard ){
+		delete pImposterBillboard;
+	}
+	if( pLODs ){
+		int i;
+		for( i=0; i<pLODCount; i++ ){
+			delete pLODs[ i ];
 		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+		delete [] pLODs;
 	}
 }
 
@@ -626,7 +582,6 @@ void deoglRModel::pSaveCached(){
 		writer->WriteVector( pWeightlessExtends.minimum );
 		writer->WriteVector( pWeightlessExtends.maximum );
 		writer->WriteByte( pHasWeightlessExtends ? 1 : 0 );
-		int i;
 		for( i=0; i<pBoneCount; i++ ){
 			writer->WriteVector( pBoneExtends[ i ].minimum );
 			writer->WriteVector( pBoneExtends[ i ].maximum );

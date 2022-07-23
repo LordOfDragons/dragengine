@@ -296,7 +296,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	/** \brief Analog moving forward/backward. */
 	public func void analogMoveFB( float amount, bool sticky )
 		if sticky
-			this.playerInputMove.setAnalogMoveForwardBackwardSticky( -amount )
+			this.playerInputMove.setAnalogMoveForwardBackwardSticky( amount )
 			
 		else
 			this.playerInputMove.setAnalogMoveForwardBackward( -amount )
@@ -306,10 +306,10 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	/** \brief Analog moving left/right. */
 	public func void analogMoveLR( float amount, bool sticky )
 		if sticky
-			this.playerInputMove.setAnalogMoveLeftRightSticky( -amount )
+			this.playerInputMove.setAnalogMoveLeftRightSticky( amount )
 			
 		else
-			this.playerInputMove.setAnalogMoveLeftRight( -amount )
+			this.playerInputMove.setAnalogMoveLeftRight( amount )
 		end
 	end
 	
@@ -383,7 +383,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	/** \brief Analog looking up/down. */
 	public func void analogLookUD( float amount, bool sticky )
 		if sticky
-			this.playerInputLook.setAnalogLookVerticalSticky( -amount )
+			this.playerInputLook.setAnalogLookVerticalSticky( amount )
 			
 		else
 			this.playerInputLook.setAnalogLookVertical( -amount )
@@ -440,8 +440,11 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	
 	/**
 	 * \brief Initialize player input tracker.
+	 * 
+	 * Sets ECBehaviorPlayerInputMove to LocomotionType.natural .
 	 */
 	protected func void initPlayerInput()
+		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.natural )
 	end
 	
 	/**
@@ -478,10 +481,10 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - Linear velocity adjust time: 0.5
 	 */
 	protected func void initLocomotionPlayer()
-		var Locomotion locomotion = locomotion.getLocomotion()
-		locomotion.setAdjustTimeVertical( 0 )
-		locomotion.setAdjustTimeHorizontal( 0 )
-		locomotion.setAdjustTimeLinearVelocity( 0.5 )
+		var Locomotion l = locomotion.getLocomotion()
+		l.setAdjustTimeVertical( 0 )
+		l.setAdjustTimeHorizontal( 0 )
+		l.setAdjustTimeLinearVelocity( 0.5 )
 	end
 	
 	

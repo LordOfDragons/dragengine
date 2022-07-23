@@ -293,19 +293,23 @@ class ScrollPanelLayout implements Layout
 	
 	/** \brief Reference size independend minimum size. */
 	protected func Point getBaseMinimumSize( Container container )
-		var Point minSize = Point.new()
+		var Point size = Point.new()
 		var int gap = this.getGap()
+		var bool usePadding = false
 		
 		if this.pHorizontalScrollBar != null and this.pHorizontalScrollBar.getVisible()
-			minSize = minSize + this.pHorizontalScrollBar.getMinimumSizeWithBorder() \
-				+ Point.new( 0, gap )
+			size = size + this.pHorizontalScrollBar.getMinimumSizeWithBorder() + Point.new( 0, gap )
+			usePadding = true
 		end
 		
 		if this.pVerticalScrollBar != null and this.pVerticalScrollBar.getVisible()
-			minSize = minSize + this.pVerticalScrollBar.getMinimumSizeWithBorder() \
-				+ Point.new( gap, 0 )
+			size = size + this.pVerticalScrollBar.getMinimumSizeWithBorder() + Point.new( gap, 0 )
+			usePadding = true
 		end
 		
-		return minSize + container.getPadding().getSize()
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

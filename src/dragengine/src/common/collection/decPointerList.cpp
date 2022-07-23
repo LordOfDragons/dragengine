@@ -191,26 +191,29 @@ void decPointerList::Insert( void *pointer, int index ){
 }
 
 void decPointerList::Move( void *pointer, int index ){
-	const int oldIndex = IndexOf( pointer );
-	if( oldIndex == -1 || index < 0 || index >= pPointerCount ){
+	Move( IndexOf( pointer ), index );
+}
+
+void decPointerList::Move( int from, int to ){
+	if( from < 0 || from >= pPointerCount || to < 0 || to >= pPointerCount ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	void * const tempPointer = pPointers[ oldIndex ];
+	void * const tempPointer = pPointers[ from ];
 	int i;
 	
-	if( index < oldIndex ){
-		for( i=oldIndex; i>index; i-- ){
+	if( to < from ){
+		for( i=from; i>to; i-- ){
 			pPointers[ i ] = pPointers[ i - 1 ];
 		}
 		
-	}else if( index > oldIndex ){
-		for( i=oldIndex; i<index; i++ ){
+	}else if( to > from ){
+		for( i=from; i<to; i++ ){
 			pPointers[ i ] = pPointers[ i + 1 ];
 		}
 	}
 	
-	pPointers[ index ] = tempPointer;
+	pPointers[ to ] = tempPointer;
 }
 
 void decPointerList::RemoveFrom( int position ){

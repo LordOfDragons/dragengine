@@ -32,7 +32,7 @@ class deVideoPlayer;
 /**
  * \brief Video Player Resource Manager.
  */
-class deVideoPlayerManager : public deResourceManager{
+class DE_DLL_EXPORT deVideoPlayerManager : public deResourceManager{
 private:
 	deResourceList pVideoPlayers;
 	

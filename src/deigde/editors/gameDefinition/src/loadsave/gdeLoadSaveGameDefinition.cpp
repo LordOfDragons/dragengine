@@ -471,6 +471,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		}else if( tagName == "navigationBlocker" ){
 			pReadObjectClassNavigationBlocker( *tag, objectClass );
 			
+		}else if( tagName == "texture" ){
+			pReadObjectClassTexture( *tag, objectClass );
+			
 		}else if( tagName == "category" ){
 			objectClass.SetCategory( GetCDataString( *tag ) );
 			
@@ -1460,6 +1463,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 		}else if( tagName == "rollOff" ){
 			speaker.SetRollOff( GetCDataFloat( *tag ) );
 			
+		}else if( tagName == "distanceOffset" ){
+			speaker.SetDistanceOffset( GetCDataFloat( *tag ) );
+			
 		}else if( tagName == "playSpeed" ){
 			speaker.SetPlaySpeed( GetCDataFloat( *tag ) );
 			
@@ -1484,6 +1490,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 				
 			}else if( value == "rollOff" ){
 				speaker.SetPropertyName( gdeOCSpeaker::epRollOff, property );
+				
+			}else if( value == "distanceOffset" ){
+				speaker.SetPropertyName( gdeOCSpeaker::epDistanceOffset, property );
 				
 			}else if( value == "playSpeed" ){
 				speaker.SetPropertyName( gdeOCSpeaker::epPlaySpeed, property );
@@ -1716,6 +1725,56 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker( const decXmlE
 	}
 	
 	objectClass.GetNavigationBlockers().Add( &navblocker );
+}
+
+void gdeLoadSaveGameDefinition::pReadObjectClassTexture( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const char * const name = GetAttributeString( root, "name" );
+	if( objectClass.GetTextures().HasNamed( name ) ){
+		LogErrorGenericProblemValue( root, name, "A texture with this name exists already." );
+	}
+	
+	const int elementCount = root.GetElementCount();
+	deObjectReference objRef;
+	int i;
+	
+	objRef.TakeOver( new gdeOCComponentTexture( name ) );
+	gdeOCComponentTexture &texture = ( gdeOCComponentTexture& )( deObject& )objRef;
+	
+	for( i=0; i<elementCount; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		const decString tagName( tag->GetName() );
+		
+		if( tagName == "skin" ){
+			texture.SetPathSkin( GetCDataString( *tag ) );
+			
+		}else if( tagName == "offset" ){
+			decVector2 offset;
+			ReadVector2( *tag, offset );
+			texture.SetOffset( offset );
+			
+		}else if( tagName == "scale" ){
+			decVector2 scale( 1.0f, 1.0f );
+			ReadVector2( *tag, scale );
+			texture.SetScale( scale );
+			
+		}else if( tagName == "rotate" ){
+			texture.SetRotation( GetCDataFloat( *tag ) * DEG2RAD );
+			
+		}else if( tagName == "tint" ){
+			decColor color( 1.0f, 1.0f, 1.0f );
+			ReadColor( *tag, color );
+			texture.SetColorTint( color );
+			
+		}else{
+			LogWarnUnknownTag( root, *tag );
+		}
+	}
+	
+	objectClass.GetTextures().Add( &texture );
 }
 
 void gdeLoadSaveGameDefinition::pReadCustomFilePatternList(
@@ -2182,11 +2241,11 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	
 	switch( objectClass.GetScaleMode() ){
 	case gdeObjectClass::esmFixed:
-		break; // default, would be "fixed"
+		writer.WriteDataTagString( "scaleMode", "fixed" );
+		break;
 		
 	case gdeObjectClass::esmUniform:
-		writer.WriteDataTagString( "scaleMode", "uniform" );
-		break;
+		break; // default, would be "uniform"
 		
 	case gdeObjectClass::esmFree:
 		writer.WriteDataTagString( "scaleMode", "free" );
@@ -2289,6 +2348,13 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 		pWriteObjectClassNavBlocker( writer, *navBlockers.GetAt( i ) );
 	}
 	
+	// textures
+	const gdeOCComponentTextureList &textures = objectClass.GetTextures();
+	const int textureCount = textures.GetCount();
+	for( i=0; i<textureCount; i++ ){
+		pWriteObjectClassTexture( writer, *textures.GetAt( i ) );
+	}
+	
 	pWriteProperties( writer, objectClass.GetProperties(), "property" );
 	pWriteProperties( writer, objectClass.GetPropertyValues(), "propertyValue" );
 	pWriteProperties( writer, objectClass.GetTextureProperties(), "textureProperty" );
@@ -2347,7 +2413,7 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 		writer.WriteDataTagBool( "partialHide", component.GetPartialHide() );
 	}
 	if( ! component.GetAttachTarget() ){
-		writer.WriteDataTagBool( "GetAttachTarget", component.GetAttachTarget() );
+		writer.WriteDataTagBool( "attachTarget", component.GetAttachTarget() );
 	}
 	
 	switch( component.GetColliderResponseType() ){
@@ -2369,7 +2435,7 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 	if( ! component.GetAffectsAudio() ){
 		writer.WriteDataTagBool( "affectsAudio", component.GetAffectsAudio() );
 	}
-	if( ! component.GetLightShadowIgnore() ){
+	if( component.GetLightShadowIgnore() ){
 		writer.WriteDataTagBool( "lightShadowIgnore", component.GetLightShadowIgnore() );
 	}
 	
@@ -3053,6 +3119,9 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker ){
 	if( fabsf( speaker.GetRollOff() - 0.1f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "rollOff", speaker.GetRollOff() );
 	}
+	if( fabsf( speaker.GetDistanceOffset() - 0.1f ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "distanceOffset", speaker.GetDistanceOffset() );
+	}
 	if( fabsf( speaker.GetPlaySpeed() - 1.0f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "playSpeed", speaker.GetPlaySpeed() );
 	}
@@ -3069,6 +3138,8 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker ){
 		"link", "range" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epRollOff ),
 		"link", "rollOff" );
+	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epDistanceOffset ),
+		"link", "distanceOffset" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epPlaySpeed ),
 		"link", "playSpeed" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epAttachPosition ),
@@ -3225,6 +3296,30 @@ decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker ){
 	pWriteLink( writer, navblocker.GetPropertyName( gdeOCNavigationBlocker::epAttachRotation ),"link", "attachRotation" );
 	
 	writer.WriteClosingTag( "navigationBlocker" );
+}
+
+void gdeLoadSaveGameDefinition::pWriteObjectClassTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture ){
+	writer.WriteOpeningTagStart( "texture" );
+	writer.WriteAttributeString( "name", texture.GetName() );
+	writer.WriteOpeningTagEnd();
+	
+	if( ! texture.GetPathSkin().IsEmpty() ){
+		writer.WriteDataTagString( "skin", texture.GetPathSkin() );
+	}
+	if( ! texture.GetOffset().IsEqualTo( decVector2() ) ){
+		WriteVector2( writer, "offset", texture.GetOffset() );
+	}
+	if( ! decVector2( 1.0f, 1.0f ).IsEqualTo( texture.GetScale() ) ){
+		WriteVector2( writer, "scale", texture.GetScale() );
+	}
+	if( fabsf( texture.GetRotation() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "rotate", texture.GetRotation() / DEG2RAD );
+	}
+	if( ! decColor( 1.0f, 1.0f, 1.0f ).IsEqualTo( texture.GetColorTint() ) ){
+		WriteColor( writer, "tint", texture.GetColorTint() );
+	}
+	
+	writer.WriteClosingTag( "texture" );
 }
 
 void gdeLoadSaveGameDefinition::pWriteSkin( decXmlWriter &writer,

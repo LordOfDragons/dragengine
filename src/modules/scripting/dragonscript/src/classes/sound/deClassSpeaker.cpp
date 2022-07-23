@@ -451,6 +451,25 @@ void deClassSpeaker::nfSetRollOff::RunFunction( dsRunTime *rt, dsValue *myself )
 	speaker.SetRollOff( rt->GetValue( 0 )->GetFloat() );
 }
 
+// public func float getDistanceOffset()
+deClassSpeaker::nfGetDistanceOffset::nfGetDistanceOffset( const sInitData &init ) :
+dsFunction( init.clsSpk, "getDistanceOffset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+}
+void deClassSpeaker::nfGetDistanceOffset::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deSpeaker &speaker = *( ( ( sSpkNatDat* )p_GetNativeData( myself ) )->speaker );
+	rt->PushFloat( speaker.GetDistanceOffset() );
+}
+
+// public func void setDistanceOffset( float distanceOffset )
+deClassSpeaker::nfSetDistanceOffset::nfSetDistanceOffset( const sInitData &init ) :
+dsFunction( init.clsSpk, "setDistanceOffset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // distanceOffset
+}
+void deClassSpeaker::nfSetDistanceOffset::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deSpeaker &speaker = *( ( ( sSpkNatDat* )p_GetNativeData( myself ) )->speaker );
+	speaker.SetDistanceOffset( rt->GetValue( 0 )->GetFloat() );
+}
+
 // public func ShapeList getShape()
 deClassSpeaker::nfGetShape::nfGetShape( const sInitData &init ) :
 dsFunction( init.clsSpk, "getShape", DSFT_FUNCTION,
@@ -718,6 +737,8 @@ void deClassSpeaker::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetRange( init ) );
 	AddFunction( new nfGetRollOff( init ) );
 	AddFunction( new nfSetRollOff( init ) );
+	AddFunction( new nfGetDistanceOffset( init ) );
+	AddFunction( new nfSetDistanceOffset( init ) );
 	AddFunction( new nfGetShape( init ) );
 	AddFunction( new nfSetShape( init ) );
 	AddFunction( new nfGetLayerMask( init ) );

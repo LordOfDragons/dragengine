@@ -147,6 +147,13 @@ void reRigBuilder::BuildRigBone( deRig *engRig, reRigBone *rigBone ){
 		engBone->SetDynamic( rigBone->GetDynamic() );
 		engBone->SetMass( rigBone->GetMass() );
 		
+		// ik limits
+		engBone->SetIKLimits( rigBone->GetIKLimitsLower() * DEG2RAD, rigBone->GetIKLimitsUpper() * DEG2RAD );
+		engBone->SetIKResistance( rigBone->GetIKResistance() );
+		engBone->SetIKLockedX( rigBone->GetIKLockedX() );
+		engBone->SetIKLockedY( rigBone->GetIKLockedY() );
+		engBone->SetIKLockedZ( rigBone->GetIKLockedZ() );
+		
 		// add shapes
 		for( s=0; s<shapeCount; s++ ){
 			shape = rigBone->GetShapeAt( s )->CreateShape();

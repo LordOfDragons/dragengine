@@ -44,6 +44,12 @@ class deBaseModule;
  * \brief FBX managed animation.
  */
 class fbxAnimation : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxAnimation> Ref;
+	
+	
+	
 private:
 	fbxScene &pScene;
 	decObjectOrderedSet pMoves;

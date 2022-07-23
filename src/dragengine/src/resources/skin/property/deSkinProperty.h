@@ -72,7 +72,7 @@ class deSkinPropertyVisitor;
  * Properties can be interprated by one or more modules. So far the
  * graphic, audio and physics module can use texture properties.
  */
-class deSkinProperty{
+class DE_DLL_EXPORT deSkinProperty{
 private:
 	decString pType;
 	decString pTexCoordSet;

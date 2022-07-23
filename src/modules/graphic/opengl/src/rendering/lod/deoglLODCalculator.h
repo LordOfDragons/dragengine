@@ -25,21 +25,21 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglCollideList;
+class deoglCollideListComponent;
 
 
 
 /**
- * @brief LOD Calculator.
  * Helper class calculating LOD levels to use for different objects. Supports storing results
  * accross multiple frames if required.
  */
 class deoglLODCalculator{
 private:
 	int pMaxPixelError;
-	float pMaxErrorPerLevel;
+	int pLodOffset;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new lod calculator. */
 	deoglLODCalculator();
@@ -47,21 +47,34 @@ public:
 	~deoglLODCalculator();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** Sets the maximum pixel error on screen. */
+	/** Set the maximum pixel error on screen. */
 	void SetMaxPixelError( int maxPixelError );
-	/** Sets the maximum error per lod level. */
-	void SetMaxErrorPerLevel( float maxErrorPerLevel );
+	
+	/** Set lod offset. */
+	void SetLodOffset( int offset );
 	
 	/** Set lod level of all components to 0. */
-	void SetComponentLOD0( deoglCollideList &collideList );
-	/** Calculates projective lod levels for all components. */
-	void SetComponentLODProjection( deoglCollideList &collideList, const decDVector &position,
+	void SetComponentLOD0( const deoglCollideList &collideList );
+	
+	/** Set lod level of all components to highest. */
+	void SetComponentLODMax( const deoglCollideList &collideList );
+	
+	/** Calculate projective lod levels for all components. */
+	void SetComponentLODProjection( const deoglCollideList &collideList, const decDVector &position,
 		const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight );
-	/** Calculates orthographic lod levels for all components. */
-	void SetComponentLODOrtho( deoglCollideList &collideList, float boxWidth, float boxHeight,
+	
+	/** Calculate orthographic lod levels for all components. */
+	void SetComponentLODOrtho( const deoglCollideList &collideList, float boxWidth, float boxHeight,
 		int screenWidth, int screenHeight );
+	
+	/** Calculate orthographic lod levels for all components. */
+	void SetComponentLODOrtho( deoglCollideListComponent &clistComponent, float boxWidth,
+		float boxHeight, int screenWidth, int screenHeight );
+	
+	/** Calculate omnidirection lod levels for all components. */
+	void SetComponentLODOmniDir( const deoglCollideList &collideList, const decDVector &position, int size );
 	/*@}*/
 };
 

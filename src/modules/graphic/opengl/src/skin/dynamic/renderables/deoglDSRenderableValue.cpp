@@ -42,6 +42,7 @@ deoglDSRenderableValue::deoglDSRenderableValue( deoglDynamicSkin &dynamicSkin, c
 deoglDSRenderable( dynamicSkin, renderable ),
 pRenderableValue( renderable ),
 pRRenderableValue( NULL ),
+pValue( renderable.GetValue() ),
 pDirty( true )
 {
 	try{
@@ -67,7 +68,18 @@ deoglRDSRenderable *deoglDSRenderableValue::GetRRenderable() const{
 }
 
 void deoglDSRenderableValue::RenderableChanged(){
-	pDirty = true;
+	const float value = pRenderableValue.GetValue();
+	
+	if( fabsf( value - pValue ) >= FLOAT_SAFE_EPSILON ){
+		pValue = value;
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
+	}
+	
+	if( pRenderableValue.GetName() != pRRenderableValue->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableValue::SyncToRender(){

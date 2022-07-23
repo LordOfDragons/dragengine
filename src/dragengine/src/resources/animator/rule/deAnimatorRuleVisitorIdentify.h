@@ -34,7 +34,7 @@
  * Furthermore save casting is provided. If the cast is not valid an
  * exception is raised.
  */
-class deAnimatorRuleVisitorIdentify : public deAnimatorRuleVisitor{
+class DE_DLL_EXPORT deAnimatorRuleVisitorIdentify : public deAnimatorRuleVisitor{
 public:
 	enum eRuleTypes{
 		ertUnknown,
@@ -48,9 +48,11 @@ public:
 		ertForeignState,
 		ertGroup,
 		ertSubAnimator,
-		ertRetarget,
 		ertTrackTo,
-		ertLimit
+		ertLimit,
+		
+		/** \version 1.9 */
+		ertMirror
 	};
 	
 	
@@ -109,14 +111,17 @@ public:
 	/** \brief Rule is a sub animator rule. */
 	inline bool IsSubAnimator() const{ return pType == ertSubAnimator; }
 	
-	/** \brief Rule is a retarget rule. */
-	inline bool IsRetarget() const{ return pType == ertRetarget; }
-	
 	/** \brief Rule is a track to rule. */
 	inline bool IsTrackTo() const{ return pType == ertTrackTo; }
 	
 	/** \brief Rule is a limit rule. */
 	inline bool IsLimit() const{ return pType == ertLimit; }
+	
+	/**
+	 * \brief Rule is a mirror rule.
+	 * \version 1.9
+	 */
+	inline bool IsMirror() const{ return pType == ertMirror; }
 	
 	/**
 	 * \brief Cast to animation rule.
@@ -179,12 +184,6 @@ public:
 	deAnimatorRuleSubAnimator &CastToSubAnimator() const;
 	
 	/**
-	 * \brief Cast to retarget rule.
-	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertRetarget.
-	 */
-	deAnimatorRuleRetarget &CastToRetarget() const;
-	
-	/**
 	 * \brief Cast to track to rule.
 	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertTrackTo.
 	 */
@@ -195,6 +194,12 @@ public:
 	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertLimit.
 	 */
 	deAnimatorRuleLimit &CastToLimit() const;
+	
+	/**
+	 * \brief Cast to mirror rule.
+	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertMirror.
+	 */
+	deAnimatorRuleMirror &CastToMirror() const;
 	
 	/** \brief Reset visitor. */
 	void Reset();
@@ -237,14 +242,17 @@ public:
 	/** \brief Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
-	
 	/** \brief Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

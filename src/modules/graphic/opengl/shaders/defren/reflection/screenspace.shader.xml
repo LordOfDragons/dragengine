@@ -7,6 +7,7 @@
 	
 	<parameter name='pQuadTCTransform'/>
 	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
 	<parameter name='pMatrixP'/>
 	<parameter name='pMatrixBackProjection'/>
 	<parameter name='pClipReflDirNearDist'/>

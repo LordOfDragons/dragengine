@@ -28,6 +28,7 @@
 #include "billboard/gdeOCBillboard.h"
 #include "camera/gdeOCCamera.h"
 #include "component/gdeOCComponent.h"
+#include "component/gdeOCComponentTexture.h"
 #include "envmapprobe/gdeOCEnvMapProbe.h"
 #include "inherit/gdeOCInherit.h"
 #include "light/gdeOCLight.h"
@@ -161,6 +162,12 @@ pCanInstantiate( objectClass.pCanInstantiate )
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCSpeaker( *objectClass.pSpeakers.GetAt( i ) ) );
 			pSpeakers.Add( ( gdeOCSpeaker* )( deObject* )objRef );
+		}
+		
+		count = objectClass.pTextures.GetCount();
+		for( i=0; i<count; i++ ){
+			objRef.TakeOver( new gdeOCComponentTexture( *objectClass.pTextures.GetAt( i ) ) );
+			pTextures.Add( ( gdeOCComponentTexture* )( deObject* )objRef );
 		}
 		
 	}catch( const deException & ){
@@ -333,6 +340,29 @@ void gdeObjectClass::SetDefaultInheritPropertyPrefix( const char *propertyName )
 	}
 }
 
+bool gdeObjectClass::InheritsFrom( const gdeObjectClass *objectClass ) const{
+	const int count = pInherits.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		const gdeOCInherit &inherit = *pInherits.GetAt( i );
+		const gdeObjectClass * const inheritOC = pGameDefinition->FindObjectClass( inherit.GetName() );
+		if( inheritOC && inheritOC->IsOrInheritsFrom( objectClass ) ){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool gdeObjectClass::IsOrInheritsFrom( const gdeObjectClass *objectClass ) const{
+	return this == objectClass || InheritsFrom( objectClass );
+}
+
+bool gdeObjectClass::IsOrInheritsFrom( const char *name ) const{
+	const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( name );
+	return objectClass && IsOrInheritsFrom( objectClass );
+}
+
+
 void gdeObjectClass::NotifyBillboardsChanged(){
 	if( pGameDefinition ){
 		pGameDefinition->NotifyOCBillboardsChanged( this );
@@ -489,6 +519,24 @@ void gdeObjectClass::NotifySpeakersChanged(){
 void gdeObjectClass::NotifySpeakerChanged( gdeOCSpeaker *speaker ){
 	if( pGameDefinition ){
 		pGameDefinition->NotifyOCSpeakerChanged( this, speaker );
+	}
+}
+
+
+
+void gdeObjectClass::SetActiveTexture( gdeOCComponentTexture *texture ){
+	pActiveTexture = texture;
+}
+
+void gdeObjectClass::NotifyTexturesChanged(){
+	if( pGameDefinition ){
+		pGameDefinition->NotifyOCTexturesChanged( this );
+	}
+}
+
+void gdeObjectClass::NotifyTextureChanged( gdeOCComponentTexture *texture ){
+	if( pGameDefinition ){
+		pGameDefinition->NotifyOCTextureChanged( this, texture );
 	}
 }
 

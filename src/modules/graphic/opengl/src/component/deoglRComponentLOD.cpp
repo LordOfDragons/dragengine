@@ -26,16 +26,19 @@
 
 #include "deoglRComponent.h"
 #include "deoglRComponentLOD.h"
+#include "deoglRComponentTexture.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../gi/deoglGIBVHDynamic.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
+#include "../model/texture/deoglModelTexture.h"
 #include "../model/face/deoglModelFace.h"
 #include "../rendering/deoglRenderGeometry.h"
+#include "../rendering/task/config/deoglRenderTaskConfigTexture.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -43,11 +46,18 @@
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTShader.h"
+#include "../shaders/deoglShaderProgram.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../skin/shader/deoglSkinShader.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
@@ -88,8 +98,6 @@ pVBOPointCount( 0 ),
 pVBOPointSize( 0 ),
 
 pVBO( 0 ),
-pSolidFaceCount( 0 ),
-pFaceCount( 0 ),
 pVAO( NULL ),
 pVBOLayout( NULL ),
 pVBOBlock( NULL ),
@@ -112,14 +120,17 @@ pDirtyDataNorTan( true ),
 pDirtyVBO( true ),
 pDirtyVAO( true ),
 
-pMemoryConsumptionGPU( 0 ),
+pMemUse( component.GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vbo ),
 
 pVBOWeightMatrices( 0 ),
 pTBOWeightMatrices( 0 ),
 pVBOTransformVertices( 0 ),
 pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
-pFBOCalcNormalTangent( NULL )
+pFBOCalcNormalTangent( NULL ),
+
+pGIBVHDynamic( NULL ),
+pDirtyGIBVHPositions( true )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentLOD );
 }
@@ -137,20 +148,18 @@ deoglRComponentLOD::~deoglRComponentLOD(){
 int deoglRComponentLOD::GetPointOffset() const{
 	if( pVAO ){
 		return 0;
-		
-	}else{
-		if( ! pVBOBlock ){
-			DETHROW( deeInvalidParam );
-		}
-		return pVBOBlock->GetOffset();
 	}
+	if( ! pVBOBlock ){
+		return 0;
+	}
+	return pVBOBlock->GetOffset();
 }
 
 int deoglRComponentLOD::GetIndexOffset() const{
 	if( pVAO ){
 		if( pComponent.GetRenderThread().GetChoices().GetSharedVBOUseBaseVertex() ){
 			if( ! pVBOBlock ){
-				DETHROW( deeInvalidParam );
+				return 0;
 			}
 			return pVBOBlock->GetIndexOffset();
 			
@@ -160,22 +169,35 @@ int deoglRComponentLOD::GetIndexOffset() const{
 		
 	}else{
 		if( ! pVBOBlock ){
-			DETHROW( deeInvalidParam );
+			return 0;
 		}
 		return pVBOBlock->GetIndexOffset();
 	}
 }
 
+deoglVAO *deoglRComponentLOD::GetUseVAO() const{
+	if( pVAO ){
+		return pVAO;
+	}
+	if( GetModelLODRef().GetVBOBlock() ){
+		return GetModelLODRef().GetVBOBlock()->GetVBO()->GetVAO();
+	}
+	return nullptr;
+}
+
 void deoglRComponentLOD::InvalidateVAO(){
 	pDirtyVAO = true;
-	pVBOBlock = NULL;
+// 	pVBOBlock = NULL;
+	pComponent.DirtyLODVBOs();
 }
 
 void deoglRComponentLOD::InvalidateVBO(){
 	pDirtyDataWeights = true;
 	pDirtyDataPositions = true;
+	pDirtyGIBVHPositions = true;
 	pDirtyDataNorTan = true;
 	pDirtyVBO = true;
+	pComponent.DirtyLODVBOs();
 }
 
 #define SPECIAL_DEBUG_ON 1
@@ -209,33 +231,18 @@ void deoglRComponentLOD::UpdateVBO(){
 			
 			pPrepareVBOLayout( modelLOD );
 			
-			#ifdef OS_ANDROID
-			const int version = 0; // 0=cpu, 1=gpuAcc, 2=gpuApprox
-			#else
-			const int version = 2; // 0=cpu, 1=gpuAcc, 2=gpuApprox
-			#endif
-			
-			// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
-			//      another input VBO can be used (uniform buffers are too small). this requires only
-			//      changing the generation of TBO to be a generation of VBO data instead and changing
-			//      the shader to use VBO input instead of TBO sampling. the VBO requires indexing to
-			//      get the right weights. we use already an index in the model VBO to sample the right
-			//      TBO texel. this indexing though is relative to the vertex but the model VBO is indexed
-			//      relative to face points. this is a problem since it would require storing weight
-			//      matrices per point not per vertex. if this is done it requires a copy of weight data
-			//      to the VBO which would allow to reduce the resolution to 16-bit. all in all tricky
-			//      
-			//      the TBO uses GL_RGBA32F to allow copy the weight matrices right into the texture
-			//      without additional conversion. the same is possible for VBOs.
-			
-			if( version == 0 ){
+			switch( pComponent.GetRenderThread().GetChoices().GetGPUTransformVertices() ){
+			case deoglRTChoices::egputvNone:
 				UpdateVBOOnCPU();
+				break;
 				
-			}else if( version == 1 ){
+			case deoglRTChoices::egputvAccurate:
 				UpdateVBOOnGPUAccurate();
+				break;
 				
-			}else{ // version == 2
+			case deoglRTChoices::egputvApproximate:
 				UpdateVBOOnGPUApproximate();
+				break;
 			}
 			
 			pUpdateVAO( modelLOD );
@@ -249,14 +256,10 @@ void deoglRComponentLOD::UpdateVBO(){
 }
 
 void deoglRComponentLOD::FreeVBO(){
+	pMemUse = 0;
+	
 	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pComponent.GetRenderThread().GetMemoryManager().GetConsumption().GetVBO();
-		
-		consumption.DecrementGPU( pMemoryConsumptionGPU );
-		consumption.DecrementCount();
-		pMemoryConsumptionGPU = 0;
-		
-		pglDeleteBuffers( 1, &pVBO );
+		pComponent.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pVBO );
 		pVBO = 0;
 	}
 	
@@ -358,7 +361,7 @@ void deoglRComponentLOD::GPUTransformVertices(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int positionCount = modelLOD.GetPositionCount();
 	
-	if( positionCount > 0 ){
+	if( positionCount > 0 && modelLOD.GetVBOBlockPositionWeight() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockPositionWeight();
@@ -399,10 +402,9 @@ void deoglRComponentLOD::GPUCalcNormalTangents(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int positionCount = modelLOD.GetPositionCount();
 	
-	if( positionCount > 0 ){
+	if( positionCount > 0 && modelLOD.GetVBOBlockCalcNormalTangent() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
-		const int positionCount = modelLOD.GetPositionCount();
 		const int tangentCount = modelLOD.GetTangentCount();
 		const int normalCount = modelLOD.GetNormalCount();
 		const int norTanCount = positionCount + normalCount + tangentCount;
@@ -516,7 +518,7 @@ void deoglRComponentLOD::GPUWriteRenderVBO(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int positionCount = modelLOD.GetPositionCount();
 	
-	if( positionCount > 0 ){
+	if( positionCount > 0 && modelLOD.GetVBOBlockWriteSkinnedVBO() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		const int normalCount = modelLOD.GetNormalCount();
 		const int pointCount = modelLOD.GetVertexCount();
@@ -610,7 +612,7 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int pointCount = modelLOD.GetVertexCount();
 	
-	if( pointCount > 0 ){
+	if( pointCount > 0 && modelLOD.GetVBOBlockWithWeight() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
@@ -685,8 +687,138 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 
 
 
+void deoglRComponentLOD::PrepareGIDynamicBVH(){
+	if( ! pGIBVHDynamic ){
+		deoglModelLOD &modelLOD = GetModelLODRef();
+		modelLOD.PrepareGILocalBVH();
+		pGIBVHDynamic = new deoglGIBVHDynamic( *modelLOD.GetGIBVHLocal() );
+	}
+	
+	if( pDirtyGIBVHPositions ){
+		PreparePositions();
+		if( pGIBVHDynamic->GetTBOVertex()->GetDataCount() > 0 ){
+			pGIBVHDynamic->UpdateVertices( pPositions, GetModelLODRef().GetPositionCount() );
+			pGIBVHDynamic->UpdateBVHExtends();
+		}
+		pDirtyGIBVHPositions = false;
+	}
+}
+
+void deoglRComponentLOD::DropGIDynamicBVH(){
+	if( pGIBVHDynamic ){
+		delete pGIBVHDynamic;
+		pGIBVHDynamic = NULL;
+	}
+}
+
+
+
+const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinTexture::eShaderTypes type ) const{
+	switch( type ){
+	case deoglSkinTexture::estComponentShadowProjection:
+		return &pRenderTaskConfigs[ 0 ];
+		
+	case deoglSkinTexture::estComponentShadowOrthogonal:
+		return &pRenderTaskConfigs[ 1 ];
+		
+	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
+		return &pRenderTaskConfigs[ 2 ];
+		
+	case deoglSkinTexture::estComponentShadowDistance:
+		return &pRenderTaskConfigs[ 3 ];
+		
+	case deoglSkinTexture::estComponentShadowDistanceCube:
+		return &pRenderTaskConfigs[ 4 ];
+		
+	default:
+		return NULL;
+	}
+}
+
+void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
+	const deoglSkinTexture::eShaderTypes typesShadow[ 5 ] = {
+		deoglSkinTexture::estComponentShadowProjection,
+		deoglSkinTexture::estComponentShadowOrthogonal,
+		deoglSkinTexture::estComponentShadowOrthogonalCascaded,
+		deoglSkinTexture::estComponentShadowDistance,
+		deoglSkinTexture::estComponentShadowDistanceCube };
+	int i;
+	
+	for( i=0; i<5; i++ ){
+		pRenderTaskConfigs[ i ].RemoveAllTextures();
+	}
+	
+	if( ! pComponent.GetModel() ){
+		return;
+	}
+	
+	const deoglVAO * const vao = GetUseVAO();
+	if( ! vao ){
+		return;
+	}
+	
+	const deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
+	const deoglModelLOD &modelLod = GetModelLODRef();
+	const int count = pComponent.GetTextureCount();
+	const int rtfmShadow = ertfRender | ertfDecal | ertfShadowNone;
+	const int rtfShadow = ertfRender;
+	
+	for( i=0; i<count; i++ ){
+		if( modelLod.GetTextureAt( i ).GetFaceCount() == 0 ){
+			continue;
+		}
+		
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
+		if( ( texture.GetRenderTaskFilters() & rtfmShadow ) != rtfShadow ){
+			continue;
+		}
+		
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! skinTexture ){
+			continue; // actually covered by filter above but better safe than sorry
+		}
+		
+		const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow( pLODIndex );
+		deoglRenderTaskSharedInstance *rtsi;
+		
+		if( group ){
+			rtsi = group->GetRTSInstance();
+			i += group->GetTextureCount() - 1;
+			
+		}else{
+			rtsi = texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance();
+		}
+		
+		int j;
+		for( j=0; j<5; j++ ){
+			deoglRenderTaskConfigTexture &rct = pRenderTaskConfigs[ j ].AddTexture();
+			rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
+			rct.SetShader( skinTexture->GetShaderFor( typesShadow[ j ] )->GetShader()->GetRTSShader() );
+			const deoglTexUnitsConfig *tuc = texture.GetTUCForShaderType( typesShadow[ j ] );
+			if( ! tuc ){
+				tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+			}
+			rct.SetTexture( tuc->GetRTSTexture() );
+			rct.SetVAO( rtvao );
+			rct.SetInstance( rtsi );
+			rct.SetGroupIndex( texture.GetSharedSPBElement()->GetIndex() );
+		}
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
+
+deoglModelLOD *deoglRComponentLOD::GetModelLOD() const{
+	const deoglRModel * const model = pComponent.GetModel();
+	return model ? &model->GetLODAt( pLODIndex ) : NULL;
+}
+
+deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
+	return pComponent.GetModelRef().GetLODAt( pLODIndex );
+}
 
 void deoglRComponentLOD::PrepareWeights(){
 	if( pDirtyModelWeights ){
@@ -698,6 +830,8 @@ void deoglRComponentLOD::PrepareWeights(){
 			if( weightsCount > 0 ){
 				weights = new oglMatrix3x4[ weightsCount ];
 			}
+			// NOTE weights count can be 0 if a higher level LOD has all weightless vertices.
+			//      this case can be optimized to using static rendering
 		}
 		
 		if( pWeights ){
@@ -751,7 +885,10 @@ void deoglRComponentLOD::PreparePositions(){
 	}
 	
 	if( pDirtyDataPositions ){
-		if( pWeights && pPositions && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
+		// pWeights can not be checked to be non-NULL since higher level LODs can contain
+		// all weightless vertices although lower level LODs have weighted vertices. in this
+		// situation all vertices are copied non-transformed
+		if( pPositions && pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 			
 			#ifdef SPECIAL_DEBUG_ON
@@ -867,60 +1004,9 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 // Private Functions
 //////////////////////
 
-class deoglRComponentLODDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vbo;
-	deoglVAO *vao;
-	GLuint vboWeightMatrices;
-	GLuint tboWeightMatrices;
-	GLuint vboTransformVertices;
-	GLuint tboTransformVertices;
-	deoglTexture *texTransformNormTan;
-	deoglFramebuffer *fboCalcNormalTangent;
-	
-	deoglRComponentLODDeletion() :
-	vbo( 0 ),
-	vao( NULL ),
-	vboWeightMatrices( 0 ),
-	tboWeightMatrices( 0 ),
-	vboTransformVertices( 0 ),
-	tboTransformVertices( 0 ),
-	texTransformNormTan( NULL ),
-	fboCalcNormalTangent( NULL ){
-	}
-	
-	virtual ~deoglRComponentLODDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( tboWeightMatrices ){
-			OGL_CHECK( renderThread, glDeleteTextures( 1, &tboWeightMatrices ) );
-		}
-		if( vboWeightMatrices ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboWeightMatrices ) );
-		}
-		if( tboTransformVertices ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &tboTransformVertices ) );
-		}
-		if( vboTransformVertices ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboTransformVertices ) );
-		}
-		if( texTransformNormTan ){
-			delete texTransformNormTan;
-		}
-		if( fboCalcNormalTangent ){
-			delete fboCalcNormalTangent;
-		}
-		if( vao ){
-			delete vao;
-		}
-		if( vbo ){
-			pglDeleteBuffers( 1, &vbo );
-		}
-	}
-};
-
 void deoglRComponentLOD::pCleanUp(){
+	DropGIDynamicBVH();
+	
 	if( pVBOLayout ){
 		delete pVBOLayout;
 	}
@@ -944,13 +1030,8 @@ void deoglRComponentLOD::pCleanUp(){
 		delete [] pWeights;
 	}
 	
-	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pComponent.GetRenderThread().GetMemoryManager().GetConsumption().GetVBO();
-		
-		consumption.DecrementGPU( pMemoryConsumptionGPU );
-		consumption.DecrementCount();
-		pMemoryConsumptionGPU = 0;
-	}
+	pMemUse = 0;
+	
 	if( pVBOData ){
 		delete [] pVBOData;
 		pVBOData = NULL;
@@ -958,35 +1039,28 @@ void deoglRComponentLOD::pCleanUp(){
 		pVBOPointSize = 0;
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRComponentLODDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRComponentLODDeletion;
-		delayedDeletion->fboCalcNormalTangent = pFBOCalcNormalTangent;
-		delayedDeletion->tboTransformVertices = pTBOTransformVertices;
-		delayedDeletion->tboWeightMatrices = pTBOWeightMatrices;
-		delayedDeletion->texTransformNormTan = pTexTransformNormTan;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vbo = pVBO;
-		delayedDeletion->vboTransformVertices = pVBOTransformVertices;
-		delayedDeletion->vboWeightMatrices = pVBOWeightMatrices;
-		pComponent.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pComponent.GetRenderThread().GetLogger().LogException( e );
-		throw;
+	if( pTexTransformNormTan ){
+		delete pTexTransformNormTan;
 	}
+	if( pFBOCalcNormalTangent ){
+		delete pFBOCalcNormalTangent;
+	}
+	if( pVAO ){
+		delete pVAO;
+	}
+	
+	deoglDelayedOperations &dops = pComponent.GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBOWeightMatrices );
+	dops.DeleteOpenGLBuffer( pTBOTransformVertices );
+	dops.DeleteOpenGLBuffer( pVBOTransformVertices );
+	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLTexture( pTBOWeightMatrices );
 }
 
 
 
 void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
-	deoglRenderThread &renderThread = pComponent.GetRenderThread();
-	deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = pComponent.GetRenderThread() );
 	const int pointCount = modelLOD.GetVertexCount();
 	deoglVBOpnt *newArray = NULL;
 	int dataSize;
@@ -1000,7 +1074,6 @@ void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
 		if( ! pVBO ){
 			DETHROW( deeOutOfMemory );
 		}
-		consumption.IncrementCount();
 	}
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
@@ -1015,10 +1088,8 @@ void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
 		pVBOPointSize = pointCount;
 		
 		// enlarge vbo
-		consumption.DecrementGPU( pMemoryConsumptionGPU );
 		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW ) );
-		pMemoryConsumptionGPU = dataSize;
-		consumption.IncrementGPU( pMemoryConsumptionGPU );
+		pMemUse = dataSize;
 	}
 	
 	// write data to buffer
@@ -1158,7 +1229,7 @@ void deoglRComponentLOD::pWriteVBOData( const deoglModelLOD &modelLOD ){
 }
 
 void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
-	if( pVAO || ! pVBO ){
+	if( pVAO || ! pVBO || ! modelLOD.GetVBOBlock() ){
 		return;
 	}
 	
@@ -1182,7 +1253,7 @@ void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
 		? vboLayout.GetStride() * pVBOBlock->GetOffset() : 0 );*/
 			// texcoord(3) => vao_tc_diffuse(3)
 	
-	if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+	if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() && pVBOBlock->GetVBO()->GetIBO() ){
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pVBOBlock->GetVBO()->GetIBO() ) );
 		pVAO->SetIndexType( vboLayout.GetIndexType() );
 		
@@ -1195,6 +1266,10 @@ void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	
+	pVAO->EnsureRTSVAO();
+	
+	pComponent.UpdateRTSInstances();
 }
 
 
@@ -1266,21 +1341,21 @@ void deoglRComponentLOD::pCalculateWeights( const deoglModelLOD &modelLOD ){
 			weightsEntries++;
 			
 			for( e=1; e<entryCount; e++ ){
-				const oglMatrix3x4 &boneMatrix = boneMatrices[ weightsEntries->bone ];
+				const oglMatrix3x4 &boneMatrix2 = boneMatrices[ weightsEntries->bone ];
 				factor = weightsEntries->weight;
 				
-				weightsMatrix.a11 += boneMatrix.a11 * factor;
-				weightsMatrix.a12 += boneMatrix.a12 * factor;
-				weightsMatrix.a13 += boneMatrix.a13 * factor;
-				weightsMatrix.a14 += boneMatrix.a14 * factor;
-				weightsMatrix.a21 += boneMatrix.a21 * factor;
-				weightsMatrix.a22 += boneMatrix.a22 * factor;
-				weightsMatrix.a23 += boneMatrix.a23 * factor;
-				weightsMatrix.a24 += boneMatrix.a24 * factor;
-				weightsMatrix.a31 += boneMatrix.a31 * factor;
-				weightsMatrix.a32 += boneMatrix.a32 * factor;
-				weightsMatrix.a33 += boneMatrix.a33 * factor;
-				weightsMatrix.a34 += boneMatrix.a34 * factor;
+				weightsMatrix.a11 += boneMatrix2.a11 * factor;
+				weightsMatrix.a12 += boneMatrix2.a12 * factor;
+				weightsMatrix.a13 += boneMatrix2.a13 * factor;
+				weightsMatrix.a14 += boneMatrix2.a14 * factor;
+				weightsMatrix.a21 += boneMatrix2.a21 * factor;
+				weightsMatrix.a22 += boneMatrix2.a22 * factor;
+				weightsMatrix.a23 += boneMatrix2.a23 * factor;
+				weightsMatrix.a24 += boneMatrix2.a24 * factor;
+				weightsMatrix.a31 += boneMatrix2.a31 * factor;
+				weightsMatrix.a32 += boneMatrix2.a32 * factor;
+				weightsMatrix.a33 += boneMatrix2.a33 * factor;
+				weightsMatrix.a34 += boneMatrix2.a34 * factor;
 				
 				weightsEntries++;
 			}
@@ -1318,6 +1393,19 @@ void deoglRComponentLOD::pTransformVertices( const deoglModelLOD &modelLOD ){
 	const oglModelPosition * const positions = modelLOD.GetPositions();
 	const int positionCount = modelLOD.GetPositionCount();
 	int i;
+	
+	if( ! pWeights ){
+		// happens if higher LOD has only weightless vertices while lower LOD has weighted
+		// vertices. this extra check avoids potential bugs if pWeights is incorrectly NULL
+		for( i=0; i<positionCount; i++ ){
+			const decVector &orgpos = positions[ i ].position;
+			oglVector &trpos = pPositions[ i ];
+			trpos.x = orgpos.x;
+			trpos.y = orgpos.y;
+			trpos.z = orgpos.z;
+		}
+		return;
+	}
 	
 	for( i=0; i<positionCount; i++ ){
 		const oglModelPosition &modelPosition = positions[ i ];
@@ -1555,4 +1643,61 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 	attrTangent.SetComponentCount( 4 );
 	attrTangent.SetDataType( deoglVBOAttribute::edtFloat );
 	attrTangent.SetOffset( 36 );
+}
+
+void deoglRComponentLOD::pUpdateRenderTaskConfig( deoglRenderTaskConfig &config,
+deoglSkinTexture::eShaderTypes type, int renderTaskFlags, int renderTaskFlagMask, bool shadow ){
+	config.RemoveAllTextures();
+	
+	if( ! pComponent.GetModel() ){
+		return;
+	}
+	
+	const deoglVAO * const vao = GetUseVAO();
+	if( ! vao ){
+		return;
+	}
+	
+	const deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
+	const deoglModelLOD &modelLod = GetModelLODRef();
+	const int count = pComponent.GetTextureCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( modelLod.GetTextureAt( i ).GetFaceCount() == 0 ){
+			continue;
+		}
+		
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
+		if( ( texture.GetRenderTaskFilters() & renderTaskFlagMask ) != renderTaskFlags ){
+			continue;
+		}
+		
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! skinTexture ){
+			continue; // actually covered by filter above but better safe than sorry
+		}
+		
+		deoglRenderTaskSharedInstance *rtsi = texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance();
+		
+		if( shadow ){
+			const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow( pLODIndex );
+			if( group ){
+				rtsi = group->GetRTSInstance();
+				i += group->GetTextureCount() - 1;
+			}
+		}
+		
+		deoglRenderTaskConfigTexture &rct = config.AddTexture();
+		rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
+		rct.SetShader( skinTexture->GetShaderFor( type )->GetShader()->GetRTSShader() );
+		const deoglTexUnitsConfig *tuc = texture.GetTUCForShaderType( type );
+		if( ! tuc ){
+			tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+		}
+		rct.SetTexture( tuc->GetRTSTexture() );
+		rct.SetVAO( rtvao );
+		rct.SetInstance( rtsi );
+		rct.SetGroupIndex( texture.GetSharedSPBElement()->GetIndex() );
+	}
 }

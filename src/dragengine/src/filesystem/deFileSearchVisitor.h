@@ -22,6 +22,8 @@
 #ifndef _DEFILESEARCHVISITOR_H_
 #define _DEFILESEARCHVISITOR_H_
 
+#include "../dragengine_export.h"
+
 class decPath;
 class deVirtualFileSystem;
 
@@ -31,7 +33,7 @@ class deVirtualFileSystem;
  * 
  * Used with deVirtualFileSystem::SearchFiles() call.
  */
-class deFileSearchVisitor{
+class DE_DLL_EXPORT deFileSearchVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

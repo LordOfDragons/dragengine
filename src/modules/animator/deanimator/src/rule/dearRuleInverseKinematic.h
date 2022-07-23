@@ -38,18 +38,17 @@ private:
 	dearIKWorkState *pChain;
 	int pChainCount;
 	
-	int pSolverBone;
-	
 	dearControllerTarget pTargetGoalPosition;
 	dearControllerTarget pTargetGoalOrientation;
 	dearControllerTarget pTargetLocalPosition;
 	dearControllerTarget pTargetLocalOrientation;
-	
 	dearControllerTarget pTargetReachRange;
 	dearControllerTarget pTargetReachCenter;
 	
+	int pSolverBone;
 	int pReachBone;
 	
+	const bool pAdjustPosition;
 	const bool pAdjustOrientation;
 	const bool pUseSolverBone;
 	
@@ -65,8 +64,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleInverseKinematic( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleInverseKinematic &rule );
+	dearRuleInverseKinematic( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleInverseKinematic &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleInverseKinematic();

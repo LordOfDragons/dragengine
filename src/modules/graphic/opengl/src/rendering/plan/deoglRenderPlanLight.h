@@ -23,33 +23,48 @@
 #define _DEOGLRENDERPLANLIGHT_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/utils/decLayerMask.h>
 
-class deoglRenderThread;
-class deoglRLight;
-class deoglRenderCacheLight;
+class deoglRenderPlan;
+class deoglCollideListLight;
 
 
 
 /**
- * \brief Render plan light.
+ * Render plan light.
  */
 class deoglRenderPlanLight{
 private:
-	deoglRenderThread &pRenderThread;
+	deoglRenderPlan &pPlan;
+	deoglCollideListLight *pLight;
 	
-	deoglRLight *pLight;
+	decDVector pPosition;
+	float pDistance;
+	int pReductionFactorStatic;
+	int pReductionFactorDynamic;
 	
-	deoglRenderCacheLight *pCacheLight;
+	int pShadowSizeStatic;
+	int pTranspShadowSizeStatic;
+	int pAmbientShadowSizeStatic;
+	
+	int pShadowSizeDynamic;
+	int pTranspShadowSizeDynamic;
+	int pAmbientShadowSizeDynamic;
+	
+	bool pUseShadow;
+	bool pUseShadowTemporary;
+	bool pUseAmbient;
+	bool pRefilterShadows;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render plan light. */
-	deoglRenderPlanLight( deoglRenderThread &renderThread );
+	/** Create render plan light. */
+	deoglRenderPlanLight( deoglRenderPlan &plan );
 	
-	/** \brief Clean up render plan light. */
+	/** Clean up render plan light. */
 	~deoglRenderPlanLight();
 	/*@}*/
 	
@@ -57,15 +72,60 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Light. */
-	inline deoglRLight *GetLight() const{ return pLight; }
+	/** Render plan. */
+	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
 	
-	/** \brief Set light. */
-	void SetLight( deoglRLight *light );
+	/** Light. */
+	inline deoglCollideListLight *GetLight() const{ return pLight; }
 	
-	/** \brief Cache light. */
-	inline deoglRenderCacheLight *GetCacheLight(){ return pCacheLight; }
+	/** Set light. */
+	void SetLight( deoglCollideListLight *light );
+	
+	/** Light position in world space. */
+	inline const decDVector &GetPosition() const{ return pPosition; }
+	
+	/** Distance of light to camera. */
+	inline float GetDistance() const{ return pDistance; }
+	
+	/** Init. */
+	void Init();
+	
+	/** Plan shadow casting. */
+	void PlanShadowCasting();
+	
+	/** Shadow size. */
+	inline int GetShadowSizeStatic() const{ return pShadowSizeStatic; }
+	inline int GetTranspShadowSizeStatic() const{ return pTranspShadowSizeStatic; }
+	inline int GetAmbientShadowSizeStatic() const{ return pAmbientShadowSizeStatic; }
+	
+	inline int GetShadowSizeDynamic() const{ return pShadowSizeDynamic; }
+	inline int GetTranspShadowSizeDynamic() const{ return pTranspShadowSizeDynamic; }
+	inline int GetAmbientShadowSizeDynamic() const{ return pAmbientShadowSizeDynamic; }
+	
+	/** Set shadow size. */
+	void SetShadowSizeStatic( int size );
+	void SetTranspShadowSizeStatic( int size );
+	void SetAmbientShadowSizeStatic( int size );
+	
+	void SetShadowSizeDynamic( int size );
+	void SetTranspShadowSizeDynamic( int size );
+	void SetAmbientShadowSizeDynamic( int size );
+	
+	/** Render switches. */
+	inline bool GetUseShadow() const{ return pUseShadow; }
+	inline bool GetUseShadowTemporary() const{ return pUseShadowTemporary; }
+	inline bool GetUseAmbient() const{ return pUseAmbient; }
+	inline bool GetRefilterShadows() const{ return pRefilterShadows; }
 	/*@}*/
+	
+	
+	
+private:
+	void pCalcReductionFactorStatic();
+	void pCalcReductionFactorDynamic();
+	void pDetermineUseShadow();
+	void pDetermineUseAmbient();
+	void pDetermineRefilterShadows();
 };
 
 #endif

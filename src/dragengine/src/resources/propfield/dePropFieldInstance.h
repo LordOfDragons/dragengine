@@ -36,7 +36,7 @@
  * bend state which allows the physics module to improve performance
  * avoiding costly calculations and lots of data transfer in memory.
  */
-class dePropFieldInstance{
+class DE_DLL_EXPORT dePropFieldInstance{
 private:
 	decVector pPosition;
 	decVector pRotation;

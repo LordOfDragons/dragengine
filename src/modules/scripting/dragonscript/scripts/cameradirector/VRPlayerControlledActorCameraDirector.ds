@@ -1,0 +1,175 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+
+namespace Dragengine.CameraDirectors
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief Line up position and orientation with VR HMD position and orientation.
+ * \version 1.6
+ * 
+ * Uses PlayerControlledActorCameraDirector as super class to get player tracking for free.
+ * If HMD is not attached the camera is not updated anymore.
+ */
+class VRPlayerControlledActorCameraDirector extends PlayerControlledActorCameraDirector
+	private var bool pActive
+	
+	/** \brief VR HMD behavior instance or \em null if absent. */
+	protected var ECBehaviorVRHMD.Instance hmd
+	
+	
+	
+	/** \brief Create camera director. */
+	public func new()
+	end
+	
+	/** \brief Create camera director. */
+	public func new( Camera camera, Microphone microphone ) super( camera, microphone )
+	end
+	
+	/** \brief Create camera director. */
+	public func new( Camera camera, Microphone microphone, ECBehaviorPlayerControllable.Tracker tracker ) \
+	super( camera, microphone, tracker )
+	end
+	
+	
+	
+	/** \brief VR HMD behavior instance or \em null if absent. */
+	public func ECBehaviorVRHMD.Instance getHMD()
+		return this.hmd
+	end
+	
+	
+	
+	
+	/**
+	 * \brief Camera director has been activated.
+	 * 
+	 * Modifies base class behavior assigning camera to VR System.
+	 */
+	public func void activate()
+		super.activate()
+		
+		VRSystem.setCamera(getCamera())
+		this.pActive = true
+	end
+	
+	/**
+	 * \brief Camera director has been deactivated.
+	 * 
+	 * Modifies base class behavior resigns camera from VR System.
+	 */
+	public func void deactivate()
+		this.pActive = false
+		VRSystem.setCamera(null)
+		
+		super.deactivate()
+	end
+	
+	/**
+	 * \brief Camera director is active. 
+	 * 
+	 * Active VR camera director assigned camera to VR System.
+	 */
+	public func bool getActive()
+		return this.pActive
+	end
+	
+	
+	
+	/**
+	 * \brief Set camera.
+	 * 
+	 * Modifies base class behavior assigning camera to VR System if director is active.
+	 */
+	public func void setCamera(Camera camera)
+		super.setCamera(camera)
+		
+		if this.pActive
+			VRSystem.setCamera(camera)
+		end
+	end
+	
+	/**
+	 * \brief Actor changed.
+	 * 
+	 * Stores the VR HMD behavior instance from the player actor is present. If actor is
+	 * absent VR HMD behavior instance is set to null
+	 */
+	protected func void actorChanged()
+		var ECBehaviorPlayerControllable.Instance actor = this.getActor()
+		
+		if actor != null
+			this.hmd = ECBehaviorVRHMD.getInstanceIn(actor.getElement())
+			
+		else
+			this.hmd = null
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Update camera.
+	 * 
+	 * If VR HMD behavior instance is present and HMD is attached assigns the HMD position
+	 * and orientation to the camera.
+	 */
+	public func void updateCamera(float elapsed)
+		if this.hmd == null or this.hmd.isDetached()
+			return
+		end
+		
+		var DMatrix matrix = this.getCameraMatrix()
+		var Quaternion orientation = matrix.toQuaternion()
+		
+		var Vector angles = orientation.getEulerAngles()
+		this.setAzimuth(angles.getY())
+		this.setElevation(angles.getX())
+		
+		var Camera camera = this.getCamera()
+		camera.setPosition(matrix.getPosition())
+		camera.setOrientation(orientation)
+	end
+	
+	/**
+	 * \brief Calculate camera matrix.
+	 * 
+	 * If VR HMD behavior instance is present and HMD is attached returns HMD matrix as
+	 * provided by VR HMD behavior instance. Otherwise creates matrix from the current
+	 * camera position and orientation.
+	 */
+	public func DMatrix getCameraMatrix()
+		if this.hmd != null and this.hmd.isAttached()
+			return this.hmd.getMatrix()
+			
+		else
+			var Camera camera = this.getCamera()
+			return DMatrix.newWorld(camera.getPosition(), camera.getOrientation())
+		end
+	end
+end
+

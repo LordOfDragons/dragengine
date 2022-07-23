@@ -26,8 +26,7 @@
 #include "deglPGListItemGame.h"
 #include "deglPanelGames.h"
 #include "../deglSharedIcon.h"
-#include "../../game/deglGame.h"
-#include "../../game/profile/deglGameProfile.h"
+#include "../../game/deglGameIcon.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -36,15 +35,15 @@
 // Class deglPGListItemGame
 /////////////////////////////
 
-FXIMPLEMENT( deglPGListItemGame, FXIconItem, NULL, 0 )
+FXIMPLEMENT( deglPGListItemGame, FXIconItem, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
 
 deglPGListItemGame::deglPGListItemGame(){ }
 
-deglPGListItemGame::deglPGListItemGame( deglPanelGames *panelGames, deglGame *game ) :
-FXIconItem( "", NULL, NULL, NULL ),
+deglPGListItemGame::deglPGListItemGame( deglPanelGames *panelGames, delGame *game ) :
+FXIconItem( "", nullptr, nullptr, nullptr ),
 pPanelGames( panelGames ),
 pGame( game )
 {
@@ -57,7 +56,7 @@ pGame( game )
 	
 	const decString gameTitle( game->GetTitle().ToUTF8() );
 	const decString gameCreator( game->GetCreator().ToUTF8() );
-	deglGameProfile * const profile = game->GetProfileToUse();
+	delGameProfile * const profile = game->GetProfileToUse();
 	
 	if( game->GetCanRun() && profile->GetValid() ){
 		gameStatus = "Ready";
@@ -75,22 +74,18 @@ pGame( game )
 	text.format( "%s\t%s\t%s", gameTitle.GetString(), gameStatus.GetString(), gameCreator.GetString() );
 	setText( text );
 	
-	pIconBig = game->GetFoxIconBig();
-	pIconMini = game->GetFoxIconMini();
-	
-	if( game->GetFoxIconBig() ){
-		setBigIcon( game->GetFoxIconBig()->GetIcon() );
+	const deglGameIcon *icon = ( deglGameIcon* )game->GetIcons().GetSmallest( 48 );
+	if( icon && icon->GetFoxIcon() ){
+		pIconBig = icon->GetScaledFoxIcon( 48 );
+		setBigIcon( pIconBig->GetIcon() );
 	}
-	if( game->GetFoxIconMini() ){
-		setMiniIcon( game->GetFoxIconMini()->GetIcon() );
+	
+	icon = ( deglGameIcon* )game->GetIcons().GetSmallest( 32 );
+	if( icon && icon->GetFoxIcon() ){
+		pIconMini = icon->GetScaledFoxIcon( 32 );
+		setMiniIcon( pIconMini->GetIcon() );
 	}
 }
 
 deglPGListItemGame::~deglPGListItemGame(){
 }
-
-
-
-// Management
-///////////////
-

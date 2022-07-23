@@ -70,7 +70,7 @@
  * to translate these settings into a useful simulation configuration and can vary.
  * By default a degree of freedom does not break.
  */
-class deColliderConstraint{
+class DE_DLL_EXPORT deColliderConstraint{
 public:
 	/** \brief Degrees of freedom. */
 	enum eDegreesOfFreedom{

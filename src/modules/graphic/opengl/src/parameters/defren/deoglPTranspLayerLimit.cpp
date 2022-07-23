@@ -50,6 +50,7 @@ deoglPTranspLayerLimit::deoglPTranspLayerLimit( deGraphicOpenGl &ogl ) : deoglPa
 	SetValueStepSize( 1.0f );
 	SetCategory( ecBasic );
 	SetDisplayName( "Transparency Layer Limit" );
+	SetDefaultValue( "4" );
 }
 
 deoglPTranspLayerLimit::~deoglPTranspLayerLimit(){

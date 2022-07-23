@@ -33,7 +33,7 @@ class deWorld;
  * \brief World Resource Manager.
  *
  */
-class deWorldManager : public deResourceManager{
+class DE_DLL_EXPORT deWorldManager : public deResourceManager{
 private:
 	deResourceList pWorlds;
 	

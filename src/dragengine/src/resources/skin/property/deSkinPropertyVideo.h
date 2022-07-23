@@ -37,7 +37,7 @@
  * added to the world. For certain use cases though like special effects it
  * is possible to use unique playback time for each instance.
  */
-class deSkinPropertyVideo : public deSkinProperty{
+class DE_DLL_EXPORT deSkinPropertyVideo : public deSkinProperty{
 private:
 	decString pPath;
 	deVideoReference pVideo;

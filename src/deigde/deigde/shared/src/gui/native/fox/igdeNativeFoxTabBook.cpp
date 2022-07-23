@@ -50,8 +50,8 @@ protected:
 	igdeNativeFoxTabBookHeader();
 	
 public:
-	igdeNativeFoxTabBookHeader( FXComposite *parent, const char *text, FXIcon *icon,
-		FXObject *target, FXSelector selector, FXuint options,
+	igdeNativeFoxTabBookHeader( FXComposite *pparent, const char *text, FXIcon *iicon,
+		FXObject *ttarget, FXSelector selector, FXuint ooptions,
 		int padLeft, int padRight, int padTop, int padBottom );
 	virtual ~igdeNativeFoxTabBookHeader();
 	
@@ -65,10 +65,10 @@ FXIMPLEMENT( igdeNativeFoxTabBookHeader, FXToggleButton, igdeNativeFoxTabBookHea
 
 igdeNativeFoxTabBookHeader::igdeNativeFoxTabBookHeader(){ }
 
-igdeNativeFoxTabBookHeader::igdeNativeFoxTabBookHeader( FXComposite *parent, const char *text,
-FXIcon *icon, FXObject *target, FXSelector selector, FXuint options,
+igdeNativeFoxTabBookHeader::igdeNativeFoxTabBookHeader( FXComposite *pparent, const char *text,
+FXIcon *iicon, FXObject *ttarget, FXSelector selector, FXuint ooptions,
 int padLeft, int padRight, int padTop, int padBottom ) :
-FXToggleButton( parent, text, text, icon, icon, target, selector, options,
+FXToggleButton( pparent, text, text, iicon, iicon, ttarget, selector, ooptions,
 	0, 0, 0, 0, padLeft, padRight, padTop, padBottom ){
 }
 
@@ -104,16 +104,16 @@ FXIMPLEMENT( igdeNativeFoxTabBook, FXVerticalFrame, igdeNativeFoxTabBookMap, ARR
 
 igdeNativeFoxTabBook::igdeNativeFoxTabBook(){ }
 
-igdeNativeFoxTabBook::igdeNativeFoxTabBook( igdeTabBook &owner, FXComposite *parent,
+igdeNativeFoxTabBook::igdeNativeFoxTabBook( igdeTabBook &powner, FXComposite *pparent,
 	FXComposite *windowParent, int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXVerticalFrame( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
+FXVerticalFrame( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
 pAutoScroller( NULL ),
 // pBtnScrollHeadersLeft( NULL ),
 // pBtnScrollHeadersRight( NULL ),
 pHeaders( NULL ),
 pSwitcher( NULL ),
-pFont( TabBookFont( owner, guitheme ) ),
+pFont( TabBookFont( powner, guitheme ) ),
 pPadLeft( TabBookPadLeft( guitheme ) ),
 pPadRight( TabBookPadRight( guitheme ) ),
 pPadTop( TabBookPadTop( guitheme ) ),
@@ -146,23 +146,23 @@ pPadBottom( TabBookPadBottom( guitheme ) )
 igdeNativeFoxTabBook::~igdeNativeFoxTabBook(){
 }
 
-igdeNativeFoxTabBook *igdeNativeFoxTabBook::CreateNativeWidget( igdeTabBook &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxTabBook *igdeNativeFoxTabBook::CreateNativeWidget( igdeTabBook &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxTabBook( owner, parent, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxTabBook( powner, pparent, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxTabBook::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -177,10 +177,10 @@ void igdeNativeFoxTabBook::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxTabBook::AddHeader( const igdeTabBook::cHeader &header ){
-	FXIcon * const icon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : NULL;
+	FXIcon * const iicon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : NULL;
 	
 	igdeNativeFoxTabBookHeader * const widget = new igdeNativeFoxTabBookHeader(
-		pHeaders, header.text.GetString(), icon, this, ID_HEADER,
+		pHeaders, header.text.GetString(), iicon, this, ID_HEADER,
 		TOGGLEBUTTON_KEEPSTATE | FRAME_SUNKEN,
 		pPadLeft, pPadRight, pPadTop, pPadBottom );
 	widget->setFont( (FXFont*)pFont->GetNativeFont() );
@@ -225,9 +225,9 @@ void *igdeNativeFoxTabBook::GetNativeContainer(){
 
 
 
-igdeFont *igdeNativeFoxTabBook::TabBookFont( const igdeTabBook &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxTabBook::TabBookFont( const igdeTabBook &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::tabBookFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -246,7 +246,7 @@ igdeFont *igdeNativeFoxTabBook::TabBookFont( const igdeTabBook &owner, const igd
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxTabBook::TabBookPadLeft( const igdeGuiTheme &guitheme ){
@@ -270,12 +270,12 @@ int igdeNativeFoxTabBook::TabBookPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxTabBook::onHeaderCommand( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxTabBook::onHeaderCommand( FXObject *sender, FXSelector, void* ){
 	ChangePanel( pHeaders->indexOfChild( ( FXWindow* )sender ) );
 	return 1;
 }
 
-long igdeNativeFoxTabBook::onHeaderUpdate( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxTabBook::onHeaderUpdate( FXObject *sender, FXSelector, void* ){
 	const int headerIndex = pHeaders->indexOfChild( ( FXWindow* )sender );
 	const int switcherIndex = pSwitcher->getCurrent();
 	
@@ -283,8 +283,8 @@ long igdeNativeFoxTabBook::onHeaderUpdate( FXObject *sender, FXSelector selector
 		headerIndex == switcherIndex ? ID_CHECK : ID_UNCHECK ), NULL );
 }
 
-long igdeNativeFoxTabBook::onHeaderMouseWheel( FXObject *sender, FXSelector selector, void *data ){
-	const FXEvent &event = *( ( FXEvent* )data );
+long igdeNativeFoxTabBook::onHeaderMouseWheel( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const int index = pSwitcher->getCurrent();
 	
 	if( event.code > 0 ){ // wheel down
@@ -307,12 +307,12 @@ long igdeNativeFoxTabBook::onHeaderMouseWheel( FXObject *sender, FXSelector sele
 	return 1;
 }
 
-long igdeNativeFoxTabBook::onHeaderMouseMoved( FXObject *sender, FXSelector selector, void *data ){
-	return pAutoScroller->onChildMouseMoved( sender, selector, data );
+long igdeNativeFoxTabBook::onHeaderMouseMoved( FXObject *sender, FXSelector selector, void *pdata ){
+	return pAutoScroller->onChildMouseMoved( sender, selector, pdata );
 }
 
-long igdeNativeFoxTabBook::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxTabBook::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }

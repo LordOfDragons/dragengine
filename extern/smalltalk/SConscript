@@ -124,13 +124,13 @@ def smalltalkBuild( target, source, env ):
 	for subdir in subdirs:
 		script.append( 'if [ -f {}/Makefile ]; then'.format( subdir ) )
 		script.append( '  cd {} || exit 1'.format( subdir ) )
-		script.append( '  make install || exit 1' )
+		script.append( '  make -j {} install || exit 1'.format(env['with_threads']) )
 		script.append( '  cd ..' )
 		script.append( 'fi' )
 	
-	#script.append( 'cd ..; make install-data-hook || exit 1' ) # kernel image
+	#script.append( 'cd ..; make -j {} install-data-hook || exit 1'.format(env['with_threads']) ) # kernel image
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building smalltalk')
 
 patches = [] # create with 'diff -rupN original_sources patches_sources'
@@ -159,6 +159,8 @@ envLibrary.Depends( library, parent_targets[ 'lib_libffi' ][ 'depends' ] )
 envLibrary.Depends( library, parent_targets[ 'lib_libltdl' ][ 'depends' ] )
 if envLibrary[ 'OSPosix' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_libsigsegv' ][ 'depends' ] )
+
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_smalltalk', library )
 

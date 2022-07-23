@@ -31,7 +31,7 @@ class deSkin;
 /**
  * \brief Read skin resource loader task.
  */
-class deRLTaskReadSkin : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadSkin : public deResourceLoaderTask {
 private:
 	deRLTaskReadSkinInternal *pInternalTask;
 	bool pSucceeded;

@@ -1,0 +1,12 @@
+diff -rupN dragonscript-1.3/SConstruct dragonscript-1.3-patched/SConstruct
+--- dragonscript-1.3/SConstruct	2020-12-31 19:01:11.000000000 +0100
++++ dragonscript-1.3-patched/SConstruct	2021-09-10 21:17:55.774377932 +0200
+@@ -5,7 +5,7 @@ import sys
+ import shlex
+ 
+ # create parent environment and load tools
+-globalEnv = Environment()
++globalEnv = Environment(ENV = {'PATH': os.environ['PATH']})
+ globalEnv['PARAMETER_SOURCE'] = ['custom.py']
+ globalEnv.Tool('config_report')
+ globalEnv.Tool('target_manager')

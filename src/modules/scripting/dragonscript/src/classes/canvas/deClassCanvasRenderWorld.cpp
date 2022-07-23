@@ -140,9 +140,9 @@ void deClassCanvasRenderWorld::nfProject::RunFunction( dsRunTime *rt, dsValue *m
 	}
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() );
-	const double aspectRatio = ( double )viewportSize.x / ( double )viewportSize.y;
 	const double halfHeight = ( double )viewportSize.y * 0.5;
 	const double halfWidth = ( double )viewportSize.x * 0.5;
+	const double aspectRatio = halfWidth / halfHeight;
 	
 	decDVector projected( camera->GetOrientation().Conjugate() * ( position - camera->GetPosition() ) );
 	if( projected.z < FLOAT_SAFE_EPSILON ){
@@ -178,20 +178,20 @@ void deClassCanvasRenderWorld::nfBackProject::RunFunction( dsRunTime *rt, dsValu
 	
 	const decPoint &viewportSize = nd.canvas->GetSize();
 	if( viewportSize.x == 0 || viewportSize.y == 0 ){
-		ds.GetClassPoint()->PushPoint( rt, decPoint() );
+		ds.GetClassVector()->PushVector( rt, camera->GetOrientation() * decVector( 0.0f, 0.0f, 1.0f ) );
 		return;
 	}
 	
 	const decPoint &position = ds.GetClassPoint()->GetPoint( rt->GetValue( 0 )->GetRealObject() );
-	const double aspectRatio = ( double )viewportSize.x / ( double )viewportSize.y;
-	const int halfHeight = viewportSize.y / 2;
-	const int halfWidth = viewportSize.x / 2;
+	const double halfHeight = ( double )viewportSize.y * 0.5;
+	const double halfWidth = ( double )viewportSize.x * 0.5;
+	const double aspectRatio = halfWidth / halfHeight;
 	decDVector direction;
 	
 	direction.x = tan( ( double )camera->GetFov() * 0.5 )
-		* ( ( double )( position.x - halfWidth ) / ( double )halfWidth );
+		* ( ( position.x - ( double )halfWidth ) / halfWidth );
 	direction.y = tan( ( double )camera->GetFov() * ( double )camera->GetFovRatio() * 0.5 )
-		* ( ( double )( halfHeight - position.y ) / ( double )halfHeight ) / aspectRatio;
+		* ( ( halfHeight - ( double )position.y ) / halfHeight ) / aspectRatio;
 	direction.z = 1.0;
 	
 	ds.GetClassVector()->PushVector( rt, ( camera->GetOrientation() * direction.Normalized() ).ToVector() );

@@ -24,91 +24,88 @@ namespace Dragengine.Gui.Borders.Factories
 
 
 /**
- * Factory for TwoColorBorder.
+ * \brief Factory for TwoColorBorder.
  */
 public class TwoColorBorderFactory implements BorderFactory
-	/** Raised or lowered edge. */
 	private var bool pRaised
-	/** Highlight color or null to use the widget gui theme highlight color. */
 	private var Color pColorHighlight
-	/** Shadow color or null to use the widget gui theme shadow color. */
 	private var Color pColorShadow
 	
 	
 	
-	/** Creates a new raised etched border factory. */
+	/** \brief Create two color border factory. */
 	public func new()
-		this.pRaised = true
+		pRaised = true
 	end
 	
 	/** \brief Create copy of border factory. */
-	public func new( TwoColorBorderFactory factory )
-		this.pRaised = factory.pRaised
-		this.pColorHighlight = factory.pColorHighlight
-		this.pColorShadow = factory.pColorShadow
+	public func new(TwoColorBorderFactory factory)
+		pRaised = factory.pRaised
+		pColorHighlight = factory.pColorHighlight
+		pColorShadow = factory.pColorShadow
 	end
 	
 	
 	
-	/** Determines if the border is raised or lowered. */
+	/** \brief Border is raised or lowered. */
 	public func bool getRaised()
-		return this.pRaised
+		return pRaised
 	end
 	
-	/** Sets if the border is raised or lowered. */
-	public func void setRaised( bool raised )
-		this.pRaised = raised
+	/** \brief Set if border is raised or lowered. */
+	public func void setRaised(bool raised)
+		pRaised = raised
 	end
 	
-	/** Retrieves the highlight color or null to use the widget gui theme highlight color. */
+	/** \brief Highlight color or null to not draw. */
 	public func Color getColorHighlight()
-		return this.pColorHighlight
+		return pColorHighlight
 	end
 	
-	/** Sets the highlight color or null to use the widget gui theme highlight color. */
-	public func void setColorHighlight( Color color )
-		this.pColorHighlight = color
+	/** \brief Set highlight color or null to not draw. */
+	public func void setColorHighlight(Color color)
+		pColorHighlight = color
 	end
 	
-	/** Retrieves the shadow color or null to use the widget gui theme shadow color. */
+	/** \brief Shadow color or null to not draw. */
 	public func Color getColorShadow()
-		return this.pColorShadow
+		return pColorShadow
 	end
 	
-	/** Sets the shadow color or null to use the widget gui theme shadow color. */
-	public func void setColorShadow( Color color )
-		this.pColorShadow = color
+	/** \brief Set shadow color or null to not draw. */
+	public func void setColorShadow(Color color)
+		pColorShadow = color
 	end
 	
 	
 	
-	/** Create border. */
+	/** \brief Create border. */
 	public func Border createBorder()
 		var TwoColorBorder border = TwoColorBorder.new()
 		
-		border.setRaised( this.pRaised )
-		border.setColorHighlight( this.pColorHighlight )
-		border.setColorShadow( this.pColorShadow )
+		border.setRaised(pRaised)
+		border.setColorHighlight(pColorHighlight)
+		border.setColorShadow(pColorShadow)
 		
 		return border
 	end
 	
 	/** \brief Create factory copy. */
 	public func BorderFactory copyFactory()
-		return TwoColorBorderFactory.new( this )
+		return TwoColorBorderFactory.new(this)
 	end
 	
 	/** \brief Set parameter. */
-	public func void setParameter( String name, Object value )
-		if name.equals( "raised" )
-			this.setRaised( value cast bool )
+	public func void setParameter(String name, Object value)
+		if name.equals("raised")
+			setRaised(value cast bool)
 			
-		elif name.equals( "colorHighlight" ) \
-		/* backwards compatibility */ or name.equals( "colorHilight" )
-			this.setColorHighlight( value cast Color )
+		elif name.equals("colorHighlight") \
+		/* backwards compatibility */ or name.equals("colorHilight")
+			setColorHighlight(value cast Color)
 			
-		elif name.equals( "colorShadow" )
-			this.setColorShadow( value cast Color )
+		elif name.equals("colorShadow")
+			setColorShadow(value cast Color)
 			
 		else
 			throw EInvalidParam.new()
@@ -120,11 +117,11 @@ public class TwoColorBorderFactory implements BorderFactory
 	
 	/** \deprecated Use getColorHighlight(). */
 	public func Color getColorHilight()
-		return this.getColorHighlight()
+		return getColorHighlight()
 	end
 	
 	/** \deprecated Use setColorHighlight(Color). */
-	public func void setColorHilight( Color color )
-		this.setColorHighlight( color )
+	public func void setColorHilight(Color color)
+		setColorHighlight(color)
 	end
 end

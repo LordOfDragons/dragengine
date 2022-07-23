@@ -331,7 +331,7 @@ void deFont::pCreateGlyphMap(){
 		}
 		
 		if( pGlyphMap[ group ] == 0 ){
-			const unsigned mapIndex = 1 + ( unsigned short )pGlyphGroupCount;
+			const unsigned short mapIndex = ( unsigned short )( 1 + pGlyphGroupCount );
 			
 			const int newCount = pGlyphGroupCount + 1;
 			unsigned short * const groups = new unsigned short[ newCount * 256 ];
@@ -348,6 +348,6 @@ void deFont::pCreateGlyphMap(){
 			pGlyphMap[ group ] = mapIndex;
 		}
 		
-		pGlyphGroups[ ( pGlyphMap[ group ] - 1 ) * 256 + entry ] = i + 1;
+		pGlyphGroups[ ( pGlyphMap[ group ] - 1 ) * 256 + entry ] = ( unsigned short )( i + 1 );
 	}
 }

@@ -28,7 +28,7 @@
 /**
  * \brief Graphic Module Environment Map Probe Peer.
  */
-class deBaseGraphicEnvMapProbe{
+class DE_DLL_EXPORT deBaseGraphicEnvMapProbe{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

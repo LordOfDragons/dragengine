@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include "debpCollisionWorld.h"
+#include "debpConstraintSolver.h"
 #include "debpDelayedOperation.h"
 #include "../dePhysicsBullet.h"
 #include "../debpCollisionObject.h"
@@ -282,9 +283,9 @@ static void cbPostTick( btDynamicsWorld *world, btScalar timeStep ){
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
 debpCollisionWorld::debpCollisionWorld( debpWorld &world, btDispatcher *dispatcher,
-btBroadphaseInterface *pairCache, btMultiBodyConstraintSolver *constraintSolver,
+btBroadphaseInterface *pairCache, debpConstraintSolver *constraintSolver,
 btCollisionConfiguration *collisionConfiguration, btSoftBodySolver *softBodySolver ) :
-btSoftMultiBodyDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
+btSoftRigidDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
 pWorld( world ),
 pDelayedOperation( NULL )
 {
@@ -292,11 +293,14 @@ pDelayedOperation( NULL )
 	
 	pDelayedOperation = new debpDelayedOperation( *this );
 	
+	solverInfo.m_timeStep = world.GetSimulationTimeStep();
+	
 	// more iterations will allow the solver to converge to the actual solution better.
 	// default 10
 	// notes: 20 improves. 100 makes the head case work well. 1000 even more close.
 	// tail case gets worse but once converged it works well even with less.
-	solverInfo.m_numIterations = 20; // 25 seems a nice value
+	// notes: bullet demos use 50, 100 or even 150
+	solverInfo.m_numIterations = 100; //20; // 25 seems a nice value
 	
 	// global non-contact constraint damping. determines percentage of relative velocity to use.
 	// hence 1 is no damping and everything below damps the velocity.
@@ -574,15 +578,8 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			colinfo->SetOwnerBone( colObj0.GetOwnerBone() );
 			colinfo->SetOwnerShape( shape0 );
 			
-			collider.AddReference(); // safe-guard to avoid collider being removed while in use
-			try{
-				collider.GetPeerScripting()->CollisionResponse( &collider, colinfo ); // can potentially remove collider
-				
-			}catch( const deException & ){
-				collider.FreeReference(); // give up safe-guard
-				throw;
-			}
-			collider.FreeReference(); // give up safe-guard
+			const deCollider::Ref guard( &collider ); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
 		}
 		
 		// call collision response on second collider if dynamic and not removed by the first collider
@@ -605,15 +602,8 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			colinfo->SetOwnerBone( colObj1Safe.GetOwnerBone() );
 			colinfo->SetOwnerShape( shape1 );
 			
-			collider.AddReference(); // safe-guard to avoid collider being removed while in use
-			try{
-				collider.GetPeerScripting()->CollisionResponse( &collider, colinfo ); // can potentially remove collider
-				
-			}catch( const deException & ){
-				collider.FreeReference(); // give up safe-guard
-				throw;
-			}
-			collider.FreeReference(); // give up safe-guard
+			const deCollider::Ref guard( &collider ); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
 		}
 		
 		if( debugInfo ){
@@ -980,7 +970,7 @@ void debpCollisionWorld::contactTest( btCollisionObject *colObj, btCollisionWorl
 
 
 void debpCollisionWorld::solveConstraints( btContactSolverInfo &solverInfo ){
-	btSoftMultiBodyDynamicsWorld::solveConstraints( solverInfo );
+	btSoftRigidDynamicsWorld::solveConstraints( solverInfo );
 }
 
 
@@ -1001,7 +991,7 @@ void debpCollisionWorld::internalSingleStepSimulation( btScalar timeStep ){
 	pDelayedOperation->Lock();
 	
 	try{
-		btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation( timeStep );
+		btSoftRigidDynamicsWorld::internalSingleStepSimulation( timeStep );
 		
 		// NOTE For btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation the pre and post tick
 		//      callback are called right at the start and end of the function. For btSoftRigidDynamicsWorld

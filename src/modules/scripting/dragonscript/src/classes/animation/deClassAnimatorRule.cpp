@@ -38,6 +38,7 @@
 #include "rules/deClassARTrackTo.h"
 #include "rules/deClassARLimit.h"
 #include "rules/deClassARGroup.h"
+#include "rules/deClassARMirror.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -55,6 +56,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 #include <dragengine/deEngine.h>
 
 #include <libdscript/exceptions.h>
@@ -171,6 +173,25 @@ void deClassAnimatorRule::nfSetBlendFactor::RunFunction( dsRunTime *rt, dsValue 
 	}
 }
 
+// public func void setInvertBlendFactor(bool invertBlendFactor)
+deClassAnimatorRule::nfSetInvertBlendFactor::nfSetInvertBlendFactor( const sInitData &init ) :
+dsFunction( init.clsArR, "setInvertBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // invertBlendFactor
+}
+void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->SetInvertBlendFactor( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void addBone( String boneName )
@@ -280,6 +301,7 @@ void deClassAnimatorRule::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnabled( init ) );
 	AddFunction( new nfSetBlendMode( init ) );
 	AddFunction( new nfSetBlendFactor( init ) );
+	AddFunction( new nfSetInvertBlendFactor( init ) );
 	
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfRemoveAllBones( init ) );
@@ -401,6 +423,10 @@ void deClassAnimatorRule::PushRule( dsRunTime *rt, deAnimator *animator, deAnima
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
 		pDS.GetClassARGroup()->PushRule( rt, animator, &visitor.CastToGroup() );
+		break;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		pDS.GetClassARMirror()->PushRule( rt, animator, &visitor.CastToMirror() );
 		break;
 		
 	default:

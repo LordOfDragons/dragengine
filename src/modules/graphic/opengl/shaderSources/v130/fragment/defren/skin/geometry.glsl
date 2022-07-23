@@ -9,10 +9,6 @@
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
-#ifdef NODE_FRAGMENT_UNIFORMS
-NODE_FRAGMENT_UNIFORMS
-#endif
-
 
 
 // Samplers
@@ -55,7 +51,7 @@ NODE_FRAGMENT_UNIFORMS
 	uniform mediump SAMPLER_2D texEmissivity;
 #endif
 #ifdef TEXTURE_RENDERCOLOR
-	uniform mediump sampler2D texRenderColor;
+	uniform mediump sampler2DArray texRenderColor;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
 	uniform lowp SAMPLER_2D texRefractionDistort;
@@ -91,12 +87,14 @@ NODE_FRAGMENT_UNIFORMS
 #ifdef TEXTURE_RIM_EMISSIVITY
 	uniform mediump SAMPLER_2D texRimEmissivity;
 #endif
-#ifdef DEPTH_TEST
-	uniform HIGHP sampler2D texDepthTest;
+#ifdef TEXTURE_NONPBR_ALBEDO
+	uniform lowp SAMPLER_2D texNonPbrAlbedo;
 #endif
-
-#ifdef NODE_FRAGMENT_SAMPLERS
-NODE_FRAGMENT_SAMPLERS
+#ifdef TEXTURE_NONPBR_METALNESS
+	uniform lowp SAMPLER_2D texNonPbrMetalness;
+#endif
+#ifdef DEPTH_TEST
+	uniform HIGHP sampler2DArray texDepthTest;
 #endif
 
 
@@ -153,9 +151,13 @@ in vec3 vNormal;
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef NODE_FRAGMENT_INPUTS
-NODE_FRAGMENT_INPUTS
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
 #endif
+
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
 
@@ -199,6 +201,10 @@ NODE_FRAGMENT_OUTPUTS
 	#include "v130/shared/defren/skin/environment_room.glsl"
 #endif
 
+#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+	#include "v130/shared/defren/skin/nonpbr_metalness.glsl"
+#endif
+
 
 
 // Constants
@@ -218,6 +224,8 @@ const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );
 	const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 	//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 #endif
+
+#include "v130/shared/normal.glsl"
 
 
 // functions required to be define last because they are based on stuff defined above
@@ -291,9 +299,9 @@ void main( void ){
 	// test against depth texture
 	#ifdef DEPTH_TEST
 		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot( texelFetch( texDepthTest, tc, 0 ).rgb, unpackDepth );
+		float depthTestValue = dot( texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).rgb, unpackDepth );
 		#else
-		float depthTestValue = texelFetch( texDepthTest, tc, 0 ).r;
+		float depthTestValue = texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).r;
 		#endif
 		
 		#ifdef INVERSE_DEPTH
@@ -381,34 +389,47 @@ void main( void ){
 	
 	// get texture properties from textures
 	#ifndef LUMINANCE_ONLY
-		vec4 color;
-		#ifdef TEXTURE_COLOR
+		#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+			vec3 nonpbrAlbedo = vec3( 0 );
+			#ifdef TEXTURE_NONPBR_ALBEDO
+				nonpbrAlbedo = TEXTURE( texNonPbrAlbedo, tcColor ).rgb;
+			#endif
+			
+			float nonpbrMetalness = 0;
+			#ifdef TEXTURE_NONPBR_METALNESS
+				nonpbrMetalness = TEXTURE( texNonPbrMetalness, tcReflectivity ).r;
+			#endif
+		#endif
+		
+		vec4 color = vec4( 0, 0, 0, 1 );
+		#ifdef TEXTURE_TRANSPARENCY
+			color.a = TEXTURE( texTransparency, tcColor ).r;
+		#endif
+		#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+			color.rgb = nonpbrMetalnessToColor( nonpbrAlbedo, nonpbrMetalness );
+		#elif defined TEXTURE_COLOR
 			#ifdef TEXTURE_TRANSPARENCY
-				color = vec4( TEXTURE( texColor, tcColor ).rgb, TEXTURE( texTransparency, tcColor ).r );
+				color.rgb = TEXTURE( texColor, tcColor ).rgb;
 			#else
 				color = TEXTURE( texColor, tcColor );
 			#endif
-		#else
-			#ifdef TEXTURE_TRANSPARENCY
-				color = vec4( 0.0, 0.0, 0.0, TEXTURE( texTransparency, tcColor ).r );
-			#else
-				#ifdef WITH_OUTLINE
-					color = vec4( pOutlineColor * pOutlineColorTint, 1.0 );
-				#else
-					color = vec4( 0.0, 0.0, 0.0, 1.0 );
-				#endif
-			#endif
+		#elif defined WITH_OUTLINE
+			color.rgb = pOutlineColor * pOutlineColorTint;
 		#endif
 		color.a *= pTransparencyMultiplier; // add an #ifdef to avoid this calculation?
 		
 		float solidity;
 		#ifdef TEXTURE_SOLIDITY
-			solidity = TEXTURE( texSolidity, tcColor ).r;
-			solidity *= pSolidityMultiplier; // add an #ifdef to avoid this calculation?
+			solidity = TEXTURE( texSolidity, tcColor ).r * pSolidityMultiplier;
 		#elif defined WITH_OUTLINE
 			solidity = pOutlineSolidity;
 		#else
-			solidity = 1.0;
+			solidity = pSolidityMultiplier;
+		#endif
+		
+		#ifdef MASKED_SOLIDITY
+		// ensure calculation of depth and geometry matches
+		solidity = solidity < 0.35 ? 0.0 : solidity;
 		#endif
 		
 		#ifdef TEXTURE_NORMAL
@@ -426,7 +447,9 @@ void main( void ){
 		#endif
 		
 		vec3 reflectivity;
-		#ifdef TEXTURE_REFLECTIVITY
+		#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+			reflectivity = nonpbrMetalnessToReflectivity( nonpbrAlbedo, nonpbrMetalness );
+		#elif defined TEXTURE_REFLECTIVITY
 			reflectivity = TEXTURE( texReflectivity, tcReflectivity ).rgb * vec3( pReflectivityMultiplier );
 		#else
 			reflectivity = vec3( 0.0 );
@@ -446,14 +469,11 @@ void main( void ){
 		#endif
 	#endif
 	
-	// Node based calculations
-	#ifdef NODE_FRAGMENT_MAIN
-	NODE_FRAGMENT_MAIN
-	#endif
-	
 	// for height map adjust alpha value
-	#ifdef HEIGHT_MAP
-		color.a *= vHTMask;
+	#ifndef LUMINANCE_ONLY
+		#ifdef HEIGHT_MAP
+			color.a *= vHTMask;
+		#endif
 	#endif
 	
 	
@@ -481,9 +501,7 @@ void main( void ){
 	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			outDiffuse = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#ifdef MATERIAL_NORMAL_INTBASIC
-				outNormal = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#endif
+			outNormal = vec4( normalZeroMaterialEnc, 0.0 );
 			outReflectivity = vec4( 0.0, 0.0, 0.0, 0.0 );
 			outRoughness = vec4( 0.0, 1.0, 1.0, 0.0 );
 		#endif
@@ -564,22 +582,9 @@ void main( void ){
 		normal.xyz = normalize( normal.xyz );
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			#ifdef WITH_OUTLINE
-				#ifdef MATERIAL_NORMAL_INTBASIC
-					outNormal = vec4( 0.5, 0.5, 0.5, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
-				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-					outNormal = vec4( 0.5, 0.5, 0.0, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
-				#else
-					outNormal = vec4( 0.0, 0.0, 0.0, color.a ); // vec4( 0.0, 0.0, -1.0, color.a );
-				#endif
+				outNormal = vec4( normalZeroMaterialEnc, color.a );
 			#else
-				#ifdef MATERIAL_NORMAL_INTBASIC
-					outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
-				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-					float f = sqrt( 8.0001 - 7.9999 * normal.z );
-					outNormal = vec4( vec3( normal.xy / vec2( f ) + vec2( 0.5 ), 0.0 ), color.a );
-				#else
-					outNormal = vec4( normal.xyz, color.a );
-				#endif
+				outNormal = vec4( normalEncodeMaterial( normal.xyz ), color.a );
 				#ifdef SOLIDITY_MULTIPLIER
 					outNormal.a *= pNormalSolidityMultiplier;
 				#endif
@@ -650,10 +655,10 @@ void main( void ){
 	#ifdef TEXTURE_RENDERCOLOR
 		vec4 renderColor;
 		#if defined TEXTURE_REFRACTION_DISTORT && ! defined WITH_OUTLINE
-			renderColor = textureLod( texRenderColor, clamp(
-				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw ), 0.0 );
+			renderColor = textureLod( texRenderColor, vec3( clamp(
+				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw ), vLayer ), 0.0 );
 		#else
-			renderColor = texelFetch( texRenderColor, tc, 0 );
+			renderColor = texelFetch( texRenderColor, ivec3( tc, vLayer ), 0 );
 		#endif
 		
 		outColor.rgb = mix( renderColor.rgb, outColor.rgb, color.a );

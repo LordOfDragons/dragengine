@@ -125,6 +125,7 @@ private:
 	DEF_NATFUNC( nfTransformNormal );
 	DEF_NATFUNC( nfGetEulerAngles );
 	DEF_NATFUNC( nfGetInverse );
+	DEF_NATFUNC( nfGetRotation );
 	DEF_NATFUNC( nfNormalize );
 	DEF_NATFUNC( nfToQuaternion );
 	DEF_NATFUNC( nfToDMatrix4 );
@@ -144,6 +145,7 @@ private:
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC( nfToStringPrecision );
 #undef DEF_NATFUNC
 };
 

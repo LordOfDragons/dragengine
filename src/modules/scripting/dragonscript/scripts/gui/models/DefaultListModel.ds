@@ -26,56 +26,66 @@ namespace Dragengine.Gui
 
 /**
  * \brief Default implementation of ListModel.
+ * 
+ * \par Version 1.5 Changes
+ * 
+ * Added support to set Auto-Select mode. Default is enabled as before version 1.5 . If enabled
+ * adding and removing items ensures an item is selected if the list is not empty. If disabled
+ * the user is responsible to set the selection after adding or removing items. If disabled
+ * and the selected item is removed the selection will be cleared.
  */
 class DefaultListModel implements ListModel
 	private var Array pElements
 	private var Array pListeners
 	private var int pSelected
+	private var bool pAutoSelect
 	
 	
 	
 	/** \brief Create default list model. */
 	public func new()
-		this.pElements = Array.new()
-		this.pListeners = Array.new()
-		this.pSelected = -1
+		pElements = Array.new()
+		pListeners = Array.new()
+		pSelected = -1
+		pAutoSelect = true
 	end
 	
 	/** \brief Create default list model with initial content. */
-	public func new( Array content )
-		this.pElements = Array.new( content )
-		this.pListeners = Array.new()
-		this.pSelected = content.getCount() > 0 if 0 else -1
+	public func new(Array content)
+		pElements = Array.new(content)
+		pListeners = Array.new()
+		pSelected = content.getCount() > 0 if 0 else -1
+		pAutoSelect = true
 	end
 	
 	
 	
 	/** \brief Add listener. */
-	public func void addListener( ListModelListener listener )
+	public func void addListener(ListModelListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pListeners.add( listener )
+		pListeners.add(listener)
 	end
 	
 	/** \brief Remove listener. */
-	public func void removeListener( ListModelListener listener )
-		this.pListeners.remove( listener )
+	public func void removeListener(ListModelListener listener)
+		pListeners.remove(listener)
 	end
 	
 	
 	
 	/** \brief Number of elements. */
 	public func int getCount()
-		return this.pElements.getCount()
+		return pElements.getCount()
 	end
 	
 	/**
 	 * \brief Element at index.
 	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
 	 */
-	public func Object getAt( int index )
-		return this.pElements.getAt( index )
+	public func Object getAt(int index)
+		return pElements.getAt(index)
 	end
 	
 	/**
@@ -87,13 +97,13 @@ class DefaultListModel implements ListModel
 	 * 
 	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal to getCount().
 	 */
-	public func void setAt( int index, Object element )
-		if element == this.pElements.getAt( index )
+	public func void setAt(int index, Object element)
+		if element == pElements.getAt(index)
 			return
 		end
 		
-		this.pElements.setAt( index, element )
-		this.notifyContentChanged( index, index )
+		pElements.setAt(index, element)
+		notifyContentChanged(index, index)
 	end
 	
 	/**
@@ -109,7 +119,7 @@ class DefaultListModel implements ListModel
 	 * \throws EInvalidParam Number of elements in \em elements does not equal number of
 	 *                       elements in range.
 	 */
-	public func void setRange( int firstIndex, int lastIndex, Array elements )
+	public func void setRange(int firstIndex, int lastIndex, Array elements)
 		if firstIndex == lastIndex
 			return
 		end
@@ -117,7 +127,7 @@ class DefaultListModel implements ListModel
 		if lastIndex < firstIndex
 			throw EInvalidParam.new()
 		end
-		if lastIndex >= this.pElements.getCount()
+		if lastIndex >= pElements.getCount()
 			throw EOutOfBounds.new()
 		end
 		
@@ -128,9 +138,9 @@ class DefaultListModel implements ListModel
 		
 		var int i
 		for i = 0 to count
-			this.pElements.setAt( firstIndex + i, elements.getAt( i ) )
+			pElements.setAt(firstIndex + i, elements.getAt(i))
 		end
-		this.notifyContentChanged( firstIndex, lastIndex )
+		notifyContentChanged(firstIndex, lastIndex)
 	end
 	
 	/**
@@ -143,8 +153,8 @@ class DefaultListModel implements ListModel
 	 * \throws EInvalidParam Number of elements in \em elements does not equal number
 	 *                       of elements in the model.
 	 */
-	public func void setAll( Array elements )
-		var int count = this.pElements.getCount()
+	public func void setAll(Array elements)
+		var int count = pElements.getCount()
 		if elements.getCount() != count
 			throw EInvalidParam.new()
 		end
@@ -153,21 +163,39 @@ class DefaultListModel implements ListModel
 			return
 		end
 		
-		var int i
-		for i = 0 to count
-			this.pElements.setAt( i, elements.getAt( i ) )
+		var Object selectedOld, selectedNew
+		if pSelected != -1
+			selectedOld = pElements.getAt(pSelected)
+			selectedNew = elements.getAt(pSelected)
 		end
-		this.notifyContentChanged( 0, count - 1 )
+		
+		pElements.removeAll()
+		pElements.addAll(elements)
+		
+		notifyContentChanged(0, count - 1)
+		
+		if not (selectedOld != null and selectedOld.equals(selectedNew))
+			if pAutoSelect and count > 0
+				pSelected = 0
+				
+			else
+				pSelected = -1
+			end
+			
+			pListeners.forEach(block ListModelListener each
+				each.selectionChanged(this)
+			end)
+		end
 	end
 	
 	/** \brief Index of element or -1 if absent. */
-	public func int indexOf( Object element )
-		return this.pElements.indexOf( element )
+	public func int indexOf(Object element)
+		return pElements.indexOf(element)
 	end
 	
 	/** \brief Element is present. */
-	public func bool has( Object element )
-		return this.pElements.has( element )
+	public func bool has(Object element)
+		return pElements.has(element)
 	end
 	
 	/**
@@ -177,11 +205,11 @@ class DefaultListModel implements ListModel
 	 * many elements at once performance problems can arise due to each change causing
 	 * widgets to relayout. If this is the case use one of the mass editing methods.
 	 */
-	public func void add( Object element )
-		this.pElements.add( element )
+	public func void add(Object element)
+		pElements.add(element)
 		
-		var int index = this.pElements.getCount() - 1
-		this.notifyElementsAdded( index, index )
+		var int index = pElements.getCount() - 1
+		notifyElementsAdded(index, index)
 	end
 	
 	/**
@@ -190,19 +218,17 @@ class DefaultListModel implements ListModel
 	 * After adding a content changed event is send to listeners. If you have
 	 * to add many elements addAll() instead of add() for performance reasons.
 	 */
-	public func void addAll( Array content )
+	public func void addAll(Array content)
 		var int count = content.getCount()
 		if count == 0
 			return
 		end
 		
-		var int fromIndex = this.pElements.getCount()
+		var int indexFrom = pElements.getCount()
 		
-		content.forEach( block Object each
-			this.pElements.add( each )
-		end )
+		pElements.addAll(content)
 		
-		this.notifyElementsAdded( fromIndex, fromIndex + count - 1 )
+		notifyElementsAdded(indexFrom, indexFrom + count - 1)
 	end
 	
 	/**
@@ -214,9 +240,15 @@ class DefaultListModel implements ListModel
 	 * 
 	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
 	 */
-	public func void insert( int index, Object element )
-		this.pElements.insert( index, element )
-		this.notifyElementsAdded( index, index )
+	public func void insert(int index, Object element)
+		var int selected = pSelected
+		if selected >= index
+			selected++
+		end
+		
+		pElements.insert(index, element)
+		notifyElementsAdded(index, index)
+		setSelected(selected)
 	end
 	
 	/**
@@ -227,18 +259,84 @@ class DefaultListModel implements ListModel
 	 * 
 	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
 	 */
-	public func void insertAll( int index, Array content )
+	public func void insertAll(int index, Array content)
 		var int count = content.getCount()
 		if count == 0
 			return
 		end
 		
-		var int i
-		for i = 0 to count
-			this.pElements.insert( index + i, content.getAt( i ) )
+		var int selected = pSelected
+		if selected >= index
+			selected += count
 		end
 		
-		this.notifyElementsAdded( index, index + count - 1 )
+		pElements.insertAll(index, content)
+		notifyElementsAdded(index, index + count - 1)
+		setSelected(selected)
+	end
+	
+	/**
+	 * \brief Move element to new location.
+	 * \version 1.11
+	 * 
+	 * Same as calling remove(Object) and insert(int,Object) but sending only one change
+	 * notification for the entire range of content between the two positions.
+	 */
+	public func void move(Object object, int index)
+		moveIndex(pElements.indexOf(object), index)
+	end
+	
+	/**
+	 * \brief Move element to new location.
+	 * \version 1.11
+	 * 
+	 * Same as calling remove(Object) and insert(int,Object) but sending only one change
+	 * notification for the entire range of content between the two positions.
+	 */
+	public func void moveIndex(int indexFrom, int indexTo)
+		if indexFrom < 0
+			throw EInvalidParam.new("indexFrom < 0")
+		end
+		if indexFrom >= pElements.getCount()
+			throw EInvalidParam.new("indexFrom >= count")
+		end
+		if indexTo < 0
+			throw EInvalidParam.new("indexTo < 0")
+		end
+		if indexTo > pElements.getCount()
+			throw EInvalidParam.new("indexTo > count")
+		end
+		
+		if indexFrom == indexTo
+			return
+		end
+		
+		pElements.move(indexFrom, indexTo)
+		
+		if indexTo > indexFrom
+			notifyContentChanged(indexFrom, indexTo)
+			
+			if pSelected != -1
+				if pSelected == indexFrom
+					setSelected(indexTo)
+					
+				elif pSelected > indexFrom and pSelected <= indexTo
+					setSelected(pSelected - 1)
+				end
+			end
+			
+		else
+			notifyContentChanged(indexTo, indexFrom)
+			
+			if pSelected != -1
+				if pSelected == indexFrom
+					setSelected(indexTo)
+					
+				elif pSelected >= indexTo and pSelected < indexFrom
+					setSelected(pSelected + 1)
+				end
+			end
+		end
 	end
 	
 	/**
@@ -250,8 +348,8 @@ class DefaultListModel implements ListModel
 	 * 
 	 * \throws EOutOfBounds Element is absent.
 	 */
-	public func void remove( Object element )
-		this.removeFrom( this.pElements.indexOf( element ) )
+	public func void remove(Object element)
+		removeFrom(pElements.indexOf(element))
 	end
 	
 	/**
@@ -263,9 +361,9 @@ class DefaultListModel implements ListModel
 	 * 
 	 * \throws EOutOfBounds \em index is less than 0 or larger than or equal getCount().
 	 */
-	public func void removeFrom( int index )
-		this.pElements.removeFrom( index )
-		this.notifyElementsRemoved( index, index )
+	public func void removeFrom(int index)
+		pElements.removeFrom(index)
+		notifyElementsRemoved(index, index)
 	end
 	
 	/**
@@ -277,7 +375,7 @@ class DefaultListModel implements ListModel
 	 * \throws EOutOfBounds \em lastIndex is less than 0 or larger than or equal getCount().
 	 * \throws EInvalidParam \em lastIndex is less than \em firstIndex.
 	 */
-	public func void removeRange( int firstIndex, int lastIndex )
+	public func void removeRange(int firstIndex, int lastIndex)
 		if firstIndex == lastIndex
 			return
 		end
@@ -285,16 +383,16 @@ class DefaultListModel implements ListModel
 		if lastIndex < firstIndex
 			throw EInvalidParam.new()
 		end
-		if lastIndex >= this.pElements.getCount()
+		if lastIndex >= pElements.getCount()
 			throw EOutOfBounds.new()
 		end
 		
 		var int i
 		for i = firstIndex to lastIndex + 1
-			this.pElements.removeFrom( firstIndex )
+			pElements.removeFrom(firstIndex)
 		end
 		
-		this.notifyElementsRemoved( firstIndex, lastIndex )
+		notifyElementsRemoved(firstIndex, lastIndex)
 	end
 	
 	/**
@@ -304,32 +402,32 @@ class DefaultListModel implements ListModel
 	 * 
 	 * \throws EOutOfBounds Element is absent.
 	 */
-	public func void removeArray( Array content )
+	public func void removeArray(Array content)
 		var int count = content.getCount()
 		if count == 0
 			return
 		end
 		
-		var int firstIndex = this.pElements.indexOf( content.getAt( 0 ) )
+		var int firstIndex = pElements.indexOf(content.getAt(0))
 		var int lastIndex = firstIndex
 		var int index
 		var int i
 		
 		for i = 1 to count
-			index = this.pElements.indexOf( content.getAt( i ) )
+			index = pElements.indexOf(content.getAt(i))
 			if index == -1
 				throw EOutOfBounds.new()
 			end
 			
-			firstIndex = DEMath.min( firstIndex, index )
-			lastIndex = DEMath.max( lastIndex, index )
+			firstIndex = DEMath.min(firstIndex, index)
+			lastIndex = DEMath.max(lastIndex, index)
 		end
 		
-		content.forEach( block Object each
-			this.pElements.remove( each )
-		end )
+		content.forEach(block Object each
+			pElements.remove(each)
+		end)
 		
-		this.notifyElementsRemoved( firstIndex, lastIndex )
+		notifyElementsRemoved(firstIndex, lastIndex)
 	end
 	
 	/**
@@ -339,18 +437,18 @@ class DefaultListModel implements ListModel
 	 * removing all elements.
 	 */
 	public func void removeAll()
-		var int count = this.pElements.getCount()
+		var int count = pElements.getCount()
 		if count == 0
 			return
 		end
 		
-		this.pElements.removeAll()
-		this.notifyElementsRemoved( 0, count - 1 )
+		pElements.removeAll()
+		notifyElementsRemoved(0, count - 1)
 	end
 	
 	/** \brief Get content as array. */
 	public func Array getContent()
-		return Array.new( this.pElements )
+		return Array.new(pElements)
 	end
 	
 	/**
@@ -365,44 +463,46 @@ class DefaultListModel implements ListModel
 	 * If you just want to replace all elements without changing the number of elements
 	 * use setAll().
 	 */
-	public func void setContent( Array content )
-		var int count = this.pElements.getCount()
+	public func void setContent(Array content)
+		var int count = pElements.getCount()
 		var int contentCount = content.getCount()
 		var int i
 		
 		if count == contentCount
-			if count == 0
-				return
-			end
-			
-			for i = 0 to count
-				this.pElements.setAt( i, content.getAt( i ) )
-			end
-			this.notifyContentChanged( 0, count - 1 )
-			
-		else
-			if count > 0
-				this.pElements.removeAll()
-				this.notifyElementsRemoved( 0, count - 1 )
-			end
-			
-			content.forEach( block Object each
-				this.pElements.add( each )
-			end )
-			if contentCount > 0
-				this.notifyElementsAdded( 0, contentCount - 1 )
-			end
+			setAll(content)
+			return
+		end
+		
+		if count > 0
+			pElements.removeAll()
+			notifyElementsRemoved(0, count - 1)
+		end
+		
+		pElements.addAll(content)
+		
+		if contentCount > 0
+			notifyElementsAdded(0, contentCount - 1)
 		end
 	end
 	
 	/** \brief Sort elements using element compare() method. */
 	public func void sort()
-		if this.pElements.getCount() == 0
+		if pElements.getCount() == 0
 			return
 		end
 		
-		this.pElements.sort()
-		this.notifyContentChanged( 0, this.pElements.getCount() - 1 )
+		var Object selected
+		if pSelected != -1
+			selected = pElements.getAt(pSelected)
+		end
+		
+		pElements.sort()
+		
+		if pSelected != -1
+			pSelected = indexOf(selected)
+		end
+		
+		notifyContentChanged(0, pElements.getCount() - 1)
 	end
 	
 	/**
@@ -411,29 +511,54 @@ class DefaultListModel implements ListModel
 	 * Block receives elements to compare as argument and returns compare result the same
 	 * way as Object.compare() does.
 	 */
-	public func void sort( Block ablock )
-		if this.pElements.getCount() == 0
+	public func void sort(Block ablock)
+		if pElements.getCount() == 0
 			return
 		end
 		
-		this.pElements.sort( ablock )
-		this.notifyContentChanged( 0, this.pElements.getCount() - 1 )
+		var Object selected
+		if pSelected != -1
+			selected = pElements.getAt(pSelected)
+		end
+		
+		pElements.sort(ablock)
+		
+		if pSelected != -1
+			pSelected = indexOf(selected)
+		end
+		
+		notifyContentChanged(0, pElements.getCount() - 1)
 	end
 	
 	
 	
 	/**
-	 * \brief Visit content with block with parameter Object.
+	 * \brief Visit content with block.
+	 * 
+	 * Block is called with argument Object.
 	 */
-	public func void forEach( Block ablock )
-		this.pElements.forEach( ablock )
+	public func void forEach(Block ablock)
+		pElements.forEach(ablock)
 	end
 	
 	/**
-	 * \brief Find object with block with parameter Object returning bool.
+	 * \brief Find first object for which block returns true.
+	 * 
+	 * Block is called with argument Object and has to return bool.
 	 */
-	public func Object find( Block ablock )
-		return this.pElements.find( ablock )
+	public func Object find(Block ablock)
+		return pElements.find(ablock)
+	end
+	
+	/**
+	 * \brief Return array with content for which block returns true.
+	 * \version 1.11
+	 * 
+	 * Block is called with argument Object and has to return bool.
+	 * Returns Array of Object.
+	 */
+	public func Array collect(Block ablock)
+		return pElements.collect(ablock)
 	end
 	
 	
@@ -442,101 +567,156 @@ class DefaultListModel implements ListModel
 	 * \brief Index of the selected element or -1 if there is no selected element.
 	 */
 	public func int getSelected()
-		return this.pSelected
+		return pSelected
 	end
 	
 	/**
 	 * \brief Set index of selected element or -1 if none is no selected element.
 	 */
-	public func void setSelected( int index )
-		if index < -1 or index >= this.pElements.getCount()
+	public func void setSelected(int index)
+		if index < -1 or index >= pElements.getCount()
 			throw EInvalidParam.new()
 		end
 		
-		if index == this.pSelected
+		if index == pSelected
 			return
 		end
 		
-		this.pSelected = index
+		pSelected = index
 		
-		this.pListeners.forEach( block ListModelListener each
-			each.selectionChanged( this )
-		end )
+		pListeners.forEach(block ListModelListener each
+			each.selectionChanged(this)
+		end)
+	end
+	
+	/**
+	 * \brief Get selected element or null.
+	 * 
+	 * If getSelected() is -1 returns null. If getSelected() is not -1 this method
+	 * behaves the same as calling getAt(getSelected()).
+	 */
+	public func Object getSelectedElement()
+		if pSelected != -1
+			return pElements.getAt(pSelected)
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Set selected element.
+	 * \version 1.9
+	 * 
+	 * Behaves the same as calling setSelected(indexOf(element)).
+	 */
+	public func void setSelectedElement(Object element)
+		setSelected(pElements.indexOf(element))
+	end
+	
+	/**
+	 * \brief Automatically select items.
+	 * \version 1.5
+	 * 
+	 * If no item is selected and an item is added it is selected. If selected item is
+	 * removed selects the next suitible item if the list is not empty.
+	 */
+	public func bool getAutoSelect()
+		return pAutoSelect
+	end
+	
+	/**
+	 * \brief Set to automatically select items.
+	 * \version 1.5
+	 * 
+	 * If no item is selected and an item is added it is selected. If selected item is
+	 * removed selects the next suitible item if the list is not empty.
+	 * 
+	 * If auto select is set to true while no item is selected the first item in the
+	 * list is selected if the list is not empty.
+	 */
+	public func void setAutoSelect(bool autoSelect)
+		if autoSelect == pAutoSelect
+			return
+		end
+		
+		pAutoSelect = autoSelect
+		
+		if autoSelect and pSelected == -1 and pElements.getCount() > 0
+			setSelected(0)
+		end
 	end
 	
 	
 	
 	/**
 	 * \brief Notify all that the content of the model in the given range changed.
-	 * \param fromIndex Index of first element that changed
-	 * \param toIndex Index of last element that changed
+	 * \param indexFrom Index of first element that changed
+	 * \param indexTo Index of last element that changed
 	 */
-	public func void notifyContentChanged( int fromIndex, int toIndex )
-		var bool notifySelectedChanged
-		var int count = this.pElements.getCount()
-		
-		if count > 0
-			if this.pSelected >= count
-				this.pSelected = count - 1
-				notifySelectedChanged = true
-			end
-			
-		elif this.pSelected != -1
-			this.pSelected = -1
-			notifySelectedChanged = true
-		end
-		
-		this.pListeners.forEach( block ListModelListener each
-			each.contentChanged( this, fromIndex, toIndex )
-		end )
-		
-		if notifySelectedChanged
-			this.pListeners.forEach( block ListModelListener each
-				each.selectionChanged( this )
-			end )
-		end
+	public func void notifyContentChanged(int indexFrom, int indexTo)
+		pListeners.forEach(block ListModelListener each
+			each.contentChanged(this, indexFrom, indexTo)
+		end)
 	end
 	
 	/**
 	 * \brief Notify all elements have been added.
-	 * \param fromIndex Index of first added element.
-	 * \param toIndex Index of last added element.
+	 * \param indexFrom Index of first added element.
+	 * \param indexTo Index of last added element.
 	 */
-	public func void notifyElementsAdded( int fromIndex, int toIndex )
-		this.pListeners.forEach( block ListModelListener each
-			each.elementsAdded( this, fromIndex, toIndex )
-		end )
+	public func void notifyElementsAdded(int indexFrom, int indexTo)
+		pListeners.forEach(block ListModelListener each
+			each.elementsAdded(this, indexFrom, indexTo)
+		end)
 		
-		if this.pSelected == -1
-			this.setSelected( 0 )
+		if pSelected == -1 and pAutoSelect
+			setSelected(indexFrom)
 		end
 	end
 	
 	/**
 	 * \brief Notify all elements have been removed.
-	 * \param fromIndex Index of first removed element.
-	 * \param toIndex Index of last removed element.
+	 * \param indexFrom Index of first removed element.
+	 * \param indexTo Index of last removed element.
 	 */
-	public func void notifyElementsRemoved( int fromIndex, int toIndex )
+	public func void notifyElementsRemoved(int indexFrom, int indexTo)
 		var bool notifySelectedChanged
 		
-		if this.pSelected > toIndex
-			this.pSelected -= toIndex - fromIndex + 1
-			notifySelectedChanged = true
+		if pSelected > indexTo
+			pSelected -= indexTo - indexFrom + 1
+			//notifySelectedChanged = true // same selection but different index
 			
-		elif this.pSelected >= fromIndex
-			this.pSelected = DEMath.min( fromIndex, this.pElements.getCount() - 1 )
+		elif pSelected >= indexFrom
+			if pAutoSelect
+				pSelected = DEMath.min(indexFrom, pElements.getCount() - 1)
+				
+			else
+				pSelected = -1
+			end
 			notifySelectedChanged = true
 		end
 		
-		this.pListeners.forEach( block ListModelListener each
-			each.elementsRemoved( this, fromIndex, toIndex )
-		end )
+		pListeners.forEach(block ListModelListener each
+			each.elementsRemoved(this, indexFrom, indexTo)
+		end)
 		
 		if notifySelectedChanged
-			this.pListeners.forEach( block ListModelListener each
-				each.selectionChanged( this )
-			end )
+			pListeners.forEach(block ListModelListener each
+				each.selectionChanged(this)
+			end)
 		end
+	end
+	
+	/**
+	 * \brief Notify all content of element in model changed.
+	 * \version 1.9
+	 * 
+	 * Behaves the same as calling notifyContentChanged(index, index).
+	 * 
+	 * \param index Index of element that changed.
+	 */
+	public func void notifyElementChanged(int index)
+		pListeners.forEach(block ListModelListener each
+			each.contentChanged(this, index, index)
+		end)
 	end
 end

@@ -28,6 +28,7 @@
 #include "igdeGDClassReference.h"
 #include "igdeGDClassManager.h"
 #include "component/igdeGDCComponent.h"
+#include "component/igdeGDCCTexture.h"
 #include "light/igdeGDCLight.h"
 #include "particleemitter/igdeGDCParticleEmitter.h"
 #include "forcefield/igdeGDCForceField.h"
@@ -263,6 +264,18 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 			}
 			gdclassExisting->ResolveInheritClasses( *this );
 			
+			const igdeGDCCTextureList &eclassCompTextures = eclass.GetComponentTextures();
+			igdeGDCCTextureList &compTextures = gdclassExisting->GetComponentTextures();
+			const int textureCount = eclassCompTextures.GetCount();
+			for( j=0; j<textureCount; j++ ){
+				igdeGDCCTexture * const texture = eclassCompTextures.GetAt( j );
+				igdeGDCCTexture * const existingTexture = compTextures.GetNamed( texture->GetName() );
+				if( existingTexture ){
+					compTextures.Remove( existingTexture );
+				}
+				compTextures.Add( texture );
+			}
+			
 			/*
 			const igdeGDCComponentList &components = eclass.GetComponentList();
 			const int componentCount = components.GetCount();
@@ -301,10 +314,11 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				
 				gdClass->SetCategory( firstInheritClass->GetCategory() );
 				
+				/*
 				// certain element classes (like triggers) do not define any component but the
 				// element class loader always adds one component. if the inheritClass class has a
 				// component without any linked parameter then we consider the element class
-				// having no componet and we copy the inheritClass component
+				// having no component and we copy the inheritClass component
 				if( firstInheritClass->GetComponentList().GetCount() > 0 ){
 					const igdeGDCComponent &component = *firstInheritClass->GetComponentList().GetAt( 0 );
 					bool hasComponent = false;
@@ -322,6 +336,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 						gdClass->AddComponent( ( igdeGDCComponent* )( deObject* )refCopy );
 					}
 				}
+				*/
 			}
 		}
 		
@@ -447,12 +462,12 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 		
 		if(inheritClassCount > 0 ){
 			// removed unknown property values
-			const decStringList keys( propertyValues.GetKeys() );
-			const int keyCount = keys.GetCount();
+			const decStringList keys2( propertyValues.GetKeys() );
+			const int keyCount2 = keys2.GetCount();
 			decStringList removeKeys;
 			
-			for( j=0; j<keyCount; j++ ){
-				const decString &key = keys.GetAt( j );
+			for( j=0; j<keyCount2; j++ ){
+				const decString &key = keys2.GetAt( j );
 				for( h=0; h<inheritClassCount; h++ ){
 					const igdeGDClass * const inheritClass = gdClass->GetInheritClassAt( h )->GetClass();
 					if( inheritClass && inheritClass->HasDefaultPropertyValue( key ) ){

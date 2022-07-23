@@ -199,12 +199,19 @@ void saeWindowMain::CreateNewSAnimation(){
 }
 
 void saeWindowMain::SaveSAnimation( const char *filename ){
+	const decString basePath( pSAnimation->GetDirectoryPath() );
+	
 	GetEditorModule().LogInfoFormat( "Saving Speech Animation %s", filename );
 	pLoadSaveSystem->SaveSAnimation( pSAnimation, filename );
 	
 	pSAnimation->SetFilePath( filename );
 	pSAnimation->SetChanged( false );
 	pSAnimation->SetSaved( true );
+	
+	if( pSAnimation->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnSAnimationPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -265,6 +272,8 @@ void saeWindowMain::LoadDocument( const char *filename ){
 	
 	SetSAnimation( sanimation );
 	GetRecentFiles().AddFile( filename );
+	
+	pWindowProperties->OnSAnimationPathChanged();
 }
 
 bool saeWindowMain::SaveDocument( const char *filename ){
@@ -345,10 +354,13 @@ public:
 		deInputEvent::ekcN, deInputEvent::ekcN ){}
 	
 	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
-		"Creating new Speech Animation discards the current one. Is that ok?" ) == igdeCommonDialogs::ebYes ){
-			pWindow.CreateNewSAnimation();
+		if( pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
+		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Speech Animation",
+		"Speech animated changed. Creating new Speech Animation discards the current one. Is that ok?" )
+		!= igdeCommonDialogs::ebYes ){
+			return;
 		}
+		pWindow.CreateNewSAnimation();
 	}
 };
 
@@ -360,6 +372,13 @@ public:
 		deInputEvent::ekcO, deInputEvent::ekcO ){}
 	
 	virtual void OnAction(){
+		if( pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
+		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Speech Animation",
+		"Speech animated changed. Open Speech Animation discards the current one. Is that ok?" )
+		!= igdeCommonDialogs::ebYes ){
+			return;
+		}
+		
 		decString filename( pWindow.GetSAnimation()->GetFilePath() );
 		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -379,6 +398,8 @@ public:
 		
 		pWindow.SetSAnimation( sanimation );
 		pWindow.GetRecentFiles().AddFile( filename );
+		
+		pWindow.GetWindowProperties().OnSAnimationPathChanged();
 	}
 };
 

@@ -22,6 +22,8 @@
 #ifndef _DEOGLSCTRANSPARENT_H_
 #define _DEOGLSCTRANSPARENT_H_
 
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 class deoglRenderThread;
 class deoglCubeMap;
 class deoglTexture;
@@ -33,7 +35,7 @@ class deoglRenderableColorCubeMap;
 
 
 /**
- * \brief Shadow Caster Transparent.
+ * Shadow Caster Transparent.
  */
 class deoglSCTransparent{
 private:
@@ -46,24 +48,42 @@ private:
 	int pLastUseStatic;
 	bool pHasStatic;
 	
-	deoglRenderableDepthTexture *pDynamicShadowMap;
-	deoglRenderableColorTexture *pDynamicColorMap;
-	deoglRenderableDepthCubeMap *pDynamicShadowCubeMap;
-	deoglRenderableColorCubeMap *pDynamicColorCubeMap;
+	deoglTexture *pDynamicShadowMap;
+	deoglTexture *pDynamicColorMap;
+	deoglCubeMap *pDynamicShadowCubeMap;
+	deoglCubeMap *pDynamicColorCubeMap;
+	int pLastUseDynamic;
+	bool pHasDynamic;
+	bool pDirtyDynamic;
 	
-	int pPlanStaticSize;
-	int pPlanDynamicSize;
-	int pPlanTransparentSize;
+	deoglRenderableDepthTexture *pTemporaryShadowMap;
+	deoglRenderableColorTexture *pTemporaryColorMap;
+	deoglRenderableDepthCubeMap *pTemporaryShadowCubeMap;
+	deoglRenderableColorCubeMap *pTemporaryColorCubeMap;
+	
+	int pLastSizeStatic;
+	int pNextSizeStatic;
+	int pLastSizeDynamic;
+	int pNextSizeDynamic;
+	
+	deoglMemoryConsumptionGPUUse pMemUseStaMapDepth;
+	deoglMemoryConsumptionGPUUse pMemUseStaMapColor;
+	deoglMemoryConsumptionGPUUse pMemUseStaCubeDepth;
+	deoglMemoryConsumptionGPUUse pMemUseStaCubeColor;
+	deoglMemoryConsumptionGPUUse pMemUseDynMapDepth;
+	deoglMemoryConsumptionGPUUse pMemUseDynMapColor;
+	deoglMemoryConsumptionGPUUse pMemUseDynCubeDepth;
+	deoglMemoryConsumptionGPUUse pMemUseDynCubeColor;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create transparent shadow caster. */
+	/** Create transparent shadow caster. */
 	deoglSCTransparent( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up transparent shadow caster. */
+	/** Clean up transparent shadow caster. */
 	~deoglSCTransparent();
 	/*@}*/
 	
@@ -71,98 +91,145 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Static shadow map or \em NULL if absent. */
+	/** Static shadow map or \em NULL if absent. */
 	inline deoglTexture *GetStaticShadowMap() const{ return pStaticShadowMap; }
 	
-	/** \brief Static shadow map with size. */
+	/** Static shadow map with size. */
 	deoglTexture *ObtainStaticShadowMapWithSize( int size, bool useFloat );
 	
-	/** \brief Static color map or \em NULL if absent. */
+	/** Static color map or \em NULL if absent. */
 	inline deoglTexture *GetStaticColorMap() const{ return pStaticColorMap; }
 	
-	/** \brief Static color map with size. */
+	/** Static color map with size. */
 	deoglTexture *ObtainStaticColorMapWithSize( int size );
 	
-	/** \brief Static shadow cube map or \em NULL if absent. */
+	/** Static shadow cube map or \em NULL if absent. */
 	inline deoglCubeMap *GetStaticShadowCubeMap() const{ return pStaticShadowCubeMap; }
 	
-	/** \brief Static shadow cube map with size. */
+	/** Static shadow cube map with size. */
 	deoglCubeMap *ObtainStaticShadowCubeMapWithSize( int size );
 	
-	/** \brief Static color cube map or \em NULL if absent. */
+	/** Static color cube map or \em NULL if absent. */
 	inline deoglCubeMap *GetStaticColorCubeMap() const{ return pStaticColorCubeMap; }
 	
-	/** \brief Static color cube map with size. */
+	/** Static color cube map with size. */
 	deoglCubeMap *ObtainStaticColorCubeMapWithSize( int size );
 	
-	/** \brief Drop static maps if present. */
+	/** Drop static maps if present. */
 	void DropStatic();
 	
-	/** \brief Number of frames elapsed since the last time static maps have been used. */
+	/** Number of frames elapsed since the last time static maps have been used. */
 	inline int GetLastUseStatic() const{ return pLastUseStatic; }
 	
-	/** \brief Increment last use static maps counter by one. */
+	/** Increment last use static maps counter by one. */
 	void IncrementLastUseStatic();
 	
-	/** \brief Reset last use static maps counter. */
+	/** Reset last use static maps counter. */
 	void ResetLastUseStatic();
 	
 	
 	
-	/** \brief Dynamic shadow map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthTexture *GetDynamicShadowMap() const{ return pDynamicShadowMap; }
+	/** Dynamic shadow map if present or \em NULL otherwise. */
+	inline deoglTexture *GetDynamicShadowMap() const{ return pDynamicShadowMap; }
 	
-	/** \brief Obtain dynamic shadow map with size if absent. */
-	deoglRenderableDepthTexture *ObtainDynamicShadowMapWithSize( int size, bool useFloat );
+	/** Obtain dynamic shadow map with size if absent. */
+	deoglTexture *ObtainDynamicShadowMapWithSize( int size, bool useFloat );
 	
-	/** \brief Dynamic color map if present or \em NULL otherwise. */
-	inline deoglRenderableColorTexture *GetDynamicColorMap() const{ return pDynamicColorMap; }
+	/** Dynamic color map if present or \em NULL otherwise. */
+	inline deoglTexture *GetDynamicColorMap() const{ return pDynamicColorMap; }
 	
-	/** \brief Obtain dynamic color map with size if absent. */
-	deoglRenderableColorTexture *ObtainDynamicColorMapWithSize( int size );
+	/** Obtain dynamic color map with size if absent. */
+	deoglTexture *ObtainDynamicColorMapWithSize( int size );
 	
-	/** \brief Dynamic shadow cube map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthCubeMap *GetDynamicShadowCubeMap() const{ return pDynamicShadowCubeMap; }
+	/** Dynamic shadow cube map if present or \em NULL otherwise. */
+	inline deoglCubeMap *GetDynamicShadowCubeMap() const{ return pDynamicShadowCubeMap; }
 	
-	/** \brief Obtain dynamic shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainDynamicShadowCubeMapWithSize( int size );
+	/** Obtain dynamic shadow cube map with size if absent. */
+	deoglCubeMap *ObtainDynamicShadowCubeMapWithSize( int size );
 	
-	/** \brief Dynamic color cube map if present or \em NULL otherwise. */
-	inline deoglRenderableColorCubeMap *GetDynamicColorCubeMap() const{ return pDynamicColorCubeMap; }
+	/** Dynamic color cube map if present or \em NULL otherwise. */
+	inline deoglCubeMap *GetDynamicColorCubeMap() const{ return pDynamicColorCubeMap; }
 	
-	/** \brief Obtain dynamic shadow cube map with size if absent. */
-	deoglRenderableColorCubeMap *ObtainDynamicColorCubeMapWithSize( int size );
+	/** Obtain dynamic shadow cube map with size if absent. */
+	deoglCubeMap *ObtainDynamicColorCubeMapWithSize( int size );
 	
-	/** \brief Drop dynamic shadow map if present. */
+	/** Drop dynamic shadow map if present. */
 	void DropDynamic();
 	
+	/** Number of frames elapsed since the last time dynamic shadow map has been used. */
+	inline int GetLastUseDynamic() const{ return pLastUseDynamic; }
+	
+	/** Increment last use dynamic shadow map counter by one. */
+	void IncrementLastUseDynamic();
+	
+	/** Reset last use dynamic shadow map counter. */
+	void ResetLastUseDynamic();
+	
+	/** Dynamic shadow map is dirty. */
+	inline bool GetDirtyDynamic() const{ return pDirtyDynamic; }
+	
+	/** Set dynamic shadow map dirty. */
+	void SetDirtyDynamic( bool dirty );
 	
 	
-	/** \brief Check if static maps have not been used recently removing them. */
+	
+	/** Temporary shadow map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthTexture *GetTemporaryShadowMap() const{ return pTemporaryShadowMap; }
+	
+	/** Obtain temporary shadow map with size if absent. */
+	deoglRenderableDepthTexture *ObtainTemporaryShadowMapWithSize( int size, bool useFloat );
+	
+	/** Temporary color map if present or \em NULL otherwise. */
+	inline deoglRenderableColorTexture *GetTemporaryColorMap() const{ return pTemporaryColorMap; }
+	
+	/** Obtain temporary color map with size if absent. */
+	deoglRenderableColorTexture *ObtainTemporaryColorMapWithSize( int size );
+	
+	/** Temporary shadow cube map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthCubeMap *GetTemporaryShadowCubeMap() const{ return pTemporaryShadowCubeMap; }
+	
+	/** Obtain temporary shadow cube map with size if absent. */
+	deoglRenderableDepthCubeMap *ObtainTemporaryShadowCubeMapWithSize( int size );
+	
+	/** Temporary color cube map if present or \em NULL otherwise. */
+	inline deoglRenderableColorCubeMap *GetTemporaryColorCubeMap() const{ return pTemporaryColorCubeMap; }
+	
+	/** Obtain temporary shadow cube map with size if absent. */
+	deoglRenderableColorCubeMap *ObtainTemporaryColorCubeMapWithSize( int size );
+	
+	/** Drop temporary shadow map if present. */
+	void DropTemporary();
+	
+	
+	
+	/** Last frame static size or 0. */
+	inline int GetLastSizeStatic() const{ return pLastSizeStatic; }
+	
+	/** Next frame static size or 0. */
+	inline int GetNextSizeStatic() const{ return pNextSizeStatic; }
+	
+	/** Set next frame static size to largest value. */
+	void SetLargestNextSizeStatic( int size );
+	
+	/** Last frame dynamic size or 0. */
+	inline int GetLastSizeDynamic() const{ return pLastSizeDynamic; }
+	
+	/** Next frame dynamic size or 0. */
+	inline int GetNextSizeDynamic() const{ return pNextSizeDynamic; }
+	
+	/** Set next frame dynamic size to largest value. */
+	void SetLargestNextSizeDynamic( int size );
+	
+	
+	
+	/** Check if static maps have not been used recently removing them. */
 	void Update();
 	
-	/** \brief Clear transparent shadow caster. */
+	/** Shadow caster requires update. True if timers are running to drop textures. */
+	bool RequiresUpdate() const;
+	
+	/** Clear transparent shadow caster. */
 	void Clear();
-	
-	
-	
-	/** \brief Plan static map size. */
-	inline int GetPlanStaticSize() const{ return pPlanStaticSize; }
-	
-	/** \brief Set plan static map size. */
-	void SetPlanStaticSize( int size );
-	
-	/** \brief Plan dynamic map size. */
-	inline int GetPlanDynamicSize() const{ return pPlanDynamicSize; }
-	
-	/** \brief Set plan dynamic map size. */
-	void SetPlanDynamicSize( int size );
-	
-	/** \brief Plan transparent map size. */
-	inline int GetPlanTransparentSize() const{ return pPlanTransparentSize; }
-	
-	/** \brief Set plan transparent map size. */
-	void SetPlanTransparentSize( int size );
 	/*@}*/
 };
 

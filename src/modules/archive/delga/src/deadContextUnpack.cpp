@@ -34,18 +34,20 @@
 #include <dragengine/common/file/decWeakFileReader.h>
 #include <dragengine/common/file/decWeakFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
+#include <dragengine/common/file/decMemoryFileReference.h>
 #include <dragengine/common/file/decMemoryFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
 
 
 
 // Callbacks
 //////////////
 
-static voidpf ZCALLBACK fZipOpenFileFunc( voidpf opaque, const char *filename, int mode ){
+static voidpf ZCALLBACK fZipOpenFileFunc( voidpf opaque, const char */*filename*/, int /*mode*/ ){
 	return opaque;
 }
 
-static uLong ZCALLBACK fZipReadFileFunc( voidpf opaque, voidpf stream, void *buf, uLong size ){
+static uLong ZCALLBACK fZipReadFileFunc( voidpf opaque, voidpf /*stream*/, void *buf, uLong size ){
 	deadContextUnpack &context = *( ( deadContextUnpack* )opaque );
 	
 	try{
@@ -57,11 +59,11 @@ static uLong ZCALLBACK fZipReadFileFunc( voidpf opaque, voidpf stream, void *buf
 	}
 }
 
-static uLong ZCALLBACK fZipWriteFileFunc( voidpf opaque, voidpf stream, const void *buf, uLong size ){
+static uLong ZCALLBACK fZipWriteFileFunc( voidpf /*opaque*/, voidpf /*stream*/, const void */*buf*/, uLong /*size*/ ){
 	return -1; // not supported
 }
 
-static long ZCALLBACK fZipTellFileFunc( voidpf opaque, voidpf stream ){
+static long ZCALLBACK fZipTellFileFunc( voidpf opaque, voidpf /*stream*/ ){
 	deadContextUnpack &context = *( ( deadContextUnpack* )opaque );
 	
 	try{
@@ -72,7 +74,7 @@ static long ZCALLBACK fZipTellFileFunc( voidpf opaque, voidpf stream ){
 	}
 }
 
-static long ZCALLBACK fZipSeekFileFunc( voidpf opaque, voidpf stream, uLong offset, int origin ){
+static long ZCALLBACK fZipSeekFileFunc( voidpf opaque, voidpf /*stream*/, uLong offset, int origin ){
 	deadContextUnpack &context = *( ( deadContextUnpack* )opaque );
 	
 	try{
@@ -85,11 +87,11 @@ static long ZCALLBACK fZipSeekFileFunc( voidpf opaque, voidpf stream, uLong offs
 	return 0;
 }
 
-static int ZCALLBACK fZipCloseFileFunc( voidpf opaque, voidpf stream ){
+static int ZCALLBACK fZipCloseFileFunc( voidpf /*opaque*/, voidpf /*stream*/ ){
 	return 0;
 }
 
-static int ZCALLBACK fZipErrorFileFunc( voidpf opaque, voidpf stream ){
+static int ZCALLBACK fZipErrorFileFunc( voidpf /*opaque*/, voidpf /*stream*/ ){
 	return 0; // not implemented
 }
 
@@ -161,7 +163,7 @@ decWeakFileReader *deadContextUnpack::OpenFileForReading( const deadArchiveFile 
 	//      a new one nor duplicate it. thus we need to manage access by multiple
 	//      shallow file readers managed to access the same zip file. problem here is
 	//      that we need to keep switching between current files in the zip file and
-	//      the file pointer ssociated with it. all this is tricky to manage and not
+	//      the file pointer associated with it. all this is tricky to manage and not
 	//      done quickly. the dirty solution right now is to just read the entire
 	//      file into a memory file and be done with it. works for small files but is
 	//      bad for large files. using the complex solution only for larger files
@@ -169,10 +171,10 @@ decWeakFileReader *deadContextUnpack::OpenFileForReading( const deadArchiveFile 
 	//      
 	// NOTE best solution not requiring complicated duplicating or opening new file
 	//      file descriptors works like this. each file small enough is loaded into
-	//      memory in a single read. this should be a couepl of hundret kB. for large
+	//      memory in a single read. this should be a couple of hundret kB. for large
 	//      files a special new file reader is used being aware of this class. a global
 	//      mutex is required on this class for this all to work. these special readers
-	//      create a new zip file handler and advance to the file they read. thea also
+	//      create a new zip file handler and advance to the file they read. then also
 	//      store a window storing the starting file pointer position, the size of the
 	//      window and the window data. the window size should be a couple of hundret kB
 	//      to access the file less often. the window is read into the buffer. now if
@@ -213,8 +215,8 @@ decWeakFileReader *deadContextUnpack::OpenFileForReading( const deadArchiveFile 
 	const decString filename( file.GetFilename() );
 	const int filesize = file.GetFileSize();
 	
-	decMemoryFile *memoryFile = NULL;
-	decMemoryFileReader *memoryFileReader = NULL;
+	decBaseFileReaderReference memoryFileReader;
+	decMemoryFileReference memoryFile;
 	bool zipFileOpen = false;
 	
 	try{
@@ -227,7 +229,7 @@ decWeakFileReader *deadContextUnpack::OpenFileForReading( const deadArchiveFile 
 		}
 		zipFileOpen = true;
 		
-		memoryFile = new decMemoryFile( filename );
+		memoryFile.TakeOver( new decMemoryFile( filename ) );
 		memoryFile->Resize( filesize );
 		const int readBytes = unzReadCurrentFile( pZipFile, memoryFile->GetPointer(), filesize );
 		if( readBytes != filesize ){
@@ -238,20 +240,11 @@ decWeakFileReader *deadContextUnpack::OpenFileForReading( const deadArchiveFile 
 		}
 		zipFileOpen = false;
 		
-		memoryFileReader = new decMemoryFileReader( memoryFile );
-		memoryFile->FreeReference();
-		memoryFile = NULL;
+		memoryFileReader.TakeOver( new decMemoryFileReader( memoryFile ) );
 		
 	}catch( const deException & ){
 		if( zipFileOpen ){
 			unzCloseCurrentFile( pZipFile );
-		}
-		
-		if( memoryFileReader ){
-			memoryFileReader->FreeReference();
-		}
-		if( memoryFile ){
-			memoryFile->FreeReference();
 		}
 		throw;
 	}
@@ -263,7 +256,7 @@ decWeakFileReader *deadContextUnpack::OpenFileForReading( const deadArchiveFile 
 	return weakReader;
 }
 
-decWeakFileWriter *deadContextUnpack::OpenFileForWriting( const deadArchiveFile &file ){
+decWeakFileWriter *deadContextUnpack::OpenFileForWriting( const deadArchiveFile & ){
 	// not supported for the time being
 	DETHROW( deeInvalidParam );
 }
@@ -306,8 +299,6 @@ void deadContextUnpack::SeekFile( int origin, long offset ){
 }
 
 deadArchiveDirectory *deadContextUnpack::ReadFileTable(){
-	deadArchiveDirectory *archiveDirectory = NULL;
-	deadArchiveFile *file = NULL;
 	unz_file_info info;
 	decString filename;
 	int error;
@@ -317,58 +308,48 @@ deadArchiveDirectory *deadContextUnpack::ReadFileTable(){
 		DETHROW_INFO( deeReadFile, pContainer->GetFilename() );
 	}
 	
-	try{
-		archiveDirectory = new deadArchiveDirectory( pModule, "" );
+	deObjectReference refArchiveDirectory;
+	refArchiveDirectory.TakeOver( new deadArchiveDirectory( pModule, "" ) );
+	deadArchiveDirectory * const archiveDirectory = ( deadArchiveDirectory* )( deObject* )refArchiveDirectory;
+	
+	while( error == UNZ_OK ){ // exit if error == UNZ_END_OF_LIST_OF_FILE
+		if( unzGetCurrentFileInfo( pZipFile, &info, NULL, 0, NULL, 0, NULL, 0 ) != UNZ_OK ){
+			DETHROW_INFO( deeReadFile, pContainer->GetFilename() );
+		}
 		
-		while( error == UNZ_OK ){ // exit if error == UNZ_END_OF_LIST_OF_FILE
-			if( unzGetCurrentFileInfo( pZipFile, &info, NULL, 0, NULL, 0, NULL, 0 ) != UNZ_OK ){
-				DETHROW_INFO( deeReadFile, pContainer->GetFilename() );
+		filename.Set( ' ', info.size_filename );
+		if( unzGetCurrentFileInfo( pZipFile, &info, ( char* )filename.GetString(),
+		info.size_filename, NULL, 0, NULL, 0 ) != UNZ_OK ){
+			DETHROW_INFO( deeReadFile, filename );
+		}
+		
+		if( ! filename.IsEmpty() && filename.GetAt( filename.GetLength() - 1 ) != '/' ){
+			const decPath archivePath( decPath::CreatePathUnix( filename ) );
+			
+			deadArchiveDirectory *directory = archiveDirectory;
+			const int count = archivePath.GetComponentCount();
+			int i;
+			for( i=0; i<count-1; i++ ){
+				directory = directory->GetOrAddDirectoryNamed(
+					archivePath.GetComponentAt( i ) );
 			}
 			
-			filename.Set( ' ', info.size_filename );
-			if( unzGetCurrentFileInfo( pZipFile, &info, ( char* )filename.GetString(),
-			info.size_filename, NULL, 0, NULL, 0 ) != UNZ_OK ){
+			unz_file_pos archivePosition;
+			if( unzGetFilePos( pZipFile, &archivePosition ) != UNZ_OK ){
 				DETHROW_INFO( deeReadFile, filename );
 			}
 			
-			if( ! filename.IsEmpty() && filename.GetAt( filename.GetLength() - 1 ) != '/' ){
-				const decPath archivePath( decPath::CreatePathUnix( filename ) );
-				
-				deadArchiveDirectory *directory = archiveDirectory;
-				const int count = archivePath.GetComponentCount();
-				int i;
-				for( i=0; i<count-1; i++ ){
-					directory = directory->GetOrAddDirectoryNamed(
-						archivePath.GetComponentAt( i ) );
-				}
-				
-				unz_file_pos archivePosition;
-				if( unzGetFilePos( pZipFile, &archivePosition ) != UNZ_OK ){
-					DETHROW_INFO( deeReadFile, filename );
-				}
-				
-				file = new deadArchiveFile( pModule, archivePath.GetLastComponent(),
-					info, archivePosition );
-				directory->AddFile( file );
-				file->FreeReference();
-				file = NULL;
-			}
-			
-			error = unzGoToNextFile( pZipFile );
-			if( error != UNZ_OK && error != UNZ_END_OF_LIST_OF_FILE ){
-				DETHROW_INFO( deeReadFile, filename );
-			}
+			deObjectReference file;
+			file.TakeOver( new deadArchiveFile( pModule, archivePath.GetLastComponent(), info, archivePosition ) );
+			directory->AddFile( ( deadArchiveFile* )( deObject* )file );
 		}
 		
-	}catch( const deException & ){
-		if( file ){
-			file->FreeReference();
+		error = unzGoToNextFile( pZipFile );
+		if( error != UNZ_OK && error != UNZ_END_OF_LIST_OF_FILE ){
+			DETHROW_INFO( deeReadFile, filename );
 		}
-		if( archiveDirectory ){
-			archiveDirectory->FreeReference();
-		}
-		throw;
 	}
 	
+	archiveDirectory->AddReference(); // caller takes over reference
 	return archiveDirectory;
 }

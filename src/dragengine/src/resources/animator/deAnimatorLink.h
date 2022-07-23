@@ -23,6 +23,7 @@
 #define _DEANIMATORLINK_H_
 
 #include "../../common/curve/decCurveBezier.h"
+#include "../../common/string/decString.h"
 
 
 /**
@@ -43,12 +44,59 @@
  * transformation parameters should map the values from the range 0-1 back
  * into the range 0-1. Certain rules can provide exceptions to allow
  * special effects for which especially clamping can be useful.
+ * 
+ * \par Bone Input (version 1.6)
+ * 
+ * If controller is -1 a bone name can be set. This will use a bone parameter
+ * as input instead of a controller value. The bone parameter is mapped from
+ * the specified range to the 0 to 1 range.
  */
-class deAnimatorLink{
+class DE_DLL_EXPORT deAnimatorLink{
+public:
+	/**
+	 * \brief Bone parameter to use.
+	 * \version 1.6
+	 */
+	enum eBoneParameter{
+		/** \brief Use local bone position along in X axis. */
+		ebpPositionX,
+		
+		/** \brief Use local bone position along Y axis. */
+		ebpPositionY,
+		
+		/** \brief Use local bone position along Z axis. */
+		ebpPositionZ,
+		
+		/** \brief Use local bone rotation around X axis in radians. */
+		ebpRotationX,
+		
+		/** \brief Use local bone rotation around Y axis in radians. */
+		ebpRotationY,
+		
+		/** \brief Use local bone rotation around Z axis in radians. */
+		ebpRotationZ,
+		
+		/** \brief Use local bone scale along X axis. */
+		ebpScaleX,
+		
+		/** \brief Use local bone scale along Y axis. */
+		ebpScaleY,
+		
+		/** \brief Use local bone scale along Z axis. */
+		ebpScaleZ
+	};
+	
+	
+	
 private:
 	int pController;
 	decCurveBezier pCurve;
 	int pRepeat;
+	decString pBone;
+	eBoneParameter pBoneParameter;
+	float pBoneMinValue;
+	float pBoneMaxValue;
+	bool pWrapY;
 	
 	
 	
@@ -95,6 +143,60 @@ public:
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
 	void SetRepeat( int repeat );
+	
+	/**
+	 * \brief Bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	inline const decString &GetBone() const{ return pBone; }
+	
+	/**
+	 * \brief Set bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	void SetBone( const char *bone );
+	
+	/**
+	 * \brief Bone parameter to use as input.
+	 * \version 1.6
+	 */
+	inline eBoneParameter GetBoneParameter() const{ return pBoneParameter; }
+	
+	/**
+	 * \brief Set bone parameter to use as input.
+	 * \version 1.6
+	 */
+	void SetBoneParameter( eBoneParameter parameter );
+	
+	/**
+	 * \brief Minimum bone parameter value.
+	 * \version 1.6
+	 */
+	inline float GetBoneMinimumValue() const{ return pBoneMinValue; }
+	
+	/**
+	 * \brief Maximum bone parameter value.
+	 * \version 1.6
+	 */
+	inline float GetBoneMaximumValue() const{ return pBoneMaxValue; }
+	
+	/**
+	 * \brief Set bone value range.
+	 * \version 1.6
+	 */
+	void SetBoneValueRange( float minimum, float maximum );
+	
+	/**
+	 * \brief Wrap Y value instead of clamping.
+	 * \version 1.9
+	 */
+	inline bool GetWrapY() const{ return pWrapY; }
+	
+	/**
+	 * \brief Set to wrap Y value instead of clamping.
+	 * \version 1.9
+	 */
+	void SetWrapY( bool wrap );
 	/*@}*/
 	
 	

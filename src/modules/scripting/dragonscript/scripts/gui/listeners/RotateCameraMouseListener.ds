@@ -1,0 +1,281 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.CameraDirectors
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Rotate camera director.
+ * \version 1.7
+ * 
+ * Set mouse button and modifiers required to trigger the listener. Once triggered moving
+ * left and right is translated to changes in camera director azimuth while moving up and
+ * down is translated to changes in camera director elevation.
+ * 
+ * The elevation is clamped to the range from -90 to 90 while the azimuth is free to rotate.
+ * Optionally the azimuth can be clamped too.
+ * 
+ * The camera director is not required to have an element assigned.
+ */
+class RotateCameraMouseListener extends DefaultMouseListener
+	private var int pButton
+	private var int pModifiers
+	private var Widget pCaptureWidget
+	private var ElementCameraDirector pDirector
+	private var float pMinimumElevation
+	private var float pMaximumElevation
+	private var float pMinimumAzimuth
+	private var float pMaximumAzimuth
+	private var bool pClampAzimuth
+	private var float pRotationSpeedAzimuth
+	private var float pRotationSpeedElevation
+	private var Point pPosition
+	private var float pAnchorAzimuth
+	private var float pAnchorElevation
+	
+	
+	
+	/**
+	 * \brief Create mouse listener tracking right mouse button with no modifiers.
+	 * \param director Camera director to update.
+	 */
+	public func new(ElementCameraDirector director) \
+	this(director, InputEventMouseButton.right, InputEventModifier.none)
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \param director Camera director to update.
+	 * \param trackButton Value from InputEventMouseButton or custom.
+	 * \param modifiers Modifiers from InputEventModifier or custom.
+	 */
+	public func new(ElementCameraDirector director, int trackButton, int modifiers)
+		if director == null
+			throw ENullPointer.new("director")
+		end
+		
+		pButton = trackButton
+		pModifiers = modifiers
+		pDirector = director
+		pMinimumElevation = -90
+		pMaximumElevation = 90
+		pMinimumAzimuth = -90
+		pMaximumAzimuth = 90
+		pClampAzimuth = false
+		pRotationSpeedAzimuth = -45.0 / 150.0 // 45 degrees per 150 pixels
+		pRotationSpeedElevation = -45.0 / 150.0 // 45 degrees per 150 pixels
+	end
+	
+	
+	
+	/** \brief Mouse button to track. */
+	public func int getButton()
+		return pButton
+	end
+	
+	/** \brief Modifiers to track. */
+	public func int getModifiers()
+		return pModifiers
+	end
+	
+	/** \brief Camera director to update. */
+	public func ElementCameraDirector getDirector()
+		return pDirector
+	end
+	
+	/** \brief Minimum elevation in degrees. */
+	public func float getMinimumElevation()
+		return pMinimumElevation
+	end
+	
+	/** \brief Set minimum elevation in degrees. */
+	public func void setMinimumElevation(float elevation)
+		pMinimumElevation = elevation
+	end
+	
+	/** \brief Maximum elevation in degrees. */
+	public func float getMaximumElevation()
+		return pMaximumElevation
+	end
+	
+	/** \brief Set maximum elevation in degrees. */
+	public func void setMaximumElevation(float elevation)
+		pMaximumElevation = elevation
+	end
+	
+	/** \brief Maximum azimuth in degrees if clamping is enabled. */
+	public func float getMinimumAzimuth()
+		return pMinimumAzimuth
+	end
+	
+	/** \brief Set maximum azimuth in degrees if clamping is enabled. */
+	public func void setMinimumAzimuth(float azimuth)
+		pMinimumAzimuth = azimuth
+	end
+	
+	/** \brief Maximum azimuth in degrees if clamping is enabled. */
+	public func float getMaximumAzimuth()
+		return pMaximumAzimuth
+	end
+	
+	/** \brief Set maximum azimuth in degrees if clamping is enabled. */
+	public func void setMaximumAzimuth(float azimuth)
+		pMaximumAzimuth = azimuth
+	end
+	
+	/** \brief Clamp azimuth. */
+	public func bool getClampAzimuth()
+		return pClampAzimuth
+	end
+	
+	/** \brief Set to clamp azimuth. */
+	public func void setClampAzimuth(bool clamp)
+		pClampAzimuth = clamp
+	end
+	
+	/**
+	 * \brief Azimuth rotation speed in degrees per pixel.
+	 * 
+	 * Negative speed rotates in the opposite direction.
+	 */
+	public func float getRotationSpeedAzimuth()
+		return pRotationSpeedAzimuth
+	end
+	
+	/**
+	 * \brief Set azimuth rotation speed in degrees per pixel.
+	 * 
+	 * Negative speed rotates in the opposite direction.
+	 */
+	public func void setRotationSpeedAzimuth(float speed)
+		pRotationSpeedAzimuth = speed
+	end
+	
+	/**
+	 * \brief Elevation rotation speed in degrees per pixel.
+	 * 
+	 * Negative speed rotates in the opposite direction.
+	 */
+	public func float getRotationSpeedElevation()
+		return pRotationSpeedElevation
+	end
+	
+	/**
+	 * \brief Set elevation rotation speed in degrees per pixel.
+	 * 
+	 * Negative speed rotates in the opposite direction.
+	 */
+	public func void setRotationSpeedElevation(float speed)
+		pRotationSpeedElevation = speed
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button pressed.
+	 * 
+	 * Captures mouse and starts tracking if button and modifiers match.
+	 */
+	public func void onButtonPress(MouseEvent event)
+		if event.getButton() != pButton or event.getModifiers() != pModifiers
+			return
+		end
+		if not event.getSource() castable Widget
+			return
+		end
+		
+		pPosition = event.getPosition()
+		pAnchorAzimuth = pDirector.getAzimuth()
+		pAnchorElevation = pDirector.getElevation()
+		
+		pCaptureWidget = event.getSource() cast Widget
+		pCaptureWidget.captureMouse()
+		
+		onStartRotate()
+	end
+	
+	/**
+	 * \brief Mouse moved.
+	 * 
+	 * Rotate camera if tracking.
+	 */
+	public func void onMouseMove(MouseEvent event)
+		if pPosition == null
+			return
+		end
+		
+		var Vector2 movement = Vector2.new(event.getPosition() - pPosition)
+		
+		var float elevation = pAnchorElevation + pRotationSpeedElevation * movement.getY()
+		elevation = DEMath.clamp(elevation, pMinimumElevation, pMaximumElevation)
+		
+		var float azimuth = pAnchorAzimuth + pRotationSpeedAzimuth * movement.getX()
+		if pClampAzimuth
+			azimuth = DEMath.clamp(azimuth, pMinimumAzimuth, pMaximumAzimuth)
+			
+		else
+			azimuth = DEMath.normalize(azimuth, -180.0, 180.0)
+		end
+		
+		pDirector.setAzimuth(azimuth)
+		pDirector.setElevation(elevation)
+		
+		onRotate()
+	end
+	
+	/**
+	 * \brief Mouse button release.
+	 * 
+	 * If tracking stop tracking and release mouse capture.
+	 */
+	public func void onButtonRelease(MouseEvent event)
+		if pPosition == null
+			return
+		end
+		
+		pCaptureWidget.releaseMouse()
+		pCaptureWidget = null
+		
+		onStopRotate()
+		
+		pPosition = null
+	end
+	
+	
+	
+	/** \brief Start rotating camera director. */
+	protected func void onStartRotate()
+	end
+	
+	/** \brief Camera director has been rotated. */
+	protected func void onRotate()
+	end
+	
+	/** \brief Stop rotating camera director. */
+	protected func void onStopRotate()
+	end
+end

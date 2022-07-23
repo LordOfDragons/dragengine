@@ -1410,7 +1410,7 @@ pVVariation( NULL )
 	
 	igdeFilePatternList filePatterns;
 	filePatterns.AddFilePattern( new igdeFilePattern(
-		"Drag[en]gine Height Terrain", "*.dehterrain", ".dehterrain" ) );
+		"Drag[en]gine Height Terrain", "*.deterrain", ".deterrain" ) );
 	helper.EditPath( groupBox, "Height Terrain:", "File to save height terrain to",
 		filePatterns, pEditPathHTerrain, new cEditPathHT( *this ) );
 	helper.EditFloat( groupBox, "Sector Size:", "Size of sectors along X and Z axis",
@@ -1500,7 +1500,7 @@ pVVariation( NULL )
 	
 	filePatterns.RemoveAllFilePatterns();
 	filePatterns.AddFilePattern( new igdeFilePattern(
-		"Drag[en]gine Prop Field Cache", "*.pfc", ".pfc" ) );
+		"Drag[en]gine Prop Field Cache", "*.depfc", ".depfc" ) );
 	helper.EditPath( groupBox, "Skin:", "Skin to use for the texture.",
 		filePatterns, pEditPathPFCache, new cPathPathPFCache( *this ) );
 	
@@ -1601,6 +1601,7 @@ void meWPHeightTerrain::SetWorld( meWorld *world ){
 		world->AddReference();
 	}
 	
+	UpdateHeightTerrain();
 	UpdateSector();
 	UpdateTextureList();
 	UpdateNavSpaceList();
@@ -1617,6 +1618,30 @@ void meWPHeightTerrain::SetWorld( meWorld *world ){
 	UpdateHeightPaint();
 	UpdateMaskPaint();
 	UpdateVisibilityPaint();
+	OnWorldPathChanged();
+}
+
+void meWPHeightTerrain::OnWorldPathChanged(){
+	if( pWorld ){
+		pEditPathHTerrain->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditPathHeightImage->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditPathVisImage->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditTexSkin->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditTexMask->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditPathPFCache->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditVVModel->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditVVSkin->SetBasePath( pWorld->GetDirectoryPath() );
+		
+	}else{
+		pEditPathHTerrain->SetBasePath( "" );
+		pEditPathHeightImage->SetBasePath( "" );
+		pEditPathVisImage->SetBasePath( "" );
+		pEditTexSkin->SetBasePath( "" );
+		pEditTexMask->SetBasePath( "" );
+		pEditPathPFCache->SetBasePath( "" );
+		pEditVVModel->SetBasePath( "" );
+		pEditVVSkin->SetBasePath( "" );
+	}
 }
 
 meHeightTerrainSector *meWPHeightTerrain::GetSector() const{

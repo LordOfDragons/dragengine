@@ -159,7 +159,7 @@ void decrbPanelStatus::UpdateStatus(){
 				textRunning = "Stopped";
 			}
 			
-			itemText.format( "%s\t%s\t%s", system->GetSystemName(), textModule, textRunning );
+			itemText.format( "%s\t%s\t%s", system->GetSystemName().GetString(), textModule, textRunning );
 			pListSystems->setItemText( i, itemText );
 		}
 	}
@@ -193,7 +193,7 @@ void decrbPanelStatus::pAddSystem( deBaseSystem *system ){
 		textRunning = "Stopped";
 	}
 	
-	itemText.format( "%s\t%s\t%s", system->GetSystemName(), textModule, textRunning );
+	itemText.format( "%s\t%s\t%s", system->GetSystemName().GetString(), textModule, textRunning );
 	pListSystems->appendItem( itemText, NULL, NULL, system, false );
 }
 

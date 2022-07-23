@@ -25,9 +25,7 @@
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
-
-class deInputDevice;
-
+class dedsInputDevice;
 
 
 /**
@@ -61,7 +59,7 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	/** \brief Push axis. */
-	void PushAxis( dsRunTime *rt, deInputDevice *device, int deviceIndex, int index );
+	void PushAxis( dsRunTime *rt, dedsInputDevice *device, int index );
 	
 	inline dsClass *GetClassInputDeviceAxisType() const{ return pClsInputDeviceAxisType; }
 	/*@}*/
@@ -81,6 +79,7 @@ private:
 		
 		dsClass *clsInputDevice;
 		dsClass *clsInputDeviceAxisType;
+		dsClass *clsInputDeviceComponent;
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
@@ -103,6 +102,7 @@ private:
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName );
 	DEF_NATFUNC( nfGetType );
+	DEF_NATFUNC( nfGetComponent );
 	
 	DEF_NATFUNC( nfGetValue );
 	

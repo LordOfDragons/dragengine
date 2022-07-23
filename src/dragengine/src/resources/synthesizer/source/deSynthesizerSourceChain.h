@@ -43,7 +43,13 @@ class deSound;
  * kind of playback requiring chaining sound files together.
  * 
  */
-class deSynthesizerSourceChain : public deSynthesizerSource{
+class DE_DLL_EXPORT deSynthesizerSourceChain : public deSynthesizerSource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceChain> Ref;
+	
+	
+	
 private:
 	decObjectList pSounds;
 	

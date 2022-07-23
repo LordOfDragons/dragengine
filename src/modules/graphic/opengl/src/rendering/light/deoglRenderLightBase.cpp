@@ -23,22 +23,29 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "deoglRenderLight.h"
 #include "deoglRenderLightBase.h"
+#include "deoglRenderGI.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../collidelist/deoglCollideListComponent.h"
-#include "../../component/deoglComponentList.h"
+#include "../../component/deoglComponentSet.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGITraceRays.h"
+#include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/cubemap/deoglRenderableDepthCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -66,31 +73,12 @@ deoglRenderLightBase::~deoglRenderLightBase(){
 // Management
 ///////////////
 
-void deoglRenderLightBase::AddComponentsToColliderList( const deoglComponentList &list ){
+void deoglRenderLightBase::AddComponentsToColliderList( const deoglComponentSet &list ){
 	const int count = list.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		pColList.AddComponent( list.GetAt( i ) );
-	}
-}
-
-void deoglRenderLightBase::UpdateComponentVBO( const deoglCollideList &list ){
-	const int count = list.GetComponentCount();
-	int i;
-	
-	for( i=0; i <count; i++ ){
-		list.GetComponentAt( i )->GetComponent()->UpdateVBO();
-	}
-}
-
-void deoglRenderLightBase::UpdateComponentRenderables( deoglRenderPlan &plan,
-const deoglCollideList &list ){
-	const int count = list.GetComponentCount();
-	int i;
-	
-	for( i=0; i <count; i++ ){
-		list.GetComponentAt( i )->GetComponent()->UpdateRenderables( plan );
 	}
 }
 
@@ -130,31 +118,25 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	
 	if( hasDepthCopy ){
 		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		
-		if( defren.GetUseEncodedDepth() ){
-			tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-			
-		}else{
-			tsmgr.EnableTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
-		}
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
 		
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	}
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 6, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 6, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 4, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 6, *renderThread.GetDefaultTextures().GetColor(), GetSamplerClampNearest() );
@@ -169,19 +151,19 @@ void deoglRenderLightBase::RestoreDRTexturesSmooth(){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 6, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 6, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampLinear() );
 		tsmgr.EnableTexture( 4, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 6, *renderThread.GetDefaultTextures().GetColor(), GetSamplerClampNearest() );
@@ -195,8 +177,45 @@ void deoglRenderLightBase::RestoreDRTextureDepthSmooth(){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 0 );
+}
+
+void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	
+	deoglGITraceRays &giTraceRays = renderThread.GetGI().GetTraceRays();
+	renderThread.GetFramebuffer().Activate( &giTraceRays.GetFBOLight() );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
+	
+	const decPoint &sampleImageSize = giState.GetSampleImageSize();
+	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+	
+	tsmgr.EnableTexture( 0, giTraceRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, giTraceRays.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 2, giTraceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 3, giTraceRays.GetTextureReflectivity(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 3 );
+	
+	#ifdef GI_RENDERDOC_DEBUG
+		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
+		OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
+		
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		renderThread.GetDeferredRendering().ActivateFBOColor( false,false );
+	#endif
 }
 
 

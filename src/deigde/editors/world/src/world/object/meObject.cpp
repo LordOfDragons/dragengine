@@ -34,6 +34,8 @@
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
 #include "../../collisions/meCLInvalidateDecals.h"
+#include "../../configuration/meConfiguration.h"
+#include "../../gui/meWindowMain.h"
 #include "../../utils/meHelpers.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -548,6 +550,33 @@ void meObject::SetScaling( const decVector &scaling ){
 	pUpdateDDSCoordSysArrowsLength();
 	
 	pWObject->SetScaling( pScaling );
+	pUpdateShapes();
+	pRepositionDDSNavSpaces();
+	UpdateNavPathTest();
+	
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
+	
+	pNotifyDecalsAboutChange();
+}
+
+void meObject::SetSizeAndScaling( const decVector &size, const decVector &scaling ){
+	if( size.IsEqualTo( pSize ) && scaling.IsEqualTo( pScaling ) ){
+		return;
+	}
+	
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
+	
+	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
+	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
+	
+	if( pWorld ){
+		pWorld->SetChanged( true );
+	}
+	
+	pUpdateDDSCoordSysArrowsLength();
+	
 	pUpdateShapes();
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
@@ -1362,7 +1391,7 @@ void meObject::UpdateComponentTextures(){
 	
 	for( i=0; i<textureCount; i++ ){
 		deComponentTexture &componentTexture = component->GetTextureAt( i );
-		const char * const textureName = engModel->GetTextureAt( i )->GetName();
+		const decString &textureName = engModel->GetTextureAt( i )->GetName();
 		meObjectTexture * const texture = GetTextureNamed( textureName );
 		
 		deSkin *useSkin = componentTexture.GetSkin();
@@ -1926,8 +1955,8 @@ void meObject::pUpdateDDSNavSpaces(){
 		int count;
 		bool requiresReposition;
 		
-		cWOSONavSpaceVisitor( deDebugDrawer *debugDrawer, igdeWDebugDrawerShapeList &ddShapes ) :
-		debugDrawer( debugDrawer ), ddShapes( ddShapes ), count( 0 ), requiresReposition( false ){
+		cWOSONavSpaceVisitor( deDebugDrawer *ddebugDrawer, igdeWDebugDrawerShapeList &dddShapes ) :
+		debugDrawer( ddebugDrawer ), ddShapes( dddShapes ), count( 0 ), requiresReposition( false ){
 		}
 		
 		virtual ~cWOSONavSpaceVisitor(){
@@ -2123,7 +2152,7 @@ void meObject::pUpdateShapeLight(){
 		igdeWDebugDrawerShape &shape;
 		
 	public:
-		cWOSOLightVisitor( igdeWDebugDrawerShape &shape ) : shape( shape ){
+		cWOSOLightVisitor( igdeWDebugDrawerShape &sshape ) : shape( sshape ){
 			shape.RemoveAllShapes();
 			shape.RemoveAllFaces();
 		}
@@ -2244,10 +2273,9 @@ void meObject::pUpdateComponent(){
 		}
 		
 		bool componentVisible = pWObject->GetVisible();
-		if( pWObject->GetGDClass() && pWObject->GetGDClass()->GetComponentList().GetCount() > 0 ){
-			if( pWObject->GetGDClass()->GetComponentList().GetAt( 0 )->GetPartialHide() ){
-				componentVisible = ! pWObject->GetPartiallyHidden();
-			}
+		const igdeGDCComponent * const gdccomponent = meHelpers::FindFirstComponent( pWObject->GetGDClass() );
+		if( gdccomponent && gdccomponent->GetPartialHide() ){
+			componentVisible = ! pWObject->GetPartiallyHidden();
 		}
 		pEngComponentBroken->SetVisible( componentVisible );
 		
@@ -2279,6 +2307,7 @@ void meObject::pUpdateCamera(){
 	if( pClassDef && pClassDef->GetHasCamera() ){
 		if( ! pCamera ){
 			pCamera = new meCamera( GetEnvironment()->GetEngineController()->GetEngine() );
+			pCamera->SetEnableGI( pWorld->GetWindowMain().GetConfiguration().GetEnableGI() );
 			pCamera->SetHostObject( this );
 			pCamera->SetWorld( pWorld );
 		}

@@ -25,6 +25,8 @@
 
 #include "deoglSPBlockSSBO.h"
 #include "../deoglShaderCompiled.h"
+#include "../../capabilities/deoglCapabilities.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -69,14 +71,12 @@ pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
 
 deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 	if( IsBufferMapped() ){
-		deoglSPBlockSSBO::UnmapBuffer();
-	}
-	if( pSSBO ){
-		pglDeleteBuffers( 1, &pSSBO );
+		pClearMapped();
 	}
 	if( pWriteBuffer ){
 		delete [] pWriteBuffer;
 	}
+	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
 }
 
 
@@ -88,7 +88,7 @@ void deoglSPBlockSSBO::SetBindingPoint( int bindingPoint ){
 	pBindingPoint = bindingPoint;
 }
 
-void deoglSPBlockSSBO::Activate(){
+void deoglSPBlockSSBO::Activate() const{
 	if( ! pSSBO || IsBufferMapped() ){
 		DETHROW( deeInvalidParam );
 	}
@@ -96,8 +96,20 @@ void deoglSPBlockSSBO::Activate(){
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, pBindingPoint, pSSBO ) );
 }
 
-void deoglSPBlockSSBO::Deactivate(){
+void deoglSPBlockSSBO::Activate( int bindingPoint ) const{
+	if( ! pSSBO || IsBufferMapped() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, pSSBO ) );
+}
+
+void deoglSPBlockSSBO::Deactivate() const{
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, pBindingPoint, 0 ) );
+}
+
+void deoglSPBlockSSBO::Deactivate( int bindingPoint ) const{
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, 0 ) );
 }
 
 void deoglSPBlockSSBO::MapBuffer(){
@@ -237,6 +249,10 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
 	
 	pClearMapped();
+}
+
+int deoglSPBlockSSBO::GetAlignmentRequirements() const{
+	return GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
 void deoglSPBlockSSBO::MapToStd430(){

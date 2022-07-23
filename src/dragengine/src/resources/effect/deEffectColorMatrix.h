@@ -36,7 +36,13 @@
  * most graphic modules can carry out such a transform as part of the
  * final image rendering in hardware.
  */
-class deEffectColorMatrix : public deEffect{
+class DE_DLL_EXPORT deEffectColorMatrix : public deEffect{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEffectColorMatrix> Ref;
+	
+	
+	
 private:
 	decColorMatrix pColorMatrix;
 	

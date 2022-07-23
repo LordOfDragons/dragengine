@@ -22,6 +22,8 @@
 #ifndef _DECXPMIMAGE_H_
 #define _DECXPMIMAGE_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Simple XPM Image container.
@@ -29,7 +31,7 @@
  * A simple parser for XPM images linked into the code.
  * It is very basic and stores the image as RGB format.
  */
-class decXpmImage{
+class DE_DLL_EXPORT decXpmImage{
 private:
 	int pWidth, pHeight;
 	char *pData;

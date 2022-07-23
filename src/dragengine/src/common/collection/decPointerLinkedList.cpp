@@ -229,7 +229,7 @@ bool decPointerLinkedList::Has( cListEntry *entry ) const{
 }
 
 void decPointerLinkedList::Add( cListEntry *entry ){
-	if( ! entry || entry->GetList() == this ){
+	if( ! entry || entry->GetList() ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -251,7 +251,7 @@ void decPointerLinkedList::Add( cListEntry *entry ){
 }
 
 void decPointerLinkedList::InsertAfter( cListEntry *entry, cListEntry *after ){
-	if( ! entry || entry->GetList() == this || ! after || after->GetList() != this ){
+	if( ! entry || entry->GetList() || ! after || after->GetList() != this ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -273,7 +273,7 @@ void decPointerLinkedList::InsertAfter( cListEntry *entry, cListEntry *after ){
 }
 
 void decPointerLinkedList::InsertBefore( cListEntry *entry, cListEntry *before ){
-	if( ! entry || entry->GetList() == this || ! before || before->GetList() != this ){
+	if( ! entry || entry->GetList() || ! before || before->GetList() != this ){
 		DETHROW( deeInvalidParam );
 	}
 	

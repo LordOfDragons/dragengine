@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleForeignState.h"
 #include "../dearBoneState.h"
@@ -59,8 +58,8 @@
 /////////////////////////////////
 
 dearRuleForeignState::dearRuleForeignState( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleForeignState &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleForeignState &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pForeignState( rule ),
 pForeignBone( -1 ),
@@ -69,14 +68,18 @@ pTargetPosition( rule.GetTargetPosition(), firstLink ),
 pTargetOrientation( rule.GetTargetOrientation(), firstLink ),
 pTargetSize( rule.GetTargetSize(), firstLink ),
 
-pEnablePosition( rule.GetEnablePosition() ),
-pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() ),
-pSourceCoordFrame( rule.GetSourceCoordinateFrame() ),
-pDestCoordFrame( rule.GetDestCoordinateFrame() ),
 pScalePosition( rule.GetScalePosition() ),
 pScaleOrientation( rule.GetScaleOrientation() ),
-pScaleSize( rule.GetScaleSize() )
+pScaleSize( rule.GetScaleSize() ),
+pSourceCoordFrame( rule.GetSourceCoordinateFrame() ),
+pDestCoordFrame( rule.GetDestCoordinateFrame() ),
+pLockX( ! rule.GetModifyX() ),
+pLockY( ! rule.GetModifyY() ),
+pLockZ( ! rule.GetModifyZ() ),
+pLockNone( ! pLockX && ! pLockY && ! pLockZ ),
+pEnablePosition( rule.GetEnablePosition() ),
+pEnableOrientation( rule.GetEnableOrientation() ),
+pEnableSize( rule.GetEnableSize() )
 {
 	RuleChanged();
 }
@@ -160,7 +163,13 @@ DEBUG_RESET_TIMERS;
 		}
 	}
 	
-	// apply state
+	// apply state.
+	// 
+	// NOTE do not modify "position", "orientation" and "scale" beyond this point
+	
+	decVector modifyPosition, modifyScale;
+	decQuaternion modifyOrientation;
+	
 	for( i=0; i<boneCount; i++ ){
 		const int animatorBone = GetBoneMappingFor( i );
 		if( animatorBone == -1 ){
@@ -171,17 +180,124 @@ DEBUG_RESET_TIMERS;
 		
 		switch( pDestCoordFrame ){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
-			boneState.BlendWith( position, orientation, scale,
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			if( pLockNone ){
+				boneState.BlendWith( position, orientation, scale, blendMode,
+					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				
+			}else{
+				if( pEnablePosition ){
+					const decVector &lockPosition = boneState.GetPosition();
+					modifyPosition = position;
+					
+					if( pLockX ){
+						modifyPosition.x = lockPosition.x;
+					}
+					if( pLockY ){
+						modifyPosition.y = lockPosition.y;
+					}
+					if( pLockZ ){
+						modifyPosition.z = lockPosition.z;
+					}
+				}
+				
+				if( pEnableOrientation ){
+					const decVector lockRotation( boneState.GetOrientation().GetEulerAngles() );
+					decVector rotation( orientation.GetEulerAngles() );
+					
+					if( pLockX ){
+						rotation.x = lockRotation.x;
+					}
+					if( pLockY ){
+						rotation.y = lockRotation.y;
+					}
+					if( pLockZ ){
+						rotation.z = lockRotation.z;
+					}
+					
+					modifyOrientation = decQuaternion::CreateFromEuler( rotation );
+				}
+				
+				if( pEnableSize ){
+					const decVector &lockScale = boneState.GetScale();
+					modifyScale = scale;
+					
+					if( pLockX ){
+						modifyScale.x = lockScale.x;
+					}
+					if( pLockY ){
+						modifyScale.y = lockScale.y;
+					}
+					if( pLockZ ){
+						modifyScale.z = lockScale.z;
+					}
+				}
+				
+				boneState.BlendWith( modifyPosition, modifyOrientation, modifyScale,
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
 			break;
 			
 		case deAnimatorRuleForeignState::ecfComponent:
 			boneState.UpdateMatrices();
 			
-			const decMatrix m( matrix.QuickMultiply( boneState.GetInverseGlobalMatrix() ).QuickMultiply( boneState.GetLocalMatrix() ) );
+			const decMatrix m( matrix.QuickMultiply( boneState.GetInverseGlobalMatrix() )
+				.QuickMultiply( boneState.GetLocalMatrix() ) );
 			
-			boneState.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			if( pLockNone ){
+				boneState.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				
+			}else{
+				if( pEnablePosition ){
+					const decVector &lockPosition = boneState.GetPosition();
+					modifyPosition = m.GetPosition();
+					
+					if( pLockX ){
+						modifyPosition.x = lockPosition.x;
+					}
+					if( pLockY ){
+						modifyPosition.y = lockPosition.y;
+					}
+					if( pLockZ ){
+						modifyPosition.z = lockPosition.z;
+					}
+				}
+				
+				if( pEnableOrientation ){
+					const decVector lockRotation( boneState.GetOrientation().GetEulerAngles() );
+					decVector rotation( m.GetEulerAngles() );
+					
+					if( pLockX ){
+						rotation.x = lockRotation.x;
+					}
+					if( pLockY ){
+						rotation.y = lockRotation.y;
+					}
+					if( pLockZ ){
+						rotation.z = lockRotation.z;
+					}
+					
+					modifyOrientation = decQuaternion::CreateFromEuler( rotation );
+				}
+				
+				if( pEnableSize ){
+					const decVector &lockScale = boneState.GetScale();
+					modifyScale = m.GetScale();
+					
+					if( pLockX ){
+						modifyScale.x = lockScale.x;
+					}
+					if( pLockY ){
+						modifyScale.y = lockScale.y;
+					}
+					if( pLockZ ){
+						modifyScale.z = lockScale.z;
+					}
+				}
+				
+				boneState.BlendWith( modifyPosition, modifyOrientation, modifyScale,
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
 			break;
 		}
 	}

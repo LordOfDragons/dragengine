@@ -21,12 +21,12 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearBoneState.h"
 #include "dearIKWorkState.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/resources/rig/deRigBone.h>
 
 
 
@@ -41,7 +41,9 @@ pBoneStateIndex( 0 ),
 pAxisTypeX( eatFree ),
 pAxisTypeY( eatFree ),
 pAxisTypeZ( eatFree ),
-pHasLimits( false ){
+pHasLimits( false ),
+pDampening( 1.0f, 1.0f, 1.0f ),
+pHasDampening( false ){
 }
 
 dearIKWorkState::~dearIKWorkState(){
@@ -64,22 +66,48 @@ void dearIKWorkState::SetInverseGlobalMatrix( const decMatrix &matrix ){
 	pInvGlobalMatrix = matrix;
 }
 
-void dearIKWorkState::SetReferenceRotation( const decVector &rotation ){
-	pRefRotation = rotation;
-}
-
-void dearIKWorkState::SetAxisTypeX( int type ){
+void dearIKWorkState::SetAxisTypeX( eAxisTypes type ){
 	pAxisTypeX = type;
 }
 
-void dearIKWorkState::SetAxisTypeY( int type ){
+void dearIKWorkState::SetAxisTypeY( eAxisTypes type ){
 	pAxisTypeY = type;
 }
 
-void dearIKWorkState::SetAxisTypeZ( int type ){
+void dearIKWorkState::SetAxisTypeZ( eAxisTypes type ){
 	pAxisTypeZ = type;
 }
 
 void dearIKWorkState::SetHasLimits( bool hasLimits ){
 	pHasLimits = hasLimits;
+}
+
+void dearIKWorkState::SetDampening( const decVector &dampening ){
+	pDampening = dampening.Clamped( decVector( 0.0f, 0.0f, 0.0f ), decVector( 1.0f, 1.0f, 1.0f ) );
+	pHasDampening = ! pDampening.IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ), 0.01f );
+}
+
+void dearIKWorkState::UpdateLimits( const deRigBone &bone ){
+	pLimitLower = bone.GetIKLimitsLower();
+	pLimitUpper = bone.GetIKLimitsUpper();
+	
+	if( pAxisTypeX != eatLimited ){
+		pLimitUpper.x = pLimitLower.x = 0.0f;
+	}
+	if( pAxisTypeY != eatLimited ){
+		pLimitUpper.y = pLimitLower.y = 0.0f;
+	}
+	if( pAxisTypeZ != eatLimited ){
+		pLimitUpper.z = pLimitLower.z = 0.0f;
+	}
+	
+	pLimitZeroQuatInv.SetFromEuler( ( pLimitLower + pLimitUpper ) * 0.5f );
+	pLimitZeroQuat = pLimitZeroQuatInv.Conjugate();
+	
+	pLimitUpper = ( pLimitUpper - pLimitLower ) * 0.5f;
+	pLimitLower = -pLimitUpper;
+}
+
+void dearIKWorkState::SetLockedRotation( const decVector &rotation ){
+	pLockedRotation = rotation;
 }

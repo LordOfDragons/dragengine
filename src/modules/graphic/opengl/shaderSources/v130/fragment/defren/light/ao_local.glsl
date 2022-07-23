@@ -4,6 +4,7 @@ precision highp int;
 
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform vec4 pTCTransform;
 uniform vec4 pTCClamp;
 uniform float pRadiusFactor;
@@ -12,14 +13,20 @@ uniform vec4 pParamSSAO; // self-occlusion, epsilon, scale, randomAngleConstant
 uniform vec4 pParamTap; // count, radius, radius-influence, radius-limit
 uniform vec4 pMipMapParams; // tcScaleU, tcScaleV, logBase, maxLevel
 
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP
-uniform HIGHP sampler2D texDepthMinMax;
+uniform HIGHP sampler2DArray texDepthMinMax;
 #endif
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
+uniform lowp sampler2DArray texDiffuse;
+uniform lowp sampler2DArray texNormal;
 
 in vec2 vTexCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec3 outAO; // ao, ssao, solidity
 
@@ -39,6 +46,8 @@ out vec3 outAO; // ao, ssao, solidity
 // Calculate the screen space ambient occlusion
 /////////////////////////////////////////////////
 
+#include "v130/shared/normal.glsl"
+
 #define pSSAOSelfOcclusion pParamSSAO.x
 #define pSSAOEpsilon pParamSSAO.y
 #define pSSAOScale pParamSSAO.z
@@ -53,13 +62,13 @@ float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 	tc = clamp( tc, pTCClamp.xy, pTCClamp.zw );
 	
 	#ifdef DECODE_IN_DEPTH
-		vec3 spos = vec3( dot( textureLod( texDepth, tc, level ).rgb, unpackDepth ) );
+		vec3 spos = vec3( dot( textureLod( texDepth, vec3( tc, vLayer ), level ).rgb, unpackDepth ) );
 	#else
-		vec3 spos = vec3( textureLod( texDepth, tc, level ).r );
+		vec3 spos = vec3( textureLod( texDepth, vec3( tc, vLayer ), level ).r );
 	#endif
 	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
 	spos.xy = tc * pTCTransform.xy + pTCTransform.zw;
-	spos.xy *= pPosTransform.zw * spos.zz;
+	spos.xy = ( spos.xy + pPosTransform2 ) * pPosTransform.zw * spos.zz;
 	
 	spos -= position;
 	
@@ -101,7 +110,7 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	outAO = vec3( 1.0 );
 	
@@ -119,22 +128,11 @@ void main( void ){
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = vTexCoord * pTCTransform.xy + pTCTransform.zw;
-	position.xy *= pPosTransform.zw * position.zz;
+	position.xy = ( position.xy + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the parameters
 #if 1
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	normal = normalize( normal );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 #else
 	vec3 normal = normalize( cross( dFdy( position ), dFdx( position ) ) );
 #endif

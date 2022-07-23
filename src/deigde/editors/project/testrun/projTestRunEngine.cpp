@@ -50,6 +50,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -145,14 +146,10 @@ void projTestRunEngine::Start(){
 	pPathShare = pEngine->GetOS()->GetPathShare();
 	pPathLib = pEngine->GetOS()->GetPathEngine();
 	
-	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'",
-		runParameters.identifier.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'",
-		pPathConfig.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'",
-		pPathShare.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'",
-		pPathLib.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'", runParameters.identifier.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString() );
 }
 
 void projTestRunEngine::PutIntoVFS(){
@@ -220,6 +217,7 @@ void projTestRunEngine::ActivateModules(){
 	ActivateModule( deModuleSystem::emtAudio, runParameters.moduleAudio );
 	ActivateModule( deModuleSystem::emtSynthesizer, runParameters.moduleSynthesizer );
 	ActivateModule( deModuleSystem::emtNetwork, runParameters.moduleNetwork );
+	ActivateModule( deModuleSystem::emtVR, runParameters.moduleVR );
 	
 	ActivateModule( deModuleSystem::emtScript,
 		runParameters.moduleScript, runParameters.moduleScriptVersion );
@@ -244,19 +242,35 @@ const char *name, const char *version ){
 		// find best module
 		for( i=0; i<count; i++ ){
 			deLoadableModule * const module2 = moduleSystem.GetModuleAt( i );
-			if( ! module2->IsLoaded() || ! module2->GetEnabled() || module2->GetType() != type ){
+			
+			if( ! module2->IsLoaded() || ! module2->GetEnabled() ){
+				continue;
+			}
+			if( module2->GetType() != type ){
+				continue;
+			}
+			if( module2->GetErrorCode() != deLoadableModule::eecSuccess ){
 				continue;
 			}
 			
-			if( module2->GetIsFallback() ){
-				if( ! module ){
+			// no best module found. use this module
+			if( ! module ){
+				module = module2;
+				
+			// best module has been found and this module is fallback. skip module
+			}else if( module2->GetIsFallback() ){
+				
+			// best module has same name as this module
+			}else if( module2->GetName() == module->GetName() ){
+				// use this module if it has higher version than the best module
+				if( deModuleSystem::CompareVersion( module2->GetVersion(), module->GetVersion() ) > 0 ){
 					module = module2;
 				}
 				
-			}else{
-				if( ! module || module->GetIsFallback() ){
-					module = module2;
-				}
+			// best module has different name than this module. use this module if
+			// it has higher priority than the best module or best module is fallback
+			}else if( module2->GetPriority() > module->GetPriority() || module->GetIsFallback() ){
+				module = module2;
 			}
 		}
 	}
@@ -312,6 +326,10 @@ const char *name, const char *version ){
 		
 	case deModuleSystem::emtScript:
 		pEngine->GetScriptingSystem()->SetActiveModule( module );
+		break;
+		
+	case deModuleSystem::emtVR:
+		pEngine->GetVRSystem()->SetActiveModule( module );
 		break;
 		
 	default:
@@ -371,6 +389,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathOverlay ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathOverlay( runParameters.pathOverlay );
 	
 	// add the user game configuration directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
@@ -380,6 +399,7 @@ void projTestRunEngine::InitVFS(){
 		decPath::CreatePathUnix( runParameters.vfsPathConfig ),
 		decPath::CreatePathNative( runParameters.pathConfig ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathConfig( runParameters.pathConfig );
 	
 	// add the user game capture directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
@@ -389,6 +409,7 @@ void projTestRunEngine::InitVFS(){
 		decPath::CreatePathUnix( runParameters.vfsPathCapture ),
 		decPath::CreatePathNative( runParameters.pathCapture ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathCapture( runParameters.pathCapture );
 }
 
 void projTestRunEngine::CreateMainWindow(){
@@ -412,7 +433,7 @@ void projTestRunEngine::Run(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
 	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Handing control over to game" );
-	pEngine->Run( runParameters.scriptDirectory, runParameters.gameObject );
+	pEngine->Run( runParameters.scriptDirectory, runParameters.scriptVersion, runParameters.gameObject );
 	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Game exited" );
 }
 

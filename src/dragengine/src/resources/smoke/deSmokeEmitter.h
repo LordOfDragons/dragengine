@@ -42,7 +42,7 @@ class deBasePhysicsSmokeEmitter;
  * the radius of the sphere across which the density is distributed
  * in a quadratic way.
  */
-struct deSmokeDensityPoint{
+struct DE_DLL_EXPORT deSmokeDensityPoint{
 	decVector position;
 	float radius;
 };
@@ -61,7 +61,13 @@ struct deSmokeDensityPoint{
  * sphere where the density is not equal to 0. Spheres with a larger
  * radius become invisible and are removed.
  */
-class deSmokeEmitter : public deResource{
+class DE_DLL_EXPORT deSmokeEmitter : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSmokeEmitter> Ref;
+	
+	
+	
 private:
 	decDVector pEmitterPosition;
 	decQuaternion pEmitterOrientation;

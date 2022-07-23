@@ -41,98 +41,98 @@ class PreloadCounter
 	
 	/** \brief Create preload counter. */
 	public func new()
-		this.pValue = 0
+		pValue = 0
 	end
 	
 	
 	
 	/** \brief Parent counter or null. */
 	public func PreloadCounter getParent()
-		return this.pParent
+		return pParent
 	end
 	
 	/** \brief Set parent counter or null. */
-	public func void setParent( PreloadCounter counter )
-		this.pParent = counter
+	public func void setParent(PreloadCounter counter)
+		pParent = counter
 	end
 	
 	
 	
 	/** \brief Counter value. */
 	public func int getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Counter reached zero. */
 	public func bool isZero()
-		return this.pValue == 0
+		return pValue == 0
 	end
 	
 	/** \brief Counter has not yet reach zero. */
 	public func bool isNotZero()
-		return this.pValue > 0
+		return pValue > 0
 	end
 	
 	/** \brief Increment counter by one. */
 	public func void increase()
-		this.pValue++
+		pValue++
 		
-		if this.pParent != null
-			this.pParent.increase()
+		if pParent != null
+			pParent.increase()
 		end
 	end
 	
 	/** \brief Increment counter by amount. */
-	public func void increaseBy( int count )
+	public func void increaseBy(int count)
 		if count < 0
-			throw EInvalidParam.new()
+			throw EInvalidParam.new("count < 0")
 		end
 		
-		this.pValue += count
+		pValue += count
 		
-		if this.pParent != null
-			this.pParent.increaseBy( count )
+		if pParent != null
+			pParent.increaseBy(count)
 		end
 	end
 	
 	/** \brief Decrement counter by one. */
 	public func void decrease()
-		if this.pValue == 0
-			throw EInvalidParam.new()
+		if pValue == 0
+			throw EInvalidParam.new("counter == 0")
 		end
 		
-		this.pValue--
+		pValue--
 		
-		if this.pParent != null
-			this.pParent.decrease()
+		if pParent != null
+			pParent.decrease()
 		end
 	end
 	
 	/** \brief Decrement counter by amount. */
-	public func void decreaseBy( int count )
+	public func void decreaseBy(int count)
 		if count < 0
-			throw EInvalidParam.new()
+			throw EInvalidParam.new("count < 0")
 		end
-		if this.pValue < count
-			throw EInvalidParam.new()
+		if pValue < count
+			throw EInvalidParam.new("counter < count")
 		end
 		
-		this.pValue -= count
+		pValue -= count
 		
-		if this.pParent != null
-			this.pParent.decreaseBy( count )
+		if pParent != null
+			pParent.decreaseBy(count)
 		end
 	end
 	
 	/** \brief Reset counter to 0. */
 	public func void reset()
-		if this.pValue == 0
+		if pValue == 0
 			return
 		end
 		
-		if this.pParent != null
-			this.pParent.decreaseBy( this.pValue )
+		if pParent != null
+			pParent.decreaseBy(pValue)
 		end
-		this.pValue = 0
+		pValue = 0
 	end
 end

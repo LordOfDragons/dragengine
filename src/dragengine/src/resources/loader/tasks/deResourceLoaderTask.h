@@ -36,7 +36,7 @@ class deFileResource;
 /**
  * \brief Resource loader task.
  */
-class deResourceLoaderTask : public deParallelTask{
+class DE_DLL_EXPORT deResourceLoaderTask : public deParallelTask{
 public:
 	/** \brief States. */
 	enum eStates{

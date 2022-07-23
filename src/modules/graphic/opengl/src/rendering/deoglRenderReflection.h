@@ -33,9 +33,8 @@ class deoglFramebuffer;
 class deoglRenderPlan;
 class deoglRenderTask;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglTexture;
-
+class deoglArrayTexture;
 
 
 /**
@@ -43,25 +42,22 @@ class deoglTexture;
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderIndexPass1;
-	deoglShaderProgram *pShaderIndexPass2;
-	/*
-	deoglShaderProgram *pShaderRenderEnvMaps;
-	*/
+	deoglShaderProgramUsage pShaderCopyColor;
+	deoglShaderProgramUsage pShaderCopyColorMipMap;
+	deoglShaderProgramUsage pShaderMinMaxMipMapMin;
+	deoglShaderProgramUsage pShaderMinMaxMipMapMax;
+	deoglShaderProgramUsage pShaderMinMaxMipMapInitial;
+	deoglShaderProgramUsage pShaderMinMaxMipMapDownsample;
+	deoglShaderProgramUsage pShaderScreenSpace;
+	deoglShaderProgramUsage pShaderApplyReflections;
 	
-	deoglShaderProgram *pShaderCopyColor;
-	deoglShaderProgram *pShaderCopyColorMipMap;
-	deoglShaderProgram *pShaderMinMaxMipMapMin;
-	deoglShaderProgram *pShaderMinMaxMipMapMax;
-	deoglShaderProgram *pShaderMinMaxMipMapInitial;
-	deoglShaderProgram *pShaderMinMaxMipMapDownsample;
-	deoglShaderProgram *pShaderScreenSpace;
-	deoglShaderProgram *pShaderApplyReflections;
-	
-	deoglShaderProgram *pShaderReflection;
-	deoglShaderProgram *pShaderCubeMap2EquiMap;
-	deoglShaderProgram *pShaderBuildEnvMap;
-	deoglShaderProgram *pShaderEnvMapMask;
+	deoglShaderProgramUsage pShaderCopyMaterial;
+	deoglShaderProgramUsage pShaderEnvMapLightGI;
+	deoglShaderProgramUsage pShaderEnvMapCopy;
+	deoglShaderProgramUsage pShaderReflection;
+	deoglShaderProgramUsage pShaderCubeMap2EquiMap;
+	deoglShaderProgramUsage pShaderBuildEnvMap;
+	deoglShaderProgramUsage pShaderEnvMapMask;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglRenderTask *pRenderTask;
@@ -123,14 +119,21 @@ public:
 	void UpdateRenderParameterBlock( deoglRenderPlan &plan );
 	
 	
-	/** Render indices. */
-	void RenderIndices( deoglRenderPlan &plan );
-	/** Render environment maps. */
-	//void RenderEnvMaps( deoglRenderPlan &plan );
 	/** Render depth min-max mip-map texture for use with screen space reflections. */
 	void RenderDepthMinMaxMipMap( deoglRenderPlan &plan );
+	
 	/** Copy color texture to temporary1 texture and create mip-map levels. */
 	void CopyColorToTemporary1( deoglRenderPlan &plan );
+	
+	/** Copy material. */
+	void CopyMaterial( deoglRenderPlan &plan, bool solid );
+	
+	/** Render GI lit environment maps. */
+	void RenderGIEnvMaps( deoglRenderPlan &plan );
+	
+	/** Copy environment map. */
+	void CopyEnvMap( deoglArrayTexture &source, deoglCubeMap &target );
+	
 	/** Render screen space reflections. */
 	void RenderScreenSpace( deoglRenderPlan &plan );
 	/*@}*/

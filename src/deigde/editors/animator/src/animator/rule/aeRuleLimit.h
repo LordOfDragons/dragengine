@@ -32,6 +32,9 @@
  * \brief Animator limit rule.
  */
 class aeRuleLimit : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleLimit> Ref;
+	
 private:
 	decVector pMinPosition;
 	decVector pMaxPosition;

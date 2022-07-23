@@ -79,6 +79,14 @@ class InputDeviceFeedback
 	end
 	
 	/**
+	 * \brief Identifier of component or empty string if standalone.
+	 * \version 1.6
+	 */
+	public func String getComponent()
+		return null
+	end
+	
+	/**
 	 * \brief Image to represent the feedback in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.

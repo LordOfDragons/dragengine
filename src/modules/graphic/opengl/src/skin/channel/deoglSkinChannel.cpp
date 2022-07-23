@@ -113,7 +113,9 @@ pImageHeld( false ),
 pVideo( NULL ),
 pVideoPlayer( -1 ),
 pSharedVideoPlayer( true ),
-pRenderable( -1 ){
+pRenderable( -1 ),
+
+pSolidityFilterPriority( 0.5f ){
 }
 
 deoglSkinChannel::~deoglSkinChannel(){
@@ -556,31 +558,6 @@ void deoglSkinChannel::GenerateConeMap(){
 
 
 
-void deoglSkinChannel::DropDelayedDeletionObjects(){
-	if( pCombinedTexture ){
-		pCombinedTexture->RemoveUsage();
-		pCombinedTexture = NULL;
-	}
-	
-	if( pCombinedImage1 ){
-		pCombinedImage1->FreeReference();
-		pCombinedImage1 = NULL;
-	}
-	if( pCombinedImage2 ){
-		pCombinedImage2->FreeReference();
-		pCombinedImage2 = NULL;
-	}
-	
-	if( pImage ){
-		if( pImageHeld ){
-			pImage->FreeReference();
-		}
-		pImage = NULL;
-	}
-}
-
-
-
 const char *deoglSkinChannel::ChannelNameFor( eChannelTypes type ){
 	switch( type ){
 	case ectColor:
@@ -639,6 +616,12 @@ const char *deoglSkinChannel::ChannelNameFor( eChannelTypes type ){
 		
 	case ectRimEmissivity:
 		return "RimEmissivity";
+		
+	case ectNonPbrAlbedo:
+		return "NonPbrAlbedo";
+		
+	case ectNonPbrMetalness:
+		return "NonPbrMetalness";
 	}
 	
 	return "?";
@@ -669,6 +652,7 @@ deoglSkinChannel::eChannelTypes& channelType ){
 		return true;
 		
 	case deoglSkinPropertyMap::eptSolidity:
+	case deoglSkinPropertyMap::eptSolidityFilterPriority:
 		channelType = ectSolidity;
 		return true;
 		
@@ -722,6 +706,14 @@ deoglSkinChannel::eChannelTypes& channelType ){
 		
 	case deoglSkinPropertyMap::eptRimEmissivity:
 		channelType = ectRimEmissivity;
+		return true;
+		
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+		channelType = ectNonPbrAlbedo;
+		return true;
+		
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		channelType = ectNonPbrMetalness;
 		return true;
 		
 	default:
@@ -814,6 +806,14 @@ void deoglSkinChannel::pInitUniformColor(){
 		break;
 		
 	case ectRimEmissivity:
+		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		break;
+		
+	case ectNonPbrAlbedo:
+		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		break;
+		
+	case ectNonPbrMetalness:
 		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
 		break;
 		
@@ -1060,6 +1060,10 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		}
 		break;
 		
+	case deoglSkinPropertyMap::eptSolidityFilterPriority:
+		pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
+		break;
+		
 	case deoglSkinPropertyMap::eptRefractionDistort:
 		pUniformColor.r = value;
 		pUniformColor.g = value;
@@ -1075,6 +1079,20 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 	const decColor &color = property.GetColor();
 	
 	switch( propertyType ){
+	case deoglSkinPropertyMap::eptHeight:
+	case deoglSkinPropertyMap::eptColorTintMask:
+	case deoglSkinPropertyMap::eptRoughness:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		pUniformColor.r = color.r;
+		break;
+		
+	case deoglSkinPropertyMap::eptRefractionDistort:
+		pUniformColor.r = color.r;
+		pUniformColor.g = color.g;
+		break;
+		
 	case deoglSkinPropertyMap::eptColor:
 	case deoglSkinPropertyMap::eptColorOmnidir:
 	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
@@ -1083,6 +1101,7 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 	case deoglSkinPropertyMap::eptEnvironmentMap:
 	case deoglSkinPropertyMap::eptEnvironmentRoom:
 	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
 		pUniformColor.r = color.r;
 		pUniformColor.g = color.g;
 		pUniformColor.b = color.b;
@@ -1095,14 +1114,6 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 		pUniformColor.g = color.g;
 		pUniformColor.b = color.b;
 		texture.SetHasEmissivity( color.r > 0.001f || color.g > 0.001f || color.b > 0.001f );
-		break;
-		
-	case deoglSkinPropertyMap::eptHeight:
-	case deoglSkinPropertyMap::eptColorTintMask:
-	case deoglSkinPropertyMap::eptRoughness:
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		pUniformColor.r = color.r;
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
@@ -1122,11 +1133,6 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 		}else{
 			texture.SetHasZeroSolidity( color.r < 0.001f );
 		}
-		break;
-		
-	case deoglSkinPropertyMap::eptRefractionDistort:
-		pUniformColor.r = color.r;
-		pUniformColor.g = color.g;
 		break;
 		
 	default:
@@ -1157,6 +1163,8 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
 	case deoglSkinPropertyMap::eptAbsorption:
 	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
 		if( image->GetComponentCount() == 1 ){
 			pClearUniformMasks( 0, 100, 100, 100 );
 			pClearUniformMasks( 1, 100, 100, 100 );
@@ -1280,6 +1288,32 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 	bool second = false;
 	
 	switch( propertyType ){
+	case deoglSkinPropertyMap::eptColorTintMask:
+	case deoglSkinPropertyMap::eptHeight:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		targetRed = 0;
+		break;
+		
+	case deoglSkinPropertyMap::eptRefractionDistort:
+		targetRed = 0;
+		targetGreen = 1;
+		break;
+		
+	case deoglSkinPropertyMap::eptColorOmnidir:
+	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+	case deoglSkinPropertyMap::eptNormal:
+	case deoglSkinPropertyMap::eptReflectivity:
+	case deoglSkinPropertyMap::eptEnvironmentMap:
+	case deoglSkinPropertyMap::eptEnvironmentRoom:
+	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+		targetRed = 0;
+		targetGreen = 1;
+		targetBlue = 2;
+		break;
+		
 	case deoglSkinPropertyMap::eptColor:
 		targetRed = 0;
 		targetGreen = 1;
@@ -1287,11 +1321,19 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 		targetAlpha = 3;
 		break;
 		
-	case deoglSkinPropertyMap::eptColorOmnidir:
-	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+	case deoglSkinPropertyMap::eptSolidity:
+		targetRed = 0;
+		texture.SetHasSolidity( true );
+		texture.SetHasZeroSolidity( false );
+		break;
+		
+	case deoglSkinPropertyMap::eptEmissivity:
+	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+	case deoglSkinPropertyMap::eptRimEmissivity:
 		targetRed = 0;
 		targetGreen = 1;
 		targetBlue = 2;
+		texture.SetHasEmissivity( true );
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
@@ -1301,88 +1343,10 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 		second = true;
 		break;
 		
-	case deoglSkinPropertyMap::eptColorTintMask:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptSolidity:
-		targetRed = 0;
-		texture.SetHasSolidity( true );
-		texture.SetHasZeroSolidity( false );
-		break;
-		
-	case deoglSkinPropertyMap::eptNormal:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptHeight:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptEmissivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		texture.SetHasEmissivity( true );
-		break;
-		
-	case deoglSkinPropertyMap::eptRefractionDistort:
-		targetRed = 0;
-		targetGreen = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptReflectivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
 	case deoglSkinPropertyMap::eptRoughness:
 		//targetRed = 3;
 		targetRed = 0;
 		second = true;
-		break;
-		
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentMap:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoom:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		texture.SetHasEmissivity( true );
-		break;
-		
-	case deoglSkinPropertyMap::eptAbsorption:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptRimEmissivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		texture.SetHasEmissivity( true );
 		break;
 		
 	default:
@@ -1603,6 +1567,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	//   'b' => mip maps are present and filtered using box-filtering
 	//   'n' => mip maps are present and filtered using 3d-normal respecting filter
 	//   'm' => mip maps are present and filtered uisng maximum filter
+	//   'M' => mip maps are present and filtered uisng minimum filter
 	//   '-' => mip maps are not present
 	// 
 	// <uniform-colors> defines the uniform color as 64-bit hex value in the form RGBA.
@@ -1665,39 +1630,49 @@ void deoglSkinChannel::pBuildCacheID(){
 	
 	// for images update the cache id sources if present
 	if( pDelayedCombineImage1 ){
+		const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
+		if( filename.IsEmpty() ){
+			pCanBeCached = false; // this one is problematic. dont do it
+			return;
+		}
+		
 		if( pDelayedCombineImage1->GetImage().GetVirtualFileSystem() !=
 		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem() ){
 			pCanBeCached = false;
 			return;
 		}
 		
-		decPath path;
-		path.SetFromUnix( pDelayedCombineImage1->GetImage().GetFilename() );
-		if( ! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile( path ) ){
+		if( ! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile(
+		decPath::CreatePathUnix( filename ) ) ){
 			pCanBeCached = false;
 			return;
 		}
 		
 		pCacheIDSource1 = "I";
-		pCacheIDSource1.Append( pDelayedCombineImage1->GetImage().GetFilename() );
+		pCacheIDSource1.Append( filename );
 	}
 	
 	if( pDelayedCombineImage2 ){
+		const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
+		if( filename.IsEmpty() ){
+			pCanBeCached = false; // this one is problematic. dont do it
+			return;
+		}
+		
 		if( pDelayedCombineImage2->GetImage().GetVirtualFileSystem() !=
 		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem() ){
 			pCanBeCached = false;
 			return;
 		}
 		
-		decPath path;
-		path.SetFromUnix( pDelayedCombineImage2->GetImage().GetFilename() );
-		if( ! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile( path ) ){
+		if( ! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile(
+		decPath::CreatePathUnix( filename ) ) ){
 			pCanBeCached = false;
 			return;
 		}
 		
 		pCacheIDSource2 = "I";
-		pCacheIDSource2.Append( pDelayedCombineImage2->GetImage().GetFilename() );
+		pCacheIDSource2.Append( filename );
 	}
 	
 	// for constructed update the cache id sources if present
@@ -1762,9 +1737,22 @@ void deoglSkinChannel::pBuildCacheID(){
 		case ectReflectivity:
 		case ectRoughness:
 		case ectRefractDistort:
-		case ectSolidity:
 		case ectRimEmissivity:
+		case ectNonPbrAlbedo:
+		case ectNonPbrMetalness:
 			pCacheID.AppendCharacter( 'b' );
+			break;
+			
+		case ectSolidity:
+			if( pSolidityFilterPriority < 0.35f ){
+				pCacheID.AppendCharacter( 'M' ); // minimum filter
+				
+			}else if( pSolidityFilterPriority > 0.65f ){
+				pCacheID.AppendCharacter( 'm' ); // maximum filter
+				
+			}else{
+				pCacheID.AppendCharacter( 'b' ); // box filter (averaging)
+			}
 			break;
 			
 		case ectNormal:
@@ -1831,9 +1819,12 @@ void deoglSkinChannel::pBuildCacheVerify(){
 		
 		// source 1 verify
 		if( pDelayedCombineImage1 ){
-			decPath path;
-			path.SetFromUnix( pDelayedCombineImage1->GetImage().GetFilename() );
+			const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
+			if( filename.IsEmpty() ){
+				DETHROW( deeInvalidAction ); // this one is problematic. dont do it
+			}
 			
+			const decPath path( decPath::CreatePathUnix( filename ) );
 			writer->WriteUInt( ( uint32_t )pDelayedCombineImage1->GetImage().
 				GetVirtualFileSystem()->GetFileModificationTime( path ) );
 			
@@ -1848,9 +1839,12 @@ void deoglSkinChannel::pBuildCacheVerify(){
 		
 		// source 2 verify
 		if( pDelayedCombineImage2 ){
-			decPath path;
-			path.SetFromUnix( pDelayedCombineImage2->GetImage().GetFilename() );
+			const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
+			if( filename.IsEmpty() ){
+				DETHROW( deeInvalidParam ); // this one is problematic. dont do it
+			}
 			
+			const decPath path( decPath::CreatePathUnix( filename ) );
 			writer->WriteUInt( ( uint32_t )pDelayedCombineImage2->GetImage().
 				GetVirtualFileSystem()->GetFileModificationTime( path ) );
 			
@@ -1933,6 +1927,8 @@ const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
 	case deoglSkinPropertyMap::eptAbsorption:
 	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
 		if( image->GetComponentCount() == 1 ){
 			pWriteImageToPixelBuffer( *image, 0, 100, 100, 100 );
 			pWriteImageToPixelBuffer( *image, 1, 100, 100, 100 );
@@ -1986,47 +1982,13 @@ const deSkinPropertyConstructed &property ){
 	int targetAlpha = 100;
 	
 	switch( propertyType ){
-	case deoglSkinPropertyMap::eptColor:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		targetAlpha = 3;
-		break;
-		
-	case deoglSkinPropertyMap::eptColorOmnidir:
-	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptTransparency:
-		//targetRed = 3; // if combined with color
-		targetRed = 0;
-		break;
-		
 	case deoglSkinPropertyMap::eptColorTintMask:
-		targetRed = 0;
-		break;
-		
 	case deoglSkinPropertyMap::eptSolidity:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptNormal:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
 	case deoglSkinPropertyMap::eptHeight:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
 		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptEmissivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
 		break;
 		
 	case deoglSkinPropertyMap::eptRefractionDistort:
@@ -2034,53 +1996,37 @@ const deSkinPropertyConstructed &property ){
 		targetGreen = 1;
 		break;
 		
+	case deoglSkinPropertyMap::eptColorOmnidir:
+	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+	case deoglSkinPropertyMap::eptNormal:
+	case deoglSkinPropertyMap::eptEmissivity:
 	case deoglSkinPropertyMap::eptReflectivity:
+	case deoglSkinPropertyMap::eptEnvironmentMap:
+	case deoglSkinPropertyMap::eptEnvironmentRoom:
+	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
 		targetRed = 0;
 		targetGreen = 1;
 		targetBlue = 2;
+		break;
+		
+	case deoglSkinPropertyMap::eptColor:
+		targetRed = 0;
+		targetGreen = 1;
+		targetBlue = 2;
+		targetAlpha = 3;
+		break;
+		
+	case deoglSkinPropertyMap::eptTransparency:
+		//targetRed = 3; // if combined with color
+		targetRed = 0;
 		break;
 		
 	case deoglSkinPropertyMap::eptRoughness:
 		//targetRed = 3;
 		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentMap:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoom:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		targetRed = 0;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptAbsorption:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptRimEmissivity:
-		targetRed = 0;
-		targetGreen = 1;
-		targetBlue = 2;
 		break;
 		
 	default:

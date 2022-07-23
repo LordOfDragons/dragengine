@@ -33,7 +33,7 @@
  * a bottom radius and optionally a top and bottom axis scaling. The axis scaling is applied
  * to the top and bottom radius along the x and z direction.
  */
-class decShapeCapsule : public decShape{
+class DE_DLL_EXPORT decShapeCapsule : public decShape{
 private:
 	float pTopRadius;
 	float pBottomRadius;

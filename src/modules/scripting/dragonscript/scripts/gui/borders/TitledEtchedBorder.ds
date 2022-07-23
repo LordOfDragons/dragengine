@@ -27,37 +27,37 @@ pin Dragengine.Scenery
 
 
 /**
- * Draws an etched border around a widget with a given color and thickness.
+ * \brief Draw etched border around a widget with a given color and thickness.
  */
 class TitledEtchedBorder extends TitledTwoColorBorder
-	/** Creates a new raised etched border. */
+	/** \brief Create titled etched border. */
 	public func new()
 	end
 	
-	/** Creates a new raised etched border. */
-	public func new( String text ) super( text )
+	/** \brief Create titled etched border. */
+	public func new(String text) super(text)
 	end
 	
 	
 	
-	/** Border size. */
+	/** \brief Border size. */
 	public func BorderSize getBorderSize()
-		return BorderSize.new( 2, this.getTextSize().getY(), 2, 2 )
+		return BorderSize.new(2, getTextSize().getY(), 2, 2)
 	end
 	
-	/** Update canvas. */
+	/** \brief Update canvas. */
 	public func void updateCanvas()
-		var Widget widget = this.getWidget()
+		var Widget widget = getWidget()
 		if widget == null
 			return
 		end
 		
-		var Color fontColor = this.getFontColor()
-		var Font font = this.getFont()
-		var String text = this.getText()
-		var Point textSize = this.getTextSize()
+		var Color textColor = getTextColor()
+		var Font font = getFont()
+		var String text = getText()
+		var Point textSize = getTextSize()
 		
-		var CanvasView borderCanvas = this.getCanvasView()
+		var CanvasView borderCanvas = getCanvasView()
 		var Point size = borderCanvas.getSize()
 		var int bottom = size.getY() - 1
 		var int right = size.getX() - 1
@@ -68,16 +68,16 @@ class TitledEtchedBorder extends TitledTwoColorBorder
 		var int borderTop = 0
 		
 		if font != null
-			borderTop = ( font.getSize() - 2 ) / 2
+			borderTop = (font.getSize() - 2) / 2
 		end
 		
-		if this.getRaised()
-			color1 = this.getColorHighlight()
-			color2 = this.getColorShadow()
+		if getRaised()
+			color1 = getColorHighlight()
+			color2 = getColorShadow()
 			
 		else
-			color1 = this.getColorShadow()
-			color2 = this.getColorHighlight()
+			color1 = getColorShadow()
+			color2 = getColorHighlight()
 		end
 		
 		borderCanvas.removeAllCanvas()
@@ -85,67 +85,67 @@ class TitledEtchedBorder extends TitledTwoColorBorder
 		// color 1 if existing
 		if color1 != null
 			var CanvasPaint canvas = CanvasPaint.new()
-			canvas.setShapeType( CanvasPaintShape.lines )
-			canvas.setLineColor( color1 )
-			canvas.setFillColor( Color.transparent )
-			canvas.setSize( size )
-			canvas.setOrder( 0.0 )
+			canvas.setShapeType(CanvasPaintShape.lines)
+			canvas.setLineColor(color1)
+			canvas.setFillColor(Color.transparent)
+			canvas.setSize(size)
+			canvas.setOrder(0.0)
 			
-			canvas.addPoint( Point.new( 1, borderTop + 1 ) )
-			canvas.addPoint( Point.new( textX1, borderTop + 1 ) )
+			canvas.addPoint(Point.new(1, borderTop + 1))
+			canvas.addPoint(Point.new(textX1, borderTop + 1))
 			
-			canvas.addPoint( Point.new( textX2, borderTop + 1 ) )
-			canvas.addPoint( Point.new( right - 1, borderTop + 1 ) )
+			canvas.addPoint(Point.new(textX2, borderTop + 1))
+			canvas.addPoint(Point.new(right - 1, borderTop + 1))
 			
-			canvas.addPoint( Point.new( 1, borderTop + 2 ) )
-			canvas.addPoint( Point.new( 1, bottom - 1 ) )
+			canvas.addPoint(Point.new(1, borderTop + 2))
+			canvas.addPoint(Point.new(1, bottom - 1))
 			
-			canvas.addPoint( Point.new( right, borderTop ) )
-			canvas.addPoint( Point.new( right, bottom + 1 ) )
+			canvas.addPoint(Point.new(right, borderTop))
+			canvas.addPoint(Point.new(right, bottom + 1))
 			
-			canvas.addPoint( Point.new( 0, bottom ) )
-			canvas.addPoint( Point.new( right, bottom ) )
+			canvas.addPoint(Point.new(0, bottom))
+			canvas.addPoint(Point.new(right, bottom))
 			
-			borderCanvas.addCanvas( canvas )
+			borderCanvas.addCanvas(canvas)
 		end
 		
 		// color 2 if existing
 		if color2 != null
 			var CanvasPaint canvas = CanvasPaint.new()
-			canvas.setShapeType( CanvasPaintShape.lines )
-			canvas.setLineColor( color2 )
-			canvas.setFillColor( Color.transparent )
-			canvas.setSize( size )
-			canvas.setOrder( 1.0 )
+			canvas.setShapeType(CanvasPaintShape.lines)
+			canvas.setLineColor(color2)
+			canvas.setFillColor(Color.transparent)
+			canvas.setSize(size)
+			canvas.setOrder(1.0)
 			
-			canvas.addPoint( Point.new( 0, borderTop ) )
-			canvas.addPoint( Point.new( textX1, borderTop ) )
+			canvas.addPoint(Point.new(0, borderTop))
+			canvas.addPoint(Point.new(textX1, borderTop))
 			
-			canvas.addPoint( Point.new( textX2, borderTop ) )
-			canvas.addPoint( Point.new( right - 1, borderTop ) )
+			canvas.addPoint(Point.new(textX2, borderTop))
+			canvas.addPoint(Point.new(right - 1, borderTop))
 			
-			canvas.addPoint( Point.new( 0, borderTop ) )
-			canvas.addPoint( Point.new( 0, bottom - 1 ) )
+			canvas.addPoint(Point.new(0, borderTop))
+			canvas.addPoint(Point.new(0, bottom - 1))
 			
-			canvas.addPoint( Point.new( 0, bottom - 1 ) )
-			canvas.addPoint( Point.new( right, bottom - 1 ) )
+			canvas.addPoint(Point.new(0, bottom - 1))
+			canvas.addPoint(Point.new(right, bottom - 1))
 			
-			canvas.addPoint( Point.new( right - 1, borderTop ) )
-			canvas.addPoint( Point.new( right - 1, bottom ) )
+			canvas.addPoint(Point.new(right - 1, borderTop))
+			canvas.addPoint(Point.new(right - 1, bottom))
 			
-			borderCanvas.addCanvas( canvas )
+			borderCanvas.addCanvas(canvas)
 		end
 		
 		// text if existing
-		if not text.empty() and font != null and fontColor != null
+		if not text.empty() and font != null and textColor != null
 			var CanvasText canvas = CanvasText.new()
-			canvas.setColor( fontColor )
-			canvas.setFont( font )
-			canvas.setText( text )
-			canvas.setPosition( Point.new( textX1 + 2, 0 ) )
-			canvas.setSize( textSize )
-			canvas.setOrder( 2.0 )
-			borderCanvas.addCanvas( canvas )
+			canvas.setColor(textColor)
+			canvas.setFont(font)
+			canvas.setText(text)
+			canvas.setPosition(Point.new(textX1 + 2, 0))
+			canvas.setSize(textSize)
+			canvas.setOrder(2.0)
+			borderCanvas.addCanvas(canvas)
 		end
 	end
 end

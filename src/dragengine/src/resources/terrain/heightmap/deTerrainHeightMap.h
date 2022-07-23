@@ -23,6 +23,7 @@
 #define _DETERRAINHEIGHTMAP_H_
 
 #include "../../../common/math/decMath.h"
+#include "../../../common/string/decString.h"
 
 class deImage;
 
@@ -56,16 +57,16 @@ class deImage;
  * influence physics or audio propagation. If the height map is missing all grid
  * points take on the height of the offset parameter.
  */
-class deTerrainHeightMap{
+class DE_DLL_EXPORT deTerrainHeightMap{
 private:
 	decPoint pPointCount;
 	decVector2 pSize;
 	float pScaling;
 	
-	char *pPathHeightImage;
+	decString pPathHeightImage;
 	deImage *pHeightImage;
 	
-	char *pPathVisImage;
+	decString pPathVisImage;
 	unsigned char *pVisibleFaces;
 	int pVFByteCount;
 	
@@ -104,7 +105,7 @@ public:
 	void SetScaling( float scaling );
 	
 	/** \brief Path of the image used to store the height map or NULL if not used. */
-	inline const char *GetPathHeightImage() const{ return ( const char * )pPathHeightImage; }
+	inline const decString &GetPathHeightImage() const{ return pPathHeightImage; }
 	
 	/** \brief Set path of the image used to store the height map or NULL if not used. */
 	void SetPathHeightImage( const  char *path );
@@ -124,7 +125,7 @@ public:
 	/** \name Face Visibility */
 	/*@{*/
 	/** \brief Path of the image used to store the visibility map or NULL if not used. */
-	inline const char *GetPathVisibilityImage() const{ return ( const char * )pPathVisImage; }
+	inline const decString &GetPathVisibilityImage() const{ return pPathVisImage; }
 	
 	/** \brief Set path of the image used to store the visibility map or NULL if not used. */
 	void SetPathVisibilityImage( const  char *path );

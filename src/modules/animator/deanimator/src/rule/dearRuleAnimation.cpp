@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleAnimation.h"
 #include "../dearBoneState.h"
@@ -69,8 +68,8 @@
 /////////////////////////////////
 
 dearRuleAnimation::dearRuleAnimation( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimation &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimation &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 pAnimation( rule ),
 
 pMove( NULL ),
@@ -85,6 +84,9 @@ pEnableSize( rule.GetEnableSize() )
 }
 
 dearRuleAnimation::~dearRuleAnimation(){
+	if( pMove ){
+		pMove->FreeReference();
+	}
 }
 
 
@@ -180,7 +182,7 @@ void dearRuleAnimation::pUpdateMove(){
 		pMove = NULL;
 	}
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( animation ){
 		pMove = animation->GetMoveNamed( pAnimation.GetMoveName() );
 		if( pMove ){

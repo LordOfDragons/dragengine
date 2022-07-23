@@ -33,6 +33,7 @@
 #	include "fox/foxincludenative.h"
 
 #elif defined IGDE_TOOLKIT_NULL
+#	include "null/nullincludenative.h"
 
 #endif
 

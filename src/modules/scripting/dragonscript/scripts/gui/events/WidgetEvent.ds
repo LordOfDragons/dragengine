@@ -28,25 +28,25 @@ namespace Dragengine.Gui.Events
  */
 class WidgetEvent extends Event
 	/** \brief Widget has been shown event identifier. */
-	public fixed var int idWidgetShown = 60
+	public static fixed var int idWidgetShown = 60
 	
 	/** \brief Widget has been hidden event identifier. */
-	public fixed var int idWidgetHidden = 61
+	public static fixed var int idWidgetHidden = 61
 	
 	/** \brief Widget position changed event identifier. */
-	public fixed var int idWidgetReposition = 62
+	public static fixed var int idWidgetReposition = 62
 	
 	/** \brief Widget size changed event identifier. */
-	public fixed var int idWidgetResized = 63
+	public static fixed var int idWidgetResized = 63
 	
 	/** \brief Widget is disposing event identifier. */
-	public fixed var int idWidgetDispose = 64
+	public static fixed var int idWidgetDispose = 64
 	
 	
 	
 	/** \brief Event identifier is a widget event identifier. */
 	public static func bool isWidgetEvent( int identifier )
-		return identifier >= idWidgetShown and identifier <= idWidgetResized
+		return identifier >= idWidgetShown and identifier <= idWidgetDispose
 	end
 	
 	

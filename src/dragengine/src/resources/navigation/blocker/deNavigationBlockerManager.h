@@ -31,7 +31,7 @@ class deNavigationBlocker;
 /**
  * \brief Navigation blocker manager.
  */
-class deNavigationBlockerManager : public deResourceManager{
+class DE_DLL_EXPORT deNavigationBlockerManager : public deResourceManager{
 private:
 	deResourceList pBlockers;
 	

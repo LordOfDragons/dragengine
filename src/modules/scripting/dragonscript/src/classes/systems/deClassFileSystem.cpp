@@ -28,12 +28,26 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/common/string/decString.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
-#include <dragengine/common/file/decPath.h>
-#include <dragengine/common/string/decString.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
+
+#ifdef OS_UNIX
+#include <errno.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassBlock.h>
@@ -257,6 +271,275 @@ void deClassFileSystem::nfPathMatchesPattern::RunFunction( dsRunTime *rt, dsValu
 	rt->PushBool( decString::StringMatchesPattern( path, pattern ) );
 }
 
+// public static func void browseOverlay(String path)
+deClassFileSystem::nfBrowseOverlay::nfBrowseOverlay( const sInitData &init ) :
+dsFunction( init.clsFileSys, "browseOverlay", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // path
+}
+void deClassFileSystem::nfBrowseOverlay::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const char * const path = rt->GetValue( 0 )->GetString();
+	
+	// ensure directory exists
+	decPath ensurePath;
+	ensurePath.SetFromUnix( path );
+	ensurePath.AddComponent( "__ds_overlay_delete_me__" );
+	
+	if( ! vfs.ExistsFile( ensurePath ) && vfs.CanWriteFile( ensurePath ) ){
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( ensurePath ) );
+		vfs.DeleteFile( ensurePath );
+	}
+	
+	// browse directory
+	decPath realPath;
+	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathOverlay() );
+	realPath.AddUnixPath( path );
+	clsFileSys.BrowseNativeDirectory( realPath );
+}
+
+// public static func void browseCapture(String path)
+deClassFileSystem::nfBrowseCapture::nfBrowseCapture( const sInitData &init ) :
+dsFunction( init.clsFileSys, "browseCapture", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // path
+}
+void deClassFileSystem::nfBrowseCapture::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const char * const path = rt->GetValue( 0 )->GetString();
+	
+	decPath tempPath;
+	tempPath.SetFromUnix( path );
+	if( tempPath.IsAbsolute() ){
+		if( tempPath.GetComponentCount() == 0 || tempPath.GetComponentAt( 0 ) != "capture" ){
+			DSTHROW_INFO( dueInvalidParam, "absolute path has to start with '/capture'" );
+		}
+		tempPath.RemoveComponentFrom( 0 );
+	}
+	
+	// ensure directory exists
+	decPath ensurePath;
+	ensurePath.SetFromUnix( "/capture" );
+	ensurePath.Add( tempPath );
+	ensurePath.AddComponent( "__ds_capture_delete_me__" );
+	
+	if( ! vfs.ExistsFile( ensurePath ) && vfs.CanWriteFile( ensurePath ) ){
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( ensurePath ) );
+		vfs.DeleteFile( ensurePath );
+	}
+	
+	// browse directory
+	decPath realPath;
+	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathCapture() );
+	realPath.Add( tempPath );
+	clsFileSys.BrowseNativeDirectory( realPath );
+}
+
+// public static func void browseConfig(String path)
+deClassFileSystem::nfBrowseConfig::nfBrowseConfig( const sInitData &init ) :
+dsFunction( init.clsFileSys, "browseConfig", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // path
+}
+void deClassFileSystem::nfBrowseConfig::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const char * const path = rt->GetValue( 0 )->GetString();
+	
+	decPath tempPath;
+	tempPath.SetFromUnix( path );
+	if( tempPath.IsAbsolute() ){
+		if( tempPath.GetComponentCount() == 0 || tempPath.GetComponentAt( 0 ) != "config" ){
+			DSTHROW_INFO( dueInvalidParam, "absolute path has to start with '/config'" );
+		}
+		tempPath.RemoveComponentFrom( 0 );
+	}
+	
+	// ensure directory exists
+	decPath ensurePath;
+	ensurePath.SetFromUnix( "/config" );
+	ensurePath.Add( tempPath );
+	ensurePath.AddComponent( "__ds_config_delete_me__" );
+	
+	if( ! vfs.ExistsFile( ensurePath ) && vfs.CanWriteFile( ensurePath ) ){
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( ensurePath ) );
+		vfs.DeleteFile( ensurePath );
+	}
+	
+	// browse directory
+	decPath realPath;
+	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathConfig() );
+	realPath.Add( tempPath );
+	clsFileSys.BrowseNativeDirectory( realPath );
+}
+
+// public static func Array getFileExtensions(ResourceLoaderType type)
+deClassFileSystem::nfGetFileExtensions::nfGetFileExtensions( const sInitData &init ) :
+dsFunction( init.clsFileSys, "getFileExtensions", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsArray ){
+	p_AddParameter( init.clsResourceLoaderType ); // type
+}
+void deClassFileSystem::nfGetFileExtensions::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	
+	// determine module type to enumerate
+	const deResourceLoader::eResourceType type = ( deResourceLoader::eResourceType )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	deModuleSystem::eModuleTypes moduleType = deModuleSystem::emtUnknown;
+	
+	switch( type ){
+	case deResourceLoader::ertAnimation:
+		moduleType = deModuleSystem::emtAnimation;
+		break;
+		
+	case deResourceLoader::ertFont:
+		moduleType = deModuleSystem::emtFont;
+		break;
+		
+	case deResourceLoader::ertImage:
+		moduleType = deModuleSystem::emtImage;
+		break;
+		
+	case deResourceLoader::ertLanguagePack:
+		moduleType = deModuleSystem::emtLanguagePack;
+		break;
+		
+	case deResourceLoader::ertModel:
+		moduleType = deModuleSystem::emtModel;
+		break;
+		
+	case deResourceLoader::ertOcclusionMesh:
+		moduleType = deModuleSystem::emtOcclusionMesh;
+		break;
+		
+	case deResourceLoader::ertRig:
+		moduleType = deModuleSystem::emtRig;
+		break;
+		
+	case deResourceLoader::ertSkin:
+		moduleType = deModuleSystem::emtSkin;
+		break;
+		
+	case deResourceLoader::ertSound:
+		moduleType = deModuleSystem::emtSound;
+		break;
+		
+	case deResourceLoader::ertVideo:
+		moduleType = deModuleSystem::emtVideo;
+		break;
+	}
+	
+	if( moduleType == deModuleSystem::emtUnknown ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	// enumerate modules
+	const deModuleSystem &modsys = *clsFileSys.GetDS()->GetGameEngine()->GetModuleSystem();
+	const int moduleCount = modsys.GetModuleCount();
+	decPointerList modules;
+	int i, j;
+	
+	for( i=0; i<moduleCount; i++ ){
+		const deLoadableModule * const module = modsys.GetModuleAt( i );
+		if( module->GetType() != moduleType || ! module->GetEnabled()
+		|| module->GetErrorCode() != deLoadableModule::eecSuccess ){
+			continue;
+		}
+		
+		const decString &name = module->GetName();
+		const int foundCount = modules.GetCount();
+		for( j=0; j<foundCount; j++ ){
+			const deLoadableModule * const module2 = ( const deLoadableModule * )modules.GetAt( j );
+			if( module2->GetName() == name ){
+				if( modsys.CompareVersion( module->GetVersion(), module2->GetVersion() ) > 0 ){
+					modules.SetAt( j, ( void* )module );
+				}
+				break;
+			}
+		}
+		
+		if( j == foundCount ){
+			modules.Add( ( void* )module );
+		}
+	}
+	
+	// build array
+	const dsEngine &sengine = *clsFileSys.GetDS()->GetScriptEngine();
+	dsValue *valueResult = rt->CreateValue( sengine.GetClassArray() );
+	dsValue *valueExtension = rt->CreateValue( clsFileSys.GetClassFileExtension() );
+	dsValue *valuePatterns = rt->CreateValue( sengine.GetClassArray() );
+	
+	try{
+		// create array
+		rt->CreateObject( valueResult, sengine.GetClassArray(), 0 );
+		
+		// iterate
+		const int foundCount = modules.GetCount();
+		for( i=0; i<foundCount; i++ ){
+			const deLoadableModule &module = *( const deLoadableModule * )modules.GetAt( i );
+			
+			// create pattern array
+			rt->CreateObject( valuePatterns, sengine.GetClassArray(), 0 );
+			
+			const decStringList &patterns = module.GetPatternList();
+			const int patternCount = patterns.GetCount();
+			for( j=0; j<patternCount; j++ ){
+				rt->PushString( patterns.GetAt( j ) );
+				rt->RunFunction( valuePatterns, "add", 1 );
+			}
+			
+			// create file extension
+			rt->PushString( module.GetDefaultExtension() );
+			rt->PushValue( valuePatterns );
+			rt->PushString( module.GetName() );
+			rt->CreateObject( valueExtension, clsFileSys.GetClassFileExtension(), 3 );
+			
+			// add to list
+			rt->PushValue( valueExtension );
+			rt->RunFunction( valueResult, "add", 1 );
+		}
+		
+		// push list as return value
+		rt->PushValue( valueResult );
+		
+		// clean up
+		rt->FreeValue( valuePatterns );
+		valuePatterns = nullptr;
+		
+		rt->FreeValue( valueResult );
+		valueResult = nullptr;
+		
+		rt->FreeValue( valueExtension );
+		
+	}catch( ... ){
+		if( valuePatterns ){
+			rt->FreeValue( valuePatterns );
+		}
+		if( valueExtension ){
+			rt->FreeValue( valueExtension );
+		}
+		if( valueResult ){
+			rt->FreeValue( valueResult );
+		}
+		throw;
+	}
+}
+
+// public static func void openUrl(String url)
+deClassFileSystem::nfOpenUrl::nfOpenUrl( const sInitData &init ) :
+dsFunction( init.clsFileSys, "openUrl", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // url
+}
+void deClassFileSystem::nfOpenUrl::RunFunction( dsRunTime *rt, dsValue* ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	clsFileSys.OpenUrl( rt->GetValue( 0 )->GetString() );
+}
+
 
 
 // Class deClassFileSystem
@@ -295,6 +578,8 @@ deClassFileSystem::~deClassFileSystem(){
 
 void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	pClsFileType = engine->GetClass( "Dragengine.FileType" );
+	pClsFileExtension = engine->GetClass( "Dragengine.FileExtension" );
+	pClsResourceLoaderType = engine->GetClass( "Dragengine.ResourceLoaderType" );
 	
 	sInitData init;
 	init.clsFileSys = this;
@@ -305,6 +590,9 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsStr = engine->GetClassString();
 	init.clsBlock = engine->GetClassBlock();
 	init.clsFileType = pClsFileType;
+	init.clsFileExtension = pClsFileExtension;
+	init.clsResourceLoaderType = pClsResourceLoaderType;
+	init.clsArray = engine->GetClassArray();
 	
 	AddFunction( new nfGetSeparator( init ) );
 	AddFunction( new nfGetPathSeparator( init ) );
@@ -319,6 +607,11 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSearchFiles( init ) );
 	AddFunction( new nfGetFileType( init ) );
 	AddFunction( new nfPathMatchesPattern( init ) );
+	AddFunction( new nfBrowseOverlay( init ) );
+	AddFunction( new nfBrowseCapture( init ) );
+	AddFunction( new nfBrowseConfig( init ) );
+	AddFunction( new nfGetFileExtensions( init ) );
+	AddFunction( new nfOpenUrl( init ) );
 	
 	CalcMemberOffsets();
 }
@@ -332,4 +625,40 @@ void deClassFileSystem::PrepareTypes(){
 	pTypeDirectory = pClsFileType->GetVariable( deVFSContainer::eftDirectory )->GetStaticValue();
 	pTypeSpecial = pClsFileType->GetVariable( deVFSContainer::eftSpecial )->GetStaticValue();
 	pTypesReady = true;
+}
+
+void deClassFileSystem::BrowseNativeDirectory( const decPath& path ) const{
+	#ifdef OS_W32
+	wchar_t widePath[ MAX_PATH ];
+	deOSWindows::Utf8ToWide( path.GetPathNative(), widePath, MAX_PATH );
+	ShellExecute( NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT );
+	
+	#else
+	const char * const appname = "xdg-open";
+	
+	if( fork() == 0 ){
+		// GetString() is required otherwise execlp fails to run correctly
+		execlp( appname, appname, path.GetPathUnix().GetString(), nullptr );
+		pDS->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
+		exit( 0 );
+	}
+	#endif
+}
+
+void deClassFileSystem::OpenUrl( const char *url ) const{
+	#ifdef OS_W32
+	wchar_t wideUrl[ 512 ];
+	deOSWindows::Utf8ToWide( url, wideUrl, 512 );
+	ShellExecute( NULL, L"open", wideUrl, NULL, NULL, SW_SHOWDEFAULT );
+	
+	#else
+	const char * const appname = "xdg-open";
+	
+	if( fork() == 0 ){
+		// GetString() is required otherwise execlp fails to run correctly
+		execlp( appname, appname, url, nullptr );
+		pDS->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
+		exit( 0 );
+	}
+	#endif
 }

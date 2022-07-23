@@ -26,6 +26,7 @@
 #include "deoglRenderbuffer.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 
@@ -47,18 +48,13 @@ pWidth( 1 ),
 pHeight( 1 ),
 pBitsPerPixel( 8 ),
 pIsDepth( false ),
-pMemoryUsageGPU( 0 ),
-pMemoryUsageColor( true ){
-	renderThread.GetMemoryManager().GetConsumption().GetRenderbuffer().IncrementCount();
+pMemUse( renderThread.GetMemoryManager().GetConsumption().renderbuffer ){
 }
 
 deoglRenderbuffer::~deoglRenderbuffer(){
 	pCleanUp();
 	
 	pRenderbuffer = 0;
-	UpdateMemoryUsage();
-	
-	pRenderThread.GetMemoryManager().GetConsumption().GetRenderbuffer().DecrementCount();
 }
 
 
@@ -115,49 +111,22 @@ void deoglRenderbuffer::Deactivate(){
 
 
 void deoglRenderbuffer::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetRenderbuffer();
+	pMemUse.Clear();
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.DecrementGPU( pMemoryUsageGPU );
-		
-		if( pMemoryUsageColor ){
-			consumption.DecrementColorCount();
-			consumption.DecrementColorGPU( pMemoryUsageGPU );
-			
-		}else{
-			consumption.DecrementDepthCount();
-			consumption.DecrementDepthGPU( pMemoryUsageGPU );
-		}
+	if( ! pRenderbuffer ){
+		return;
 	}
 	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageColor = true;
-	
-	if( pRenderbuffer ){
-		int baseSize;
-		
-		baseSize = pWidth * pHeight;
-		
-		baseSize *= pBitsPerPixel >> 3;
-		if( ( pBitsPerPixel & 0x7 ) > 0 ){
-			baseSize >>= 1;
-		}
-		
-		pMemoryUsageColor = ! pIsDepth;
-		pMemoryUsageGPU = baseSize;
+	int baseSize = pWidth * pHeight * ( pBitsPerPixel >> 3 );
+	if( ( pBitsPerPixel & 0x7 ) > 0 ){
+		baseSize >>= 1;
 	}
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.IncrementGPU( pMemoryUsageGPU );
+	if( pIsDepth ){
+		pMemUse.depth = baseSize;
 		
-		if( pMemoryUsageColor ){
-			consumption.IncrementColorCount();
-			consumption.IncrementColorGPU( pMemoryUsageGPU );
-			
-		}else{
-			consumption.IncrementDepthCount();
-			consumption.IncrementDepthGPU( pMemoryUsageGPU );
-		}
+	}else{
+		pMemUse.color = baseSize;
 	}
 }
 
@@ -248,7 +217,5 @@ void deoglRenderbuffer::SetStencilFormat(){
 //////////////////////
 
 void deoglRenderbuffer::pCleanUp(){
-	if( pRenderbuffer ){
-		pglDeleteRenderbuffers( 1, &pRenderbuffer );
-	}
+	pRenderThread.GetDelayedOperations().DeleteOpenGLRenderBuffer( pRenderbuffer );
 }

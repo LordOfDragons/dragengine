@@ -22,11 +22,13 @@
 #ifndef _DENAVIGATIONSPACEEDGE_H_
 #define _DENAVIGATIONSPACEEDGE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Navigation Space Edge.
  */
-class deNavigationSpaceEdge{
+class DE_DLL_EXPORT deNavigationSpaceEdge{
 private:
 	unsigned short pVertex1;
 	unsigned short pVertex2;

@@ -58,6 +58,7 @@ pAudioThread( audioThread ),
 pRange( 0.0f ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 0.0f ),
+pAttenuationDistanceOffset( 0.0f ),
 pRTConfig( NULL ),
 pRayCount( 0 ),
 pRayOpeningAngle( 0.0f ),
@@ -103,9 +104,10 @@ void deoalEnvProbe::SetRange( float range ){
 	Invalidate();
 }
 
-void deoalEnvProbe::SetAttenuation( float refDist, float rolloff ){
+void deoalEnvProbe::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
+	pAttenuationDistanceOffset = distanceOffset;
 	Invalidate();
 }
 
@@ -178,7 +180,7 @@ float deoalEnvProbe::AttenuatedGain( float distance ) const{
 	// gain = AL_REFERENCE_DISTANCE / (AL_REFERENCE_DISTANCE
 	//        + AL_ROLLOFF_FACTOR * ( distance - AL_REFERENCE_DISTANCE ) );
 	return pAttenuationRefDist / ( pAttenuationRefDist + pAttenuationRolloff
-		* decMath::max( distance - pAttenuationRefDist, 0.0f ) );
+		* decMath::max( distance + pAttenuationDistanceOffset - pAttenuationRefDist, 0.0f ) );
 }
 
 
@@ -249,7 +251,7 @@ const deoalRayTraceConfig &probeConfig ){
 	
 	pAudioThread.GetRTParallelEnvProbe().TraceSoundRays( roomParameters,
 		pSoundRayList, pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff,
-		world, rtWorldBVH, pLayerMask, *pRTConfig );
+		pAttenuationDistanceOffset, world, rtWorldBVH, pLayerMask, *pRTConfig );
 	
 	pMinExtend = roomParameters.minExtend;
 	pMaxExtend = roomParameters.maxExtend;

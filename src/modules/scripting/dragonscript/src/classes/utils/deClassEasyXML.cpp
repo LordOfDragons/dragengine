@@ -36,7 +36,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/visitors/decXmlVisitorWriter.h>
@@ -77,6 +79,17 @@ void deClassEasyXML::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 		nd.document->AddElement( root );
 		root->FreeReference();
 		
+	}catch( const deException &e ){
+		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
+		if( root ){
+			root->FreeReference();
+		}
+		if( nd.document ){
+			nd.document->FreeReference();
+			nd.document = NULL;
+		}
+		throw;
+		
 	}catch( ... ){
 		if( root ){
 			root->FreeReference();
@@ -111,12 +124,10 @@ void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
 	// load xml
 	deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
 	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
-	decBaseFileReader *reader = NULL;
-	decPath path;
 	
 	try{
-		path.SetFromUnix( filename );
-		reader = vfs.OpenFileForReading( path );
+		decBaseFileReaderReference reader;
+		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 		
 		nd.document = new dedsXmlDocument( filename );
 		
@@ -129,12 +140,15 @@ void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
 			nd.document->SetParseLog( parser.GetParseLog() );
 		}
 		
-		reader->FreeReference();
+	}catch( const deException &e ){
+		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
+		if( nd.document ){
+			nd.document->FreeReference();
+			nd.document = NULL;
+		}
+		throw;
 		
 	}catch( ... ){
-		if( reader ){
-			reader->FreeReference();
-		}
 		if( nd.document ){
 			nd.document->FreeReference();
 			nd.document = NULL;

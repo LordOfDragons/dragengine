@@ -36,6 +36,8 @@
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileReader.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
+#include <dragengine/common/file/decZFileReader.h>
+#include <dragengine/common/file/decZFileWriter.h>
 #include <dragengine/common/string/decString.h>
 #include <libdscript/exceptions.h>
 
@@ -155,19 +157,9 @@ deClassMemoryFile::nfGetReader::nfGetReader( const sInitData &init ) : dsFunctio
 void deClassMemoryFile::nfGetReader::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
-	decMemoryFileReader *reader = NULL;
 	
-	try{
-		reader = new decMemoryFileReader( memoryFile );
-		ds.GetClassFileReader()->PushFileReader( rt, reader );
-		reader->FreeReference();
-		
-	}catch( ... ){
-		if( reader ){
-			reader->FreeReference();
-		}
-		throw;
-	}
+	ds.GetClassFileReader()->PushFileReader( rt, decMemoryFileReader::Ref::New(
+		new decMemoryFileReader( memoryFile ) ) );
 }
 
 // public func FileWriter getWriter( bool append )
@@ -178,21 +170,37 @@ deClassMemoryFile::nfGetWriter::nfGetWriter( const sInitData &init ) : dsFunctio
 void deClassMemoryFile::nfGetWriter::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
-	decMemoryFileWriter *writer = NULL;
 	
 	const bool append = rt->GetValue( 0 )->GetBool();
 	
-	try{
-		writer = new decMemoryFileWriter( memoryFile, append );
-		ds.GetClassFileWriter()->PushFileWriter( rt, writer );
-		writer->FreeReference();
-		
-	}catch( ... ){
-		if( writer ){
-			writer->FreeReference();
-		}
-		throw;
-	}
+	ds.GetClassFileWriter()->PushFileWriter( rt, decMemoryFileWriter::Ref::New(
+		new decMemoryFileWriter( memoryFile, append ) ) );
+}
+
+// public func FileReader getReaderZCompressed()
+deClassMemoryFile::nfGetReaderZCompressed::nfGetReaderZCompressed( const sInitData &init ) :
+dsFunction( init.clsMemFile, "getReaderZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFRead ){
+}
+void deClassMemoryFile::nfGetReaderZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
+	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassFileReader()->PushFileReader( rt, decZFileReader::Ref::New( new decZFileReader(
+		decMemoryFileReader::Ref::New( new decMemoryFileReader( memoryFile ) ) ) ) );
+}
+
+// public func FileWriter getWriterZCompressed()
+deClassMemoryFile::nfGetWriterZCompressed::nfGetWriterZCompressed( const sInitData &init ) :
+dsFunction( init.clsMemFile, "getWriterZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFWrite ){
+}
+void deClassMemoryFile::nfGetWriterZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
+	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassFileWriter()->PushFileWriter( rt, decZFileWriter::Ref::New( new decZFileWriter(
+		decMemoryFileWriter::Ref::New( new decMemoryFileWriter( memoryFile, false ) ) ) ) );
 }
 
 
@@ -246,6 +254,8 @@ void deClassMemoryFile::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetReader( init ) );
 	AddFunction( new nfGetWriter( init ) );
+	AddFunction( new nfGetReaderZCompressed( init ) );
+	AddFunction( new nfGetWriterZCompressed( init ) );
 	
 	CalcMemberOffsets();
 }

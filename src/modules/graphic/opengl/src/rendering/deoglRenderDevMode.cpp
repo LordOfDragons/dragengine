@@ -30,11 +30,14 @@
 #include "plan/deoglRenderPlanDebug.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../collidelist/deoglCollideListComponent.h"
+#include "../collidelist/deoglCollideListLight.h"
 #include "../collidelist/deoglCollideListManager.h"
 #include "../collidelist/deoglCollideListPropField.h"
 #include "../collidelist/deoglCollideListPropFieldType.h"
+#include "../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../deoglDebugFont.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -50,6 +53,7 @@
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -65,9 +69,11 @@
 #include "../terrain/heightmap/deoglHTSCluster.h"
 #include "../terrain/heightmap/deoglHTView.h"
 #include "../terrain/heightmap/deoglHTViewSector.h"
+#include "../terrain/heightmap/deoglHTViewSectorCluster.h"
 #include "../terrain/heightmap/deoglRHeightTerrain.h"
 #include "../terrain/heightmap/deoglRHTSector.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture2d/deoglRenderableColorTextureManager.h"
 #include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
@@ -131,10 +137,6 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 	pVBOShapes = 0;
 	pVAOShapes = 0;
 	
-	pShaderSolidColor2D = NULL;
-	pShaderSolidColor3D = NULL;
-	pShaderShape = NULL;
-	
 	try{
 		pCreateShapesVAO();
 		
@@ -146,9 +148,6 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
@@ -282,26 +281,18 @@ void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
 	
 	shader.SetParameterFloat( spsc3dColor, colorSolid.r, colorSolid.g, colorSolid.b, colorSolid.a );
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l );
-		
-		if( light.GetVisible() ){
-			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-			shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-			
-			shapeBox.RenderFaces();
-		}
+		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+		box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
+		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		shapeBox.RenderFaces();
 	}
 	
 	shader.SetParameterFloat( spsc3dColor, colorWire.r, colorWire.g, colorWire.b, colorWire.a );
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l );
-		
-		if( light.GetVisible() ){
-			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-			shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
-			
-			shapeBox.RenderLines();
-		}
+		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+		box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
+		shader.SetParameterDMatrix4x4( spsc3dMatrixMVP, decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixVP );
+		shapeBox.RenderLines();
 	}
 	pglBindVertexArray( 0 );
 }
@@ -323,7 +314,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 	const float alphaSolid = 0.1f;
 	const float alphaWire = 1.0f;
 	deoglDCollisionBox box;
-	int c, lodLevel;
+	int c;
 	
 	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
 	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
@@ -337,10 +328,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 		deoglCollideListComponent &clComponent = *collideList.GetComponentAt( c );
 		deoglRComponent &component = *clComponent.GetComponent();
 		
-		lodLevel = clComponent.GetLODLevel();
-		if( lodLevel > 5 ){
-			lodLevel = 5;
-		}
+		const int lodLevel = decMath::min( clComponent.GetLODLevel(), 5 );
 		shader.SetParameterFloat( spsc3dColor, colorLevels[ lodLevel ].r, colorLevels[ lodLevel ].g, colorLevels[ lodLevel ].b, alphaSolid );
 		
 		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
@@ -353,10 +341,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 		deoglCollideListComponent &clComponent = *collideList.GetComponentAt( c );
 		deoglRComponent &component = *clComponent.GetComponent();
 		
-		lodLevel = clComponent.GetLODLevel();
-		if( lodLevel > 5 ){
-			lodLevel = 5;
-		}
+		const int lodLevel = decMath::min( clComponent.GetLODLevel(), 5 );
 		shader.SetParameterFloat( spsc3dColor, colorLevels[ lodLevel ].r, colorLevels[ lodLevel ].g, colorLevels[ lodLevel ].b, alphaWire );
 		
 		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
@@ -510,12 +495,11 @@ void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
 			
 			for( j=0; j<typeCount; j++ ){
 				if( j == typeIndex ){
-					const deoglCollideListPropFieldType &clPropFieldType = *clPropField.GetTypeAt( j );
-					deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
-					const int clusterCount = clPropFieldType.GetClusterCount();
+					const deoglCollideListPropFieldType &cltype = *clPropField.GetTypeAt( j );
+					const int clusterCount = cltype.GetClusterCount();
 					
 					for( k=0; k<clusterCount; k++ ){
-						const deoglPropFieldCluster &cluster = *clusters[ k ];
+						const deoglPropFieldCluster &cluster = *cltype.GetClusterAt( k ).GetCluster();
 						
 						box.SetFromExtends( propFieldOffset + decDVector( cluster.GetMinimumExtend() ),
 							propFieldOffset + decDVector( cluster.GetMaximumExtend() ) );
@@ -565,7 +549,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l );
+			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
 			
 			box.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
 			
@@ -585,7 +569,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		const decColor colorWire( colorSolid.r, colorSolid.g, colorSolid.b, alphaWire );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l );
+			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
 			
 			box.SetFromExtends( light.GetFullMinExtend(), light.GetFullMaxExtend() );
 			
@@ -607,14 +591,15 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l );
+			const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+			const deoglRLight &light = *cllight.GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
 			pglBindVertexArray( lightVolume.GetVAO() );
 			shader->SetParameterDMatrix4x4( spsMatrixMVP, light.GetMatrix() * matrixVP );
 			shader->SetParameterDMatrix4x4( spsMatrixMVP2, light.GetMatrix() * matrixVP );
 			
-			if( light.GetCameraInside() ){
+			if( cllight.GetCameraInside() ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.01f ) );
 				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
 				
@@ -637,13 +622,14 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	
 	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
-		deoglRLight &light = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
+		const deoglCollideListLight &cllight = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
+		const deoglRLight &light = *cllight.GetLight();
 		decMatrix matrix1, matrix2;
 		decDMatrix matrixMVP;
 		
 		if( light.GetLightType() == deLight::eltSpot ){
-			const deoglComponentList &listStatic = light.GetStaticComponentList();
-			const deoglComponentList &listDynamic = light.GetDynamicComponentList();
+			const deoglComponentSet &listStatic = light.GetStaticComponentList();
+			const deoglComponentSet &listDynamic = light.GetDynamicComponentList();
 			const float cutOffDist = light.GetRange();
 			int i, count;
 			
@@ -724,7 +710,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 			shader->SetParameterDMatrix4x4( spsMatrixMVP, decDMatrix( matrix1 ) * matrixMVP );
 			shader->SetParameterDMatrix4x4( spsMatrixMVP2, decDMatrix( matrix2 ) * matrixMVP );
 			
-			if( light.GetCameraInside() ){
+			if( cllight.GetCameraInside() ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
 				shapeCylinder.RenderFaces();
 				
@@ -928,6 +914,8 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	// overwise prepare for rendering the overlay information
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( pVAOShapes ) );
 	
@@ -970,6 +958,9 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	
 	if( devMode.GetShowDebugInfo() ){
 		RenderDebugInformation( plan, position, size );
+		if( devMode.GetDebugInfoLog() ){
+			LogDebugInformation();
+		}
 		position.y += size.y + vgap;
 	}
 	
@@ -990,7 +981,7 @@ void deoglRenderDevMode::RenderOccMapLevel( deoglRenderPlan &plan ){
 		occMapLevel = occMapMaxLevel;
 	}
 	
-	GetRenderThread().GetRenderers().GetDebug().DisplayTextureLevel( plan, occmap.GetTexture(), occMapLevel, false );
+	GetRenderThread().GetRenderers().GetDebug().DisplayArrayTextureLayerLevel( plan, occmap.GetTexture(), 0, occMapLevel, false );
 }
 
 void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
@@ -1032,7 +1023,6 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 			if( scoord.x >= fromSector.x && scoord.y >= fromSector.y && scoord.x <= toSector.x && scoord.y <= toSector.y ){
 				const deoglHTViewSector &htvsector = *htview->GetSectorAt( s );
 				const deoglHTSCluster * const htclusters = htsector.GetClusters();
-				const sHTVSCluster * const htvclusters = htvsector.GetClusters();
 				const int clusterCount = htsector.GetClusterCount();
 				
 				camrelpos = campos.ToVector(); // TODO adjust to sector
@@ -1060,7 +1050,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 				ci = 0;
 				for( z=0; z<clusterCount; z++ ){
 					for( x=0; x<clusterCount; x++ ){
-						lodLevel = htvclusters[ ci ].lodLevel;
+						lodLevel = htvsector.GetClusterAt( ci ).GetLodLevel();
 						
 						if( lodLevel < 0 ){
 							shader.SetParameterFloat( spsc2dColor, 0.25f, 0.25f, 0.25f, 1.0f );
@@ -1159,13 +1149,15 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	int maxWidth = 0;
 	decString text;
 	
+	renderDebug.BeginRenderText();
+	
 	/*
-	"View:    O %5i       | T %7i       | L %3i       | E %3i"
-	"CullPS:  O %5i(%3i%%) | T %7i(%3i%%) | L %3i(%3i%%) | S %4i"
-	"Outside: O %5i(%3i%%) | T %7i(%3i%%)"
-	"OccMap:  O %5i | T %7i | I %5i | Rt %2i.%1ims | Tt %2i.%1ims | Ot %2i.%1ims"
-	"LOD:     O %5i(%3i%%) | T %7i(%3i%%)"
-	"Render:  O %5i(%3i%%) | T %7i(%3i%%) | L %3i(%3i%%) | E %3i | P %2i"
+	"View:    O %5i       | T %7i       | L %3d       | E %3d"
+	"CullPS:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | S %4d"
+	"Outside: O %5i(%3d%%) | T %7i(%3d%%)"
+	"OccMap:  O %5i | T %7i | I %5i | Rt %2d.%1ims | Tt %2d.%1ims | Ot %2d.%1ims"
+	"LOD:     O %5i(%3d%%) | T %7i(%3d%%)"
+	"Render:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | E %3d | P %2d"
 	*/
 	// information about visible objects in the view before any culling is done
 	const int viewObjects = debug.GetViewObjects();
@@ -1173,8 +1165,8 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	const int viewLights = debug.GetViewLights();
 	const int viewEnvMaps = debug.GetViewEnvMaps();
 	
-	text.Format( "View:    O %5i       | T %7i       | L %3i       | E %3i", viewObjects, viewTriangles, viewLights, viewEnvMaps );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	text.Format( "View:    O %5i       | T %7i       | L %3d       | E %3d", viewObjects, viewTriangles, viewLights, viewEnvMaps );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1196,10 +1188,10 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 		cullPSLightsRatio = 100.0 * ( ( double )cullPSLights / ( double )viewLights );
 	}
 	
-	text.Format( "CullPS:  O %5i(%3i%%) | T %7i(%3i%%) | L %3i(%3i%%)", cullPSObjects,
+	text.Format( "CullPS:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%)", cullPSObjects,
 		( int )cullPSObjectsRatio, cullPSTriangles, ( int )cullPSTrianglesRatio, cullPSLights,
 		( int )cullPSLightsRatio );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1211,12 +1203,12 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	const float occTotalTime = occmapRenderTime + occTestTime;
 	const int occTestCount = debug.GetOccTestCount();
 	
-	text.Format( "OccMap:  O %5i | T %7i | I %5i | Rt %2i.%1ims | Tt %2i.%1ims | Ot %2i.%1ims",
+	text.Format( "OccMap:  O %5i | T %7i | I %5i | Rt %2d.%1ims | Tt %2d.%1ims | Ot %2d.%1ims",
 		occmapObjects, occmapTriangles, occTestCount,
 		( int )( occmapRenderTime * 1000.0f ), ( int )( occmapRenderTime * 10000.0f ) % 10,
 		( int )( occTestTime * 1000.0f ), ( int )( occTestTime * 10000.0f ) % 10,
 		( int )( occTotalTime * 1000.0f ), ( int )( occTotalTime * 10000.0f ) % 10 );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1237,8 +1229,8 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 		lodTrianglesRatio = 100.0 * ( ( double )renderTriangles / ( double )lodTriangles );
 	}
 	
-	text.Format( "LOD:     O       (   ) | T %7i(%3i%%)", lodTriangles, ( int )lodTrianglesRatio );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	text.Format( "LOD:     O       (   ) | T %7i(%3d%%)", lodTriangles, ( int )lodTrianglesRatio );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1252,12 +1244,14 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 		renderLightsRatio = 100.0 * ( ( double )renderLights / ( double )viewLights );
 	}
 	
-	text.Format( "Render:  O %5i(%3i%%) | T %7i(%3i%%) | L %3i(%3i%%) | E %3i | P %2i", renderObjects,
+	text.Format( "Render:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | E %3d | P %2d", renderObjects,
 		( int )renderObjectsRatio, renderTriangles, ( int )renderTrianglesRatio, renderLights,
 		( int )renderLightsRatio, ( int )renderEnvMaps, renderPasses );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
+	
+	renderDebug.EndRenderText();
 	
 	// finished
 	size.x = maxWidth;
@@ -1266,38 +1260,39 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
 	const decColor color1 = decColor( 1.0f, 1.0f, 1.0f );
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglMemoryConsumption &consumption = renderThread.GetMemoryManager().GetConsumption();
 	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
 	int y = position.y;
 	int maxWidth = 0;
 	decString text;
 	
-	const char * const fmtTex2D  = "Tex2D (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
-	const char * const fmtTexArr = "TexArr(%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
-	const char * const fmtCube   = "Cube  (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
-	const char * const fmtRenBuf = "RenBuf(%4i): %4uM                 | C(%4i) %4uM                 | D(%3i) %3uM";
-	const char * const fmtSkin   = "Skins (%4i): %4uM %4uM(%2i%%) %3uM";
-	const char * const fmtRender = "Renderables :  2D-C(%2i) %3uM | 2D-D(%2i) %3uM | Arr(%2i) %3uM";
-	const char * const fmtVBO    = "VBO   (%4i): %4uM | S(%4i) %4uM | I(%4i) %4uM | T(%4i) %4uM";
+	const char * const fmtTex2D  = "Tex2D (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtTexArr = "TexArr(%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtCube   = "Cube  (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtRenBuf = "RenBuf(%4d): %4" OGLPFLLU "M                 | C(%4d) %4" OGLPFLLU "M                 | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtSkin   = "Skins (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M";
+	const char * const fmtRender = "Renderables :  2D-C(%2d) %3" OGLPFLLU "M | 2D-D(%2d) %3" OGLPFLLU "M | Arr-C(%2d) %3" OGLPFLLU "M | Arr-D(%2d) %3" OGLPFLLU "M";
+	const char * const fmtVBO    = "VBO   (%4d): %4uM | S(%4d) %4uM | I(%4d) %4uM | S(%4d) %4uM | T(%4d) %4uM";
 	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
 	
 	// textures 2d
-	const deoglMemoryConsumptionTexture &consumptionTexture2D = renderThread.GetMemoryManager().GetConsumption().GetTexture2D();
-	const int textureCount = consumptionTexture2D.GetCount();
-	const int textureColorCount = consumptionTexture2D.GetColorCount();
-	const int textureDepthCount = consumptionTexture2D.GetDepthCount();
-	unsigned int textureGPU = consumptionTexture2D.GetGPU();
-	unsigned int textureGPUCompressed = consumptionTexture2D.GetGPUCompressed();
-	unsigned int textureGPUUncompressed = consumptionTexture2D.GetGPUUncompressed();
-	unsigned int textureColorGPU = consumptionTexture2D.GetColorGPU();
-	unsigned int textureColorGPUCompressed = consumptionTexture2D.GetColorGPUCompressed();
-	unsigned int textureColorGPUUncompressed = consumptionTexture2D.GetColorGPUUncompressed();
-	unsigned int textureDepthGPU = consumptionTexture2D.GetDepthGPU();
-	//unsigned int textureDepthGPUCompressed = consumptionTexture2D.GetDepthGPUCompressed();
-	//unsigned int textureDepthGPUUncompressed = consumptionTexture2D.GetDepthGPUUncompressed();
-	double textureRatioCompressed = 0.0f;
-	double textureColorRatioCompressed = 0.0f;
-	//double textureDepthRatioCompressed = 0.0f;
+	const deoglMemoryConsumptionTexture &consumptionTexture2D = consumption.texture2D;
+	const int textureCount = consumptionTexture2D.all.GetCount();
+	const int textureColorCount = consumptionTexture2D.color.GetCount();
+	const int textureDepthCount = consumptionTexture2D.depth.GetCount();
+	unsigned long long textureGPU = consumptionTexture2D.all.GetConsumption();
+	unsigned long long textureGPUCompressed = consumptionTexture2D.allCompressed.GetConsumption();
+	unsigned long long textureGPUUncompressed = consumptionTexture2D.allUncompressed.GetConsumption();
+	unsigned long long textureColorGPU = consumptionTexture2D.color.GetConsumption();
+	unsigned long long textureColorGPUCompressed = consumptionTexture2D.colorCompressed.GetConsumption();
+	unsigned long long textureColorGPUUncompressed = consumptionTexture2D.colorUncompressed.GetConsumption();
+	unsigned long long textureDepthGPU = consumptionTexture2D.depth.GetConsumption();
+	//unsigned long long textureDepthGPUCompressed = consumptionTexture2D.depthCompressed.GetConsumption();
+	//unsigned long long textureDepthGPUUncompressed = consumptionTexture2D.depthUncompressed.GetConsumption();
+	double textureRatioCompressed = 0.0;
+	double textureColorRatioCompressed = 0.0;
+	//double textureDepthRatioCompressed = 0.0;
 	
 	if( textureGPU > 0 ){
 		textureRatioCompressed = 100.0 * ( ( double )textureGPUCompressed / ( double )textureGPU );
@@ -1315,40 +1310,42 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//	textureDepthRatioCompressed = 100.0 * ( ( double )textureDepthGPUCompressed / ( double )textureDepthGPU );
 	//}
 	
-	textureGPU /= 1000000;
-	textureGPUCompressed /= 1000000;
-	textureGPUUncompressed /= 1000000;
-	textureColorGPU /= 1000000;
-	textureColorGPUCompressed /= 1000000;
-	textureColorGPUUncompressed /= 1000000;
-	textureDepthGPU /= 1000000;
-	//textureDepthGPUCompressed /= 1000000;
-	//textureDepthGPUUncompressed /= 1000000;
+	textureGPU /= 1000000ull;
+	textureGPUCompressed /= 1000000ull;
+	textureGPUUncompressed /= 1000000ull;
+	textureColorGPU /= 1000000ull;
+	textureColorGPUCompressed /= 1000000ull;
+	textureColorGPUUncompressed /= 1000000ull;
+	textureDepthGPU /= 1000000ull;
+	//textureDepthGPUCompressed /= 1000000ull;
+	//textureDepthGPUUncompressed /= 1000000ull;
+	
+	renderDebug.BeginRenderText();
 	
 	text.Format( fmtTex2D, textureCount, textureGPU, textureGPUCompressed, ( int )textureRatioCompressed,
 		textureGPUUncompressed, textureColorCount, textureColorGPU, textureColorGPUCompressed,
 		( int )textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// textures array
-	const deoglMemoryConsumptionTexture &consumptionTextureArray = renderThread.GetMemoryManager().GetConsumption().GetTextureArray();
-	const int textureArrayCount = consumptionTextureArray.GetCount();
-	const int textureArrayColorCount = consumptionTextureArray.GetColorCount();
-	const int textureArrayDepthCount = consumptionTextureArray.GetDepthCount();
-	unsigned int textureArrayGPU = consumptionTextureArray.GetGPU();
-	unsigned int textureArrayGPUCompressed = consumptionTextureArray.GetGPUCompressed();
-	unsigned int textureArrayGPUUncompressed = consumptionTextureArray.GetGPUUncompressed();
-	unsigned int textureArrayColorGPU = consumptionTextureArray.GetColorGPU();
-	unsigned int textureArrayColorGPUCompressed = consumptionTextureArray.GetColorGPUCompressed();
-	unsigned int textureArrayColorGPUUncompressed = consumptionTextureArray.GetColorGPUUncompressed();
-	unsigned int textureArrayDepthGPU = consumptionTextureArray.GetDepthGPU();
-	//unsigned int textureArrayDepthGPUCompressed = consumptionTextureArray.GetDepthGPUCompressed();
-	//unsigned int textureArrayDepthGPUUncompressed = consumptionTextureArray.GetDepthGPUUncompressed();
-	double textureArrayRatioCompressed = 0.0f;
-	double textureArrayColorRatioCompressed = 0.0f;
-	//double textureArrayDepthRatioCompressed = 0.0f;
+	const deoglMemoryConsumptionTexture &consumptionTextureArray = consumption.textureArray;
+	const int textureArrayCount = consumptionTextureArray.all.GetCount();
+	const int textureArrayColorCount = consumptionTextureArray.color.GetCount();
+	const int textureArrayDepthCount = consumptionTextureArray.depth.GetCount();
+	unsigned long long textureArrayGPU = consumptionTextureArray.all.GetConsumption();
+	unsigned long long textureArrayGPUCompressed = consumptionTextureArray.allCompressed.GetConsumption();
+	unsigned long long textureArrayGPUUncompressed = consumptionTextureArray.allUncompressed.GetConsumption();
+	unsigned long long textureArrayColorGPU = consumptionTextureArray.color.GetConsumption();
+	unsigned long long textureArrayColorGPUCompressed = consumptionTextureArray.colorCompressed.GetConsumption();
+	unsigned long long textureArrayColorGPUUncompressed = consumptionTextureArray.colorUncompressed.GetConsumption();
+	unsigned long long textureArrayDepthGPU = consumptionTextureArray.depth.GetConsumption();
+	//unsigned long long textureArrayDepthGPUCompressed = consumptionTextureArray.depthCompressed.GetConsumption();
+	//unsigned long long textureArrayDepthGPUUncompressed = consumptionTextureArray.depthUncompressed.GetConsumption();
+	double textureArrayRatioCompressed = 0.0;
+	double textureArrayColorRatioCompressed = 0.0;
+	//double textureArrayDepthRatioCompressed = 0.0;
 	
 	if( textureArrayGPU > 0 ){
 		textureArrayRatioCompressed = 100.0 * ( ( double )textureArrayGPUCompressed / ( double )textureArrayGPU );
@@ -1366,37 +1363,37 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//	textureArrayDepthRatioCompressed = 100.0 * ( ( double )textureArrayDepthGPUCompressed / ( double )textureArrayDepthGPU );
 	//}
 	
-	textureArrayGPU /= 1000000;
-	textureArrayGPUCompressed /= 1000000;
-	textureArrayGPUUncompressed /= 1000000;
-	textureArrayColorGPU /= 1000000;
-	textureArrayColorGPUCompressed /= 1000000;
-	textureArrayColorGPUUncompressed /= 1000000;
-	textureArrayDepthGPU /= 1000000;
-	//textureArrayDepthGPUCompressed /= 1000000;
-	//textureArrayDepthGPUUncompressed /= 1000000;
+	textureArrayGPU /= 1000000ull;
+	textureArrayGPUCompressed /= 1000000ull;
+	textureArrayGPUUncompressed /= 1000000ull;
+	textureArrayColorGPU /= 1000000ull;
+	textureArrayColorGPUCompressed /= 1000000ull;
+	textureArrayColorGPUUncompressed /= 1000000ull;
+	textureArrayDepthGPU /= 1000000ull;
+	//textureArrayDepthGPUCompressed /= 1000000ull;
+	//textureArrayDepthGPUUncompressed /= 1000000ull;
 	
 	text.Format( fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, ( int )textureArrayRatioCompressed,
 		textureArrayGPUUncompressed, textureArrayColorCount, textureArrayColorGPU, textureArrayColorGPUCompressed,
 		( int )textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// cube maps
-	const deoglMemoryConsumptionTexture &consumptionTextureCube = renderThread.GetMemoryManager().GetConsumption().GetTextureCube();
-	const int cubemapCount = consumptionTextureCube.GetCount();
-	const int cubemapColorCount = consumptionTextureCube.GetColorCount();
-	const int cubemapDepthCount = consumptionTextureCube.GetDepthCount();
-	unsigned int cubemapGPU = consumptionTextureCube.GetGPU();
-	unsigned int cubemapGPUCompressed = consumptionTextureCube.GetGPUCompressed();
-	unsigned int cubemapGPUUncompressed = consumptionTextureCube.GetGPUUncompressed();
-	unsigned int cubemapColorGPU = consumptionTextureCube.GetColorGPU();
-	unsigned int cubemapColorGPUCompressed = consumptionTextureCube.GetColorGPUCompressed();
-	unsigned int cubemapColorGPUUncompressed = consumptionTextureCube.GetColorGPUUncompressed();
-	unsigned int cubemapDepthGPU = consumptionTextureCube.GetDepthGPU();
-	//unsigned int cubemapDepthGPUCompressed = consumptionTextureCube.GetDepthGPUCompressed();
-	//unsigned int cubemapDepthGPUUncompressed = consumptionTextureCube.GetDepthGPUUncompressed();
+	const deoglMemoryConsumptionTexture &consumptionTextureCube = consumption.textureCube;
+	const int cubemapCount = consumptionTextureCube.all.GetCount();
+	const int cubemapColorCount = consumptionTextureCube.color.GetCount();
+	const int cubemapDepthCount = consumptionTextureCube.depth.GetCount();
+	unsigned long long cubemapGPU = consumptionTextureCube.all.GetConsumption();
+	unsigned long long cubemapGPUCompressed = consumptionTextureCube.allCompressed.GetConsumption();
+	unsigned long long cubemapGPUUncompressed = consumptionTextureCube.allUncompressed.GetConsumption();
+	unsigned long long cubemapColorGPU = consumptionTextureCube.color.GetConsumption();
+	unsigned long long cubemapColorGPUCompressed = consumptionTextureCube.colorCompressed.GetConsumption();
+	unsigned long long cubemapColorGPUUncompressed = consumptionTextureCube.colorUncompressed.GetConsumption();
+	unsigned long long cubemapDepthGPU = consumptionTextureCube.depth.GetConsumption();
+	//unsigned long long cubemapDepthGPUCompressed = consumptionTextureCube.depthCompressed.GetConsumption();
+	//unsigned long long cubemapDepthGPUUncompressed = consumptionTextureCube.depthUncompressed.GetConsumption();
 	double cubemapRatioCompressed = 0.0f;
 	double cubemapColorRatioCompressed = 0.0f;
 	//double cubemapDepthRatioCompressed = 0.0f;
@@ -1417,49 +1414,49 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//	cubemapDepthRatioCompressed = 100.0 * ( ( double )cubemapDepthGPUCompressed / ( double )cubemapDepthGPU );
 	//}
 	
-	cubemapGPU /= 1000000;
-	cubemapGPUCompressed /= 1000000;
-	cubemapGPUUncompressed /= 1000000;
-	cubemapColorGPU /= 1000000;
-	cubemapColorGPUCompressed /= 1000000;
-	cubemapColorGPUUncompressed /= 1000000;
-	cubemapDepthGPU /= 1000000;
-	//cubemapDepthGPUCompressed /= 1000000;
-	//cubemapDepthGPUUncompressed /= 1000000;
+	cubemapGPU /= 1000000ull;
+	cubemapGPUCompressed /= 1000000ull;
+	cubemapGPUUncompressed /= 1000000ull;
+	cubemapColorGPU /= 1000000ull;
+	cubemapColorGPUCompressed /= 1000000ull;
+	cubemapColorGPUUncompressed /= 1000000ull;
+	cubemapDepthGPU /= 1000000ull;
+	//cubemapDepthGPUCompressed /= 1000000ull;
+	//cubemapDepthGPUUncompressed /= 1000000ull;
 	
 	text.Format( fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, ( int )cubemapRatioCompressed, cubemapGPUUncompressed,
 		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
 		cubemapDepthCount, cubemapDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// renderbuffer
-	const deoglMemoryConsumptionTexture &consumptionRenderbuffer = renderThread.GetMemoryManager().GetConsumption().GetRenderbuffer();
-	const int renderbufferCount = consumptionRenderbuffer.GetCount();
-	const int renderbufferColorCount = consumptionRenderbuffer.GetColorCount();
-	const int renderbufferDepthCount = consumptionRenderbuffer.GetDepthCount();
-	unsigned int renderbufferGPU = consumptionRenderbuffer.GetGPU();
-	unsigned int renderbufferColorGPU = consumptionRenderbuffer.GetColorGPU();
-	unsigned int renderbufferDepthGPU = consumptionRenderbuffer.GetDepthGPU();
+	const deoglMemoryConsumptionRenderBuffer &consumptionRenderbuffer = consumption.renderbuffer;
+	const int renderbufferCount = consumptionRenderbuffer.all.GetCount();
+	const int renderbufferColorCount = consumptionRenderbuffer.color.GetCount();
+	const int renderbufferDepthCount = consumptionRenderbuffer.depth.GetCount();
+	unsigned long long renderbufferGPU = consumptionRenderbuffer.all.GetConsumption();
+	unsigned long long renderbufferColorGPU = consumptionRenderbuffer.color.GetConsumption();
+	unsigned long long renderbufferDepthGPU = consumptionRenderbuffer.depth.GetConsumption();
 	
-	renderbufferGPU /= 1000000;
-	renderbufferColorGPU /= 1000000;
-	renderbufferDepthGPU /= 1000000;
+	renderbufferGPU /= 1000000ull;
+	renderbufferColorGPU /= 1000000ull;
+	renderbufferDepthGPU /= 1000000ull;
 	
 	text.Format( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
 		renderbufferDepthCount, renderbufferDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// skin memory consumption
-	const deoglMemoryConsumptionTexture &consumptionSkin = renderThread.GetMemoryManager().GetConsumption().GetSkin();
-	const int skinCount = consumptionSkin.GetCount();
-	unsigned int skinGPU = consumptionSkin.GetGPU();
-	unsigned int skinGPUCompressed = consumptionSkin.GetGPUCompressed();
-	unsigned int skinGPUUncompressed = consumptionSkin.GetGPUUncompressed();
-	double percentageCompressed = 0.0f;
+	const deoglMemoryConsumptionSkin &consumptionSkin = consumption.skin;
+	const int skinCount = consumptionSkin.all.GetCount();
+	unsigned long long skinGPU = consumptionSkin.all.GetConsumption();
+	unsigned long long skinGPUCompressed = consumptionSkin.allCompressed.GetConsumption();
+	unsigned long long skinGPUUncompressed = consumptionSkin.allUncompressed.GetConsumption();
+	double percentageCompressed = 0.0;
 	
 	if( skinGPU > 0 ){
 		percentageCompressed = 100.0 * ( ( double )skinGPUCompressed / ( double )skinGPU );
@@ -1468,75 +1465,86 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 		}
 	}
 	
-	skinGPU /= 1000000;
-	skinGPUCompressed /= 1000000;
-	skinGPUUncompressed /= 1000000;
+	skinGPU /= 1000000ull;
+	skinGPUCompressed /= 1000000ull;
+	skinGPUUncompressed /= 1000000ull;
 	
 	text.Format( fmtSkin, skinCount, skinGPU, skinGPUCompressed, ( int )percentageCompressed, skinGPUUncompressed );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// renderable memory consumption
 	const int renderable2DColorCount = renderThread.GetTexture().GetRenderableColorTexture().GetTextureCount();
 	const int renderable2DDepthCount = renderThread.GetTexture().GetRenderableDepthTexture().GetTextureCount();
-	const int renderableArrayCount = renderThread.GetTexture().GetRenderableArrayTexture().GetTextureCount();
-	unsigned int renderable2DColorGPU = 0; //memmgr.GetRenderable2DColorGPU();
-	unsigned int renderable2DDepthGPU = 0; //memmgr.GetRenderable2DDepthGPU();
-	unsigned int renderableArrayGPU = 0; //memmgr.GetRenderableArrayGPU();
+	const int renderableArrayColorCount = renderThread.GetTexture().GetRenderableColorArrayTexture().GetCount();
+	const int renderableArrayDepthCount = renderThread.GetTexture().GetRenderableDepthArrayTexture().GetCount();
+	unsigned long long renderable2DColorGPU = 0; //memmgr.GetRenderable2DColorGPU();
+	unsigned long long renderable2DDepthGPU = 0; //memmgr.GetRenderable2DDepthGPU();
+	unsigned long long renderableArrayColorGPU = 0; //memmgr.GetRenderableArrayGPU();
+	unsigned long long renderableArrayDepthGPU = 0; //memmgr.GetRenderableArrayGPU();
 	
-	renderable2DColorGPU /= 1000000;
-	renderable2DDepthGPU /= 1000000;
-	renderableArrayGPU /= 1000000;
+	renderable2DColorGPU /= 1000000ull;
+	renderable2DDepthGPU /= 1000000ull;
+	renderableArrayColorGPU /= 1000000ull;
+	renderableArrayDepthGPU /= 1000000ull;
 	
-	text.Format( fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount, renderable2DDepthGPU,
-		renderableArrayCount, renderableArrayGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	text.Format( fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount,
+		renderable2DDepthGPU, renderableArrayColorCount, renderableArrayColorGPU,
+		renderableArrayDepthCount, renderableArrayDepthGPU );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// vbo
-	const deoglMemoryConsumptionVBO &consumptionVBO = renderThread.GetMemoryManager().GetConsumption().GetVBO();
-	const int vboCount = consumptionVBO.GetCount();
-	const int vboSharedCount = consumptionVBO.GetSharedCount();
-	const int vboIBOCount = consumptionVBO.GetIBOCount();
-	const int vboTBOCount = consumptionVBO.GetTBOCount();
-	unsigned int vboGPU = consumptionVBO.GetGPU() / 1000000;
-	unsigned int vboSharedGPU = consumptionVBO.GetSharedGPU() / 1000000;
-	unsigned int vboIBOGPU = consumptionVBO.GetIBOGPU() / 1000000;
-	unsigned int vboTBOGPU = consumptionVBO.GetTBOGPU() / 1000000;
+	const deoglMemoryConsumptionBufferObject &consumptionBO = consumption.bufferObject;
+	const int vboCount = consumptionBO.vbo.GetCount();
+	const int vboSharedCount = consumptionBO.vboShared.GetCount();
+	const int iboCount = consumptionBO.ibo.GetCount();
+	const int iboSharedCount = consumptionBO.iboShared.GetCount();
+	const int tboCount = consumptionBO.tbo.GetCount();
+	unsigned int vboGPU = consumptionBO.vbo.GetConsumptionMB();
+	unsigned int vboSharedGPU = consumptionBO.vboShared.GetConsumptionMB();
+	unsigned int iboGPU = consumptionBO.ibo.GetConsumptionMB();
+	unsigned int iboSharedGPU = consumptionBO.iboShared.GetConsumptionMB();
+	unsigned int tboGPU = consumptionBO.tbo.GetConsumptionMB();
 	
-	text.Format( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, vboIBOCount, vboIBOGPU, vboTBOCount, vboTBOGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	text.Format( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, iboCount,
+		iboGPU, iboSharedCount, iboSharedGPU, tboCount, tboGPU );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// deferred rendering system
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	int defrenGPU = defren.GetMemoryUsageGPU() / 1000000;
-	int defrenGPUTexture = defren.GetMemoryUsageGPUTexture() / 1000000;
-	int defrenGPURenBuf = defren.GetMemoryUsageGPURenderbuffer() / 1000000;
+	const deoglMemoryConsumptionDeferredRendering &consumptionDefren = consumption.deferredRendering;
+	unsigned int defrenGPU = consumptionDefren.target.GetConsumptionMB();
+	unsigned int defrenGPUTexture = consumptionDefren.texture.GetConsumptionMB();
+	unsigned int defrenGPURenBuf = consumptionDefren.renderBuffer.GetConsumptionMB();
 	
 	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// grand total of all above
-	int totalGPU;
+	unsigned long long totalGPU;
 	
-	totalGPU = consumptionTexture2D.GetGPU();
-	totalGPU += consumptionTextureArray.GetGPU();
-	totalGPU += consumptionTextureCube.GetGPU();
-	totalGPU += consumptionRenderbuffer.GetGPU();
-	totalGPU += consumptionVBO.GetGPU();
-	totalGPU /= 1000000;
+	totalGPU = consumptionTexture2D.all.GetConsumption();
+	totalGPU += consumptionTextureArray.all.GetConsumption();
+	totalGPU += consumptionTextureCube.all.GetConsumption();
+	totalGPU += consumptionRenderbuffer.all.GetConsumption();
+	totalGPU += consumptionBO.vbo.GetConsumption();
+	totalGPU += consumptionBO.ibo.GetConsumption();
+	totalGPU += consumptionBO.ubo.GetConsumption();
+	totalGPU += consumptionBO.ssbo.GetConsumption();
+	totalGPU /= 1000000ull;
 	
-	text.Format( "Total %4iM", totalGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	text.Format( "Total %4" OGLPFLLU "M", totalGPU );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
+	renderDebug.EndRenderText();
 	
 	size.x = maxWidth;
 }
@@ -1555,11 +1563,60 @@ const decPoint &position, decPoint &size ){
 	
 	LayoutDebugInformation( plan, decPoint(), size, list, 0, maxWidth, true );
 	
+	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
+	renderDebug.BeginRenderRectangle();
+	renderDebug.BeginRenderText();
+	
 	int i;
 	for( i=0; i<count; i++ ){
 		const deoglDebugInformation &debugInformation = *list.GetAt( i );
 		if( debugInformation.GetVisible() ){
 			RenderDebugInformation( plan, position, debugInformation );
+		}
+	}
+	
+	renderDebug.EndRenderRectangle();
+	renderDebug.EndRenderText();
+}
+
+void deoglRenderDevMode::LogDebugInformation(){
+	const deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	const int count = list.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRTLogger &logger = GetRenderThread().GetLogger();
+	logger.LogInfo( "LogDebugInformation:" );
+	LogDebugInformation( list, decString() );
+}
+
+void deoglRenderDevMode::LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix ){
+	deoglRTLogger &logger = GetRenderThread().GetLogger();
+	const int count = list.GetCount();
+	int i;
+	
+	const decString childPrefix( prefix + "  " );
+	for( i=0; i<count; i++ ){
+		const deoglDebugInformation &di = *list.GetAt( i );
+		if( ! di.GetVisible() ){
+			continue;
+		}
+		
+		if( di.HasElapsedTime() && di.HasCounter() ){
+			logger.LogInfoFormat( "%s- %s: %d.%01dms (%d)", prefix.GetString(), di.GetName().GetString(),
+				( int )( di.GetElapsedTimeAccum() * 1000.0f ), ( int )( di.GetElapsedTimeAccum() * 10000.0f ) % 10, di.GetCounter() );
+			
+		}else if( di.HasElapsedTime() ){
+			logger.LogInfoFormat( "%s- %s: %d.%01dms", prefix.GetString(), di.GetName().GetString(),
+				( int )( di.GetElapsedTimeAccum() * 1000.0f ), ( int )( di.GetElapsedTimeAccum() * 10000.0f ) % 10 );
+			
+		}else{
+			logger.LogInfoFormat( "%s- %s: -", prefix.GetString(), di.GetName().GetString() );
+		}
+		
+		if( di.GetChildren().GetCount() > 0 ){
+			LogDebugInformation( di.GetChildren(), childPrefix );
 		}
 	}
 }
@@ -1574,16 +1631,7 @@ int minWidth, int maxWidth, bool alignSidewards ){
 	int i;
 	
 	if( ! alignSidewards ){
-		for( i=0; i<count; i++ ){
-			const deoglDebugInformation &child = *list.GetAt( i );
-			if( ! child.GetVisible() ){
-				continue;
-			}
-			
-			maxNameWidth = decMath::max( maxNameWidth, child.GetName().GetLength() + 1 );
-			siblingsHaveElapsedTime |= child.HasElapsedTime();
-			siblingsHaveCounter |= child.HasCounter();
-		}
+		ChildMaxNameLen( list, maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter );
 	}
 	
 	decPoint childPos( position );
@@ -1638,6 +1686,25 @@ int minWidth, int maxWidth, bool alignSidewards ){
 	}
 	
 	size.y = childPos.y - position.y;
+}
+
+void deoglRenderDevMode::ChildMaxNameLen( const deoglDebugInformationList &list,
+int &maxNameWidth, bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const{
+	const int count = list.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglDebugInformation &child = *list.GetAt( i );
+		if( ! child.GetVisible() ){
+			continue;
+		}
+		
+		maxNameWidth = decMath::max( maxNameWidth, child.GetName().GetLength() + 1 );
+		siblingsHaveElapsedTime |= child.HasElapsedTime();
+		siblingsHaveCounter |= child.HasCounter();
+		
+		ChildMaxNameLen( child.GetChildren(), maxNameWidth, siblingsHaveElapsedTime, siblingsHaveCounter );
+	}
 }
 
 void deoglRenderDevMode::LayoutDebugInformation( deoglRenderPlan& plan, int maxNameWidth,
@@ -1723,11 +1790,13 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 	// render text
 	const decPoint position( parentPosition + debugInformation.GetRenderPosition() );
 	
-	renderDebug.RenderRectangle( plan, position.x, position.y,
+	renderDebug.AddRenderRectangle( plan, position.x, position.y,
 		position.x + debugInformation.GetRenderSize().x, position.y + fontHeight,
 		debugInformation.GetColorBackground() );
 	
-	renderDebug.RenderText( plan, debugInformation.GetRenderText(),
+// 	renderDebug.RenderText( plan, debugInformation.GetRenderText(),
+// 		position.x, position.y, debugInformation.GetColorText() );
+	renderDebug.AddRenderText( plan, debugInformation.GetRenderText(),
 		position.x, position.y, debugInformation.GetColorText() );
 	
 	// render children
@@ -1748,22 +1817,9 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 //////////////////////
 
 void deoglRenderDevMode::pCleanUp(){
-	if( pShaderSolidColor2D ){
-		pShaderSolidColor2D->RemoveUsage();
-	}
-	if( pShaderSolidColor3D ){
-		pShaderSolidColor3D->RemoveUsage();
-	}
-	if( pShaderShape ){
-		pShaderShape->RemoveUsage();
-	}
-	
-	if( pVAOShapes ){
-		pglDeleteVertexArrays( 1, &pVAOShapes );
-	}
-	if( pVBOShapes ){
-		pglDeleteBuffers( 1, &pVBOShapes );
-	}
+	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLVertexArray( pVAOShapes );
+	dops.DeleteOpenGLBuffer( pVBOShapes );
 }
 
 void deoglRenderDevMode::pCreateShapesVAO(){

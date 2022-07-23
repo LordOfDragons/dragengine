@@ -475,6 +475,7 @@
 			<description>Note.</description>
 			<type>string</type>
 		</property>
+		<partialHideTag>Editing</partialHideTag>
 		<category>Dragengine</category>
 	</class>
 	<class name='BaseSpeaker'>
@@ -891,6 +892,10 @@
 			<description>Name of renderable to create or empty string if not used.</description>
 			<type>string</type>
 		</property>
+		<property name='renderableSolidity'>
+			<description>Name of solidity renderable to create or empty string if not used. If not empty the solidity renderable is set to contain the transparency of the regular renderable converted to grayscale image. This can be used to create HUD displays or holographic displays where content is fully or partially transparent.</description>
+			<type>string</type>
+		</property>
 		<property name='size'>
 			<description>Size of Panel.</description>
 			<type>point2</type>
@@ -906,6 +911,38 @@
 		</property>
 		<property name='designerSelector'>
 			<description>Designer selector to use for Panel.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRenderableDesktop'>
+		<description>Behavior element behavior adding a renderable Desktop.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>renderableDesktop.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='renderableSolidity'>
+			<description>Name of solidity renderable to create or empty string if not used. If not empty the solidity renderable is set to contain the transparency of the regular renderable converted to grayscale image. This can be used to create HUD displays or holographic displays where content is fully or partially transparent.</description>
+			<type>string</type>
+		</property>
+		<property name='size'>
+			<description>Size of Desktop.</description>
+			<type>point2</type>
+			<default>1024 1024</default>
+		</property>
+		<property name='guiTheme'>
+			<description>Path to gui theme to use.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+			</customPathPattern>
+		</property>
+		<property name='designerSelector'>
+			<description>Designer selector to use for Desktop.</description>
 			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
@@ -1054,6 +1091,16 @@
 		<property name='timeout'>
 			<description>Time in seconds until target is fired/reset after expression becomes true.</description>
 			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='timeoutSpread'>
+			<description>Timeout spread is added to regular timeout. Timeout is chosen randomly between -spread to spread seconds. Hence random timeout spreads the chosen time above and below the regular timeout up to "spread" seconds.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='timeoutRearm'>
+			<description>Rearm trigger on timeout if still enabled.</description>
+			<type>boolean</type>
 			<default>0</default>
 		</property>
 		<property name='fireOnTimeout'>
@@ -1550,6 +1597,11 @@
 			<description>Trigger target pulsed if particles died.</description>
 			<type>triggerTarget</type>
 		</property>
+		<property name='warmUpTime'>
+			<description>Time in seconds to warm-start casting particles when enabled. Ensures a stead particle emission is present when starting casting instead of starting with no particles at all</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorPlaySound'>
@@ -1585,13 +1637,13 @@
 		<defaultInheritPropertyPrefix>speaker.</defaultInheritPropertyPrefix>
 		<speaker>
 			<range>10</range>
-			<rollOff>1</rollOff>
 			<link target='sound' property='sound'/>
 			<link target='looping' property='looping'/>
 			<link target='playing' property='playing'/>
 			<link target='volume' property='volume'/>
 			<link target='range' property='range'/>
 			<link target='rollOff' property='rollOff'/>
+			<link target='distanceOffset' property='distanceOffset'/>
 			<link target='playSpeed' property='playSpeed'/>
 			<link target='attachPosition' property='position'/>
 			<link target='attachRotation' property='orientation'/>
@@ -1622,6 +1674,11 @@
 			<description>Roll off attenuation factor. 1 is realistic. Larger than 1 attenuates stronger. Smaller than 1 attenuates weaker.</description>
 			<type>float</type>
 			<default>1</default>
+		</property>
+		<property name='distanceOffset'>
+			<description>For use by distance sounds. Offsets the true distance to the sound source for attenuation calculation to make the sound appear coming from far away. Requires increasing the volume to compensate for the distance increased attenuation.</description>
+			<type>float</type>
+			<default>0</default>
 		</property>
 		<property name='playSpeed'>
 			<description>Playing speed relative to normal speed. A value of 1 is normal playing speed. A value of 2 plays back at double the speed while 0.5 plays back at half the speed. Negative values are allowed and play backwards.</description>
@@ -1704,6 +1761,11 @@
 			<type>float</type>
 			<default>200</default>
 		</property>
+		<property name='enableHDRR'>
+			<description>Enable high definition range rendering (HDRR) if supported.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
 		<property name='exposure'>
 			<description>Exposure.</description>
 			<type>float</type>
@@ -1723,6 +1785,11 @@
 			<description>Adaption time of the eye in seconds.</description>
 			<type>float</type>
 			<default>0.1</default>
+		</property>
+		<property name='enableGI'>
+			<description>Enable global illumination (GI) if supported.</description>
+			<type>boolean</type>
+			<default>0</default>
 		</property>
 		<property name='position'>
 			<description>Position relative to behavior element to attach camera to.</description>
@@ -1960,6 +2027,11 @@
 		<property name='subtitleSelectorID'>
 			<description>Sub title style selector. Widgets in the sub title text have designer selectors like "SubTitleBoxText{.&lt;selectorId&gt;}{.&lt;style&gt;}" where "style" is used by the conversation artists (for example "think" or "shout") while "selectorId" allows per-actor variations. Empty string uses no ID.</description>
 			<type>string</type>
+		</property>
+		<property name='headRotatorBone'>
+			<description>Head rotator bone name or empty string if not used.</description>
+			<type>string</type>
+			<default/>
 		</property>
 		<property name='headRotatorOffset'>
 			<description>Head rotator offset used for Head-Look-At handling.</description>
@@ -2379,10 +2451,10 @@
 		<defaultInheritPropertyPrefix>announcer.</defaultInheritPropertyPrefix>
 		<speaker>
 			<range>10</range>
-			<rollOff>1</rollOff>
 			<link target='volume' property='volume'/>
 			<link target='range' property='range'/>
 			<link target='rollOff' property='rollOff'/>
+			<link target='distanceOffset' property='distanceOffset'/>
 			<link target='attachPosition' property='position'/>
 			<link target='attachRotation' property='orientation'/>
 			<trigger target='playing' property='trigger'/>
@@ -2409,6 +2481,11 @@
 			<description>Roll off attenuation factor. 1 is realistic. Larger than 1 attenuates stronger. Smaller than 1 attenuates weaker.</description>
 			<type>float</type>
 			<default>1</default>
+		</property>
+		<property name='distanceOffset'>
+			<description>For use by distance sounds. Offsets the true distance to the sound source for attenuation calculation to make the sound appear coming from far away. Requires increasing the volume to compensate for the distance increased attenuation.</description>
+			<type>float</type>
+			<default>0</default>
 		</property>
 		<property name='trigger'>
 			<description>Trigger expression toggling playing state of speaker.</description>
@@ -2587,6 +2664,76 @@
 			<description>Look-at position for element to use while approaching. By default no look-at is used which equals to an empty string.</description>
 			<type>vector3</type>
 			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorCustomColor'>
+		<description>Adds support to define custom colors the player can modify.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>customColor.</defaultInheritPropertyPrefix>
+		<property name='name'>
+			<description>Name to display in UI.</description>
+			<type>string</type>
+		</property>
+		<property name='description'>
+			<description>Description to display in UI.</description>
+			<type>string</type>
+		</property>
+		<property name='allowedColors'>
+			<description>List of allowed colors or empty list to allow all colors. Value is in the form "r1,g1,b1 r2,g2,b2 ..." where (rX,gX,bX) define the Xth color. Optionally new-line can be used instead of space to separate colors.</description>
+			<type>list</type>
+		</property>
+		<property name='defaultColor'>
+			<description>Default color if color is not set by the player.</description>
+			<type>color</type>
+			<default>1 1 1</default>
+		</property>
+		<property name='color'>
+			<description>Initial color selection. Use empty string if there to use default color.</description>
+			<type>color</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRenderableCustomColor'>
+		<description>Applies ECBehaviorCustomColor to a renderable. Supports two modes: Single-Texture and Multi-Texture. For Single-Texture also set the image. For Multi-Texture also set the renderable name.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>renderableCustomColor.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used. Required for Multi-Texture mode.</description>
+			<type>string</type>
+		</property>
+		<property name='image'>
+			<description>Image to use as mask. Required for Single-Texture mode.</description>
+			<type>path</type>
+			<pathPatternType>image</pathPatternType>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorControlDesktop'>
+		<description>Behavior allows player (or other actors) to move the mouse pointer on a ECBehaviorRenderableDesktop by looking or pointing at the desired position. Behavior can be used multiple times for example to control different renderable desktops. Element class properties have the prefix "controlDesktop{(id)}.".</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>controlDesktop.</defaultInheritPropertyPrefix>
+		<property name='lowerLeft'>
+			<description>Virtual plane lower left position.</description>
+			<type>vector3</type>
+			<default>-0.5 -0.5 0</default>
+		</property>
+		<property name='lowerRight'>
+			<description>Virtual plane lower right position.</description>
+			<type>vector3</type>
+			<default>0.5 -0.5 0</default>
+		</property>
+		<property name='upperLeft'>
+			<description>Virtual plane upper left position.</description>
+			<type>vector3</type>
+			<default>-0.5 0.5 0</default>
+		</property>
+		<property name='bone'>
+			<description>Name of bone the virtual plane is attached to or empty string to not use.</description>
+			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

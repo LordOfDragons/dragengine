@@ -61,9 +61,9 @@ FXIMPLEMENT( igdeNativeFoxApplication, FXApp,
 igdeNativeFoxApplication::igdeNativeFoxApplication(){
 }
 
-igdeNativeFoxApplication::igdeNativeFoxApplication( igdeApplication &owner ) :
+igdeNativeFoxApplication::igdeNativeFoxApplication( igdeApplication &powner ) :
 FXApp( "DEIGDE", "Drag[en]gine" ),
-pOwner( &owner ),
+pOwner( &powner ),
 pToolTip( NULL ),
 pDisableModalUpdating( false ),
 pFoxArgs( NULL ),
@@ -187,6 +187,10 @@ void igdeNativeFoxApplication::Run(){
 	while( runWhileEvents() ){
 		igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
 		if( mainWindow ){
+			if( ! mainWindow->GetNativeWidget() ){
+				return; // sometimes FOX manages to make us miss this event
+			}
+			
 			mainWindow->OnFrameUpdate();
 		}
 	}

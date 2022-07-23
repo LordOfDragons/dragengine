@@ -28,7 +28,6 @@
 
 
 class deoglRSkyInstance;
-class deoglShaderProgram;
 class deoglRenderPlan;
 class deoglEnvironmentMap;
 class deoglRWorld;
@@ -41,9 +40,9 @@ class decLayerMask;
  */
 class deoglRenderSky : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderSkySphere;
-	deoglShaderProgram *pShaderSkyBox;
-	deoglShaderProgram *pShaderBody;
+	deoglShaderProgramUsage pShaderSkySphere;
+	deoglShaderProgramUsage pShaderSkyBox;
+	deoglShaderProgramUsage pShaderBody;
 	
 	decPointerList pSkyInstances;
 	

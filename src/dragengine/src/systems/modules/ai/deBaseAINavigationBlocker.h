@@ -22,12 +22,14 @@
 #ifndef _DEBASEAINAVIGATIONBLOCKER_H_
 #define _DEBASEAINAVIGATIONBLOCKER_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief AI module navigation blocker peer.
  */
-class deBaseAINavigationBlocker{
+class DE_DLL_EXPORT deBaseAINavigationBlocker{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

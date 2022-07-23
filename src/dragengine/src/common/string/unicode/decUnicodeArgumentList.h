@@ -22,6 +22,8 @@
 #ifndef _DECUNICODEARGUMENTLIST_H_
 #define _DECUNICODEARGUMENTLIST_H_
 
+#include "../../../dragengine_export.h"
+
 
 // definitions
 class decUnicodeString;
@@ -35,7 +37,7 @@ class decUnicodeString;
  * commands in unicode format and turning them into a simple to
  * use argument list.
  */
-class decUnicodeArgumentList{
+class DE_DLL_EXPORT decUnicodeArgumentList{
 private:
 	decUnicodeString **pArguments;
 	int pArgumentCount, pArgumentSize;

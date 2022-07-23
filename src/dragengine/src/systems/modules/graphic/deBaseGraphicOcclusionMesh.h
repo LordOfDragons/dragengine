@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICOCCLUSIONMESH_H_
 #define _DEBASEGRAPHICOCCLUSIONMESH_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic Module Occlusion Mesh Peer.
  */
-class deBaseGraphicOcclusionMesh{
+class DE_DLL_EXPORT deBaseGraphicOcclusionMesh{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -37,7 +37,13 @@
  * enable position, rotation and size manipulation individually ( if you wish
  * only one or two of those properties to be altered ). 
  */
-class deAnimatorRuleStateManipulator : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleStateManipulator : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleStateManipulator> Ref;
+	
+	
+	
 private:
 	decVector pMinPosition;
 	decVector pMaxPosition;

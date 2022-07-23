@@ -39,7 +39,13 @@ class decMemoryFile;
  * system containing various files inside this memory block the block
  * memory file class is better suited.
  */
-class deVFSMemoryFiles : public deVFSContainer{
+class DE_DLL_EXPORT deVFSMemoryFiles : public deVFSContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSMemoryFiles> Ref;
+	
+	
+	
 private:
 	decObjectList pFiles;
 	dePathList pDirectories;

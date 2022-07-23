@@ -58,25 +58,25 @@ FXIMPLEMENT( igdeNativeFoxToggleButton, FXToggleButton, igdeNativeFoxToggleButto
 
 igdeNativeFoxToggleButton::igdeNativeFoxToggleButton(){ }
 
-igdeNativeFoxToggleButton::igdeNativeFoxToggleButton( igdeToggleButton &owner, FXComposite *parent,
+igdeNativeFoxToggleButton::igdeNativeFoxToggleButton( igdeToggleButton &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXToggleButton( parent, ButtonText( owner ), ButtonText( owner ),
-	ButtonIconOn( owner ), ButtonIconOff( owner ), this, ID_SELF,
-	layoutFlags | ButtonFlags( owner ), 0, 0, 0, 0,
+FXToggleButton( pparent, ButtonText( powner ), ButtonText( powner ),
+	ButtonIconOn( powner ), ButtonIconOff( powner ), this, ID_SELF,
+	layoutFlags | ButtonFlags( powner ), 0, 0, 0, 0,
 	ButtonPadLeft( guitheme ), ButtonPadRight( guitheme ),
 	ButtonPadTop( guitheme ), ButtonPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( ButtonFont( owner, guitheme ) ),
+pOwner( &powner ),
+pFont( ButtonFont( powner, guitheme ) ),
 pDeleted( NULL )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
-	setState( owner.GetToggled() );
+	setState( powner.GetToggled() );
 	
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 }
 
 igdeNativeFoxToggleButton::~igdeNativeFoxToggleButton(){
@@ -85,23 +85,23 @@ igdeNativeFoxToggleButton::~igdeNativeFoxToggleButton(){
 	}
 }
 
-igdeNativeFoxToggleButton *igdeNativeFoxToggleButton::CreateNativeWidget( igdeToggleButton &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxToggleButton *igdeNativeFoxToggleButton::CreateNativeWidget( igdeToggleButton &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* )powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxToggleButton( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxToggleButton( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxToggleButton::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &ppparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( ppparent.id() ){
 		create();
 	}
 }
@@ -164,40 +164,40 @@ void igdeNativeFoxToggleButton::UpdateToggled(){
 
 
 
-const char *igdeNativeFoxToggleButton::ButtonText( const igdeToggleButton &owner ){
-	if( owner.GetStyle() == igdeToggleButton::ebsToolBar && owner.GetIcon() ){
+const char *igdeNativeFoxToggleButton::ButtonText( const igdeToggleButton &powner ){
+	if( powner.GetStyle() == igdeToggleButton::ebsToolBar && powner.GetIcon() ){
 		return "";
 		
 	}else{
-		return owner.GetText();
+		return powner.GetText();
 	}
 }
 
-FXIcon *igdeNativeFoxToggleButton::ButtonIconOn( const igdeToggleButton &owner ){
-	return owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL;
+FXIcon *igdeNativeFoxToggleButton::ButtonIconOn( const igdeToggleButton &powner ){
+	return powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL;
 }
 
-FXIcon *igdeNativeFoxToggleButton::ButtonIconOff( const igdeToggleButton &owner ){
-	return owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL;
+FXIcon *igdeNativeFoxToggleButton::ButtonIconOff( const igdeToggleButton &powner ){
+	return powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL;
 }
 
-int igdeNativeFoxToggleButton::ButtonFlags( const igdeToggleButton &owner ){
-	int flags = TOGGLEBUTTON_KEEPSTATE;
+int igdeNativeFoxToggleButton::ButtonFlags( const igdeToggleButton &powner ){
+	int fflags = TOGGLEBUTTON_KEEPSTATE;
 	
-	if( owner.GetStyle() == igdeToggleButton::ebsToolBar ){
-		flags |= TOGGLEBUTTON_TOOLBAR | FRAME_RAISED;
+	if( powner.GetStyle() == igdeToggleButton::ebsToolBar ){
+		fflags |= TOGGLEBUTTON_TOOLBAR | FRAME_RAISED;
 		
 	}else{
-		flags |= FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT;
+		fflags |= FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT;
 		//flags |= TOGGLEBUTTON_NORMAL;
 	}
 	
-	return flags;
+	return fflags;
 }
 
-igdeFont *igdeNativeFoxToggleButton::ButtonFont( const igdeToggleButton &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxToggleButton::ButtonFont( const igdeToggleButton &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::buttonFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -216,7 +216,7 @@ igdeFont *igdeNativeFoxToggleButton::ButtonFont( const igdeToggleButton &owner, 
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxToggleButton::ButtonPadLeft( const igdeGuiTheme &guitheme ){
@@ -240,7 +240,7 @@ int igdeNativeFoxToggleButton::ButtonPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxToggleButton::onCommand( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxToggleButton::onCommand( FXObject*, FXSelector, void* ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}
@@ -286,7 +286,7 @@ long igdeNativeFoxToggleButton::onCommand( FXObject *sender, FXSelector selector
 	return 1;
 }
 
-long igdeNativeFoxToggleButton::onUpdate( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxToggleButton::onUpdate( FXObject*, FXSelector, void* ){
 	igdeAction * const action = pOwner->GetAction();
 	if( ! action ){
 		return 0;

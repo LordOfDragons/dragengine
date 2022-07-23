@@ -36,7 +36,7 @@
 ////////////////////////////
 
 deglGuiBuilder::deglGuiBuilder(){
-	pFont = NULL;
+	pFont = nullptr;
 	
 	pColonsFloat = 7;
 	pColonsDouble = 12;
@@ -270,7 +270,7 @@ FXLabel *deglGuiBuilder::CreateLabel( FXComposite *container, const char *text, 
 FXLabel *deglGuiBuilder::CreateLabel( FXComposite *container, const char *text, const char *toolTip, int padding ) const{
 	if( ! container || ! text || ! toolTip || padding < 0 ) DETHROW( deeInvalidParam );
 	
-	FXLabel *label = new FXLabel( container, text, NULL, LABEL_NORMAL, 0, 0, 0, 0, 0, padding, 0, 0 );
+	FXLabel *label = new FXLabel( container, text, nullptr, LABEL_NORMAL, 0, 0, 0, 0, 0, padding, 0, 0 );
 	if( ! label ) DETHROW( deeOutOfMemory );
 	
 	if( pFont ){
@@ -289,8 +289,8 @@ const char *toolTip, bool fixedSizeX, bool fixedSizeY ) const{
 	FXText *textArea;
 	FXint options = 0;
 	
-	if( ! fixedSizeX ) options |= LAYOUT_FILL_X;
-	if( ! fixedSizeY ) options |= LAYOUT_FILL_Y;
+	if( ! fixedSizeX ) options |= LAYOUT_FILL_X | LAYOUT_FILL_COLUMN;
+	if( ! fixedSizeY ) options |= LAYOUT_FILL_Y | LAYOUT_FILL_ROW;
 	
 	frame = new FXPacker( container, FRAME_SUNKEN | options, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 	
@@ -364,7 +364,7 @@ const char *toolTip, int colons, bool fixedSize ) const{
 
 FXButton *deglGuiBuilder::CreateButton( FXComposite *container, const char *text, FXObject *target,
 FXSelector selector, const char *toolTip ) const{
-	return CreateButton( container, text, NULL, target, selector, toolTip );
+	return CreateButton( container, text, nullptr, target, selector, toolTip );
 }
 
 FXButton *deglGuiBuilder::CreateButton( FXComposite *container, const char *text, FXIcon *icon, FXObject *target,

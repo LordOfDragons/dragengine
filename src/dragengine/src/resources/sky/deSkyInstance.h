@@ -39,7 +39,13 @@ class deWorld;
  * like. While skies define how the sky looks like the actual sky is produced using per
  * instance parameters.
  */
-class deSkyInstance : public deResource{
+class DE_DLL_EXPORT deSkyInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkyInstance> Ref;
+	
+	
+	
 private:
 	deSkyReference pSky;
 	int pOrder;

@@ -22,6 +22,8 @@
 #ifndef _DEBASEGRAPHICPROPFIELD_H_
 #define _DEBASEGRAPHICPROPFIELD_H_
 
+#include "../../../dragengine_export.h"
+
 
 class dePropField;
 class dePropFieldType;
@@ -33,7 +35,7 @@ class deDecal;
  *
  * Peer for the prop field resource used by graphic modules.
  */
-class deBaseGraphicPropField{
+class DE_DLL_EXPORT deBaseGraphicPropField{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

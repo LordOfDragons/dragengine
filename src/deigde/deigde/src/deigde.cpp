@@ -40,7 +40,8 @@ int main( int argCount, char **args ){
 		igdeRealApplication().Run( argCount, args );
 		
 	}catch( const deException &e ){
-		return -1;
+		e.PrintError();
+		return 1;
 	}
 	return 0;
 }
@@ -57,7 +58,8 @@ static int WINAPI RealWinMain(){
 		igdeRealApplication().Run();
 		
 	}catch( const deException &e ){
-		return -1;
+		e.PrintError();
+		return 1;
 	}
 	return 0;
 }

@@ -68,6 +68,12 @@ public:
 	
 	/** Adds a new define. */
 	void AddDefine( const char *name, const char *value );
+	void AddDefine( const char *name, int value );
+	void AddDefine( const char *name, bool value );
+	
+	/** \brief Remove define. */
+	void RemoveDefine( const char *name );
+	
 	/** Removes all defines. */
 	void RemoveAllDefines();
 	

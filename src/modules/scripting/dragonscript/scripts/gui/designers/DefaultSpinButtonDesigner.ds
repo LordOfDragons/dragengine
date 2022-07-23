@@ -195,6 +195,9 @@ class DefaultSpinButtonDesigner extends DefaultWidgetDesigner implements SpinBut
 			
 		elif name.equals( "imageDownHover" )
 			this.setButtonDownImageHover( value cast Image )
+			
+		else
+			super.setParameter( name, value )
 		end
 	end
 	

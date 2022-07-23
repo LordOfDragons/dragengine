@@ -50,6 +50,7 @@ deoglPOccTestMode::deoglPOccTestMode( deGraphicOpenGl &ogl ) : deoglParameter( o
 		{ "transformFeedback", "Transform Feedback", "Uses the transform feedback extension to test for occlusion." }
 	};
 	AddSelectionEntries( entries, 3 );
+	SetDefaultValue( "transformFeedback" );
 }
 
 deoglPOccTestMode::~deoglPOccTestMode(){

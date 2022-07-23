@@ -925,15 +925,19 @@ void deClassCollider::nfAddConstraint::RunFunction( dsRunTime *rt, dsValue *myse
 		DSTHROW( dueNullPointer );
 	}
 	
-	const deScriptingDragonScript &ds = ( ( deClassCollider* )GetOwnerClass() )->GetDS();
-	deColliderConstraint *constraint = NULL;
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
-	const deColliderConstraint * const workConstraint =
+	const deColliderConstraint * const workConstraint = 
 		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
 	if( ! workConstraint ){
-		DSTHROW( dueNullPointer );
+		DSTHROW_INFO( dueNullPointer, "constraint" );
+	}
+	if( clsCollider.FindConstraint( *nd.collider, *workConstraint ) ){
+		DSTHROW_INFO( dueInvalidParam, "constraint with same target exists already" );
 	}
 	
+	deColliderConstraint *constraint = nullptr;
 	try{
 		constraint = new deColliderConstraint( *workConstraint );
 		nd.collider->AddConstraint( constraint );
@@ -946,7 +950,82 @@ void deClassCollider::nfAddConstraint::RunFunction( dsRunTime *rt, dsValue *myse
 	}
 }
 
-// public func void setConstaintAt( int index, ColliderConstraint constraint )
+// public func bool hasConstraint(ColliderConstraint constraint)
+deClassCollider::nfHasConstraint::nfHasConstraint( const sInitData &init ) :
+dsFunction( init.clsCol, "hasConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsCCon ); // constraint
+}
+void deClassCollider::nfHasConstraint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
+	
+	const deColliderConstraint * const constraint = 
+		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
+	rt->PushBool( constraint && clsCollider.FindConstraint( *nd.collider, *constraint ) );
+}
+
+// public func int indexOfConstraint(ColliderConstraint constraint)
+deClassCollider::nfIndexOfConstraint::nfIndexOfConstraint( const sInitData &init ) :
+dsFunction( init.clsCol, "indexOfConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsCCon ); // constraint
+}
+void deClassCollider::nfIndexOfConstraint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
+	int index = -1;
+	
+	deColliderConstraint *constraint =
+		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
+	if( constraint ){
+		constraint = clsCollider.FindConstraint( *nd.collider, *constraint );
+		if( constraint ){
+			index = nd.collider->IndexOfConstraint( constraint );
+		}
+	}
+	
+	rt->PushInt( index );
+}
+
+// public func ColliderConstraint getConstraintAt(int index)
+deClassCollider::nfGetConstraintAt::nfGetConstraintAt( const sInitData &init ) :
+dsFunction( init.clsCol, "getConstraintAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCCon ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassCollider::nfGetConstraintAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassCollider* )GetOwnerClass() )->GetDS();
+	
+	const deColliderConstraint * const workConstraint =
+		nd.collider->GetConstraintAt( rt->GetValue( 0 )->GetInt() );
+	
+	deColliderConstraint *constraint = nullptr;
+	try{
+		constraint = new deColliderConstraint( *workConstraint );
+		ds.GetClassColliderConstraint()->PushConstraint( rt, constraint );
+		
+	}catch( ... ){
+		if( constraint ){
+			delete constraint;
+		}
+		throw;
+	}
+}
+
+// public func void setConstraintAt( int index, ColliderConstraint constraint )
 deClassCollider::nfSetConstraintAt::nfSetConstraintAt( const sInitData &init ) : dsFunction( init.clsCol,
 "addConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInt ); // index
@@ -958,17 +1037,54 @@ void deClassCollider::nfSetConstraintAt::RunFunction( dsRunTime *rt, dsValue *my
 		DSTHROW( dueNullPointer );
 	}
 	
-	const deScriptingDragonScript &ds = ( ( deClassCollider* )GetOwnerClass() )->GetDS();
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const int index = rt->GetValue( 0 )->GetInt();
+	deColliderConstraint &constraint = *nd.collider->GetConstraintAt( index );
+	
 	const deColliderConstraint * const workConstraint =
 		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 1 )->GetRealObject() );
 	if( ! workConstraint ){
+		DSTHROW_INFO( dueNullPointer, "constraint" );
+	}
+	
+	if( workConstraint->GetTargetCollider() != constraint.GetTargetCollider()
+	|| workConstraint->GetTargetBone() != constraint.GetTargetBone()
+	|| workConstraint->GetBone() != constraint.GetBone() ){
+		DSTHROW_INFO( dueInvalidParam, "new constraint target has to match old constraint target" );
+	}
+	
+	constraint = *workConstraint;
+	nd.collider->NotifyConstraintChanged( index );
+}
+
+// public func void removeConstraint(ColliderConstraint constraint)
+deClassCollider::nfRemoveConstraint::nfRemoveConstraint( const sInitData &init ) :
+dsFunction( init.clsCol, "removeConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCCon ); // constraint
+}
+void deClassCollider::nfRemoveConstraint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
 		DSTHROW( dueNullPointer );
 	}
 	
-	*nd.collider->GetConstraintAt( index ) = *workConstraint;
-	nd.collider->NotifyConstraintChanged( index );
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
+	
+	const deColliderConstraint * const workConstraint =
+		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
+	if( ! workConstraint ){
+		DSTHROW_INFO( dueNullPointer, "constraint" );
+	}
+	
+	deColliderConstraint * const constraint = clsCollider.FindConstraint( *nd.collider, *workConstraint );
+	if( ! constraint ){
+		DSTHROW_INFO( dueOutOfBoundary, "constraint not found" );
+	}
+	
+	nd.collider->RemoveConstraint( constraint );
 }
 
 // public func void removeConstraintFrom( int index )
@@ -982,9 +1098,7 @@ void deClassCollider::nfRemoveConstraintFrom::RunFunction( dsRunTime *rt, dsValu
 		DSTHROW( dueNullPointer );
 	}
 	
-	const int index = rt->GetValue( 0 )->GetInt();
-	
-	nd.collider->RemoveConstraint( nd.collider->GetConstraintAt( index ) );
+	nd.collider->RemoveConstraint( nd.collider->GetConstraintAt( rt->GetValue( 0 )->GetInt() ) );
 }
 
 // public func void removeAllConstraints()
@@ -1898,7 +2012,11 @@ void deClassCollider::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetConstraintCount( init ) );
 	AddFunction( new nfAddConstraint( init ) );
+	AddFunction( new nfHasConstraint( init ) );
+	AddFunction( new nfIndexOfConstraint( init ) );
+	AddFunction( new nfGetConstraintAt( init ) );
 	AddFunction( new nfSetConstraintAt( init ) );
+	AddFunction( new nfRemoveConstraint( init ) );
 	AddFunction( new nfRemoveConstraintFrom( init ) );
 	AddFunction( new nfRemoveAllConstraints( init ) );
 	
@@ -2518,4 +2636,21 @@ void deClassCollider::AttachRelativeMovement( deCollider &collider, deResource *
 		}
 		throw;
 	}
+}
+
+deColliderConstraint *deClassCollider::FindConstraint( deCollider &collider,
+const deColliderConstraint &constraint ) const{
+	const int count = collider.GetConstraintCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deColliderConstraint * const checkConstraint = collider.GetConstraintAt( i );
+		if( checkConstraint->GetTargetCollider() == constraint.GetTargetCollider()
+		&& checkConstraint->GetTargetBone() == constraint.GetTargetBone()
+		&& checkConstraint->GetBone() == constraint.GetBone() ){
+			return checkConstraint;
+		}
+	}
+	
+	return nullptr;
 }

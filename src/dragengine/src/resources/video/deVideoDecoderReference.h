@@ -37,7 +37,7 @@ class deVideoDecoder;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deVideoDecoderReference : protected deObjectReference {
+class DE_DLL_EXPORT deVideoDecoderReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

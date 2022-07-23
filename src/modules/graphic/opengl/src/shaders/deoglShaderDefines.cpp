@@ -122,6 +122,31 @@ void deoglShaderDefines::AddDefine( const char *name, const char *value ){
 	pDefineCount++;
 }
 
+void deoglShaderDefines::AddDefine( const char *name, int value ){
+	char buffer[ 16 ];
+	sprintf( &buffer[ 0 ], "%d", value );
+	AddDefine( name, buffer );
+}
+
+void deoglShaderDefines::AddDefine( const char *name, bool value ){
+	AddDefine( name, value ? "1" : "0" );
+}
+
+void deoglShaderDefines::RemoveDefine( const char *name ){
+	int i;
+	for( i=0; i<pDefineCount; i++ ){
+		if( strcmp( pDefines[ i ].name, name ) == 0 ){
+			delete [] pDefines[ i ].name;
+			delete [] pDefines[ i ].value;
+			if( i < pDefineCount - 1 ){
+				pDefines[ i ] = pDefines[ pDefineCount - 1 ];
+			}
+			pDefineCount--;
+			return;
+		}
+	}
+}
+
 void deoglShaderDefines::RemoveAllDefines(){
 	if( pDefines ){
 		while( pDefineCount > 0 ){

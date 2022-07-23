@@ -22,13 +22,15 @@
 #ifndef _DECPOINTERSET_H_
 #define _DECPOINTERSET_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Set of pointers.
  * 
  * All pointers including NULL are allowed and they can occure only once in the set.
  */
-class decPointerSet{
+class DE_DLL_EXPORT decPointerSet{
 private:
 	void **pPointers;
 	int pPointerCount;

@@ -1,0 +1,157 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
+        default: 'X.Y{.Z}'
+      changelogPageNumber:
+        description: 'Changelog Page Number'
+        required: true
+        type: string
+        default: 'XXXX'
+
+jobs:
+  build_linux:
+    uses: ./.github/workflows/build_linux.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-linux
+      artifactInstaller: installers-linux
+      artifactTools: tools-crossplatform
+  
+  build_windows:
+    uses: ./.github/workflows/build_windows.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+  
+  build_windows_installer:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_windows_installer.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+      artifactInstaller: installers-windows
+  
+  build_linux_ci:
+    uses: ./.github/workflows/build_linux_ci.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactInstaller: installers-linux-ci
+  
+  build_live:
+    needs: [build_linux, build_windows]
+    uses: ./.github/workflows/build_live.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactLinux: archives-linux
+      artifactWindows: archives-windows
+      artifactLauncher: archive-livelauncher
+    
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
+    
+  testing:
+    needs: [build_linux, build_testing]
+    uses: ./.github/workflows/testing.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: installers-linux
+      artifactTesting: archive-testing
+      artifactResults: testing-results
+
+  upload:
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, testing]
+    runs-on: ubuntu-20.04
+    
+    steps:
+      - name: Get Linux Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: installers-linux
+      
+      - name: Get Windows Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: installers-windows
+      
+      - name: Get Crossplatform Tools
+        uses: actions/download-artifact@v3
+        with:
+          name: tools-crossplatform
+      
+      - name: Get Linux CI Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: installers-linux-ci
+      
+      - name: Get Live Launcher
+        uses: actions/download-artifact@v3
+        with:
+          name: archive-livelauncher
+      
+      - name: Upload Artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: false
+          artifactErrorsFailBuild: true
+          draft: false
+          prerelease: false
+          commit: 'master'
+          tag: 'v${{ github.event.inputs.version }}'
+          name: 'Drag[en]gine Game Engine Release ${{ github.event.inputs.version }}'
+          body: |
+            ${{ github.event.inputs.version }} release of the Drag[en]gine Game Engine.
+            
+            Contains installers for End-Users (gamers) as well as Development tools for Game developers.
+            
+            See https://dragondreams.ch/?page_id=${{ github.event.inputs.changelogPageNumber }} for the full listing.
+            
+            For End-Users and Game Developers:
+            - install-dragengine-${{ github.event.inputs.version }}-linux64.sh
+            - install-dragengine-${{ github.event.inputs.version }}-windows64.exe
+            - dragengine-live-${{ github.event.inputs.version }}.zip (live-build suitable for running games without installing the game engine or demo-sessions on exhibitions)
+            
+            For Game Developers (you do NOT need source code nor compiling to develop games, just the engine and the IGDE):
+            - install-deigde-${{ github.event.inputs.version }}-linux64.sh
+            - install-deigde-${{ github.event.inputs.version }}-windows64.exe
+            
+            For Continuous Integration (Build Servers):
+            - install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh
+            - install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
+            
+            For Engine Module developers:
+            - install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh
+            - install-dragengine-dev-${{ github.event.inputs.version }}-windows64.exe
+            
+            For IGDE Editor developers:
+            - install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh
+            - install-deigde-dev-${{ github.event.inputs.version }}-windows64.exe
+            
+            Example projects to learn developing with the Drag[en]gine Game Engine can be found on the Wiki (https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:exampleprojects) and in the DEExamples repository (https://github.com/LordOfDragons/deexamples).
+          artifacts: >
+            install-dragengine-${{ github.event.inputs.version }}-linux64.sh,
+            install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh,
+            install-deigde-${{ github.event.inputs.version }}-linux64.sh,
+            install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh,
+            install-dragengine-${{ github.event.inputs.version }}-windows64.exe,
+            install-dragengine-sdk-${{ github.event.inputs.version }}-windows64.exe,
+            install-deigde-${{ github.event.inputs.version }}-windows64.exe,
+            install-deigde-sdk-${{ github.event.inputs.version }}-windows64.exe,
+            blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
+            dragengine-live-${{ github.event.inputs.version }}.zip,
+            install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
+            install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh

@@ -138,17 +138,17 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onPaint( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 	
-	long onSocketCommand( FXObject *sender, FXSelector selector, void *data );
-	long onSocketLeftMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onSocketMouseMoved( FXObject *sender, FXSelector selector, void *data );
-	long onSocketLeftMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onSocketDndEnter( FXObject *sender, FXSelector selector, void *data );
-	long onSocketDndLeave( FXObject *sender, FXSelector selector, void *data );
-	long onSocketDndDrop( FXObject *sender, FXSelector selector, void *data );
-	long onSocketDndMotion( FXObject *sender, FXSelector selector, void *data );
+	long onSocketCommand( FXObject*, FXSelector, void* );
+	long onSocketLeftMouseDown( FXObject*, FXSelector, void* );
+	long onSocketMouseMoved( FXObject*, FXSelector, void* );
+	long onSocketLeftMouseUp( FXObject*, FXSelector, void* );
+	long onSocketDndEnter( FXObject*, FXSelector, void* );
+	long onSocketDndLeave( FXObject*, FXSelector, void* );
+	long onSocketDndDrop( FXObject*, FXSelector, void* );
+	long onSocketDndMotion( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

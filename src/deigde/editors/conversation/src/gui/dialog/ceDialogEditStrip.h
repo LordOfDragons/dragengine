@@ -22,6 +22,7 @@
 #ifndef _CEDIALOGEDITSTRIP_H_
 #define _CEDIALOGEDITSTRIP_H_
 
+#include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/dialog/igdeDialog.h>
@@ -32,24 +33,39 @@ class decStringList;
 
 
 /**
- * \brief Dialog edit strip.
+ * Dialog edit strip.
  */
 class ceDialogEditStrip : public igdeDialog{
+public:
+	class Listener : public deObject{
+	public:
+		typedef deTObjectReference<Listener> Ref;
+		
+		Listener();
+		virtual float DefaultDuration(  const decString &id );
+		
+	protected:
+		virtual ~Listener();
+	};
+	
 private:
 	igdeComboBoxFilterReference pCBID;
 	igdeTextFieldReference pEditPause;
 	igdeTextFieldReference pEditDuration;
+	igdeButtonReference pBtnResetDuration;
+	Listener::Ref pListener;
+	bool pAutoResetDuration;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create dialog. */
+	/** Create dialog. */
 	ceDialogEditStrip( igdeEnvironment &environment, const char *windowTitle, const char *textLabel );
 	
 protected:
-	/** \brief Clean up dialog. */
+	/** Clean up dialog. */
 	virtual ~ceDialogEditStrip();
 	/*@}*/
 	
@@ -58,31 +74,43 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Set entries in list of possible identifiers to select. */
+	/** Set entries in list of possible identifiers to select. */
 	void SetIDList( const decStringList &list );
 	
-	/** \brief Set identifier. */
+	/** Set identifier. */
 	void SetID( const char *id );
 	
-	/** \brief Set pause. */
+	/** Set pause. */
 	void SetPause( float pause );
 	
-	/** \brief Set duration. */
+	/** Set duration. */
 	void SetDuration( float duration );
 	
-	/** \brief Set from strip. */
+	/** Set from strip. */
 	void SetFromStrip( const ceStrip &strip );
 	
-	/** \brief Update strip. */
+	/** Update strip. */
 	void UpdateStrip( ceStrip &strip ) const;
 	
-	/** \brief Create new strip from data. */
+	/** Create new strip from data. */
 	ceStrip *CreateStrip() const;
+	
+	/** Set listener or nullptr. */
+	void SetListener( const Listener::Ref &listener );
+	
+	/** Reset duration to default duration. */
+	void ResetDuration();
+	
+	/** Automatically reset duraation on changing identifier. */
+	inline bool GetAutoResetDuration() const{ return pAutoResetDuration; }
+	
+	/** Set automatically reset duraation on changing identifier. */
+	void SetAutoResetDuration( bool autoResetDuration );
 	
 	
 	
 	/**
-	 * \brief Init running.
+	 * Init running.
 	 * 
 	 * Called by Run() after dialog is created. Subclass can implement to init controls
 	 * after the dialog is visible on screen.

@@ -29,7 +29,7 @@
 class deColliderConstraint;
 class deColliderConstraintDof;
 class btTypedConstraint;
-class btDynamicsWorld;
+class debpCollisionWorld;
 class debpPhysicsBody;
 class dePhysicsBullet;
 
@@ -41,27 +41,27 @@ class dePhysicsBullet;
  */
 class debpColliderConstraint{
 public:
-	/** \brief Type of the constraint. */
+	/** Type of the constraint. */
 	enum eConstraintType{
-		/** \brief Static. */
+		/** Static. */
 		ectStatic,
 		
-		/** \brief Ball-Socket. */
+		/** Ball-Socket. */
 		ectBallSocket,
 		
-		/** \brief Hinge. */
+		/** Hinge. */
 		ectHinge,
 		
-		/** \brief Cone-Twist. */
+		/** Cone-Twist. */
 		ectConeTwist,
 		
-		/** \brief Slider. */
+		/** Slider. */
 		ectSlider,
 		
-		/** \brief Generic. */
+		/** Generic. */
 		ectGeneric,
 		
-		/** \brief Generic Spring. */
+		/** Generic Spring. */
 		ectGenericSpring
 	};
 	
@@ -72,7 +72,7 @@ private:
 	deColliderConstraint &pConstraint;
 	int pRigBoneConstraintIndex;
 	
-	btDynamicsWorld *pDynWorld;
+	debpCollisionWorld *pDynWorld;
 	btTypedConstraint *pBpConstraint;
 	debpPhysicsBody *pPhyBody1;
 	debpPhysicsBody *pPhyBody2;
@@ -88,10 +88,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create collider constraint. */
+	/** Create collider constraint. */
 	debpColliderConstraint( dePhysicsBullet &bullet, deColliderConstraint &constraint );
 	
-	/** \brief Clean up collider constraint. */
+	/** Clean up collider constraint. */
 	~debpColliderConstraint();
 	/*@}*/
 	
@@ -99,74 +99,74 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Engine constraint. */
+	/** Engine constraint. */
 	inline deColliderConstraint &GetConstraint() const{ return pConstraint; }
 	
-	/** \brief Rig bone constraint index or -1 if not set. */
+	/** Rig bone constraint index or -1 if not set. */
 	inline int GetRigBoneConstraintIndex() const{ return pRigBoneConstraintIndex; }
 	
-	/** \brief Set rig bone constraint index or -1 if not set. */
+	/** Set rig bone constraint index or -1 if not set. */
 	void SetRigBoneConstraintIndex( int index );
 	
-	/** \brief Dynamics world. */
-	inline btDynamicsWorld *GetDynamicsWorld() const{ return pDynWorld; }
+	/** Dynamics world. */
+	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	
-	/** \brief Set dynamics world. */
-	void SetDynamicsWorld( btDynamicsWorld *dynWorld );
+	/** Set dynamics world. */
+	void SetDynamicsWorld( debpCollisionWorld *dynWorld );
 	
-	/** \brief Bullet constraint or \em NULL. */
+	/** Bullet constraint or nullptr. */
 	inline btTypedConstraint *GetBpConstraint() const{ return pBpConstraint; }
 	
-	/** \brief First physics body or \em NULL. */
+	/** First physics body or nullptr. */
 	inline debpPhysicsBody *GetFirstBody() const{ return pPhyBody1; }
 	
-	/** \brief Set first physics body or \em NULL. */
+	/** Set first physics body or nullptr. */
 	void SetFirstBody( debpPhysicsBody *body );
 	
-	/** \brief Second physics body or \em NULL. */
+	/** Second physics body or nullptr. */
 	inline debpPhysicsBody *GetSecondBody() const{ return pPhyBody2; }
 	
-	/** \brief Set second physics body or \em NULL. */
+	/** Set second physics body or nullptr. */
 	void SetSecondBody( debpPhysicsBody *body );
 	
-	/** \brief Offset for first physics body. */
+	/** Offset for first physics body. */
 	inline const decVector &GetFirstOffset() const{ return pOffset1; }
 	
-	/** \brief Set offset for first physics body. */
+	/** Set offset for first physics body. */
 	void SetFirstOffset( const decVector &offset );
 	
-	/** \brief Offset for second physics body. */
+	/** Offset for second physics body. */
 	inline const decVector &GetSecondOffset() const{ return pOffset2; }
 	
-	/** \brief Set offset for second physics body. */
+	/** Set offset for second physics body. */
 	void SetSecondOffset( const decVector &offset );
 	
-	/** \brief Type of constraint. */
+	/** Type of constraint. */
 	inline eConstraintType GetConstraintType() const{ return pConstraintType; }
 	
-	/** \brief Constraint can be broken. */
+	/** Constraint can be broken. */
 	bool IsBreakable() const;
 	
-	/** \brief Constraint is enabled. */
+	/** Constraint is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
-	/** \brief Set if constraint is enabled. */
+	/** Set if constraint is enabled. */
 	void SetEnabled( bool enabled );
 	
-	/** \brief Constraint has broken due to physics simulation. */
+	/** Constraint has broken due to physics simulation. */
 	inline bool GetHasBroken() const{ return pHasBroken; }
 	
-	/** \brief Set if constraint has broken due to physics simulation. */
+	/** Set if constraint has broken due to physics simulation. */
 	void SetHasBroken( bool hasBroken );
 	
 	/**
-	 * \brief Prepare constraint for next detection step.
+	 * Prepare constraint for next detection step.
 	 * \details Required to deal with advanced features like joint frictions.
 	 */
 	void PrepareForStep();
 	
 	/**
-	 * \brief Check if constraint has broken due to physics simulation since the last time.
+	 * Check if constraint has broken due to physics simulation since the last time.
 	 * 
 	 * Returns true if the constraint has not been marked broken but is now broken.
 	 * After this point false is returned.
@@ -175,17 +175,17 @@ public:
 	
 	
 	
-	/** \brief Notify constraint changed. */
+	/** Notify constraint changed. */
 	void ConstraintChanged();
 	
-	/** \brief Notify rigid body has been created. */
+	/** Notify rigid body has been created. */
 	void RigidBodyCreated( debpPhysicsBody *body );
 	
-	/** \brief Notify rigid body is about to be destroyed. */
+	/** Notify rigid body is about to be destroyed. */
 	void RigidBodyDestroy( debpPhysicsBody *body );
 	
 	/**
-	 * \brief Notify physics body is about to be destroyed.
+	 * Notify physics body is about to be destroyed.
 	 * 
 	 * This should never happen if we unregistered ourself correctly. If this does
 	 * happen we have to invalidate the given body without unregistering ourself first.
@@ -197,10 +197,10 @@ public:
 	
 	/** \name Internal use only */
 	/*@{*/
-	/** \brief Calculate motor velocity for angular joint friction. */
+	/** Calculate motor velocity for angular joint friction. */
 	decVector AngularJointFrictionVelocity( float timeStep ) const;
 	
-	/** \brief Calculate motor velocity for linear joint friction. */
+	/** Calculate motor velocity for linear joint friction. */
 	decVector LinearJointFrictionVelocity( float timeStep ) const;
 	/*@}*/
 	

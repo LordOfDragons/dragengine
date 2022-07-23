@@ -32,6 +32,9 @@
  * \brief Foreign state rule.
  */
 class aeRuleForeignState : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleForeignState> Ref;
+	
 private:
 	decString pForeignBone;
 	deAnimatorRuleForeignState::eCoordinateFrames pSourceCoordinateFrame;
@@ -101,10 +104,15 @@ public:
 	
 	/** \brief Retrieve the scale position target. */
 	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	
 	/** \brief Retrieve the scale orientation target. */
 	inline aeControllerTarget &GetTargetOrientation(){ return pTargetOrientation; }
+	inline const aeControllerTarget &GetTargetOrientation() const{ return pTargetOrientation; }
+	
 	/** \brief Retrieve the scale size target. */
 	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
+	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
 	
 	/** \brief Creates an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

@@ -29,17 +29,23 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
-class deglEMParameter;
-class deglGameProfile;
+class delEMParameter;
+class delGameProfile;
 
 
 /**
- * \brief Profiles panel module parameter.
+ * Profiles panel module parameter.
  */
 class deglDialogProfileListParameter : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deglDialogProfileListParameter> Ref;
+	
+	
+	
 private:
-	deglEMParameter &pParameter;
-	deglGameProfile &pProfile;
+	delEMParameter &pParameter;
+	delGameProfile &pProfile;
 	decString pModuleName;
 	
 	decString pDescription;
@@ -59,13 +65,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
-	deglDialogProfileListParameter( deglEMParameter &parameter, deglGameProfile &profile,
+	/** Create parameter. */
+	deglDialogProfileListParameter( delEMParameter &parameter, delGameProfile &profile,
 		const char *moduleName, FXMatrix *container, FXObject *target, 
 		int labelSelector, int valueSelector );
 	
 protected:
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deglDialogProfileListParameter();
 	/*@}*/
 	
@@ -74,40 +80,40 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Description. */
+	/** Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
-	/** \brief Sender matches label. */
+	/** Sender matches label. */
 	bool SenderMatchesLabel( FXObject *sender ) const;
 	
-	/** \brief Sender matches edit widget. */
+	/** Sender matches edit widget. */
 	bool SenderMatchesEdit( FXObject *sender ) const;
 	
 	/**
-	 * \brief Process command message if sender is edit widget of this parameter.
+	 * Process command message if sender is edit widget of this parameter.
 	 * \returns true if processed or false if not destined for this parameter.
 	 */
 	bool ProcessSelCommand( FXObject *sender );
 	
 	/**
-	 * \brief Process changed message if sender is edit widget of this parameter.
+	 * Process changed message if sender is edit widget of this parameter.
 	 * \returns true if processed or false if not destined for this parameter.
 	 */
 	bool ProcessSelChanged( FXObject *sender );
 	
-	/** \brief Set parameter value. */
+	/** Set parameter value. */
 	void SetParameterValue( const char *value );
 	
-	/** \brief Set parameter value. */
+	/** Set parameter value. */
 	void SetParameterValue( FXdouble value );
 	
-	/** \brief Update edit widget value from parameter value. */
+	/** Update edit widget value from parameter value. */
 	void Update();
 	
-	/** \brief Reset value to default. */
+	/** Reset value to default. */
 	void Reset();
 	
-	/** \brief Update visibility. */
+	/** Update visibility. */
 	void UpdateVisibility( deModuleParameter::eCategory category );
 	/*@}*/
 };

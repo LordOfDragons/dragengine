@@ -22,10 +22,12 @@
 #ifndef _DECSMOOTHFLOAT_H_
 #define _DECSMOOTHFLOAT_H_
 
+#include "../../../dragengine_export.h"
+
 /**
  * \brief Double floating point value with smooth adjusting over time.
  */
-class decSmoothDouble{
+class DE_DLL_EXPORT decSmoothDouble{
 private:
 	double pValue;
 	double pGoal;
@@ -34,7 +36,7 @@ private:
 	double pChangeSpeed;
 	double pFactorTime;
 	double pFactorLimit;
-	float pFactorDrop;
+	double pFactorDrop;
 	bool pSmoothed;
 	
 	

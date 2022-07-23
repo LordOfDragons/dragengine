@@ -26,6 +26,8 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassPoint3.h"
+#include "deClassVector.h"
+#include "deClassDVector.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -354,6 +356,28 @@ void deClassPoint3::nfIsZero::RunFunction( dsRunTime *rt, dsValue *myself ){
 
 
 
+// public func Vector toVector()
+deClassPoint3::nfToVector::nfToVector( const sInitData &init ) :
+dsFunction( init.clsPt3, "toVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
+}
+void deClassPoint3::nfToVector::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decPoint3 &point = ( ( sPt3NatDat* )p_GetNativeData( myself ) )->point;
+	( ( deClassPoint3* )GetOwnerClass() )->GetScriptModule()->GetClassVector()->
+		PushVector( rt, decVector( point ) );
+}
+
+// public func DVector toDVector()
+deClassPoint3::nfToDVector::nfToDVector( const sInitData &init ) :
+dsFunction( init.clsPt3, "toDVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector ){
+}
+void deClassPoint3::nfToDVector::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decPoint3 &point = ( ( sPt3NatDat* )p_GetNativeData( myself ) )->point;
+	( ( deClassPoint3* )GetOwnerClass() )->GetScriptModule()->GetClassDVector()->
+		PushDVector( rt, decDVector( point ) );
+}
+
+
+
 // File Handling
 //////////////////
 
@@ -598,6 +622,8 @@ void deClassPoint3::CreateClassMembers( dsEngine *engine ){
 	init.clsFlt = engine->GetClassFloat();
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsVector = pScrMgr->GetClassVector();
+	init.clsDVector = pScrMgr->GetClassDVector();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -619,6 +645,9 @@ void deClassPoint3::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIsAtLeast( init ) );
 	AddFunction( new nfIsAtMost( init ) );
 	AddFunction( new nfIsZero( init ) );
+	
+	AddFunction( new nfToVector( init ) );
+	AddFunction( new nfToDVector( init ) );
 	
 	AddFunction( new nfCompMultiply( init ) );
 	AddFunction( new nfCompDivide( init ) );

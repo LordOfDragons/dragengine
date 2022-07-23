@@ -50,8 +50,8 @@
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -76,6 +76,8 @@ pSkin( NULL ),
 
 pUseSkinTexture( NULL ),
 
+pClustersRequirePrepareForRender( true ),
+
 pBendFactor( 1.0f ),
 
 pParamBlock( NULL ),
@@ -83,55 +85,14 @@ pParamBlock( NULL ),
 pValidParamBlock( false ),
 pDirtyParamBlock( true ),
 
-pDirtyModel( true ){
+pDirtyModel( true )
+{
 	LEAK_CHECK_CREATE( propField.GetRenderThread(), PropFieldType );
 }
 
-class deoglRPropFieldDeletion : public deoglDelayedDeletion{
-public:
-	deoglSPBlockUBO *paramBlock;
-	decPointerList clusters;
-	
-	deoglRPropFieldDeletion() :
-	paramBlock( NULL ){
-	}
-	
-	virtual ~deoglRPropFieldDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		const int clusterCount = clusters.GetCount();
-		int i;
-		for( i=0; i<clusterCount; i++ ){
-			delete ( deoglPropFieldCluster* )clusters.GetAt( i );
-		}
-		if( paramBlock ){
-			paramBlock->FreeReference();
-		}
-	}
-};
-
-class deoglRPropFieldRemoveAllClustersDeletion : public deoglDelayedDeletion{
-public:
-	decPointerList clusters;
-	
-	deoglRPropFieldRemoveAllClustersDeletion(){
-	}
-	
-	virtual ~deoglRPropFieldRemoveAllClustersDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		const int clusterCount = clusters.GetCount();
-		int i;
-		for( i=0; i<clusterCount; i++ ){
-			delete ( deoglPropFieldCluster* )clusters.GetAt( i );
-		}
-	}
-};
-
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE( pPropField.GetRenderThread(), PropFieldType );
+	
 	if( pSkin ){
 		pSkin->FreeReference();
 	}
@@ -139,21 +100,13 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 		pModel->FreeReference();
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRPropFieldDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRPropFieldDeletion;
-		delayedDeletion->paramBlock = pParamBlock;
-		delayedDeletion->clusters = pClusters;
-		pPropField.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPropField.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
+	}
+	if( pParamBlock ){
+		pParamBlock->FreeReference();
 	}
 }
 
@@ -178,6 +131,13 @@ void deoglRPropFieldType::SetModel( deoglRModel *model ){
 	}
 	
 	pDirtyModel = true;
+	pPropField.TypeRequiresPrepareForRender();
+	
+	const int count = pClusters.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->DirtyRTSInstance();
+	}
 }
 
 void deoglRPropFieldType::SetSkin( deoglRSkin *skin ){
@@ -202,7 +162,6 @@ void deoglRPropFieldType::SetSkin( deoglRSkin *skin ){
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
-	//pComponent->MarkTextureUseSkinDirty();
 }
 
 
@@ -213,6 +172,7 @@ void deoglRPropFieldType::RebuildInstances( const dePropFieldType &type ){
 	RemoveAllClusters();
 	
 	if( ! pModel || ! pSkin ){
+		ClusterRequiresPrepareForRender();
 		return;
 	}
 	
@@ -238,6 +198,7 @@ void deoglRPropFieldType::RebuildInstances( const dePropFieldType &type ){
 		AddClustersWithSieve( type );
 		//AddClustersWithGenerator();
 		//printf( "prop field %p, type %p, %i clusters\n", pPropField, this, pClusterCount );
+		ClusterRequiresPrepareForRender();
 	}
 	
 	// determine the bending factor
@@ -445,21 +406,19 @@ void deoglRPropFieldType::AddClustersFromGenerator( const dePropFieldType &type,
 
 
 void deoglRPropFieldType::PrepareForRender(){
-	if( pDirtyModel ){
-		if( pModel ){
-			pModel->PrepareImposterBillboard();
-		}
-		
-		pDirtyModel = false;
-	}
+	pPrepareModel();
+	pPrepareParamBlock();
 	
-	// update tbos before they are used to avoid hick-ups
-// 	const int count = pClusters.GetCount();
-// 	int i;
-// 	
-// 	for( i=0; i<count; i++ ){
-// 		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateTBOs();
-// 	}
+	if( pClustersRequirePrepareForRender ){
+		pClustersRequirePrepareForRender = false;
+		
+		const int count = pClusters.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->PrepareForRender();
+		}
+	}
 }
 
 void deoglRPropFieldType::UpdateInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix ){
@@ -481,92 +440,40 @@ void deoglRPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
 		DETHROW( deeInvalidParam );
 	}
 	pClusters.Add( cluster );
+	ClusterRequiresPrepareForRender();
 }
 
 void deoglRPropFieldType::RemoveAllClusters(){
-	// this is called during synchronization. clusters use though opengl objects a lot so
-	// they have to be delayed deleted
-	deoglRPropFieldRemoveAllClustersDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRPropFieldRemoveAllClustersDeletion;
-		delayedDeletion->clusters = pClusters;
-		pPropField.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		pClusters.RemoveAll();
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPropField.GetRenderThread().GetLogger().LogException( e );
-		throw;
-	}
-	
-	/*
-	const int count = pClusters.GetCount();
+	// this is called during synchronization
+	const int clusterCount = pClusters.GetCount();
 	int i;
-	
-	for( i=0; i<count; i++ ){
+	for( i=0; i<clusterCount; i++ ){
 		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
 	}
 	pClusters.RemoveAll();
-	*/
+}
+
+void deoglRPropFieldType::ClusterRequiresPrepareForRender(){
+	pClustersRequirePrepareForRender = true;
+	pPropField.TypeRequiresPrepareForRender();
 }
 
 
 
 void deoglRPropFieldType::PrepareBendStateData( const dePropFieldType &type ){
+	// WARNING Called during synchronization by main thread
+	
 	const int count = pClusters.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->PrepareBendStateData( type );
 	}
+	
+	ClusterRequiresPrepareForRender();
 }
 
 
-
-deoglSPBlockUBO *deoglRPropFieldType::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estPropFieldGeometry || shaderType > deoglSkinTexture::estPropFieldEnvMap ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return GetParamBlock();
-}
-
-deoglSPBlockUBO *deoglRPropFieldType::GetParamBlock(){
-	if( ! pValidParamBlock ){
-		if( pParamBlock ){
-			pParamBlock->FreeReference();
-			pParamBlock = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry );
-			
-			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlock = new deoglSPBlockUBO( *pPropField.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{*/
-				pParamBlock = skinShader.CreateSPBInstParam();
-			//}
-		}
-		
-		pValidParamBlock = true;
-		pDirtyParamBlock = true;
-	}
-	
-	if( pDirtyParamBlock ){
-		if( pParamBlock ){
-			UpdateInstanceParamBlock( *pParamBlock, *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry ) );
-		}
-		
-		pDirtyParamBlock = false;
-	}
-	
-	return pParamBlock;
-}
 
 void deoglRPropFieldType::InvalidateParamBlocks(){
 	pValidParamBlock = false;
@@ -575,6 +482,7 @@ void deoglRPropFieldType::InvalidateParamBlocks(){
 
 void deoglRPropFieldType::MarkParamBlocksDirty(){
 	pDirtyParamBlock = true;
+	pPropField.TypeRequiresPrepareForRender();
 }
 
 void deoglRPropFieldType::MarkTUCsDirty(){
@@ -584,6 +492,8 @@ void deoglRPropFieldType::MarkTUCsDirty(){
 	for( i=0; i<count; i++ ){
 		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->MarkTUCsDirty();
 	}
+	
+	pPropField.TypeRequiresPrepareForRender();
 }
 
 
@@ -678,6 +588,8 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 			paramBlock.SetParameterDataBVec3( target, false, false, false );
 		}
 		
+		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+		
 		// per texture dynamic texture properties
 		skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 		
@@ -692,4 +604,56 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 
 void deoglRPropFieldType::WorldReferencePointChanged(){
 	pDirtyParamBlock = true;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRPropFieldType::pPrepareModel(){
+	if( ! pDirtyModel ){
+		return;
+	}
+	
+	if( pModel ){
+		pModel->PrepareImposterBillboard();
+		pModel->GetLODAt( 0 ).PrepareVBOBlock();
+	}
+	
+	pDirtyModel = false;
+}
+
+void deoglRPropFieldType::pPrepareParamBlock(){
+	if( ! pValidParamBlock ){
+		if( pParamBlock ){
+			pParamBlock->FreeReference();
+			pParamBlock = NULL;
+		}
+		
+		if( pUseSkinTexture ){
+			deoglSkinShader &skinShader =
+				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry );
+			
+			/*if( deoglSkinShader::USE_SHARED_SPB ){
+				pParamBlock = new deoglSPBlockUBO( *pPropField.GetRenderThread()
+					.GetBufferObject().GetLayoutSkinInstanceUBO() );
+				
+			}else{*/
+				pParamBlock = skinShader.CreateSPBInstParam();
+			//}
+		}
+		
+		pValidParamBlock = true;
+		pDirtyParamBlock = true;
+	}
+	
+	if( pDirtyParamBlock ){
+		if( pParamBlock ){
+			UpdateInstanceParamBlock( *pParamBlock,
+				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry ) );
+		}
+		
+		pDirtyParamBlock = false;
+	}
 }

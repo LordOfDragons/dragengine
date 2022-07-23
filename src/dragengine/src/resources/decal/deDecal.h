@@ -49,7 +49,13 @@ class deBaseAudioDecal;
  * around the decal in clockwise order. The decal is then projected along the view direction
  * on the geometry it is attached to.
  */
-class deDecal : public deResource{
+class DE_DLL_EXPORT deDecal : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deDecal> Ref;
+	
+	
+	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;

@@ -34,7 +34,7 @@ class deSound;
 /**
  * \brief Base sound module providing load/save support for sounds.
  */
-class deBaseSoundModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseSoundModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

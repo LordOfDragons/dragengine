@@ -1,0 +1,182 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Menu item showing a sub menu.
+ * \version 1.11
+ */
+class MenuItemSubMenu extends MenuItemCommand
+	private var Widget pWidgetArrow
+	private var Panel pPanelArrow
+	private var MenuPopup pSubMenu
+	
+	
+	
+	/** \brief Create menu item command. */
+	public func new(String text) this(null, text)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text) super(icon, text)
+		runWhileBlockingLayout(block
+			setDesignerSelector("MenuItem.SubMenu")
+			
+			pPanelArrow = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			addRightIcon(pPanelArrow)
+		end)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(String text, MenuPopup subMenu) this(text)
+		setSubMenu(subMenu)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text, MenuPopup subMenu) this(icon, text)
+		setSubMenu(subMenu)
+	end
+	
+	/** \brief Dispose of menu item. */
+	public func void dispose()
+		pWidgetArrow = null
+		pPanelArrow = null
+		
+		if pSubMenu != null
+			pSubMenu.safeDispose()
+			pSubMenu = null
+		end
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Sub menu to show or null if not set. */
+	public func MenuPopup getSubMenu()
+		return pSubMenu
+	end
+	
+	/** \brief Set sub menu to show or null if not set. */
+	public func void setSubMenu(MenuPopup menu)
+		if menu == pSubMenu
+			return
+		end
+		
+		if pSubMenu != null
+			pSubMenu.safeDispose()
+		end
+		
+		pSubMenu = menu
+		
+		if menu != null
+			menu.setParentMenuItem(this)
+			menu.setCloseOnPopDown(false)
+		end
+	end
+	
+	
+	
+	/** \brief Fire action. */
+	public func void fireAction(int modifiers)
+		// no super call since this would close the top level menu popup
+		fireActionListeners(modifiers)
+	end
+	
+	/** \brief Show sub menu. */
+	public func void showSubMenu()
+		if pSubMenu == null or pSubMenu.getVisible()
+			return
+		end
+		
+		var Point position = getDesktopPosition()
+		var Point size = getSize()
+		
+		if pSubMenu.getParent() == null
+			getDesktop().addWindow(pSubMenu)
+		end
+		
+		var Point popupPosition = Point.new(position.getX() + size.getX() - 5, position.getY() - 5)
+		pSubMenu.popup(popupPosition)
+		
+		var Point realPosition = pSubMenu.getPosition()
+		if realPosition.getX() >= popupPosition.getX()
+			return
+		end
+		
+		pSubMenu.setX(DEMath.max(position.getX() + 5 - pSubMenu.getWidth(), 0))
+	end
+	
+	/** \brief Hide sub menu if visible. */
+	public func void hideSubMenu()
+		if pSubMenu != null and pSubMenu.getVisible()
+			pSubMenu.popdown()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Arrow widget or \em null if not set.
+	 * \note For use by designers.
+	 */
+	public func Widget getWidgetArrow()
+		return pWidgetArrow
+	end
+	
+	/**
+	 * \brief Set arrow widget or \em null if not set.
+	 * \note For use by designers.
+	 */
+	public func void setWidgetArrow(Widget widget)
+		if widget == pWidgetArrow
+			return
+		end
+		
+		if pWidgetArrow != null
+			removeWidget(pWidgetArrow)
+		end
+		
+		pWidgetArrow = widget
+		
+		if widget != null
+			pPanelArrow.addWidget(widget, BorderLayout.Area.right)
+		end
+	end
+	
+	
+	
+	/** \brief Mouse moved. */
+	public func void onMouseMove(MouseEvent event)
+		super.onMouseMove(event)
+		
+		var MenuPopup menu = getParentMenuPopup()
+		if menu != null
+			menu.setOpenSubMenu(this)
+		end
+	end
+end

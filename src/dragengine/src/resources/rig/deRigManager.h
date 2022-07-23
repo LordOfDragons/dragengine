@@ -34,7 +34,7 @@ class deRigBuilder;
  * \brief Rig Resource manager.
  *
  */
-class deRigManager : public deFileResourceManager{
+class DE_DLL_EXPORT deRigManager : public deFileResourceManager{
 private:
 	deFileResourceList pRigs;
 	

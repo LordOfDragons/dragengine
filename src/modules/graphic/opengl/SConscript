@@ -40,7 +40,7 @@ if envModule['build_graphics_opengl'] != TernaryVariableNo:
 			buildModule = True
 		
 		if hasOpenGL:
-			if envModule['OSPosix']:
+			if envModule['OSPosix'] or envModule['OSMacOS']:
 				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', 'glXGetProcAddress(NULL);')
 				if hasFuncProc:
 					envModule.Append(CXXFLAGS = '-DHAS_OGL_GETPROC')
@@ -60,7 +60,7 @@ if not buildModule:
 	Return()
 
 if envModule['OSWindows']:
-	libs.append(['kernel32', 'user32', 'gdi32'])
+	libs.append('gdi32')
 	#envModule.Append(CXXFLAGS = '-g')
 
 if envModule['platform_android'] != 'no':
@@ -75,12 +75,18 @@ if envModule['OSBeOS']:
 
 if envModule['OSMacOS']:
 	envModule.Append(FRAMEWORKS = ['Cocoa', 'OpenGL'])
+	# OpenGL deprecation. for the time being silence until Vulkan is done
+	envModule.Append(CPPFLAGS = ['-DGL_SILENCE_DEPRECATION'])
+	# Silence more deprecated warnings. Looking at them later
+	envModule.Append(CPPFLAGS = ['-Wno-deprecated-declarations'])
 
 if envModule['with_debug']:
 	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
 
+appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
+
 # fetch values in expanded form for later use
-versionString = '1.4'
+versionString = '1.13'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -120,6 +126,11 @@ for l in library:
 	if l.name.endswith(envModule['SHLIBSUFFIX']):
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'graopengl.pdb'))
+	archive['{}/graopengl.pdb'.format(pathPdb)] = envModule.File('graopengl.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME' },

@@ -42,6 +42,12 @@ class deBaseModule;
  * \brief FBX managed rig.
  */
 class fbxRig : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxRig> Ref;
+	
+	
+	
 private:
 	fbxScene &pScene;
 	fbxNode &pNodePose;

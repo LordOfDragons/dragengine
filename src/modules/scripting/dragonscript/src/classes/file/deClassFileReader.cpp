@@ -31,8 +31,11 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decZFileReader.h>
 #include <dragengine/common/string/decString.h>
+
 #include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassTimeDate.h>
 
 
 
@@ -70,6 +73,23 @@ void deClassFileReader::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! nd.fileReader ){
 		DSTHROW( dueOutOfMemory );
 	}
+}
+
+// public static func FileReader newZCompressed(String filename)
+deClassFileReader::nfNewZCompressed::nfNewZCompressed( const sInitData &init ) :
+dsFunction( init.clsFRead, "newZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFRead ){
+	p_AddParameter( init.clsStr ); // filename
+}
+void deClassFileReader::nfNewZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassFileReader &clsFRead = *( ( deClassFileReader* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFRead.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	
+	clsFRead.PushFileReader( rt, decZFileReader::Ref::New(
+		new decZFileReader( decBaseFileReader::Ref::New(
+			vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
 // public func destructor()
@@ -329,6 +349,34 @@ void deClassFileReader::nfSkipString16::RunFunction( dsRunTime *rt, dsValue *mys
 	fileReader.SkipString16();
 }
 
+// public func TimeDate readTimeDate()
+deClassFileReader::nfReadTimeDate::nfReadTimeDate( const sInitData &init ) :
+dsFunction( init.clsFRead, "readTimeDate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTimeDate ){
+}
+void deClassFileReader::nfReadTimeDate::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	deScriptingDragonScript &ds = *( ( deClassFileReader* )GetOwnerClass() )->GetDS();
+	dsClassTimeDate::sTimeDate timeDate;
+	
+	switch( fileReader.ReadByte() ){ // version
+	case 0:
+		timeDate.year = fileReader.ReadUShort();
+		timeDate.month = fileReader.ReadByte();
+		timeDate.day = fileReader.ReadByte();
+		timeDate.hour = fileReader.ReadByte();
+		timeDate.minute = fileReader.ReadByte();
+		timeDate.second = fileReader.ReadByte();
+		timeDate.dayOfWeek = fileReader.ReadByte();
+		timeDate.dayOfYear = fileReader.ReadUShort();
+		break;
+		
+	default:
+		DETHROW_INFO( deeInvalidFormat, "unsupported version" );
+	}
+	
+	( ( dsClassTimeDate* )ds.GetScriptEngine()->GetClassTimeDate() )->PushTimeDate( rt, timeDate );
+}
+
 
 
 // Class deClassFileReader
@@ -367,8 +415,10 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	init.clsObj = engine->GetClassObject();
 	init.clsInt = engine->GetClassInt();
 	init.clsFlt = engine->GetClassFloat();
+	init.clsTimeDate = engine->GetClassTimeDate();
 	
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewZCompressed( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );
@@ -394,6 +444,7 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfReadString( init ) );
 	AddFunction( new nfSkipString8( init ) );
 	AddFunction( new nfSkipString16( init ) );
+	AddFunction( new nfReadTimeDate( init ) );
 	
 	CalcMemberOffsets();
 }

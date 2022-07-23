@@ -22,6 +22,8 @@
 #ifndef _DESYNTHESIZERSOURCEVISITOR_H_
 #define _DESYNTHESIZERSOURCEVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deSynthesizerSource;
 class deSynthesizerSourceChain;
 class deSynthesizerSourceGroup;
@@ -33,7 +35,7 @@ class deSynthesizerSourceWave;
 /**
  * \brief Synthesizer source visitor.
  */
-class deSynthesizerSourceVisitor{
+class DE_DLL_EXPORT deSynthesizerSourceVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

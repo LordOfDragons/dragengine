@@ -30,7 +30,6 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -60,45 +59,14 @@ pDirtyTexture( false )
 {
 }
 
-class deoglRVideoPlayerDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	
-	deoglRVideoPlayerDeletion() :
-	texture( NULL ){
-	}
-	
-	virtual ~deoglRVideoPlayerDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( texture ){
-			delete texture;
-		}
-	}
-};
-
 deoglRVideoPlayer::~deoglRVideoPlayer(){
 	SetVideo( NULL );
 	
 	if( pPixelBuffer ){
 		delete pPixelBuffer;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRVideoPlayerDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRVideoPlayerDeletion;
-		delayedDeletion->texture = pTexture;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTexture ){
+		delete pTexture;
 	}
 }
 
@@ -159,22 +127,7 @@ void deoglRVideoPlayer::SetVideoSize( int width, int height, int componentCount 
 	}
 	
 	if( pTexture ){
-		// this call done from inside the main thread. use delayed deletion
-		deoglRVideoPlayerDeletion *delayedDeletion = NULL;
-		
-		try{
-			delayedDeletion = new deoglRVideoPlayerDeletion;
-			delayedDeletion->texture = pTexture;
-			pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-			
-		}catch( const deException &e ){
-			if( delayedDeletion ){
-				delete delayedDeletion;
-			}
-			pRenderThread.GetLogger().LogException( e );
-			throw;
-		}
-		
+		delete pTexture;
 		pTexture = NULL;
 	}
 	

@@ -25,6 +25,7 @@
 #include "deInputDeviceAxis.h"
 #include "deInputDeviceButton.h"
 #include "deInputDeviceFeedback.h"
+#include "deInputDeviceComponent.h"
 #include "../common/exceptions.h"
 #include "../resources/model/deModel.h"
 #include "../resources/skin/deSkin.h"
@@ -42,7 +43,12 @@ pButtonCount( 0 ),
 pAxes( NULL ),
 pAxisCount( 0 ),
 pFeedbacks( NULL ),
-pFeedbackCount( 0 ){
+pFeedbackCount( 0 ),
+pComponents( nullptr ),
+pComponentCount( 0 ),
+pBoneConfiguration( ebcNone ),
+pSupportsFaceEyeExpressions( false ),
+pSupportsFaceMouthExpressions( false ){
 }
 
 deInputDevice::~deInputDevice(){
@@ -95,6 +101,50 @@ void deInputDevice::AddDisplayIcon( deImage *image ){
 
 void deInputDevice::SetDisplayText( const char * text){
 	pDisplayText = text;
+}
+
+void deInputDevice::SetBoneConfiguration( eBoneConfigurations configuration ){
+	pBoneConfiguration = configuration;
+}
+
+const decVector &deInputDevice::GetFingerTipOffset( int index ) const{
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index > 4 ){
+		DETHROW_INFO( deeInvalidParam, "index > 4" );
+	}
+	return pFingerTipOffset[ index ];
+}
+
+void deInputDevice::SetFingerTipOffset( int index, const decVector &offset ){
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index > 4 ){
+		DETHROW_INFO( deeInvalidParam, "index > 4" );
+	}
+	pFingerTipOffset[ index ] = offset;
+}
+
+void deInputDevice::SetHandRig( deRig *rig ){
+	pHandRig = rig;
+}
+
+void deInputDevice::SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions ){
+	pSupportsFaceEyeExpressions = supportsFaceEyeExpressions;
+}
+
+void deInputDevice::SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions ){
+	pSupportsFaceMouthExpressions = supportsFaceMouthExpressions;
+}
+
+void deInputDevice::SetVRModel( deModel *model ){
+	pVRModel = model;
+}
+
+void deInputDevice::SetVRSkin( deSkin *skin ){
+	pVRSkin = skin;
 }
 
 
@@ -226,10 +276,55 @@ int deInputDevice::IndexOfFeedbackWithID( const char *id ) const{
 
 
 
+// Components
+//////////////
+
+void deInputDevice::SetComponentCount( int count ){
+	if( pComponents ){
+		delete [] pComponents;
+		pComponents = NULL;
+		pComponentCount = 0;
+	}
+	
+	if( count == 0 ){
+		return;
+	}
+	
+	pComponents = new deInputDeviceComponent[ count ];
+	pComponentCount = count;
+}
+
+deInputDeviceComponent &deInputDevice::GetComponentAt( int index ) const{
+	if( index < 0 || index >= pComponentCount ){
+		DETHROW( deeOutOfBoundary );
+	}
+	return pComponents[ index ];
+}
+
+int deInputDevice::IndexOfComponentWithID( const char *id ) const{
+	if( ! id ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	int i;
+	for( i=0; i<pComponentCount; i++ ){
+		if( pComponents[ i ].GetID() == id ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+
+
 // Privat functions
 /////////////////////
 
 void deInputDevice::pCleanUp(){
+	if( pComponents ){
+		delete [] pComponents;
+	}
 	if( pFeedbacks ){
 		delete [] pFeedbacks;
 	}

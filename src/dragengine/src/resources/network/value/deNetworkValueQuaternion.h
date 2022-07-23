@@ -32,7 +32,13 @@
  * Defines a quaternion network value. Quaternions are tuples with float
  * components. The quaternion contains four components.
  */
-class deNetworkValueQuaternion : public deNetworkValue{
+class DE_DLL_EXPORT deNetworkValueQuaternion : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueQuaternion> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	decQuaternion pValue;

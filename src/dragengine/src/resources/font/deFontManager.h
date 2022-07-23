@@ -33,7 +33,7 @@ class deFontBuilder;
 /**
  * \brief Font resource manager.
  */
-class deFontManager : public deFileResourceManager{
+class DE_DLL_EXPORT deFontManager : public deFileResourceManager{
 private:
 	deFileResourceList pFonts;
 	

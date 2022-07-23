@@ -685,7 +685,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			select this.pLocomotionType
 			case LocomotionType.natural
 				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection + locomotion.getLookHorizontalGoal() )
-				if this.pMovingSpeed > 0.001
+				if this.pMovingSpeed > 0.001 or not locomotion.getCanTurnInPlace()
 					locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() + this.pMovingBodyTurn )
 					
 				else
@@ -693,13 +693,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				end
 				
 			case LocomotionType.fps
-				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection + locomotion.getLookHorizontalGoal() )
-				if this.pMovingSpeed > 0.001
-					locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() )
-					
-				else
-					locomotion.setTurnHorizontal( 0 )
-				end
+				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection )
+				locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() )
 				
 			case LocomotionType.vehicle
 				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection )
@@ -901,8 +896,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputMove.
 	 */
 	static public func ECBehaviorPlayerInputMove getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInputMove
+		return eclass.findBehavior( block ECBehaviorPlayerInputMove each
+			return true
 		end ) cast ECBehaviorPlayerInputMove
 	end
 	
@@ -913,8 +908,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputMove.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

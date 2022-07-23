@@ -85,6 +85,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
@@ -211,7 +212,7 @@ public:
 	
 	virtual igdeUndo *OnActionGameDefinition( gdeGameDefinition *gameDefinition ){
 		decString basePath( gameDefinition->GetBasePath() );
-		if( igdeCommonDialogs::GetDirectory( &pPanel, "Select Project Data Directory", basePath ) ){
+		if( igdeCommonDialogs::GetDirectory( pPanel.GetParentWindow(), "Select Project Data Directory", basePath ) ){
 			pTextField.SetText( basePath );
 			pTextField.NotifyTextChanged();
 		}

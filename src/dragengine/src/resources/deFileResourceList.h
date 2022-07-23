@@ -33,7 +33,7 @@ class deVirtualFileSystem;
  * Extends the resource list with a file resource specific check for the existence
  * of a file resource with a given name.
  */
-class deFileResourceList : public deResourceList{
+class DE_DLL_EXPORT deFileResourceList : public deResourceList{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

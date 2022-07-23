@@ -115,7 +115,7 @@ bool fbxPropertyArrayLong::GetValueAtAsBool( int index ) const{
 }
 
 int fbxPropertyArrayLong::GetValueAtAsInt( int index ) const{
-	return GetValueAt( index );
+	return ( int )GetValueAt( index );
 }
 
 int64_t fbxPropertyArrayLong::GetValueAtAsLong( int index ) const{
@@ -123,11 +123,11 @@ int64_t fbxPropertyArrayLong::GetValueAtAsLong( int index ) const{
 }
 
 float fbxPropertyArrayLong::GetValueAtAsFloat( int index ) const{
-	return GetValueAt( index );
+	return ( float )GetValueAt( index );
 }
 
 double fbxPropertyArrayLong::GetValueAtAsDouble( int index ) const{
-	return GetValueAt( index );
+	return ( double )GetValueAt( index );
 }
 
 

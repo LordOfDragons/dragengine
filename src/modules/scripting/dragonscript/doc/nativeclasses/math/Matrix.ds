@@ -22,90 +22,95 @@ fixed class Matrix
 	end
 	
 	/** \brief Create matrix from values. */
-	public func new( float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34 )
+	public func new(float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34)
 	end
 	
 	/** \brief Create translation matrix. */
-	public static func Matrix newTranslation( Vector translation )
+	public static func Matrix newTranslation(Vector translation)
 		return null
 	end
 	
 	/** \brief Create translation matrix. */
-	public static func Matrix newTranslation( float tx, float ty, float tz )
+	public static func Matrix newTranslation(float tx, float ty, float tz)
 		return null
 	end
 	
 	/** \brief Create scaling matrix. */
-	public static func Matrix newScaling( Vector scaling )
+	public static func Matrix newScaling(Vector scaling)
 		return null
 	end
 	
 	/** \brief Create scaling matrix. */
-	public static func Matrix newScaling( float sx, float sy, float sz )
+	public static func Matrix newScaling(float sx, float sy, float sz)
 		return null
 	end
 	
 	/** \brief Create rotation around the x axis matrix. */
-	public static func Matrix newRotationX( float rotation )
+	public static func Matrix newRotationX(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation around the y axis matrix. */
-	public static func Matrix newRotationY( float rotation )
+	public static func Matrix newRotationY(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation around the z axis matrix. */
-	public static func Matrix newRotationZ( float rotation )
+	public static func Matrix newRotationZ(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix newRotation( Vector rotation )
+	public static func Matrix newRotation(Vector rotation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix newRotation( float rx, float ry, float rz )
+	public static func Matrix newRotation(float rx, float ry, float rz)
+		return null
+	end
+	
+	/** \brief Create rotation matrix. */
+	public static func Matrix newRotationAxis(Vector axis, float rotation)
 		return null
 	end
 	
 	/** \brief Create scaling-rotation-translation matrix composing of a scaling followed by a rotation and a translation. */
-	public static func Matrix newSRT( Vector scaling, Vector rotation, Vector translation )
+	public static func Matrix newSRT(Vector scaling, Vector rotation, Vector translation)
 		return null
 	end
 	
 	/** \brief Create rotation-translation matrix composing of a rotation followed by a translation. */
-	public static func Matrix newRT( Vector rotation, Vector translation )
+	public static func Matrix newRT(Vector rotation, Vector translation)
 		return null
 	end
 	
 	/** \brief Create scale-view-up-translation matrix composing of a rotation followed by a world matrix. */
-	public static func Matrix newSVUT( Vector scaling, Vector view, Vector up, Vector translation )
+	public static func Matrix newSVUT(Vector scaling, Vector view, Vector up, Vector translation)
 		return null
 	end
 	
 	/** \brief Create view-up matrix. */
-	public static func Matrix newVU( Vector view, Vector up )
+	public static func Matrix newVU(Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create camera matrix. */
-	public static func Matrix newCamera( Vector position, Vector view, Vector up )
+	public static func Matrix newCamera(Vector position, Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create world matrix. */
-	public static func Matrix newWorld( Vector position, Vector view, Vector up )
+	public static func Matrix newWorld(Vector position, Vector view, Vector up)
 	end
 	
 	/** \brief Create world matrix. */
-	public static func Matrix newWorld( Vector position, Quaternion quaternion )
+	public static func Matrix newWorld(Vector position, Quaternion orientation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix from the given quaternion. */
-	public static func Matrix newFromQuaternion( Quaternion quaternion )
+	public static func Matrix newFromQuaternion(Quaternion quaternion)
 		return null
 	end
 	/*@}*/
@@ -119,7 +124,7 @@ fixed class Matrix
 	 * \throws EInvalidParam \em row is less than 0 or larger than 2.
 	 * \throws EInvalidParam \em col is less than 0 or larger than 3.
 	 */
-	public func float getAt( int row, int col )
+	public func float getAt(int row, int col)
 		return 0.0
 	end
 	
@@ -204,7 +209,7 @@ fixed class Matrix
 	end
 	
 	/** \brief Transform normal by matrix. */
-	public func Vector transformNormal( Vector normal )
+	public func Vector transformNormal(Vector normal)
 		return null
 	end
 	
@@ -215,6 +220,11 @@ fixed class Matrix
 	
 	/** \brief Inverse. */
 	public func Matrix getInverse()
+		return null
+	end
+	
+	/** \brief Matrix with only the rotational part. */
+	public func Matrix getRotation()
 		return null
 	end
 	
@@ -263,7 +273,7 @@ fixed class Matrix
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type Matrix and components are equal.
 	*/
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	
@@ -282,6 +292,18 @@ fixed class Matrix
 	public func String toString()
 		return null
 	end
+	
+	/**
+	 * \brief String representation of matrix with precision.
+	 * 
+	 * Same as toString() except the count of digits of each component is precision.
+	 * 
+	 * \param precision Precision in digits in the range from 0 to 9 inclusive.
+	 * \throws EInvalidParam precision is less than 0 or larger than 9.
+	 */
+	public func String toString(int precision)
+		return null
+	end
 	/*@}*/
 	
 	
@@ -289,12 +311,12 @@ fixed class Matrix
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read matrix from a file reader. */
-	static public func Matrix readFromFile( FileReader reader )
+	static public func Matrix readFromFile(FileReader reader)
 		return null
 	end
 	
 	/** \brief Write matrix to a file writer. */
-	public func void writeToFile( FileWriter writer )
+	public func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 	
@@ -303,17 +325,17 @@ fixed class Matrix
 	/** \name Operators */
 	/*@{*/
 	/** \brief Sum of matrix with another Matrix. */
-	public func Matrix +( Matrix matrix )
+	public func Matrix +(Matrix matrix)
 		return null
 	end
 	
 	/** \brief Difference of matrix and another Matrix. */
-	public func Matrix -( Matrix matrix )
+	public func Matrix -(Matrix matrix)
 		return null
 	end
 	
 	/** \brief Matrix multiplied by a factor. */
-	public func Matrix *( float k )
+	public func Matrix *(float k)
 		return null
 	end
 	
@@ -321,17 +343,17 @@ fixed class Matrix
 	 * \brief Matrix divided by a factor.
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
-	public func Matrix /( float k )
+	public func Matrix /(float k)
 		return null
 	end
 	
 	/** \brief Matrix multiplied by another Matrix. */
-	public func Matrix *( Matrix matrix )
+	public func Matrix *(Matrix matrix)
 		return null
 	end
 	
 	/** \brief Vector transformed by matrix. */
-	public func Vector *( Vector vector )
+	public func Vector *(Vector vector)
 		return null
 	end
 	/*@}*/

@@ -23,6 +23,7 @@
 #define _DESKINTEXTURE_H_
 
 #include "../../common/math/decMath.h"
+#include "../../common/string/decString.h"
 
 class deSkinProperty;
 class deSkinVisitor;
@@ -35,9 +36,9 @@ class deSkinVisitor;
  * defining the material properties for rendering. Furthermore audio related
  * properties are stored as well as physics properties.
  */
-class deSkinTexture{
+class DE_DLL_EXPORT deSkinTexture{
 private:
-	char *pName;
+	const decString pName;
 	
 	deSkinProperty **pProperties;
 	int pPropertyCount;
@@ -60,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the texture. */
-	inline const char *GetName() const{ return ( const char * )pName; }
+	inline const decString &GetName() const{ return pName; }
 	/*@}*/
 	
 	
@@ -88,11 +89,6 @@ public:
 	/** \brief Adds a property. */
 	void AddProperty( deSkinProperty *property );
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

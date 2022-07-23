@@ -35,7 +35,7 @@ class deglWindowLogger;
 
 
 /**
- * @brief Main Window.
+ * Main Window.
  */
 class deglWindowMain : public FXMainWindow{
 	FXDECLARE( deglWindowMain )
@@ -54,6 +54,8 @@ public:
 		ID_SETTINGS_ENGINE,
 		ID_TIMER_PULSE
 	};
+	
+	
 	
 private:
 	deglLauncher *pLauncher;
@@ -76,69 +78,80 @@ private:
 	FXIcon *pIconInvalidSmall;
 	FXIcon *pIconButtonInfo;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new main window. */
+	/** Create main window. */
 	deglWindowMain( FXApp* app, int argc, char **argv );
-	/** Cleans up the main window prototype. */
+	
+	/** Clean up main window. */
 	virtual ~deglWindowMain();
-	/** Fox request for creating the window. */
+	
+	/** Fox create window. */
 	virtual void create();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the launcher. */
+	/** Launcher. */
+	
 	inline deglLauncher *GetLauncher() const{ return pLauncher; }
-	/** Retrieves the gui builder. */
+	/** GUI builder. */
 	inline deglGuiBuilder *GetGuiBuilder() const{ return pGuiBuilder; }
 	
-	/**
-	 * \brief Run command line actions.
-	 * \returns True to start the application loop or false to exit
-	 */
+	/** Run command line actions. Returns true to start the application loop or false to exit. */
 	bool RunCommandLineActions();
 	
-	/** Displays an exception error. */
+	/** Display exception error. */
 	void DisplayException( const deException &exception );
 	
-	/** Retrieves the menu bar. */
+	/** Menu bar. */
 	inline FXMenuBar *GetMenuBar() const{ return pMenuBar; }
 	
-	/** Retrieves the games panel. */
+	/** Games panel. */
 	inline deglPanelGames *GetPanelGames() const{ return pPanelGames; }
 	
-	/** Retrieves the logger window or NULL if not visible. */
+	/** Logger window or nullptr if not visible. */
 	inline deglWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
+	
 	/**
-	 * Shows the logger window. If not existing yet it is created otherwise it is
+	 * Show logger window. If not existing yet it is created otherwise it is
 	 * focused and raised ontop of all other windows.
 	 */
 	void ShowWindowLogger();
 	
-	/** Sets the visibility of the progress bar in the status bar. */
+	/** Set visibility of the progress bar in the status bar. */
 	void SetProgressVisible( bool visible );
-	/** Sets the progress bar progress. */
+	
+	/** Set progress bar progress. */
 	void SetProgress( float progress );
-	/** Sets the progress text. */
+	
+	/** Set progress text. */
 	void SetProgressText( const decUnicodeString &text );
 	
-	/** Asks the user if it is okay to quit the application. */
+	/** Ask user to quit application. */
 	bool QuitRequest();
 	
-	/** \brief Reload games and patches. */
+	/** Reload games and patches. */
 	void ReloadGamesAndPatches();
 	
-	/** Retrieves the small valid icon. */
+	/** Small valid icon. */
 	inline FXIcon *GetIconValidSmall() const{ return pIconValidSmall; }
-	/** Retrieves the small invalid icon. */
+	
+	/** Small invalid icon. */
 	inline FXIcon *GetIconInvalidSmall() const{ return pIconInvalidSmall; }
-	/** Retrieves the info button icon. */
+	
+	/** Info button icon. */
 	inline FXIcon *GetIconButtonInfo() const{ return pIconButtonInfo; }
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onResize( FXObject *sender, FXSelector selector, void *data );
 	
@@ -155,5 +168,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif

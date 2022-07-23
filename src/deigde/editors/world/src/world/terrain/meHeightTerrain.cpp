@@ -64,7 +64,7 @@ pSaved( false ),
 pSectorSize( 500 ),
 pSectorResolution( 1024 ),
 pBaseHeight( 0.0f ),
-pHeightScaling( 1.0f ),
+pHeightScaling( 100.0f ),
 pActiveSector( NULL ),
 pActiveVLayer( NULL )
 {
@@ -101,7 +101,14 @@ void meHeightTerrain::SetPathHT( const char *path ){
 
 decString meHeightTerrain::GetBaseDirectory() const{
 	decPath path( decPath::AbsolutePathUnix( pPathHT, pWorld.GetDirectoryPath() ) );
-	path.RemoveLastComponent();
+	
+	if( path.GetComponentCount() > 0 ){
+		path.RemoveLastComponent();
+		
+	}else{
+		path.SetFromNative( "/" ); // in new world files both path can be empty
+	}
+	
 	return path.GetPathUnix();
 }
 
@@ -680,6 +687,9 @@ void meHeightTerrain::pUpdateHeightTerrain(){
 	collisionFilter.SetBit( meWorld::eclmEditing );
 	
 	pEngHT->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+	
+	pEngHT->SetBaseHeight( pBaseHeight );
+	pEngHT->SetHeightScaling( pHeightScaling );
 	
 	// set the height terrain to the world
 	world.SetHeightTerrain( pEngHT );

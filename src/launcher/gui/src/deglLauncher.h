@@ -22,86 +22,70 @@
 #ifndef _DEGLLAUNCHER_H_
 #define _DEGLLAUNCHER_H_
 
-#include "game/patch/deglPatchManager.h"
+#include "deglSignalHandler.h"
+#include "config/deglConfiguration.h"
 
-#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#include <delauncher/delLauncher.h>
+#include <delauncher/game/delGame.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 
 class deglConfiguration;
-class deglEngine;
-class deVirtualFileSystem;
-class deglGameManager;
-class deglGame;
-class deglLoggerHistory;
-class deLogger;
 class deglWindowMain;
 
 
-
 /**
- * @brief Main Launcher Class.
+ * Launcher.
  */
-class deglLauncher{
+class deglLauncher : public delLauncher{
 private:
+	deglSignalHandler pSignalHandler;
+	deglConfiguration pConfiguration;
+	
 	deglWindowMain *pWindowMain;
 	
-	decUnicodeArgumentList pArgList;
-	deVirtualFileSystem *pFileSystem;
-	deglConfiguration *pConfiguration;
-	deglEngine *pEngine;
-	deglGameManager *pGameManager;
-	deglPatchManager pPatchManager;
-	deglGame *pCmdLineGame;
-	deLogger *pLogger;
-	deglLoggerHistory *pLoggerHistory;
+	decUnicodeArgumentList pArguments;
+	delGame::Ref pCmdLineGame;
 	
 	decString pRunGame;
 	decUnicodeArgumentList pRunGameArgList;
 	decString pRunProfileName;
 	decString pCmdLineInstallDelga;
 	
+	bool pCmdLineQuitNow;
+	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new launcher. */
+	/** Create launcher. */
 	deglLauncher( deglWindowMain *windowMain, int argc, char **argv );
-	/** Cleans up the launcher. */
-	~deglLauncher();
+	
+	/** Clean up launcher. */
+	virtual ~deglLauncher();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the command line arguments. */
-	inline const decUnicodeArgumentList &GetArgumentList() const{ return pArgList; }
-	/** Retrieves the file system. */
-	inline deVirtualFileSystem *GetFileSystem() const{ return pFileSystem; }
-	/** Retrieves the configuration. */
-	inline deglConfiguration *GetConfiguration() const{ return pConfiguration; }
-	/** Retrieves the engine. */
-	inline deglEngine *GetEngine() const{ return pEngine; }
-	/** Retrieves the game manager. */
-	inline deglGameManager *GetGameManager() const{ return pGameManager; }
+	/** Command line arguments. */
+	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
-	/** \brief Patch manager. */
-	inline deglPatchManager &GetPatchManager(){ return pPatchManager; }
-	inline const deglPatchManager &GetPatchManager() const{ return pPatchManager; }
-	
-	/** Retrieves the logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
-	/** Retrieves the logger history. */
-	inline deglLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
+	/** Configuration. */
+	inline deglConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const deglConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** \brief Install delga command line argument. */
 	inline const decString &GetCommandLineInstallDelga() const{ return pCmdLineInstallDelga; }
 	
-	/** Determines if a game has to be run due to command line arguments. */
+	/** Game has to be run due to command line arguments. */
 	bool HasCommandLineRunGame() const;
 	
-	/**
-	 * \brief Run game from command line.
-	 * \returns True to start the application loop or false to exit
-	 */
+	/** Run game from command line. Returns true to start the application loop or false to exit */
 	bool RunCommandLineGame();
+	
 	/**
 	 * Run game from command line stop check. Called when a game stops. Checks if the last
 	 * game stopped running and shuts down the application if run from the command line.
@@ -110,12 +94,23 @@ public:
 	
 	/** Pulse checking. */
 	void PulseChecking();
+	
+	/** Quit now requested from the command line. */
+	inline bool GetCmdLineQuitNow() const{ return pCmdLineQuitNow; }
+	
+	
+	
+	/** Create game icon instance. */
+	virtual delGameIcon *CreateGameIcon( int size, const char *path );
 	/*@}*/
+	
+	
 	
 private:
 	void pParseArguments();
+	bool pParseWindowsURIScheme();
 	void pInitLogger();
-	void pRegisterSignals();
+	static decString pUrlDecode( const char *url );
 };
 
 #endif

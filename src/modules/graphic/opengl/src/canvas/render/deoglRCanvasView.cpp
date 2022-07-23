@@ -30,7 +30,6 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../target/deoglRenderTarget.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -52,42 +51,11 @@ pResizeRenderTarget( false )
 	LEAK_CHECK_CREATE( renderThread, CanvasView );
 }
 
-class deoglRCanvasViewDeletion : public deoglDelayedDeletion{
-public:
-	deoglRenderTarget *renderTarget;
-	
-	deoglRCanvasViewDeletion() :
-	renderTarget( NULL ){
-	}
-	
-	virtual ~deoglRCanvasViewDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( renderTarget ){
-			renderTarget->FreeReference();
-		}
-	}
-};
-
 deoglRCanvasView::~deoglRCanvasView(){
 	LEAK_CHECK_FREE( GetRenderThread(), CanvasView );
 	RemoveAllChildren();
-	
-	// delayed deletion of opengl containing objects
-	deoglRCanvasViewDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCanvasViewDeletion;
-		delayedDeletion->renderTarget = pRenderTarget;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
+	if( pRenderTarget ){
+		pRenderTarget->FreeReference();
 	}
 }
 
@@ -142,24 +110,25 @@ void deoglRCanvasView::SetResizeRenderTarget(){
 	pResizeRenderTarget = true;
 }
 
-void deoglRCanvasView::PrepareRenderTarget(){
-	PrepareForRender();
+void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
+int componentCount, int bitCount ){
+	PrepareForRender( renderPlanMask );
 	
-	if( pRenderTarget ){
+	if( pRenderTarget && pRenderTarget->GetComponentCount() == componentCount
+	&& pRenderTarget->GetBitCount() == bitCount ){
 		if( pResizeRenderTarget ){
-			const int width = ( int )( GetSize().x + 0.5f );
-			const int height = ( int )( GetSize().y + 0.5f );
-			pRenderTarget->SetSize( width, height );
+			pRenderTarget->SetSize( decVector2( GetSize() ).Round() );
 			pResizeRenderTarget = false;
 		}
 		
 	}else{
-		const int width = ( int )( GetSize().x + 0.5f );
-		const int height = ( int )( GetSize().y + 0.5f );
-		const int componentCount = 4; // if transparency=1 componentCount of 3 would work too
-		const int bitCount = 8;
+		if( pRenderTarget ){
+			pRenderTarget->FreeReference();
+			pRenderTarget = nullptr;
+		}
 		
-		pRenderTarget = new deoglRenderTarget( GetRenderThread(), width, height, componentCount, bitCount );
+		pRenderTarget = new deoglRenderTarget( GetRenderThread(),
+			decVector2( GetSize() ).Round(), componentCount, bitCount );
 		pResizeRenderTarget = false;
 	}
 	
@@ -172,16 +141,23 @@ void deoglRCanvasView::PrepareRenderTarget(){
 		pRenderTarget->PrepareFramebuffer();
 		
 		// render content
-		const decPoint viewportSize( pRenderTarget->GetWidth(), pRenderTarget->GetHeight() );
-		
-		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(), decPoint(), viewportSize, false );
+		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),
+			decPoint(), pRenderTarget->GetSize(), false, renderPlanMask );
 		// for rendering into the render target the canvas position and transform has to be negated.
 		// this way rendering with the position and transform as used for regular rendering cancels
 		// each other out resulting in an identity transformation. this way no second code path is
 		// required.
 		context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
+		context.UpdateTransformMask();
 		
 		GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
+		
+		// clear the render target. this is required for situations where transparent overlays
+		// are rendered with children canvas not covering all pixels
+		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, componentCount == 4 ? 0.0f : 1.0f };
+		OGL_CHECK( GetRenderThread(), pglClearBufferfv( GL_COLOR, 0, clearColor ) );
+		
+		// render content
 		Render( context );
 		
 		// release framebuffer
@@ -191,14 +167,19 @@ void deoglRCanvasView::PrepareRenderTarget(){
 
 
 
-void deoglRCanvasView::PrepareForRender(){
+void deoglRCanvasView::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	const int count = pChildren.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
+	
+	int i;
 	for( i=0; i<count; i++ ){
 		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
 		if( child.GetVisible() ){
-			child.PrepareForRender();
+			child.PrepareForRender( renderPlanMask );
 		}
 	}
 }

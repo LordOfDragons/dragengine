@@ -32,7 +32,7 @@ class deOcclusionMeshBuilder;
 /**
  * \brief Occlusion Mesh Manager.
  */
-class deOcclusionMeshManager : public deFileResourceManager{
+class DE_DLL_EXPORT deOcclusionMeshManager : public deFileResourceManager{
 private:
 	deFileResourceList pMeshes;
 	

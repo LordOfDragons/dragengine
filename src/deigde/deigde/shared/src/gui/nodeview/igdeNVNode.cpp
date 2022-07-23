@@ -329,7 +329,7 @@ void igdeNVNode::CreateNativeWidget(){
 	
 	igdeNativeNVNode * const native = igdeNativeNVNode::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	native->create();
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 	

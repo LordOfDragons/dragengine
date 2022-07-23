@@ -34,29 +34,29 @@ class StackLayout implements Layout
 	/** \brief Aspect ratio behavior. */
 	enum AspectRatio
 		/**
-		* \brief No aspect ratio protection.
-		* 
-		* Widgets can turn out stretched loosing their aspect ratio.
-		*/
+		 * \brief No aspect ratio protection.
+		 * 
+		 * Widgets can turn out stretched loosing their aspect ratio.
+		 */
 		stretch
 		
 		/**
-		* \brief Protect aspect ratio fitting widget into available space.
-		* 
-		* Widgets are guaranteed to keep their aspect ratio. The size and position
-		* is corrected in a way the widget fits entirely inside the container. This
-		* ensures widgets are not clipped and are fully visible but potentially
-		* introduces empty borders.
-		*/
+		 * \brief Protect aspect ratio fitting widget into available space.
+		 * 
+		 * Widgets are guaranteed to keep their aspect ratio. The size and position
+		 * is corrected in a way the widget fits entirely inside the container. This
+		 * ensures widgets are not clipped and are fully visible but potentially
+		 * introduces empty borders.
+		 */
 		fit
 		
 		/**
-		* \brief Protect aspect ratio clipping widget to fill available space.
-		* 
-		* Widgets are guaranteed to keep their aspect ratio. The size and position
-		* is corrected in a way the widget entirely fills the container. This ensures
-		* no empty borders exist around widgets widgets but potentially clips widgets.
-		*/
+		 * \brief Protect aspect ratio clipping widget to fill available space.
+		 * 
+		 * Widgets are guaranteed to keep their aspect ratio. The size and position
+		 * is corrected in a way the widget entirely fills the container. This ensures
+		 * no empty borders exist around widgets widgets but potentially clips widgets.
+		 */
 		clip
 	end
 	
@@ -183,14 +183,15 @@ class StackLayout implements Layout
 				child.setSize( Point.new( width - borderWidth, height - borderHeight ) )
 				
 			else
-				var Point childMinSize = Point.new( 1, 1 ).largest( child.getMinimumSizeWithBorderForWidth( width ) )
+				var Point childMinSize = Point.new().largest( child.getMinimumSizeWithBorderForWidth( width ) )
 				var int childWidth = width - borderWidth
 				var int childHeight = height - borderHeight
 				var int aspectOffsetX = 0
 				var int aspectOffsetY = 0
 				
 				if this.pStretchIfSmaller or not ( childMinSize <= Point.new( childWidth, childHeight ) )
-					var float aspectRatio2 = ( childMinSize.getX() cast float ) / ( childMinSize.getY() cast float )
+					var float aspectRatio2 = ( Math.max( childMinSize.getX(), 1 ) cast float ) \
+						/ ( Math.max( childMinSize.getY(), 1 ) cast float )
 					
 					if this.pAspectRatio == AspectRatio.fit
 						if aspectRatio2 < aspectRatio1
@@ -236,34 +237,48 @@ class StackLayout implements Layout
 	/** \brief Minimum size of layout using reference width and variable height. */
 	public func Point getMinimumSizeForWidth( Container container, int width )
 		var int count = container.getWidgetCount()
-		var Point minSize = Point.new( 1, 1 )
+		var Point size = Point.new()
+		var bool usePadding = false
 		var Widget child
 		var int i
 		
 		for i = 0 to count
 			child = container.getWidget( i )
-			if child.getVisible()
-				minSize = minSize.largest( child.getMinimumSizeWithBorderForWidth( width ) )
+			if not child.getVisible()
+				continue
 			end
+			
+			size = size.largest( child.getMinimumSizeWithBorderForWidth( width ) )
+			usePadding = true
 		end
 		
-		return minSize + container.getPadding().getSize()
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	/** \brief Minimum size of layout using reference widget height and variable width. */
 	public func Point getMinimumSizeForHeight( Container container, int height )
 		var int count = container.getWidgetCount()
-		var Point minSize = Point.new( 1, 1 )
+		var Point size = Point.new()
+		var bool usePadding = false
 		var Widget child
 		var int i
 		
 		for i = 0 to count
 			child = container.getWidget( i )
-			if child.getVisible()
-				minSize = minSize.largest( child.getMinimumSizeWithBorderForHeight( height ) )
+			if not child.getVisible()
+				continue
 			end
+			
+			size = size.largest( child.getMinimumSizeWithBorderForHeight( height ) )
+			usePadding = true
 		end
 		
-		return minSize + container.getPadding().getSize()
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

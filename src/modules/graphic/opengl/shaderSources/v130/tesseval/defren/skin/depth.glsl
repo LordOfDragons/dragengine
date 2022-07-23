@@ -56,7 +56,7 @@ layout( triangles, equal_spacing, ccw ) in;
 // Outputs
 ////////////
 
-#ifdef GS_RENDER_CUBE
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vGSTCColor;
 		#define vTCColor vGSTCColor
@@ -126,6 +126,7 @@ layout( triangles, equal_spacing, ccw ) in;
 //////////////////
 
 #include "v130/shared/tessellation.glsl"
+#include "v130/shared/defren/sanitize_position.glsl"
 
 void main(){
 	//#ifdef TESSELLATION_LINEAR
@@ -163,7 +164,7 @@ void main(){
 	#ifdef BILLBOARD
 		gl_Position = pMatrixP * gl_Position;
 	#else
-		gl_Position = pMatrixVP * gl_Position;
+		gl_Position = sanitizePosition( pMatrixVP * gl_Position );
 	#endif
 	
 	#ifdef DEPTH_ORTHOGONAL

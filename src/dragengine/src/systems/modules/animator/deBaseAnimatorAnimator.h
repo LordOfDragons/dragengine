@@ -22,6 +22,8 @@
 #ifndef _DEBASEANIMATORANIMATOR_H_
 #define _DEBASEANIMATORANIMATOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deAnimatorRule;
 class deAnimatorLink;
 class deAnimatorController;
@@ -31,7 +33,7 @@ class deAnimatorController;
 /**
  * \brief Animator module animator peer.
  */
-class deBaseAnimatorAnimator{
+class DE_DLL_EXPORT deBaseAnimatorAnimator{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -35,25 +35,23 @@ pin Dragengine.Gui.Events
  * Supports designing using designer selector "TextField.ComboBoxEditor".
  */
 class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
-	/** \brief Action listeners. */
-	private var Array pActionListeners
+	private var Array pEditorActionListeners
 	
 	
 	
 	/** \brief Create default combo box editor. */
-	public func new() this( DefaultTextModel.new() )
+	public func new() this(DefaultTextModel.new())
 	end
 	
 	/** \brief Create default combo box editor. */
-	public func new( TextModel model ) super( model )
-		this.pActionListeners = Array.new()
-		this.setDesignerSelector( this.getDesignerSelector() + ".ComboBoxEditor" )
-		//this.setBorder( null )
+	public func new(TextModel model) super(model)
+		pEditorActionListeners = Array.new()
+		setDesignerSelector(getDesignerSelector() + ".ComboBoxEditor")
 	end
 	
 	/** \brief Create default combo box editor. */
-	public func new( TextModel model, int displayCharCount ) this( model )
-		this.setDisplayCharCount( displayCharCount )
+	public func new(TextModel model, int displayCharCount) this(model)
+		setDisplayCharCount(displayCharCount)
 	end
 	
 	/** \brief Dispose of widget. */
@@ -61,7 +59,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 		// it is possible the dispose is triggered due to an action listener call.
 		// if Array.removeAll() is called in this case an exception is thrown due to
 		// modifying the array while iterating over it. dropping the array is enough
-		this.pActionListeners = null
+		pEditorActionListeners = null
 		super.dispose()
 	end
 	
@@ -78,33 +76,57 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 *          setEditorValue() if unchanged or a new object if changed.
 	 */
 	public func Object getEditorValue()
-		return this.getModel().getText()
+		return getModel().getText()
 	end
 	
 	/**
 	 * \brief Set editor value to object or \em null to clear.
 	 * \details \em object is garanteed to not be modified by the editor.
 	 */
-	public func void setEditorValue( Object object )
+	public func void setEditorValue(Object object)
 		if object == null
-			this.getModel().setText( "" )
+			getModel().setText("")
 			
 		else
-			this.getModel().setText( object.toString() )
+			getModel().setText(object.toString())
 		end
+		
+		fireAction(0)
 	end
 	
 	/**
 	 * \brief Add action listener.
 	 * \details Action listener is called whenever the edited object changes.
+	 * \note This shadows TextWidget.addActionListener(). To use it use addTextActionListener().
 	 */
-	public func void addActionListener( ActionListener listener )
-		this.pActionListeners.add( listener )
+	public func void addActionListener(ActionListener listener)
+		pEditorActionListeners.add(listener)
 	end
 	
-	/** \brief Remove action listener. */
-	public func void removeActionListener( ActionListener listener )
-		this.pActionListeners.remove( listener )
+	/**
+	 * \brief Remove action listener.
+	 * \note This shadows TextWidget.removeActionListener(). To use it use removeTextActionListener().
+	 */
+	public func void removeActionListener(ActionListener listener)
+		pEditorActionListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Add text widget action listener.
+	 * \version 1.8
+	 * \note Forwards to shadowed TextWidget.addActionListener().
+	 */
+	public func void addTextActionListener(ActionListener listener)
+		super.addActionListener(listener)
+	end
+	
+	/**
+	 * \brief Remove text widget action listener.
+	 * \version 1.8
+	 * \note Forwards to shadowed TextWidget.removeActionListener().
+	 */
+	public func void removeTextActionListener(ActionListener listener)
+		super.removeActionListener(listener)
 	end
 	
 	/**
@@ -115,19 +137,20 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 */
 	public func void startEditing()
 		// selection not implemented yet on TextField
-		this.grabFocus()
+		setCursorPosition(getModel().getText().getLength())
+		grabFocus()
 	end
 	
 	
 	
 	/** \brief Text string has changed. */
-	public func void textChanged( TextModel textModel )
-		super.textChanged( textModel )
+	public func void textChanged(TextModel textModel)
+		super.textChanged(textModel)
 		
-		var ActionEvent event = ActionEvent.new( this, ActionEvent.idAction, 0 )
+		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, 0)
 		
-		this.pActionListeners.forEach( block ActionListener each
-			each.onAction( event )
-		end )
+		pEditorActionListeners.forEach(block ActionListener each
+			each.onAction(event)
+		end)
 	end
 end

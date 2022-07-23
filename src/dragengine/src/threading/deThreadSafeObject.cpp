@@ -47,12 +47,12 @@ deThreadSafeObject::~deThreadSafeObject(){
 ///////////////
 
 int deThreadSafeObject::GetRefCount(){
-	deMutexGuard lock( pMutex );
+	const deMutexGuard lock( pMutex );
 	return pRefCount;
 }
 
 void deThreadSafeObject::AddReference(){
-	deMutexGuard lock( pMutex );
+	const deMutexGuard lock( pMutex );
 	pRefCount++;
 }
 

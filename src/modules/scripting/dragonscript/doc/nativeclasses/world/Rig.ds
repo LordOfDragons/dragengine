@@ -28,7 +28,7 @@ fixed class Rig
 	 *          same loaded rig resource. Once no object instance uses an rig
 	 *          file anymore it is released from memory.
 	 */
-	public func new( String filename )
+	public func new(String filename)
 	end
 	
 	/**
@@ -37,7 +37,7 @@ fixed class Rig
 	 *          or if the file is already loaded the listener is used to deliver the loaded
 	 *          rig or \em null if the loading failed.
 	 */
-	static public func void loadAsynchron( String filename, ResourceListener listener )
+	static public func void loadAsynchron(String filename, ResourceListener listener)
 	end
 	/*@}*/
 	
@@ -53,7 +53,7 @@ fixed class Rig
 	
 	
 	/** \brief Save rig to filename. */
-	public func void save( String filename )
+	public func void save(String filename)
 	end
 	
 	/**
@@ -62,7 +62,7 @@ fixed class Rig
 	 * \returns \em true if \em other is of type Rig and both point to the same engine
 	 *          rig resource.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	
@@ -85,7 +85,7 @@ fixed class Rig
 	end
 	
 	/** \brief Index of named bone or -1 if absent. */
-	public func int indexOfBoneNamed( String name )
+	public func int indexOfBoneNamed(String name)
 		return 0
 	end
 	
@@ -93,7 +93,7 @@ fixed class Rig
 	 * \brief Name of bone at index.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func String boneGetName( int bone )
+	public func String boneGetName(int bone)
 		return null
 	end
 	
@@ -101,7 +101,7 @@ fixed class Rig
 	 * \brief Bone position.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBonePosition( int bone )
+	public func Vector boneGetPosition(int bone)
 		return null
 	end
 	
@@ -109,7 +109,32 @@ fixed class Rig
 	 * \brief Bone orientation.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Quaternion getBoneOrientation( int bone )
+	public func Quaternion boneGetOrientation(int bone)
+		return null
+	end
+	
+	/**
+	 * \brief Bone rotation in degrees.
+	 * \version 1.11
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Vector boneGetRotation(int bone)
+		return null
+	end
+	
+	/**
+	 * \brief Matrix transforming from local bone space to model space in reference pose.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Matrix getBoneMatrix(int bone)
+		return null
+	end
+	
+	/**
+	 * \brief Matrix transforming from model space to local bone space in reference pose.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Matrix getBoneInverseMatrix(int bone)
 		return null
 	end
 	
@@ -117,7 +142,7 @@ fixed class Rig
 	 * \brief Bone central mass point.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneCentralMassPoint( int bone )
+	public func Vector boneGetCentralMassPoint(int bone)
 		return null
 	end
 	
@@ -125,7 +150,7 @@ fixed class Rig
 	 * \brief Bone mass in kg.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func float boneGetMass( int bone )
+	public func float boneGetMass(int bone)
 		return 0.0
 	end
 	
@@ -133,8 +158,25 @@ fixed class Rig
 	 * \brief Bone is enabled for dynamic simulation if collider rig or collider component is dynamic.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func bool getBoneDynamic( int bone )
+	public func bool boneGetDynamic(int bone)
 		return false
+	end
+	
+	/**
+	 * \brief Index of parent bone or -1 if bone is a root bone.
+	 * \version 1.6
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func int boneGetParent(int bone)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of root bone or -1 if no root bone is set.
+	 * \version 1.11
+	 */
+	public func int getRootBone()
+		return 0
 	end
 	/*@}*/
 	
@@ -146,7 +188,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics lower limits used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneIKLimitsLower( int bone )
+	public func Vector boneGetIKLimitsLower(int bone)
 		return null
 	end
 	
@@ -154,7 +196,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics upper limits used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneIKLimitsUpper( int bone )
+	public func Vector boneGetIKLimitsUpper(int bone)
 		return null
 	end
 	
@@ -162,7 +204,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics resisteance used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneIKResistance( int bone )
+	public func Vector boneGetIKResistance(int bone)
 		return null
 	end
 	
@@ -170,7 +212,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics per axis locked state used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func bool getBoneIKLocked( int bone, int axis )
+	public func bool boneGetIKLocked(int bone, int axis)
 		return false
 	end
 	/*@}*/
@@ -183,7 +225,7 @@ fixed class Rig
 	 * \brief Bone constraint count.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func int getBoneConstraintCount( int bone )
+	public func int boneGetConstraintCount(int bone)
 		return 0
 	end
 	
@@ -194,9 +236,39 @@ fixed class Rig
 	 *          dynamically managed at runtime or replacing bone constraints with modified versions
 	 *          for example in response to collisions.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
-	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to getBoneConstraintCount().
+	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to boneGetConstraintCount().
 	 */
-	public func ColliderConstraint getBoneConstraintAt( int bone, int constraint )
+	public func ColliderConstraint boneGetConstraintAt(int bone, int constraint)
+		return null
+	end
+	
+	/**
+	 * \brief Position of the reference coordinate frame.
+	 * \version 1.11
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to boneGetConstraintCount().
+	 */
+	public func Vector boneConstraintGetReferencePosition(int bone, int constraint)
+		return null
+	end
+	
+	/**
+	 * \brief Orientation of the reference coordinate frame.
+	 * \version 1.11
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to boneGetConstraintCount().
+	 */
+	public func Quaternion boneConstraintGetReferenceOrientation(int bone, int constraint)
+		return null
+	end
+	
+	/**
+	 * \brief Offset of the bone constraint position relative to the reference coordinate frame.
+	 * \version 1.11
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to boneGetConstraintCount().
+	 */
+	public func Vector boneConstraintGetBoneOffset(int bone, int constraint)
 		return null
 	end
 	/*@}*/
@@ -209,7 +281,7 @@ fixed class Rig
 	 * \brief Bone shapes.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func ShapeList boneGetShapes( int bone )
+	public func ShapeList boneGetShapes(int bone)
 		return null
 	end
 	
@@ -218,7 +290,7 @@ fixed class Rig
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 * \throws EOutOfBoundary \em shape is less than 0 or greater than or equal to boneGetShapes().getCount().
 	 */
-	public func String boneShapeGetProperty( int bone, int shape )
+	public func String boneShapeGetProperty(int bone, int shape)
 		return null
 	end
 	/*@}*/
@@ -236,7 +308,15 @@ fixed class Rig
 	 * \brief Shape property string.
 	 * \throws EOutOfBoundary \em shape is less than 0 or greater than or equal to getShapes().getCount().
 	 */
-	public func String shapeGetProperty( int shape )
+	public func String shapeGetProperty(int shape)
+		return null
+	end
+	
+	/**
+	 * \brief Rig central mass point.
+	 * \version 1.11
+	 */
+	public func Vector getCentralMassPoint()
 		return null
 	end
 	/*@}*/

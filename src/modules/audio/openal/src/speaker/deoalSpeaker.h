@@ -164,6 +164,9 @@ public:
 	/** \brief Roll off factor changed. */
 	virtual void RollOffChanged();
 	
+	/** \brief Distance offset changed. */
+	virtual void DistanceOffsetChanged();
+	
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();
 	

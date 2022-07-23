@@ -22,7 +22,14 @@
 #ifndef _DEINPUTEVENT_H_
 #define _DEINPUTEVENT_H_
 
+#include "../dragengine_export.h"
+#include "../dragengine_configuration.h"
+
+#ifdef OS_W32_VS
+#include "../app/include_windows.h"
+#else
 #include <sys/time.h>
+#endif
 
 
 /**
@@ -32,7 +39,7 @@
  * game engine event queue. The <em>script module</em> then reads those events
  * and processes them.
  */
-class deInputEvent{
+class DE_DLL_EXPORT deInputEvent{
 public:
 	/** \brief Event Codes. */
 	enum eEvents{
@@ -63,14 +70,34 @@ public:
 		/** \brief Device button released. */
 		eeButtonRelease,
 		
-		/** \brief Input device has been attached to host system. */
+		/** \deprecated Use eeDevicesAttachedDetached. */
 		eeDeviceAttached,
 		
-		/** \brief Input device has been detatched from host system. */
+		/** \deprecated Use eeDevicesAttachedDetached. */
 		eeDeviceDetached,
 		
 		/** \brief Input device parameters changed. */
-		eeDeviceParamsChanged
+		eeDeviceParamsChanged,
+		
+		/**
+		 * \brief Device button touched.
+		 * \version 1.6
+		 */
+		eeButtonTouch,
+		
+		/**
+		 * \brief Device button untouched.
+		 * \version 1.6
+		 */
+		eeButtonUntouch,
+		
+		/**
+		 * \brief Devices have been attached or detached.
+		 * \version 1.10
+		 * 
+		 * Modules have to query the entire list of devices to detect changes.
+		 */
+		eeDevicesAttachedDetached
 	};
 	
 	/** \brief State modifiers. */
@@ -212,6 +239,40 @@ public:
 		embcMiddle
 	};
 	
+	/**
+	 * \brief Source of the input event.
+	 * \version 1.6
+	 */
+	enum eSources{
+		esInput, //<! Originates from Input System
+		esVR //<! Originates from VR System
+	};
+	
+	/**
+	 * \brief Location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	enum eKeyLocation{
+		/**
+		 * \brief No location information.
+		 * 
+		 * Used for all keys existing only once on the keyboard and primary keys located
+		 * in the large key block on keyboards.
+		 */
+		eklNone,
+		
+		/** \brief Left side key, for example left shift key. */
+		eklLeft,
+		
+		/** \brief Right side key, for example right shift key. */
+		eklRight,
+		
+		/** \brief Key is located in the number pad. */
+		eklNumberPad
+	};
+	
 	
 	
 private:
@@ -225,6 +286,8 @@ private:
 	int pY;
 	float pValue;
 	timeval pTime;
+	eSources pSource;
+	eKeyLocation pKeyLocation;
 	
 	
 	
@@ -334,6 +397,34 @@ public:
 	
 	/** \brief Set time the event occurred. */
 	void SetTime( const timeval &eventTime );
+	
+	/**
+	 * \brief Source of the input event.
+	 * \version 1.6
+	 */
+	inline eSources GetSource() const{ return pSource; }
+	
+	/**
+	 * \brief Set source of the input event.
+	 * \version 1.6
+	 */
+	void SetSource( eSources source );
+	
+	/**
+	 * \brief Location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	inline eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
+	
+	/**
+	 * \brief Set location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	void SetKeyLocation( eKeyLocation location );
 	
 	/** \brief Copies properties of another event to this event. */
 	void SetFrom( const deInputEvent &event );

@@ -817,6 +817,41 @@ void deClassColorMatrix::nfToString::RunFunction( dsRunTime *rt, dsValue *myself
 	rt->PushString( str );
 }
 
+// public func String toString( int precision )
+deClassColorMatrix::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsClrMat, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassColorMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 110 ];
+	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
+		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
+	
+	const decColorMatrix &matrix = ( ( sCMNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13, matrix.a14, matrix.a15,
+		matrix.a21, matrix.a22, matrix.a23, matrix.a24, matrix.a25,
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34, matrix.a35,
+		matrix.a41, matrix.a42, matrix.a43, matrix.a44, matrix.a45 );
+	
+	rt->PushString( str );
+}
+
 
 
 // Class deClassColorMatrix
@@ -920,6 +955,7 @@ void deClassColorMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decColorMatrix &deClassColorMatrix::GetColorMatrix( dsRealObject *myself ) const{

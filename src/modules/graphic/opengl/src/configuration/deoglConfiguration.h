@@ -30,15 +30,10 @@
 
 class deoglConfiguration{
 public:
-	/** Log levels. */
 	enum eLogLevels{
-		/** Show only errors. */
 		ellError,
-		/** Show errors and warnings. */
 		ellWarning,
-		/** Show errors, warnings and basic information. */
 		ellInfo,
-		/** Show errors, warnings and full debug information. */
 		ellDebug
 	};
 	
@@ -62,6 +57,35 @@ public:
 		eemmMultipleBoxProjection
 	};
 	
+	enum eShadowQuality{
+		esqOff,
+		esqVeryLow,
+		esqLow,
+		esqMedium,
+		esqHigh,
+		esqVeryHigh
+	};
+	
+	enum eGIQuality{
+		egiqOff,
+		egiqVeryLow,
+		egiqLow,
+		egiqMedium,
+		egiqHigh,
+		egiqVeryHigh
+	};
+	
+	enum eGIUpdateSpeed{
+		egiusOff,
+		egiusVeryLow,
+		egiusLow,
+		egiusMedium,
+		egiusHigh,
+		egiusVeryHigh
+	};
+	
+	
+	
 private:
 	bool pDirty;
 	
@@ -70,20 +94,17 @@ private:
 	float pMapFaceSplitThreshold;
 	float pSkyBodyDensity;
 	bool pReducedLighting;
-	bool pDebugUseShadow;
 	bool pDebugShowCB;
 	bool pDebugWireframe;
 	bool pDebugUVSplitter;
 	bool pDebugPrintSkyUpdate;
 	bool pShowLightCB;
 	
-	int pShadowMapSize;
+	eShadowQuality pShadowQuality;
 	float pShadowMapOffsetScale;
 	float pShadowMapOffsetBias;
 	float pShadowCubePCFSize;
-	int pShadowCubeSize;
 	int pOcclusionReduction;
-	bool pUseShadowCubeEncodedDepth;
 	
 	float pDistShadowScale;
 	float pDistShadowBias;
@@ -100,8 +121,6 @@ private:
 	bool pDisableStencil;
 	bool pStencilOnlyOnRB;
 	
-	bool pDefRenEncDepth;
-	bool pDefRenUsePOTs;
 	int pDefRenSizeLimit;
 	bool pUseHDRR;
 	float pHDRRMaxIntensity;
@@ -117,7 +136,6 @@ private:
 	float pDecalOffsetBias;
 	
 	int pLODMaxPixelError;
-	float pLODMaxErrorPerLevel;
 	
 	float pNormalRoughnessCorrectionStrength;
 	
@@ -169,7 +187,14 @@ private:
 	
 	int pMaxSPBIndexCount;
 	
+	eGIQuality pGIQuality;
+	eGIUpdateSpeed pGIUpdateSpeed;
+	
 	decStringSet pDisableExtensions;
+	
+	float pVRRenderScale;
+	int pVRForceFrameRate;
+	
 	
 	
 public:
@@ -178,38 +203,42 @@ public:
 	~deoglConfiguration();
 	// parmeters
 	
-	/** \brief Configuration changed. */
+	/** Configuration changed. */
 	inline bool GetDirty() const{ return pDirty; }
 	
-	/** \brief Set configuration changed. */
+	/** Set configuration changed. */
 	void SetDirty( bool dirty );
 	
 	
 	
-	/** \brief Log level. */
+	/** Log level. */
 	inline eLogLevels GetLogLevel() const{ return pLogLevel; }
 	
-	/** \brief Helper method testing if warnings have to be logged. */
+	/** Helper method testing if warnings have to be logged. */
 	inline bool GetDoLogWarn() const{ return pLogLevel >= ellWarning; }
 	
-	/** \brief Helper method testing if info have to be logged. */
+	/** Helper method testing if info have to be logged. */
 	inline bool GetDoLogInfo() const{ return pLogLevel >= ellInfo; }
 	
-	/** \brief Helper method testing if debug have to be logged. */
+	/** Helper method testing if debug have to be logged. */
 	inline bool GetDoLogDebug() const{ return pLogLevel >= ellDebug; }
 	
-	/** \brief Set log level. */
+	/** Set log level. */
 	void SetLogLevel( eLogLevels logLevel );
+	
+	/** Shadow quality. */
+	inline eShadowQuality GetShadowQuality() const{ return pShadowQuality; }
+	
+	/** Set shadow quality. */
+	void SetShadowQuality( eShadowQuality quality );
 	
 	inline float GetSkyBodyDensity() const{ return pSkyBodyDensity; }
 	inline bool GetUseReducedLighting() const{ return pReducedLighting; }
-	inline bool GetDebugUseShadow() const{ return pDebugUseShadow; }
 	inline bool GetDebugShowCB() const{ return pDebugShowCB; }
 	inline bool GetDebugWireframe() const{ return pDebugWireframe; }
 	inline bool GetDebugUVSplitter() const{ return pDebugUVSplitter; }
 	inline bool GetShowLightCB() const{ return pShowLightCB; }
 	inline float GetMapFaceSplitThreshold() const{ return pMapFaceSplitThreshold; }
-	inline int GetShadowMapSize() const{ return pShadowMapSize; }
 	inline float GetShadowMapOffsetScale() const{ return pShadowMapOffsetScale; }
 	inline float GetShadowMapOffsetBias() const{ return pShadowMapOffsetBias; }
 	inline float GetTextOffsetU() const{ return pTextOffsetU; }
@@ -219,13 +248,11 @@ public:
 	inline bool GetUseTextureCompression() const{ return pUseTextureCompression; }
 	void SetSkyBodyDensity( float density );
 	void SetUseReducedLighting( bool reduced );
-	void SetDebugUseShadow( bool shadow );
 	void SetDebugShowCB( bool show );
 	void SetDebugWireframe( bool wireframe );
 	void SetDebugUVSplitter( bool uvSplitter );
 	void SetShowLightCB( bool show );
 	void SetMapFaceSplitThreshold( float threshold );
-	void SetShadowMapSize( int size );
 	void SetShadowMapOffsetScale( float scale );
 	void SetShadowMapOffsetBias( float bias );
 	void SetTextOffsetU( float offset );
@@ -234,10 +261,10 @@ public:
 	void SetLightCutOffIntensity( float cutOffIntensity );
 	void SetUseTextureCompression( bool useTextureCompression );
 	
-	/** \brief Transparency layer limit. */
+	/** Transparency layer limit. */
 	inline int GetTranspLayerLimit() const{ return pTranspLayerLimit; }
 	
-	/** \brief Set transparency layer limit. */
+	/** Set transparency layer limit. */
 	void SetTranspLayerLimit( int limit );
 	
 	/** Determines if debug messages are printed concerning sky updating and env-map updating. */
@@ -245,10 +272,6 @@ public:
 	/** Sets if debug messages are printed concerning sky updating and env-map updating. */
 	void SetDebugPrintSkyUpdate( bool enable );
 	
-	/** Retrieves the shadow cube size. */
-	inline int GetShadowCubeSize() const{ return pShadowCubeSize; }
-	/** Sets the shadow cube size. */
-	void SetShadowCubeSize( int size );
 	/** Retrieves the shadow cube pcf size. */
 	inline float GetShadowCubePCFSize() const{ return pShadowCubePCFSize; }
 	/** Sets the shadow cube pcf size. */
@@ -283,19 +306,7 @@ public:
 	inline bool GetStencilOnlyOnRB() const{ return pStencilOnlyOnRB; }
 	/** Sets if stencil buffer is used only on renderbuffers ( broken hardware fix ). */
 	void SetStencilOnlyOnRB( bool stencilOnlyOnRB );
-	/** Determines if depth has to be encoded for cube shadow maps. */
-	inline bool GetUseShadowCubeEncodeDepth() const{ return pUseShadowCubeEncodedDepth; }
-	/** Sets if depth has to be encoded for cube shadow maps. */
-	void SetUseShadowCubeEncodeDepth( bool useEncodeDepth );
 	
-	/** Determines if depth has to be encoded for deferred rendering. */
-	inline bool GetDefRenEncDepth() const{ return pDefRenEncDepth; }
-	/** Sets if depth has to be encoded for deferred rendering. */
-	void SetDefRenEncDepth( bool useEncDepth );
-	/** Determines if power of two (POT) textures should be used for deferred rendering instead of non-POTs. */
-	inline bool GetDefRenUsePOTs() const{ return pDefRenUsePOTs; }
-	/** Sets if power of two (POT) textures should be used for deferred rendering instead of non-POTs. */
-	void SetDefRenUsePOTs( bool usePOTs );
 	/** Retrieves the size limit for rendering using deferred rendering or 0 for no limit. */
 	inline int GetDefRenSizeLimit() const{ return pDefRenSizeLimit; }
 	/** Sets the size limit for rendering using deferred rendering or 0 for no limit. */
@@ -309,10 +320,10 @@ public:
 	/** Sets the maximum intensity for the hdrr tone mapper. */
 	void SetHDRRMaximumIntensity( float maximumIntensity );
 	
-	/** \brief High definition range rendering scene key. */
+	/** High definition range rendering scene key. */
 	inline float GetHDRRSceneKey() const{ return pHDRRSceneKey; }
 	
-	/** \brief Set high definition range rendering scene key. */
+	/** Set high definition range rendering scene key. */
 	void SetHDRRSceneKey( float key );
 	
 	/** Determines if rendering takes place with halve the resolution and then upscaled. */
@@ -320,10 +331,10 @@ public:
 	/** Sets if rendering takes place with halve the resolution and then upscaled. */
 	void SetRenderDownScale( int downScale );
 	
-	/** \brief Enable inverse depth using floating point depth buffer if supported. */
+	/** Enable inverse depth using floating point depth buffer if supported. */
 	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
 	
-	/** \brief Set if inverse depth using floating point depth buffer is enabled if supported. */
+	/** Set if inverse depth using floating point depth buffer is enabled if supported. */
 	void SetUseInverseDepth( bool useInverseDepth );
 	
 	
@@ -354,10 +365,6 @@ public:
 	inline int GetLODMaxPixelError() const{ return pLODMaxPixelError; }
 	/** Sets the maximum pixel error allowed for LOD calculation. */
 	void SetLODMaxPixelError( int maxPixelError );
-	/** Retrieves the maximum LOD error allowed per level in LOD calculation. */
-	inline float GetLODMaxErrorPerLevel() const{ return pLODMaxErrorPerLevel; }
-	/** Sets the maximum LOD error allowed per level in LOD calculation. */
-	void SetLODMaxErrorPerLevel( float maxErrorPerLevel );
 	
 	/** Retrieves the normal roughness correction strength. */
 	inline float GetNormalRoughnessCorrectionStrength() const{ return pNormalRoughnessCorrectionStrength; }
@@ -444,9 +451,9 @@ public:
 	/** Sets if screen space subsurface scattering is enabled. */
 	void SetSSSSSEnable( bool enable );
 	
-	/** \brief Determines if in-game rendered environment maps are enabled. */
+	/** Determines if in-game rendered environment maps are enabled. */
 	inline bool GetEnvMapEnable() const{ return pEnvMapEnable; }
-	/** \brief Sets if in-game rendered environment maps are enabled. */
+	/** Sets if in-game rendered environment maps are enabled. */
 	void SetEnvMapEnable( bool enable );
 	/** Determines if equirectangular environment maps are used. */
 	inline bool GetEnvMapUseEqui() const{ return pEnvMapUseEqui; }
@@ -461,36 +468,36 @@ public:
 	/** Sets the environment map method. */
 	void SetEnvMapMethod( eEnvironmentMapMethods method );
 	
-	/** \brief Frame rate limit for render thread. */
+	/** Frame rate limit for render thread. */
 	inline int GetFrameRateLimit() const{ return pFrameRateLimit; }
 	
-	/** \brief Set frame rate limit for render thread. */
+	/** Set frame rate limit for render thread. */
 	void SetFrameRateLimit( int frameRateLimit );
 	
-	/** \brief Ratio between game time and render time required to skip synchronization. */
+	/** Ratio between game time and render time required to skip synchronization. */
 	inline float GetAsyncRenderSkipSyncTimeRatio() const{ return pAsyncRenderSkipSyncTimeRatio; }
 	
-	/** \brief Set ratio between game time and render time required to skip synchronization. */
+	/** Set ratio between game time and render time required to skip synchronization. */
 	void SetAsyncRenderSkipSyncTimeRatio( float ratio );
 	
 	
 	
-	/** \brief Create debug context. */
+	/** Create debug context. */
 	inline bool GetDebugContext() const{ return pDebugContext; }
 	
-	/** \brief Set debug context. */
+	/** Set debug context. */
 	void SetDebugContext( bool debugContext );
 	
-	/** \brief Asynchronous rendering. */
+	/** Asynchronous rendering. */
 	inline bool GetAsyncRendering() const{ return pAsyncRendering; }
 	
-	/** \brief Set asynchronous rendering. */
+	/** Set asynchronous rendering. */
 	void SetAsyncRendering( bool asyncRendering );
 	
-	/** \brief Enable memory optimization using retained image data. */
+	/** Enable memory optimization using retained image data. */
 	inline bool GetEnableRetainImageOptimization() const{ return pEnableRetainImageOptimization; }
 	
-	/** \brief Set if memory optimization using retained image data is enabled. */
+	/** Set if memory optimization using retained image data is enabled. */
 	void SetEnableRetainImageOptimization( bool enable );
 	
 	
@@ -520,18 +527,30 @@ public:
 	
 	/** Determines if linear filtering for cube mapping has to be disabled. */
 	inline bool GetDisableCubeMapLinearFiltering() const{ return pDisableCubeMapLinearFiltering; }
-	/** \brief Set if linear filtering for cube mapping has to be disabled. */
+	/** Set if linear filtering for cube mapping has to be disabled. */
 	void SetDisableCubeMapLinearFiltering( bool disableCubeMapLinearFiltering );
 	
-	/** \brief Maximum shared parameter buffer index count. */
+	/** Maximum shared parameter buffer index count. */
 	inline int GetMaxSPBIndexCount() const{ return pMaxSPBIndexCount; }
 	
-	/** \brief Set maximum shared parameter buffer index count. */
+	/** Set maximum shared parameter buffer index count. */
 	void SetMaxSPBIndexCount( int count );
 	
-	/** \brief OpenGL extensions to disable. */
+	inline eGIQuality GetGIQuality() const{ return pGIQuality; }
+	void SetGIQuality( eGIQuality quality );
+	
+	inline eGIUpdateSpeed GetGIUpdateSpeed() const{ return pGIUpdateSpeed; }
+	void SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed );
+	
+	/** OpenGL extensions to disable. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
 	inline const decStringSet &GetDisableExtensions() const{ return pDisableExtensions; }
+	
+	inline float GetVRRenderScale() const{ return pVRRenderScale; }
+	void SetVRRenderScale( float scale );
+	
+	inline int GetVRForceFrameRate() const{ return pVRForceFrameRate; }
+	void SetVRForceFrameRate( int framerate );
 };
 
 #endif

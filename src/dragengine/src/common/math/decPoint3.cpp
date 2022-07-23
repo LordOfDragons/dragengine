@@ -76,7 +76,7 @@ decPoint3::decPoint3( const decDVector &p ){
 ///////////////
 
 float decPoint3::Length() const{
-	return sqrtf( x * x + y * y + z * z );
+	return sqrtf( ( float )( x * x + y * y + z * z ) );
 }
 
 void decPoint3::SetZero(){

@@ -72,5 +72,122 @@ fixed class Engine
 	public static func Dictionary getScriptModuleStats()
 		return null
 	end
+	
+	
+	
+	/**
+	 * \brief Default value for EnableGI parameter in cameras.
+	 * \version 1.5
+	 */
+	public static func bool getDefaultEnableGI()
+		return false
+	end
+	
+	/**
+	 * \brief Set default value for EnableGI parameter in cameras.
+	 * \version 1.5
+	 */
+	public static func void setDefaultEnableGI(bool enable)
+	end
+	
+	
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func String getCompatibleVersion()
+		return null
+	end
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func int getCompatibleVersionMajor()
+		return 0
+	end
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func int getCompatibleVersionMinor()
+		return 0
+	end
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func int getCompatibleVersionPatch()
+		return 0
+	end
+	
+	/**
+	 * \brief Compatible script version is older than given version.
+	 * \version 1.10
+	 */
+	public static func bool isCompatibleVersionOlder(int major, int minor)
+		return false
+	end
+	
+	/**
+	 * \brief Compatible script version is newer than given version.
+	 * \version 1.10
+	 */
+	public static func bool isCompatibleVersionNewer(int major, int minor)
+		return false
+	end
+	
+	
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func String getModuleVersion()
+		return null
+	end
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func int getModuleVersionMajor()
+		return 0
+	end
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func int getModuleVersionMinor()
+		return 0
+	end
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func int getModuleVersionPatch()
+		return 0
+	end
+	
+	/**
+	 * \brief Module script version is older than given version.
+	 * \version 1.10
+	 */
+	public static func bool isModuleVersionOlder(int major, int minor)
+		return false
+	end
+	
+	/**
+	 * \brief Module script version is newer than given version.
+	 * \version 1.10
+	 */
+	public static func bool isModuleVersionNewer(int major, int minor)
+		return false
+	end
 	/*@}*/
 end

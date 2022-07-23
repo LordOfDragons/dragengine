@@ -34,7 +34,7 @@ class deRigConstraint;
 /**
  * \brief Physics module collider peer.
  */
-class deBasePhysicsCollider{
+class DE_DLL_EXPORT deBasePhysicsCollider{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

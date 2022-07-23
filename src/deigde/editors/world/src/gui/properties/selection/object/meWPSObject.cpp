@@ -89,6 +89,8 @@
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector2.h>
@@ -230,6 +232,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meObject *object ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPSObject &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPSObject &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meObject * const object = pPanel.GetActiveObject();
+		if( ! object ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), object ) );
+		if( undo ){
+			object->GetWorld()->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meObject *object ) = 0;
+};
+
 
 
 class cSpinActive : public igdeSpinTextFieldListener{
@@ -318,15 +343,50 @@ public:
 };
 
 
-class cEditPosition : public cBaseEditVectorListener{
+class cEditPosition : public cBaseEditDVectorListener{
 public:
-	cEditPosition( meWPSObject &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPosition( meWPSObject &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meObject *object ){
+	virtual igdeUndo *OnChanged( const decDVector &vector, meObject *object ){
 		if( object->GetPosition().IsEqualTo( vector ) ){
 			return NULL;
 		}
 		return new meUSetObjectPosition( object, vector );
+	}
+};
+
+class cActionResetPosition : public cBaseAction{
+public:
+	cActionResetPosition( meWPSObject &panel ) : cBaseAction( panel, "Reset Position", NULL, "Reset position to 0" ){ }
+	
+	virtual igdeUndo *OnAction( meObject *object ){
+		return ! object->GetPosition().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) )
+			? new meUSetObjectPosition( object, decVector() ) : NULL;
+	}
+};
+
+class cActionMenuPosition : public igdeActionContextMenu{
+	meWPSObject &pPanel;
+	
+public:
+	cActionMenuPosition( meWPSObject &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Position menu" ),
+	pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		if( ! pPanel.GetActiveObject() ){
+			return;
+		}
+		
+		meWindowMain &windowMain = pPanel.GetWPSelection().GetWindowProperties().GetWindowMain();
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionX() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionY() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionZ() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionXZ() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyPositionXYZ() );
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionResetPosition( pPanel ), true );
 	}
 };
 
@@ -339,6 +399,50 @@ public:
 			return NULL;
 		}
 		return new meUSetObjectRotation( object, vector );
+	}
+};
+
+class cActionResetRotation : public cBaseAction{
+public:
+	cActionResetRotation( meWPSObject &panel ) : cBaseAction( panel, "Reset Rotation", NULL, "Reset rotation to 0" ){ }
+	
+	virtual igdeUndo *OnAction( meObject *object ){
+		return ! object->GetRotation().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) )
+			? new meUSetObjectRotation( object, decVector() ) : NULL;
+	}
+};
+
+class cActionMenuRotation : public igdeActionContextMenu{
+	meWPSObject &pPanel;
+	
+public:
+	cActionMenuRotation( meWPSObject &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Rotation menu" ),
+	pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		if( ! pPanel.GetActiveObject() ){
+			return;
+		}
+		
+		meWindowMain &windowMain = pPanel.GetWPSelection().GetWindowProperties().GetWindowMain();
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyRotationX() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyRotationY() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyRotationZ() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyRotationXYZ() );
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectRotateL45() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectRotateL90() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectRotateR45() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectRotateR90() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectRotate180() );
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionResetRotation( pPanel ), true );
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectDropToGround() );
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectSnapToGrid() );
 	}
 };
 
@@ -420,11 +524,35 @@ public:
 
 class cActionResetScaling : public cBaseAction{
 public:
-	cActionResetScaling( meWPSObject &panel ) : cBaseAction( panel, "R", NULL, "Reset scaling to 1" ){ }
+	cActionResetScaling( meWPSObject &panel ) : cBaseAction( panel, "Reset Scaling", NULL, "Reset scaling to 1" ){ }
 	
 	virtual igdeUndo *OnAction( meObject *object ){
 		return ! object->GetScaling().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) )
 			? new meUObjectSetScaling( object, decVector( 1.0f, 1.0f, 1.0f ) ) : NULL;
+	}
+};
+
+class cActionMenuScale : public igdeActionContextMenu{
+	meWPSObject &pPanel;
+	
+public:
+	cActionMenuScale( meWPSObject &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Scale menu" ),
+	pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		if( ! pPanel.GetActiveObject() ){
+			return;
+		}
+		
+		meWindowMain &windowMain = pPanel.GetWPSelection().GetWindowProperties().GetWindowMain();
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyScaleX() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyScaleY() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyScaleZ() );
+		helper.MenuCommand( contextMenu, windowMain.GetActionObjectCopyScaleXYZ() );
+		helper.Separator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionResetScaling( pPanel ), true );
 	}
 };
 
@@ -521,7 +649,7 @@ public:
 	cActionTextureRemoveModel( meWPSObject &panel, const char *name ) :
 	cBaseAction( panel, name, NULL, "Remove model texture" ), pTextureName( name ){ }
 	
-	virtual igdeUndo *OnAction( meObject *object ){
+	virtual igdeUndo *OnAction( meObject* ){
 		return NULL;
 	}
 	
@@ -721,7 +849,7 @@ public:
 		"Copy To Selected", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
 			"Copy texture from active object to selected objects" ){}
 	
-	virtual igdeUndo *OnActionTexture( meObject *object, meObjectTexture *texture ){
+	virtual igdeUndo *OnActionTexture( meObject*, meObjectTexture *texture ){
 		const meObjectList &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		return list.GetCount() > 0 ? new meUObjectTextureCopyToSelected( list, texture ) : NULL;
 	}
@@ -1100,6 +1228,10 @@ pWorld( NULL )
 	pActionClassBrowse.TakeOver( new cActionClassBrowse( *this ) );
 	pActionClassEdit.TakeOver( new cActionClassEdit( *this ) );
 	
+	pActionMenuPosition.TakeOver( new cActionMenuPosition( *this ) );
+	pActionMenuRotation.TakeOver( new cActionMenuRotation( *this ) );
+	pActionMenuScale.TakeOver( new cActionMenuScale( *this ) );
+	
 	pActionMenuTexture.TakeOver( new cActionMenuTexture( *this ) );
 	pActionTextureAddCustom.TakeOver( new cActionTextureAddCustom( *this ) );
 	pActionTextureAddAllModel.TakeOver( new cActionTextureAddAllModel( *this ) );
@@ -1140,14 +1272,20 @@ pWorld( NULL )
 	helper.EditString( groupBox, "Attach:", "ID of object to attach to", pEditAttach, NULL );
 	pEditAttach->SetEditable( false );
 	
-	helper.EditVector( groupBox, "Position:", "Position of the object.",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the object.",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.FormLineStretchFirst( groupBox, "Position:", "Position of the object.", formLine );
+	helper.EditDVector( formLine, "Position of the object.", pEditPosition, new cEditPosition( *this ) );
+	helper.Button( formLine, pBtnPositionMenu, pActionMenuPosition );
+	pActionMenuPosition->SetWidget( pBtnPositionMenu );
+	
+	helper.FormLineStretchFirst( groupBox, "Rotation:", "Rotation of the object.", formLine );
+	helper.EditVector( formLine, "Rotation of the object.", pEditRotation, new cEditRotation( *this ) );
+	helper.Button( formLine, pBtnRotationMenu, pActionMenuRotation );
+	pActionMenuRotation->SetWidget( pBtnRotationMenu );
 	
 	helper.FormLineStretchFirst( groupBox, "Scaling:", "Scaling of the object.", formLine );
 	helper.EditVector( formLine, "Scaling of the object.", pEditScaling, new cEditScaling( *this ) );
-	helper.Button( formLine, pBtnResetScaling, new cActionResetScaling( *this ), true );
+	helper.Button( formLine, pBtnScaleMenu, pActionMenuScale );
+	pActionMenuScale->SetWidget( pBtnScaleMenu );
 	
 	helper.EditVector( groupBox, "Size:", "Size of the object.", pEditSize, new cEditSize( *this ) );
 	
@@ -1359,7 +1497,6 @@ void meWPSObject::UpdateEnabled(){
 	pEditPosition->SetEnabled( enabled );
 	pEditSize->SetEnabled( enabled );
 	pEditScaling->SetEnabled( enabled );
-	pBtnResetScaling->GetAction()->Update();
 	pEditRotation->SetEnabled( enabled );
 	pChkShowMissingTextures->SetEnabled( enabled );
 }
@@ -1388,7 +1525,7 @@ void meWPSObject::UpdateGeometry(){
 			pEditAttach->SetText( "<none>" );
 		}
 		
-		pEditPosition->SetVector( object->GetPosition() );
+		pEditPosition->SetDVector( object->GetPosition() );
 		pEditSize->SetVector( object->GetSize() );
 		pEditScaling->SetVector( object->GetScaling() );
 		pEditRotation->SetVector( object->GetRotation() );
@@ -1397,7 +1534,7 @@ void meWPSObject::UpdateGeometry(){
 	}else{
 		pEditID->ClearText();
 		pEditAttach->ClearText();
-		pEditPosition->SetVector( decVector() );
+		pEditPosition->SetDVector( decDVector() );
 		pEditSize->SetVector( decVector( 1.0f, 1.0f, 1.0f ) );
 		pEditScaling->SetVector( decVector( 1.0f, 1.0f, 1.0f ) );
 		pEditRotation->SetVector( decVector() );
@@ -1555,8 +1692,8 @@ void meWPSObject::UpdateTextureList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			meObjectTexture * const texture = object->GetTextureAt( i );
-			pCBTexture->AddItem( texture->GetName(), NULL, texture );
+			meObjectTexture * const texture2 = object->GetTextureAt( i );
+			pCBTexture->AddItem( texture2->GetName(), NULL, texture2 );
 		}
 		
 		pCBTexture->SortItems();

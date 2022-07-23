@@ -32,7 +32,7 @@
  * towards and including the goal. The path can be used for
  * collision checking or branching path.
  */
-class deNavigatorPath{
+class DE_DLL_EXPORT deNavigatorPath{
 private:
 	decDVector *pPoints;
 	int pCount;

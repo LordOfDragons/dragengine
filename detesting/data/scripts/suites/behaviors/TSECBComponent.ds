@@ -1,0 +1,433 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorComponent.
+ */
+class TSECBComponent extends TestSuite
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorComponent.new(ec, null)
+			assertEquals(ECBehaviorComponent.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorComponent.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorComponent.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertNotNull(behavior.getComponent())
+			assertNull(behavior.getCollider())
+			
+			assertEquals(behavior.getComponent().getPrefix(), "component.")
+			
+			assertNull(behavior.getComponent().getModel().getPath())
+			assertNull(behavior.getComponent().getSkin().getPath())
+			assertNull(behavior.getComponent().getRig().getPath())
+			assertNull(behavior.getComponent().getOcclusionMesh().getPath())
+			assertNull(behavior.getComponent().getAudioModel().getPath())
+			assertTrue(behavior.getComponent().getRenderEnvMap().getValue())
+			assertTrue(behavior.getComponent().getAffectsAudio().getValue())
+			assertEquals(behavior.getComponent().getHintMovement().getEnumeration(), ComponentHintMovement.stationary)
+			assertEquals(behavior.getComponent().getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default))
+			assertEquals(behavior.getComponent().getLayerMaskRenderEnvMap(), LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap))
+			assertEquals(behavior.getComponent().getLayerMaskAffectsAudio(), LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+			
+			assertHasProperty("component.model")
+			assertHasProperty("component.skin")
+			assertHasProperty("component.rig")
+			assertHasProperty("component.occlusionMesh")
+			assertHasProperty("component.audioModel")
+			assertHasProperty("component.textureReplacements")
+			assertHasProperty("component.renderEnvMap")
+			assertHasProperty("component.affectsAudio")
+			assertHasProperty("component.hintMovement")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorComponent.Instance component = behavior.instance(e)
+			assertNotNull(component)
+			assertEquals(component.getECBehavior(), behavior)
+			
+			var Component c = component.getComponent()
+			assertNotNull(c)
+			assertNull(c.getModel())
+			assertNull(c.getRig())
+			assertNull(c.getSkin())
+			assertNull(c.getOcclusionMesh())
+			assertNull(c.getAudioModel())
+			
+			assertEquals(ECBehaviorComponent.getInstanceIn(e), component)
+			
+			assertEquals(ECBehaviorComponent.getAllInstancesIn(e), Array.newWith(component))
+			
+			return false
+		end
+	end
+	
+	/** Component with only model set. */
+	class ModelOnly extends TestCaseECBehavior
+		public func new() super("modelOnly", UnicodeString.newFromUTF8("Model only"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+			behavior.getComponent().getModel().setPath("/content/model/box/box.demodel")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+			var Component c = component.getComponent()
+			assertNotNull(c)
+			assertNotNull(c.getModel())
+			assertNull(c.getRig())
+			assertNull(c.getSkin())
+			assertNull(c.getOcclusionMesh())
+			
+			return false
+		end
+	end
+	
+	/** Component with model, skin and rig resource set. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+			
+			var String basePath = "/content/model/box"
+			var String pathModel = basePath + "/box.demodel"
+			var String pathSkin = basePath + "/box.deskin"
+			var String pathRig = basePath + "/box.derig"
+			var String pathOccMesh = basePath + "/box.deoccmesh"
+			var String pathAudoModel = basePath + "/box_audio.demodel"
+			
+			var ECComposeComponent cc = behavior.getComponent()
+			behavior.setCommonPath(pathModel, pathSkin, pathRig)
+			assertEquals(cc.getModel().getPath(), pathModel)
+			assertEquals(cc.getSkin().getPath(), pathSkin)
+			assertEquals(cc.getRig().getPath(), pathRig)
+			
+			behavior.setCommonPath(basePath, "box.demodel", "box.deskin", "box.derig")
+			assertEquals(cc.getModel().getPath(), pathModel)
+			assertEquals(cc.getSkin().getPath(), pathSkin)
+			assertEquals(cc.getRig().getPath(), pathRig)
+			
+			behavior.setAllPath(pathModel, pathSkin, pathRig, pathOccMesh, pathAudoModel)
+			assertEquals(cc.getModel().getPath(), pathModel)
+			assertEquals(cc.getSkin().getPath(), pathSkin)
+			assertEquals(cc.getRig().getPath(), pathRig)
+			assertEquals(cc.getOcclusionMesh().getPath(), pathOccMesh)
+			assertEquals(cc.getAudioModel().getPath(), pathAudoModel)
+			
+			behavior.setAllPath(basePath, "box.demodel", "box.deskin", "box.derig", "box.deoccmesh", "box_audio.demodel")
+			assertEquals(cc.getModel().getPath(), pathModel)
+			assertEquals(cc.getSkin().getPath(), pathSkin)
+			assertEquals(cc.getRig().getPath(), pathRig)
+			assertEquals(cc.getOcclusionMesh().getPath(), pathOccMesh)
+			assertEquals(cc.getAudioModel().getPath(), pathAudoModel)
+			
+			assertEquals(cc.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default))
+			assertEquals(cc.getLayerMaskRenderEnvMap(), LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap))
+			assertEquals(cc.getLayerMaskAffectsAudio(), LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+			
+			// actual path used for instance tests
+			cc.getOcclusionMesh().setPath(null)
+			cc.getAudioModel().setPath(null)
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPosition(DVector.new(2, 1, 3))
+			s.setRotation(Vector.new(20, 10, 30))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+			var Component c = component.getComponent()
+			assertNotNull(c)
+			assertNotNull(c.getModel())
+			assertNotNull(c.getRig())
+			assertNotNull(c.getSkin())
+			assertNull(c.getOcclusionMesh())
+			assertNull(c.getAudioModel())
+			assertEquals(c.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default, \
+				BaseGameApp.WorldLayerBit.envmap, BaseGameApp.WorldLayerBit.audio))
+			assertDVector(c.getPosition(), DVector.new(2, 1, 3))
+			assertQuaternion(c.getOrientation(), Quaternion.newFromEuler(20, 10, 30))
+			
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		private var ECBehaviorComponent behavior2
+		private var ECBehaviorComponent behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorComponent.new(ec, null)
+			behavior2 = ECBehaviorComponent.new(ec, null, "sub1")
+			behavior3 = ECBehaviorComponent.new(ec, null, "sub2")
+			assertEquals(ECBehaviorComponent.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorComponent.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorComponent.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorComponent.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorComponent.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorComponent.Instance component = behavior.instance(e)
+			var ECBehaviorComponent.Instance component2 = behavior2.instance(e)
+			var ECBehaviorComponent.Instance component3 = behavior3.instance(e)
+			assertNotNull(component)
+			assertNotNull(component2)
+			assertNotNull(component3)
+			assertEquals(component.getECBehavior(), behavior)
+			assertEquals(component2.getECBehavior(), behavior2)
+			assertEquals(component3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorComponent.getInstanceIn(e), component)
+			assertEquals(ECBehaviorComponent.getInstanceIn(e, "sub1"), component2)
+			assertEquals(ECBehaviorComponent.getInstanceIn(e, "sub2"), component3)
+			
+			assertNull(ECBehaviorComponent.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorComponent.getAllInstancesIn(e), Array.newWith(component, component2, component3))
+			
+			assertEquals(behavior.getComponent().getPrefix(), "component.")
+			assertEquals(behavior2.getComponent().getPrefix(), "component(sub1).")
+			assertEquals(behavior3.getComponent().getPrefix(), "component(sub2).")
+			
+			assertHasProperty("component.model")
+			assertHasProperty("component.skin")
+			assertHasProperty("component.rig")
+			assertHasProperty("component.occlusionMesh")
+			assertHasProperty("component.audioModel")
+			assertHasProperty("component.textureReplacements")
+			assertHasProperty("component.renderEnvMap")
+			assertHasProperty("component.affectsAudio")
+			assertHasProperty("component.hintMovement")
+			
+			assertHasProperty("component(sub1).model")
+			assertHasProperty("component(sub1).skin")
+			assertHasProperty("component(sub1).rig")
+			assertHasProperty("component(sub1).occlusionMesh")
+			assertHasProperty("component(sub1).audioModel")
+			assertHasProperty("component(sub1).textureReplacements")
+			assertHasProperty("component(sub1).renderEnvMap")
+			assertHasProperty("component(sub1).affectsAudio")
+			assertHasProperty("component(sub1).hintMovement")
+			
+			assertHasProperty("component(sub2).model")
+			assertHasProperty("component(sub2).skin")
+			assertHasProperty("component(sub2).rig")
+			assertHasProperty("component(sub2).occlusionMesh")
+			assertHasProperty("component(sub2).audioModel")
+			assertHasProperty("component(sub2).textureReplacements")
+			assertHasProperty("component(sub2).renderEnvMap")
+			assertHasProperty("component(sub2).affectsAudio")
+			assertHasProperty("component(sub2).hintMovement")
+			
+			return false
+		end
+	end
+	
+	/** Texture replacements. */
+	class TextureReplacing extends TestCaseECBehavior
+		public func new() super("textureReplacing", UnicodeString.newFromUTF8("Texture Replacing"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+			
+			var String basePath = "/content/model/box"
+			
+			behavior.setCommonPath(basePath, "box2.demodel", "box2.deskin", "box.derig")
+			behavior.addTextureReplacement("material2", basePath + "/replace1.deskin")
+			behavior.addTextureReplacement("material3", basePath + "/replace2.deskin", Vector2.new(2, 3))
+			behavior.addTextureReplacement("material4", basePath + "/replace3.deskin", Color.red)
+			behavior.addTextureReplacement("material5", basePath + "/replace4.deskin", Vector2.new(3, 4), Color.blue)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+			var Component c = component.getComponent()
+			assertNotNull(c)
+			assertNotNull(c.getModel())
+			assertNotNull(c.getRig())
+			assertNotNull(c.getSkin())
+			assertNull(c.getOcclusionMesh())
+			assertNull(c.getAudioModel())
+			
+			var String basePath = "/content/model/box"
+			
+			var int index = c.indexOfTextureNamed("material1")
+			assertNull(c.getTextureSkinAt(index))
+			assertEquals(c.getTextureTransformAt(index), TexMatrix2.new())
+			assertNull(c.getTextureDynamicSkinAt(index))
+			assertEquals(component.getUsedSkin("material1").getFilename(), basePath + "/box2.deskin")
+			
+			index = c.indexOfTextureNamed("material2")
+			assertEquals(c.getTextureSkinAt(index).getFilename(), basePath + "/replace1.deskin")
+			assertEquals(c.getTextureTransformAt(index), TexMatrix2.new())
+			assertNull(c.getTextureDynamicSkinAt(index))
+			assertEquals(component.getUsedSkin("material2").getFilename(), basePath + "/replace1.deskin")
+			
+			index = c.indexOfTextureNamed("material3")
+			assertEquals(c.getTextureSkinAt(index).getFilename(), basePath + "/replace2.deskin")
+			assertEquals(c.getTextureTransformAt(index), TexMatrix2.newScaling(Vector2.new(2, 3)))
+			assertNull(c.getTextureDynamicSkinAt(index))
+			assertEquals(component.getUsedSkin("material3").getFilename(), basePath + "/replace2.deskin")
+			
+			index = c.indexOfTextureNamed("material4")
+			assertEquals(c.getTextureSkinAt(index).getFilename(), basePath + "/replace3.deskin")
+			assertEquals(c.getTextureTransformAt(index), TexMatrix2.new())
+			assertNotNull(c.getTextureDynamicSkinAt(index))
+			assertEquals(c.getTextureDynamicSkinAt(index).getRenderableCount(), 1)
+			assertEquals(c.getTextureDynamicSkinAt(index).getTypeAt(0), DynamicSkinRenderableType.color)
+			assertEquals(component.getUsedSkin("material4").getFilename(), basePath + "/replace3.deskin")
+			
+			index = c.indexOfTextureNamed("material5")
+			assertEquals(c.getTextureSkinAt(index).getFilename(), basePath + "/replace4.deskin")
+			assertEquals(c.getTextureTransformAt(index), TexMatrix2.newScaling(Vector2.new(3, 4)))
+			assertNotNull(c.getTextureDynamicSkinAt(index))
+			assertEquals(c.getTextureDynamicSkinAt(index).getRenderableCount(), 1)
+			assertEquals(c.getTextureDynamicSkinAt(index).getTypeAt(0), DynamicSkinRenderableType.color)
+			assertEquals(component.getUsedSkin("material5").getFilename(), basePath + "/replace4.deskin")
+			
+			return false
+		end
+	end
+	
+	/** Component without env-map and affects-audio. */
+	class NoEnvMapAffectsAudio extends TestCaseECBehavior
+		public func new() super("noEnvMapAffectsAudio", UnicodeString.newFromUTF8("No EnvMap/AffectsAudio"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+		end
+		
+		protected func void setStubProperties()
+			getStubElement().setPropertyBoolFor("component.renderEnvMap", false)
+			getStubElement().setPropertyBoolFor("component.affectsAudio", false)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var Component c = behavior.instance(getElement()).getComponent()
+			assertEquals(c.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default))
+			return false
+		end
+	end
+	
+	/** Component with env-map but without affects-audio. */
+	class NoAffectsAudio extends TestCaseECBehavior
+		public func new() super("noAffectsAudio", UnicodeString.newFromUTF8("No AffectsAudio"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+		end
+		
+		protected func void setStubProperties()
+			getStubElement().setPropertyBoolFor("component.affectsAudio", false)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var Component c = behavior.instance(getElement()).getComponent()
+			assertEquals(c.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default, \
+				BaseGameApp.WorldLayerBit.envmap))
+			return false
+		end
+	end
+	
+	/** Component with env-map but without affects-audio. */
+	class NoEnvMap extends TestCaseECBehavior
+		public func new() super("noEnvMap", UnicodeString.newFromUTF8("No EnvMap"))
+		end
+		
+		private var ECBehaviorComponent behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+		end
+		
+		protected func void setStubProperties()
+			getStubElement().setPropertyBoolFor("component.renderEnvMap", false)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var Component c = behavior.instance(getElement()).getComponent()
+			assertEquals(c.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default, \
+				BaseGameApp.WorldLayerBit.audio))
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorComponent", UnicodeString.newFromUTF8("ECBehaviorComponent"))
+		addTestCase(Empty.new())
+		addTestCase(ModelOnly.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+		addTestCase(TextureReplacing.new())
+		addTestCase(NoEnvMapAffectsAudio.new())
+		addTestCase(NoAffectsAudio.new())
+		addTestCase(NoEnvMap.new())
+	end
+end

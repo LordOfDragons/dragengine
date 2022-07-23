@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "deoglSkinShader.h"
 #include "deoglSkinShaderConfig.h"
 #include "deoglSkinShaderManager.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -43,6 +42,7 @@ static const char *vUnitSourceCodePath[ deoglSkinShaderManager::EUSCP_COUNT ] = 
 	"v130/vertex/defren/skin/depth.glsl", // euscpVertexDepth
 	"v130/vertex/defren/skin/particle.glsl", // euscpVertexParticle
 	"v130/vertex/defren/skin/passthrough.glsl", // euscpVertexPassThrough
+	"v130/vertex/defren/gi/materialMap.glsl", // euscpGIMaterialMap
 	
 	"v130/geometry/defren/skin/geometry.glsl", // euscpGeometryGeometry
 	"v130/geometry/defren/skin/depth.glsl", // euscpGeometryDepth
@@ -56,7 +56,8 @@ static const char *vUnitSourceCodePath[ deoglSkinShaderManager::EUSCP_COUNT ] = 
 	"v130/tesseval/defren/skin/depth.glsl", // euscpTessEvalDepth
 	
 	"v130/fragment/defren/skin/geometry.glsl", // euscpFragmentGeometry
-	"v130/fragment/defren/skin/depth.glsl" // euscpFragmentDepth
+	"v130/fragment/defren/skin/depth.glsl", // euscpFragmentDepth
+	"v130/fragment/defren/gi/materialMap.glsl" // euscpGIMaterialMap
 };
 
 
@@ -109,13 +110,13 @@ int deoglSkinShaderManager::GetShaderCount() const{
 	return pShaderList.GetCount();
 }
 
-deoglSkinShader *deoglSkinShaderManager::GetShaderAt( int index ) const{
-	return ( deoglSkinShader* )pShaderList.GetAt( index );
+const deoglSkinShader &deoglSkinShaderManager::GetShaderAt( int index ) const{
+	return *( const deoglSkinShader * )pShaderList.GetAt( index );
 }
 
 void deoglSkinShaderManager::AddShader( deoglSkinShader *shader ){
 	if( ! shader ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeNullPointer, "shader" );
 	}
 	pShaderList.Add( shader );
 }
@@ -145,32 +146,20 @@ bool deoglSkinShaderManager::HasShaderWith( deoglSkinShaderConfig &configuration
 	return false;
 }
 
-deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
+deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
 	const int count = pShaderList.GetCount();
-	deoglSkinShader *shader = NULL;
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		shader = ( deoglSkinShader* )pShaderList.GetAt( i );
-		
+		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );
 		if( shader->GetConfig() == configuration ){
-			shader->AddReference();
-			return shader;
+			return deoglSkinShader::Ref( shader );
 		}
 	}
 	
-	shader = NULL;
-	try{
-		shader = new deoglSkinShader( pRenderThread, configuration );
-		pShaderList.Add( shader );
-		
-	}catch( const deException & ){
-		if( shader ){
-			shader->FreeReference();
-		}
-		throw;
-	}
-	
+	const deoglSkinShader::Ref shader( deoglSkinShader::Ref::New(
+		new deoglSkinShader( pRenderThread, configuration ) ) );
+	pShaderList.Add( shader );
 	return shader;
 }
 

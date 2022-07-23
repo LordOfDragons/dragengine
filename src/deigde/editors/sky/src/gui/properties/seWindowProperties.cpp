@@ -90,3 +90,7 @@ void seWindowProperties::SetSky( seSky *sky ){
 	( ( seWPView& )( igdeWidget& )pPanelView ).SetSky( sky );
 	( ( seWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetSky( sky );
 }
+
+void seWindowProperties::OnSkyPathChanged(){
+	( ( seWPLayer& )( igdeWidget& )pPanelLayer ).OnSkyPathChanged();
+}

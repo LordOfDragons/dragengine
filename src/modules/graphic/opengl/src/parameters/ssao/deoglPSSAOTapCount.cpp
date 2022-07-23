@@ -50,6 +50,7 @@ deoglParameterInt( ogl )
 		" recommended value for modern graphic cards." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO Tap Count" );
+	SetDefaultValue( "18" );
 }
 
 deoglPSSAOTapCount::~deoglPSSAOTapCount(){

@@ -7,6 +7,7 @@
 	<version>VERSION</version>
 	<type>Input</type>
 	<fallback/>
+	<priority>0</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

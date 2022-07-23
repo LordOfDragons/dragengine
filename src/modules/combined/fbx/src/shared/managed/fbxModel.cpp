@@ -200,7 +200,6 @@ void fbxModel::MatchClusters( const fbxRig &rig ){
 		
 		pScene.FindConnections( cluster.GetNodeClusterID(), connections );
 		const int conCount = connections.GetCount();
-		int i;
 		
 		for( i=0; i<conCount; i++ ){
 			const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );

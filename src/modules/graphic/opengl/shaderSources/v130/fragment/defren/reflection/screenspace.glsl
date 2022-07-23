@@ -5,6 +5,7 @@ precision highp int;
 
 uniform vec4 pQuadTCTransform;
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform mat4 pMatrixP;
 uniform mat4 pMatrixBackProjection;
 uniform float pClipReflDirNearDist;
@@ -18,16 +19,22 @@ uniform vec4 pCoverageFactor2; // -1 / edgeSize, 0.5 / edgeSize, powEdge, powRay
 uniform int pRoughnessMaxTaps;
 uniform float pRoughnessTapCountScale;
 
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP
-uniform HIGHP sampler2D texDepthMinMax;
+uniform HIGHP sampler2DArray texDepthMinMax;
 #endif
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+uniform lowp sampler2DArray texDiffuse;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
 
 in vec4 vScreenCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec3 outResult;
 
@@ -47,15 +54,16 @@ const vec4 ignoreDistance = vec4( 5.0 ); // anything larger than length(vec3(2,2
 const vec4 distanceBorder = vec4( 0.0 );
 
 #ifdef DECODE_IN_DEPTH
-	#define TAP_DEPTH(tc,level)		dot( textureLod( texDepth, tc, level ).rgb, unpackDepth )
+	#define TAP_DEPTH(tc,level)		dot( textureLod( texDepth, vec3( tc, vLayer ), level ).rgb, unpackDepth )
 #else
-	#define TAP_DEPTH(tc,level)		textureLod( texDepth, tc, level ).r
+	#define TAP_DEPTH(tc,level)		textureLod( texDepth, vec3( tc, vLayer ), level ).r
 #endif
 
 #ifdef ROUGHNESS_TAPPING
 const vec4 roughnessToAngleBase = vec4( 3.14159265, 3.14159265, -1.5707963, -1.5707963 ); // scaleX, scaleY, offsetX, offsetY
 #endif
 
+#include "v130/shared/normal.glsl"
 
 
 // Calculate the screen space reflection
@@ -129,7 +137,7 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 	
 	for( i=0; i<pSubStepCount; i++ ){
 		/*#ifdef USE_DEPTH_MIPMAP
-			geomZ = textureLod( texDepthMinMax, tcTo.st * pMinMaxTCFactor, mipMapLod ).rg;
+			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pMinMaxTCFactor, vLayer ), mipMapLod ).rg;
 		#else*/
 			geomZ = TAP_DEPTH( tcTo.st, 0.0 );
 		//#endif
@@ -569,7 +577,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 					continue;
 				}
 			#endif
-			geomZ = textureLod( texDepthMinMax, tcTo.st * pMinMaxTCFactor, 5.0 ).rg;
+			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pMinMaxTCFactor, vLayer ), 5.0 ).rg;
 		#else
 			geomZ = TAP_DEPTH( tcTo.st, 0.0 );
 		#endif
@@ -707,7 +715,7 @@ float rand( vec2 seed ){
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	// discard not inizalized fragments
 	if( texelFetch( texDiffuse, tc, 0 ).a == 0.0 ){
@@ -742,22 +750,11 @@ void main( void ){
 		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the reflection parameters
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	vec3 reflectDir = reflect( normalize( position ), normalize( normal ) );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
+	vec3 reflectDir = reflect( normalize( position ), normal );
 	
 	// calculate the screen space reflection
 	#ifdef ROUGHNESS_TAPPING

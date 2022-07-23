@@ -81,6 +81,7 @@ pHeightTerrain( NULL ),
 
 pSharedVideoPlayerList( NULL ),
 
+pDirtySize( false ),
 pDirtySkies( true ),
 pDirtyBillboards( true ),
 pDirtyComponents( true ),
@@ -93,12 +94,11 @@ pDirtyLights( true ),
 pDirtyLumimeters( true ),
 pDirtyParticleEmitterInstances( true ),
 pDirtyPropFields( true ),
-pDirtySky( true ),
 
 pSyncing( false )
 {
 	try{
-		pRWorld = new deoglRWorld( ogl.GetRenderThread(), world.GetSize() * 0.5 );
+		pRWorld = new deoglRWorld( ogl.GetRenderThread(), world.GetSize() );
 		
 		pSharedVideoPlayerList = new deoglSharedVideoPlayerList( ogl );
 		
@@ -266,6 +266,16 @@ void deoglWorld::SyncToRender(){
 	
 	DEBUG_RESET_TIMERS;
 	try{
+		if( pDirtySize ){
+			pDirtySize = false;
+			pRWorld->SetSize( pWorld.GetSize() );
+		}
+		
+		// should be done better. these situations only require a prepare for render:
+		// - Update called (hence always in regular games)
+		// - Content requires an update (TODO)
+		pRWorld->RequiresPrepareForRender();
+		
 		if( pDirtyLighting ){
 			pRWorld->SetDisableLights( pWorld.GetDisableLights() );
 			pRWorld->SetAmbientLight( pWorld.GetAmbientLight() );
@@ -349,6 +359,10 @@ void deoglWorld::RemoveSyncBillboard( deoglBillboard *billboard ){
 
 // Notifications
 //////////////////
+
+void deoglWorld::SizeChanged(){
+	pDirtySize = true;
+}
 
 void deoglWorld::HeightTerrainChanged(){
 	if( pWorld.GetHeightTerrain() ){
@@ -744,6 +758,8 @@ extern int hackCSOctCount;
 extern float hackCSOctTime;
 extern int hackCSBoneMapCount;
 extern float hackCSBoneMapTime;
+extern int hackCSSpecialCount;
+extern float hackCSSpecialTime;
 #endif
 
 void deoglWorld::pSyncComponents(){
@@ -764,6 +780,8 @@ void deoglWorld::pSyncComponents(){
 	hackCSOctTime = 0;
 	hackCSBoneMapCount = 0;
 	hackCSBoneMapTime = 0;
+	hackCSSpecialCount = 0;
+	hackCSSpecialTime = 0;
 	#endif
 	
 	if( pDirtyComponents ){
@@ -818,6 +836,7 @@ void deoglWorld::pSyncComponents(){
 	pOgl.LogInfoFormat( "CSExt     %.1fys (%i, %.1fys)", hackCSExtTime*1e6f, hackCSExtCount, hackCSExtCount==0 ? 0 : hackCSExtTime/(float)hackCSExtCount*1e6f );
 	pOgl.LogInfoFormat( "CSOct     %.1fys (%i, %.1fys)", hackCSOctTime*1e6f, hackCSOctCount, hackCSOctCount==0 ? 0 : hackCSOctTime/(float)hackCSOctCount*1e6f );
 	pOgl.LogInfoFormat( "CSBoneMap %.1fys (%i, %.1fys)", hackCSBoneMapTime*1e6f, hackCSBoneMapCount, hackCSBoneMapCount==0 ? 0 : hackCSBoneMapTime/(float)hackCSBoneMapCount*1e6f );
+	pOgl.LogInfoFormat( "CSSpecial %.1fys (%i, %.1fys)", hackCSSpecialTime*1e6f, hackCSSpecialCount, hackCSSpecialCount==0 ? 0 : hackCSSpecialTime/(float)hackCSSpecialCount*1e6f );
 	#endif
 }
 

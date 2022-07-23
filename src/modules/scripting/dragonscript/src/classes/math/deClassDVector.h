@@ -59,6 +59,7 @@ private:
 	struct sInitData{
 		dsClass *clsDVec, *clsVoid, *clsBool, *clsStr, *clsObj, *clsInt, *clsFlt, *clsVec;
 		dsClass *clsFileReader, *clsFileWriter;
+		dsClass *clsPoint3;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -87,6 +88,9 @@ private:
 	DEF_NATFUNC( nfSmallest );
 	DEF_NATFUNC( nfLargest );
 	DEF_NATFUNC( nfClamped );
+	DEF_NATFUNC( nfRound );
+	DEF_NATFUNC( nfRound2 );
+	DEF_NATFUNC( nfMix );
 	
 	DEF_NATFUNC( nfIsEqualTo );
 	DEF_NATFUNC( nfIsAtLeast );
@@ -113,6 +117,7 @@ private:
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC( nfToStringPrecision );
 #undef DEF_NATFUNC
 };
 

@@ -32,7 +32,7 @@
  * \todo
  * - Remove weight matrix as the graphic module calculates it itself
  */
-class deComponentBone{
+class DE_DLL_EXPORT deComponentBone{
 private:
 	int pParentBone;
 	

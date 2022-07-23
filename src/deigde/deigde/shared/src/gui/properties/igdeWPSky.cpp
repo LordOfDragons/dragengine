@@ -64,7 +64,7 @@ public:
 	cTextPathSky( igdeWPSky &panel ) : pPanel( panel ){ }
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
-		if( ! pPanel.GetSky() ){
+		if( ! pPanel.GetSky() || textField->GetText() == pPanel.GetSky()->GetPath() ){
 			return;
 		}
 		
@@ -90,6 +90,10 @@ public:
 		
 		decString sky( pTextField.GetText() );
 		if( ! igdeDialogBrowserSky::SelectSky( &pPanel, sky ) ){
+			return;
+		}
+		
+		if( sky == pPanel.GetSky()->GetPath() ){
 			return;
 		}
 		
@@ -120,6 +124,10 @@ public:
 			return;
 		}
 		
+		if( filename == pPanel.GetSky()->GetPath() ){
+			return;
+		}
+		
 		pPanel.GetSky()->SetPath( filename );
 		pPanel.UpdateSky();
 		pPanel.OnAction();
@@ -136,14 +144,16 @@ public:
 	pPanel( panel ), pIndex( index ){ }
 	
 	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ){
-		OnSliderTextValueChanged( sliderText );
-	}
-	
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
 		if( ! pPanel.GetSky() ){
 			return;
 		}
+		
 		pPanel.GetSky()->SetControllerValue( pIndex, sliderText->GetValue() );
+	}
+	
+	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
+		OnSliderTextValueChanging( sliderText );
+		pPanel.OnAction();
 	}
 };
 
@@ -159,18 +169,14 @@ public:
 
 igdeWPSky::igdeWPSky( igdeEnvironment &environment ) :
 igdeContainerFlow( environment, igdeContainerFlow::eaY ),
-pSky( NULL ),
-pControllers( NULL ),
-pControllerCount( 0 )
+pSky( NULL )
 {
 	pCreateContent();
 }
 
 igdeWPSky::igdeWPSky( igdeEnvironment &environment, igdeAction *action ) :
 igdeContainerFlow( environment, igdeContainerFlow::eaY ),
-pSky( NULL ),
-pControllers( NULL ),
-pControllerCount( 0 )
+pSky( NULL )
 {
 	pCreateContent();
 	SetAction( action );
@@ -179,10 +185,6 @@ pControllerCount( 0 )
 igdeWPSky::~igdeWPSky(){
 	DestroyNativeWidget();
 	SetAction( NULL );
-	
-	if( pControllers ){
-		delete [] pControllers;
-	}
 }
 
 
@@ -215,78 +217,85 @@ void igdeWPSky::UpdateSky(){
 void igdeWPSky::RebuildControllers(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
+	const int controllerCount = pSky ? pSky->GetControllerCount() : 0;
 	
-	pFraControllers->RemoveAllChildren();
-	
-	// create array holding controller widgets ( even if not all are used in the end )
-	if( pControllers ){
-		delete [] pControllers;
-		pControllers = NULL;
-	}
-	pControllerCount = 0;
-	
-	int controllerCount = 0;
-	if( pSky ){
-		controllerCount = pSky->GetControllerCount();
+	// remove superfluous widgets
+	while( pControllers.GetCount() > controllerCount ){
+		Controller &controller = *( ( Controller* )pControllers.GetAt( pControllers.GetCount() - 1 ) );
+		pFraControllers->RemoveChild( controller.slider );
+		pFraControllers->RemoveChild( controller.label );
+		pControllers.RemoveFrom( pControllers.GetCount() - 1 );
 	}
 	
-	if( controllerCount > 0 ){
-		pControllers = new sController[ controllerCount ];
+	// add new widgets
+	while( pControllers.GetCount() < controllerCount ){
+		Controller::Ref controller( Controller::Ref::New( new Controller ) );
+		
+		controller->controller = pControllers.GetCount();
+		
+		helper.EditSliderText( pFraControllers, "", "Current value of the controller ''",
+			0.0f, 1.0f, 6, 3, 0.1f, controller->slider,
+			new cEditControllerValue( *this, controller->controller ) );
+		
+		controller->label = ( igdeLabel* )pFraControllers->GetChildAt(
+			pFraControllers->IndexOfChild( controller->slider ) - 1 );
+		
+		pControllers.Add( controller );
 	}
 	
-	// create widgets
-	decString name, description;
+	// update widgets
 	int i;
-	
 	for( i=0; i<controllerCount; i++ ){
-		sController &sctrl = pControllers[ pControllerCount ];
-		
-		if( i < controllerCount ){
-			name = pSky->GetControllerAt( i ).GetName();
-			
-		}else{
-			name.Format( "Controller #%d", i );
-		}
-		
-		description.Format( "Current value of the controller %s", name.GetString() );
-		
-		sctrl.controller = i;
-		helper.EditSliderText( pFraControllers, name, description, 0.0f, 1.0f, 6, 3, 0.1f,
-			sctrl.slider, new cEditControllerValue( *this, i ) );
-		
-		pControllerCount++;
-		
-		UpdateController( sctrl.controller );
+		UpdateController( i );
 	}
 }
 
-void igdeWPSky::UpdateController( int controller ){
-	const deSkyController &octrl = pSky->GetControllerAt( controller );
-	sController &sctrl = pControllers[ controller ];
+void igdeWPSky::UpdateController( int index ){
+	Controller &controller = *( ( Controller* )pControllers.GetAt( index ) );
+	const deSkyController &skyController = pSky->GetControllerAt( index );
 	
-	const float minimum = octrl.GetMinimumValue();
-	const float maximum = octrl.GetMaximumValue();
-	const float value = octrl.GetCurrentValue();
+	const decString &name = skyController.GetName();
 	
-	if( maximum > minimum ){
-		sctrl.slider->SetRange( minimum, maximum );
-		sctrl.slider->SetTickSpacing( ( maximum - minimum ) * 0.1f );
-		sctrl.slider->SetValue( value );
-		sctrl.slider->SetEnabled( true );
+	if( name != controller.name ){
+		controller.name = name;
+		controller.label->SetText( name );
 		
-	}else{
-		sctrl.slider->SetRange( 0.0f, 1.0f );
-		sctrl.slider->SetTickSpacing( 0.1f );
-		sctrl.slider->SetValue( 0.0f );
-		sctrl.slider->SetEnabled( false );
+		decString description;
+		description.Format( "Current value of the controller '%s'", name.GetString() );
+		controller.label->SetDescription( description );
+		controller.slider->SetDescription( description );
 	}
+	
+	const float minimum = skyController.GetMinimumValue();
+	const float maximum = skyController.GetMaximumValue();
+	const float value = skyController.GetCurrentValue();
+	
+	if( minimum != controller.minimum || maximum != controller.maximum ){
+		controller.minimum = minimum;
+		controller.maximum = maximum;
+		
+		if( maximum > minimum ){
+			controller.slider->SetRange( minimum, maximum );
+			controller.slider->SetTickSpacing( ( maximum - minimum ) * 0.1f );
+			controller.slider->SetValue( value );
+			controller.slider->SetEnabled( true );
+			
+		}else{
+			controller.slider->SetRange( 0.0f, 1.0f );
+			controller.slider->SetTickSpacing( 0.1f );
+			controller.slider->SetValue( 0.0f );
+			controller.slider->SetEnabled( false );
+		}
+	}
+	
+	controller.slider->SetValue( value );
 }
 
 void igdeWPSky::UpdateControllerValue( int controller ){
-	const deSkyController &octrl = pSky->GetControllerAt( controller );
-	sController &sctrl = pControllers[ controller ];
+	igdeEditSliderText &slider = ( ( Controller* )pControllers.GetAt( controller ) )->slider;
+	const deSkyController &skyController = pSky->GetControllerAt( controller );
 	
-	sctrl.slider->SetValue( octrl.GetCurrentValue() );
+	slider.SetValue( skyController.GetCurrentValue() );
 }
 
 

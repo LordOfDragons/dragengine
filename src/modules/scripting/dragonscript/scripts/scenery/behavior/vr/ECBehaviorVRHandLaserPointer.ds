@@ -1,0 +1,569 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding VR Hand Controller Laser Pointer support to actor.
+ * \version 1.7
+ * 
+ * VR Hand Controllers often use a laser pointer type interaction.
+ * 
+ * This behavior adds a particle emitter representing the laser pointer. The behavior attaches
+ * itself to a ECBehaviorVRHandPointAt. The enable casting of the particle emitter is linked
+ * to the enabled state of ECBehaviorVRHandPointAt.
+ * 
+ * Named controllers can be used to set typically laserpointer parameters at runtime if
+ * the named controllers exist. The following named controllers are supported:
+ * - "length": Length of unobstructed beam in meters.
+ * - "intensity": Intensity of beam.
+ * - "red": Red color component of beam.
+ * - "green": Green color component of beam.
+ * - "blue": Blue color component of beam.
+ * 
+ * Additional named controllers can be added if required. The default particle emitter
+ * used is "/shareddata/particles/laserpointer/laserpointer.depemit". This particle emitter
+ * defines the controller ranges like this:
+ * - "length": Between 0m to 10m
+ * - "intensity": Between 0 to 1. The beam skin uses camera adapted intensity hence
+ *                1 represents full bright intensits compared to camera upper intensity
+ * - "red", "green", "blue": All betwen 0 to 1.
+ * 
+ * The default particle emitter is set to use custom collision response. This behavior
+ * implements the response to make the beam stop at the first hit obstacle. The collision
+ * filter from ECBehaviorVRHandPointAt is copied to the particle emitter to ensure the
+ * results are comparable.
+ * 
+ * The particle emitter is aligned with the test direction.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ */
+class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief VR Hand Point At listener. */
+		class ListenPointAt extends ECBehaviorVRHandPointAt.DefaultListener
+			private var Instance pInstance
+			
+			public func new(Instance instance)
+				pInstance = instance
+			end
+			
+			public func void enabledChanged(ECBehaviorVRHandPointAt.Instance instance)
+				pInstance.updateVisibile()
+			end
+			
+			public func void testParametersChanged(ECBehaviorVRHandPointAt.Instance instance)
+				pInstance.updateParameters()
+			end
+		end
+		
+		/** \brief Stop particle at obstacle listener. */
+		class StopAtObstacleListener extends ECBehaviorParticleEmitter.DefaultListener
+			public func new()
+			end
+			
+			public func void particleResponse(ECBehaviorParticleEmitter.Instance instance, CollisionInfo collisionInfo)
+				collisionInfo.setParticleVelocity(Vector.new())
+			end
+		end
+		
+		
+		
+		private var ECBehaviorVRHandLaserPointer pECBehavior
+		private var ECBehaviorVRHandPointAt.Instance pVRHandPointAt
+		private var ECBehaviorParticleEmitter.Instance pParticleEmitter
+		private var ParticleEmitterController pControllerLength
+		private var ParticleEmitterController pControllerIntensity
+		private var ParticleEmitterController pControllerRed
+		private var ParticleEmitterController pControllerGreen
+		private var ParticleEmitterController pControllerBlue
+		private var float pLength
+		private var float pIntensity
+		private var Color pColor
+		
+		
+		
+		/** \brief Create instance. */
+		public func new(ECBehaviorVRHandLaserPointer ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			// copy the collision filter from the point-at behavior to the particle emitter
+			// behavior. this is done here too since the user can modify the collision filter
+			// after the particle emitter behavior has been added. this code here ensures
+			// the user does not have to worry about setting the collision filter manually
+			// unless he is doing something special
+			ecbehavior.getParticleEmitter().getParticleEmitter().getCollisionFilter()\
+				.setCollisionFilter(ecbehavior.getVRHandPointAt().getCollisionFilter().getCollisionFilter())
+			
+			pVRHandPointAt = ecbehavior.getVRHandPointAt().instance(element)
+			pParticleEmitter = ecbehavior.getParticleEmitter().instance(element)
+			
+			setRequiresThink(true)
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			pParticleEmitter = null
+			pVRHandPointAt = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			
+			pLength = pECBehavior.getLength().getValue(stub)
+			pIntensity = pECBehavior.getIntensity().getValue(stub)
+			pColor = pECBehavior.getColor().getColor(stub, codec)
+			
+			var ParticleEmitterInstance pei = pParticleEmitter.getParticleEmitterInstance()
+			if pei != null
+				pControllerLength = pei.getControllerNamed(pECBehavior.getControllerLength().getValue(stub))
+				pControllerIntensity = pei.getControllerNamed(pECBehavior.getControllerIntensity().getValue(stub))
+				pControllerRed = pei.getControllerNamed(pECBehavior.getControllerRed().getValue(stub))
+				pControllerGreen = pei.getControllerNamed(pECBehavior.getControllerGreen().getValue(stub))
+				pControllerBlue = pei.getControllerNamed(pECBehavior.getControllerBlue().getValue(stub))
+				
+				// set values
+				if pControllerLength != null
+					pControllerLength.setValue(pLength)
+				end
+				if pControllerIntensity != null
+					pControllerIntensity.setValue(pIntensity)
+				end
+				if pControllerRed != null
+					pControllerRed.setValue(pColor.getRed())
+				end
+				if pControllerGreen != null
+					pControllerGreen.setValue(pColor.getGreen())
+				end
+				if pControllerBlue != null
+					pControllerBlue.setValue(pColor.getBlue())
+				end
+				
+				// copy colliders to ignore from vr hand collider
+				var Collider collider = pVRHandPointAt.getVRHand().getCollider()
+				var int i, count = collider.getIgnoreColliderCount()
+				for i = 0 to count
+					pei.addIgnoreCollider(collider.getIgnoreColliderAt(i))
+				end
+			end
+			
+			pVRHandPointAt.addListener(ListenPointAt.new(this))
+			pParticleEmitter.addListener(StopAtObstacleListener.new())
+			
+			updateVisibile()
+			updateParameters()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRHandLaserPointer getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Hand Point At behavior instance. */
+		public func ECBehaviorVRHandPointAt.Instance getVRHandPointAt()
+			return pVRHandPointAt
+		end
+		
+		/** \brief Component behavior instance. */
+		public func ECBehaviorParticleEmitter.Instance getParticleEmitter()
+			return pParticleEmitter
+		end
+		
+		/** \brief Length controller or null if not found. */
+		public func ParticleEmitterController getControllerLength()
+			return pControllerLength
+		end
+		
+		/** \brief Intensity controller or null if not found. */
+		public func ParticleEmitterController getControllerIntensity()
+			return pControllerIntensity
+		end
+		
+		/** \brief Red color controller or null if not found. */
+		public func ParticleEmitterController getControllerRed()
+			return pControllerRed
+		end
+		
+		/** \brief Green color controller or null if not found. */
+		public func ParticleEmitterController getControllerGreen()
+			return pControllerGreen
+		end
+		
+		/** \brief Blue color controller or null if not found. */
+		public func ParticleEmitterController getControllerBlue()
+			return pControllerBlue
+		end
+		
+		
+		
+		/** Length of beam in meters. */
+		public func float getLength()
+			return pLength
+		end
+		
+		/** Set length of beam in meters. */
+		public func void setLength(float length)
+			pLength = DEMath.max(length, 0.0)
+			if pControllerLength != null
+				pControllerLength.setValue(pLength)
+			end
+		end
+		
+		/** Intensity of beam. */
+		public func float getIntensity()
+			return pIntensity
+		end
+		
+		/** Set intensity of beam. */
+		public func void setIntensity(float intensity)
+			pIntensity = DEMath.max(intensity, 0.0)
+			if pControllerIntensity != null
+				pControllerIntensity.setValue(pIntensity)
+			end
+		end
+		
+		/** Color of beam. */
+		public func Color getColor()
+			return pColor
+		end
+		
+		/** Set color of beam. */
+		public func void setColor(Color color)
+			if color == null
+				throw ENullPointer.new("color")
+			end
+			
+			pColor = color
+			
+			if pControllerRed != null
+				pControllerRed.setValue(pColor.getRed())
+			end
+			if pControllerGreen != null
+				pControllerGreen.setValue(pColor.getGreen())
+			end
+			if pControllerBlue != null
+				pControllerBlue.setValue(pColor.getBlue())
+			end
+		end
+		
+		
+		
+		/** State like visiblity changed. */
+		public func void stateChanged()
+			updateVisibile()
+		end
+		
+		/** \brief Update component visible. */
+		public func void updateVisibile()
+			var ParticleEmitterInstance pei = pParticleEmitter.getParticleEmitterInstance()
+			if pei == null
+				return
+			end
+			
+			if getElement().getVisible() and pVRHandPointAt.getEnabled()
+				pei.setEnableCasting(true)
+				
+			else
+				pei.setEnableCasting(false)
+				pei.killAllParticles()
+			end
+		end
+		
+		/**
+		 * \brief Update casting parameters from point at parameters.
+		 * 
+		 * Reattaches the particle emitter instance to line up with the point at test direction.
+		 */
+		public func void updateParameters()
+			var ParticleEmitterInstance pei = pParticleEmitter.getParticleEmitterInstance()
+			if pei == null
+				return
+			end
+			
+			var Collider collider = pVRHandPointAt.getVRHand().getCollider()
+			collider.detach(pei)
+			collider.attachStatic(pei, pVRHandPointAt.getOrigin(), \
+				Quaternion.newFromEuler(pVRHandPointAt.getRotation()))
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				setLength(reader.readFloat())
+				setIntensity(reader.readFloat())
+				setColor(Color.readFromFile(reader))
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeFloat(pLength)
+			writer.writeFloat(pIntensity)
+			pColor.writeToFile(writer)
+		end
+	end
+	
+	
+	
+	private var ECBehaviorVRHandPointAt pVRHandPointAt
+	private var ECBehaviorParticleEmitter pParticleEmitter
+	private var ECPString pControllerLength
+	private var ECPString pControllerIntensity
+	private var ECPString pControllerRed
+	private var ECPString pControllerGreen
+	private var ECPString pControllerBlue
+	private var ECPFloat pLength
+	private var ECPFloat pIntensity
+	private var ECPColor pColor
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt) \
+	this(eclass, vrHandPointAt, "")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, String id) \
+	this(eclass, vrHandPointAt, id, id.empty() if "vrHandLaserPointer" else "vrHandLaserPointer(" + id + ")")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
+	String id, String subID) this(eclass, vrHandPointAt, id, subID, subID + ".")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
+	String id, String subID, String prefix) super(eclass, id)
+		if vrHandPointAt == null
+			throw ENullPointer.new("vrHandPointAt")
+		end
+		
+		pVRHandPointAt = vrHandPointAt
+		
+		pParticleEmitter = ECBehaviorParticleEmitter.new(eclass, null,\
+			BaseGameApp.getApp().getLoaders(), null, subID, prefix + "particleEmitter.")
+		pParticleEmitter.getParticleEmitter().getCasting().setValue(false)
+		pParticleEmitter.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
+			vrHandPointAt.getCollisionFilter().getCollisionFilter())
+		pParticleEmitter.getParticleEmitter().getParticleEmitter().setPath(\
+			"/shareddata/particles/laserpointer/laserpointer.depemit")
+		
+		pControllerLength = ECPString.new(prefix + "controllerLength", "length")
+		eclass.addProperty(pControllerLength)
+		
+		pControllerIntensity = ECPString.new(prefix + "controllerIntensity", "intensity")
+		eclass.addProperty(pControllerIntensity)
+		
+		pControllerRed = ECPString.new(prefix + "controllerRed", "red")
+		eclass.addProperty(pControllerRed)
+		
+		pControllerGreen = ECPString.new(prefix + "controllerGreen", "green")
+		eclass.addProperty(pControllerGreen)
+		
+		pControllerBlue = ECPString.new(prefix + "controllerBlue", "blue")
+		eclass.addProperty(pControllerBlue)
+		
+		pLength = ECPFloat.new(prefix + "length", 10, 0)
+		eclass.addProperty(pLength)
+		
+		pIntensity = ECPFloat.new(prefix + "intensity", 0.4, 0)
+		eclass.addProperty(pIntensity)
+		
+		pColor = ECPColor.new(prefix + "color", Color.new(0, 1, 1))
+		eclass.addProperty(pColor)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pVRHandPointAt = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief VR Hand Point At behavior. */
+	public func ECBehaviorVRHandPointAt getVRHandPointAt()
+		return pVRHandPointAt
+	end
+	
+	/** \brief Particle emitter behavior. */
+	public func ECBehaviorParticleEmitter getParticleEmitter()
+		return pParticleEmitter
+	end
+	
+	/** \brief Controller length name. */
+	public func ECPString getControllerLength()
+		return pControllerLength
+	end
+	
+	/** \brief Controller intensity name. */
+	public func ECPString getControllerIntensity()
+		return pControllerIntensity
+	end
+	
+	/** \brief Controller red name. */
+	public func ECPString getControllerRed()
+		return pControllerRed
+	end
+	
+	/** \brief Controller green name. */
+	public func ECPString getControllerGreen()
+		return pControllerGreen
+	end
+	
+	/** \brief Controller blue name. */
+	public func ECPString getControllerBlue()
+		return pControllerBlue
+	end
+	
+	/** \brief Length of beam in meters. */
+	public func ECPFloat getLength()
+		return pLength
+	end
+	
+	/** \brief Intensity of beam. */
+	public func ECPFloat getIntensity()
+		return pIntensity
+	end
+	
+	/** \brief Color of beam. */
+	public func ECPColor getColor()
+		return pColor
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandLaserPointer.
+	 */
+	static public func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandLaserPointer each
+			return true
+		end) cast ECBehaviorVRHandLaserPointer
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandLaserPointer with specific identifier.
+	 */
+	static public func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHandLaserPointer each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHandLaserPointer
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandLaserPointer behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHandLaserPointer each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandLaserPointer.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandLaserPointer.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandLaserPointer.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

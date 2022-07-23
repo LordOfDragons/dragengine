@@ -37,7 +37,7 @@ class deParallelTask;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deParallelTaskReference : protected deThreadSafeObjectReference {
+class DE_DLL_EXPORT deParallelTaskReference : protected deThreadSafeObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

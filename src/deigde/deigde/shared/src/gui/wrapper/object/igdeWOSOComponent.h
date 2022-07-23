@@ -32,6 +32,7 @@
 
 
 class deColliderAttachment;
+class igdeGDClass;
 class igdeGDCComponent;
 class deAnimatorController;
 

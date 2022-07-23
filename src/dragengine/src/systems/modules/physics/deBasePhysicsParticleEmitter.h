@@ -22,11 +22,13 @@
 #ifndef _DEBASEPHYSICSPARTICLEEMITTER_H_
 #define _DEBASEPHYSICSPARTICLEEMITTER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics Emitter Particle System Peer.
  */
-class deBasePhysicsParticleEmitter{
+class DE_DLL_EXPORT deBasePhysicsParticleEmitter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -22,6 +22,7 @@
 #ifndef _DETHREADSAFEOBJECTREFERENCE_H_
 #define _DETHREADSAFEOBJECTREFERENCE_H_
 
+#include "../dragengine_export.h"
 
 class deThreadSafeObject;
 
@@ -36,7 +37,7 @@ class deThreadSafeObject;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deThreadSafeObjectReference{
+class DE_DLL_EXPORT deThreadSafeObjectReference{
 private:
 	deThreadSafeObject *pObject;
 	

@@ -22,6 +22,8 @@
 #ifndef _DESYNTHESIZEREFFECTVISITOR_H_
 #define _DESYNTHESIZEREFFECTVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deSynthesizerEffect;
 class deSynthesizerEffectStretch;
 
@@ -29,7 +31,7 @@ class deSynthesizerEffectStretch;
 /**
  * \brief Synthesizer effect visitor.
  */
-class deSynthesizerEffectVisitor{
+class DE_DLL_EXPORT deSynthesizerEffectVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

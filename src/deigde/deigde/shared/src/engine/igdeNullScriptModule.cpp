@@ -149,7 +149,7 @@ bool igdeNullScriptModule::OnResizeRenderWindow( ){
 	return true;
 }
 
-bool igdeNullScriptModule::SendEvent( deInputEvent *event ){
+bool igdeNullScriptModule::SendEvent( deInputEvent* ){
 	return true;
 }
 

@@ -47,20 +47,17 @@ pLogLevel( ellInfo ),
 pMapFaceSplitThreshold( 5.0f ), // largest allowed face edge in meters
 pSkyBodyDensity( 1.0f ), // render 100% sky bodies
 pReducedLighting( false ),
-pDebugUseShadow( true ),
 pDebugShowCB( false ),
 pDebugWireframe( false ),
 pDebugUVSplitter( true ),
 pDebugPrintSkyUpdate( false ),
 pShowLightCB( false ),
 
-pShadowMapSize( 1024 ),
+pShadowQuality( esqHigh ),
 pShadowMapOffsetScale( 1.1f ),
 pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
-pShadowCubeSize( 1024 ),
 pOcclusionReduction( 1 ),
-pUseShadowCubeEncodedDepth( false ),
 
 pDistShadowScale( 1.0f ),
 pDistShadowBias( 0.001f ), //4.0f ), // 24-bit: 1 step is 1.192093e-7
@@ -77,8 +74,6 @@ pUseEncodeDepth( false ),
 pDisableStencil( false ),
 pStencilOnlyOnRB( false ),
 
-pDefRenEncDepth( false ),
-pDefRenUsePOTs( false ),
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
 pHDRRMaxIntensity( 1.5f ),
@@ -94,7 +89,6 @@ pDecalOffsetScale( -1.5f ), //-0.1f;
 pDecalOffsetBias( -8.0f ), //-1.0f;
 
 pLODMaxPixelError( 2 ),
-pLODMaxErrorPerLevel( 0.1f ),
 
 pNormalRoughnessCorrectionStrength( 0.75f ), // 0.5f;
 
@@ -144,7 +138,13 @@ pDebugSnapshot( 0 ),
 
 pDisableCubeMapLinearFiltering( false ),
 
-pMaxSPBIndexCount( 10000 )
+pMaxSPBIndexCount( 10000 ),
+
+pGIQuality( egiqHigh ),
+pGIUpdateSpeed( egiusMedium ),
+
+pVRRenderScale( 1.0f ),
+pVRForceFrameRate( 0 )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -160,6 +160,7 @@ pMaxSPBIndexCount( 10000 )
 	// unimportant by the high pixel density. hardware scaler could be used but this
 	// would affect also 2D graphics. the default should only cut down on the heavy
 	// processing of 3D graphics while keeping 2D graphics crisp if possible
+	pShadowQuality = esqVeryLow;
 	pShadowMapSize = 256; //1024
 	pShadowCubeSize = 256; //1024
 	pOcclusionReduction = 2; //1
@@ -191,9 +192,6 @@ pMaxSPBIndexCount( 10000 )
 	
 	// make sure retain image memory optimization is enabled since memory is scarce
 	pEnableRetainImageOptimization = true;
-	
-	// Testing
-	//pDebugUseShadow = false;
 	
 	// debug
 	pDebugContext = true;
@@ -241,14 +239,6 @@ void deoglConfiguration::SetUseReducedLighting( bool reduced ){
 		return;
 	}
 	pReducedLighting = reduced;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetDebugUseShadow( bool shadow ){
-	if( shadow == pDebugUseShadow ){
-		return;
-	}
-	pDebugUseShadow = shadow;
 	pDirty = true;
 }
 
@@ -303,24 +293,12 @@ void deoglConfiguration::SetMapFaceSplitThreshold( float threshold ){
 
 
 
-void deoglConfiguration::SetShadowMapSize( int size ){
-	if( size == pShadowMapSize ){
+void deoglConfiguration::SetShadowQuality( eShadowQuality quality ){
+	if( quality == pShadowQuality ){
 		return;
 	}
 	
-	switch( size ){
-	case 256:
-	case 512:
-	case 1024:
-	case 2048:
-	case 4096:
-		break;
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-	
-	pShadowMapSize = size;
+	pShadowQuality = quality;
 	pDirty = true;
 }
 
@@ -340,27 +318,6 @@ void deoglConfiguration::SetShadowMapOffsetBias( float bias ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetShadowCubeSize( int size ){
-	if( size == pShadowCubeSize ){
-		return;
-	}
-	
-	bool valid = false;
-	int i;
-	for( i=5; i<16; i++ ){
-		if( size == ( 2 << i ) ){
-			valid = true;
-			break;
-		}
-	}
-	if( ! valid ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pShadowCubeSize = size;
-	pDirty = true;
-}
-
 void deoglConfiguration::SetShadowCubePCFSize( float pcfSize ){
 	pcfSize = decMath::max( pcfSize, 0.0f );
 	if( fabsf( pcfSize - pShadowCubePCFSize ) < FLOAT_SAFE_EPSILON ){
@@ -376,14 +333,6 @@ void deoglConfiguration::SetOcclusionReduction( int reductionFactor ){
 		return;
 	}
 	pOcclusionReduction = reductionFactor;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetUseShadowCubeEncodeDepth( bool useEncodeDepth ){
-	if( useEncodeDepth == pUseShadowCubeEncodedDepth ){
-		return;
-	}
-	pUseShadowCubeEncodedDepth = useEncodeDepth;
 	pDirty = true;
 }
 
@@ -491,19 +440,6 @@ void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
 
 
 
-void deoglConfiguration::SetDefRenEncDepth( bool useEncDepth ){
-	//pDefRenEncDepth = useEncDepth;
-	//pDirty = true;
-}
-
-void deoglConfiguration::SetDefRenUsePOTs( bool usePOTs ){
-	if( usePOTs == pDefRenUsePOTs ){
-		return;
-	}
-	pDefRenUsePOTs = usePOTs;
-	pDirty = true;
-}
-
 void deoglConfiguration::SetDefRenSizeLimit( int size ){
 	size = decMath::max( size, 0 );
 	if( size == pDefRenSizeLimit ){
@@ -609,15 +545,6 @@ void deoglConfiguration::SetLODMaxPixelError( int maxPixelError ){
 		return;
 	}
 	pLODMaxPixelError = maxPixelError;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetLODMaxErrorPerLevel( float maxErrorPerLevel ){
-	maxErrorPerLevel = decMath::max( maxErrorPerLevel, 0.001f );
-	if( fabsf( maxErrorPerLevel - pLODMaxErrorPerLevel ) < FLOAT_SAFE_EPSILON ){
-		return;
-	}
-	pLODMaxErrorPerLevel = maxErrorPerLevel;
 	pDirty = true;
 }
 
@@ -965,5 +892,54 @@ void deoglConfiguration::SetMaxSPBIndexCount( int count ){
 	}
 	
 	pMaxSPBIndexCount = count;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetGIQuality( eGIQuality quality ){
+	if( quality == pGIQuality ){
+		return;
+	}
+	
+	pGIQuality = quality;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
+	if( updateSpeed == pGIUpdateSpeed ){
+		return;
+	}
+	
+	pGIUpdateSpeed = updateSpeed;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRRenderScale( float scale ){
+	scale = floorf( ( scale / 0.05f ) + 0.5f ) * 0.05f;
+	
+	if( fabsf( scale - pVRRenderScale ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pVRRenderScale = scale;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRForceFrameRate( int framerate ){
+	switch( framerate ){
+	case 90:
+	case 45:
+	case 30:
+	case 15:
+		break;
+		
+	default:
+		framerate = 0;
+	}
+	
+	if( framerate == pVRForceFrameRate ){
+		return;
+	}
+	
+	pVRForceFrameRate = framerate;
 	pDirty = true;
 }

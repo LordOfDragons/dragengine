@@ -179,6 +179,7 @@ pWorkMode( ewmSelect ),
 pSimulationRunning( false ),
 pCLSimulation( *this ),
 pGravity( 0.0f, -9.81f, 0.0f ),
+pMass( 10.0f ),
 pDynamic( true ),
 pSlowmotion( 1.0f ),
 
@@ -268,7 +269,7 @@ pDirtyRig( true )
 		pEngSimCollider->SetEnabled( false );
 		pEngSimCollider->SetResponseType( deCollider::ertDynamic );
 		pEngSimCollider->SetUseLocalGravity( false );//! pDynamic );
-		pEngSimCollider->SetMass( 10.0f );
+		pEngSimCollider->SetMass( pMass );
 		
 		layerMask.ClearMask();
 		layerMask.SetBit( reRig::eclmSimulation );
@@ -946,6 +947,18 @@ void reRig::SetDynamic( bool dynamic ){
 		
 		NotifyRigChanged();
 	}
+}
+
+void reRig::SetMass( float mass ){
+	mass = decMath::max( mass, 0.001f );
+	if( fabsf( mass - pMass ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pMass = mass;
+	pEngSimCollider->SetMass( pMass );
+	
+	NotifyRigChanged();
 }
 
 void reRig::UpdateFromSimulation(){
@@ -1754,6 +1767,9 @@ void reRig::NotifyConstraintCountChanged(){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintCountChanged( this );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 void reRig::NotifyConstraintChanged( reRigConstraint *constraint ){
@@ -1762,6 +1778,9 @@ void reRig::NotifyConstraintChanged( reRigConstraint *constraint ){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintChanged( this, constraint );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 void reRig::NotifyConstraintSelectedChanged( reRigConstraint *constraint ){
@@ -1794,6 +1813,9 @@ void reRig::NotifyAllConstraintChanged( reRigConstraint *constraint ){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintChanged( this, constraint );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 void reRig::NotifyAllConstraintDofChanged( reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dof ){
@@ -1802,6 +1824,9 @@ void reRig::NotifyAllConstraintDofChanged( reRigConstraint *constraint, deCollid
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintDofChanged( this, constraint, dof );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 

@@ -22,6 +22,8 @@
 #ifndef _DECDATETIME_H_
 #define _DECDATETIME_H_
 
+#include "../../dragengine_export.h"
+
 
 /** \brief System time value. */
 typedef long long TIME_SYSTEM;
@@ -30,7 +32,7 @@ typedef long long TIME_SYSTEM;
 /**
  * \brief Timestamp with date.
  */
-class decDateTime{
+class DE_DLL_EXPORT decDateTime{
 private:
 	int pYear;
 	int pMonth;

@@ -34,6 +34,8 @@
 #include "../debpMotionState.h"
 #include "../dePhysicsBullet.h"
 #include "../debpConfiguration.h"
+#include "../world/debpWorld.h"
+#include "../world/debpCollisionWorld.h"
 
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 #include "BulletDynamics/Dynamics/btDynamicsWorld.h"
@@ -61,10 +63,10 @@ pBullet( bullet ),
 pConstraint( constraint ),
 pRigBoneConstraintIndex( -1 ),
 
-pDynWorld( NULL ),
-pBpConstraint( NULL ),
-pPhyBody1( NULL ),
-pPhyBody2( NULL ),
+pDynWorld( nullptr ),
+pBpConstraint( nullptr ),
+pPhyBody1( nullptr ),
+pPhyBody2( nullptr ),
 
 pConstraintType( ectHinge ),
 pEnabled( true ),
@@ -86,14 +88,16 @@ void debpColliderConstraint::SetRigBoneConstraintIndex( int index ){
 	pRigBoneConstraintIndex = index;
 }
 
-void debpColliderConstraint::SetDynamicsWorld( btDynamicsWorld *dynWorld ){
-	if( pDynWorld != dynWorld ){
-		pFreeConstraint();
-		
-		pDynWorld = dynWorld;
-		
-		pCreateConstraint();
+void debpColliderConstraint::SetDynamicsWorld( debpCollisionWorld *dynWorld ){
+	if( pDynWorld == dynWorld ){
+		return;
 	}
+	
+	pFreeConstraint();
+	
+	pDynWorld = dynWorld;
+	
+	pCreateConstraint();
 }
 
 void debpColliderConstraint::SetFirstBody( debpPhysicsBody *body ){
@@ -463,7 +467,7 @@ void debpColliderConstraint::pDetectConstraintType(){
 }
 
 void debpColliderConstraint::pCreateConstraint(){
-// 	pBullet.LogInfoFormat( "pCreateConstraint c=%p bc=%p e=%i dw=%p pb1=%p pb2=%p", pConstraint, pBpConstraint, pEnabled?1:0, pDynWorld, pPhyBody1, pPhyBody2 );
+// 	pBullet.LogInfoFormat( "pCreateConstraint c=%p bc=%p e=%i dw=%p pb1=%p pb2=%p", pConstraint, pBpConstraint, pEnabled?1:0, pWorld, pPhyBody1, pPhyBody2 );
 	if( ! pBpConstraint && pEnabled && pDynWorld
 	&& pPhyBody1 && pPhyBody1->GetRigidBody()
 	&& ! ( pPhyBody2 && ! pPhyBody2->GetRigidBody() ) ){
@@ -1217,7 +1221,7 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	// indicate the perecentage of force feedback of the spring. this though
 	// requires dividing the damping by the fps value ( 60Hz in default bullet )
 	// to obtain a corresponding bullet value.
-	springDamping = pConstraint.GetSpringDamping() / 60.0f;
+	springDamping = pConstraint.GetSpringDamping() * pDynWorld->GetWorld().GetSimulationTimeStep();
 	
 	// create a constraint for two bodies if phy body 2 is not NULL
 	if( pPhyBody2 ){

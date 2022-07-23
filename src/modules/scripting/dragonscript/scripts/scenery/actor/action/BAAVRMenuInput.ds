@@ -1,0 +1,47 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Interface for VR menu interaction support with base actor actions.
+ * \version 1.12
+ * 
+ * Implementing actions provide touch, untouch, press and unpress actions.
+ * 
+ * The touch, untouch, press and unpress actions are binary actions. Not all controllers
+ * support menu buttons or touch and untouch of said button.
+ */
+interface BAAVRMenuInput
+	/** \brief Menu is touched. */
+	func void menuTouch()
+	
+	/** \brief Menu has been untouched. */
+	func void menuUntouch()
+	
+	/** \brief Menu is pressed. */
+	func void menuPress()
+	
+	/** \brief Menu has been released. */
+	func void menuRelease()
+end

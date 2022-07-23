@@ -37,7 +37,7 @@ class deForceField;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deForceFieldReference : protected deObjectReference {
+class DE_DLL_EXPORT deForceFieldReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

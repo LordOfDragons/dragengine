@@ -25,13 +25,13 @@
 #include "foxtoolkit.h"
 
 class deglWindowMain;
-class deglGame;
-class deglPatch;
+class delGame;
+class delPatch;
 class decString;
 
 
 /**
- * \brief Uninstall game or patch.
+ * Uninstall game or patch.
  */
 class deglUninstall{
 private:
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create uninstaller. */
+	/** Create uninstaller. */
 	deglUninstall( deglWindowMain &window );
 	
-	/** \brief Clean up uninstaller. */
+	/** Clean up uninstaller. */
 	~deglUninstall();
 	/*@}*/
 	
@@ -53,11 +53,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Uninstall game. */
-	bool UninstallGame( deglGame &game );
+	/** Uninstall game. */
+	bool UninstallGame( delGame &game );
 	
-	/** \brief Uninstall patch. */
-	bool UninstallPatch( deglPatch &patch );
+	/** Uninstall patch. */
+	bool UninstallPatch( delPatch &patch );
 	/*@}*/
 	
 	

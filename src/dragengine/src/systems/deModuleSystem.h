@@ -22,9 +22,7 @@
 #ifndef _DEMODULESYSTEM_H_
 #define _DEMODULESYSTEM_H_
 
-
 #include "../common/collection/decObjectOrderedSet.h"
-
 
 class deEngine;
 class deLoadableModule;
@@ -47,7 +45,7 @@ class deBaseModule;
  * provide a nice view to the user showing what is working and what
  * not. Only loaded modules are used by the engine.
  */
-class deModuleSystem{
+class DE_DLL_EXPORT deModuleSystem{
 public:
 	/** \brief Module Types. */
 	enum eModuleTypes{
@@ -115,7 +113,13 @@ public:
 		emtSynthesizer,
 		
 		/** \brief Archive module. */
-		emtArchive
+		emtArchive,
+		
+		/**
+		 * \brief VR system module.
+		 * \version 1.6
+		 */
+		emtVR
 	};
 	
 	
@@ -248,6 +252,7 @@ public:
 	 * - "OcclusionMesh" returns emtOcclusionMesh
 	 * - "Synthesizer" returns emtSynthesizer
 	 * - "Archive" returns emtArchive
+	 * - "VR" returns emtVR
 	 *
 	 * In all other cases emtUnknown is returned. Case does not matter.
 	 */
@@ -268,6 +273,7 @@ public:
 	 * - emtAI
 	 * - emtCrashRecovery
 	 * - emtSynthesizer
+	 * - emtVR
 	 *
 	 * All others are multiple type.
 	 */

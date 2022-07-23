@@ -76,6 +76,7 @@ void deoglSkinStateRenderable::SetPlan( deoglRenderPlan *plan ){
 	}
 	
 	if( pPlan ){
+		pPlan->SetWorld( NULL );
 		delete pPlan;
 		pPlan = NULL;
 	}
@@ -140,13 +141,5 @@ void deoglSkinStateRenderable::AddRenderPlans( deoglRenderPlan &plan ){
 				maskedPlan->SetComponent( pSkinState.GetOwnerComponent(), pSkinState.GetOwnerComponentTexture() );
 			}
 		}
-	}
-}
-
-
-
-void deoglSkinStateRenderable::DropDelayedDeletionObjects(){
-	if( pPlan ){
-		pPlan->SetWorld( NULL );
 	}
 }

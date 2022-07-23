@@ -56,11 +56,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAONavSpace::gdeVAONavSpace( gdeViewActiveObject &view, gdeOCNavigationSpace *ocnavspace ) :
-pView( view ),
+gdeVAONavSpace::gdeVAONavSpace( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCNavigationSpace *ocnavspace ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCNavSpace( ocnavspace ),
-pDDSpace( NULL ),
-pDDBlocker( NULL ),
 pDDSSpace( NULL ),
 pDDSBlocker( NULL )
 {
@@ -127,11 +126,11 @@ void gdeVAONavSpace::pCleanUp(){
 	}
 	if( pDDSpace ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDDSpace );
-		pDDSpace->FreeReference();
+		pDDSpace = NULL;
 	}
 	if( pDDBlocker ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDDBlocker );
-		pDDBlocker->FreeReference();
+		pDDBlocker = NULL;
 	}
 	
 	if( pOCNavSpace ){
@@ -145,11 +144,11 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDDSpace = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDSpace.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDDSpace->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDDSpace );
 	
-	pDDBlocker = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDBlocker.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDDBlocker->SetXRay( false );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDDBlocker );
 	
@@ -165,13 +164,13 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 void gdeVAONavSpace::pBuildDDSSpace(){
 	pDDSSpace->RemoveAllFaces();
 	
-	if( pOCNavSpace->GetPath().IsEmpty() ){
+	const decString path( PropertyString( pOCNavSpace->GetPropertyName( gdeOCNavigationSpace::epPath ), pOCNavSpace->GetPath() ) );
+	if( path.IsEmpty() ){
 		return;
 	}
 	
 	// load navigation space
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
-	const decPath path( decPath::CreatePathUnix( pOCNavSpace->GetPath() ) );
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	igdeLoadSaveNavSpace loader( &environment, "gdeVAONavSpace" );
@@ -180,7 +179,7 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 	
 	try{
 		navspace = engine.GetNavigationSpaceManager()->CreateNavigationSpace();
-		reader = vfs->OpenFileForReading( path );
+		reader = vfs->OpenFileForReading( decPath::CreatePathUnix( path ) );
 		loader.Load( *navspace, *reader );
 		reader->FreeReference();
 		reader = NULL;
@@ -196,9 +195,10 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 	
 	// create debug drawer shape
 	try{
-		pDDSSpace->SetPosition( pOCNavSpace->GetPosition() );
-		pDDSSpace->SetOrientation( decQuaternion::CreateFromEuler(
-			pOCNavSpace->GetRotation() * DEG2RAD ) );
+		pDDSSpace->SetPosition( PropertyVector( pOCNavSpace->GetPropertyName(
+			gdeOCNavigationSpace::epAttachPosition ), pOCNavSpace->GetPosition() ) );
+		pDDSSpace->SetOrientation( PropertyQuaternion( pOCNavSpace->GetPropertyName(
+			gdeOCNavigationSpace::epAttachRotation ), pOCNavSpace->GetRotation() ) );
 		pDDSSpace->AddNavSpaceFaces( *navspace );
 		
 	}catch( const deException &e ){
@@ -216,14 +216,17 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 void gdeVAONavSpace::pBuildDDSBlocker(){
 	pDDSBlocker->RemoveAllShapes();
 	
-	const decShapeList &blockerShape = pOCNavSpace->GetBlockerShapeList();
+	decShapeList blockerShape;
+	PropertyShapeList( pOCNavSpace->GetPropertyName( gdeOCNavigationSpace::epBlockerShape ),
+		blockerShape, pOCNavSpace->GetBlockerShapeList() );
 	if( blockerShape.GetCount() == 0 ){
 		return;
 	}
 	
-	pDDSBlocker->SetPosition( pOCNavSpace->GetPosition() );
-	pDDSBlocker->SetOrientation( decQuaternion::CreateFromEuler(
-		pOCNavSpace->GetRotation() * DEG2RAD ) );
+	pDDSBlocker->SetPosition( PropertyVector( pOCNavSpace->GetPropertyName(
+		gdeOCNavigationSpace::epAttachPosition ), pOCNavSpace->GetPosition() ) );
+	pDDSBlocker->SetOrientation( PropertyQuaternion( pOCNavSpace->GetPropertyName(
+		gdeOCNavigationSpace::epAttachRotation ), pOCNavSpace->GetRotation() ) );
 	pDDSBlocker->AddShapes( blockerShape );
 }
 

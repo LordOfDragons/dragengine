@@ -32,7 +32,7 @@ class deRig;
 /**
  * \brief Base rig module providing load/save support for rigs
  */
-class deBaseRigModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseRigModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

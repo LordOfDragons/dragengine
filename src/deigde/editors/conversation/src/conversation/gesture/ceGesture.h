@@ -86,25 +86,32 @@ value during every frame update without having to worry about anything.
 
 
 /**
- * \brief Gesture.
+ * Gesture.
  */
 class ceGesture : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceGesture> Ref;
+	
+	
+	
 private:
 	ceConversation *pConversation;
 	
 	decString pName;
 	decString pAnimator;
 	bool pHold;
+	float pDuration;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create gesture. */
+	/** Create gesture. */
 	ceGesture( const char *name = "Gesture" );
 	
-	/** \brief Clean up gesture. */
+	/** Clean up gesture. */
 	virtual ~ceGesture();
 	/*@}*/
 	
@@ -112,29 +119,35 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Conversation or \em NULL if not set. */
+	/** Conversation or \em NULL if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set conversation or \em NULL if not set. */
+	/** Set conversation or \em NULL if not set. */
 	void SetConversation( ceConversation *conversation );
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Name of animator to use. */
+	/** Name of animator to use. */
 	inline const decString &GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set name of animator to use. */
+	/** Set name of animator to use. */
 	void SetAnimator( const char *animator );
 	
-	/** \brief Hold gesture after finishing it. */
+	/** Hold gesture after finishing it. */
 	inline bool GetHold() const{ return pHold; }
 	
-	/** \brief Set if gesture is hold after finishing it. */
+	/** Set if gesture is hold after finishing it. */
 	void SetHold( bool hold );
+	
+	/** Duration in seconds. */
+	inline float GetDuration() const{ return pDuration; }
+	
+	/** Set duration in seconds. */
+	void SetDuration( float duration );
 	/*@}*/
 };
 

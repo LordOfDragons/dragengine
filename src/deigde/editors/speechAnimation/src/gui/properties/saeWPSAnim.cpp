@@ -402,8 +402,7 @@ class cTextWordPhonetics : public cBaseWordTextFieldListener{
 public:
 	cTextWordPhonetics( saeWPSAnim &panel ) : cBaseWordTextFieldListener( panel ){ }
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField,
-	saeSAnimation *sanimation, saeWord * word ){
+	virtual igdeUndo *OnChanged( igdeTextField *textField, saeSAnimation*, saeWord * word ){
 		decUnicodeString phonetics;
 		try{
 			phonetics = decUnicodeString::NewFromUTF8( textField->GetText() );
@@ -559,6 +558,18 @@ void saeWPSAnim::SetSAnimation( saeSAnimation *sanimation ){
 	}
 	
 	UpdateSAnimation();
+	OnSAnimationPathChanged();
+}
+
+void saeWPSAnim::OnSAnimationPathChanged(){
+	if( pSAnimation ){
+		pEditRigPath->SetBasePath( pSAnimation->GetDirectoryPath() );
+		pEditAnimPath->SetBasePath( pSAnimation->GetDirectoryPath() );
+		
+	}else{
+		pEditRigPath->SetBasePath( "" );
+		pEditAnimPath->SetBasePath( "" );
+	}
 }
 
 
@@ -675,6 +686,8 @@ void saeWPSAnim::UpdatePhoneme(){
 }
 
 void saeWPSAnim::UpdatePhonemeMoveList(){
+	saePhoneme * const phoneme = GetActivePhoneme();
+	
 	pCBPhonemeMove->RemoveAllItems();
 	
 	if( pSAnimation ){
@@ -698,6 +711,10 @@ void saeWPSAnim::UpdatePhonemeMoveList(){
 	
 	pCBPhonemeMove->StoreFilterItems();
 	pCBPhonemeMove->FilterItems();
+	
+	if( pSAnimation ){
+		pSAnimation->SetActivePhoneme( phoneme );
+	}
 }
 
 
@@ -711,6 +728,8 @@ saeWord *saeWPSAnim::GetActiveWord() const{
 }
 
 void saeWPSAnim::UpdateWordList(){
+	saeWord * const selection = GetActiveWord();
+	
 	pCBWord->RemoveAllItems();
 	
 	if( pSAnimation ){
@@ -729,7 +748,9 @@ void saeWPSAnim::UpdateWordList(){
 	pCBWord->StoreFilterItems();
 	pCBWord->FilterItems();
 	
-	SelectActiveWord();
+	if( pSAnimation ){
+		pSAnimation->SetActiveWord( selection );
+	}
 }
 
 void saeWPSAnim::SelectActiveWord(){

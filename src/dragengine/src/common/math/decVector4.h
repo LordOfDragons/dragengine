@@ -23,7 +23,7 @@
 /**
  * \brief 4 Component Vector.
  */
-class decVector4{
+class DE_DLL_EXPORT decVector4{
 public:
 	/** \brief X Component of vector. */
 	float x;

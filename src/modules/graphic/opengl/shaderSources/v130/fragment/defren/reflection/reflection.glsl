@@ -12,6 +12,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat3 pMatrixEnvMap;
 	vec4 pQuadTCTransform;
 	vec4 pPosTransform;
+	vec2 pPosTransform2;
 	vec2 pBlendFactors; // x=multiply, y=add
 	float pEnvMapLodLevel;
 	int pLayerCount;
@@ -23,12 +24,12 @@ UBOLAYOUT uniform RenderParameters{
 // Samplers
 /////////////
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+uniform HIGHP sampler2DArray texDepth;
+uniform lowp sampler2DArray texDiffuse;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texReflectivity;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
 uniform mediump sampler2DArray texEnvMapArray;
 uniform mediump sampler2D texEnvMapSky;
 
@@ -38,6 +39,12 @@ uniform mediump sampler2D texEnvMapSky;
 ///////////////////
 
 in vec4 vScreenCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec4 outColor;
 
@@ -54,25 +61,12 @@ out vec4 outColor;
 	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 #endif
 
+#include "v130/shared/normal.glsl"
 
 
 /** Calculate the reflections parameters. */
-void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 normal, out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	normal = normalize( normal );
-	
+void calculateReflectionParameters( in ivec3 tc, in vec3 position, out vec3 normal,
+out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	// fetch reflectivity
 	reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
 	
@@ -84,6 +78,7 @@ void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 norm
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
+	normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	reflectDir = reflect( fragmentDirection, normal );
 	
@@ -247,7 +242,7 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	if( texelFetch( texDiffuse, tc, 0 ).a == 0.0 ){
@@ -261,7 +256,7 @@ void main( void ){
 		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the reflection parameters. these are the same no matter which solution is used later on
 	// to obtain the reflected color from
@@ -336,7 +331,7 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	#ifdef DECODE_IN_DEPTH
 		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
@@ -345,25 +340,10 @@ void main( void ){
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+		position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	#else
 		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
 	#endif
-	
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	normal = normalize( normal );
 	
 	// fetch reflectivity
 	vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
@@ -376,6 +356,7 @@ void main( void ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal ) );
 	

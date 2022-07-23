@@ -67,16 +67,16 @@
 // Callbacks
 //////////////
 
-static voidpf ZCALLBACK fZipOpenFileFunc( voidpf opaque, const char *filename, int mode ){
+static voidpf ZCALLBACK fZipOpenFileFunc( voidpf opaque, const char */*filename*/, int /*mode*/ ){
 	return opaque;
 }
 
-static uLong ZCALLBACK fZipReadFileFunc( voidpf opaque, voidpf stream, void *buf, uLong size ){
+static uLong ZCALLBACK fZipReadFileFunc( voidpf /*opaque*/, voidpf /*stream*/, void *buf, uLong size ){
 	printf( "fZipReadFileFunc %p %ld\n", buf, size );
 	return -1; // not supported
 }
 
-static uLong ZCALLBACK fZipWriteFileFunc( voidpf opaque, voidpf stream, const void *buf, uLong size ){
+static uLong ZCALLBACK fZipWriteFileFunc( voidpf opaque, voidpf /*stream*/, const void *buf, uLong size ){
 	projTaskDistribute &task = *( ( projTaskDistribute* )opaque );
 	
 	try{
@@ -88,7 +88,7 @@ static uLong ZCALLBACK fZipWriteFileFunc( voidpf opaque, voidpf stream, const vo
 	}
 }
 
-static long ZCALLBACK fZipTellFileFunc( voidpf opaque, voidpf stream ){
+static long ZCALLBACK fZipTellFileFunc( voidpf opaque, voidpf /*stream*/ ){
 	try{
 		return ( ( projTaskDistribute* )opaque )->GetDelgaPosition();
 		
@@ -97,7 +97,7 @@ static long ZCALLBACK fZipTellFileFunc( voidpf opaque, voidpf stream ){
 	}
 }
 
-static long ZCALLBACK fZipSeekFileFunc( voidpf opaque, voidpf stream, uLong offset, int origin ){
+static long ZCALLBACK fZipSeekFileFunc( voidpf opaque, voidpf /*stream*/, uLong offset, int origin ){
 	try{
 		( ( projTaskDistribute* )opaque )->SeekDelgaFile( ( long )offset, origin );
 		
@@ -108,11 +108,11 @@ static long ZCALLBACK fZipSeekFileFunc( voidpf opaque, voidpf stream, uLong offs
 	return 0;
 }
 
-static int ZCALLBACK fZipCloseFileFunc( voidpf opaque, voidpf stream ){
+static int ZCALLBACK fZipCloseFileFunc( voidpf /*opaque*/, voidpf /*stream*/ ){
 	return 0;
 }
 
-static int ZCALLBACK fZipErrorFileFunc( voidpf opaque, voidpf stream ){
+static int ZCALLBACK fZipErrorFileFunc( voidpf /*opaque*/, voidpf /*stream*/ ){
 	return 0; // not implemented
 }
 
@@ -158,36 +158,42 @@ projTaskDistribute::~projTaskDistribute(){
 ///////////////
 
 bool projTaskDistribute::Step(){
-	switch( pState ){
-	case esInitial:
-		pBuildExcludeBaseGameDefPath();
-		pExcludePatterns = pProfile.GetExcludePatterns();
-		pVFS = pWindowMain.GetEnvironment().GetFileSystemGame();
-		pCreateDelgaWriter();
-		pScanDirectory( decPath::CreatePathUnix( "/" ) );
-		
-		pState = esProcessFiles;
-		return true;
-		
-	case esProcessFiles:
-		pProcessFiles();
-		if( pStackDirectories.GetCount() > 0 ){
+	try{
+		switch( pState ){
+		case esInitial:
+			pBuildExcludeBaseGameDefPath();
+			pExcludePatterns = pProfile.GetExcludePatterns();
+			pVFS = pWindowMain.GetEnvironment().GetFileSystemGame();
+			pCreateDelgaWriter();
+			pScanDirectory( decPath::CreatePathUnix( "/" ) );
+			
+			pState = esProcessFiles;
 			return true;
+			
+		case esProcessFiles:
+			pProcessFiles();
+			if( pStackDirectories.GetCount() > 0 ){
+				return true;
+			}
+			
+			// all files processed
+			pUsedFileExtensions += pProfile.GetRequiredExtensions();
+			
+			pWriteGameXml();
+			pCloseDelgaWriter();
+			pState = esFinished;
+			SetMessage( "Finished" );
+			
+			return true;
+			
+		case esFinished:
+		default:
+			return false;
 		}
 		
-		// all files processed
-		pUsedFileExtensions += pProfile.GetRequiredExtensions();
-		
-		pWriteGameXml();
-		pCloseDelgaWriter();
+	}catch( const deException &e ){
 		pState = esFinished;
-		SetMessage( "Finished" );
-		
-		return true;
-		
-	case esFinished:
-	default:
-		return false;
+		throw;
 	}
 }
 
@@ -447,15 +453,103 @@ void projTaskDistribute::pProcessFile( const decPath &path ){
 	pDelgaFileCount++;
 	
 	// for the time being simply copy the file
-	pAddUsedFileExtension( path );
-	pZipBeginFile( path );
+	const decString extension( pGetFileExtension( path ) );
+	bool compress = true;
+	
+	if( ! extension.IsEmpty() ){
+		pUsedFileExtensions.Add( extension );
+		
+		const deLoadableModule * const module = pGetMatchingModule( extension );
+		if( module && module->GetNoCompress() ){
+			compress = false;
+		}
+	}
+	
+	pZipBeginFile( path, compress );
 	pCopyFile( path );
 	pZipCloseFile();
 }
 
+decString projTaskDistribute::pGetFileExtension( const decPath &path ) const{
+	const decString &title = path.GetLastComponent();
+	const int delimiter = title.FindReverse( '.' );
+	if( delimiter != -1 ){
+		return title.GetMiddle( delimiter ); // keep '.'
+	}
+	return decString();
+}
+
+deLoadableModule *projTaskDistribute::pGetMatchingModule( const decString &extension ) const{
+	const deModuleSystem &moduleSystem = *pWindowMain.GetEnvironment().GetEngineController()->GetEngine()->GetModuleSystem();
+	
+	static const int checkTypeCount = 11;
+	static const deModuleSystem::eModuleTypes checkTypes[ checkTypeCount ] = {
+		deModuleSystem::emtAnimation,
+		deModuleSystem::emtArchive,
+		deModuleSystem::emtFont,
+		deModuleSystem::emtImage,
+		deModuleSystem::emtLanguagePack,
+		deModuleSystem::emtModel,
+		deModuleSystem::emtOcclusionMesh,
+		deModuleSystem::emtRig,
+		deModuleSystem::emtSkin,
+		deModuleSystem::emtSound,
+		deModuleSystem::emtVideo
+	};
+	
+	int i;
+	for( i=0; i<checkTypeCount; i++ ){
+		deLoadableModule * const module = moduleSystem.FindMatching( checkTypes[ i ], extension );
+		if( module ){
+			return module;
+		}
+	}
+	
+	return nullptr;
+}
+
+const char *projTaskDistribute::pGetModuleTypeName( deModuleSystem::eModuleTypes type ) const{
+	switch( type ){
+	case deModuleSystem::emtAnimation:
+		return "Animation";
+		
+	case deModuleSystem::emtArchive:
+		return "Archive";
+		
+	case deModuleSystem::emtFont:
+		return "Font";
+		
+	case deModuleSystem::emtImage:
+		return "Image";
+		
+	case deModuleSystem::emtLanguagePack:
+		return "LanguagePack";
+		
+	case deModuleSystem::emtModel:
+		return "Model";
+		
+	case deModuleSystem::emtOcclusionMesh:
+		return "OcclusionMesh";
+		
+	case deModuleSystem::emtRig:
+		return "Rig";
+		
+	case deModuleSystem::emtSkin:
+		return "Skin";
+		
+	case deModuleSystem::emtSound:
+		return "Sound";
+		
+	case deModuleSystem::emtVideo:
+		return "Video";
+		
+	default:
+		DETHROW( deeInvalidParam );
+	};
+}
+
 void projTaskDistribute::pCopyFile( const decPath &path ){
-	decBaseFileReaderReference reader;
-	reader.TakeOver( pVFS->OpenFileForReading( path ) );
+	const decBaseFileReaderReference reader( decBaseFileReader::Ref::New( pVFS->OpenFileForReading( path ) ) );
 	
 	const long size = reader->GetLength();
 	if( size == 0 ){
@@ -470,7 +564,7 @@ void projTaskDistribute::pCopyFile( const decPath &path ){
 	}
 }
 
-void projTaskDistribute::pZipBeginFile( const decPath &path ){
+void projTaskDistribute::pZipBeginFile( const decPath &path, bool compress ){
 	const decDateTime modtime( pVFS->GetFileModificationTime( path ) );
 	
 	zip_fileinfo info;
@@ -487,8 +581,11 @@ void projTaskDistribute::pZipBeginFile( const decPath &path ){
 	info.external_fa = 0; // no idea what this is
 	
 	// NOTE: path contains '/' as prefix. delga files require path without prefix
+	int method = Z_DEFLATED;
+	int level = compress ? Z_DEFAULT_COMPRESSION : Z_NO_COMPRESSION;
+	
 	if( zipOpenNewFileInZip( pZipFile, path.GetPathUnix().GetMiddle( 1 ), &info,
-	NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION ) != ZIP_OK ){
+	nullptr, 0, nullptr, 0, nullptr, method, level ) != ZIP_OK ){
 		DETHROW( deeInvalidParam );
 	}
 }
@@ -553,16 +650,6 @@ void projTaskDistribute::pCloseDirectory(){
 	}
 	
 	pStackDirectories.RemoveFrom( pStackDirectories.GetCount() - 1 );
-}
-
-void projTaskDistribute::pAddUsedFileExtension( const decPath &path ){
-	const decString &title = path.GetLastComponent();
-	const int delimiter = title.FindReverse( '.' );
-	if( delimiter == -1 ){
-		return;
-	}
-	
-	pUsedFileExtensions.Add( title.GetMiddle( delimiter ) ); // keep '.'
 }
 
 void projTaskDistribute::pWriteGameXml(){
@@ -651,50 +738,19 @@ void projTaskDistribute::pWriteGameXml( decXmlWriter &writer ){
 	writer.WriteClosingTag( "degame" );
 }
 
-struct sCheckType{
-	deModuleSystem::eModuleTypes type;
-	const char *name;
-};
-
 void projTaskDistribute::pWriteGameXmlRequiredFormats( decXmlWriter &writer ){
-	const deEngine &engine = *pWindowMain.GetEnvironment().GetEngineController()->GetEngine();
-	const deModuleSystem &moduleSystem = *engine.GetModuleSystem();
-	
-	const int checkTypeCount = 11;
-	const sCheckType checkTypes[ checkTypeCount ] = {
-		{ deModuleSystem::emtAnimation, "Animation" },
-		{ deModuleSystem::emtArchive, "Archive" },
-		{ deModuleSystem::emtFont, "Font" },
-		{ deModuleSystem::emtImage, "Image" },
-		{ deModuleSystem::emtLanguagePack, "LanguagePack" },
-		{ deModuleSystem::emtModel, "Model" },
-		{ deModuleSystem::emtOcclusionMesh, "OcclusionMesh" },
-		{ deModuleSystem::emtRig, "Rig" },
-		{ deModuleSystem::emtSkin, "Skin" },
-		{ deModuleSystem::emtSound, "Sound" },
-		{ deModuleSystem::emtVideo, "Video" }
-	};
-	
 	const int usedExtCount = pUsedFileExtensions.GetCount();
-	int i, j;
+	int i;
 	
 	for( i=0; i<usedExtCount; i++ ){
 		const decString &extension = pUsedFileExtensions.GetAt( i );
-		const sCheckType *foundType = NULL;
-		
-		for( j=0; j<checkTypeCount; j++ ){
-			if( moduleSystem.FindMatching( checkTypes[ j ].type, extension ) ){
-				foundType = checkTypes + j;
-				break;
-			}
-		}
-		
+		const deLoadableModule * const foundType = pGetMatchingModule( extension );
 		if( ! foundType ){
 			continue;
 		}
 		
 		writer.WriteOpeningTagStart( "requireFormat" );
-		writer.WriteAttributeString( "type", foundType->name );
+		writer.WriteAttributeString( "type", pGetModuleTypeName( foundType->GetType() ) );
 		writer.WriteOpeningTagEnd( false, false );
 		writer.WriteTextString( extension );
 		writer.WriteClosingTag( "requireFormat", false );

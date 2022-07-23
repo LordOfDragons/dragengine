@@ -27,12 +27,12 @@
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
-class deInputDevice;
+class dedsInputDevice;
 
 
 
 /**
- * \brief Input system script class.
+ * Input system script class.
  */
 class deClassInputSystem : public dsClass{
 private:
@@ -40,16 +40,17 @@ private:
 	
 	decObjectList pCachedDevices;
 	bool pCacheDirty;
+	dsClass *pClsInputEventKeyLocation;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create script class. */
+	/** Create script class. */
 	deClassInputSystem( deScriptingDragonScript &ds );
 	
-	/** \brief Clean up script class. */
+	/** Clean up script class. */
 	virtual ~deClassInputSystem();
 	/*@}*/
 	
@@ -57,20 +58,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Create class members. */
+	/** Create class members. */
 	virtual void CreateClassMembers( dsEngine *engine );
 	
-	/** \brief Script module. */
+	/** Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
-	/** \brief Cached input device count. */
+	/** Cached input device count. */
 	int GetCachedDeviceCount();
 	
-	/** \brief Cached device. */
-	deInputDevice *GetCachedDeviceAt( int index );
+	/** Cached device. */
+	dedsInputDevice *GetCachedDeviceAt( int index );
 	
-	/** \brief Invalidate cached devices. */
+	/** Invalidate cached devices. */
 	void InvalidCachedDevices();
+	
+	/** Frame update. */
+	void OnFrameUpdate();
+	
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	
@@ -89,6 +95,7 @@ private:
 		
 		dsClass *clsModPar;
 		dsClass *clsInputDevice;
+		dsClass *clsInputEventKeyLocation;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -107,11 +114,14 @@ private:
 	DEF_NATFUNC( nfIndexOfAxisWithID );
 	DEF_NATFUNC( nfIndexOfFeedbackWithID );
 	DEF_NATFUNC( nfGetButtonPressed );
+	DEF_NATFUNC( nfGetButtonTouched );
 	DEF_NATFUNC( nfGetAxisValue );
 	DEF_NATFUNC( nfGetFeedbackValue );
 	DEF_NATFUNC( nfSetFeedbackValue );
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
+	DEF_NATFUNC( nfButtonMatchingKeyCode2 );
+	DEF_NATFUNC( nfButtonMatchingKeyChar2 );
 	
 	DEF_NATFUNC( nfGetParameterCount );
 	DEF_NATFUNC( nfGetParameterInfo );

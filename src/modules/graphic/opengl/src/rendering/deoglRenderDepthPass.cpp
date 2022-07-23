@@ -26,6 +26,7 @@
 #include "deoglRenderDepthPass.h"
 #include "deoglRenderGeometry.h"
 #include "deoglRenderOcclusion.h"
+#include "deoglRenderVR.h"
 #include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlanDebug.h"
@@ -33,8 +34,9 @@
 #include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
-#include "../collidelist/deoglCollideListComponent.h"
 #include "../collidelist/deoglCollideList.h"
+#include "../collidelist/deoglCollideListComponent.h"
+#include "../collidelist/deoglCollideListLight.h"
 #include "../collidelist/deoglCollideListManager.h"
 #include "../component/deoglRComponent.h"
 #include "../debug/deoglDebugInformation.h"
@@ -63,6 +65,7 @@
 #include "../shapes/deoglShape.h"
 #include "../shapes/deoglShapeManager.h"
 #include "../texture/deoglTextureStageManager.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../vao/deoglVAO.h"
 
@@ -133,27 +136,24 @@ deoglRenderBase( renderThread )
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
 	defines.AddDefine( "DEPTH_TEST", "1" );
-	pShaderCopyDepth.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "COPY_COLOR", "1" );
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
 	}
-	pShaderCopyDepthColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
-	if( config.GetDefRenEncDepth() ){
-		defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-	}
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "INVERSE_DEPTH", "1" );
 	}
 	defines.AddDefine( "NO_TEXCOORD", "1" );
 	defines.AddDefine( "USE_MIN_FUNCTION", "1" ); // so it works for SSR. should also work for SSAO
-	pShaderDepthDownsample.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDepthDownsample = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
@@ -163,14 +163,14 @@ deoglRenderBase( renderThread )
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
 	
-	pShaderDepthSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDepthSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
 	
-	pShaderDepthClipSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	
@@ -178,30 +178,30 @@ deoglRenderBase( renderThread )
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthSolidCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthSolidCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "IGNORE_HOLES", "1" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthHoles.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthHoles = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthHolesCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthHolesCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthClipSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthClipSolidCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipSolidCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
@@ -209,10 +209,10 @@ deoglRenderBase( renderThread )
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthClipHoles.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipHoles = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthClipHolesCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipHolesCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 }
 
@@ -259,7 +259,7 @@ deoglRenderDepthPass::~deoglRenderDepthPass(){
 
 
 
-void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
@@ -346,7 +346,7 @@ void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, deoglRen
 
 
 
-void deoglRenderDepthPass::RenderDepth( deoglRenderPlan &plan, deoglRenderPlanMasked *mask,
+void deoglRenderDepthPass::RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
 bool solid, bool maskedOnly, bool reverseDepthTest ){
 DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -356,8 +356,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	deoglCollideList &collideList = plan.GetCollideList();
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
-	deoglRenderTask &renderTask = *renworld.GetRenderTask();
-	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 	
 	// debug
 	if( planDebug ){
@@ -388,145 +386,172 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	}
 	
+	if( solid && ! mask ){
+		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
+	}
+	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	SetCullMode( plan.GetFlipCulling() );
 	
+	deoglRenderTask *renderTask;
 	
-	// build render task
-	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-	
-	addToRenderTask.Reset();
-	addToRenderTask.SetSolid( solid );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	addToRenderTask.SetNoRendered( mask );
-	
-	// components
-	if( mask && mask->GetUseClipPlane() ){
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthClipPlaneReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthClipPlane );
-		}
+	if( solid ){
+		deoglRenderPlanTasks &tasks = plan.GetTasks();
+		tasks.WaitFinishBuildingTasksDepth();
+		
+		tasks.GetSolidDepthTask().SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask = &tasks.GetSolidDepthTask();
 		
 	}else{
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepth );
-		}
-	}
-	addToRenderTask.AddComponents( collideList );
-	
-	// billboards
-	if( mask && mask->GetUseClipPlane() ){
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthClipPlaneReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthClipPlane );
-		}
+		DebugTimer1Reset( plan, true );
+		renderTask = renworld.GetRenderTask();
+		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
-	}else{
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepth );
-		}
-	}
-	addToRenderTask.AddBillboards( collideList );
-	
-	// prop fields
-	deoglSkinTexture::eShaderTypes propFieldShaderType1, propFieldShaderType2;
-	
-	if( mask && mask->GetUseClipPlane() ){
-		if( reverseDepthTest ){
-			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlaneReversed;
-			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlaneReversed;
-			
-		}else{
-			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlane;
-			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlane;
-		}
+		// build render task
+		renderTask->Clear();
 		
-	}else{
-		if( reverseDepthTest ){
-			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthReversed;
-			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthReversed;
-			
-		}else{
-			propFieldShaderType1 = deoglSkinTexture::estPropFieldDepth;
-			propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepth;
-		}
-	}
-	
-	addToRenderTask.SetSkinShaderType( propFieldShaderType1 );
-	addToRenderTask.AddPropFields( collideList, false );
-	
-	addToRenderTask.SetSkinShaderType( propFieldShaderType2 );
-	addToRenderTask.AddPropFields( collideList, true );
-	
-	// height terrains
-	if( mask && mask->GetUseClipPlane() ){
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthClipPlaneReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthClipPlane );
-		}
+		addToRenderTask.Reset();
+		addToRenderTask.SetSolid( solid );
+		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+		addToRenderTask.SetNoRendered( mask );
 		
-	}else{
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepth );
-		}
-	}
-	addToRenderTask.AddHeightTerrains( collideList, true );
-	
-	// particles
-	if( renderThread.GetChoices().GetRealTransparentParticles() ){
+		// components
 		if( mask && mask->GetUseClipPlane() ){
 			if( reverseDepthTest ){
-				addToRenderTask.SetSkinShaderType(
-					deoglSkinTexture::estParticleDepthClipPlaneReversed );
-				addToRenderTask.SetSkinShaderTypeRibbon(
-					deoglSkinTexture::estParticleRibbonDepthClipPlaneReversed );
-				addToRenderTask.SetSkinShaderTypeBeam(
-					deoglSkinTexture::estParticleBeamDepthClipPlaneReversed );
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthClipPlaneReversed );
 				
 			}else{
-				addToRenderTask.SetSkinShaderType(
-					deoglSkinTexture::estParticleDepthClipPlane );
-				addToRenderTask.SetSkinShaderTypeRibbon(
-					deoglSkinTexture::estParticleRibbonDepthClipPlane );
-				addToRenderTask.SetSkinShaderTypeBeam(
-					deoglSkinTexture::estParticleBeamDepthClipPlane );
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthClipPlane );
 			}
 			
 		}else{
 			if( reverseDepthTest ){
-				addToRenderTask.SetSkinShaderType(
-					deoglSkinTexture::estParticleDepthReversed );
-				addToRenderTask.SetSkinShaderTypeRibbon(
-					deoglSkinTexture::estParticleRibbonDepthReversed );
-				addToRenderTask.SetSkinShaderTypeBeam(
-					deoglSkinTexture::estParticleBeamDepthReversed );
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthReversed );
 				
 			}else{
-				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleDepth );
-				addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonDepth );
-				addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamDepth );
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepth );
 			}
 		}
-		addToRenderTask.AddParticles( collideList );
+		addToRenderTask.SetFilterDecal( true );
+		addToRenderTask.SetDecal( false );
+		
+		addToRenderTask.AddComponents( collideList );
+		
+		addToRenderTask.SetFilterDecal( false );
+		
+		// billboards
+		if( mask && mask->GetUseClipPlane() ){
+			if( reverseDepthTest ){
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthClipPlaneReversed );
+				
+			}else{
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthClipPlane );
+			}
+			
+		}else{
+			if( reverseDepthTest ){
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthReversed );
+				
+			}else{
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepth );
+			}
+		}
+		addToRenderTask.AddBillboards( collideList );
+		
+		// prop fields
+		deoglSkinTexture::eShaderTypes propFieldShaderType1, propFieldShaderType2;
+		
+		if( mask && mask->GetUseClipPlane() ){
+			if( reverseDepthTest ){
+				propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlaneReversed;
+				propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlaneReversed;
+				
+			}else{
+				propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlane;
+				propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlane;
+			}
+			
+		}else{
+			if( reverseDepthTest ){
+				propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthReversed;
+				propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthReversed;
+				
+			}else{
+				propFieldShaderType1 = deoglSkinTexture::estPropFieldDepth;
+				propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepth;
+			}
+		}
+		
+		addToRenderTask.SetSkinShaderType( propFieldShaderType1 );
+		addToRenderTask.AddPropFields( collideList, false );
+		
+		addToRenderTask.SetSkinShaderType( propFieldShaderType2 );
+		addToRenderTask.AddPropFields( collideList, true );
+		
+		// height terrains
+		if( mask && mask->GetUseClipPlane() ){
+			if( reverseDepthTest ){
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthClipPlaneReversed );
+				
+			}else{
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthClipPlane );
+			}
+			
+		}else{
+			if( reverseDepthTest ){
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthReversed );
+				
+			}else{
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepth );
+			}
+		}
+		addToRenderTask.AddHeightTerrains( collideList, true );
+		
+		// particles
+		if( renderThread.GetChoices().GetRealTransparentParticles() ){
+			if( mask && mask->GetUseClipPlane() ){
+				if( reverseDepthTest ){
+					addToRenderTask.SetSkinShaderType(
+						deoglSkinTexture::estParticleDepthClipPlaneReversed );
+					addToRenderTask.SetSkinShaderTypeRibbon(
+						deoglSkinTexture::estParticleRibbonDepthClipPlaneReversed );
+					addToRenderTask.SetSkinShaderTypeBeam(
+						deoglSkinTexture::estParticleBeamDepthClipPlaneReversed );
+					
+				}else{
+					addToRenderTask.SetSkinShaderType(
+						deoglSkinTexture::estParticleDepthClipPlane );
+					addToRenderTask.SetSkinShaderTypeRibbon(
+						deoglSkinTexture::estParticleRibbonDepthClipPlane );
+					addToRenderTask.SetSkinShaderTypeBeam(
+						deoglSkinTexture::estParticleBeamDepthClipPlane );
+				}
+				
+			}else{
+				if( reverseDepthTest ){
+					addToRenderTask.SetSkinShaderType(
+						deoglSkinTexture::estParticleDepthReversed );
+					addToRenderTask.SetSkinShaderTypeRibbon(
+						deoglSkinTexture::estParticleRibbonDepthReversed );
+					addToRenderTask.SetSkinShaderTypeBeam(
+						deoglSkinTexture::estParticleBeamDepthReversed );
+					
+				}else{
+					addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleDepth );
+					addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonDepth );
+					addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamDepth );
+				}
+			}
+			addToRenderTask.AddParticles( collideList );
+		}
+		
+		renderTask->PrepareForRender();
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
 	}
 	
-	if( renderTask.GetShaderCount() > 0 ){
+	if( renderTask->GetShaderCount() > 0 ){
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		
 		if( planDebug && plan.GetRenderPassNumber() == 1 ){
 			const int componentCount = collideList.GetComponentCount();
 			deoglEnvironmentMapList envMapList;
@@ -535,14 +560,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 			for( i=0; i<componentCount; i++ ){
 				const deoglCollideListComponent &clistComponent = *collideList.GetComponentAt( i );
 				const deoglRComponent &component = *clistComponent.GetComponent();
-				
-				if( ! component.GetRenderVisible() ){
-					continue;
-				}
-				if( ! component.GetModel() ){
-					continue;
-				}
-				
 				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( clistComponent.GetLODLevel() );
 				
 				planDebug->IncrementRenderedObjects();
@@ -564,21 +581,12 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		//if( config.GetQuickDebug() == 100 ){
 		//	renderTask.SortInstancesByDistance( ogl.GetQuickSorter(), plan.GetCameraPosition(), plan.GetInverseCameraMatrix().TransformView() );
 		//}
-		renderTask.PrepareForRender( renderThread );
-		
 		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
 			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderDepthPass: render task" );
-			renderTask.DebugPrint( renderThread.GetLogger() );
+			renderTask->DebugPrint( renderThread.GetLogger() );
 		}
 		
-		if( solid ){
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthTask, true );
-			
-		}else{
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
-		}
-		
-		rengeom.RenderTask( renderTask );
+		rengeom.RenderTask( *renderTask );
 		
 		if( solid ){
 			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthRender, true );
@@ -590,47 +598,53 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	
 	
 	// outline
-	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-	
-	addToRenderTask.Reset();
-	addToRenderTask.SetOutline( true );
-	addToRenderTask.SetFilterDecal( true );
-	addToRenderTask.SetDecal( false );
-	addToRenderTask.SetSolid( solid );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	addToRenderTask.SetNoRendered( mask );
-	
-	if( mask && mask->GetUseClipPlane() ){
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlaneReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlane );
-		}
+	if( solid ){
+		deoglRenderPlanTasks &tasks = plan.GetTasks();
+		tasks.GetSolidDepthOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask = &tasks.GetSolidDepthOutlineTask();
 		
 	}else{
-		if( reverseDepthTest ){
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthReversed );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepth );
-		}
-	}
-	addToRenderTask.AddComponents( collideList );
-	
-	if( renderTask.GetShaderCount() > 0 ){
-		renderTask.PrepareForRender( renderThread );
+		DebugTimer1Reset( plan, true );
+		renderTask = renworld.GetRenderTask();
+		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
-		if( solid ){
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthTask, true );
+		renderTask->Clear();
+		
+		addToRenderTask.Reset();
+		addToRenderTask.SetOutline( true );
+		addToRenderTask.SetFilterDecal( true );
+		addToRenderTask.SetDecal( false );
+		addToRenderTask.SetSolid( solid );
+		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+		addToRenderTask.SetNoRendered( mask );
+		
+		if( mask && mask->GetUseClipPlane() ){
+			if( reverseDepthTest ){
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlaneReversed );
+				
+			}else{
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlane );
+			}
 			
 		}else{
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
+			if( reverseDepthTest ){
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthReversed );
+				
+			}else{
+				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepth );
+			}
 		}
+		addToRenderTask.AddComponents( collideList );
+		
+		renderTask->PrepareForRender();
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentDepthTask, true );
+	}
+	
+	if( renderTask->GetShaderCount() > 0 ){
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 		
 		SetCullMode( ! plan.GetFlipCulling() );
-		rengeom.RenderTask( renderTask );
+		rengeom.RenderTask( *renderTask );
 		SetCullMode( plan.GetFlipCulling() );
 		
 		if( solid ){
@@ -685,7 +699,7 @@ DBG_ENTER("DownsampleDepth")
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTexture &texture = *defren.GetDepthTexture1();
+	deoglArrayTexture &texture = *defren.GetDepthTexture1();
 	deoglShaderCompiled *shader;
 	int height, width, i;
 	
@@ -710,7 +724,7 @@ DBG_ENTER("DownsampleDepth")
 	renderThread.GetShader().ActivateShader( pShaderDepthDownsample );
 	shader = pShaderDepthDownsample->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, texture, GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, texture, GetSamplerClampNearest() );
 	
 	for( i=1; i<=mipMapLevelCount; i++ ){
 		defren.ActivateFBODepthLevel( i );
@@ -730,11 +744,10 @@ DBG_ENTER("DownsampleDepth")
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		decString text;
-		int i;
 		
 		for( i=0; i<=mipMapLevelCount; i++ ){
 			text.Format( "downsample_depth-pass%i", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 				*defren.GetDepthTexture1(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
 		}
 	}
@@ -743,13 +756,9 @@ DBG_EXIT("DownsampleDepth")
 
 
 
-void deoglRenderDepthPass::RenderOcclusionQueryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderDepthPass::RenderOcclusionQueryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	
 	deoglCollideList &collideList = plan.GetCollideList();
-	const int lightCount = collideList.GetLightCount();
 	
 	// NOTE: the currently does not fully work and breaks for lights the camera
 	// is inside the light box. the same check should be used as for the 180
@@ -762,19 +771,33 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// to arrive. rendering seems though to be faster than the occlusion test
 	// can return. not much one can do here except reintroducing the assigning
 	// of lights to rooms to cull them this way. solution pending.
+	// 
+	// NOTE: GI required reordering rendering to support the expensive operation.
+	// Now the first light rendering happens rather soon after the depth pass.
+	// this causes the first light to request for the occlusion query result nearly
+	// directly after the query has been started. this causes delays up to 10ms
+	// which is not acceptable. since GI requires light shadows to be rendered
+	// even if not visible or outside the view the entire occlusion query is not
+	// helping much at all. so dropping it for the time being and improving shadow
+	// rendering performance instead
 	
-	collideList.MarkLightsVisible( true );
+	collideList.MarkLightsCulled( false );
 	
+	DBG_EXIT("RenderOcclusionQueryPass(disabled)")
+	
+#if 0
+	const int lightCount = collideList.GetLightCount();
 	if( lightCount == 0 ){
 		DBG_EXIT("RenderOcclusionQueryPass(earily)")
 		return;
 	}
 	
+	deoglRenderThread &renderThread = GetRenderThread();
 	const decDMatrix &matrixV = plan.GetCameraMatrix();
 	const decDMatrix matrixP( plan.GetProjectionMatrix() );
 	deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDVector &campos = plan.GetCameraPosition();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const decDVector extoff( 0.1, 0.1, 0.1 );
 	deoglShaderCompiled *shader;
 	int l;
@@ -808,24 +831,24 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// spdoPFMatrix // not used for light
 	
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l );
-		light.UpdateLightVolume();
-		
-		const decDVector &lminext = light.GetMinimumExtend();
-		const decDVector &lmaxext = light.GetMaximumExtend();
-		light.SetInsideCamera( ( campos > lminext - extoff ) && ( campos < lmaxext + extoff ) );
-		if( light.GetCameraInside() ){
+		deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+// 		if( cllight.GetCameraInside() ){
+		if( cllight.GetCameraInsideOccQueryBox() ){
 			continue;
 		}
 		
-		const decDMatrix matrixModel( decDMatrix::CreateScale( ( lmaxext - lminext ) * 0.5 )
-			* decDMatrix::CreateTranslation( ( lminext + lmaxext ) * 0.5 ) );
+		const deoglRLight &light = *cllight.GetLight();
+		const decDVector &minExtend = light.GetMinimumExtend();
+		const decDVector &maxExtend = light.GetMaximumExtend();
+		
+		const decDMatrix matrixModel( decDMatrix::CreateScale( ( maxExtend - minExtend ) * 0.5 )
+			* decDMatrix::CreateTranslation( ( minExtend + maxExtend ) * 0.5 ) );
 		const decDMatrix matrixMV( matrixModel * matrixV );
 		
 		shader->SetParameterDMatrix4x3( spdoMatrixMV, matrixMV );
 		shader->SetParameterDMatrix4x4( spdoMatrixMVP, matrixMV * matrixP );
 		
-		deoglOcclusionQuery &occquery = light.GetOcclusionQuery();
+		deoglOcclusionQuery &occquery = cllight.GetOcclusionQuery();
 		occquery.BeginQuery( deoglOcclusionQuery::eqtAny );
 		shapeBox.RenderFaces();
 		occquery.EndQuery();
@@ -833,4 +856,5 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	
 	pglBindVertexArray( 0 );
 DBG_EXIT("RenderOcclusionQueryPass")
+#endif
 }

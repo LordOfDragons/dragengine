@@ -22,6 +22,8 @@
 #ifndef _DESKINBUILDER_H_
 #define _DESKINBUILDER_H_
 
+#include "../../dragengine_export.h"
+
 class deSkin;
 
 
@@ -34,7 +36,7 @@ class deSkin;
  * representation of a skin. The default implementation creates an
  * empty skin.
  */
-class deSkinBuilder{
+class DE_DLL_EXPORT deSkinBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -1,0 +1,230 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Animators
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Definition of a mirror animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
+ */
+class ADRuleMirror extends ADRule
+	/** \brief Match bone name. */
+	class MatchBoneName
+		private var String pFirst
+		private var String pSecond
+		private var ARMirrorMatchNameType pType
+		
+		/** \brief Create match bone name. */
+		public func new(String first, String second, ARMirrorMatchNameType type)
+			if first == null
+				throw ENullPointer.new("first")
+			end
+			if first.empty()
+				throw EInvalidParam.new("first is empty string")
+			end
+			if second == null
+				throw ENullPointer.new("second")
+			end
+			if second.empty()
+				throw EInvalidParam.new("second is empty string")
+			end
+			if type == null
+				throw ENullPointer.new("type")
+			end
+			
+			pFirst = first
+			pSecond = second
+			pType = type
+		end
+		
+		/** \brief First bone name component to match. */
+		public func String getFirst()
+			return pFirst
+		end
+		
+		/** \brief Second bone name component to match. */
+		public func String getSecond()
+			return pSecond
+		end
+		
+		/** \brief Match type. */
+		public  func ARMirrorMatchNameType getType()
+			return pType
+		end
+	end
+	
+	
+	
+	private var ARMirrorMirrorAxis pMirrorAxis
+	private var String pMirrorBone
+	private var Array pMatchNames
+	private var bool pEnablePosition
+	private var bool pEnableOrientation
+	private var bool pEnableSize
+	
+	
+	
+	/** \brief Create animation rule definition. */
+	public func new()
+		pMirrorAxis = ARMirrorMirrorAxis.x
+		pMirrorBone = ""
+		pMatchNames = Array.new()
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = false
+	end
+	
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleMirror rule) super(fromDef, toDef, rule)
+		pMirrorAxis = rule.pMirrorAxis
+		pMirrorBone = rule.pMirrorBone
+		pMatchNames = Array.new(rule.pMatchNames)
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
+	end
+	
+	
+	
+	/** \brief Mirror axis. */
+	public func ARMirrorMirrorAxis getMirrorAxis()
+		return pMirrorAxis
+	end
+	
+	/** \brief Set mirror axis. */
+	public func void setMirrorAxis(ARMirrorMirrorAxis axis)
+		pMirrorAxis = axis
+	end
+	
+	/** \brief Name of mirror bone or empty string to use component. */
+	public func String getMirrorBone()
+		return pMirrorBone
+	end
+	
+	/** \brief Set name of mirror bone or empty string to use component. */
+	public func void setMirrorBone(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pMirrorBone = bone
+	end
+	
+	/** \brief Count of match bone names. */
+	public func int getMatchNameCount()
+		return pMatchNames.getCount()
+	end
+	
+	/** \brief Match bone name at index. */
+	public func MatchBoneName getMatchNameAt(int index)
+		return pMatchNames.getAt(index) cast MatchBoneName
+	end
+	
+	/** \brief Add match bone name. */
+	public func void addMatchName(String first, String second, ARMirrorMatchNameType type)
+		pMatchNames.add(MatchBoneName.new(first, second, type))
+	end
+	
+	/** \brief Position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return pEnablePosition
+	end
+	
+	/** \brief Set if position manipulation is enabled. */
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
+	end
+	
+	/** \brief Orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return pEnableOrientation
+	end
+	
+	/** \brief Set orientation manipulation is enabled. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
+	end
+	
+	/** \brief Size manipulation is enabled. */
+	public func bool getEnableSize()
+		return pEnableSize
+	end
+	
+	/** \brief Setsif size manipulation is enabled. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
+		var ARMirror rule = ARMirror.new()
+		
+		buildRuleCommon(rule)
+		
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARMirrorTarget, each.getLink().getIndex())
+		end)
+		
+		rule.setMirrorAxis(pMirrorAxis)
+		rule.setMirrorBone(pMirrorBone)
+		pMatchNames.forEach(block MatchBoneName each
+			rule.addMatchName(each.getFirst(), each.getSecond(), each.getType())
+		end)
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
+		
+		return rule
+	end
+	
+	
+	
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Mirror") + \
+			" axis=" + pMirrorAxis + \
+			" bone=" + pMirrorBone + \
+			" epos=" + pEnablePosition + \
+			" eorient=" + pEnableOrientation + \
+			" esize=" + pEnableSize + ")")
+	end
+end

@@ -92,8 +92,9 @@ class deSynthesizerSystem;
 class deTouchSensorManager;
 class deVideoManager;
 class deVideoPlayerManager;
-class deWorldManager;
 class deVirtualFileSystem;
+class deVRSystem;
+class deWorldManager;
 
 class decTimer;
 
@@ -126,7 +127,7 @@ class decTimer;
  * crashes. Wrapping all in an try-catch clause should
  * be enough for testing to be safe.
  */
-class deEngine{
+class DE_DLL_EXPORT deEngine{
 private:
 	// application
 	deCmdLineArgs *pArgs;
@@ -152,6 +153,9 @@ private:
 	decString pPathData; // the path to the data files
 	decString pCacheAppID; // unique catch directory identifier for the application
 	deVirtualFileSystem *pVFS;
+	decString pPathCapture;
+	decString pPathOverlay;
+	decString pPathConfig;
 	
 	// frame timer
 	decTimer *pFrameTimer;
@@ -220,6 +224,7 @@ public:
 	deNetworkSystem *GetNetworkSystem() const;
 	deAISystem *GetAISystem() const;
 	deSynthesizerSystem *GetSynthesizerSystem() const;
+	deVRSystem *GetVRSystem() const;
 	
 	/** \brief Scan module directory and loads all modules in there. */
 	void LoadModules();
@@ -385,6 +390,60 @@ public:
 	
 	/** \brief Virtual file system used by the game engine. */
 	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
+	
+	/**
+	 * \brief Overlay directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which overlay data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathOverlay() const{ return pPathOverlay; }
+	
+	/**
+	 * \brief Set overlay directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which overlay data is stored or an empty string if not available.
+	 */
+	void SetPathOverlay( const char *path );
+	
+	/**
+	 * \brief Capture directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which capture data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathCapture() const{ return pPathCapture; }
+	
+	/**
+	 * \brief Set capture directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which capture data is stored or an empty string if not available.
+	 */
+	void SetPathCapture( const char *path );
+	
+	/**
+	 * \brief Config directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which config data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	
+	/**
+	 * \brief Set config directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which config data is stored or an empty string if not available.
+	 */
+	void SetPathConfig( const char *path );
 	/*@}*/
 	
 	
@@ -449,6 +508,12 @@ public:
 	/*@{*/
 	/**
 	 * \brief Run game engine.
+	 * \deprecated Use Run(const char*, const char*, const char*);
+	 */
+	bool Run( const char *scriptDirectory, const char *gameObject );
+	
+	/**
+	 * \brief Run game engine.
 	 * 
 	 * Calling this function the control is handed over to the game engine. The scripts in the
 	 * specified directory ( relative to the data directory ) are parsed and executed. This
@@ -458,12 +523,13 @@ public:
 	 * is no need to enclose it in a try-catch block.
 	 *
 	 * \param scriptDir Directory relative to data directory containing the script files for your game.
+	 * \param scriptVersion Script version the application has been written against.
 	 * \param gameObject Initial game object to create. Script module specific value.
 	 *                   Usually a class or function name to use to create the game object
 	 * \returns true if the game engine exited under normal circumstances or false if an
 	 *          unrecoverable error occurred
 	 */
-	bool Run( const char *scriptDirectory, const char *gameObject );
+	bool Run( const char *scriptDirectory, const char *scriptVersion, const char *gameObject );
 	
 	/**
 	 * \brief Reset elapsed time counter.

@@ -145,15 +145,15 @@ void meHeightTerrainTexture::SetTypeNumber( int typeNumber ){
 }
 
 void meHeightTerrainTexture::SetPathSkin( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pPathSkin.Equals( path ) ){
-		pPathSkin = path;
-		
-		pLoadSkin();
-		
-		NotifyTextureChanged();
+	if( pPathSkin == path ){
+		return;
 	}
+	
+	pPathSkin = path;
+	
+	pLoadSkin();
+	
+	NotifyTextureChanged();
 }
 
 

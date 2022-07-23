@@ -53,36 +53,36 @@ FXIMPLEMENT( igdeNativeFoxMenuOption, FXMenuRadio,
 
 igdeNativeFoxMenuOption::igdeNativeFoxMenuOption(){ }
 
-igdeNativeFoxMenuOption::igdeNativeFoxMenuOption( igdeMenuOption &owner, FXComposite *parent ) :
-FXMenuRadio( parent, BuildConstrText( owner ), this, ID_SELF ),
-pOwner( &owner )
+igdeNativeFoxMenuOption::igdeNativeFoxMenuOption( igdeMenuOption &powner, FXComposite *pparent ) :
+FXMenuRadio( pparent, BuildConstrText( powner ), this, ID_SELF ),
+pOwner( &powner )
 {
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
 	
-	setCheck( owner.GetSelected() );
+	setCheck( powner.GetSelected() );
 }
 
 igdeNativeFoxMenuOption::~igdeNativeFoxMenuOption(){
 }
 
-igdeNativeFoxMenuOption *igdeNativeFoxMenuOption::CreateNativeWidget( igdeMenuOption &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxMenuOption *igdeNativeFoxMenuOption::CreateNativeWidget( igdeMenuOption &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxMenuOption( owner, parent );
+	return new igdeNativeFoxMenuOption( powner, pparent );
 }
 
 void igdeNativeFoxMenuOption::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -101,10 +101,10 @@ void igdeNativeFoxMenuOption::UpdateSelected(){
 }
 
 
-FXString igdeNativeFoxMenuOption::BuildConstrText( igdeMenuOption &owner ){
-	return igdeUIFoxHelper::MnemonizeString( owner.GetText(), owner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( owner.GetHotKey() )
-		+ "\t" + owner.GetDescription().GetString();
+FXString igdeNativeFoxMenuOption::BuildConstrText( igdeMenuOption &powner ){
+	return igdeUIFoxHelper::MnemonizeString( powner.GetText(), powner.GetMnemonic() )
+		+ "\t" + igdeUIFoxHelper::AccelString( powner.GetHotKey() )
+		+ "\t" + powner.GetDescription().GetString();
 }
 
 
@@ -112,7 +112,7 @@ FXString igdeNativeFoxMenuOption::BuildConstrText( igdeMenuOption &owner ){
 // Events
 ///////////
 
-long igdeNativeFoxMenuOption::onMenuAction( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxMenuOption::onMenuAction( FXObject*, FXSelector, void* ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}
@@ -132,7 +132,7 @@ long igdeNativeFoxMenuOption::onMenuAction( FXObject *sender, FXSelector selecto
 	return 1;
 }
 
-long igdeNativeFoxMenuOption::updateMenuAction( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxMenuOption::updateMenuAction( FXObject*, FXSelector, void* ){
 	igdeAction * const action = pOwner->GetAction();
 	if( ! action ){
 		return 0;

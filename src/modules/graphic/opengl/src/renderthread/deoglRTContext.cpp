@@ -38,7 +38,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
+#include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
@@ -55,6 +57,7 @@
 #endif
 
 #ifdef OS_MACOS
+#include "../extensions/macosfix.h"
 #include <dragengine/app/deOSMacOS.h>
 #endif
 
@@ -509,6 +512,20 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_ACTIVATEAPP:
 		// changing this value in the main thread is acceptable
 		pAppActivated = wParam == TRUE;
+		
+		// this situation is now annoying. the deOSWindow does not receive WM_ACTIVATEAPP
+		// only we do. this in turn means the windows input module will not receive this
+		// message either but it is required to get it. so we forward the message to
+		// the input module
+		{
+		MSG msg;
+		memset( &msg, 0, sizeof( msg ) );
+		msg.hwnd = hwnd;
+		msg.message = message;
+		msg.wParam = wParam;
+		msg.lParam = lParam;
+		pRenderThread.GetOgl().GetGameEngine()->GetInputSystem()->GetActiveModule()->EventLoop( msg );
+		}
 		return 0;
 		
 	case WM_ERASEBKGND:
@@ -802,21 +819,23 @@ void deoglRTContext::pCreateGLContext(){
 	if( pglXCreateContextAttribs ){
 		logger.LogInfo( "Creating OpenGL Context using new method" );
 		
+		int contextFlags = 0;
+		// contextFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
+		
+		if( pRenderThread.GetConfiguration().GetDebugContext() ){
+			logger.LogInfo( "Enable debug context" );
+			contextFlags |= GLX_CONTEXT_DEBUG_BIT_ARB;
+		}
+		
 		int contextAttribs[] = {
 			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
 			GLX_CONTEXT_MINOR_VERSION_ARB, 3,
 			GLX_RENDER_TYPE, GLX_RGBA_TYPE,
 			GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
-			None, None, //GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_DEBUG_BIT_ARB,
-			None, None, //GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+			GLX_CONTEXT_FLAGS_ARB, contextFlags,
+			None, None,
 			None };
-		int contextAttribCount = 8;
-		
-		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Creating debug context" );
-			contextAttribs[ contextAttribCount++ ] = GLX_CONTEXT_FLAGS_ARB;
-			contextAttribs[ contextAttribCount++ ] = GLX_CONTEXT_DEBUG_BIT_ARB;
-		}
+// 		int contextAttribCount = 10;
 		
 		pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
 		

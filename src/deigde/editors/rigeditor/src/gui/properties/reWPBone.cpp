@@ -36,7 +36,11 @@
 #include "../../undosys/properties/bone/reUSetBoneOrientation.h"
 #include "../../undosys/properties/bone/reUSetBoneCentralMassPoint.h"
 #include "../../undosys/properties/bone/reUSetBoneMass.h"
+#include "../../undosys/properties/bone/reUSetBoneIKLimitsLower.h"
+#include "../../undosys/properties/bone/reUSetBoneIKLimitsUpper.h"
+#include "../../undosys/properties/bone/reUSetBoneIKResistance.h"
 #include "../../undosys/properties/bone/reUToggleBoneDynamic.h"
+#include "../../undosys/properties/bone/reUToggleBoneIKLocked.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -272,6 +276,53 @@ public:
 	}
 };
 
+class cEditIKLimitsLower : public cBaseEditVectorListener{
+public:
+	cEditIKLimitsLower( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
+		if( vector.IsEqualTo( bone->GetIKLimitsLower() ) ){
+			return NULL;
+		}
+		return new reUSetBoneIKLimitsLower( bone, vector );
+	}
+};
+
+class cEditIKLimitsUpper : public cBaseEditVectorListener{
+public:
+	cEditIKLimitsUpper( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
+		if( vector.IsEqualTo( bone->GetIKLimitsUpper() ) ){
+			return NULL;
+		}
+		return new reUSetBoneIKLimitsUpper( bone, vector );
+	}
+};
+
+class cEditIKResistance : public cBaseEditVectorListener{
+public:
+	cEditIKResistance( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
+		if( vector.IsEqualTo( bone->GetIKResistance() ) ){
+			return NULL;
+		}
+		return new reUSetBoneIKResistance( bone, vector );
+	}
+};
+
+class cCheckIKLocked : public cBaseAction{
+	const int pAxis;
+public:
+	cCheckIKLocked( reWPBone &panel, int axis, const char *text ) : cBaseAction( panel, text,
+		"Determines if the IK Axis is locked." ), pAxis( axis ){ }
+	
+	virtual igdeUndo *OnAction( reRig *rig, reRigBone *bone ){
+		return new reUToggleBoneIKLocked( bone, pAxis );
+	}
+};
+
 }
 
 
@@ -331,6 +382,23 @@ pListener( NULL )
 		pEditMass, new cTextMass( *this ) );
 	
 	helper.CheckBox( groupBox, pChkDynamic, new cCheckDynamic( *this ), true );
+	
+	// inverse kinematic limits
+	helper.GroupBox( content, groupBox, "Inverse Kinematic Limits:" );
+	
+	helper.EditVector( groupBox, "Lower:", "Lower IK Limits per axis in degrees.",
+		pEditIKLimitsLower, new cEditIKLimitsLower( *this ) );
+	
+	helper.EditVector( groupBox, "Upper:", "Upper IK Limits per axis in degrees.",
+		pEditIKLimitsUpper, new cEditIKLimitsUpper( *this ) );
+	
+	helper.EditVector( groupBox, "Resistance:", "Resistance per axis in degrees in the range from 0 to 1.",
+		pEditIKResistance, new cEditIKResistance( *this ) );
+	
+	helper.FormLine( groupBox, "Locked:", "IK axis is locked", frameLine );
+	helper.CheckBox( frameLine, pChkIKLockedX, new cCheckIKLocked( *this, 0, "X" ), true );
+	helper.CheckBox( frameLine, pChkIKLockedY, new cCheckIKLocked( *this, 1, "Y" ), true );
+	helper.CheckBox( frameLine, pChkIKLockedZ, new cCheckIKLocked( *this, 2, "Z" ), true );
 }
 
 reWPBone::~reWPBone(){
@@ -421,8 +489,14 @@ void reWPBone::UpdateBone(){
 		pEditPosition->SetVector( pBone->GetPosition() );
 		pEditRotation->SetVector( pBone->GetOrientation() );
 		pEditCentralMassPoint->SetVector( pBone->GetCentralMassPoint() );
+		pEditIKLimitsLower->SetVector( pBone->GetIKLimitsLower() );
+		pEditIKLimitsUpper->SetVector( pBone->GetIKLimitsUpper() );
+		pEditIKResistance->SetVector( pBone->GetIKResistance() );
 		pEditMass->SetFloat( pBone->GetMass() );
 		pChkDynamic->SetChecked( pBone->GetDynamic() );
+		pChkIKLockedX->SetChecked( pBone->GetIKLockedX() );
+		pChkIKLockedY->SetChecked( pBone->GetIKLockedY() );
+		pChkIKLockedZ->SetChecked( pBone->GetIKLockedZ() );
 		
 	}else{
 		pEditName->ClearText();
@@ -430,8 +504,14 @@ void reWPBone::UpdateBone(){
 		pEditPosition->SetVector( decVector() );
 		pEditRotation->SetVector( decVector() );
 		pEditCentralMassPoint->SetVector( decVector() );
+		pEditIKLimitsLower->SetVector( decVector() );
+		pEditIKLimitsUpper->SetVector( decVector() );
+		pEditIKResistance->SetVector( decVector() );
 		pEditMass->ClearText();
 		pChkDynamic->SetChecked( false );
+		pChkIKLockedX->SetChecked( false );
+		pChkIKLockedY->SetChecked( false );
+		pChkIKLockedZ->SetChecked( false );
 	}
 	
 	const bool enabled = pBone != NULL;
@@ -440,6 +520,12 @@ void reWPBone::UpdateBone(){
 	pEditPosition->SetEnabled( enabled );
 	pEditRotation->SetEnabled( enabled );
 	pEditCentralMassPoint->SetEnabled( enabled );
+	pEditIKLimitsLower->SetEnabled( enabled );
+	pEditIKLimitsUpper->SetEnabled( enabled );
+	pEditIKResistance->SetEnabled( enabled );
 	pEditMass->SetEnabled( enabled );
 	pChkDynamic->SetEnabled( enabled );
+	pChkIKLockedX->SetEnabled( enabled );
+	pChkIKLockedY->SetEnabled( enabled );
+	pChkIKLockedZ->SetEnabled( enabled );
 }

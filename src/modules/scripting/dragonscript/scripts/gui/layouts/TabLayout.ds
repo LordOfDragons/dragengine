@@ -156,16 +156,28 @@ class TabLayout implements Layout
 	/** \brief Minimum size of layout using reference width and variable height. */
 	public func Point getMinimumSizeForWidth( Container container, int width )
 		var int refWidth = DEMath.max( 0, width - container.getPadding().getWidth() )
-		return container.injectWidget( container.getPadding().getSize(), block Point size, Widget widget
+		
+		var Point size = container.injectWidget( Point.new(), block Point size, Widget widget
 			return size.largest( widget.getMinimumSizeWithBorderForWidth( refWidth ) )
 		end ) cast Point
+		
+		if not size.isZero()
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	/** \brief Minimum size of layout using reference widget height and variable width. */
 	public func Point getMinimumSizeForHeight( Container container, int height )
 		var int refHeight = DEMath.max( 0, height - container.getPadding().getHeight() )
-		return container.injectWidget( container.getPadding().getSize(), block Point size, Widget widget
+		
+		var Point size = container.injectWidget( Point.new(), block Point size, Widget widget
 			return size.largest( widget.getMinimumSizeWithBorderForHeight( refHeight ) )
 		end ) cast Point
+		
+		if not size.isZero()
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

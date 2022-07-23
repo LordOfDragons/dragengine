@@ -436,8 +436,8 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorAttachToParent getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorAttachToParent
+		return eclass.findBehavior( block ECBehaviorAttachToParent each
+			return true
 		end ) cast ECBehaviorAttachToParent
 	end
 	
@@ -449,8 +449,8 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

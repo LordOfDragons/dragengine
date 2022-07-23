@@ -22,11 +22,13 @@
 #ifndef _DEBASEAUDIOSYNTHESIZERINSTANCE_H_
 #define _DEBASEAUDIOSYNTHESIZERINSTANCE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Audio module synthesizer instance peer.
  */
-class deBaseAudioSynthesizerInstance{
+class DE_DLL_EXPORT deBaseAudioSynthesizerInstance{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

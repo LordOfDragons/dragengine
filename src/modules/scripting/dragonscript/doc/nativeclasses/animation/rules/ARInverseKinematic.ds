@@ -26,43 +26,50 @@ class ARInverseKinematic extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Set goal position. */
-	public func void setGoalPosition( Vector position )
+	public func void setGoalPosition(Vector position)
 	end
 	
 	/** \brief Set goal orientation. */
-	public func void setGoalOrientation( Vector orientation )
+	public func void setGoalOrientation(Vector orientation)
 	end
 	
 	/** \brief Set local position. */
-	public func void setLocalPosition( Vector position )
+	public func void setLocalPosition(Vector position)
 	end
 	
 	/** \brief Set local orientation. */
-	public func void setLocalOrientation( Vector orientation )
+	public func void setLocalOrientation(Vector orientation)
+	end
+	
+	/**
+	 * \brief Set adjust position.
+	 * \version 1.6
+	 */
+	public func void setAdjustPosition(bool adjust)
 	end
 	
 	/** \brief Set adjust orientation. */
-	public func void setAdjustOrientation( bool adjustOrientation )
+	public func void setAdjustOrientation(bool adjust)
 	end
 	
 	/** \brief Set solver bone or empty string to use none. */
-	public func void setSolverBone( String bone )
+	public func void setSolverBone(String bone)
 	end
 	
 	/** \brief Set use solver bone. */
-	public func void setUseSolverBone( bool useSolverBone )
+	public func void setUseSolverBone(bool useSolverBone)
 	end
 	
 	/** \brief Set reach range in meters. */
-	public func void setReachRange( float range )
+	public func void setReachRange(float range)
 	end
 	
 	/** \brief Set reach bone name or empty string to use none. */
-	public func void setReachBone( String bone )
+	public func void setReachBone(String bone)
 	end
 	
 	/** \brief Set reach center. */
-	public func void setReachCenter( Vector center )
+	public func void setReachCenter(Vector center)
 	end
 	
 	
@@ -71,14 +78,14 @@ class ARInverseKinematic extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARInverseKinematicTarget target, int link )
+	public func void targetAddLink(ARInverseKinematicTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARInverseKinematicTarget target )
+	public func void targetRemoveAllLinks(ARInverseKinematicTarget target)
 	end
 	/*@}*/
 end

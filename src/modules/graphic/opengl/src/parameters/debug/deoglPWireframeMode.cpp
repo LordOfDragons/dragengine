@@ -41,6 +41,7 @@ deoglPWireframeMode::deoglPWireframeMode( deGraphicOpenGl &ogl ) : deoglParamete
 	SetDescription( "Renders in wireframe mode" );
 	SetCategory( ecExpert );
 	SetDisplayName( "Wireframe Mode" );
+	SetDefaultValue( "0" );
 }
 
 deoglPWireframeMode::~deoglPWireframeMode(){

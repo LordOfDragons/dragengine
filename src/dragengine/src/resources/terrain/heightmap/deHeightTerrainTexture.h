@@ -43,7 +43,7 @@ class deImage;
  * along the negative y axis is used for mapping the textures. All other
  * parameters are free to be modified.
  */
-class deHeightTerrainTexture{
+class DE_DLL_EXPORT deHeightTerrainTexture{
 private:
 	deSkin *pSkin;
 	

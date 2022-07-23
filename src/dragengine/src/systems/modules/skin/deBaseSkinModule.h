@@ -32,7 +32,7 @@ class deSkin;
 /**
  * \brief Base skin module providing load/save support for skins.
  */
-class deBaseSkinModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseSkinModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

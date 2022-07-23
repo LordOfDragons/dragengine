@@ -22,13 +22,15 @@
 #ifndef _DEBASESCRIPTINGPROPFIELD_H_
 #define _DEBASESCRIPTINGPROPFIELD_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Scripting Module Prop Field Peer.
  *
  * Scripting module peer for a prop field.
  */
-class deBaseScriptingPropField{
+class DE_DLL_EXPORT deBaseScriptingPropField{
 private:
 	
 public:

@@ -24,13 +24,14 @@
 
 #include "../foxtoolkit.h"
 
+#include <delauncher/engine/modules/delEngineModule.h>
+
 class deglWindowMain;
-class deglEngineModule;
 
 
 
 /**
- * @brief Module Properties Panel.
+ * Module Properties Panel.
  */
 class deglDialogModuleProps : public FXDialogBox{
 	FXDECLARE( deglDialogModuleProps )
@@ -46,7 +47,7 @@ public:
 	
 private:
 	deglWindowMain *pWindowMain;
-	deglEngineModule *pModule;
+	const delEngineModule::Ref pModule;
 	
 	FXTabBook *pTabPanels;
 	
@@ -69,26 +70,26 @@ private:
 	FXTextField *pEditLibFileEntryPoint;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dialog. */
-	deglDialogModuleProps( deglWindowMain *windowMain, deglEngineModule *module, FXWindow *owner );
+	deglDialogModuleProps( deglWindowMain *windowMain, delEngineModule *module, FXWindow *owner );
 	/** Cleans up the dialog. */
 	virtual ~deglDialogModuleProps();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	/** Retrieves the module. */
-	inline deglEngineModule *GetModule() const{ return pModule; }
+	inline delEngineModule *GetModule() const{ return pModule; }
 	
 	/** Set values from moduel. */
 	void SetFromModule();
 	/*@}*/
 	
-	/** @name Events */
+	/** \name Events */
 	/*@{*/
 	long onBtnInfo( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/

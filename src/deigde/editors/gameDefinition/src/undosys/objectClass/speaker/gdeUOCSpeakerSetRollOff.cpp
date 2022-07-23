@@ -46,7 +46,7 @@ pSpeaker( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetShortInfo( "Speaker set half-volume distance" );
+	SetShortInfo( "Speaker set roll off" );
 	
 	pOldValue = speaker->GetRollOff();
 	pNewValue = newValue;

@@ -77,6 +77,7 @@
 #include "../../undosys/gesture/ceUCGestureSetName.h"
 #include "../../undosys/gesture/ceUCGestureSetAnimator.h"
 #include "../../undosys/gesture/ceUCGestureToggleHold.h"
+#include "../../undosys/gesture/ceUCGestureSetDuration.h"
 #include "../../undosys/target/ceUCTargetAdd.h"
 #include "../../undosys/target/ceUCTargetRemove.h"
 #include "../../undosys/target/ceUCTargetSetName.h"
@@ -817,7 +818,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && ! editVector.GetVector().IsEqualTo( cameraShot->GetRotationFrom() )
-			? new ceUCCShotSetPosFrom( cameraShot, editVector.GetVector() ) : NULL;
+			? new ceUCCShotSetRotFrom( cameraShot, editVector.GetVector() ) : NULL;
 	}
 };
 
@@ -828,7 +829,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && ! editVector.GetVector().IsEqualTo( cameraShot->GetRotationTo() )
-			? new ceUCCShotSetPosTo( cameraShot, editVector.GetVector() ) : NULL;
+			? new ceUCCShotSetRotTo( cameraShot, editVector.GetVector() ) : NULL;
 	}
 };
 
@@ -1079,6 +1080,18 @@ public:
 		ceGesture * const gesture = pPanel.GetGesture();
 		SetEnabled( gesture );
 		SetSelected( gesture && gesture->GetHold() );
+	}
+};
+
+class cTextGestureDuration : public cBaseTextFieldListener{
+public:
+	cTextGestureDuration( ceWPConversation &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, ceConversation* ){
+		ceGesture * const gesture = pPanel.GetGesture();
+		const float value = textField.GetFloat();
+		return gesture && fabsf( value - gesture->GetDuration() ) > FLOAT_SAFE_EPSILON
+			? new ceUCGestureSetDuration( gesture, value ) : nullptr;
 	}
 };
 
@@ -1420,6 +1433,10 @@ pConversation( NULL )
 	
 	helper.EditString( groupBox, "Animator:", "Name of the animator to use for this gesture",
 		pEditGestureAnimator, new cTextGestureAnimator( *this ) );
+	
+	helper.EditFloat( groupBox, "Duration:", "Duration of gesture. Used as default value in strips",
+		pEditGestureDuration, new cTextGestureDuration ( *this ) );
+	
 	helper.CheckBox( groupBox, pChkGestureHold, new cActionGestureHold( *this ), true );
 	
 	
@@ -1492,6 +1509,7 @@ void ceWPConversation::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseList();
 	
 	UpdateActorIDLists();
+	OnConversationPathChanged();
 }
 
 
@@ -1500,6 +1518,14 @@ void ceWPConversation::UpdateConversation(){
 	UpdateImportConvoPathList();
 }
 
+void ceWPConversation::OnConversationPathChanged(){
+	if( pConversation ){
+		pPathImportConvo->SetBasePath( pConversation->GetDirectoryPath() );
+		
+	}else{
+		pPathImportConvo->SetBasePath( "" );
+	}
+}
 
 
 void ceWPConversation::UpdateImportConvoPathList(){
@@ -1554,6 +1580,7 @@ void ceWPConversation::UpdateGestureList(){
 		}
 		
 		pCBGesture->SortItems();
+		pCBGesture->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1578,6 +1605,7 @@ void ceWPConversation::UpdateGesture(){
 	ceGesture * const gesture = GetGesture();
 	if( gesture ){
 		pEditGestureAnimator->SetText( gesture->GetAnimator() );
+		pEditGestureDuration->SetFloat( gesture->GetDuration() );
 	}
 	
 	pChkGestureHold->GetAction()->Update();
@@ -1605,6 +1633,7 @@ void ceWPConversation::UpdateFacePoseList(){
 		}
 		
 		pCBFacePose->SortItems();
+		pCBFacePose->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1650,13 +1679,13 @@ void ceWPConversation::UpdateFPControllerList(){
 		
 		for( i=0; i<count; i++ ){
 			ceControllerValue * const entry = list.GetAt( i );
-			const int controller = entry->GetController();
+			const int controllerIndex = entry->GetController();
 			
-			if( controller >= 0 && controller < controllerNames.GetCount() ){
-				text.Format( "%i: %s", controller, controllerNames.GetAt( controller ).GetString() );
+			if( controllerIndex >= 0 && controllerIndex < controllerNames.GetCount() ){
+				text.Format( "%i: %s", controllerIndex, controllerNames.GetAt( controllerIndex ).GetString() );
 				
 			}else{
-				text.Format( "%i: -", controller );
+				text.Format( "%i: -", controllerIndex );
 			}
 			
 			pCBFPController->AddItem( text, NULL, entry );
@@ -1709,6 +1738,7 @@ void ceWPConversation::UpdateCameraShotList(){
 		}
 		
 		pCBCameraShot->SortItems();
+		pCBCameraShot->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1824,6 +1854,7 @@ void ceWPConversation::UpdateTargetList(){
 		}
 		
 		pCBTarget->SortItems();
+		pCBTarget->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1922,6 +1953,7 @@ void ceWPConversation::UpdateActorIDLists(){
 		}
 		
 		pCBTargetActorID->SortItems();
+		pCBTargetActorID->StoreFilterItems();
 	}
 	
 	pCBTargetActorID->SetText( selection );

@@ -31,16 +31,20 @@
 #include "deoglRenderTransparentPasses.h"
 #include "deoglRenderTranspCounting.h"
 #include "deoglRenderWorld.h"
+#include "deoglRenderVR.h"
 #include "debug/deoglRenderDebugDrawer.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
+#include "light/deoglRenderGI.h"
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglAddToRenderTaskParticles.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskParticles.h"
+#include "../component/deoglRComponent.h"
 #include "../debug/deoglDebugSnapshot.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -52,6 +56,7 @@
 #include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -62,8 +67,9 @@
 #include "../sky/deoglRSky.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../sky/deoglRSkyLayer.h"
-#include "../texture/texture2d/deoglTexture.h"
 #include "../texture/deoglTextureStageManager.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/texture2d/deoglTexture.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
 
@@ -152,8 +158,9 @@ deoglRenderWorld::deoglRenderWorld( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 pRenderPB( NULL ),
-pRenderLuminancePB( NULL ),
-pRenderCubePB( NULL ),
+pRenderLuminancePB( nullptr ),
+pRenderCubePB( nullptr ),
+pRenderStereoPB( nullptr ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
 pParticleSorter( NULL ),
@@ -167,11 +174,12 @@ pDebugInfo( renderThread )
 	deoglShaderDefines defines;
 	
 	try{
-		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread );
+		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread );
+		pRenderCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
+		pRenderStereoPB = deoglSkinShader::CreateSPBRenderStereo( renderThread );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		
 		pParticleSorter = new deoglParticleSorter;
@@ -180,7 +188,7 @@ pDebugInfo( renderThread )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
-		pShaderFinalize.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		DevModeDebugInfoChanged();
@@ -241,11 +249,9 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportX = plan.GetViewportX();
-	const int viewportY = plan.GetViewportY();
 	
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
@@ -257,7 +263,7 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	defren.SwapPostProcessTarget();
 }
 
-void deoglRenderWorld::RenderWorld( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderWorld::RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderWorld", "%p", mask)
 DEBUG_RESET_TIMER
 //	bool maskedRendering = info->GetUseRenderMask();
@@ -340,12 +346,26 @@ DEBUG_RESET_TIMER
 // 		ClearScreen( plan, false, false );
 	}
 	
-	if( debugMainPass ){
-		DebugTimer2Sample( plan, *pDebugInfo.infoPrepare, true );
-	}
-	
 	// prepare for one render turn with this camera
 	plan.PrepareRenderOneTurn();
+	
+	// trace global illumination rays if in main render pass
+	if( ! mask ){
+		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
+		if( plan.GetUpdateGIState() ){
+			renderGI.TraceRays( plan );
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			DebugTimer2Sample( plan, *pDebugInfo.infoGITraceRays, true );
+			
+			// calculate probe offset and extends. done here to avoid stalling since the results
+			// are read during the next frame update. for offsets the result is also used later
+			// on to update offset texture when not used anymore. this has no stalling problem
+			// since the rendering happens sequentially on the GPU
+			renderGI.ProbeOffset( plan );
+			renderGI.ProbeExtends( plan );
+		}
+	}
 	
 	// solid pass
 	QUICK_DEBUG_START( 15, 19 )
@@ -359,9 +379,19 @@ DEBUG_RESET_TIMER
 	DBG_ENTER("RenderDepthMinMaxMipMap")
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 	DBG_EXIT("RenderDepthMinMaxMipMap")
-	DBG_ENTER("RenderReflections")
-	renderers.GetReflection().RenderReflections( plan );
-	DBG_EXIT("RenderReflections")
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+		// NOTE actually this requires updated GI probes but this happens below during RenderLights().
+		//      this is though not that much of a trouble. it only causes environment maps to be
+		//      GI light one frame behind
+		DBG_ENTER("RenderGIEnvMaps")
+		renderers.GetReflection().RenderGIEnvMaps( plan );
+		DBG_EXIT("RenderGIEnvMaps")
+		
+		DBG_ENTER("RenderReflections")
+		renderers.GetReflection().RenderReflections( plan );
+		DBG_EXIT("RenderReflections")
+	}
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
 	}
@@ -393,27 +423,29 @@ DEBUG_RESET_TIMER
 		if( ! mask ){
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
+			DebugTimer2Sample( plan, *pDebugInfo.infoLuminancePrepare, true );
+		}
+		
+		if( ! mask ){
+			DBG_ENTER("EnvMapCopyMaterials")
+			renderers.GetReflection().CopyMaterial( plan, true );
+			DBG_EXIT("EnvMapCopyMaterials")
 		}
 		
 		DBG_ENTER("RenderLights")
-		renderers.GetLight().RenderLights( plan, true );
+		renderers.GetLight().RenderLights( plan, true, mask );
 		DBG_EXIT("RenderLights")
-		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
-#if 0
-			if(plan.GetFBOTarget()){
-				static int c = 0;
-				const decDVector &p = plan.GetCameraPosition();
-				decString s;
-				s.Format("envmap_%g-%g-%g/c%d/lights-after/", p.x, p.y, p.z, c++);
-				deoglDebugSnapshot snapshot( renderThread );
-				snapshot.SetEnableColor( true );
-				snapshot.SetEnableStates( true );
-				snapshot.SetName( s );
-				snapshot.TakeSnapshot();
-			}
-#endif
+		if( debugMainPass ){
+			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+		}
 	}
 	QUICK_DEBUG_END
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+		DBG_ENTER("RenderGIEnvMaps")
+		renderers.GetReflection().RenderGIEnvMaps( plan );
+		DBG_EXIT("RenderGIEnvMaps")
+	}
 	
 	DBG_ENTER("RenderReflectionScreenSpace")
 	renderers.GetReflection().RenderScreenSpace( plan );
@@ -424,12 +456,12 @@ DEBUG_RESET_TIMER
 	
 	// transparenc passes
 	QUICK_DEBUG_START( 12, 19 )
-	if( ! plan.GetFBOTarget() ){
+// 	if( ! plan.GetFBOTarget() ){
 		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
 		}
-	}
+// 	}
 	QUICK_DEBUG_END
 	
 	// stop using stencil testing
@@ -453,7 +485,7 @@ DEBUG_RESET_TIMER
 			OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 			
 			defren.ActivateFBOTemporary2( false );
-			tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+			tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 			
 			renderThread.GetShader().ActivateShader( pShaderFinalize );
 			shader = pShaderFinalize->GetCompiled();
@@ -502,6 +534,7 @@ DEBUG_RESET_TIMER
 		
 		if( plan.GetRenderDebugPass() ){
 			RenderDebugDrawers( plan );
+			renderers.GetLight().GetRenderGI().RenderDebugOverlay( plan );
 			
 			//pRenderDebugging( info );
 			DebugTimer2Sample( plan, *pDebugInfo.infoDebugDrawers, true );
@@ -516,7 +549,17 @@ DEBUG_RESET_TIMER
 		
 		// debug information
 		if( plan.GetDebugTiming() && ! plan.GetFBOTarget() && devMode.GetEnabled() ){ // only in canvas rendering and main pass
+			// measuring the time required for rendering developer mode is tricky. the reason is
+			// that we need to sample the time across this function call. the sampling is present
+			// only after the function call returns which draws the measurements. we can not
+			// simply delay the result and show it the next time since we also need to clear
+			// at some time. to solve this a temporary measurement container is used. before
+			// showing the result the temporary measurement is copied to the real measurement
+			// which is then displayed while the temporary one is clear
+			pDebugInfo.infoDeveloperMode->CopyResults( *pDebugInfo.infoDeveloperModeTemp );
+			pDebugInfo.infoDeveloperModeTemp->Clear();
 			renderers.GetDevMode().RenderDevMode( plan );
+			DebugTimer1Sample( plan, *pDebugInfo.infoDeveloperModeTemp, true );
 		}
 		
 		// swap one last time so the caller finds the final image to work with in GetPostProcessTexture
@@ -528,7 +571,7 @@ DBG_EXIT("RenderWorld")
 
 
 
-void deoglRenderWorld::PrepareRenderParamBlock( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderWorld::PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const decDMatrix matrixEnvMap( plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
@@ -620,6 +663,59 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	}
 	pRenderPB->UnmapBuffer();
 	
+	// fill the parameter block parameters with the found values. only used parameters are set
+	pRenderStereoPB->MapBuffer();
+	try{
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
+		pRenderStereoPB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matrixProjection );
+		pRenderStereoPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+		
+		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 0, matrixCamera );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
+		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
+		
+		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCamera );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCamera * matrixProjection );
+		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCamera.GetRotationMatrix().Invert() );
+		
+		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
+		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
+		
+		pRenderStereoPB->SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
+		pRenderStereoPB->SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
+		
+		defren.SetShaderViewport( *pRenderStereoPB, deoglSkinShader::erutViewport, true );
+		
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutClipPlane, clipPlaneNormal, clipPlaneDistance );
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
+			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
+		
+		pRenderStereoPB->SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, particleLight );
+		
+		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
+		
+		if( plan.GetCamera() ){
+			pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+				plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey() );
+			
+		}else{
+			pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+				plan.GetCameraAdaptedIntensity() );
+		}
+		
+		const float znear = plan.GetCameraImageDistance();
+		const float zfar = plan.GetCameraViewDistance();
+		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
+		pRenderStereoPB->SetParameterDataVec3( deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange );
+		
+	}catch( const deException & ){
+		pRenderStereoPB->UnmapBuffer();
+		throw;
+	}
+	
+	pRenderStereoPB->UnmapBuffer();
+	
 	// luminance parameter block is the same except screen space differs
 	pRenderLuminancePB->MapBuffer();
 	try{
@@ -660,6 +756,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		pRenderLuminancePB->UnmapBuffer();
 		throw;
 	}
+	
 	pRenderLuminancePB->UnmapBuffer();
 DBG_EXIT("PrepareRenderParamBlock")
 }
@@ -732,10 +829,16 @@ DBG_EXIT("RenderMaskedPass(early)")
 		pAddToRenderTask->SetSkinShaderType( deoglSkinTexture::estComponentDepth );
 		pAddToRenderTask->SetNoRendered( false );
 		
-		pAddToRenderTask->AddComponentFaces( *maskedPlan->GetComponent(), maskedPlan->GetComponentTexture(), 0 );
+		pAddToRenderTask->AddComponentFaces( maskedPlan->GetComponent()->GetLODAt( 0 ),
+			maskedPlan->GetComponentTexture(), 0 );
 		
-		pRenderTask->PrepareForRender( renderThread );
+		pRenderTask->PrepareForRender();
 		rengeom.RenderTask( *pRenderTask );
+		
+		// render vr hidden mesh clearing the mask
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x01 ) );
+		
+		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
 		
 		// render the world using this mask
 		deoglRenderPlan &maskedPlanPlan = *maskedPlan->GetPlan();
@@ -838,74 +941,88 @@ void deoglRenderWorld::RenderAntiAliasingPass(){
 	*/
 }
 
-void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan ){
+void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan,
+bool withColorCorrection, bool withGammaCorrection ){
 DBG_ENTER("RenderFinalizeFBO")
 	deoglRenderThread &renderThread = GetRenderThread();
-	const bool copyDepth = plan.GetFBOTargetCopyDepth();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderCompiled *shader;
 	deoglTexSamplerConfig *sampler;
 	
-	const int viewportHeight = plan.GetViewportHeight();
-	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportX = plan.GetViewportX();
-	const int viewportY = plan.GetViewportY();
+	const bool upscale = plan.GetUseUpscaling();
+	const int upscaleWidth = plan.GetUpscaleWidth();
+	const int upscaleHeight = plan.GetUpscaleHeight();
 	
 	renderThread.GetFramebuffer().Activate( plan.GetFBOTarget() );
 	
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
+	const int viewportWidth = upscale ? upscaleWidth : plan.GetViewportWidth();
 	
 	renderThread.GetTexture().GetStages().DisableAllStages();
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	sampler = &GetSamplerClampLinear();
-	
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
-	if( copyDepth ){
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), *sampler );
+	if( plan.GetUseUpscaling() ){
+		sampler = &GetSamplerClampLinear();
+		
+	}else{
+		sampler = &GetSamplerClampNearest();
 	}
+	
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
 	
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	
-	if( copyDepth ){
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	}
-	
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program and parameters
-	if( copyDepth ){
-		renderThread.GetShader().ActivateShader( pShaderFinalize );
-		shader = pShaderFinalize->GetCompiled();
-		
-	}else{
-		renderThread.GetShader().ActivateShader( pShaderFinalize );
-		shader = pShaderFinalize->GetCompiled();
-	}
+	renderThread.GetShader().ActivateShader( pShaderFinalize );
+	shader = pShaderFinalize->GetCompiled();
 	
 	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
-	shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
-	shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
 	
-	if( plan.GetUpsideDown() ){
-		defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+	if( withGammaCorrection ){
+		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
+		shader->SetParameterFloat( spfinGamma, gamma, gamma, gamma, 1.0f );
 		
 	}else{
-		defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+	
+	if( withColorCorrection ){
+		shader->SetParameterFloat( spfinBrightness, config.GetBrightness(),
+			config.GetBrightness(), config.GetBrightness(), 1.0f );
+		shader->SetParameterFloat( spfinContrast, config.GetContrast(),
+			config.GetContrast(), config.GetContrast(), 1.0f );
+		
+	}else{
+		shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
+		shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
+	}
+	
+	if( plan.GetUpsideDown() ){
+		if( upscale ){
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform,
+				plan.GetViewportWidth(), plan.GetViewportHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		}
+		
+	}else{
+		if( upscale ){
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform,
+				plan.GetViewportWidth(), plan.GetViewportHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		}
 	}
 	
 	defren.RenderFSQuadVAO();
@@ -940,12 +1057,10 @@ DBG_ENTER("RenderFinalizeContext")
 	
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportX = plan.GetViewportX();
-	const int viewportY = plan.GetViewportY();
 	
 	renderThread.GetTexture().GetStages().DisableAllStages();
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	if( plan.GetUseUpscaling() ){
@@ -955,7 +1070,7 @@ DBG_ENTER("RenderFinalizeContext")
 		sampler = &GetSamplerClampNearest();
 	}
 	
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
 	
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -975,10 +1090,22 @@ DBG_ENTER("RenderFinalizeContext")
 	shader->SetParameterFloat( spfinContrast, contrast, contrast, contrast, 1.0f );
 	
 	if( plan.GetUpsideDown() ){
-		defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		if( plan.GetUseUpscaling() ){
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform,
+				plan.GetUpscaleWidth(), plan.GetUpscaleHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		}
 		
 	}else{
-		defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		if( plan.GetUseUpscaling() ){
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform,
+				plan.GetUpscaleWidth(), plan.GetUpscaleHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		}
 	}
 	
 	defren.RenderFSQuadVAO();
@@ -1027,8 +1154,14 @@ void deoglRenderWorld::pCleanUp(){
 	if( pRenderTask ){
 		delete pRenderTask;
 	}
+	if( pRenderStereoPB ){
+		pRenderStereoPB->FreeReference();
+	}
 	if( pRenderCubePB ){
 		pRenderCubePB->FreeReference();
+	}
+	if( pRenderLuminancePB ){
+		pRenderLuminancePB->FreeReference();
 	}
 	if( pRenderPB ){
 		pRenderPB->FreeReference();

@@ -26,15 +26,16 @@
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <dragengine/common/math/decMath.h>
 
+class dePhysicsBullet;
 class debpBulletCompoundShape;
 class debpBulletShape;
 class btTransform;
 class btVector3;
-
+class btCollisionShape;
 
 
 /**
- * \brief Create bullet shape from engine shapes.
+ * Create bullet shape from engine shapes.
  * 
  * Creates a bullet shape visiting an engine shape. The visitor
  * creates a minimal shape if possible. The created bullet shape
@@ -58,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	debpCreateBulletShape();
 	
-	/** \brief Clean up visitor. */
+	/** Clean up visitor. */
 	virtual ~debpCreateBulletShape();
 	/*@}*/
 	
@@ -69,54 +70,60 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief CCD threshold. */
+	/** CCD threshold. */
 	inline float GetCcdThreshold() const{ return pCcdThreshold; }
 	
-	/** \brief CCD radius. */
+	/** CCD radius. */
 	inline float GetCcdRadius() const { return pCcdRadius; }
 	
-	/** \brief Set offset. */
+	/** Set offset. */
 	void SetOffset( const decVector &offset );
 	
-	/** \brief Set scale. */
+	/** Set scale. */
 	void SetScale( const decVector &scale );
 	
-	/** \brief No margin is set on created shapes. */
+	/** No margin is set on created shapes. */
 	inline bool GetNoMargin() const{ return pNoMargin; }
 	
-	/** \brief Set if no margin is set on created shapes. */
+	/** Set if no margin is set on created shapes. */
 	void SetNoMargin( bool noMargin );
 	
-	/** \brief Shape or \em NULL if not created. */
+	/** Shape or nullptr if not created. */
 	debpBulletShape *GetBulletShape() const;
 	
-	/** \brief Reset visitor. */
+	/** Reset visitor. */
 	void Reset();
 	
-	/** \brief Set shape index. */
+	/** Finish shape. */
+	void Finish();
+	
+	/** Set shape index. */
 	void SetShapeIndex( int index );
+	
+	/** Shape debug. */
+	void DebugPrintShape( dePhysicsBullet &bullet, const char *prefix = "" ) const;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit shape. */
+	/** Visit shape. */
 	virtual void VisitShape( decShape &shape );
 	
-	/** \brief Visit sphere shape. */
+	/** Visit sphere shape. */
 	virtual void VisitShapeSphere( decShapeSphere &sphere );
 	
-	/** \brief Visit box shape. */
+	/** Visit box shape. */
 	virtual void VisitShapeBox( decShapeBox &box );
 	
-	/** \brief Visit cylinder shape. */
+	/** Visit cylinder shape. */
 	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
 	
-	/** \brief Visit capsule shape. */
+	/** Visit capsule shape. */
 	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
 	
-	/** \brief Visit hull shape. */
+	/** Visit hull shape. */
 	virtual void VisitShapeHull( decShapeHull &hull );
 	/*@}*/
 	
@@ -126,6 +133,7 @@ private:
 	void pCreateCompoundShape();
 	void pAddCollisionShape( debpBulletShape *collisionShape );
 	void pAddTransformedCollisionShape( debpBulletShape *collisionShape, const btTransform &transform );
+	void pDebugPrintShape( dePhysicsBullet &bullet, const btCollisionShape &shape, const char *prefix = "" ) const;
 };
 
 #endif

@@ -50,7 +50,12 @@ pCanvasView( NULL ),
 pDirty( true )
 {
 	try{
-		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin(), renderable );
+		
+		if( renderable.GetCanvas() ){
+			pCanvasView = ( deoglCanvasView* )renderable.GetCanvas()->GetPeerGraphic();
+			pCanvasView->AddListener( this );
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -72,19 +77,28 @@ deoglRDSRenderable *deoglDSRenderableCanvas::GetRRenderable() const{
 }
 
 void deoglDSRenderableCanvas::RenderableChanged(){
-	if( pCanvasView ){
-		pCanvasView->GetNotifyRenderables().Remove( this );
-	}
+	deoglCanvasView * const canvasView = pRenderableCanvas.GetCanvas()
+		? ( deoglCanvasView* )pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
 	
-	if( pRenderableCanvas.GetCanvas() ){
-		pCanvasView = ( deoglCanvasView* )pRenderableCanvas.GetCanvas()->GetPeerGraphic();
-		pCanvasView->GetNotifyRenderables().Add( this );
+	if( canvasView != pCanvasView ){
+		if( pCanvasView ){
+			pCanvasView->RemoveListener( this );
+		}
 		
-	}else{
-		pCanvasView = NULL;
+		pCanvasView = canvasView;
+		
+		if( canvasView ){
+			canvasView->AddListener( this );
+		}
+		
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
 	}
 	
-	pDirty = true;
+	if( pRenderableCanvas.GetName() != pRRenderableCanvas->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableCanvas::SyncToRender(){
@@ -94,6 +108,8 @@ void deoglDSRenderableCanvas::SyncToRender(){
 	
 	if( pDirty ){
 		pRRenderableCanvas->SetName( pRenderableCanvas.GetName() );
+		pRRenderableCanvas->SetComponentCount( pRenderableCanvas.GetComponentCount() );
+		pRRenderableCanvas->SetBitCount( pRenderableCanvas.GetBitCount() );
 		
 		if( pCanvasView ){
 			pRRenderableCanvas->SetCanvas( pCanvasView->GetRCanvasView() );
@@ -106,12 +122,12 @@ void deoglDSRenderableCanvas::SyncToRender(){
 	}
 }
 
-void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
-	pDynamicSkin.RenderableRequiresSync();
+void deoglDSRenderableCanvas::CanvasViewDestroyed(){
+	pCanvasView = NULL;
 }
 
-void deoglDSRenderableCanvas::DropCanvasView(){
-	pCanvasView = NULL;
+void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
+	pDynamicSkin.NotifyRenderableRequiresSync( *this );
 }
 
 
@@ -125,6 +141,6 @@ void deoglDSRenderableCanvas::pCleanUp(){
 	}
 	
 	if( pCanvasView ){
-		pCanvasView->GetNotifyRenderables().Remove( this );
+		pCanvasView->RemoveListener( this );
 	}
 }

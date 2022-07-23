@@ -28,6 +28,7 @@
 #include "../pixelbuffer/deoglPixelBuffer.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../memory/deoglMemoryManager.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -51,7 +52,8 @@
 ////////////////////////////
 
 deoglTexture1D::deoglTexture1D( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+pRenderThread( renderThread ),
+pMemUse( pRenderThread.GetMemoryManager().GetConsumption().texture1D )
 {
 	pTexture = 0;
 	
@@ -60,10 +62,6 @@ pRenderThread( renderThread )
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageCompressed = false;
-	pMemoryUsageColor = true;
 }
 
 deoglTexture1D::~deoglTexture1D(){
@@ -224,14 +222,8 @@ void deoglTexture1D::CreateTexture(){
 }
 
 void deoglTexture1D::DestroyTexture(){
-	// to avoid problems with threading and such it would be a good idea to move this deletion call
-	// out to a safe place. for this we need a texture deletion manager which hosts opengl textures
-	// to be deleted the next time it is safe. a safe time would be before or after frame rendering
-	// calls or somewhere during the clean up process. in this case the texture would be simply
-	// registered with the deletion manager and set to NULL in here
-	
 	if( pTexture ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTexture ) );
+		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture( pTexture );
 		pTexture = 0;
 		
 		UpdateMemoryUsage();
@@ -530,159 +522,46 @@ void deoglTexture1D::CopyFrom( const deoglTexture1D &texture, bool withMipMaps, 
 
 
 void deoglTexture1D::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetTexture1D();
+	pMemUse.Clear();
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.DecrementCount();
-		consumption.DecrementGPU( pMemoryUsageGPU );
-		
-		if( pMemoryUsageColor ){
-			consumption.DecrementColorCount();
-			consumption.DecrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUUncompressed( pMemoryUsageGPU );
-			}
-			
-		}else{
-			consumption.DecrementDepthCount();
-			consumption.DecrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
-		}
-		
-		pMemoryUsageGPU = 0;
-		pMemoryUsageCompressed = false;
-		pMemoryUsageColor = true;
+	if( ! pTexture || ! pFormat ){
+		return;
 	}
 	
-	if( pTexture ){
-		const int bitsPerPixel = pFormat->GetBitsPerPixel();
-		int baseSize, mipmappedSize;
-		double mipmapFactor = 1.0;
-		
-		baseSize = pSize;
-		
-		if( pMipMapped ){
-			int size = pSize;
-			int i;
-			
-			mipmappedSize = baseSize;
-			
-			for( i=0; i<pRealMipMapLevelCount; i++ ){
-				size >>= 1;
-				if( size < 1 ){
-					size = 1;
-				}
-				
-				mipmappedSize += size;
-			}
-			
-			mipmapFactor = ( double )mipmappedSize / ( double )baseSize;
-		}
-		
-		baseSize *= bitsPerPixel >> 3;
-		if( ( bitsPerPixel & 0x7 ) > 0 ){
-			baseSize >>= 1;
-		}
-		
-		pMemoryUsageColor = ! pFormat->GetIsDepth();
-		
-		#ifdef ANDROID
-		if( pMipMapped ){
-			pMemoryUsageGPU = ( int )( ( double )baseSize * mipmapFactor );
-			
-		}else{
-			pMemoryUsageGPU = baseSize;
-		}
-		
-		#else
-		if( pFormat->GetIsCompressed() ){
-			deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-			GLint compressedSize, isReallyCompressed;
-			
-			tsmgr.EnableBareTexture1D( 0, *this );
-			
-			isReallyCompressed = 0;
-			OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_1D, 0, GL_TEXTURE_COMPRESSED, &isReallyCompressed ) );
-			
-			if( isReallyCompressed ){
-				compressedSize = 0;
-				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_1D, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
-				
-				if( pMipMapped ){
-					pMemoryUsageGPU = ( int )( ( double )compressedSize * mipmapFactor );
-					
-				}else{
-					pMemoryUsageGPU = compressedSize;
-				}
-				pMemoryUsageCompressed = true;
-				
-			}else{
-				if( pMipMapped ){
-					pMemoryUsageGPU = ( int )( ( double )baseSize * mipmapFactor );
-					
-				}else{
-					pMemoryUsageGPU = baseSize;
-				}
-			}
-			
-			tsmgr.DisableStage( 0 );
-			
-		}else{
-			if( pMipMapped ){
-				pMemoryUsageGPU = ( int )( ( double )baseSize * mipmapFactor );
-				
-			}else{
-				pMemoryUsageGPU = baseSize;
-			}
-		}
-		#endif
-	}
+	#ifdef ANDROID
+	pMemUse.SetUncompressed( *pFormat, pSize, 1, 1, pRealMipMapLevelCount );
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.IncrementCount();
-		consumption.IncrementGPU( pMemoryUsageGPU );
+	#else
+	if( pFormat->GetIsCompressed() ){
+		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+		tsmgr.EnableBareTexture1D( 0, *this );
 		
-		if( pMemoryUsageColor ){
-			consumption.IncrementColorCount();
-			consumption.IncrementColorGPU( pMemoryUsageGPU );
+		GLint isReallyCompressed = 0;
+		OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_1D,
+			0, GL_TEXTURE_COMPRESSED, &isReallyCompressed ) );
+		
+		if( isReallyCompressed ){
+			unsigned long consumption = 0ull;
+			GLint l, compressedSize;
 			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUUncompressed( pMemoryUsageGPU );
+			for( l=0; l<pRealMipMapLevelCount; l++ ){
+				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_1D,
+					l, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
+				consumption += ( unsigned long long )compressedSize;
 			}
+			
+			pMemUse.SetCompressed( consumption, *pFormat );
 			
 		}else{
-			consumption.IncrementDepthCount();
-			consumption.IncrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
+			pMemUse.SetUncompressed( *pFormat, pSize, 1, 1, pRealMipMapLevelCount );
 		}
+		
+		tsmgr.DisableStage( 0 );
+		
+	}else{
+		pMemUse.SetUncompressed( *pFormat, pSize, 1, 1, pRealMipMapLevelCount );
 	}
+	#endif
 }
 
 

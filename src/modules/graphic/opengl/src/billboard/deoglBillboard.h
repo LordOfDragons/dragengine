@@ -22,6 +22,8 @@
 #ifndef _DEOGLBILLBOARD_H_
 #define _DEOGLBILLBOARD_H_
 
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
+
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
 
@@ -38,7 +40,7 @@ class deBillboard;
 /**
  * \brief Billboard peer.
  */
-class deoglBillboard : public deBaseGraphicBillboard{
+class deoglBillboard : public deBaseGraphicBillboard, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	const deBillboard &pBillboard;
@@ -60,9 +62,11 @@ public:
 	bool pDirtyRenderEnvMap;
 	bool pDirtySkin;
 	bool pDirtyDynamicSkin;
+	bool pDirtyRenderableMapping;
 	bool pDirtySkinStateCalculatedProperties;
-	bool pDirtyRenderables;
+	bool pSkinStatePrepareRenderables;
 	
+	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
@@ -116,17 +120,23 @@ public:
 	
 	
 	
-	/** \brief Dynamic skin needs sync. */
-	void DynamicSkinRequiresSync();
-	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
+	void DirtyRenderableMapping();
 	
 	
 	
 	/** \brief World syncing linked list. */
 	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
 	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	/*@}*/
+	
+	
+	
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	

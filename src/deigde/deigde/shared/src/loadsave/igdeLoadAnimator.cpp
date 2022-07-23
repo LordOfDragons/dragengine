@@ -31,6 +31,7 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -44,6 +45,7 @@
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorReference.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
@@ -60,6 +62,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
 
@@ -156,7 +159,7 @@ void igdeLoadAnimator::pReadAnimator( const decXmlElementTag &root, const char *
 					animator.SetRig( rig );
 					rig->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( rig ){
 						rig->FreeReference();
 					}
@@ -173,7 +176,7 @@ void igdeLoadAnimator::pReadAnimator( const decXmlElementTag &root, const char *
 					animator.SetAnimation( animation );
 					animation->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( animation ){
 						animation->FreeReference();
 					}
@@ -253,16 +256,59 @@ void igdeLoadAnimator::pReadLink( const decXmlElementTag &root, deAnimator &anim
 				continue;
 			}
 			
-			if( strcmp( tag->GetName(), "controller" ) == 0 ){
+			if( tag->GetName() == "controller" ){
 				link->SetController( GetCDataInt( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "curve" ) == 0 ){
+			}else if( tag->GetName() == "curve" ){
 				decCurveBezier curve;
 				ReadCurveBezier( *tag, curve );
 				link->SetCurve( curve );
 				
-			}else if( strcmp( tag->GetName(), "repeat" ) == 0 ){
+			}else if( tag->GetName() == "repeat" ){
 				link->SetRepeat( GetCDataInt( *tag ) );
+				
+			}else if( tag->GetName() == "bone" ){
+				link->SetBone( GetCDataString( *tag ) );
+				
+			}else if( tag->GetName() == "boneParameter" ){
+				const char * const name = GetCDataString( *tag );
+				
+				if( strcmp( name, "positionX" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpPositionX );
+					
+				}else if( strcmp( name, "positionY" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpPositionY );
+					
+				}else if( strcmp( name, "positionZ" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpPositionZ );
+					
+				}else if( strcmp( name, "rotationX" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpRotationX );
+					
+				}else if( strcmp( name, "rotationY" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpRotationY );
+					
+				}else if( strcmp( name, "rotationZ" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpRotationZ );
+					
+				}else if( strcmp( name, "scaleX" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpScaleX );
+					
+				}else if( strcmp( name, "scaleY" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpScaleY );
+					
+				}else if( strcmp( name, "scaleZ" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpScaleZ );
+					
+				}else{
+					LogErrorUnknownValue( *tag, name );
+				}
+				
+			}else if( tag->GetName() == "boneLimits" ){
+				link->SetBoneValueRange( GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
+				
+			}else if( tag->GetName() == "wrapY" ){
+				link->SetWrapY( GetCDataBool( *tag ) );
 			}
 		}
 		
@@ -276,7 +322,8 @@ void igdeLoadAnimator::pReadLink( const decXmlElementTag &root, deAnimator &anim
 	}
 }
 
-deAnimatorRule *igdeLoadAnimator::pReadRule( const decXmlElementTag &root, const char *basePath, deAnimator &animator ){
+deAnimatorRule *igdeLoadAnimator::pReadRule( const decXmlElementTag &root,
+const char *basePath, deAnimator &animator ){
 	if( strcmp( root.GetName(), "ruleAnimation" ) == 0 ){
 		return pReadRuleAnimation( root, animator );
 		
@@ -309,6 +356,9 @@ deAnimatorRule *igdeLoadAnimator::pReadRule( const decXmlElementTag &root, const
 		
 	}else if( strcmp( root.GetName(), "ruleLimit" ) == 0 ){
 		return pReadRuleLimit( root, animator );
+		
+	}else if( strcmp( root.GetName(), "ruleMirror" ) == 0 ){
+		return pReadRuleMirror( root, animator );
 		
 	}else{
 		return NULL;
@@ -545,6 +595,17 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator( const decXmlEleme
 				ReadVector( *tag, vector );
 				rule->SetMaximumScaling( vector );
 				
+			}else if( strcmp( tag->GetName(), "axis" ) == 0 ){
+				vector.SetZero();
+				ReadVector( *tag, vector );
+				rule->SetAxis( vector );
+				
+			}else if( strcmp( tag->GetName(), "minimumAngle" ) == 0 ){
+				rule->SetMinimumAngle( GetCDataFloat( *tag ) * DEG2RAD );
+				
+			}else if( strcmp( tag->GetName(), "maximumAngle" ) == 0 ){
+				rule->SetMaximumAngle( GetCDataFloat( *tag ) * DEG2RAD );
+				
 			}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
 				name = GetCDataString( *tag );
 				
@@ -569,6 +630,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator( const decXmlEleme
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "useAxis" ) == 0 ){
+				rule->SetUseAxis( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 				rule->SetTargetBone( GetCDataString( *tag ) );
@@ -755,7 +819,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic( const decXmlElemen
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleInverseKinematic *rule = NULL;
 	decVector vector;
-	const char *name;
 	int e;
 	
 	try{
@@ -767,52 +830,70 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic( const decXmlElemen
 				continue;
 			}
 			
-			if( strcmp( tag->GetName(), "goalPosition" ) == 0 ){
+			const decString &tagName = tag->GetName();
+			if( tagName == "goalPosition" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetGoalPosition( vector );
 				
-			}else if( strcmp( tag->GetName(), "goalOrientation" ) == 0 ){
+			}else if( tagName == "goalOrientation" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetGoalOrientation( decMatrix::CreateRotation( vector * DEG2RAD ).ToQuaternion() );
 				
-			}else if( strcmp( tag->GetName(), "localPosition" ) == 0 ){
+			}else if( tagName == "localPosition" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetLocalPosition( vector );
 				
-			}else if( strcmp( tag->GetName(), "localOrientation" ) == 0 ){
+			}else if( tagName == "localOrientation" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetLocalOrientation( decMatrix::CreateRotation( vector * DEG2RAD ).ToQuaternion() );
 				
-			}else if( strcmp( tag->GetName(), "adjustOrientation" ) == 0 ){
+			}else if( tagName == "adjustOrientation" ){
 				rule->SetAdjustOrientation( GetCDataBool( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "solverBone" ) == 0 ){
+			}else if( tagName == "solverBone" ){
 				rule->SetSolverBone( GetCDataString( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "useSolverBone" ) == 0 ){
+			}else if( tagName == "useSolverBone" ){
 				rule->SetUseSolverBone( GetCDataBool( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-				name = GetAttributeString( *tag, "name" );
+			}else if( tagName == "reachRange" ){
+				rule->SetReachRange( GetCDataFloat( *tag ) );
 				
-				if( strcmp( name, "blendFactor" ) == 0 ){
+			}else if( tagName == "reachBone" ){
+				rule->SetReachBone( GetCDataString( *tag ) );
+				
+			}else if ( tagName == "reachCenter" ){
+				vector.SetZero();
+				ReadVector( *tag, vector );
+				rule->SetReachCenter( vector );
+				
+			}else if( tagName == "target" ){
+				const decString &name = GetAttributeString( *tag, "name" );
+				
+				if( name == "blendFactor" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetBlendFactor() );
 					
-				}else if( strcmp( name, "goalPosition" ) == 0 ){
+				}else if( name == "goalPosition" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetGoalPosition() );
 					
-				}else if( strcmp( name, "goalOrientation" ) == 0 ){
+				}else if( name == "goalOrientation" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetGoalOrientation() );
 					
-				}else if( strcmp( name, "localPosition" ) == 0 ){
+				}else if( name == "localPosition" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetLocalPosition() );
 					
-				}else if( strcmp( name, "localOrientation" ) == 0 ){
+				}else if( name == "localOrientation" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetLocalOrientation() );
+					
+				}else if( name == "reachRange" ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetReachRange() );
+					
+				}else if( name == "reachCenter" ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetReachCenter() );
 					
 				}else{
 					LogErrorUnknownValue( *tag, name );
@@ -930,7 +1011,88 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 	return rule;
 }
 
-deAnimatorRule *igdeLoadAnimator::pReadRuleGroup( const decXmlElementTag &root, const char *basePath, deAnimator &animator ){
+deAnimatorRule * igdeLoadAnimator::pReadRuleMirror( const decXmlElementTag &root, deAnimator &animator ){
+	const deAnimatorRuleMirror::Ref rule( deAnimatorRuleMirror::Ref::New( new deAnimatorRuleMirror ) );
+	const int elementCount = root.GetElementCount();
+	decVector vector;
+	int i;
+	
+	for( i=0; i<elementCount; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "enablePosition" ){
+			rule->SetEnablePosition( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableOrientation" ){
+			rule->SetEnableOrientation( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableSize" ){
+			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "mirrorAxis" ){
+			const decString &name = tag->GetFirstData()->GetData();
+			
+			if( name == "x" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaX );
+				
+			}else if( name == "y" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaY );
+				
+			}else if( name == "z" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaZ );
+				
+			}else{
+				LogErrorUnknownValue( *tag, name );
+			}
+			
+		}else if( strcmp( tag->GetName(), "mirrorBone" ) == 0 ){
+			rule->SetMirrorBone( GetCDataString( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "matchName" ) == 0 ){
+			const decString &first = GetAttributeString( *tag, "first" );
+			const decString &second = GetAttributeString( *tag, "second" );
+			const decString &strType = GetAttributeString( *tag, "type" );
+			
+			deAnimatorRuleMirror::eMatchNameType type;
+			if( strType == "first" ){
+				type = deAnimatorRuleMirror::emntFirst;
+				
+			}else if( strType == "last" ){
+				type = deAnimatorRuleMirror::emntLast;
+				
+			}else if( strType == "middle" ){
+				type = deAnimatorRuleMirror::emntMiddle;
+				
+			}else{
+				LogErrorUnknownValue( *tag, strType );
+				DETHROW( deeInvalidParam ); // LogErrorUnknownValue does throw but compiler does not see it
+			}
+			
+			rule->AddMatchName( first, second, type );
+			
+		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+			const decString &name = GetAttributeString( *tag, "name" );
+			
+			if( name == "blendFactor" ){
+				pReadControllerTarget( *tag, animator, rule->GetTargetBlendFactor() );
+				
+			}else{
+				LogErrorUnknownValue( *tag, name );
+			}
+			
+		}else{
+			pReadRuleCommon( *tag, animator, *rule );
+		}
+	}
+	
+	return rule;
+}
+
+deAnimatorRule *igdeLoadAnimator::pReadRuleGroup( const decXmlElementTag &root,
+const char *basePath, deAnimator &animator ){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleGroup *rule = NULL;
 	int i;
@@ -1005,16 +1167,14 @@ deAnimatorRule *igdeLoadAnimator::pReadRuleGroup( const decXmlElementTag &root, 
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator( const decXmlElementTag &root, const char *basePath, deAnimator &animator ){
+deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator( const decXmlElementTag &root,
+const char *basePath, deAnimator &animator ){
 	deEngine &engine = *animator.GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleSubAnimator *rule = NULL;
-	decBaseFileReader *reader = NULL;
-	deAnimator *subAnimator = NULL;
 	bool hasConnections = false;
 	decString pathAnimator;
-	decPath pathFile;
 	decVector vector;
 	const char *name;
 	int e, target;
@@ -1034,26 +1194,17 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator( const decXmlElementTag 
 					continue;
 				}
 				
-				subAnimator = NULL;
-				reader = NULL;
-				
 				try{
-					pathFile.SetFromUnix( pathAnimator.GetString() );
-					
-					reader = vfs.OpenFileForReading( pathFile );
-					subAnimator = animator.GetEngine()->GetAnimatorManager()->CreateAnimator();
-					Load( pathAnimator, *subAnimator, *reader );
+					const decPath realPath( decPath::AbsolutePathNative( pathAnimator, basePath ) );
+					decBaseFileReaderReference reader;
+					reader.TakeOver( vfs.OpenFileForReading( realPath ) );
+					deAnimatorReference subAnimator;
+					subAnimator.TakeOver( animator.GetEngine()->GetAnimatorManager()->CreateAnimator() );
+					Load( realPath.GetPathUnix(), subAnimator, reader );
 					rule->SetSubAnimator( subAnimator );
-					subAnimator->FreeReference();
-					reader->FreeReference();
 					
-				}catch( const deException &e ){
-					if( subAnimator ){
-						subAnimator->FreeReference();
-					}
-					if( reader ){
-						reader->FreeReference();
-					}
+				}catch( const deException &e2 ){
+					LogWarnExceptionTag( *tag, e2 );
 					LogWarnGenericProblemTag( root, tag->GetName(), "Failed loading animator" );
 				}
 				
@@ -1382,6 +1533,10 @@ bool igdeLoadAnimator::pReadRuleCommon( const decXmlElementTag &root, deAnimator
 		
 	}else if( strcmp( root.GetName(), "blendFactor" ) == 0 ){
 		rule.SetBlendFactor( GetCDataFloat( root ) );
+		return true;
+		
+	}else if( root.GetName() == "invertBlendFactor" ){
+		rule.SetInvertBlendFactor( GetCDataBool( root ) );
 		return true;
 		
 	}else if( strcmp( root.GetName(), "bone" ) == 0 ){

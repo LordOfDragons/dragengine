@@ -54,7 +54,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigBone::reRigBone( deEngine *engine ){
+reRigBone::reRigBone( deEngine *engine ) :
+pIKLimitsLower( TWO_PI, TWO_PI, TWO_PI ),
+pIKLimitsUpper( 0.0f, 0.0f, 0.0f ),
+pIKResistance( 0.0f, 0.0f, 0.0f )
+{
 	if( ! engine ){
 		DETHROW( deeInvalidParam );
 	}
@@ -531,6 +535,95 @@ void reRigBone::RemoveAllShapes(){
 	
 	if( pRig ){
 		pRig->NotifyAllStructureChanged();
+	}
+}
+
+
+
+// Inverse kinematics
+///////////////////////
+
+void reRigBone::SetIKLimitsLower( const decVector &lower ){
+	if( lower.IsEqualTo( pIKLimitsLower ) ){
+		return;
+	}
+	
+	pIKLimitsLower = lower;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLimitsUpper( const decVector &upper ){
+	if( upper.IsEqualTo( pIKLimitsUpper ) ){
+		return;
+	}
+	
+	pIKLimitsUpper = upper;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKResistance( const decVector &resistance ){
+	if( resistance.IsEqualTo( pIKResistance ) ){
+		return;
+	}
+	
+	pIKResistance = resistance;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLockedX( bool locked ){
+	if( locked == pIKLocked[ 0 ] ){
+		return;
+	}
+	
+	pIKLocked[ 0 ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLockedY( bool locked ){
+	if( locked == pIKLocked[ 1 ] ){
+		return;
+	}
+	
+	pIKLocked[ 1 ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLockedZ( bool locked ){
+	if( locked == pIKLocked[ 2 ] ){
+		return;
+	}
+	
+	pIKLocked[ 2 ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLocked( int axis, bool locked ){
+	if( locked == pIKLocked[ axis ] ){
+		return;
+	}
+	
+	pIKLocked[ axis ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
 	}
 }
 

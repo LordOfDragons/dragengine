@@ -58,10 +58,11 @@ pin Dragengine.Utils
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       var DynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this)
- *       var ECBehaviorCamera camera1 = ECBehaviorCamera.new(this, "camera1")
- *       var ECBehaviorCamera camera2 = ECBehaviorCamera.new(this, "camera2")
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this, null)
+ *       var ECBehaviorCollider collider = ECBehaviorCollider.new(this, component)
+ *       var DynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, component)
+ *       var ECBehaviorCamera camera1 = ECBehaviorCamera.new(this, collider, "camera1")
+ *       var ECBehaviorCamera camera2 = ECBehaviorCamera.new(this, collider, "camera2")
  *       
  *       var ECBehaviorRenderableCamera behavior = ECBehaviorRenderableCamera.new(this, dynamicSkin, camera1)
  *       behavior.getRenderable().setValue("camera1")
@@ -205,8 +206,8 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorRenderableCamera getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorRenderableCamera
+		return eclass.findBehavior( block ECBehaviorRenderableCamera each
+			return true
 		end ) cast ECBehaviorRenderableCamera
 	end
 	
@@ -218,8 +219,7 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 */
 	static public func ECBehaviorRenderableCamera getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorRenderableCamera each
-			return each castable ECBehaviorRenderableCamera and \
-				( each cast ECBehaviorRenderableCamera ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorRenderableCamera
 	end
 	
@@ -230,13 +230,9 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorRenderableCamera
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorRenderableCamera each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -249,8 +245,8 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -261,9 +257,8 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -274,13 +269,9 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

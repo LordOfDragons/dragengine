@@ -39,7 +39,7 @@ class deEngine;
 /**
  * \brief Canvas resource manager
  */
-class deCanvasManager : public deResourceManager{
+class DE_DLL_EXPORT deCanvasManager : public deResourceManager{
 private:
 	deResourceList pCanvas;
 	

@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 
+#include "dePathList.h"
 #include "../deObject.h"
 #include "../common/file/decPath.h"
 #include "../common/utils/decDateTime.h"
@@ -51,7 +52,13 @@ class decBaseFileWriter;
  * path. This allows to add special containers that should not be easily
  * visible to game scripts unless the path is known.
  */
-class deVFSContainer : public deObject{
+class DE_DLL_EXPORT deVFSContainer : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSContainer> Ref;
+	
+	
+	
 public:
 	/** \brief File types */
 	enum eFileTypes{
@@ -70,6 +77,7 @@ public:
 private:
 	const decPath pRootPath;
 	bool pHidden;
+	dePathList pHiddenPath;
 	
 	
 	
@@ -107,9 +115,47 @@ public:
 	void SetHidden( bool hidden );
 	
 	/**
+	 * \brief Count of hidden path.
+	 * \version 1.13
+	 */
+	int GetHiddenPathCount() const;
+	
+	/**
+	 * \brief Removed hidden path at index.
+	 * \version 1.13
+	 */
+	const decPath &GetHiddenPathAt( int index ) const;
+	
+	/**
+	 * \brief Removed hidden path is present.
+	 * \version 1.13
+	 */
+	bool HasHiddenPath( const decPath &path ) const;
+	
+	/**
+	 * \brief Add hidden path.
+	 * \version 1.13
+	 */
+	void AddHiddenPath( const decPath &path );
+	
+	/**
+	 * \brief Remove hidden path.
+	 * \version 1.13
+	 */
+	void RemoveHiddenPath( const decPath &path );
+	
+	/**
+	 * \brief Remove all hidden path.
+	 * \version 1.13
+	 */
+	void RemoveAllHiddenPath();
+	
+	
+	
+	/**
 	 * \brief File exists.
 	 * 
-	 * Path is elative to the root path.
+	 * Path is relative to the root path.
 	 */
 	virtual bool ExistsFile( const decPath &path ) = 0;
 	
@@ -140,6 +186,15 @@ public:
 	 * The path is relative to the root path.
 	 */
 	virtual bool CanDeleteFile( const decPath &path ) = 0;
+	
+	/**
+	 * \brief Path is hidden for all lower containers.
+	 * \version 1.13
+	 * 
+	 * Path is relative to the root path. Use to hide path in containers below this
+	 * container for example to remove files while patching.
+	 */
+	virtual bool IsPathHiddenBelow( const decPath &path );
 	
 	
 	

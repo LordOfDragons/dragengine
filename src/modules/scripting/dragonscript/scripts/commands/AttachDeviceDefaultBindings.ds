@@ -1,0 +1,53 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+
+/**
+ * \brief Binding manager adding default bindings for newly attached devices.
+ * \version 1.6
+ * 
+ * If the attached device has no bindings assigned yet calls BaseGameApp.defaultBindings()
+ * to obtain default bindings and assigns them to the binding manager.
+ */
+class AttachDeviceDefaultBindings extends DefaultBindingManagerListener
+	/** \brief Create binding manager listener. */
+	public func new()
+	end
+	
+	/** \brief Device has been attached. */
+	public func void deviceAttached( BindingManager manager, InputDevice device )
+		var InputEventSource source = device.getSource()
+		var int index = device.getIndex()
+		
+		if manager.findAxisBinding( block Binding each
+			return each.getSystem() == source and each.getDeviceIndex() == index
+		end ) != null or manager.findButtonBinding( block Binding each
+			return each.getSystem() == source and each.getDeviceIndex() == index
+		end ) != null
+			return
+		end
+		
+		BaseGameApp.getApp().defaultBindings().updateBindingManager( device )
+	end
+end

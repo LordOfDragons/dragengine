@@ -33,10 +33,11 @@ class deAnimationKeyframeList;
  * \brief Animation Move.
  *
  */
-class deAnimationMove{
+class DE_DLL_EXPORT deAnimationMove{
 private:
 	decString pName;
 	float pPlaytime;
+	float pFPS;
 	deAnimationKeyframeList **pLists;
 	int pListCount, pListSize;
 	
@@ -67,6 +68,22 @@ public:
 	
 	/** \brief Set playtime for the move which is the largest time of all keyframes. */
 	void SetPlaytime( float playtime );
+	
+	/**
+	 * \brief Frames per second.
+	 * \version 1.6
+	 * 
+	 * Used for saving only if animation file format requires sampling.
+	 */
+	inline float GetFPS() const{ return pFPS; }
+	
+	/**
+	 * \brief Set frames per second.
+	 * \version 1.6
+	 * 
+	 * Used for saving only if animation file format requires sampling.
+	 */
+	void SetFPS( float fps );
 	
 	/** \brief Count of keyframe lists. */
 	inline int GetKeyframeListCount() const{ return pListCount; }

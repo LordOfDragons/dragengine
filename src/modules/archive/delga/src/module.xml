@@ -6,6 +6,8 @@
 	<version>VERSION</version>
 	<type>Archive</type>
 	<pattern>.delga</pattern>
+	<noCompress/>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

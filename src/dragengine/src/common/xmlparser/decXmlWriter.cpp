@@ -21,13 +21,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "decXmlWriter.h"
-
 #include "../file/decBaseFileWriter.h"
 #include "../string/unicode/decUnicodeString.h"
 #include "../string/decString.h"
 #include "../exceptions.h"
+#include "../../dragengine_configuration.h"
 
 
 
@@ -197,7 +196,11 @@ void decXmlWriter::WriteAttributeString( const char *name, const char *string ){
 	
 	while( *walker ){
 		if( *walker == '<' || *walker == '&' || *walker == '\'' ){
-			sprintf( buffer, "&#%i;", *walker );
+			#ifdef OS_W32_VS
+				sprintf_s( buffer, 10, "&#%i;", *walker );
+			#else
+				sprintf( buffer, "&#%i;", *walker );
+			#endif
 			pFile->WriteString( buffer );
 			
 		}else{
@@ -246,7 +249,11 @@ void decXmlWriter::WriteAttributeInt( const char *name, int value ){
 	}
 	
 	char buffer[ 20 ];
-	sprintf( buffer, "%i", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%i", value );
+	#else
+		sprintf( buffer, "%i", value );
+	#endif
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
@@ -266,7 +273,11 @@ void decXmlWriter::WriteAttributeFloat( const char *name, float value ){
 	}
 	
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
@@ -286,7 +297,11 @@ void decXmlWriter::WriteAttributeDouble( const char *name, double value ){
 	}
 	
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
@@ -335,7 +350,11 @@ void decXmlWriter::WriteTextString( const char *text ){
 		*/
 		
 		if( *walker == '<' || *walker == '&' || *walker == '>' ){
-			sprintf( buffer, "&#%i;", *walker );
+			#ifdef OS_W32_VS
+				sprintf_s( buffer, 10, "&#%i;", *walker );
+			#else
+				sprintf( buffer, "&#%i;", *walker );
+			#endif
 			pFile->WriteString( buffer );
 			
 		}else{
@@ -365,21 +384,33 @@ void decXmlWriter::WriteTextBool( bool value ){
 
 void decXmlWriter::WriteTextInt( int value ){
 	char buffer[ 20 ];
-	sprintf( buffer, "%i", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%i", value );
+	#else
+		sprintf( buffer, "%i", value );
+	#endif
 	
 	pFile->WriteString( buffer );
 }
 
 void decXmlWriter::WriteTextFloat( float value ){
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteString( buffer );
 }
 
 void decXmlWriter::WriteTextDouble( double value ){
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteString( buffer );
 }

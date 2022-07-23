@@ -24,8 +24,12 @@
 #include <string.h>
 
 #include "deoglVAO.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../vbo/deoglVBOLayout.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedVAO.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -38,25 +42,27 @@
 ////////////////////////////
 
 deoglVAO::deoglVAO( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
-	pVAO = 0;
-	
-	pIndexSize = 0;
-	pIndexGLType = GL_NONE;
-	
-	pRenderTaskTrackingNumber = 0;
-	pRenderTaskVAOIndex = 0;
-	
+pRenderThread( renderThread ),
+pVAO( 0 ),
+pIndexSize( 0 ),
+pIndexGLType( GL_NONE ),
+pRTSVAO( NULL )
+{
 	OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAO ) );
 	if( ! pVAO ){
 		DETHROW( deeOutOfMemory );
 	}
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
 deoglVAO::~deoglVAO(){
-	if( pVAO ){
-		pglDeleteVertexArrays( 1, &pVAO );
+	if( pRTSVAO ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnVAO( pRTSVAO );
 	}
+	
+	pRenderThread.GetDelayedOperations().DeleteOpenGLVertexArray( pVAO );
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 
 
@@ -95,10 +101,11 @@ void deoglVAO::SetIndexType( deoglVBOLayout::eIndexTypes indexType ){
 
 
 
-void deoglVAO::SetRenderTaskTrackingNumber( unsigned int trackingNumber ){
-	pRenderTaskTrackingNumber = trackingNumber;
-}
-
-void deoglVAO::SetRenderTaskVAOIndex( int vaoIndex ){
-	pRenderTaskVAOIndex = vaoIndex;
+void deoglVAO::EnsureRTSVAO(){
+	if( pRTSVAO ){
+		return;
+	}
+	
+	pRTSVAO = pRenderThread.GetRenderTaskSharedPool().GetVAO();
+	pRTSVAO->SetVAO( this );
 }

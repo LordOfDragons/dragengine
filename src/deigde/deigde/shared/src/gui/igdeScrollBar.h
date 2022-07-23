@@ -100,6 +100,9 @@ public:
 	/** \brief Set range upper value. */
 	void SetUpper( int upper );
 	
+	/** \brief Set range. */
+	void SetRange( int lower, int upper );
+	
 	/** \brief Page size. */
 	inline int GetPageSize() const{ return pPageSize; }
 	

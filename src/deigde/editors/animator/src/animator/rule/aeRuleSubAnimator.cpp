@@ -34,6 +34,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -146,7 +147,8 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		
 		try{
 			// load from file
-			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator( pPathSubAnimator );
+			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
+				decPath::AbsolutePathUnix( pPathSubAnimator, parentAnimator->GetDirectoryPath() ).GetPathUnix() );
 			
 			controllerCount = animator->GetControllers().GetCount();
 			linkCount = animator->GetLinks().GetCount();
@@ -201,10 +203,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				engRule->FreeReference();
 				engRule = NULL;
 			}
-			
-			// assign component and animation
-			//pSubAnimator->SetComponent( parentAnimator->GetEngineComponent() );
-			pSubAnimator->SetAnimation( parentAnimator->GetEngineAnimator()->GetAnimation() );
 			
 			// free the loaded animator as it is no more needed
 			animator->FreeReference();
@@ -337,24 +335,9 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 
 
 void aeRuleSubAnimator::UpdateCompAnim(){
-	deAnimatorRuleSubAnimator *rule = ( deAnimatorRuleSubAnimator* )GetEngineRule();
-	aeAnimator *animator = GetAnimator();
-	
-	if( rule ){
-		rule->SetSubAnimator( NULL );
-	}
-	
-	if( pSubAnimator ){
-		//pSubAnimator->SetComponent( NULL );
-		pSubAnimator->SetAnimation( NULL );
-		
-		//pSubAnimator->SetComponent( animator->GetEngineComponent() );
-		pSubAnimator->SetAnimation( animator->GetEngineAnimator()->GetAnimation() );
-	}
-	
+	deAnimatorRuleSubAnimator * const rule = ( deAnimatorRuleSubAnimator* )GetEngineRule();
 	if( rule ){
 		rule->SetSubAnimator( pSubAnimator );
-		
 		NotifyRuleChanged();
 	}
 }

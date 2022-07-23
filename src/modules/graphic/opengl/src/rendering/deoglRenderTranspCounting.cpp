@@ -120,17 +120,17 @@ pCount( 0 )
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Count Layers Particles" );
-	pShaderTraCountDepthParticle.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountDepthParticle = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
-	pShaderTraCountDepthParticleClip.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountDepthParticleClip = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
-	pShaderTraCountMaxCount.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
-	pShaderTraCountGetCount.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	
@@ -181,7 +181,7 @@ deoglRenderTranspCounting::~deoglRenderTranspCounting(){
 
 
 
-void deoglRenderTranspCounting::CountTransparency( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTranspCounting::CountTransparency( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -289,11 +289,11 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	}
 	
 	// render
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureDiffuse(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
 			"transp_count", deoglDebugSaveTexture::ecNoConversion );
 		//renderThread.GetConfiguration()->SetDebugSnapshot( 0 );
 		renderTask.DebugPrint( renderThread.GetLogger() );
@@ -321,7 +321,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	addToRenderTask.AddComponents( collideList );
 	
 	if( renderTask.GetShaderCount() > 0 ){
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( renderTask );
 		SetCullMode( plan.GetFlipCulling() );
@@ -355,11 +355,11 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			if( useTexture1 ){
 				defren.ActivateFBOReflectivity( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 				
 			}else{
 				defren.ActivateFBODiffuse( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 			}
 			OGL_CHECK( renderThread, glViewport( 0, 0, nextSize, curHeight ) );
 // 			OGL_CHECK( renderThread, glScissor( 0, 0, nextSize, curHeight ) );
@@ -379,10 +379,10 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 				text.Format( "transp_count_max_u_%ix%i_%i", curWidth, curHeight, nextSize );
 				if( useTexture1 ){
 					//defren.ActivateFBODiffuse( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureReflectivity(), text );
+					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureReflectivity(), text );
 				}else{
 					//defren.ActivateFBOReflectivity( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureDiffuse(), text );
+					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureDiffuse(), text );
 				}
 			}
 			
@@ -396,11 +396,11 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			if( useTexture1 ){
 				defren.ActivateFBOReflectivity( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 				
 			}else{
 				defren.ActivateFBODiffuse( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 			}
 			OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, nextSize ) );
 // 			OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, nextSize ) );
@@ -420,10 +420,10 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 				text.Format( "transp_count_max_v_%ix%i_%i", curWidth, curHeight, nextSize );
 				if( useTexture1 ){
 					//defren.ActivateFBODiffuse( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureReflectivity(), text );
+					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureReflectivity(), text );
 				}else{
 					//defren.ActivateFBOReflectivity( true );
-					renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureDiffuse(), text );
+					renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureDiffuse(), text );
 				}
 			}
 			
@@ -448,11 +448,11 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	#else
 		if( useTexture1 ){
 			defren.ActivateFBOReflectivity( false );
-			tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+			tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 			
 		}else{
 			defren.ActivateFBODiffuse( false );
-			tsmgr.EnableTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+			tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		}
 		OGL_CHECK( renderThread, glViewport( 0, 0, 100, 1 ) );
 // 		OGL_CHECK( renderThread, glScissor( 0, 0, 100, 1 ) );
@@ -477,10 +477,10 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		pOccQuery->GetResult();
 		tsmgr.DisableStage( 0 );
 		if( useTexture1 ){
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 				*defren.GetTextureReflectivity(), "transp_count_get" );
 		}else{
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 				*defren.GetTextureDiffuse(), "transp_count_get" );
 		}
 	}

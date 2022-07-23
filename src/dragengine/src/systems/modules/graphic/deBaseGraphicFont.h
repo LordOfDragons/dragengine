@@ -22,13 +22,13 @@
 #ifndef _DEBASEGRAPHICFONT_H_
 #define _DEBASEGRAPHICFONT_H_
 
-
+#include "../../../dragengine_export.h"
 
 /**
  * \brief Graphic Module Font Peer.
  *
  */
-class deBaseGraphicFont{
+class DE_DLL_EXPORT deBaseGraphicFont{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

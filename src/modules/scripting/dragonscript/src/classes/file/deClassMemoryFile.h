@@ -100,6 +100,8 @@ private:
 	
 	DEF_NATFUNC( nfGetReader );
 	DEF_NATFUNC( nfGetWriter );
+	DEF_NATFUNC( nfGetReaderZCompressed );
+	DEF_NATFUNC( nfGetWriterZCompressed );
 #undef DEF_NATFUNC
 };
 

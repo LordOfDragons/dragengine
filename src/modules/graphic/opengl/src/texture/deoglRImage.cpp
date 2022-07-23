@@ -31,7 +31,6 @@
 #include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -64,7 +63,9 @@ pCubeMap( NULL ),
 pArrayTexture( NULL ),
 pSkinUse( false ),
 pScaleU( 1.0f ),
-pScaleV( 1.0f )
+pScaleV( 1.0f ),
+
+pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 {
 	LEAK_CHECK_CREATE( renderThread, Image );
 }
@@ -101,7 +102,7 @@ void deoglRImage::SetTexture( deoglTexture *texture ){
 	pDirectReleaseTextures();
 	pTexture = texture;
 	pSkinUse = true;
-	pUpdateSkinMemoryUsage( true );
+	pUpdateSkinMemoryUsage();
 }
 
 void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
@@ -112,7 +113,7 @@ void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
 	pDirectReleaseTextures();
 	pCubeMap = cubemap;
 	pSkinUse = true;
-	pUpdateSkinMemoryUsage( true );
+	pUpdateSkinMemoryUsage();
 }
 
 void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
@@ -123,7 +124,7 @@ void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
 	pDirectReleaseTextures();
 	pArrayTexture = arrayTexture;
 	pSkinUse = true;
-	pUpdateSkinMemoryUsage( true );
+	pUpdateSkinMemoryUsage();
 }
 
 
@@ -142,7 +143,11 @@ void deoglRImage::PrepareForRender(){
 		// if the image is too small disable compression. otherwise the result
 		// can turn out smeared out. observed are problems at less than 5 pixel
 		// width or height. with 5 or more pixel no such problem is observed
-		const bool compressed = pWidth >= 5 && pHeight >= 5;
+		const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+		
+		// NOTE since this is usually called for images used in UI using compression typically
+		//      results in visible artifacts. since these places have no way to tell if using
+		//      compression is a problem default to not use compression
 		
 		if( pDepth == 1 ){
 			pTexture = new deoglTexture( pRenderThread );
@@ -183,34 +188,6 @@ void deoglRImage::PrepareForRender(){
 // Private Functions
 //////////////////////
 
-class deoglRImageDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	deoglCubeMap *cubemap;
-	deoglArrayTexture *arrayTexture;
-	
-	deoglRImageDeletion() :
-	texture( NULL ),
-	cubemap( NULL ),
-	arrayTexture( NULL ){
-	}
-	
-	virtual ~deoglRImageDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( texture ){
-			delete texture;
-		}
-		if( cubemap ){
-			delete cubemap;
-		}
-		if( arrayTexture ){
-			delete arrayTexture;
-		}
-	}
-};
-
 void deoglRImage::pCleanUp(){
 	if( pPixelBuffer ){
 		delete pPixelBuffer;
@@ -219,36 +196,12 @@ void deoglRImage::pCleanUp(){
 }
 
 void deoglRImage::pReleaseTextures(){
-	pUpdateSkinMemoryUsage( false );
-	
 	pRenderThread.GetDelayedOperations().RemoveInitImage( this );
-	
-	deoglRImageDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRImageDeletion;
-		delayedDeletion->texture = pTexture;
-		delayedDeletion->cubemap = pCubeMap;
-		delayedDeletion->arrayTexture = pArrayTexture;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
-	}
-	
-	pTexture = NULL;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
+	pDirectReleaseTextures();
 }
 
 void deoglRImage::pDirectReleaseTextures(){
-	// called from render thread. does not use delayed operations to avoid dead-locking
-	pUpdateSkinMemoryUsage( false );
-	
+	// called from render thread and from pReleaseTextures
 	if( pTexture ){
 		delete pTexture;
 		pTexture = NULL;
@@ -261,65 +214,29 @@ void deoglRImage::pDirectReleaseTextures(){
 		delete pArrayTexture;
 		pArrayTexture = NULL;
 	}
+	
+	pUpdateSkinMemoryUsage();
 }
 
-void deoglRImage::pUpdateSkinMemoryUsage( bool add ){
+void deoglRImage::pUpdateSkinMemoryUsage(){
+	pSkinMemUse.Clear();
+	
 	if( ! pSkinUse ){
 		return;
 	}
 	
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	int usageGPUUncompressed = 0;
-	int usageGPUCompressed = 0;
-	int usageGPU = 0;
-	int usageCount = 0;
-	
 	if( pTexture ){
-		usageGPU += pTexture->GetMemoryUsageGPU();
-		usageCount++;
-		
-		if( pTexture->GetMemoryUsageCompressed() ){
-			usageGPUCompressed += pTexture->GetMemoryUsageGPU();
-			
-		}else{
-			usageGPUUncompressed += pTexture->GetMemoryUsageGPU();
-		}
+		pSkinMemUse.compressed += pTexture->GetMemoryConsumption().TotalCompressed();
+		pSkinMemUse.uncompressed += pTexture->GetMemoryConsumption().TotalUncompressed();
 	}
 	
 	if( pCubeMap ){
-		usageGPU += pCubeMap->GetMemoryUsageGPU();
-		usageCount++;
-		
-		if( pCubeMap->GetMemoryUsageCompressed() ){
-			usageGPUCompressed += pCubeMap->GetMemoryUsageGPU();
-			
-		}else{
-			usageGPUUncompressed += pCubeMap->GetMemoryUsageGPU();
-		}
+		pSkinMemUse.compressed += pCubeMap->GetMemoryConsumption().TotalCompressed();
+		pSkinMemUse.uncompressed += pCubeMap->GetMemoryConsumption().TotalUncompressed();
 	}
 	
 	if( pArrayTexture ){
-		usageGPU += pArrayTexture->GetMemoryUsageGPU();
-		usageCount++;
-		
-		if( pArrayTexture->GetMemoryUsageCompressed() ){
-			usageGPUCompressed += pArrayTexture->GetMemoryUsageGPU();
-			
-		}else{
-			usageGPUUncompressed += pArrayTexture->GetMemoryUsageGPU();
-		}
-	}
-	
-	if( add ){
-		consumption.IncrementGPU( usageGPU );
-		consumption.IncrementGPUCompressed( usageGPUCompressed );
-		consumption.IncrementGPUUncompressed( usageGPUUncompressed );
-		consumption.IncrementCountBy( usageCount );
-		
-	}else{
-		consumption.DecrementGPU( usageGPU );
-		consumption.DecrementGPUCompressed( usageGPUCompressed );
-		consumption.DecrementGPUUncompressed( usageGPUUncompressed );
-		consumption.DecrementCountBy( usageCount );
+		pSkinMemUse.compressed += pArrayTexture->GetMemoryConsumption().TotalCompressed();
+		pSkinMemUse.uncompressed += pArrayTexture->GetMemoryConsumption().TotalUncompressed();
 	}
 }

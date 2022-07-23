@@ -240,7 +240,7 @@ deClassForceField::nfGetApplicationType::nfGetApplicationType( const sInitData &
 }
 void deClassForceField::nfGetApplicationType::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deForceField &forcefield = *( ( ( sFFNatDat* )p_GetNativeData( myself ) )->forcefield );
-	rt->PushValue( ( ( deClassForceField* )GetOwnerClass() )->GetClassForceFieldType()
+	rt->PushValue( ( ( deClassForceField* )GetOwnerClass() )->GetClassForceFieldApplication()
 		->GetVariable( forcefield.GetApplicationType() )->GetStaticValue() );
 }
 

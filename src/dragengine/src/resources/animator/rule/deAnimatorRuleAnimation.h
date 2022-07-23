@@ -33,7 +33,13 @@
  * fetch is indicated with the name of the move and the the time
  * from the beginning of the move.
  */
-class deAnimatorRuleAnimation : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleAnimation : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleAnimation> Ref;
+	
+	
+	
 private:
 	decString pMoveName;
 	float pMoveTime;

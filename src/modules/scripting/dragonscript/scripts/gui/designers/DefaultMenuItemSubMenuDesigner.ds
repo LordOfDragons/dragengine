@@ -1,0 +1,199 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of WidgetDesigner for MenuItemSubMenu.
+ * \version 1.11
+ */
+class DefaultMenuItemSubMenuDesigner extends DefaultWidgetDesigner
+	/** \brief Design for a particular widget state. */
+	public class MenuItemSubMenuStateDesign extends StateDesign
+		private var Image pImageArrow
+		
+		
+		
+		/** \brief Create state design. */
+		public func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		public func new(MenuItemSubMenuStateDesign stateDesign) super(stateDesign)
+			pImageArrow = stateDesign.pImageArrow
+		end
+		
+		
+		
+		/** \brief Arrow image. */
+		public func Image getImageArrow()
+			return pImageArrow
+		end
+		
+		/** \brief Set arrow image. */
+		public func void setImageArrow(Image image)
+			pImageArrow = image
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | canvas | CanvasCreator | setCanvasCreator |
+		 * | border | BorderFactory | setBorderFactory |
+		 * | font | Font | setFont |
+		 * | textColor | Color | setTextColor |
+		 * | padding | BorderSize | setPadding |
+		 * | imageArrow | Image | setImageArrow |
+		 */
+		public func void setParameter(String name, Object value)
+			if name.equals("imageArrow")
+				setImageArrow(value cast Image)
+				
+			else
+				super.setParameter(name, value)
+			end
+		end
+		
+		
+		
+		/** \brief Create copy of state. */
+		public func DefaultWidgetDesigner.StateDesign copyDesign()
+			return MenuItemSubMenuStateDesign.new(this)
+		end
+		
+		/**
+		 * \brief Merge states.
+		 * 
+		 * Updates state with parameters of this state if defined. Used to find the first
+		 * defined parameter for a series of states acting as fallback for each other.
+		 */
+		public func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
+			
+			var MenuItemSubMenuStateDesign cbstate = state cast MenuItemSubMenuStateDesign
+			
+			if pImageArrow != null
+				cbstate.pImageArrow = pImageArrow
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		public func void apply(Widget widget)
+			super.apply(widget)
+			
+			var MenuItemSubMenu menuItem = widget cast MenuItemSubMenu
+			var DisplayImage widgetArrow = menuItem.getWidgetArrow() cast DisplayImage
+			
+			widgetArrow.setImage(pImageArrow)
+		end
+	end
+	
+	
+	
+	/** \brief Create new box designer. */
+	public func new()
+		setDesignNormal(MenuItemSubMenuStateDesign.new())
+		setDesignDisabled(MenuItemSubMenuStateDesign.new())
+		setDesignFocused(MenuItemSubMenuStateDesign.new())
+		setDesignHover(MenuItemSubMenuStateDesign.new())
+		setDesignFocusedHover(MenuItemSubMenuStateDesign.new())
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new(DefaultMenuItemSubMenuDesigner designer) super(designer)
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	public func MenuItemSubMenuStateDesign getMenuItemSubMenuDesignNormal()
+		return getDesignNormal() cast MenuItemSubMenuStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	public func MenuItemSubMenuStateDesign getMenuItemSubMenuDesignDisabled()
+		return getDesignDisabled() cast MenuItemSubMenuStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	public func MenuItemSubMenuStateDesign getMenuItemSubMenuDesignFocused()
+		return getDesignFocused() cast MenuItemSubMenuStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	public func MenuItemSubMenuStateDesign getMenuItemSubMenuDesignHover()
+		return getDesignHover() cast MenuItemSubMenuStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	public func MenuItemSubMenuStateDesign getMenuItemSubMenuDesignFocusedHover()
+		return getDesignFocusedHover() cast MenuItemSubMenuStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultButtonDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.imageArrow | Image | getDesign{state}.setImageArrow |
+	 */
+	public func void setParameter(String name, Object value)
+		super.setParameter(name, value)
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultMenuItemSubMenuDesigner.new(this)
+	end
+	
+	
+	
+	/** \brief Design widget. */
+	public func void designWidget(Widget widget)
+		// create box and mark widgets if not existing
+		var MenuItemSubMenu menuItem = widget cast MenuItemSubMenu
+		
+		var DisplayImage widgetArrow = menuItem.getWidgetArrow() cast DisplayImage
+		if widgetArrow == null
+			widgetArrow = DisplayImage.new(null)
+			menuItem.setWidgetArrow(widgetArrow)
+		end
+		
+		// design widget
+		super.designWidget(widget)
+	end
+end

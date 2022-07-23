@@ -1,0 +1,77 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Mouse listener scrolling model using mouse wheel movement.
+ * \version 1.9
+ * 
+ * Typical use for this listener is on a TextField linked to a SpinButton to allow the user
+ * to scroll the range model by wheelingon the text field
+ */
+class ScrollModelWheelMouseListener extends DefaultMouseListener
+	/** \brief Model. */
+	private var RangeModel pModel
+	
+	
+	
+	/** \brief Create mouse listener. */
+	public func new(RangeModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		pModel = model
+	end
+	
+	
+	
+	/** \brief Model to scroll. */
+	public func RangeModel getModel()
+		return pModel
+	end
+	
+	/** \brief Set model to scroll. */
+	public func void setModel(RangeModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		pModel = model
+	end
+	
+	
+	
+	/** \brief Mouse wheel moved. */
+	public func void onMouseWheel(MouseEvent event)
+		var int y = event.getPosition().getY()
+		
+		if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+			pModel.setValue(pModel.getValue() + pModel.getPageSize() * y)
+			
+		else
+			pModel.setValue(pModel.getValue() + pModel.getIncrement() * y)
+		end
+	end
+end

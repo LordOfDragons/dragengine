@@ -71,6 +71,19 @@ pin Dragengine.Debugging
  * This class is designed as single use with new instances created for each loading process.
  * Only one GameWorldLoader should be active at once. If you need to run multiple instances
  * in parallel you have to carefully manage the loading windows (for example use hidden ones).
+ * 
+ * \par Version 1.8
+ * 
+ * Added default handling for loading world using persistency. This requires two additional
+ * parameters to be set.
+ * 
+ * The setIDGenerator(MutableID) sets the ID Generator to use. This initializes the GameWorld
+ * with the next object ID while loading and adds an ID Remapper entry to assign world objects
+ * unique IDs starting with the next free ID.
+ * 
+ * The setPersistency(PersistencyEnvironment,FileReader) sets the persistency to load from.
+ * If set loading is slightly different loading the world content and restoring persisted
+ * states. Use this to load save states.
  */
 class GameWorldLoader
 	/** \brief Frame update listener. */
@@ -79,13 +92,13 @@ class GameWorldLoader
 		private var GameWorldLoader pGameWorldLoader
 		
 		/** \brief Create frame update listener. */
-		public func new( GameWorldLoader gameWorldLoader )
-			this.pGameWorldLoader = gameWorldLoader
+		public func new(GameWorldLoader gameWorldLoader)
+			pGameWorldLoader = gameWorldLoader
 		end
 		
 		/** \brief Do frame update. */
-		public func void frameUpdate( float elapsed )
-			this.pGameWorldLoader.updateLoading()
+		public func void frameUpdate(float elapsed)
+			pGameWorldLoader.updateLoading()
 		end
 	end
 	
@@ -103,6 +116,9 @@ class GameWorldLoader
 	private var bool pCleanUpStubWorld
 	private var String pPathWorld
 	private var FrameUpdater pFrameUpdater
+	private var MutableID pIDGenerator
+	private var PersistencyEnvironment pPersistEnvironment
+	private var FileReader pPersistencyReader
 	
 	private var DebugVerifyStubProperties pDebugVerifyStubProperties
 	
@@ -113,8 +129,8 @@ class GameWorldLoader
 	 * 
 	 * Creates a DecalBuilder and an AddDecalVisitor.
 	 */
-	public func new() this( BaseGameApp.getApp().getConsole(), \
-	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getElementClassList() )
+	public func new() this(BaseGameApp.getApp().getConsole(), BaseGameApp.getApp().getLoaders(),\
+	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator())
 	end
 	
 	/**
@@ -122,58 +138,75 @@ class GameWorldLoader
 	 * 
 	 * Creates a DecalBuilder and an AddDecalVisitor.
 	 */
-	public func new( Console console, Loaders loaders, ElementClassList elementClassList )
+	public func new(Console console, Loaders loaders, ElementClassList elementClassList)\
+	this(console, loaders, elementClassList, null)
+	end
+	
+	/**
+	 * \brief Create game world loader.
+	 * \version 1.8
+	 * 
+	 * Creates a DecalBuilder and an AddDecalVisitor.
+	 */
+	public func new(Console console, Loaders loaders, ElementClassList elementClassList, MutableID idGenerator)
 		if console == null or loaders == null or elementClassList == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("console")
+		end
+		if loaders == null
+			throw ENullPointer.new("loaders")
+		end
+		if elementClassList == null
+			throw ENullPointer.new("elementClassList")
 		end
 		
-		this.pConsole = console
-		this.pLoaders = loaders
-		this.pElementClassList = elementClassList
+		pConsole = console
+		pLoaders = loaders
+		pElementClassList = elementClassList
+		pIDGenerator = idGenerator
 		
-		this.pDecalBuilder = DecalBuilder.new()
-		this.pIgnorePersistableElements = false
-		this.pEnableNetworking = false
+		pDecalBuilder = DecalBuilder.new()
+		pIgnorePersistableElements = false
+		pEnableNetworking = false
 		
-		this.pCleanUpStubWorld = false
+		pCleanUpStubWorld = false
 		
-		this.pPreloadManager = PreloadManager.new()
+		pPreloadManager = PreloadManager.new()
 	end
 	
 	/** \brief Dispose of game world loader to break reference loops. */
 	public func void dispose()
-		this.stopFrameUpdater()
-		this.setWindowLoading( null )
+		stopFrameUpdater()
+		setWindowLoading(null)
 		
-		if this.pDecalBuilder != null
-			this.pDecalBuilder.dispose()
-			this.pDecalBuilder = null
+		if pDecalBuilder != null
+			pDecalBuilder.dispose()
+			pDecalBuilder = null
 		end
 		
-		this.pPreloadManager = null
-		this.pDebugVerifyStubProperties = null
+		pPreloadManager = null
+		pDebugVerifyStubProperties = null
 	end
 	
 	
 	
 	/** \brief Console console. */
 	public func Console getConsole()
-		return this.pConsole
+		return pConsole
 	end
 	
 	/** \brief Loaders. */
 	public func Loaders getLoaders()
-		return this.pLoaders
+		return pLoaders
 	end
 	
 	/** \brief Element classes list. */
 	public func ElementClassList getElementClassList()
-		return this.pElementClassList
+		return pElementClassList
 	end
 	
 	/** \brief Decal builder used for world decals. */
 	public func DecalBuilder getDecalBuilder()
-		return this.pDecalBuilder
+		return pDecalBuilder
 	end
 	
 	/**
@@ -181,86 +214,127 @@ class GameWorldLoader
 	 * 
 	 * The old decal builder is disposed of if present.
 	 */
-	public func void setDecalBuilder( DecalBuilder decalBuilder )
-		if decalBuilder == this.pDecalBuilder
+	public func void setDecalBuilder(DecalBuilder decalBuilder)
+		if decalBuilder == pDecalBuilder
 			return
 		end
 		
-		if this.pDecalBuilder != null
-			this.pDecalBuilder.dispose()
+		if pDecalBuilder != null
+			pDecalBuilder.dispose()
 		end
 		
-		this.pDecalBuilder = decalBuilder
+		pDecalBuilder = decalBuilder
 	end
 	
 	/** \brief Loading window window. */
 	public func WindowLoading getWindowLoading()
-		return this.pWindowLoading
+		return pWindowLoading
 	end
 	
 	/** \brief Set loading window. */
-	public func void setWindowLoading( WindowLoading window )
-		if window == this.pWindowLoading
+	public func void setWindowLoading(WindowLoading window)
+		if window == pWindowLoading
 			return
 		end
 		
-		if this.pWindowLoading != null
-			this.pWindowLoading.close()
+		if pWindowLoading != null
+			pWindowLoading.close()
 		end
 		
-		this.pWindowLoading = window
+		pWindowLoading = window
 	end
 	
 	/** \brief Preload manager. */
 	public func PreloadManager getPreloadManager()
-		return this.pPreloadManager
+		return pPreloadManager
 	end
 	
 	/** \brief Ignore persistable elements. */
 	public func bool getIgnorePersistableElements()
-		return this.pIgnorePersistableElements
+		return pIgnorePersistableElements
 	end
 	
 	/** \brief Set if persistable elements are ignored. */
-	public func void setIgnorePersistableElements( bool ignorePersistableElements )
-		this.pIgnorePersistableElements = ignorePersistableElements
+	public func void setIgnorePersistableElements(bool ignorePersistableElements)
+		pIgnorePersistableElements = ignorePersistableElements
 	end
 	
 	/** \brief Enable networking. */
 	public func bool getEnableNetworking()
-		return this.pEnableNetworking
+		return pEnableNetworking
 	end
 	
 	/** \brief Set if networking is enabled. */
-	public func void setEnableNetworking( bool enable )
-		this.pEnableNetworking = enable
+	public func void setEnableNetworking(bool enable)
+		pEnableNetworking = enable
 	end
 	
 	/** \brief Game world stub. */
 	public func StubGameWorld getStubWorld()
-		return this.pStubWorld
+		return pStubWorld
 	end
 	
 	/** \brief World file path. */
 	public func String getPathWorld()
-		return this.pPathWorld
+		return pPathWorld
 	end
 	
 	/** \brief Set world file path. */
-	public func void setPathWorld( String path )
-		this.pPathWorld = path
+	public func void setPathWorld(String path)
+		pPathWorld = path
+	end
+	
+	/**
+	 * \brief ID Generator or null.
+	 * \version 1.8
+	 */
+	public func MutableID getIDGenerator()
+		return pIDGenerator
+	end
+	
+	/**
+	 * \brief Persistency environment or null.
+	 * \version 1.8
+	 */
+	public func PersistencyEnvironment getPersistencyEnvironment()
+		return pPersistEnvironment
+	end
+	
+	/**
+	 * \brief Persistency reader or null.
+	 * \version 1.8
+	 */
+	public func FileReader getPersistencyReader()
+		return pPersistencyReader
+	end
+	
+	/**
+	 * \brief Set persistency environment and reader.
+	 * \version 1.8
+	 * 
+	 * Set both to non-null to enable loading game world using persisted state.
+	 * 
+	 * \throws EInvalidParam environment or reader is null but not both.
+	 */
+	public func void setPersistency(PersistencyEnvironment environment, FileReader reader)
+		if (environment == null) != (reader == null)
+			throw EInvalidParam.new("environment or reader is null but not both")
+		end
+		
+		pPersistEnvironment = environment
+		pPersistencyReader = reader
 	end
 	
 	
 	
 	/** \brief Debug verify stub properties while loading or null if not used. */
 	public func DebugVerifyStubProperties getDebugVerifyStubProperties()
-		return this.pDebugVerifyStubProperties
+		return pDebugVerifyStubProperties
 	end
 	
 	/** \brief Set debug verify stub properties while loading or null if not used. */
-	public func void setDebugVerifyStubProperties( DebugVerifyStubProperties debug )
-		this.pDebugVerifyStubProperties = debug
+	public func void setDebugVerifyStubProperties(DebugVerifyStubProperties debug)
+		pDebugVerifyStubProperties = debug
 	end
 	
 	
@@ -271,29 +345,29 @@ class GameWorldLoader
 	 * Set up all required parameters before calling this method, in particular setPathWorld().
 	 */
 	public func void startLoading()
-		if this.pPathWorld == null
+		if pPathWorld == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pStubWorld = null
-		this.pCleanUpStubWorld = false
+		pStubWorld = null
+		pCleanUpStubWorld = false
 		
 		try
-			this.createLoadingWindow()
-			this.loadWorld()
+			createLoadingWindow()
+			loadWorld()
 			
-			this.preloadResources()
-			this.pStubWorld.beginPreloading()
+			preloadResources()
+			pStubWorld.beginPreloading()
 			
-			if this.pWindowLoading != null
-				this.pWindowLoading.setPreloadManager( this.pPreloadManager )
+			if pWindowLoading != null
+				pWindowLoading.setPreloadManager(pPreloadManager)
 			end
 			
-			this.startFrameUpdater()
+			startFrameUpdater()
 			
 		catch Exception e
-			this.pConsole.addError( "Failed loading game world '" + this.pPathWorld + "'", e )
-			this.cleanUp()
+			pConsole.addError("Failed loading game world '" + pPathWorld + "'", e)
+			cleanUp()
 			throw
 		end
 	end
@@ -307,39 +381,39 @@ class GameWorldLoader
 		var bool preloadProblemsReported = false
 		
 		try
-			this.pStubWorld.updatePreloading()
-			if this.pPreloadManager.getCounter().isNotZero()
+			pStubWorld.updatePreloading()
+			if pPreloadManager.getCounter().isNotZero()
 				return
 			end
 			
 			preloadProblemsReported = true
-			if this.reportPreloadProblems()
+			if reportPreloadProblems()
 				throw EInvalidParam.new()
 			end
 			
-			this.createContentFromStub()
-			this.pCleanUpStubWorld = false
+			createContentFromStub()
+			pCleanUpStubWorld = false
 			
 		catch Exception e
-			this.pConsole.addError( "Failed loading game world '" + this.pPathWorld + "'", e )
+			pConsole.addError("Failed loading game world '" + pPathWorld + "'", e)
 			if not preloadProblemsReported
-				this.reportPreloadProblems()
+				reportPreloadProblems()
 			end
-			this.cancelLoading()
+			cancelLoading()
 			return
 		end
 		
-		this.cleanUp()
+		cleanUp()
 		
 		try
-			this.onLoadWorldFinished()
+			onLoadWorldFinished()
 			
 		catch Exception e
-			this.pConsole.addError( "Failed calling onLoadWorldFinished after " \
-				+ "loading game world '" + this.pPathWorld + "'", e )
+			pConsole.addError("Failed calling onLoadWorldFinished after " \
+				+ "loading game world '" + pPathWorld + "'", e)
 			
-			this.pCleanUpStubWorld = true
-			this.cancelLoading()
+			pCleanUpStubWorld = true
+			cancelLoading()
 		end
 	end
 	
@@ -350,36 +424,36 @@ class GameWorldLoader
 	 * Calls onLoadWorldFailed().
 	 */
 	public func void cancelLoading()
-		this.cleanUp()
-		this.onLoadWorldFailed()
+		cleanUp()
+		onLoadWorldFailed()
 	end
 	
 	
 	
 	/** \brief Set game world stub. */
-	protected func void setStubWorld( StubGameWorld stub )
-		this.pStubWorld = stub
+	protected func void setStubWorld(StubGameWorld stub)
+		pStubWorld = stub
 	end
 	
 	/** \brief Clean up world stub. */
 	protected func bool getCleanUpStubWorld()
-		return this.pCleanUpStubWorld
+		return pCleanUpStubWorld
 	end
 	
 	/** \brief Set clean up world stub. */
-	protected func void setCleanUpStubWorld( bool cleanUpStubWorld )
-		this.pCleanUpStubWorld = cleanUpStubWorld
+	protected func void setCleanUpStubWorld(bool cleanUpStubWorld)
+		pCleanUpStubWorld = cleanUpStubWorld
 	end
 	
 	/** \brief Cleaning up. */
 	protected func void cleanUp()
-		this.stopFrameUpdater()
-		this.setWindowLoading( null )
-		this.pPreloadManager = null
+		stopFrameUpdater()
+		setWindowLoading(null)
+		pPreloadManager = null
 		
-		if this.pStubWorld != null and this.pCleanUpStubWorld
-			this.pStubWorld.getGameWorld().dispose()
-			this.pStubWorld = null
+		if pStubWorld != null and pCleanUpStubWorld
+			pStubWorld.getGameWorld().dispose()
+			pStubWorld = null
 		end
 	end
 	
@@ -387,16 +461,16 @@ class GameWorldLoader
 	
 	/** \brief Start frame updater if not started. */
 	protected func void startFrameUpdater()
-		if this.pFrameUpdater == null
-			this.pFrameUpdater = FrameUpdater.new( this )
+		if pFrameUpdater == null
+			pFrameUpdater = FrameUpdater.new(this)
 		end
 	end
 	
 	/** \brief Stop frame updater if running. */
 	protected func void stopFrameUpdater()
-		if this.pFrameUpdater != null
-			this.pFrameUpdater.giveUp()
-			this.pFrameUpdater = null
+		if pFrameUpdater != null
+			pFrameUpdater.giveUp()
+			pFrameUpdater = null
 		end
 	end
 	
@@ -405,11 +479,11 @@ class GameWorldLoader
 	 */
 	protected func void createLoadingWindow()
 		var WindowLoading window = WindowLoading.new()
-		//window.setBgStyle( "Bg1" )
-		window.getModelText().setText( "Loading..." )
-		this.setWindowLoading( window )
+		//window.setBgStyle("Bg1")
+		window.getModelText().setText("Loading...")
+		setWindowLoading(window)
 		
-		BaseGameApp.getApp().getDesktop().addWindow( window )
+		BaseGameApp.getApp().getDesktop().addWindow(window)
 		window.grabFocus()
 		
 		BaseGameApp.getApp().setInputProcessorDesktop()
@@ -417,11 +491,85 @@ class GameWorldLoader
 	
 	/** \brief Load world. */
 	protected func void loadWorld()
-		this.pStubWorld = StubGameWorld.new( this.createGameWorld(), \
-			this.pPreloadManager.getCounter() )
-		this.pCleanUpStubWorld = true
-		this.pLoaders.getWorld().loadFromFile( this.pStubWorld, this.pPathWorld, \
-			this.pIgnorePersistableElements, this.pEnableNetworking )
+		pStubWorld = StubGameWorld.new(createGameWorld(), pPreloadManager.getCounter())
+		pCleanUpStubWorld = true
+		pLoaders.getWorld().loadFromFile(pStubWorld, pPathWorld, pIgnorePersistableElements, pEnableNetworking)
+		worldStoreNextIDAndRemapEntry()
+		persistencyReadWorld()
+	end
+	
+	/**
+	 * \brief Set world next object ID and add ID Remapper entry if required.
+	 * \version 1.8
+	 * 
+	 * Set world next object ID is always done.
+	 * 
+	 * The ID mapper and ID generator is only adjusted if persistency environment and reader
+	 * are null. If persistency is present the read and updated during readElementStubsFromFile()
+	 * call later on. Make sure ID Generator has been read from persisted state before this
+	 * function is called.
+	 * 
+	 * Remapper entry is added if the ID generator next ID is larger than 1. The ID Generator
+	 * is always incremented by the last used object ID (next object ID - 1).
+	 * 
+	 * If ID Generator or persistency is null only sets the next object ID.
+	 * 
+	 * Called by loadWorld().
+	 */
+	protected func void worldStoreNextIDAndRemapEntry()
+		var GameWorld gameWorld = pStubWorld.getGameWorld()
+		
+		var UniqueID nextObjectID = pStubWorld.getNextObjectID()
+		gameWorld.setNextObjectID(nextObjectID)
+		
+		if pIDGenerator != null and pPersistEnvironment == null and pPersistencyReader == null
+			var UniqueID firstID = UniqueID.new(1)
+			if nextObjectID > firstID
+				if pIDGenerator.toUniqueID() > firstID
+					gameWorld.getUniqueIDRemapper().add(firstID, nextObjectID, pIDGenerator.toUniqueID() - firstID)
+				end
+				pIDGenerator.incrementBy(nextObjectID - firstID)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Read world from persistency reader.
+	 * \version 1.8
+	 * 
+	 * Does nothing if persistency environment, reader or ID Generator is null.
+	 * 
+	 * Called by loadWorld().
+	 */
+	protected func void persistencyReadWorld()
+		if pPersistencyReader == null or pPersistencyReader == null or pIDGenerator == null
+			return
+		end
+		
+		pStubWorld.getGameWorld().readFromFile(pPersistEnvironment, pPersistencyReader)
+		
+		// read element stubs from file. this call does a couple of things.
+		// 
+		// first it reads the next object ID and unique ID remapper.
+		// 
+		// then it remaps the elements stubs created while loading the world using the unique
+		// ID remapper load in the previous step. for this reason this call has to come after
+		// the create element calls above.
+		// 
+		// then the dynamic element stubs are read. this creates the dynamnic elements not
+		// present in the game world at the time the world has been designed
+		pStubWorld.getGameWorld().readElementStubsFromFile(pPersistEnvironment,\
+			pPersistencyReader, pIDGenerator, pElementClassList, pStubWorld)
+		
+		/*
+		pConsole.addMessage("persistencyReadWorld")
+		pStubWorld.getGameWorld().getUniqueIDRemapper().forEach(block UniqueIDRemapper.RemapEntry each
+			pConsole.addMessage("  - remap " + each.getFirstID() + " : " + each.getLastID() + " offset " + each.getOffset())
+		end)
+// 		pStubWorld.forEachElement(block StubElement each
+// 			pConsole.addMessage("  - " + each.getClass().getClassname() + ": " + each.getID())
+// 		end)
+		*/
 	end
 	
 	/**
@@ -430,15 +578,15 @@ class GameWorldLoader
 	 * Preloads resources from all elements classes.
 	 */
 	protected func void preloadResources()
-		this.pElementClassList.preloadAll( this.pPreloadManager )
+		pElementClassList.preloadAll(pPreloadManager)
 		
 		/*
-		this.pStubWorld.addElementClassesTo( this.pPreloadManager )
+		pStubWorld.addElementClassesTo(pPreloadManager)
 		
-		this.pPreloadManager.addElementClassDependencies()
+		pPreloadManager.addElementClassDependencies()
 		*/
 		
-		this.pPreloadManager.preloadElementClasses()
+		pPreloadManager.preloadElementClasses()
 	end
 	
 	/**
@@ -446,7 +594,7 @@ class GameWorldLoader
 	 * \returns True if problems are present.
 	 */
 	protected func bool reportPreloadProblems()
-		return this.pElementClassList.logPreloadProblems( this.pConsole )
+		return pElementClassList.logPreloadProblems(pConsole)
 	end
 	
 	/**
@@ -462,18 +610,67 @@ class GameWorldLoader
 	/**
 	 * \brief Create world content from stubs.
 	 * 
-	 * Calls verifyPreloading(), createAndAddElements() and createWorldDecals() on
-	 * the world stub.
+	 * If persistency environment and reader are not null calls persistencyCreateContentFromStub().
+	 * 
+	 * Otherwise calls verifyPreloading(), createAndAddElements() and createWorldDecals()
+	 * on the world stub.
 	 * 
 	 * \note If DebugVerifyStubProperties is set verifies stub elements before creating them.
 	 */
 	protected func void createContentFromStub()
-		this.pStubWorld.verifyPreloading( this.pConsole )
-		if this.pDebugVerifyStubProperties != null
-			this.pDebugVerifyStubProperties.verifyWorld( this.pStubWorld )
+		if pPersistEnvironment != null and pPersistencyReader != null
+			persistencyCreateContentFromStub()
+			return
 		end
-		this.pStubWorld.createAndAddElements( this.pConsole )
-		this.pStubWorld.createWorldDecals( this.pDecalBuilder, this.pConsole )
+		
+		pStubWorld.verifyPreloading(pConsole)
+		if pDebugVerifyStubProperties != null
+			pDebugVerifyStubProperties.verifyWorld(pStubWorld)
+		end
+		pStubWorld.createAndAddElements(pConsole)
+		pStubWorld.createWorldDecals(pDecalBuilder, pConsole)
+	end
+	
+	/**
+	 * \brief Create world content from stubs using persistency.
+	 * \version 1.8
+	 * 
+	 * Calls verifyPreloading(), createAndAddNonPersistableElements(),
+	 * createAndAddPersistableElements(), loadAndAddPersistableElements and createWorldDecals()
+	 * on the world stub.
+	 * 
+	 * Called by createContentFromStub() if persistency environment and reader is not null.
+	 * 
+	 * \note If DebugVerifyStubProperties is set verifies stub elements before creating them.
+	 * 
+	 * \throws EInvalidAction persistency environment or reader is null.
+	 */
+	protected func void persistencyCreateContentFromStub()
+		if pPersistEnvironment == null or pPersistencyReader == null
+			throw EInvalidAction.new("persistency environment or reader is null")
+		end
+		
+		pStubWorld.verifyPreloading(pConsole)
+		if getDebugVerifyStubProperties() != null
+			getDebugVerifyStubProperties().verifyWorld(pStubWorld)
+		end
+		
+		pStubWorld.createAndAddNonPersistableElements(pConsole)
+		
+		if pStubWorld.getNewElementsRange() != null
+			pStubWorld.createAndAddPersistableElements(pConsole, pStubWorld.getNewElementsRange())
+		end
+		
+		pStubWorld.loadAndAddPersistableElements(pConsole, pPersistEnvironment, pPersistencyReader)
+		
+		pStubWorld.createWorldDecals(pDecalBuilder, pConsole)
+		
+		/*
+		pConsole.addMessage("persistencyCreateContentFromStub")
+		pStubWorld.getGameWorld().forEachElement(block Element each
+			pConsole.addMessage("  - " + each.getClass().getClassname() + ": " + each.getID())
+		end)
+		*/
 	end
 	
 	

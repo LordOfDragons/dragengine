@@ -57,6 +57,7 @@ deoglParameterFloat( ogl )
 		" 6 seems to be a good value for this case." );
 	SetCategory( ecExpert );
 	SetDisplayName( "AO Self Shadow Smooth Angle" );
+	SetDefaultValue( "10" );
 }
 
 deoglPAOSelfShadowSmoothAngle::~deoglPAOSelfShadowSmoothAngle(){

@@ -21,6 +21,10 @@
 
 #include "deoglSharedSPBRTIGroup.h"
 #include "deoglSharedSPBRTIGroupList.h"
+#include "../../../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../../../rendering/task/shared/deoglRenderTaskSharedInstance.h"
+#include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -32,12 +36,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &parent,
-deoglSharedSPB &sharedSPB ) :
+deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList *parent,
+deoglSharedSPB &sharedSPB, int textureCount ) :
 pParent( parent ),
-pSharedSPB( sharedSPB ){
+pSharedSPB( sharedSPB ),
+pTextureCount( textureCount ),
+pRTSInstance( NULL )
+{
+	if( ! parent ){
+		DETHROW_INFO( deeNullPointer, "parent" );
+	}
+	
+	pRTSInstance = parent->GetRenderThread().GetRenderTaskSharedPool().GetInstance();
+	pUniqueKey = parent->GetRenderThread().GetUniqueKey().Get();
 }
 
 deoglSharedSPBRTIGroup::~deoglSharedSPBRTIGroup(){
-	pParent.Remove( this );
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
+	
+	pParent->GetRenderThread().GetUniqueKey().Return( pUniqueKey );
+	pParent->Remove( this );
 }

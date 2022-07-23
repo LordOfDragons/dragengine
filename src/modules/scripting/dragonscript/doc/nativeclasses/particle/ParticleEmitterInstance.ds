@@ -84,6 +84,36 @@ class ParticleEmitterInstance
 	public func void setTimeScale( float scale )
 	end
 	
+	/**
+	 * \brief Warm up time used when enabling casting.
+	 * \version 1.7
+	 */
+	public func float getWarmUpTime()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set warm up time used when enabling casting.
+	 * \version 1.7
+	 */
+	public func void setWarmUpTime( float warmUpTime )
+	end
+	
+	/**
+	 * \brief Burst time. Set by the physics module to be used by the graphics module.
+	 * \version 1.7
+	 */
+	public func float getBurstTime()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set burst time. Set by the physics module to be used by the graphics module.
+	 * \version 1.7
+	 */
+	public func void setBurstTime( float burstTime )
+	end
+	
 	
 	
 	/** \brief Rendr layer mask. */
@@ -225,6 +255,58 @@ class ParticleEmitterInstance
 	 * \details Non-matching controllers are ignored.
 	 */
 	public func void copyNamedControllerStates( ParticleEmitterInstance instance )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Ignore colliders */
+	/*@{*/
+	/**
+	 * \brief Number of colliders to ignore.
+	 * \version 1.7
+	 */
+	public func int getIgnoreColliderCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Ignore collider at index.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getIgnoreColliderCount().
+	 */
+	public func Collider getIgnoreColliderAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Ignore collider is present.
+	 * \version 1.7
+	 */
+	public func bool hasIgnoreCollider( Collider collider )
+		return false
+	end
+	
+	/**
+	 * \brief Add collider to ignore.
+	 * \version 1.7
+	 */
+	public func void addIgnoreCollider( Collider collider )
+	end
+	
+	/**
+	 * \brief Remove collider to ignore.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em collider is absent.
+	 */
+	public func void removeIgnoreCollider( Collider collider )
+	end
+	
+	/**
+	 * \brief Remove all colliders to ignore.
+	 * \version 1.7
+	 */
+	public func void removeAllIgnoreColliders()
 	end
 	/*@}*/
 end

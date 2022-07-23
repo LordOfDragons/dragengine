@@ -37,7 +37,7 @@ class deVirtualFileSystem;
  * If a resource is already present loading is skiped. This can be used by
  * deSkinBuilder users to use already loaded resources.
  */
-class deSkinPropertyNodeVisitorLoad : public deSkinPropertyNodeVisitor{
+class DE_DLL_EXPORT deSkinPropertyNodeVisitorLoad : public deSkinPropertyNodeVisitor{
 private:
 	deEngine &pEngine;
 	deVirtualFileSystem * const pVirtualFileSystem;

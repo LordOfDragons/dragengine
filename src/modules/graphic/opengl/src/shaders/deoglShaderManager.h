@@ -35,6 +35,7 @@ class deoglShaderSources;
 class deoglShaderLanguage;
 class deVirtualFileSystem;
 class decPath;
+class deoglShaderProgramUsage;
 
 
 
@@ -128,7 +129,7 @@ public:
 	/** Retrieves the number of programs. */
 	inline int GetProgramCount() const{ return pProgramCount; }
 	/** Retrieves the program at the given index. */
-	deoglShaderProgram *GetProgramAt( int index ) const;
+	const deoglShaderProgram &GetProgramAt( int index ) const;
 	/** Determines if a program with the given sources and defines combination exists. */
 //	bool HasProgramWith( deoglShaderUnitProgram *fragment, deoglShaderUnitProgram *vertex,
 //		deoglShaderUnitProgram *geometry, const deoglShaderDefines &defines ) const;
@@ -149,10 +150,9 @@ public:
 	/**
 	 * \brief Program with sources and defines combination.
 	 * 
-	 * If program is absent it is loaded and compiled first. A usage is added to the program
-	 * before returning. Use deoglShaderProgramUsage::TakeOver() to store the usage.
+	 * If program is absent it is loaded and compiled first. A usage is added to the program.
 	 */
-	deoglShaderProgram *GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines );
+	deoglShaderProgramUsage GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines );
 	
 	/** Adds a program. */
 	void AddProgram( deoglShaderProgram *program );

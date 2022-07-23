@@ -1,9 +1,9 @@
 precision highp float;
 precision highp int;
 
-uniform HIGHP sampler2D texOccMap;
+uniform HIGHP sampler2DArray texOccMap;
 #ifdef DUAL_OCCMAP
-uniform HIGHP sampler2D texOccMap2;
+uniform HIGHP sampler2DArray texOccMap2;
 #endif
 
 uniform mat4 pMatrix; // camera-rotation and projection
@@ -30,6 +30,12 @@ uniform vec4 pFrustumTestMul;
 in vec3 inMinExtend;
 in vec3 inMaxExtend;
 
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
+
 out float fbResult;
 
 const float baselog = log2( 3.0 ); // 1.5849625007211563
@@ -39,83 +45,51 @@ const float baselog = log2( 3.0 ); // 1.5849625007211563
 
 
 
-// calculates the screen space position of a point. if the z coordinate is behind the near z plane clamp the
-// coordinates to the closest border. otherwise apply conventional projection mapping
-/*#define CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld ) \
-	pointScreen = matrix * pointWorld; \
-	if( pointScreen.z < clipNear ){ \
-		pointScreen.xyz = vec3( mix( vec2( -1.0 ), vec2( 1.0 ), bvec2( step( 0.5, pointScreen.xy ) ) ), clipNear ); \
-	}else{ \
-		pointScreen.xy = clamp( pointScreen.xy / vec2( pointScreen.w ), -1.0, 1.0 ); \
-	}*/
-#define CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld ) \
-	pointScreen = matrix * pointWorld; \
-	if( pointScreen.z >= clipNear ){ \
-		pointScreen.xy = clamp( pointScreen.xy / vec2( pointScreen.w ), vec2( -1.0 ), vec2( 1.0 ) ); \
-	}
+const bvec3 vBoxCorner[ 8 ] = bvec3[ 8 ](
+	bvec3( false, false, false ), // point -x, -y, -z
+	bvec3( true,  false, false ), // point  x, -y, -z
+	bvec3( false, true,  false ), // point -x,  y, -z
+	bvec3( true,  true,  false ), // point  x,  y, -z
+	bvec3( false, false, true  ), // point -x, -y,  z
+	bvec3( true,  false, true  ), // point  x, -y,  z
+	bvec3( false, true,  true  ), // point -x,  y,  z
+	bvec3( true,  true,  true  )  // point  x,  y,  z
+);
 
-// calculates the screen space AABB projection
-void calcScreenAABB( out vec3 minExtend, out vec3 maxExtend, in mat4 matrix, in float clipNear,
+// calculate screen space AABB projection. returns true if all points are in front of near plane
+bool calcScreenAABB( out vec3 minExtend, out vec3 maxExtend, in mat4 matrix,
 in vec3 inputMinExtend, in vec3 inputMaxExtend ){
-	vec4 pointScreen, pointWorld;
+	vec4 screen, world = vec4( 1.0 );
+	int i;
 	
-	// point -x, -y, -z
-	pointWorld = vec4( inputMinExtend, 1.0 );
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = pointScreen.xyz;
-	maxExtend = pointScreen.xyz;
+	minExtend = vec3( 1.0 );
+	maxExtend = vec3( -1.0 );
 	
-	// point  x, -y, -z
-	pointWorld.x = inputMaxExtend.x;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
+	for( i=0; i<8; i++ ){
+		world.xyz = mix( inputMinExtend, inputMaxExtend, vBoxCorner[ i ] );
+		screen = matrix * world;
+		if( screen.z <= 0.0 ){
+			return false;
+		}
+		screen.xy /= screen.ww;
+		
+		minExtend = min( minExtend, screen.xyz );
+		maxExtend = max( maxExtend, screen.xyz );
+	}
 	
-	// point  x,  y, -z
-	pointWorld.y = inputMaxExtend.y;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
-	
-	// point -x,  y, -z
-	pointWorld.x = inputMinExtend.x;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
-	
-	// point -x,  y,  z
-	pointWorld.z = inputMaxExtend.z;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
-	
-	// point  x,  y,  z
-	pointWorld.x = inputMaxExtend.x;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
-	
-	// point  x, -y,  z
-	pointWorld.y = inputMinExtend.y;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
-	
-	// point -x, -y,  z
-	pointWorld.x = inputMinExtend.x;
-	CALC_SCREEN_POSITION( pointScreen, matrix, clipNear, pointWorld )
-	minExtend = min( minExtend, vec3( pointScreen ) );
-	maxExtend = max( maxExtend, vec3( pointScreen ) );
-	
-	// clamp extends to screen
-	//minExtend.xy = clamp( minExtend.xy, vec2( -1.0 ), vec2( 1.0 ) );
-	//maxExtend.xy = clamp( maxExtend.xy, vec2( -1.0 ), vec2( 1.0 ) );
+	minExtend = max( minExtend, vec3( -1.0 ) );
+	maxExtend = min( maxExtend, vec3( 1.0 ) );
+	return true;
 }
 
+
+
+const vec2 vOneTwoThird = vec2( 1.0 / 3.0, 2.0 / 3.0 );
+
 // test box against occlusion map
-void testBox( out float result, out float largestSample, in vec3 minExtend, in vec2 maxExtend,
-in vec2 scaleSize, in float baseLevel, sampler2D occmap ){
-	vec2 size = ( maxExtend - vec2( minExtend ) ) * scaleSize;
+bool testBox( out float largestSample, in vec2 minExtend, in vec2 maxExtend,
+in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap ){
+	vec2 size = ( maxExtend - minExtend ) * scaleSize;
 	
 	//if( min( size.x, size.y ) < 0.01 ){ //0.1 ){
 	//	result = 0.0;
@@ -126,35 +100,38 @@ in vec2 scaleSize, in float baseLevel, sampler2D occmap ){
 		// false invisibility of elements
 		vec2 ensureMinSize = vec2( 2.0 ); // 4 for sun and still few problems??
 		vec2 adjustSize = max( vec2( 0.0 ), ensureMinSize - size ) * vec2( 0.5 ) / scaleSize;
-		minExtend.xy -= adjustSize;
+		minExtend -= adjustSize;
 		maxExtend += adjustSize;
 		size = max( ensureMinSize, size );
 		
-		// note about the calculation of the lod level to use. we tap 4x4 pixels to obtain the depth value
-		// to compare against. hence we need the lod level where the box covers at most 4 pixels in a row.
-		// since the box can though be exactly in the middle over these four pixels the maximal size of
-		// the box can not exceed 3 pixels. The following graphics illustrates the problem:
+		// note about the calculation of the lod level to use. we tap 4x4 pixels to obtain
+		// the depth value to compare against. hence we need the lod level where the box
+		// covers at most 4 pixels in a row. since the box can though be exactly in the
+		// middle over these four pixels the maximal size of the box can not exceed 3
+		// pixels. The following graphics illustrates the problem:
 		// | x | x | x | x |
-		// here a pixel is a |x| block with the x the center of the pixel. if the box starts in the middle
-		// of the first pixel 4 taps are done each a pixel away from the last one if the size of the box is
-		// 3 pixels. if it is larger up to 5 pixels are crossed and one pixel has to be skipped falsifying
-		// the result. hence we choose the lod level where the maximum size of the box is at most 3 to gain
-		// as much information from our 4x4 taps without compromising the correctness of the calculation.
-		// for this subtracting log2(3) results in an as optimal usage of the 4x4 block as reasonable
-		// without obtaining incorrect results even in the worst case.
+		// here a pixel is a |x| block with the x the center of the pixel. if the box
+		// starts in the middle of the first pixel 4 taps are done each a pixel away from
+		// the last one if the size of the box is 3 pixels. if it is larger up to 5 pixels
+		// are crossed and one pixel has to be skipped falsifying the result. hence we
+		// choose the lod level where the maximum size of the box is at most 3 to gain
+		// as much information from our 4x4 taps without compromising the correctness of
+		// the calculation. for this subtracting log2(3) results in an as optimal usage of
+		// the 4x4 block as reasonable without obtaining incorrect results even in the
+		// worst case.
 		float maxSize = max( size.x, size.y );
 		//float level = max( ceil( log2( maxSize ) - baselog ), baseLevel );
 		float level = baseLevel + max( ceil( log2( maxSize ) - baselog ), 0.0 );
-		vec4 steps = mix( minExtend.xxyy, maxExtend.xxyy, vec4( 1.0 / 3.0, 2.0 / 3.0, 1.0 / 3.0, 2.0 / 3.0 ) );
+		vec4 steps = mix( minExtend.xxyy, maxExtend.xxyy, vOneTwoThird.xyxy );
 		vec4 samples, samplesAll;
-		vec2 tc;
+		vec3 tc = vec3( 0, 0, vLayer );
 		
 		// test pattern where we have to change only one texture coordinate component at the time:
 		// [ 6 7 10 11 ]
 		// [ 5 8  9 12 ]
 		// [ 4 3 14 13 ]
 		// [ 1 2 15 16 ]
-		tc = vec2( minExtend );
+		tc.xy = minExtend;
 		samples.x = textureLod( occmap, tc, level ).x;
 		tc.x = steps.x;
 		samples.y = textureLod( occmap, tc, level ).x;
@@ -200,13 +177,18 @@ in vec2 scaleSize, in float baseLevel, sampler2D occmap ){
 		
 		samplesAll.xy = max( samplesAll.xy, samplesAll.zw );
 		largestSample = max( samplesAll.x, samplesAll.y );
-		result = float( minExtend.z <= largestSample );
+		
+		return minDepth <= largestSample;
 	//}
 }
 
 
 
+const vec2 vScale = vec2( 0.5 );
+const vec2 vOffset = vec2( 0.5 );
+
 void main( void ){
+	gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 ); // keep broken compilers happy
 	fbResult = 1.0;
 	
 	#ifdef ENSURE_MIN_SIZE
@@ -222,55 +204,65 @@ void main( void ){
 	
 	vec3 testMinExtend;
 	vec3 testMaxExtend;
-	calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, pClipNear, inputMinExtend, inputMaxExtend );
+	if( ! calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend ) ){
+		return;
+	}
 	
-#ifdef FRUSTUM_TEST
-	vec3 testCenter = vec3( ( testMinExtend.xy + testMaxExtend.xy ) * vec2( 0.5 ), testMinExtend.z );
-	vec4 lambda;
-	lambda.x = dot( testCenter, pFrustumNormal1 );
-	lambda.y = dot( testCenter, pFrustumNormal2 );
-	lambda.z = dot( testCenter, pFrustumNormal3 );
-	lambda.w = dot( testCenter, pFrustumNormal4 );
-	lambda = lambda * pFrustumTestMul + pFrustumTestAdd;
-	lambda.xy = min( lambda.xy, lambda.zw );
-	testMaxExtend.z = min( testMinExtend.z + min( lambda.x, lambda.y ), testMaxExtend.z );
-	
-	calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, pClipNear2, testMinExtend, testMaxExtend );
-	
-	if( testMinExtend.z >= pClipNear2 ){
-		vec3 occmapMinExtend;
-		vec2 occmapMaxExtend;
-		float occmapMaxDepth;
+	#ifdef FRUSTUM_TEST
+		/*
+		// NOTE this optimization incorrectly discards a shadow caster causing sun light sometimes
+		//      leaking through. mostly seen with hallway and facade meshes. the box seems to fail
+		//      the occlusion map test. can be reproduced by looking along a hallway with a wall
+		//      behind the camera. the shortened box seems. in this case the z coordinate of the
+		//      failing hallway enclosing box is for example [-0.876 .. -0.706] causing the discard.
+		//      the camera occlusion test has [-1.054 .. -0.773] for the same box.
+		// 
+		// TODO verify the calculation and see if the optimization can be made to work correctly
 		
-		occmapMinExtend = testMinExtend * vec3( 0.5 ) + vec3( 0.5 );
-		occmapMaxExtend = vec2( testMaxExtend ) * vec2( 0.5 ) + vec2( 0.5 );
-		testBox( fbResult, occmapMaxDepth, occmapMinExtend, occmapMaxExtend, pScaleSize, pBaseLevel, texOccMap );
-	}
-	
-#else
-	vec3 occmapMinExtend;
-	vec2 occmapMaxExtend;
-	float occmapMaxDepth;
-	
-	if( testMinExtend.z >= pClipNear ){
-		occmapMinExtend = testMinExtend * vec3( 0.5 ) + vec3( 0.5 );
-		occmapMaxExtend = vec2( testMaxExtend ) * vec2( 0.5 ) + vec2( 0.5 );
-		testBox( fbResult, occmapMaxDepth, occmapMinExtend, occmapMaxExtend, pScaleSize, pBaseLevel, texOccMap );
-	}
-	
-	#ifdef DUAL_OCCMAP
-		if( fbResult > 0.5 ){
-			testMaxExtend.z = max( testMaxExtend.z, occmapMaxDepth * 2.0 - 1.0 );
-			calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, pClipNear2, testMinExtend, testMaxExtend );
-			
-			if( testMinExtend.z >= pClipNear2 ){
-				occmapMinExtend = testMinExtend * vec3( 0.5 ) + vec3( 0.5 );
-				occmapMaxExtend = vec2( testMaxExtend ) * vec2( 0.5 ) + vec2( 0.5 );
-				testBox( fbResult, occmapMaxDepth, occmapMinExtend, occmapMaxExtend, pScaleSize2, pBaseLevel2, texOccMap2 );
-			}
+		vec3 testCenter = vec3( ( testMinExtend.xy + testMaxExtend.xy ) * vec2( 0.5 ), testMinExtend.z );
+		vec4 lambda;
+		lambda.x = dot( testCenter, pFrustumNormal1 );
+		lambda.y = dot( testCenter, pFrustumNormal2 );
+		lambda.z = dot( testCenter, pFrustumNormal3 );
+		lambda.w = dot( testCenter, pFrustumNormal4 );
+		lambda = lambda * pFrustumTestMul + pFrustumTestAdd;
+		lambda.xy = min( lambda.xy, lambda.zw );
+		testMaxExtend.z = min( testMinExtend.z + min( lambda.x, lambda.y ), testMaxExtend.z );
+		*/
+		
+		if( ! calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend ) ){
+			return;
 		}
+		
+		float occmapMaxDepth;
+		vec2 occmapMinExtend = testMinExtend.xy * vScale + vOffset;
+		vec2 occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
+		if( ! testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap ) ){
+			fbResult = 0.0;
+			return;
+		}
+		
+	#else
+		float occmapMaxDepth;
+		vec2 occmapMinExtend = testMinExtend.xy * vScale + vOffset;
+		vec2 occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
+		if( ! testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap ) ){
+			fbResult = 0.0;
+			return;
+		}
+		
+		#ifdef DUAL_OCCMAP
+			testMaxExtend.z = max( testMaxExtend.z, occmapMaxDepth );
+			if( ! calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend ) ){
+				return;
+			}
+			
+			occmapMinExtend = testMinExtend.xy * vScale + vOffset;
+			occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
+			if( ! testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize2, pBaseLevel2, texOccMap2 ) ){
+				fbResult = 0.0;
+				return;
+			}
+		#endif
 	#endif
-#endif
-	
-	gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 ); // keep broken compilers happy
 }

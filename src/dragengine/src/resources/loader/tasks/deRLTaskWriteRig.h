@@ -29,7 +29,7 @@
 /**
  * \brief Write rig resource loader task.
  */
-class deRLTaskWriteRig : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskWriteRig : public deResourceLoaderTask {
 private:
 	deRigReference pRig;
 	bool pSucceeded;

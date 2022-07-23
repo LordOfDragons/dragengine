@@ -26,7 +26,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class deoglLightShader;
+#include "../light/shader/deoglLightShader.h"
+
 class deoglLightShaderConfig;
 class deoglPixelBuffer;
 class deoglRParticleEmitter;
@@ -84,7 +85,7 @@ private:
 	
 	bool pEmitLight;
 	bool pHasTransparency;
-	deoglLightShader *pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ EST_COUNT ];
 	deoglSPBlockUBO *pParamBlockLight;
 	
 	deParticleEmitterType::eSimulationTypes pSimulationType;

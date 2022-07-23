@@ -31,7 +31,7 @@ class deObject;
 /**
  * \brief Dictionary of objects mapping objects to string keys.
  */
-class decObjectDictionary{
+class DE_DLL_EXPORT decObjectDictionary{
 private:
 	struct sDictEntry{
 		unsigned int hash;

@@ -68,10 +68,14 @@ void debpShapeList::RemoveAllShapes(){
 
 
 
-void debpShapeList::UpdateWithMatrix( const decDMatrix &transformation ){
+void debpShapeList::UpdateWithMatrix( const decDMatrix& transformation ){
+	UpdateWithMatrix( transformation, transformation.GetScale() );
+}
+
+void debpShapeList::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
 	const int count = pShapes.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		( ( debpShape* )pShapes.GetAt( i ) )->UpdateWithMatrix( transformation );
+		( ( debpShape* )pShapes.GetAt( i ) )->UpdateWithMatrix( transformation, scale );
 	}
 }

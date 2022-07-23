@@ -30,25 +30,30 @@ class declLauncher;
 
 
 /**
- * @brief Help.
+ * Help.
  */
 class declActionHelp{
 private:
-	declLauncher *pLauncher;
+	declLauncher &pLauncher;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new action. */
-	declActionHelp( declLauncher *launcher );
-	/** Cleans up the action. */
+	/** Create action. */
+	declActionHelp( declLauncher &launcher );
+	
+	/** Clean up action. */
 	~declActionHelp();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the launcher. */
-	inline declLauncher *GetLauncher() const{ return pLauncher; }
+	/** Launcher. */
+	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** Run action. */
 	void Run();

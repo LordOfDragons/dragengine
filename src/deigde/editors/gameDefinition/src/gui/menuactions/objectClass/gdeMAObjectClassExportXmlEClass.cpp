@@ -90,7 +90,7 @@ igdeUndo *gdeMAObjectClassExportXmlEClass::OnAction( gdeGameDefinition &gameDefi
 	path.RemoveLastComponent();
 	pLastDirExportXmlEClass = path.GetPathNative();
 	
-	pWindowMain.GetLoadSaveSystem().SaveXmlEClass( *objectClass, filename );
+	pWindowMain.GetLoadSaveSystem().SaveXmlEClass( gameDefinition, *objectClass, filename );
 	return NULL;
 }
 

@@ -37,15 +37,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorRuleForeignState::deAnimatorRuleForeignState(){
-	pScalePosition = 0.0f;
-	pScaleOrientation = 0.0f;
-	pScaleSize = 0.0f;
-	pSourceCoordinateFrame = ecfBoneLocal;
-	pDestCoordinateFrame = ecfBoneLocal;
-	pEnablePosition = true;
-	pEnableOrientation = true;
-	pEnableSize = false;
+deAnimatorRuleForeignState::deAnimatorRuleForeignState() :
+pSourceCoordinateFrame( ecfBoneLocal ),
+pDestCoordinateFrame( ecfBoneLocal ),
+pScalePosition( 0.0f ),
+pScaleOrientation( 0.0f ),
+pScaleSize( 0.0f ),
+pModifyX( true ),
+pModifyY( true ),
+pModifyZ( true ),
+pEnablePosition( true ),
+pEnableOrientation( true ),
+pEnableSize( false ){
 }
 
 deAnimatorRuleForeignState::~deAnimatorRuleForeignState(){
@@ -57,9 +60,6 @@ deAnimatorRuleForeignState::~deAnimatorRuleForeignState(){
 ///////////////
 
 void deAnimatorRuleForeignState::SetForeignBone( const char *boneName ){
-	if( ! boneName ){
-		DETHROW( deeInvalidParam );
-	}
 	pForeignBone = boneName;
 }
 
@@ -75,17 +75,23 @@ void deAnimatorRuleForeignState::SetScaleSize( float scaleSize ){
 	pScaleSize = scaleSize;
 }
 
+void deAnimatorRuleForeignState::SetModifyX( bool modify ){
+	pModifyX = modify;
+}
+
+void deAnimatorRuleForeignState::SetModifyY( bool modify ){
+	pModifyY = modify;
+}
+
+void deAnimatorRuleForeignState::SetModifyZ( bool modify ){
+	pModifyZ = modify;
+}
+
 void deAnimatorRuleForeignState::SetSourceCoordinateFrame( eCoordinateFrames coordinateFrame ){
-	if( coordinateFrame < ecfBoneLocal || coordinateFrame > ecfComponent ){
-		DETHROW( deeInvalidParam );
-	}
 	pSourceCoordinateFrame = coordinateFrame;
 }
 
 void deAnimatorRuleForeignState::SetDestCoordinateFrame( eCoordinateFrames coordinateFrame ){
-	if( coordinateFrame < ecfBoneLocal || coordinateFrame > ecfComponent ){
-		DETHROW( deeInvalidParam );
-	}
 	pDestCoordinateFrame = coordinateFrame;
 }
 

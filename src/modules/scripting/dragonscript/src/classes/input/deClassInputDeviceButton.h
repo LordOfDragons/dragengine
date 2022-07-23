@@ -26,7 +26,7 @@
 
 class deScriptingDragonScript;
 
-class deInputDevice;
+class dedsInputDevice;
 
 
 
@@ -36,6 +36,7 @@ class deInputDevice;
 class deClassInputDeviceButton : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
+	dsClass *pClsInputDeviceButtonType;
 	
 	
 	
@@ -60,7 +61,9 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	/** \brief Push button. */
-	void PushButton( dsRunTime *rt, deInputDevice *device, int deviceIndex, int index );
+	void PushButton( dsRunTime *rt, dedsInputDevice *device, int index );
+	
+	inline dsClass *GetClassInputDeviceButtonType() const{ return pClsInputDeviceButtonType; }
 	/*@}*/
 	
 	
@@ -76,6 +79,7 @@ private:
 		dsClass *clsObject;
 		
 		dsClass *clsInputDevice;
+		dsClass *clsInputDeviceButtonType;
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
@@ -91,14 +95,18 @@ private:
 	
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName);
+	DEF_NATFUNC( nfGetType );
+	DEF_NATFUNC( nfGetComponent );
 	DEF_NATFUNC( nfGetDisplayImage );
 	DEF_NATFUNC( nfGetDisplayIconCount );
 	DEF_NATFUNC( nfGetDisplayIconAt );
 	DEF_NATFUNC( nfGetLargestDisplayIconX );
 	DEF_NATFUNC( nfGetLargestDisplayIconY );
 	DEF_NATFUNC( nfGetDisplayText );
+	DEF_NATFUNC( nfGetTouchable );
 	
 	DEF_NATFUNC( nfIsPressed );
+	DEF_NATFUNC( nfIsTouched );
 	
 	DEF_NATFUNC( nfEquals );
 #undef DEF_NATFUNC

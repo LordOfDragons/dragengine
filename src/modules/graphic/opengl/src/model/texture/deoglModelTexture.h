@@ -26,6 +26,7 @@
 
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
 
+class deoglRenderThread;
 
 
 /**
@@ -38,7 +39,7 @@ private:
 	bool pDoubleSided;
 	bool pDecal;
 	int pDecalOffset;
-	deoglSharedSPBRTIGroupList pRTIGroups;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroups;
 	
 	
 	
@@ -46,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create texture. */
-	deoglModelTexture();
+	deoglModelTexture( deoglRenderThread &renderThread );
 	
 	/** \brief Clean up texture. */
 	~deoglModelTexture();

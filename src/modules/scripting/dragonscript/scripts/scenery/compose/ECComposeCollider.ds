@@ -109,6 +109,11 @@ class ECComposeCollider
 		return this.pShape
 	end
 	
+	/** \brief Rig if no component is used. */
+	public func ECPRig getRig()
+		return this.pRig
+	end
+	
 	
 	
 	/** \brief Collision filter. */

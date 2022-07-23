@@ -654,6 +654,26 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 	}
 }
 
+bool debpColliderComponent::GetRigidBodyDeactivated() const{
+	if( pSimplePhyBody && pSimplePhyBody->GetRigidBody() ){
+		return ! pSimplePhyBody->GetRigidBody()->isActive();
+	}
+	if( pBones && pBones->GetBoneCount() > 0 ){
+		const int count = pBones->GetBoneCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			const debpColliderBone * const bone = pBones->GetBoneAt( i );
+			if( bone ){
+				debpPhysicsBody * const phyBody = bone->GetPhysicsBody();
+				if( phyBody && phyBody->GetRigidBody() && phyBody->GetRigidBody()->isActive() ){
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
 void debpColliderComponent::ApplyGravity( float elapsed ){
 	pLinVelo += pGravity * elapsed;
 }
@@ -1297,11 +1317,43 @@ void debpColliderComponent::OrientationChanged(){
 	}
 }
 
+void debpColliderComponent::ScaleChanged(){
+	const decVector &scale = pColliderComponent.GetScale();
+	
+	if( pScale.IsEqualTo( scale ) ){
+		return;
+	}
+	
+	pScale = scale;
+	
+	MarkMatrixDirty();
+	MarkDirtyOctree();
+	
+	if( ! pPreventUpdate ){
+		if( ! pSimplePhyBody ){
+			DirtyBones();
+		}
+	}
+	
+	pDirtyShapes = true;
+	pDirtySweepTest = true;
+	pDirtyStaticTest = true;
+	
+	pUpdateBones();
+	
+	RequiresUpdate();
+	
+	if( pColliderComponent.GetAttachmentCount() > 0 ){
+		pUpdateAttachments( true );
+	}
+}
+
 void debpColliderComponent::GeometryChanged(){
 	const decDVector &position = pColliderComponent.GetPosition();
 	const decQuaternion &orientation = pColliderComponent.GetOrientation();
 	const decVector &scale = pColliderComponent.GetScale();
-	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && pScale.IsEqualTo( scale ) ){
+	const bool sameScale = pScale.IsEqualTo( scale );
+	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && sameScale ){
 		return;
 	}
 	
@@ -1313,6 +1365,7 @@ void debpColliderComponent::GeometryChanged(){
 	
 	pPosition = position;
 	pOrientation = orientation;
+	pScale = scale;
 	
 	MarkMatrixDirty();
 	MarkDirtyOctree();
@@ -1343,32 +1396,12 @@ void debpColliderComponent::GeometryChanged(){
 	
 	pDirtyShapes = true;
 	
-	RequiresUpdate();
-	
-	if( pColliderComponent.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if( ! sameScale ){
+		pDirtySweepTest = true;
+		pDirtyStaticTest = true;
+		
+		pUpdateBones();
 	}
-}
-
-void debpColliderComponent::ScaleChanged(){
-	const decVector &scale = pColliderComponent.GetScale();
-	
-	if( pScale.IsEqualTo( scale ) ){
-		return;
-	}
-	
-	pScale = scale;
-	
-	MarkMatrixDirty();
-	MarkDirtyOctree();
-	
-	if( ! pPreventUpdate ){
-		if( ! pSimplePhyBody ){
-			DirtyBones();
-		}
-	}
-	
-	pDirtyShapes = true;
 	
 	RequiresUpdate();
 	
@@ -1570,6 +1603,13 @@ void debpColliderComponent::ComponentChanged(){
 		for( i=0; i<attachmentCount; i++ ){
 			GetAttachmentAt( i )->AttachmentChanged();
 		}
+	}
+	
+	// align component if present
+	if( component ){
+		component->SetPosition( pColliderComponent.GetPosition() );
+		component->SetOrientation( pColliderComponent.GetOrientation() );
+		component->SetScaling( pColliderComponent.GetScale() );
 	}
 }
 
@@ -2195,6 +2235,12 @@ void debpColliderComponent::ComponentMeshDirty(){
 		DirtyBones();
 	}
 	
+	if( GetAttachmentCount() > 0 ){
+		// component mesh dirty is send if component has bones changed by animation.
+		// attachments have to be updated also if animation only is used
+		DirtyAttachments();
+	}
+	
 	// TODO in model dynamic test mode the triangle mesh changes causing the collision object
 	//      to change. this can be done using a component hosted triangle collision shape
 	//      which changes. requires no bone update.
@@ -2300,7 +2346,7 @@ void debpColliderComponent::pUpdateBones(){
 		}
 	}
 	
-	// of there are no shapes but bones check if there is at least one bone with a shape
+	// if there are no shapes but bones check if there is at least one bone with a shape
 	bool hasBonesWithShape = false;
 	if( shapeCount == 0 ){
 		for( b=0; b<boneCount; b++ ){
@@ -2396,8 +2442,10 @@ void debpColliderComponent::pUpdateBones(){
 				try{
 					compoundShape = new btCompoundShape( true );
 					compoundShape->setUserPointer( ( void* )( intptr_t )0 );
-					compoundShape->setLocalScaling( btVector3( ( btScalar )scale.x, ( btScalar )scale.y, ( btScalar )scale.z ) );
 					compoundShape->addChildShape( transform, model->GetShape()->GetShape() ); // not released on destructor
+					
+					compoundShape->setLocalScaling( btVector3( ( btScalar )scale.x, ( btScalar )scale.y, ( btScalar )scale.z ) );
+						// setLocalScaling has to come last or scaling does not propagate
 					
 					bulletShape = new debpBulletCompoundShape( compoundShape );
 					bulletShape->AddChildShape( model->GetShape() );
@@ -2441,6 +2489,7 @@ void debpColliderComponent::pUpdateBones(){
 				shape->Visit( createBulletShape );
 				shape->Visit( shapeSurface );
 			}
+			createBulletShape.Finish();
 			pSimplePhyBody->SetShape( createBulletShape.GetBulletShape() );
 			pSimplePhyBody->SetShapeSurface( shapeSurface.GetSurface() );
 			
@@ -2762,6 +2811,7 @@ void debpColliderComponent::pUpdateSweepCollisionTest(){
 	}
 	
 	if( pDirtySweepTest ){
+		const decVector &scale = pColliderComponent.GetScale();
 		deRig *rig = NULL;
 		int count = 0;
 		int i;
@@ -2776,7 +2826,7 @@ void debpColliderComponent::pUpdateSweepCollisionTest(){
 		pSweepCollisionTest->RemoveAllShapes();
 		
 		for( i=0; i<count; i++ ){
-			pSweepCollisionTest->AddShape( *rig->GetShapes().GetAt( i ) );
+			pSweepCollisionTest->AddShape( *rig->GetShapes().GetAt( i ), scale );
 		}
 		
 		pDirtySweepTest = false;
@@ -2876,6 +2926,7 @@ debpBulletShape *debpColliderComponent::pCreateBPShape(){
 		createBulletShape.SetShapeIndex( i );
 		rig->GetShapes().GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	
 	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
 	if( bulletShape ){

@@ -22,6 +22,8 @@
 #ifndef _DECXMLVISITOR_H_
 #define _DECXMLVISITOR_H_
 
+#include "../../dragengine_export.h"
+
 class decXmlAttValue;
 class decXmlCDSect;
 class decXmlCharacterData;
@@ -39,7 +41,7 @@ class decXmlPI;
 /**
  * \brief XML element visitor.
  */
-class decXmlVisitor{
+class DE_DLL_EXPORT decXmlVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

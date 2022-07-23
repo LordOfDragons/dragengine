@@ -141,10 +141,20 @@ void deClassScriptSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *my
 	rt->PushString( answer.ToUTF8() );
 }
 
+// public static func int getFPSRate()
+deClassScriptSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsScrSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassScriptSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassScriptSystem* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetGameEngine()->GetFPSRate() );
+}
+
 
 
 // Class deClassScriptSystem
-/////////////////////////////
+//////////////////////////////
 
 // Constructor, Destructor
 ////////////////////////////
@@ -187,4 +197,5 @@ void deClassScriptSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetParameterValue( init ) );
 	
 	AddFunction( new nfSendCommand( init ) );
+	AddFunction( new nfGetFPSRate( init ) );
 }

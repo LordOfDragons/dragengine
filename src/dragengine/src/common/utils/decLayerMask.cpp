@@ -136,7 +136,7 @@ void decLayerMask::SetFromBitString( const char *string ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( string );
+	const int len = ( int )strlen( string );
 	int i;
 	
 	pMask = 0;
@@ -189,7 +189,7 @@ void decLayerMask::SetFromHexString( const char *string ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( string );
+	const int len = ( int )strlen( string );
 	int i;
 	
 	pMask = 0;

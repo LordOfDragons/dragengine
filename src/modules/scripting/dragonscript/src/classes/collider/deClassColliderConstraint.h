@@ -125,6 +125,13 @@ private:
 	DEF_NATFUNC( nfGetAngularUpperLimits );
 	DEF_NATFUNC( nfSetAngularLimits );
 	
+	DEF_NATFUNC( nfGetStaticFrictionFor );
+	DEF_NATFUNC( nfSetStaticFrictionFor );
+	DEF_NATFUNC( nfGetKinematicFrictionFor );
+	DEF_NATFUNC( nfSetKinematicFrictionFor );
+	DEF_NATFUNC( nfGetSpringStiffnessFor );
+	DEF_NATFUNC( nfSetSpringStiffnessFor );
+	
 	DEF_NATFUNC( nfGetLinearDamping );
 	DEF_NATFUNC( nfSetLinearDamping );
 	DEF_NATFUNC( nfGetAngularDamping );

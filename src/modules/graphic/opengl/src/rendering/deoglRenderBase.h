@@ -23,11 +23,12 @@
 #define _DEOGLRENDERBASE_H_
 
 #include "../deoglBasics.h"
+#include "../debug/deoglDebugInformation.h"
+#include "../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
-class deoglDebugInformation;
 class deoglCollideList;
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -38,7 +39,7 @@ class deoglShaderDefines;
 
 
 /**
- * \brief Base Renderer Class.
+ * Base Renderer Class.
  */
 class deoglRenderBase{
 public:
@@ -70,10 +71,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create base renderer. */
+	/** Create base renderer. */
 	deoglRenderBase( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderBase();
 	/*@}*/
 	
@@ -81,47 +82,50 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Add basic defines for shaders. */
+	/** Add basic defines for shaders. */
 	void AddBasicDefines( deoglShaderDefines &defines );
 	
-	/** \brief Clamped nearest sampler. */
+	/** Add shared SPB defines for shaders. */
+	void AddSharedSPBDefines( deoglShaderDefines &defines );
+	
+	/** Clamped nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerClampNearest() const;
 	
-	/** \brief Clamped linear sampler. */
+	/** Clamped linear sampler. */
 	deoglTexSamplerConfig &GetSamplerClampLinear() const;
 	
-	/** \brief Clamped nearest mipmap sampler. */
+	/** Clamped nearest mipmap sampler. */
 	deoglTexSamplerConfig &GetSamplerClampNearestMipMap() const;
 	
-	/** \brief Clamped linear mipmap sampler. */
+	/** Clamped linear mipmap sampler. */
 	deoglTexSamplerConfig &GetSamplerClampLinearMipMap() const;
 	
-	/** \brief Clamped linear mipmap nearest sampler. */
+	/** Clamped linear mipmap nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerClampLinearMipMapNearest() const;
 	
-	/** \brief Repeat nearest sampler. */
+	/** Repeat nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerRepeatNearest() const;
 	
-	/** \brief Repeat linear sampler. */
+	/** Repeat linear sampler. */
 	deoglTexSamplerConfig &GetSamplerRepeatLinear() const;
 	
-	/** \brief Repeat linear mipmap sampler. */
+	/** Repeat linear mipmap sampler. */
 	deoglTexSamplerConfig &GetSamplerRepeatLinearMipMap() const;
 	
-	/** \brief Shadow test clamped linear sampler. */
+	/** Shadow test clamped linear sampler. */
 	deoglTexSamplerConfig &GetSamplerShadowClampLinear() const;
 	
-	/** \brief Shadow test clamped linear sampler for inverse depth testing if enabled. */
+	/** Shadow test clamped linear sampler for inverse depth testing if enabled. */
 	deoglTexSamplerConfig &GetSamplerShadowClampLinearInverse() const;
 	
 	
 	
-	/** \brief Set cull mode. */
+	/** Set cull mode. */
 	void SetCullMode( bool renderBackFaces );
 	/*@}*/
 	
@@ -129,62 +133,66 @@ public:
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Direct access debug timer. */
+	/** Direct access debug timer. */
 	inline decTimer& GetDebugTimerAt( int index ){ return pDebugTimer[ index ]; }
 	
-	/** \brief Reset all debug timers if plan has debug enabled. */
+	/** Reset all debug timers if plan has debug enabled. */
 	void DebugTimersReset( const deoglRenderPlan &plan, bool waitGPU );
 	
-	/** \brief Reset first debug timer if plan has debug enabled. */
+	/** Reset first debug timer if plan has debug enabled. */
 	void DebugTimer1Reset( const deoglRenderPlan &plan, bool waitGPU );
 	
-	/** \brief Sample first debug timer if plan has debug enabled updating debug information. */
+	/** Sample first debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer1Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		bool waitGPU );
 	
-	/** \brief Sample first debug timer if plan has debug enabled updating debug information. */
+	/** Sample first debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer1SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		int count, bool waitGPU );
 	
-	/** \brief Reset second debug timer if plan has debug enabled. */
+	/** Reset second debug timer if plan has debug enabled. */
 	void DebugTimer2Reset( const deoglRenderPlan &plan, bool waitGPU );
 	
-	/** \brief Sample second debug timer if plan has debug enabled updating debug information. */
+	/** Sample second debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer2Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		bool waitGPU );
 	
-	/** \brief Sample second debug timer if plan has debug enabled updating debug information. */
+	/** Sample second debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer2SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		int count, bool waitGPU );
 	
-	/** \brief Reset third debug timer if plan has debug enabled. */
+	/** Reset third debug timer if plan has debug enabled. */
 	void DebugTimer3Reset( const deoglRenderPlan &plan, bool waitGPU );
 	
-	/** \brief Sample third debug timer if plan has debug enabled updating debug information. */
+	/** Sample third debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer3Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		bool waitGPU );
 	
-	/** \brief Sample third debug timer if plan has debug enabled updating debug information. */
+	/** Sample third debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer3SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		int count, bool waitGPU );
 	
-	/** \brief Reset fourthed debug timer if plan has debug enabled. */
+	/** Reset fourthed debug timer if plan has debug enabled. */
 	void DebugTimer4Reset( const deoglRenderPlan &plan, bool waitGPU );
 	
-	/** \brief Sample fourthed debug timer if plan has debug enabled updating debug information. */
+	/** Sample fourthed debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer4Sample( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		bool waitGPU );
 	
-	/** \brief Sample fourthed debug timer if plan has debug enabled updating debug information. */
+	/** Sample fourthed debug timer if plan has debug enabled updating debug information. */
 	void DebugTimer4SampleCount( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
 		int count, bool waitGPU );
 	
+	/** Increment debug timer. */
+	void DebugTimerIncrement( const deoglRenderPlan &plan, deoglDebugInformation &debugInfo,
+		float elapsed, int count );
 	
 	
-	/** \brief Add top level debug information in the right order. */
+	
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	
 	

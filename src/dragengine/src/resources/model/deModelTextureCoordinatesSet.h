@@ -30,7 +30,7 @@
  * Defines an additional named set of texture coordinates for all faces
  * in the model.
  */
-class deModelTextureCoordinatesSet{
+class DE_DLL_EXPORT deModelTextureCoordinatesSet{
 private:
 	decVector2 *pTextureCoordinates;
 	int pTextureCoordinatesCount;

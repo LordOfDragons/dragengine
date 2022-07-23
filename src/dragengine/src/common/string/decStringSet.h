@@ -32,7 +32,7 @@
  * The set is ordered.
  * 
  */
-class decStringSet{
+class DE_DLL_EXPORT decStringSet{
 private:
 	decString **pStrings;
 	int pStringCount;

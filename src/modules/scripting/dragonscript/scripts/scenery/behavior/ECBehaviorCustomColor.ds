@@ -1,0 +1,546 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+
+
+/**
+ * \brief Behavior element behavior adding custom color support.
+ * \version 1.5
+ * 
+ * Custom colors are typically used to allow players to customize the look of their player
+ * actor by altering the color of individual body parts. This behavior allows to define
+ * custom color slots the player or artist can manipulate. This behavior does not define
+ * how custom colors are applied. This is left for other behaviors or game scripts to do.
+ * 
+ * Custom colors compose of a display name and the currently assigned color. This color
+ * can be null to use the assigned default color. An optional list of colors can be used
+ * to restrict the colors the player can select. If the list is empty the player can choose
+ * the color unrestricted. In addition a display description can be added in case the
+ * game developer would like to communicate additional information about the custom color.
+ * 
+ * This behavior can be added multiple times to an element. Each instance creates one custom
+ * color the player can manipulate. To distinguish the custom colors each instance has an
+ * identifier which can be used to retrieve a specific instance. The prefix of the element
+ * class properties is "customColor." . If the identifier is not empty the element class
+ * properties have the prefix "{id}.customColor.". This can be overwritten if required.
+ * This is an example of the typical use of this behavior:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorCustomColor.new(this, "color1", "Color 1", Color.blue)
+ *       ECBehaviorCustomColor.new(this, "color2", "Color 2", Color.red)
+ *    end
+ * end
+ * \endcode
+ * 
+ * This defines an element which contains two custom colors the player can choose at will.
+ * You can now define the parameters to use for both custom colors using for example the
+ * properties "customColor(color1).color" for the first custom color and
+ * "customColor(color2).color" for the second custom color.
+ * 
+ * It is recommended to always specify an identifier even if only one custom color is used.
+ * This avoids potentially name conflicts especially if other behaviors are added custom colors.
+ * 
+ * Element class properties have the prefix "customColor{(id)}.".
+ * 
+ * 
+ * 
+ * \par Listening
+ * 
+ * Since this behavior provides no support to apply the chosen color listening is used.
+ * Behaviors knowing how to apply the color add a listener and are notified if the color
+ * changes.
+ * 
+ * 
+ * 
+ * \par Persistency
+ * 
+ * This behavior supports persistable element class (setPersistable). Persists the selected
+ * color.
+ */
+class ECBehaviorCustomColor extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Chosen color changed. */
+		func void colorChanged(Instance instance)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Chosen color changed. */
+		public func void colorChanged(Instance instance)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorCustomColor pECBehavior
+		private var UnicodeString pName
+		private var UnicodeString pDescription
+		private var Array pAllowedColors
+		private var Color pDefaultColor
+		private var Color pColor
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorCustomColor ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pAllowedColors = Array.new()
+			pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			pListeners = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			
+			pName = pECBehavior.getName().getValue(stub)
+			pDescription = pECBehavior.getDescription().getValue(stub)
+			pAllowedColors = pECBehavior.getAllowedColors().getColors(stub)
+			pDefaultColor = pECBehavior.getDefaultColor().getColor(stub, codec)
+			
+			pECBehavior.createListeners(this)
+			
+			setColor(pECBehavior.getColor().getColor(stub, codec))
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorCustomColor getECBehavior()
+			return pECBehavior
+		end
+		
+		
+		
+		/** \brief Name to display in UI. */
+		public func UnicodeString getName()
+			return pName
+		end
+		
+		/** \brief Set name to display in UI. */
+		protected func void setName(UnicodeString name)
+			if name == null
+				throw ENullPointer.new("name")
+			end
+			pName = name
+		end
+		
+		/** \brief Description to display in UI. */
+		public func UnicodeString getDescription()
+			return pDescription
+		end
+		
+		/** \brief Set description to display in UI. */
+		protected func void setDescription(UnicodeString description)
+			if description == null
+				throw ENullPointer.new("description")
+			end
+			pDescription = description
+		end
+		
+		
+		
+		/**
+		 * \brief List of allowed colors or empty list to allow all colors.
+		 * 
+		 * Returns Array of Color.
+		 */
+		public func Array getAllowedColors()
+			return pAllowedColors
+		end
+		
+		/** \brief Count of allowed colors. */
+		public func int getAllowedColorCount()
+			return pAllowedColors.getCount()
+		end
+		
+		/** \brief Allowed color at index. */
+		public func Color getAllowedColorAt(int index)
+			return pAllowedColors.getAt(index) cast Color
+		end
+		
+		/** \brief Random allowed color or null if list is empty. */
+		public func Color randomAllowedColor()
+			if pAllowedColors.getCount() > 0
+				return pAllowedColors.random() cast Color
+				
+			else
+				return null
+			end
+		end
+		
+		/** \brief Add color. */
+		protected func void addAllowedColor(Color color)
+			if color == null
+				throw ENullPointer.new("color")
+			end
+			pAllowedColors.add(color)
+		end
+		
+		/** \brief Remove all allowed colors. */
+		protected func void removeAllAllowedColors()
+			pAllowedColors.removeAll()
+		end
+		
+		
+		
+		/** \brief Default color if color is null. */
+		public func Color getDefaultColor()
+			return pDefaultColor
+		end
+		
+		/** \brief Set default color if color is null. */
+		protected func void setDefaultColor(Color color)
+			if color == null
+				throw ENullPointer.new("color")
+			end
+			pDefaultColor = color
+		end
+		
+		/** \brief Color or null to use the default color. */
+		public func Color getColor()
+			return pColor
+		end
+		
+		/** \brief Color or default color if color is null. */
+		public func Color getColorOrDefault()
+			if pColor != null
+				return pColor
+				
+			else
+				return pDefaultColor
+			end
+		end
+		
+		/** \brief Set color or null to use the default color. */
+		public func void setColor(Color color)
+			if pColor == color or (pColor != null and color != null and pColor.equals(color))
+				return
+			end
+			
+			pColor = color
+			
+			pListeners.forEach(block Listener each
+				each.colorChanged(this)
+			end)
+		end
+		
+		/** \brief Reset color to default color. */
+		public func void resetColor()
+			setColor(pDefaultColor)
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				if flags.getAt(0)
+					setColor(Color.readFromFile(reader))
+					
+				else
+					resetColor()
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** Writes the element to a file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pColor != null)
+			flags.writeToFile(writer)
+			
+			if pColor != null
+				pColor.writeToFile(writer)
+			end
+		end
+	end
+	
+	
+	
+	private var ECPUnicodeString pName
+	private var ECPUnicodeString pDescription
+	private var ECPColorList pAllowedColors
+	private var ECPColor pDefaultColor
+	private var ECPColor pColor
+	private var Array pListenerFactories
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 */
+	public func new(BehaviorElementClass eclass) this(eclass, "")
+	end
+	
+	public func new(BehaviorElementClass eclass, String id) \
+	this(eclass, id, id.empty() if "customColor" else "customColor(" + id + ")")
+	end
+	
+	public func new(BehaviorElementClass eclass, String id, String subID) \
+	this(eclass, id, subID, subID + ".")
+	end
+	
+	public func new(BehaviorElementClass eclass, String id, String subID, \
+	String prefix) super(eclass, id)
+		pListenerFactories = Array.new()
+		
+		pName = ECPUnicodeString.new(prefix + "name", UnicodeString.new())
+		eclass.addProperty(pName)
+		
+		pDescription = ECPUnicodeString.new(prefix + "description", UnicodeString.new())
+		eclass.addProperty(pDescription)
+		
+		pAllowedColors = ECPColorList.new(prefix + "allowedColors", eclass.getCodecPropertyString())
+		eclass.addProperty(pAllowedColors)
+		
+		pDefaultColor = ECPColor.new(prefix + "defaultColor", Color.white)
+		eclass.addProperty(pDefaultColor)
+		
+		pColor = ECPColor.new(prefix + "color", null)
+		eclass.addProperty(pColor)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Name to display in UI. */
+	public func ECPUnicodeString getName()
+		return pName
+	end
+	
+	/** \brief Description to display in UI. */
+	public func ECPUnicodeString getDescription()
+		return pDescription
+	end
+	
+	/** \brief List of allowed colors or empty list to allow all colors. */
+	public func ECPColorList getAllowedColors()
+		return pAllowedColors
+	end
+	
+	/** \brief Default color if color is null. */
+	public func ECPColor getDefaultColor()
+		return pDefaultColor
+	end
+	
+	/** \brief Color or null to use the default color. */
+	public func ECPColor getColor()
+		return pColor
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorCustomColor getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorCustomColor each
+			return true
+		end) cast ECBehaviorCustomColor
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCustomColor with specific identifier.
+	 */
+	static public func ECBehaviorCustomColor getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorCustomColor each
+			return each.getID().equals(id)
+		end) cast ECBehaviorCustomColor
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorCustomColor behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorCustomColor each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorCustomColor.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorCustomColor.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorCustomColor.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

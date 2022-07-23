@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "deoglLightVolume.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../vbo/deoglVBOLayout.h"
 #include "../../vbo/deoglVBOAttribute.h"
@@ -54,12 +55,10 @@ pDirtyVBO( true ){
 }
 
 deoglLightVolume::~deoglLightVolume(){
-	if( pVBO ){
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	if( pVAO ){
-		pglDeleteVertexArrays( 1, &pVAO );
-	}
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLVertexArray( pVAO );
+	
 	if( pPoints ){
 		delete [] pPoints;
 	}

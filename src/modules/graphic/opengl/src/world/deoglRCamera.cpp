@@ -34,8 +34,8 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
+#include "../vr/deoglVR.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -56,17 +56,22 @@ pTextureToneMapParams( NULL ),
 pElapsedToneMapAdaption( 0.0f ),
 pForceToneMapAdaption( true ),
 
+pEnableHDRR( true ),
 pExposure( 1.0f ),
 pLowestIntensity( 0.0f ),
 pHighestIntensity( 1.0f ),
 pAdaptionTime( 1.0f ),
+
+pEnableGI( false ),
 
 pPlan( NULL ),
 
 pInitTexture( true ),
 
 pLastAverageLuminance( 0.0f ),
-pDirtyLastAverageLuminance( true )
+pDirtyLastAverageLuminance( true ),
+
+pVR( nullptr )
 {
 	try{
 		// create render plan
@@ -100,6 +105,8 @@ void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
+	pPlan->SetWorld( NULL ); // has to come first since SetWorld accesses previous world
+	
 	if( pParentWorld ){
 		pParentWorld->FreeReference();
 	}
@@ -108,11 +115,9 @@ void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
 	
 	if( parentWorld ){
 		parentWorld->AddReference();
-		pPlan->SetWorld( parentWorld );
-		
-	}else{
-		pPlan->SetWorld( NULL );
 	}
+	
+	pPlan->SetWorld( parentWorld );
 }
 
 
@@ -125,7 +130,7 @@ void deoglRCamera::SetPosition( const decDVector &position ){
 
 void deoglRCamera::SetCameraMatrices( const decDMatrix &matrix ){
 	pCameraMatrix = matrix;
-	pInverseCameraMatrix = pCameraMatrix.Invert();
+	pInverseCameraMatrix = pCameraMatrix.QuickInvert();
 }
 
 
@@ -150,6 +155,10 @@ void deoglRCamera::ResetElapsedToneMapAdaption(){
 
 
 
+void deoglRCamera::SetEnableHDRR( bool enable ){
+	pEnableHDRR = enable;
+}
+
 void deoglRCamera::SetExposure( float exposure ){
 	pExposure = decMath::max( exposure, 0.0f );
 }
@@ -164,6 +173,35 @@ void deoglRCamera::SetHighestIntensity( float highestIntensity ){
 
 void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 	pAdaptionTime = decMath::max( adaptionTime, 0.0f );
+}
+
+
+
+void deoglRCamera::SetEnableGI( bool enable ){
+	pEnableGI = enable;
+	pPlan->SetUseGIState( enable );
+}
+
+
+
+void deoglRCamera::EnableVR( bool enable ){
+	if( enable ){
+		if( ! pVR ){
+			pVR = new deoglVR( *this );
+		}
+		
+		pRenderThread.SetVRCamera( this );
+		
+	}else{
+		if( pRenderThread.GetVRCamera() == this ){
+			pRenderThread.SetVRCamera( nullptr );
+		}
+		
+		if( pVR ){
+			delete pVR;
+			pVR = nullptr;
+		}
+	}
 }
 
 
@@ -220,6 +258,7 @@ void deoglRCamera::PrepareForRender(){
 		dataToneMapParams.a = 0.0f; // brightPassThreshold
 		pTextureToneMapParams->SetPixels( pbToneMapParams );
 		pInitTexture = false;
+		pForceToneMapAdaption = true;
 		pDirtyLastAverageLuminance = true;
 	}
 	
@@ -235,46 +274,15 @@ void deoglRCamera::PrepareForRender(){
 // Private Functions
 //////////////////////
 
-class deoglRCameraDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *textureToneMapParams;
-	
-	deoglRCameraDeletion() :
-	textureToneMapParams( NULL ){
-	}
-	
-	virtual ~deoglRCameraDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( textureToneMapParams ){
-			delete textureToneMapParams;
-		}
-	}
-};
-
 void deoglRCamera::pCleanUp(){
+	EnableVR( false );
 	SetParentWorld( NULL );
 	
 	RemoveAllEffects();
 	
-	if( pPlan ){
-		delete pPlan;
-	}
+	delete pPlan;
 	
-	// delayed deletion of opengl containing objects
-	deoglRCameraDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCameraDeletion;
-		delayedDeletion->textureToneMapParams = pTextureToneMapParams;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pTextureToneMapParams ){
+		delete pTextureToneMapParams;
 	}
 }

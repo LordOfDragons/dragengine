@@ -54,8 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleAnimationDifference( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleAnimationDifference &rule );
+	dearRuleAnimationDifference( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimationDifference &rule );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleAnimationDifference();

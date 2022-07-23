@@ -25,9 +25,6 @@
 
 #include "deoglMemoryConsumptionTexture.h"
 
-#include <dragengine/common/exceptions.h>
-
-
 
 // Class deoglMemoryConsumptionTexture
 ////////////////////////////////////////
@@ -35,27 +32,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionTexture::deoglMemoryConsumptionTexture(){
-	pCount = 0;
-	pGPU = 0;
-	pGPUCompressed = 0;
-	pGPUUncompressed = 0;
-	
-	pColorCount = 0;
-	pColorGPU = 0;
-	pColorGPUCompressed = 0;
-	pColorGPUUncompressed = 0;
-	
-	pDepthCount = 0;
-	pDepthGPU = 0;
-	pDepthGPUCompressed = 0;
-	pDepthGPUUncompressed = 0;
+deoglMemoryConsumptionTexture::deoglMemoryConsumptionTexture( const decString &baseName ) :
+all( baseName ),
+allCompressed( baseName + " Compressed" ),
+allUncompressed( baseName + " Uncompressed" ),
+
+color( baseName + " Color", all ),
+colorCompressed( baseName + " Color Compressed", color, allCompressed ),
+colorUncompressed( baseName + " Color Uncompressed", color, allUncompressed ),
+
+depth( baseName + " Depth", all ),
+depthCompressed( baseName + " Depth Compressed", depth, allCompressed ),
+depthUncompressed( baseName + " Depth Uncompressed", depth, allUncompressed ){
 }
 
 deoglMemoryConsumptionTexture::~deoglMemoryConsumptionTexture(){
 }
-
-
-
-// Management
-///////////////

@@ -22,36 +22,49 @@
 #ifndef _DEGLWINDOWLOGGERLISTENER_H_
 #define _DEGLWINDOWLOGGERLISTENER_H_
 
-#include "../../logger/deglLoggerHistoryListener.h"
+#include <delauncher/logger/delLoggerHistoryListener.h>
 
 class deglWindowLogger;
 
 
 
 /**
- * @brief Logger Window Listener.
+ * Logger Window Listener.
  */
-class deglWindowLoggerListener : public deglLoggerHistoryListener{
+class deglWindowLoggerListener : public delLoggerHistoryListener{
 private:
-	deglWindowLogger *pWindow;
+	deglWindowLogger &pWindow;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new listener. */
-	deglWindowLoggerListener( deglWindowLogger *window );
-	/** Cleans up the listener. */
+	/** Create listener. */
+	deglWindowLoggerListener( deglWindowLogger &window );
+	
+protected:
+	/** Clean up listener. */
 	virtual ~deglWindowLoggerListener();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
-	/** A message has been added to the history. */
-	virtual void MessageAdded( deglLoggerHistory *history, deglLoggerHistoryEntry &entry );
-	/** History has been cleared. */
-	virtual void HistoryCleared( deglLoggerHistory *history );
+	/**
+	 * Message added.
+	 * \note Histroy mutex is locked while this method is called.
+	 */
+	virtual void MessageAdded( const delLoggerHistory &history, const delLoggerHistoryEntry &entry );
+	
+	/**
+	 * History cleared.
+	 * \note Histroy mutex is locked while this method is called.
+	 */
+	virtual void HistoryCleared( const delLoggerHistory &history );
 	/*@}*/
 };
 
-// end of include only once
 #endif

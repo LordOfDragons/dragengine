@@ -40,7 +40,13 @@ class decBaseFileWriter;
  * Be careful with the use of the file writer outside the logger. deObject
  * reference counting is not thread safe.
  */
-class deLoggerFile : public deLogger{
+class DE_DLL_EXPORT deLoggerFile : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerFile> Ref;
+	
+	
+	
 private:
 	decBaseFileWriter *pWriter;
 	deMutex pMutex;
@@ -87,6 +93,7 @@ public:
 	
 protected:
 	inline deMutex &GetMutex(){ return pMutex; }
+	void LogPrefix( const char *source, const char *message, const char *prefix );
 };
 
 #endif

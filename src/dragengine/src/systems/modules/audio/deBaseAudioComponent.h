@@ -22,6 +22,8 @@
 #ifndef _DEBASEAUDIOCOMPONENT_H_
 #define _DEBASEAUDIOCOMPONENT_H_
 
+#include "../../../dragengine_export.h"
+
 class deDecal;
 class deComponentTexture;
 
@@ -30,7 +32,7 @@ class deComponentTexture;
 /**
  * \brief Audio module component peer.
  */
-class deBaseAudioComponent{
+class DE_DLL_EXPORT deBaseAudioComponent{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

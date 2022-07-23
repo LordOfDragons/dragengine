@@ -33,7 +33,9 @@ class deoglModelTexture;
 class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglSharedVBOBlock;
+class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
+class deoglGIBVHLocal;
 
 class deGraphicOpenGl;
 class deModel;
@@ -71,7 +73,7 @@ public:
 	deoglRModel &pModel;
 	const int pLODIndex;
 	
-	deoglModelTexture *pTextures;
+	deoglModelTexture **pTextures;
 	int pTextureCount;
 	
 	oglModelPosition *pPositions;
@@ -117,12 +119,16 @@ public:
 	float pMaxError;
 	float pAvgError;
 	
+	deoglGIBVHLocal *pGIBVHLocal;
+	
+	
+	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new model lod. */
+	/** Creates a new model lod. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &engModel );
-	/** \brief Creates a new model lod from cache. */
+	/** Creates a new model lod from cache. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader );
 	/** Cleans up the model lod. */
 	~deoglModelLOD();
@@ -137,42 +143,42 @@ public:
 	
 	
 	
-	/** Retrieves the VBO block. */
-	deoglSharedVBOBlock *GetVBOBlock();
+	/** Prepare VBO block. */
+	void PrepareVBOBlock();
+	void PrepareVBOBlockPositionWeight();
+	void PrepareVBOBlockCalcNormalTangent();
+	void PrepareVBOBlockWriteSkinnedVBO();
+	void PrepareVBOBlockWithWeight();
 	
-	/** \brief Retrieves the position weight VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockPositionWeight();
+	/** VBO block. */
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
+	inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
+	inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
+	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
 	
-	/** \brief Retrieves the calculate normal tangent VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent();
-	
-	/** \brief Retrieves the write skinned vbo VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO();
-	
-	/** \brief Retrieves the vbo block with weight. */
-	deoglSharedVBOBlock *GetVBOBlockWithWeight();
-	
-	/** \brief Index buffer object. */
+	/** Index buffer object. */
 	GLuint GetIBO();
 	
-	/** \brief Index buffer object data type. */
+	/** Index buffer object data type. */
 	inline deoglVBOLayout::eIndexTypes GetIBOType() const{ return pIBOType; }
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
+	deoglModelTexture &GetTextureAt( int index );
 	const deoglModelTexture &GetTextureAt( int index ) const;
 	
-	/** \brief Texture render task instance group. */
+	/** Texture render task instance group. */
 	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt( int texture ) const;
 	
-	/** \brief Model has double sided textures. */
+	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Model has decal textures. */
+	/** Model has decal textures. */
 	inline bool GetDecal() const{ return pDecal; }
 	
 	/** Retrieves the positions. */
@@ -221,10 +227,10 @@ public:
 	/** Retrieves the texture coordinate set at the given index. */
 	const deoglModelLODTexCoordSet &GetTextureCoordSetAt( int index ) const;
 	
-	/** \brief Octree or \em NULL if there is none. */
+	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }
 	
-	/** \brief Prepare octree if not existing already. */
+	/** Prepare octree if not existing already. */
 	void PrepareOctree();
 	
 	/** Retrieves the maximum error in meters compared to LOD 0. */
@@ -232,10 +238,18 @@ public:
 	/** Retrieves the average error in meters compared to LOD 0. */
 	inline float GetAvgError() const{ return pAvgError; }
 	
-	/** \brief Load from cache file. */
+	/** Load from cache file. */
 	void LoadFromCache( decBaseFileReader &reader );
-	/** \brief Save to cache file. */
+	/** Save to cache file. */
 	void SaveToCache( decBaseFileWriter &writer );
+	
+	
+	
+	/** GI Local BVH or NULL. */
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
+	
+	/** Prepare GI Local BVH if not build yet. */
+	void PrepareGILocalBVH();
 	/*@}*/
 	
 private:

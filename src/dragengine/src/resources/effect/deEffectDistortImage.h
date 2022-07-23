@@ -37,7 +37,13 @@ class deEffectChain;
  * look up the pixel from the rendered image. The offset is first multiplied
  * by the strength factor.
  */
-class deEffectDistortImage : public deEffect{
+class DE_DLL_EXPORT deEffectDistortImage : public deEffect{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEffectDistortImage> Ref;
+	
+	
+	
 private:
 	deImageReference pImage;
 	decVector2 pTexCoords[ 4 ];

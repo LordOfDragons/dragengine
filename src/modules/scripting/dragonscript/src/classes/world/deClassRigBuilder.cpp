@@ -215,7 +215,7 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	const decVector &rotation = ds.GetClassVector()->GetVector( rt->GetValue( 3 )->GetRealObject() );
 	const decVector &centralMassPoint = ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() );
 	const bool dynamic = rt->GetValue( 5 )->GetBool();
-	const float mass = rt->GetValue( 6 )->GetBool();
+	const float mass = rt->GetValue( 6 )->GetFloat();
 	const decVector &ikLimitsLower = ds.GetClassVector()->GetVector( rt->GetValue( 7 )->GetRealObject() );
 	const decVector &ikLimitsUpper = ds.GetClassVector()->GetVector( rt->GetValue( 8 )->GetRealObject() );
 	const decVector &ikResistance = ds.GetClassVector()->GetVector( rt->GetValue( 9 )->GetRealObject() );
@@ -228,11 +228,11 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	try{
 		bone->SetParent( parent );
 		bone->SetPosition( position );
-		bone->SetRotation( rotation );
+		bone->SetRotation( rotation * DEG2RAD );
 		bone->SetCentralMassPoint( centralMassPoint );
 		bone->SetDynamic( dynamic );
 		bone->SetMass( mass );
-		bone->SetIKLimits( ikLimitsLower, ikLimitsUpper );
+		bone->SetIKLimits( ikLimitsLower * DEG2RAD, ikLimitsUpper * DEG2RAD );
 		bone->SetIKResistance( ikResistance );
 		bone->SetIKLockedX( ikLockedX );
 		bone->SetIKLockedY( ikLockedY );
@@ -279,14 +279,16 @@ void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction( dsRunTime *rt, ds
 	bone.SetShapeProperties( properties );
 }
 
-// protected func void addBoneConstraint( int bone, Vector referencePosition, Vector boneOffset,
-// float linearDamping, float angularDamping, float springDamping, bool isRope,
+// protected func void addBoneConstraint( int bone, Vector referencePosition,
+// Quaternion referenceOrientation, Vector boneOffset, float linearDamping,
+// float angularDamping, float springDamping, bool isRope,
 // float breakingThreshold, int parentBone )
 deClassRigBuilder::nfAddBoneConstraint::nfAddBoneConstraint( const sInitData &init ) :
 dsFunction( init.clsRigBuilder, "addBoneConstraint", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // bone
 	p_AddParameter( init.clsVector ); // referencePosition
+	p_AddParameter( init.clsQuaternion ); // referenceOrientation
 	p_AddParameter( init.clsVector ); // boneOffset
 	p_AddParameter( init.clsFloat ); // linearDamping
 	p_AddParameter( init.clsFloat ); // angularDamping
@@ -311,7 +313,7 @@ void deClassRigBuilder::nfAddBoneConstraint::RunFunction( dsRunTime *rt, dsValue
 	const float springDamping = rt->GetValue( 6 )->GetFloat();
 	const bool isRope = rt->GetValue( 7 )->GetBool();
 	const float breakingThreshold = rt->GetValue( 8 )->GetFloat();
-	const int parentBone = rt->GetValue( 9 )->GetFloat();
+	const int parentBone = rt->GetValue( 9 )->GetInt();
 	
 	deRigConstraint * const constraint = new deRigConstraint;
 	try{
@@ -357,11 +359,27 @@ void deClassRigBuilder::nfSetBoneConstraintDof::RunFunction( dsRunTime *rt, dsVa
 	
 	deRigBone &bone = builder->GetRig()->GetBoneAt( rt->GetValue( 0 )->GetInt() );
 	deRigConstraint &constraint = bone.GetConstraintAt( rt->GetValue( 1 )->GetInt() );
-	deColliderConstraintDof &dof = constraint.GetDof( ( deColliderConstraint::eDegreesOfFreedom )
+	const deColliderConstraint::eDegreesOfFreedom dofEnum = ( deColliderConstraint::eDegreesOfFreedom )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
-			*rt->GetValue( 2 )->GetRealObject() ) );
-	dof.SetLowerLimit( rt->GetValue( 3 )->GetFloat() );
-	dof.SetUpperLimit( rt->GetValue( 4 )->GetFloat() );
+			*rt->GetValue( 2 )->GetRealObject() );
+	deColliderConstraintDof &dof = constraint.GetDof( dofEnum );
+	
+	switch( dofEnum ){
+	case deColliderConstraint::edofLinearX:
+	case deColliderConstraint::edofLinearY:
+	case deColliderConstraint::edofLinearZ:
+		dof.SetLowerLimit( rt->GetValue( 3 )->GetFloat() );
+		dof.SetUpperLimit( rt->GetValue( 4 )->GetFloat() );
+		break;
+		
+	case deColliderConstraint::edofAngularX:
+	case deColliderConstraint::edofAngularY:
+	case deColliderConstraint::edofAngularZ:
+		dof.SetLowerLimit( rt->GetValue( 3 )->GetFloat() * DEG2RAD );
+		dof.SetUpperLimit( rt->GetValue( 4 )->GetFloat() * DEG2RAD );
+		break;
+	}
+	
 	dof.SetStaticFriction( rt->GetValue( 5 )->GetFloat() );
 	dof.SetKinematicFriction( rt->GetValue( 6 )->GetFloat() );
 	dof.SetSpringStiffness( rt->GetValue( 7 )->GetFloat() );

@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICSKYINSTANCE_H_
 #define _DEBASEGRAPHICSKYINSTANCE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic module sky instance peer.
  */
-class deBaseGraphicSkyInstance{
+class DE_DLL_EXPORT deBaseGraphicSkyInstance{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

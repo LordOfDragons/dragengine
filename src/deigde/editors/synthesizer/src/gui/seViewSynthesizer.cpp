@@ -128,6 +128,10 @@ void seViewSynthesizer::SetSynthesizer( seSynthesizer *synthesizer ){
 	pWPSynthesizer->SetSynthesizer( synthesizer );
 }
 
+void seViewSynthesizer::OnSynthesizerPathChanged(){
+	pWPSource->OnSynthesizerPathChanged();
+}
+
 
 
 void seViewSynthesizer::ResetView(){

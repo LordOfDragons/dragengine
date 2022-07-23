@@ -105,7 +105,13 @@ class deBasePhysicsParticleEmitter;
  * For these simplified simulations can be used which often can be driven
  * entirely on the GPU.
  */
-class deParticleEmitter : public deResource{
+class DE_DLL_EXPORT deParticleEmitter : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitter> Ref;
+	
+	
+	
 private:
 	deParticleEmitterController **pControllers;
 	int pControllerCount;

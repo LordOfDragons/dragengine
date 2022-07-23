@@ -29,6 +29,9 @@
 #include "../../../animator/aeAnimator.h"
 #include "../../../animator/controller/aeController.h"
 #include "../../../animator/rule/aeRuleBoneTransformator.h"
+#include "../../../undosys/rule/bonetrans/aeURuleBTransSetAxis.h"
+#include "../../../undosys/rule/bonetrans/aeURuleBTransSetMinAngle.h"
+#include "../../../undosys/rule/bonetrans/aeURuleBTransSetMaxAngle.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetTransMin.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetTransMax.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetRotMin.h"
@@ -39,6 +42,7 @@
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetEnablePos.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetEnableOrien.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetEnableSize.h"
+#include "../../../undosys/rule/bonetrans/aeURuleBTransSetUseAxis.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetTargetBone.h"
 #include "../../../animatoreditor.h"
 
@@ -47,6 +51,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
@@ -72,7 +77,7 @@
 
 
 // Actions
-///////////
+////////////
 
 namespace{
 
@@ -167,6 +172,30 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator *animator, aeRuleBoneTransformator *rule ) = 0;
 };
 
+class cBaseTextFieldListener : public igdeTextFieldListener{
+protected:
+	aeWPAPanelRuleBoneTransformator &pPanel;
+	
+public:
+	cBaseTextFieldListener( aeWPAPanelRuleBoneTransformator &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		aeRuleBoneTransformator * const rule = ( aeRuleBoneTransformator* )pPanel.GetRule();
+		if( ! animator || ! rule ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( textField, animator, rule ) );
+		if( undo ){
+			animator->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleBoneTransformator *rule ) = 0;
+};
+
 
 class cEditTranslationMinimum : public cBaseEditVectorListener{
 public:
@@ -225,6 +254,38 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
 		return ! editVector->GetVector().IsEqualTo( rule->GetMaximumScaling() )
 			? new aeURuleBTransSetScaleMax( rule, editVector->GetVector() ) : NULL;
+	}
+};
+
+class cEditAxis : public cBaseEditVectorListener{
+public:
+	cEditAxis( aeWPAPanelRuleBoneTransformator &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleBoneTransformator *rule ){
+		return ! editVector->GetVector().IsEqualTo( rule->GetAxis() )
+			? new aeURuleBTransSetAxis( rule, editVector->GetVector() ) : NULL;
+	}
+};
+
+class cEditMinimumAngle : public cBaseTextFieldListener{
+public:
+	cEditMinimumAngle( aeWPAPanelRuleBoneTransformator &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule ){
+		const float value = textField->GetFloat();
+		return fabsf( value - rule->GetMinimumAngle() ) > FLOAT_SAFE_EPSILON
+			? new aeURuleBTransSetMinAngle( rule, value ) : nullptr;
+	}
+};
+
+class cEditMaximumAngle : public cBaseTextFieldListener{
+public:
+	cEditMaximumAngle( aeWPAPanelRuleBoneTransformator &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleBoneTransformator *rule ){
+		const float value = textField->GetFloat();
+		return fabsf( value - rule->GetMaximumAngle() ) > FLOAT_SAFE_EPSILON
+			? new aeURuleBTransSetMaxAngle( rule, value ) : nullptr;
 	}
 };
 
@@ -288,6 +349,21 @@ public:
 	}
 };
 
+class cActionUseAxis : public cBaseAction{
+public:
+	cActionUseAxis( aeWPAPanelRuleBoneTransformator &panel ) : cBaseAction( panel,
+		"Use rotation axis", NULL, "Use rotation axis instead of direct rotation" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleBoneTransformator *rule ){
+		return new aeURuleBTransSetUseAxis( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleBoneTransformator &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetUseAxis() );
+	}
+};
+
 class cComboTargetBone : public cBaseComboBoxListener{
 public:
 	cComboTargetBone( aeWPAPanelRuleBoneTransformator &panel ) : cBaseComboBoxListener( panel ){ }
@@ -332,6 +408,13 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertBoneTransformator )
 		pEditMinScale, new cEditScalingMinimum( *this ) );
 	helper.EditVector( groupBox, "Max Scaling:", "Maximum scaling",
 		pEditMaxScale, new cEditScalingMaximum( *this ) );
+	
+	helper.CheckBox( groupBox, pChkUseAxis, new cActionUseAxis( *this ), true );
+	helper.EditVector( groupBox, "Axis:", "Rotation axis", pEditAxis, new cEditAxis( *this ) );
+	helper.EditFloat( groupBox, "Min Angle:", "Minimum axis rotation angle",
+		pEditMinAngle, new cEditMinimumAngle( *this ) );
+	helper.EditFloat( groupBox, "Max Angle:", "Maximum axis rotation angle",
+		pEditMaxAngle, new cEditMaximumAngle( *this ) );
 	
 	helper.ComboBox( groupBox, "Coord-Frame:", "Sets the coordinate frame to use for rotation",
 		pCBCoordFrame, new cComboCoordFrame( *this ) );
@@ -391,6 +474,9 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 		pEditMaxRot->SetVector( rule->GetMaximumRotation() );
 		pEditMinScale->SetVector( rule->GetMinimumScaling() );
 		pEditMaxScale->SetVector( rule->GetMaximumScaling() );
+		pEditAxis->SetVector( rule->GetAxis() );
+		pEditMinAngle->SetFloat( rule->GetMinimumAngle() );
+		pEditMaxAngle->SetFloat( rule->GetMaximumAngle() );
 		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )rule->GetCoordinateFrame() );
 		pCBTargetBone->SetText( rule->GetTargetBone() );
 		
@@ -401,6 +487,9 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 		pEditMaxRot->SetVector( decVector() );
 		pEditMinScale->SetVector( decVector() );
 		pEditMaxScale->SetVector( decVector() );
+		pEditAxis->SetVector( decVector( 0.0f, 0.0f, 1.0f ) );
+		pEditMinAngle->SetFloat( 0.0f );
+		pEditMaxAngle->SetFloat( 0.0f );
 		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfComponent );
 		pCBTargetBone->ClearText();
 	}
@@ -412,6 +501,10 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 	pEditMaxRot->SetEnabled( enabled );
 	pEditMinScale->SetEnabled( enabled );
 	pEditMaxScale->SetEnabled( enabled );
+	pChkUseAxis->GetAction()->Update();
+	pEditAxis->SetEnabled( enabled );
+	pEditMinAngle->SetEnabled( enabled );
+	pEditMaxAngle->SetEnabled( enabled );
 	pCBCoordFrame->SetEnabled( enabled );
 	pCBTargetBone->SetEnabled( enabled );
 	

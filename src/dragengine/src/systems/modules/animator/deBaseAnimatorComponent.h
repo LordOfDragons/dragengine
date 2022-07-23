@@ -22,12 +22,14 @@
 #ifndef _DEBASEANIMATORCOMPONENT_H_
 #define _DEBASEANIMATORCOMPONENT_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Animator module component peer.
  */
-class deBaseAnimatorComponent{
+class DE_DLL_EXPORT deBaseAnimatorComponent{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

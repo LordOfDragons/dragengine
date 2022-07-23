@@ -80,11 +80,21 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 			end
 			
 			public func void lightActivated( ECBehaviorLight.Instance instance )
-				this.pInstance.activate()
+				if this.pInstance.getElement().isReallyInGameWorld()
+					this.pInstance.activate()
+					
+				else
+					this.pInstance.setActivated()
+				end
 			end
 			
 			public func void lightDeactivated( ECBehaviorLight.Instance instance )
-				this.pInstance.deactivate()
+				if this.pInstance.getElement().isReallyInGameWorld()
+					this.pInstance.deactivate()
+					
+				else
+					this.pInstance.setDeactivated()
+				end
 			end
 		end
 		
@@ -221,6 +231,42 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 				this.pState = State.lower
 				this.setRequiresThink( true )
 			end
+		end
+		
+		/**
+		 * \brief Set light to activated state now.
+		 * \version 1.5
+		 */
+		public func void setActivated()
+			if this.pState == State.on
+				return
+			end
+			
+			this.pState = State.on
+			this.setRequiresThink( false )
+			
+			var Light light = this.pLight.getLight()
+			light.setIntensity( this.pFullBrightIntensity )
+			light.setActivated( true )
+			this.pLight.notifyParametersChanged()
+		end
+		
+		/**
+		 * \brief Set light to deactivated state now.
+		 * \version 1.5
+		 */
+		public func void setDeactivated()
+			if this.pState == State.off
+				return
+			end
+			
+			this.pState = State.off
+			this.setRequiresThink( false )
+			
+			var Light light = this.pLight.getLight()
+			light.setIntensity( 0 )
+			light.setActivated( false )
+			this.pLight.notifyParametersChanged()
 		end
 		
 		
@@ -370,8 +416,8 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorLightDimmer getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorLightDimmer
+		return eclass.findBehavior( block ECBehaviorLightDimmer each
+			return true
 		end ) cast ECBehaviorLightDimmer
 	end
 	
@@ -383,8 +429,7 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 */
 	static public func ECBehaviorLightDimmer getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorLightDimmer each
-			return each castable ECBehaviorLightDimmer and \
-				( each cast ECBehaviorLightDimmer ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorLightDimmer
 	end
 	
@@ -395,13 +440,9 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorLightDimmer
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorLightDimmer each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -414,8 +455,8 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -426,9 +467,8 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 * of type ECBehaviorLightDimmer.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -439,13 +479,9 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

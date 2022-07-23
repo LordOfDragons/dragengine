@@ -30,32 +30,37 @@ class declLauncher;
 
 
 /**
- * @brief List Profiles Action.
+ * \brief List Profiles Action.
  */
 class declListProfiles{
 private:
-	declLauncher *pLauncher;
+	declLauncher &pLauncher;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new action. */
-	declListProfiles( declLauncher *launcher );
+	declListProfiles( declLauncher &launcher );
+	
 	/** Cleans up the action. */
 	~declListProfiles();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the launcher. */
-	inline declLauncher *GetLauncher() const{ return pLauncher; }
+	/** Launcher. */
+	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** Print syntax. */
 	void PrintSyntax();
+	
 	/** Parse arguments. */
 	void ParseArguments();
-	/** Init launcher. */
-	void InitLauncher();
+	
 	/** Run action. */
 	void Run();
 	/*@}*/

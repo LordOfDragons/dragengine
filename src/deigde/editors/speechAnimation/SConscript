@@ -4,7 +4,7 @@ Import( 'parent_env parent_targets parent_report' )
 
 envEditor = parent_env.Clone()
 
-buildEditor = 'deigde_shared' in parent_targets
+buildEditor = 'deigde_shared' in parent_targets and parent_env['build_editor_speechanimation'] != TernaryVariableNo
 parent_report[ 'build IGDE Speech Animation Editor' ] = 'yes' if buildEditor else 'no'
 if not buildEditor:
 	Return()
@@ -46,6 +46,11 @@ for l in library:
 	if l.name.endswith( envEditor[ 'SHLIBSUFFIX' ] ):
 		install.append( envEditor.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
+
+if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
+	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
+	install.append(envEditor.Install(pathPdb, 'speechanimation.pdb'))
+	archive['{}/speechanimation.pdb'.format(pathPdb)] = envEditor.File('speechanimation.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

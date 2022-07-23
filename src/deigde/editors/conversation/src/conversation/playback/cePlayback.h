@@ -42,19 +42,19 @@ class cePlaybackCamera;
 
 
 /**
- * \brief Conversation playback.
+ * Conversation playback.
  */
 class cePlayback{
 public:
-	/** \brief Camera handling. */
+	/** Camera handling. */
 	enum eCameraHandling{
-		/** \brief Conversation playback. */
+		/** Conversation playback. */
 		echConversation,
 		
-		/** \brief Selected camera shot. */
+		/** Selected camera shot. */
 		echCameraShot,
 		
-		/** \brief Free moving. */
+		/** Free moving. */
 		echFree
 	};
 	
@@ -69,6 +69,7 @@ private:
 	bool pRunning;
 	bool pPaused;
 	bool pActionWaiting;
+	bool pAutoAdvanceCommands;
 	eCameraHandling pCameraHandling;
 	float pActionTime;
 	ceTextBoxText *pTextBoxText;
@@ -88,10 +89,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create playback. */
+	/** Create playback. */
 	cePlayback( ceConversation &conversation );
 	
-	/** \brief Clean up playback. */
+	/** Clean up playback. */
 	~cePlayback();
 	/*@}*/
 	
@@ -99,117 +100,123 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Conversation. */
+	/** Conversation. */
 	inline ceConversation &GetConversation(){ return pConversation; }
 	inline const ceConversation &GetConversation() const{ return pConversation; }
 	
-	/** \brief Playback camera. */
+	/** Playback camera. */
 	inline cePlaybackCamera *GetCamera() const{ return pCamera; }
 	
 	
 	
-	/** \brief Topic to play back. */
+	/** Topic to play back. */
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
-	/** \brief Set topic to play back. */
+	/** Set topic to play back. */
 	void SetTopic( ceConversationTopic *topic );
 	
 	
 	
-	/** \brief Conversation is running. */
+	/** Conversation is running. */
 	inline bool GetRunning() const{ return pRunning; }
 	
-	/** \brief Set conversation is running. */
+	/** Set conversation is running. */
 	void SetRunning( bool running );
 	
-	/** \brief Conversation is paused. */
+	/** Conversation is paused. */
 	inline bool GetPaused() const{ return pPaused; }
 	
-	/** \brief Set conversation is paused. */
+	/** Set conversation is paused. */
 	void SetPaused( bool paused );
 	
-	/** \brief Rewind to beginning of topic. */
+	/** Rewind to beginning of topic. */
 	void Rewind();
 	
-	/** \brief Reset camera. */
+	/** Reset camera. */
 	void ResetCamera();
 	
-	/** \brief Camera handling. */
+	/** Camera handling. */
 	inline eCameraHandling GetCameraHandling() const{ return pCameraHandling; }
 	
-	/** \brief Set camera handling. */
+	/** Set camera handling. */
 	void SetCameraHandling( eCameraHandling handling );
 	
+	/** Auto advance certain commands or wait for user. */
+	inline bool GetAutoAdvanceCommands() const{ return pAutoAdvanceCommands; }
+	
+	/** Set to auto advance certain commands or wait for user. */
+	void SetAutoAdvanceCommands( bool autoAdvance );
 	
 	
-	/** \brief Action stack. */
+	
+	/** Action stack. */
 	inline cePlaybackActionStack &GetActionStack(){ return pActionStack; }
 	inline const cePlaybackActionStack &GetActionStack() const{ return pActionStack; }
 	
-	/** \brief Command list. */
+	/** Command list. */
 	inline cePlaybackCommandList &GetCommands(){ return pCommandList; }
 	inline const cePlaybackCommandList &GetCommandList() const{ return pCommandList; }
 	
-	/** \brief Variable list. */
+	/** Variable list. */
 	inline cePlaybackVariableList &GetVariables(){ return pVariableList; }
 	inline const cePlaybackVariableList &GetVariableList() const{ return pVariableList; }
 	
-	/** \brief List of missing words encountered so far. */
+	/** List of missing words encountered so far. */
 	inline decStringSet &GetMissingWords(){ return pMissingWords; }
 	inline const decStringSet &GetMissingWords() const{ return pMissingWords; }
 	
-	/** \brief Trigger table. */
+	/** Trigger table. */
 	inline igdeTriggerTargetList &GetTriggerTable(){ return pTriggerTable; }
 	inline const igdeTriggerTargetList &GetTriggerTable() const{ return pTriggerTable; }
 	
 	
 	
-	/** \brief Play single action. */
+	/** Play single action. */
 	void PlaySingleAction( ceConversationAction *action, float time );
 	
 	
 	
-	/** \brief Number of actors. */
+	/** Number of actors. */
 	inline int GetActorCount() const{ return pActorCount; }
 	
-	/** \brief Set number of actors. */
+	/** Set number of actors. */
 	void SetActorCount( int count );
 	
-	/** \brief Actor. */
+	/** Actor. */
 	cePlaybackActor &GetActorAt( int index ) const;
 	
 	
 	
-	/** \brief Update playback. */
+	/** Update playback. */
 	void Update( float elapsed );
 	
-	/** \brief Update camera. */
+	/** Update camera. */
 	void UpdateCamera( float elapsed );
 	
-	/** \brief Process actions. */
+	/** Process actions. */
 	void ProcessActions( float elapsed );
 	
-	/** \brief Advance to next action. */
+	/** Advance to next action. */
 	void AdvanceToNextAction();
 	
-	/** \brief Fast forward until the actor stopped speaking. */
+	/** Fast forward until the actor stopped speaking. */
 	void FastForwardSpeaking();
 	
-	/** \brief Cancel looping action list. */
+	/** Cancel looping action list. */
 	void CancelLoopingLayer( int stackDepth );
 	
-	/** \brief Last action played back or \em NULL if not set. */
+	/** Last action played back or \em NULL if not set. */
 	inline ceConversationAction *GetLastPlayedAction() const{ return pLastPlayedAction; }
 	
-	/** \brief Last action played back parent topic or \em NULL if not set. */
+	/** Last action played back parent topic or \em NULL if not set. */
 	inline ceConversationTopic *GetLastPlayedActionTopic() const{ return pLastPlayedActionTopic; }
 	
 	
 	
-	/** \brief Set text box text. */
+	/** Set text box text. */
 	void SetTextBoxText( const decUnicodeString &text );
 	
-	/** \brief Clear text box text. */
+	/** Clear text box text. */
 	void ClearTextBoxText();
 	/*@}*/
 	

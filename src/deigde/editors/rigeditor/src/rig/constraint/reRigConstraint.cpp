@@ -108,12 +108,12 @@ reRigConstraint::reRigConstraint( deEngine *engine ){
 	pDirtyPositions = true;
 	
 	try{
-		pDof[ deColliderConstraint::edofLinearX ] = new reRigConstraintDof( this, deColliderConstraint::edofLinearX );
-		pDof[ deColliderConstraint::edofLinearY ] = new reRigConstraintDof( this, deColliderConstraint::edofLinearY );
-		pDof[ deColliderConstraint::edofLinearZ ] = new reRigConstraintDof( this, deColliderConstraint::edofLinearZ );
-		pDof[ deColliderConstraint::edofAngularX ] = new reRigConstraintDof( this, deColliderConstraint::edofAngularX );
-		pDof[ deColliderConstraint::edofAngularY ] = new reRigConstraintDof( this, deColliderConstraint::edofAngularY );
-		pDof[ deColliderConstraint::edofAngularZ ] = new reRigConstraintDof( this, deColliderConstraint::edofAngularZ );
+		pDof[ deColliderConstraint::edofLinearX ] = new reRigConstraintDof( *this, deColliderConstraint::edofLinearX );
+		pDof[ deColliderConstraint::edofLinearY ] = new reRigConstraintDof( *this, deColliderConstraint::edofLinearY );
+		pDof[ deColliderConstraint::edofLinearZ ] = new reRigConstraintDof( *this, deColliderConstraint::edofLinearZ );
+		pDof[ deColliderConstraint::edofAngularX ] = new reRigConstraintDof( *this, deColliderConstraint::edofAngularX );
+		pDof[ deColliderConstraint::edofAngularY ] = new reRigConstraintDof( *this, deColliderConstraint::edofAngularY );
+		pDof[ deColliderConstraint::edofAngularZ ] = new reRigConstraintDof( *this, deColliderConstraint::edofAngularZ );
 		
 		pCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled( true );
@@ -401,10 +401,6 @@ void reRigConstraint::SetOffset( const decVector &offset ){
 
 
 reRigConstraintDof &reRigConstraint::GetDof( deColliderConstraint::eDegreesOfFreedom dof ) const{
-	if( dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	return *pDof[ dof ];
 }
 
@@ -586,7 +582,7 @@ void reRigConstraint::Update(){
 	if( pDirtyPositions ){
 		pDirtyPositions = false;
 		
-		pPoseMatrix1 = decDMatrix::CreateRotation( pOrientation * DEG2RAD ) * decDMatrix::CreateTranslation( pPosition );
+		pPoseMatrix1.SetRT( pOrientation * DEG2RAD, pPosition );
 		pPoseMatrix2 = pPoseMatrix1;
 		
 		if( pRigBone ){
@@ -797,7 +793,8 @@ void reRigConstraint::pUpdateDDConstraintGeometry(){
 			arrowEnd = pRigBone->GetPoseMatrix().ToMatrix() * pRigBone->GetCentralMassPoint();
 			
 			if( pConstraintBone ){
-				arrowStart = ( pRigBone->GetMatrix() * pConstraintBone->GetInverseMatrix() * pConstraintBone->GetPoseMatrix().ToMatrix() ) * pPosition;
+				arrowStart = ( pRigBone->GetMatrix() * pConstraintBone->GetInverseMatrix()
+					* pConstraintBone->GetPoseMatrix().ToMatrix() ) * pPosition;
 				
 			}else{
 				arrowStart = pPosition;

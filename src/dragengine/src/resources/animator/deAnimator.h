@@ -49,7 +49,13 @@ class deBaseAnimatorAnimator;
  * than one rule. The animator object has peers into the animator module.
  * This way the creation of animations can be accelerated if possible.
  */
-class deAnimator : public deResource{
+class DE_DLL_EXPORT deAnimator : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimator> Ref;
+	
+	
+	
 private:
 	deRigReference pRig;
 	deAnimationReference pAnimation;

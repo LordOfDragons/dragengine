@@ -28,7 +28,7 @@
 /**
  * \brief Scripting module touch sensor peer.
  */
-class deBaseScriptingSoundLevelMeter{
+class DE_DLL_EXPORT deBaseScriptingSoundLevelMeter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

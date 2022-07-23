@@ -66,6 +66,7 @@ private:
 		dsClass *clsPE, *clsCurveBezier, *clsQuat, *clsDynSkin;
 		dsClass *clsPEController;
 		dsClass *clsLayerMask;
+		dsClass *clsCollider;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -88,6 +89,10 @@ private:
 	DEF_NATFUNC( nfSetRemoveAfterLastParticleDied );
 	DEF_NATFUNC( nfGetTimeScale );
 	DEF_NATFUNC( nfSetTimeScale );
+	DEF_NATFUNC( nfGetWarmUpTime );
+	DEF_NATFUNC( nfSetWarmUpTime );
+	DEF_NATFUNC( nfGetBurstTime );
+	DEF_NATFUNC( nfSetBurstTime );
 	
 	DEF_NATFUNC( nfGetControllerCount );
 	DEF_NATFUNC( nfGetControllerAt );
@@ -112,6 +117,13 @@ private:
 	
 	DEF_NATFUNC( nfGetListener );
 	DEF_NATFUNC( nfSetListener );
+	
+	DEF_NATFUNC( nfGetIgnoreColliderCount );
+	DEF_NATFUNC( nfGetIgnoreColliderAt );
+	DEF_NATFUNC( nfHasIgnoreCollider );
+	DEF_NATFUNC( nfAddIgnoreCollider );
+	DEF_NATFUNC( nfRemoveIgnoreCollider );
+	DEF_NATFUNC( nfRemoveAllIgnoreColliders );
 	
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfEquals );

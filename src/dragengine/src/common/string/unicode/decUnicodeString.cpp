@@ -30,6 +30,7 @@
 #include "decUnicodeStringList.h"
 #include "../decString.h"
 #include "../../exceptions.h"
+#include "../../../dragengine_configuration.h"
 
 
 
@@ -178,57 +179,97 @@ void decUnicodeString::Set( int character, int count ){
 void decUnicodeString::SetValue( char value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( unsigned char value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( short value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( unsigned short value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( int value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( unsigned int value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( float value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetValue( double value ){
 	decString temp;
 	temp.SetValue( value );
-	pCreateString( 1, temp.GetLength() );
-	strcpy( (char*)pString, temp.GetString() );
+	const int length = temp.GetLength();
+	pCreateString( 1, length );
+	#ifdef OS_W32_VS
+		strcpy_s( ( char* )pString, length + 1, temp.GetString() );
+	#else
+		strcpy( (char*)pString, temp.GetString() );
+	#endif
 }
 
 void decUnicodeString::SetFromUTF8( const char *string ){

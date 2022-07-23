@@ -22,6 +22,8 @@
 #ifndef _DECPOINTERORDEREDSET_H_
 #define _DECPOINTERORDEREDSET_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Ordered set of pointers.
@@ -29,7 +31,7 @@
  * All pointers including NULL are allowed. Pointers can be included
  * only once in the set.
  */
-class decPointerOrderedSet{
+class DE_DLL_EXPORT decPointerOrderedSet{
 private:
 	void **pPointers;
 	int pPointerCount;

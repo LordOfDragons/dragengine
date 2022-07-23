@@ -35,7 +35,13 @@ class deLanguagePackManager;
  *
  * Language pack contain a list of entries assigning translations to names.
  */
-class deLanguagePack : public deFileResource{
+class DE_DLL_EXPORT deLanguagePack : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLanguagePack> Ref;
+	
+	
+	
 private:
 	decUnicodeString pName;
 	decUnicodeString pDescription;

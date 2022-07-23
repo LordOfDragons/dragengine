@@ -41,6 +41,7 @@ class aeWPAPanelRuleStateManipulator;
 class aeWPAPanelRuleStateSnapshot;
 class aeWPAPanelRuleSubAnimator;
 class aeWPAPanelRuleTrackTo;
+class aeWPAPanelRuleMirror;
 class aeWindowProperties;
 class aeWPRuleListener;
 
@@ -71,6 +72,7 @@ private:
 	aeWPAPanelRuleSubAnimator *pPanelSubAnimator;
 	aeWPAPanelRuleTrackTo *pPanelTrackTo;
 	aeWPAPanelRuleLimit *pPanelLimit;
+	aeWPAPanelRuleMirror *pPanelMirror;
 	aeWPAPanelRule *pActivePanel;
 	
 	
@@ -129,6 +131,9 @@ public:
 	
 	/** \brief Update the rule move list. */
 	void UpdateRuleMoveList();
+	
+	/** \brief Animator path changed. */
+	void OnAnimatorPathChanged();
 	/*@}*/
 };
 

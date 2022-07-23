@@ -32,6 +32,9 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "../../dragengine_export.h"
+
+
 /** \brief Value of pi. */
 #ifdef PI
 #	undef PI
@@ -118,101 +121,101 @@ class decBoundary;
 
 namespace decMath{
 	/** \brief Smaller of two values. */
-	inline float min( float a, float b ){
+	inline DE_DLL_EXPORT float min( float a, float b ){
 		return ( a < b ) ? a : b;
 	}
 	
 	/** \brief Smaller of two values. */
-	inline double min( double a, double b ){
+	inline DE_DLL_EXPORT double min( double a, double b ){
 		return ( a < b ) ? a : b;
 	}
 	
 	/** \brief Smaller of two values. */
-	inline int min( int a, int b ){
+	inline DE_DLL_EXPORT int min( int a, int b ){
 		return ( a < b ) ? a : b;
 	}
 	
 	/** \brief Smaller of three values. */
-	inline float min( float a, float b, float c ){
+	inline DE_DLL_EXPORT float min( float a, float b, float c ){
 		return min( min( a, b ), c );
 	}
 	
 	/** \brief Smaller of three values. */
-	inline double min( double a, double b, double c ){
+	inline DE_DLL_EXPORT double min( double a, double b, double c ){
 		return min( min( a, b ), c );
 	}
 	
 	/** \brief Smaller of three values. */
-	inline int min( int a, int b, int c ){
+	inline DE_DLL_EXPORT int min( int a, int b, int c ){
 		return min( min( a, b ), c );
 	}
 	
 	/** \brief Smaller of four values. */
-	inline float min( float a, float b, float c, float d ){
+	inline DE_DLL_EXPORT float min( float a, float b, float c, float d ){
 		return min( min( a, b ), min( c, d ) );
 	}
 	
 	/** \brief Smaller of four values. */
-	inline double min( double a, double b, double c, double d ){
+	inline DE_DLL_EXPORT double min( double a, double b, double c, double d ){
 		return min( min( a, b ), min( c, d ) );
 	}
 	
 	/** \brief Smaller of four values. */
-	inline int min( int a, int b, int c, int d ){
+	inline DE_DLL_EXPORT int min( int a, int b, int c, int d ){
 		return min( min( a, b ), min( c, d ) );
 	}
 	
 	
 	
 	/** \brief Larger of two values. */
-	inline float max( float a, float b ){
+	inline DE_DLL_EXPORT float max( float a, float b ){
 		return ( a > b ) ? a : b;
 	}
 	
 	/** \brief Larger of two values. */
-	inline double max( double a, double b ){
+	inline DE_DLL_EXPORT double max( double a, double b ){
 		return ( a > b ) ? a : b;
 	}
 	
 	/** \brief Larger of two values. */
-	inline int max( int a, int b ){
+	inline DE_DLL_EXPORT int max( int a, int b ){
 		return ( a > b ) ? a : b;
 	}
 	
 	/** \brief Larger of three values. */
-	inline float max( float a, float b, float c ){
+	inline DE_DLL_EXPORT float max( float a, float b, float c ){
 		return max( max( a, b ), c );
 	}
 	
 	/** \brief Larger of three values. */
-	inline double max( double a, double b, double c ){
+	inline DE_DLL_EXPORT double max( double a, double b, double c ){
 		return max( max( a, b ), c );
 	}
 	
 	/** \brief Larger of three values. */
-	inline int max( int a, int b, int c ){
+	inline DE_DLL_EXPORT int max( int a, int b, int c ){
 		return max( max( a, b ), c );
 	}
 	
 	/** \brief Larger of four values. */
-	inline float max( float a, float b, float c, float d ){
+	inline DE_DLL_EXPORT float max( float a, float b, float c, float d ){
 		return max( max( a, b ), max( c, d ) );
 	}
 	
 	/** \brief Larger of four values. */
-	inline double max( double a, double b, double c, double d ){
+	inline DE_DLL_EXPORT double max( double a, double b, double c, double d ){
 		return max( max( a, b ), max( c, d ) );
 	}
 	
 	/** \brief Larger of four values. */
-	inline int max( int a, int b, int c, int d ){
+	inline DE_DLL_EXPORT int max( int a, int b, int c, int d ){
 		return max( max( a, b ), max( c, d ) );
 	}
 	
 	
 	
 	/** \brief Clamp value to range. */
-	inline float clamp( float x, float lower, float upper ){
+	inline DE_DLL_EXPORT float clamp( float x, float lower, float upper ){
 		if( x <= lower ){
 			return lower;
 			
@@ -225,7 +228,7 @@ namespace decMath{
 	}
 	
 	/** \brief Clamp value to range. */
-	inline double clamp( double x, double lower, double upper ){
+	inline DE_DLL_EXPORT double clamp( double x, double lower, double upper ){
 		if( x <= lower ){
 			return lower;
 			
@@ -238,7 +241,7 @@ namespace decMath{
 	}
 	
 	/** \brief Clamp value to range. */
-	inline int clamp( int x, int lower, int upper ){
+	inline DE_DLL_EXPORT int clamp( int x, int lower, int upper ){
 		if( x <= lower ){
 			return lower;
 			
@@ -253,7 +256,7 @@ namespace decMath{
 	
 	
 	/** \brief Normalize value. */
-	inline int normalize( int x, int lower, int upper ){
+	inline DE_DLL_EXPORT int normalize( int x, int lower, int upper ){
 		if( lower < upper ){
 			return lower + ( ( x - lower ) % ( upper - lower + 1 ) );
 			
@@ -263,7 +266,7 @@ namespace decMath{
 	}
 	
 	/** \brief Normalize value. */
-	inline float normalize( float x, float lower, float upper ){
+	inline DE_DLL_EXPORT float normalize( float x, float lower, float upper ){
 		if( lower < upper ){
 			const float range = upper - lower;
 			const float offset = x - lower;
@@ -275,7 +278,7 @@ namespace decMath{
 	}
 	
 	/** \brief Normalize value. */
-	inline double normalize( double x, double lower, double upper ){
+	inline DE_DLL_EXPORT double normalize( double x, double lower, double upper ){
 		if( lower < upper ){
 			const double range = upper - lower;
 			const double offset = x - lower;
@@ -291,7 +294,7 @@ namespace decMath{
 	 * 
 	 * Same as normalize(float,float,float) with lower set to 0.
 	 */
-	inline float normalize( float x, float upper ){
+	inline DE_DLL_EXPORT float normalize( float x, float upper ){
 		if( upper > 0.0f ){
 			return ( x - floorf( x / upper ) * upper );
 			
@@ -305,7 +308,7 @@ namespace decMath{
 	 * 
 	 * Same as normalize(double,double,double) with lower set to 0.
 	 */
-	inline double normalize( double x, double upper ){
+	inline DE_DLL_EXPORT double normalize( double x, double upper ){
 		if( upper > 0.0 ){
 			return ( x - floor( x / upper ) * upper );
 			
@@ -321,7 +324,7 @@ namespace decMath{
 	 * 
 	 * \em blend is clamped to the range between 0 and 1 before mixing.
 	 */
-	inline float mix( float a, float b, float blend ){
+	inline DE_DLL_EXPORT float mix( float a, float b, float blend ){
 		if( blend <= 0.0f ){
 			return a;
 			
@@ -338,7 +341,7 @@ namespace decMath{
 	 * 
 	 * \em blend is clamped to the range between 0 and 1 before mixing.
 	 */
-	inline double mix( double a, double b, double blend ){
+	inline DE_DLL_EXPORT double mix( double a, double b, double blend ){
 		if( blend <= 0.0 ){
 			return a;
 			
@@ -353,7 +356,7 @@ namespace decMath{
 	
 	
 	/** \brief Linear map x to the range from 0 to 1. */
-	inline float linearStep( float x, float lower, float upper ){
+	inline DE_DLL_EXPORT float linearStep( float x, float lower, float upper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return 0.0f;
@@ -371,7 +374,7 @@ namespace decMath{
 	}
 	
 	/** \brief Linear map x to the range from 0 to 1. */
-	inline double linearStep( double x, double lower, double upper ){
+	inline DE_DLL_EXPORT double linearStep( double x, double lower, double upper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return 0.0;
@@ -389,7 +392,7 @@ namespace decMath{
 	}
 	
 	/** \brief Linear map x from one range to another range. */
-	inline float linearStep( float x, float lower, float upper, float mapLower, float mapUpper ){
+	inline DE_DLL_EXPORT float linearStep( float x, float lower, float upper, float mapLower, float mapUpper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return mapLower;
@@ -407,7 +410,7 @@ namespace decMath{
 	}
 	
 	/** \brief Linear map x from one range to another range. */
-	inline double linearStep( double x, double lower, double upper, double mapLower, double mapUpper ){
+	inline DE_DLL_EXPORT double linearStep( double x, double lower, double upper, double mapLower, double mapUpper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return mapLower;
@@ -427,7 +430,7 @@ namespace decMath{
 	
 	
 	/** \brief Smooth map x to the range from 0 to 1. */
-	inline float smoothStep( float x, float lower, float upper ){
+	inline DE_DLL_EXPORT float smoothStep( float x, float lower, float upper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return 0.0f;
@@ -446,7 +449,7 @@ namespace decMath{
 	}
 	
 	/** \brief Smooth map x to the range from 0 to 1. */
-	inline double smoothStep( double x, double lower, double upper ){
+	inline DE_DLL_EXPORT double smoothStep( double x, double lower, double upper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return 0.0;
@@ -465,7 +468,7 @@ namespace decMath{
 	}
 	
 	/** \brief Smooth map x from one range to another range. */
-	inline float smoothStep( float x, float lower, float upper, float mapLower, float mapUpper ){
+	inline DE_DLL_EXPORT float smoothStep( float x, float lower, float upper, float mapLower, float mapUpper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return mapLower;
@@ -485,7 +488,7 @@ namespace decMath{
 	}
 	
 	/** \brief Smooth map x from one range to another range. */
-	inline double smoothStep( double x, double lower, double upper, double mapLower, double mapUpper ){
+	inline DE_DLL_EXPORT double smoothStep( double x, double lower, double upper, double mapLower, double mapUpper ){
 		if( upper > lower ){
 			if( x <= lower ){
 				return mapLower;
@@ -507,7 +510,7 @@ namespace decMath{
 	
 	
 	/** \brief Random value. */
-	inline int random( int lower, int upper ){
+	inline DE_DLL_EXPORT int random( int lower, int upper ){
 		if( upper > lower ){
 			const float factor2 = ( float )rand() / ( float )RAND_MAX;
 			const float factor1 = 1.0f - factor2;
@@ -519,7 +522,7 @@ namespace decMath{
 	}
 	
 	/** \brief Random value. */
-	inline float random( float lower, float upper ){
+	inline DE_DLL_EXPORT float random( float lower, float upper ){
 		if( upper > lower ){
 			const float factor2 = ( float )rand() / ( float )RAND_MAX;
 			const float factor1 = 1.0f - factor2;

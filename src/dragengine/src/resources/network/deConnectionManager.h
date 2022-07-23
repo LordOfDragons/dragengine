@@ -32,7 +32,7 @@ class deConnection;
 /**
  * \brief Connection Resource Manager.
  */
-class deConnectionManager : public deResourceManager{
+class DE_DLL_EXPORT deConnectionManager : public deResourceManager{
 private:
 	deResourceList pConnections;
 	

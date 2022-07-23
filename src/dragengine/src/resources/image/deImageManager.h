@@ -38,7 +38,7 @@ class deImage;
 /**
  * \brief Image Resource Manager.
  */
-class deImageManager : public deFileResourceManager{
+class DE_DLL_EXPORT deImageManager : public deFileResourceManager{
 private:
 	deFileResourceList pImages;
 	

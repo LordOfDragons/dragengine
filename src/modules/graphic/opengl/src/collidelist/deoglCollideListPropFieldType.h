@@ -22,43 +22,80 @@
 #ifndef _DEOGLCOLLIDELISTPROPFIELDTYPE_H_
 #define _DEOGLCOLLIDELISTPROPFIELDTYPE_H_
 
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/math/decMath.h>
+
+class deoglCollideListPropField;
+class deoglCollideListPropFieldCluster;
+class deoglOcclusionTest;
+class deoglRPropFieldType;
 class deoglPropFieldCluster;
 
 
-
 /**
- * @brief Collide List Prop Field Type.
+ * Collide List Prop Field Type.
  */
 class deoglCollideListPropFieldType{
 private:
-	deoglPropFieldCluster **pClusters;
+	deoglCollideListPropField &pPropField;
+	
+	deoglRPropFieldType *pType;
+	
+	decPointerList pClusters;
 	int pClusterCount;
-	int pClusterSize;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new collide list prop field type. */
-	deoglCollideListPropFieldType();
-	/** Cleans up the collide list prop field type. */
+	/** Create prop field type. */
+	deoglCollideListPropFieldType( deoglCollideListPropField &propField );
+	
+	/** Clean up prop field type. */
 	~deoglCollideListPropFieldType();
 	/*@}*/
 	
-	/** @name Management */
-	/*@{*/
-	/** Determines if the prop field type is empty. */
-	inline bool GetIsEmpty() const{ return pClusterCount == 0; }
-	/** Determines if the prop field type is not empty. */
-	inline bool GetIsNotEmpty() const{ return pClusterCount > 0; }
 	
-	/** Retrieves the number of clusters. */
+	
+	/** \name Management */
+	/*@{*/
+	/** Clear sector. */
+	void Clear();
+	
+	/** Start occlusion test. */
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset );
+	
+	
+	
+	/** Type. */
+	inline deoglRPropFieldType *GetType() const{ return pType; }
+	
+	/** Set type. */
+	void SetType( deoglRPropFieldType *type );
+	
+	/** Count of clusters. */
 	inline int GetClusterCount() const{ return pClusterCount; }
-	/** Retrieves the the clusters. */
-	inline deoglPropFieldCluster **GetClusters() const{ return pClusters; }
-	/** Adds a cluster. */
-	void AddCluster( deoglPropFieldCluster *cluster );
-	/** Removes all clusters. */
+	
+	/** Cluster at index. */
+	deoglCollideListPropFieldCluster &GetClusterAt( int index ) const;
+	
+	/** Add cluster. */
+	deoglCollideListPropFieldCluster *AddCluster( deoglPropFieldCluster *cluster );
+	
+	/** Remove all clusters. */
 	void RemoveAllClusters();
+	
+	/** Remove culled clusters. */
+	void RemoveCulledClusters();
+	
+	
+	
+	/** Prop field type is empty. */
+	inline bool GetIsEmpty() const{ return pClusterCount == 0; }
+	
+	/** Prop field type is not empty. */
+	inline bool GetIsNotEmpty() const{ return pClusterCount > 0; }
 	/*@}*/
 };
 

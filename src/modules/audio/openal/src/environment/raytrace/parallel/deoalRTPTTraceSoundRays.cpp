@@ -59,6 +59,7 @@ pProbeConfig( NULL ),
 pRange( 0.0f ),
 pRefDist( 1.0f ),
 pRollOff( 0.0f ),
+pDistanceOffset( 0.0f ),
 pUseAttenuation( false ),
 pFirstRay( 0 ),
 #ifndef RTPTTSR_ONE_TASK_PER_RAY
@@ -74,6 +75,8 @@ pInverseRayTracing( false ),
 pDetectOutsideLength( 100.0 ),
 pBackStepDistance( 1e-4 )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	pRTWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
@@ -144,11 +147,12 @@ void deoalRTPTTraceSoundRays::SetRange( float range ){
 	pRange = range;
 }
 
-void deoalRTPTTraceSoundRays::SetAttenuationParameters( float refDist, float rollOff ){
+void deoalRTPTTraceSoundRays::SetAttenuationParameters( float refDist, float rollOff, float distanceOffset ){
 	pRefDist = refDist;
 	pRollOff = rollOff;
+	pDistanceOffset = distanceOffset;
 	pUseAttenuation = fabsf( pRefDist - 1.0f ) > FLOAT_SAFE_EPSILON
-		|| fabsf( pRollOff ) > FLOAT_SAFE_EPSILON;
+		|| fabsf( pRollOff ) > FLOAT_SAFE_EPSILON || fabsf( pDistanceOffset ) > 0.001f;
 }
 
 void deoalRTPTTraceSoundRays::SetFirstRay( int firstRay ){
@@ -956,10 +960,13 @@ const sTraceAbsorptionSum &absorptionSum ){
 	// causing gain to drop exponentially. also if the attenuation would be calculated only
 	// over the distance travelled since the start of the ray the result would be too low.
 	// for example the total distance is 6 then the attenuation is 1/6. if this is now split
-	// over one bounce after 3m the attenuation would be (1/3)/3 which is 1/9 instead o 1/6.
+	// over one bounce after 3m the attenuation would be (1/3)/3 which is 1/9 instead of 1/6.
 	// thus the attenuation calculation is only used to check when the gain becomes inaudible.
 	// the final calculation step will calculate the distance attenuation
 	//const float attGain = pEnvProbe->AttenuatedGain( reflectedRay.distance ); // * ( float )dotOut;
+	
+	// NOTE if source centric tracing is done pDistanceOffset can be larger than 0 and far
+	//      away sound sources can be traced. if listener centris pDistanceOffset is always 0
 	const float attGain = Attenuate( reflectedRay.distance );
 	
 	// WARNING
@@ -1112,11 +1119,9 @@ void deoalRTPTTraceSoundRays::pUpdateExtends( const decDVector &position ){
 
 float deoalRTPTTraceSoundRays::Attenuate( float distance ) const{
 	if( pUseAttenuation ){
-		return pRefDist / ( pRefDist + pRollOff * decMath::max( distance - pRefDist, 0.0f ) );
-		
-	}else{
-		return 1.0f;
+		return pRefDist / ( pRefDist + pRollOff * decMath::max( distance + pDistanceOffset - pRefDist, 0.0f ) );
 	}
+	return 1.0f;
 }
 
 void deoalRTPTTraceSoundRays::DetectRayOutside( const sTraceRay &ray, const decDVector &position ){

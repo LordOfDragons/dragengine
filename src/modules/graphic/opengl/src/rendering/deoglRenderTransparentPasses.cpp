@@ -123,19 +123,19 @@ deoglRenderBase( renderThread )
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
 	}
-	pShaderCopyDepthColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "DEPTH_TEST", "1" );
 	if( ! defren.GetUseInverseDepth() ){
 		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
 	}
-	pShaderCopyDepthLimit.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepthLimit = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-	pShaderCopyColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 }
 
 deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
@@ -181,7 +181,7 @@ deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	// to handle pixel correct transparency a depth peeling approach is used but different
 	// than the conventional depth peeling approach. in the conventional approach peeling
@@ -292,8 +292,12 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			// render the transparent layer
 			RenderTransparentGeometryPass( plan, mask );
 			
+			if( ! mask ){
+				renderThread.GetRenderers().GetReflection().CopyMaterial( plan, false );
+			}
+			
 			if( ! plan.GetDisableLights() ){
-				renderThread.GetRenderers().GetLight().RenderLights( plan, false );
+				renderThread.GetRenderers().GetLight().RenderLights( plan, false, mask );
 				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentLights, true );
 			}
 			
@@ -332,7 +336,7 @@ DBG_EXIT("RenderTransparentPasses")
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -530,8 +534,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	renderThread.GetShader().ActivateShader( pShaderCopyDepthColor );
 	shader = pShaderCopyDepthColor->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
 	defren.RenderFSQuadVAO();
@@ -604,8 +608,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
-	addToRenderTask.SetNoRendered( true );
-	addToRenderTask.SetFilterHoles( true );
+	addToRenderTask.SetNoRendered( mask );
+	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 	
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );
@@ -625,7 +629,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		addToRenderTask.AddParticles( collideList );
 	}
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	rengeom.RenderTask( renderTask );
@@ -646,7 +650,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	if( renderTask.GetShaderCount() > 0 ){
@@ -679,7 +683,7 @@ DBG_EXIT("RenderTransparentGeometryPass")
 }
 
 void deoglRenderTransparentPasses::RenderTransparentLimitDepth(
-deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
@@ -780,7 +784,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 		
 		renderThread.GetShader().ActivateShader( pShaderCopyDepthLimit );
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 		defren.SetShaderParamFSQuad( *pShaderCopyDepthLimit->GetCompiled(), spcdQuadParams );
 		defren.RenderFSQuadVAO();
 		defren.SwapDepthTextures(); // solid depth is now depth1
@@ -827,7 +831,7 @@ DBG_EXIT("RenderTransparentLimitDepth")
 
 
 void deoglRenderTransparentPasses::RenderVolumetricPass( deoglRenderPlan &plan,
-deoglRenderPlanMasked *mask, bool inbetween ){
+const deoglRenderPlanMasked *mask, bool inbetween ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
 		return;
@@ -987,7 +991,7 @@ void deoglRenderTransparentPasses::CopyColorToTemporary(){
 	renderThread.GetShader().ActivateShader( pShaderCopyColor );
 	deoglShaderCompiled * const shader = pShaderCopyColor->GetCompiled();
 	
-	renderThread.GetTexture().GetStages().EnableTexture( 0,
+	renderThread.GetTexture().GetStages().EnableArrayTexture( 0,
 		*defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );

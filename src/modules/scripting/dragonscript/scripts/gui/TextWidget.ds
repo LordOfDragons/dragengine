@@ -35,32 +35,45 @@ pin Dragengine.Scenery
  * Provides onKeyType() method called if key press event contains printable character.
  */
 class TextWidget extends Widget implements TextModelListener
-	/** \brief Text model */
 	private var TextModel pModel
-	
-	/** \brief Text validator or null if not used. */
 	private var TextValidator pValidator
+	private var bool pReadOnly
+	private var Array pActionListeners
+	private var bool pHasTyped
+	private var bool pActionOnEnter
+	private var bool pAddTabToText
 	
 	
 	
 	/** \brief Create text widget. */
-	public func new( TextModel model )
+	public func new(TextModel model) this(model, false)
+	end
+	
+	/**
+	 * \brief Create text widget.
+	 * \version 1.7
+	 */
+	public func new(TextModel model, bool readOnly)
 		if model == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pModel = model
-		this.pModel.addListener( this )
+		pReadOnly = readOnly
+		pAddTabToText = false
+		pModel = model
+		pModel.addListener(this)
+		pActionListeners = Array.new()
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		if this.pModel != null
-			this.pModel.removeListener( this )
-			this.pModel = null
-		end
+		pValidator = null
+		pActionListeners = null
 		
-		this.pValidator = null
+		if pModel != null
+			pModel.removeListener(this)
+			pModel = null
+		end
 		
 		super.dispose()
 	end
@@ -69,12 +82,12 @@ class TextWidget extends Widget implements TextModelListener
 	
 	/** \brief Text model. */
 	public func TextModel getModel()
-		return this.pModel
+		return pModel
 	end
 	
 	/** \brief Set text model. */
-	public func void setModel( TextModel model )
-		if model == this.pModel
+	public func void setModel(TextModel model)
+		if model == pModel
 			return
 		end
 		
@@ -82,16 +95,16 @@ class TextWidget extends Widget implements TextModelListener
 			throw EInvalidParam.new()
 		end
 		
-		this.pModel.removeListener( this )
-		this.pModel = model
-		this.pModel.addListener( this )
+		pModel.removeListener(this)
+		pModel = model
+		pModel.addListener(this)
 		
-		this.onModelChanged()
+		onModelChanged()
 	end
 	
 	/** \brief Text validator or null if not used. */
 	public func TextValidator getValidator()
-		return this.pValidator
+		return pValidator
 	end
 	
 	/**
@@ -100,8 +113,90 @@ class TextWidget extends Widget implements TextModelListener
 	 * Current model text is not re-validated. Caller has to ensure text is valid before
 	 * assigning a new validator to avoid impossible to solve situations.
 	 */
-	public func void setValidator( TextValidator validator )
-		this.pValidator = validator
+	public func void setValidator(TextValidator validator)
+		pValidator = validator
+	end
+	
+	
+	
+	/**
+	 * \brief Add action listener.
+	 * \version 1.8
+	 */
+	public func void addActionListener(ActionListener listener)
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		pActionListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove action listener.
+	 * \version 1.8
+	 */
+	public func void removeActionListener(ActionListener listener)
+		pActionListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief User has changed text by typing in the widget since the last action listener call.
+	 * \version 1.8
+	 */
+	public func bool getHasTyped()
+		return pHasTyped
+	end
+	
+	/**
+	 * \brief Set if user has changed text by typing in the widget since the last action listener call.
+	 * \version 1.8
+	 */
+	protected func void setHasTyped(bool hasTyped)
+		pHasTyped = hasTyped
+	end
+	
+	/**
+	 * \brief Call action listeners if enter is pressed after user changed text by typing into the widget.
+	 * \version 1.8
+	 */
+	public func bool getActionOnEnter()
+		return pActionOnEnter
+	end
+	
+	/**
+	 * \brief Set to call action listeners if enter is pressed after user changed text by typing into the widget.
+	 * \version 1.8
+	 */
+	public func void setActionOnEnter(bool actionOnEnter)
+		pActionOnEnter = actionOnEnter
+	end
+	
+	/**
+	 * \brief Add tab to text instead of moving focus.
+	 * \version 1.8
+	 */
+	public func bool getAddTabToText()
+		return pAddTabToText
+	end
+	
+	/**
+	 * \brief Set to add tab to text instead of moving focus.
+	 * \version 1.8
+	 */
+	public func void setAddTabToText(bool addTabToText)
+		pAddTabToText = addTabToText
+	end
+	
+	/**
+	 * \brief Fire action.
+	 * \version 1.8
+	 */
+	public func void fireAction(int modifiers)
+		pHasTyped = false
+		
+		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, modifiers)
+		pActionListeners.forEach(block ActionListener each
+			each.onAction(event)
+		end)
 	end
 	
 	
@@ -112,7 +207,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * Convenience method for calling getModel().getText().
 	 */
 	public func String getText()
-		return this.pModel.getText()
+		return pModel.getText()
 	end
 	
 	/**
@@ -120,8 +215,25 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Convenience method for calling getModel().setText().
 	 */
-	public func void setText( String text )
-		this.pModel.setText( text )
+	public func void setText(String text)
+		pModel.setText(text)
+	end
+	
+	
+	
+	/** Determines if the text is read only. */
+	public func bool getReadOnly()
+		return pReadOnly
+	end
+	
+	/** Sets if the text is read only. */
+	public func void setReadOnly(bool readOnly)
+		if readOnly == pReadOnly
+			return
+		end
+		
+		pReadOnly = readOnly
+		onReadOnlyChanged()
 	end
 	
 	
@@ -131,7 +243,7 @@ class TextWidget extends Widget implements TextModelListener
 	 " 
 	 " Convenience method called if onKeyPress is called with an event containing a printable key.
 	 */
-	public func void onKeyType( KeyEvent event )
+	public func void onKeyType(KeyEvent event)
 	end
 	
 	/** \brief Text model changed. */
@@ -143,7 +255,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Implementation of TextModelListener.textChanged().
 	 */
-	public func void textChanged( TextModel textModel )
+	public func void textChanged(TextModel textModel)
 	end
 	
 	
@@ -153,10 +265,100 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * If event contains a printable character onKeyType() is called after super.onKeyPress().
 	 */
-	public func void onKeyPress( KeyEvent event )
-		super.onKeyPress( event )
-		if event.getKeyChar() > 0
-			this.onKeyType( event )
+	public func void onKeyPress(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.enter
+			if not pReadOnly
+				if pActionOnEnter
+					if pHasTyped
+						pHasTyped = false
+						fireAction(event.getModifiers())
+					end
+					
+				elif event.getKeyChar() > 0
+					onKeyType(event)
+				end
+			end
+			
+			super.onKeyPress(event)
+			return
+			
+		case InputEventKey.tab
+			if pAddTabToText
+				if not pReadOnly and event.getKeyChar() > 0
+					onKeyType(event)
+				end
+				
+				// no super call since this would move focus away from the widget.
+				// still send event to listeners though
+				sendEventToListeners(event, true)
+				
+			else
+				super.onKeyPress(event)
+			end
+			return
+			
+		case InputEventKey.c
+			if (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
+				onClipboardCopy()
+				return
+			end
+			
+		case InputEventKey.x
+			if (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
+				onClipboardCut()
+				return
+			end
+			
+		case InputEventKey.v
+			if (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
+				onClipboardPaste()
+				return
+			end
 		end
+		
+		if not pReadOnly and event.getKeyChar() > 0
+			onKeyType(event)
+		end
+		
+		super.onKeyPress(event)
+	end
+	
+	/** \brief Widget lost focus. */
+	public func void onFocusLost(FocusEvent event)
+		super.onFocusLost(event)
+		
+		if pHasTyped
+			pHasTyped = false
+			fireAction(0)
+		end
+	end
+	
+	/**
+	 * \brief Read only state changed.
+	 * \vrsion 1.7
+	 */
+	public func void onReadOnlyChanged()
+	end
+	
+	/**
+	 * \brief Copy to clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardCopy()
+	end
+	
+	/**
+	 * \brief Cut to clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardCut()
+	end
+	
+	/**
+	 * \brief Paste from clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardPaste()
 	end
 end

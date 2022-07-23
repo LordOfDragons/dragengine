@@ -29,7 +29,13 @@
 /**
  * \brief XML Element Tag.
  */
-class decXmlElementTag : public decXmlContainer{
+class DE_DLL_EXPORT decXmlElementTag : public decXmlContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlElementTag> Ref;
+	
+	
+	
 private:
 	decString pName;
 	decString pNamespace;

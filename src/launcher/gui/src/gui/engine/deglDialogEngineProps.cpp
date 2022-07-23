@@ -29,9 +29,6 @@
 #include "../deglWindowMain.h"
 #include "../deglGuiBuilder.h"
 #include "../../deglLauncher.h"
-#include "../../engine/deglEngine.h"
-#include "../../game/deglGameManager.h"
-#include "../../game/profile/deglGameProfile.h"
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/exceptions.h>
@@ -60,9 +57,10 @@ FXIMPLEMENT( deglDialogEngineProps, FXDialogBox, deglDialogEnginePropsMap, ARRAY
 
 deglDialogEngineProps::deglDialogEngineProps(){ }
 
-deglDialogEngineProps::deglDialogEngineProps( deglWindowMain *windowMain, FXWindow *owner ) :
-FXDialogBox( owner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
-0, 0, 600, 300, 10, 10, 10, 5 ){
+deglDialogEngineProps::deglDialogEngineProps( deglWindowMain *windowMain, FXWindow *powner ) :
+FXDialogBox( powner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+0, 0, 600, 300, 10, 10, 10, 5 )
+{
 	const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXVerticalFrame *frameTab;
 	FXVerticalFrame *frameGroup;
@@ -77,71 +75,69 @@ FXDialogBox( owner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	
 	// create content
 	content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
-	if( ! content ) DETHROW( deeOutOfMemory );
-	
 	frameGroup = new FXVerticalFrame( content, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-	if( ! frameGroup ) DETHROW( deeOutOfMemory );
 	
 	
 	
 	// information
-	pTabPanels = new FXTabBook( frameGroup, NULL, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	if( ! pTabPanels ) DETHROW( deeOutOfMemory );
+	pTabPanels = new FXTabBook( frameGroup, nullptr, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
 	
-	new FXTabItem( pTabPanels, "Information", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Information", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
-	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
-	if( ! frameTab ) DETHROW( deeOutOfMemory );
+	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	
 	block = guiBuilder.CreateMatrixPacker( frameTab, 2 );
 	
 	toolTip = "Configuration path.";
 	guiBuilder.CreateLabel( block, "Path Config:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditPathConfig = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditPathConfig = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditPathConfig->setEditable( false );
 	
 	toolTip = "Share path";
 	guiBuilder.CreateLabel( block, "Path Share:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditPathShare = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditPathShare = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditPathShare->setEditable( false );
 	
 	toolTip = "Lib path";
 	guiBuilder.CreateLabel( block, "Path Libraries:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditPathLib = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditPathLib = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditPathLib->setEditable( false );
 	
 	
 	
 	
 	// settings
-	new FXTabItem( pTabPanels, "Settings", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Settings", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
-	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
-	if( ! frameTab ) DETHROW( deeOutOfMemory );
+	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	
 	block = guiBuilder.CreateMatrixPacker( frameTab, 2 );
 	
 	toolTip = "Select the profile to use or leave empty to use the default profile.";
 	guiBuilder.CreateLabel( block, "Active Profile:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pCBActiveProfile = guiBuilder.CreateComboBox( frameLine, this, ID_CB_ACTIVE_PROFILE, toolTip, true, 20, 8, false );
+	pCBActiveProfile = guiBuilder.CreateComboBox( frameLine, this,
+		ID_CB_ACTIVE_PROFILE, toolTip, true, 20, 8, false );
 	pCBActiveProfile->setSortFunc( deglGuiBuilder::SortListItemByName );
-	pBtnEditProfiles = guiBuilder.CreateButton( frameLine, "Edit Profiles", NULL, this, ID_BTN_EDIT_PROFILES, "Edit game profiles" );
+	pBtnEditProfiles = guiBuilder.CreateButton( frameLine, "Edit Profiles", nullptr,
+		this, ID_BTN_EDIT_PROFILES, "Edit game profiles" );
 	
 	
 	
 	// buttons below
-	frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
-	if( ! frameGroup ) DETHROW( deeOutOfMemory );
+	frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
 	
 	new FXSeparator( frameGroup );
 	
 	frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
-	if( ! frameLine ) DETHROW( deeOutOfMemory );
-	new FXButton( frameLine, "Close Dialog", NULL, this, ID_ACCEPT, LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	new FXButton( frameLine, "Close Dialog", nullptr, this, ID_ACCEPT,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
 	
 	// set values
 	SetFromEngine();
@@ -156,8 +152,8 @@ deglDialogEngineProps::~deglDialogEngineProps(){
 ///////////////
 
 void deglDialogEngineProps::SetFromEngine(){
-	const deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
-	const deglEngine &engine = *pWindowMain->GetLauncher()->GetEngine();
+	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
 	
 	pEditPathConfig->setText( engine.GetPathConfig().GetString() );
 	pEditPathShare->setText( engine.GetPathShare().GetString() );
@@ -169,14 +165,14 @@ void deglDialogEngineProps::SetFromEngine(){
 }
 
 void deglDialogEngineProps::UpdateProfileList(){
-	const deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
-	const deglGameProfileList &profileList = gameManager.GetProfileList();
-	int i, count = profileList.GetProfileCount();
+	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+	const delGameProfileList &profiles = gameManager.GetProfiles();
+	int i, count = profiles.GetCount();
 	
 	pCBActiveProfile->clearItems();
-	pCBActiveProfile->appendItem( "< Default Profile >", NULL );
+	pCBActiveProfile->appendItem( "< Default Profile >", nullptr );
 	for( i=0; i<count; i++ ){
-		deglGameProfile * const profile = profileList.GetProfileAt( i );
+		delGameProfile * const profile = profiles.GetAt( i );
 		pCBActiveProfile->appendItem( profile->GetName().GetString(), profile );
 	}
 	pCBActiveProfile->setCurrentItem( pCBActiveProfile->findItemByData( gameManager.GetActiveProfile() ) );
@@ -187,21 +183,22 @@ void deglDialogEngineProps::UpdateProfileList(){
 // Events
 ///////////
 
-long deglDialogEngineProps::onCBProfilesChanged( FXObject *sender, FXSelector selector, void *data ){
-	deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
+long deglDialogEngineProps::onCBProfilesChanged( FXObject*, FXSelector, void* ){
+	delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	
-	gameManager.SetActiveProfile( ( deglGameProfile* )pCBActiveProfile->getItemData( pCBActiveProfile->getCurrentItem() ) );
+	gameManager.SetActiveProfile( ( delGameProfile* )pCBActiveProfile->getItemData( pCBActiveProfile->getCurrentItem() ) );
+	pWindowMain->GetLauncher()->GetEngine().SaveConfig();
 	
 	return 1;
 }
 
-long deglDialogEngineProps::onBtnEditProfiles( FXObject *sender, FXSelector selector, void *data ){
-	deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
+long deglDialogEngineProps::onBtnEditProfiles( FXObject*, FXSelector, void* ){
+	delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	
 	try{
 		if( deglDialogProfileList( pWindowMain, this, gameManager.GetActiveProfile() ).execute() ){
-			pWindowMain->GetLauncher()->GetEngine()->SaveConfig();
-			gameManager.GetProfileList().ValidateProfiles( *pWindowMain->GetLauncher() );
+			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
+			gameManager.GetProfiles().ValidateAll( *pWindowMain->GetLauncher() );
 			gameManager.ApplyProfileChanges();
 			gameManager.SaveGameConfigs();
 			UpdateProfileList();

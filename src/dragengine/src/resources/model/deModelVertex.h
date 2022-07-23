@@ -28,7 +28,7 @@
 /**
  * \brief Model Vertex.
  */
-class deModelVertex{
+class DE_DLL_EXPORT deModelVertex{
 private:
 	decVector pPosition;
 	int pWeightSet;

@@ -22,6 +22,8 @@
 #ifndef _DEBASEGRAPHICCOMPONENT_H_
 #define _DEBASEGRAPHICCOMPONENT_H_
 
+#include "../../../dragengine_export.h"
+
 class decVector;
 class deDecal;
 class deComponentTexture;
@@ -31,7 +33,7 @@ class deRenderable;
 /**
  * \brief Graphic Module Component Peer.
  */
-class deBaseGraphicComponent{
+class DE_DLL_EXPORT deBaseGraphicComponent{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -53,7 +53,6 @@ class Window extends Container
 	
 	
 	
-	private var String pTitle
 	private var Decoration pDecoration
 	private var WindowState pWindowState
 	private var Widget pActiveWidget
@@ -84,7 +83,6 @@ class Window extends Container
 	
 	/** \brief Create window with the given geometry. */
 	public func new( Point position, Point size ) super( position, size )
-		this.pTitle = ""
 		this.pWindowState = WindowState.normal
 		this.pCanReorder = true
 		this.pCanMove = true
@@ -129,30 +127,19 @@ class Window extends Container
 		
 		this.onClosing( WindowEvent.new( this, WindowEvent.idWindowClosing ) )
 		
-		if this.getParent() != null
-			this.getParent().removeWidget( this )
-		end
-		
-		this.dispose()
+		this.safeDispose()
 	end
 	
 	
-	
-	/** \brief Window title. */
-	public func String getTitle()
-		return this.pTitle
-	end
 	
 	/** \brief Set window title. */
-	public func void setTitle( String title )
-		if title.equals( this.pTitle )
-			return
-		end
+	public func void setTitle(String title)
+		var bool titleChanged = not title.equals(getTitle())
 		
-		this.pTitle = title
+		super.setTitle(title)
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if titleChanged and pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 	end
 	
@@ -445,11 +432,12 @@ class Window extends Container
 	
 	/** \brief Active widget or null if there is none. */
 	public func Widget getActiveWidget()
-		if this.pActiveWidget != null
-			if not this.pActiveWidget.getCanFocus() \
-			or not this.pActiveWidget.getEnabled() \
-			or not this.pActiveWidget.getVisible()
-				this.pActiveWidget = null
+		if pActiveWidget != null
+			if pActiveWidget.getParent() == null /* removed or disposed while active */ \
+			or not pActiveWidget.getCanFocus() \
+			or not pActiveWidget.getEnabled() \
+			or not pActiveWidget.getVisible()
+				pActiveWidget = null
 			end
 		end
 		

@@ -29,67 +29,76 @@ class reRigConstraint;
 
 
 /**
- * @brief Rig constraint degree of freedom working object.
+ * Rig constraint degree of freedom working object.
  */
 class reRigConstraintDof{
 private:
-	/** Parent rig constraint. */
-	reRigConstraint *pRigConstraint;
-	/** Dof index. */
-	deColliderConstraint::eDegreesOfFreedom pDofIndex;
-	
-	/** Lower limit. */
+	reRigConstraint &pRigConstraint;
+	const deColliderConstraint::eDegreesOfFreedom pDofIndex;
 	float pLowerLimit;
-	/** Upper limit. */
 	float pUpperLimit;
-	/** Static friction. */
 	float pStaticFriction;
-	/** Kinetic friction. */
 	float pKinematicFriction;
-	/** Spring stiffness. */
 	float pSpringStiffness;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new rig constraint dof. */
-	reRigConstraintDof( reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dofIndex );
-	/** Cleans up the rig constraint dof. */
+	/** Create rig constraint dof. */
+	reRigConstraintDof( reRigConstraint &constraint, deColliderConstraint::eDegreesOfFreedom dofIndex );
+	
+	/** Clean up rig constraint dof. */
 	~reRigConstraintDof();
 	/*@}*/
 	
-	/** @name Management */
-	/*@{*/
-	/** Retrieves the parent rig constraint. */
-	inline reRigConstraint *GetRigConstraint() const{ return pRigConstraint; }
-	/** Retrieves the dof index. */
-	inline int GetDofIndex() const{ return pDofIndex; }
 	
-	/** Retrieves the lower limit. */
+	
+	/** \name Management */
+	/*@{*/
+	/** Parent rig constraint. */
+	inline reRigConstraint &GetRigConstraint() const{ return pRigConstraint; }
+	
+	/** Dof index. */
+	inline deColliderConstraint::eDegreesOfFreedom GetDofIndex() const{ return pDofIndex; }
+	
+	/** Equality threshold to use for lower and upper limit. */
+	float GetThresholdLimits() const;
+	
+	/** Lower limit. */
 	inline float GetLowerLimit() const{ return pLowerLimit; }
-	/** Sets the lower limit. */
+	
+	/** Set lower limit. */
 	void SetLowerLimit( float lowerLimit );
-	/** Retrieves the upper limit. */
+	
+	/** Upper limit. */
 	inline float GetUpperLimit() const{ return pUpperLimit; }
-	/** Sets the upper limit. */
+	
+	/** Set upper limit. */
 	void SetUpperLimit( float upperLimit );
 	
-	/** Retrieves the static friction coefficient. */
+	/** Static friction coefficient. */
 	inline float GetStaticFriction() const{ return pStaticFriction; }
-	/** Sets the static friction coefficient. */
+	
+	/** Set static friction coefficient. */
 	void SetStaticFriction( float friction );
-	/** Retrieves the kinematic friction coefficient. */
+	
+	/** Kinematic friction coefficient. */
 	inline float GetKinematicFriction() const{ return pKinematicFriction; }
-	/** Sets the kinematic friction coefficient. */
+	
+	/** Set kinematic friction coefficient. */
 	void SetKinematicFriction( float friction );
 	
-	/** Retrieves the spring stiffness. */
+	/** Spring stiffness. */
 	inline float GetSpringStiffness() const{ return pSpringStiffness; }
-	/** Sets the spring stiffness. */
+	
+	/** Set spring stiffness. */
 	void SetSpringStiffness( float stiffness );
 	
 	/** Update engine constraint dof. */
 	void UpdateEngineDof( deColliderConstraintDof &engDof ) const;
+	
 	/** Set from engine constraint dof. */
 	void SetFromEngineDof( const deColliderConstraintDof &engDof );
 	
@@ -98,12 +107,10 @@ public:
 	
 	/** Notify all that the constraint dof changed. */
 	void NotifyAllConstraintDofChanged();
+	
 	/** Notify engine about change to the constraint dof. */
 	void NotifyEngineConstraintChanged();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

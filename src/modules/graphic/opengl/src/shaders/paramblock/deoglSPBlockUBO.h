@@ -27,11 +27,10 @@
 
 
 /**
- * \brief Shader parameter block based on VBO.
- * 
- * Stores the data for a shader parameter block. This is used to set the value of a GLSL
- * uniform block in shader programs. Each block is defined as a byte array with members
- * in the uniform block mapped areas inde the data block.
+ * Shader parameter block based on VBO. Stores the data for a shader parameter block.
+ * This is used to set the value of a GLSL uniform block in shader programs. Each block
+ * is defined as a byte array with members in the uniform block mapped areas inde the
+ * data block.
  */
 class deoglSPBlockUBO : public deoglShaderParameterBlock{
 private:
@@ -48,14 +47,14 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader parameter block. */
+	/** Create shader parameter block. */
 	deoglSPBlockUBO( deoglRenderThread &renderThread );
 	
-	/** \brief Create copy of shader storage buffer object. */
+	/** Create copy of shader storage buffer object. */
 	deoglSPBlockUBO( const deoglSPBlockUBO &paramBlock );
 	
 protected:
-	/** \brief Clean up shader parameter block. */
+	/** Clean up shader parameter block. */
 	virtual ~deoglSPBlockUBO();
 	/*@}*/
 	
@@ -64,36 +63,45 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Uniform buffer object or 0 if not created yet. */
+	/** Uniform buffer object or 0 if not created yet. */
 	inline GLuint GetUBO() const{ return pUBO; }
 	
-	/** \brief Binding point. */
+	/** Binding point. */
 	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
-	/** \brief Set binding point. */
+	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
-	/** \brief Activate buffer. */
-	virtual void Activate();
+	/** Activate buffer. */
+	virtual void Activate() const;
 	
-	/** \brief Deactivate buffer. */
-	virtual void Deactivate();
+	/** Activate buffer overriding binding point. */
+	virtual void Activate( int bindingPoint ) const;
 	
-	/** \brief Map buffer discarding content. */
+	/** Deactivate buffer. */
+	virtual void Deactivate() const;
+	
+	/** Deactivate buffer overriding binding point. */
+	virtual void Deactivate( int bindingPoint ) const;
+	
+	/** Map buffer discarding content. */
 	virtual void MapBuffer();
 	
 	/**
-	 * \brief Map buffer for specific element discarding content.
+	 * Map buffer for specific element discarding content.
 	 * 
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
 	virtual void MapBuffer( int element );
 	
-	/** \brief Unmap buffer uploading data to GPU. */
+	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
-	/** \brief Debug print configuration. */
+	/** Get platform alignment requirements. */
+	virtual int GetAlignmentRequirements() const;
+	
+	/** Debug print configuration. */
 	void DebugPrintConfig( const char *name );
 	/*@}*/
 	

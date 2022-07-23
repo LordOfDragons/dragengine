@@ -31,7 +31,13 @@
  * 
  * \note Logger console is thread safe.
  */
-class deLoggerConsole : public deLogger{
+class DE_DLL_EXPORT deLoggerConsole : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerConsole> Ref;
+	
+	
+	
 private:
 	deMutex pMutex;
 	
@@ -72,6 +78,7 @@ public:
 	
 protected:
 	inline deMutex &GetMutex(){ return pMutex; }
+	void LogPrefix( const char *source, const char *message, const char *prefix );
 };
 
 #endif

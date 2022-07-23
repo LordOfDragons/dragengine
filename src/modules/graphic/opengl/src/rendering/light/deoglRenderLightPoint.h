@@ -28,12 +28,12 @@
 class deoglCubeMap;
 class deoglLightShader;
 class deoglRenderPlan;
+class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRTRenderers;
-
+class deoglRenderPlanMasked;
 
 
 /**
@@ -44,34 +44,55 @@ public:
 	struct sShadowDepthMaps{
 		deoglCubeMap *shadow1Solid;
 		deoglCubeMap *shadow1Transp;
+		deoglCubeMap *shadow1TranspColor;
 		deoglCubeMap *shadow2Solid;
 		deoglCubeMap *shadow2Transp;
+		deoglCubeMap *shadow2TranspColor;
 		deoglCubeMap *shadow1Ambient;
 		deoglCubeMap *shadow2Ambient;
 		
-		inline sShadowDepthMaps() :
-		shadow1Solid( NULL ),
-		shadow1Transp( NULL ),
-		shadow2Solid( NULL ),
-		shadow2Transp( NULL ){}
+		sShadowDepthMaps();
+	};
+	
+	struct sShadowParams{
+		decDMatrix matrixProjection;
+		bool solid;
+		bool transparentStaticShadow;
+		bool transparentDynamicShadow;
+		const deoglCollideList *collideList1;
+		const deoglCollideList *collideList2;
+		int solidShadowMapSize;
+		int transpShadowMapSize;
+		int ambientMapSize;
+		bool withTransparent;
+		float shadowScale;
+		float shadowOffset;
+		
+		/**
+		 * Maximum pixel error. If the rendered mesh and the mesh used for shadow calculation
+		 * differ shadow artifacts can happen. By definition lod meshes should be conservative
+		 * which means they should not stick outside the silhouette if possible. This has the
+		 * following consequences. If the render mesh has lower lod level than the shadow mesh
+		 * shadow artifacts appear since the rendered mesh faces are inside the higher lod mesh.
+		 * This also means if the shadow mesh is using a higher lod level than the rendered
+		 * mesh shadow artifacts should not appear. Increasing the lod level though makes the
+		 * silhouette of the cast shadow more edgy but also makes rendering the shadow maps
+		 * faster. It's difficult to find a good solution for this.
+		 */
+		int lodMaxPixelError;
+		int lodOffset;
+		
+		sShadowParams();
 	};
 	
 	
 	
 private:
-	deoglShaderProgram *pShaderLight;
-	deoglShaderProgram *pShaderLightShadow;
-	deoglShaderProgram *pShaderLightShadowTransp;
-	
-	deoglShaderProgram *pShaderShadowSolid;
-	deoglShaderProgram *pShaderShadowHoles;
-	deoglShaderProgram *pShaderShadowTransp;
-	
-	deoglShaderProgram *pShaderBoxBoundary1;
-	deoglShaderProgram *pShaderBoxBoundary1Ambient;
-	deoglShaderProgram *pShaderBoxBoundary2;
-	deoglShaderProgram *pShaderOccMap;
-	deoglShaderProgram *pShaderOccMapCube;
+	deoglShaderProgramUsage pShaderBoxBoundary1;
+	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
+	deoglShaderProgramUsage pShaderBoxBoundary2;
+	deoglShaderProgramUsage pShaderOccMap;
+	deoglShaderProgramUsage pShaderOccMapCube;
 	
 	int pCubeFaces[ 6 ];
 	
@@ -79,36 +100,34 @@ private:
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowVBOs;
-	deoglDebugInformation *pDebugInfoSolidShadowClear;
-	deoglDebugInformation *pDebugInfoSolidShadowClearTransp;
-	deoglDebugInformation *pDebugInfoSolidShadowFace;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceClear;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTask;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceRender;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTranspClear;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTranspTask;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTranspRender;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFace;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTranspClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTranspTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTranspRender;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentShadow;
-	deoglDebugInformation *pDebugInfoTransparentShadowVBOs;
-	deoglDebugInformation *pDebugInfoTransparentShadowClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowClearTransp;
-	deoglDebugInformation *pDebugInfoTransparentShadowFace;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceRender;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTranspClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTranspTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTranspRender;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadow;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFace;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTranspClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTranspTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTranspRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	
@@ -127,40 +146,39 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** \brief Calculate box boundary for a point light. */
-	void CalculateBoxBoundary( deoglRLight &light );
+	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
 	
 	/** \brief Renders lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render point light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRLight &light );
+	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
+	
+	/** \brief Activate textures for lighting. */
+	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
+		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadows for a point light. */
-	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
-		const decDMatrix &matrixProjection, bool transparentStaticShadow,
-		bool transparentDynamicShadow, bool refilterShadow );
+	void RenderShadows( deoglRenderPlanLight &planLight, sShadowParams &shadowParams );
 	
 	/** \brief Clear cube map. */
 	void ClearCubeMap( deoglShadowMapper &shadowMapper, int shadowMapSize );
 	
 	/** \brief Render shadow cube map. */
-	void RenderShadowMaps( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixProjection,
-		deoglShadowMapper &shadowMapper, const deoglCollideList *clist1, const deoglCollideList *clist2,
-		int solidShadowMapSize, int transpShadowMapSize, bool withTransparent, float shadowScale,
-		float shadowOffset, bool debugSolid );
+	void RenderShadowMaps( deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
 	/** \brief Render ambient map. */
-	void RenderAmbientMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixProjection,
-		deoglShadowMapper &shadowMapper, const deoglCollideList *clist1, const deoglCollideList *clist2,
-		int ambientMapSize, float shadowScale, float shadowOffset );
+	void RenderAmbientMap( deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
 	/** \brief Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRLight &light );
+		deoglRenderPlanLight &planLight );
 	
 	/** \brief Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRLight &light, sShadowDepthMaps &shadowDepthMaps );
+		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps );
 	
 	
 	

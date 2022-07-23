@@ -32,7 +32,7 @@ class deSynthesizer;
 /**
  * \brief Synthesizer resource manager.
  */
-class deSynthesizerManager : public deResourceManager{
+class DE_DLL_EXPORT deSynthesizerManager : public deResourceManager{
 private:
 	deResourceList pSynthesizers;
 	

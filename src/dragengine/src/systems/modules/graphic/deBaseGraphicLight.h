@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICLIGHT_H_
 #define _DEBASEGRAPHICLIGHT_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic module light peer.
  */
-class deBaseGraphicLight{
+class DE_DLL_EXPORT deBaseGraphicLight{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

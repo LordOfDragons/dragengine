@@ -30,7 +30,7 @@ class decUnicodeStringList;
 /**
  * \brief Dictionary of unicode strings mapping strings to string keys.
  */
-class decUnicodeStringDictionary{
+class DE_DLL_EXPORT decUnicodeStringDictionary{
 private:
 	struct sDictEntry{
 		unsigned int hash;

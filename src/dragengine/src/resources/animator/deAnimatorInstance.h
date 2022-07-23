@@ -61,7 +61,13 @@ class deBaseAnimatorAnimatorInstance;
  * time as a collider component if the rig of the component is driven by
  * physics. Animators can though be used if the rig is kinematic. 
  */
-class deAnimatorInstance : public deResource{
+class DE_DLL_EXPORT deAnimatorInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorInstance> Ref;
+	
+	
+	
 private:
 	deAnimatorReference pAnimator;
 	deComponentReference pComponent;

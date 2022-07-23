@@ -50,7 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleTrackTo( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleTrackTo &rule );
+	dearRuleTrackTo( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleTrackTo &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleTrackTo();

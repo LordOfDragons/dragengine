@@ -1,0 +1,56 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief AnimatorLink bone parameter.
+ */
+enum AnimatorLinkBoneParameter
+	/** \brief Use local bone position along in X axis. */
+	positionX
+	
+	/** \brief Use local bone position along Y axis. */
+	positionY
+	
+	/** \brief Use local bone position along Z axis. */
+	positionZ
+	
+	/** \brief Use local bone rotation around X axis in radians. */
+	rotationX
+	
+	/** \brief Use local bone rotation around Y axis in radians. */
+	rotationY
+	
+	/** \brief Use local bone rotation around Z axis in radians. */
+	rotationZ
+	
+	/** \brief Use local bone scale along X axis. */
+	scaleX
+	
+	/** \brief Use local bone scale along Y axis. */
+	scaleY
+	
+	/** \brief Use local bone scale along Z axis. */
+	scaleZ
+end

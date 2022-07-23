@@ -35,7 +35,7 @@ class deBaseInputModule;
  * Supported input devices are all devices found on the host system which can
  * be used to provide digital or analog input.
  */
-class deInputSystem : public deBaseSystem{
+class DE_DLL_EXPORT deInputSystem : public deBaseSystem{
 private:
 	deBaseInputModule *pActiveModule;
 	deInputEventQueue *pEventQueue;

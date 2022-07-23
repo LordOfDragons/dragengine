@@ -28,7 +28,7 @@
 /**
  * \brief Identify synthesizer source visitor.
  */
-class deSynthesizerSourceVisitorIdentify : public deSynthesizerSourceVisitor{
+class DE_DLL_EXPORT deSynthesizerSourceVisitorIdentify : public deSynthesizerSourceVisitor{
 public:
 	enum eSourceTypes{
 		estUnknown,

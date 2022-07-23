@@ -42,6 +42,7 @@ class Container extends Widget
 	private var int pCachedMinSizeForWidthWidth
 	private var Point pCachedMinSizeForHeightSize
 	private var int pCachedMinSizeForHeightHeight
+	private var bool pStateChangeNotifyChildren
 	
 	
 	
@@ -113,7 +114,7 @@ class Container extends Widget
 			index = this.pChildren.getCount() - 1
 			widget = this.pChildren.getAt( index ) cast Widget
 			
-			widget.setParent( null )
+			widget.setParent(null)
 			
 			if index < this.pChildren.getCount()
 				this.pChildren.removeFrom( index )
@@ -176,7 +177,7 @@ class Container extends Widget
 		
 		var Desktop desktop = this.getDesktop()
 		if desktop != null
-			var Widget hoverWidget = desktop.getHoverWidget()
+			var Widget hoverWidget = getHoverWidget()
 			if hoverWidget != null and hoverWidget.hasParent( this )
 				desktop.setActiveMousePointer( hoverWidget.getFirstMousePointer() )
 			end
@@ -331,9 +332,13 @@ class Container extends Widget
 		
 		this.getCanvasContent().addCanvas( widget.getCanvasWidget() )
 		widget.getCanvasWidget().setOrder( ( this.pChildren.getCount() - 1 ) cast float )
+		
+		doLayout()
 	end
 	
-	/** Removes a widget from this container. */
+	/**
+	 * \brief Remove widget without disposing.
+	 */
 	public func void removeWidget( Widget widget )
 		if not this.pChildren.has( widget )
 			throw EInvalidParam.new()
@@ -350,7 +355,9 @@ class Container extends Widget
 		this.doLayout()
 	end
 	
-	/** Removes all widgets from this container. */
+	/**
+	 * \brief Remove and dispose all widgets.
+	 */
 	public func void removeAllWidgets()
 		// forEach with a block is not used here since it is possible a child widget removes
 		// another child widget during setParent() or dispose()
@@ -361,6 +368,8 @@ class Container extends Widget
 			while this.pChildren.getCount() > 0
 				index = this.pChildren.getCount() - 1
 				widget = this.pChildren.getAt( index ) cast Widget
+				
+				widget.setParent(null)
 				
 				this.pLayout.removeWidget( widget )
 				this.pChildren.removeFrom( index )
@@ -727,18 +736,48 @@ class Container extends Widget
 	
 	/**
 	 * \brief Mouse is hovering over this widget.
-	 * \details Tests if the hover widget of the parent desktop is this widget.
+	 * 
+	 * Tests if the hover widget is this widget.
 	 */
 	public func bool isMouseInside()
-		var Desktop desktop = this.getDesktop()
-		if desktop == null
-			return false
-		end
-		
-		var Widget hoverWidget = desktop.getHoverWidget()
-		return hoverWidget == this or ( hoverWidget != null and hoverWidget.hasParent( this ) )
+		var Widget hoverWidget = getHoverWidget()
+		return hoverWidget == this or (hoverWidget != null and hoverWidget.hasParent(this))
 	end
 	
+	
+	
+	/**
+	 * \brief Notify children if state changed.
+	 * \version 1.5
+	 */
+	public func bool getStateChangeNotifyChildren()
+		return this.pStateChangeNotifyChildren
+	end
+	
+	/**
+	 * \brief Set to notify children if state changed.
+	 * \version 1.5
+	 */
+	public func void setStateChangeNotifyChildren( bool notify )
+		this.pStateChangeNotifyChildren = notify
+	end
+	
+	
+	
+	/** Set if widget is enabled. */
+	public func void setEnabled(bool enabled)
+		if enabled == getEnabled()
+			return
+		end
+		
+		super.setEnabled(enabled)
+		
+		// enabled changes require children to be always updated
+		runWhileBlockingLayout(block
+			notifyChildrenParentStateChanged(true)
+		end)
+		doLayoutIfBlocked()
+	end
 	
 	
 	/** \brief Widget has been hidden. */
@@ -759,7 +798,7 @@ class Container extends Widget
 		end
 		
 		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged()
+			this.notifyChildrenParentStateChanged(false)
 		end )
 		this.doLayoutIfBlocked()
 	end
@@ -767,17 +806,39 @@ class Container extends Widget
 	/**
 	 * \brief Parent state changed.
 	 * 
-	 * Called by some certain widgets supporting childs widgets able to track their state.
-	 * 
-	 * The default implementation triggers a design() call and calls onParentStateChanged()
-	 * on all child widgets.
+	 * Calls onParentStateChanged() on all child widgets.
 	 */
 	public func void onParentStateChanged()
-		this.runWhileBlockingLayout( block
+		if this.pStateChangeNotifyChildren
+			this.runWhileBlockingLayout( block
+				super.onParentStateChanged()
+				this.notifyChildrenParentStateChanged()
+			end )
+			this.doLayoutIfBlocked()
+			
+		else
 			super.onParentStateChanged()
-			this.notifyChildrenParentStateChanged()
-		end )
-		this.doLayoutIfBlocked()
+		end
+	end
+	
+	/**
+	 * \brief Parent state changed.
+	 * \version 1.7
+	 * 
+	 * Calls onParentStateChanged() on all child widgets. Supports forcing update on the
+	 * entire children chain.
+	 */
+	public func void onParentStateChanged(bool force)
+		if pStateChangeNotifyChildren or force
+			runWhileBlockingLayout( block
+				super.onParentStateChanged(force)
+				notifyChildrenParentStateChanged(force)
+			end)
+			doLayoutIfBlocked()
+			
+		else
+			super.onParentStateChanged()
+		end
 	end
 	
 	/** \brief Notify children about parent state change. */
@@ -785,6 +846,16 @@ class Container extends Widget
 		this.pChildren.forEach( block Widget each
 			each.onParentStateChanged()
 		end )
+	end
+	
+	/**
+	 * \brief Notify children about parent state change.
+	 * \version 1.7
+	 */
+	public func void notifyChildrenParentStateChanged(bool force)
+		pChildren.forEach(block Widget each
+			each.onParentStateChanged(force)
+		end)
 	end
 	
 	/** \brief Size changed. */
@@ -819,6 +890,42 @@ class Container extends Widget
 		
 		for i = 0 to count
 			( this.pChildren.getAt( i ) cast Widget ).getCanvasWidget().setOrder( i cast float )
+		end
+	end
+	
+	/**
+	 * Notification that the mouse entered the widget. The default behaviour
+	 * is to send the message to all registered listeners or propagate it back
+	 * to the parent if allowed.
+	 */
+	public func void onMouseEnter( MouseEvent event )
+		if this.pStateChangeNotifyChildren
+			this.runWhileBlockingLayout( block
+				this.notifyChildrenParentStateChanged(false)
+				super.onMouseEnter( event )
+			end )
+			this.doLayoutIfBlocked()
+			
+		else
+			super.onMouseEnter( event )
+		end
+	end
+	
+	/**
+	 * Notification that the mouse left the widget. The default behaviour
+	 * is to send the message to all registered listeners or propagate it back
+	 * to the parent if allowed.
+	 */
+	public func void onMouseLeave( MouseEvent event )
+		if this.pStateChangeNotifyChildren
+			this.runWhileBlockingLayout( block
+				this.notifyChildrenParentStateChanged(false)
+				super.onMouseLeave( event )
+			end )
+			this.doLayoutIfBlocked()
+			
+		else
+			super.onMouseLeave( event )
 		end
 	end
 end

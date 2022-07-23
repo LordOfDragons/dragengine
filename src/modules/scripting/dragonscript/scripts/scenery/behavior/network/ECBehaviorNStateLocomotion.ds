@@ -387,8 +387,8 @@ class ECBehaviorNStateLocomotion extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorNStateLocomotion getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorNStateLocomotion
+		return eclass.findBehavior( block ECBehaviorNStateLocomotion each
+			return true
 		end ) cast ECBehaviorNStateLocomotion
 	end
 	
@@ -400,8 +400,8 @@ class ECBehaviorNStateLocomotion extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

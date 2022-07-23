@@ -417,6 +417,59 @@
 		</affects>
 	</property>
 	
+	<property name='solidity.filterPriority'>
+		<description>
+			Defines the filter priority. Graphic modules use Mip-Mapping to calculate down
+			scaled versions of the image set using the "solidity" texture property. This
+			improves performance and visual quality. By down scaling the image information
+			is lost. There exist different ways to calculate the down sampled images.
+			The most common solutions are averaging, minimum and maximum.<br/>
+			<br/>
+			Averaging is the default Mip-Mapping technique used and calculates down scaled
+			image pixels by averaging over pixels from the the next higher level. For most
+			images this technique yields good results.<br/>
+			<br/>
+			The minimum and maximum technique use instead the smallest respective largest
+			value of pixels from the next higher level. In contrary to averaging this favors
+			either holes (minimum) or solid geometry (maximum).<br/>
+			<br/>
+			In some situations using averaging causes problems. These are two examples.<br/>
+			<br/>
+			With foliage averaging the solidity can cause the foliage to grow thinner over
+			distance. This causes bushes and trees at distance to loose their density. By
+			using maximum filtering solidity is favored and foliage grows denser over
+			distance. This can be visually better looking than thinning out.<br/>
+			<br/>
+			With shutter blinds the lower part of the image is holed all the way to the
+			border. By using texture transformation the blinds can be pulled up leaving
+			most of the image open. Averaging can now cause the hole pixels on the bottom
+			of the image to smear with the solid pixels causing the hole to vanish over
+			distance. This can cause textures where the player can see through to suddenly
+			become totally solid. By using minimum filtering holes are favored and the
+			texture is ensured to keep the hole part at the bottom intact.<br/>
+			<br/>
+			This parameter is a hint to the Graphic Module if holes or solid geometry
+			should be favored. A value of 0 favors holes. A value of 1 favors solid geometry.
+			A value of 0.5 averages between the two. The actual implementation in the
+			Graphic Module can be different but this texture property helps to shift the
+			calculation into the right direction to get good results.<br/>
+			<br/>
+			Mip-Mapping is one situation where Graphic Modules can use this texture
+			property to deliver better results. Another situation could be alpha dithering
+			or percentage alpha filtering to improve the visual quality.<br/>
+			<br/>
+			The default value is 0.5.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.5</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='refraction.distort'>
 		<description>
 			Defines the distortion applied to rendered content behind transparent material.
@@ -1530,6 +1583,55 @@
 		<components>1</components>
 		<default>
 			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='nonpbr.albedo'>
+		<description>
+			Defines the Non-PBR albedo color. This texture property is part of Non-PBR
+			metalness workflow and is used together with the "nonpbr.metalness" texture
+			property. These values are Non-PBR since they do not represent real world
+			material properties and store "color" and "reflectivity" texture property
+			in a merged format distributed across "nonpbr.albedo" and "nonpbr.metalness".
+			These texture properties exist to allow using textures authored by tool
+			supporting only the Non-PBR metalness workflow including other game engines.
+			Typically this property is specified using a 24-bit image.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='nonpbr.metalness'>
+		<description>
+			Defines the Non-PBR metalness color. This texture property is part of Non-PBR
+			metalness workflow and is used together with the "nonpbr.albedo" texture
+			property. These values are Non-PBR since they do not represent real world
+			material properties and store "color" and "reflectivity" texture property
+			in a merged format distributed across "nonpbr.albedo" and "nonpbr.metalness".
+			These texture properties exist to allow using textures authored by tool
+			supporting only the Non-PBR metalness workflow including other game engines.
+			Typically this property is specified using a 8-bit image. A value of 0
+			indicates a fully dieletric material where "nonpbr.albedo" maps to "color"
+			and "reflectivity" is set to 0.23 (4%). A value of 1 indicates a fully
+			electric material where "color" is set to (0,0,0) and "nonpbr.albedo"
+			maps to "reflectivity". Values inbetween blend between these two states.
+			Due to this mapping various materials can not be properly represented.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
 		</default>
 		<affects>
 			<module>graphic</module>

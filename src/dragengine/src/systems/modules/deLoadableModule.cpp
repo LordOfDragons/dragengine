@@ -48,8 +48,11 @@ pType( deModuleSystem::emtUnknown ),
 pDescription( "No description" ),
 pAuthor( "Unknown" ),
 pVersion( "1.0" ),
-	
+
+pPriority( 0 ),
 pFallback( false ),
+pNoSaving( false ),
+pNoCompress( false ),
 
 pEnabled( true ),
 
@@ -118,8 +121,20 @@ void deLoadableModule::SetDirectoryName( const char *dirName ){
 	pDirName = dirName;
 }
 
+void deLoadableModule::SetPriority( int priority ){
+	pPriority = priority;
+}
+
 void deLoadableModule::SetIsFallback( bool fallback ){
 	pFallback = fallback;
+}
+
+void deLoadableModule::SetNoSaving( bool noSaving ){
+	pNoSaving = noSaving;
+}
+
+void deLoadableModule::SetNoCompress( bool noCompress ){
+	pNoCompress = noCompress;
 }
 
 void deLoadableModule::SetEnabled( bool enabled ){

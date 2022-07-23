@@ -66,6 +66,9 @@ public:
 	
 	/** \brief Set emitter. */
 	void SetEmitter( peeEmitter *emitter );
+	
+	/** \brief Emitter path changed. */
+	void OnEmitterPathChanged();
 	/*@}*/
 };
 

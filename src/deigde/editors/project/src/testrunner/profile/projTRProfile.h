@@ -48,6 +48,7 @@ private:
 	decString pModuleAudio;
 	decString pModuleSynthesizer;
 	decString pModuleNetwork;
+	decString pModuleVR;
 	
 	projTRPParameterList pParameters;
 	decStringDictionary pDisableModuleVersions;
@@ -137,6 +138,12 @@ public:
 	
 	/** \brief Set network module. */
 	void SetModuleNetwork( const char *moduleName );
+	
+	/** \brief VR module. */
+	inline const decString &GetModuleVR() const{ return pModuleVR; }
+	
+	/** \brief Set VR module. */
+	void SetModuleVR( const char *moduleName );
 	
 	/** \brief Parameters. */
 	inline projTRPParameterList &GetParameters(){ return pParameters; }

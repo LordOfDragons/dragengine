@@ -28,7 +28,7 @@
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
-#include "../../texture/texture2d/deoglTexture.h"
+#include "../../texture/arraytexture/deoglArrayTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -43,9 +43,9 @@
 int deoglDRDepthMinMax::USAGE_VERSION = -1; // 0=2pixel, 1=2texture, 2=splitTexture, -1=disabled
 
 deoglDRDepthMinMax::deoglDRDepthMinMax( deoglRenderThread &renderThread,
-int width, int height, int maxLevelCount ) :
+int width, int height, int layerCount, int maxLevelCount ) :
 pRenderThread( renderThread){
-	if( width < 1 || height < 1 || maxLevelCount < 0 ){
+	if( width < 1 || height < 1 || layerCount < 1 || maxLevelCount < 0 ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -59,6 +59,7 @@ pRenderThread( renderThread){
 	
 	pWidth = width;
 	pHeight = height;
+	pLayerCount = layerCount;
 	pLevelCount = 1;
 	pMaxLevelCount = maxLevelCount;
 	
@@ -164,8 +165,8 @@ void deoglDRDepthMinMax::pCreateTextures(){
 	}
 	
 	if( USAGE_VERSION == 0 ){
-		pTexture = new deoglTexture( pRenderThread );
-		pTexture->SetSize( pWidth, pHeight );
+		pTexture = new deoglArrayTexture( pRenderThread );
+		pTexture->SetSize( pWidth, pHeight, pLayerCount );
 		//pTexture->SetFBOFormat( 2, true );
 		pTexture->SetFormatMappingByNumber( deoglCapsFmtSupport::eutfRG32F ); // on the laptop eutfRG16 is faster
 		pTexture->SetMipMapped( true );
@@ -173,23 +174,23 @@ void deoglDRDepthMinMax::pCreateTextures(){
 		pTexture->CreateTexture();
 		
 	}else if( USAGE_VERSION == 1 ){
-		pTextureMin = new deoglTexture( pRenderThread );
-		pTextureMin->SetSize( pWidth, pHeight );
+		pTextureMin = new deoglArrayTexture( pRenderThread );
+		pTextureMin->SetSize( pWidth, pHeight, pLayerCount );
 		pTextureMin->SetDepthFormat( false, false );
 		pTextureMin->SetMipMapped( true );
 		pTextureMin->SetMipMapLevelCount( pLevelCount - 1 );
 		pTextureMin->CreateTexture();
 		
-		pTextureMax = new deoglTexture( pRenderThread );
-		pTextureMax->SetSize( pWidth, pHeight );
+		pTextureMax = new deoglArrayTexture( pRenderThread );
+		pTextureMax->SetSize( pWidth, pHeight, pLayerCount );
 		pTextureMax->SetDepthFormat( false, false );
 		pTextureMax->SetMipMapped( true );
 		pTextureMax->SetMipMapLevelCount( pLevelCount - 1 );
 		pTextureMax->CreateTexture();
 		
 	}else{ // USAGE_VERSION == 2
-		pTexture = new deoglTexture( pRenderThread );
-		pTexture->SetSize( pWidth << 1, pHeight );
+		pTexture = new deoglArrayTexture( pRenderThread );
+		pTexture->SetSize( pWidth << 1, pHeight, pLayerCount );
 		pTexture->SetDepthFormat( false, false );
 		pTexture->SetMipMapped( true );
 		pTexture->SetMipMapLevelCount( pLevelCount - 1 );
@@ -213,7 +214,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 				
 				pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
 				
-				pFBOs[ i ]->AttachColorTextureLevel( 0, pTexture, i );
+				pFBOs[ i ]->AttachColorArrayTextureLevel( 0, pTexture, i );
 				
 				const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -235,7 +236,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 				
 				pRenderThread.GetFramebuffer().Activate( pFBOMin[ i ] );
 				
-				pFBOMin[ i ]->AttachDepthTextureLevel( pTextureMin, i );
+				pFBOMin[ i ]->AttachDepthArrayTextureLevel( pTextureMin, i );
 				
 				const GLenum buffers[ 1 ] = { GL_NONE };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -256,7 +257,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 				
 				pRenderThread.GetFramebuffer().Activate( pFBOMax[ i ] );
 				
-				pFBOMax[ i ]->AttachDepthTextureLevel( pTextureMax, i );
+				pFBOMax[ i ]->AttachDepthArrayTextureLevel( pTextureMax, i );
 				
 				const GLenum buffers[ 1 ] = { GL_NONE };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -277,7 +278,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 				
 				pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
 				
-				pFBOs[ i ]->AttachDepthTextureLevel( pTexture, i );
+				pFBOs[ i ]->AttachDepthArrayTextureLevel( pTexture, i );
 				
 				const GLenum buffers[ 1 ] = { GL_NONE };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );

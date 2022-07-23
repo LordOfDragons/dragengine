@@ -29,9 +29,6 @@
 #include "deglDialogModuleProps.h"
 #include "../deglWindowMain.h"
 #include "../../deglLauncher.h"
-#include "../../engine/deglEngine.h"
-#include "../../engine/modules/deglEngineModule.h"
-#include "../../engine/modules/deglEngineModuleList.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -76,9 +73,9 @@ FXIconList( p, tgt, sel, opts, x, y, w, h ){
 deglPanelEngine::ExtIconList::~ExtIconList(){
 }
 
-long deglPanelEngine::ExtIconList::onHeaderClicked( FXObject *sender, FXSelector selector, void *data ){
+long deglPanelEngine::ExtIconList::onHeaderClicked( FXObject*, FXSelector, void* ){
 	if( target ){
-		return target->tryHandle( this, FXSEL( SEL_HEADER_CLICKED, message ), NULL );
+		return target->tryHandle( this, FXSEL( SEL_HEADER_CLICKED, message ), nullptr );
 	}
 	return 0;
 }
@@ -96,17 +93,18 @@ FXIMPLEMENT( deglPanelEngine, FXVerticalFrame, deglPanelEngineMap, ARRAYNUMBER( 
 deglPanelEngine::deglPanelEngine(){ }
 
 deglPanelEngine::deglPanelEngine( deglWindowMain *windowMain, FXComposite *container ) :
-FXVerticalFrame( container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ){
-	pWindowMain = windowMain;
-	
-	pListModules = new ExtIconList( this, this, ID_LIST_MODULES, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	pListModules->appendHeader( "Name", NULL, 200 );
-	pListModules->appendHeader( "Type", NULL, 150 );
-	pListModules->appendHeader( "Version", NULL, 60 );
-	pListModules->appendHeader( "Status", NULL, 150 );
+FXVerticalFrame( container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pWindowMain( windowMain ),
+pSortListModules( elmsNameAsc )
+{
+	pListModules = new ExtIconList( this, this,
+		ID_LIST_MODULES, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	pListModules->appendHeader( "Name", nullptr, 200 );
+	pListModules->appendHeader( "Type", nullptr, 150 );
+	pListModules->appendHeader( "Version", nullptr, 60 );
+	pListModules->appendHeader( "Status", nullptr, 150 );
 	
 	pListModules->setSortFunc( deglPanelEngine::SortModulesByNameAsc );
-	pSortListModules = elmsNameAsc;
 }
 
 deglPanelEngine::~deglPanelEngine(){
@@ -117,29 +115,29 @@ deglPanelEngine::~deglPanelEngine(){
 // Management
 ///////////////
 
-deglEngineModule *deglPanelEngine::GetSelectedModule() const{
+delEngineModule *deglPanelEngine::GetSelectedModule() const{
 	int selection = pListModules->getCurrentItem();
 	
 	if( selection != -1 ){
 		return ( ( deglPEListItemModule* )pListModules->getItem( selection ) )->GetModule();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
 
 void deglPanelEngine::UpdateModuleList(){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	int i, count = moduleList.GetModuleCount();
+	const delEngineModuleList &modules = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	int i, count = modules.GetCount();
 	deglPEListItemModule *listItem;
-	deglEngineModule *module;
+	delEngineModule *module;
 	
 	pListModules->clearItems();
 	
 	for( i=0; i<count; i++ ){
-		module = moduleList.GetModuleAt( i );
-		listItem = NULL;
+		module = modules.GetAt( i );
+		listItem = nullptr;
 		
 		try{
 			listItem = new deglPEListItemModule( this, module );
@@ -160,14 +158,14 @@ void deglPanelEngine::UpdateModuleList(){
 
 
 FXint deglPanelEngine::SortModulesByNameAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const deglEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
-	const deglEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
+	const delEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
+	const delEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
 	return module1.GetName().Compare( module2.GetName() );
 }
 
 FXint deglPanelEngine::SortModulesByNameDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const deglEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
-	const deglEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
+	const delEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
+	const delEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
 	return module2.GetName().Compare( module1.GetName() );
 }
 
@@ -184,14 +182,14 @@ FXint deglPanelEngine::SortModulesByTypeDesc( const FXIconItem *item1, const FXI
 }
 
 FXint deglPanelEngine::SortModulesByVersionAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const deglEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
-	const deglEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
+	const delEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
+	const delEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
 	return deModuleSystem::CompareVersion( module1.GetVersion(), module2.GetVersion() );
 }
 
 FXint deglPanelEngine::SortModulesByVersionDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const deglEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
-	const deglEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
+	const delEngineModule &module1 = *( ( ( deglPEListItemModule* )item1 )->GetModule() );
+	const delEngineModule &module2 = *( ( ( deglPEListItemModule* )item2 )->GetModule() );
 	return deModuleSystem::CompareVersion( module2.GetVersion(), module1.GetVersion() );
 }
 
@@ -212,14 +210,14 @@ FXint deglPanelEngine::SortModulesByStatusDesc( const FXIconItem *item1, const F
 // Events
 ///////////
 
-long deglPanelEngine::onListModulesChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglPanelEngine::onListModulesChanged( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelEngine::onListModulesRDown( FXObject *sender, FXSelector selector, void *data ){
-	const FXEvent &event = *( ( const FXEvent * )data );
-	deglEngineModule *module = NULL;
-	FXMenuPane *popup = NULL;
+long deglPanelEngine::onListModulesRDown( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( const FXEvent * )pdata );
+	delEngineModule *module = nullptr;
+	FXMenuPane *popup = nullptr;
 	int x = event.root_x;
 	int y = event.root_y;
 	
@@ -232,11 +230,11 @@ long deglPanelEngine::onListModulesRDown( FXObject *sender, FXSelector selector,
 			popup = new FXMenuPane( this );
 			if( ! popup ) DETHROW( deeOutOfMemory );
 			
-			if( ! new FXMenuCommand( popup, "Properties...", NULL, this, ID_PU_MODULE_PROPS ) ) DETHROW( deeOutOfMemory );
+			if( ! new FXMenuCommand( popup, "Properties...", nullptr, this, ID_PU_MODULE_PROPS ) ) DETHROW( deeOutOfMemory );
 			
 			popup->create();
 			
-			popup->popup( NULL, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
+			popup->popup( nullptr, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
 			pWindowMain->getApp()->runModalWhileShown( popup );
 			
 			delete popup;
@@ -252,16 +250,16 @@ long deglPanelEngine::onListModulesRDown( FXObject *sender, FXSelector selector,
 	//pListModules->translateCoordinatesTo( x, y, pWindowMain->getApp()->getRootWindow(), event. );
 }
 
-long deglPanelEngine::onListModulesRUp( FXObject *sender, FXSelector selector, void *data ){
+long deglPanelEngine::onListModulesRUp( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelEngine::onListModulesDblClick( FXObject *sender, FXSelector selector, void *data ){
-	return onPUModuleProps( sender, selector, data );
+long deglPanelEngine::onListModulesDblClick( FXObject *sender, FXSelector selector, void *pdata ){
+	return onPUModuleProps( sender, selector, pdata );
 }
 
-long deglPanelEngine::onListModulesHeaderClicked( FXObject *sender, FXSelector selector, void *data ){
-	int colon = ( intptr_t )data;
+long deglPanelEngine::onListModulesHeaderClicked( FXObject*, FXSelector, void *pdata ){
+	int colon = ( intptr_t )pdata;
 	
 	if( colon == 0 ){
 		if( pSortListModules == elmsNameAsc ){
@@ -315,10 +313,8 @@ long deglPanelEngine::onListModulesHeaderClicked( FXObject *sender, FXSelector s
 	return 1;
 }
 
-
-
-long deglPanelEngine::onPUModuleProps( FXObject *sender, FXSelector selector, void *data ){
-	deglEngineModule *module = GetSelectedModule();
+long deglPanelEngine::onPUModuleProps( FXObject*, FXSelector, void* ){
+	delEngineModule *module = GetSelectedModule();
 	
 	if( module ){
 		deglDialogModuleProps dialog( pWindowMain, module, pWindowMain );

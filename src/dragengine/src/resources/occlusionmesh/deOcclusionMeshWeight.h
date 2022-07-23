@@ -22,12 +22,14 @@
 #ifndef _DEOCCLUSIONMESHWEIGHT_H_
 #define _DEOCCLUSIONMESHWEIGHT_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Occlusion Mesh Weight.
  * A single weight in a weight set. The bone index has to be 0 or larger, the weight in the range from 0 to 1.
  */
-class deOcclusionMeshWeight{
+class DE_DLL_EXPORT deOcclusionMeshWeight{
 private:
 	int pBone;
 	float pWeight;

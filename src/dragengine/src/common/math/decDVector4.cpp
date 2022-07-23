@@ -119,7 +119,7 @@ void decDVector4::Set( double nx, double ny, double nz, double nw ){
 }
 
 decVector4 decDVector4::ToVector4() const{
-	return decVector4( ( double )x, ( double )y, ( double )z, ( double )w );
+	return decVector4( ( float )x, ( float )y, ( float )z, ( float )w );
 }
 
 decDVector4 decDVector4::Mix( const decDVector4 &vector, double blendFactor ) const{

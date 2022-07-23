@@ -22,6 +22,8 @@
 #ifndef _DECSHAPEVISITOR_H_
 #define _DECSHAPEVISITOR_H_
 
+#include "../../dragengine_export.h"
+
 class decShape;
 class decShapeSphere;
 class decShapeBox;
@@ -33,7 +35,7 @@ class decShapeHull;
 /**
  * \brief Visitor for analytic shapes.
  */
-class decShapeVisitor{
+class DE_DLL_EXPORT decShapeVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -23,6 +23,7 @@
 #define _IGDEWPSTATICSKY_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decObjectList.h>
 
 #include "../igdeButtonReference.h"
 #include "../igdeContainerReference.h"
@@ -53,9 +54,16 @@ class igdeWSky;
  */
 class igdeWPSky : public igdeContainerFlow, igdeActionListener{
 private:
-	struct sController{
+	class Controller : public deObject{
+	public:
+		typedef deTObjectReference<Controller> Ref;
+		
 		int controller;
+		igdeLabelReference label;
 		igdeEditSliderTextReference slider;
+		decString name;
+		float minimum;
+		float maximum;
 	};
 	
 	
@@ -68,8 +76,7 @@ private:
 	igdeButtonReference pBtnFromGDSky;
 	
 	igdeContainerReference pFraControllers;
-	sController *pControllers;
-	int pControllerCount;
+	decObjectList pControllers;
 	
 	igdeActionReference pAction;
 	

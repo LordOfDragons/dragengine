@@ -79,6 +79,7 @@ private:
 	igdeIconReference pIconRuleStateSnapshot;
 	igdeIconReference pIconRuleSubAnimator;
 	igdeIconReference pIconRuleTrackTo;
+	igdeIconReference pIconRuleMirror;
 	
 	igdeActionReference pActionFileNew;
 	igdeActionReference pActionFileOpen;
@@ -118,6 +119,7 @@ private:
 	igdeActionReference pActionRuleAddSubAnimator;
 	igdeActionReference pActionRuleAddTrackTo;
 	igdeActionReference pActionRuleAddLimit;
+	igdeActionReference pActionRuleAddMirror;
 	
 	igdeActionReference pActionRuleAddIntoGroupAnim;
 	igdeActionReference pActionRuleAddIntoGroupAnimDiff;
@@ -131,6 +133,7 @@ private:
 	igdeActionReference pActionRuleAddIntoGroupSubAnimator;
 	igdeActionReference pActionRuleAddIntoGroupTrackTo;
 	igdeActionReference pActionRuleAddIntoGroupLimit;
+	igdeActionReference pActionRuleAddIntoGroupMirror;
 	
 	igdeActionReference pActionRuleInsertAnim;
 	igdeActionReference pActionRuleInsertAnimDiff;
@@ -144,6 +147,7 @@ private:
 	igdeActionReference pActionRuleInsertSubAnimator;
 	igdeActionReference pActionRuleInsertTrackTo;
 	igdeActionReference pActionRuleInsertLimit;
+	igdeActionReference pActionRuleInsertMirror;
 	
 	igdeActionReference pActionRuleRemove;
 	igdeActionReference pActionRuleUp;
@@ -237,6 +241,7 @@ public:
 	inline igdeIcon *GetIconRuleStateSnapshot() const{ return pIconRuleStateSnapshot; }
 	inline igdeIcon *GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
 	inline igdeIcon *GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
+	inline igdeIcon *GetIconRuleMirror() const{ return pIconRuleMirror; }
 	igdeIcon *GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes type ) const;
 	
 	
@@ -264,6 +269,7 @@ public:
 	inline igdeAction *GetActionRuleAddSubAnimator() const{ return pActionRuleAddSubAnimator; }
 	inline igdeAction *GetActionRuleAddTrackTo() const{ return pActionRuleAddTrackTo; }
 	inline igdeAction *GetActionRuleAddLimit() const{ return pActionRuleAddLimit; }
+	inline igdeAction *GetActionRuleAddMirror() const{ return pActionRuleAddMirror; }
 	
 	inline igdeAction *GetActionRuleAddIntoGroupAnim() const{ return pActionRuleAddIntoGroupAnim; }
 	inline igdeAction *GetActionRuleAddIntoGroupAnimDiff() const{ return pActionRuleAddIntoGroupAnimDiff; }
@@ -277,6 +283,7 @@ public:
 	inline igdeAction *GetActionRuleAddIntoGroupSubAnimator() const{ return pActionRuleAddIntoGroupSubAnimator; }
 	inline igdeAction *GetActionRuleAddIntoGroupTrackTo() const{ return pActionRuleAddIntoGroupTrackTo; }
 	inline igdeAction *GetActionRuleAddIntoGroupLimit() const{ return pActionRuleAddIntoGroupLimit; }
+	inline igdeAction *GetActionRuleAddIntoGroupMirror() const{ return pActionRuleAddIntoGroupMirror; }
 	
 	inline igdeAction *GetActionRuleInsertAnim() const{ return pActionRuleInsertAnim; }
 	inline igdeAction *GetActionRuleInsertAnimDiff() const{ return pActionRuleInsertAnimDiff; }
@@ -290,6 +297,7 @@ public:
 	inline igdeAction *GetActionRuleInsertSubAnimator() const{ return pActionRuleInsertSubAnimator; }
 	inline igdeAction *GetActionRuleInsertTrackTo() const{ return pActionRuleInsertTrackTo; }
 	inline igdeAction *GetActionRuleInsertLimit() const{ return pActionRuleInsertLimit; }
+	inline igdeAction *GetActionRuleInsertMirror() const{ return pActionRuleInsertMirror; }
 	
 	inline igdeAction *GetActionRuleRemove() const{ return pActionRuleRemove; }
 	inline igdeAction *GetActionRuleUp() const{ return pActionRuleUp; }

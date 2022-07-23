@@ -29,7 +29,13 @@
 /**
  * \brief Synthesizer group source.
  */
-class deSynthesizerSourceGroup : public deSynthesizerSource{
+class DE_DLL_EXPORT deSynthesizerSourceGroup : public deSynthesizerSource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceGroup> Ref;
+	
+	
+	
 public:
 	/** \brief Application types. */
 	enum eApplicationTypes{

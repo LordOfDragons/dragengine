@@ -88,7 +88,7 @@ class ConversationInputProcessor extends DefaultInputProcessor
 				
 			elif this.pBindingManager != null
 				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getDevice(), event.getCode() )
+					event.getSource(), event.getDevice(), event.getCode() )
 				
 				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
 					binding.getCommand().start()
@@ -98,7 +98,7 @@ class ConversationInputProcessor extends DefaultInputProcessor
 		case InputEventType.keyRelease
 			if this.pBindingManager != null
 				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getDevice(), event.getCode() )
+					event.getSource(), event.getDevice(), event.getCode() )
 				
 				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
 					binding.getCommand().stop()

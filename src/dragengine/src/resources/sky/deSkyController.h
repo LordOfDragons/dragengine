@@ -35,7 +35,7 @@
  * value matching your setup. The controller takes care of transforming the current
  * value into the proper 0 to 1 range required for sounds to work with.
  */
-class deSkyController{
+class DE_DLL_EXPORT deSkyController{
 private:
 	decString pName;
 	float pMinValue;

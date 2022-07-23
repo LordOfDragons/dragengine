@@ -61,6 +61,10 @@ pin Dragengine.Utils
  * 
  * \code delta = analogInput * analogFactor * speed \endcode
  * 
+ * This calculation applies only to non-sticky input as this originates from mouse input
+ * devices only. Sticky inputs originating from game pads and similar used the elapsed
+ * time instead of analogFactor and thus are similar to digital input.
+ * 
  * Using negative factor switches direction. Using negative factor and speed keeps the
  * direction unchanged.
  */
@@ -291,8 +295,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				value -= this.pSpeedLookHorizontal * elapsed
 			end
 			
-			value += this.pAnalogLookHorizontalSticky * this.pAnalogFactorLookHorizontal * this.pSpeedLookHorizontal
-			value += this.pAnalogLookHorizontal * this.pAnalogFactorLookHorizontal * this.pSpeedLookHorizontal
+			value += this.pAnalogLookHorizontalSticky * this.pSpeedLookHorizontal * elapsed
+			value += this.pAnalogLookHorizontal * this.pSpeedLookHorizontal * this.pAnalogFactorLookHorizontal
 			this.pAnalogLookHorizontal = 0
 			
 			return value
@@ -309,8 +313,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				value -= this.pSpeedLookVertical * elapsed
 			end
 			
-			value += this.pAnalogLookVerticalSticky * this.pAnalogFactorLookVertical * this.pSpeedLookVertical
-			value += this.pAnalogLookVertical * this.pAnalogFactorLookVertical * this.pSpeedLookVertical
+			value += this.pAnalogLookVerticalSticky * this.pSpeedLookVertical * elapsed
+			value += this.pAnalogLookVertical * this.pSpeedLookVertical * this.pAnalogFactorLookVertical
 			this.pAnalogLookVertical = 0
 			
 			return value
@@ -462,8 +466,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputLook.
 	 */
 	static public func ECBehaviorPlayerInputLook getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInputLook
+		return eclass.findBehavior( block ECBehaviorPlayerInputLook each
+			return true
 		end ) cast ECBehaviorPlayerInputLook
 	end
 	
@@ -474,8 +478,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputLook.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

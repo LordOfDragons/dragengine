@@ -46,7 +46,13 @@ class deBaseAnimatorAnimation;
  * time. The bones of an animation have to be mapped first to
  * the bones of a rig.
  */
-class deAnimation : public deFileResource{
+class DE_DLL_EXPORT deAnimation : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimation> Ref;
+	
+	
+	
 private:
 	deAnimationBone **pBones;
 	deAnimationMove **pMoves;

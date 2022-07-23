@@ -34,7 +34,13 @@ class deBaseAudioVideoPlayer;
 /**
  * \brief Play back video resources.
  */
-class deVideoPlayer : public deResource{
+class DE_DLL_EXPORT deVideoPlayer : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideoPlayer> Ref;
+	
+	
+	
 public:
 	/** \brief Play state. */
 	enum ePlayState{

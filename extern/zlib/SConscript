@@ -67,14 +67,23 @@ def zlibBuild( target, source, env ):
 				script.append( 'export INCLUDE_PATH="{}"'.format( buildDir.Dir( 'include' ).abspath ) )
 				script.append( 'export LIBRARY_PATH="{}"'.format( buildDir.Dir( 'lib' ).abspath ) )
 				
+				combinedLoc = []
+				if 'CROSSCOMPILE_CFLAGS' in envLibrary:
+					combinedLoc.extend(envLibrary['CROSSCOMPILE_CFLAGS'])
+				if 'CROSSCOMPILE_LINKFLAGS' in envLibrary:
+					combinedLoc.extend(envLibrary['CROSSCOMPILE_LINKFLAGS'])
+				if combinedLoc:
+					script.append('export LOC="{}"'.format(' '.join(
+						[envLibrary.subst(x) for x in flatten(combinedLoc)])))
+				
 				if buildStaticLinking:
-					script.append( 'make install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=0'
-						' || exit 1'.format( envLibrary[ 'CROSSCOMPILE_HOST' ], buildDir.abspath ) )
+					script.append( 'make -j {} install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=0'
+						' || exit 1'.format(env['with_threads'], env['CROSSCOMPILE_HOST'], buildDir.abspath ) )
 				else:
-					script.append( 'make install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=1'
-						' || exit 1'.format( envLibrary[ 'CROSSCOMPILE_HOST' ], buildDir.abspath ) )
+					script.append( 'make -j {} install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=1'
+						' || exit 1'.format(env['with_threads'], env['CROSSCOMPILE_HOST'], buildDir.abspath ) )
 			else:
-				line = ['mingw32-make.exe', '-f"win32\\Makefile.gcc"', 'install']
+				line = ['mingw32-make.exe', '-f"win32\\Makefile.gcc"', '-j {}'.format(env['with_threads']), 'install']
 				line.append('BINARY_PATH="{}"'.format(buildDir.Dir('bin').abspath))
 				line.append('INCLUDE_PATH="{}"'.format(buildDir.Dir('include').abspath))
 				line.append('LIBRARY_PATH="{}"'.format(buildDir.Dir('lib').abspath))
@@ -91,14 +100,14 @@ def zlibBuild( target, source, env ):
 			#cmdline.append( '--archs="-arch i386 -arch x86_64"' )
 			script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
 			
-			script.append( 'make install || exit 1' )
+			script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 		
 		# NOTE under windows calling this command can do nothing at all with no error given.
 		#      examining the problem shows that python seems to have troubles if the path
 		#      name includes non-ascii7 characters. all attempts to fix this have failed so
 		#      far. only solution is to use a path name not containing such characters.
 		#      maybe it's also a windows problem, no idea.
-		if not env.RunIsolatedSystem(script):
+		if not env.RunExternalCommand(script):
 			raise Exception('Failed building zlib')
 		
 	if env['OSWindows']:
@@ -117,6 +126,8 @@ if envLibrary['OSWindows']:
 
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(zlibBuild, 'Build zlib' ) )
+
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_zlib', library )
 

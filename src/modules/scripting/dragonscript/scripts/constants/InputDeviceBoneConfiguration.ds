@@ -1,0 +1,55 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief Bone configurations.
+ * \version 1.6
+ */
+enum InputDeviceBoneConfiguration
+	/** \brief No bones supported. */
+	none
+	
+	/**
+	 * \brief Articulated hand bones.
+	 * 
+	 * Bones are defined for fingers in this order:
+	 * - Wrist: 0
+	 * - Thumb: bones 1 to 4
+	 * - Index finger: bones 5 to 8
+	 * - Middle finger: bones 9 to 12
+	 * - Ring finger: bones 13 to 16
+	 * - Pinky finger: bones 17 to 20
+	 * 
+	 * For a total of 21 bones. Each finger has 4 bones in these order:
+	 * - Segment 0: inside palm
+	 * - Segment 1: first finger segment
+	 * - Segment 2: second finger segment
+	 * - Segment 3: third finger segment
+	 * 
+	 * Poses are relative to the parent bone inside chains and the device coordinate
+	 * frame for chain root bones.
+	 */
+	hand
+end

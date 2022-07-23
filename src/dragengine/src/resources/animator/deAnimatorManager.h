@@ -33,7 +33,7 @@ class deAnimator;
  * \brief Animator Resource Manager.
  *
  */
-class deAnimatorManager : public deResourceManager{
+class DE_DLL_EXPORT deAnimatorManager : public deResourceManager{
 private:
 	deResourceList pAnimators;
 	

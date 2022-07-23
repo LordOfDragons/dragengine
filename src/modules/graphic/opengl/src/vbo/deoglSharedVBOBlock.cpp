@@ -37,58 +37,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo ){
-	if( ! vbo ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pVBO = vbo;
-	pOffset = 0;
-	pSize = 0;
-	pData = NULL;
-	pIndexOffset = 0;
-	pIndexCount = 0;
-	pIndexData = NULL;
-	pValid = false;
-	pEmpty = true;
-	
-	vbo->AddReference();
-}
-
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size ){
-	if( ! vbo || offset < 0 || size < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pVBO = vbo;
-	pOffset = offset;
-	pSize = size;
-	pData = NULL;
-	pIndexOffset = 0;
-	pIndexCount = 0;
-	pIndexData = NULL;
-	pValid = false;
-	pEmpty = true;
-	
-	pVBO->AddReference();
-}
-
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size, int indexOffset, int indexCount ){
+deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size,
+int indexOffset, int indexCount ) :
+pVBO( vbo ),
+pOffset( offset ),
+pSize( size ),
+pData( NULL ),
+pIndexOffset( indexOffset ),
+pIndexCount( indexCount ),
+pIndexData( NULL ),
+pValid(  false ),
+pEmpty( true )
+{
 	if( ! vbo || offset < 0 || size < 0 || indexOffset < 0 || indexCount < 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	pVBO = vbo;
-	pOffset = offset;
-	pSize = size;
-	pData = NULL;
-	pIndexOffset = indexOffset;
-	pIndexCount = indexCount;
-	pIndexData = NULL;
-	pValid = false;
-	pEmpty = true;
-	
-	pVBO->AddReference();
 }
 
 deoglSharedVBOBlock::~deoglSharedVBOBlock(){
@@ -98,10 +61,6 @@ deoglSharedVBOBlock::~deoglSharedVBOBlock(){
 	if( pData ){
 		delete [] pData;
 	}
-	
-	if( pVBO ){
-		pVBO->FreeReference();
-	}
 }
 
 
@@ -109,15 +68,8 @@ deoglSharedVBOBlock::~deoglSharedVBOBlock(){
 // Management
 ///////////////
 
-void deoglSharedVBOBlock::SetOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( offset != pOffset ){
-		pOffset = offset;
-		pValid = false;
-	}
+void deoglSharedVBOBlock::DropVBO(){
+	pVBO = NULL;
 }
 
 void deoglSharedVBOBlock::SetSize( int size ){
@@ -128,17 +80,6 @@ void deoglSharedVBOBlock::SetSize( int size ){
 	if( size != pSize ){
 		pSize = size;
 		pReallocData();
-	}
-}
-
-void deoglSharedVBOBlock::SetIndexOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( offset != pIndexOffset ){
-		pIndexOffset = offset;
-		pValid = false;
 	}
 }
 
@@ -163,12 +104,16 @@ void deoglSharedVBOBlock::SetEmpty( bool empty ){
 void deoglSharedVBOBlock::SetValid( bool valid ){
 	pValid = valid;
 	
-	if( ! valid ){
+	if( ! valid && pVBO ){
 		pVBO->MarkDirty();
 	}
 }
 
 void deoglSharedVBOBlock::Prepare(){
+	if( ! pVBO ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	pVBO->Prepare();
 }
 
@@ -178,6 +123,10 @@ void deoglSharedVBOBlock::Prepare(){
 //////////////////////
 
 void deoglSharedVBOBlock::pReallocData(){
+	if( ! pVBO ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	if( pEmpty ){
 		if( pIndexData ){
 			delete [] pIndexData;

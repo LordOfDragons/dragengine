@@ -36,13 +36,13 @@ class deoglRComponent;
 class deoglRBillboard;
 class deoglRDecal;
 class deoglRLight;
+class deoglRenderPlanMasked;
 
 class deComponent;
 
 
 /**
- * \brief State of skin for a component or other object using dynamic skins.
- * 
+ * State of skin for a component or other object using dynamic skins.
  * Stores also renderable link indices to alter skin states dynamically. The
  * number of renderable links matches the number of renderables in the skin
  * object. The links point to the host object renderables.
@@ -69,19 +69,17 @@ private:
 	
 	decPoint pVariationSeed;
 	
-	int pUpdateNumber;
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state. */
+	/** Create skin state. */
 	deoglSkinState( deoglRenderThread &renderThread );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRComponent &component, int texture = -1 );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRBillboard &billboard );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRDecal &decal );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRLight &light );
 	
-	/** \brief Clean up skin state. */
+	/** Clean up skin state. */
 	~deoglSkinState();
 	/*@}*/
 	
@@ -89,116 +87,107 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Owner component or NULL. */
+	/** Owner component or NULL. */
 	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
-	/** \brief Owner component texture. */
+	/** Owner component texture. */
 	inline int GetOwnerComponentTexture() const{ return pOwnerComponentTexture; }
 	
-	/** \brief Owner billboard or NULL. */
+	/** Owner billboard or NULL. */
 	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
 	
-	/** \brief Owner decal or NULL. */
+	/** Owner decal or NULL. */
 	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
 	
-	/** \brief Owner light or NULL. */
+	/** Owner light or NULL. */
 	inline deoglRLight *GetOwnerLight() const{ return pOwnerLight; }
 	
-	/** \brief Owner skin or NULL. */
+	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
 	
-	/** \brief Owner dynamic skin or NULL. */
+	/** Owner dynamic skin or NULL. */
 	deoglRDynamicSkin *GetOwnerDynamicSkin() const;
 	
 	
 	
-	/** \brief Time value. */
+	/** Time value. */
 	inline float GetTime() const{ return pTime; }
 	
-	/** \brief Set time value. */
+	/** Set time value. */
 	void SetTime( float time );
 	
-	/** \brief Advance time. */
+	/** Advance time. */
 	void AdvanceTime( float timeStep );
 	
 	
 	
-	/** \brief Update number. */
-	inline int GetUpdateNumber() const{ return pUpdateNumber; }
-	
-	/** \brief Set update number. */
-	void SetUpdateNumber( int updateNumber );
-	
-	
-	
-	/** \brief Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
-	
-	
-	
-	/** \brief Number of video players. */
+	/** Number of video players. */
 	int GetVideoPlayerCount() const;
 	
-	/** \brief Set number of video players. */
+	/** Set number of video players. */
 	void SetVideoPlayerCount( int count );
 	
-	/** \brief Video player at index which can be \em NULL if not set. */
+	/** Video player at index which can be \em NULL if not set. */
 	deoglRVideoPlayer *GetVideoPlayerAt( int index ) const;
 	
-	/** \brief Set video player at index which can be \em NULL if not set. */
+	/** Set video player at index which can be \em NULL if not set. */
 	void SetVideoPlayerAt( int index, deoglRVideoPlayer *videoPlayer );
 	
 	
 	
-	/** \brief Prepare renderables for rendering if required. */
-	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin );
+	/** Prepare renderables for rendering if required. */
+	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+		const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Add render plans. */
+	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	inline int GetRenderableCount() const{ return pRenderableCount; }
 	
-	/** \brief Renderable at the given index. */
+	/** Renderable at the given index. */
 	deoglSkinStateRenderable *GetRenderableAt( int index ) const;
 	
-	/** \brief Add renderable. */
+	/** Add renderable. */
 	deoglSkinStateRenderable *AddRenderable();
 	
-	/** \brief Add renderables. */
+	/** Add renderables. */
 	void AddRenderables( deoglRSkin &skin, deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Remove all renderables. */
+	/** Remove all renderables. */
 	void RemoveAllRenderables();
 	
 	
 	
-	/** \brief Number of calculated properties. */
+	/** Number of calculated properties. */
 	inline int GetCalculatedPropertyCount() const{ return pCalculatedPropertyCount; }
 	
-	/** \brief Set calculated property count. */
+	/** Set calculated property count. */
 	void SetCalculatedPropertyCount( int count );
 	
-	/** \brief Calculated property at index. */
+	/** Calculated property at index. */
 	deoglSkinStateCalculated &GetCalculatedPropertyAt( int index ) const;
 	
-	/** \brief Initialize calculated properties. */
+	/** Initialize calculated properties. */
 	void InitCalculatedProperties();
 	
-	/** \brief Map calculated property bones. */
+	/** Map calculated property bones. */
 	void CalculatedPropertiesMapBones( const deComponent &component );
 	
-	/** \brief Update calculated property bones. */
+	/** Update calculated property bones. */
 	void UpdateCalculatedPropertiesBones( const deComponent &component );
 	
+	/** Update calculated properties. */
+	void UpdateCalculatedProperties();
 	
 	
-	/** \brief Variation seed. */
+	
+	/** Variation seed. */
 	inline const decPoint &GetVariationSeed() const{ return pVariationSeed; }
 	
-	/** \brief Set variation seed. */
+	/** Set variation seed. */
 	void SetVariationSeed( const decPoint &seed );
 	/*@}*/
 	

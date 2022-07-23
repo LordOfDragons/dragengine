@@ -1,0 +1,1021 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding VR Hand Controller support to actor.
+ * \version 1.6
+ * 
+ * This behavior tracks one hand controller optionally displaying it on screen using either
+ * the developer provided model or a custom model. Optionally a rig can be assigned to get
+ * physical presence of the controller in the game world.
+ * 
+ * This behavior can be added multiple times to an element. This allows to track two hand
+ * controllers. Each instance has an identifier which can be used to retrieve a specific
+ * instance. The prefix of the element class properties is "vrHand." . If the identifier
+ * is not empty the element class properties have the prefix "{id}.vrHand." .
+ * This can be overwritten if required.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \par Version 1.7
+ * 
+ * Adds a collider resource to allow other elements to attach to the hand. By default
+ * the collider is set to be a ghost collider suitable for attaching elements without
+ * causing interactions with the scene. If you would like to get interaction with the
+ * scene set the collision parameters accordingly.
+ */
+class ECBehaviorVRHand extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Hand controller attached and ready to use. */
+		func void controllerAttached(Instance instance)
+		
+		/** \brief Hand controller detached and no more usable. */
+		func void controllerDetached(Instance instance)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Hand controller attached and ready to use. */
+		public func void controllerAttached(Instance instance)
+		end
+		
+		/** \brief Hand controller detached and no more usable. */
+		public func void controllerDetached(Instance instance)
+		end
+	end
+	
+	/**
+	 * \brief Listener for behavior collision events.
+	 * \version 1.7
+	 */
+	interface CollisionListener
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
+	end
+	
+	/**
+	 * \brief Default implementation of behavior collision listener.
+	 * \version 1.7
+	 */
+	class DefaultCollisionListener implements CollisionListener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		public func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance implements ColliderListener
+		/** \brief Controller attach/detach listener. */
+		class AttachDetachListener extends DefaultBindingManagerListener
+			private var Instance pInstance
+			
+			public func new(Instance instance)
+				pInstance = instance
+			end
+			
+			public func void deviceAttached(BindingManager manager, InputDevice device)
+				if device.getType() == pInstance.getECBehavior().getInputDeviceType()
+					pInstance.setInputDevice(device)
+				end
+			end
+			
+			public func void deviceDetached(BindingManager manager, InputDevice device)
+				if pInstance.getInputDevice() == device
+					pInstance.setInputDevice(null)
+				end
+			end
+			
+			public func void devicesReloaded(BindingManager manager)
+				// temporary
+				var InputDeviceType type = pInstance.getECBehavior().getInputDeviceType()
+				pInstance.setInputDevice(manager.findDevice(block InputDevice each
+					return each.getType() == type
+				end))
+			end
+		end
+		
+		
+		
+		private var ECBehaviorVRHand pECBehavior
+		private var ECBehaviorVRPlayspace.Instance pVRPlayspace
+		private var ECBehaviorComponent.Instance pComponent
+		private var Model pCustomModel
+		private var Skin pCustomSkin
+		private var bool pUseVendorModel
+		private var bool pShowHand
+		private var InputDevice pInputDevice
+		private var Vector pPosition
+		private var Quaternion pOrientation
+		private var Vector pLinearVelocity
+		private var Vector pAngularVelocity
+		private var Array pListeners
+		private var AttachDetachListener pAttachDetachListener
+		private var Collider pCollider
+		private var Array pCollisionListeners
+		
+		
+		
+		/** \brief Create instance. */
+		public func new(ECBehaviorVRHand ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pUseVendorModel = true
+			pShowHand = true
+			pPosition = Vector.new()
+			pOrientation = Quaternion.new()
+			pLinearVelocity = Vector.new()
+			pAngularVelocity = Vector.new()
+			pListeners = Array.new()
+			pAttachDetachListener = AttachDetachListener.new(this)
+			pCollisionListeners = Array.new()
+			
+			pVRPlayspace = ecbehavior.getVRPlayspace().instance(element)
+			pComponent = ecbehavior.getComponent().instance(element)
+			
+			setRequiresThink(true)
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			if pCollider != null
+				pCollider.setColliderListener(null)
+				pCollider.setOwner(null)
+				pCollider.removeAllCollisionTests()
+				pCollider.removeAllIgnoreColliders()
+				//pCollider = null // not doing this prevents depending behaviors fail while disposing
+			end
+			pCollisionListeners = null
+			
+			pAttachDetachListener = null
+			pListeners = null
+			pComponent = null
+			pVRPlayspace = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init(StubElement stub)
+			// create component
+			var Component component = pComponent.getComponent()
+			if component != null
+				pCustomModel = component.getModel()
+				pCustomSkin = component.getSkin()
+			end
+			
+			pShowHand = pECBehavior.getShowHand().getValue(stub)
+			pUseVendorModel = pECBehavior.getUseVendorModel().getValue(stub)
+			
+			// create collider
+			var BehaviorElement element = getElement()
+			pCollider = createCollider(stub)
+			pCollider.setColliderListener(this)
+			pCollider.setOwner(element)
+			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			
+			// if response type is dynamic update bone position. this is required for dynamic
+			// rigs with bones. upon initializing the bones they are set to zero but bones
+			// in colliders are in world space. without init dynamic bones end up everywhere
+			// but not where we want them
+			if pCollider.getResponseType() == CollisionResponse.dynamic and pCollider castable ColliderComponent
+				(pCollider cast ColliderComponent).copyStatesFromComponent()
+			end
+			
+			// attach component if not rig attached already
+			attachComponent(stub)
+			
+			// do the rest
+			pECBehavior.createListeners(this)
+			
+			updateVisibile()
+		end
+		
+		/**
+		 * \brief Create collider.
+		 * \version 1.7
+		 * \param stub Stub to use.
+		 * \param component Component to use or \em null if absent.
+		 */
+		protected func Collider createCollider(StubElement stub)
+			var BehaviorElement element = getElement()
+			var Collider collider
+			
+			if pComponent != null
+				collider = pECBehavior.getCollider().createCollider(element, stub, pComponent.getComponent())
+			end
+			
+			if collider == null
+				collider = pECBehavior.getCollider().createCollider(element, stub)
+			end
+			
+			return collider
+		end
+		
+		/**
+		 * \brief Attach component to collider if required.
+		 * \version 1.7
+		 */
+		protected func void attachComponent(StubElement stub)
+			if pComponent.getComponent() != null and not pCollider castable ColliderComponent
+				pCollider.attachStatic(pComponent.getComponent(), Vector.new(), Quaternion.new())
+			end
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRHand getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Playspace. */
+		public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+			return pVRPlayspace
+		end
+		
+		/** \brief Component behavior instance. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return pComponent
+		end
+		
+		/** \brief Use vendor model. */
+		public func bool getUseVendorModel()
+			return pUseVendorModel
+		end
+		
+		/** \brief Set use vendor model. */
+		public func void setUseVendorModel(bool useVendorModel)
+			if useVendorModel == pUseVendorModel
+				return
+			end
+			
+			pUseVendorModel = useVendorModel
+			updateModelSkin()
+		end
+		
+		/** \brief Show hand. */
+		public func bool getShowHand()
+			return pShowHand
+		end
+		
+		/** \brief Set show hand. */
+		public func void setShowHand(bool showHand)
+			if showHand == pShowHand
+				return
+			end
+			
+			pShowHand = showHand
+			stateChanged()
+		end
+		
+		/** \brief Input device or null if detached. */
+		public func InputDevice getInputDevice()
+			return pInputDevice
+		end
+		
+		/** \brief Set input device or null if detached. */
+		public func void setInputDevice(InputDevice device)
+			if device == pInputDevice
+				return
+			end
+			
+			if pInputDevice != null
+				pListeners.forEach(block Listener each
+					each.controllerDetached(this)
+				end)
+			end
+			
+			pInputDevice = device
+			updateModelSkin()
+			
+			if device != null
+				pListeners.forEach(block Listener each
+					each.controllerAttached(this)
+				end)
+			end
+		end
+		
+		/** \brief Controller is attached. */
+		public func bool isAttached()
+			return pInputDevice != null
+		end
+		
+		/** \brief Controller is detached. */
+		public func bool isDetached()
+			return pInputDevice == null
+		end
+		
+		/**
+		 * \brief Collider.
+		 * \version 1.7
+		 */
+		public func Collider getCollider()
+			return pCollider
+		end
+		
+		
+		
+		/**
+		 * \brief Position.
+		 * \note Position is queried each time the function is called.
+		 */
+		public func DVector getPosition()
+			return pVRPlayspace.getMatrix() * DVector.new(getPositionPlayspace())
+		end
+		
+		/**
+		 * \brief Playspace local position.
+		 * \note Position is queried each time the function is called.
+		 */
+		public func Vector getPositionPlayspace()
+			if pInputDevice != null
+				pPosition = pInputDevice.getDevicePosePosition()
+			end
+			return pPosition
+		end
+		
+		/**
+		 * \brief Orientation.
+		 * \note Orientation is queried each time the function is called.
+		 */
+		public func Quaternion getOrientation()
+			return getOrientationPlayspace() * pVRPlayspace.getOrientation()
+		end
+		
+		/**
+		 * \brief Playspace local orientation.
+		 * \note Orientation is queried each time the function is called.
+		 */
+		public func Quaternion getOrientationPlayspace()
+			if pInputDevice != null
+				pOrientation = pInputDevice.getDevicePoseOrientation()
+			end
+			return pOrientation
+		end
+		
+		/**
+		 * \brief Matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		public func DMatrix getMatrix()
+			return DMatrix.newWorld(getPosition(), getOrientation())
+		end
+		
+		/**
+		 * \brief Playspace local matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		public func Matrix getMatrixPlayspace()
+			return Matrix.newWorld(getPositionPlayspace(), getOrientationPlayspace())
+		end
+		
+		/**
+		 * \brief Inverse matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		public func DMatrix getInverseMatrix()
+			return getMatrix().getInverse()
+		end
+		
+		/**
+		 * \brief Inverse playspace local matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		public func Matrix getInverseMatrixPlayspace()
+			return getMatrixPlayspace().getInverse()
+		end
+		
+		
+		
+		/**
+		 * \brief Linear velocity.
+		 * \version 1.10
+		 * \note Linear velocity is queried each time the function is called.
+		 */
+		public func Vector getLinearVelocity()
+			return pVRPlayspace.getMatrix().transformNormal(\
+				DVector.new(getLinearVelocityPlayspace())).toVector()
+		end
+		
+		/**
+		 * \brief Playspace local linear velocity.
+		 * \version 1.10
+		 * \note Linear velocity is queried each time the function is called.
+		 */
+		public func Vector getLinearVelocityPlayspace()
+			if pInputDevice != null
+				pLinearVelocity = pInputDevice.getDevicePoseLinearVelocity()
+			end
+			return pLinearVelocity
+		end
+		
+		/**
+		 * \brief Angular velocity.
+		 * \version 1.10
+		 * \note Angular velocity is queried each time the function is called.
+		 */
+		public func Vector getAngularVelocity()
+			return pVRPlayspace.getMatrix().transformNormal(\
+				DVector.new(getAngularVelocityPlayspace())).toVector()
+		end
+		
+		/**
+		 * \brief Playspace local angular velocity.
+		 * \version 1.10
+		 * \note Angular velocity is queried each time the function is called.
+		 */
+		public func Vector getAngularVelocityPlayspace()
+			if pInputDevice != null
+				pAngularVelocity = pInputDevice.getDevicePoseAngularVelocity()
+			end
+			return pAngularVelocity
+		end
+		
+		
+		
+		/**
+		 * \brief Rig shape property or null if not possible.
+		 * \version 1.7
+		 */
+		public func String getRigShapeProperty(int bone, int shape)
+			if shape == -1 or pCollider == null or not pCollider castable ColliderRig
+				return null
+			end
+			
+			var Rig rig = (pCollider cast ColliderRig).getRig()
+			if rig == null
+				return null
+			end
+			
+			if bone != -1
+				return rig.boneShapeGetProperty(bone, shape)
+				
+			else
+				return rig.shapeGetProperty(shape)
+			end
+		end
+		
+		/**
+		 * \brief Rig shape property from collision or null if not possible.
+		 * \version 1.7
+		 */
+		public func String getRigShapeProperty(CollisionInfo info, bool owner)
+			if owner
+				return getRigShapeProperty(info.getOwnerBone(), info.getOwnerShape())
+				
+			elif info.hasBone() and info.hasShape()
+				return getRigShapeProperty(info.getBone(), info.getShape())
+				
+			else
+				return  null
+			end
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/**
+		 * \brief Add collision listener.
+		 * \version 1.7
+		 */
+		public func void addCollisionListener(CollisionListener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pCollisionListeners.add(listener)
+		end
+		
+		/**
+		 * \brief Remove collision listener.
+		 * \version 1.7
+		 */
+		public func void removeCollisionListener(CollisionListener listener)
+			pCollisionListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Element has been added to game world. Start tracking device. */
+		public func void addToGameWorld()
+			var BindingManager bindingManager = pECBehavior.getBindingManager()
+			bindingManager.addListener(pAttachDetachListener)
+			
+			// find device
+			var InputDeviceType type = pECBehavior.getInputDeviceType()
+			setInputDevice(bindingManager.findDevice(block InputDevice each
+				return each.getType() == type
+			end))
+			
+			// add collider to world
+			getElement().getGameWorld().getWorld().addCollider(pCollider)
+		end
+		
+		/** \brief Element has been removed from game world. Stop tracking device. */
+		public func void removeFromGameWorld()
+			// remove collider from game world
+			getElement().getGameWorld().getWorld().removeCollider(pCollider)
+			
+			// forget about input device
+			pECBehavior.getBindingManager().removeListener(pAttachDetachListener)
+			setInputDevice(null)
+		end
+		
+		/** \brief Frame update. */
+		public func void think(float elapsed)
+			pCollider.setGeometry(getPosition(), getOrientation())
+		end
+		
+		/** \brief Element state changed like visible. */
+		public func void stateChanged()
+			updateVisibile()
+		end
+		
+		/** \brief Position or orientation changed. */
+		public func void geometryChanged()
+			pCollider.setScale(getElement().getScaling())
+		end
+		
+		
+		
+		/** \brief Colliders can hit each other. */
+		public func bool canHitCollider(Collider owner, Collider collider)
+			return true
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * 
+		 * If listeners are present calls collisionResponse() on all listeners expecting them
+		 * to handle collision properly. Otherwise for static and kinematic collision response
+		 * clears linear and angular velocity. For dynamic collision response nothing is done.
+		 */
+		public func void collisionResponse(Collider owner, CollisionInfo info)
+			if pCollisionListeners.getCount() > 0
+				pCollisionListeners.forEach(block CollisionListener each
+					each.collisionResponse(this, owner, info)
+				end)
+				
+			elif pCollider.getResponseType() != CollisionResponse.dynamic
+				owner.setLinearVelocity(Vector.new())
+				owner.setAngularVelocity(Vector.new())
+			end
+		end
+		
+		/** \brief Collider position and/or orientation changed. */
+		public func void colliderChanged(Collider owner)
+		end
+		
+		
+		
+		/** \brief Update component model and skin. */
+		protected func void updateModelSkin()
+			var Component component = pComponent.getComponent()
+			if component == null
+				return
+			end
+			
+			if pUseVendorModel
+				if pInputDevice != null
+					component.setModelAndSkin(pInputDevice.getVRModel(), pInputDevice.getVRSkin())
+					
+				else
+					component.setModelAndSkin(null, null)
+				end
+				
+			else
+				component.setModelAndSkin(pCustomModel, pCustomSkin)
+			end
+			
+			// update collider? not required if rig is the same
+		end
+		
+		/** \brief Update component visible. */
+		protected func void updateVisibile()
+			var Component component = pComponent.getComponent()
+			if component == null
+				return
+			end
+			
+			var bool visible = pShowHand and getElement().getVisible()
+			
+			component.setVisible(visible)
+			pCollider.setEnabled(visible)
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				var DVector position = DVector.readFromFile(reader)
+				var Quaternion orientation = Quaternion.readFromFile(reader)
+				var Vector scaling = Vector.readFromFile(reader)
+				
+				pCollider.setGeometry(position, orientation, scaling)
+				pCollider.setLinearVelocity(Vector.readFromFile(reader))
+				pCollider.setAngularVelocity(Vector.readFromFile(reader))
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			pCollider.getPosition().writeToFile(writer)
+			pCollider.getOrientation().writeToFile(writer)
+			pCollider.getScale().writeToFile(writer)
+			pCollider.getLinearVelocity().writeToFile(writer)
+			pCollider.getAngularVelocity().writeToFile(writer)
+		end
+	end
+	
+	
+	
+	private var InputDeviceType pInputDeviceType
+	private var BindingManager pBindingManager
+	private var ECBehaviorVRPlayspace pVRPlayspace
+	private var ECBehaviorComponent pComponent
+	private var ECPBoolean pUseVendorModel
+	private var ECPBoolean pShowHand
+	private var ECComposeCollider pCollider
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType) this(eclass, vrPlayspace, inputDeviceType, \
+	BaseGameApp.getApp().getBindingManager())
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id) this(eclass, vrPlayspace, inputDeviceType, \
+	BaseGameApp.getApp().getBindingManager(), id)
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id, String subID) this(eclass, vrPlayspace, \
+	inputDeviceType, BaseGameApp.getApp().getBindingManager(), id, subID)
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id, String subID, String prefix) \
+	this(eclass, vrPlayspace, inputDeviceType, BaseGameApp.getApp().getBindingManager(), \
+	id, subID, prefix)
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager) \
+	this(eclass, vrPlayspace, inputDeviceType, bindingManager, "")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id) \
+	this(eclass, vrPlayspace, inputDeviceType, bindingManager, id, \
+	id.empty() if "vrHand" else "vrHand(" + id + ")")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, String subID) \
+	this(eclass, vrPlayspace, inputDeviceType, bindingManager, id, subID, subID + ".")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, \
+	String subID, String prefix) super(eclass, id)
+		if vrPlayspace == null
+			throw ENullPointer.new("vrPlayspace")
+		end
+		if inputDeviceType == null
+			throw ENullPointer.new("inputDeviceType")
+		end
+		if bindingManager == null
+			throw ENullPointer.new("bindingManager")
+		end
+		
+		pInputDeviceType = inputDeviceType
+		pBindingManager = bindingManager
+		pVRPlayspace = vrPlayspace
+		pListenerFactories = Array.new()
+		
+		pComponent = ECBehaviorComponent.new(eclass, null, subID, prefix + "component.")
+		
+		pUseVendorModel = ECPBoolean.new(prefix + "useVendorModel", true)
+		eclass.addProperty(pUseVendorModel)
+		
+		pShowHand = ECPBoolean.new(prefix + "showHand", true)
+		eclass.addProperty(pShowHand)
+		
+		pCollider = ECComposeCollider.new(eclass, prefix + "collider.")
+		setGhost()
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pListenerFactories = null
+		pVRPlayspace = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Input device type. */
+	public func InputDeviceType getInputDeviceType()
+		return pInputDeviceType
+	end
+	
+	/** \brief Binding manager. */
+	public func BindingManager getBindingManager()
+		return pBindingManager
+	end
+	
+	/** \brief VR Playspace behavior. */
+	public func ECBehaviorVRPlayspace getVRPlayspace()
+		return pVRPlayspace
+	end
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return pComponent
+	end
+	
+	/** \brief Use vendor model. */
+	public func ECPBoolean getUseVendorModel()
+		return pUseVendorModel
+	end
+	
+	/** \brief Show hand. */
+	public func ECPBoolean getShowHand()
+		return pShowHand
+	end
+	
+	/**
+	 * \brief Composeable collider for element class.
+	 * \version 1.7
+	 */
+	public func ECComposeCollider getCollider()
+		return pCollider
+	end
+	
+	
+	
+	/**
+	 * \brief Set up collider as ghost collider.
+	 * \version 1.7
+	 * 
+	 * Ghost colliders have empty collision filter and kinematic collision response. They collide
+	 * with nothing and are useful to interact with the game world without physically pushing
+	 * objects by accident. 
+	 */
+	public func void setGhost()
+		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		pCollider.getLocalGravity().setVector(Vector.new())
+		pCollider.getWeight().setValue(1)
+		pCollider.setCollisionFilter(CollisionFilter.new())
+	end
+	
+	/**
+	 * \brief Set up collider as kinematic collider.
+	 * \version 1.10
+	 * 
+	 * Kinematic colliders have kinematic collision response, collision category
+	 * BaseGameApp.CollisionFilterBit.geometry and filter BaseGameApp.CollisionFilterBit.dynamic
+	 * and BaseGameApp.CollisionFilterBit.particle. They collide with PhysicsElementClass and
+	 * SimpleElementClass and allow hands to physically push objects.
+	 */
+	public func void setPhysics()
+		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		pCollider.getLocalGravity().setVector(null)
+		pCollider.getWeight().setValue(1)
+		
+		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.geometry)
+		
+		var LayerMask lmFilter = LayerMask.new()
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
+		
+		pCollider.setCollisionFilter(CollisionFilter.new(lmCategory, lmFilter))
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHand.
+	 */
+	static public func ECBehaviorVRHand getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHand each
+			return true
+		end) cast ECBehaviorVRHand
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHand with specific identifier.
+	 */
+	static public func ECBehaviorVRHand getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHand each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHand
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHand behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHand each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHand.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHand.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHand.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

@@ -87,6 +87,7 @@ pCollider( collider )
 	pIsPrepared = false;
 	
 	pMarked = false;
+	pTouchSensorMarked = false;
 	
 	pColDetPrepareIndex = -1;
 	pAutoColDetPrepare = false;
@@ -602,6 +603,7 @@ void debpCollider::UpdateDebugDrawer(){
 			pDebugDrawer->SetXRay( true );
 			pDebugDrawer->SetPosition( pCollider.GetPosition() );
 			pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+			pDebugDrawer->SetScale( pCollider.GetScale() );
 			
 			if( pParentWorld ){
 				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
@@ -627,6 +629,16 @@ void debpCollider::UpdateDebugDrawer(){
 			}else{
 				colorFill = debpDebugDrawerColors::colliderLowFill;
 				colorEdge = debpDebugDrawerColors::colliderLowEdge;
+			}
+			
+		}else if( devmode.GetHighlightDeactivation() ){
+			if( GetRigidBodyDeactivated() ){
+				colorFill = debpDebugDrawerColors::colliderLowFill;
+				colorEdge = debpDebugDrawerColors::colliderLowEdge;
+				
+			}else{
+				colorFill = debpDebugDrawerColors::colliderFill;
+				colorEdge = debpDebugDrawerColors::colliderEdge;
 			}
 			
 		}else{
@@ -658,6 +670,10 @@ void debpCollider::UpdateDebugDrawer(){
 void debpCollider::UpdateDDSShape(){
 }
 
+bool debpCollider::GetRigidBodyDeactivated() const{
+	return true;
+}
+
 
 
 // Notifications
@@ -675,10 +691,17 @@ void debpCollider::OrientationChanged(){
 	}
 }
 
+void debpCollider::ScaleChanged(){
+	if( pDebugDrawer ){
+		pDebugDrawer->SetScale( pCollider.GetScale() );
+	}
+}
+
 void debpCollider::GeometryChanged(){
 	if( pDebugDrawer ){
 		pDebugDrawer->SetPosition( pCollider.GetPosition() );
 		pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+		pDebugDrawer->SetScale( pCollider.GetScale() );
 	}
 }
 

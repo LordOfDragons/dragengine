@@ -42,7 +42,7 @@ class decConvexVolume;
  * a marker value is included in the default convex volume face class
  * which can be set to an integer value.
  */
-class decConvexVolumeFace{
+class DE_DLL_EXPORT decConvexVolumeFace{
 private:
 	int *pVertices;
 	int pVertexCount;

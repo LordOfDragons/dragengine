@@ -54,7 +54,8 @@ pValueStepSize( parameter.pValueStepSize ),
 pSelectionEntries( NULL ),
 pSelectionEntryCount( 0 ),
 pCategory( parameter.pCategory ),
-pDisplayName( parameter.pDisplayName )
+pDisplayName( parameter.pDisplayName ),
+pDefaultValue( parameter.pDefaultValue )
 {
 	if( parameter.pSelectionEntryCount > 0 ){
 		pSelectionEntries = new SelectionEntry[ parameter.pSelectionEntryCount ];
@@ -185,6 +186,10 @@ void deModuleParameter::SetDisplayName( const char *displayName ){
 	pDisplayName = displayName;
 }
 
+void deModuleParameter::SetDefaultValue( const decString &defaultValue ){
+	pDefaultValue = defaultValue;
+}
+
 void deModuleParameter::Reset(){
 	pType = eptBoolean;
 	pName.Empty();
@@ -195,6 +200,7 @@ void deModuleParameter::Reset(){
 	RemoveAllSelectionEntries();
 	pCategory = ecBasic;
 	pDisplayName.Empty();
+	pDefaultValue.Empty();
 }
 
 
@@ -211,6 +217,7 @@ deModuleParameter &deModuleParameter::operator=( const deModuleParameter &parame
 	pValueStepSize = parameter.pValueStepSize;
 	pCategory = parameter.pCategory;
 	pDisplayName = parameter.pDisplayName;
+	pDefaultValue = parameter.pDefaultValue;
 	
 	RemoveAllSelectionEntries();
 	if( parameter.pSelectionEntryCount > 0 ){

@@ -38,7 +38,7 @@
  * Links controller value to layer targets. Maps controller values using a bezier curve.
  * Using repeat values larger than 1 the curve is repeated along the Y axis.
  */
-class deSkyLink{
+class DE_DLL_EXPORT deSkyLink{
 private:
 	int pController;
 	decCurveBezier pCurve;

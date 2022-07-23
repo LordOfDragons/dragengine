@@ -213,6 +213,16 @@ void deClassGraphicSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *m
 	rt->PushString( answer.ToUTF8().GetString() );
 }
 
+// public static func int getFPSRate()
+deClassGraphicSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsGraSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt ){
+}
+void deClassGraphicSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassGraphicSystem* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetFPSRate() );
+}
+
 
 
 // class deClassGraphicSystem
@@ -257,4 +267,5 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetParameterValue(init));
 	AddFunction(new nfSetParameterValue(init));
 	AddFunction( new nfSendCommand( init ) );
+	AddFunction( new nfGetFPSRate( init ) );
 }

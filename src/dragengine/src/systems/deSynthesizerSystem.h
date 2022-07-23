@@ -40,7 +40,7 @@ class deSynthesizerInstance;
  * for the engine. An synthesizer module is able to carry out the actions
  * stored in an synthesizer object.
  */
-class deSynthesizerSystem : public deBaseSystem{
+class DE_DLL_EXPORT deSynthesizerSystem : public deBaseSystem{
 private:
 	deBaseSynthesizerModule *pActiveModule;
 	

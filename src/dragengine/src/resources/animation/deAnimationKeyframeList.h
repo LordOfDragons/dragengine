@@ -22,6 +22,8 @@
 #ifndef _DEANIMATIONKEYFRAMELIST_H_
 #define _DEANIMATIONKEYFRAMELIST_H_
 
+#include "../../dragengine_export.h"
+
 class deAnimation;
 class deAnimationKeyframe;
 
@@ -30,7 +32,7 @@ class deAnimationKeyframe;
  * \brief Animation Keyframe List.
  *
  */
-class deAnimationKeyframeList{
+class DE_DLL_EXPORT deAnimationKeyframeList{
 private:
 	deAnimationKeyframe **pKeyframes;
 	int pKeyframeCount, pKeyframeSize;

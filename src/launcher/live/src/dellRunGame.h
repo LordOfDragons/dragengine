@@ -22,6 +22,9 @@
 #ifndef _DELLRUNGAME_H_
 #define _DELLRUNGAME_H_
 
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameRunParams.h>
+
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -34,7 +37,7 @@ class decStringList;
 
 
 /**
- * \brief Run Game Action.
+ * Run Game Action.
  */
 class dellRunGame{
 private:
@@ -43,14 +46,8 @@ private:
 	decString pDelgaFile;
 	decString pProfileName;
 	
-	dellGame *pGame;
-	dellGameProfile *pProfile;
-	dellGPModuleList *pModuleParameters;
-	decString pRunArguments;
-	int pRunWidth;
-	int pRunHeight;
-	bool pRunFullScreen;
-	decString pWindowTitle;
+	delGame::Ref pGame;
+	delGameRunParams pRunParams;
 	decUnicodeArgumentList pGameArgs;
 	
 	
@@ -58,10 +55,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create run game. */
+	/** Create run game. */
 	dellRunGame( dellLauncher &launcher );
 	
-	/** \brief Clean up run game. */
+	/** Clean up run game. */
 	~dellRunGame();
 	/*@}*/
 	
@@ -69,50 +66,32 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Launcher. */
+	/** Launcher. */
 	inline dellLauncher &GetLauncher() const{ return pLauncher; }
 	
-	/** \brief Parse arguments. */
+	/** Parse arguments. */
 	bool ParseArguments();
 	
-	/** \brief Parse module parameter argument. */
-	bool ParseModuleParameter( const decString &value );
-	
-	/** \brief Init launcher. */
-	void InitLauncher();
-	
-	/** \brief Locate game to run. */
+	/** Locate game to run. */
 	bool LocateGame();
 	
-	/** \brief Locate and test profile to run and update parameters. */
+	/** Locate and test profile to run and update parameters. */
 	bool LocateProfile();
 	
-	/** \brief Show problems with the game. */
+	/** Update game arguments. */
+	void UpdateRunArguments();
+	
+	/** Show problems with the game. */
 	void ShowGameProblems();
 	
-	/** \brief Show problems with the profile. */
+	/** Show problems with the profile. */
 	void ShowProfileProblems();
 	
-	/** \brief Show module problem if there are any. */
+	/** Show module problem if there are any. */
 	void ShowModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType );
 	
-	/** \brief Activate script module. */
-	void ActivateScriptModule();
-	
-	/** \brief Add disk directory to virtual file system. */
-	void VFSAddDiskDir( const char *pathRoot, const char *pathDisk, bool readOnly );
-	
-	/** \brief Add containers to the engine virtual file system. */
-	void InitVFS();
-	
-	/** \brief Copy game arguments to engine argument list. */
-	void CopyGameArguments();
-	
-	/** \brief Run game. */
+	/** Run game. */
 	void Run();
-	
-	/** \brief Process module parameter changes. */
-	void StoreCustomConfig( const dellGPModuleList &changedModules );
 	/*@}*/
 };
 

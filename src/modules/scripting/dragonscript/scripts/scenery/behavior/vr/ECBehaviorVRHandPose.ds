@@ -1,0 +1,809 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Animators
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to apply hand pose to VR Hand.
+ * \version 1.7
+ * 
+ * Behavior queries VR hand device for bone poses and applies them to the VR hand component.
+ * 
+ * Creates an animator to apply the states. This allows to chain other animators like
+ * ECBehaviorActorAnimated for best performance. The bone names can be modified to adjust
+ * to rigs using different names.
+ * 
+ * The default bone names are these:
+ * - Origin set to VR Hand: origin
+ * - Wrist: hand
+ * - Thumb: thumb1, thumb2, thumb3
+ * - Index: index1, index2, index3, index4
+ * - Middle: middle1, middle2, middle3, middle4
+ * - Ring: ring1, ring2, ring3, ring4
+ * - Pinky: pinky1, pinky2, pinky3, pinky4
+ * 
+ * Models of varying size can be used.
+ * 
+ * By default only rotation of bones are used. If you want to use also positions you have
+ * first to set "onlyRotation" element class property to false. Using models with position
+ * transfer requires some additional care to work properly. In particular the model rig
+ * has to match as closely as possible the rig used by the VR runtime except for scaling.
+ * The behavior scales the input data to fit the model size. For this process to wor you
+ * have to measure the distance from the middle finger tip bone to the wrist bone.
+ * Use the base of these bones not their tails (in Blender3D). Set this values as the
+ * "fingerTipDistance" element class property:
+ * 
+ * \code{.ds}
+ * getFingerTipDistance().setValue(0.165)
+ * \endcode
+ * 
+ * The default distance is 0.165 which is a measuring of a typical VR hand model.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorVRHand
+ */
+class ECBehaviorVRHandPose extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		class Bone
+			public var String bone
+			public var int poseIndex
+			public var String namePrefix
+			public var ADController adControllerPosition
+			public var ADController adControllerOrientation
+			public var AnimatorController controllerPosition
+			public var AnimatorController controllerOrientation
+			public var Vector posePosition
+			public var Quaternion poseOrientation
+			
+			public func new(String bone, int poseIndex, String namePrefix)
+				this.bone = bone
+				this.poseIndex = poseIndex
+				this.namePrefix = namePrefix
+			end
+		end
+		
+		enum BoneEntry
+			wrist
+			thumb1
+			thumb2
+			thumb3
+			index1
+			index2
+			index3
+			index4
+			middle1
+			middle2
+			middle3
+			middle4
+			ring1
+			ring2
+			ring3
+			ring4
+			pinky1
+			pinky2
+			pinky3
+			pinky4
+		end
+		
+		
+		
+		private var ECBehaviorVRHandPose pECBehavior
+		private var ECBehaviorVRHand.Instance pVRHand
+		
+		private var bool pOnlyRotation
+		private var String pBoneOrigin
+		private var Array pBones
+		private var Array pAnimateBones
+		private var AnimatorInstance pAnimatorInstance
+		private var ADController pADControllerEnableFingers
+		private var AnimatorController pControllerEnableFingers
+		
+		private var Matrix pHandScale
+		private var float pModelFingerTipDistance
+		private var float pPoseFingerTipDistance
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorVRHandPose ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pBones = Array.new()
+			pHandScale = Matrix.new()
+			
+			pVRHand = ecbehavior.getVRHand().instance(element)
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			pVRHand = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			pOnlyRotation = pECBehavior.getOnlyRotation().getValue(stub)
+			
+			pModelFingerTipDistance = pECBehavior.getFingerTipDistance().getValue(stub)
+			pPoseFingerTipDistance = pModelFingerTipDistance
+			
+			// add bones
+			pBoneOrigin = pECBehavior.getBoneOrigin().getValue(stub)
+			
+			if not pECBehavior.getEnabled().getValue(stub)
+				return
+			end
+			
+			pBones.add(Bone.new(pECBehavior.getBoneWrist().getValue(stub), InputDeviceHandBone.wrist, "wrist"))
+			pBones.add(Bone.new(pECBehavior.getBoneThumb1().getValue(stub), InputDeviceHandBone.thumb0, "thumb1"))
+			pBones.add(Bone.new(pECBehavior.getBoneThumb2().getValue(stub), InputDeviceHandBone.thumb1, "thumb2"))
+			pBones.add(Bone.new(pECBehavior.getBoneThumb3().getValue(stub), InputDeviceHandBone.thumb2, "thumb3"))
+			pBones.add(Bone.new(pECBehavior.getBoneIndex1().getValue(stub), InputDeviceHandBone.index0, "index1"))
+			pBones.add(Bone.new(pECBehavior.getBoneIndex2().getValue(stub), InputDeviceHandBone.index1, "index2"))
+			pBones.add(Bone.new(pECBehavior.getBoneIndex3().getValue(stub), InputDeviceHandBone.index2, "index3"))
+			pBones.add(Bone.new(pECBehavior.getBoneIndex4().getValue(stub), InputDeviceHandBone.index3, "index4"))
+			pBones.add(Bone.new(pECBehavior.getBoneMiddle1().getValue(stub), InputDeviceHandBone.middle0, "middle1"))
+			pBones.add(Bone.new(pECBehavior.getBoneMiddle2().getValue(stub), InputDeviceHandBone.middle1, "middle2"))
+			pBones.add(Bone.new(pECBehavior.getBoneMiddle3().getValue(stub), InputDeviceHandBone.middle2, "middle3"))
+			pBones.add(Bone.new(pECBehavior.getBoneMiddle4().getValue(stub), InputDeviceHandBone.middle3, "middle4"))
+			pBones.add(Bone.new(pECBehavior.getBoneRing1().getValue(stub), InputDeviceHandBone.ring0, "ring1"))
+			pBones.add(Bone.new(pECBehavior.getBoneRing2().getValue(stub), InputDeviceHandBone.ring1, "ring2"))
+			pBones.add(Bone.new(pECBehavior.getBoneRing3().getValue(stub), InputDeviceHandBone.ring2, "ring3"))
+			pBones.add(Bone.new(pECBehavior.getBoneRing4().getValue(stub), InputDeviceHandBone.ring3, "ring4"))
+			pBones.add(Bone.new(pECBehavior.getBonePinky1().getValue(stub), InputDeviceHandBone.pinky0, "pinky1"))
+			pBones.add(Bone.new(pECBehavior.getBonePinky2().getValue(stub), InputDeviceHandBone.pinky1, "pinky2"))
+			pBones.add(Bone.new(pECBehavior.getBonePinky3().getValue(stub), InputDeviceHandBone.pinky2, "pinky3"))
+			pBones.add(Bone.new(pECBehavior.getBonePinky4().getValue(stub), InputDeviceHandBone.pinky3, "pinky4"))
+			
+			// collect bones to animate
+			pAnimateBones = pBones.collect(block Bone each
+				return not each.bone.empty()
+			end)
+			
+			// create animator instance
+			var Component component = pVRHand.getComponent().getComponent()
+			
+			pAnimatorInstance = AnimatorInstance.new()
+			pAnimatorInstance.setComponent(component)
+			if component != null and component.getRig() != null
+				pAnimatorInstance.setAnimator(createAnimator(stub, component))
+				
+				// get controllers and store them for later use
+				pAnimateBones.forEach(block Bone bone
+					bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
+					bone.adControllerOrientation = null
+					
+					if bone.adControllerPosition != null
+						bone.controllerPosition = pAnimatorInstance.getControllerAt(bone.adControllerPosition.getIndex())
+						bone.adControllerPosition = null
+					end
+				end)
+				
+				pControllerEnableFingers = pAnimatorInstance.getControllerAt(pADControllerEnableFingers.getIndex())
+				pADControllerEnableFingers = null
+			end
+		end
+		
+		/** Create animator definition. */
+		protected func AnimatorDefinition createAnimatorDefinition(StubElement stub, Component component)
+			// create animator definition
+			var AnimatorDefinition definition = AnimatorDefinition.new("hand pose")
+			definition.setRig(component.getRig())
+			
+			// add bones
+			if not pBoneOrigin.empty()
+				definition.addBone(pBoneOrigin)
+			end
+			pAnimateBones.forEach(block Bone each
+				definition.addBone(each.bone)
+			end)
+			
+			// add reset rule
+			var ADRuleStateManipulator ruleReset = ADRuleStateManipulator.new()
+			if not pBoneOrigin.empty()
+				ruleReset.addBone(pBoneOrigin)
+			end
+			pAnimateBones.forEach(block Bone each
+				ruleReset.addBone(each.bone)
+			end)
+			definition.addRule(ruleReset)
+			
+			// add controllers, links and rules for bones
+			pADControllerEnableFingers = ADController.new()
+			pADControllerEnableFingers.setName("enable fingers")
+			pADControllerEnableFingers.setMinimum(0)
+			pADControllerEnableFingers.setMaximum(1)
+			pADControllerEnableFingers.setClamp(true)
+			definition.addController(pADControllerEnableFingers)
+			
+			var ADLink linkEnableFingers = ADLink.new()
+			linkEnableFingers.setController(pADControllerEnableFingers)
+			linkEnableFingers.setCurve(CurveBezier.newDefaultLinear())
+			definition.addLink(linkEnableFingers)
+			
+			pAnimateBones.forEach(block int index, Bone bone
+				bone.adControllerOrientation = ADController.new()
+				bone.adControllerOrientation.setName(bone.namePrefix + " orientation")
+				definition.addController(bone.adControllerOrientation)
+				
+				var ADLink linkOrientation = ADLink.new()
+				linkOrientation.setController(bone.adControllerOrientation)
+				definition.addLink(linkOrientation)
+				
+				var ADRuleInverseKinematic rule = ADRuleInverseKinematic.new()
+				rule.setName(bone.namePrefix)
+				rule.setAdjustOrientation(true)
+				rule.setAdjustPosition(false)
+				rule.addBone(bone.bone)
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalOrientation, linkOrientation))
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.blendFactor, linkEnableFingers))
+				
+				if bone.poseIndex == InputDeviceHandBone.wrist or not pOnlyRotation
+					bone.adControllerPosition = ADController.new()
+					bone.adControllerPosition.setName(bone.namePrefix + " position")
+					definition.addController(bone.adControllerPosition)
+					
+					var ADLink linkPosition = ADLink.new()
+					linkPosition.setController(bone.adControllerPosition)
+					definition.addLink(linkPosition)
+					
+					rule.setAdjustPosition(true)
+					rule.addTargetLink(ADRuleTargetLink.new(\
+						ARInverseKinematicTarget.goalPosition, linkPosition))
+				end
+				
+				definition.addRule(rule)
+			end)
+			
+			// finished
+			return definition
+		end
+		
+		/** Create animator using definition created using createAnimatorDefinition(). */
+		protected func Animator createAnimator(StubElement stub, Component component)
+			var Animator animator = Animator.new()
+			createAnimatorDefinition(stub, component).buildAnimator(animator)
+			return animator
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRHandPose getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Hand behavior instance. */
+		public func ECBehaviorVRHand.Instance getVRHand()
+			return pVRHand
+		end
+		
+		
+		
+		/** \brief Apply only rotation instead of position and rotation. */
+		public func bool getOnlyRotation()
+			return pOnlyRotation
+		end
+		
+		
+		
+		/** \brief Bone entry. */
+		protected func Bone getBone(BoneEntry entry)
+			return pBones.getAt(entry.order()) cast Bone
+		end
+		
+		/** \brief Bone entry. */
+		protected func Bone getBoneAt(int index)
+			return pBones.getAt(index) cast Bone
+		end
+		
+		
+		
+		/** \brief Update controllers. */
+		public func void updateControllers()
+			// get device and check if values can be fetched
+			var InputDevice device = pVRHand.getInputDevice()
+			
+			if device == null\
+			or device.getBoneConfiguration() != InputDeviceBoneConfiguration.hand\
+			or device.getDeviceBonePoseCount() != 21
+				if pControllerEnableFingers != null
+					pControllerEnableFingers.setValue(0)
+				end
+				return
+			end
+			
+			// fetch values
+			pAnimateBones.forEach(block Bone bone
+				bone.poseOrientation = device.getDeviceBonePoseOrientation(bone.poseIndex, false)
+				bone.posePosition = device.getDeviceBonePosePosition(bone.poseIndex, false)
+			end)
+			
+			// update hand scale
+			if not pOnlyRotation
+				calcPoseFingerTipDistance()
+				updateHandScale()
+			end
+			
+			// update controllers with transformed poses
+			pAnimateBones.forEach(block Bone bone
+				bone.controllerOrientation.setRotation(bone.poseOrientation.getEulerAngles())
+				
+				if bone.controllerPosition != null
+					bone.controllerPosition.setVector(pHandScale * bone.posePosition)
+				end
+			end)
+			
+			pControllerEnableFingers.setValue(1)
+		end
+		
+		/** \brief Apply animations. */
+		public func void applyAnimations()
+			if pAnimatorInstance != null
+				pAnimatorInstance.apply()
+			end
+		end
+		
+		/** \brief Calculate pose finger tip distance. */
+		protected func void calcPoseFingerTipDistance()
+			pPoseFingerTipDistance = pModelFingerTipDistance
+			
+			var Vector last = getBone(BoneEntry.wrist).posePosition
+			if last == null
+				return
+			end
+			
+			pPoseFingerTipDistance = 0
+			
+			var Vector next = getBone(BoneEntry.middle1).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+				last = next
+			end
+			
+			next = getBone(BoneEntry.middle2).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+				last = next
+			end
+			
+			next = getBone(BoneEntry.middle3).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+				last = next
+			end
+			
+			next = getBone(BoneEntry.middle4).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+			end
+			
+			if pPoseFingerTipDistance == 0
+				pPoseFingerTipDistance = pModelFingerTipDistance
+			end
+		end
+		
+		/** \brief Calculate hand scaling. */
+		protected func void updateHandScale()
+			var Vector wrist = getBone(BoneEntry.wrist).posePosition
+			if wrist == null
+				pHandScale = Matrix.new()
+				return
+			end
+			
+			var float scale = pModelFingerTipDistance / pPoseFingerTipDistance
+// 			BaseGameApp.getApp().getConsole().addMessage("HandScale: pd={:.3f} md={:.3f} s={:.3f}"\
+// 				.format(Array.newWith(pPoseFingerTipDistance, pModelFingerTipDistance, scale)))
+			pHandScale = Matrix.newTranslation(-wrist)\
+				* Matrix.newScaling(scale, scale, scale)\
+				* Matrix.newTranslation(wrist)
+		end
+	end
+	
+	
+	
+	private var ECBehaviorVRHand pVRHand
+	private var ECPString pBoneOrigin
+	private var ECPString pBoneWrist
+	private var ECPString pBoneThumb1
+	private var ECPString pBoneThumb2
+	private var ECPString pBoneThumb3
+	private var ECPString pBoneIndex1
+	private var ECPString pBoneIndex2
+	private var ECPString pBoneIndex3
+	private var ECPString pBoneIndex4
+	private var ECPString pBoneMiddle1
+	private var ECPString pBoneMiddle2
+	private var ECPString pBoneMiddle3
+	private var ECPString pBoneMiddle4
+	private var ECPString pBoneRing1
+	private var ECPString pBoneRing2
+	private var ECPString pBoneRing3
+	private var ECPString pBoneRing4
+	private var ECPString pBonePinky1
+	private var ECPString pBonePinky2
+	private var ECPString pBonePinky3
+	private var ECPString pBonePinky4
+	private var ECPFloat pFingerTipDistance
+	private var ECPBoolean pEnabled
+	private var ECPBoolean pOnlyRotation
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
+	this(eclass, vrHand, id, id.empty() if "vrHandPose." else "vrHandPose(" + id + ").")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
+	String prefix) super(eclass, id)
+		pVRHand = vrHand
+		
+		pBoneOrigin = ECPString.new(prefix + "boneOrigin", "origin")
+		eclass.addProperty(pBoneOrigin)
+		
+		pBoneWrist = ECPString.new(prefix + "boneWrist", "wrist")
+		eclass.addProperty(pBoneWrist)
+		
+		// thumb
+		pBoneThumb1 = ECPString.new(prefix + "boneThumb1", "thumb1")
+		eclass.addProperty(pBoneThumb1)
+		
+		pBoneThumb2 = ECPString.new(prefix + "boneThumb2", "thumb2")
+		eclass.addProperty(pBoneThumb2)
+		
+		pBoneThumb3 = ECPString.new(prefix + "boneThumb3", "thumb3")
+		eclass.addProperty(pBoneThumb3)
+		
+		// index
+		pBoneIndex1 = ECPString.new(prefix + "boneIndex1", "index1")
+		eclass.addProperty(pBoneIndex1)
+		
+		pBoneIndex2 = ECPString.new(prefix + "boneIndex2", "index2")
+		eclass.addProperty(pBoneIndex2)
+		
+		pBoneIndex3 = ECPString.new(prefix + "boneIndex3", "index3")
+		eclass.addProperty(pBoneIndex3)
+		
+		pBoneIndex4 = ECPString.new(prefix + "boneIndex4", "index4")
+		eclass.addProperty(pBoneIndex4)
+		
+		// middle
+		pBoneMiddle1 = ECPString.new(prefix + "boneMiddle1", "middle1")
+		eclass.addProperty(pBoneMiddle1)
+		
+		pBoneMiddle2 = ECPString.new(prefix + "boneMiddle2", "middle2")
+		eclass.addProperty(pBoneMiddle2)
+		
+		pBoneMiddle3 = ECPString.new(prefix + "boneMiddle3", "middle3")
+		eclass.addProperty(pBoneMiddle3)
+		
+		pBoneMiddle4 = ECPString.new(prefix + "boneMiddle4", "middle4")
+		eclass.addProperty(pBoneMiddle4)
+		
+		// ring
+		pBoneRing1 = ECPString.new(prefix + "boneRing1", "ring1")
+		eclass.addProperty(pBoneRing1)
+		
+		pBoneRing2 = ECPString.new(prefix + "boneRing2", "ring2")
+		eclass.addProperty(pBoneRing2)
+		
+		pBoneRing3 = ECPString.new(prefix + "boneRing3", "ring3")
+		eclass.addProperty(pBoneRing3)
+		
+		pBoneRing4 = ECPString.new(prefix + "boneRing4", "ring4")
+		eclass.addProperty(pBoneRing4)
+		
+		// pinky
+		pBonePinky1 = ECPString.new(prefix + "bonePinky1", "pinky1")
+		eclass.addProperty(pBonePinky1)
+		
+		pBonePinky2 = ECPString.new(prefix + "bonePinky2", "pinky2")
+		eclass.addProperty(pBonePinky2)
+		
+		pBonePinky3 = ECPString.new(prefix + "bonePinky3", "pinky3")
+		eclass.addProperty(pBonePinky3)
+		
+		pBonePinky4 = ECPString.new(prefix + "bonePinky4", "pinky4")
+		eclass.addProperty(pBonePinky4)
+		
+		// properties
+		pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01)
+		eclass.addProperty(pFingerTipDistance)
+		
+		pEnabled = ECPBoolean.new(prefix + "enabled", true)
+		eclass.addProperty(pEnabled)
+		
+		pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true)
+		eclass.addProperty(pOnlyRotation)
+		
+		// add to class
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pVRHand = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief VR Hand behavior or null. */
+	public func ECBehaviorVRHand getVRHand()
+		return pVRHand
+	end
+	
+	/** \brief Origin bone name. */
+	public func ECPString getBoneOrigin()
+		return pBoneOrigin
+	end
+	
+	/** \brief Wrist bone name. */
+	public func ECPString getBoneWrist()
+		return pBoneWrist
+	end
+	
+	/** \brief Thumb bone name. */
+	public func ECPString getBoneThumb1()
+		return pBoneThumb1
+	end
+	
+	public func ECPString getBoneThumb2()
+		return pBoneThumb2
+	end
+	
+	public func ECPString getBoneThumb3()
+		return pBoneThumb3
+	end
+	
+	/** \brief Index bone name. */
+	public func ECPString getBoneIndex1()
+		return pBoneIndex1
+	end
+	
+	public func ECPString getBoneIndex2()
+		return pBoneIndex2
+	end
+	
+	public func ECPString getBoneIndex3()
+		return pBoneIndex3
+	end
+	
+	public func ECPString getBoneIndex4()
+		return pBoneIndex4
+	end
+	
+	/** \brief Middle bone name. */
+	public func ECPString getBoneMiddle1()
+		return pBoneMiddle1
+	end
+	
+	public func ECPString getBoneMiddle2()
+		return pBoneMiddle2
+	end
+	
+	public func ECPString getBoneMiddle3()
+		return pBoneMiddle3
+	end
+	
+	public func ECPString getBoneMiddle4()
+		return pBoneMiddle4
+	end
+	
+	/** \brief Ring bone name. */
+	public func ECPString getBoneRing1()
+		return pBoneRing1
+	end
+	
+	public func ECPString getBoneRing2()
+		return pBoneRing2
+	end
+	
+	public func ECPString getBoneRing3()
+		return pBoneRing3
+	end
+	
+	public func ECPString getBoneRing4()
+		return pBoneRing4
+	end
+	
+	/** \brief Pinky bone name. */
+	public func ECPString getBonePinky1()
+		return pBonePinky1
+	end
+	
+	public func ECPString getBonePinky2()
+		return pBonePinky2
+	end
+	
+	public func ECPString getBonePinky3()
+		return pBonePinky3
+	end
+	
+	public func ECPString getBonePinky4()
+		return pBonePinky4
+	end
+	
+	
+	
+	/** \brief Distance between middle finger tip and wrist in fully stretched pose. */
+	public func ECPFloat getFingerTipDistance()
+		return pFingerTipDistance
+	end
+	
+	/** \brief Enable hand pose. */
+	public func ECPBoolean getEnabled()
+		return pEnabled
+	end
+	
+	/** \brief Apply only rotation instead of position and rotation. */
+	public func ECPBoolean getOnlyRotation()
+		return pOnlyRotation
+	end
+	
+	
+	
+	/**
+	 * \brief Set finger names to default names with hand prefix.
+	 * \version 1.10
+	 * 
+	 * For example "wrist" becomes "wrist.r" if rightHand is true otherwise "wrist.l"
+	 */
+	public func void setHandBoneNames(bool rightHand)
+		var String suffix = rightHand if ".r" else ".l"
+		
+		pBoneOrigin.setValue("origin" + suffix)
+		pBoneWrist.setValue("wrist" + suffix)
+		
+		pBoneThumb1.setValue("thumb1" + suffix)
+		pBoneThumb2.setValue("thumb2" + suffix)
+		pBoneThumb3.setValue("thumb3" + suffix)
+		
+		pBoneIndex1.setValue("index1" + suffix)
+		pBoneIndex2.setValue("index2" + suffix)
+		pBoneIndex3.setValue("index3" + suffix)
+		pBoneIndex4.setValue("index4" + suffix)
+		
+		pBoneMiddle1.setValue("middle1" + suffix)
+		pBoneMiddle2.setValue("middle2" + suffix)
+		pBoneMiddle3.setValue("middle3" + suffix)
+		pBoneMiddle4.setValue("middle4" + suffix)
+		
+		pBoneRing1.setValue("ring1" + suffix)
+		pBoneRing2.setValue("ring2" + suffix)
+		pBoneRing3.setValue("ring3" + suffix)
+		pBoneRing4.setValue("ring4" + suffix)
+		
+		pBonePinky1.setValue("pinky1" + suffix)
+		pBonePinky2.setValue("pinky2" + suffix)
+		pBonePinky3.setValue("pinky3" + suffix)
+		pBonePinky4.setValue("pinky4" + suffix)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandPose.
+	 */
+	static public func ECBehaviorVRHandPose getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandPose each
+			return true
+		end) cast ECBehaviorVRHandPose
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandPose with specific identifier.
+	 */
+	static public func ECBehaviorVRHandPose getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHandPose each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHandPose
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandPose behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHandPose each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandPose.Instance .
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderableCamera.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

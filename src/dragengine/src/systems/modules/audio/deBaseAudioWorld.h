@@ -22,6 +22,8 @@
 #ifndef _DEBASEAUDIOWORLD_H_
 #define _DEBASEAUDIOWORLD_H_
 
+#include "../../../dragengine_export.h"
+
 class deSpeaker;
 class deMicrophone;
 class deComponent;
@@ -32,7 +34,7 @@ class deSoundLevelMeter;
 /**
  * \brief Audio module world peer.
  */
-class deBaseAudioWorld{
+class DE_DLL_EXPORT deBaseAudioWorld{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

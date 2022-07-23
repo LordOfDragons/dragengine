@@ -37,7 +37,7 @@ class deNetworkState;
 /**
  * \brief Base Network Module.
  */
-class deBaseNetworkModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseNetworkModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -68,6 +68,14 @@ public:
 	
 	/** \brief Process network. */
 	virtual void ProcessNetwork() = 0;
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	virtual int GetFPSRate();
 	/*@}*/
 	
 	

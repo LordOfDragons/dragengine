@@ -30,10 +30,10 @@ namespace Dragengine.Gui.Events
  */
 class KeyEvent extends ModifiableEvent
 	/** Key pressed event idenfitier */
-	public fixed var int idKeyPressed = 10
+	public static fixed var int idKeyPressed = 10
 	
 	/** Key released event idenfitier */
-	public fixed var int idKeyReleased = 11
+	public static fixed var int idKeyReleased = 11
 	
 	
 	
@@ -42,6 +42,12 @@ class KeyEvent extends ModifiableEvent
 	
 	/** \brief Key character */
 	private var int pKeyChar
+	
+	/**
+	 * \brief Source system.
+	 * \version 1.6
+	 */
+	private var InputEventSource pSystem
 	
 	/** \brief Device index. */
 	private var int pDevice
@@ -58,20 +64,45 @@ class KeyEvent extends ModifiableEvent
 	
 	
 	
-	/** \brief Create event. */
+	/**
+	 * \brief Create event.
+	 * \deprecated Use new(Object,int,int,int,InputEventSource,int,int)
+	 */
+	public func new( Object source, int id, int keyCode, int modifiers, int device, int buttonCode ) \
+	this( source, id, keyCode, modifiers, InputEventSource.input, device, buttonCode )
+	end
+	
+	/**
+	 * \brief Create event.
+	 * \deprecated Use new(Object,int,int,int,int,InputEventSource,int,int)
+	 */
+	public func new( Object source, int id, int keyCode, int modifiers, int keyChar, \
+	int device, int buttonCode ) this( source, id, keyCode, modifiers, keyChar, \
+	InputEventSource.input, device, buttonCode )
+	end
+	
+	/**
+	 * \brief Create event.
+	 * \version 1.6
+	 */
 	public func new( Object source, int id, int keyCode, int modifiers, \
-	int device, int buttonCode ) super( source, id, modifiers )
+	InputEventSource system, int device, int buttonCode ) super( source, id, modifiers )
 		this.pKeyCode = keyCode
 		this.pKeyChar = 0
+		this.pSystem = system
 		this.pDevice = device
 		this.pButtonCode = buttonCode
 	end
 	
-	/** \brief Create event. */
+	/**
+	 * \brief Create event.
+	 * \version 1.6
+	 */
 	public func new( Object source, int id, int keyCode, int modifiers, int keyChar, \
-	int device, int buttonCode ) super( source, id, modifiers )
+	InputEventSource system, int device, int buttonCode ) super( source, id, modifiers )
 		this.pKeyCode = keyCode
 		this.pKeyChar = keyChar
+		this.pSystem = system
 		this.pDevice = device
 		this.pButtonCode = buttonCode
 	end
@@ -86,6 +117,14 @@ class KeyEvent extends ModifiableEvent
 	/** \brief Printable key character if existing. */
 	public func int getKeyChar()
 		return this.pKeyChar
+	end
+	
+	/**
+	 * \brief Source system.
+	 * \version 1.6
+	 */
+	public func InputEventSource getSystem()
+		return this.pSystem
 	end
 	
 	/** \brief Device index. */

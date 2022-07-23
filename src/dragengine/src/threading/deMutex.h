@@ -22,6 +22,7 @@
 #ifndef _DEMUTEX_H_
 #define _DEMUTEX_H_
 
+#include "../dragengine_export.h"
 #include "../dragengine_configuration.h"
 
 #if defined OS_UNIX || defined OS_BEOS
@@ -39,7 +40,7 @@
  * Provides mutual exclusive access support using a thin wrapper around
  * the operating system specific threading mutex.
  */
-class deMutex{
+class DE_DLL_EXPORT deMutex{
 private:
 #if defined OS_UNIX || defined OS_BEOS
 	pthread_mutex_t pMutex;

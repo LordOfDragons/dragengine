@@ -43,6 +43,8 @@ deoglPGammaCorrection::deoglPGammaCorrection( deGraphicOpenGl &ogl ) : deoglPara
 	SetMaximumValue( 1.5f );
 	SetValueStepSize( 0.05f );
 	SetDisplayName( "Gamma" );
+	SetCategory( ecBasic );
+	SetDefaultValue( "1" );
 }
 
 deoglPGammaCorrection::~deoglPGammaCorrection(){

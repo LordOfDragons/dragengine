@@ -29,7 +29,7 @@
 /**
  * \brief Language pack translation entry.
  */
-class deLanguagePackEntry{
+class DE_DLL_EXPORT deLanguagePackEntry{
 private:
 	decString pName;
 	decUnicodeString pText;

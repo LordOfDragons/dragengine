@@ -28,7 +28,13 @@
 /**
  * \brief Synthesizer wave function source.
  */
-class deSynthesizerSourceWave : public deSynthesizerSource{
+class DE_DLL_EXPORT deSynthesizerSourceWave : public deSynthesizerSource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceWave> Ref;
+	
+	
+	
 public:
 	/** \brief Wave type. */
 	enum eWaveType{

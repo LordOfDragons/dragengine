@@ -22,6 +22,8 @@
 #ifndef _DEBASEGRAPHICCAMERA_H_
 #define _DEBASEGRAPHICCAMERA_H_
 
+#include "../../../dragengine_export.h"
+
 class deEffect;
 
 
@@ -29,7 +31,7 @@ class deEffect;
  * \brief Graphic Module Camera Peer.
  *
  */
-class deBaseGraphicCamera{
+class DE_DLL_EXPORT deBaseGraphicCamera{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -70,6 +72,33 @@ public:
 	
 	/** \brief Request graphic module to reset adapted intensity to optimal value. */
 	virtual void ResetAdaptedIntensity();
+	/*@}*/
+	
+	
+	
+	/** \name For use by VR Module only */
+	/*@{*/
+	/**
+	 * \brief Camera assigned to HMD.
+	 * \version 1.6
+	 * 
+	 * Called from main thread.
+	 */
+	virtual void VRAssignedToHMD();
+	
+	/**
+	 * \brief Camera resigned from HMD.
+	 * \version 1.6
+	 * 
+	 * Called from main thread.
+	 */
+	virtual void VRResignedFromHMD();
+	
+	/**
+	 * \version 1.6
+	 * \deprecated Not used.
+	 */
+	virtual void VRRenderParametersChanged();
 	/*@}*/
 };
 

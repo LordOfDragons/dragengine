@@ -70,12 +70,12 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
-	long onEnter( FXObject *sender, FXSelector selector, void *data );
-	long onLeave( FXObject *sender, FXSelector selector, void *data );
-	long onLeftMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onLeftMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onMouseMoved( FXObject *sender, FXSelector selector, void *data );
+	long onPaint( FXObject*, FXSelector, void* );
+	long onEnter( FXObject*, FXSelector, void* );
+	long onLeave( FXObject*, FXSelector, void* );
+	long onLeftMouseDown( FXObject*, FXSelector, void* );
+	long onLeftMouseUp( FXObject*, FXSelector, void* );
+	long onMouseMoved( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

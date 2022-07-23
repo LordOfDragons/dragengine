@@ -51,7 +51,7 @@
  * time based repeating animations. For bone related input it can be useful to enable
  * clamping to avoid values wrapping around.
  */
-class deSkinPropertyMapped : public deSkinProperty{
+class DE_DLL_EXPORT deSkinPropertyMapped : public deSkinProperty{
 public:
 	/** \brief Input types. */
 	enum eInputTypes{
@@ -87,7 +87,7 @@ public:
 	};
 	
 	/** \brief Component. */
-	class cComponent{
+	class DE_DLL_EXPORT cComponent{
 	private:
 		decCurveBezier pCurve;
 		eInputTypes pInputType;

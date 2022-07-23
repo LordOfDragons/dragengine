@@ -61,9 +61,11 @@ void deInputDeviceFeedback::SetName( const char *name ){
 }
 
 void deInputDeviceFeedback::SetType( eFeedbackTypes type ){
-	if( type < eftVibration || type > eftGeneric ){
-		DETHROW( deeInvalidParam );
-	}
+	pType = type;
+}
+
+void deInputDeviceFeedback::SetComponent( const char *component ){
+	pComponent = component;
 }
 
 void deInputDeviceFeedback::SetDisplayImage( deImage *image ){
@@ -98,6 +100,7 @@ deInputDeviceFeedback &deInputDeviceFeedback::operator=( const deInputDeviceFeed
 	pID = feedback.pID;
 	pName = feedback.pName;
 	pType = feedback.pType;
+	pComponent = feedback.pComponent;
 	pDisplayImage = feedback.pDisplayImage;
 	pDisplayIcons = feedback.pDisplayIcons;
 	pDisplayText = feedback.pDisplayText;

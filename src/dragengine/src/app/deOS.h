@@ -37,7 +37,7 @@ class decString;
 /**
  * \brief Interface for Operating System classes.
  */
-class deOS{
+class DE_DLL_EXPORT deOS{
 private:
 	deEngine *pEngine;
 	bool pAppActive;

@@ -37,7 +37,7 @@ class deDebugDrawer;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deDebugDrawerReference : protected deObjectReference {
+class DE_DLL_EXPORT deDebugDrawerReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

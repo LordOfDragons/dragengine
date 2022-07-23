@@ -36,12 +36,13 @@
 #include "deoglRTRenderers.h"
 #include "deoglRTShader.h"
 #include "deoglRTTexture.h"
+#include "deoglRTUniqueKey.h"
 #include "../deGraphicOpenGl.h"
 #include "../deoglBasics.h"
 #include "../deoglPreloader.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
-#include "../canvas/render/deoglRCanvas.h"
+#include "../canvas/render/deoglRCanvasView.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugInformation.h"
@@ -50,20 +51,24 @@
 #include "../edgefinder/deoglEdgeFinder.h"
 #include "../envmap/deoglEnvMapSlotManager.h"
 #include "../extensions/deoglExtensions.h"
+#include "../gi/deoglGI.h"
 #include "../light/deoglLightBoundaryMap.h"
-#include "../occlusiontest/deoglOcclusionTest.h"
+#include "../occlusiontest/deoglOcclusionTestPool.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/deoglRenderCanvas.h"
-#include "../rendering/cache/deoglRenderCache.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
+#include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
 #include "../utils/deoglQuickSorter.h"
 #include "../vbo/deoglSharedVBOListList.h"
+#include "../vr/deoglVR.h"
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
+#include "../world/deoglRCamera.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
@@ -89,6 +94,9 @@ deoglRenderThread::deoglRenderThread( deGraphicOpenGl &ogl ) :
 pOgl( ogl ),
 
 pAsyncRendering( true ),
+pConfigChanged( true ),
+pFrameCounter( 0 ),
+pVRCamera( nullptr ),
 
 pLeakTracker( *this ),
 
@@ -112,37 +120,20 @@ pEnvMapSlotManager( NULL ),
 pExtensions( NULL ),
 pLightBoundarybox( NULL ),
 pOccQueryMgr( NULL ),
-pOcclusionTest( NULL ),
-pRenderCache( NULL ),
+pGI( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
+pPersistentRenderTaskPool( NULL ),
+pRenderTaskSharedPool( NULL ),
+pUniqueKey( NULL ),
+pOcclusionTestPool( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
+pTimeHistoryFrame( 29, 2 ),
 pEstimatedRenderTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
-
-pDebugInfoModule( NULL ),
-
-pDebugInfoThreadMain( NULL ),
-pDebugInfoThreadMainWaitFinish( NULL ),
-pDebugInfoThreadMainSynchronize( NULL ),
-
-pDebugInfoThreadRender( NULL ),
-pDebugInfoThreadRenderSwap( NULL ),
-pDebugInfoThreadRenderBegin( NULL ),
-pDebugInfoThreadRenderWindows( NULL ),
-pDebugInfoThreadRenderWindowsPrepare( NULL ),
-pDebugInfoThreadRenderWindowsRender( NULL ),
-pDebugInfoThreadRenderCapture( NULL ),
-pDebugInfoThreadRenderEnd( NULL ),
-
-pDebugInfoFrameLimiter( NULL ),
-pDebugInfoFLEstimMain( NULL ),
-pDebugInfoFLEstimRender( NULL ),
-pDebugInfoFLFrameRateMain( NULL ),
-pDebugInfoFLFrameRateRender( NULL ),
 
 pMainThreadShowDebugInfoModule( false ),
 
@@ -167,7 +158,8 @@ pInitialRenderWindow( NULL ), // temporary variable for thread initialization
 pThreadState( etsStopped ),
 pThreadFailure( false ),
 pBarrierSyncIn( 2 ),
-pBarrierSyncOut( 2 )
+pBarrierSyncOut( 2 ),
+pSignalSemaphoreSyncVR( false )
 {
 	try{
 		pConfiguration = ogl.GetConfiguration();
@@ -230,7 +222,11 @@ bool deoglRenderThread::HasContext() const{
 
 
 
-void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvas *canvas ){
+void deoglRenderThread::SetVRCamera( deoglRCamera *camera ){
+	pVRCamera = camera;
+}
+
+void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvasView *canvas ){
 	if( canvas == pCanvasInputOverlay ){
 		return;
 	}
@@ -246,7 +242,7 @@ void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvas *canvas ){
 	}
 }
 
-void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
+void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvasView *canvas ){
 	if( canvas == pCanvasDebugOverlay ){
 		return;
 	}
@@ -267,12 +263,12 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
 // #define DEBUG_SYNC 1
 
 #ifdef DEBUG_SYNC
-	#define DEBUG_SYNC_RT_FAILURE printf("RT(%i): set failure to %d\n", __LINE__, pThreadFailure);
-	#define DEBUG_SYNC_RT_WAIT(b) printf("RT(%i): wait on barrier %s\n", __LINE__, b);
-	#define DEBUG_SYNC_RT_PASS(b) printf("RT(%i): passed barrier %s\n", __LINE__, b);
-	#define DEBUG_SYNC_MT_STATE printf("MT(%i): state changed to %i\n", __LINE__, pThreadState);
-	#define DEBUG_SYNC_MT_WAIT(b) printf("MT(%i): wait on barrier %s\n", __LINE__, b);
-	#define DEBUG_SYNC_MT_PASS(b) printf("MT(%i): passed barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_RT_FAILURE pOgl.LogInfoFormat("RT(%i): set failure to %d\n", __LINE__, pThreadFailure);
+	#define DEBUG_SYNC_RT_WAIT(b) pOgl.LogInfoFormat("RT(%i): wait on barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_RT_PASS(b) pOgl.LogInfoFormat("RT(%i): passed barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_MT_STATE pOgl.LogInfoFormat("MT(%i): state changed to %i\n", __LINE__, pThreadState);
+	#define DEBUG_SYNC_MT_WAIT(b) pOgl.LogInfoFormat("MT(%i): wait on barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_MT_PASS(b) pOgl.LogInfoFormat("MT(%i): passed barrier %s\n", __LINE__, b);
 #else
 	#define DEBUG_SYNC_RT_FAILURE
 	#define DEBUG_SYNC_RT_WAIT(b)
@@ -285,6 +281,7 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
 void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 	OGL_INIT_MAIN_THREAD_CHECK;
 	
+	pConfigChanged = true;
 	pInitialRenderWindow = renderWindow;
 	pUpdateConfigFrameLimiter();
 	
@@ -479,8 +476,8 @@ void deoglRenderThread::Run(){
 		try{
 			pCleanUpThread();
 			
-		}catch( const deException &exception ){
-			pLogger->LogException( exception );
+		}catch( const deException &exception2 ){
+			pLogger->LogException( exception2 );
 		}
 		
 		return;
@@ -491,6 +488,8 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	pTimerFrameUpdate.Reset();
+	pTimerVRFrameUpdate.Reset();
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
@@ -513,6 +512,8 @@ void deoglRenderThread::Run(){
 			
 		// render a single frame if ready
 		}else if( pThreadState == etsRendering ){
+			float elapsedRender = 0.0f;
+			
 			try{
 				pTimerRender.Reset();
 				
@@ -520,24 +521,36 @@ void deoglRenderThread::Run(){
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
-				const float elapsed = pTimerRender.GetElapsedTime();
-				pTimeHistoryRender.Add( elapsed );
+				elapsedRender = pTimerRender.GetElapsedTime();
+				pTimeHistoryRender.Add( elapsedRender );
 				//pLogger->LogInfo( decString("TimeHistory Render: ") + pTimeHistoryRender.DebugPrint() );
-				/*
-				pLogger->LogInfoFormat( "RenderThread Elapsed %dms (FPS %d)",
-					( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
-				*/
+// 				pLogger->LogInfoFormat( "RenderThread Elapsed %.1fms (FPS %.1f)", elapsed * 1000.0f, 1.0f / decMath::max( elapsed, 0.001f ) );
 				
-				pLimitFrameRate( elapsed );
+				pLimitFrameRate( elapsedRender );
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
 			}catch( const deException &exception ){
 				pLogger->LogException( exception );
 				pTimerRender.Reset();
+				
+				if( pSignalSemaphoreSyncVR ){
+					pSignalSemaphoreSyncVR = false;
+					pSemaphoreSyncVR.Signal();
+				}
+				
 				pThreadFailure = true;
 				DEBUG_SYNC_RT_FAILURE
 			}
+			
+			const float elapsedFrameUpdate = pTimerFrameUpdate.GetElapsedTime();
+			pTimeHistoryFrame.Add( elapsedFrameUpdate );
+			
+			/*
+			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
+				elapsedRender * 1000.0f, elapsedFrameUpdate * 1000.0f,
+				1.0f / decMath::max( elapsedFrameUpdate, 0.001f ) );
+			*/
 			
 		#ifdef ANDROID
 		}else if( pThreadState == etsWindowTerminate ){
@@ -636,10 +649,20 @@ void deoglRenderThread::Synchronize(){
 	
 	pMainThreadShowDebugInfoModule = pDebugInfoModule->GetVisible();
 	
+	pFPSRate = 0;
+	if( pTimeHistoryFrame.HasMetrics() ){
+		pFPSRate = ( int )( 1.0f / pTimeHistoryFrame.GetAverage() );
+	}
+	
 	if( pAsyncRendering ){
 		// begin rendering next frame unless thread is not active
 		if( pThreadState == etsStopped ){
 			return;
+		}
+		
+		const bool hasVR = pVRCamera && pVRCamera->GetVR();
+		if( hasVR ){
+			pSignalSemaphoreSyncVR = true;
 		}
 		
 		pThreadState = etsRendering;
@@ -650,6 +673,10 @@ void deoglRenderThread::Synchronize(){
 		DEBUG_SYNC_MT_PASS("out");
 		
 		pTimerMain.Reset();
+		
+		if( hasVR ){
+			pSemaphoreSyncVR.Wait();
+		}
 		
 	}else{
 		// render thread part here run synchronous
@@ -703,7 +730,9 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 				remainingTime * 1e3f, remainingTime / estimatedGameTime, ratioTimes );
 			*/
 			
-			if( remainingTime / estimatedGameTime >= ratioTimes ){
+			const bool hasVR = pVRCamera && pVRCamera->GetVR();
+			
+			if( remainingTime / estimatedGameTime >= ratioTimes && ! hasVR ){
 				return false; // enough time to do another game frame update
 			}
 		}
@@ -857,6 +886,31 @@ void deoglRenderThread::pInitThreadPhase3(){
 	pContext->InitPhase3( pInitialRenderWindow );
 }
 
+// #define DO_VULKAN_TEST
+
+#ifdef DO_VULKAN_TEST
+#include <queue/devkCommandPool.h>
+#include <buffer/devkBuffer.h>
+#include <descriptor/devkDescriptorPool.h>
+#include <descriptor/devkDescriptorSet.h>
+#include <descriptor/devkDescriptorSetLayout.h>
+#include <descriptor/devkDescriptorSetLayoutConfiguration.h>
+#include <pipeline/devkPipelineCompute.h>
+#include <pipeline/devkPipelineConfiguration.h>
+#include <queue/devkCommandBuffer.h>
+#include <shader/devkShaderModule.h>
+#include <renderpass/devkRenderPass.h>
+#include <renderpass/devkRenderPassConfiguration.h>
+#include <image/devkImage.h>
+#include <image/devkImageConfiguration.h>
+#include <image/devkImageView.h>
+#include <framebuffer/devkFramebuffer.h>
+#include <framebuffer/devkFramebufferConfiguration.h>
+#include <dragengine/common/file/decMemoryFile.h>
+#include <dragengine/common/file/decMemoryFileReader.h>
+#include <dragengine/common/file/decMemoryFileWriter.h>
+#endif
+
 void deoglRenderThread::pInitThreadPhase4(){
 	pContext->InitPhase4( pInitialRenderWindow );
 	pInitialRenderWindow = NULL;
@@ -868,6 +922,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pOptimizerManager = new deoglOptimizerManager;
 	// deprecated
 	
+	// required to be present before anything else
+	pUniqueKey = new deoglRTUniqueKey;
+	pRenderTaskSharedPool = new deoglRenderTaskSharedPool( *this );
+	
+	// init extensions
 	pInitExtensions();
 	
 	// below depends on extensions to be initialized first
@@ -875,67 +934,68 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pTexture = new deoglRTTexture( *this );
 	pFramebuffer = new deoglRTFramebuffer( *this );
 	pShader = new deoglRTShader( *this );
+	pDelayedOperations = new deoglDelayedOperations( *this );
 	
 	pInitCapabilities();
 	
 	// debug information
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 	const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 	const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
 	
-	pDebugInfoModule = new deoglDebugInformation( "Module", colorText, colorBg );
+	pDebugInfoModule.TakeOver( new deoglDebugInformation( "Module", colorText, colorBg ) );
 	pDebugInfoModule->SetVisible( false );
 	pDebug->GetDebugInformationList().Add( pDebugInfoModule );
  	
-	pDebugInfoThreadMain = new deoglDebugInformation( "Main Thread", colorText, colorBgSub );
+	pDebugInfoThreadMain.TakeOver( new deoglDebugInformation( "Main Thread", colorText, colorBgSub ) );
 	pDebugInfoModule->GetChildren().Add( pDebugInfoThreadMain );
 		
-		pDebugInfoThreadMainWaitFinish = new deoglDebugInformation( "Wait Finish", colorText, colorBgSub2 );
+		pDebugInfoThreadMainWaitFinish.TakeOver( new deoglDebugInformation( "Wait Finish", colorText, colorBgSub2 ) );
 		pDebugInfoThreadMain->GetChildren().Add( pDebugInfoThreadMainWaitFinish );
 		
-		pDebugInfoThreadMainSynchronize = new deoglDebugInformation( "Synchronize", colorText, colorBgSub2 );
+		pDebugInfoThreadMainSynchronize.TakeOver( new deoglDebugInformation( "Synchronize", colorText, colorBgSub2 ) );
 		pDebugInfoThreadMain->GetChildren().Add( pDebugInfoThreadMainSynchronize );
 	
-	pDebugInfoThreadRender = new deoglDebugInformation( "Render Thread", colorText, colorBgSub );
+	pDebugInfoThreadRender.TakeOver( new deoglDebugInformation( "Render Thread", colorText, colorBgSub ) );
 	pDebugInfoModule->GetChildren().Add( pDebugInfoThreadRender );
 		
-		pDebugInfoThreadRenderSwap = new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 );
+		pDebugInfoThreadRenderSwap.TakeOver( new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSwap );
 		
-		pDebugInfoThreadRenderBegin = new deoglDebugInformation( "Begin", colorText, colorBgSub2 );
+		pDebugInfoThreadRenderBegin.TakeOver( new deoglDebugInformation( "Begin", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderBegin );
 		
-		pDebugInfoThreadRenderWindows = new deoglDebugInformation( "Windows", colorText, colorBgSub2 );
+		pDebugInfoThreadRenderWindows.TakeOver( new deoglDebugInformation( "Windows", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderWindows );
 			
-			pDebugInfoThreadRenderWindowsPrepare = new deoglDebugInformation( "Prepare", colorText, colorBgSub3 );
+			pDebugInfoThreadRenderWindowsPrepare.TakeOver( new deoglDebugInformation( "Prepare", colorText, colorBgSub3 ) );
 			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoThreadRenderWindowsPrepare );
 			
-			pDebugInfoThreadRenderWindowsRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+			pDebugInfoThreadRenderWindowsRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 			pDebugInfoThreadRenderWindows->GetChildren().Add( pDebugInfoThreadRenderWindowsRender );
 		
-		pDebugInfoThreadRenderCapture = new deoglDebugInformation( "Capture", colorText, colorBgSub2 );
+		pDebugInfoThreadRenderCapture.TakeOver( new deoglDebugInformation( "Capture", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderCapture );
 		
-		pDebugInfoThreadRenderEnd = new deoglDebugInformation( "End", colorText, colorBgSub2 );
+		pDebugInfoThreadRenderEnd.TakeOver( new deoglDebugInformation( "End", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderEnd );
 	
-	pDebugInfoFrameLimiter = new deoglDebugInformation( "Frame Limiter", colorText, colorBg );
+	pDebugInfoFrameLimiter.TakeOver( new deoglDebugInformation( "Frame Limiter", colorText, colorBg ) );
 	pDebugInfoFrameLimiter->SetVisible( false );
 	pDebug->GetDebugInformationList().Add( pDebugInfoFrameLimiter );
 		
-		pDebugInfoFLEstimMain = new deoglDebugInformation( "Estimate main", colorText, colorBgSub );
+		pDebugInfoFLEstimMain.TakeOver( new deoglDebugInformation( "Estimate main", colorText, colorBgSub ) );
 		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLEstimMain );
 		
-		pDebugInfoFLEstimRender = new deoglDebugInformation( "Estimate Render", colorText, colorBgSub );
+		pDebugInfoFLEstimRender.TakeOver( new deoglDebugInformation( "Estimate Render", colorText, colorBgSub ) );
 		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLEstimRender );
 		
-		pDebugInfoFLFrameRateMain = new deoglDebugInformation( "FPS Main", colorText, colorBgSub );
+		pDebugInfoFLFrameRateMain.TakeOver( new deoglDebugInformation( "FPS Main", colorText, colorBgSub ) );
 		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLFrameRateMain );
 		
-		pDebugInfoFLFrameRateRender = new deoglDebugInformation( "FPS Render", colorText, colorBgSub );
+		pDebugInfoFLFrameRateRender.TakeOver( new deoglDebugInformation( "FPS Render", colorText, colorBgSub ) );
 		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLFrameRateRender );
 	
 	// below depends on capabilities being known
@@ -945,18 +1005,374 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pBufferObject->Init();
 	
 	pTriangleSorter = new deoglTriangleSorter;
-	pDelayedOperations = new deoglDelayedOperations( *this );
-	pRenderCache = new deoglRenderCache( *this );
+	pOcclusionTestPool = new deoglOcclusionTestPool( *this );
+	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pShadowMapper = new deoglShadowMapper( *this );
 	pDeferredRendering = new deoglDeferredRendering( *this );
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
-	pOcclusionTest = new deoglOcclusionTest( *this );
-	pLightBoundarybox = new deoglLightBoundaryMap( *this, pConfiguration.GetShadowMapSize() >> 1 );
+	pGI = new deoglGI( *this );
+	pLightBoundarybox = new deoglLightBoundaryMap( *this,
+		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
 	
 	pRenderers = new deoglRTRenderers( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
+	
+	// load vulkan and create device if supported
+	try{
+		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
+		#ifdef DO_VULKAN_TEST
+		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic( 0 );
+		#else
+		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
+		#endif
+		
+	}catch( const deException &e ){
+		pLogger->LogException( e );
+	}
+	
+#ifdef DO_VULKAN_TEST
+	if( pVulkan ){
+		#define VKTLOG(cmd,s) timer.Reset(); cmd; pLogger->LogInfoFormat("Vulkan Test: " s " %dys", (int)(timer.GetElapsedTime()*1e6));
+		devkQueue &queue = pVulkanDevice->GetComputeQueue();
+		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
+		const int inputDataCount = 32;
+		devkBuffer::Ref bufferInput( devkBuffer::Ref::New(
+			new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * inputDataCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT ) ) );
+		int i;
+		uint32_t bufferInputData[ inputDataCount ];
+		for( i=0; i<inputDataCount; i++ ){
+			bufferInputData[ i ] = i;
+		}
+		decTimer timer;
+		VKTLOG( bufferInput->SetData( bufferInputData ), "Buffer SetData")
+		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice")
+		VKTLOG( bufferInput->Wait(), "Buffer Wait")
+		
+		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
+		dslSSBOConfig.SetShaderStageFlags( VK_DESCRIPTOR_TYPE_STORAGE_BUFFER );
+		dslSSBOConfig.SetLayoutBindingCount( 1 );
+		dslSSBOConfig.SetLayoutBindingAt( 0, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT );
+		
+		devkDescriptorSetLayout * const dslSSBO = pVulkanDevice->GetDescriptorSetLayoutManager().GetWith( dslSSBOConfig );
+		
+		devkDescriptorPool::Ref dpSSBO;
+		dpSSBO.TakeOver( new devkDescriptorPool( pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO ) );
+		
+		devkDescriptorSet::Ref dsSSBO;
+		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
+		
+		dsSSBO->SetBinding( 0, bufferInput );
+		VKTLOG( dsSSBO->Update(), "DescriptorSet SSBO Update" );
+		
+		const uint32_t test1_spv_data[] = {
+			0x07230203,0x00010000,0x0008000a,0x00000027,0x00000000,0x00020011,0x00000001,0x0006000b,
+			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
+			0x0006000f,0x00000005,0x00000005,0x6e69616d,0x00000000,0x0000000c,0x00060010,0x00000005,
+			0x00000011,0x00000001,0x00000001,0x00000001,0x00050007,0x00000001,0x74736574,0x6f632e31,
+			0x0000706d,0x008b0003,0x00000002,0x000001c2,0x00000001,0x4f202f2f,0x646f4d70,0x50656c75,
+			0x65636f72,0x64657373,0x746e6520,0x702d7972,0x746e696f,0x69616d20,0x2f2f0a6e,0x4d704f20,
+			0x6c75646f,0x6f725065,0x73736563,0x64206465,0x6e696665,0x616d2d65,0x206f7263,0x544c554d,
+			0x494c5049,0x323d5245,0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,0x65737365,0x6c632064,
+			0x746e6569,0x6c757620,0x316e616b,0x2f0a3030,0x704f202f,0x75646f4d,0x7250656c,0x7365636f,
+			0x20646573,0x67726174,0x652d7465,0x7620766e,0x616b6c75,0x302e316e,0x202f2f0a,0x6f4d704f,
+			0x656c7564,0x636f7250,0x65737365,0x6e652064,0x2d797274,0x6e696f70,0x616d2074,0x230a6e69,
+			0x656e696c,0x230a3120,0x73726576,0x206e6f69,0x0a303534,0x79616c0a,0x2874756f,0x646e6962,
+			0x20676e69,0x2930203d,0x66756220,0x20726566,0x61746144,0x200a7b20,0x69752020,0x7620746e,
+			0x65756c61,0x3b5d5b73,0x0a3b7d0a,0x79616c0a,0x2074756f,0x636f6c28,0x735f6c61,0x5f657a69,
+			0x203d2078,0x6c202c31,0x6c61636f,0x7a69735f,0x20795f65,0x2c31203d,0x636f6c20,0x735f6c61,
+			0x5f657a69,0x203d207a,0x69202931,0x0a0a3b6e,0x6f79616c,0x28207475,0x736e6f63,0x746e6174,
+			0x2064695f,0x2930203d,0x6e6f6320,0x75207473,0x20746e69,0x6c615663,0x6f436575,0x20746e75,
+			0x3233203d,0x760a0a3b,0x2064696f,0x6e69616d,0x0a7b2928,0x6e6f6309,0x75207473,0x20746e69,
+			0x65646e69,0x203d2078,0x475f6c67,0x61626f6c,0x766e496c,0x7461636f,0x496e6f69,0x3b782e44,
+			0x6669090a,0x6e692028,0x20786564,0x63203d3e,0x756c6156,0x756f4365,0x2920746e,0x09090a7b,
+			0x75746572,0x0a3b6e72,0x090a7d09,0x6176090a,0x7365756c,0x6e69205b,0x20786564,0x3d2a205d,
+			0x4c554d20,0x4c504954,0x3b524549,0x000a7d0a,0x00040005,0x00000005,0x6e69616d,0x00000000,
+			0x00040005,0x00000009,0x65646e69,0x00000078,0x00080005,0x0000000c,0x475f6c67,0x61626f6c,
+			0x766e496c,0x7461636f,0x496e6f69,0x00000044,0x00050005,0x00000012,0x6c615663,0x6f436575,
+			0x00746e75,0x00040005,0x00000019,0x61746144,0x00000000,0x00050006,0x00000019,0x00000000,
+			0x756c6176,0x00007365,0x00030005,0x0000001b,0x00000000,0x00040047,0x0000000c,0x0000000b,
+			0x0000001c,0x00040047,0x00000012,0x00000001,0x00000000,0x00040047,0x00000018,0x00000006,
+			0x00000004,0x00050048,0x00000019,0x00000000,0x00000023,0x00000000,0x00030047,0x00000019,
+			0x00000003,0x00040047,0x0000001b,0x00000022,0x00000000,0x00040047,0x0000001b,0x00000021,
+			0x00000000,0x00040047,0x00000026,0x0000000b,0x00000019,0x00020013,0x00000003,0x00030021,
+			0x00000004,0x00000003,0x00040015,0x00000007,0x00000020,0x00000000,0x00040020,0x00000008,
+			0x00000007,0x00000007,0x00040017,0x0000000a,0x00000007,0x00000003,0x00040020,0x0000000b,
+			0x00000001,0x0000000a,0x0004003b,0x0000000b,0x0000000c,0x00000001,0x0004002b,0x00000007,
+			0x0000000d,0x00000000,0x00040020,0x0000000e,0x00000001,0x00000007,0x00040032,0x00000007,
+			0x00000012,0x00000020,0x00020014,0x00000013,0x0003001d,0x00000018,0x00000007,0x0003001e,
+			0x00000019,0x00000018,0x00040020,0x0000001a,0x00000002,0x00000019,0x0004003b,0x0000001a,
+			0x0000001b,0x00000002,0x00040015,0x0000001c,0x00000020,0x00000001,0x0004002b,0x0000001c,
+			0x0000001d,0x00000000,0x0004002b,0x00000007,0x0000001f,0x00000002,0x00040020,0x00000020,
+			0x00000002,0x00000007,0x0004002b,0x00000007,0x00000025,0x00000001,0x0006002c,0x0000000a,
+			0x00000026,0x00000025,0x00000025,0x00000025,0x00050036,0x00000003,0x00000005,0x00000000,
+			0x00000004,0x000200f8,0x00000006,0x0004003b,0x00000008,0x00000009,0x00000007,0x00040008,
+			0x00000001,0x0000000c,0x00000000,0x00050041,0x0000000e,0x0000000f,0x0000000c,0x0000000d,
+			0x0004003d,0x00000007,0x00000010,0x0000000f,0x0003003e,0x00000009,0x00000010,0x00040008,
+			0x00000001,0x0000000d,0x00000000,0x0004003d,0x00000007,0x00000011,0x00000009,0x000500ae,
+			0x00000013,0x00000014,0x00000011,0x00000012,0x000300f7,0x00000016,0x00000000,0x000400fa,
+			0x00000014,0x00000015,0x00000016,0x000200f8,0x00000015,0x00040008,0x00000001,0x0000000e,
+			0x00000000,0x000100fd,0x000200f8,0x00000016,0x00040008,0x00000001,0x00000011,0x00000000,
+			0x0004003d,0x00000007,0x0000001e,0x00000009,0x00060041,0x00000020,0x00000021,0x0000001b,
+			0x0000001d,0x0000001e,0x0004003d,0x00000007,0x00000022,0x00000021,0x00050084,0x00000007,
+			0x00000023,0x00000022,0x0000001f,0x00060041,0x00000020,0x00000024,0x0000001b,0x0000001d,
+			0x0000001e,0x0003003e,0x00000024,0x00000023,0x000100fd,0x00010038
+		};
+		decMemoryFile::Ref mfshader( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest.spv" ) ) );
+		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test1_spv_data, sizeof( test1_spv_data ) );
+		
+		devkShaderModule::Ref shader;
+		VKTLOG( shader.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest.spv",
+			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		
+		devkPipelineConfiguration pipelineConfig;
+		pipelineConfig.SetDescriptorSetLayout( dslSSBO );
+		pipelineConfig.SetType( devkPipelineConfiguration::etCompute );
+		pipelineConfig.SetShaderCompute( shader );
+		
+		const struct ShaderConfig{
+			uint32_t valueCount = inputDataCount;
+		} shaderConfig;
+		
+		devkSpecialization::Ref specialization;
+		specialization.TakeOver( new devkSpecialization( &shaderConfig, sizeof( shaderConfig ), 1 ) );
+		specialization->SetEntryUIntAt( 0, 0, offsetof( ShaderConfig, valueCount ) );
+		pipelineConfig.SetSpecialization( specialization );
+		
+		devkPipeline *pipeline;
+		VKTLOG( pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
+		
+		devkCommandBuffer::Ref cmdbuf( commandPool->GetCommandBuffer() );
+		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin")
+		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierShader")
+		VKTLOG( cmdbuf->BindPipeline( *pipeline ), "CmdBuf BindPipeline")
+		VKTLOG( cmdbuf->BindDescriptorSet( 0, dsSSBO ), "CmdBuf BindDescriptorSet")
+		VKTLOG( cmdbuf->DispatchCompute( shaderConfig.valueCount, 1, 1 ), "CmdBuf DispatchCompute")
+		VKTLOG( cmdbuf->BarrierShaderTransfer( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHost")
+		VKTLOG( cmdbuf->ReadBuffer( bufferInput ), "CmdBuf ReadBuffer")
+		VKTLOG( cmdbuf->BarrierTransferHost( bufferInput ), "CmdBuf BarrierTransferHost")
+		VKTLOG( cmdbuf->End(), "CmdBuf End")
+		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit")
+		
+		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait")
+		
+		VKTLOG( bufferInput->GetData( bufferInputData ), "Buffer GetData")
+		decString string( "Computed: [" );
+		for( i=0; i<inputDataCount; i++ ){
+			string.AppendFormat( "%s%d", i > 0 ? ", " : "", bufferInputData[ i ] );
+		}
+		string.Append( "]" );
+		pLogger->LogInfo( string );
+		
+		// graphic test
+		devkRenderPassConfiguration renPassConfig;
+		
+		renPassConfig.SetAttachmentCount( 1 );
+		renPassConfig.SetColorAttachmentAt( 0, VK_FORMAT_R8G8B8A8_UNORM /* VK_FORMAT_R8G8B8_UNORM not working? */,
+			devkRenderPassConfiguration::eitClear, devkRenderPassConfiguration::eotReadBack );
+		renPassConfig.SetClearValueColorFloatAt( 0, 0, 0, 0, 0 );
+		
+		renPassConfig.SetSubPassCount( 1 );
+		renPassConfig.SetSubPassAt( 0, -1, 0 );
+		
+		devkRenderPass::Ref renderPass;
+		VKTLOG( renderPass.TakeOver( new devkRenderPass( pVulkanDevice, renPassConfig ) ), "Create Render Pass" )
+		
+		devkImageConfiguration imageConfig;
+		imageConfig.Set2D( decPoint( 64, 32 ), VK_FORMAT_R8G8B8A8_UNORM );
+		imageConfig.EnableColorAttachment( true );
+		imageConfig.EnableTransferSource( true );
+		devkImage::Ref image;
+		VKTLOG( image.TakeOver( new devkImage( pVulkanDevice, imageConfig ) ), "Create Image" )
+		
+		devkImageView::Ref imageView;
+		VKTLOG( imageView.TakeOver( new devkImageView( image ) ), "Create Image View" )
+		
+		devkFramebufferConfiguration framebufferConfig;
+		framebufferConfig.SetAttachmentCount( 1 );
+		framebufferConfig.SetAttachmentAt( 0, imageView );
+		framebufferConfig.SetSize( decPoint( 64, 32 ) );
+		
+		devkFramebuffer::Ref framebuffer;
+		VKTLOG( framebuffer.TakeOver( new devkFramebuffer( renderPass, framebufferConfig ) ), "Create Framebuffer" )
+		
+		const uint32_t test2_vert_spv_data[] = {
+			0x07230203,0x00010000,0x0008000a,0x00000022,0x00000000,0x00020011,0x00000001,0x0006000b,
+			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
+			0x000a000f,0x00000000,0x00000005,0x6e69616d,0x00000000,0x0000000e,0x00000013,0x0000001d,
+			0x0000001e,0x00000021,0x00050007,0x00000001,0x74736574,0x65762e32,0x00007472,0x00a20003,
+			0x00000002,0x000001c2,0x00000001,0x4f202f2f,0x646f4d70,0x50656c75,0x65636f72,0x64657373,
+			0x746e6520,0x702d7972,0x746e696f,0x69616d20,0x2f2f0a6e,0x4d704f20,0x6c75646f,0x6f725065,
+			0x73736563,0x64206465,0x6e696665,0x616d2d65,0x206f7263,0x544c554d,0x494c5049,0x323d5245,
+			0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,0x65737365,0x6c632064,0x746e6569,0x6c757620,
+			0x316e616b,0x2f0a3030,0x704f202f,0x75646f4d,0x7250656c,0x7365636f,0x20646573,0x67726174,
+			0x652d7465,0x7620766e,0x616b6c75,0x302e316e,0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,
+			0x65737365,0x6e652064,0x2d797274,0x6e696f70,0x616d2074,0x230a6e69,0x656e696c,0x230a3120,
+			0x73726576,0x206e6f69,0x0a303534,0x79616c0a,0x2074756f,0x636f6c28,0x6f697461,0x203d206e,
+			0x69202930,0x6576206e,0x69203363,0x736f506e,0x6f697469,0x6c0a3b6e,0x756f7961,0x6c282074,
+			0x7461636f,0x206e6f69,0x2931203d,0x206e6920,0x33636576,0x436e6920,0x726f6c6f,0x616c0a3b,
+			0x74756f79,0x6f6c2820,0x69746163,0x3d206e6f,0x20293220,0x76206e69,0x20346365,0x61506e69,
+			0x64656b63,0x6c0a0a3b,0x756f7961,0x6c282074,0x7461636f,0x206e6f69,0x2930203d,0x74756f20,
+			0x63657620,0x43762033,0x726f6c6f,0x760a0a3b,0x2064696f,0x6e69616d,0x0a7b2928,0x0a2a2f09,
+			0x6e6f6309,0x76207473,0x20336365,0x69736f70,0x6e6f6974,0x33205b73,0x3d205d20,0x63657620,
+			0x33205b33,0x0a285d20,0x65760909,0x20283363,0x31202c31,0x2030202c,0x090a2c29,0x63657609,
+			0x2d202833,0x31202c31,0x2030202c,0x090a2c29,0x63657609,0x30202833,0x312d202c,0x2030202c,
+			0x29090a29,0x0a090a3b,0x5f6c6709,0x69736f50,0x6e6f6974,0x76203d20,0x28346365,0x736f7020,
+			0x6f697469,0x205b736e,0x565f6c67,0x65747265,0x646e4978,0x5d207865,0x2031202c,0x090a3b29,
+			0x090a2f2a,0x6c67090a,0x736f505f,0x6f697469,0x203d206e,0x34636576,0x6e692028,0x69736f50,
+			0x6e6f6974,0x2031202c,0x090a3b29,0x6c6f4376,0x3d20726f,0x436e6920,0x726f6c6f,0x0a7d0a3b,
+			0x00000000,0x00040005,0x00000005,0x6e69616d,0x00000000,0x00060005,0x0000000c,0x505f6c67,
+			0x65567265,0x78657472,0x00000000,0x00060006,0x0000000c,0x00000000,0x505f6c67,0x7469736f,
+			0x006e6f69,0x00070006,0x0000000c,0x00000001,0x505f6c67,0x746e696f,0x657a6953,0x00000000,
+			0x00070006,0x0000000c,0x00000002,0x435f6c67,0x4470696c,0x61747369,0x0065636e,0x00070006,
+			0x0000000c,0x00000003,0x435f6c67,0x446c6c75,0x61747369,0x0065636e,0x00030005,0x0000000e,
+			0x00000000,0x00050005,0x00000013,0x6f506e69,0x69746973,0x00006e6f,0x00040005,0x0000001d,
+			0x6c6f4376,0x0000726f,0x00040005,0x0000001e,0x6f436e69,0x00726f6c,0x00050005,0x00000021,
+			0x61506e69,0x64656b63,0x00000000,0x00050048,0x0000000c,0x00000000,0x0000000b,0x00000000,
+			0x00050048,0x0000000c,0x00000001,0x0000000b,0x00000001,0x00050048,0x0000000c,0x00000002,
+			0x0000000b,0x00000003,0x00050048,0x0000000c,0x00000003,0x0000000b,0x00000004,0x00030047,
+			0x0000000c,0x00000002,0x00040047,0x00000013,0x0000001e,0x00000000,0x00040047,0x0000001d,
+			0x0000001e,0x00000000,0x00040047,0x0000001e,0x0000001e,0x00000001,0x00040047,0x00000021,
+			0x0000001e,0x00000002,0x00020013,0x00000003,0x00030021,0x00000004,0x00000003,0x00030016,
+			0x00000007,0x00000020,0x00040017,0x00000008,0x00000007,0x00000004,0x00040015,0x00000009,
+			0x00000020,0x00000000,0x0004002b,0x00000009,0x0000000a,0x00000001,0x0004001c,0x0000000b,
+			0x00000007,0x0000000a,0x0006001e,0x0000000c,0x00000008,0x00000007,0x0000000b,0x0000000b,
+			0x00040020,0x0000000d,0x00000003,0x0000000c,0x0004003b,0x0000000d,0x0000000e,0x00000003,
+			0x00040015,0x0000000f,0x00000020,0x00000001,0x0004002b,0x0000000f,0x00000010,0x00000000,
+			0x00040017,0x00000011,0x00000007,0x00000003,0x00040020,0x00000012,0x00000001,0x00000011,
+			0x0004003b,0x00000012,0x00000013,0x00000001,0x0004002b,0x00000007,0x00000015,0x3f800000,
+			0x00040020,0x0000001a,0x00000003,0x00000008,0x00040020,0x0000001c,0x00000003,0x00000011,
+			0x0004003b,0x0000001c,0x0000001d,0x00000003,0x0004003b,0x00000012,0x0000001e,0x00000001,
+			0x00040020,0x00000020,0x00000001,0x00000008,0x0004003b,0x00000020,0x00000021,0x00000001,
+			0x00050036,0x00000003,0x00000005,0x00000000,0x00000004,0x000200f8,0x00000006,0x00040008,
+			0x00000001,0x00000014,0x00000000,0x0004003d,0x00000011,0x00000014,0x00000013,0x00050051,
+			0x00000007,0x00000016,0x00000014,0x00000000,0x00050051,0x00000007,0x00000017,0x00000014,
+			0x00000001,0x00050051,0x00000007,0x00000018,0x00000014,0x00000002,0x00070050,0x00000008,
+			0x00000019,0x00000016,0x00000017,0x00000018,0x00000015,0x00050041,0x0000001a,0x0000001b,
+			0x0000000e,0x00000010,0x0003003e,0x0000001b,0x00000019,0x00040008,0x00000001,0x00000015,
+			0x00000000,0x0004003d,0x00000011,0x0000001f,0x0000001e,0x0003003e,0x0000001d,0x0000001f,
+			0x000100fd,0x00010038
+		};
+		
+		mfshader.TakeOver( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest2_vert.spv" ) ) );
+		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_vert_spv_data, sizeof( test2_vert_spv_data ) );
+		
+		devkShaderModule::Ref shaderVert;
+		VKTLOG( shaderVert.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_vert.spv",
+			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		
+		const uint32_t test2_frag_spv_data[] = {
+			0x07230203,0x00010000,0x0008000a,0x00000014,0x00000000,0x00020011,0x00000001,0x0006000b,
+			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
+			0x0007000f,0x00000004,0x00000005,0x6e69616d,0x00000000,0x0000000a,0x0000000d,0x00030010,
+			0x00000005,0x00000007,0x00050007,0x00000001,0x74736574,0x72662e32,0x00006761,0x00840003,
+			0x00000002,0x000001c2,0x00000001,0x4f202f2f,0x646f4d70,0x50656c75,0x65636f72,0x64657373,
+			0x746e6520,0x702d7972,0x746e696f,0x69616d20,0x2f2f0a6e,0x4d704f20,0x6c75646f,0x6f725065,
+			0x73736563,0x64206465,0x6e696665,0x616d2d65,0x206f7263,0x544c554d,0x494c5049,0x323d5245,
+			0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,0x65737365,0x6c632064,0x746e6569,0x6c757620,
+			0x316e616b,0x2f0a3030,0x704f202f,0x75646f4d,0x7250656c,0x7365636f,0x20646573,0x67726174,
+			0x652d7465,0x7620766e,0x616b6c75,0x302e316e,0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,
+			0x65737365,0x6e652064,0x2d797274,0x6e696f70,0x616d2074,0x230a6e69,0x656e696c,0x230a3120,
+			0x73726576,0x206e6f69,0x0a303534,0x79616c0a,0x2074756f,0x636f6c28,0x6f697461,0x203d206e,
+			0x69202930,0x6576206e,0x76203363,0x6f6c6f43,0x0a0a3b72,0x6f79616c,0x28207475,0x61636f6c,
+			0x6e6f6974,0x30203d20,0x756f2029,0x65762074,0x6f203463,0x6f437475,0x3b726f6c,0x6f760a0a,
+			0x6d206469,0x286e6961,0x0a7b2029,0x6f2f2f09,0x6f437475,0x20726f6c,0x6576203d,0x20283463,
+			0x465f6c67,0x43676172,0x64726f6f,0x2f20782e,0x2c333620,0x5f6c6720,0x67617246,0x726f6f43,
+			0x20792e64,0x3133202f,0x2c30202c,0x29203120,0x2f2f0a3b,0x756f0920,0x6c6f4374,0x3d20726f,
+			0x63657620,0x67202834,0x72465f6c,0x6f436761,0x2e64726f,0x202f2079,0x202c3133,0x30202c30,
+			0x2031202c,0x2f0a3b29,0x6f09202f,0x6f437475,0x20726f6c,0x6576203d,0x31283463,0x2c30202c,
+			0x202c3020,0x0a3b2931,0x74756f09,0x6f6c6f43,0x203d2072,0x34636576,0x43762028,0x726f6c6f,
+			0x2031202c,0x7d0a3b29,0x0000000a,0x00040005,0x00000005,0x6e69616d,0x00000000,0x00050005,
+			0x0000000a,0x4374756f,0x726f6c6f,0x00000000,0x00040005,0x0000000d,0x6c6f4376,0x0000726f,
+			0x00040047,0x0000000a,0x0000001e,0x00000000,0x00040047,0x0000000d,0x0000001e,0x00000000,
+			0x00020013,0x00000003,0x00030021,0x00000004,0x00000003,0x00030016,0x00000007,0x00000020,
+			0x00040017,0x00000008,0x00000007,0x00000004,0x00040020,0x00000009,0x00000003,0x00000008,
+			0x0004003b,0x00000009,0x0000000a,0x00000003,0x00040017,0x0000000b,0x00000007,0x00000003,
+			0x00040020,0x0000000c,0x00000001,0x0000000b,0x0004003b,0x0000000c,0x0000000d,0x00000001,
+			0x0004002b,0x00000007,0x0000000f,0x3f800000,0x00050036,0x00000003,0x00000005,0x00000000,
+			0x00000004,0x000200f8,0x00000006,0x00040008,0x00000001,0x0000000b,0x00000000,0x0004003d,
+			0x0000000b,0x0000000e,0x0000000d,0x00050051,0x00000007,0x00000010,0x0000000e,0x00000000,
+			0x00050051,0x00000007,0x00000011,0x0000000e,0x00000001,0x00050051,0x00000007,0x00000012,
+			0x0000000e,0x00000002,0x00070050,0x00000008,0x00000013,0x00000010,0x00000011,0x00000012,
+			0x0000000f,0x0003003e,0x0000000a,0x00000013,0x000100fd,0x00010038
+		};
+		
+		mfshader.TakeOver( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest2_frag.spv" ) ) );
+		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_frag_spv_data, sizeof( test2_frag_spv_data ) );
+		
+		devkShaderModule::Ref shaderFrag;
+		VKTLOG( shaderFrag.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_frag.spv",
+			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		
+		struct sVertex{
+			struct{
+				float x, y, z;
+			} position;
+			struct{
+				float r, g, b;
+			} color;
+			uint32_t packed;
+		};
+		const sVertex vertices[ 3 ] = {
+			{ {  1,  1, 0 }, { 1, 0, 0 }, 0 },
+			{ { -1,  1, 0 }, { 1, 0, 0 }, 0 },
+			{ {  0, -1, 0 }, { 0, 0, 0 }, 0 }
+		};
+		
+		bufferInput.TakeOver( devkBuffer::Ref::New( new devkBuffer( pVulkanDevice,
+			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT ) ) );
+		VKTLOG( bufferInput->SetData( vertices ), "Buffer SetData" )
+		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice" )
+		VKTLOG( bufferInput->Wait(), "Buffer Wait" )
+		
+		pipelineConfig = devkPipelineConfiguration();
+		pipelineConfig.SetType( devkPipelineConfiguration::etGraphics );
+		pipelineConfig.SetRenderPass( renderPass );
+		pipelineConfig.SetShaderVertex( shaderVert );
+		pipelineConfig.SetShaderFragment( shaderFrag );
+		
+		pipelineConfig.SetBindingCount( 1 );
+		pipelineConfig.SetBindingAt( 0, 0, sizeof( sVertex ) );
+		
+		pipelineConfig.SetAttributeCount( 3 );
+		pipelineConfig.SetAttributeAt( 0, 0, 0, devkPipelineConfiguration::eafFloat3, offsetof( sVertex, position ) );
+		pipelineConfig.SetAttributeAt( 1, 1, 0, devkPipelineConfiguration::eafFloat3, offsetof( sVertex, color ) );
+		pipelineConfig.SetAttributeAt( 2, 2, 0, devkPipelineConfiguration::eafUIntNormA8B8G8R8, offsetof( sVertex, packed ) );
+		
+		VKTLOG( pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineGraphic" )
+		
+		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin" )
+		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierShader" )
+		VKTLOG( cmdbuf->BeginRenderPass( renderPass, framebuffer ), "CmdBuf BeginRenderPass" )
+		VKTLOG( cmdbuf->BindPipeline( *pipeline ), "CmdBuf BindPipeline" )
+		VKTLOG( cmdbuf->BindVertexBuffer( 0, bufferInput ), "CmdBuf BindVertexBuffer" )
+		VKTLOG( cmdbuf->Draw( 3, 1 ), "CmdBuf Draw" )
+		VKTLOG( cmdbuf->EndRenderPass(), "CmdBuf EndRenderPass" )
+		VKTLOG( cmdbuf->BarrierShaderTransfer( image, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT ), "CmdBuf BarrierHost" )
+		VKTLOG( cmdbuf->ReadImage( image ), "CmdBuf ReadImage" )
+		VKTLOG( cmdbuf->BarrierTransferHost( image ), "CmdBuf BarrierTransferHost" )
+		VKTLOG( cmdbuf->End(), "CmdBuf End" )
+		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit" )
+		
+		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait" )
+		
+		oglRGBA imgdata[ 64 * 32 ];
+		VKTLOG( image->GetData( imgdata ), "Image GetData" )
+		int x, y;
+		for( y=0; y<32; y++ ){
+			decString string( "Drawn: [" );
+			for( x=0; x<64; x++ ){
+				string.AppendCharacter( 'a' + ( int )imgdata[ 64 * y + x ].r * 25 / 255 );
+			}
+			string.Append( "]" );
+			pLogger->LogInfo( string );
+		}
+	}
+#endif
+	
+	// initial notification. required for testing if devode config is hardcoded in constructor
+	DevModeDebugInfoChanged();
 	
 	// some final preparations. is this really required?
 	pTexture->GetStages().DisableAllStages();
@@ -1062,6 +1478,12 @@ void deoglRenderThread::pInitCapabilities(){
 
 
 void deoglRenderThread::pRenderSingleFrame(){
+	if( pConfigChanged ){
+		pConfigChanged = false;
+		
+		pGI->GetTraceRays().UpdateFromConfig();
+	}
+	
 	//const deoglDeveloperMode &devmode = pDebug->GetDeveloperMode();
 	const bool showDebugInfoModule = pDebugInfoModule->GetVisible();
 	
@@ -1104,6 +1526,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 			pDebugTimerRenderThread3.Reset();
 		}
 		
+		pVRRender();
 		const int count = pRRenderWindowList.GetCount();
 		int i;
 		for( i=0; i<count; i++ ){
@@ -1124,6 +1547,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 			pDebugTimeThreadRenderCapture = pDebugTimerRenderThread2.GetElapsedTime();
 		}
 		
+		pVRSubmit();
 		pEndFrame();
 		
 	}else{
@@ -1144,6 +1568,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame BeginFrame");
 		#endif
 		
+		pVRRender();
 		pRenderWindows();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderWindows = pDebugTimerRenderThread2.GetElapsedTime();
@@ -1160,6 +1585,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame CaptureCanvas");
 		#endif
 		
+		pVRSubmit();
 		pEndFrame();
 	}
 	
@@ -1410,7 +1836,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		renderableArrayCount, renderableArrayGPU );
 	
 	// vbo
-	const deoglMemoryConsumptionVBO &consumptionVBO = pMemoryManager.GetConsumption().GetVBO();
+	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().GetVBO();
 	const int vboCount = consumptionVBO.GetCount();
 	const int vboSharedCount = consumptionVBO.GetSharedCount();
 	const int vboIBOCount = consumptionVBO.GetIBOCount();
@@ -1671,14 +2097,12 @@ void deoglRenderThread::pBeginFrame(){
 	pContext->CheckConfigurationChanged();
 	#endif
 	
-	// free objects registered for delayed deletion. done before the rendering starts not after
-	// since delayed free requests are registered during the synchronization time. during
-	// rendering new objects are created so freeing objects before new ones are created is
-	// uses GPU memory better. the number of objects deleted per call is limited to prevent
-	// hickups if lots of objects are deleted.
-	pDelayedOperations->ProcessFreeOperations( false );
+	// free objects registered for delayed deletion. done before the rendering starts
+	// not after since delayed free requests typically happen during synchronization
+	// time. during rendering time new objects are created so freeing objects before
+	// new ones are created uses GPU memory better
+	pDelayedOperations->ProcessFreeOperations();
 	
-	pRenderCache->Clear(); // just to be safe in case an exception messed things up
 	pDelayedOperations->ProcessInitOperations();
 	
 	pPreloader->PreloadAll(); // DEPRECATED
@@ -1690,6 +2114,9 @@ void deoglRenderThread::pBeginFrame(){
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
+	
+	pFrameCounter++; // wraps around when hitting maximum
+	pVRBeginFrame();
 }
 
 void deoglRenderThread::pSyncConfiguration(){
@@ -1699,17 +2126,11 @@ void deoglRenderThread::pSyncConfiguration(){
 	// the configuration over to the render thread configuration and set both
 	// configurations non-dirty
 	if( config.GetDirty() ){
-		const bool needResize = ( config.GetDefRenUsePOTs() != pConfiguration.GetDefRenUsePOTs() );
-		
 		pConfiguration = config;
+		pConfigChanged = true;
 		
 		pConfiguration.SetDirty( false );
 		config.SetDirty( false );
-		
-		pDeferredRendering->SetUseEncodedDepth( pConfiguration.GetUseEncodeDepth() );
-		if( needResize ){
-			pDeferredRendering->ForceResize();
-		}
 		
 		pUpdateConfigFrameLimiter();
 		
@@ -1733,6 +2154,41 @@ void deoglRenderThread::pRenderWindows(){
 	}
 }
 
+void deoglRenderThread::pVRBeginFrame(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( ! vr ){
+		return;
+	}
+	
+	vr->BeginFrame();
+	
+	if( pSignalSemaphoreSyncVR ){
+		pSignalSemaphoreSyncVR = false;
+		pSemaphoreSyncVR.Signal();
+	}
+}
+
+void deoglRenderThread::pVRRender(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->Render();
+	}
+}
+
+void deoglRenderThread::pVRSubmit(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->Submit();
+	}
+}
+
+void deoglRenderThread::pVREndFrame(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->EndFrame();
+	}
+}
+
 void deoglRenderThread::pCaptureCanvas(){
 	const int count = pRCaptureCanvasList.GetCount();
 	int i;
@@ -1743,16 +2199,46 @@ void deoglRenderThread::pCaptureCanvas(){
 }
 
 void deoglRenderThread::pEndFrame(){
-	pRenderCache->Clear();
+	pVREndFrame();
+	if( pDebug->GetDeveloperMode().GetEnabled() ){
+		if( pDebug->GetDeveloperMode().GetLogMemoryConsumption() ){
+			pDebug->GetDebugMemoryConsumption().Update();
+		}
+	}
 }
 
 void deoglRenderThread::pLimitFrameRate( float elapsed ){
+	float limit = pFrameTimeLimit;
+	
+	// if VR is used frame limiter has to be overriden. VR does frame limiting itself
+	// to 90Hz. if the rendering can not keep up with steady 90Hz this can result in
+	// problems. one solution is to limit the rendering to 45Hz or 30Hz. this will
+	// cause the VR environment to adjust for a lesser performing application. For this
+	// to work though we have to artifically limit frame rate to not go beyond the
+	// threshold or the VR environment can start oscillate
+	// 
+	// to avoid oscillating a hystersis value is used before switching to a higher
+	// target FPS rate. by default the hysteresis is 20%. this ensures the rendering
+	// can really keep up with a higher frame rate before switching up
+	if( pVRCamera && pVRCamera->GetVR() ){
+		elapsed = pTimerVRFrameUpdate.GetElapsedTime();
+		
+		deoglVR &vr = *pVRCamera->GetVR();
+		vr.UpdateTargetFPS( elapsed );
+		
+		if( vr.GetTargetFPS() == 90 ){
+			return;
+		}
+		
+		limit = 1.0f / ( float )vr.GetTargetFPS();
+	}
+	
 	#ifdef OS_W32
 	decTimer timer;
 	timer.Reset();
 	#endif
 	
-	while( elapsed < pFrameTimeLimit ){
+	while( elapsed < limit ){
 		// we have some spare time due to the frame limiter. we could do here some
 		// optimization work to use the time for intelligent stuff. we can touch
 		// the GPU during this time if necessary but if possible it should be
@@ -1766,13 +2252,15 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		#else
 		timespec timeout, remaining;
 		timeout.tv_sec = 0;
-		timeout.tv_nsec = ( long )( ( pFrameTimeLimit - elapsed ) * 1e9f );
+		timeout.tv_nsec = ( long )( ( limit - elapsed ) * 1e9f );
 		while( nanosleep( &timeout, &remaining ) == -1 && errno == EINTR ){
 			timeout = remaining;
 		}
 		break;
 		#endif
 	}
+	
+	pTimerVRFrameUpdate.Reset();
 }
 
 
@@ -1872,6 +2360,14 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pLightBoundarybox;
 			pLightBoundarybox = NULL;
 		}
+		if( pOcclusionTestPool ){
+			delete pOcclusionTestPool;
+			pOcclusionTestPool = NULL;
+		}
+		if( pPersistentRenderTaskPool ){
+			delete pPersistentRenderTaskPool;
+			pPersistentRenderTaskPool = NULL;
+		}
 		if( pTriangleSorter ){
 			delete pTriangleSorter;
 			pTriangleSorter = NULL;
@@ -1881,21 +2377,17 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pOccQueryMgr;
 			pOccQueryMgr = NULL;
 		}
-		if( pOcclusionTest ){
-			delete pOcclusionTest;
-			pOcclusionTest = NULL;
+		if( pGI ){
+			delete pGI;
+			pGI = NULL;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
 		if( pDelayedOperations ){
-			delete pDelayedOperations;
-			pDelayedOperations = NULL;
+			pDelayedOperations->Clear(); // first stage clear
 		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
-		#endif
 		
 		if( pDeferredRendering ){
 			delete pDeferredRendering;
@@ -1910,13 +2402,6 @@ void deoglRenderThread::pCleanUpThread(){
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
-		#endif
-		if( pRenderCache ){
-			delete pRenderCache;
-			pRenderCache = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy render cache (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		if( pEnvMapSlotManager ){
 			delete pEnvMapSlotManager;
@@ -1948,79 +2433,30 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
-		if( pDebugInfoModule ){
-			pDebug->GetDebugInformationList().Remove( pDebugInfoModule );
-			pDebugInfoModule->FreeReference();
-			pDebugInfoModule = NULL;
-		}
+		pVulkanDevice = nullptr;
+		pVulkan = nullptr;
 		
-		if( pDebugInfoThreadMain ){
-			pDebugInfoThreadMain->FreeReference();
-			pDebugInfoThreadMain = NULL;
-		}
-		if( pDebugInfoThreadMainWaitFinish ){
-			pDebugInfoThreadMainWaitFinish->FreeReference();
-			pDebugInfoThreadMainWaitFinish = NULL;
-		}
-		if( pDebugInfoThreadMainSynchronize ){
-			pDebugInfoThreadMainSynchronize->FreeReference();
-			pDebugInfoThreadMainSynchronize = NULL;
-		}
+		deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
+		dilist.RemoveIfPresent( pDebugInfoModule );
+		dilist.RemoveIfPresent( pDebugInfoFrameLimiter );
 		
-		if( pDebugInfoThreadRender ){
-			pDebugInfoThreadRender->FreeReference();
-			pDebugInfoThreadRender = NULL;
-		}
-		if( pDebugInfoThreadRenderSwap ){
-			pDebugInfoThreadRenderSwap->FreeReference();
-			pDebugInfoThreadRenderSwap = NULL;
-		}
-		if( pDebugInfoThreadRenderBegin ){
-			pDebugInfoThreadRenderBegin->FreeReference();
-			pDebugInfoThreadRenderBegin = NULL;
-		}
-		if( pDebugInfoThreadRenderWindows ){
-			pDebugInfoThreadRenderWindows->FreeReference();
-			pDebugInfoThreadRenderWindows = NULL;
-		}
-		if( pDebugInfoThreadRenderWindowsPrepare ){
-			pDebugInfoThreadRenderWindowsPrepare->FreeReference();
-			pDebugInfoThreadRenderWindowsPrepare = NULL;
-		}
-		if( pDebugInfoThreadRenderWindowsRender ){
-			pDebugInfoThreadRenderWindowsRender->FreeReference();
-			pDebugInfoThreadRenderWindowsRender = NULL;
-		}
-		if( pDebugInfoThreadRenderCapture ){
-			pDebugInfoThreadRenderCapture->FreeReference();
-			pDebugInfoThreadRenderCapture = NULL;
-		}
-		if( pDebugInfoThreadRenderEnd ){
-			pDebugInfoThreadRenderEnd->FreeReference();
-			pDebugInfoThreadRenderEnd = NULL;
-		}
-		
-		if( pDebugInfoFrameLimiter ){
-			pDebug->GetDebugInformationList().Remove( pDebugInfoFrameLimiter );
-			pDebugInfoFrameLimiter->FreeReference();
-			pDebugInfoFrameLimiter = NULL;
-		}
-		if( pDebugInfoFLEstimMain ){
-			pDebugInfoFLEstimMain->FreeReference();
-			pDebugInfoFLEstimMain = NULL;
-		}
-		if( pDebugInfoFLEstimRender ){
-			pDebugInfoFLEstimRender->FreeReference();
-			pDebugInfoFLEstimRender = NULL;
-		}
-		if( pDebugInfoFLFrameRateMain ){
-			pDebugInfoFLFrameRateMain->FreeReference();
-			pDebugInfoFLFrameRateMain = NULL;
-		}
-		if( pDebugInfoFLFrameRateRender ){
-			pDebugInfoFLFrameRateRender->FreeReference();
-			pDebugInfoFLFrameRateRender = NULL;
-		}
+		pDebugInfoModule = nullptr;
+		pDebugInfoThreadMain = nullptr;
+		pDebugInfoThreadMainWaitFinish = nullptr;
+		pDebugInfoThreadMainSynchronize = nullptr;
+		pDebugInfoThreadRender = nullptr;
+		pDebugInfoThreadRenderSwap = nullptr;
+		pDebugInfoThreadRenderBegin = nullptr;
+		pDebugInfoThreadRenderWindows = nullptr;
+		pDebugInfoThreadRenderWindowsPrepare = nullptr;
+		pDebugInfoThreadRenderWindowsRender = nullptr;
+		pDebugInfoThreadRenderCapture = nullptr;
+		pDebugInfoThreadRenderEnd = nullptr;
+		pDebugInfoFrameLimiter = nullptr;
+		pDebugInfoFLEstimMain = nullptr;
+		pDebugInfoFLEstimRender = nullptr;
+		pDebugInfoFLFrameRateMain = nullptr;
+		pDebugInfoFLFrameRateRender = nullptr;
 		
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy debug-info (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
@@ -2066,6 +2502,11 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
+		if( pChoices ){
+			delete pChoices;
+			pChoices = NULL;
+		}
+		
 		// deprecated
 		if( pEdgeFinder ){
 			delete pEdgeFinder;
@@ -2084,6 +2525,24 @@ void deoglRenderThread::pCleanUpThread(){
 			pQuickSorter = NULL;
 		}
 		// deprecated
+		
+		// has to come last
+		if( pRenderTaskSharedPool ){
+			delete pRenderTaskSharedPool;
+			pRenderTaskSharedPool = NULL;
+		}
+		if( pUniqueKey ){
+			delete pUniqueKey;
+			pUniqueKey = NULL;
+		}
+		
+		if( pDelayedOperations ){
+			delete pDelayedOperations;
+			pDelayedOperations = NULL;
+		}
+		#ifdef TIME_CLEANUP
+		pLogger->LogInfoFormat( "RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		#endif
 		
 		// free context
 // 		cleanUpWindow->FreeReference();

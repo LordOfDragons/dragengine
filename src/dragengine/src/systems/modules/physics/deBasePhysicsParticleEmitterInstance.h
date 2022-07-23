@@ -22,11 +22,13 @@
 #ifndef _DEBASEPHYSICSPARTICLEEMITTERINSTANCE_H_
 #define _DEBASEPHYSICSPARTICLEEMITTERINSTANCE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics Particle Emitter Instance Peer.
  */
-class deBasePhysicsParticleEmitterInstance{
+class DE_DLL_EXPORT deBasePhysicsParticleEmitterInstance{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -55,6 +57,12 @@ public:
 	
 	/** \brief Collision filter changed. */
 	virtual void CollisionFilterChanged();
+	
+	/**
+	 * \brief Ignore colliders changed.
+	 * \version 1.7
+	 */
+	virtual void IgnoreCollidersChanged();
 	
 	/** \brief Warm up time changed. */
 	virtual void WarmUpTimeChanged();

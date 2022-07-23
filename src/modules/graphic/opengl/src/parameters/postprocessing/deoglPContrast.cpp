@@ -44,6 +44,8 @@ deoglPContrast::deoglPContrast( deGraphicOpenGl &ogl ) : deoglParameterFloat( og
 	SetMaximumValue( 1.5f );
 	SetValueStepSize( 0.05f );
 	SetDisplayName( "Contrast" );
+	SetCategory( ecAdvanced );
+	SetDefaultValue( "1" );
 }
 
 deoglPContrast::~deoglPContrast(){

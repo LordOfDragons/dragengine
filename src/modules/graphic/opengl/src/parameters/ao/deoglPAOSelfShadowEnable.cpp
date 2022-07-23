@@ -48,6 +48,7 @@ deoglParameterBool( ogl )
 		" To fine tune the ambient occlusion self shadowing see the aoSelfShadow* module parameters." );
 	SetCategory( ecBasic );
 	SetDisplayName( "AO Self Shadow" );
+	SetDefaultValue( "1" );
 }
 
 deoglPAOSelfShadowEnable::~deoglPAOSelfShadowEnable(){

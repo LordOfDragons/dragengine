@@ -43,6 +43,12 @@ class deBaseModule;
  * \brief FBX managed rig bone.
  */
 class fbxRigBone : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxRigBone> Ref;
+	
+	
+	
 private:
 	fbxRig &pRig;
 	fbxNode &pNodePoseBone;

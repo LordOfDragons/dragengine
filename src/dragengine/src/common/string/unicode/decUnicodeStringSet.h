@@ -30,7 +30,7 @@
  * 
  * The strings in the set are not allowed the be duplicates of each other and can not be NULL.
  */
-class decUnicodeStringSet{
+class DE_DLL_EXPORT decUnicodeStringSet{
 private:
 	decUnicodeString **pStrings;
 	int pStringCount;

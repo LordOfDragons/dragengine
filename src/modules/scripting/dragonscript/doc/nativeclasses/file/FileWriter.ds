@@ -18,7 +18,15 @@ class FileWriter
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create file writer writing to virtual file system file. */
-	public func new( String filename )
+	public func new(String filename)
+	end
+	
+	/**
+	 * \brief Create Z-Compressing file writer writing to virtual file system file.
+	 * \version 1.8
+	 */
+	public static func FileWriter newZCompressed(String filename)
+		return null
 	end
 	/*@}*/
 	
@@ -39,57 +47,61 @@ class FileWriter
 	end
 	
 	/** \brief Set stream version used by writeToFile of native classes. */
-	public func void setStreamVersion( int version )
+	public func void setStreamVersion(int version)
 	end
 	
 	
 	
 	/** \brief Write one byte (1 byte). */
-	public func void writeChar( int value )
+	public func void writeChar(int value)
 	end
 	
 	/** \brief Write one unsigned byte (1 byte). */
-	public func void writeByte( int value )
+	public func void writeByte(int value)
 	end
 	
 	/** \brief Write one short (2 bytes). */
-	public func void writeShort( int value )
+	public func void writeShort(int value)
 	end
 	
 	/** \brief Write one unsigned short (2 bytes). */
-	public func void writeUShort( int value )
+	public func void writeUShort(int value)
 	end
 	
 	/** \brief Write one int (4 bytes). */
-	public func void writeInt( int value )
+	public func void writeInt(int value)
 	end
 	
 	/** \brief Write one unsigned int (4 bytes). */
-	public func void writeUInt( int value )
+	public func void writeUInt(int value)
 	end
 	
 	/** \brief Write one float (4 bytes). */
-	public func void writeFloat( float value )
+	public func void writeFloat(float value)
 	end
 	
 	/** \brief Write a string prefixed by a 1-byte length field. */
-	public func void writeString8( String string )
+	public func void writeString8(String string)
 	end
 	
 	/** \brief Write a string prefixed by a 2-byte2 length field. */
-	public func void writeString16( String string )
+	public func void writeString16(String string)
 	end
 	
 	/** \brief Write string without length field. */
-	public func void writeString( String data )
+	public func void writeString(String data)
 	end
 	
 	/** \brief Write data from file reader. */
-	public func void writeData( FileReader reader )
+	public func void writeData(FileReader reader)
 	end
 	
 	/** \brief Write data from file reader. */
-	public func void writeData( FileReader reader, int size )
+	public func void writeData(FileReader reader, int size)
+	end
+	
+	/** \brief Write TimeDate instance. */
+	public func void writeTimeDate(TimeDate timeDate)
 	end
 	/*@}*/
 end

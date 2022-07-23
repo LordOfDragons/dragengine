@@ -38,7 +38,13 @@ class deException;
  * 
  * \note Loggers are thread safe. See subclass for potential restrictions.
  */
-class deLogger : public deObject{
+class DE_DLL_EXPORT deLogger : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLogger> Ref;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

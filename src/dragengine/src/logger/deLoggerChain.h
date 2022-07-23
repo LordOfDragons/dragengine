@@ -36,7 +36,13 @@
  * layout while the logger is in active use due to deObject reference counting not
  * being thread safe.
  */
-class deLoggerChain : public deLogger{
+class DE_DLL_EXPORT deLoggerChain : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerChain> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pLoggerList;
 	deMutex pMutex;

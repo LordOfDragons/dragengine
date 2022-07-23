@@ -28,12 +28,15 @@
 
 
 /**
- * \brief Shared FOX icon.
- * 
  * FOX icons are not reference counted. This makes sharing them problematic.
- * This class fixes this problemm.
  */
 class deglSharedIcon : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deglSharedIcon> Ref;
+	
+	
+	
 private:
 	FXIcon *pIcon;
 	
@@ -42,18 +45,20 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared icon. */
+	/** Create shared icon. */
 	deglSharedIcon( FXIcon *icon );
 	
-	/** \brief Clean up shared icon. */
+protected:
+	/** Clean up shared icon. */
 	virtual ~deglSharedIcon();
 	/*@}*/
 	
 	
 	
-	/** @name Management */
+public:
+	/** \name Management */
 	/*@{*/
-	/** \brief Icon. */
+	/** Icon. */
 	inline FXIcon *GetIcon() const{ return pIcon; }
 	/*@}*/
 };

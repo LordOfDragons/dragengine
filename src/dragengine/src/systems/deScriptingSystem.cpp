@@ -81,6 +81,10 @@ void deScriptingSystem::SetScriptDirectory( const char *scriptDirectory ){
 	pScriptDirectory = scriptDirectory;
 }
 
+void deScriptingSystem::SetScriptVersion( const char *scriptVersion ){
+	pScriptVersion = scriptVersion;
+}
+
 void deScriptingSystem::SetGameObject( const char *gameObject ){
 	pGameObject = gameObject;
 }
@@ -334,7 +338,7 @@ void deScriptingSystem::OnResizeRenderWindow(){
 }
 
 void deScriptingSystem::SendEvent( deInputEvent *event){
-	if( ! pActiveModule->SendEvent(event) ){
+	if( ! pActiveModule->SendEvent( event ) ){
 		GetEngine()->SignalScriptFailed();
 	}
 }

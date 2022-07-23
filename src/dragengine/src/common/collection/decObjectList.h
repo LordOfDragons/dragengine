@@ -22,6 +22,8 @@
 #ifndef _DECOBJECTLIST_H_
 #define _DECOBJECTLIST_H_
 
+#include "../../dragengine_export.h"
+
 class deObject;
 
 
@@ -31,7 +33,7 @@ class deObject;
  * All objects including NULL are allowed. Objects can be included
  * multiple times in the list.
  */
-class decObjectList{
+class DE_DLL_EXPORT decObjectList{
 private:
 	deObject **pObjects;
 	int pObjectCount;

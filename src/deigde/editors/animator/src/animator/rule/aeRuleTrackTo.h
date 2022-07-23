@@ -31,6 +31,9 @@
  * \brief Animator rule track to.
  */
 class aeRuleTrackTo : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleTrackTo> Ref;
+	
 private:
 	decString pTrackBone;
 	deAnimatorRuleTrackTo::eTrackAxis pTrackAxis;
@@ -77,8 +80,11 @@ public:
 	
 	/** \brief Retrieve the position target. */
 	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
+	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	
 	/** \brief Retrieve the up target. */
 	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
+	inline const aeControllerTarget &GetTargetUp() const{ return pTargetUp; }
 	
 	/** \brief Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

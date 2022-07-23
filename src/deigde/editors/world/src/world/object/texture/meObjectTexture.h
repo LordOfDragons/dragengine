@@ -39,6 +39,12 @@ class deSkin;
  * \brief Object texture.
  */
 class meObjectTexture : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<meObjectTexture> Ref;
+	
+	
+	
 private:
 	igdeEnvironment *pEnvironment;
 	

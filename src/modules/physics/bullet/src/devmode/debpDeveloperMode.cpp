@@ -55,7 +55,8 @@ debpDeveloperMode::debpDeveloperMode( dePhysicsBullet &bullet ) :
 pBullet( bullet ),
 pEnabled( false ),
 pTakeSnapshot( false ),
-pHighlightResponseType( -1 )
+pHighlightResponseType( -1 ),
+pHighlightDeactivation( false )
 {
 	(void)pBullet; // for future use
 }
@@ -92,6 +93,10 @@ bool debpDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, d
 		
 	}else if( command.MatchesArgumentAt( 0, "dm_highlight_response_type" ) ){
 		pCmdHighlightResponseType( command, answer );
+		return true;
+		
+	}else if( command.MatchesArgumentAt( 0, "dm_highlight_deactivation" ) ){
+		pCmdHighlightDeactivation( command, answer );
 		return true;
 		
 	}else if( command.MatchesArgumentAt( 0, "dm_debug" ) ){
@@ -141,6 +146,7 @@ void debpDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUnic
 	answer.AppendFromUTF8( "dm_take_snapshot => Snapshot next world into a COLLADA file.\n" );
 	answer.AppendFromUTF8( "dm_show_category => Show collision objects with collision category (comma-separated list of bit-numbers or 'off').\n" );
 	answer.AppendFromUTF8( "dm_highlight_response_type => Highlight response type if dm_show_category is used.\n" );
+	answer.AppendFromUTF8( "dm_highlight_deactivation {1 | 0} => Hilight deactivation state if dm_show_category is used.\n" );
 	answer.AppendFromUTF8( "dm_debug {enable | disable} => Enable performance debugging.\n" );
 }
 
@@ -232,6 +238,13 @@ decUnicodeString &answer ){
 		answer.AppendFromUTF8( "dm_highlight_response_type = off" );
 		break;
 	}
+}
+
+void debpDeveloperMode::pCmdHighlightDeactivation( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	if( command.GetArgumentCount() == 2 ){
+		pHighlightDeactivation = command.GetArgumentAt( 1 )->ToInt() != 0;
+	}
+	answer.AppendFormat( "dm_highlight_deactivation = %d", pHighlightDeactivation ? 1 : 0 );
 }
 
 void debpDeveloperMode::pCmdDebugEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){

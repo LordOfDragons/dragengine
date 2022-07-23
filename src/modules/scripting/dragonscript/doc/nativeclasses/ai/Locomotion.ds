@@ -390,14 +390,19 @@ class Locomotion
 	end
 	
 	/**
-	 * \brief Movement speed.
-	 * \details For Non-FPS locomotion type this is negative for moving backwards.
+	 * \brief Relative movement speed.
+	 * 
+	 * Speed is positive for moving forward and negative for moving backwards.
 	 */
 	public func float getMovingSpeed()
 		return 0.0
 	end
 	
-	/** \brief Absolute movement speed. */
+	/**
+	 * \brief Absolute movement speed.
+	 * 
+	 * Absolute value of getMovingSpeed() no matter if moving forward or backwards.
+	 */
 	public func float getAbsMovingSpeed()
 		return 0.0
 	end

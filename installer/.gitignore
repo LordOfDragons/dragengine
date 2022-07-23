@@ -1,0 +1,4 @@
+*.iss
+AppxManifest.xml
+artifacts
+build_msix

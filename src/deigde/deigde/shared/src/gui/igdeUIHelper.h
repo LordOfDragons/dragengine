@@ -42,6 +42,8 @@ class igdeContainerReference;
 class igdeContainerScrollReference;
 class igdeEditDirectoryListener;
 class igdeEditDirectoryReference;
+class igdeEditDVectorListener;
+class igdeEditDVectorReference;
 class igdeEditPathListener;
 class igdeEditPathReference;
 class igdeEditPoint3Listener;
@@ -381,6 +383,12 @@ public:
 	void ComboBox( igdeContainer &form, const char *label, bool editable, const char *description,
 		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
 	
+	void ComboBox( igdeContainer &form, const char *label, int columns, bool editable,
+		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+	
+	void ComboBox( igdeContainer &form, const char *label, int columns, int rows, bool editable,
+		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+	
 	/**
 	 * \brief Add combo box.
 	 * 
@@ -413,6 +421,12 @@ public:
 	
 	void ComboBoxFilter( igdeContainer &form, const char *label, bool editable, const char *description,
 		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+	
+	void ComboBoxFilter( igdeContainer &form, const char *label, int columns, bool editable,
+		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+	
+	void ComboBoxFilter( igdeContainer &form, const char *label, int columns, int rows, bool editable,
+		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
 	
 	/**
 	 * \brief Add combo box filter.
@@ -610,6 +624,37 @@ public:
 	
 	void EditDirectory( const char *description, igdeEditDirectoryReference &editDirectory,
 		igdeEditDirectoryListener *listener, bool useGameVFS = true );
+	
+	
+	
+	/**
+	 * \brief Form line with label and edit vector.
+	 * 
+	 * \warning Listener reference is taken over. Only use with new created listeners.
+	 */
+	void EditDVector( igdeContainer &form, const char *label, const char *description,
+		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+	
+	void EditDVector( igdeContainer &form, const char *label, const char *description,
+		int columns, int precision, igdeEditDVectorReference &editDVector,
+		igdeEditDVectorListener *listener );
+	
+	/**
+	 * \brief Add edit vector.
+	 * 
+	 * \warning Listener reference is taken over. Only use with new created listeners.
+	 */
+	void EditDVector( igdeContainer &parent, const char *description,
+		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+	
+	void EditDVector( igdeContainer &parent, const char *description, int columns, int precision,
+		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+	
+	void EditDVector( const char *description, igdeEditDVectorReference &editDVector,
+		igdeEditDVectorListener *listener );
+	
+	void EditDVector( const char *description, int columns, int precision,
+		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
 	
 	
 	

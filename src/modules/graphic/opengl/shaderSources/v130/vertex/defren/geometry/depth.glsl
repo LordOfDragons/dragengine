@@ -30,6 +30,8 @@ out vec2 vTexCoord;
 out vec3 vClipCoord;
 #endif
 
+#include "v130/shared/defren/sanitize_position.glsl"
+
 void main( void ){
 #if defined( IGNORE_HOLES ) || defined( CLIP_DEPTH )
 	vTexCoord = pMatrixDiffuse * vec3( inTexCoord, 1.0 );
@@ -46,13 +48,14 @@ void main( void ){
 	mat3 mb = mat3( bc.y, bs.y, 0.0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );
 	
 	// out = Mmvp * vec4( Mb * ( Mr * ( in * vec3( s ) ) ) + T, 1 )
-	gl_Position = pMatrixMVP * vec4( mb * ( mat3( pPFMatrix ) * ( inPosition * vec3( s ) ) ) + vec3( pPFMatrix[ 3 ] ), 1.0 );
+	gl_Position = sanitizePosition( pMatrixMVP * vec4( mb * ( mat3( pPFMatrix )
+		* ( inPosition * vec3( s ) ) ) + vec3( pPFMatrix[ 3 ] ), 1.0 ) );
 	
 #else // PROP_FIELD
 #ifdef HEIGHTTERRAIN
-	gl_Position = pMatrixMVP * vec4( inPosition.x, inHTHeight, inPosition.y, 1.0 );
+	gl_Position = sanitizePosition( pMatrixMVP * vec4( inPosition.x, inHTHeight, inPosition.y, 1.0 ) );
 #else // HEIGHTTERRAIN
-	gl_Position = pMatrixMVP * vec4( inPosition.xyz, 1.0 );
+	gl_Position = sanitizePosition( pMatrixMVP * vec4( inPosition.xyz, 1.0 ) );
 #endif // HEIGHTTERRAIN
 #endif // PROP_FIELD
 	

@@ -58,13 +58,13 @@ FXIMPLEMENT( igdeNativeFoxDialog, FXDialogBox, igdeNativeFoxDialogMap, ARRAYNUMB
 
 igdeNativeFoxDialog::igdeNativeFoxDialog(){ }
 
-igdeNativeFoxDialog::igdeNativeFoxDialog( igdeDialog &owner, FXWindow *parent,
+igdeNativeFoxDialog::igdeNativeFoxDialog( igdeDialog &powner, FXWindow *pparent,
 const igdeGuiTheme &guitheme ) :
-FXDialogBox( parent, owner.GetTitle().GetString(), DialogFlags( owner ), 0, 0, 0, 0,
+FXDialogBox( pparent, powner.GetTitle().GetString(), DialogFlags( powner ), 0, 0, 0, 0,
 	DialogPadLeft( guitheme ), DialogPadRight( guitheme ),
 	DialogPadTop( guitheme ), DialogPadBottom( guitheme ),
 	0, 0 ),
-pOwner( &owner )
+pOwner( &powner )
 {
 	UpdateIcon();
 }
@@ -72,8 +72,8 @@ pOwner( &owner )
 igdeNativeFoxDialog::~igdeNativeFoxDialog(){
 }
 
-igdeNativeFoxDialog *igdeNativeFoxDialog::CreateNativeWidget( igdeDialog &owner, igdeWidget *ownerOwner ){
-	if( owner.GetParent() ){
+igdeNativeFoxDialog *igdeNativeFoxDialog::CreateNativeWidget( igdeDialog &powner, igdeWidget *ownerOwner ){
+	if( powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -82,7 +82,7 @@ igdeNativeFoxDialog *igdeNativeFoxDialog::CreateNativeWidget( igdeDialog &owner,
 		nativeOwner = ( FXWindow* )ownerOwner->GetNativeWidget();
 	}
 	
-	return new igdeNativeFoxDialog( owner, nativeOwner, *owner.GetGuiTheme() );
+	return new igdeNativeFoxDialog( powner, nativeOwner, *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxDialog::PostCreateNativeWidget(){
@@ -116,9 +116,9 @@ void igdeNativeFoxDialog::UpdatePosition(){
 }
 
 void igdeNativeFoxDialog::UpdateIcon(){
-	FXIcon * const icon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
-	setIcon( icon );
-	setMiniIcon( icon );
+	FXIcon * const iicon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
+	setIcon( iicon );
+	setMiniIcon( iicon );
 }
 
 void igdeNativeFoxDialog::UpdateTitle(){
@@ -148,14 +148,14 @@ void igdeNativeFoxDialog::CloseDialog( bool accepted ){
 
 
 
-int igdeNativeFoxDialog::DialogFlags( const igdeDialog &owner ){
-	int flags = DECOR_TITLE | DECOR_BORDER | DECOR_CLOSE | DECOR_MENU;
+int igdeNativeFoxDialog::DialogFlags( const igdeDialog &powner ){
+	int fflags = DECOR_TITLE | DECOR_BORDER | DECOR_CLOSE | DECOR_MENU;
 	
-	if( owner.GetCanResize() ){
-		flags |=  DECOR_RESIZE; //DECOR_STRETCHABLE, DECOR_SHRINKABLE
+	if( powner.GetCanResize() ){
+		fflags |=  DECOR_RESIZE; //DECOR_STRETCHABLE, DECOR_SHRINKABLE
 	}
 	
-	return flags;
+	return fflags;
 }
 
 int igdeNativeFoxDialog::DialogPadLeft( const igdeGuiTheme &guitheme ){
@@ -191,8 +191,8 @@ long igdeNativeFoxDialog::onClose( FXObject*, FXSelector, void* ){
 	return pOwner->Cancel() ? 0 : 1;
 }
 
-long igdeNativeFoxDialog::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxDialog::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }

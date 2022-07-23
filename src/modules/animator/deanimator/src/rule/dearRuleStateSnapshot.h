@@ -51,7 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleStateSnapshot( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleStateSnapshot &rule );
+	dearRuleStateSnapshot( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleStateSnapshot &rule );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleStateSnapshot();

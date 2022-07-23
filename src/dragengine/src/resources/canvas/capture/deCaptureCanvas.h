@@ -49,7 +49,13 @@ class deCaptureCanvasManager;
  * You can capture the canvas view of a render window or any other canvas view
  * similar to a deCanvasCanvas.
  */
-class deCaptureCanvas : public deResource{
+class DE_DLL_EXPORT deCaptureCanvas : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCaptureCanvas> Ref;
+	
+	
+	
 private:
 	deCanvasViewReference pCanvasView;
 	deImageReference pImage;

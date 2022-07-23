@@ -31,6 +31,11 @@ pin Dragengine.Scenery
  * 
  * Provides default timer manager for simple timer creation. Individual instances of
  * timer managers can be created to provide timer handling at different speeds if required.
+ * 
+ * \par 1.9
+ * 
+ * If you create a TimerManager besides the default TimerManager make sure to call
+ * giveUpAllTimers() to avoid memory leaks.
  */
 class TimerManager
 	private static var TimerManager pDefaultManager = null
@@ -40,22 +45,22 @@ class TimerManager
 	
 	/** \brief Create timer manager. */
 	public func new()
-		this.pTimers = SafeArray.new()
+		pTimers = SafeArray.new()
 	end
 	
 	
 	
 	/** \brief Register timer. */
-	public func void addTimer( Timer timer )
+	public func void addTimer(Timer timer)
 		if timer == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("timer")
 		end
-		this.pTimers.add( timer )
+		pTimers.add(timer)
 	end
 	
 	/** \brief Unregister timer. */
-	public func void removeTimer( Timer timer )
-		this.pTimers.removeIfPresent( timer )
+	public func void removeTimer(Timer timer)
+		pTimers.removeIfPresent(timer)
 	end
 	
 	
@@ -65,14 +70,30 @@ class TimerManager
 	 * 
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
-	public func void advance( float elapsed )
+	public func void advance(float elapsed)
 		if elapsed <= 0
 			return
 		end
 		
-		this.pTimers.forEach( block Timer each
-			each.advance( elapsed )
-		end )
+		pTimers.forEach(block Timer each
+			each.advance(elapsed)
+		end)
+	end
+	
+	/**
+	 * \brief Give up all timers and remove them.
+	 * \version 1.9
+	 * 
+	 * Use this call before exiting the game to cancel registered timers and properly
+	 * cleaning them up to avoid memory leaks.
+	 */
+	public func void giveUpAllTimers()
+		var SafeArray timers = pTimers
+		pTimers = SafeArray.new()
+		
+		timers.forEach(block Timer each
+			each.giveUp()
+		end)
 	end
 	
 	
@@ -91,7 +112,7 @@ class TimerManager
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
 	public static func void advanceDefault()
-		getDefault().advance( Engine.getElapsedTime() )
+		getDefault().advance(Engine.getElapsedTime())
 	end
 	
 	/**
@@ -99,7 +120,18 @@ class TimerManager
 	 * 
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
-	public static func void advanceDefault( float elapsed )
-		getDefault().advance( elapsed )
+	public static func void advanceDefault(float elapsed)
+		getDefault().advance(elapsed)
+	end
+	
+	/**
+	 * \brief Give up all timers of default timer manager and remove them.
+	 * \version 1.9
+	 * 
+	 * Use this call before exiting the game to cancel registered timers and properly
+	 * cleaning them up to avoid memory leaks.
+	 */
+	public static func void giveUpAllTimersDefault()
+		getDefault().giveUpAllTimers()
 	end
 end

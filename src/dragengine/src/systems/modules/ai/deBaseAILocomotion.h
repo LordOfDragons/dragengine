@@ -22,12 +22,14 @@
 #ifndef _DEBASEAILOCOMOTION_H_
 #define _DEBASEAILOCOMOTION_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief AI module locomotion peer.
  */
-class deBaseAILocomotion{
+class DE_DLL_EXPORT deBaseAILocomotion{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

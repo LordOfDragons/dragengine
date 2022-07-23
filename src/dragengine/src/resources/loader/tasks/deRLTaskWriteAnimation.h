@@ -29,7 +29,7 @@
 /**
  * \brief Write animation resource loader task.
  */
-class deRLTaskWriteAnimation : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskWriteAnimation : public deResourceLoaderTask {
 private:
 	deAnimationReference pAnimation;
 	bool pSucceeded;

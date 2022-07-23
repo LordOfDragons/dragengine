@@ -43,6 +43,12 @@ class fbxRigBone;
  * \brief FBX managed model cluster.
  */
 class fbxModelCluster : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxModelCluster> Ref;
+	
+	
+	
 private:
 	fbxModel &pModel;
 	fbxNode &pNodeCluster;

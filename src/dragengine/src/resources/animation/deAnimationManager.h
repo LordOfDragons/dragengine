@@ -34,7 +34,7 @@ class deAnimationBuilder;
  * \brief Animation Resource Manager.
  *
  */
-class deAnimationManager : public deFileResourceManager{
+class DE_DLL_EXPORT deAnimationManager : public deFileResourceManager{
 private:
 	deFileResourceList pAnimations;
 	
@@ -77,6 +77,18 @@ public:
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
 	deAnimation *LoadAnimation( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	
+	/**
+	 * \brief Save animation to file.
+	 * \version 1.6
+	 */
+	void SaveAnimation( const deAnimation &animation, const char *filename );
+	
+	/**
+	 * \brief Save animation to file.
+	 * \version 1.6
+	 */
+	void SaveAnimation( const deAnimation &animation, deVirtualFileSystem &vfs, const char *filename );
 	
 	/**
 	 * \brief Add loaded and fully prepared animation.

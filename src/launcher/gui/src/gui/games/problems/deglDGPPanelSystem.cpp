@@ -29,11 +29,10 @@
 #include "../../deglWindowMain.h"
 #include "../../deglGuiBuilder.h"
 #include "../../../deglLauncher.h"
-#include "../../../engine/deglEngine.h"
-#include "../../../engine/modules/deglEngineModule.h"
-#include "../../../game/deglGame.h"
-#include "../../../game/fileformat/deglFileFormat.h"
-#include "../../../game/profile/deglGameProfile.h"
+
+#include <delauncher/engine/modules/delEngineModule.h>
+#include <delauncher/engine/modules/delEngineModuleList.h>
+#include <delauncher/game/fileformat/delFileFormat.h>
 
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/common/string/decString.h>
@@ -63,6 +62,8 @@ FXDEFMAP( deglDGPPanelSystem ) deglDGPPanelSystemMap[]={
 	FXMAPFUNC( SEL_CHANGED, deglDGPPanelSystem::ID_CB_MOD_NET, deglDGPPanelSystem::onCBModNetChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDGPPanelSystem::ID_CB_MOD_SYN, deglDGPPanelSystem::onCBModSynChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDGPPanelSystem::ID_CB_MOD_SYN, deglDGPPanelSystem::onCBModSynChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDGPPanelSystem::ID_CB_MOD_VR, deglDGPPanelSystem::onCBModVRChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDGPPanelSystem::ID_CB_MOD_VR, deglDGPPanelSystem::onCBModVRChanged ),
 };
 
 
@@ -78,14 +79,14 @@ FXIMPLEMENT( deglDGPPanelSystem, FXVerticalFrame, deglDGPPanelSystemMap, ARRAYNU
 deglDGPPanelSystem::deglDGPPanelSystem(){ }
 
 deglDGPPanelSystem::deglDGPPanelSystem( deglDialogGameProblems *parentDialog, FXComposite *container ) :
-FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 0 ){
+FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 0 ),
+pParentDialog( parentDialog ),
+pStatusWorking( false )
+{
 	if( ! parentDialog ) DETHROW( deeInvalidParam );
 	
 	FXScrollWindow *scrollWindow;
 	FXVerticalFrame *frameContent;
-	
-	pParentDialog = parentDialog;
-	pStatusWorking = false;
 	
 	pSysAI.type = deModuleSystem::emtAI;
 	pSysAnimator.type = deModuleSystem::emtAnimator;
@@ -96,13 +97,11 @@ FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 
 	pSysNetwork.type = deModuleSystem::emtNetwork;
 	pSysSynthesizer.type = deModuleSystem::emtSynthesizer;
 	pSysPhysics.type = deModuleSystem::emtPhysics;
+	pSysVR.type = deModuleSystem::emtVR;
 	
 	// create content
 	scrollWindow = new FXScrollWindow( this, LAYOUT_FILL_X | LAYOUT_FILL_Y | SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
-	if( ! scrollWindow ) DETHROW( deeOutOfMemory );
-	
 	frameContent = new FXVerticalFrame( scrollWindow, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 );
-	if( ! frameContent ) DETHROW( deeOutOfMemory );
 	
 	pCreateSystem( pSysGraphic, "Graphic Module:", "Select the Graphic Module to use", ID_CB_MOD_GRA, frameContent );
 	pCreateSystem( pSysInput, "Input Module:", "Select the Input Module to use", ID_CB_MOD_INP, frameContent );
@@ -113,6 +112,7 @@ FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 
 	pCreateSystem( pSysAudio, "Audio Module:", "Select the Audio Module to use", ID_CB_MOD_AUD, frameContent );
 	pCreateSystem( pSysSynthesizer, "Synthesizer Module:", "Select Synthesizer Module to use", ID_CB_MOD_SYN, frameContent );
 	pCreateSystem( pSysNetwork, "Network Module:", "Select the Network Module to use", ID_CB_MOD_NET, frameContent );
+	pCreateSystem( pSysVR, "VR Module:", "Select the VR Module to use", ID_CB_MOD_VR, frameContent );
 }
 
 deglDGPPanelSystem::~deglDGPPanelSystem(){
@@ -124,10 +124,8 @@ deglDGPPanelSystem::~deglDGPPanelSystem(){
 ///////////////
 
 void deglDGPPanelSystem::UpdateSystemModuleLists(){
-	const deglEngineModuleList &moduleList = pParentDialog->GetWindowMain()->GetLauncher()->GetEngine()->GetModuleList();
-	int i, count = moduleList.GetModuleCount();
-	deglEngineModule *module;
-	int type;
+	const delEngineModuleList &moduleList = pParentDialog->GetWindowMain()->GetLauncher()->GetEngine().GetModules();
+	int i, count = moduleList.GetCount();
 	
 	pSysGraphic.combobox->clearItems();
 	pSysInput.combobox->clearItems();
@@ -138,37 +136,54 @@ void deglDGPPanelSystem::UpdateSystemModuleLists(){
 	pSysAudio.combobox->clearItems();
 	pSysSynthesizer.combobox->clearItems();
 	pSysNetwork.combobox->clearItems();
+	pSysVR.combobox->clearItems();
 	
 	for( i=0; i<count; i++ ){
-		module = moduleList.GetModuleAt( i );
-		type = module->GetType();
+		const delEngineModule &module = *moduleList.GetAt( i );
 		
-		if( type == deModuleSystem::emtGraphic ){
-			pSysGraphic.combobox->appendItem( module->GetName().GetString() );
+		switch( module.GetType() ){
+		case deModuleSystem::emtGraphic:
+			pSysGraphic.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtInput ){
-			pSysInput.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtInput:
+			pSysInput.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtPhysics ){
-			pSysPhysics.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtPhysics:
+			pSysPhysics.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtAnimator ){
-			pSysAnimator.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtAnimator:
+			pSysAnimator.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtAI ){
-			pSysAI.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtAI:
+			pSysAI.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtCrashRecovery ){
-			pSysCrashRecovery.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtCrashRecovery:
+			pSysCrashRecovery.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtAudio ){
-			pSysAudio.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtAudio:
+			pSysAudio.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtSynthesizer ){
-			pSysSynthesizer.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtSynthesizer:
+			pSysSynthesizer.combobox->appendItem( module.GetName().GetString() );
+			break;
 			
-		}else if( type == deModuleSystem::emtNetwork ){
-			pSysNetwork.combobox->appendItem( module->GetName().GetString() );
+		case deModuleSystem::emtNetwork:
+			pSysNetwork.combobox->appendItem( module.GetName().GetString() );
+			break;
+			
+		case deModuleSystem::emtVR:
+			pSysVR.combobox->appendItem( module.GetName().GetString() );
+			break;
+			
+		default:
+			break;
 		}
 	}
 	
@@ -181,6 +196,7 @@ void deglDGPPanelSystem::UpdateSystemModuleLists(){
 	pSysAudio.combobox->sortItems();
 	pSysSynthesizer.combobox->sortItems();
 	pSysNetwork.combobox->sortItems();
+	pSysVR.combobox->sortItems();
 }
 
 void deglDGPPanelSystem::UpdatePanel(){
@@ -195,17 +211,18 @@ void deglDGPPanelSystem::UpdatePanel(){
 	UpdateSystem( pSysAudio, pParentDialog->GetWorkingProfile()->GetModuleAudio().GetString() );
 	UpdateSystem( pSysSynthesizer, pParentDialog->GetWorkingProfile()->GetModuleSynthesizer().GetString() );
 	UpdateSystem( pSysNetwork, pParentDialog->GetWorkingProfile()->GetModuleNetwork().GetString() );
+	UpdateSystem( pSysVR, pParentDialog->GetWorkingProfile()->GetModuleVR().GetString() );
 }
 
 void deglDGPPanelSystem::UpdateSystem( sSystem &system, const char *moduleName ){
-	const deglEngineModuleList &moduleList = pParentDialog->GetWindowMain()->GetLauncher()->GetEngine()->GetModuleList();
+	const delEngineModuleList &modules = pParentDialog->GetWindowMain()->GetLauncher()->GetEngine().GetModules();
 	FXColor colorBack = pParentDialog->GetBackColorValid();
 	FXColor colorText = pParentDialog->GetTextColorValid();
-	deglEngineModule *module;
+	delEngineModule *module;
 	bool working = true;
 	
 	system.combobox->setText( moduleName );
-	module = moduleList.GetModuleNamed( moduleName );
+	module = modules.GetNamed( moduleName );
 	
 	if( ! module ){
 		system.problem->setText( "No module exists with the given name." );
@@ -215,7 +232,7 @@ void deglDGPPanelSystem::UpdateSystem( sSystem &system, const char *moduleName )
 		system.problem->setText( "Module is not of the correct type." );
 		working = false;
 		
-	}else if( module->GetStatus() != deglEngineModule::emsReady ){
+	}else if( module->GetStatus() != delEngineModule::emsReady ){
 		system.problem->setText( "Module has problems and can not be used." );
 		working = false;
 	}
@@ -244,56 +261,62 @@ void deglDGPPanelSystem::UpdateSystem( sSystem &system, const char *moduleName )
 // Events
 ///////////
 
-long deglDGPPanelSystem::onCBModGraChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModGraChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleGraphic( pSysGraphic.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModInpChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModInpChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleInput( pSysInput.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModPhyChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModPhyChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModulePhysics( pSysPhysics.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModAmrChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModAmrChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleAnimator( pSysAnimator.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModAIChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModAIChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleAI( pSysAI.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModCRChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModCRChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleCrashRecovery( pSysCrashRecovery.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModAudChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModAudChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleAudio( pSysAudio.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModNetChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModNetChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleNetwork( pSysNetwork.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
 
-long deglDGPPanelSystem::onCBModSynChanged( FXObject *sender, FXSelector selector, void *data ){
+long deglDGPPanelSystem::onCBModSynChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleSynthesizer( pSysSynthesizer.combobox->getText().text() );
+	pParentDialog->UpdatePanels();
+	return 1;
+}
+
+long deglDGPPanelSystem::onCBModVRChanged( FXObject*, FXSelector, void* ){
+	pParentDialog->GetWorkingProfile()->SetModuleVR( pSysVR.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }
@@ -303,26 +326,26 @@ long deglDGPPanelSystem::onCBModSynChanged( FXObject *sender, FXSelector selecto
 // Private Functions
 //////////////////////
 
-void deglDGPPanelSystem::pCreateSystem( sSystem &system, const char *textLabel, const char *toolText, int comboBoxSelector, FXComposite *container ){
+void deglDGPPanelSystem::pCreateSystem( sSystem &system, const char *textLabel,
+const char *toolText, int comboBoxSelector, FXComposite *container ){
 	const deglGuiBuilder &guiBuilder = *pParentDialog->GetWindowMain()->GetGuiBuilder();
 	FXHorizontalFrame *frameLine;
 	int fixTextWidth = 180;
 	
-	system.box = new FXVerticalFrame( container, FRAME_GROOVE | LAYOUT_FILL_X, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0 );
-	if( ! system.box ) DETHROW( deeOutOfMemory );
-	
+	system.box = new FXVerticalFrame( container, FRAME_GROOVE | LAYOUT_FILL_X,
+		0, 0, 0, 0, 1, 1, 1, 1, 0, 0 );
 	frameLine = new FXHorizontalFrame( system.box, LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-	if( ! frameLine ) DETHROW( deeOutOfMemory );
 	
-	system.label = new FXLabel( frameLine, textLabel, NULL, LABEL_NORMAL | LAYOUT_FIX_WIDTH | LAYOUT_FILL_Y, 0, 0, fixTextWidth );
-	if( ! system.label ) DETHROW( deeOutOfMemory );
+	system.label = new FXLabel( frameLine, textLabel, nullptr,
+		LABEL_NORMAL | LAYOUT_FIX_WIDTH | LAYOUT_FILL_Y, 0, 0, fixTextWidth );
 	system.label->setJustify( JUSTIFY_LEFT | JUSTIFY_CENTER_Y );
 	system.label->setTipText( toolText );
 	
-	system.combobox = guiBuilder.CreateComboBox( frameLine, this, comboBoxSelector, toolText, true, 20, 5, false );
+	system.combobox = guiBuilder.CreateComboBox( frameLine, this,
+		comboBoxSelector, toolText, true, 20, 5, false );
 	system.combobox->setSortFunc( deglGuiBuilder::SortListItemByName );
 	
-	system.problem = new FXLabel( system.box, "This label contains a short problem description.", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
-	if( ! system.problem ) DETHROW( deeOutOfMemory );
+	system.problem = new FXLabel( system.box, "This label contains a short problem description.",
+		nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	system.problem->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 }

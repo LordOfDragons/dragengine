@@ -55,7 +55,7 @@ class deTouchSensor;
  * scripting or programming language. The scripting module defines also
  * how much of the power of the engine is exposed to the scripter.
  */
-class deBaseScriptingModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseScriptingModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -92,6 +92,9 @@ public:
 	 * See the individual manuals of the scripting modules to learn about
 	 * those requirements. After the Init function has exited the scripting
 	 * module is ready to operate the game.
+	 * 
+	 * The sript version to be compatible against can be queried using
+	 * deScriptingSystem::GetScriptVersion().
 	 */
 	virtual bool Init( const char *scriptDirectory, const char *gameObject ) = 0;
 	

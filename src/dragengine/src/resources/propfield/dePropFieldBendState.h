@@ -30,7 +30,7 @@
  *
  * Stores the bending state of one or more instances.
  */
-class dePropFieldBendState{
+class DE_DLL_EXPORT dePropFieldBendState{
 private:
 	float pBendX;
 	float pBendZ;

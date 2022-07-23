@@ -20,7 +20,8 @@
  */
 
 #include "deBaseInputModule.h"
-
+#include "../../../common/exceptions.h"
+#include "../../../input/deInputDevicePose.h"
 
 
 // Class deBaseInputModule
@@ -38,6 +39,35 @@ deBaseInputModule::~deBaseInputModule(){
 // Notifications
 //////////////////
 
+bool deBaseInputModule::GetButtonTouched( int, int ){
+	return false;
+}
+
+int deBaseInputModule::IndexOfComponentWithID( int, const char* ){
+	return -1;
+}
+
+void deBaseInputModule::GetDevicePose( int, deInputDevicePose &pose ){
+	pose = deInputDevicePose();
+}
+
+void deBaseInputModule::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
+	pose = deInputDevicePose();
+}
+
+float deBaseInputModule::GetDeviceFaceExpression( int device, int expression ){
+	return 0.0f;
+}
+
+int deBaseInputModule::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation ){
+	return ButtonMatchingKeyCode( device, keyCode );
+}
+
+int deBaseInputModule::ButtonMatchingKeyChar( int device, int character, deInputEvent::eKeyLocation ){
+	return ButtonMatchingKeyChar( device, character );
+}
+
 void deBaseInputModule::ProcessEvents(){
 }
 
@@ -54,26 +84,26 @@ void deBaseInputModule::AppActivationChanged(){
 }
 
 #if defined OS_UNIX && defined HAS_LIB_X11
-void deBaseInputModule::EventLoop( XEvent &event ){
+void deBaseInputModule::EventLoop( XEvent& ){
 }
 #endif
 
 #ifdef OS_W32
-void deBaseInputModule::EventLoop( const MSG &message ){
+void deBaseInputModule::EventLoop( const MSG& ){
 }
 #endif
 
 #ifdef OS_ANDROID
-void deBaseInputModule::EventLoop( const AInputEvent &event ){
+void deBaseInputModule::EventLoop( const AInputEvent& ){
 }
 #endif
 	
 #ifdef OS_BEOS
-void deBaseInputModule::EventLoop( const BMessage &message ){
+void deBaseInputModule::EventLoop( const BMessage& ){
 }
 #endif
 	
 #ifdef OS_MACOS
-void deBaseInputModule::EventLoop( const NSEvent &event ){
+void deBaseInputModule::EventLoop( const NSEvent& ){
 }
 #endif

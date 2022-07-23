@@ -22,11 +22,13 @@
 #ifndef _DEFONTGLYPH_H_
 #define _DEFONTGLYPH_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Text font glyph definition.
  */
-class deFontGlyph{
+class DE_DLL_EXPORT deFontGlyph{
 private:
 	int pUnicode;
 	int pX;

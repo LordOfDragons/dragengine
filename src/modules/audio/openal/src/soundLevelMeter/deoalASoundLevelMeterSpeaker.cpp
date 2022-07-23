@@ -68,6 +68,9 @@ deoalASoundLevelMeterSpeaker::~deoalASoundLevelMeterSpeaker(){
 	if( pEnvProbe ){
 		delete pEnvProbe;
 	}
+	if( pListener ){
+		delete pListener;
+	}
 }
 
 
@@ -126,7 +129,8 @@ void deoalASoundLevelMeterSpeaker::SpeakerAttenuationChanged(){
 		return;
 	}
 	
-	pEnvProbe->SetAttenuation( pSpeaker->GetAttenuationRefDist(), pSpeaker->GetAttenuationRolloff() );
+	pEnvProbe->SetAttenuation( pSpeaker->GetAttenuationRefDist(),
+		pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset() );
 	
 	if( pEnvProbe->GetOctreeNode() ){
 		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
@@ -145,7 +149,7 @@ void deoalASoundLevelMeterSpeaker::Listen(){
 	pListenDirect();
 	pListenReflected();
 	
-	pVolume = pSpeaker->GetVolume() * decMath::max( pGainLow, pGainMedium, pGainHigh );
+	pVolume = decMath::max( pGainLow, pGainMedium, pGainHigh );
 }
 
 
@@ -157,7 +161,7 @@ void deoalASoundLevelMeterSpeaker::pListenDirect(){
 	const decDVector &speakerPosition = pSpeaker->GetPosition();
 	const decDVector &meterPosition = pSoundLevelMeter.GetPosition();
 	const float distance = ( float )( ( speakerPosition - meterPosition ).Length() );
-	const float gain = pSpeaker->AttenuatedGain( distance );
+	const float gain = pSpeaker->GetVolume() * pSpeaker->AttenuatedGain( distance );
 	if( gain < 1e-3f ){
 		return;
 	}
@@ -223,7 +227,7 @@ void deoalASoundLevelMeterSpeaker::pListenReflected(){
 		pEnvProbe->SetPosition( pSpeaker->GetPosition() );
 		pEnvProbe->SetRange( pSpeaker->GetRange() );
 		pEnvProbe->SetAttenuation( pSpeaker->GetAttenuationRefDist(),
-			pSpeaker->GetAttenuationRolloff() );
+			pSpeaker->GetAttenuationRolloff(), pSpeaker->GetAttenuationDistanceOffset() );
 	}
 	
 	if( ! pListener ){
@@ -242,13 +246,15 @@ void deoalASoundLevelMeterSpeaker::pListenReflected(){
 // 		pListener->GetReverberationGainLow(), pListener->GetReverberationGainMedium(),
 // 		pListener->GetReverberationGainHigh(), pListener->GetImpulseResponse().GetCount() );
 	
-	pGainLow += pListener->GetReflectedLow();
-	pGainMedium += pListener->GetReflectedMedium();
-	pGainHigh += pListener->GetReflectedHigh();
+	const float volume = pSpeaker->GetVolume();
 	
-	pGainLow += pListener->GetReverberationGainLow();
-	pGainMedium += pListener->GetReverberationGainMedium();
-	pGainHigh += pListener->GetReverberationGainHigh();
+	pGainLow += volume * pListener->GetReflectedLow();
+	pGainMedium += volume * pListener->GetReflectedMedium();
+	pGainHigh += volume * pListener->GetReflectedHigh();
+	
+	pGainLow += volume * pListener->GetReverberationGainLow();
+	pGainMedium += volume * pListener->GetReverberationGainMedium();
+	pGainHigh += volume * pListener->GetReverberationGainHigh();
 }
 
 const deoalRayTraceHitElement *deoalASoundLevelMeterSpeaker::pNextHitElement(

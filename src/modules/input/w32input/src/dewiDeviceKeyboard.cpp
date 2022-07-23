@@ -347,6 +347,7 @@ dewiDevice( module, esWindows )
 		}
 		
 		button.SetKeyCode( KeyCodeForWICode( iterentry->virtkey ) );
+		button.SetKeyLocation( KeyLocationForWICode( iterentry->virtkey ) );
 		button.SetMatchPriority( MatchingPriorityForWICode( iterentry->virtkey ) );
 		
 		buttonIndex++;
@@ -450,6 +451,29 @@ deInputEvent::eKeyCodes dewiDeviceKeyboard::KeyCodeForWICode( int code ){
 	return deInputEvent::ekcUndefined;
 }
 
+deInputEvent::eKeyLocation dewiDeviceKeyboard::KeyLocationForWICode( int code ){
+	switch( code ){
+	case VK_LSHIFT:
+	case VK_LCONTROL:
+	case VK_LMENU:
+	case VK_LWIN:
+		return deInputEvent::eklLeft;
+		
+	case VK_RSHIFT:
+	case VK_RCONTROL:
+	case VK_RMENU:
+	case VK_RWIN:
+		return deInputEvent::eklRight;
+		
+	default:
+		if( code >= VK_NUMPAD0 && code <= VK_NUMPAD9 ){
+			return deInputEvent::eklNumberPad;
+		}
+	}
+	
+	return deInputEvent::eklNone;
+}
+
 int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	// lower value is higher priority
 	
@@ -458,11 +482,11 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	case VK_TAB:
 	case VK_RETURN:
 	case VK_SHIFT:
-	case VK_LSHIFT:
+	case VK_RSHIFT:
 	case VK_CONTROL:
-	case VK_LCONTROL:
+	case VK_RCONTROL:
 	case VK_MENU:
-	case VK_LMENU:
+	case VK_RMENU:
 	case VK_PAUSE:
 	case VK_ESCAPE:
 	case VK_SPACE:
@@ -475,15 +499,15 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	case VK_DOWN:
 	case VK_INSERT:
 	case VK_DELETE:
-	case VK_LWIN:
+	case VK_RWIN:
 	case VK_APPS:
 		return 0;
 		
+	case VK_LSHIFT:
+	case VK_LCONTROL:
+	case VK_LMENU:
+	case VK_LWIN:
 	case VK_CLEAR:
-	case VK_RSHIFT:
-	case VK_RCONTROL:
-	case VK_RMENU:
-	case VK_RWIN:
 		return 1;
 		
 	default:

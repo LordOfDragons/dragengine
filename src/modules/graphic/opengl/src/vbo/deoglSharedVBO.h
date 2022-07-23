@@ -22,11 +22,12 @@
 #ifndef _DEOGLSHAREDVBO_H_
 #define _DEOGLSHAREDVBO_H_
 
+#include "deoglVBOLayout.h"
+#include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/deObject.h>
-
-#include "../deoglBasics.h"
-#include "deoglVBOLayout.h"
 
 class deoglSharedVBOBlock;
 class deoglSharedVBOList;
@@ -53,14 +54,14 @@ public:
 	int pIndexUsedSize;
 	bool pDirty;
 	
-	int pMemoryGPUVBO;
-	int pMemoryGPUIBO;
+	deoglMemoryConsumptionGPUUse pMemUseVBO;
+	deoglMemoryConsumptionGPUUse pMemUseIBO;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shared vbo. */
-	deoglSharedVBO( deoglSharedVBOList *parentList, int size );
+	deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize );
 	/** Cleans up the shared vbo. */
 	virtual ~deoglSharedVBO();
 	/*@}*/
@@ -90,10 +91,9 @@ public:
 	/** Marks the VBO dirty. */
 	void MarkDirty();
 	
-	/** Retrieves the GPU memory consumption for the VBO. */
-	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUVBO; }
-	/** Retrieves the GPU memory consumption for the IBO. */
-	inline int GetMemoryConsumptionGPUIBO() const{ return pMemoryGPUIBO; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{ return pMemUseVBO; }
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{ return pMemUseIBO; }
 	/*@}*/
 	
 	/** \name Data Management */
@@ -102,20 +102,17 @@ public:
 	int GetBlockCount() const;
 	/** Retrieves the block at the given location. */
 	deoglSharedVBOBlock *GetBlockAt( int index ) const;
+	
 	/**
 	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
 	 * location has been found or NULL if there is not enough space left in the VBO.
 	 */
-	deoglSharedVBOBlock *AddBlock( int size );
-	/**
-	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
-	 * location has been found or NULL if there is not enough space left in the VBO.
-	 */
-	deoglSharedVBOBlock *AddBlock( int size, int indexCount );
+	deoglSharedVBOBlock *AddBlock( int size, int indexCount = 0 );
 	/** Removes a block of data returning the space to the pool of free space. */
 	void RemoveBlock( deoglSharedVBOBlock *block );
-	/** Retrieves the index of the first empty block with at least the given amount of size or NULL if not found. */
-	int IndexOfEmptyBlockWithMinSize( int size );
+	
+	/** Index of first empty block with minimum size and index count available or NULL if not found. */
+	int IndexOfEmptyBlockWithMinSize( int size, int indexCount );
 	/*@}*/
 	
 private:

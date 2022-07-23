@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <stdlib.h>
+
 #include "common.h"
 
 #ifdef OS_W32
@@ -113,7 +115,7 @@ void AssertPathExists( const std::string &path ){
 }
 
 
-extern char **environ;
+// extern char **environ;
 Environment::Environment() : buildenv( nullptr ){
 	char **iterenv = environ;
 	while( *iterenv ){

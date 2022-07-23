@@ -22,6 +22,8 @@
 #ifndef _DEMUTEXGUARD_H_
 #define _DEMUTEXGUARD_H_
 
+#include "../dragengine_export.h"
+
 class deMutex;
 
 
@@ -30,7 +32,7 @@ class deMutex;
  *
  * Exception safe automatic locking and unlocking.
  */
-class deMutexGuard{
+class DE_DLL_EXPORT deMutexGuard{
 private:
 	deMutex &pMutex;
 	bool pLocked;
@@ -49,6 +51,13 @@ public:
 	
 	
 	
+private:
+	// Protection against coding mistakes
+	deMutexGuard( const deMutexGuard &guard );
+	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Guard holds the lock. */

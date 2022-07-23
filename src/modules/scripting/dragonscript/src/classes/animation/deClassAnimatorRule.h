@@ -101,6 +101,7 @@ private:
 	DEF_NATFUNC( nfSetEnabled );
 	DEF_NATFUNC( nfSetBlendMode );
 	DEF_NATFUNC( nfSetBlendFactor );
+	DEF_NATFUNC( nfSetInvertBlendFactor );
 	
 	DEF_NATFUNC( nfAddBone );
 	DEF_NATFUNC( nfRemoveAllBones );

@@ -19,35 +19,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _AEULINKREMOVE_H_
 #define _AEULINKREMOVE_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
 
-// predefinitions
-class aeLink;
-class aeRule;
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
+#include "../../animator/link/aeLink.h"
+#include "../../animator/rule/aeRule.h"
+
 class aeControllerTarget;
 
 
 
 /**
- * @brief Undo Link Remove.
- *
- * Removes a link.
+ * Undo Link Remove.
  */
 class aeULinkRemove : public igdeUndo{
 private:
 	struct sTarget{
-		aeRule *rule;
+		aeRule::Ref rule;
 		aeControllerTarget *target;
 	};
 	
-	aeAnimator *pAnimator;
-	aeLink *pLink;
+	aeAnimator::Ref pAnimator;
+	aeLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;
@@ -73,8 +69,8 @@ public:
 	
 private:
 	void pCleanUp();
+	void pAddTargets( int targetCount, aeLink *link, aeRule *rule );
 	void pAddTarget( int targetCount, aeRule *rule, aeControllerTarget *target );
 };
 
-// end of include only once
 #endif

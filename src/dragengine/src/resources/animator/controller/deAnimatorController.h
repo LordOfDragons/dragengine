@@ -46,7 +46,7 @@
  * useful for certain specialized rules which need a position or even
  * orientations to do their work.
  */
-class deAnimatorController{
+class DE_DLL_EXPORT deAnimatorController{
 private:
 	decString pName;
 	float pMinValue;

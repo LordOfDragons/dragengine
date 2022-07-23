@@ -46,7 +46,13 @@ class deBaseGraphicOcclusionMesh;
  * are the vertices used in the faces and are stored as a continuous array of vertex
  * indices. Each face defines the number of corners it contains in clockwise order.
  */
-class deOcclusionMesh : public deFileResource{
+class DE_DLL_EXPORT deOcclusionMesh : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deOcclusionMesh> Ref;
+	
+	
+	
 private:
 	deOcclusionMeshBone *pBones;
 	deOcclusionMeshWeight *pWeights;

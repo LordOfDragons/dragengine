@@ -26,7 +26,10 @@
 #include "deoglHTSCluster.h"
 #include "deoglHTView.h"
 #include "deoglHTViewSector.h"
+#include "deoglHTViewSectorCluster.h"
 #include "deoglRHTSector.h"
+#include "deoglRHeightTerrain.h"
+#include "../../renderthread/deoglRenderThread.h"
 #include "../../utils/collision/deoglDCollisionBox.h"
 #include "../../utils/collision/deoglDCollisionVolume.h"
 
@@ -42,23 +45,29 @@
 
 deoglHTViewSector::deoglHTViewSector( deoglHTView &view, deoglRHTSector &sector ) :
 pView( view ),
-pSector( sector )
+pSector( sector ),
+pClusters( NULL ),
+pClusterCount( 0 )
 {
-	int c, count = sector.GetClusterCount() * sector.GetClusterCount();
+	const int count = sector.GetClusterCount();
+	decPoint i;
 	
-	pClusters = new sHTVSCluster[ count ];
+	pClusters = new deoglHTViewSectorCluster*[ count * count ];
 	
-	for( c=0; c<count; c++ ){
-		pClusters[ c ].lodLevel = 0;
-		pClusters[ c ].borders[ 0 ] = 0;
-		pClusters[ c ].borders[ 1 ] = 0;
-		pClusters[ c ].borders[ 2 ] = 0;
-		pClusters[ c ].borders[ 3 ] = 0;
+	for( i.y=0; i.y<count; i.y++ ){
+		for( i.x=0; i.x<count; i.x++ ){
+			pClusters[ pClusterCount++ ] = new deoglHTViewSectorCluster( *this, i );
+		}
 	}
 }
 
 deoglHTViewSector::~deoglHTViewSector(){
-	if( pClusters ) delete [] pClusters;
+	if( pClusters ){
+		while( pClusterCount > 0 ){
+			delete pClusters[ --pClusterCount ];
+		}
+		delete [] pClusters;
+	}
 }
 
 
@@ -66,83 +75,68 @@ deoglHTViewSector::~deoglHTViewSector(){
 // Management
 ///////////////
 
-sHTVSCluster &deoglHTViewSector::GetClusterAt( int x, int z ) const{
-	if( x < 0 || x >= pSector.GetClusterCount() || z < 0 || z >= pSector.GetClusterCount() ) DETHROW( deeInvalidParam );
+deoglHTViewSectorCluster &deoglHTViewSector::GetClusterAt( int index ) const{
+	if( index < 0 || index >= pClusterCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return *pClusters[ index ];
+}
+
+deoglHTViewSectorCluster &deoglHTViewSector::GetClusterAt( const decPoint &coordinates ) const{
+	if( coordinates.x < 0 || coordinates.x >= pSector.GetClusterCount()
+	|| coordinates.y < 0 || coordinates.y >= pSector.GetClusterCount() ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	return pClusters[ pSector.GetClusterCount() * z + x ];
+	return *pClusters[ pSector.GetClusterCount() * coordinates.y + coordinates.x ];
 }
 
 void deoglHTViewSector::ResetClusters(){
-	int c, count = pSector.GetClusterCount() * pSector.GetClusterCount();
-	
-	for( c=0; c<count; c++ ){
-		pClusters[ c ].lodLevel = 0;
-		pClusters[ c ].borders[ 0 ] = 0;
-		pClusters[ c ].borders[ 1 ] = 0;
-		pClusters[ c ].borders[ 2 ] = 0;
-		pClusters[ c ].borders[ 3 ] = 0;
+	int i;
+	for( i=0; i<pClusterCount; i++ ){
+		pClusters[ i ]->Reset();
 	}
 }
-/*
-void deoglHTViewSector::DetermineVisibilityUsing( deoglDCollisionVolume *collisionVolume ){
-	if( ! collisionVolume ) DETHROW( deeInvalidParam );
-	
-	int c, count = pSector.GetClusterCount() * pSector.GetClusterCount();
-	deoglHTSCluster *clusters = pSector.GetClusters();
-	deoglDCollisionBox colBox;
-	
-	for( c=0; c<count; c++ ){
-		colBox.SetCenter( clusters[ c ].GetCenter() );
-		colBox.SetHalfSize( clusters[ c ].GetHalfExtends() );
-		
-		if( collisionVolume->BoxHitsVolume( &colBox ) ){
-			pClusters[ c ].lodLevel = 0;
-			
-		}else{
-			pClusters[ c ].lodLevel = -1;
-		}
-	}
-}
-*/
+
 void deoglHTViewSector::UpdateLODLevels( const decVector &camera ){
 	deoglHTSCluster *clusters = pSector.GetClusters();
 	int clusterCount = pSector.GetClusterCount();
-	int c, totalClusterCount = clusterCount * clusterCount;
-	int x, z, base, neighborLOD;
+	int c, x, z, base, neighborLOD;
 	decVector difference;
 	float squareDist;
 	
 	// determine the new LOD levels based solely on the camera position without rules
-	for( c=0; c<totalClusterCount; c++ ){
+	for( c=0; c<pClusterCount; c++ ){
 		//if( pClusters[ c ].lodLevel != -1 ){
+			deoglHTViewSectorCluster &cluster = *pClusters[ c ];
 			if( clusters[ c ].GetNoLOD() ){
-				pClusters[ c ].lodLevel = 0;
+				cluster.SetLodLevel( 0 );
 				
 			}else{
 				difference = camera - clusters[ c ].GetCenter();
 				squareDist = difference * difference;
 				
 				if( squareDist < 1e4f ){
-					pClusters[ c ].lodLevel = 0;
+					cluster.SetLodLevel( 0 );
 					
 				}else if( squareDist < 4e4f ){
-					pClusters[ c ].lodLevel = 1;
+					cluster.SetLodLevel( 1 );
 					
 				}else if( squareDist < 9e4f ){
-					pClusters[ c ].lodLevel = 2;
+					cluster.SetLodLevel( 2 );
 					
 				}else if( squareDist < 16e4f ){
-					pClusters[ c ].lodLevel = 3;
+					cluster.SetLodLevel( 3 );
 					
 				}else{
-					pClusters[ c ].lodLevel = 4;
+					cluster.SetLodLevel( 4 );
 				}
 			}
 			
-			pClusters[ c ].borders[ ehtvsbLeft ] = ehtscbLeft;
-			pClusters[ c ].borders[ ehtvsbTop ] = ehtscbTop;
-			pClusters[ c ].borders[ ehtvsbRight ] = ehtscbRight;
-			pClusters[ c ].borders[ ehtvsbBottom ] = ehtscbBottom;
+			cluster.SetBorderTarget( deoglHTViewSectorCluster::ebLeft, deoglHTViewSectorCluster::ebtLeft );
+			cluster.SetBorderTarget( deoglHTViewSectorCluster::ebTop, deoglHTViewSectorCluster::ebtTop );
+			cluster.SetBorderTarget( deoglHTViewSectorCluster::ebRight, deoglHTViewSectorCluster::ebtRight );
+			cluster.SetBorderTarget( deoglHTViewSectorCluster::ebBottom, deoglHTViewSectorCluster::ebtBottom );
 		//}
 	}
 	
@@ -157,33 +151,38 @@ void deoglHTViewSector::UpdateLODLevels( const decVector &camera ){
 	for( z=0; z<clusterCount; z++ ){
 		for( x=0; x<clusterCount; x++ ){
 			base = clusterCount * z + x;
+			deoglHTViewSectorCluster &cluster = *pClusters[ base ];
 			
-			if( pClusters[ base ].lodLevel >= 0 ){
+			if( cluster.GetLodLevel() >= 0 ){
 				if( x > 0 ){
-					neighborLOD = pClusters[ base - 1 ].lodLevel;
-					if( neighborLOD >= 0 && neighborLOD < pClusters[ base ].lodLevel ){
-						pClusters[ base ].borders[ ehtvsbLeft ] = ehtscbFixLeft;
+					neighborLOD = pClusters[ base - 1 ]->GetLodLevel();
+					if( neighborLOD >= 0 && neighborLOD < cluster.GetLodLevel() ){
+						cluster.SetBorderTarget( deoglHTViewSectorCluster::ebLeft,
+							deoglHTViewSectorCluster::ebtFixLeft );
 					}
 				}
 				
 				if( z > 0 ){
-					neighborLOD = pClusters[ base - clusterCount ].lodLevel;
-					if( neighborLOD >= 0 && neighborLOD < pClusters[ base ].lodLevel ){
-						pClusters[ base ].borders[ ehtvsbTop ] = ehtscbFixTop;
+					neighborLOD = pClusters[ base - clusterCount ]->GetLodLevel();
+					if( neighborLOD >= 0 && neighborLOD < cluster.GetLodLevel() ){
+						cluster.SetBorderTarget( deoglHTViewSectorCluster::ebTop,
+							deoglHTViewSectorCluster::ebtFixTop );
 					}
 				}
 				
 				if( x < clusterCount - 1 ){
-					neighborLOD = pClusters[ base + 1 ].lodLevel;
-					if( neighborLOD >= 0 && neighborLOD < pClusters[ base ].lodLevel ){
-						pClusters[ base ].borders[ ehtvsbRight ] = ehtscbFixRight;
+					neighborLOD = pClusters[ base + 1 ]->GetLodLevel();
+					if( neighborLOD >= 0 && neighborLOD < cluster.GetLodLevel() ){
+						cluster.SetBorderTarget( deoglHTViewSectorCluster::ebRight,
+							deoglHTViewSectorCluster::ebtFixRight );
 					}
 				}
 				
 				if( z < clusterCount - 1 ){
-					neighborLOD = pClusters[ base + clusterCount ].lodLevel;
-					if( neighborLOD >= 0 && neighborLOD < pClusters[ base ].lodLevel ){
-						pClusters[ base ].borders[ ehtvsbBottom ] = ehtscbFixBottom;
+					neighborLOD = pClusters[ base + clusterCount ]->GetLodLevel();
+					if( neighborLOD >= 0 && neighborLOD < cluster.GetLodLevel() ){
+						cluster.SetBorderTarget( deoglHTViewSectorCluster::ebBottom,
+							deoglHTViewSectorCluster::ebtFixBottom );
 					}
 				}
 			}
@@ -192,15 +191,21 @@ void deoglHTViewSector::UpdateLODLevels( const decVector &camera ){
 }
 
 bool deoglHTViewSector::IsVisible() const{
-	int i, count = pSector.GetClusterCount() * pSector.GetClusterCount();
-	
-	for( i=0; i<count; i++ ){
-		if( pClusters[ i ].lodLevel >= 0 ){
+	int i;
+	for( i=0; i<pClusterCount; i++ ){
+		if( pClusters[ i ]->GetLodLevel() >= 0 ){
 			return true;
 		}
 	}
 	
 	return false;
+}
+
+void deoglHTViewSector::UpdateAllRTSInstances(){
+	int i;
+	for( i=0; i<pClusterCount; i++ ){
+		pClusters[ i ]->UpdateRTSInstances();
+	}
 }
 
 
@@ -211,34 +216,35 @@ bool deoglHTViewSector::IsVisible() const{
 void deoglHTViewSector::pLimitNeighborLODLevels( int x, int z ){
 	int clusterCount = pSector.GetClusterCount();
 	int base = clusterCount * z + x;
+	deoglHTViewSectorCluster &cluster = *pClusters[ base ];
 	
-	if( pClusters[ base ].lodLevel >= 0 && pClusters[ base ].lodLevel < HTSC_MAX_LOD ){
-		int nextLODLevel = pClusters[ base ].lodLevel + 1;
+	if( cluster.GetLodLevel() >= 0 && cluster.GetLodLevel() < HTSC_MAX_LOD ){
+		int nextLODLevel = cluster.GetLodLevel() + 1;
 		
 		if( x > 0 ){
-			if( pClusters[ base - 1 ].lodLevel > nextLODLevel ){
-				pClusters[ base - 1 ].lodLevel = nextLODLevel;
+			if( pClusters[ base - 1 ]->GetLodLevel() > nextLODLevel ){
+				pClusters[ base - 1 ]->SetLodLevel( nextLODLevel );
 				pLimitNeighborLODLevels( x - 1, z );
 			}
 		}
 		
 		if( z > 0 ){
-			if( pClusters[ base - clusterCount ].lodLevel > nextLODLevel ){
-				pClusters[ base - clusterCount ].lodLevel = nextLODLevel;
+			if( pClusters[ base - clusterCount ]->GetLodLevel() > nextLODLevel ){
+				pClusters[ base - clusterCount ]->SetLodLevel( nextLODLevel );
 				pLimitNeighborLODLevels( x, z - 1 );
 			}
 		}
 		
 		if( x < clusterCount - 1 ){
-			if( pClusters[ base + 1 ].lodLevel > nextLODLevel ){
-				pClusters[ base + 1 ].lodLevel = nextLODLevel;
+			if( pClusters[ base + 1 ]->GetLodLevel() > nextLODLevel ){
+				pClusters[ base + 1 ]->SetLodLevel( nextLODLevel );
 				pLimitNeighborLODLevels( x + 1, z );
 			}
 		}
 		
 		if( z < clusterCount - 1 ){
-			if( pClusters[ base + clusterCount ].lodLevel > nextLODLevel ){
-				pClusters[ base + clusterCount ].lodLevel = nextLODLevel;
+			if( pClusters[ base + clusterCount ]->GetLodLevel() > nextLODLevel ){
+				pClusters[ base + clusterCount ]->SetLodLevel( nextLODLevel );
 				pLimitNeighborLODLevels( x, z + 1 );
 			}
 		}

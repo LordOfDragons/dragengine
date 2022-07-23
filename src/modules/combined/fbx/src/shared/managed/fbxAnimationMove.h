@@ -43,6 +43,12 @@ class deBaseModule;
  * \brief FBX managed model cluster.
  */
 class fbxAnimationMove : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxAnimationMove> Ref;
+	
+	
+	
 private:
 	fbxAnimation &pAnimation;
 	fbxNode &pNodeStack;

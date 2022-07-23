@@ -8,6 +8,9 @@
 
 namespace Dragengine.Gui
 
+pin Dragengine.Scenery
+
+
 /**
  * \brief Immutable 3-component integer point.
  * 
@@ -105,6 +108,22 @@ fixed class Point3
 	 * \throws EDivisionByZero A component of point is 0.
 	 */
 	public func Point3 compDivide( Point3 point )
+		return null
+	end
+	
+	/**
+	 * \brief Convert to single precision vector with possible loss of precision.
+	 * \version 1.8
+	 */
+	public func Vector toVector()
+		return null
+	end
+	
+	/**
+	 * \brief Convert to double precision vector with possible loss of precision.
+	 * \version 1.8
+	 */
+	public func DVector toDVector()
 		return null
 	end
 	

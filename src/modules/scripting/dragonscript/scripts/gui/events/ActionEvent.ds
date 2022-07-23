@@ -32,7 +32,7 @@ namespace Dragengine.Gui.Events
  */
 class ActionEvent extends ModifiableEvent
 	/** \brief Action event identifier. */
-	public fixed var int idAction = 30
+	public static fixed var int idAction = 30
 	
 	
 	

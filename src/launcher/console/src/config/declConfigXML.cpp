@@ -47,7 +47,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-declConfigXML::declConfigXML( deLogger *logger, const char *loggerSource ) : declBaseXML( logger, loggerSource ){
+declConfigXML::declConfigXML( deLogger *logger, const char *loggerSource ) : delBaseXML( logger, loggerSource ){
 }
 
 declConfigXML::~declConfigXML(){
@@ -106,7 +106,7 @@ void declConfigXML::pReadConfig( const decXmlElementTag &root, declConfiguration
 			if( strcmp( tag->GetName(), "DUMMY" ) == 0 ){
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+				ErrorUnknownTag( root, *tag );
 			}
 		}
 	}

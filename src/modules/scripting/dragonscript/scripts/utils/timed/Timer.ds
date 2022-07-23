@@ -47,8 +47,8 @@ abstract class Timer
 	 * \param triggerTime Seconds to wait before triggering
 	 * \param periodic Reschedule trigger once finished.
 	 */
-	public func new( float triggerTime, bool periodic ) \
-	this( TimerManager.getDefault(), triggerTime, periodic )
+	public func new(float triggerTime, bool periodic)\
+	this(TimerManager.getDefault(), triggerTime, periodic)
 	end
 	
 	/**
@@ -58,17 +58,17 @@ abstract class Timer
 	 * \param triggerTime Seconds to wait before triggering
 	 * \param periodic True if this timer is periodic
 	 */
-	public func new( TimerManager manager, float triggerTime, bool periodic )
+	public func new(TimerManager manager, float triggerTime, bool periodic)
 		if manager == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("manager")
 		end
 		
-		this.pTimerManager = manager
-		this.pTriggerTime = DEMath.max( triggerTime, 0.0 )
-		this.pElapsedTime = 0.0
-		this.pIsPeriodic = periodic
+		pTimerManager = manager
+		pTriggerTime = DEMath.max(triggerTime, 0.0)
+		pElapsedTime = 0
+		pIsPeriodic = periodic
 		
-		this.pTimerManager.addTimer( this )
+		pTimerManager.addTimer(this)
 	end
 	
 	
@@ -79,54 +79,54 @@ abstract class Timer
 	 * Call to give up pending timer. Dropping the reference alone does not give up the timer.
 	 */
 	public func void giveUp()
-		if this.pTimerManager == null
+		if pTimerManager == null
 			return
 		end
 		
-		this.pTimerManager.removeTimer( this )
-		this.pTimerManager = null
+		pTimerManager.removeTimer(this)
+		pTimerManager = null
 	end
 	
 	
 	
 	/** \brief Timer manager the timer is registered at. */
 	public func TimerManager getTimerManager()
-		return this.pTimerManager
+		return pTimerManager
 	end
 	
 	/** \brief Seconds until timer elapsed. */
 	public func float getTriggerTime()
-		return this.pTriggerTime
+		return pTriggerTime
 	end
 	
 	/** \brief Set seconds until timer elapses. */
-	public func void setTriggerTime( float triggerTime )
-		this.pTriggerTime = DEMath.max( triggerTime, 0.0 )
+	public func void setTriggerTime(float triggerTime)
+		pTriggerTime = DEMath.max(triggerTime, 0.0)
 	end
 	
 	/** \brief Timer is periodic. */
 	public func bool getIsPeriodic()
-		return this.pIsPeriodic
+		return pIsPeriodic
 	end
 	
 	/** \brief Set if timer is periodic. */
-	public func void setIsPeriodic( bool periodic )
-		this.pIsPeriodic = periodic
+	public func void setIsPeriodic(bool periodic)
+		pIsPeriodic = periodic
 	end
 	
 	/** \brief Elapsed seconds. */
 	public func float getElapsedTime()
-		return this.pElapsedTime
+		return pElapsedTime
 	end
 	
 	/** \brief Set elapsed seconds. */
-	public func void setElapsedTime( float elapsedTime )
-		this.pElapsedTime = elapsedTime
+	public func void setElapsedTime(float elapsedTime)
+		pElapsedTime = elapsedTime
 	end
 	
 	/** \brief Remaining seconds until timer elapses. */
 	public func float getRemainingTime()
-		return DEMath.max( this.pTriggerTime - this.pElapsedTime, 0.0 )
+		return DEMath.max(pTriggerTime - pElapsedTime, 0.0)
 	end
 	
 	
@@ -141,25 +141,25 @@ abstract class Timer
 	 * If you need this kind of precise timing use FrameUpdateListener and track elapsed
 	 * time directly.
 	 */
-	public func void advance( float elapsed )
-		if elapsed <= 0
+	public func void advance(float elapsed)
+		if elapsed <= 0 or pTimerManager == null
 			return
 		end
 		
-		this.pElapsedTime += elapsed
-		if this.pElapsedTime < this.pTriggerTime
+		pElapsedTime += elapsed
+		if pElapsedTime < pTriggerTime
 			return
 		end
 		
-		if this.pIsPeriodic
-			//this.pElapsedTime = DEMath.normalize( this.pElapsedTime, this.pTriggerTime )
-			this.pElapsedTime = 0
+		if pIsPeriodic
+			//pElapsedTime = DEMath.normalize(pElapsedTime, pTriggerTime)
+			pElapsedTime = 0
+			fire()
 			
 		else
-			this.giveUp()
+			fire()
+			giveUp()
 		end
-		
-		this.fire()
 	end
 	
 	

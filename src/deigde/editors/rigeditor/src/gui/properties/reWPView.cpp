@@ -53,6 +53,8 @@
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -174,6 +176,23 @@ public:
 	}
 	
 	virtual void OnChanged( const decVector &vector, reRig &rig ) = 0;
+};
+
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	reWPView &pPanel;
+	
+public:
+	cBaseEditDVectorListener( reWPView &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		reRig * const rig = pPanel.GetRig();
+		if( rig ){
+			OnChanged( editDVector->GetDVector(), *rig );
+		}
+	}
+	
+	virtual void OnChanged( const decDVector &vector, reRig &rig ) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -363,11 +382,11 @@ public:
 };
 
 
-class cEditCameraPosition : public cBaseEditVectorListener{
+class cEditCameraPosition : public cBaseEditDVectorListener{
 public:
-	cEditCameraPosition( reWPView &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditCameraPosition( reWPView &panel ) : cBaseEditDVectorListener( panel ){ }
 	
-	virtual void OnChanged( const decVector &vector, reRig &rig ){
+	virtual void OnChanged( const decDVector &vector, reRig &rig ){
 		rig.GetCamera()->SetFreePosition( vector );
 	}
 };
@@ -610,7 +629,7 @@ pRig( NULL )
 	// camera
 	helper.GroupBox( content, groupBox, "Camera:", true );
 	
-	helper.EditVector( groupBox, "Position:", "Position of the camera.",
+	helper.EditDVector( groupBox, "Position:", "Position of the camera.",
 		pEditCamPosition, new cEditCameraPosition( *this ) );
 	helper.EditVector( groupBox, "Rotation:", "Rotation of the camera.",
 		pEditCamRotation, new cEditCameraRotation( *this ) );
@@ -745,7 +764,7 @@ void reWPView::UpdateCamera(){
 	const bool enableAttach = camera ? camera->GetAttachToBone() : false;
 	
 	if( camera ){
-		pEditCamPosition->SetVector( camera->GetFreePosition() );
+		pEditCamPosition->SetDVector( camera->GetFreePosition() );
 		pEditCamRotation->SetVector( camera->GetFreeOrientation() );
 		pEditCamFov->SetFloat( camera->GetFov() );
 		pEditCamFovRatio->SetFloat( camera->GetFovRatio() );
@@ -762,7 +781,7 @@ void reWPView::UpdateCamera(){
 		pEditCamRelRotation->SetVector( camera->GetRelativeOrientation() );
 		
 	}else{
-		pEditCamPosition->SetVector( decVector() );
+		pEditCamPosition->SetDVector( decDVector() );
 		pEditCamRotation->SetVector( decVector() );
 		pEditCamFov->ClearText();
 		pEditCamFovRatio->ClearText();

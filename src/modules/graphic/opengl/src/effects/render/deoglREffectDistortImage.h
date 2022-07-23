@@ -23,11 +23,11 @@
 #define _DEOGLREFFECTDISTORTIMAGE_H_
 
 #include "deoglREffect.h"
+#include "../../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRImage;
-class deoglShaderProgram;
 
 
 /**
@@ -38,7 +38,7 @@ private:
 	decVector2 pStrength;
 	deoglRImage *pImage;
 	
-	deoglShaderProgram *pShader;
+	deoglShaderProgramUsage pShader;
 	
 public:
 	/** \name Constructors and Destructors */

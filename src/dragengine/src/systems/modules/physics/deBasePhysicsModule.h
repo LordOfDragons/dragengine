@@ -59,7 +59,7 @@ class deSmokeEmitter;
  * 
  * The physics module provides physical simulations on colliders.
  */
-class deBasePhysicsModule : public deBaseModule{
+class DE_DLL_EXPORT deBasePhysicsModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -79,6 +79,14 @@ public:
 	
 	/** \brief Shut down physics module and cleans up. */
 	virtual void CleanUp() = 0;
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	virtual int GetFPSRate();
 	/*@}*/
 	
 	

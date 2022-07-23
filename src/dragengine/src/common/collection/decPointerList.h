@@ -22,6 +22,8 @@
 #ifndef _DECPOINTERLIST_H_
 #define _DECPOINTERLIST_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief List of pointers.
@@ -29,7 +31,7 @@
  * All pointers including NULL are allowed. Pointers can be included
  * multiple times in the list.
  */
-class decPointerList{
+class DE_DLL_EXPORT decPointerList{
 private:
 	void **pPointers;
 	int pPointerCount;
@@ -101,10 +103,17 @@ public:
 	
 	/**
 	 * \brief Move pointer.
-	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
-	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
+	 * \throws deeInvalidParam \em pointer is not part of the list.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
 	void Move( void *pointer, int index );
+	
+	/**
+	 * \brief Move pointer.
+	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
+	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount()-1.
+	 */
+	void Move( int from, int to );
 	
 	/**
 	 * \brief Remove pointer from index.

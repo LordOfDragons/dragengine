@@ -23,7 +23,7 @@
 /**
  * \brief 2 Component Integer Point.
  */
-class decPoint{
+class DE_DLL_EXPORT decPoint{
 public:
 	/** \brief X Component of point. */
 	int x;

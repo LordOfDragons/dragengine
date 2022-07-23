@@ -58,40 +58,40 @@ FXIMPLEMENT( igdeNativeFoxSlider, FXSlider, igdeNativeFoxSliderMap, ARRAYNUMBER(
 
 igdeNativeFoxSlider::igdeNativeFoxSlider(){ }
 
-igdeNativeFoxSlider::igdeNativeFoxSlider( igdeSlider &owner, FXComposite *parent, int layoutFlags ) :
-FXSlider( parent, this, ID_SELF, layoutFlags | SliderFlags( owner ) ),
-pOwner( &owner )
+igdeNativeFoxSlider::igdeNativeFoxSlider( igdeSlider &powner, FXComposite *pparent, int layoutFlags ) :
+FXSlider( pparent, this, ID_SELF, layoutFlags | SliderFlags( powner ) ),
+pOwner( &powner )
 {
 	UpdateScale();
 	UpdateRange();
 	UpdateValue();
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
 	
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 }
 
 igdeNativeFoxSlider::~igdeNativeFoxSlider(){
 }
 
-igdeNativeFoxSlider *igdeNativeFoxSlider::CreateNativeWidget( igdeSlider &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxSlider *igdeNativeFoxSlider::CreateNativeWidget( igdeSlider &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxSlider( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxSlider( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxSlider::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -141,8 +141,8 @@ void igdeNativeFoxSlider::UpdateDescription(){
 
 
 
-int igdeNativeFoxSlider::SliderFlags( const igdeSlider &owner ){
-	switch( owner.GetOrientation() ){
+int igdeNativeFoxSlider::SliderFlags( const igdeSlider &powner ){
+	switch( powner.GetOrientation() ){
 	case igdeSlider::eoHorizontal:
 		return SLIDER_HORIZONTAL | SLIDER_ARROW_DOWN | SLIDER_TICKS_BOTTOM;
 		

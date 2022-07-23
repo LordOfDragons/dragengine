@@ -27,12 +27,13 @@
 #include "deglDialogProfileListParameter.h"
 #include "../deglWindowMain.h"
 #include "../deglGuiBuilder.h"
-#include "../../engine/modules/parameter/deglEMParameter.h"
-#include "../../game/profile/deglGameProfile.h"
-#include "../../game/profile/deglGPMParameter.h"
-#include "../../game/profile/deglGPModule.h"
 
-#include <dragengine/deObjectReference.h>
+#include <delauncher/engine/modules/parameter/delEMParameter.h>
+#include <delauncher/game/profile/delGameProfile.h>
+#include <delauncher/game/profile/delGPModule.h>
+#include <delauncher/game/profile/delGPMParameter.h>
+#include <delauncher/game/profile/delGPMParameterList.h>
+
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -45,19 +46,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglDialogProfileListParameter::deglDialogProfileListParameter( deglEMParameter &parameter,
-	deglGameProfile &profile, const char *moduleName, FXMatrix *container,
+deglDialogProfileListParameter::deglDialogProfileListParameter( delEMParameter &parameter,
+	delGameProfile &profile, const char *moduleName, FXMatrix *container,
 	FXObject *target, int labelSelector, int valueSelector ) :
 pParameter( parameter ),
 pProfile( profile ),
 pModuleName( moduleName ),
-pLabel( NULL ),
-pComboBox( NULL ),
-pFrameSlider( NULL ),
-pSlider( NULL ),
-pSliderText( NULL ),
-pCheckBox( NULL ),
-pTextField( NULL ),
+pLabel( nullptr ),
+pComboBox( nullptr ),
+pFrameSlider( nullptr ),
+pSlider( nullptr ),
+pSliderText( nullptr ),
+pCheckBox( nullptr ),
+pTextField( nullptr ),
 pCustomized( false )
 {
 	if( ! container ){
@@ -82,7 +83,7 @@ pCustomized( false )
 	const char * const name = ! parameter.GetInfo().GetDisplayName().IsEmpty()
 		? parameter.GetInfo().GetDisplayName() : parameter.GetInfo().GetName();
 	
-	pLabel = new FXLabel( container, name, NULL, LAYOUT_FILL_X | LAYOUT_FILL_Y | LABEL_NORMAL | JUSTIFY_LEFT );
+	pLabel = new FXLabel( container, name, nullptr, LAYOUT_FILL_X | LAYOUT_FILL_Y | LABEL_NORMAL | JUSTIFY_LEFT );
 	pLabel->setTarget( target );
 	pLabel->setSelector( labelSelector );
 	pLabel->enable();
@@ -109,7 +110,7 @@ pCustomized( false )
 		pSlider->setTickDelta( parameter.GetInfo().GetValueStepSize() );
 		pSlider->create();
 		
-		pSliderText = new FXTextField( pFrameSlider, 5, NULL, 0, TEXTFIELD_NORMAL | TEXTFIELD_READONLY );
+		pSliderText = new FXTextField( pFrameSlider, 5, nullptr, 0, TEXTFIELD_NORMAL | TEXTFIELD_READONLY );
 		pSliderText->create();
 		}break;
 		
@@ -232,28 +233,28 @@ bool deglDialogProfileListParameter::ProcessSelChanged( FXObject *sender ){
 }
 
 void deglDialogProfileListParameter::SetParameterValue( const char *value ){
-	deObjectReference profileModule( pProfile.GetModuleList().GetModuleNamed( pModuleName ) );
+	delGPModule::Ref profileModule( pProfile.GetModules().GetNamed( pModuleName ) );
 	if( ! profileModule ){
 		if( pParameter.GetValue() == value ){
 			return;
 		}
-		profileModule.TakeOver( new deglGPModule( pModuleName ) );
-		pProfile.GetModuleList().AddModule( ( deglGPModule* )( deObject* )profileModule );
+		profileModule.TakeOver( new delGPModule( pModuleName ) );
+		pProfile.GetModules().Add( profileModule );
 	}
 	
-	deglGPMParameterList &mpParamList = ( ( deglGPModule& )( deObject& )profileModule ).GetParameterList();
+	delGPMParameterList &mpParamList = profileModule->GetParameters();
 	
 	const decString &parameterName = pParameter.GetInfo().GetName();
-	deObjectReference profileParameter( mpParamList.GetParameterNamed( parameterName ) );
+	delGPMParameter::Ref profileParameter( mpParamList.GetNamed( parameterName ) );
 	if( ! profileParameter ){
 		if( pParameter.GetValue() == value ){
 			return;
 		}
-		profileParameter.TakeOver( new deglGPMParameter( parameterName ) );
-		mpParamList.AddParameter( ( deglGPMParameter* )( deObject* )profileParameter );
+		profileParameter.TakeOver( new delGPMParameter( parameterName ) );
+		mpParamList.Add( profileParameter );
 	}
 	
-	( ( deglGPMParameter& )( deObject& )profileParameter ).SetValue( value );
+	profileParameter->SetValue( value );
 	
 	Update();
 }
@@ -284,10 +285,10 @@ void deglDialogProfileListParameter::Update(){
 	decString value( pParameter.GetValue() );
 	pCustomized = false;
 	
-	const deglGPModule * const module = pProfile.GetModuleList().GetModuleNamed( pModuleName );
+	const delGPModule * const module = pProfile.GetModules().GetNamed( pModuleName );
 	if( module ){
-		const deglGPMParameter * const parameter = module->GetParameterList()
-			.GetParameterNamed( pParameter.GetInfo().GetName() );
+		const delGPMParameter * const parameter = module->GetParameters()
+			.GetNamed( pParameter.GetInfo().GetName() );
 		if( parameter ){
 			value = parameter->GetValue();
 			pCustomized = true;
@@ -344,19 +345,19 @@ void deglDialogProfileListParameter::Update(){
 }
 
 void deglDialogProfileListParameter::Reset(){
-	deglGPMParameter *parameter = NULL;
-	deglGPModule * const module = pProfile.GetModuleList().GetModuleNamed( pModuleName );
+	delGPMParameter *parameter = nullptr;
+	delGPModule * const module = pProfile.GetModules().GetNamed( pModuleName );
 	if( module ){
-		parameter = module->GetParameterList().GetParameterNamed( pParameter.GetInfo().GetName() );
+		parameter = module->GetParameters().GetNamed( pParameter.GetInfo().GetName() );
 	}
 	
 	if( module ){
 		if( parameter ){
-			module->GetParameterList().RemoveParameter( parameter );
+			module->GetParameters().Remove( parameter );
 		}
 		
-		if( module->GetParameterList().GetParameterCount() == 0 ){
-			pProfile.GetModuleList().RemoveModule( module );
+		if( module->GetParameters().GetCount() == 0 ){
+			pProfile.GetModules().Remove( module );
 		}
 	}
 	

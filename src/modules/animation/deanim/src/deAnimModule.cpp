@@ -151,9 +151,9 @@ void deAnimModule::LoadAnimation( decBaseFileReader &file, deAnimation &anim ){
 	try{
 		// bones
 		boneCount = file.ReadByte();
-		if( boneCount < 1 ){
-			DETHROW( deeInvalidFormat );
-		}
+// 		if( boneCount < 1 ){
+// 			DETHROW( deeInvalidFormat );
+// 		}
 		
 		for( i=0; i<boneCount; i++ ){
 			newBone = new deAnimationBone;
@@ -170,9 +170,9 @@ void deAnimModule::LoadAnimation( decBaseFileReader &file, deAnimation &anim ){
 		
 		// moves
 		moveCount = file.ReadUShort();
-		if( moveCount < 1 ){
-			DETHROW( deeInvalidFormat );
-		}
+// 		if( moveCount < 1 ){
+// 			DETHROW( deeInvalidFormat );
+// 		}
 		
 		for( i=0; i<moveCount; i++ ){
 			newMove = new deAnimationMove;
@@ -189,6 +189,7 @@ void deAnimModule::LoadAnimation( decBaseFileReader &file, deAnimation &anim ){
 				
 				playtimeFrames = file.ReadUShort();
 				
+				newMove->SetFPS( ( float )fps );
 				newMove->SetPlaytime( timeFactor * playtimeFrames );
 				
 			}else{
@@ -204,6 +205,7 @@ void deAnimModule::LoadAnimation( decBaseFileReader &file, deAnimation &anim ){
 					fps = 50;
 				}
 				
+				newMove->SetFPS( ( float )fps );
 				newMove->SetPlaytime( playtimeSeconds );
 			}
 			
@@ -353,6 +355,174 @@ void deAnimModule::LoadAnimation( decBaseFileReader &file, deAnimation &anim ){
 	}
 }
 
-void deAnimModule::SaveAnimation( decBaseFileWriter &file, const deAnimation &anim ){
-	// nothing yet
+void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &animation ){
+	const char * const headerSig = "Drag[en]gine Animation  ";
+	int i, j, k;
+	
+	// write header
+	writer.Write( headerSig, 24 );
+	writer.WriteByte( 1 ); // version
+	writer.WriteByte( 0xf0 ); // flags (0xf0 = hack flag)
+	
+	// write bones
+	const int boneCount = animation.GetBoneCount();
+	writer.WriteByte( boneCount );
+	
+	for( i=0; i<boneCount; i++ ){
+		writer.WriteString8( animation.GetBone( i )->GetName() );
+	}
+	
+	// write moves
+	const int moveCount = animation.GetMoveCount();
+	writer.WriteUShort( moveCount );
+	
+	for( i=0; i<moveCount; i++ ){
+		const deAnimationMove &move = *animation.GetMove( i );
+		const int kflCount = move.GetKeyframeListCount();
+		
+		writer.WriteString8( move.GetName() );
+		
+		writer.WriteFloat( move.GetPlaytime() );
+		
+		int playtimeFrames = 0;
+		for( j=0; j<kflCount; j++ ){
+			const deAnimationKeyframeList &kfl = *move.GetKeyframeList( j );
+			const int keyframeCount = kfl.GetKeyframeCount();
+			const float fps = move.GetFPS();
+			int realKeyframeCount = 0;
+			int lastFrame = -1;
+			
+			for( k=0; k<keyframeCount; k++ ){
+				const int frame = ( int )( fps * kfl.GetKeyframe( k )->GetTime() + 0.5f );
+				if( frame != lastFrame ){
+					lastFrame = frame;
+					realKeyframeCount++;
+				}
+			}
+			
+			playtimeFrames = decMath::max( playtimeFrames, realKeyframeCount );
+		}
+		writer.WriteUShort( playtimeFrames );
+		
+		// write bones
+		for( j=0; j<boneCount; j++ ){
+			const deAnimationKeyframeList &kfl = *move.GetKeyframeList( j );
+			const int keyframeCount = kfl.GetKeyframeCount();
+			
+			// TODO optimize writing using flags
+			bool hasVarPos = true;
+			bool hasVarRot = true;
+			bool hasVarScale = true;
+			bool fewKeyframes = true;
+			bool ignoreBone = keyframeCount == 0;
+			bool formatFloat = true;
+			
+			int flags = 0;
+			if( hasVarPos ){
+				flags |= FLAG_HAS_VAR_POS;
+			}
+			if( hasVarRot ){
+				flags |= FLAG_HAS_VAR_ROT;
+			}
+			if( hasVarScale ){
+				flags |= FLAG_HAS_VAR_SCALE;
+			}
+			if( fewKeyframes ){
+				flags |= FLAG_HAS_FEW_KEYFRAMES;
+			}
+			if( ignoreBone ){
+				flags |= FLAG_IGNORE_BONE;
+			}
+			if( formatFloat ){
+				flags |= FLAG_FORMAT_FLOAT;
+			}
+			writer.WriteByte( flags );
+			
+			// write keyframes if required
+			if( ! ignoreBone && ( hasVarPos || hasVarRot || hasVarScale ) ){
+				// we have to caluclate first the real keyframe count. this is required since
+				// due to sampling two keyframes can fall on the same frame number. in this
+				// case the first one is used and the second one skipped which drops the count
+				const float fps = move.GetFPS();
+				
+				if( fewKeyframes ){
+					int realKeyframeCount = 0;
+					int lastFrame = -1;
+					
+					for( k=0; k<keyframeCount; k++ ){
+						const int frame = ( int )( fps * kfl.GetKeyframe( k )->GetTime() + 0.5f );
+						if( frame != lastFrame ){
+							lastFrame = frame;
+							realKeyframeCount++;
+						}
+					}
+					
+					writer.WriteUShort( realKeyframeCount );
+				}
+				
+				int lastFrame = -1;
+				
+				for( k=0; k<keyframeCount; k++ ){
+					const deAnimationKeyframe &keyframe = *kfl.GetKeyframe( k );
+					
+					if( fewKeyframes ){
+						const int frame = ( int )( fps * kfl.GetKeyframe( k )->GetTime() + 0.5f );
+						if( frame == lastFrame ){
+							continue;
+						}
+						
+						lastFrame = frame;
+						writer.WriteUShort( ( unsigned short )frame );
+					}
+					
+					if( hasVarPos ){
+						const decVector &position = keyframe.GetPosition();
+						
+						if( formatFloat ){
+							writer.WriteFloat( position.x );
+							writer.WriteFloat( position.y );
+							writer.WriteFloat( position.z );
+							
+						}else{
+							writer.WriteShort( ( short )( position.x * 1000.0f + 0.5f ) );
+							writer.WriteShort( ( short )( position.y * 1000.0f + 0.5f ) );
+							writer.WriteShort( ( short )( position.z * 1000.0f + 0.5f ) );
+						}
+					}
+					
+					// read rotation if variable
+					if( hasVarRot ){
+						const decVector &rotation = keyframe.GetRotation();
+						
+						if( formatFloat ){
+							writer.WriteFloat( rotation.x );
+							writer.WriteFloat( rotation.y );
+							writer.WriteFloat( rotation.z );
+							
+						}else{
+							writer.WriteShort( ( short )( rotation.x * RAD2DEG * 100.0f + 0.5f ) );
+							writer.WriteShort( ( short )( rotation.y * RAD2DEG * 100.0f + 0.5f ) );
+							writer.WriteShort( ( short )( rotation.z * RAD2DEG * 100.0f + 0.5f ) );
+						}
+					}
+					
+					// read scaleing if variable
+					if( hasVarScale ){
+						const decVector &scale = keyframe.GetScale();
+						
+						if( formatFloat ){
+							writer.WriteFloat( scale.x );
+							writer.WriteFloat( scale.y );
+							writer.WriteFloat( scale.z );
+							
+						}else{
+							writer.WriteShort( ( short )( scale.x * 100.0f + 0.5f ) );
+							writer.WriteShort( ( short )( scale.y * 100.0f + 0.5f ) );
+							writer.WriteShort( ( short )( scale.z * 100.0f + 0.5f ) );
+						}
+					}
+				}
+			}
+		}
+	}
 }

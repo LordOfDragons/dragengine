@@ -33,17 +33,25 @@ class deoglRenderThread;
 
 #ifdef OGL_THREAD_CHECK
 	void dbgInitThreadCheck();
-	#define OGL_INIT_THREAD_CHECK		dbgInitThreadCheck()
+	#define OGL_INIT_THREAD_CHECK dbgInitThreadCheck()
 	void dbgInitMainThreadCheck();
-	#define OGL_INIT_MAIN_THREAD_CHECK	dbgInitMainThreadCheck()
+	#define OGL_INIT_MAIN_THREAD_CHECK dbgInitMainThreadCheck()
 	
 	void dbgOnMainThreadCheck();
-	#define OGL_ON_MAIN_THREAD			dbgOnMainThreadCheck();
+	#define OGL_ON_MAIN_THREAD dbgOnMainThreadCheck();
+	
+	void dbgOnRenderThreadCheck();
+	#define OGL_ON_RENDER_THREAD dbgOnRenderThreadCheck();
+	
+	void dbgOnMainOrRenderThreadCheck();
+	#define OGL_ON_MAIN_OR_RENDER_THREAD dbgOnMainOrRenderThreadCheck();
 	
 #else
 	#define OGL_INIT_THREAD_CHECK
 	#define OGL_INIT_MAIN_THREAD_CHECK
 	#define OGL_ON_MAIN_THREAD
+	#define OGL_ON_RENDER_THREAD
+	#define OGL_ON_MAIN_OR_RENDER_THREAD
 #endif
 
 
@@ -56,12 +64,12 @@ class deoglRenderThread;
 	void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
 	#define OGL_CHECK( renderThread, cmd )		glGetError(); cmd; dbgCheckOglError( renderThread, __FILE__, __LINE__ )
 	#define OGLX_CHECK( renderThread, cmd )		if( ( cmd ) == False ) (renderThread).GetLogger().LogErrorFormat( "failed at %s:%i\n", __FILE__, __LINE__ )
-	#define OGL_IF_CHECK(renderThread)			renderThread
+	#define OGL_IF_CHECK(cmd)			cmd
 	
 #else
 	#define OGL_CHECK(renderThread,cmd)			cmd
 	#define OGLX_CHECK(renderThread,cmd)		cmd
-	#define OGL_IF_CHECK(renderThread)
+	#define OGL_IF_CHECK(cmd)
 #endif
 
 
@@ -224,6 +232,30 @@ struct deoglVBOHeightTerrain2{
 	GLfloat normal;
 };
 
+
+
+/** Render task filters. */
+enum eRenderTaskFilters{
+	ertfRender = 0x1,
+	ertfSolid = 0x2,
+	ertfShadowNone = 0x4,
+	ertfReflected = 0x8,
+	ertfRendered = 0x10,
+	ertfOutline = 0x20,
+	ertfOutlineSolid = 0x40,
+	ertfHoles = 0x80,
+	ertfDecal = 0x100,
+	ertfDoubleSided = 0200
+};
+
+
+
+/** Printf problems. */
+#ifdef OS_W32
+#define OGLPFLLU "I64u"
+#else
+#define OGLPFLLU "llu"
+#endif
 
 
 #endif

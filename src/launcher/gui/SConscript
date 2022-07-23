@@ -3,6 +3,7 @@ from SConsCommon import *
 Import('parent_env parent_targets parent_report')
 
 envLauncher = parent_env.Clone()
+envLauncher.Tool('symlink')
 
 buildLauncher = envLauncher['build_guilauncher'] != TernaryVariableNo
 
@@ -25,18 +26,17 @@ elif envLauncher['OSPosix']:
 
 libs = []
 
-appendLibrary(envLauncher, parent_targets['dragengine'], libs)
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
 appendLibrary(envLauncher, parent_targets['lib_fox'], libs)
-libs.extend(parent_targets['dragengine']['binlibs'])
+libs.extend(parent_targets['delauncher']['binlibs'])
 
-if envLauncher['OSPosix']:
+if envLauncher['OSPosix'] or envLauncher['OSMacOS']:
 	envLauncher.Append(CXXFLAGS = '-DHAS_LIB_DL')
 	
 elif envLauncher['OSBeOS']:
 	libs.extend(['root', 'be'])
 
 elif envLauncher['OSWindows']:
-	libs.extend(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'shell32'])
 	envLauncher.Append(LINKFLAGS = '-Wl,-subsystem,windows')
 	envLauncher.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
@@ -74,15 +74,11 @@ if envLauncher['OSWindows']:
 	envEngine.Append(CXXFLAGS = ['-DOS_W32_HELPER'])
 	
 	libsEngine = []
-	appendLibrary(envEngine, parent_targets['dragengine'], libsEngine)
-	libsEngine.extend(parent_targets['dragengine']['binlibs'])
-	libsEngine.extend(['kernel32', 'user32'])
+	appendLibrary(envEngine, parent_targets['delauncher'], libsEngine)
+	libsEngine.extend(parent_targets['delauncher']['binlibs'])
 	
-	objectsEngine = [
-		envEngine.StaticObject('src/engine/deglEngineProcess-helper',
-			'src/engine/deglEngineProcess.cpp'),
-		envEngine.StaticObject('src/engine/deglEngineProcessRunGame-helper',
-			'src/engine/deglEngineProcessRunGame.cpp')]
+	objectsEngine = [envEngine.StaticObject('src/engine/deglEngineProcessHelper-helper',
+		'src/engine/deglEngineProcessHelper.cpp')]
 	
 	programEngine = envEngine.Program(target='delauncher-gui-engine', source=objectsEngine, LIBS=libsEngine)
 	programs.append(programEngine)
@@ -91,6 +87,11 @@ if envLauncher['OSWindows']:
 
 program = envLauncher.Program(target='delauncher-gui', source=objects, LIBS=libs)
 programs.append(program)
+
+if envLauncher['OSPosix']:
+	linkProgram = envLauncher.SymLink(envLauncher.File('delauncher'), program)
+	programs.append(linkProgram)
+
 targetBuild = parent_env.Alias('launcher_gui_build', programs)
 
 install = []
@@ -99,6 +100,17 @@ archive = {}
 install.append(envLauncher.Install(pathBin, program))
 for p in program:
 	archive[os.path.join(pathBin, p.name)] = p
+
+if envLauncher['OSPosix']:
+	for l in linkProgram:
+		target = os.path.join(pathBin, 'delauncher')
+		installSandbox = GetOption('install_sandbox')
+		if installSandbox:
+			target = os.path.join(installSandbox, SCons.Util.make_path_relative(target))
+		source = l
+		install.append(envLauncher.Command(target, l, Copy('$TARGET', '$SOURCE')))
+		
+		archive[os.path.join(pathBin, l.name)] = l
 
 if envLauncher['OSWindows']:
 	install.append(envEngine.Install(pathBin, programEngine))
@@ -147,6 +159,10 @@ if envLauncher['OSPosix']:
 	source = 'man/delauncher-gui.1'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
+	
+if envLauncher['OSWindows'] and envLauncher['CROSSCOMPILE_CLANG'] and envLauncher['with_install_pdb']:
+	install.append(envLauncher.Install(pathBin, 'delauncher-gui.pdb'))
+	archive['{}/delauncher-gui.pdb'.format(pathBin)] = envLauncher.File('delauncher-gui.pdb')
 
 targetInstall = parent_env.Alias('launcher_gui', install)
 

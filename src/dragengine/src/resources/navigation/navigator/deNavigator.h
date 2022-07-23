@@ -41,7 +41,13 @@ class deWorld;
  * impassable. By default this is set to 1'000'000. Hence using a fix cost of more than
  * 1M marks the node or connection as blocked or impassable.
  */
-class deNavigator : public deResource{
+class DE_DLL_EXPORT deNavigator : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNavigator> Ref;
+	
+	
+	
 private:
 	int pLayer;
 	deNavigationSpace::eSpaceTypes pSpaceType;

@@ -32,7 +32,7 @@
  * The set is ordered.
  * 
  */
-class decUuidSet{
+class DE_DLL_EXPORT decUuidSet{
 private:
 	decUuid *pUuids;
 	int pUuidCount;

@@ -27,6 +27,7 @@
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
 class decIntList;
+class dearAnimatorInstance;
 class deAnimatorLink;
 class dearControllerStates;
 
@@ -36,8 +37,11 @@ class dearControllerStates;
  */
 class dearLink{
 private:
+	const dearAnimatorInstance &pInstance;
 	deAnimatorLink pLink;
-	decCurveBezierEvaluator pEvaluator;
+	const decCurveBezierEvaluator pEvaluator;
+	int pBoneIndex;
+	const bool pWrapY;
 	
 	
 	
@@ -45,11 +49,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create link. */
-	dearLink( const deAnimatorLink &link, const decIntList &controllerMapping );
+	dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
+		const decIntList &controllerMapping );
 	
 	/** \brief Clean up link. */
 	~dearLink();
 	/*@}*/
+	
+	
 	
 	/** \name Management */
 	/*@{*/
@@ -62,15 +69,19 @@ public:
 	/** \brief Controller index relative to parent animator instance. */
 	int GetController() const;
 	
+	/** \brief Link has valid bone. */
+	bool HasBone() const;
+	
+	
 	
 	/** \brief Value of link. */
-	float GetValue( const dearControllerStates &controllerStates, float defaultValue ) const;
+	float GetValue( float defaultValue ) const;
 	
 	/** \brief Vector of link. */
-	void GetVector( const dearControllerStates &controllerStates, decVector &vector ) const;
+	void GetVector( decVector &vector ) const;
 	
 	/** \brief Quaternion of link. */
-	void GetQuaternion( const dearControllerStates &controllerStates, decQuaternion &quaternion ) const;
+	void GetQuaternion( decQuaternion &quaternion ) const;
 	/*@}*/
 };
 

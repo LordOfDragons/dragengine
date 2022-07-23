@@ -28,7 +28,7 @@
 /**
  * \brief Model Triangular Face.
  */
-class deModelFace{
+class DE_DLL_EXPORT deModelFace{
 private:
 	int pTexture;
 	int pVertex[ 3 ];

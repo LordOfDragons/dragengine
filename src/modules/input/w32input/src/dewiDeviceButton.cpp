@@ -46,7 +46,9 @@ pPressed( false ),
 pWICode( 0 ),
 pWIChar( -1 ),
 pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ){
+pMatchPriority( 10 ),
+pKeyLocation( deInputEvent::eklNone )
+{
 }
 
 dewiDeviceButton::~dewiDeviceButton(){
@@ -123,6 +125,10 @@ void dewiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
 
 void dewiDeviceButton::SetMatchPriority( int priority ){
 	pMatchPriority = priority;
+}
+
+void dewiDeviceButton::SetKeyLocation( deInputEvent::eKeyLocation location ){
+	pKeyLocation = location;
 }
 
 

@@ -44,6 +44,7 @@ deoglParameterFloat( ogl )
 	SetDescription( "Sets the size of pcf taps for shadow cube maps." );
 	SetCategory( ecExpert );
 	SetDisplayName( "Shadow Cube PCV Size" );
+	SetDefaultValue( "1" );
 }
 
 deoglPShadowCubePCFSize::~deoglPShadowCubePCFSize(){

@@ -29,21 +29,22 @@ class dearAnimatorInstance;
 
 
 /**
- * \brief Task applying rules to an animator instance state.
+ * Task applying rules to an animator instance state.
  */
 class dearTaskApplyRules : public deParallelTask{
 private:
 	dearAnimatorInstance &pInstance;
+	bool pDropped;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create task. */
+	/** Create task. */
 	dearTaskApplyRules( dearAnimatorInstance &instance );
 	
-	/** \brief Clean up task. */
+	/** Clean up task. */
 	virtual ~dearTaskApplyRules();
 	/*@}*/
 	
@@ -51,14 +52,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator instance owning this task. */
+	/** Animator instance owning this task. */
 	inline dearAnimatorInstance &GetInstance() const{ return pInstance; }
 	
-	/** \brief Parallel task implementation. */
+	/** Instance dropped task. */
+	void Drop();
+	
+	/** Parallel task implementation. */
 	virtual void Run();
 	
 	/**
-	 * \brief Synchronous processing of task Run() finished.
+	 * Synchronous processing of task Run() finished.
 	 * \details Called after the task has finished and has been collected by
 	 *          deParallelProcessing::Update(). This call runs synchronously in the
 	 *          main engine thread. You have to check using IsCancelled() if the
@@ -72,10 +76,10 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Short task name for debugging. */
+	/** Short task name for debugging. */
 	virtual decString GetDebugName() const;
 	
-	/** \brief Task details for debugging. */
+	/** Task details for debugging. */
 	virtual decString GetDebugDetails() const;
 	/*@}*/
 };

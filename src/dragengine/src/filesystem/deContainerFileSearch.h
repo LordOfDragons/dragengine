@@ -30,7 +30,7 @@
  * 
  * Used with deVFSContainer::SearchFiles() call.
  */
-class deContainerFileSearch{
+class DE_DLL_EXPORT deContainerFileSearch{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

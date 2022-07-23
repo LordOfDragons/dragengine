@@ -51,7 +51,6 @@
 
 #ifdef OS_BEOS
 
-#include "engine/declEngine.h"
 #include <dragengine/app/deOSBeOS.h>
 
 class deBApp : public BApplication{
@@ -89,8 +88,8 @@ public:
 	}
 	
 	virtual void MessageReceived( BMessage *message ){
-		if( pLauncher.GetEngine() && pLauncher.GetEngine()->GetEngine() ){
-			pLauncher.GetEngine()->GetEngine()->GetOS()->CastToOSBeOS()->MessageReceived( message );
+		if( pLauncher.runningGame && pLauncher.runningGame->GetEngineInstance() ){
+			pLauncher.runningGame->GetEngineInstance()->BeosMessageReceived( message );
 		}
 	}
 	

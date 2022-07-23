@@ -22,6 +22,7 @@
 #ifndef _DEBASEGRAPHICDYNAMICSKIN_H_
 #define _DEBASEGRAPHICDYNAMICSKIN_H_
 
+#include "../../../dragengine_export.h"
 
 class deDSRenderable;
 
@@ -31,7 +32,7 @@ class deDSRenderable;
  *
  * Graphic Module Dynamic Skin Peer.
  */
-class deBaseGraphicDynamicSkin{
+class DE_DLL_EXPORT deBaseGraphicDynamicSkin{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

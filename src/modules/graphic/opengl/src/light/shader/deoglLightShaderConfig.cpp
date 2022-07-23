@@ -53,7 +53,8 @@ void deoglLightShaderConfig::Reset(){
 	pShadowTapMode = estmSingle;
 	pShadowMappingAlgorithm1 = esma2D;
 	pShadowMappingAlgorithm2 = esma2D;
-	pMaterialNormalMode = emnmIntBasic;
+	pMaterialNormalModeDec = emnmFloat;
+	pMaterialNormalModeEnc = emnmFloat;
 	pParticleMode = epmParticle;
 	
 	pDecodeInDepth = false;
@@ -66,6 +67,7 @@ void deoglLightShaderConfig::Reset(){
 	pFullScreenQuad = false;
 	pSubSurface = false;
 	pLuminanceOnly = false;
+	pGIRay = false;
 	
 	pTextureNoise = false;
 	pTextureColor = false;
@@ -97,8 +99,12 @@ void deoglLightShaderConfig::SetShadowMappingAlgorithm2( eShadowMappingAlgorithm
 	pShadowMappingAlgorithm2 = shadowMappingAlgorithm;
 }
 
-void deoglLightShaderConfig::SetMaterialNormalMode( eMaterialNormalModes materialNormalMode ){
-	pMaterialNormalMode = materialNormalMode;
+void deoglLightShaderConfig::SetMaterialNormalModeDec( eMaterialNormalModes materialNormalMode ){
+	pMaterialNormalModeDec = materialNormalMode;
+}
+
+void deoglLightShaderConfig::SetMaterialNormalModeEnc( eMaterialNormalModes materialNormalMode ){
+	pMaterialNormalModeEnc = materialNormalMode;
 }
 
 void deoglLightShaderConfig::SetParticleMode( eParticleModes mode ){
@@ -145,6 +151,10 @@ void deoglLightShaderConfig::SetSubSurface( bool subSurface ){
 
 void deoglLightShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
 	pLuminanceOnly = luminanceOnly;
+}
+
+void deoglLightShaderConfig::SetGIRay( bool giRay ){
+	pGIRay = giRay;
 }
 
 
@@ -201,10 +211,11 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	const char * const materialNormalModeStrings[] = { "matnorFloat", "matnorIntBasic", "matnorSpheremap" };
 	const char * const particleModeStrings[] = { "particle", "ribbon", "beam" };
 	
-	string.Format( "(%s %s %s %s sma1=%s sma2=%s",
+	string.Format( "(%s %s %s/%s %s sma1=%s sma2=%s",
 		lightModeStrings[ pLightMode ],
 		shadowTapModeStrings[ pShadowTapMode ],
-		materialNormalModeStrings[ pMaterialNormalMode ],
+		materialNormalModeStrings[ pMaterialNormalModeDec ],
+		materialNormalModeStrings[ pMaterialNormalModeEnc ],
 		particleModeStrings[ pParticleMode ],
 		shadowMappingAlgorithmStrings[ pShadowMappingAlgorithm1 ],
 		shadowMappingAlgorithmStrings[ pShadowMappingAlgorithm2 ] );
@@ -253,6 +264,9 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pLuminanceOnly ){
 		string.Append( " luminanceOnly" );
 	}
+	if( pGIRay ){
+		string.Append( " giRay" );
+	}
 	
 	if( pTextureShadow1Solid ){
 		string.Append( " shadow1Solid" );
@@ -286,7 +300,8 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pShadowTapMode = config.pShadowTapMode;
 	pShadowMappingAlgorithm1 = config.pShadowMappingAlgorithm1;
 	pShadowMappingAlgorithm2 = config.pShadowMappingAlgorithm2;
-	pMaterialNormalMode = config.pMaterialNormalMode;
+	pMaterialNormalModeDec = config.pMaterialNormalModeDec;
+	pMaterialNormalModeEnc = config.pMaterialNormalModeEnc;
 	pParticleMode = config.pParticleMode;
 	
 	pDecodeInDepth = config.pDecodeInDepth;
@@ -299,6 +314,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pFullScreenQuad = config.pFullScreenQuad;
 	pSubSurface = config.pSubSurface;
 	pLuminanceOnly = config.pLuminanceOnly;
+	pGIRay = config.pGIRay;
 	
 	pTextureNoise = config.pTextureNoise;
 	pTextureColor = config.pTextureColor;
@@ -319,7 +335,8 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pShadowTapMode == config.pShadowTapMode
 		&& pShadowMappingAlgorithm1 == config.pShadowMappingAlgorithm1
 		&& pShadowMappingAlgorithm2 == config.pShadowMappingAlgorithm2
-		&& pMaterialNormalMode == config.pMaterialNormalMode
+		&& pMaterialNormalModeDec == config.pMaterialNormalModeDec
+		&& pMaterialNormalModeEnc == config.pMaterialNormalModeEnc
 		&& pParticleMode == config.pParticleMode
 		
 		&& pDecodeInDepth == config.pDecodeInDepth
@@ -332,6 +349,7 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pFullScreenQuad == config.pFullScreenQuad
 		&& pSubSurface == config.pSubSurface
 		&& pLuminanceOnly == config.pLuminanceOnly
+		&& pGIRay == config.pGIRay
 		
 		&& pTextureNoise == config.pTextureNoise
 		&& pTextureColor == config.pTextureColor

@@ -27,7 +27,7 @@
  * color and 1 indicates full luminance. The color also contains an alpha component
  * where 0 indicates completly transparent and 1 indicates completly opaque.
  */
-class decColor{
+class DE_DLL_EXPORT decColor{
 public:
 	/** \brief Red Component of color. */
 	float r;
@@ -60,6 +60,38 @@ public:
 	
 	/** \brief Creates copy of a color with different alpha value. */
 	decColor( const decColor &copy, float alpha );
+	
+	/**
+	 * \brief Create color from HSV.
+	 * \version 1.8
+	 * \param[in] hue Hue in the range from 0 (0 degrees) to 1 (360 degrees).
+	 *                Values outside this range are normalized hence -0.2
+	 *                is used as 0.8 for the calculation.
+	 * \param[in] saturation Saturation in the range from 0 to 1. Value is clamped.
+	 * \param[in] value Value in the range from 0 to 1. Value is clamped.
+	 */
+	static decColor CreateHSV( float hue, float saturation, float value );
+	
+	/**
+	 * \brief Create color from HSL.
+	 * \version 1.8
+	 * \param[in] hue Hue in the range from 0 (0 degrees) to 1 (360 degrees).
+	 *                Values outside this range are normalized hence -0.2
+	 *                is used as 0.8 for the calculation.
+	 * \param[in] saturation Saturation in the range from 0 to 1. Value is clamped.
+	 * \param[in] lightness Lightness in the range from 0 to 1. Value is clamped.
+	 */
+	static decColor CreateHSL( float hue, float saturation, float lightness );
+	
+	/**
+	 * \brief Create color from CMYK.
+	 * \version 1.8
+	 * \param[in] cyan Cyan in the range from 0 to 1. Value is clamped.
+	 * \param[in] magenta Magenta in the range from 0 to 1. Value is clamped.
+	 * \param[in] yellow Yellow in the range from 0 to 1. Value is clamped.
+	 * \param[in] black Black in the range from 0 to 1. Value is clamped.
+	 */
+	static decColor CreateCMYK( float cyan, float magenta, float yellow, float black );
 	/*@}*/
 	
 	
@@ -89,6 +121,34 @@ public:
 	
 	/** \brief Color is equal component wise to another color with respect to a threshold. */
 	bool IsEqualTo( const decColor &color, float threshold = COLOR_THRESHOLD ) const;
+	
+	/**
+	 * \brief Convert to HSV.
+	 * \version 1.8
+	 * \param[out] hue Hue in the range from 0 (0 degrees) to 1 (360 degrees).
+	 * \param[out] saturation Saturation in the range from 0 to 1.
+	 * \param[out] value Value in the range from 0 to 1.
+	 */
+	void ToHSV( float &hue, float &saturation, float &value ) const;
+	
+	/**
+	 * \brief Convert to HSL.
+	 * \version 1.8
+	 * \param[out] hue Hue in the range from 0 (0 degrees) to 1 (360 degrees).
+	 * \param[out] saturation Saturation in the range from 0 to 1.
+	 * \param[out] lightness Lightness in the range from 0 to 1.
+	 */
+	void ToHSL( float &hue, float &saturation, float &lightness ) const;
+	
+	/**
+	 * \brief Convert to CMYK.
+	 * \version 1.8
+	 * \param[out] cyan Cyan in the range from 0 to 1.
+	 * \param[out] magenta Magenta in the range from 0 to 1.
+	 * \param[out] yellow Yellow in the range from 0 to 1.
+	 * \param[out] black Black in the range from 0 to 1.
+	 */
+	void ToCMYK( float &cyan, float &magenta, float &yellow, float &black ) const;
 	/*@}*/
 	
 	

@@ -254,6 +254,7 @@ void seWindowMain::LoadSkin( const char *filename ){
 	
 	// fore loading resources since the base path is now set
 	skin->UpdateResources();
+	pWindowProperties->OnSkinPathChanged();
 	
 	// determine the file title of the loaded skin
 	const int lsindex = pLoadSaveSystem->IndexOfLSSkinMatching( filename );
@@ -324,6 +325,7 @@ void seWindowMain::SaveSkin( const char *filename ){
 	// path are now different and potentially broken
 	if( basePathChanged ){
 		pSkin->UpdateResources();
+		pWindowProperties->OnSkinPathChanged();
 	}
 	GetRecentFiles().AddFile( filename );
 }
@@ -604,7 +606,7 @@ public:
 		decString filename( skin->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.SaveSkin( filename );
 		}
 		return NULL;
@@ -794,12 +796,12 @@ public:
 			pathChange.SetFrom( importSkinPath );
 			
 		}else{
-			const decPath skinPath( decPath::CreatePathUnix( skin->GetDirectoryPath() ) );
+			const decPath skinPath2( decPath::CreatePathUnix( skin->GetDirectoryPath() ) );
 			decPath comparePath;
 			
 			// add conmponents until both path are no more equal. that is the common base
-			for( i=0; i<skinPath.GetComponentCount(); i++ ){
-				pathChange.AddComponent( skinPath.GetComponentAt( i ) );
+			for( i=0; i<skinPath2.GetComponentCount(); i++ ){
+				pathChange.AddComponent( skinPath2.GetComponentAt( i ) );
 				comparePath.AddComponent( importSkinPath.GetComponentAt( i ) );
 				if( pathChange != comparePath ){
 					break;
@@ -810,7 +812,7 @@ public:
 			const int baseComponentCount = i;
 			
 			pathChange.SetEmpty();
-			for( i=baseComponentCount; i<skinPath.GetComponentCount(); i++ ){
+			for( i=baseComponentCount; i<skinPath2.GetComponentCount(); i++ ){
 				pathChange.AddComponent( ".." );
 			}
 			for( i=baseComponentCount; i<importSkinPath.GetComponentCount(); i++ ){

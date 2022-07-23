@@ -35,36 +35,57 @@ pin Dragengine.Scenery
  * Supports designing using designer selector "OptionBox".
  */
 class OptionBox extends ToggleButton
-	/** \brief Option box widget. */
 	private var Widget pWidgetOptionBox
-	
-	/** \brief Selected widget. */
 	private var Widget pWidgetSelected
-	
-	/** \brief Panel hosting optionbox widget. */
+	private var Panel pPanelCheckTextImage
 	private var Panel pPanelOptionBox
-	
-	/** \brief Panel hosting selected widget. */
 	private var Panel pPanelSelected
 	
 	
 	
 	/** \brief Create option box. */
 	public func new()
-		this.setStickyToggled( true )
-		this.setDesignerSelector( "OptionBox" )
+		setStickyToggled(true)
+		setDesignerSelector("OptionBox")
 	end
 	
 	/** \brief Create text option button. */
-	public func new( String text ) super( text )
-		this.setStickyToggled( true )
-		this.setDesignerSelector( "OptionBox" )
+	public func new(String text) super(text)
+		setStickyToggled(true)
+		setDesignerSelector("OptionBox")
 	end
 	
 	/** \brief Create text and image option button. */
-	public func new( String text, Image image ) super( text, image )
-		this.setStickyToggled( true )
-		this.setDesignerSelector( "OptionBox" )
+	public func new(String text, Image image) super(text, image)
+		setStickyToggled(true)
+		setDesignerSelector("OptionBox")
+	end
+	
+	/**
+	 * \brief Create option button.
+	 * \version 1.11
+	 */
+	public func new(ToggleModel model) super(model)
+		setStickyToggled(true)
+		setDesignerSelector("OptionBox")
+	end
+	
+	/**
+	 * \brief Create text option button.
+	 * \version 1.11
+	 */
+	public func new(ToggleModel model, String text) super(model, text)
+		setStickyToggled(true)
+		setDesignerSelector("OptionBox")
+	end
+	
+	/**
+	 * \brief Create text and image option button.
+	 * \version 1.11
+	 */
+	public func new(ToggleModel model, String text, Image image) super(model, text, image)
+		setStickyToggled(true)
+		setDesignerSelector("OptionBox")
 	end
 	
 	/**
@@ -72,10 +93,11 @@ class OptionBox extends ToggleButton
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
 	public func void dispose()
-		this.pWidgetOptionBox = null
-		this.pWidgetSelected = null
-		this.pPanelOptionBox = null
-		this.pPanelSelected = null
+		pWidgetOptionBox = null
+		pWidgetSelected = null
+		pPanelOptionBox = null
+		pPanelSelected = null
+		pPanelCheckTextImage = null
 		
 		super.dispose()
 	end
@@ -87,27 +109,26 @@ class OptionBox extends ToggleButton
 	 * \details For use by option box designers.
 	 */
 	public func Widget getOptionBoxWidget()
-		return this.pWidgetOptionBox
+		return pWidgetOptionBox
 	end
 	
 	/**
 	 * \brief Set option box widget or \em null if not set.
 	 * \details For use by option box designers.
 	 */
-	public func void setOptionBoxWidget( Widget widget )
-		if widget == this.pWidgetOptionBox
+	public func void setOptionBoxWidget(Widget widget)
+		if widget == pWidgetOptionBox
 			return
 		end
 		
-		if this.pWidgetOptionBox != null
-			this.pPanelOptionBox.removeWidget( this.pWidgetOptionBox )
-			this.pWidgetOptionBox.dispose()
+		if pWidgetOptionBox != null
+			pWidgetOptionBox.safeDispose()
 		end
 		
-		this.pWidgetOptionBox = widget
+		pWidgetOptionBox = widget
 		
 		if widget != null
-			this.pPanelOptionBox.addWidget( widget )
+			pPanelOptionBox.addWidget(widget)
 		end
 	end
 	
@@ -116,27 +137,26 @@ class OptionBox extends ToggleButton
 	 * \details For use by option box designers.
 	 */
 	public func Widget getSelectedWidget()
-		return this.pWidgetSelected
+		return pWidgetSelected
 	end
 	
 	/**
 	 * \brief Set option selected widget.
 	 * \details For use by option box designers.
 	 */
-	public func void setSelectedWidget( Widget widget )
-		if widget == this.pWidgetSelected
+	public func void setSelectedWidget(Widget widget)
+		if widget == pWidgetSelected
 			return
 		end
 		
-		if this.pWidgetSelected != null
-			this.pPanelSelected.removeWidget( this.pWidgetSelected )
-			this.pWidgetSelected.dispose()
+		if pWidgetSelected != null
+			pWidgetSelected.safeDispose()
 		end
 		
-		this.pWidgetSelected = widget
+		pWidgetSelected = widget
 		
 		if widget != null
-			this.pPanelSelected.addWidget( widget )
+			pPanelSelected.addWidget(widget)
 		end
 	end
 	
@@ -144,8 +164,8 @@ class OptionBox extends ToggleButton
 	
 	/** \brief Designer changed. */
 	public func void onDesignerChanged()
-		this.setOptionBoxWidget( null )
-		this.setSelectedWidget( null )
+		setOptionBoxWidget(null)
+		setSelectedWidget(null)
 	end
 	
 	
@@ -155,50 +175,58 @@ class OptionBox extends ToggleButton
 	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
 	 */
 	public func void createContentWidgets()
-		var bool enabled = this.getEnabled()
-		var String text = this.getText()
+		var bool enabled = getEnabled()
+		var String text = getText()
 		
-		this.pWidgetOptionBox = null
-		this.pWidgetSelected = null
-		this.pPanelOptionBox = null
-		this.pPanelSelected = null
+		pWidgetOptionBox = null
+		pWidgetSelected = null
+		pPanelOptionBox = null
+		pPanelSelected = null
+		pPanelCheckTextImage = null
 		
-		this.removeAllWidgets()
-		this.setWidgetImage( null )
-		this.setWidgetText( null )
+		removeAllWidgets()
+		setWidgetImage(null)
+		setWidgetText(null)
 		
-		this.setLayout( BorderLayout.new( 5 ) )
+		setLayout(BorderLayout.new(5))
 		
 		// optionbox with option mark
-		var Panel panel = Panel.new()
-		panel.setLayout( StackLayout.new() )
-		this.addWidget( panel, BorderLayout.Area.left )
-		
-		this.pPanelOptionBox = Panel.new()
-		this.pPanelOptionBox.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		panel.addWidget( this.pPanelOptionBox )
-		
-		this.pPanelSelected = Panel.new()
-		this.pPanelSelected.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		panel.addWidget( this.pPanelSelected )
+		addWidget(Panel.new(StackLayout.new(), block Panel p
+			pPanelOptionBox = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelOptionBox)
+			
+			pPanelSelected = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelSelected)
+		end), BorderLayout.Area.left)
 		
 		// image and text
-		panel = Panel.new()
-		panel.setLayout( FlowLayout.new( LayoutAxis.x ) )
-		this.addWidget( panel, BorderLayout.Area.content )
-		
-		var DisplayImage widgetImage = DisplayImage.new()
-		widgetImage.setEnabled( enabled )
-		panel.addWidget( widgetImage )
-		widgetImage.setVisible( false )
-		this.setWidgetImage( widgetImage )
-		
-		var Label widgetText = Label.new( text, Label.middleLeft )
-		widgetText.setFont( this.getFont() )
-		widgetText.setTextColor( this.getTextColor() )
-		widgetText.setEnabled( enabled )
-		panel.addWidget( widgetText )
-		widgetText.setVisible( not text.empty() )
-		this.setWidgetText( widgetText )
+		pPanelCheckTextImage = Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
+			var DisplayImage widgetImage = DisplayImage.new(null, "Image." + getDesignerSelector())
+			widgetImage.setEnabled(enabled)
+			p.addWidget(widgetImage)
+			widgetImage.setVisible(false)
+			setWidgetImage(widgetImage)
+			
+			var Label widgetText = Label.new(text, "Label." + getDesignerSelector())
+			widgetText.setEnabled(enabled)
+			p.addWidget(widgetText)
+			widgetText.setVisible(not text.empty())
+			setWidgetText(widgetText)
+			
+			p.setVisible(not text.empty())
+		end)
+		addWidget(pPanelCheckTextImage, BorderLayout.Area.content)
+	end
+	
+	/** \brief Set text of the button. */
+	public func void setText(String text)
+		super.setText(text)
+		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
+	end
+	
+	/** \brief Update image to display depending on current button state. */
+	public func void updateWidgetImage()
+		super.updateWidgetImage()
+		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
 	end
 end

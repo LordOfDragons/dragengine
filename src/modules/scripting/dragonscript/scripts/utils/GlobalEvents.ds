@@ -47,7 +47,7 @@ class GlobalEvents
 		 * \param data Data send with the event. Can be null if the event requires no
 		 *             additional parameters.
 		 */
-		func void onEvent( Object source, Object data )
+		func void onEvent(Object source, Object data)
 	end
 	
 	/** \brief Default implementation of event listener. */
@@ -63,7 +63,7 @@ class GlobalEvents
 		 * \param data Data send with the event. Can be null if the event requires no
 		 *             additional parameters.
 		 */
-		public func void onEvent( Object source, Object data )
+		public func void onEvent(Object source, Object data)
 		end
 	end
 	
@@ -82,13 +82,13 @@ class GlobalEvents
 		 * Code block receives two Object type parameters. The first parameter is the source
 		 * sending the event and the second parameter the optional event data.
 		 */
-		public func new( Block ablock )
-			this.setBlock( ablock )
+		public func new(Block ablock)
+			setBlock(ablock)
 		end
 		
 		/** \brief Code block. */
 		public func Block getBlock()
-			return this.pBlock
+			return pBlock
 		end
 		
 		/**
@@ -97,11 +97,11 @@ class GlobalEvents
 		 * Code block receives two Object type parameters. The first parameter is the source
 		 * sending the event and the second parameter the optional event data.
 		 */
-		public func void setBlock( Block ablock )
+		public func void setBlock(Block ablock)
 			if ablock == null
-				throw ENullPointer.new( "ablock" )
+				throw ENullPointer.new("ablock")
 			end
-			this.pBlock = ablock
+			pBlock = ablock
 		end
 		
 		/**
@@ -111,8 +111,8 @@ class GlobalEvents
 		 * \param data Data send with the event. Can be null if the event requires no
 		 *             additional parameters.
 		 */
-		public func void onEvent( Object source, Object data )
-			this.pBlock.run( source, data )
+		public func void onEvent(Object source, Object data)
+			pBlock.run(source, data)
 		end
 	end
 	
@@ -124,7 +124,7 @@ class GlobalEvents
 	
 	/** \brief Create global events. */
 	public func new()
-		this.pEvents = Dictionary.new()
+		pEvents = Dictionary.new()
 	end
 	
 	
@@ -136,21 +136,21 @@ class GlobalEvents
 	 * 
 	 * \throws EInvalidParam Listener has been already added to event.
 	 */
-	public func void addListener( String event, Listener listener )
+	public func void addListener(String event, Listener listener)
 		if event == null
-			throw ENullPointer.new( "event" )
+			throw ENullPointer.new("event")
 		end
 		if listener == null
-			throw ENullPointer.new( "listener" )
+			throw ENullPointer.new("listener")
 		end
 		
-		var SafeArray listeners = this.pEvents.getAt( event, null ) cast SafeArray
+		var SafeArray listeners = pEvents.getAt(event, null) cast SafeArray
 		if listeners == null
 			listeners = SafeArray.new()
-			this.pEvents.setAt( event, listeners )
+			pEvents.setAt(event, listeners)
 		end
 		
-		listeners.add( listener )
+		listeners.add(listener)
 	end
 	
 	/**
@@ -160,15 +160,15 @@ class GlobalEvents
 	 * 
 	 * \throws EInvalidParam Listener is not present for event.
 	 */
-	public func void removeListener( String event, Listener listener )
+	public func void removeListener(String event, Listener listener)
 		if event == null
-			throw ENullPointer.new( "event" )
+			throw ENullPointer.new("event")
 		end
 		if listener == null
-			throw ENullPointer.new( "listener" )
+			throw ENullPointer.new("listener")
 		end
 		
-		( this.pEvents.getAt( event ) cast SafeArray ).remove( listener )
+		(pEvents.getAt(event) cast SafeArray).remove(listener)
 	end
 	
 	/**
@@ -183,8 +183,8 @@ class GlobalEvents
 	 * 
 	 * It is save to add listener while event is in progress of being send.
 	 */
-	public func void addListener( String event, Block ablock )
-		this.addListener( event, BlockListener.new( ablock ) )
+	public func void addListener(String event, Block ablock)
+		addListener(event, BlockListener.new(ablock))
 	end
 	
 	
@@ -199,15 +199,15 @@ class GlobalEvents
 	 * \param data Data send with the event. Can be null if the event requires no
 	 *             additional parameters.
 	 */
-	public func void sendEvent( String event, Object source, Object data )
-		var SafeArray listeners = this.pEvents.getAt( event, null ) cast SafeArray
+	public func void sendEvent(String event, Object source, Object data)
+		var SafeArray listeners = pEvents.getAt(event, null) cast SafeArray
 		if listeners == null
 			return
 		end
 		
-		listeners.forEach( block Listener each
-			each.onEvent( source, data )
-		end )
+		listeners.forEach(block Listener each
+			each.onEvent(source, data)
+		end)
 	end
 	
 	/**
@@ -215,8 +215,8 @@ class GlobalEvents
 	 * 
 	 * Same as sendEvent(String,Object,Object) but using null as data.
 	 */
-	public func void sendEvent( String event, Object source )
-		this.sendEvent( event, source, null )
+	public func void sendEvent(String event, Object source)
+		sendEvent(event, source, null)
 	end
 	
 	/**
@@ -224,7 +224,7 @@ class GlobalEvents
 	 * 
 	 * Same as sendEvent(String,Object,Object) but using null as source and data.
 	 */
-	public func void sendEvent( String event )
-		this.sendEvent( event, null, null )
+	public func void sendEvent(String event)
+		sendEvent(event, null, null)
 	end
 end

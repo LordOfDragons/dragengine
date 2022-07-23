@@ -22,12 +22,14 @@
 #ifndef _DENAVIGATORTYPE_H_
 #define _DENAVIGATORTYPE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Navigator Type.
  * Defines the costs to apply during path finding for all navigation spaces with a given type number.
  */
-class deNavigatorType{
+class DE_DLL_EXPORT deNavigatorType{
 private:
 	int pType;
 	float pFixCost;

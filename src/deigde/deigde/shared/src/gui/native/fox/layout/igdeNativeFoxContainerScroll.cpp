@@ -49,39 +49,39 @@ FXIMPLEMENT( igdeNativeFoxContainerScroll, FXScrollWindow,
 
 igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll(){ }
 
-igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll( igdeContainerScroll &owner,
-	FXComposite *parent, int layoutFlags ) :
-FXScrollWindow( parent, layoutFlags, 0, 0, 0, 0 ),
-pOwner( &owner ){
+igdeNativeFoxContainerScroll::igdeNativeFoxContainerScroll( igdeContainerScroll &powner,
+	FXComposite *pparent, int layoutFlags ) :
+FXScrollWindow( pparent, layoutFlags, 0, 0, 0, 0 ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxContainerScroll::~igdeNativeFoxContainerScroll(){
 }
 
-igdeNativeFoxContainerScroll *igdeNativeFoxContainerScroll::CreateNativeWidget( igdeContainerScroll &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxContainerScroll *igdeNativeFoxContainerScroll::CreateNativeWidget( igdeContainerScroll &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &owner ) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
-	if( ! owner.GetCanScrollX() ){
+	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &powner ) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
+	if( ! powner.GetCanScrollX() ){
 		layoutFlags |= HSCROLLING_OFF;
 	}
-	if( ! owner.GetCanScrollY() ){
+	if( ! powner.GetCanScrollY() ){
 		layoutFlags |= VSCROLLING_OFF;
 	}
 	
-	return new igdeNativeFoxContainerScroll( owner, parent, layoutFlags );
+	return new igdeNativeFoxContainerScroll( powner, pparent, layoutFlags );
 }
 
 void igdeNativeFoxContainerScroll::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -100,8 +100,8 @@ long igdeNativeFoxContainerScroll::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxContainerScroll::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerScroll::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_SIDE_TOP;
 	
 	//if( ! pOwner->GetCanScrollX() ){

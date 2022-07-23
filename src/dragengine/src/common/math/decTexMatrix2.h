@@ -23,7 +23,7 @@
 /**
  * \brief 3x2 component texture matrix in row major order.
  */
-class decTexMatrix2{
+class DE_DLL_EXPORT decTexMatrix2{
 public:
 	float a11, a12, a13;
 	float a21, a22, a23;

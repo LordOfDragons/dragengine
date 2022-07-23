@@ -23,11 +23,14 @@
 #define _DEOGLRDECAL_H_
 
 #include "../skin/deoglSkinTexture.h"
-#include "../rendering/task/deoglRenderTaskInstanceGroup.h"
 
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 
+class deoglGIBVHLocal;
+class deoglGIBVHDynamic;
 class deoglRenderPlan;
 class deoglRComponent;
 class deoglRDynamicSkin;
@@ -42,11 +45,14 @@ class deoglSkinShader;
 class deoglSkinState;
 class deoglTexUnitsConfig;
 class deoglVAO;
+class deoglRenderTaskSharedInstance;
+class deoglRenderPlanMasked;
+class deoglDecalListener;
 
 
 
 /**
- * \brief Render decal.
+ * Render decal.
  */
 class deoglRDecal : public deObject{
 public:
@@ -68,43 +74,47 @@ public:
 	deoglRDynamicSkin *pUseDynamicSkin;
 	deoglSkinState *pUseSkinState;
 	
+	bool pDirtyPrepareSkinStateRenderables;
+	
 	deoglSharedVBOBlock *pVBOBlock;
 	int pPointCount;
 	
 	bool pDirtyVBO;
 	bool pDirtyUseTexture;
-	bool pDirtyRenderables;
 	
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
 	
-	deoglSPBlockUBO *pParamBlockGeometry;
-	deoglSPBlockUBO *pParamBlockEnvMap;
-	
 	deoglSharedSPBElement *pSharedSPBElement;
-	deoglRenderTaskInstanceGroup pRTIGroup;
+	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	deoglTexUnitsConfig *pTUCGeometry;
 	deoglTexUnitsConfig *pTUCShadow;
 	deoglTexUnitsConfig *pTUCEnvMap;
 	
-	bool pValidParamBlockGeometry;
-	bool pValidParamBlockEnvMap;
-	bool pDirtyParamBlockGeometry;
-	bool pDirtyParamBlockEnvMap;
 	bool pDirtySharedSPBElement;
+	bool pDirtyTUCs;
 	
-	bool pDirtyTUCGeometry;
-	bool pDirtyTUCShadow;
-	bool pDirtyTUCEnvMap;
+	deoglGIBVHLocal *pGIBVHLocal;
+	deoglGIBVHDynamic *pGIBVHDynamic;
+	bool pDirtyGIBVHLocal;
+	bool pDirtyGIBVHDynamic;
+	bool pStaticTexture;
+	
+	unsigned int pUniqueKey;
+	
+	decObjectOrderedSet pListeners;
+	int pListenerIndex;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render decal. */
+	/** Create render decal. */
 	deoglRDecal( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render decal. */
+	/** Clean up render decal. */
 	virtual ~deoglRDecal();
 	/*@}*/
 	
@@ -112,74 +122,68 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decVector &position );
 	
-	/** \brief Orientation. */
+	/** Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Set orientation. */
+	/** Set orientation. */
 	void SetOrientation( const decQuaternion &orientation );
 	
-	/** \brief Size. */
+	/** Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
-	/** \brief Set size. */
+	/** Set size. */
 	void SetSize( const decVector &size );
 	
-	/** \brief Texture coordinate transformation matrix. */
+	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set texture coordinate transformation matrix. */
+	/** Set texture coordinate transformation matrix. */
 	void SetTransform( const decTexMatrix2 &matrix );
 	
-	/** \brief Decal is visible. */
+	/** Decal is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set decal is visible. */
+	/** Set decal is visible. */
 	void SetVisible( bool visible );
 	
 	
 	
-	/** \brief Update skin. */
+	/** Update skin. */
 	void UpdateSkin( float elapsed );
 	
-	/** \brief Update vbo if required. */
-	void UpdateVBO();
-	
-	/** \brief Set vbo dirty. */
+	/** Set vbo dirty. */
 	void SetDirtyVBO();
 	
-	/** \brief Update renderables in the decal if existing */
-	void UpdateRenderables( deoglRenderPlan &plan );
 	
 	
-	
-	/** \brief Skin or \em NULL if not set. */
+	/** Skin or \em NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL if not set. */
+	/** Set skin or \em NULL if not set. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Dynamic skin or \em NULL if not set. */
+	/** Dynamic skin or \em NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or \em NULL if not set. */
+	/** Set dynamic skin or \em NULL if not set. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
 	/** Retrieves the skin state or NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * \brief Set skin state or \em NULL if there is none.
+	 * Set skin state or \em NULL if there is none.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void SetSkinState( deoglSkinState *skinState );
@@ -194,11 +198,9 @@ public:
 	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	/** Retrieves the actual skin state to use. */
 	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
-	/** Updates the actual texture parameters to use. */
-	void UpdateUseSkin();
 	
 	/**
-	 * \brief Update skin state depending on skin and dynamic skin.
+	 * Update skin state depending on skin and dynamic skin.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void UpdateSkinState();
@@ -210,67 +212,68 @@ public:
 	
 	
 	
-	/** \brief Parent component. */
+	void DirtyPrepareSkinStateRenderables();
+	void DynamicSkinRenderablesChanged();
+	void UpdateRenderableMapping();
+	
+	
+	
+	/** Parent component. */
 	inline deoglRComponent *GetParentComponent() const{ return pParentComponent; }
 	
 	/**
-	 * \brief Set parent component or \em NULL.
+	 * Set parent component or \em NULL.
 	 * \warning Only call from main thread during synchronization.
 	 */
 	void SetParentComponent( deoglRComponent *component );
 	
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
 	inline bool GetComponentMarkedRemove() const{ return pComponentMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
 	void SetComponentMarkedRemove( bool marked );
 	
 	
 	
-	/** \brief Shared shader parameter block element. */
-	deoglSharedSPBElement *GetSharedSPBElement();
+	/** Shared shader parameter block element. */
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
-	/** \brief Render task instance group. */
-	inline deoglRenderTaskInstanceGroup &GetRTIGroup(){ return pRTIGroup; }
+	/** Render task shared instance or NULL. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
-	/** Retrieves the shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
+	/** Texture units configuration for the given shader type. */
+	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	
 	/**
-	 * Retrieves the geometry shader parameter block or NULL if there is no valid skin texture.
+	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * This texture units configuration works for the shader type estComponentGeometry.
 	 */
-	deoglSPBlockUBO *GetParamBlockGeometry();
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
+	
 	/**
-	 * Retrieves the environment map shader parameter block or NULL if there is no valid skin texture.
+	 * Texture units configuration for shadow type shaders or NULL if empty.
+	 * This texture units configuration works for these shader types:
+	 * - estComponentShadowProjection
+	 * - estComponentShadowOrthogonal
+	 * - estComponentShadowOrthogonalCascaded
+	 * - estComponentShadowDistance
+	 */
+	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
+	
+	/**
+	 * Texture units configuration for the environment map shader or NULL if empty.
 	 * This texture units configuration works for the shader type estEnvMap.
 	 */
-	deoglSPBlockUBO *GetParamBlockEnvMap();
-	/** Retrieves the texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
-	/**
-	 * Retrieves the texture units configuration for geometry type shaders or NULL if empty.
-	 * This texture units configuration works for the shader type estComponentGeometry.
-	 */
-	deoglTexUnitsConfig *GetTUCGeometry();
-	/**
-	 * Retrieves the texture units configuration for shadow type shaders or NULL if empty.
-	 * This texture units configuration works for the shader types estComponentShadowProjection,
-	 * estComponentShadowOrthogonal and estComponentShadowDistance.
-	 */
-	deoglTexUnitsConfig *GetTUCShadow();
-	/**
-	 * Retrieves the texture units configuration for the environment map shader or NULL if empty.
-	 * This texture units configuration works for the shader type estEnvMap.
-	 */
-	deoglTexUnitsConfig *GetTUCEnvMap();
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
+	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType );
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	/** Mark parameter blocks dirty. */
@@ -278,18 +281,74 @@ public:
 	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
-	/** Update instance parameter shader parameter block. */
-	void UpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock, int element, deoglSkinShader &skinShader );
 	
 	
+	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
+	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Prepare for quick disposal of decal. */
+	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
+	
+	
+	
+	/** GI Local BVH or NULL. */
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
+	
+	/** Prepare GI Local BVH if not build yet. */
+	void PrepareGILocalBVH();
+	
+	/** Set GI BVHs dirty. */
+	void SetDirtyGIBVH();
+	
+	/** Texture is static. */
+	inline bool GetStaticTexture() const{ return pStaticTexture; }
+	
+	/** Update static texture. */
+	void UpdateStaticTexture();
+	
+	
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	/*@}*/
 	
+	
+	
+	/** \name Listeners */
+	/*@{*/
+	/** Add a listener. */
+	void AddListener( deoglDecalListener *listener );
+	
+	/** Remove listener if existing. */
+	void RemoveListener( deoglDecalListener *listener );
+	
+	/** Notify all geometry changed. */
+	void NotifyGeometryChanged();
+	
+	/** Notify all decal has been destroyed. */
+	void NotifyDecalDestroyed();
+	
+	/** Notify all texture changed. */
+	void NotifyTextureChanged();
+	
+	/** Notify all TUC changed. */
+	void NotifyTUCChanged();
+	/*@}*/
+	
+	
+	
 private:
-	void pUpdateRenderables();
 	void pCreateMeshComponent();
+	void pPrepareVBO();
+	void pUpdateUseSkin();
+	void pPrepareTUCs();
+	void pPrepareParamBlocks();
+	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void pUpdateRTSInstance();
+	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
+		int element, deoglSkinShader &skinShader );
+	
+	void pRequiresPrepareForRender();
 };
 
 #endif

@@ -22,6 +22,8 @@
 #ifndef _DEAERRORTRACE_H_
 #define _DEAERRORTRACE_H_
 
+#include "../common/string/decString.h"
+
 class deErrorTracePoint;
 class deLoadableModule;
 class deLogger;
@@ -33,9 +35,9 @@ class deLogger;
  * An Error Trace object contains a list of Error Trace Point objects.
  * describing the path of an error that occurred in the engine.
  */
-class deErrorTrace{
+class DE_DLL_EXPORT deErrorTrace{
 private:
-	char *pError;
+	decString pError;
 	deErrorTracePoint **pPoints;
 	int pPointCount;
 	int pPointSize;
@@ -57,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Error. */
-	inline const char *GetError() const{ return ( const char * )pError; }
+	inline const decString &GetError() const{ return pError; }
 	
 	/** \brief Set error. */
 	void SetError( const char *error );

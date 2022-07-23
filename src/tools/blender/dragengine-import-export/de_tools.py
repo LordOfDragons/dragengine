@@ -27,6 +27,8 @@ import bpy
 from .de_tool_aogen import OBJECT_OT_ToolAOGeneration
 from .de_tool_channellayout import OBJECT_OT_DEToolSortActionChannels
 from .de_tool_collapsevertices import TypeDETVertex
+from .de_tool_mirrorvertices import OBJECT_OT_ToolMirrorVertices
+from .de_tool_removeemptyvertexgroups import OBJECT_OT_ToolRemoveEmptyVertexGroups
 from .de_tool_eclassproperty import OBJECT_OT_DEToolEClassProperty
 from .de_tool_gbuffernormgen import OBJECT_OT_ToolGBufferNormGen
 from .de_tool_loderrorcalc import OBJECT_OT_DEToolLODInfo
@@ -38,6 +40,7 @@ from .de_tool_texturefill import OBJECT_OT_ToolTextureFill
 from .de_tool_transferuv import OBJECT_OT_ToolTransferUV
 from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
 from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
+from .de_tool_spreadanim import OBJECT_OT_DEToolSpreadAnimation
 from .de_porting import registerClass
 
 
@@ -51,8 +54,8 @@ class OBJECT_OT_DEToolSeamToSharp(bpy.types.Operator):
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Set sharp edges from seams"""
 	
-	selected = bpy.props.BoolProperty(name="Selected Edges", description="Apply only to selected edges", default=True)
-	visible = bpy.props.BoolProperty(name="Visible Edges", description="Apply only to visible edges", default=True)
+	selected: bpy.props.BoolProperty(name="Selected Edges", description="Apply only to selected edges", default=True)
+	visible: bpy.props.BoolProperty(name="Visible Edges", description="Apply only to visible edges", default=True)
 	
 	@classmethod
 	def poll(cls, context):
@@ -87,7 +90,8 @@ class OBJECT_OT_DEToolSelectNgon(bpy.types.Operator):
 	@classmethod
 	def poll(cls, context):
 		return context.active_object != None and context.active_object.type == 'MESH' \
-			and context.tool_settings.mesh_select_mode[2]
+			and context.tool_settings.mesh_select_mode[2] \
+			and bpy.context.mode == 'EDIT_MESH'
 	
 	def execute(self, context):
 		editmode = (bpy.context.mode == 'EDIT_MESH')
@@ -164,9 +168,9 @@ class MATERIAL_UL_matslots_example(bpy.types.UIList):
 ###############
 
 class TypeDETOptions(bpy.types.PropertyGroup):
-	collapseVerticesTargets = bpy.props.CollectionProperty(type=TypeDETVertex)
-	projectUVCurrent = bpy.props.PointerProperty(type=TypeDETProjectUVTemplate)
-	projectUVTemplates = bpy.props.CollectionProperty(type=TypeDETProjectUVTemplate)
+	collapseVerticesTargets: bpy.props.CollectionProperty(type=TypeDETVertex)
+	projectUVCurrent: bpy.props.PointerProperty(type=TypeDETProjectUVTemplate)
+	projectUVTemplates: bpy.props.CollectionProperty(type=TypeDETProjectUVTemplate)
 registerClass(TypeDETOptions)
 
 class VIEW3D_PT_Dragengine(bpy.types.Panel):
@@ -187,7 +191,7 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		if context.active_object.type == 'MESH':
 			self.drawMeshTools(context)
 		if context.active_object.type == 'ARMATURE':
-			self.drawArmatureTools(context.active_object)
+			self.drawArmatureTools(context)
 		if len(context.selected_objects) > 0:
 			self.drawCommonTools(context)
 	
@@ -219,9 +223,11 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		row = col.row(align=True)
 		row.operator(operator="dragengine.seamtosharp", text="Seam to Sharp")
 		row = col.row(align=True)
-		row.operator(operator="uv.seams_from_islands", text="Seams from Island")
-		row = col.row(align=True)
 		row.operator(operator="dragengine.selectngon", text="Select N-Gon")
+		row = col.row(align=True)
+		row.operator(operator="dragengine.mirror_vertices", text="Mirror Vertices")
+		row = col.row(align=True)
+		row.operator(operator="dragengine.remove_empty_vertex_groups", text="Remove Empty VGroups")
 		
 		# generators
 		layout.row(align=True).label(text="Generators:")
@@ -255,13 +261,35 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		col = layout.column(align=True)
 		row = col.row(align=True)
 		row.operator(operator="dragengine.shapropfromtex", text="Shape Prop from Tex")
-	
-	def drawArmatureTools(self, object):
+		
+		# export
+		layout.row(align=True).label(text="Export:")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator(operator="dragengine.export_model", text="Model")
+		row.operator(operator="dragengine.export_rig", text="Rig")
+		row = col.row(align=True)
+		row.operator(operator="dragengine.export_occmesh", text="OccMesh")
+		row.operator(operator="dragengine.export_navspace", text="NavMesh")
+		
+	def drawArmatureTools(self, context):
 		layout = self.layout
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.mirroranimation", text="Mirror Animation")
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.fixactiongroups", text="Fix Action Groups")
+		
+		# spread animation
+		col = layout.column(align=True)
+		col.row(align=True).operator(operator="dragengine.spreadanim", text="Spread Animation")
+		col.row(align=True).prop(context.scene, "dragengine_spreadanimtarget", expand=True)
+		
+		# export
+		layout.row(align=True).label(text="Export:")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator(operator="dragengine.export_rig", text="Rig")
+		row.operator(operator="dragengine.export_animation", text="Animation")
 	
 	def drawCommonTools(self, context):
 		layout = self.layout
@@ -269,6 +297,7 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		col = layout.column(align=True)
 		row = col.row(align=True)
 		row.operator(operator="dragengine.eclassproperty", text="Property Text")
+
 registerClass(VIEW3D_PT_Dragengine)
 
 
@@ -319,6 +348,9 @@ class IMAGEEDITOR_PT_Dragengine(bpy.types.Panel):
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.texturefill", text="Texture Fill")
 		row.operator(operator="dragengine.encblnor2denor", text="Convert Normal")
+		
+		row = layout.row(align=True)
+		row.operator(operator="uv.seams_from_islands", text="Seams from Island")
 registerClass(IMAGEEDITOR_PT_Dragengine)
 
 
@@ -347,8 +379,8 @@ class OBJECT_PT_DragengineScene(bpy.types.Panel):
 registerClass(OBJECT_PT_DragengineScene)
 
 class TypeDEMoveSet(bpy.types.PropertyGroup):
-	filters = bpy.props.CollectionProperty(type=bpy.types.PropertyGroup)
-	index = bpy.props.IntProperty(name="Index", description="Index", default=-1, min=-1 )
+	filters: bpy.props.CollectionProperty(type=bpy.types.PropertyGroup)
+	index: bpy.props.IntProperty(name="Index", description="Index", default=-1, min=-1 )
 registerClass(TypeDEMoveSet)
 
 bpy.types.Scene.dragengine_movesets = bpy.props.CollectionProperty(type=TypeDEMoveSet)
@@ -514,11 +546,12 @@ bpy.types.Object.dragengine_lodmesh = bpy.props.StringProperty(name="LOD-Mesh",
 	description="Mesh to use as next LOD", default="")
 
 bpy.types.Object.dragengine_hasloderror = bpy.props.BoolProperty(name="LOD-Error",
-	description="Use LOD error instead of automatically calculated LOD Error",
+	description="Use Custom LOD error instead of automatically calculated LOD Error ",
 	default=False)
 
 bpy.types.Object.dragengine_loderror = bpy.props.FloatProperty(name="Error",
-	description="Custom LOD error to use", precision=3, default=0.01, min=0.001, soft_max=0.1)
+	description="Custom LOD error to use (relative to base mesh) ",
+	precision=3, default=0.01, min=0.001, soft_max=0.1)
 
 bpy.types.Object.dragengine_navspacetype = bpy.props.EnumProperty(
 	name = "Nav-Space Type", description = "Navigation space type",
@@ -601,6 +634,24 @@ bpy.types.Object.dragengine_physics = bpy.props.EnumProperty(items = (
 bpy.types.Object.dragengine_shapeproperty = bpy.props.StringProperty(
 	name="Property", description="Shape property string", default="")
 
+bpy.types.Object.dragengine_shapetopradiusscale = bpy.props.FloatProperty(
+	name="Top Radius Scale", description="Top Radius scaling (capsule/cylinder)",
+	precision=3, default=1, min=0, soft_max=1)
+
+bpy.types.Object.dragengine_shapebottomradiusscale = bpy.props.FloatProperty(
+	name="Bottom Radius Scale", description="Bottom radius scaling (capsule/cylinder)",
+	precision=3, default=1, min=0, soft_max=1)
+
+"""
+bpy.types.Object.dragengine_shapetopaxisscale = bpy.props.FloatVectorProperty(
+	name="Top Axis Scale", description="Top Axis scaling (tapered capsule/cylinder)",
+	size=2, precision=3, default=(1, 1), min=0, soft_max=1)
+
+bpy.types.Object.dragengine_shapebottomaxisscale = bpy.props.FloatVectorProperty(
+	name="Bottom Axis Scale", description="Bottom axis scaling (tapered capsule/cylinder)",
+	size=2, precision=3, default=(1, 1), min=0, soft_max=1)
+"""
+
 
 class OBJECT_PT_DragenginePhysics(bpy.types.Panel):
 	bl_space_type = 'PROPERTIES'
@@ -615,10 +666,16 @@ class OBJECT_PT_DragenginePhysics(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		rd = context.active_object
-		row = layout.row(align=True)
-		row.prop(rd, "dragengine_physics", expand = False)
-		row = layout.row(align=True)
-		row.prop(rd, "dragengine_shapeproperty", expand = False)
+		layout.row(align=True).prop(rd, "dragengine_physics", expand=False)
+		layout.row(align=True).prop(rd, "dragengine_shapeproperty", expand=False)
+		
+		col = layout.column(align=True)
+		col.label(text="Capsule/Cylinder Radius Scale")
+		row = col.row(align=True)
+		row.column(align=True).prop(rd, "dragengine_shapetopradiusscale", text="Top", expand=False)
+		row.column(align=True).prop(rd, "dragengine_shapebottomradiusscale", text="Bottom", expand=False)
+		#layout.row(align=True).prop(rd, "dragengine_shapetopaxisscale", expand=False)
+		#layout.row(align=True).prop(rd, "dragengine_shapebottomaxisscale", expand=False)
 registerClass(OBJECT_PT_DragenginePhysics)
 
 
@@ -675,10 +732,10 @@ registerClass(OBJECT_PT_DragengineMaterial)
 ###########################
 
 class TypeDEVertexGroupNavType(bpy.types.PropertyGroup):
-	group = bpy.props.StringProperty(
+	group: bpy.props.StringProperty(
 		name="Group", description="Group name", default='')
 	
-	navtype = bpy.props.IntProperty(
+	navtype: bpy.props.IntProperty(
 		name="Navigation Type", description="Navigation type to use for members of the vertex group",
 		default=0, min=0, soft_min=0, soft_max=10, max=65535)
 registerClass(TypeDEVertexGroupNavType)
@@ -787,9 +844,9 @@ class OBJECT_PT_DragengineArmatureAction(bpy.types.Panel):
 		row.prop(rd, "dragengine_export", expand=True, toggle=True)
 		
 		if rd.dragengine_export:
-			row = col.row(align=False)
-			row.prop(rd, "dragengine_exportname", expand=True)
-			row.prop(rd, "dragengine_timescaling", expand=True, toggle=True)
+			col = layout.column(align=True)
+			col.row(align=True).prop(rd, "dragengine_exportname", expand=True)
+			col.row(align=True).prop(rd, "dragengine_timescaling", expand=True, toggle=True)
 			
 			col = layout.column(align=True)
 			row = col.row(align=False)
@@ -1000,9 +1057,9 @@ registerClass(INFO_HT_DragengineProgress)
 """
 
 class TypeDragengineProgress(bpy.types.PropertyGroup):
-	percentage = bpy.props.FloatProperty(name="Percentage", description="Percentage to display", default=0.0)
-	infoText = bpy.props.StringProperty(name="Info Text", description="Information text to display", default="")
-	visible = bpy.props.BoolProperty(name="Visible", description="Determines if the progress panel is visible", default=False)
+	percentage: bpy.props.FloatProperty(name="Percentage", description="Percentage to display", default=0.0)
+	infoText: bpy.props.StringProperty(name="Info Text", description="Information text to display", default="")
+	visible: bpy.props.BoolProperty(name="Visible", description="Determines if the progress panel is visible", default=False)
 registerClass(TypeDragengineProgress)
 
 class INFO_HT_DragengineProgress(bpy.types.Header):

@@ -65,6 +65,12 @@ class deEngine;
  * \brief World object.
  */
 class meObject : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<meObject> Ref;
+	
+	
+	
 private:
 	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished {
 		meObject &pObject;
@@ -245,6 +251,9 @@ public:
 	inline decVector GetScaling() const{ return pScaling; }
 	/** \brief Sets the scaling. */
 	void SetScaling( const decVector &scaling );
+	
+	/** Set scaling and size for undo actions. */
+	void SetSizeAndScaling( const decVector &size, const decVector &scaling );
 	
 	/** \brief ID. */
 	inline const decUniqueID &GetID() const{ return pID; }

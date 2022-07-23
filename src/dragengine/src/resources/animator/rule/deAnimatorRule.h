@@ -42,7 +42,7 @@ class deAnimatorRuleVisitor;
  * casting. Both ways have their advantage in the right situation.
  * Furthermore the base class provides some common functionality that
  * all rules share. Each rule can have one or more controllers and
- * bones assigned. The subclass decides how many of those controllers
+ * bones assigned. The subclass DE_DLL_EXPORT decides how many of those controllers
  * are used. Hence specifying more than one controller for a rule
  * using only one controller does not hurt. The rule in question simply
  * uses the first controller then. Rules can be disabled to take them
@@ -53,7 +53,13 @@ class deAnimatorRuleVisitor;
  * The blending is controlled with the source and destination blend
  * factor similar to the ones in the animator.
  */
-class deAnimatorRule : public deObject{
+class DE_DLL_EXPORT deAnimatorRule : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRule> Ref;
+	
+	
+	
 public:
 	/** \brief Blending Modes. */
 	enum eBlendModes{
@@ -71,6 +77,7 @@ private:
 	decStringSet pListBones;
 	eBlendModes pBlendMode;
 	float pBlendFactor;
+	bool pInvertBlendFactor;
 	bool pEnabled;
 	
 	deAnimatorControllerTarget pTargetBlendFactor;
@@ -124,6 +131,18 @@ public:
 	
 	/** \brief Set source blend factor. */
 	void SetBlendFactor( float factor );
+	
+	/**
+	 * \brief Invert blend factor (1 - factor).
+	 * \version 1.13
+	 */
+	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
+	
+	/**
+	 * \brief Set to invert blend factor (1 - factor).
+	 * \version 1.13
+	 */
+	void SetInvertBlendFactor( bool invert );
 	
 	/** \brief List of bones. */
 	inline decStringSet &GetListBones(){ return pListBones; }

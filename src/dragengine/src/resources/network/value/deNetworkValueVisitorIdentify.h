@@ -34,7 +34,7 @@
  * value types. Furthermore save casting is provided. If the cast is not
  * valid an exception is raised.
  */
-class deNetworkValueVisitorIdentify : public deNetworkValueVisitor{
+class DE_DLL_EXPORT deNetworkValueVisitorIdentify : public deNetworkValueVisitor{
 public:
 	enum eNetworkValues{
 		envtInteger,

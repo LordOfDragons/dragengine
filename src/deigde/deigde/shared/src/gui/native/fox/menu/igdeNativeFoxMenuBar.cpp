@@ -49,30 +49,30 @@ FXIMPLEMENT( igdeNativeFoxMenuBar, FXMenuBar,
 
 igdeNativeFoxMenuBar::igdeNativeFoxMenuBar(){ }
 
-igdeNativeFoxMenuBar::igdeNativeFoxMenuBar( igdeMenuBar &owner, FXComposite *parent, int layoutFlags ) :
-FXMenuBar( parent, layoutFlags ),
-pOwner( &owner ){
+igdeNativeFoxMenuBar::igdeNativeFoxMenuBar( igdeMenuBar &powner, FXComposite *pparent, int layoutFlags ) :
+FXMenuBar( pparent, layoutFlags ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxMenuBar::~igdeNativeFoxMenuBar(){
 }
 
-igdeNativeFoxMenuBar *igdeNativeFoxMenuBar::CreateNativeWidget( igdeMenuBar &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxMenuBar *igdeNativeFoxMenuBar::CreateNativeWidget( igdeMenuBar &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxMenuBar( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxMenuBar( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxMenuBar::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -86,8 +86,8 @@ void igdeNativeFoxMenuBar::DestroyNativeWidget(){
 // Events
 ///////////
 
-long igdeNativeFoxMenuBar::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxMenuBar::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
 	return 1;
 }

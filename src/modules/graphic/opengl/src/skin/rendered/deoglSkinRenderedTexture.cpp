@@ -33,8 +33,12 @@
 #include "../../model/deoglRModel.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/face/deoglModelFace.h"
+#include "../../rendering/light/deoglRenderGI.h"
+#include "../../rendering/light/deoglRenderLight.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../rendering/plan/deoglRenderPlanMasked.h"
+#include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -171,17 +175,30 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	mirrorNormal = mirrorMatrix.TransformNormal( mirrorNormal );
 	mirrorRefPoint = mirrorMatrix * mirrorRefPoint;
 	
+	decDMatrix mirrorFreeMatrix( mirrorMatrix );
+	mirrorFreeMatrix.a11 = -mirrorMatrix.a11;
+	mirrorFreeMatrix.a12 = -mirrorMatrix.a12;
+	mirrorFreeMatrix.a13 = -mirrorMatrix.a13;
+	mirrorFreeMatrix.a14 = -mirrorMatrix.a14;
+	
 	// set the plan properties
 	pPlan->SetWorld( plan.GetWorld() );
 	pPlan->SetCamera( NULL ); // since this is a fake camera
 	pPlan->CopyCameraParametersFrom( plan );
 	pPlan->SetCameraMatrix( mirrorMatrix );
+	pPlan->SetCameraMatrixNonMirrored( mirrorFreeMatrix );
 	pPlan->UpdateRefPosCameraMatrix();
 	
 	pPlan->SetFlipCulling( ! plan.GetFlipCulling() );
 	pPlan->SetNoRenderedOccMesh( true );
 	
 	pPlan->SetNoReflections( true ); // HACK prevent re-entrant problem for the time being
+	
+	// use the parent plan gi state but without modifying it. allows to use GI with
+	// no extra cost and witout messing up parent GI state. for mirrors this is good
+	// enough since mirrors need to be in view of the parent camera
+	pPlan->SetUseConstGIState( plan.GetRenderGIState() );
+	pPlan->SetUseGIState( pPlan->GetUseConstGIState() != NULL );
 	
 	// calculate the frustum for this texture
 	//matrixMVP = ( ownerMatrix * pPlan->GetCameraMatrix() ).ToMatrix() * pPlan->GetProjectionMatrix();
@@ -215,7 +232,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	maskedPlan.SetClipDistance( mirrorNormal * mirrorRefPoint );
 	
 	// prepare the just added plan for rendering
-	pPlan->PrepareRender();
+	pPlan->PrepareRender( &maskedPlan );
 }
 
 void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVector &planePosition ) const{
@@ -224,16 +241,12 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVec
 	}
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
-	if( ! component.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
 	componentLOD.PrepareNormalsTangents();
 	const oglVector * const compFaceNormals = componentLOD.GetFaceNormals();
 	const oglVector * const compPositions = componentLOD.GetPositions();
 	
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	const int faceCount = modelLOD.GetFaceCount();
@@ -306,12 +319,8 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	}
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
-	if( ! component.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	int f, faceCount = modelLOD.GetFaceCount();

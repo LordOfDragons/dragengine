@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearAnimatorInstance.h"
 #include "dearControllerTarget.h"
@@ -75,7 +74,6 @@ int dearControllerTarget::GetLinkAt( int index ) const{
 
 
 float dearControllerTarget::GetValue( const dearAnimatorInstance &instance, float defaultValue ) const{
-	const dearControllerStates &controllerStatus = instance.GetControllerStates();
 	float value = defaultValue;
 	bool firstValue = true;
 	int i;
@@ -86,16 +84,16 @@ float dearControllerTarget::GetValue( const dearAnimatorInstance &instance, floa
 		}
 		
 		const dearLink &link = *instance.GetLinkAt( pLinks[ i ] );
-		if( ! link.HasController() ){
+		if( ! link.HasController() && ! link.HasBone() ){
 			continue;
 		}
 		
 		if( firstValue ){
-			value = link.GetValue( controllerStatus, 1.0f );
+			value = link.GetValue( 1.0f );
 			firstValue = false;
 			
 		}else{
-			value *= link.GetValue( controllerStatus, 1.0f );
+			value *= link.GetValue( 1.0f );
 		}
 	}
 	

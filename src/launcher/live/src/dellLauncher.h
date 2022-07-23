@@ -22,46 +22,67 @@
 #ifndef _DELLLAUNCHER_H_
 #define _DELLLAUNCHER_H_
 
-#include "game/dellGameManager.h"
-#include "engine/dellEngine.h"
+#include <delauncher/delLauncher.h>
 
+#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/logger/deLoggerReference.h>
 
-class dellEngine;
+#ifdef OS_BEOS
+#include <delauncher/game/delGame.h>
+#endif
 
 
 
 /**
- * \brief Launcher.
+ * Live launcher.
  */
 class dellLauncher{
+public:
+	class Launcher : public delLauncher{
+	public:
+		Launcher();
+		virtual ~Launcher();
+	};
+	
+#ifdef OS_UNIX
+	class PreloadLibrary : public deObject{
+		void * const pHandle;
+	public:
+		PreloadLibrary( const decPath &basePath, const char *filename );
+		virtual ~PreloadLibrary();
+	};
+#endif
+	
+	
+	
 private:
 	decUnicodeArgumentList pArguments;
 	decPath pWorkingDir;
 	decPath pPathConfigUser;
 	decStringList pEnvParamsStore;
-	deVirtualFileSystemReference pFileSystem;
-	deLoggerReference pLogger;
-	dellEngine pEngine;
-	dellGameManager pGameManager;
+	
+#ifdef OS_UNIX
+	decObjectSet pPreloadLibraries;
+#endif
+	
+	Launcher *pLauncher;
 	
 	decString pDelgaFile;
 	decUnicodeArgumentList pGameArgs;
-	decString pWindowTitle;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create launcher. */
+	/** Create launcher. */
 	dellLauncher();
 	
-	/** \brief Clean up launcher. */
+	/** Clean up launcher. */
 	~dellLauncher();
 	/*@}*/
 	
@@ -69,41 +90,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Command line arguments. */
+	/** Command line arguments. */
 	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
-	/** \brief Add argument to the command line argument list. */
+	/** Add argument to the command line argument list. */
 	void AddArgument( const decUnicodeString &argument );
 	
-	/** \brief File system. */
-	inline deVirtualFileSystem *GetFileSystem() const{ return pFileSystem; }
-	
-	/** \brief Engine. */
-	inline dellEngine &GetEngine(){ return pEngine; }
-	inline const dellEngine &GetEngine() const{ return pEngine; }
-	
-	/** \brief Game manager. */
-	inline dellGameManager &GetGameManager(){ return pGameManager; }
-	inline const dellGameManager &GetGameManager() const{ return pGameManager; }
-	
-	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
-	
-	/** \brief Working directory. */
+	/** Working directory. */
 	inline const decPath GetWorkingDirectory() const{ return pWorkingDir; }
 	
-	/** \brief Init. */
-	void Init();
+	/** Launcher. */
+	inline Launcher &GetLauncher() const{ return *pLauncher; }
 	
-	/** \brief Run. */
+	/** Run. */
 	void Run();
+
+#ifdef OS_BEOS
+	delGame::Ref runningGame;
+#endif
 	/*@}*/
 	
 	
 	
 private:
-	void pInitVFS();
-	void pInitLogger();
 	void pUpdateEnvironment();
 };
 

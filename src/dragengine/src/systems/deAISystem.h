@@ -45,7 +45,7 @@ class deWorld;
  * for the engine. An ai module is able to carry out the actions
  * stored in an ai object.
  */
-class deAISystem : public deBaseSystem{
+class DE_DLL_EXPORT deAISystem : public deBaseSystem{
 private:
 	deBaseAIModule *pActiveModule;
 	

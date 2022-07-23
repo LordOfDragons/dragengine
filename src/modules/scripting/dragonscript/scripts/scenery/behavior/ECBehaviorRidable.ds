@@ -124,8 +124,8 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * of type ECBehaviorRidable.
 	 */
 	static public func ECBehaviorRidable getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorRidable
+		return eclass.findBehavior( block ECBehaviorRidable each
+			return true
 		end ) cast ECBehaviorRidable
 	end
 	
@@ -137,8 +137,8 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

@@ -25,63 +25,64 @@
 #include "deoglRenderLightBase.h"
 
 class deoglAddToRenderTask;
-class deoglLightProbeTexture;
 class deoglRenderLightParticles;
 class deoglRenderLightPoint;
 class deoglRenderLightSky;
 class deoglRenderLightSpot;
+class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglRTRenderers;
+class deoglRenderPlanMasked;
 
 
 /**
- * \brief Light renderer.
+ * Light renderer.
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgram *pShaderCopyDepth;
+	deoglShaderProgramUsage pShaderCopyDepth;
 	
-	deoglShaderProgram *pShaderAOLocal;
-	deoglShaderProgram *pShaderAOBlur1;
-	deoglShaderProgram *pShaderAOBlur2;
-	deoglShaderProgram *pShaderDebugAO;
+	deoglShaderProgramUsage pShaderAOLocal;
+	deoglShaderProgramUsage pShaderAOBlur1;
+	deoglShaderProgramUsage pShaderAOBlur2;
+	deoglShaderProgramUsage pShaderDebugAO;
 	
-	deoglShaderProgram *pShaderSSSSS;
+	deoglShaderProgramUsage pShaderSSSSS;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;
 	deoglRenderLightPoint *pRenderLightPoint;
 	deoglRenderLightParticles *pRenderLightParticles;
+	deoglRenderGI *pRenderGI;
 	
 	deoglSPBlockUBO *pLightPB;
 	deoglSPBlockUBO *pShadowPB;
+	deoglSPBlockUBO *pShadowCascadedPB;
 	deoglSPBlockUBO *pShadowCubePB;
 	deoglSPBlockUBO *pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
-	deoglLightProbeTexture *pLightProbesTexture;
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoSolidCopyDepth;
-	deoglDebugInformation *pDebugInfoSolidParticle;
-	deoglDebugInformation *pDebugInfoSolidSSSSS;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoSolidCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoSolidParticle;
+	deoglDebugInformation::Ref pDebugInfoSolidSSSSS;
 	
-	deoglDebugInformation *pDebugInfoTransparent;
-	deoglDebugInformation *pDebugInfoTransparentCopyDepth;
-	deoglDebugInformation *pDebugInfoTransparentSSSSS;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoTransparentCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoTransparentSSSSS;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create light renderer. */
+	/** Create light renderer. */
 	deoglRenderLight( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderLight();
 	/*@}*/
 	
@@ -89,48 +90,51 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Renderer for spot lights. */
+	/** Renderer for spot lights. */
 	inline deoglRenderLightSpot &GetRenderLightSpot() const{ return *pRenderLightSpot; }
 	
-	/** \brief Renderer for sky lights. */
+	/** Renderer for sky lights. */
 	inline deoglRenderLightSky &GetRenderLightSky() const{ return *pRenderLightSky; }
 	
-	/** \brief Renderer for point lights. */
+	/** Renderer for point lights. */
 	inline deoglRenderLightPoint &GetRenderLightPoint() const{ return *pRenderLightPoint; }
 	
-	/** \brief Renderer for particle lights. */
+	/** Renderer for particle lights. */
 	inline deoglRenderLightParticles &GetRenderLightParticles() const{ return *pRenderLightParticles; }
 	
+	/** Renderer for global illumination. */
+	inline deoglRenderGI &GetRenderGI() const{ return *pRenderGI; }
 	
 	
-	/** \brief Light render parameter block. */
+	
+	/** Light render parameter block. */
 	inline deoglSPBlockUBO *GetLightPB() const{ return pLightPB; }
 	
-	/** \brief Shadow render parameter block. */
+	/** Shadow render parameter block. */
 	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
 	
-	/** \brief Shadow render parameter block cubemap. */
+	/** Shadow render parameter block. */
+	inline deoglSPBlockUBO *GetShadowCascadedPB() const{ return pShadowCascadedPB; }
+	
+	/** Shadow render parameter block cubemap. */
 	inline deoglSPBlockUBO *GetShadowCubePB() const{ return pShadowCubePB; }
 	
-	/** \brief Occmap render parameter block. */
+	/** Occmap render parameter block. */
 	inline deoglSPBlockUBO *GetOccMapPB() const{ return pOccMapPB; }
 	
-	/** \brief Render task. */
+	/** Render task. */
 	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
 	
-	/** \brief Add to render task. */
+	/** Add to render task. */
 	inline deoglAddToRenderTask &GetAddToRenderTask() const{ return *pAddToRenderTask; }
 	
-	/** \brief Light probes texture. */
-	inline deoglLightProbeTexture &GetLightProbesTexture() const{ return *pLightProbesTexture; }
 	
 	
-	
-	/** \brief Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	/** Render lights. */
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/**
-	 * \brief Render ambient occlusion.
+	 * Render ambient occlusion.
 	 * 
 	 * SSAO Pass. Using FBO Def-Ren AO-Solidity buffer. No clearing.
 	 * Input textures: 0=depth, 1=diffuse, 2=normal.
@@ -156,21 +160,21 @@ public:
 	 */
 	void RenderAO( deoglRenderPlan &plan, bool solid );
 	
-	/** \brief Render screen space sub surface scattering. */
+	/** Render screen space sub surface scattering. */
 	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
 	
-	/** \brief Prepare light render parameter shader parameter block. */
+	/** Prepare light render parameter shader parameter block. */
 	void PrepareRenderParamBlockLight( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Reset debug information. */
+	/** Reset debug information. */
 	void ResetDebugInfo();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

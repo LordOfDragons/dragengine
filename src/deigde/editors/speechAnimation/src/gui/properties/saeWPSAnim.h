@@ -92,6 +92,9 @@ public:
 	/** \brief Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
+	/** \brief Speech animation path changed. */
+	void OnSAnimationPathChanged();
+	
 	
 	
 	/** \brief Update speech animation. */

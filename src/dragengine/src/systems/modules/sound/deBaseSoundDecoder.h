@@ -35,7 +35,7 @@ class decBaseFileReader;
  * user decides if the data is read synchronous or asynchronous. The sound information is
  * not replicated in the decoder but found in the source sound resource.
  */
-class deBaseSoundDecoder{
+class DE_DLL_EXPORT deBaseSoundDecoder{
 private:
 	decBaseFileReader *pFile;
 	

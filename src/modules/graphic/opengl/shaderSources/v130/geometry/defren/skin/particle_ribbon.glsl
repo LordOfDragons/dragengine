@@ -56,9 +56,7 @@ in vec4 vParticle1[ 4 ]; // red, green, blue, transparency
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef NODE_GEOMETRY_INPUTS
-NODE_GEOMETRY_INPUTS
-#endif
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
 
@@ -85,6 +83,15 @@ out vec2 vTCColor;
 	out vec2 vTCAO;
 #endif
 
+#ifdef CLIP_PLANE
+	out vec3 vClipCoord;
+#endif
+#ifdef DEPTH_ORTHOGONAL
+	out float vZCoord;
+#endif
+#ifdef DEPTH_DISTANCE
+	out vec3 vPosition;
+#endif
 out vec3 vNormal;
 #ifdef WITH_TANGENT
 	out vec3 vTangent;
@@ -136,21 +143,96 @@ const float pi = 3.14159265;
 // Main Function
 //////////////////
 
+void emitCorner( in int corner, in vec3 offset, in vec2 tc ){
+	vec4 position = gl_in[ corner ].gl_Position;
+	position.xyz -= offset;
+	
+	gl_Position = pMatrixP * position;
+	
+	#ifdef SHARED_SPB
+	vSPBIndex = spbIndex;
+	#endif
+	
+	vParticleColor = vParticle1[ corner ];
+	#ifdef WITH_EMISSIVITY
+		vParticleEmissivity = vParticle0[ corner ].y;
+	#endif
+	
+	vTCColor = tc;
+	#ifdef TEXTURE_COLOR_TINT_MASK
+		vTCColorTintMask = tc;
+	#endif
+	#ifdef TEXTURE_NORMAL
+		vTCNormal = tc;
+	#endif
+	#ifdef TEXTURE_REFLECTIVITY
+		vTCReflectivity = tc;
+	#endif
+	#ifdef WITH_EMISSIVITY
+		vTCEmissivity = tc;
+	#endif
+	#ifdef TEXTURE_REFRACTION_DISTORT
+		vTCRefractionDistort = tc;
+	#endif
+	#ifdef TEXTURE_AO
+		vTCAO = tc;
+	#endif
+	#ifdef WITH_REFLECT_DIR
+		vReflectDir = position.xyz;
+	#endif
+	#ifdef FADEOUT_RANGE
+		vFadeZ = position.z;
+	#endif
+	#ifdef CLIP_PLANE
+		vClipCoord = position.xyz;
+	#endif
+	#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+		#ifdef DEPTH_ORTHOGONAL
+			#ifdef NO_ZCLIP
+				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
+				gl_Position.z = 0.0;
+			#else
+				vZCoord = gl_Position.z;
+			#endif
+		#endif
+	#endif
+	#ifdef DEPTH_DISTANCE
+		vPosition = position.xyz;
+	#endif
+	
+	vNormal = particleNormal;
+	#ifdef WITH_TANGENT
+		vTangent = particleTangent;
+	#endif
+	#ifdef WITH_BITANGENT
+		vBitangent = particleBitangent;
+	#endif
+	
+	gl_Layer = 0;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
+	
+	EmitVertex();
+}
+
+
+
 void main( void ){
 	// calculate the ribbon properties
 	vec3 ribbonAxis1, ribbonAxis2;
 	vec4 position;
 	
-#ifdef USE_SHEETS
-	mat3 matRot1, matRot2;
-	//int sheetCount = 3;
-	#define sheetCount pParticleSheetCount
-	int s;
+	#ifdef USE_SHEETS
+		mat3 matRot1, matRot2;
+		//int sheetCount = 3;
+		#define sheetCount pParticleSheetCount
+		int s;
+		
+		float rotAngle = pi / float( sheetCount );
+		vec3 sSc = vec3( sin( rotAngle ), -sin( rotAngle ), cos( rotAngle ) );
+		vec3 c1 = vec3( 1.0 - sSc.z );
+	#endif
 	
-	float rotAngle = pi / float( sheetCount );
-	vec3 sSc = vec3( sin( rotAngle ), -sin( rotAngle ), cos( rotAngle ) );
-	vec3 c1 = vec3( 1.0 - sSc.z );
-#endif
+	
 	
 	// calculate first ribbon axis and rotation matrix
 	vec3 up = normalize( vec3( -gl_in[ 1 ].gl_Position ) );
@@ -167,17 +249,19 @@ void main( void ){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
-#ifdef USE_SHEETS
-	//vec4 view2 = vec4( cross( ribbonAxis1, up ), 1.0 );
-	//vec4 view2 = vec4( cross( normalize( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) ), up ), 1.0 );
-	vec4 view2 = vec4( normalize( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) ), 1.0 );
-	vec3 v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
-	vec3 v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
-	vec3 v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
-	matRot1 = mat3( v1, v2, v3 );
-#endif
+	#ifdef USE_SHEETS
+		//vec4 view2 = vec4( cross( ribbonAxis1, up ), 1.0 );
+		//vec4 view2 = vec4( normalize( cross( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ), up ) ), 1.0 );
+		vec4 view2 = vec4( normalize( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) ), 1.0 );
+		vec3 v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
+		vec3 v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
+		vec3 v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
+		matRot1 = mat3( v1, v2, v3 );
+	#endif
 	
 	ribbonAxis1 *= vec3( vParticle0[ 1 ].x * 0.5 );
+	
+	
 	
 	// calculate second ribbon axis and rotation matrix
 	up = normalize( vec3( -gl_in[ 2 ].gl_Position ) );
@@ -198,177 +282,34 @@ void main( void ){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
-#ifdef USE_SHEETS
-	//view2 = vec4( cross( ribbonAxis2, up ), 1.0 );
-	//view2 = vec4( cross( normalize( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) ), up ), 1.0 );
-	view2 = vec4( normalize( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) ), 1.0 );
-	v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
-	v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
-	v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
-	matRot2 = mat3( v1, v2, v3 );
-#endif
+	#ifdef USE_SHEETS
+		//view2 = vec4( cross( ribbonAxis2, up ), 1.0 );
+		//view2 = vec4( normalize( cross( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ), up ) ), 1.0 );
+		view2 = vec4( normalize( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) ), 1.0 );
+		v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
+		v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
+		v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
+		matRot2 = mat3( v1, v2, v3 );
+	#endif
 	
 	ribbonAxis2 *= vec3( vParticle0[ 2 ].x * 0.5 );
 	
-	// this is the same for all points
-	vNormal = particleNormal;
-	#ifdef WITH_TANGENT
-		vTangent = particleTangent;
-	#endif
-	#ifdef WITH_BITANGENT
-		vBitangent = particleBitangent;
-	#endif
 	
-	#ifdef SHARED_SPB
-	vSPBIndex = spbIndex;
-	#endif
-	
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	gl_Layer = 0;
 	
 	// generate billboard(s)
-#ifdef USE_SHEETS
+	#ifdef USE_SHEETS
 	for( s=0; s<sheetCount; s++ ){
-#endif
-		position = gl_in[ 1 ].gl_Position; // z and w stays the same for all vertices
-		
-		position.xyz -= ribbonAxis1;
-		gl_Position = pMatrixP * position;
-		vParticleColor = vParticle1[ 1 ];
-		#ifdef WITH_EMISSIVITY
-			vParticleEmissivity = vParticle0[ 1 ].y;
-		#endif
-		vTCColor = tc1;
-		#ifdef TEXTURE_COLOR_TINT_MASK
-			vTCColorTintMask = tc1;
-		#endif
-		#ifdef TEXTURE_NORMAL
-			vTCNormal = tc1;
-		#endif
-		#ifdef TEXTURE_REFLECTIVITY
-			vTCReflectivity = tc1;
-		#endif
-		#ifdef WITH_EMISSIVITY
-			vTCEmissivity = tc1;
-		#endif
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			vTCRefractionDistort = tc1;
-		#endif
-		#ifdef TEXTURE_AO
-			vTCAO = tc1;
-		#endif
-		#ifdef WITH_REFLECT_DIR
-			vReflectDir = position.xyz;
-		#endif
-		#ifdef FADEOUT_RANGE
-			vFadeZ = position.z;
-		#endif
-		EmitVertex();
-		
-		position.xyz = vec3( gl_in[ 2 ].gl_Position ) - ribbonAxis2;
-		gl_Position = pMatrixP * position;
-		vParticleColor = vParticle1[ 2 ];
-		#ifdef WITH_EMISSIVITY
-			vParticleEmissivity = vParticle0[ 2 ].y;
-		#endif
-		vTCColor = tc2;
-		#ifdef TEXTURE_COLOR_TINT_MASK
-			vTCColorTintMask = tc2;
-		#endif
-		#ifdef TEXTURE_NORMAL
-			vTCNormal = tc2;
-		#endif
-		#ifdef TEXTURE_REFLECTIVITY
-			vTCReflectivity = tc2;
-		#endif
-		#ifdef WITH_EMISSIVITY
-			vTCEmissivity = tc2;
-		#endif
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			vTCRefractionDistort = tc2;
-		#endif
-		#ifdef TEXTURE_AO
-			vTCAO = tc2;
-		#endif
-		#ifdef WITH_REFLECT_DIR
-			vReflectDir = position.xyz;
-		#endif
-		#ifdef FADEOUT_RANGE
-			vFadeZ = position.z;
-		#endif
-		EmitVertex();
-		
-		position.xyz = vec3( gl_in[ 1 ].gl_Position ) + ribbonAxis1;
-		gl_Position = pMatrixP * position;
-		vParticleColor = vParticle1[ 1 ];
-		#ifdef WITH_EMISSIVITY
-			vParticleEmissivity = vParticle0[ 1 ].y;
-		#endif
-		vTCColor = tc3;
-		#ifdef TEXTURE_COLOR_TINT_MASK
-			vTCColorTintMask = tc3;
-		#endif
-		#ifdef TEXTURE_NORMAL
-			vTCNormal = tc3;
-		#endif
-		#ifdef TEXTURE_REFLECTIVITY
-			vTCReflectivity = tc3;
-		#endif
-		#ifdef WITH_EMISSIVITY
-			vTCEmissivity = tc3;
-		#endif
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			vTCRefractionDistort = tc3;
-		#endif
-		#ifdef TEXTURE_AO
-			vTCAO = tc3;
-		#endif
-		#ifdef WITH_REFLECT_DIR
-			vReflectDir = position.xyz;
-		#endif
-		#ifdef FADEOUT_RANGE
-			vFadeZ = position.z;
-		#endif
-		EmitVertex();
-		
-		position.xyz = vec3( gl_in[ 2 ].gl_Position ) + ribbonAxis2;
-		gl_Position = pMatrixP * position;
-		vParticleColor = vParticle1[ 2 ];
-		#ifdef WITH_EMISSIVITY
-			vParticleEmissivity = vParticle0[ 2 ].y;
-		#endif
-		vTCColor = tc4;
-		#ifdef TEXTURE_COLOR_TINT_MASK
-			vTCColorTintMask = tc4;
-		#endif
-		#ifdef TEXTURE_NORMAL
-			vTCNormal = tc4;
-		#endif
-		#ifdef TEXTURE_REFLECTIVITY
-			vTCReflectivity = tc4;
-		#endif
-		#ifdef WITH_EMISSIVITY
-			vTCEmissivity = tc4;
-		#endif
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			vTCRefractionDistort = tc4;
-		#endif
-		#ifdef TEXTURE_AO
-			vTCAO = tc4;
-		#endif
-		#ifdef WITH_REFLECT_DIR
-			vReflectDir = position.xyz;
-		#endif
-		#ifdef FADEOUT_RANGE
-			vFadeZ = position.z;
-		#endif
-		EmitVertex();
+	#endif
+		emitCorner( 1, -ribbonAxis1, tc1 );
+		emitCorner( 2, -ribbonAxis2, tc2 );
+		emitCorner( 1, ribbonAxis1, tc3 );
+		emitCorner( 2, ribbonAxis2, tc4 );
 		
 		EndPrimitive();
 		
-#ifdef USE_SHEETS
+	#ifdef USE_SHEETS
 		ribbonAxis1 = matRot1 * ribbonAxis1;
 		ribbonAxis2 = matRot2 * ribbonAxis2;
 	}
-#endif
+	#endif
 }

@@ -55,6 +55,7 @@ deoglPLODMaxPixelError::deoglPLODMaxPixelError( deGraphicOpenGl &ogl ) : deoglPa
 		{ "32", "32 Pixel", "Allow 32 Pixel error" }
 	};
 	AddSelectionEntries( entries, 6 );
+	SetDefaultValue( "2" );
 }
 
 deoglPLODMaxPixelError::~deoglPLODMaxPixelError(){

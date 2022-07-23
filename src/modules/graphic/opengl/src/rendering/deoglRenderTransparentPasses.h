@@ -23,7 +23,6 @@
 #define _DEOGLRENDERTRANSPARENTPASSES_H_
 
 #include "deoglRenderBase.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
@@ -55,16 +54,16 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** \brief Render Transparent Passes. */
-	void RenderTransparentPasses( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render transparent geometry pass. */
-	void RenderTransparentGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render transparent depth limite pass. */
-	void RenderTransparentLimitDepth( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderTransparentLimitDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render volumetric pass. */
-	void RenderVolumetricPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask, bool inbetween );
+	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
 	
 	/** \brief Copy color texture to temporary texture. */
 	void CopyColorToTemporary();

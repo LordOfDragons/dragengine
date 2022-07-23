@@ -32,17 +32,12 @@ class deglLauncher;
 
 
 /**
- * \brief Launcher Configuration.
+ * Launcher Configuration.
  */
 class deglConfiguration{
 private:
-	deglLauncher *pLauncher;
-	
-	decString pPathConfigSystem;
-	decString pPathConfigUser;
-	decString pPathShares;
-	decString pPathGames;
-	decString pPathLogs;
+	deglLauncher &pLauncher;
+	bool pCanSave;
 	
 	deglConfigWindow pWindowMain;
 	
@@ -51,78 +46,51 @@ private:
 	FXColor pClrProblemBack;
 	FXColor pClrProblemText;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new configuration. */
-	deglConfiguration( deglLauncher *launcher );
-	/** Cleans up the configuration. */
+	/** Create configuration. */
+	deglConfiguration( deglLauncher &launcher );
+	
+	/** Clean up configuration. */
 	~deglConfiguration();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the system config path. */
-	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
-	/** Sets the system config path. */
-	void SetPathConfigSystem( const char *path );
-	/** Retrieves the user config path. */
-	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
-	/** Sets the user config path. */
-	void SetPathConfigUser( const char *path );
-	
-	/** \brief Shares path. */
-	inline const decString &GetPathShares() const{ return pPathShares; }
-	
-	/** \brief Set shares path. */
-	void SetPathShares( const char *path );
-	
-	/** \brief Games path. */
-	inline const decString &GetPathGames() const{ return pPathGames; }
-	
-	/** \brief Set games path. */
-	void SetPathGames( const char *path );
-	
-	/** Retrieves the logs path. */
-	inline const decString &GetPathLogs() const{ return pPathLogs; }
-	/** Sets the logs path. */
-	void SetPathLogs( const char *path );
-	
-	/** Locate path. */
-	void LocatePath();
-	/** Initialize virtual file system. */
-	void InitVirtualFileSystem();
-	/** Log some important value. */
-	void LogImportantValues();
-	
 	/**
-	 * Load the configuration. Tries to locate the configuration file in
-	 * the known places reading first the system wide configuration and
-	 * then the user configuration if found. For all not found configuration
-	 * values the default value is used.
+	 * Load the configuration. Tries to locate the configuration file in the known places
+	 * reading first the system wide configuration and then the user configuration if found.
+	 * For all not found configuration values the default value is used.
 	 */
 	void LoadConfiguration();
+	
 	/**
-	 * Saves the configuration to the user configuration directory. If the
-	 * directory or files do not exist they are created.
+	 * Saves the configuration to the user configuration directory. If the directory or
+	 * files do not exist they are created.
 	 */
 	void SaveConfiguration();
 	
-	/** Retrieves the main window configuration. */
+	/** Main window configuration. */
 	inline deglConfigWindow &GetWindowMain(){ return pWindowMain; }
 	inline const deglConfigWindow &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the background color for valid elements. */
+	/** Background color for valid elements. */
 	inline FXColor GetBackColorValid() const{ return pClrValidBack; }
-	/** Retrieves the background color for problem elements. */
+	
+	/** Background color for problem elements. */
 	inline FXColor GetBackColorProblem() const{ return pClrProblemBack; }
-	/** Retrieves the text color for valid elements. */
+	
+	/** Text color for valid elements. */
 	inline FXColor GetTextColorValid() const{ return pClrValidText; }
-	/** Retrieves the text color for problem elements. */
+	
+	/** Text color for problem elements. */
 	inline FXColor GetTextColorProblem() const{ return pClrProblemText; }
 	/*@}*/
-	
-private:
 };
 
-#endif // _DEGLGAME_H_
+#endif

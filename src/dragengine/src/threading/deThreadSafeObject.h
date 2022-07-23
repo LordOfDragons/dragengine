@@ -32,7 +32,7 @@
  * threaded use. This does not imply all methods of the object are thread safe. Subclasses
  * are encouraged to use GetMutex() to provide thread safe access to methods.
  */
-class deThreadSafeObject{
+class DE_DLL_EXPORT deThreadSafeObject{
 private:
 	int pRefCount;
 	deMutex pMutex;

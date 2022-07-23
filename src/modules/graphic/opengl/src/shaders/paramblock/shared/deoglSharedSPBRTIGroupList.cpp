@@ -36,7 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBRTIGroupList::deoglSharedSPBRTIGroupList(){
+deoglSharedSPBRTIGroupList::deoglSharedSPBRTIGroupList( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ){
 }
 
 deoglSharedSPBRTIGroupList::~deoglSharedSPBRTIGroupList(){
@@ -55,26 +56,31 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetAt( int index ) const{
 	return ( deoglSharedSPBRTIGroup* )pGroups.GetAt( index );
 }
 
-deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith( deoglSharedSPB &sharedSPB ){
+deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith( deoglSharedSPB &sharedSPB, int textureCount ) const{
 	const int count = pGroups.GetCount();
 	int i;
 	
-	// find group with shared SPB
-	deoglSharedSPBRTIGroup *group = NULL;
-	
 	for( i=0; i<count; i++ ){
-		group = ( deoglSharedSPBRTIGroup* )pGroups.GetAt( i );
-		if( &group->GetSharedSPB() == &sharedSPB ){
+		deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pGroups.GetAt( i );
+		if( &group->GetSharedSPB() == &sharedSPB && group->GetTextureCount() == textureCount ){
 			group->AddReference();
 			return group;
 		}
 	}
 	
-	// matching group not found. create a new group
+	return nullptr;
+}
+
+deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetOrAddWith( deoglSharedSPB &sharedSPB, int textureCount ){
+	deoglSharedSPBRTIGroup * const group = GetWith( sharedSPB, textureCount );
+	return group ? group : AddWith( sharedSPB, textureCount );
+}
+
+deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::AddWith( deoglSharedSPB &sharedSPB, int textureCount ){
+	deoglSharedSPBRTIGroup *group = nullptr;
 	try{
-		group = new deoglSharedSPBRTIGroup( *this, sharedSPB );
+		group = new deoglSharedSPBRTIGroup( this, sharedSPB, textureCount );
 		pGroups.Add( group );
-		return group;
 		
 	}catch( const deException & ){
 		if( group ){
@@ -82,6 +88,7 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith( deoglSharedSPB &sha
 		}
 		throw;
 	}
+	return group;
 }
 
 void deoglSharedSPBRTIGroupList::Remove( deoglSharedSPBRTIGroup *group ){

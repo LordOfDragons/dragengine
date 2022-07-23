@@ -88,6 +88,9 @@ class Armature:
 		def __init__(self, object, scalePosition):
 			self.object = object
 			self.bone = None
+			self.topRadiusScale = object.dragengine_shapetopradiusscale
+			self.bottomRadiusScale = object.dragengine_shapebottomradiusscale
+			self.unitRadii = math.fabs(self.topRadiusScale - 1) < 0.001 and math.fabs(self.bottomRadiusScale - 1) < 0.001
 			
 			self.matrix = object.matrix_world
 			if object.parent:
@@ -107,6 +110,7 @@ class Armature:
 			self.matrix = matrix
 			
 			(loc,rot,scale) = self.matrix.decompose()
+			scale = Vector([self.object.dimensions[0], self.object.dimensions[2], self.object.dimensions[1]])
 			self.matrix = matmul(Matrix.Translation(loc), rot.to_matrix().to_4x4())
 			
 			self.position = vector_by_matrix(matmul(scalePosition, self.matrix), Vector())
@@ -387,6 +391,8 @@ class Mesh:
 	# add texture coordinates sets
 	def initAddTexCoordSets(self):
 		if hasattr(self.mesh, "uv_textures"):
+			if not self.mesh.uv_textures:
+				raise 'At least 1 UV-Texture required'
 			if len(self.mesh.uv_textures) == 1:
 				self.texCoordSets.append(Mesh.TexCoordSet(
 					0, self.mesh.uv_textures[0], self.mesh.uv_layers[0]))
@@ -400,6 +406,8 @@ class Mesh:
 						self.texCoordSets.append(Mesh.TexCoordSet(len(self.texCoordSets),
 							self.mesh.uv_textures[i], self.mesh.uv_layers[i]))
 		else:
+			if not self.mesh.uv_layers:
+				raise 'At least 1 UV-Layer required'
 			if len(self.mesh.uv_layers) == 1:
 				self.texCoordSets.append(Mesh.TexCoordSet(0, None, self.mesh.uv_layers[0]))
 			else:
@@ -425,11 +433,21 @@ class Mesh:
 			for vertex in self.vertices:
 				maxWeights = self.object.dragengine_maxweights
 				# first add all weights as found in the vertex
+				# 
+				# WARNING blender has a bug that can cause data inconsistency. the group.group
+				#         index can be larger or equal to the length of vgroups which is wrong.
+				#         we use a try catch to protect against this problem ignoring such
+				#         broken weights. so far it is totally unknown how such a data
+				#         inconsistency can happen but when it does the exporter breaks
 				vw = vertex.weights.weights
 				for group in vertex.vertex.groups:
-					bone = mapBones.get(vgroups[group.group].name)
-					if bone and group.weight > 0.001:
-						vw.append(Mesh.Weight(bone, group.weight))
+					try:
+						bone = mapBones.get(vgroups[group.group].name)
+						if bone and group.weight > 0.001:
+							vw.append(Mesh.Weight(bone, group.weight))
+					except Exception as e:
+						print('BLENDER BUG! Data inconsistency caught: group.group={} len(vgroups)={}'.format(
+							group.group, len(vgroups)))
 				# normalize weights, sort weights and calculate hash value
 				vertex.weights.normalize(maxWeights)
 			
@@ -508,6 +526,20 @@ class Mesh:
 			self.multiFoldMesh = True
 			self.mesh.edges[edge].select = True
 		self.faces[fi].edges[c1] = edge
+	
+	# apply auto smoothing
+	def applyAutoSmooth(self):
+		if not self.mesh.use_auto_smooth:
+			return
+		angle = self.mesh.auto_smooth_angle
+		
+		for edge in self.edges:
+			if edge.faces[0] != -1 and edge.faces[1] != -1:
+				f1 = self.faces[edge.faces[0]]
+				f2 = self.faces[edge.faces[1]]
+				if f1.face.normal.angle(f2.face.normal, 0) > angle:
+					edge.sharp = True
+					edge.hard = True
 	
 	# calculate corner normals
 	def initCalcCornerNormals(self):

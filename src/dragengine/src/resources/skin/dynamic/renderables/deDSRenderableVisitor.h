@@ -22,6 +22,8 @@
 #ifndef _DEDSRENDERABLEVISITOR_H_
 #define _DEDSRENDERABLEVISITOR_H_
 
+#include "../../../../dragengine_export.h"
+
 class deDSRenderable;
 class deDSRenderableValue;
 class deDSRenderableColor;
@@ -34,7 +36,7 @@ class deDSRenderableCamera;
 /**
  * \brief Visitor for dynamic skin renderables.
  */
-class deDSRenderableVisitor{
+class DE_DLL_EXPORT deDSRenderableVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

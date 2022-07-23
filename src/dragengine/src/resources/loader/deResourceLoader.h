@@ -62,7 +62,7 @@ class deVirtualFileSystem;
  * - Sound
  * - Video
  */
-class deResourceLoader{
+class DE_DLL_EXPORT deResourceLoader{
 public:
 	/** \brief Resource types. */
 	enum eResourceType{

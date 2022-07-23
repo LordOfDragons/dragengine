@@ -54,6 +54,7 @@ deoglPSSAOMipMapBase::deoglPSSAOMipMapBase( deGraphicOpenGl &ogl ) : deoglParame
 		" reasonable balance between the two." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO MipMap Base" );
+	SetDefaultValue( "8" );
 }
 
 deoglPSSAOMipMapBase::~deoglPSSAOMipMapBase(){

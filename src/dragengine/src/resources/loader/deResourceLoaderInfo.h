@@ -35,7 +35,7 @@ class deFileResource;
  * and resource type. If the resource is NULL the loading failed. Otherwise the
  * loaded resource is stored.
  */
-class deResourceLoaderInfo{
+class DE_DLL_EXPORT deResourceLoaderInfo{
 private:
 	decString pPath;
 	deResourceLoader::eResourceType pResourceType;

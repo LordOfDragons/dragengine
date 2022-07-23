@@ -22,10 +22,12 @@
 #ifndef _DEBASEGRAPHICBILLBOARD_H_
 #define _DEBASEGRAPHICBILLBOARD_H_
 
+#include "../../../dragengine_export.h"
+
 /**
  * \brief Graphic Module Billboard Peer.
  */
-class deBaseGraphicBillboard{
+class DE_DLL_EXPORT deBaseGraphicBillboard{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

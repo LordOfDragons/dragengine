@@ -187,6 +187,12 @@ class WindowConsole extends Window implements ConsoleListener
 		this.setSize( Point.new( GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() / 2 ) )
 	end
 	
+	/** \brief Window has been resized. */
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
+		this.updateCanvasConsole()
+	end
+	
 	
 	
 	/** \brief Update canvas console if required. */

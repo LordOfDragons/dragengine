@@ -22,13 +22,15 @@
 #ifndef _DEBASENETWORKSTATE_H_
 #define _DEBASENETWORKSTATE_H_
 
+#include "../../../dragengine_export.h"
+
 class deNetworkValue;
 
 
 /**
  * \brief Network Module State Peer.
  */
-class deBaseNetworkState{
+class DE_DLL_EXPORT deBaseNetworkState{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

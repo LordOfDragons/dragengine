@@ -53,7 +53,13 @@ class deWorld;
  * reflected map geometry as well as possible. Avoid complex shape lists for the reflection
  * border as this is usually better for Graphic Modules to handle.
  */
-class deEnvMapProbe : public deResource{
+class DE_DLL_EXPORT deEnvMapProbe : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEnvMapProbe> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

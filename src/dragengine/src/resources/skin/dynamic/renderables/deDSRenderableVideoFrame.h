@@ -31,7 +31,7 @@
  *
  * The texture is defined by a frame of a video.
  */
-class deDSRenderableVideoFrame : public deDSRenderable{
+class DE_DLL_EXPORT deDSRenderableVideoFrame : public deDSRenderable{
 private:
 	deVideoPlayerReference pVideoPlayer;
 	

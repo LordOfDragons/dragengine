@@ -41,14 +41,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTarget::deoglRenderTarget( deoglRenderThread &renderThread, int width, int height, int componentCount, int bitCount ) :
+deoglRenderTarget::deoglRenderTarget( deoglRenderThread &renderThread,
+	const decPoint &size, int componentCount, int bitCount ) :
 pRenderThread( renderThread ),
 
-pWidth( decMath::max( width, 1 ) ),
-pHeight( decMath::max( height, 1 ) ),
-pTextureWidth( pWidth ),
-pTextureHeight( pHeight ),
-pAspectRatio( ( float )pWidth / ( float )pHeight ),
+pSize( decPoint( 1, 1 ).Largest( size ) ),
+pTextureSize( pSize ),
+pAspectRatio( ( float )pSize.x / ( float )pSize.y ),
 pBitCount( bitCount ),
 pComponentCount( componentCount ),
 pFloatTexture( bitCount != 8 ),
@@ -56,12 +55,7 @@ pFloatTexture( bitCount != 8 ),
 pDirtyTexture( true ),
 
 pTexture( NULL ),
-pFBO( NULL )
-{
-	/*if( ogl->GetConfiguration()->GetUsePOTTextures() ){
-		for( pTextureWidth=1; pTextureWidth<pWidth; pTextureWidth<<=1 );
-		for( pTextureHeight=1; pTextureHeight<pHeight; pTextureHeight<<=1 );
-	}*/
+pFBO( NULL ){
 }
 
 deoglRenderTarget::~deoglRenderTarget(){
@@ -77,12 +71,12 @@ deoglRenderTarget::~deoglRenderTarget(){
 // Management
 ///////////////
 
-void deoglRenderTarget::SetSize( int width, int height ){
-	if( width < 1 || height < 1 ){
+void deoglRenderTarget::SetSize( const decPoint &size ){
+	if( ! ( size > decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( width == pWidth && height == pHeight ){
+	if( size == pSize ){
 		return;
 	}
 	
@@ -92,16 +86,10 @@ void deoglRenderTarget::SetSize( int width, int height ){
 		pTexture = NULL;
 	}
 	
-	pWidth = width;
-	pHeight = height;
-	pAspectRatio = ( float )pWidth / ( float )pHeight;
+	pSize = size;
+	pAspectRatio = ( float )pSize.x / ( float )pSize.y;
 	
-	pTextureWidth = pWidth;
-	pTextureHeight = pHeight;
-	/*if( ogl->GetConfiguration()->GetUsePOTTextures() ){
-		for( pTextureWidth=1; pTextureWidth<pWidth; pTextureWidth<<=1 );
-		for( pTextureHeight=1; pTextureHeight<pHeight; pTextureHeight<<=1 );
-	}*/
+	pTextureSize = pSize;
 	
 	pDirtyTexture = true;
 }
@@ -111,7 +99,7 @@ void deoglRenderTarget::SetSize( int width, int height ){
 void deoglRenderTarget::PrepareFramebuffer(){
 	if( ! pTexture ){
 		pTexture = new deoglTexture( pRenderThread );
-		pTexture->SetSize( pTextureWidth, pTextureHeight );
+		pTexture->SetSize( pTextureSize );
 		pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
 		pTexture->SetMipMapped( false );
 		pTexture->CreateTexture(); // require or framebuffer attaching fails

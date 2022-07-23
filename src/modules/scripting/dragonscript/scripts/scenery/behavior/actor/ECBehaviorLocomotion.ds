@@ -180,14 +180,14 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * 
 		 * Sets these initial parameters:
 		 * - Can turn: yes
-		 * - Can turn in-place: yes
+		 * - Can turn in-place: no
 		 * - Linear velocity adjust range: Actor element class run speed
 		 * - Linear velocity adjust time: 0.5
 		 * - Moving left right adjust time: 0
 		 * - Looking limits: -80..80 (up-down) and -90..90 (left-right)
 		 * - Looking adjust times: 0
 		 * - Orientation adjust time: 1
-		 * - Turn adjust look left-right: yes
+		 * - Turn adjust look left-right: no
 		 * - Turn in-place limit: -70..70
 		 * - Turn in-place adjust time: 1
 		 * 
@@ -433,8 +433,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * of type ECBehaviorLocomotion.
 	 */
 	static public func ECBehaviorLocomotion getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorLocomotion
+		return eclass.findBehavior( block ECBehaviorLocomotion each
+			return true
 		end ) cast ECBehaviorLocomotion
 	end
 	
@@ -445,8 +445,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * of type ECBehaviorLocomotion.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

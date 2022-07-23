@@ -31,13 +31,29 @@ uniform vec2 pClamp; // clamp.s, clamp.t
 uniform vec3 pDepthTransform; // transformZ1, transformZ2, depthThreshold
 #endif
 
-uniform mediump sampler2D texData;
+#ifdef INPUT_ARRAY_TEXTURES
+	uniform mediump sampler2DArray texData;
+#else
+	uniform mediump sampler2D texData;
+#endif
+
 #ifdef DEPTH_DIFFERENCE_WEIGHTING
-uniform HIGHP sampler2D texDepth;
+	#ifdef INPUT_ARRAY_TEXTURES
+		uniform HIGHP sampler2DArray texDepth;
+	#else
+		uniform HIGHP sampler2D texDepth;
+	#endif
 #endif
 
 in vec2 vTexCoord;
 
+#ifdef INPUT_ARRAY_TEXTURES
+	#ifdef GS_RENDER_STEREO
+		flat in int vLayer;
+	#else
+		const int vLayer = 0;
+	#endif
+#endif
 
 
 #ifndef OUT_DATA_SIZE
@@ -91,7 +107,11 @@ in vec2 vTexCoord;
 	#endif
 #endif
 
-#define TEX_DATA(tc,weights) ( textureLod( texData, tc, 0.0 ) . TEX_DATA_SWIZZLE * TEX_DATA_TYPE( weights ) )
+#ifdef INPUT_ARRAY_TEXTURES
+	#define TEX_DATA(tc,weights) ( textureLod( texData, vec3( tc, vLayer ), 0 ) . TEX_DATA_SWIZZLE * TEX_DATA_TYPE( weights ) )
+#else
+	#define TEX_DATA(tc,weights) ( textureLod( texData, tc, 0 ) . TEX_DATA_SWIZZLE * TEX_DATA_TYPE( weights ) )
+#endif
 
 
 
@@ -100,12 +120,20 @@ in vec2 vTexCoord;
 #endif
 
 #ifdef DEPTH_DIFFERENCE_WEIGHTING
-	#ifdef DECODE_IN_DEPTH
-		#define TAP_DEPTH(tc) depth = pDepthTransform.x / ( pDepthTransform.y - dot( textureLod( texDepth, tc, 0.0 ).rgb, unpackDepth ) )
-		//#define TAP_DEPTH(tc) depth = dot( textureLod( texDepth, tc, 0.0 ).rgb, unpackDepth )
+	#ifdef INPUT_ARRAY_TEXTURES
+		#define TEX_DEPTH(tc) textureLod( texDepth, vec3( tc, vLayer ), 0 )
+		#define TEX_FETCH_DEPTH(tc) texelFetch( texDepth, ivec3( tc, vLayer ), 0 )
 	#else
-		#define TAP_DEPTH(tc) depth = pDepthTransform.x / ( pDepthTransform.y - textureLod( texDepth, tc, 0.0 ).r )
-		//#define TAP_DEPTH(tc) depth = textureLod( texDepth, tc, 0.0 ).r
+		#define TEX_DEPTH(tc) textureLod( texDepth, tc, 0 )
+		#define TEX_FETCH_DEPTH(tc) texelFetch( texDepth, ivec2( tc ), 0 )
+	#endif
+
+	#ifdef DECODE_IN_DEPTH
+		#define TAP_DEPTH(tc) depth = pDepthTransform.x / ( pDepthTransform.y - dot( TEX_DEPTH( tc ).rgb, unpackDepth ) )
+		//#define TAP_DEPTH(tc) depth = dot( TEX_DEPTH( tc ).rgb, unpackDepth )
+	#else
+		#define TAP_DEPTH(tc) depth = pDepthTransform.x / ( pDepthTransform.y - TEX_DEPTH( tc ).r )
+		//#define TAP_DEPTH(tc) depth = TEX_DEPTH( tc ).r
 	#endif
 	#define DDW_CALC_WEIGHT(w) weight = w * max( 0.0, 1.0 - pDepthTransform.z * abs( depth - refdepth ) )
 	#define EVAL_PIXEL(tc,w) TAP_DEPTH(tc); DDW_CALC_WEIGHT(w); accum += TEX_DATA(tc,weight); weightSum += weight
@@ -119,11 +147,11 @@ void main( void ){
 	TEX_DATA_TYPE accum = TEX_DATA( vTexCoord, pWeights1.x );
 	#ifdef DEPTH_DIFFERENCE_WEIGHTING
 		#ifdef DECODE_IN_DEPTH
-			float refdepth = pDepthTransform.x / ( pDepthTransform.y - dot( texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).rgb, unpackDepth ) );
-			//float refdepth = dot( texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).rgb, unpackDepth );
+			float refdepth = pDepthTransform.x / ( pDepthTransform.y - dot( TEX_FETCH_DEPTH( gl_FragCoord.xy ).rgb, unpackDepth ) );
+			//float refdepth = dot( TEX_FETCH_DEPTH( gl_FragCoord.xy ).rgb, unpackDepth );
 		#else
-			float refdepth = pDepthTransform.x / ( pDepthTransform.y - texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).r );
-			//float refdepth = texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).r;
+			float refdepth = pDepthTransform.x / ( pDepthTransform.y - TEX_FETCH_DEPTH( gl_FragCoord.xy ).r );
+			//float refdepth = TEX_FETCH_DEPTH( gl_FragCoord.xy ).r;
 		#endif
 		float weightSum = pWeights1.x;
 		float weight, depth;

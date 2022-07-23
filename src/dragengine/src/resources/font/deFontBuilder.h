@@ -22,6 +22,8 @@
 #ifndef _DEFONTBUILDER_H_
 #define _DEFONTBUILDER_H_
 
+#include "../../dragengine_export.h"
+
 class deFont;
 
 
@@ -33,7 +35,7 @@ class deFont;
  * Usually used by editors to create font resources from an in-editor
  * representation of a font.
  */
-class deFontBuilder{
+class DE_DLL_EXPORT deFontBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

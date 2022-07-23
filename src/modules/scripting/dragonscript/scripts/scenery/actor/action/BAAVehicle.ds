@@ -256,7 +256,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 	/** \brief Analog moving forward/backward. */
 	public func void analogMoveFB( float amount, bool sticky )
 		if sticky
-			this.playerInputMove.setAnalogMoveForwardBackwardSticky( -amount )
+			this.playerInputMove.setAnalogMoveForwardBackwardSticky( amount )
 			
 		else
 			this.playerInputMove.setAnalogMoveForwardBackward( -amount )
@@ -303,10 +303,10 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 	/** \brief Analog moving left/right. */
 	public func void analogMoveLR( float amount, bool sticky )
 		if sticky
-			this.playerInputTurn.setAnalogTurnHorizontalSticky( -amount )
+			this.playerInputTurn.setAnalogTurnHorizontalSticky( amount )
 			
 		else
-			this.playerInputTurn.setAnalogTurnHorizontal( -amount )
+			this.playerInputTurn.setAnalogTurnHorizontal( amount )
 		end
 	end
 	
@@ -419,8 +419,11 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 	
 	/**
 	 * \brief Initialize player input tracker.
+	 * 
+	 * Sets ECBehaviorPlayerInputMove to LocomotionType.vehicle .
 	 */
 	protected func void initPlayerInput()
+		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.vehicle )
 	end
 	
 	/**
@@ -447,7 +450,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 	 * - Linear velocity adjust time: 1
 	 */
 	protected func void initLocomotion()
-		locomotion.initVehicle( this.playerInputMove.getSpeedWalk() )
+		this.locomotion.initVehicle( this.playerInputMove.getSpeedWalk() )
 	end
 	
 	

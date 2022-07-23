@@ -77,6 +77,9 @@ public:
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer( seSynthesizer *synthesizer );
 	
+	/** \brief Synthesizer path changed. */
+	void OnSynthesizerPathChanged();
+	
 	/** \brief Game like frame update. */
 	void OnFrameUpdate( float elapsed );
 	/*@}*/

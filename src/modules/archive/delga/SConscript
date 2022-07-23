@@ -15,7 +15,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs)
 appendLibrary( envModule, parent_targets[ 'lib_zlib' ], libs )
 
 # fetch values in expanded form for later use
-versionString = '1.0'
+versionString = '1.5'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -51,6 +51,11 @@ for l in library:
 	if l.name.endswith(envModule['SHLIBSUFFIX']):
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'arcdelga.pdb'))
+	archive['{}/arcdelga.pdb'.format(pathPdb)] = envModule.File('arcdelga.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME' },

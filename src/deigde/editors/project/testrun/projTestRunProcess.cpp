@@ -123,8 +123,8 @@ void projTestRunProcess::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void projTestRunProcess::WriteFloatToPipe( float value ){
@@ -166,9 +166,9 @@ int projTestRunProcess::ReadUCharFromPipe(){
 }
 
 int projTestRunProcess::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
 int projTestRunProcess::ReadFloatFromPipe(){
@@ -264,6 +264,7 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.pathCapture = ReadString16FromPipe();
 	
 	pRunParameters.scriptDirectory = ReadString16FromPipe();
+	pRunParameters.scriptVersion = ReadString16FromPipe();
 	pRunParameters.gameObject = ReadString16FromPipe();
 	pRunParameters.vfsPathConfig = ReadString16FromPipe();
 	pRunParameters.vfsPathCapture = ReadString16FromPipe();
@@ -308,6 +309,7 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.moduleAudio = ReadString16FromPipe();
 	pRunParameters.moduleSynthesizer = ReadString16FromPipe();
 	pRunParameters.moduleNetwork = ReadString16FromPipe();
+	pRunParameters.moduleVR = ReadString16FromPipe();
 	
 // 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
 }
@@ -330,6 +332,8 @@ void projTestRunProcess::pLogConfiguration(){
 	
 	pLogger->LogInfoFormat( LOGSOURCE, "- Script Directory: %s",
 		pRunParameters.scriptDirectory.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Script Version: %s",
+		pRunParameters.scriptVersion.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- Game Object: %s",
 		pRunParameters.gameObject.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Config: %s",
@@ -391,6 +395,8 @@ void projTestRunProcess::pLogConfiguration(){
 		pRunParameters.moduleSynthesizer.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- Module Network: %s",
 		pRunParameters.moduleNetwork.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module VR: %s",
+		pRunParameters.moduleVR.GetString() );
 }
 
 void projTestRunProcess::pCreateLogger(){

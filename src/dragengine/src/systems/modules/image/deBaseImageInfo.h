@@ -33,7 +33,7 @@
  * by the image module to store additional data structures needed for loading
  * in a subclasses object.
  */
-class deBaseImageInfo{
+class DE_DLL_EXPORT deBaseImageInfo{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

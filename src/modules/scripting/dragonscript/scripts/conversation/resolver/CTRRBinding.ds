@@ -125,38 +125,36 @@ class CTRRBinding implements ConversationTagResolverRule
 		
 		// buttons
 		this.pBindings.forEachButtonBinding( block Binding each
-			if each.getCommand() == command and each.getDeviceIndex() != -1 \
-			and each.getSourceIndex() != -1
-				var InputDevice device = this.pBindings.getDeviceAt( each.getDeviceIndex() )
-				var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
-				var Image icon = button.getLargestDisplayIconY( maxHeight )
-				
-				images.add( icon )
-				
-				if icon != null
-					values.add( button.getDisplayText() )
+			if each.getCommand() == command
+				var InputDeviceButton button = each.getInputDeviceButton()
+				if button != null
+					var Image icon = button.getLargestDisplayIconY( maxHeight )
+					images.add( icon )
 					
-				else
-					values.add( this.devicePrefix( device ) + button.getName() )
+					if icon != null
+						values.add( button.getDisplayText() )
+						
+					else
+						values.add( this.devicePrefix( button.getInputDevice() ) + button.getName() )
+					end
 				end
 			end
 		end )
 		
 		// axis
 		this.pBindings.forEachAxisBinding( block Binding each
-			if each.getCommand() == command and each.getDeviceIndex() != -1 \
-			and each.getSourceIndex() != -1
-				var InputDevice device = this.pBindings.getDeviceAt( each.getDeviceIndex() )
-				var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
-				var Image icon = axis.getLargestDisplayIconY( maxHeight )
-				
-				images.add( icon )
-				
-				if icon != null
-					values.add( axis.getDisplayText() )
+			if each.getCommand() == command
+				var InputDeviceAxis axis = each.getInputDeviceAxis()
+				if axis != null
+					var Image icon = axis.getLargestDisplayIconY( maxHeight )
+					images.add( icon )
 					
-				else
-					values.add( this.devicePrefix( device ) + axis.getName() )
+					if icon != null
+						values.add( axis.getDisplayText() )
+						
+					else
+						values.add( this.devicePrefix( axis.getInputDevice() ) + axis.getName() )
+					end
 				end
 			end
 		end )

@@ -11,11 +11,8 @@
 	#include "v130/shared/defren/skin/shared_spb_index.glsl"
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
-
-#ifdef NODE_VERTEX_UNIFORMS
-NODE_VERTEX_UNIFORMS
-#endif
 
 
 
@@ -93,7 +90,7 @@ NODE_VERTEX_INPUTS
 		#define vReflectDir vTCSReflectDir
 	#endif
 	
-#elif defined GS_RENDER_CUBE
+#elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vGSTCColor;
 		#define vTCColor vGSTCColor
@@ -131,7 +128,7 @@ NODE_VERTEX_INPUTS
 		flat out int vGSSPBIndex;
 		#define vSPBIndex vGSSPBIndex
 		
-		#ifdef GS_RENDER_CUBE
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			flat out int vGSSPBFlags;
 		#endif
 	#endif
@@ -187,6 +184,7 @@ NODE_VERTEX_OUTPUTS
 // Main Function
 //////////////////
 
+#include "v130/shared/defren/sanitize_position.glsl"
 #include "v130/shared/defren/skin/transform_position.glsl"
 #ifdef REQUIRES_NORMAL
 	#include "v130/shared/defren/skin/transform_normal.glsl"
@@ -207,11 +205,20 @@ void main( void ){
 	
 	// transform position
 	vec3 position;
-	transformPosition( position, spbIndex );
+	#ifdef REQUIRES_TRANSFORM_TRANSFER
+		sTransformTransfer transformTransfer;
+		transformPosition( position, spbIndex, transformTransfer );
+	#else
+		transformPosition( position, spbIndex );
+	#endif
 	
 	// normal calculation
 	#ifdef REQUIRES_NORMAL
-		transformNormal( spbIndex );
+		#ifdef REQUIRES_TRANSFORM_TRANSFER
+			transformNormal( spbIndex, transformTransfer );
+		#else
+			transformNormal( spbIndex );
+		#endif
 	#endif
 	
 	// reflection directory for environment map reflections
@@ -222,13 +229,17 @@ void main( void ){
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				vReflectDir = pMatrixV * vec4( position, 1.0 );
+				#ifdef GS_RENDER_CUBE
+					vReflectDir = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				#else
+					vReflectDir = pMatrixV * vec4( position, 1.0 );
+				#endif
 			#endif
 		#endif
 	#endif
 	
 	// non-perspective depth values if required
-	#ifndef HAS_TESSELLATION_SHADER
+	#if ! defined HAS_TESSELLATION_SHADER && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
 		#ifdef DEPTH_ORTHOGONAL
 			#ifdef NO_ZCLIP
 				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
@@ -245,7 +256,11 @@ void main( void ){
 			#ifdef BILLBOARD
 				vPosition = position;
 			#else
-				vPosition = pMatrixV * vec4( position, 1.0 );
+				#ifdef GS_RENDER_CUBE
+					vPosition = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				#else
+					vPosition = pMatrixV * vec4( position, 1.0 );
+				#endif
 			#endif
 		#endif
 	#endif
@@ -258,7 +273,11 @@ void main( void ){
 			#ifdef BILLBOARD
 				vClipCoord = position;
 			#else
-				vClipCoord = pMatrixV * vec4( position, 1.0 );
+				#ifdef GS_RENDER_CUBE
+					vClipCoord = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				#else
+					vClipCoord = pMatrixV * vec4( position, 1.0 );
+				#endif
 			#endif
 		#endif
 	#endif
@@ -274,13 +293,17 @@ void main( void ){
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = ( pMatrixV * vec4( position, 1.0 ) ).z;
+			#ifdef GS_RENDER_CUBE
+				vFadeZ = ( pMatrixV[ 0 ] * vec4( position, 1.0 ) ).z;
+			#else
+				vFadeZ = ( pMatrixV * vec4( position, 1.0 ) ).z;
+			#endif
 		#endif
 	#endif
 	
 	#ifdef SHARED_SPB
 		vSPBIndex = spbIndex;
-		#ifdef GS_RENDER_CUBE
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			vGSSPBFlags = spbFlags;
 		#endif
 	#endif

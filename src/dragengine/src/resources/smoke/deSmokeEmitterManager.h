@@ -34,7 +34,7 @@ class deSmokeEmitter;
  *
  * Manages a list of smoke emitters.
  */
-class deSmokeEmitterManager : public deResourceManager{
+class DE_DLL_EXPORT deSmokeEmitterManager : public deResourceManager{
 private:
 	deResourceList pSmokeEmitters;
 	

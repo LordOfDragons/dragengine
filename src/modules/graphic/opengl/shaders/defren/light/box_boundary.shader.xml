@@ -10,14 +10,14 @@
 	<texture name='texDepth' target='2'/>
 	<texture name='texAmbient' target='3'/>
 	
-	<parameter name='pQuadParams'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
-	<parameter name='pMipMapLevel'/> <!-- 2 -->
-	<parameter name='pMatrixRotation'/> <!-- 3 -->
-	<parameter name='pInitialMinValue'/> <!-- 4 -->
-	<parameter name='pInitialMaxValue'/> <!-- 5 -->
-	<parameter name='pClearMinValue'/> <!-- 6 -->
-	<parameter name='pClearMaxValue'/> <!-- 7 -->
+	<parameter name='pQuadParams'/>
+	<parameter name='pPosTransform'/>
+	<parameter name='pMipMapLevel'/>
+	<parameter name='pMatrixRotation'/>
+	<parameter name='pInitialMinValue'/>
+	<parameter name='pInitialMaxValue'/>
+	<parameter name='pClearMinValue'/>
+	<parameter name='pClearMaxValue'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

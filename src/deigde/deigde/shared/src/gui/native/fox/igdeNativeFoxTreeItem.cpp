@@ -44,8 +44,8 @@ FXIMPLEMENT( igdeNativeFoxTreeItem, FXTreeItem, NULL, 0 )
 
 igdeNativeFoxTreeItem::igdeNativeFoxTreeItem(){ }
 
-igdeNativeFoxTreeItem::igdeNativeFoxTreeItem( igdeTreeItem &owner ) :
-pOwner( &owner )
+igdeNativeFoxTreeItem::igdeNativeFoxTreeItem( igdeTreeItem &powner ) :
+pOwner( &powner )
 {
 }
 

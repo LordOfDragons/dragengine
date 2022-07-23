@@ -46,19 +46,23 @@ private:
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pUseAxis;
 	const decVector pMinTranslation;
 	const decVector pMaxTranslation;
 	const decVector pMinRotation;
 	const decVector pMaxRotation;
 	const decVector pMinScaling;
 	const decVector pMaxScaling;
+	const decVector pAxis;
+	const float pMinAngle;
+	const float pMaxAngle;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleBoneTransformator( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleBoneTransformator &rule );
+	dearRuleBoneTransformator( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleBoneTransformator &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleBoneTransformator();

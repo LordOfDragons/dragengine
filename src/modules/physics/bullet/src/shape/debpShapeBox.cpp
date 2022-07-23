@@ -38,9 +38,6 @@
 
 debpShapeBox::debpShapeBox( decShapeBox *shape ) : debpShape( estBox, shape ){
 	pSBox = shape;
-	
-	pCBox.SetHalfSize( shape->GetHalfExtends() );
-	
 	SetCollisionVolume( &pCBox );
 }
 
@@ -52,9 +49,10 @@ debpShapeBox::~debpShapeBox(){
 // Management
 ///////////////
 
-void debpShapeBox::UpdateWithMatrix( const decDMatrix &transformation ){
+void debpShapeBox::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
 	pCBox.SetCenter( transformation * pSBox->GetPosition() );
 	pCBox.SetOrientation( pSBox->GetOrientation() * transformation.ToQuaternion() );
+	pCBox.SetHalfSize( pSBox->GetHalfExtends().Multiply( scale ) );
 }
 
 void debpShapeBox::PrintDebug( dePhysicsBullet &module ){

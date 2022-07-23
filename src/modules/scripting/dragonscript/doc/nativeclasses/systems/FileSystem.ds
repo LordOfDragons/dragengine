@@ -46,31 +46,31 @@ fixed class FileSystem
 	 * \brief File exist.
 	 * \details If the filename is relative it is checked against the game path.
 	 */
-	public static func bool existsFile( String path )
+	public static func bool existsFile(String path)
 		return false
 	end
 	
 	/** \brief File can be read. */
-	public static func bool canReadFile( String path )
+	public static func bool canReadFile(String path)
 		return false
 	end
 	
 	/** \brief File can be written. */
-	public static func bool canWriteFile( String path )
+	public static func bool canWriteFile(String path)
 		return false
 	end
 	
 	/** \brief File can be deleted. */
-	public static func bool canDeleteFile( String path )
+	public static func bool canDeleteFile(String path)
 		return false
 	end
 	
 	/** \brief Delete file. */
-	public static func void deleteFile( String path )
+	public static func void deleteFile(String path)
 	end
 	
 	/** \brief Type of file. */
-	public static func FileType getTypeOfFile( String path )
+	public static func FileType getTypeOfFile(String path)
 		return null
 	end
 	
@@ -89,12 +89,75 @@ fixed class FileSystem
 	 * end)
 	 * \endcode
 	 */
-	public static func void searchFiles( String directory, bool recursive, Block ablock )
+	public static func void searchFiles(String directory, bool recursive, Block ablock)
 	end
 	
 	/** \brief Path matches a file pattern. */
-	public static func bool pathMatchesPattern( String string, String pattern )
+	public static func bool pathMatchesPattern(String string, String pattern)
 		return false
+	end
+	
+	/**
+	 * \brief Browse overlay path.
+	 * \version 1.7
+	 * 
+	 * Open operating system native file browser showing the content of path inside the
+	 * currently running game overlay directory. If the directory not exist it is created.
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void browseOverlay(String path)
+	end
+	
+	/**
+	 * \brief Browse capture path.
+	 * \version 1.7
+	 * 
+	 * Open operating system native file browser showing the content of path inside the
+	 * currently running game capture directory. If the directory not exist it is created.
+	 * 
+	 * If path is an absolute path it has to start with "/capture" directory.
+	 * If path is relative it is considered relative to "/capture" directory.
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void browseCapture(String path)
+	end
+	
+	/**
+	 * \brief Browse config path.
+	 * \version 1.7
+	 * 
+	 * Open operating system native file browser showing the content of path inside the
+	 * currently running game config directory. If the directory not exist it is created.
+	 * 
+	 * If path is an absolute path it has to start with "/config" directory.
+	 * If path is relative it is considered relative to "/config" directory.
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void browseConfig(String path)
+	end
+	
+	/**
+	 * \brief Get file extension list for resource type for use in file browsing.
+	 * \version 1.7
+	 * 
+	 * Returns an Array of FileExtension objects. For each running engine module of the
+	 * respective type one FileExtension object is created. The FileExtension object
+	 * contains the display name, an Array of file patterns in the form ".xyz" and
+	 * a default extension in the form ".xyz".
+	 */
+	public static func Array getFileExtensions(ResourceLoaderType type)
+	end
+	
+	/**
+	 * \brief Open URL using user defined application.
+	 * \version 1.9
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void openUrl(String url)
 	end
 	/*@}*/
 end

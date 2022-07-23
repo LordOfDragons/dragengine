@@ -25,6 +25,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassVector.h"
+#include "deClassPoint3.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -308,6 +309,50 @@ void deClassVector::nfClamped::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsVector.PushVector( rt, vector.Clamped( min, max ) );
 }
 
+// public func Point3 round()
+deClassVector::nfRound::nfRound( const sInitData &init ) :
+dsFunction( init.clsVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint3 ){
+}
+void deClassVector::nfRound::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
+	
+	( ( deClassVector* )GetOwnerClass() )->GetScriptModule()->
+		GetClassPoint3()->PushPoint( rt, vector.Round() );
+}
+
+// public func Vector round(float unit)
+deClassVector::nfRound2::nfRound2( const sInitData &init ) :
+dsFunction( init.clsVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsFlt ); // unit
+}
+void deClassVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decVector vector( ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector );
+	deClassVector &clsVector = *( ( deClassVector* )GetOwnerClass() );
+	const float unit = rt->GetValue( 0 )->GetFloat();
+	
+	vector /= unit;
+	vector.x = floor( vector.x + 0.5f );
+	vector.y = floor( vector.y + 0.5f );
+	vector.z = floor( vector.z + 0.5f );
+	vector *= unit;
+	clsVector.PushVector( rt, vector );
+}
+
+// public func Vector mix(Vector vector, float factor)
+deClassVector::nfMix::nfMix( const sInitData &init ) :
+dsFunction( init.clsVec, "mix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsVec ); // vector
+	p_AddParameter( init.clsFlt ); // factor
+}
+void deClassVector::nfMix::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
+	deClassVector &clsVector = *( ( deClassVector* )GetOwnerClass() );
+	const decVector &other = clsVector.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const float factor = rt->GetValue( 1 )->GetFloat();
+	
+	clsVector.PushVector( rt, vector.Mix( other, factor ) );
+}
+
 
 
 // testing
@@ -581,9 +626,34 @@ deClassVector::nfToString::nfToString( const sInitData &init ) : dsFunction( ini
 }
 void deClassVector::nfToString::RunFunction( dsRunTime *RT, dsValue *This ){
 	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( This ) )->vector;
-	char buffer[ 50 ];
-	sprintf( ( char* )&buffer, "(%f,%f,%f)", vector.x, vector.y, vector.z );
-	RT->PushString( buffer );
+	decString string;
+	string.Format( "(%f,%f,%f)", vector.x, vector.y, vector.z );
+	RT->PushString( string );
+}
+
+// public func String toString( int precision )
+deClassVector::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsVec, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 17 ];
+	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
+	
+	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
+	decString string;
+	string.Format( format, vector.x, vector.y, vector.z );
+	rt->PushString( string );
 }
 
 
@@ -619,6 +689,7 @@ void deClassVector::CreateClassMembers( dsEngine *engine ){
 	init.clsFlt = engine->GetClassFloat();
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsPoint3 = pScrMgr->GetClassPoint3();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -641,6 +712,9 @@ void deClassVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSmallest( init ) );
 	AddFunction( new nfLargest( init ) );
 	AddFunction( new nfClamped( init ) );
+	AddFunction( new nfRound( init ) );
+	AddFunction( new nfRound2( init ) );
+	AddFunction( new nfMix( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );
 	AddFunction( new nfIsAtLeast( init ) );
@@ -665,6 +739,7 @@ void deClassVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decVector &deClassVector::GetVector( dsRealObject *myself ) const{

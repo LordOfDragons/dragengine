@@ -29,11 +29,10 @@
 #include "../../deglWindowMain.h"
 #include "../../deglGuiBuilder.h"
 #include "../../../deglLauncher.h"
-#include "../../../engine/deglEngine.h"
-#include "../../../engine/modules/deglEngineModule.h"
-#include "../../../game/deglGame.h"
-#include "../../../game/fileformat/deglFileFormat.h"
-#include "../../../game/profile/deglGameProfile.h"
+
+#include <delauncher/engine/modules/delEngineModule.h>
+#include <delauncher/engine/modules/delEngineModuleList.h>
+#include <delauncher/game/fileformat/delFileFormat.h>
 
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/common/exceptions.h>
@@ -43,8 +42,7 @@
 // Events
 ///////////
 
-FXDEFMAP( deglDGPPanelFileFormats ) deglDGPPanelFileFormatsMap[]={
-};
+FXDEFMAP( deglDGPPanelFileFormats ) deglDGPPanelFileFormatsMap[] = {};
 
 
 
@@ -59,29 +57,27 @@ FXIMPLEMENT( deglDGPPanelFileFormats, FXVerticalFrame, deglDGPPanelFileFormatsMa
 deglDGPPanelFileFormats::deglDGPPanelFileFormats(){ }
 
 deglDGPPanelFileFormats::deglDGPPanelFileFormats( deglDialogGameProblems *parentDialog, FXComposite *container ) :
-FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 0 ){
+FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 0 ),
+pParentDialog( parentDialog ),
+pStatusWorking( false )
+{
 	if( ! parentDialog ) DETHROW( deeInvalidParam );
 	
 	FXScrollWindow *scrollWindow;
 	FXVerticalFrame *frameContent;
 	
-	pParentDialog = parentDialog;
-	pStatusWorking = false;
-	
 	// create content
-	scrollWindow = new FXScrollWindow( this, LAYOUT_FILL_X | LAYOUT_FILL_Y | SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
-	if( ! scrollWindow ) DETHROW( deeOutOfMemory );
+	scrollWindow = new FXScrollWindow( this, LAYOUT_FILL_X | LAYOUT_FILL_Y
+		| SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
+	frameContent = new FXVerticalFrame( scrollWindow, LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 3 );
 	
-	frameContent = new FXVerticalFrame( scrollWindow, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 );
-	if( ! frameContent ) DETHROW( deeOutOfMemory );
-	
-	pListFormats = new FXIconList( frameContent, this, ID_LIST_FORMATS, ICONLIST_BROWSESELECT | ICONLIST_DETAILED |
-		LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	if( ! pListFormats ) DETHROW( deeOutOfMemory );
-	pListFormats->appendHeader( "Resource Type", NULL, 110 );
-	pListFormats->appendHeader( "File Format", NULL, 130 );
-	pListFormats->appendHeader( "Supported by", NULL, 130 );
-	pListFormats->appendHeader( "Problem", NULL, 150 );
+	pListFormats = new FXIconList( frameContent, this, ID_LIST_FORMATS,
+		ICONLIST_BROWSESELECT | ICONLIST_DETAILED | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	pListFormats->appendHeader( "Resource Type", nullptr, 110 );
+	pListFormats->appendHeader( "File Format", nullptr, 130 );
+	pListFormats->appendHeader( "Supported by", nullptr, 130 );
+	pListFormats->appendHeader( "Problem", nullptr, 150 );
 	
 	RebuildFormatList();
 }
@@ -95,56 +91,67 @@ deglDGPPanelFileFormats::~deglDGPPanelFileFormats(){
 ///////////////
 
 void deglDGPPanelFileFormats::RebuildFormatList(){
-	deglGame &game = *pParentDialog->GetGame();
-	const deglEngine &engine = *pParentDialog->GetWindowMain()->GetLauncher()->GetEngine();
-	const deglEngineModuleList &moduleList = engine.GetModuleList();
-	deglFileFormatList &fileFormatList = game.GetFileFormatList();
-	int f, formatCount = fileFormatList.GetFormatCount();
-	int m, moduleCount = moduleList.GetModuleCount();
-	deglEngineModule *matchingModule;
-	deglEngineModule *module = NULL;
+	delGame &game = *pParentDialog->GetGame();
+	const delEngine &engine = pParentDialog->GetWindowMain()->GetLauncher()->GetEngine();
+	const delEngineModuleList &modules = engine.GetModules();
+	delFileFormatList &fileFormats = game.GetFileFormats();
+	int f, formatCount = fileFormats.GetCount();
+	int m, moduleCount = modules.GetCount();
+	delEngineModule *matchingModule;
+	delEngineModule *module = nullptr;
 	deModuleSystem::eModuleTypes formatType;
 	FXString text;
 	
 	pListFormats->clearItems();
 	
 	for( f=0; f<formatCount; f++ ){
-		deglFileFormat &format = *fileFormatList.GetFormatAt( f );
+		delFileFormat &format = *fileFormats.GetAt( f );
 		const decString &formatPattern = format.GetPattern();
 		formatType = format.GetType();
 		
 		// type string
-		if( formatType == deModuleSystem::emtAnimation ){
+		switch( formatType ){
+		case deModuleSystem::emtAnimation:
 			text = "Animation\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtFont ){
+		case deModuleSystem::emtFont:
 			text = "Font\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtImage ){
+		case deModuleSystem::emtImage:
 			text = "Image\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtLanguagePack ){
+		case deModuleSystem::emtLanguagePack:
 			text = "Language Pack\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtModel ){
+		case deModuleSystem::emtModel:
 			text = "Model\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtRig ){
+		case deModuleSystem::emtRig:
 			text = "Rig\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtSkin ){
+		case deModuleSystem::emtSkin:
 			text = "Skin\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtSound ){
+		case deModuleSystem::emtSound:
 			text = "Sound\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtVideo ){
+		case deModuleSystem::emtVideo:
 			text = "Video\t";
+			break;
 			
-		}else if( formatType == deModuleSystem::emtOcclusionMesh ){
+		case deModuleSystem::emtOcclusionMesh:
 			text = "Occlusion Mesh\t";
+			break;
 			
-		}else{
+		default:
 			text = "???\t";
 		}
 		
@@ -153,11 +160,11 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 		text.append( '\t' );
 		
 		// add module supporting this file format
-		matchingModule = NULL;
+		matchingModule = nullptr;
 		
 		if( ! deModuleSystem::IsSingleType( formatType ) ){
 			for( m=0; m<moduleCount; m++ ){
-				module = moduleList.GetModuleAt( m );
+				module = modules.GetAt( m );
 				
 				if( module->GetType() == formatType ){
 					if( formatPattern.MatchesPattern( module->GetPattern() ) ){
@@ -178,7 +185,7 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 		
 		// add status
 		if( matchingModule ){
-			if( module->GetStatus() == deglEngineModule::emsReady ){
+			if( module->GetStatus() == delEngineModule::emsReady ){
 				text.append( "-" );
 				
 			}else{
@@ -191,7 +198,7 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 			pStatusWorking = false;
 		}
 		
-		pListFormats->appendItem( text, NULL, NULL, NULL );
+		pListFormats->appendItem( text, nullptr, nullptr, nullptr );
 	}
 }
 

@@ -34,7 +34,7 @@
  * type create an instance then set the point count and fill in the points. Do not alter the
  * points after the shape has been added to a collider.
  */
-class decShapeHull : public decShape{
+class DE_DLL_EXPORT decShapeHull : public decShape{
 private:
 	decVector *pPoints;
 	int pPointCount;

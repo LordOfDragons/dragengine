@@ -94,5 +94,13 @@ class ModuleParameter
 	public func String getDisplayName()
 		return null
 	end
+	
+	/**
+	 * \brief Default value.
+	 * \version 1.7
+	 */
+	public func String getDefaultValue()
+		return null
+	end
 	/*@}*/
 end

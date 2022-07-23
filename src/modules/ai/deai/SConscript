@@ -7,7 +7,7 @@ Import( 'parent_env parent_targets parent_report' )
 envModule = parent_env.Clone()
 
 # fetch values in expanded form for later use
-versionString = '1.4'
+versionString = '1.5'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -37,6 +37,11 @@ for l in library:
 	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'aideai.pdb'))
+	archive['{}/aideai.pdb'.format(pathPdb)] = envModule.File('aideai.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

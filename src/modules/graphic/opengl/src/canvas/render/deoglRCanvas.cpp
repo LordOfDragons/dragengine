@@ -24,6 +24,13 @@
 #include <string.h>
 
 #include "deoglRCanvas.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../rendering/deoglRenderCanvas.h"
+#include "../../rendering/deoglRenderCanvasContext.h"
+#include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../target/deoglRenderTarget.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,10 +48,18 @@ pOrder( 0.0f ),
 pTransparency( 1.0f ),
 pBlendSrc( GL_SRC_ALPHA ),
 pBlendDest( GL_ONE_MINUS_SRC_ALPHA ),
-pVisible( true ){
+pMask( NULL ),
+pVisible( true ),
+pMaskRenderTarget( NULL ){
 }
 
 deoglRCanvas::~deoglRCanvas(){
+	if( pMask ){
+		pMask->FreeReference();
+	}
+	if( pMaskRenderTarget ){
+		pMaskRenderTarget->FreeReference();
+	}
 }
 
 
@@ -84,11 +99,74 @@ void deoglRCanvas::SetBlendDest( GLenum blendDest ){
 	pBlendDest = blendDest;
 }
 
+void deoglRCanvas::SetMask( deoglRCanvas *mask ){
+	if( mask == pMask ){
+		return;
+	}
+	
+	if( pMask ){
+		pMask->FreeReference();
+	}
+	
+	pMask = mask;
+	
+	if( mask ){
+		mask->AddReference();
+	}
+}
+
 void deoglRCanvas::SetVisible( bool visible ){
 	pVisible = visible;
 }
 
+void deoglRCanvas::DirtyMaskRenderTarget(){
+	if( pMaskRenderTarget ){
+		pMaskRenderTarget->SetTextureDirty( true );
+	}
+}
 
 
-void deoglRCanvas::PrepareForRender(){
+
+void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pMask ){
+		pMask->PrepareForRender( renderPlanMask );
+		
+		const int width = ( int )( GetSize().x + 0.5f );
+		const int height = ( int )( GetSize().y + 0.5f );
+		
+		if( pMaskRenderTarget ){
+			pMaskRenderTarget->SetSize( decPoint( width, height ) );
+			
+		}else{
+			pMaskRenderTarget = new deoglRenderTarget( GetRenderThread(), decPoint( width, height ), 1, 8 );
+		}
+		
+		if( pMaskRenderTarget->GetTextureDirty() ){
+			pMaskRenderTarget->SetTextureDirty( false );
+			
+			pMaskRenderTarget->PrepareFramebuffer();
+			
+			deoglRenderCanvasContext context( *pMask, pMaskRenderTarget->GetFBO(),
+				decPoint(), pMaskRenderTarget->GetSize(), false, renderPlanMask );
+			
+			// for rendering into the render target the canvas position and transform has
+			// to be negated. this way rendering with the position and transform as used
+			// for regular rendering cancels each other out resulting in an identity
+			// transformation. this way no second code path is required.
+			context.SetTransform( pMask->GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
+			context.UpdateTransformMask();
+			
+			GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
+			pMask->Render( context );
+			
+			// TODO we need to merge this mask with a potentially previous mask if nested
+			//      widgets have individual masks. this requires rendering the previous
+			//      mask into this mask with the correct transformation. to do this we
+			//      have to walk up the mask/parent chain to find the previous mask and
+			//      render this render target texture. this requires a new method in
+			//      deoglRenderCanvas to keep this there
+			
+			pMaskRenderTarget->ReleaseFramebuffer(); // temporary
+		}
+	}
 }

@@ -23,8 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglRenderTask.h"
 #include "deoglRenderTaskShader.h"
 #include "deoglRenderTaskTexture.h"
+#include "shared/deoglRenderTaskSharedTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 
 #include <dragengine/common/exceptions.h>
@@ -39,11 +41,7 @@
 
 deoglRenderTaskShader::deoglRenderTaskShader() :
 pShader( NULL ),
-pParamBlock( NULL ),
-pSPBInstanceIndexBase( -1 ),
 
-pRootTexture( NULL ),
-pTailTexture( NULL ),
 pTextureCount( 0 ),
 
 pHasTexture( NULL ),
@@ -55,6 +53,13 @@ deoglRenderTaskShader::~deoglRenderTaskShader(){
 	if( pHasTexture ){
 		delete [] pHasTexture;
 	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		delete ( deoglRenderTaskTexture* )pTextures.GetAt( i );
+	}
+	pTextures.RemoveAll();
 }
 
 
@@ -64,129 +69,100 @@ deoglRenderTaskShader::~deoglRenderTaskShader(){
 
 void deoglRenderTaskShader::Reset(){
 	pShader = NULL;
-	pParamBlock = NULL;
-	pSPBInstanceIndexBase = -1;
 	pHasTextureCount = 0;
-	
-	pRootTexture = NULL;
-	pTailTexture = NULL;
 	pTextureCount = 0;
 }
 
 
 
 int deoglRenderTaskShader::GetTotalPointCount() const{
-	deoglRenderTaskTexture *texture = pRootTexture;
-	int pointCount = 0;
-	
-	while( texture ){
-		pointCount += texture->GetTotalPointCount();
-		texture = texture->GetNextTexture();
+	int i, pointCount = 0;
+	for( i=0; i<pTextureCount; i++ ){
+		pointCount += ( ( deoglRenderTaskTexture* )pTextures.GetAt( i ) )->GetTotalPointCount();
 	}
-	
 	return pointCount;
 }
 
 int deoglRenderTaskShader::GetTotalVAOCount() const{
-	deoglRenderTaskTexture *texture = pRootTexture;
-	int vaoCount = 0;
-	
-	while( texture ){
-		vaoCount += texture->GetVAOCount();
-		texture = texture->GetNextTexture();
+	int i, vaoCount = 0;
+	for( i=0; i<pTextureCount; i++ ){
+		vaoCount += ( ( deoglRenderTaskTexture* )pTextures.GetAt( i ) )->GetVAOCount();
 	}
-	
 	return vaoCount;
 }
 
 int deoglRenderTaskShader::GetTotalInstanceCount() const{
-	deoglRenderTaskTexture *texture = pRootTexture;
-	int instanceCount = 0;
-	
-	while( texture ){
-		instanceCount += texture->GetTotalInstanceCount();
-		texture = texture->GetNextTexture();
+	int i, instanceCount = 0;
+	for( i=0; i<pTextureCount; i++ ){
+		instanceCount += ( ( deoglRenderTaskTexture* )pTextures.GetAt( i ) )->GetTotalInstanceCount();
 	}
-	
 	return instanceCount;
 }
 
 int deoglRenderTaskShader::GetTotalSubInstanceCount() const{
-	deoglRenderTaskTexture *texture = pRootTexture;
-	int subInstanceCount = 0;
-	
-	while( texture ){
-		subInstanceCount += texture->GetTotalSubInstanceCount();
-		texture = texture->GetNextTexture();
+	int i, subInstanceCount = 0;
+	for( i=0; i<pTextureCount; i++ ){
+		subInstanceCount += ( ( deoglRenderTaskTexture* )pTextures.GetAt( i ) )->GetTotalSubInstanceCount();
 	}
-	
 	return subInstanceCount;
 }
 
 
 
-void deoglRenderTaskShader::SetShader( deoglShaderProgram *shader ){
+void deoglRenderTaskShader::SetShader( const deoglRenderTaskSharedShader *shader ){
 	pShader = shader;
 }
 
-void deoglRenderTaskShader::SetParameterBlock( deoglSPBlockUBO *block ){
-	pParamBlock = block;
+
+
+deoglRenderTaskTexture *deoglRenderTaskShader::GetTextureAt( int index ) const{
+	return ( deoglRenderTaskTexture* )pTextures.GetAt( index );
 }
 
-void deoglRenderTaskShader::SetSPBInstanceIndexBase( int parameter ){
-	pSPBInstanceIndexBase = parameter;
-}
-
-
-
-void deoglRenderTaskShader::AddTexture( deoglRenderTaskTexture *texture ){
+deoglRenderTaskTexture *deoglRenderTaskShader::AddTexture( const deoglRenderTaskSharedTexture *texture ){
 	if( ! texture ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pTailTexture ){
-		pTailTexture->SetNextTexture( texture );
-	}
-	texture->SetNextTexture( NULL );
+	const int index = texture->GetIndex();
 	
-	pTailTexture = texture;
-	
-	if( ! pRootTexture ){
-		pRootTexture = texture;
-	}
-	
-	pTextureCount++;
-	
-	// mark as added
-	const int tucIndex = texture->GetTUC()->GetRenderTaskTUCIndex();
-	
-	if( tucIndex >= pHasTextureCount ){
-		if( tucIndex >= pHasTextureSize ){
-			deoglRenderTaskTexture ** const newArray = new deoglRenderTaskTexture*[ tucIndex + 1 ];
+	if( index >= pHasTextureCount ){
+		if( index >= pHasTextureSize ){
+			deoglRenderTaskTexture ** const newArray = new deoglRenderTaskTexture*[ index + 1 ];
 			
-			if( pHasTextureCount > 0 ){
-				memcpy( newArray, pHasTexture, sizeof( deoglRenderTaskTexture* ) * pHasTextureCount );
+			if( pHasTexture ){
+				if( pHasTextureCount > 0 ){
+					memcpy( newArray, pHasTexture, sizeof( deoglRenderTaskTexture* ) * pHasTextureCount );
+				}
 				delete [] pHasTexture;
 			}
 			
 			pHasTexture = newArray;
-			pHasTextureSize = tucIndex + 1;
+			pHasTextureSize = index + 1;
 		}
 		
-		while( pHasTextureCount < tucIndex ){
-			pHasTexture[ pHasTextureCount++ ] = NULL;
+		if( pHasTextureCount <= index ){
+			memset( pHasTexture + pHasTextureCount, 0, sizeof( deoglRenderTaskTexture* ) * ( index - pHasTextureCount + 1 ) );
+			pHasTextureCount = index + 1;
 		}
-		pHasTextureCount++;
 	}
 	
-	pHasTexture[ tucIndex ] = texture;
-}
-
-deoglRenderTaskTexture *deoglRenderTaskShader::GetTextureForIndex( int tucIndex ){
-	if( tucIndex < pHasTextureCount ){
-		return pHasTexture[ tucIndex ];
+	deoglRenderTaskTexture *rttexture = pHasTexture[ index ];
+	if( rttexture ){
+		return rttexture;
+	}
+	
+	if( pTextureCount == pTextures.GetCount() ){
+		rttexture = new deoglRenderTaskTexture;
+		pTextures.Add( rttexture );
 		
 	}else{
-		return NULL;
+		rttexture = ( deoglRenderTaskTexture* )pTextures.GetAt( pTextureCount );
+		rttexture->Reset();
 	}
+	pTextureCount++;
+	
+	rttexture->SetTexture( texture );
+	pHasTexture[ index ] = rttexture;
+	return rttexture;
 }

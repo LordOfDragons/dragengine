@@ -43,6 +43,7 @@ deoglParameterFloat( ogl )
 	SetDescription( "Sets the scaling factor of the shadow map offset." );
 	SetCategory( ecExpert );
 	SetDisplayName( "Shadow Map Offset Scale" );
+	SetDefaultValue( "1.1" );
 }
 
 deoglPShadowMapOffsetScale::~deoglPShadowMapOffsetScale(){

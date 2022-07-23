@@ -23,7 +23,7 @@
 /**
  * \brief 2 component vector.
  */
-class decVector2{
+class DE_DLL_EXPORT decVector2{
 public:
 	float x;
 	float y;

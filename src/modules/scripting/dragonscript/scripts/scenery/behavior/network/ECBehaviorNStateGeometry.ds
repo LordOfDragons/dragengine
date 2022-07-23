@@ -227,8 +227,8 @@ class ECBehaviorNStateGeometry extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorNStateGeometry getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorNStateGeometry
+		return eclass.findBehavior( block ECBehaviorNStateGeometry each
+			return true
 		end ) cast ECBehaviorNStateGeometry
 	end
 	
@@ -240,8 +240,8 @@ class ECBehaviorNStateGeometry extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

@@ -137,6 +137,14 @@ class ElementVisitor
 		this.visitBehaviorElement( actor )
 	end
 	
+	/**
+	 * \brief Visit base VR actor.
+	 * \version 1.6
+	 */
+	public func void visitBaseVRActor( BaseVRActor actor )
+		this.visitBaseActor( actor )
+	end
+	
 	/** \brief Visit environment map. */
 	public func void visitEnvironmentMap( EnvironmentMap environmentMap )
 		this.visitBehaviorElement( environmentMap )

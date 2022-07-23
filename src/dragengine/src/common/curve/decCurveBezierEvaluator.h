@@ -30,7 +30,7 @@ class decCurveBezier;
 /**
  * \brief Bezier Curve Evaluator.
  */
-class decCurveBezierEvaluator{
+class DE_DLL_EXPORT decCurveBezierEvaluator{
 private:
 	const decCurveBezier &pCurve;
 	

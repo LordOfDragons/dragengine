@@ -23,13 +23,15 @@
 #ifndef _DEBASEAUDIOSKIN_H_
 #define _DEBASEAUDIOSKIN_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Audio Module Skin Peer.
  *
  */
-class deBaseAudioSkin{
+class DE_DLL_EXPORT deBaseAudioSkin{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

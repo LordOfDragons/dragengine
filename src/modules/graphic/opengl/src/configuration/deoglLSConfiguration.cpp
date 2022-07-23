@@ -92,7 +92,7 @@ void deoglLSConfiguration::LoadConfig( deoglConfiguration &configuration ){
 	}
 }
 
-void deoglLSConfiguration::SaveConfig( const deoglConfiguration &configuration ){
+void deoglLSConfiguration::SaveConfig( const deoglConfiguration & ){
 }
 
 
@@ -147,9 +147,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 							tag->GetPositionNumber(), value.GetString(), name );
 					}
 					
-				}else if( strcmp( name, "debugUseShadow" ) == 0 ){
-					configuration.SetDebugUseShadow( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "debugShowCB" ) == 0 ){
 					configuration.SetDebugShowCB( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
@@ -174,17 +171,37 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "mapFaceSplitThreshold" ) == 0 ){
 					configuration.SetMapFaceSplitThreshold( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
-				}else if( strcmp( name, "shadowMapSize" ) == 0 ){
-					configuration.SetShadowMapSize( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
+				}else if( strcmp( name, "shadowQuality" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "veryHigh" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqVeryHigh );
+						
+					}else if( value == "high" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqHigh );
+						
+					}else if( value == "medium" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqMedium );
+						
+					}else if( value == "low" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqLow );
+						
+					}else if( value == "veryLow" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqVeryLow );
+						
+					}else if( value == "off" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqOff );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
 					
 				}else if( strcmp( name, "shadowMapOffsetScale" ) == 0 ){
 					configuration.SetShadowMapOffsetScale( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
 				}else if( strcmp( name, "shadowMapOffsetBias" ) == 0 ){
 					configuration.SetShadowMapOffsetBias( strtof( tag->GetFirstData()->GetData(), NULL ) );
-					
-				}else if( strcmp( name, "shadowCubeSize" ) == 0 ){
-					configuration.SetShadowCubeSize( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					
 				}else if( strcmp( name, "shadowCubePCFSize" ) == 0 ){
 					configuration.SetShadowCubePCFSize( strtof( tag->GetFirstData()->GetData(), NULL ) );
@@ -213,9 +230,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "useEncodeDepth" ) == 0 ){
 					configuration.SetUseEncodeDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
-				}else if( strcmp( name, "useShadowCubeEncodeDepth" ) == 0 ){
-					configuration.SetUseShadowCubeEncodeDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "disableStencil" ) == 0 ){
 					configuration.SetDisableStencil( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
@@ -227,12 +241,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 					
 				}else if( strcmp( name, "useTextureCompression" ) == 0 ){
 					configuration.SetUseTextureCompression( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenEncDepth" ) == 0 ){
-					configuration.SetDefRenEncDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenUsePOTs" ) == 0 ){
-					configuration.SetDefRenUsePOTs( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
 				}else if( strcmp( name, "defRenSizeLimit" ) == 0 ){
 					configuration.SetDefRenSizeLimit( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
@@ -266,9 +274,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 					
 				}else if( strcmp( name, "lodMaxPixelError" ) == 0 ){
 					configuration.SetLODMaxPixelError( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-					
-				}else if( strcmp( name, "lodMaxErrorPerLevel" ) == 0 ){
-					configuration.SetLODMaxErrorPerLevel( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
 					
 					
@@ -379,6 +384,62 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "maxSPBIndexCount" ) == 0 ){
 					configuration.SetMaxSPBIndexCount( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
+					
+					
+				}else if( strcmp( name, "giQuality" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "veryHigh" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqVeryHigh );
+						
+					}else if( value == "high" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqHigh );
+						
+					}else if( value == "medium" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqMedium );
+						
+					}else if( value == "low" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqLow );
+						
+					}else if( value == "veryLow" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqVeryLow );
+						
+					}else if( value == "off" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqOff );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
+				}else if( strcmp( name, "giUpdateSpeed" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "veryHigh" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusVeryHigh );
+						
+					}else if( value == "high" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusHigh );
+						
+					}else if( value == "medium" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusMedium );
+						
+					}else if( value == "low" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusLow );
+						
+					}else if( value == "veryLow" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusVeryLow );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
+				}else if( strcmp( name, "vrRenderScale" ) == 0 ){
+					configuration.SetVRRenderScale( tag->GetFirstData()->GetData().ToFloat() );
+					
+				}else if( strcmp( name, "vrForceFrameRate" ) == 0 ){
+					configuration.SetVRForceFrameRate( tag->GetFirstData()->GetData().ToInt() );
 					
 				}else{
 					pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property name %s.",

@@ -56,6 +56,7 @@ deoglParameterFloat( ogl )
 		" Increase if self occlusion becomes a problem." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO Self Occlusion Angle" );
+	SetDefaultValue( "10" );
 }
 
 deoglPSSAOSelfOcclusionAngle::~deoglPSSAOSelfOcclusionAngle(){

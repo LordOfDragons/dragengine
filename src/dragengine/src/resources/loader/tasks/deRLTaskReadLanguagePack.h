@@ -29,7 +29,7 @@
 /**
  * \brief Read languagePack resource loader task.
  */
-class deRLTaskReadLanguagePack : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadLanguagePack : public deResourceLoaderTask {
 private:
 	deLanguagePackReference pLanguagePack;
 	bool pSucceeded;

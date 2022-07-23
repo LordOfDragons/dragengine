@@ -178,6 +178,10 @@ void igdeWOSOSpeaker::UpdateTriggers(){
 			pSpeaker->SetMuted( false );
 		}
 		
+		if( pTriggerPlaying ){
+			pTriggerPlaying->Evaluate();
+		}
+		
 		if( pEvalPlaying() ){
 			pSpeaker->Play();
 			
@@ -276,6 +280,9 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 	pSpeaker->SetRollOff( GetFloatProperty(
 		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epRollOff ),
 		pGDSpeaker.GetRollOff() ) );
+	pSpeaker->SetDistanceOffset( GetFloatProperty(
+		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epDistanceOffset ),
+		pGDSpeaker.GetDistanceOffset() ) );
 	pSpeaker->SetPlaySpeed( GetFloatProperty(
 		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epPlaySpeed ),
 		pGDSpeaker.GetPlaySpeed() ) );

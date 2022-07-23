@@ -72,66 +72,72 @@ class deoglSkinChannel{
 public:
 	/** \brief Channel types. */
 	enum eChannelTypes{
-		/** \brief Color channel with combined texture with color as rgb transparency as alpha. */
+		/** \brief Color (rgb). */
 		ectColor,
 		
-		/** \brief Color tint mask channel with direct r texture. */
+		/** \brief Color tint mask (r). */
 		ectColorTintMask,
 		
-		/** \brief Transparency channel with combined with transparency. */
+		/** \brief Transparency (r). */
 		ectTransparency,
 		
-		/** \brief Omni-directional color channel with cube map. */
+		/** \brief Omni-directional color (rgb cube). */
 		ectColorOmnidirCube,
 		
-		/** \brief Omni-directional color channel with equirect map. */
+		/** \brief Omni-directional color equirect map (rgb). */
 		ectColorOmnidirEquirect,
 		
-		/** \brief Solidity channel with direct r texture. */
+		/** \brief Solidity (r). */
 		ectSolidity,
 		
-		/** \brief Normal channel with normal as rgb and optional normal deviation angle as alpha. */
+		/** \brief Normal (rgb), optional normal deviation angle (a). */
 		ectNormal,
 		
-		/** \brief Height map with optional tech specific map as rg. */
+		/** \brief Height map (r), optional tech specific (g). */
 		ectHeight,
 		
-		/** \brief Emission channel with combined texture with color as rgb and strength as alpha. */
+		/** \brief Emission color (rgb), emission strength (a). */
 		ectEmissivity,
 		
-		/** \brief Refraction distortion channel with direct rg(b) texture. */
+		/** \brief Refraction distortion (rg). */
 		ectRefractDistort,
 		
-		/** \brief Ambient occlusion channel with direct r texture. */
+		/** \brief Ambient occlusion (r). */
 		ectAO,
 		
-		/** \brief Reflectivity channel with reflectivity as rgb. */
+		/** \brief Reflectivity (rgb). */
 		ectReflectivity,
 		
-		/** \brief Roughness channel with roughness as red. */
+		/** \brief Roughness (r). */
 		ectRoughness,
 		
-		/** \brief Environment map channel with cube map texture. */
+		/** \brief Environment map (rgb cube). */
 		ectEnvironmentMap,
 		
-		/** \brief Environment room channel with cube map texture. */
+		/** \brief Environment room (rgb cube). */
 		ectEnvironmentRoom,
 		
-		/** \brief Environment room mask channel with r texture. */
+		/** \brief Environment room mask (r). */
 		ectEnvironmentRoomMask,
 		
-		/** \brief Environment room emissivity channel with cube map texture. */
+		/** \brief Environment room emissivity (rgb cube). */
 		ectEnvironmentRoomEmissivity,
 		
-		/** \brief Absorption. */
+		/** \brief Absorption (rgb). */
 		ectAbsorption,
 		
-		/** \brief Rim emission channel. */
+		/** \brief Rim emission (r). */
 		ectRimEmissivity,
+		
+		/** \brief Non-PBR albedo (rgb). */
+		ectNonPbrAlbedo,
+		
+		/** \brief Non-PBR metalness (r). */
+		ectNonPbrMetalness
 	};
 	
 	/** \brief Number of channels. */
-	static const int CHANNEL_COUNT = ectRimEmissivity + 1;
+	static const int CHANNEL_COUNT = ectNonPbrMetalness + 1;
 	
 	
 	
@@ -179,6 +185,8 @@ private:
 	int pVideoPlayer;
 	bool pSharedVideoPlayer;
 	int pRenderable;
+	
+	float pSolidityFilterPriority;
 	
 	
 	
@@ -392,11 +400,6 @@ public:
 	 * \warning Called from deoglDelayedOperations only. Runs in render thread.
 	 */
 	void UseSharedImage();
-	
-	
-	
-	/** \brief Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
 	
 	
 	

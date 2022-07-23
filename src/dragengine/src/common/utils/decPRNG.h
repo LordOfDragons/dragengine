@@ -22,6 +22,8 @@
 #ifndef _DECPRNG_H_
 #define _DECPRNG_H_
 
+#include "../../dragengine_export.h"
+
 
 /** \brief The default upper integer value range. */
 #define DE_RANDOM_INT_UPPER 2147483647
@@ -33,7 +35,7 @@
  * Provides a simple PRNG that works the same across all supported platform
  * no matter the actual random implementation used by the platform.
  */
-class decPRNG{
+class DE_DLL_EXPORT decPRNG{
 private:
 	unsigned int pSeed;
 	unsigned int pNext;

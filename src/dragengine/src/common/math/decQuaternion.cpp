@@ -485,7 +485,7 @@ decDVector decQuaternion::operator*( const decDVector &v ) const{
 	const double tz = v.y * ( double )x + v.z * ( double )w - v.x * ( double )y;
 	const double tw = v.x * ( double )x + v.y * ( double )y + v.z * ( double )z;
 	
-	return decVector( ( double )x * tw + ( double )y * tz - ( double )z * ty + ( double )w * tx,
+	return decDVector( ( double )x * tw + ( double )y * tz - ( double )z * ty + ( double )w * tx,
 		( double )y * tw + ( double )z * tx + ( double )w * ty - ( double )x * tz,
 		( double )x * ty - ( double )y * tx + ( double )z * tw + ( double )w * tz );
 }

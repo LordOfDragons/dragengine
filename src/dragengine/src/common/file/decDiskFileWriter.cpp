@@ -25,6 +25,7 @@
 
 #include "decDiskFileWriter.h"
 #include "../exceptions.h"
+#include "../../dragengine_configuration.h"
 
 #ifdef OS_W32
 #include "../../app/deOSWindows.h"
@@ -45,7 +46,11 @@ pFile( NULL )
 #ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( filename, widePath, MAX_PATH );
+	#ifdef OS_W32_VS
+	_wfopen_s( &pFile, widePath, append ? L"ab" : L"wb" );
+	#else
 	pFile = _wfopen( widePath, append ? L"ab" : L"wb" );
+	#endif
 	
 #else
 	pFile = fopen( filename, append ? "ab" : "wb" );

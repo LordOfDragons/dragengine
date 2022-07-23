@@ -79,6 +79,9 @@ public:
 private:
 	debpCollisionDetection &pColDet;
 	decPointerList pShapeList;
+	decVector pScale;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -96,9 +99,9 @@ public:
 	inline const decPointerList &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Add a shape from a decShape. */
-	void AddShape( decShape &shape );
+	void AddShape( decShape &shape, const decVector &scale );
 	/** \brief Adds all shapes from a decShapeList. */
-	void AddShapes( const decShapeList &list );
+	void AddShapes( const decShapeList &list, const decVector &scale );
 	/** \brief Remove all shapes. */
 	void RemoveAllShapes();
 	

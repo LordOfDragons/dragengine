@@ -29,7 +29,6 @@
 #include "../../../../renderthread/deoglRTLogger.h"
 #include "../../../../texture/texture2d/deoglTexture.h"
 #include "../../../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -51,41 +50,10 @@ pDirty( true )
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableValue );
 }
 
-class deoglRDSRenderableValueDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	
-	deoglRDSRenderableValueDeletion() :
-	texture( NULL ){
-	}
-	
-	virtual ~deoglRDSRenderableValueDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( texture){
-			delete texture;
-		}
-	}
-};
-
 deoglRDSRenderableValue::~deoglRDSRenderableValue(){
 	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableValue );
-	
-	// delayed deletion of opengl containing objects
-	deoglRDSRenderableValueDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRDSRenderableValueDeletion;
-		delayedDeletion->texture = pTexture;
-		GetDynamicSkin().GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetDynamicSkin().GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTexture ){
+		delete pTexture;
 	}
 }
 
@@ -101,18 +69,16 @@ void deoglRDSRenderableValue::SetValue( float value ){
 	
 	pValue = value;
 	pDirty = true;
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableValue::PrepareForRender(){
+void deoglRDSRenderableValue::PrepareForRender( const deoglRenderPlanMasked * ){
 }
 
-float deoglRDSRenderableValue::GetRenderValue( float defaultValue ){
+float deoglRDSRenderableValue::GetRenderValue( float ){
 	return pValue;
 }
 
-decColor deoglRDSRenderableValue::GetRenderColor( const decColor &defaultColor ){
+decColor deoglRDSRenderableValue::GetRenderColor( const decColor & ){
 	return decColor( pValue, pValue, pValue, 1.0f );
 }
 

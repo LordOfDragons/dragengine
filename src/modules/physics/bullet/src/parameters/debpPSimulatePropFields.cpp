@@ -43,6 +43,7 @@ debpPSimulatePropFields::debpPSimulatePropFields( dePhysicsBullet &bullet ) : de
 	SetDescription( "Enables simulation of prop fields under the influence of force fields and colliders" );
 	SetCategory( ecBasic );
 	SetDisplayName( "Simulate Prop Fields" );
+	SetDefaultValue( "1" );
 }
 
 debpPSimulatePropFields::~debpPSimulatePropFields(){

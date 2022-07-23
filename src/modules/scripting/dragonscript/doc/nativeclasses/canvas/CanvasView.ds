@@ -39,16 +39,24 @@ class CanvasView extends Canvas
 	 * \throws EInvalidParam \em index is less than 0.
 	 * \throws EInvalidParam \em index is larger than or equal to getCanvasCount().
 	 */
-	public func Canvas getCanvasAt( int index )
+	public func Canvas getCanvasAt(int index)
 		return null
 	end
 	
 	/** \brief Add child canvas. */
-	public func void addCanvas( Canvas canvas )
+	public func void addCanvas(Canvas canvas)
+	end
+	
+	/**
+	 * \brief Child canvas is present
+	 * \version 1.11
+	 */
+	public func bool hasCanvas(Canvas canvas)
+		return false
 	end
 	
 	/** \brief Remove child canvas. */
-	public func void removeCanvas( Canvas canvas )
+	public func void removeCanvas(Canvas canvas)
 	end
 	
 	/** \brief Remove all child canvas. */
@@ -62,7 +70,7 @@ class CanvasView extends Canvas
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	

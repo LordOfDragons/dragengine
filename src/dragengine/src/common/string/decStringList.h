@@ -30,7 +30,7 @@
  * 
  * The strings in the list are allowed the be duplicates of each other but can not be NULL.
  */
-class decStringList{
+class DE_DLL_EXPORT decStringList{
 private:
 	decString **pStrings;
 	int pStringCount;

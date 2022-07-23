@@ -461,6 +461,8 @@ void peeEmitter::SetActiveController( peeController *controller ){
 //////////
 
 void peeEmitter::AddType( peeType *type ){
+	FreeEmitter();
+	
 	pTypeList.Add( type );
 	type->SetEmitter( this );
 	NotifyTypeStructureChanged();
@@ -471,6 +473,8 @@ void peeEmitter::AddType( peeType *type ){
 }
 
 void peeEmitter::InsertTypeAt( peeType *type, int index ){
+	FreeEmitter();
+	
 	pTypeList.InsertAt( type, index );
 	type->SetEmitter( this );
 	NotifyTypeStructureChanged();
@@ -481,6 +485,7 @@ void peeEmitter::InsertTypeAt( peeType *type, int index ){
 }
 
 void peeEmitter::MoveTypeTo( peeType *type, int index ){
+	FreeEmitter();
 	pTypeList.MoveTo( type, index );
 	NotifyTypeStructureChanged();
 }
@@ -489,6 +494,8 @@ void peeEmitter::RemoveType( peeType *type ){
 	if( ! type || type->GetEmitter() != this ){
 		DETHROW( deeInvalidParam );
 	}
+	
+	FreeEmitter();
 	
 	if( type->GetActive() ){
 		if( pTypeList.GetCount() == 1 ){
@@ -513,6 +520,7 @@ void peeEmitter::RemoveAllTypes(){
 	const int count = pTypeList.GetCount();
 	int i;
 	
+	FreeEmitter();
 	SetActiveType( NULL );
 	
 	for( i=0; i<count; i++ ){

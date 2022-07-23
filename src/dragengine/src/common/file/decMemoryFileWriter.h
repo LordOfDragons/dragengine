@@ -30,7 +30,13 @@ class decMemoryFile;
 /**
  * \brief Write memory file.
  */
-class decMemoryFileWriter : public decBaseFileWriter{
+class DE_DLL_EXPORT decMemoryFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decMemoryFileWriter> Ref;
+	
+	
+	
 private:
 	decMemoryFile *pFile;
 	int pPosition;

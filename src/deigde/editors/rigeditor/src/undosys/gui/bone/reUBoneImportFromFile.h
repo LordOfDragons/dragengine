@@ -60,6 +60,10 @@ private:
 		bool oldDynamic;
 		reRigShapeList *oldShapes;
 		reRigConstraintList *oldConstraints;
+		decVector oldIKLimitsLower;
+		decVector oldIKLimitsUpper;
+		decVector oldIKResistance;
+		bool oldIKLocked[ 3 ];
 	};
 	
 	

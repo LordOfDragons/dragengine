@@ -64,5 +64,8 @@ void deBaseGraphicCanvas::TransparencyChanged(){
 void deBaseGraphicCanvas::BlendModeChanged(){
 }
 
+void deBaseGraphicCanvas::MaskChanged(){
+}
+
 void deBaseGraphicCanvas::ContentChanged(){
 }

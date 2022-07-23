@@ -70,6 +70,7 @@
 #include "classes/animation/rules/deClassARStateSnapshot.h"
 #include "classes/animation/rules/deClassARSubAnimator.h"
 #include "classes/animation/rules/deClassARTrackTo.h"
+#include "classes/animation/rules/deClassARMirror.h"
 
 #include "classes/cachedveg/deClassCachedVegetation.h"
 
@@ -130,6 +131,7 @@
 #include "classes/input/deClassInputDeviceAxis.h"
 #include "classes/input/deClassInputDeviceButton.h"
 #include "classes/input/deClassInputDeviceFeedback.h"
+#include "classes/input/deClassInputDeviceComponent.h"
 #include "classes/input/deClassInputEvent.h"
 
 #include "classes/particle/deClassParticleEmitter.h"
@@ -221,6 +223,7 @@
 #include "classes/systems/deClassScriptSystem.h"
 #include "classes/systems/deClassSynthesizerSystem.h"
 #include "classes/systems/deClassSystem.h"
+#include "classes/systems/deClassVRSystem.h"
 
 #include "classes/translation/deClassLanguagePack.h"
 #include "classes/translation/deClassLanguagePackBuilder.h"
@@ -272,6 +275,7 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/exceptions/deException.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
 #include <libdscript/exceptions.h>
@@ -310,9 +314,21 @@ deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
 // class deScriptingDragonScript
 //////////////////////////////////
 
+deScriptingDragonScript::sModuleVersion::sModuleVersion() : major( 0 ), minor( 0 ), patch( 0 ){
+}
+
+void deScriptingDragonScript::sModuleVersion::SetVersion( const char *pversion ){
+	version = pversion;
+	const decStringList parts( version.Split( '.' ) );
+	major = parts.GetAt( 0 ).ToInt();
+	minor = parts.GetAt( 1 ).ToInt();
+	patch = parts.GetCount() > 2 ? parts.GetAt( 2 ).ToInt() : 0;
+}
+
 // constructor, destructor
 deScriptingDragonScript::deScriptingDragonScript( deLoadableModule &loadableModule ) :
-deBaseScriptingModule( loadableModule ){
+deBaseScriptingModule( loadableModule )
+{
 	pScriptEngine = NULL;
 	
 	pClsAISys = NULL;
@@ -327,7 +343,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsARAnimSelect = NULL;
 	pClsARBoneTrans = NULL;
 	pClsAnimatorSystem = NULL;
-	pClsFSta = NULL;
+	pClsARFSta = NULL;
 	pClsARGroup = NULL; 
 	pClsARIK = NULL;
 	pClsARLimit = NULL;
@@ -335,6 +351,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsARSnap = NULL;
 	pClsARSubA = NULL;
 	pClsARTrack = NULL;
+	pClsARMirror = NULL;
 	pClsAudSys = NULL;
 	pClsCVeg = NULL;
 	pClsCam = NULL;
@@ -399,6 +416,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsInpDevAxis = NULL;
 	pClsInpDevBtn = NULL;
 	pClsInpDevFb = NULL;
+	pClsInpDevComp = NULL;
 	pClsInpEvent = NULL;
 	pClsInpSys = NULL;
 	pClsLyM = NULL;
@@ -489,6 +507,9 @@ deBaseScriptingModule( loadableModule ){
 	pClsWorld = NULL;
 	pClsXMLEl = NULL;
 	pClsXML = NULL;
+	pClsVRSys = NULL;
+	
+	pClsResourceLoaderType = nullptr;
 	
 	pClsGameObj = NULL;
 	pGameObj = NULL;
@@ -498,6 +519,9 @@ deBaseScriptingModule( loadableModule ){
 	pColInfo = NULL;
 	pColliderListenerClosest = NULL;
 	pColliderListenerAdaptor = NULL;
+	
+	// module version
+	pModuleVersion.SetVersion( DS_MODULE_VERSION );
 }
 deScriptingDragonScript::~deScriptingDragonScript(){
 	ShutDown();
@@ -520,6 +544,15 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 	deDSEngineManager *dsmanager = NULL;
 	
 	try{
+		decString version( GetGameEngine()->GetScriptingSystem()->GetScriptVersion() );
+		if( version.IsEmpty() ){
+			version = "1.8"; // added in version 1.9
+		}
+		
+		pCompatibleVersion.SetVersion( version );
+		LogInfoFormat( "Requested compatible script version: %s", pCompatibleVersion.version.GetString() );
+		LogInfoFormat( "Module version: %s", pModuleVersion.version.GetString() );
+		
 		// create lock manager
 	//	pLockManager = new dedsLockManager;
 	//	if( ! pLockManager ) return false;
@@ -686,6 +719,9 @@ void deScriptingDragonScript::ShutDown(){
 		
 		// forget about the game class
 		pClsGameObj = NULL;
+		
+		// delete values pending registered to be deleted later
+		DeleteValuesDeleteLater();
 		
 		// delete collision info
 		if( pColInfo ){
@@ -881,8 +917,12 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 	timerCanHitCollider = 0; timerCanHitColliderCount = 0;
 	timerColliderChanged = 0; timerColliderChangedCount = 0;
 	#endif
-	pResourceLoader->Update();
+	pResourceLoader->OnFrameUpdate();
+	pClsInpSys->OnFrameUpdate();
+	pClsVRSys->OnFrameUpdate();
+	
 	DeleteValuesDeleteLater();
+	
 	const bool result = pCallFunction( "onFrameUpdate" );
 	#ifdef SPECIAL_DEBUG
 	LogInfoFormat( "OnFrameUpdate: collisionResponse(%i) = %iys", timerCollisionResponseCount, timerCollisionResponse );
@@ -905,8 +945,23 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 		return false;
 	}
 	
-	if( event->GetType() == deInputEvent::eeDeviceParamsChanged ){
-		pClsInpSys->InvalidCachedDevices();
+	switch( event->GetType() ){
+	//case deInputEvent::eeDeviceAttached: // deprecated
+	//case deInputEvent::eeDeviceDetached: // deprecated
+	case deInputEvent::eeDeviceParamsChanged:
+	case deInputEvent::eeDevicesAttachedDetached:
+		switch( event->GetSource() ){
+		case deInputEvent::esInput:
+			pClsInpSys->InvalidCachedDevices();
+			break;
+			
+		case deInputEvent::esVR:
+			pClsVRSys->InvalidCachedDevices();
+			break;
+		}
+		
+	default:
+		break;
 	}
 	
 	dsRunTime &rt = *pScriptEngine->GetMainRunTime();
@@ -1114,7 +1169,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsRN = new deClassResourceListener( engine, this ) );
 		
 		package->AddHostClass( pClsGame = new deClassGame( *this ) );
-		package->AddHostClass( pClsEngine = new deClassEngine( engine, this ) );
+		package->AddHostClass( pClsEngine = new deClassEngine( *this ) );
 		package->AddHostClass( pClsMath = new deClassMath( this ) );
 		package->AddHostClass( pClsModPar = new deClassModuleParameter( engine, this ) );
 		package->AddHostClass( pClsScrSys = new deClassScriptSystem( *this ) );
@@ -1125,11 +1180,13 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsAudSys = new deClassAudioSystem( *this ) );
 		package->AddHostClass( pClsSynthesizerSystem = new deClassSynthesizerSystem( *this ) );
 		package->AddHostClass( pClsInpSys = new deClassInputSystem( *this ) );
+		package->AddHostClass( pClsVRSys = new deClassVRSystem( *this ) );
 		package->AddHostClass( pClsInpEvent = new deClassInputEvent( *this ) );
 		package->AddHostClass( pClsInpDev = new deClassInputDevice( *this ) );
 		package->AddHostClass( pClsInpDevAxis = new deClassInputDeviceAxis( *this ) );
 		package->AddHostClass( pClsInpDevBtn = new deClassInputDeviceButton( *this ) );
 		package->AddHostClass( pClsInpDevFb = new deClassInputDeviceFeedback( *this ) );
+		package->AddHostClass( pClsInpDevComp = new deClassInputDeviceComponent( *this ) );
 		package->AddHostClass( pClsPhySys = new deClassPhysicsSystem( *this ) );
 		package->AddHostClass( pClsNetSys = new deClassNetworkSystem( *this ) );
 		package->AddHostClass( pClsEnvMapProbe = new deClassEnvMapProbe( this ) );
@@ -1154,7 +1211,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsARAnimDiff = new deClassARAnimationDifference( *this ) );
 		package->AddHostClass( pClsARAnimSelect = new deClassARAnimationSelect( *this ) );
 		package->AddHostClass( pClsARBoneTrans = new deClassARBoneTransformator( *this ) );
-		package->AddHostClass( pClsFSta = new deClassARForeignState( *this ) );
+		package->AddHostClass( pClsARFSta = new deClassARForeignState( *this ) );
 		package->AddHostClass( pClsARGroup = new deClassARGroup( *this ) );
 		package->AddHostClass( pClsARIK = new deClassARInverseKinematic( *this ) );
 		package->AddHostClass( pClsARLimit = new deClassARLimit( *this ) );
@@ -1162,6 +1219,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsARSnap = new deClassARStateSnapshot( *this ) );
 		package->AddHostClass( pClsARSubA = new deClassARSubAnimator( *this ) );
 		package->AddHostClass( pClsARTrack = new deClassARTrackTo( *this ) );
+		package->AddHostClass( pClsARMirror = new deClassARMirror( *this ) );
 		package->AddHostClass( pClsCI = new deClassCollisionInfo( engine, this ) );
 		package->AddHostClass( pClsCT = new deClassCollisionTester( *this ) );
 		package->AddHostClass( pClsSkin = new deClassSkin( *this ) );
@@ -1178,7 +1236,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCCT = new deClassColliderCollisionTest( *this ) );
 		package->AddHostClass( pClsLig = new deClassLight( *this ) );
 		package->AddHostClass( pClsLoco = new deClassLocomotion( *this ) );
-		package->AddHostClass( pClsCam = new deClassCamera( engine, this ) );
+		package->AddHostClass( pClsCam = new deClassCamera( *this ) );
 		package->AddHostClass( pClsCanvas = new deClassCanvas( *this ) );
 		package->AddHostClass( pClsCanvasCView = new deClassCanvasCanvasView( *this ) );
 		package->AddHostClass( pClsCanvasImage = new deClassCanvasImage( *this ) );
@@ -1266,6 +1324,9 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		
 //		package->PrintClasses();
 		package = NULL;
+		
+		// find constant classes
+		pClsResourceLoaderType = pScriptEngine->GetClass( "Dragengine.ResourceLoaderType" );
 		
 	}catch( const duException &e ){
 		if( package ){

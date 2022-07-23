@@ -33,21 +33,23 @@ class deOcclusionMesh;
 class deoglRenderThread;
 class deoglSharedVBOBlock;
 class deoglSharedSPBListUBO;
+class deoglBVH;
+class deoglRayTraceField;
 
 
 
 /**
- * \brief Occlusion Mesh Peer.
+ * Occlusion Mesh Peer.
  */
 class deoglROcclusionMesh : public deObject{
 public:
-	/** \brief Mesh weight. */
+	/** Mesh weight. */
 	struct sWeight{
 		int bone;
 		float weight;
 	};
 	
-	/** \brief Mesh vertex. */
+	/** Mesh vertex. */
 	struct sVertex{
 		decVector position;
 		int weight;
@@ -73,18 +75,21 @@ public:
 	int pDoubleSidedFaceCount;
 	
 	deoglSharedSPBListUBO *pSharedSPBListUBO;
-	deoglSharedSPBRTIGroupList pRTIGroupsSingle;
-	deoglSharedSPBRTIGroupList pRTIGroupsDouble;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroupsSingle;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroupsDouble;
+	
+	deoglBVH *pBVH;
+	deoglRayTraceField *pRayTraceField;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new render occlusion mesh. */
+	/** Create render occlusion mesh. */
 	deoglROcclusionMesh( deoglRenderThread &renderThread, const deOcclusionMesh &occlusionMesh );
 	
-	/** \brief Clean up render occlusion mesh. */
+	/** Clean up render occlusion mesh. */
 	virtual ~deoglROcclusionMesh();
 	/*@}*/
 	
@@ -92,66 +97,88 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief VBO block. */
-	deoglSharedVBOBlock *GetVBOBlock();
+	/** Filename for debugging. */
+	inline const decString &GetFilename() const{ return pFilename; }
+	
+	/** VBO block. */
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	
+	/** Prepare VBO block. */
+	void PrepareVBOBlock();
 	
 	
 	
-	/** \brief Weights entries. */
+	/** Weights entries. */
 	inline sWeight *GetWeightsEntries() const{ return pWeightsEntries; }
 	
-	/** \brief Number of weights entries. */
+	/** Number of weights entries. */
 	inline int GetWeightsEntryCount() const{ return pWeightsEntryCount; }
 	
-	/** \brief Weights entries count list. */
+	/** Weights entries count list. */
 	inline int *GetWeightsCounts() const{ return pWeightsCounts; }
 	
-	/** \brief Number of weights. */
+	/** Number of weights. */
 	inline int GetWeightsCount() const{ return pWeightsCount; }
 	
 	
 	
-	/** \brief Vertices. */
+	/** Vertices. */
 	inline sVertex *GetVertices() const{ return pVertices; }
 	
-	/** \brief Vertex count. */
+	/** Vertex count. */
 	inline int GetVertexCount() const{ return pVertexCount; }
 	
 	
 	
-	/** \brief Corners. */
+	/** Corners. */
 	inline unsigned short *GetCorners() const{ return pCorners; }
 	
-	/** \brief Number of corners. */
+	/** Number of corners. */
 	inline int GetCornerCount() const{ return pCornerCount; }
 	
 	
 	
 	/**
-	 * \brief Single sided face count.
+	 * Single sided face count.
 	 * \details Located before the double sided faces.
 	 */
 	inline int GetSingleSidedFaceCount() const{ return pSingleSidedFaceCount; }
 	
 	/**
-	 * \brief Double sided face count.
-	 * \details Located after the double sided faces.
+	 * Double sided face count.
+	 * \details Located after the single sided faces.
 	 */
 	inline int GetDoubleSidedFaceCount() const{ return pDoubleSidedFaceCount; }
 	
 	
 	
-	/** \brief Shared shader parameter block list using UBO. */
+	/** Shared shader parameter block list using UBO. */
 	deoglSharedSPBListUBO &GetSharedSPBListUBO();
 	
-	/** \brief Render task instance groups for single sided faces. */
+	/** Render task instance groups for single sided faces. */
 	inline deoglSharedSPBRTIGroupList &GetRTIGroupsSingle(){ return pRTIGroupsSingle; }
 	
-	/** \brief Render task instance groups for double sided fgaces. */
+	/** Render task instance groups for double sided fgaces. */
 	inline deoglSharedSPBRTIGroupList &GetRTIGroupDouble(){ return pRTIGroupsDouble; }
+	
+	
+	
+	/** BVH or NULL. */
+	inline deoglBVH *GetBVH() const{ return pBVH; }
+	
+	/** Build BVH if not build yet. */
+	void PrepareBVH();
+	
+	
+	
+	/** Ray trace field or NULL. */
+	inline deoglRayTraceField *GetRayTraceField() const{ return pRayTraceField; }
+	
+	/** Prepare ray trace field. */
+	void PrepareRayTraceField();
 	/*@}*/
 	
 	

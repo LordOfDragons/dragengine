@@ -66,6 +66,9 @@ public:
 	
 	/** \brief Update collision volumes of all shapes using a transformation matrix. */
 	void UpdateWithMatrix( const decDMatrix &transformation );
+	
+	/** \brief Update collision volumes of all shapes using a transformation matrix. */
+	void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale );
 	/*@}*/
 };
 

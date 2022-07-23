@@ -30,6 +30,15 @@
 #include "task/deoglRenderTaskShader.h"
 #include "task/deoglRenderTaskTexture.h"
 #include "task/deoglRenderTaskVAO.h"
+#include "task/shared/deoglRenderTaskSharedInstance.h"
+#include "task/shared/deoglRenderTaskSharedShader.h"
+#include "task/shared/deoglRenderTaskSharedTexture.h"
+#include "task/shared/deoglRenderTaskSharedVAO.h"
+#include "task/persistent/deoglPersistentRenderTask.h"
+#include "task/persistent/deoglPersistentRenderTaskInstance.h"
+#include "task/persistent/deoglPersistentRenderTaskShader.h"
+#include "task/persistent/deoglPersistentRenderTaskTexture.h"
+#include "task/persistent/deoglPersistentRenderTaskVAO.h"
 
 #include "../capabilities/deoglCapabilities.h"
 #include "../collidelist/deoglCollideList.h"
@@ -145,13 +154,6 @@ enum eSPRenderTaskEnvMap{
 deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
 // 	deoglConfiguration &config = ogl->GetConfiguration();
 // 	const bool useEncodeDepth = config.GetUseEncodeDepth();
-	pShaderParticle = NULL;
-	
-	pShaderTransformPositions = NULL;
-	pShaderCalcNormalsTangents = NULL;
-	pShaderWriteSkinnedVBO = NULL;
-	
-	pShaderApproxTransformVNT = NULL;
 	
 	#ifndef ANDROID
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
@@ -254,50 +256,54 @@ if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
 */
 
 void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
-	const int renderTaskShaderCount = renderTask.GetShaderCount();
-	if( renderTaskShaderCount == 0 ){
+	const int shaderCount = renderTask.GetShaderCount();
+	if( shaderCount == 0 ){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const bool forceDoubleSided = renderTask.GetForceDoubleSided();
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
-	int i;
+	int i, j, k, l;
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
-	for( i=0; i<renderTaskShaderCount; i++ ){
-		const deoglRenderTaskShader &renderTaskShader = *renderTask.GetShaderAt( i );
-		deoglShaderCompiled &shader = *renderTaskShader.GetShader()->GetCompiled();
-		
-		renderThread.GetShader().ActivateShader( renderTaskShader.GetShader() );
+	for( i=0; i<shaderCount; i++ ){
+		const deoglRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
+		const int targetSPBInstanceIndexBase = rtshader.GetShader()->GetSPBInstanceIndexBase();
+		deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
+		deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
+		renderThread.GetShader().ActivateShader( &shaderProgram );
 		
 		if( renderParamBlock ){
 			renderParamBlock->Activate();
 		}
 		
-		deoglRenderTaskTexture *renderTaskTexture = renderTaskShader.GetRootTexture();
-		
-		while( renderTaskTexture ){
-			if( renderTaskTexture->GetParameterBlock() ){
-				renderTaskTexture->GetParameterBlock()->Activate();
+		const int textureCount = rtshader.GetTextureCount();
+		for( j=0; j<textureCount; j++ ){
+			const deoglRenderTaskTexture &rttexture = *rtshader.GetTextureAt( j );
+			const deoglTexUnitsConfig * const tuc = rttexture.GetTexture()->GetTUC();
+			if( tuc ){
+				tuc->Apply();
+				if( tuc->GetParameterBlock() ){
+					tuc->GetParameterBlock()->Activate();
+				}
 			}
-			renderTaskTexture->GetTUC()->Apply();
 			
-			deoglRenderTaskVAO *renderTaskVAO = renderTaskTexture->GetRootVAO();
-			
-			while( renderTaskVAO ){
-				deoglRenderTaskInstance *renderTaskInstance = renderTaskVAO->GetRootInstance();
-				if( ! renderTaskInstance ){
-					renderTaskVAO = renderTaskVAO->GetNextVAO();
+			const int vaoCount = rttexture.GetVAOCount();
+			for( k=0; k<vaoCount; k++ ){
+				const deoglRenderTaskVAO &rtvao = *rttexture.GetVAOAt( k );
+				const int instanceCount = rtvao.GetInstanceCount();
+				if( instanceCount == 0 ){
 					continue;
 				}
 				
-				deoglVAO * const vao = renderTaskVAO->GetVAO();
+				deoglVAO * const vao = rtvao.GetVAO()->GetVAO();
 				if( vao != curVAO ){
 					pglBindVertexArray( vao->GetVAO() );
 					curVAO = vao;
@@ -306,29 +312,31 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 				const GLenum indexGLType = vao->GetIndexGLType();
 				const int indexSize = vao->GetIndexSize();
 				
-				while( renderTaskInstance ){
-					const bool doubleSided = renderTaskInstance->GetDoubleSided();
+				for( l=0; l<instanceCount; l++ ){
+					const deoglRenderTaskInstance &rtinstance = *rtvao.GetInstanceAt( l );
+					const deoglRenderTaskSharedInstance &instance = *rtinstance.GetInstance();
+					const bool doubleSided = instance.GetDoubleSided() | forceDoubleSided;
 					
-					if( renderTaskInstance->GetParameterBlock() ){
-						renderTaskInstance->GetParameterBlock()->Activate();
+					if( instance.GetParameterBlock() ){
+						instance.GetParameterBlock()->Activate();
 					}
-					if( renderTaskInstance->GetParameterBlockSpecial() ){
-						renderTaskInstance->GetParameterBlockSpecial()->Activate();
+					if( instance.GetParameterBlockSpecial() ){
+						instance.GetParameterBlockSpecial()->Activate();
 					}
-					if( renderTaskInstance->GetSubInstanceSPB() ){
-						renderTaskInstance->GetSubInstanceSPB()->GetParameterBlock()->Activate();
+					if( instance.GetSubInstanceSPB() ){
+						instance.GetSubInstanceSPB()->GetParameterBlock()->Activate();
 					}
 					
-					if( renderTaskInstance->GetSIIndexInstanceSPB() != spbSIIndexInstance ){
-						if( renderTaskInstance->GetSIIndexInstanceSPB() ){
-							renderTaskInstance->GetSIIndexInstanceSPB()->Activate();
+					if( rtinstance.GetSIIndexInstanceSPB() != spbSIIndexInstance ){
+						if( rtinstance.GetSIIndexInstanceSPB() ){
+							rtinstance.GetSIIndexInstanceSPB()->Activate();
 						}
-						spbSIIndexInstance = renderTaskInstance->GetSIIndexInstanceSPB();
+						spbSIIndexInstance = rtinstance.GetSIIndexInstanceSPB();
 					}
 					
-					if( renderTaskShader.GetSPBInstanceIndexBase() != -1 ){
-						shader.SetParameterInt( renderTaskShader.GetSPBInstanceIndexBase(),
-							renderTaskInstance->GetSIIndexInstanceFirst() );
+					if( targetSPBInstanceIndexBase != -1 ){
+						shader.SetParameterInt( targetSPBInstanceIndexBase,
+						rtinstance.GetSIIndexInstanceFirst() );
 					}
 					
 					if( doubleSided != curDoubleSided ){
@@ -342,19 +350,19 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						curDoubleSided = doubleSided;
 					}
 					
-					GLenum primitiveType = renderTaskInstance->GetPrimitiveType();
+					GLenum primitiveType = instance.GetPrimitiveType();
 					
 					if( pglPatchParameteri && shader.GetHasTessellation() ){
-						pglPatchParameteri( GL_PATCH_VERTICES,
-							renderTaskInstance->GetTessPatchVertexCount() );
+						pglPatchParameteri( GL_PATCH_VERTICES, instance.GetTessPatchVertexCount() );
 						primitiveType = GL_PATCHES;
 					}
 					
-					if( renderTaskInstance->GetSubInstanceCount() == 0 ){
-						if( renderTaskInstance->GetIndexCount() == 0 ){
+					const int subInstanceCount = rtinstance.GetSubInstanceCount() + instance.GetSubInstanceCount();
+					
+					if( subInstanceCount == 0 ){
+						if( instance.GetIndexCount() == 0 ){
 							OGL_CHECK( renderThread, glDrawArrays( primitiveType,
-								renderTaskInstance->GetFirstPoint(),
-								renderTaskInstance->GetPointCount() ) );
+								instance.GetFirstPoint(), instance.GetPointCount() ) );
 							
 						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
 							// renderTaskInstance->GetFirstPoint() as base-vertex. required since
@@ -365,51 +373,190 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 							// need to shift the indices by
 							
 							OGL_CHECK( renderThread, pglDrawElementsBaseVertex( primitiveType,
-								renderTaskInstance->GetIndexCount(), indexGLType,
-									( GLvoid* )( intptr_t )(
-										indexSize * renderTaskInstance->GetFirstIndex() ),
-								renderTaskInstance->GetFirstPoint() ) );
+								instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								instance.GetFirstPoint() ) );
 							
 						}else{
 							OGL_CHECK( renderThread, glDrawElements( primitiveType,
-								renderTaskInstance->GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )(
-									indexSize * renderTaskInstance->GetFirstIndex() ) ) );
+								instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ) ) );
 						}
 						
 					}else{
-						if( renderTaskInstance->GetIndexCount() == 0 ){
+						if( instance.GetIndexCount() == 0 ){
 							OGL_CHECK( renderThread, pglDrawArraysInstanced( primitiveType,
-								renderTaskInstance->GetFirstPoint(),
-								renderTaskInstance->GetPointCount(),
-								renderTaskInstance->GetSubInstanceCount() ) );
+								instance.GetFirstPoint(), instance.GetPointCount(), subInstanceCount ) );
 							
 						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
 							OGL_CHECK( renderThread, pglDrawElementsInstancedBaseVertex(
-								primitiveType, renderTaskInstance->GetIndexCount(),
-								indexGLType, ( GLvoid* )( intptr_t )(
-									indexSize * renderTaskInstance->GetFirstIndex() ),
-								renderTaskInstance->GetSubInstanceCount(),
-								renderTaskInstance->GetFirstPoint() ) );
+								primitiveType, instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								subInstanceCount, instance.GetFirstPoint() ) );
 							
 						}else{
 							OGL_CHECK( renderThread, pglDrawElementsInstanced(
-								primitiveType, renderTaskInstance->GetIndexCount(),
-								indexGLType, ( GLvoid* )( intptr_t )(
-									indexSize * renderTaskInstance->GetFirstIndex() ),
-								renderTaskInstance->GetSubInstanceCount() ) );
+								primitiveType, instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								subInstanceCount ) );
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	pglBindVertexArray( 0 );
+}
+
+void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTask ){
+	const decPointerLinkedList::cListEntry *iterShader = renderTask.GetRootShader();
+	if( ! iterShader ){
+		return;
+	}
+	
+	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const deoglShaderParameterBlock *spbSIIndexInstance = NULL;
+	deoglRenderThread &renderThread = GetRenderThread();
+	bool curDoubleSided = false;
+	const deoglVAO *curVAO = NULL;
+	
+	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	
+	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
+	
+	while( iterShader ){
+		const deoglPersistentRenderTaskShader &rtshader = *( ( deoglPersistentRenderTaskShader* )iterShader->GetOwner() );
+		const deoglShaderCompiled &shader = *rtshader.GetShader()->GetCompiled();
+		
+		renderThread.GetShader().ActivateShader( rtshader.GetShader() );
+		
+		if( renderParamBlock ){
+			renderParamBlock->Activate();
+		}
+		
+		const decPointerLinkedList::cListEntry *iterTexture = rtshader.GetRootTexture();
+		while( iterTexture ){
+			const deoglPersistentRenderTaskTexture &texture = *( ( deoglPersistentRenderTaskTexture* )iterTexture->GetOwner() );
+			
+			if( texture.GetParameterBlock() ){
+				texture.GetParameterBlock()->Activate();
+			}
+			texture.GetTUC()->Apply();
+			
+			const decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
+			while( iterVAO ){
+				const deoglPersistentRenderTaskVAO &rtvao = *( ( deoglPersistentRenderTaskVAO* )iterVAO->GetOwner() );
+				const decPointerLinkedList::cListEntry *iterInstance = rtvao.GetRootInstance();
+				if( ! iterInstance ){
+					iterVAO = iterVAO->GetNext();
+					continue;
+				}
+				
+				const deoglVAO * const vao = rtvao.GetVAO();
+				if( vao != curVAO ){
+					pglBindVertexArray( vao->GetVAO() );
+					curVAO = vao;
+				}
+				
+				const GLenum indexGLType = vao->GetIndexGLType();
+				const int indexSize = vao->GetIndexSize();
+				
+				while( iterInstance ){
+					const deoglPersistentRenderTaskInstance &instance = *( ( deoglPersistentRenderTaskInstance* )iterInstance->GetOwner() );
+					const bool doubleSided = instance.GetDoubleSided();
+					
+					if( instance.GetParameterBlock() ){
+						instance.GetParameterBlock()->Activate();
+					}
+					if( instance.GetParameterBlockSpecial() ){
+						instance.GetParameterBlockSpecial()->Activate();
+					}
+					if( instance.GetSubInstanceSPB() ){
+						instance.GetSubInstanceSPB()->GetParameterBlock()->Activate();
+					}
+					
+					if( instance.GetSIIndexInstanceSPB() != spbSIIndexInstance ){
+						if( instance.GetSIIndexInstanceSPB() ){
+							instance.GetSIIndexInstanceSPB()->Activate();
+						}
+						spbSIIndexInstance = instance.GetSIIndexInstanceSPB();
+					}
+					
+					if( rtshader.GetSPBInstanceIndexBase() != -1 ){
+						shader.SetParameterInt( rtshader.GetSPBInstanceIndexBase(),
+							instance.GetSIIndexInstanceFirst() );
+					}
+					
+					if( doubleSided != curDoubleSided ){
+						if( doubleSided ){
+							OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+							
+						}else{
+							OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+						}
+						
+						curDoubleSided = doubleSided;
+					}
+					
+					GLenum primitiveType = instance.GetPrimitiveType();
+					
+					if( pglPatchParameteri && shader.GetHasTessellation() ){
+						pglPatchParameteri( GL_PATCH_VERTICES, instance.GetTessPatchVertexCount() );
+						primitiveType = GL_PATCHES;
+					}
+					
+					if( instance.GetSubInstanceCount() == 0 ){
+						if( instance.GetIndexCount() == 0 ){
+							OGL_CHECK( renderThread, glDrawArrays( primitiveType,
+								instance.GetFirstPoint(), instance.GetPointCount() ) );
+							
+						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+							// renderTaskInstance->GetFirstPoint() as base-vertex. required since
+							// the indices are stored relative to the block of points for various
+							// reasons. base-vertex is required to shift the indices to the correct
+							// range of points in the vbo. FirstPoint contains already the index
+							// to the first point in the block and thus is the right value we
+							// need to shift the indices by
+							
+							OGL_CHECK( renderThread, pglDrawElementsBaseVertex( primitiveType,
+								instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								instance.GetFirstPoint() ) );
+							
+						}else{
+							OGL_CHECK( renderThread, glDrawElements( primitiveType,
+								instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ) ) );
+						}
+						
+					}else{
+						if( instance.GetIndexCount() == 0 ){
+							OGL_CHECK( renderThread, pglDrawArraysInstanced( primitiveType,
+								instance.GetFirstPoint(), instance.GetPointCount(),
+								instance.GetSubInstanceCount() ) );
+							
+						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+							OGL_CHECK( renderThread, pglDrawElementsInstancedBaseVertex(
+								primitiveType, instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								instance.GetSubInstanceCount(), instance.GetFirstPoint() ) );
+							
+						}else{
+							OGL_CHECK( renderThread, pglDrawElementsInstanced(
+								primitiveType, instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								instance.GetSubInstanceCount() ) );
 						}
 					}
 					
-					renderTaskInstance = renderTaskInstance->GetNextInstance();
+					iterInstance = iterInstance->GetNext();
 				}
-				
-				renderTaskVAO = renderTaskVAO->GetNextVAO();
+				iterVAO = iterVAO->GetNext();
 			}
-			
-			renderTaskTexture = renderTaskTexture->GetNextTexture();
+			iterTexture = iterTexture->GetNext();
 		}
-		
+		iterShader = iterShader->GetNext();
 	}
 	
 	pglBindVertexArray( 0 );
@@ -573,26 +720,4 @@ GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount 
 //////////////////////
 
 void deoglRenderGeometry::pCleanUp(){
-	if( pShaderApproxTransformVNT ){
-		pShaderApproxTransformVNT->RemoveUsage();
-		pShaderApproxTransformVNT = NULL;
-	}
-	
-	if( pShaderWriteSkinnedVBO ){
-		pShaderWriteSkinnedVBO->RemoveUsage();
-		pShaderWriteSkinnedVBO = NULL;
-	}
-	if( pShaderCalcNormalsTangents ){
-		pShaderCalcNormalsTangents->RemoveUsage();
-		pShaderCalcNormalsTangents = NULL;
-	}
-	if( pShaderTransformPositions ){
-		pShaderTransformPositions->RemoveUsage();
-		pShaderTransformPositions = NULL;
-	}
-	
-	if( pShaderParticle ){
-		pShaderParticle->RemoveUsage();
-		pShaderParticle = NULL;
-	}
 }

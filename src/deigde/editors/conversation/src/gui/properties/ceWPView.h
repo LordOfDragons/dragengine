@@ -119,6 +119,7 @@ private:
 	igdeButtonReference pBtnPlaybackRewind;
 	igdeCheckBoxReference pChkPlaybackRunning;
 	igdeCheckBoxReference pChkPlaybackPaused;
+	igdeCheckBoxReference pChkPlaybackAutoAdvanceCommands;
 	igdeComboBoxReference pCBPlaybackCameraHandling;
 	igdeListBoxReference pListPlaybackCommands;
 	igdeListBoxReference pListPlaybackVars;

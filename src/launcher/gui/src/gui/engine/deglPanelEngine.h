@@ -25,12 +25,12 @@
 #include "../foxtoolkit.h"
 
 class deglWindowMain;
-class deglEngineModule;
+class delEngineModule;
 
 
 
 /**
- * @brief Engine Panel.
+ * Engine Panel.
  */
 class deglPanelEngine : public FXVerticalFrame{
 	FXDECLARE( deglPanelEngine )
@@ -38,7 +38,7 @@ protected:
 	deglPanelEngine();
 	
 public:
-	/** \brief Icon list extended to send header click to enable sorting. */
+	/** Icon list extended to send header click to enable sorting. */
 	class ExtIconList : public FXIconList{
 		FXDECLARE( ExtIconList )
 	protected:
@@ -49,7 +49,7 @@ public:
 			SEL_HEADER_CLICKED = SEL_LAST
 		};
 		
-		ExtIconList( FXComposite *p, FXObject *tgt = NULL, FXSelector sel = 0,
+		ExtIconList( FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0,
 			FXuint opts = ICONLIST_NORMAL, FXint x = 0, FXint y = 0,
 			FXint w = 0, FXint h = 0 );
 		
@@ -79,47 +79,59 @@ public:
 		elmsStatusDesc,
 	};
 	
+	
+	
 private:
 	deglWindowMain *pWindowMain;
 	
 	FXIconList *pListModules;
-	int pSortListModules;
+	eListModuleSorting pSortListModules;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new panel. */
+	/** Create panel. */
 	deglPanelEngine( deglWindowMain *windowMain, FXComposite *container );
-	/** Cleans up the panel. */
+	
+	/** Clean up panel. */
 	virtual ~deglPanelEngine();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the main window. */
+	/** Main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the selected module if any. */
-	deglEngineModule *GetSelectedModule() const;
+	/** Selected module or nullptr. */
+	delEngineModule *GetSelectedModule() const;
 	
-	/** Update the module list. */
+	/** Update module list. */
 	void UpdateModuleList();
 	
 	/** Sorts module list by the name. */
 	static FXint SortModulesByNameAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortModulesByNameDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	
 	/** Sorts module list by the type. */
 	static FXint SortModulesByTypeAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortModulesByTypeDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	
 	/** Sorts module list by the version. */
 	static FXint SortModulesByVersionAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortModulesByVersionDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	
 	/** Sorts module list by the status. */
 	static FXint SortModulesByStatusAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortModulesByStatusDesc( const FXIconItem *item1, const FXIconItem *item2 );
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onListModulesChanged( FXObject *sender, FXSelector selector, void *data );
 	long onListModulesRDown( FXObject *sender, FXSelector selector, void *data );
@@ -131,5 +143,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif

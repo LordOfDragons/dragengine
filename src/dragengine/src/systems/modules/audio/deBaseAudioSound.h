@@ -22,12 +22,14 @@
 #ifndef _DEBASEAUDIOSOUND_H_
 #define _DEBASEAUDIOSOUND_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Audio module sound peer.
  */
-class deBaseAudioSound{
+class DE_DLL_EXPORT deBaseAudioSound{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

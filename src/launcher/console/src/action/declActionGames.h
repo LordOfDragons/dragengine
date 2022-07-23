@@ -30,7 +30,7 @@ class declLauncher;
 
 
 /**
- * \brief Games Action.
+ * Games Action.
  */
 class declActionGames{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create action. */
+	/** Create action. */
 	declActionGames( declLauncher &launcher );
 	
-	/** \brief Clean up action. */
+	/** Clean up action. */
 	~declActionGames();
 	/*@}*/
 	
@@ -52,16 +52,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Launcher. */
+	/** Launcher. */
 	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
-	/** \brief Print syntax. */
+	/** Print syntax. */
 	void PrintSyntax();
 	
-	/** \brief Init launcher. */
-	void InitLauncher();
-	
-	/** \brief Run action. */
+	/** Run action. */
 	int Run();
 	/*@}*/
 	

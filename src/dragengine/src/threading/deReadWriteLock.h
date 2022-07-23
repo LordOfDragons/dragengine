@@ -22,6 +22,7 @@
 #ifndef _DEREADWRITELOCK_H_
 #define _DEREADWRITELOCK_H_
 
+#include "../dragengine_export.h"
 #include "../dragengine_configuration.h"
 
 #if defined OS_UNIX || defined OS_BEOS
@@ -42,7 +43,7 @@
  * This object ensure that either one or more readers access an object or exactly one
  * writer but no other combination.
  */
-class deReadWriteLock{
+class DE_DLL_EXPORT deReadWriteLock{
 private:
 #if defined OS_UNIX || defined OS_BEOS
 	pthread_rwlock_t pRWLock;

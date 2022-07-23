@@ -35,7 +35,7 @@ from mathutils import Vector, Matrix
 
 from .de_math import transformPosition, vector_by_matrix
 from .de_resources import Mesh
-from .de_porting import registerClass
+from .de_porting import registerClass, matmul
 
 
 
@@ -44,8 +44,8 @@ class OBJECT_OT_ExportNavigationSpace( bpy.types.Operator, ExportHelper ):
 	bl_label = "Navigation Space (.denavspace))"
 	__doc__ = """Export as Drag[en]gine Navigation Space"""
 	filename_ext = ".denavspace"
-	filter_glob = bpy.props.StringProperty( default="*.denavspace", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.denavspace", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),

@@ -69,11 +69,9 @@ void deoglRDSRenderableImage::SetImage( deoglRImage *image ){
 	if( image ){
 		image->AddReference();
 	}
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableImage::PrepareForRender(){
+void deoglRDSRenderableImage::PrepareForRender( const deoglRenderPlanMasked * ){
 	if( pImage ){
 		pImage->PrepareForRender();
 	}

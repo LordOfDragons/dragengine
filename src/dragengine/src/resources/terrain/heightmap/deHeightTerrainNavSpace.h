@@ -34,7 +34,7 @@ class deHeightTerrainNavSpaceEdge;
  * Vertices are stored as navigation points derived from the terrain geometry:
  * <code>navpoint = image-dimension * coord.y + coord.x</code> .
  */
-class deHeightTerrainNavSpace{
+class DE_DLL_EXPORT deHeightTerrainNavSpace{
 private:
 	deNavigationSpace::eSpaceTypes pType;
 	int pLayer;

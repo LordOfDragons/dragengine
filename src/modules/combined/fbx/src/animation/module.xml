@@ -6,6 +6,9 @@
 	<version>VERSION</version>
 	<type>Animation</type>
 	<pattern>.fbx</pattern>
+	<noSaving/>
+	<noCompress/>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

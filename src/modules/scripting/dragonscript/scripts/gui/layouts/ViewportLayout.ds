@@ -1,0 +1,123 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.Layouts
+
+pin Dragengine.Gui.Borders
+
+
+/**
+ * \brief Similar to FixedMinimalLayout but allows to restrict width or height.
+ * \version 1.7
+ * 
+ * Viewport with FixedMinimalLayout would result in the containing ScrollPanel to use the total
+ * viewport content size as minimum size defeating the purpose of using Viewport in the first
+ * place. Viewport solved this problem by forcing a minimum size of (5,5). This is though
+ * unconvenient if for example only the height should be scrollable but the width should be
+ * full size. This layout provides a simple way to achieve this behavior without needing to
+ * resort to forcing minimum size.
+ * 
+ * To restrict width or height set a value larger 0. A value of 0 indicates no restriction.
+ */
+class ViewportLayout extends FixedMinimalLayout
+	private var int pWidth
+	private var int pHeight
+	private var bool pStretch
+	
+	
+	
+	/** \brief Create layout with fixed size (5,5). */
+	public func new() this(5, 5, false)
+	end
+	
+	/** \brief Create layout. */
+	public func new(int width, int height, bool stretch)
+		pStretch = stretch
+		setWidth(width)
+		setHeight(height)
+	end
+	
+	
+	
+	/** Fixed width or 0 to not restrict. */
+	public func int getWidth()
+		return pWidth
+	end
+	
+	/** Set fixed width or 0 to not restrict. */
+	public func void setWidth(int width)
+		if width < 0
+			throw EInvalidParam.new("width < 0")
+		end
+		pWidth = width
+	end
+	
+	/** Fixed height or 0 to not restrict. */
+	public func int getHeight()
+		return pHeight
+	end
+	
+	/** Set fixed height or 0 to not restrict. */
+	public func void setHeight(int height)
+		if height < 0
+			throw EInvalidParam.new("height < 0")
+		end
+		pHeight = height
+	end
+	
+	/** Stretch content instead of using minimum size. */
+	public func bool getStretch()
+		return pStretch
+	end
+	
+	/** Set stretch content instead of using minimum size. */
+	public func void setStretch(bool stretch)
+		pStretch = stretch
+	end
+	
+	
+	
+	/** Layout content. */
+	public func void doLayout(Container container)
+		var Point size = container.getContainerSize()
+		
+		container.forEachWidget(block Widget child
+			if child.getVisible()
+				var Point childSize = child.getMinimumSize()
+				
+				if pStretch
+					childSize = childSize.largest(size)
+				end
+				
+				child.setSize(childSize)
+			end
+		end)
+	end
+	
+	
+	
+	/** \brief Minimal size required for layout in container. */
+	public func Point getMinimumSize(Container container)
+		var Point size = super.getMinimumSize(container)
+		return Point.new(pWidth > 0 if pWidth else size.getX(), pHeight > 0 if pHeight else size.getY())
+	end
+end

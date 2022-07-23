@@ -21,7 +21,7 @@ if not buildModule:
 	Return()
 
 # fetch values in expanded form for later use
-versionString = '1.0'
+versionString = '1.8'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -45,7 +45,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-libs.append( [ 'kernel32', 'user32', 'gdi32', 'winmm', 'wsock32' ] )
+libs.append('winmm')
 
 library = envModule.LoadableModule( target='inpw32', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'inp_w32_build', library )
@@ -56,6 +56,11 @@ for l in library:
 	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
+
+if envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'inpw32.pdb'))
+	archive['{}/inpw32.pdb'.format(pathPdb)] = envModule.File('inpw32.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

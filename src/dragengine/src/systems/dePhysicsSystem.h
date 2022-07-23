@@ -47,7 +47,7 @@ class deSmokeEmitter;
  *
  * Provides physical simulation support.
  */
-class dePhysicsSystem : public deBaseSystem{
+class DE_DLL_EXPORT dePhysicsSystem : public deBaseSystem{
 private:
 	deBasePhysicsModule *pActiveModule;
 	

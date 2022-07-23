@@ -22,6 +22,7 @@
 #ifndef _DECTIMER_H_
 #define _DECTIMER_H_
 
+#include "../../dragengine_export.h"
 #include "../../dragengine_configuration.h"
 
 #ifdef OS_UNIX
@@ -40,13 +41,14 @@
  * \brief Simple timer.
  *
  */
-class decTimer{
+class DE_DLL_EXPORT decTimer{
 private:
-#if defined( OS_UNIX )
+#if defined OS_UNIX
 	time_t pLastSec;
 	suseconds_t pLastUSec;
-#elif defined( OS_W32 )
-	DWORD pLastTime;
+#elif defined OS_W32
+	LONGLONG pLastTime;
+	double pInvFrequency;
 #endif
 	
 	
@@ -70,6 +72,9 @@ public:
 	
 	/** \brief Time elapsed in seconds since the last reset. */
 	float GetElapsedTime();
+	
+	/** \brief Time elapsed in seconds since the last reset without doing a reset. */
+	float PeekElapsedTime();
 	/*@}*/
 };
 

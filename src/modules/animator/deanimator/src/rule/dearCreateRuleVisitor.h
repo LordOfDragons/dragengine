@@ -25,6 +25,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitor.h>
 
 class decIntList;
+class dearAnimator;
 class dearAnimatorInstance;
 class dearRule;
 class deAnimator;
@@ -37,7 +38,7 @@ class deAnimator;
 class dearCreateRuleVisitor : public deAnimatorRuleVisitor{
 private:
 	dearAnimatorInstance &pInstance;
-	const deAnimator &pAnimator;
+	const dearAnimator &pAnimator;
 	const decIntList &pControllerMapping;
 	const int pFirstLink;
 	
@@ -47,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new visitor. */
-	dearCreateRuleVisitor( dearAnimatorInstance &instance, const deAnimator &animator,
+	dearCreateRuleVisitor( dearAnimatorInstance &instance, const dearAnimator &animator,
 		const decIntList &controllerMapping, int firstLink );
 	
 	/** \brief Clean up object. */
@@ -108,14 +109,17 @@ public:
 	/** \brief Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
-	
 	/** \brief Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

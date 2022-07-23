@@ -185,6 +185,9 @@ bool dePhysicsBullet::Init(){
 	
 	pConfiguration->LoadConfig();
 	
+	// temporarily global variables. fine with me since we do not need it local for the time being
+	gDeactivationTime = 1.0f; // default 2.0f
+	
 	return true;
 }
 

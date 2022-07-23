@@ -28,7 +28,7 @@
 /**
  * \brief Skin property shape node for constructed texture property.
  */
-class deSkinPropertyNodeShape : public deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNodeShape : public deSkinPropertyNode{
 public:
 	/** \brief Shape types. */
 	enum eShapeTypes{

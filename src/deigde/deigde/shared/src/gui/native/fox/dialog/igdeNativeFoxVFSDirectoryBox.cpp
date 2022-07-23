@@ -143,10 +143,10 @@ FXTreeItem *igdeNativeFoxVFSDirectoryBox::pBuildListFrom( const decPath &path ){
 }
 
 void igdeNativeFoxVFSDirectoryBox::pGetPathFor( decPath &path, FXTreeItem *item ){
-	FXTreeItem *parent = item->getParent();
+	FXTreeItem *pparent = item->getParent();
 	
-	if( parent ){
-		pGetPathFor( path, parent );
+	if( pparent ){
+		pGetPathFor( path, pparent );
 		path.AddComponent( item->getText().text() );
 		
 	}else{

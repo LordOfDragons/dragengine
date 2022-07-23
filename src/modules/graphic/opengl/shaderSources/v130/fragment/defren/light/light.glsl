@@ -34,7 +34,7 @@ precision highp int;
 	#define COLORED_SHADOWS 1
 #endif
 
-#ifdef SKY_LIGHT
+#if defined SKY_LIGHT && ! defined GI_RAY
 	#define USE_ARRAY_FORM 1
 #endif
 
@@ -73,59 +73,67 @@ precision highp int;
 	#define SAMPLER_SHADOWCUBE samplerCube
 #endif
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+#ifdef GI_RAY
+	uniform HIGHP sampler2D texPosition;
+	uniform lowp sampler2D texDiffuse;
+	uniform lowp sampler2D texNormal;
+	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
+#else
+	uniform HIGHP sampler2DArray texDepth;
+	uniform lowp sampler2DArray texDiffuse;
+	uniform lowp sampler2DArray texNormal;
+	uniform lowp sampler2DArray texReflectivity;
+	uniform lowp sampler2DArray texRoughness;
+	uniform lowp sampler2DArray texAOSolidity;
+#endif
+
 #ifdef WITH_SUBSURFACE
-	uniform mediump sampler2D texSubSurface;
+	uniform mediump sampler2DArray texSubSurface;
 #endif
 #ifdef TEXTURE_SHADOW1_SOLID
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadow1SolidDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow1SolidDepth;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadow1SolidDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow1SolidDepth;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW1_TRANSPARENT
 	#ifdef SMA1_CUBE
-		uniform mediump SAMPLER_SHADOWCUBE texShadow1TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow1TransparentDepth;
 		uniform lowp samplerCube texShadow1TransparentColor;
 	#else
-		uniform mediump SAMPLER_SHADOW2D texShadow1TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow1TransparentDepth;
 		uniform lowp sampler2D texShadow1TransparentColor;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW2_SOLID
 	#ifdef SMA2_CUBE
-		uniform mediump SAMPLER_SHADOWCUBE texShadow2SolidDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow2SolidDepth;
 	#else
-		uniform mediump SAMPLER_SHADOW2D texShadow2SolidDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow2SolidDepth;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW2_TRANSPARENT
 	#ifdef SMA2_CUBE
-		uniform mediump SAMPLER_SHADOWCUBE texShadow2TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow2TransparentDepth;
 		uniform lowp samplerCube texShadow2TransparentColor;
 	#else
-		uniform mediump SAMPLER_SHADOW2D texShadow2TransparentDepth;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow2TransparentDepth;
 		uniform lowp sampler2D texShadow2TransparentColor;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW1_AMBIENT
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadow1Ambient;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow1Ambient;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadow1Ambient;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow1Ambient;
 	#endif
 #endif
 #ifdef TEXTURE_SHADOW2_AMBIENT
 	#ifdef SMA1_CUBE
-		uniform lowp SAMPLER_SHADOWCUBE texShadow2Ambient;
+		uniform HIGHP SAMPLER_SHADOWCUBE texShadow2Ambient;
 	#else
-		uniform lowp SAMPLER_SHADOW2D texShadow2Ambient;
+		uniform HIGHP SAMPLER_SHADOW2D texShadow2Ambient;
 	#endif
 #endif
 #ifdef TEXTURE_NOISE
@@ -164,7 +172,6 @@ uniform lowp sampler2D texAOSolidity;
 #endif
 
 
-
 // Inputs
 ///////////
 
@@ -182,6 +189,12 @@ uniform lowp sampler2D texAOSolidity;
 	#define pLightPosition vParticleLightPosition
 	#define pLightColor vParticleLightColor
 	#define pLightRange vParticleLightRange
+#endif
+
+#if definedGS_RENDER_STEREO && ! defined GI_RAY
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 
@@ -241,6 +254,19 @@ const vec3 ambientLightFactor = vec3( 0.25, 0.5, 0.25 );
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 //const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 
+
+
+// Includes using definitions above
+/////////////////////////////////////
+
+#ifdef SKY_LIGHT
+	#ifdef ENABLE_OCCTRACING
+		#include "v130/shared/defren/light/occtracing.glsl"
+		#include "v130/shared/defren/light/normal_from_depth.glsl"
+	#endif
+#endif
+
+#include "v130/shared/normal.glsl"
 
 
 // Macros to increase readability and extendibility
@@ -403,7 +429,7 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 	#define ES2D( tc ) tc
 #else
 	#define ES2DTC vec3
-	#define ES2D( tc ) tc.stp
+	#define ES2D( tc ) (tc).stp
 #endif
 
 // for HW_DEPTH_COMPARE mediump is required
@@ -626,29 +652,61 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 //////////////////
 
 void main( void ){
+	ivec3 tcArray = ivec3( gl_FragCoord.xy, vLayer );
 	#ifdef LUMINANCE_ONLY
-	ivec2 tc = ivec2( gl_FragCoord.xy * pLumFragCoordScale );
+		tcArray.xy *= pLumFragCoordScale;
 	#else
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	
+	#ifdef GI_RAY
+		ivec2 tc = ivec2( tcArray );
+	#else
+		ivec3 tc = tcArray;
 	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
-	if( diffuse.a == 0.0 ){
-		discard;
-	}
+	#ifndef GI_RAY
+		if( diffuse.a == 0.0 ){
+			discard;
+		}
+	#endif
 	
 	// determine position of fragment to light
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
+	#ifdef GI_RAY
+		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
+		if( positionDistance.a > 9999.0 ){
+			// ray hits nothing. for sky lights this adds the ambient light contribution.
+			// for all other light sources do not light the ray
+			#ifdef SKY_LIGHT
+				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
+				outLuminance = dot( lightColor, lumiFactors );
+				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
+				return;
+			#else
+				discard;
+			#endif
+		}
+		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord * pPosTransform.zw * position.zz;
-	#else
-		position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
+		#ifdef DECODE_IN_DEPTH
+			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
+		#else
+			float depth = texelFetch( texDepth, tc, 0 ).r;
+		#endif
+		
+		#ifndef PARTICLE_LIGHT
+			if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
+				discard;
+			}
+		#endif
+		
+		vec3 position = vec3( depth );
+		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
+		#ifdef FULLSCREENQUAD
+			position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
+		#else
+			position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
+		#endif
 	#endif
 	
 	// calculate light direction and distance
@@ -778,16 +836,10 @@ void main( void ){
 	#endif
 	
 	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined MATERIAL_NORMAL_SPHEREMAP
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
+	vec3 normal = normalLoadMaterial( texNormal, tc );
+	
+	#ifdef GI_RAY
+		normal = normal * pGIRayMatrixNormal; // requires matrix transpose done by reversed order
 	#endif
 	
 	if( dot( normal, normal ) < 0.0001 ){
@@ -800,7 +852,7 @@ void main( void ){
 	
 	// calculate the sss thickness from the shadow map if existing
 	#ifdef WITH_SUBSURFACE
-		vec3 absorptionRadius = texelFetch( texSubSurface, tc, 0 ).rgb;
+		vec3 absorptionRadius = texelFetch( texSubSurface, tcArray, 0 ).rgb;
 		float largestAbsorptionRadius = max( max( absorptionRadius.x, absorptionRadius.y ), absorptionRadius.z );
 		#ifdef SHADOW_CASTING
 			#ifdef TEXTURE_SHADOW1_SOLID
@@ -870,11 +922,40 @@ void main( void ){
 		}else{
 			shadow = clamp( dotval * shadowThresholdInv + 1.0, 0.0, 1.0 );
 		#else
-			shadow = 1.0;
+			// force back facing fragments into shadow. not only does this avoid the need to
+			// sample the shadow maps but it also avoids light leaking problems. this does
+			// not affect ambient shadows
+			if( dotval > 0.0 ){
+				shadow = 1.0;
 		#endif
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
 					shadow = min( shadow, evaluateShadowCube( texShadow1SolidDepth, pShadow1Solid, shapos1 ) );
+				#elif defined GI_RAY && defined SKY_LIGHT
+					// the main shadow map array is only guaranteed to hold valid data for
+					// pixels falling into the view frustum. outside this volume data is
+					// potentially culled for performance reason. use GI shadow map instead
+					// 
+					// NOTE this is not working reliably. most probably the view based optimization
+					//      is not working properly using the GI view. this causes rays to switch
+					//      between receiving sky light or not when slightly rotating the view.
+					//      the problematic hits are located behind the camera. for this reason
+					//      the GI-ShadowMap is always used although the quality is inferior than
+					//      using the view shadow map
+// 					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
+// 					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
+						//shadow = min( shadow, SHATEX( texShadow1SolidDepth, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
+						vec4 gishapos = pGIShadowMatrix * vec4( position, 1.0 );
+						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pGIShadowParams, ES2D( gishapos ) ) );
+						
+						// prevent the test depth from reaching 0 or below. if this happens the test
+						// result incorrectly considers the fragment not in shadows even if it is.
+						// it is not enough to clamp to 0. it has to be larger than 0.
+// 						shapos1.q = max( shapos1.q, 0.0001 );
+						
+// 					}else{
+// 						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
+// 					}
 				#else
 					shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
 				#endif
@@ -882,10 +963,15 @@ void main( void ){
 			#ifdef TEXTURE_SHADOW2_SOLID
 				#ifdef SMA2_CUBE
 					shadow = min( shadow, evaluateShadowCube( texShadow2SolidDepth, pShadow2Solid, shapos2 ) );
+				#elif defined GI_RAY && defined SKY_LIGHT
+					shadow = min( shadow, evaluateShadow2D( texShadow2SolidDepth, pGIShadowParams, ES2D( gishapos ) ) );
 				#else
 					shadow = min( shadow, evaluateShadow2D( texShadow2SolidDepth, pShadow2Solid, ES2D( shapos2 ) ) );
 				#endif
 			#endif
+			}else{
+				shadow = 0.0;
+			}
 			
 			#ifdef AMBIENT_LIGHTING
 				// temporary until sky light is improved. required since pLightAmbientRatio is
@@ -978,6 +1064,8 @@ void main( void ){
 		#endif
 	#endif
 	
+	
+	
 	// diffuse term = color_diff * color_light * max( dot( normal, lightDir ), 0 )
 	// specular term = ( ( ap + 2 ) / 8 ) * pow( max( dot( normal, halfDir ), 0 ), ap )
 	//                   * fresnel( color_reflectivity, lightDir, halfDir )
@@ -1001,16 +1089,24 @@ void main( void ){
 	// 
 	// roughness = clamp( texture-input( 0=sharp .. 1=diffuse ), 0.0, 1.0 )
 	// float ap = 2.0 / ( specularity.g * specularity.g + maxAP ) - minAP
-	vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
-	vec3 roughness = texelFetch( texRoughness, tc, 0 ).rgb;
-	vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
+	#ifdef GI_RAY
+		vec4 reflRough = texelFetch( texReflectivity, tc, 0 );
+		vec3 reflectivity = reflRough.rgb;
+		vec3 roughness = vec3( reflRough.a, 0.0, 0.0 );
+		
+	#else
+		vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
+		vec3 roughness = texelFetch( texRoughness, tc, 0 ).rgb;
+		vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
+	#endif
 	
 	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding if both are used.
 	// the result is stored in aoSolidity.g . this way aoSolidity.r contains the pure texture-ao and
 	// aoSolidity.gb the combined ao
-	aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
-	diffuse.a *= aoSolidity.b;
-	
+	#ifndef GI_RAY
+		aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
+		diffuse.a *= aoSolidity.b;
+	#endif
 	
 	// specular term
 	//roughness.r = max( roughness.r, 0.1 );
@@ -1021,7 +1117,7 @@ void main( void ){
 	vec3 specFresnelTerm = mix( reflectivity, vec3( 1.0 ), vec3( pow( clamp( 1.0 - dot( lightDir, halfDir ), 0.0, 1.0 ), 5.0 ) ) );
 	
 	#ifdef AMBIENT_LIGHTING
-// 		float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
+		//float aldotval = dot( vec3( dotval * dotval, dotval, 1.0 ), ambientLightFactor );
 	#endif
 	dotval = max( dotval, 0.0 );
 	
@@ -1030,6 +1126,8 @@ void main( void ){
 	#endif
 	vec3 finalColorSurface = clamp( vec3( specNormTerm * specPowTerm ) * specFresnelTerm, vec3( 0.0 ), vec3( 1.0 ) );
 		// clamp prevents overshoot on near 0 roughness (specNormTerm)
+	
+	
 	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
 	vec3 lightColor = pLightColor;
@@ -1058,42 +1156,60 @@ void main( void ){
 		vec3 absorptionLightColor = lightColor;
 	#endif
 	
-	#ifdef PARTICLE_LIGHT
-		lightColor *= vec3( dotval );
-	#else
-// 		lightColor *= vec3( dotval );
-		lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+	#ifndef GI_RAY
+		#ifdef PARTICLE_LIGHT
+			lightColor *= vec3( dotval );
+		#else
+	 		//lightColor *= vec3( dotval );
+			lightColor *= vec3( mix( pLightAmbientRatio, 1.0, dotval ) );
+		#endif
 	#endif
 	#ifdef SHADOW_CASTING
 		lightColor *= shadowColor;
 	#endif
 	
-	// apply ambient occlusion to the direct lighting. this is done by comparing the ambient occlusion angle
-	// with the lighting angle. the ambient occlusion angle can be calculated using the relation ao = 1 - cos(angle).
-	// this works because the ao value can be considered the ratio between a free sphere cap and the entire half
-	// sphere. since a sphere cap is defined by an angle around the sphere direction the ao value can be directly
-	// related to an angle with a simple calculation. this allows to add self-shadowing with next to no extra cost
-	// 
-	// with SSAO the result is tricky and more wrong than right in some cases. due to this only the texture-ao is
-	// used for self-shadowing since this one is guaranteed to be well calculated and usually on a small scale
-	// 
-	lightColor *= vec3( clamp( ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0, pAOSelfShadow.x, 1.0 ) );
-	//lightColor *= vec3( smoothstep( pAOSelfShadow.x, 1.0, ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0 ) );
-	//  problem with smoothstep undefined if pAOSelfShadow.x == 1.0 which is the case for disabling self-shadowing
-	
-	// ambient lighting. this uses the better ambient lighting trick. there the calculation would be like this:
-	//   color += diffuse * ambient * mix( 0.25, 1, clamp( d, 0, 1 ) )
-	// where d is:
-	//   dnl = dot( normal, lightdir )
-	//   d = squared( dnl * 0.5 + 0.5 )
-	// this can be rewritten a bit like this:
-	//   d = dnl * 0.5 * dnl * 0.5 + 2 * dnl * 0.5 * 0.5 + 0.5 * 0.5
-	//   d = dnl * dnl * 0.25 + dnl * 0.5 + 0.25
-	//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
-	// this calculation is moved up since we need the dot product without clamping for the ambient lighting
-	#ifdef AMBIENT_LIGHTING
-// 		vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
-		vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+	#ifndef GI_RAY
+		// apply ambient occlusion to the direct lighting. this is done by comparing the ambient occlusion angle
+		// with the lighting angle. the ambient occlusion angle can be calculated using the relation ao = 1 - cos(angle).
+		// this works because the ao value can be considered the ratio between a free sphere cap and the entire half
+		// sphere. since a sphere cap is defined by an angle around the sphere direction the ao value can be directly
+		// related to an angle with a simple calculation. this allows to add self-shadowing with next to no extra cost
+		// 
+		// with SSAO the result is tricky and more wrong than right in some cases. due to this only the texture-ao is
+		// used for self-shadowing since this one is guaranteed to be well calculated and usually on a small scale
+		// 
+		lightColor *= vec3( clamp( ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0, pAOSelfShadow.x, 1.0 ) );
+		//lightColor *= vec3( smoothstep( pAOSelfShadow.x, 1.0, ( ( acos( 1.0 - aoSolidity.r ) - acos( dotval ) ) * pAOSelfShadow.y ) + 1.0 ) );
+		//  problem with smoothstep undefined if pAOSelfShadow.x == 1.0 which is the case for disabling self-shadowing
+		
+		// ambient lighting. this uses the better ambient lighting trick. there the calculation would be like this:
+		//   color += diffuse * ambient * mix( 0.25, 1, clamp( d, 0, 1 ) )
+		// where d is:
+		//   dnl = dot( normal, lightdir )
+		//   d = squared( dnl * 0.5 + 0.5 )
+		// this can be rewritten a bit like this:
+		//   d = dnl * 0.5 * dnl * 0.5 + 2 * dnl * 0.5 * 0.5 + 0.5 * 0.5
+		//   d = dnl * dnl * 0.25 + dnl * 0.5 + 0.25
+		//   d = dot( ( dnl * dnl, dnl, 1 ), ( 0.25, 0.5, 0.25 ) )
+		// this calculation is moved up since we need the dot product without clamping for the ambient lighting
+		#ifdef AMBIENT_LIGHTING
+			#ifdef SKY_LIGHT
+				#ifdef ENABLE_OCCTRACING
+					vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+					if( pOTEnabled ){
+						// normal is not a geometry normal but a modified normal. for tracing
+						// we need though a geometry normal. this can be derived from depth
+						//finalColorAmbient *= vec3( occtraceOcclusion( position, normal ) );
+						finalColorAmbient *= vec3( occtraceOcclusion( position, normalFromDepth( tc, depth, position ) ) );
+					}
+				#else
+					vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+				#endif
+			#else
+	// 			vec3 finalColorAmbient = pLightColorAmbient * vec3( mix( 0.25, 1.0, clamp( aldotval, 0.0, 1.0 ) ) * aoSolidity.g );
+				vec3 finalColorAmbient = pLightColorAmbient * vec3( aoSolidity.g );
+			#endif
+		#endif
 	#endif
 	
 	// distance and spot attenuation
@@ -1179,13 +1295,24 @@ void main( void ){
 	//#ifdef AMBIENT_LIGHTING
 	//	finalColorAmbient *= vec3( aoSolidity.g );
 	//#endif
+	#ifdef SKY_LIGHT
+		#ifdef ENABLE_OCCTRACING
+			if( pOTEnabled ){
+				lightColor = max( lightColor, finalColorAmbient );
+			}
+		#endif
+	#endif
 	
 	// final light contribution
 	finalColorSurface *= lightColor;
 	
 	vec3 finalColorSubSurface = lightColor;
 	#ifdef AMBIENT_LIGHTING
-		finalColorSubSurface += finalColorAmbient;
+		//#ifndef SKY_LIGHT
+			// note: if enabled also for other light sources skip too if
+			// ifdef ENABLE_OCCTRACING and pOTEnabled = true
+			finalColorSubSurface += finalColorAmbient;
+		//#endif
 	#endif
 	
 	outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );

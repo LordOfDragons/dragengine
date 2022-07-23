@@ -29,7 +29,6 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -65,58 +64,19 @@ pUpdateFrame( -1 )
 	}
 }
 
-class deoglRVideoDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture **textures;
-	int textureCount;
-	
-	deoglRVideoDeletion() :
-	textures( NULL ),
-	textureCount( 0 ){
-	}
-	
-	virtual ~deoglRVideoDeletion(){
-		if( textures ){
-			delete [] textures;
-		}
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		int i;
-		for( i=0; i<textureCount; i++ ){
-			if( textures[ i ] ){
-				delete textures[ i ];
-			}
-		}
-	}
-};
-
 deoglRVideo::~deoglRVideo(){
 	if( pPixelBuffer ){
 		delete pPixelBuffer;
 	}
 	
-	// delayed deletion of opengl containing objects
-	if( ! pFrames ){
-		return;
-	}
-	
-	deoglRVideoDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRVideoDeletion;
-		if( pFrameCount > 0 ){
-			delayedDeletion->textures = pFrames;
-			delayedDeletion->textureCount = pFrameCount;
+	if( pFrames ){
+		int i;
+		for( i=0; i<pFrameCount; i++ ){
+			if( pFrames[ i ] ){
+				delete pFrames[ i ];
+			}
 		}
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+		delete [] pFrames;
 	}
 }
 

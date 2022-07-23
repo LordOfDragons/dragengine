@@ -37,7 +37,7 @@
  * the canvas view defines the size of the used render target but the
  * Graphic Module is free to choose a fitting size itself.
  */
-class deDSRenderableCanvas : public deDSRenderable{
+class DE_DLL_EXPORT deDSRenderableCanvas : public deDSRenderable{
 private:
 	int pComponentCount;
 	int pBitCount;

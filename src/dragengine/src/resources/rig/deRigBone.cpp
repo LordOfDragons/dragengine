@@ -40,7 +40,7 @@ pName( name ),
 pParent( -1 ),
 pMass( 1.0f ),
 pDynamic( false ),
-pIKLimitsLower( 1.0f, 1.0f, 1.0f ),
+pIKLimitsLower( TWO_PI, TWO_PI, TWO_PI ),
 pIKLimitsUpper( 0.0f, 0.0f, 0.0f ),
 pIKResistance( 0.0f, 0.0f, 0.0f ),
 pConstraints( NULL ),
@@ -115,7 +115,7 @@ void deRigBone::SetIKLimits( const decVector &lower, const decVector &upper ){
 }
 
 void deRigBone::SetIKResistance( const decVector &resistance ){
-	pIKResistance = resistance;
+	pIKResistance = resistance.Clamped( decVector(), decVector( 1.0f, 1.0f, 1.0f ) );
 }
 
 void deRigBone::SetIKLockedX( bool locked ){

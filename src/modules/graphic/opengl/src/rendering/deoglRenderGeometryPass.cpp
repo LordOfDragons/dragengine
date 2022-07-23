@@ -30,6 +30,7 @@
 #include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
+#include "light/deoglRenderGI.h"
 #include "plan/deoglRenderPlan.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
@@ -91,7 +92,7 @@ deoglRenderBase( renderThread )
 	deoglShaderDefines defines;
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Skin Debug" );
-	pShaderDEBUG.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDebug = shaderManager.GetProgramWith( sources, defines );
 }
 
 deoglRenderGeometryPass::~deoglRenderGeometryPass(){
@@ -141,12 +142,9 @@ void deoglRenderGeometryPass::RenderDecals( deoglRenderPlan &plan ){
 DBG_ENTER("RenderDecals")
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	const deoglCollideList &collideList = plan.GetCollideList();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglRenderTask &renderTask = *renworld.GetRenderTask();
-	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 	
 	// set opengl states
 	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
@@ -164,44 +162,25 @@ DBG_ENTER("RenderDecals")
 	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	// render using render task
-	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	deoglRenderPlanTasks &tasks = plan.GetTasks();
+	tasks.WaitFinishBuildingTasksGeometry();
 	
-	addToRenderTask.Reset();
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.SetNoRendered( true );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estDecalGeometry );
-	
-	addToRenderTask.SetFilterDecal( true );
-	addToRenderTask.SetDecal( true );
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.AddComponents( collideList );
-	addToRenderTask.SetSolid( false );
-	addToRenderTask.AddComponents( collideList );
-	addToRenderTask.SetFilterDecal( false );
-	
-	addToRenderTask.AddDecals( collideList );
-	
-	renderTask.PrepareForRender( renderThread );
-	rengeom.RenderTask( renderTask );
+	tasks.GetSolidDecalsTask().SetRenderParamBlock( renworld.GetRenderPB() );
+	rengeom.RenderTask( tasks.GetSolidDecalsTask() );
 	
 	// cleanup
 	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
 DBG_EXIT("RenderDecals")
 }
 
-void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
-	const deoglCollideList &collideList = plan.GetCollideList();
 	deoglConfiguration &config = renderThread.GetConfiguration();
-	deoglRenderTask &renderTask = *renworld.GetRenderTask();
-	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 	
 	// switch to wireframe mode if required
 	if( renderThread.GetConfiguration().GetDebugWireframe() ){
@@ -232,16 +211,16 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	if( mask ){
 		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
+		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) ); // transparency disables this
 		
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	}
 	
 	QUICK_DEBUG_START( 16, 19 )
-	GetRenderThread().GetRenderers().GetSky().RenderSky( plan );
+	renderThread.GetRenderers().GetSky().RenderSky( plan );
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
 	QUICK_DEBUG_END
-	
 	
 	
 	// activate material fbo and clear all color attachments except color and depth buffer
@@ -277,9 +256,12 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
+	
 	// render geometry
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
@@ -293,44 +275,23 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	
-	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-	
-	addToRenderTask.Reset();
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.SetNoRendered( true );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+	deoglRenderPlanTasks &tasks = plan.GetTasks();
+	tasks.WaitFinishBuildingTasksGeometry();
 	
 	// height terrain has to come first since it has to be handled differently
-	if( collideList.GetHTSectorCount() > 0 ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
-		addToRenderTask.AddHeightTerrains( collideList, true );
+	if( tasks.GetSolidGeometryHeight1Task().GetShaderCount() > 0 ){
+		tasks.GetSolidGeometryHeight1Task().SetRenderParamBlock( renworld.GetRenderPB() );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		renderTask.PrepareForRender( renderThread );
-		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
-			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderGeometryPass: render task height terrain pass 1" );
-			renderTask.DebugPrint( renderThread.GetLogger() );
-		}
-		rengeom.RenderTask( renderTask );
-		
-		renderTask.Clear();
-		renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-		addToRenderTask.AddHeightTerrains( collideList, false );
+		rengeom.RenderTask( tasks.GetSolidGeometryHeight1Task() );
+	}
+	if( tasks.GetSolidGeometryHeight2Task().GetShaderCount() > 0 ){
+		tasks.GetSolidGeometryHeight2Task().SetRenderParamBlock( renworld.GetRenderPB() );
 		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-		renderTask.PrepareForRender( renderThread );
-		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
-			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderGeometryPass: render task height terrain pass 2" );
-			renderTask.DebugPrint( renderThread.GetLogger() );
-		}
-		rengeom.RenderTask( renderTask );
-		
-		renderTask.Clear();
-		renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		rengeom.RenderTask( tasks.GetSolidGeometryHeight2Task() );
 	}
 	
-	// build render task
+	// other content
 	if( defren.GetUseFadeOutRange() && false /* alpha blend problem */ ){
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
@@ -339,64 +300,18 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	}
 	
-	addToRenderTask.SetFilterDecal( true );
-	addToRenderTask.SetDecal( false );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
-	addToRenderTask.AddComponents( collideList );
-	addToRenderTask.SetFilterDecal( false );
-	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardGeometry );
-	addToRenderTask.AddBillboards( collideList );
-	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldGeometry );
-	addToRenderTask.AddPropFields( collideList, false );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterGeometry );
-	addToRenderTask.AddPropFields( collideList, true );
-	
-	if( renderThread.GetChoices().GetRealTransparentParticles() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleGeometry );
-		addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry );
-		addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry );
-		addToRenderTask.AddParticles( collideList );
-	}
-	
-	renderTask.PrepareForRender( renderThread );
-	
-	if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
-		renderThread.GetLogger().LogInfo( "RenderWorld.pRenderGeometryPass: render task" );
-		renderTask.DebugPrint( renderThread.GetLogger() );
-		config.SetDebugSnapshot( 0 );
-	}
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryTask, true );
-	
-	rengeom.RenderTask( renderTask );
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
-	
+	tasks.GetSolidGeometryTask().SetRenderParamBlock( renworld.GetRenderPB() );
+	rengeom.RenderTask( tasks.GetSolidGeometryTask() );
 	
 	// outline
-	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-	
-	addToRenderTask.Reset();
-	addToRenderTask.SetOutline( true );
-	addToRenderTask.SetFilterDecal( true );
-	addToRenderTask.SetDecal( false );
-	addToRenderTask.SetSolid( true );
-	addToRenderTask.SetNoRendered( true );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
-	addToRenderTask.AddComponents( collideList );
-	
-	renderTask.PrepareForRender( renderThread );
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryTask, true );
-	
-	if( renderTask.GetShaderCount() > 0 ){
+	if( tasks.GetSolidGeometryOutlineTask().GetShaderCount() > 0 ){
+		tasks.GetSolidGeometryOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
 		SetCullMode( ! plan.GetFlipCulling() );
-		rengeom.RenderTask( renderTask );
+		rengeom.RenderTask( tasks.GetSolidGeometryOutlineTask() );
 		SetCullMode( plan.GetFlipCulling() );
-		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	}
+	
+	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
 	
 	
 	// decals

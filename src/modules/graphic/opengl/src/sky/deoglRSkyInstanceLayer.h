@@ -22,34 +22,49 @@
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class deoglLightShader;
+#include "../light/shader/deoglLightShader.h"
+
 class deoglLightShaderConfig;
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglSPBlockUBO;
-class deoglSkyLayerShadowCaster;
 class deoglSkyLayerTracker;
+class deoglShadowCaster;
+class deoglSkyLayerGICascade;
+class deoglGIState;
+class deoglGICascade;
+class deoglRComponent;
 
 
 
 /**
- * \brief Render sky Layer.
+ * Render sky Layer.
  */
 class deoglRSkyInstanceLayer{
 public:
-	/** \brief Shader Types. */
+	/** Shader Types. */
 	enum eShaderTypes{
-		/** \brief No shadow casting. */
+		/** No shadow casting. */
 		estNoShadow,
 		
-		/** \brief Ambient light only. */
+		/** Ambient light only. */
 		estAmbient,
 		
-		/** \brief Solid shadow. */
+		/** Solid shadow. */
 		estSolid,
+		
+		/** No shadow casting. */
+		estGIRayNoShadow,
+		
+		/** Solid shadow using one texture. */
+		estGIRaySolid1,
+		
+		/** Solid shadow using two textures. */
+		estGIRaySolid2,
 		
 		/** Number of shaders. */
 		EST_COUNT
@@ -78,21 +93,24 @@ private:
 	deoglSkyLayerTracker *pTrackerEnvMap;
 	bool pSkyNeedsUpdate;
 	
-	deoglLightShader *pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ EST_COUNT ];
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	
-	deoglSkyLayerShadowCaster *pShadowCaster;
+	deoglShadowCaster *pShadowCaster;
+	
+	decPointerList pGICascades;
+	
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky instance layer. */
+	/** Create sky instance layer. */
 	deoglRSkyInstanceLayer( deoglRSkyInstance &instance, int index );
 	
-	/** \brief Clean up sky instance layer. */
+	/** Clean up sky instance layer. */
 	~deoglRSkyInstanceLayer();
 	/*@}*/
 	
@@ -100,72 +118,98 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent sky instance, */
+	/** Parent sky instance, */
 	inline deoglRSkyInstance &GetInstance() const{ return pInstance; }
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update();
 	
-	/** \brief Apply multiply by total values modifiers. */
+	/** Apply multiply by total values modifiers. */
 	void UpdateWithModifiers();
 	
-	/** \brief Sky needs update. */
+	/** Sky needs update. */
 	inline bool GetSkyNeedsUpdate() const{ return pSkyNeedsUpdate; }
 	
 	
 	
-	/** \brief Matrix. */
+	/** Matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Inverse matrix. */
+	/** Inverse matrix. */
 	inline const decMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
-	/** \brief Blending color. */
+	/** Blending color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Intensity. */
+	/** Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Layer is visible. */
+	/** Layer is visible. */
 	bool GetVisible() const;
 	
-	/** \brief Orientation of the sky light. */
+	/** Orientation of the sky light. */
 	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
 	
-	/** \brief Color of the sky light. */
+	/** Color of the sky light. */
 	inline const decColor &GetLightColor() const{ return pLightColor; }
 	
-	/** \brief Intensity of the direct sky light. */
+	/** Intensity of the direct sky light. */
 	inline float GetLightIntensity() const{ return pLightIntensity; }
 	
-	/** \brief Intensity of the diffuse sky light. */
+	/** Intensity of the diffuse sky light. */
 	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
-	/** \brief Layer has direct light. */
+	/** Total light intensity. */
+	inline float GetTotalLightIntensity() const{ return pLightIntensity + pAmbientIntensity; }
+	
+	/** Layer has direct light. */
 	bool GetHasLightDirect() const;
 	
-	/** \brief Layer has diffuse light. */
+	/** Layer has diffuse light. */
 	bool GetHasLightAmbient() const;
 	
 	
 	
-	/** \brief Shader for shader type. */
+	/** Shader for shader type. */
 	deoglLightShader *GetShaderFor( int shaderType );
 	
-	/** \brief Shader configuration for shader type. */
+	/** Shader configuration for shader type. */
 	bool GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config );
 	
-	/** \brief Light parameter block. */
+	/** Light parameter block. */
 	deoglSPBlockUBO *GetLightParameterBlock();
 	
-	/** \brief Instance parameter block. */
+	/** Instance parameter block. */
 	deoglSPBlockUBO *GetInstanceParameterBlock();
 	
-	/** \brief Shadow caster. */
-	inline deoglSkyLayerShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
+	/** Shadow caster. */
+	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
+	
+	/** Notify skies render static component changed requiring updates. */
+	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	
+	
+	
+	/** Count of GI cascades. */
+	int GetGICascadeCount() const;
+	
+	/** GI Cascade or NULL if not found. */
+	deoglSkyLayerGICascade *GetGICascade( const deoglGICascade &cascade ) const;
+	
+	/** Add GI Cascade if absent. */
+	deoglSkyLayerGICascade *AddGICascade( const deoglGICascade &cascade );
+	
+	/** Remove GI Cascade if present. */
+	void RemoveGICascade( const deoglGICascade &cascade );
+	
+	/** Remove all GI Cascades for GI State if present. */
+	void RemoveAllGICascades( const deoglGIState &state );
+	
+	/** Remove all GI Cascades. */
+	void RemoveAllGICascades();
 	/*@}*/
 	
 	

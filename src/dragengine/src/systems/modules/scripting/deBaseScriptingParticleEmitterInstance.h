@@ -30,7 +30,7 @@ class deCollisionInfo;
 /**
  * \brief Scripting Module Particle Emitter Instance Peer.
  */
-class deBaseScriptingParticleEmitterInstance{
+class DE_DLL_EXPORT deBaseScriptingParticleEmitterInstance{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglTimerQuery.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
@@ -47,9 +48,7 @@ pQuery( 0 )
 }
 
 deoglTimerQuery::~deoglTimerQuery(){
-	if( pQuery ){
-		pglDeleteQueries( 1, &pQuery );
-	}
+	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery( pQuery );
 }
 
 

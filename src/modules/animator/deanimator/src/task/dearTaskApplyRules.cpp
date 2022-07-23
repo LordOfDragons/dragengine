@@ -43,7 +43,8 @@
 
 dearTaskApplyRules::dearTaskApplyRules( dearAnimatorInstance &instance ) :
 deParallelTask( &instance.GetModule() ),
-pInstance( instance ){
+pInstance( instance ),
+pDropped( false ){
 }
 
 dearTaskApplyRules::~dearTaskApplyRules(){
@@ -53,6 +54,10 @@ dearTaskApplyRules::~dearTaskApplyRules(){
 
 // Subclass Responsibility
 ////////////////////////////
+
+void dearTaskApplyRules::Drop(){
+	pDropped = true;
+}
 
 void dearTaskApplyRules::Run(){
 // 	pInstance.GetModule().LogInfoFormat( "TaskApplyRules.Run(%p): ApplyRules", &pInstance );
@@ -68,6 +73,10 @@ void dearTaskApplyRules::Run(){
 }
 
 void dearTaskApplyRules::Finished(){
+	if( pDropped ){
+		return; // pInstance became invalid
+	}
+	
 	// PROBLEM
 	// 
 	// task is marked finished after Run() method. this means the next task can start running

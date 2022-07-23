@@ -467,10 +467,7 @@ void igdeDialogNewGameProject::AutoFillPathProject(){
 		return;
 	}
 	
-	decPath path( decPath::CreatePathNative( pEditPathProject->GetDirectory() ) );
-	if( path.GetComponentCount() > 0 ){
-		path.RemoveLastComponent();
-	}
+	decPath path( decPath::CreatePathNative( pWindowMain.GetConfiguration().GetPathProjects() ) );
 	path.AddComponent( pEditName->GetText() );
 	pEditPathProject->SetDirectory( path.GetPathNative() );
 	

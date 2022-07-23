@@ -1,4 +1,4 @@
-#if defined GS_RENDER_CUBE_INSTANCING && ! defined ANDROID
+#if defined GS_INSTANCING && ! defined ANDROID
 	#extension GL_ARB_gpu_shader5 : require
 #endif
 
@@ -7,7 +7,7 @@ precision highp int;
 
 // layout definitions
 #ifdef GS_RENDER_CUBE
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 		layout( triangles, invocations=6 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
 	#else
@@ -28,6 +28,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat4x3 pMatrixV[ 6 ];
 	vec4 pTransformZ[ 6 ];
 	vec2 pZToDepth;
+	vec4 pClipPlane; // normal.xyz, distance
 };
 
 #ifdef GS_RENDER_CUBE
@@ -52,67 +53,63 @@ out vec3 vPosition;
 #ifdef SHARED_SPB
 	#define pMatrixModel pSharedSPB[ spbIndex ].pSPBMatrixModel
 	#ifdef GS_RENDER_CUBE_CULLING
-		#define pCubeFaceVisible spbFlags
+		#define pLayerVisibility spbFlags
 	#endif
 #endif
 
 #include "v130/shared/defren/skin/ubo_special_parameters.glsl"
+#include "v130/shared/defren/sanitize_position.glsl"
 
 
 
 // Main Function
 //////////////////
 
-void main( void ){
-	int i;
+void emitCorner( in int face, in vec4 position ){
+	#ifdef PERSPECTIVE_TO_LINEAR
+		vDepth = dot( pTransformZ[ face ], position );
+	#endif
+	#ifdef DEPTH_DISTANCE
+		vPosition = pMatrixV[ face ] * position;
+	#endif
 	
+	gl_Position = sanitizePosition( pMatrixVP[ face ] * position );
+	
+	gl_Layer = face;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	#ifdef GS_RENDER_CUBE_INSTANCING
-	gl_Layer = gl_InvocationID;
+	EmitVertex();
+}
+
+void main( void ){
+	int i, face;
+	
+	#ifdef GS_INSTANCING
+	face = gl_InvocationID;
 	#else
-	for( int face=0; face<6; face++ ){
-		gl_Layer = face;
+	for( face=0; face<6; face++ ){
 	#endif
 		
 		#ifdef GS_RENDER_CUBE_CULLING
-			// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
-			//          skip the loop increment if used in if-statements resulting in GPU infinite
-			//          loop. sometimes continue works but especially here it results in the GPU
-			//          dying horribly. the only working solution is to use the code in a way
-			//          no 'continue' statement is required to be used
+		// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
+		//          skip the loop increment if used in if-statements resulting in GPU infinite
+		//          loop. sometimes continue works but especially here it results in the GPU
+		//          dying horribly. the only working solution is to use the code in a way
+		//          no 'continue' statement is required to be used
+		if( ( pLayerVisibility & ( 1 << face ) ) != 0 ){
+		#endif
 			
-			#ifdef GS_RENDER_CUBE_INSTANCING
-			if( ( pCubeFaceVisible & ( 1 << gl_Layer ) ) == 0 ){
-				return;
+			// emit triangle
+			for( i=0; i<3; i++ ){
+				emitCorner( face, gl_in[ i ].gl_Position );
 			}
-			#else
-			if( ( pCubeFaceVisible & ( 1 << gl_Layer ) ) != 0 ){
-			#endif
-		#endif
-		
-		// emit triangle
-		for( i=0; i<3; i++ ){
-			gl_Position = pMatrixVP[ gl_Layer ] * gl_in[ i ].gl_Position;
-			#ifdef PERSPECTIVE_TO_LINEAR
-				vDepth = dot( pTransformZ[ gl_Layer ], gl_in[ i ].gl_Position )
-					* pZToDepth.x + pZToDepth.y;
-			#endif
-			#ifdef DEPTH_DISTANCE
-				vPosition = pMatrixV[ gl_Layer ] * gl_in[ i ].gl_Position;
-			#endif
+			EndPrimitive();
 			
-			EmitVertex();
-		}
-		
-		EndPrimitive();
-		
-		
-		#if defined GS_RENDER_CUBE_CULLING && ! defined GS_RENDER_CUBE_INSTANCING
+		#ifdef GS_RENDER_CUBE_CULLING
 		}
 		#endif
 		
-	#ifndef GS_RENDER_CUBE_INSTANCING
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }

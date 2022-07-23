@@ -22,11 +22,13 @@
 #ifndef _DEBASESCRIPTINGSPEAKER_H_
 #define _DEBASESCRIPTINGSPEAKER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Scripting module speaker peer.
  */
-class deBaseScriptingSpeaker{
+class DE_DLL_EXPORT deBaseScriptingSpeaker{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

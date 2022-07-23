@@ -18,7 +18,15 @@ class FileReader
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create file reader reading from virtual file system file. */
-	public func new( String filename )
+	public func new(String filename)
+	end
+	
+	/**
+	 * \brief Create Z-Decompressing file reader reading from virtual file system file.
+	 * \version 1.8
+	 */
+	public static func FileReader newZCompressed(String filename)
+		return null
 	end
 	/*@}*/
 	
@@ -42,15 +50,15 @@ class FileReader
 	end
 	
 	/** \brief Set reading file position in bytes relative to beginning of file. */
-	public func void setPosition( int position )
+	public func void setPosition(int position)
 	end
 	
 	/** \brief Move reading file position by offset in bytes. */
-	public func void movePosition( int offset )
+	public func void movePosition(int offset)
 	end
 	
 	/** \brief Set reading file position in bytes relative to end of file. */
-	public func void setPositionEnd( int position )
+	public func void setPositionEnd(int position)
 	end
 	
 	
@@ -61,7 +69,7 @@ class FileReader
 	end
 	
 	/** \brief Set stream version used by readFromFile of native classes. */
-	public func void setStreamVersion( int version )
+	public func void setStreamVersion(int version)
 	end
 	
 	
@@ -70,37 +78,37 @@ class FileReader
 		return false
 	end
 	
-	/** \brief Read one byte ( 1 byte ) and advance the file reading position. */
+	/** \brief Read one byte (1 byte) and advance the file reading position. */
 	public func int readChar()
 		return 0
 	end
 	
-	/** \brief Read one unsigned byte ( 1 byte ) and advance the file reading position. */
+	/** \brief Read one unsigned byte (1 byte) and advance the file reading position. */
 	public func int readByte()
 		return 0
 	end
 	
-	/** \brief Read one short ( 2 bytes ) and advance the file reading position. */
+	/** \brief Read one short (2 bytes) and advance the file reading position. */
 	public func int readShort()
 		return 0
 	end
 	
-	/** \brief Read one unsigned short ( 2 bytes ) and advance the file reading position. */
+	/** \brief Read one unsigned short (2 bytes) and advance the file reading position. */
 	public func int readUShort()
 		return 0
 	end
 	
-	/** \brief Read one int ( 4 bytes ) and advance the file reading position. */
+	/** \brief Read one int (4 bytes) and advance the file reading position. */
 	public func int readInt()
 		return 0
 	end
 	
-	/** \brief Read one unsigned int ( 4 bytes ) and advance the file reading position. */
+	/** \brief Read one unsigned int (4 bytes) and advance the file reading position. */
 	public func int readUInt()
 		return 0
 	end
 	
-	/** \brief Read one float ( 4 bytes ) and advance the file reading position. */
+	/** \brief Read one float (4 bytes) and advance the file reading position. */
 	public func float readFloat()
 		return 0.0
 	end
@@ -116,7 +124,7 @@ class FileReader
 	end
 	
 	/** \brief Read string without length field and advance the file reading position. */
-	public func String readString( int size )
+	public func String readString(int size)
 		return null
 	end
 	
@@ -126,6 +134,11 @@ class FileReader
 	
 	/** \brief Skips string prefixed by a 2-byte2 length field and advance the file reading position. */
 	public func void skipString16()
+	end
+	
+	/** \brief Read TimeDate instance. */
+	public func TimeDate readTimeDate()
+		return null
 	end
 	/*@}*/
 end

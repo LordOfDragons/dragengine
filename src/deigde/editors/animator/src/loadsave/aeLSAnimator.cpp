@@ -43,6 +43,7 @@
 #include "../animator/rule/aeRuleTrackTo.h"
 #include "../animator/rule/aeRuleLimit.h"
 #include "../animator/rule/aeRuleGroup.h"
+#include "../animator/rule/aeRuleMirror.h"
 #include "../gui/aeWindowMain.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -73,6 +74,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 
 
 
@@ -144,7 +146,7 @@ void aeLSAnimator::LoadAnimator( aeAnimator *animator, decBaseFileReader *file )
 		DETHROW( deeInvalidParam );
 	}
 	
-	pLoadAnimator( root, animator );
+	pLoadAnimator( root, *animator );
 }
 
 void aeLSAnimator::SaveAnimator( aeAnimator *animator, decBaseFileWriter *file ){
@@ -158,7 +160,7 @@ void aeLSAnimator::SaveAnimator( aeAnimator *animator, decBaseFileWriter *file )
 	writer.WriteOpeningTag( "animator", false, true );
 	
 	// display section
-	pSaveDisplay( writer, animator );
+	pSaveDisplay( writer, *animator );
 	
 	// animator properties
 	writer.WriteDataTagString( "rig", animator->GetRigPath() );
@@ -176,21 +178,21 @@ void aeLSAnimator::SaveAnimator( aeAnimator *animator, decBaseFileWriter *file )
 	count = animator->GetControllers().GetCount();
 	for( i=0; i<count; i++ ){
 		writer.WriteNewline();
-		pSaveController( writer, animator->GetControllers().GetAt( i ) );
+		pSaveController( writer, *animator->GetControllers().GetAt( i ) );
 	}
 	
 	// write links
 	count = animator->GetLinks().GetCount();
 	for( i=0; i<count; i++ ){
 		writer.WriteNewline();
-		pSaveLink( writer, animator, animator->GetLinks().GetAt( i ) );
+		pSaveLink( writer, *animator, *animator->GetLinks().GetAt( i ) );
 	}
 	
 	// write rules
 	count = animator->GetRules().GetCount();
 	for( i=0; i<count; i++ ){
 		writer.WriteNewline();
-		pSaveRule( writer, animator, animator->GetRules().GetAt( i ) );
+		pSaveRule( writer, *animator, *animator->GetRules().GetAt( i ) );
 	}
 	
 	// write footer
@@ -202,7 +204,7 @@ void aeLSAnimator::SaveAnimator( aeAnimator *animator, decBaseFileWriter *file )
 // Private functions
 //////////////////////
 
-void aeLSAnimator::pSaveDisplay( decXmlWriter &writer, aeAnimator *animator ){
+void aeLSAnimator::pSaveDisplay( decXmlWriter &writer, const aeAnimator &animator ){
 	bool saveExplainingComments = false;
 	
 	if( saveExplainingComments ){
@@ -211,24 +213,24 @@ void aeLSAnimator::pSaveDisplay( decXmlWriter &writer, aeAnimator *animator ){
 	writer.WriteOpeningTag( "display" );
 	
 	if( saveExplainingComments ) writer.WriteComment( "Path to model to use." );
-	writer.WriteDataTagString( "model", animator->GetDisplayModelPath() );
+	writer.WriteDataTagString( "model", animator.GetDisplayModelPath() );
 	
 	if( saveExplainingComments ) writer.WriteComment( "Path to skin to use." );
-	writer.WriteDataTagString( "skin", animator->GetDisplaySkinPath() );
+	writer.WriteDataTagString( "skin", animator.GetDisplaySkinPath() );
 	
 	if( saveExplainingComments ) writer.WriteComment( "Path to rig to use." );
-	writer.WriteDataTagString( "rig", animator->GetDisplayRigPath() );
+	writer.WriteDataTagString( "rig", animator.GetDisplayRigPath() );
 	
 //	if( saveExplainingComments ) writer.WriteComment( "Path to animation to use." );
-//	writer.WriteDataTagString( "animation", animator->GetAnimationPath() );
+//	writer.WriteDataTagString( "animation", animator.GetAnimationPath() );
 	
 	pSaveLocomotion( writer, animator );
 	
 	writer.WriteClosingTag( "display" );
 }
 
-void aeLSAnimator::pSaveLocomotion( decXmlWriter &writer, aeAnimator *animator ){
-	const aeAnimatorLocomotion &locomotion = animator->GetLocomotion();
+void aeLSAnimator::pSaveLocomotion( decXmlWriter &writer, const aeAnimator &animator ){
+	const aeAnimatorLocomotion &locomotion = animator.GetLocomotion();
 	int l, legCount = locomotion.GetLegCount();
 	
 	writer.WriteOpeningTag( "locomotion" );
@@ -352,135 +354,193 @@ void aeLSAnimator::pSaveLocomotion( decXmlWriter &writer, aeAnimator *animator )
 	writer.WriteClosingTag( "locomotion" );
 }
 
-void aeLSAnimator::pSaveController( decXmlWriter &writer, aeController *controller ){
+void aeLSAnimator::pSaveController( decXmlWriter &writer, const aeController &controller ){
 	writer.WriteOpeningTag( "controller" );
 	
-	writer.WriteDataTagString( "name", controller->GetName() );
+	writer.WriteDataTagString( "name", controller.GetName() );
 	
 	writer.WriteOpeningTagStart( "limits" );
-	writer.WriteAttributeFloat( "min", controller->GetMinimumValue() );
-	writer.WriteAttributeFloat( "max", controller->GetMaximumValue() );
+	writer.WriteAttributeFloat( "min", controller.GetMinimumValue() );
+	writer.WriteAttributeFloat( "max", controller.GetMaximumValue() );
 	writer.WriteOpeningTagEnd( true );
 	
-	if( controller->GetFrozen() ){
-		writer.WriteDataTagBool( "frozen", controller->GetFrozen() );
+	if( controller.GetFrozen() ){
+		writer.WriteDataTagBool( "frozen", controller.GetFrozen() );
 	}
-	if( ! controller->GetClamp() ){
-		writer.WriteDataTagBool( "clamp", controller->GetClamp() );
+	if( ! controller.GetClamp() ){
+		writer.WriteDataTagBool( "clamp", controller.GetClamp() );
 	}
 	
-	if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaElapsedTime ){
+	if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaElapsedTime ){
 		writer.WriteDataTagString( "locomotionAttribute", "elapsedTime" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLookUpDown ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLookUpDown ){
 		writer.WriteDataTagString( "locomotionAttribute", "lookUpDown" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLookLeftRight ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLookLeftRight ){
 		writer.WriteDataTagString( "locomotionAttribute", "lookLeftRight" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaMovingSpeed ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaMovingSpeed ){
 		writer.WriteDataTagString( "locomotionAttribute", "movingSpeed" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaMovingDirection ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaMovingDirection ){
 		writer.WriteDataTagString( "locomotionAttribute", "movingDirection" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeMovingSpeed ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeMovingSpeed ){
 		writer.WriteDataTagString( "locomotionAttribute", "relativeMovingSpeed" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaTurningSpeed ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaTurningSpeed ){
 		writer.WriteDataTagString( "locomotionAttribute", "turningSpeed" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaStance ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaStance ){
 		writer.WriteDataTagString( "locomotionAttribute", "stance" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaDisplacement ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaDisplacement ){
 		writer.WriteDataTagString( "locomotionAttribute", "displacement" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeDisplacement ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaRelativeDisplacement ){
 		writer.WriteDataTagString( "locomotionAttribute", "relativeDisplacement" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltOffset ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltOffset ){
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltOffset" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltUpDown ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltUpDown ){
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltUpDown" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltRightLeft ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaBodyTiltRightLeft ){
 		writer.WriteDataTagString( "locomotionAttribute", "bodyTiltLeftRight" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaTimeTurnIP ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaTimeTurnIP ){
 		writer.WriteDataTagString( "locomotionAttribute", "timeTurnIP" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegGroundPosition ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegGroundPosition ){
 		writer.WriteDataTagString( "locomotionAttribute", "legGroundPosition" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegGroundNormal ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegGroundNormal ){
 		writer.WriteDataTagString( "locomotionAttribute", "legGroundNormal" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegInfluence ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegInfluence ){
 		writer.WriteDataTagString( "locomotionAttribute", "legInfluence" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegPosition ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegPosition ){
 		writer.WriteDataTagString( "locomotionAttribute", "legPosition" );
 		
-	}else if( controller->GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegOrientation ){
+	}else if( controller.GetLocomotionAttribute() == aeAnimatorLocomotion::eaLegOrientation ){
 		writer.WriteDataTagString( "locomotionAttribute", "legOrientation" );
 	}
 	
-	if( controller->GetLocomotionLeg() > 0 ){
-		writer.WriteDataTagInt( "locomotionLeg", controller->GetLocomotionLeg() );
+	if( controller.GetLocomotionLeg() > 0 ){
+		writer.WriteDataTagInt( "locomotionLeg", controller.GetLocomotionLeg() );
 	}
 	
 	writer.WriteClosingTag( "controller" );
 }
 
-void aeLSAnimator::pSaveLink( decXmlWriter &writer, aeAnimator *animator, aeLink *link ){
+void aeLSAnimator::pSaveLink( decXmlWriter &writer, const aeAnimator &animator, const aeLink &link ){
 	int controllerIndex = -1;
 	
-	if( link->GetController() ){
-		controllerIndex = animator->GetControllers().IndexOf( link->GetController() );
+	if( link.GetController() ){
+		controllerIndex = animator.GetControllers().IndexOf( link.GetController() );
 	}
 	
 	writer.WriteOpeningTag( "link" );
 	
-	writer.WriteDataTagString( "name", link->GetName().GetString() );
+	writer.WriteDataTagString( "name", link.GetName().GetString() );
 	writer.WriteDataTagInt( "controller", controllerIndex );
-	if( link->GetRepeat() != 1 ){
-		writer.WriteDataTagInt( "repeat", link->GetRepeat() );
+	if( link.GetRepeat() != 1 ){
+		writer.WriteDataTagInt( "repeat", link.GetRepeat() );
+	}
+	if( ! link.GetBone().IsEmpty() ){
+		writer.WriteDataTagString( "bone", link.GetBone() );
 	}
 	
-	const decCurveBezier &curve = link->GetCurve();
+	switch( link.GetBoneParameter() ){
+	case deAnimatorLink::ebpPositionX:
+		writer.WriteDataTagString( "boneParameter", "positionX" );
+		break;
+		
+	case deAnimatorLink::ebpPositionY:
+		writer.WriteDataTagString( "boneParameter", "positionY" );
+		break;
+		
+	case deAnimatorLink::ebpPositionZ:
+		//writer.WriteDataTagString( "boneParameter", "positionZ" ); // default
+		break;
+		
+	case deAnimatorLink::ebpRotationX:
+		writer.WriteDataTagString( "boneParameter", "rotationX" );
+		break;
+		
+	case deAnimatorLink::ebpRotationY:
+		writer.WriteDataTagString( "boneParameter", "rotationY" );
+		break;
+		
+	case deAnimatorLink::ebpRotationZ:
+		writer.WriteDataTagString( "boneParameter", "rotationZ" );
+		break;
+		
+	case deAnimatorLink::ebpScaleX:
+		writer.WriteDataTagString( "boneParameter", "scaleX" );
+		break;
+		
+	case deAnimatorLink::ebpScaleY:
+		writer.WriteDataTagString( "boneParameter", "scaleY" );
+		break;
+		
+	case deAnimatorLink::ebpScaleZ:
+		writer.WriteDataTagString( "boneParameter", "scaleZ" );
+		break;
+	}
+	
+	if( fabsf( link.GetBoneMinimum() ) > FLOAT_SAFE_EPSILON
+	|| fabsf( link.GetBoneMaximum() - 1.0f ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteOpeningTagStart( "boneLimits" );
+		writer.WriteAttributeFloat( "min", link.GetBoneMinimum() );
+		writer.WriteAttributeFloat( "max", link.GetBoneMaximum() );
+		writer.WriteOpeningTagEnd( true );
+	}
+	
+	if( link.GetWrapY() ){
+		writer.WriteDataTagBool( "wrapY", link.GetWrapY() );
+	}
+	
+	const decCurveBezier &curve = link.GetCurve();
 	if( curve.GetInterpolationMode() != decCurveBezier::eimLinear || curve.GetPointCount() != 2
 	|| ! curve.GetPointAt( 0 ).GetPoint().IsEqualTo( decVector2( 0.0f, 0.0f ) )
 	|| ! curve.GetPointAt( 1 ).GetPoint().IsEqualTo( decVector2( 1.0f, 1.0f ) ) ){
-		WriteCurveBezier( writer, "curve", link->GetCurve() );
+		WriteCurveBezier( writer, "curve", link.GetCurve() );
 	}
 	
 	writer.WriteClosingTag( "link" );
 }
 
-void aeLSAnimator::pSaveRuleCommon( decXmlWriter &writer, aeAnimator *animator, aeRule *rule ){
-	const decStringSet &boneList = rule->GetListBones();
+void aeLSAnimator::pSaveRuleCommon( decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule ){
+	const decStringSet &boneList = rule.GetListBones();
 	int i, count;
 	
-	writer.WriteDataTagString( "name", rule->GetName() );
-	if( ! rule->GetEnabled() ){
-		writer.WriteDataTagBool( "enabled", rule->GetEnabled() );
+	writer.WriteDataTagString( "name", rule.GetName() );
+	if( ! rule.GetEnabled() ){
+		writer.WriteDataTagBool( "enabled", rule.GetEnabled() );
 	}
 	
-	if( rule->GetBlendMode() == deAnimatorRule::ebmBlend ){
-		writer.WriteDataTagString( "blendMode", "blend" );
+	if( rule.GetBlendMode() == deAnimatorRule::ebmBlend ){
+		//writer.WriteDataTagString( "blendMode", "blend" ); // default value
 		
-	}else if( rule->GetBlendMode() == deAnimatorRule::ebmOverlay ){
+	}else if( rule.GetBlendMode() == deAnimatorRule::ebmOverlay ){
 		writer.WriteDataTagString( "blendMode", "overlay" );
 		
 	}else{
 		DETHROW( deeInvalidParam );
 	}
 	
-	writer.WriteDataTagFloat( "blendFactor", rule->GetBlendFactor() );
+	if( fabsf( rule.GetBlendFactor() - 1.0f ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "blendFactor", rule.GetBlendFactor() );
+	}
+	if( rule.GetInvertBlendFactor() ){
+		writer.WriteDataTagBool( "invertBlendFactor", rule.GetInvertBlendFactor() );
+	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetBlendFactor(), "blendFactor" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetBlendFactor(), "blendFactor" );
 	
 	count = boneList.GetCount();
 	for( i=0; i<count; i++ ){
@@ -488,46 +548,50 @@ void aeLSAnimator::pSaveRuleCommon( decXmlWriter &writer, aeAnimator *animator, 
 	}
 }
 
-void aeLSAnimator::pSaveRule( decXmlWriter &writer, aeAnimator *animator, aeRule *rule ){
-	if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertAnimation ){
-		pSaveRuleAnimation( writer, animator, ( aeRuleAnimation* )rule );
+void aeLSAnimator::pSaveRule( decXmlWriter &writer, const aeAnimator &animator, const aeRule &rule ){
+	if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertAnimation ){
+		pSaveRuleAnimation( writer, animator, ( const aeRuleAnimation & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertAnimationDifference ){
-		pSaveRuleAnimationDifference( writer, animator, ( aeRuleAnimationDifference* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertAnimationDifference ){
+		pSaveRuleAnimationDifference( writer, animator, ( const aeRuleAnimationDifference & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertAnimationSelect ){
-		pSaveRuleAnimationSelect( writer, animator, ( aeRuleAnimationSelect* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertAnimationSelect ){
+		pSaveRuleAnimationSelect( writer, animator, ( const aeRuleAnimationSelect & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertBoneTransformator ){
-		pSaveRuleBoneTransformator( writer, animator, ( aeRuleBoneTransformator* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertBoneTransformator ){
+		pSaveRuleBoneTransformator( writer, animator, ( const aeRuleBoneTransformator & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertStateManipulator ){
-		pSaveRuleStateManipulator( writer, animator, ( aeRuleStateManipulator* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertStateManipulator ){
+		pSaveRuleStateManipulator( writer, animator, ( const aeRuleStateManipulator & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertStateSnapshot ){
-		pSaveRuleStateSnapshot( writer, animator, ( aeRuleStateSnapshot* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertStateSnapshot ){
+		pSaveRuleStateSnapshot( writer, animator, ( const aeRuleStateSnapshot & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertInverseKinematic ){
-		pSaveRuleInverseKinematic( writer, animator, ( aeRuleInverseKinematic* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertInverseKinematic ){
+		pSaveRuleInverseKinematic( writer, animator, ( const aeRuleInverseKinematic & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertForeignState ){
-		pSaveRuleForeignState( writer, animator, ( aeRuleForeignState* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertForeignState ){
+		pSaveRuleForeignState( writer, animator, ( const aeRuleForeignState & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup ){
-		pSaveRuleGroup( writer, animator, ( aeRuleGroup* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup ){
+		pSaveRuleGroup( writer, animator, ( const aeRuleGroup & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertSubAnimator ){
-		pSaveRuleSubAnimator( writer, animator, ( aeRuleSubAnimator* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertSubAnimator ){
+		pSaveRuleSubAnimator( writer, animator, ( const aeRuleSubAnimator & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertTrackTo ){
-		pSaveRuleTrackTo( writer, animator, ( aeRuleTrackTo* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertTrackTo ){
+		pSaveRuleTrackTo( writer, animator, ( const aeRuleTrackTo & )rule );
 		
-	}else if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertLimit ){
-		pSaveRuleLimit( writer, animator, ( aeRuleLimit* )rule );
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertLimit ){
+		pSaveRuleLimit( writer, animator, ( const aeRuleLimit & )rule );
+		
+	}else if( rule.GetType() == deAnimatorRuleVisitorIdentify::ertMirror ){
+		pSaveRuleMirror( writer, animator, ( const aeRuleMirror & )rule );
 	}
 }
 
-void aeLSAnimator::pSaveControllerTarget( decXmlWriter &writer, aeAnimator *animator, const aeControllerTarget &target, const char *name ){
+void aeLSAnimator::pSaveControllerTarget( decXmlWriter &writer, const aeAnimator &animator,
+const aeControllerTarget &target, const char *name ){
 	const int linkCount = target.GetLinkCount();
 	if( linkCount == 0 ){
 		return;
@@ -543,7 +607,7 @@ void aeLSAnimator::pSaveControllerTarget( decXmlWriter &writer, aeAnimator *anim
 	for( l=0; l<linkCount; l++ ){
 		link = target.GetLinkAt( l );
 		
-		linkIndex = animator->GetLinks().IndexOf( link );
+		linkIndex = animator.GetLinks().IndexOf( link );
 		
 		writer.WriteDataTagInt( "link", linkIndex );
 	}
@@ -551,63 +615,64 @@ void aeLSAnimator::pSaveControllerTarget( decXmlWriter &writer, aeAnimator *anim
 	writer.WriteClosingTag( "target" );
 }
 
-void aeLSAnimator::pSaveRuleAnimation( decXmlWriter &writer, aeAnimator *animator, aeRuleAnimation *rule ){
+void aeLSAnimator::pSaveRuleAnimation( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleAnimation &rule ){
 	writer.WriteOpeningTag( "ruleAnimation" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteDataTagString( "moveName", rule->GetMoveName() );
-	writer.WriteDataTagFloat( "moveTime", rule->GetMoveTime() );
+	writer.WriteDataTagString( "moveName", rule.GetMoveName() );
+	writer.WriteDataTagFloat( "moveTime", rule.GetMoveTime() );
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetMoveTime(), "moveTime" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetMoveTime(), "moveTime" );
 	
 	writer.WriteClosingTag( "ruleAnimation" );
 }
 
-void aeLSAnimator::pSaveRuleAnimationDifference( decXmlWriter &writer, aeAnimator *animator,
-aeRuleAnimationDifference *rule ){
+void aeLSAnimator::pSaveRuleAnimationDifference( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleAnimationDifference &rule ){
 	writer.WriteOpeningTag( "ruleAnimationDifference" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteDataTagString( "leadingMoveName", rule->GetLeadingMoveName() );
-	writer.WriteDataTagFloat( "leadingMoveTime", rule->GetLeadingMoveTime() );
-	writer.WriteDataTagString( "referenceMoveName", rule->GetReferenceMoveName() );
-	writer.WriteDataTagFloat( "referenceMoveTime", rule->GetReferenceMoveTime() );
+	writer.WriteDataTagString( "leadingMoveName", rule.GetLeadingMoveName() );
+	writer.WriteDataTagFloat( "leadingMoveTime", rule.GetLeadingMoveTime() );
+	writer.WriteDataTagString( "referenceMoveName", rule.GetReferenceMoveName() );
+	writer.WriteDataTagFloat( "referenceMoveTime", rule.GetReferenceMoveTime() );
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetLeadingMoveTime(), "leadingMoveTime" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetReferenceMoveTime(), "referenceMoveTime" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetLeadingMoveTime(), "leadingMoveTime" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetReferenceMoveTime(), "referenceMoveTime" );
 	
 	writer.WriteClosingTag( "ruleAnimationDifference" );
 }
 
-void aeLSAnimator::pSaveRuleAnimationSelect( decXmlWriter &writer, aeAnimator *animator,
-aeRuleAnimationSelect *rule ){
+void aeLSAnimator::pSaveRuleAnimationSelect( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleAnimationSelect &rule ){
 	writer.WriteOpeningTag( "ruleAnimationSelect" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	const decStringList &moves = rule->GetMoves();
+	const decStringList &moves = rule.GetMoves();
 	const int moveCount = moves.GetCount();
 	int i;
 	
@@ -615,305 +680,412 @@ aeRuleAnimationSelect *rule ){
 		writer.WriteDataTagString( "move", moves.GetAt( i ) );
 	}
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetMoveTime(), "moveTime" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetSelect(), "selection" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetMoveTime(), "moveTime" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetSelect(), "selection" );
 	
 	writer.WriteClosingTag( "ruleAnimationSelect" );
 }
 
-void aeLSAnimator::pSaveRuleBoneTransformator( decXmlWriter &writer, aeAnimator *animator, aeRuleBoneTransformator *rule ){
+void aeLSAnimator::pSaveRuleBoneTransformator( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleBoneTransformator &rule ){
 	writer.WriteOpeningTag( "ruleBoneTransformator" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteOpeningTagStart( "minimumTranslation" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumTranslation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumTranslation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumTranslation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule.GetMinimumTranslation().IsZero() ){
+		writer.WriteOpeningTagStart( "minimumTranslation" );
+		writer.WriteAttributeFloat( "x", rule.GetMinimumTranslation().x );
+		writer.WriteAttributeFloat( "y", rule.GetMinimumTranslation().y );
+		writer.WriteAttributeFloat( "z", rule.GetMinimumTranslation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "maximumTranslation" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumTranslation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumTranslation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumTranslation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule.GetMaximumTranslation().IsZero() ){
+		writer.WriteOpeningTagStart( "maximumTranslation" );
+		writer.WriteAttributeFloat( "x", rule.GetMaximumTranslation().x );
+		writer.WriteAttributeFloat( "y", rule.GetMaximumTranslation().y );
+		writer.WriteAttributeFloat( "z", rule.GetMaximumTranslation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "minimumRotation" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumRotation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule.GetMinimumRotation().IsZero() ){
+		writer.WriteOpeningTagStart( "minimumRotation" );
+		writer.WriteAttributeFloat( "x", rule.GetMinimumRotation().x );
+		writer.WriteAttributeFloat( "y", rule.GetMinimumRotation().y );
+		writer.WriteAttributeFloat( "z", rule.GetMinimumRotation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "maximumRotation" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumRotation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule.GetMaximumRotation().IsZero() ){
+		writer.WriteOpeningTagStart( "maximumRotation" );
+		writer.WriteAttributeFloat( "x", rule.GetMaximumRotation().x );
+		writer.WriteAttributeFloat( "y", rule.GetMaximumRotation().y );
+		writer.WriteAttributeFloat( "z", rule.GetMaximumRotation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "minimumScaling" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumScaling().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumScaling().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumScaling().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule.GetMinimumScaling().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
+		writer.WriteOpeningTagStart( "minimumScaling" );
+		writer.WriteAttributeFloat( "x", rule.GetMinimumScaling().x );
+		writer.WriteAttributeFloat( "y", rule.GetMinimumScaling().y );
+		writer.WriteAttributeFloat( "z", rule.GetMinimumScaling().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "maximumScaling" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumScaling().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumScaling().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumScaling().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule.GetMaximumScaling().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
+		writer.WriteOpeningTagStart( "maximumScaling" );
+		writer.WriteAttributeFloat( "x", rule.GetMaximumScaling().x );
+		writer.WriteAttributeFloat( "y", rule.GetMaximumScaling().y );
+		writer.WriteAttributeFloat( "z", rule.GetMaximumScaling().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	if( rule->GetCoordinateFrame() == deAnimatorRuleBoneTransformator::ecfBoneLocal ){
+	if( ! rule.GetAxis().IsEqualTo( decVector( 0.0f, 0.0f, 1.0f ) ) ){
+		writer.WriteOpeningTagStart( "axis" );
+		writer.WriteAttributeFloat( "x", rule.GetAxis().x );
+		writer.WriteAttributeFloat( "y", rule.GetAxis().y );
+		writer.WriteAttributeFloat( "z", rule.GetAxis().z );
+		writer.WriteOpeningTagEnd( true );
+	}
+	
+	if( fabsf( rule.GetMinimumAngle() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "minimumAngle", rule.GetMinimumAngle() );
+	}
+	if( fabsf( rule.GetMaximumAngle() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "maximumAngle", rule.GetMaximumAngle() );
+	}
+	
+	switch( rule.GetCoordinateFrame() ){
+	case deAnimatorRuleBoneTransformator::ecfBoneLocal:
 		writer.WriteDataTagString( "cframe", "local" );
+		break;
 		
-	}else if( rule->GetCoordinateFrame() == deAnimatorRuleBoneTransformator::ecfComponent ){
+	case deAnimatorRuleBoneTransformator::ecfComponent:
 		writer.WriteDataTagString( "cframe", "component" );
+		break;
 		
-	}else{ // deAnimatorRuleBoneTransformator::ecfRotationBone
+	case deAnimatorRuleBoneTransformator::ecfTargetBone:
 		writer.WriteDataTagString( "cframe", "target" );
+		break;
 	}
 	
-	if( rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
-	writer.WriteDataTagString( "targetBone", rule->GetTargetBone() );
+	if( rule.GetUseAxis() ){
+		writer.WriteDataTagBool( "useAxis", rule.GetUseAxis() );
+	}
+	if( ! rule.GetTargetBone().IsEmpty() ){
+		writer.WriteDataTagString( "targetBone", rule.GetTargetBone() );
+	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetTranslation(), "translation" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetRotation(), "rotation" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetScaling(), "scaling" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetTranslation(), "translation" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetRotation(), "rotation" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetScaling(), "scaling" );
 	
 	writer.WriteClosingTag( "ruleBoneTransformator" );
 }
 
-void aeLSAnimator::pSaveRuleStateManipulator( decXmlWriter &writer, aeAnimator *animator, aeRuleStateManipulator *rule ){
+void aeLSAnimator::pSaveRuleStateManipulator( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleStateManipulator &rule ){
 	writer.WriteOpeningTag( "ruleStateManipulator" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
 	writer.WriteOpeningTagStart( "positionMinimum" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumPosition().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumPosition().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumPosition().z );
+	writer.WriteAttributeFloat( "x", rule.GetMinimumPosition().x );
+	writer.WriteAttributeFloat( "y", rule.GetMinimumPosition().y );
+	writer.WriteAttributeFloat( "z", rule.GetMinimumPosition().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "positionMaximum" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumPosition().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumPosition().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumPosition().z );
+	writer.WriteAttributeFloat( "x", rule.GetMaximumPosition().x );
+	writer.WriteAttributeFloat( "y", rule.GetMaximumPosition().y );
+	writer.WriteAttributeFloat( "z", rule.GetMaximumPosition().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "rotationMinimum" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumRotation().z );
+	writer.WriteAttributeFloat( "x", rule.GetMinimumRotation().x );
+	writer.WriteAttributeFloat( "y", rule.GetMinimumRotation().y );
+	writer.WriteAttributeFloat( "z", rule.GetMinimumRotation().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "rotationMaximum" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumRotation().z );
+	writer.WriteAttributeFloat( "x", rule.GetMaximumRotation().x );
+	writer.WriteAttributeFloat( "y", rule.GetMaximumRotation().y );
+	writer.WriteAttributeFloat( "z", rule.GetMaximumRotation().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "sizeMinimum" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumSize().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumSize().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumSize().z );
+	writer.WriteAttributeFloat( "x", rule.GetMinimumSize().x );
+	writer.WriteAttributeFloat( "y", rule.GetMinimumSize().y );
+	writer.WriteAttributeFloat( "z", rule.GetMinimumSize().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "sizeMaximum" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumSize().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumSize().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumSize().z );
+	writer.WriteAttributeFloat( "x", rule.GetMaximumSize().x );
+	writer.WriteAttributeFloat( "y", rule.GetMaximumSize().y );
+	writer.WriteAttributeFloat( "z", rule.GetMaximumSize().z );
 	writer.WriteOpeningTagEnd( true );
 	
-	if( rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetPosition(), "position" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetRotation(), "orientation" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetSize(), "size" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetPosition(), "position" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetRotation(), "orientation" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetSize(), "size" );
 	
 	writer.WriteClosingTag( "ruleStateManipulator" );
 }
 
-void aeLSAnimator::pSaveRuleStateSnapshot( decXmlWriter &writer, aeAnimator *animator, aeRuleStateSnapshot *rule ){
+void aeLSAnimator::pSaveRuleStateSnapshot( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleStateSnapshot &rule ){
 	writer.WriteOpeningTag( "ruleStateSnapshot" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	if( ! rule->GetUseLastState() ){
-		writer.WriteDataTagBool( "useLastState", rule->GetUseLastState() );
+	if( ! rule.GetUseLastState() ){
+		writer.WriteDataTagBool( "useLastState", rule.GetUseLastState() );
 	}
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
 	writer.WriteClosingTag( "ruleStateSnapshot" );
 }
 
-void aeLSAnimator::pSaveRuleInverseKinematic( decXmlWriter &writer, aeAnimator *animator, aeRuleInverseKinematic *rule ){
+void aeLSAnimator::pSaveRuleInverseKinematic( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleInverseKinematic &rule ){
 	writer.WriteOpeningTag( "ruleInverseKinematic" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	const decVector &goalPosition = rule->GetGoalPosition();
+	const decVector &goalPosition = rule.GetGoalPosition();
 	writer.WriteOpeningTagStart( "goalPosition" );
 	writer.WriteAttributeFloat( "x", goalPosition.x );
 	writer.WriteAttributeFloat( "y", goalPosition.y );
 	writer.WriteAttributeFloat( "z", goalPosition.z );
 	writer.WriteOpeningTagEnd( true );
 	
-	const decVector &goalOrientation = rule->GetGoalOrientation();
+	const decVector &goalOrientation = rule.GetGoalOrientation();
 	writer.WriteOpeningTagStart( "goalOrientation" );
 	writer.WriteAttributeFloat( "x", goalOrientation.x );
 	writer.WriteAttributeFloat( "y", goalOrientation.y );
 	writer.WriteAttributeFloat( "z", goalOrientation.z );
 	writer.WriteOpeningTagEnd( true );
 	
-	const decVector &localPosition = rule->GetLocalPosition();
+	const decVector &localPosition = rule.GetLocalPosition();
 	writer.WriteOpeningTagStart( "localPosition" );
 	writer.WriteAttributeFloat( "x", localPosition.x );
 	writer.WriteAttributeFloat( "y", localPosition.y );
 	writer.WriteAttributeFloat( "z", localPosition.z );
 	writer.WriteOpeningTagEnd( true );
 	
-	const decVector &localOrientation = rule->GetLocalOrientation();
+	const decVector &localOrientation = rule.GetLocalOrientation();
 	writer.WriteOpeningTagStart( "localOrientation" );
 	writer.WriteAttributeFloat( "x", localOrientation.x );
 	writer.WriteAttributeFloat( "y", localOrientation.y );
 	writer.WriteAttributeFloat( "z", localOrientation.z );
 	writer.WriteOpeningTagEnd( true );
 	
-	if( rule->GetAdjustOrientation() ){
-		writer.WriteDataTagBool( "adjustOrientation", rule->GetAdjustOrientation() );
+	if( rule.GetAdjustOrientation() ){
+		writer.WriteDataTagBool( "adjustOrientation", rule.GetAdjustOrientation() );
 	}
 	
-	if( ! rule->GetSolverBone().IsEmpty() ){
-		writer.WriteDataTagString( "solverBone", rule->GetSolverBone() );
+	if( ! rule.GetSolverBone().IsEmpty() ){
+		writer.WriteDataTagString( "solverBone", rule.GetSolverBone() );
 	}
-	if( rule->GetUseSolverBone() ){
-		writer.WriteDataTagBool( "useSolverBone", rule->GetUseSolverBone() );
-	}
-	
-	writer.WriteDataTagFloat( "reachRange", rule->GetReachRange() );
-	if( ! rule->GetReachBone().IsEmpty() ){
-		writer.WriteDataTagString( "reachBone", rule->GetReachBone() );
+	if( rule.GetUseSolverBone() ){
+		writer.WriteDataTagBool( "useSolverBone", rule.GetUseSolverBone() );
 	}
 	
-	const decVector &reachCenter = rule->GetReachCenter();
-	writer.WriteOpeningTagStart( "reachCenter" );
-	writer.WriteAttributeFloat( "x", reachCenter.x );
-	writer.WriteAttributeFloat( "y", reachCenter.y );
-	writer.WriteAttributeFloat( "z", reachCenter.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteDataTagFloat( "reachRange", rule.GetReachRange() );
+	if( ! rule.GetReachBone().IsEmpty() ){
+		writer.WriteDataTagString( "reachBone", rule.GetReachBone() );
+	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetGoalPosition(), "goalPosition" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetGoalOrientation(), "goalOrientation" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetLocalPosition(), "localPosition" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetLocalOrientation(), "localOrientation" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetReachRange(), "reachRange" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetReachCenter(), "reachCenter" );
+	const decVector &reachCenter = rule.GetReachCenter();
+	if( ! reachCenter.IsZero() ){
+		writer.WriteOpeningTagStart( "reachCenter" );
+		writer.WriteAttributeFloat( "x", reachCenter.x );
+		writer.WriteAttributeFloat( "y", reachCenter.y );
+		writer.WriteAttributeFloat( "z", reachCenter.z );
+		writer.WriteOpeningTagEnd( true );
+	}
+	
+	pSaveControllerTarget( writer, animator, rule.GetTargetGoalPosition(), "goalPosition" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetGoalOrientation(), "goalOrientation" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetLocalPosition(), "localPosition" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetLocalOrientation(), "localOrientation" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetReachRange(), "reachRange" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetReachCenter(), "reachCenter" );
 	
 	writer.WriteClosingTag( "ruleInverseKinematic" );
 }
 
-void aeLSAnimator::pSaveRuleForeignState( decXmlWriter &writer, aeAnimator *animator, aeRuleForeignState *rule ){
+void aeLSAnimator::pSaveRuleForeignState( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleForeignState &rule ){
 	writer.WriteOpeningTag( "ruleForeignState" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteDataTagString( "foreignBone", rule->GetForeignBone() );
-	writer.WriteDataTagFloat( "scalePosition", rule->GetScalePosition() );
-	writer.WriteDataTagFloat( "scaleOrientation", rule->GetScaleOrientation() );
-	writer.WriteDataTagFloat( "scaleSize", rule->GetScaleSize() );
+	writer.WriteDataTagString( "foreignBone", rule.GetForeignBone() );
+	writer.WriteDataTagFloat( "scalePosition", rule.GetScalePosition() );
+	writer.WriteDataTagFloat( "scaleOrientation", rule.GetScaleOrientation() );
+	writer.WriteDataTagFloat( "scaleSize", rule.GetScaleSize() );
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
-	if( rule->GetSourceCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal ){
+	if( rule.GetSourceCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal ){
 		writer.WriteDataTagString( "srcCFrame", "local" );
 		
 	}else{ // deAnimatorRuleForeignState::ecfComponent
 		writer.WriteDataTagString( "srcCFrame", "component" );
 	}
 	
-	if( rule->GetDestCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal ){
+	if( rule.GetDestCoordinateFrame() == deAnimatorRuleForeignState::ecfBoneLocal ){
 		writer.WriteDataTagString( "destCFrame", "local" );
 		
 	}else{ // deAnimatorRuleForeignState::ecfComponent
 		writer.WriteDataTagString( "destCFrame", "component" );
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetPosition(), "position" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetOrientation(), "orientation" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetSize(), "size" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetPosition(), "position" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetOrientation(), "orientation" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetSize(), "size" );
 	
 	writer.WriteClosingTag( "ruleForeignState" );
 }
 
-void aeLSAnimator::pSaveRuleGroup( decXmlWriter &writer, aeAnimator *animator, aeRuleGroup *rule ){
+
+void aeLSAnimator::pSaveRuleMirror( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleMirror &rule ){
+	writer.WriteOpeningTag( "ruleMirror" );
+	
+	pSaveRuleCommon( writer, animator, rule );
+	
+	switch( rule.GetMirrorAxis() ){
+	case deAnimatorRuleMirror::emaX:
+		writer.WriteDataTagString( "mirrorAxis", "x" );
+		break;
+		
+	case deAnimatorRuleMirror::emaY:
+		writer.WriteDataTagString( "mirrorAxis", "y" );
+		break;
+		
+	case deAnimatorRuleMirror::emaZ:
+		writer.WriteDataTagString( "mirrorAxis", "z" );
+		break;
+	}
+	
+	if( ! rule.GetMirrorBone().IsEmpty() ){
+		writer.WriteDataTagString( "mirrorBone", rule.GetMirrorBone() );
+	}
+	
+	const int count = rule.GetMatchNameCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		const aeRuleMirror::cMatchName &matchName = *rule.GetMatchNameAt( i );
+		writer.WriteOpeningTagStart( "matchName" );
+		writer.WriteAttributeString( "first", matchName.GetFirst() );
+		writer.WriteAttributeString( "second", matchName.GetSecond() );
+		
+		switch( matchName.GetType() ){
+		case deAnimatorRuleMirror::emntFirst:
+			writer.WriteAttributeString( "type", "first" );
+			break;
+			
+		case deAnimatorRuleMirror::emntLast:
+			writer.WriteAttributeString( "type", "last" );
+			break;
+			
+		case deAnimatorRuleMirror::emntMiddle:
+			writer.WriteAttributeString( "type", "middle" );
+			break;
+		}
+		
+		writer.WriteOpeningTagEnd( true );
+	}
+	
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
+	}
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
+	}
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
+	}
+	
+	writer.WriteClosingTag( "ruleMirror" );
+}
+
+void aeLSAnimator::pSaveRuleGroup( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleGroup &rule ){
 	writer.WriteOpeningTag( "ruleGroup" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
-	const int count = rule->GetRules().GetCount();
+	const int count = rule.GetRules().GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
 		writer.WriteNewline();
-		pSaveRule( writer, animator, rule->GetRules().GetAt( i ) );
+		pSaveRule( writer, animator, *rule.GetRules().GetAt( i ) );
 	}
 	
-	if( rule->GetUseCurrentState() ){
-		writer.WriteDataTagBool( "useCurrentState", rule->GetUseCurrentState() );
+	if( rule.GetUseCurrentState() ){
+		writer.WriteDataTagBool( "useCurrentState", rule.GetUseCurrentState() );
 	}
 	
-	switch( rule->GetApplicationType() ){
+	switch( rule.GetApplicationType() ){
 	case deAnimatorRuleGroup::eatAll:
 		writer.WriteDataTagString( "applicationType", "all" );
 		break;
@@ -923,274 +1095,277 @@ void aeLSAnimator::pSaveRuleGroup( decXmlWriter &writer, aeAnimator *animator, a
 		break;
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetSelect(), "selection" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetSelect(), "selection" );
 	
 	writer.WriteClosingTag( "ruleGroup" );
 }
 
-void aeLSAnimator::pSaveRuleSubAnimator( decXmlWriter &writer, aeAnimator *animator, aeRuleSubAnimator *rule ){
+void aeLSAnimator::pSaveRuleSubAnimator( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleSubAnimator &rule ){
 	writer.WriteOpeningTag( "ruleSubAnimator" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteDataTagString( "pathAnimator", rule->GetPathSubAnimator() );
+	writer.WriteDataTagString( "pathAnimator", rule.GetPathSubAnimator() );
 	
-	const int connectionCount = rule->GetConnectionCount();
+	const int connectionCount = rule.GetConnectionCount();
 	int i;
 	for( i=0; i<connectionCount; i++ ){
-		aeController * const controller = rule->GetControllerAt( i );
+		aeController * const controller = rule.GetControllerAt( i );
 		if( ! controller ){
 			continue;
 		}
 		
 		writer.WriteOpeningTagStart( "connection" );
-		writer.WriteAttributeInt( "controller", animator->GetControllers().IndexOf( controller ) );
+		writer.WriteAttributeInt( "controller", animator.GetControllers().IndexOf( controller ) );
 		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextString( rule->GetSubAnimator()->GetControllerAt( i )->GetName() );
+		writer.WriteTextString( rule.GetSubAnimator()->GetControllerAt( i )->GetName() );
 		writer.WriteClosingTag( "connection", false );
 	}
 	
-	if( ! rule->GetEnablePosition() ){
-		writer.WriteDataTagBool( "enablePosition", rule->GetEnablePosition() );
+	if( ! rule.GetEnablePosition() ){
+		writer.WriteDataTagBool( "enablePosition", rule.GetEnablePosition() );
 	}
-	if( ! rule->GetEnableOrientation() ){
-		writer.WriteDataTagBool( "enableOrientation", rule->GetEnableOrientation() );
+	if( ! rule.GetEnableOrientation() ){
+		writer.WriteDataTagBool( "enableOrientation", rule.GetEnableOrientation() );
 	}
-	if( ! rule->GetEnableSize() ){
-		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
+	if( ! rule.GetEnableSize() ){
+		writer.WriteDataTagBool( "enableSize", rule.GetEnableSize() );
 	}
 	
 	writer.WriteClosingTag( "ruleSubAnimator" );
 }
 
-void aeLSAnimator::pSaveRuleTrackTo( decXmlWriter &writer, aeAnimator *animator, aeRuleTrackTo *rule ){
+void aeLSAnimator::pSaveRuleTrackTo( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleTrackTo &rule ){
 	writer.WriteOpeningTag( "ruleTrackTo" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteDataTagString( "trackBone", rule->GetTrackBone().GetString() );
+	writer.WriteDataTagString( "trackBone", rule.GetTrackBone().GetString() );
 	
-	if( rule->GetTrackAxis() == deAnimatorRuleTrackTo::etaPosX ){
+	if( rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaPosX ){
 		writer.WriteDataTagString( "trackAxis", "posX" );
 		
-	}else if( rule->GetTrackAxis() == deAnimatorRuleTrackTo::etaPosY ){
+	}else if( rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaPosY ){
 		writer.WriteDataTagString( "trackAxis", "posY" );
 		
-	}else if( rule->GetTrackAxis() == deAnimatorRuleTrackTo::etaPosZ ){
+	}else if( rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaPosZ ){
 		writer.WriteDataTagString( "trackAxis", "posZ" );
 		
-	}else if( rule->GetTrackAxis() == deAnimatorRuleTrackTo::etaNegX ){
+	}else if( rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaNegX ){
 		writer.WriteDataTagString( "trackAxis", "negX" );
 		
-	}else if( rule->GetTrackAxis() == deAnimatorRuleTrackTo::etaNegY ){
+	}else if( rule.GetTrackAxis() == deAnimatorRuleTrackTo::etaNegY ){
 		writer.WriteDataTagString( "trackAxis", "negY" );
 		
 	}else{ // deAnimatorRuleTrackTo::etaNegZ
 		writer.WriteDataTagString( "trackAxis", "negZ" );
 	}
 	
-	if( rule->GetUpAxis() == deAnimatorRuleTrackTo::etaPosX ){
+	if( rule.GetUpAxis() == deAnimatorRuleTrackTo::etaPosX ){
 		writer.WriteDataTagString( "upAxis", "posX" );
 		
-	}else if( rule->GetUpAxis() == deAnimatorRuleTrackTo::etaPosY ){
+	}else if( rule.GetUpAxis() == deAnimatorRuleTrackTo::etaPosY ){
 		writer.WriteDataTagString( "upAxis", "posY" );
 		
-	}else if( rule->GetUpAxis() == deAnimatorRuleTrackTo::etaPosZ ){
+	}else if( rule.GetUpAxis() == deAnimatorRuleTrackTo::etaPosZ ){
 		writer.WriteDataTagString( "upAxis", "posZ" );
 		
-	}else if( rule->GetUpAxis() == deAnimatorRuleTrackTo::etaNegX ){
+	}else if( rule.GetUpAxis() == deAnimatorRuleTrackTo::etaNegX ){
 		writer.WriteDataTagString( "upAxis", "negX" );
 		
-	}else if( rule->GetUpAxis() == deAnimatorRuleTrackTo::etaNegY ){
+	}else if( rule.GetUpAxis() == deAnimatorRuleTrackTo::etaNegY ){
 		writer.WriteDataTagString( "upAxis", "negY" );
 		
 	}else{ // deAnimatorRuleTrackTo::etaNegZ
 		writer.WriteDataTagString( "upAxis", "negZ" );
 	}
 	
-	if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutWorldX ){
+	if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutWorldX ){
 		writer.WriteDataTagString( "upTarget", "worldX" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutWorldY ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutWorldY ){
 		writer.WriteDataTagString( "upTarget", "worldY" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutWorldZ ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutWorldZ ){
 		writer.WriteDataTagString( "upTarget", "worldZ" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutComponentX ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutComponentX ){
 		writer.WriteDataTagString( "upTarget", "componentX" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutComponentY ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutComponentY ){
 		writer.WriteDataTagString( "upTarget", "componentY" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutComponentZ ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutComponentZ ){
 		writer.WriteDataTagString( "upTarget", "componentZ" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneX ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneX ){
 		writer.WriteDataTagString( "upTarget", "trackBoneX" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneY ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneY ){
 		writer.WriteDataTagString( "upTarget", "trackBoneY" );
 		
-	}else if( rule->GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneZ ){
+	}else if( rule.GetUpTarget() == deAnimatorRuleTrackTo::eutTrackBoneZ ){
 		writer.WriteDataTagString( "upTarget", "trackBoneZ" );
 		
 	}else{ // deAnimatorRuleTrackTo::eutController
 		writer.WriteDataTagString( "upTarget", "controller" );
 	}
 	
-	if( rule->GetLockedAxis() == deAnimatorRuleTrackTo::elaNone ){
+	if( rule.GetLockedAxis() == deAnimatorRuleTrackTo::elaNone ){
 		writer.WriteDataTagString( "lockedAxis", "none" );
 		
-	}else if( rule->GetLockedAxis() == deAnimatorRuleTrackTo::elaX ){
+	}else if( rule.GetLockedAxis() == deAnimatorRuleTrackTo::elaX ){
 		writer.WriteDataTagString( "lockedAxis", "x" );
 		
-	}else if( rule->GetLockedAxis() == deAnimatorRuleTrackTo::elaY ){
+	}else if( rule.GetLockedAxis() == deAnimatorRuleTrackTo::elaY ){
 		writer.WriteDataTagString( "lockedAxis", "z" );
 		
 	}else{ // deAnimatorRuleTrackTo::elaZ
 		writer.WriteDataTagString( "lockedAxis", "z" );
 	}
 	
-	pSaveControllerTarget( writer, animator, rule->GetTargetPosition(), "position" );
-	pSaveControllerTarget( writer, animator, rule->GetTargetUp(), "up" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetPosition(), "position" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetUp(), "up" );
 	
 	writer.WriteClosingTag( "ruleTrackTo" );
 }
 
-void aeLSAnimator::pSaveRuleLimit( decXmlWriter &writer, aeAnimator *animator, aeRuleLimit *rule ){
+void aeLSAnimator::pSaveRuleLimit( decXmlWriter &writer, const aeAnimator &animator,
+const aeRuleLimit &rule ){
 	writer.WriteOpeningTag( "ruleLimit" );
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
 	writer.WriteOpeningTagStart( "minimumPosition" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumPosition().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumPosition().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumPosition().z );
+	writer.WriteAttributeFloat( "x", rule.GetMinimumPosition().x );
+	writer.WriteAttributeFloat( "y", rule.GetMinimumPosition().y );
+	writer.WriteAttributeFloat( "z", rule.GetMinimumPosition().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "maximumPosition" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumPosition().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumPosition().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumPosition().z );
+	writer.WriteAttributeFloat( "x", rule.GetMaximumPosition().x );
+	writer.WriteAttributeFloat( "y", rule.GetMaximumPosition().y );
+	writer.WriteAttributeFloat( "z", rule.GetMaximumPosition().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "minimumRotation" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumRotation().z );
+	writer.WriteAttributeFloat( "x", rule.GetMinimumRotation().x );
+	writer.WriteAttributeFloat( "y", rule.GetMinimumRotation().y );
+	writer.WriteAttributeFloat( "z", rule.GetMinimumRotation().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "maximumRotation" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumRotation().z );
+	writer.WriteAttributeFloat( "x", rule.GetMaximumRotation().x );
+	writer.WriteAttributeFloat( "y", rule.GetMaximumRotation().y );
+	writer.WriteAttributeFloat( "z", rule.GetMaximumRotation().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "minimumScaling" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumScaling().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumScaling().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumScaling().z );
+	writer.WriteAttributeFloat( "x", rule.GetMinimumScaling().x );
+	writer.WriteAttributeFloat( "y", rule.GetMinimumScaling().y );
+	writer.WriteAttributeFloat( "z", rule.GetMinimumScaling().z );
 	writer.WriteOpeningTagEnd( true );
 	
 	writer.WriteOpeningTagStart( "maximumScaling" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumScaling().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumScaling().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumScaling().z );
+	writer.WriteAttributeFloat( "x", rule.GetMaximumScaling().x );
+	writer.WriteAttributeFloat( "y", rule.GetMaximumScaling().y );
+	writer.WriteAttributeFloat( "z", rule.GetMaximumScaling().z );
 	writer.WriteOpeningTagEnd( true );
 	
-	if( rule->GetCoordinateFrame() == deAnimatorRuleLimit::ecfBoneLocal ){
+	if( rule.GetCoordinateFrame() == deAnimatorRuleLimit::ecfBoneLocal ){
 		writer.WriteDataTagString( "cframe", "local" );
 		
-	}else if( rule->GetCoordinateFrame() == deAnimatorRuleLimit::ecfComponent ){
+	}else if( rule.GetCoordinateFrame() == deAnimatorRuleLimit::ecfComponent ){
 		writer.WriteDataTagString( "cframe", "component" );
 		
 	}else{ // deAnimatorRuleBoneTransformator::ecfRotationBone
 		writer.WriteDataTagString( "cframe", "target" );
 	}
 	
-	writer.WriteDataTagString( "targetBone", rule->GetTargetBone().GetString() );
+	writer.WriteDataTagString( "targetBone", rule.GetTargetBone().GetString() );
 	
-	if( rule->GetEnablePositionXMin() || rule->GetEnablePositionYMin() || rule->GetEnablePositionZMin() ){
+	if( rule.GetEnablePositionXMin() || rule.GetEnablePositionYMin() || rule.GetEnablePositionZMin() ){
 		writer.WriteOpeningTagStart( "enablePosMin" );
-		if( rule->GetEnablePositionXMin() ){
-			writer.WriteAttributeBool( "x", rule->GetEnablePositionXMin() );
+		if( rule.GetEnablePositionXMin() ){
+			writer.WriteAttributeBool( "x", rule.GetEnablePositionXMin() );
 		}
-		if( rule->GetEnablePositionYMin() ){
-			writer.WriteAttributeBool( "y", rule->GetEnablePositionYMin() );
+		if( rule.GetEnablePositionYMin() ){
+			writer.WriteAttributeBool( "y", rule.GetEnablePositionYMin() );
 		}
-		if( rule->GetEnablePositionZMin() ){
-			writer.WriteAttributeBool( "z", rule->GetEnablePositionZMin() );
+		if( rule.GetEnablePositionZMin() ){
+			writer.WriteAttributeBool( "z", rule.GetEnablePositionZMin() );
 		}
 		writer.WriteOpeningTagEnd( true );
 	}
 	
-	if( rule->GetEnablePositionXMax() || rule->GetEnablePositionYMax() || rule->GetEnablePositionZMax() ){
+	if( rule.GetEnablePositionXMax() || rule.GetEnablePositionYMax() || rule.GetEnablePositionZMax() ){
 		writer.WriteOpeningTagStart( "enablePosMax" );
-		if( rule->GetEnablePositionXMax() ){
-			writer.WriteAttributeBool( "x", rule->GetEnablePositionXMax() );
+		if( rule.GetEnablePositionXMax() ){
+			writer.WriteAttributeBool( "x", rule.GetEnablePositionXMax() );
 		}
-		if( rule->GetEnablePositionYMax() ){
-			writer.WriteAttributeBool( "y", rule->GetEnablePositionYMax() );
+		if( rule.GetEnablePositionYMax() ){
+			writer.WriteAttributeBool( "y", rule.GetEnablePositionYMax() );
 		}
-		if( rule->GetEnablePositionZMax() ){
-			writer.WriteAttributeBool( "z", rule->GetEnablePositionZMax() );
+		if( rule.GetEnablePositionZMax() ){
+			writer.WriteAttributeBool( "z", rule.GetEnablePositionZMax() );
 		}
 		writer.WriteOpeningTagEnd( true );
 	}
 	
-	if( rule->GetEnableRotationXMin() || rule->GetEnableRotationYMin() || rule->GetEnableRotationZMin() ){
+	if( rule.GetEnableRotationXMin() || rule.GetEnableRotationYMin() || rule.GetEnableRotationZMin() ){
 		writer.WriteOpeningTagStart( "enableRotMin" );
-		if( rule->GetEnableRotationXMin() ){
-			writer.WriteAttributeBool( "x", rule->GetEnableRotationXMin() );
+		if( rule.GetEnableRotationXMin() ){
+			writer.WriteAttributeBool( "x", rule.GetEnableRotationXMin() );
 		}
-		if( rule->GetEnableRotationYMin() ){
-			writer.WriteAttributeBool( "y", rule->GetEnableRotationYMin() );
+		if( rule.GetEnableRotationYMin() ){
+			writer.WriteAttributeBool( "y", rule.GetEnableRotationYMin() );
 		}
-		if( rule->GetEnableRotationZMin() ){
-			writer.WriteAttributeBool( "z", rule->GetEnableRotationZMin() );
+		if( rule.GetEnableRotationZMin() ){
+			writer.WriteAttributeBool( "z", rule.GetEnableRotationZMin() );
 		}
 		writer.WriteOpeningTagEnd( true );
 	}
 	
-	if( rule->GetEnableRotationXMax() || rule->GetEnableRotationYMax() || rule->GetEnableRotationZMax() ){
+	if( rule.GetEnableRotationXMax() || rule.GetEnableRotationYMax() || rule.GetEnableRotationZMax() ){
 		writer.WriteOpeningTagStart( "enableRotMax" );
-		if( rule->GetEnableRotationXMax() ){
-			writer.WriteAttributeBool( "x", rule->GetEnableRotationXMax() );
+		if( rule.GetEnableRotationXMax() ){
+			writer.WriteAttributeBool( "x", rule.GetEnableRotationXMax() );
 		}
-		if( rule->GetEnableRotationYMax() ){
-			writer.WriteAttributeBool( "y", rule->GetEnableRotationYMax() );
+		if( rule.GetEnableRotationYMax() ){
+			writer.WriteAttributeBool( "y", rule.GetEnableRotationYMax() );
 		}
-		if( rule->GetEnableRotationZMax() ){
-			writer.WriteAttributeBool( "z", rule->GetEnableRotationZMax() );
+		if( rule.GetEnableRotationZMax() ){
+			writer.WriteAttributeBool( "z", rule.GetEnableRotationZMax() );
 		}
 		writer.WriteOpeningTagEnd( true );
 	}
 	
-	if( rule->GetEnableScalingXMin() || rule->GetEnableScalingYMin() || rule->GetEnableScalingZMin() ){
+	if( rule.GetEnableScalingXMin() || rule.GetEnableScalingYMin() || rule.GetEnableScalingZMin() ){
 		writer.WriteOpeningTagStart( "enableScaleMin" );
-		if( rule->GetEnableScalingXMin() ){
-			writer.WriteAttributeBool( "x", rule->GetEnableScalingXMin() );
+		if( rule.GetEnableScalingXMin() ){
+			writer.WriteAttributeBool( "x", rule.GetEnableScalingXMin() );
 		}
-		if( rule->GetEnableScalingYMin() ){
-			writer.WriteAttributeBool( "y", rule->GetEnableScalingYMin() );
+		if( rule.GetEnableScalingYMin() ){
+			writer.WriteAttributeBool( "y", rule.GetEnableScalingYMin() );
 		}
-		if( rule->GetEnableScalingZMin() ){
-			writer.WriteAttributeBool( "z", rule->GetEnableScalingZMin() );
+		if( rule.GetEnableScalingZMin() ){
+			writer.WriteAttributeBool( "z", rule.GetEnableScalingZMin() );
 		}
 		writer.WriteOpeningTagEnd( true );
 	}
 	
-	if( rule->GetEnableScalingXMax() || rule->GetEnableScalingYMax() || rule->GetEnableScalingZMax() ){
+	if( rule.GetEnableScalingXMax() || rule.GetEnableScalingYMax() || rule.GetEnableScalingZMax() ){
 		writer.WriteOpeningTagStart( "enableScaleMax" );
-		if( rule->GetEnableScalingXMax() ){
-			writer.WriteAttributeBool( "x", rule->GetEnableScalingXMax() );
+		if( rule.GetEnableScalingXMax() ){
+			writer.WriteAttributeBool( "x", rule.GetEnableScalingXMax() );
 		}
-		if( rule->GetEnableScalingYMax() ){
-			writer.WriteAttributeBool( "y", rule->GetEnableScalingYMax() );
+		if( rule.GetEnableScalingYMax() ){
+			writer.WriteAttributeBool( "y", rule.GetEnableScalingYMax() );
 		}
-		if( rule->GetEnableScalingZMax() ){
-			writer.WriteAttributeBool( "z", rule->GetEnableScalingZMax() );
+		if( rule.GetEnableScalingZMax() ){
+			writer.WriteAttributeBool( "z", rule.GetEnableScalingZMax() );
 		}
 		writer.WriteOpeningTagEnd( true );
 	}
@@ -1248,7 +1423,7 @@ float aeLSAnimator::pGetAttributeFloat( decXmlElementTag *tag, const char *name 
 
 
 
-void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator *animator ){
+void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	decXmlElementTag *tag;
 	int i;
@@ -1261,16 +1436,16 @@ void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator *animator )
 				
 			}else if( strcmp( tag->GetName(), "rig" ) == 0 ){
 				if( tag->GetFirstData() ){
-					animator->SetRigPath( tag->GetFirstData()->GetData() );
+					animator.SetRigPath( GetCDataString( *tag ) );
 				}
 				
 			}else if( strcmp( tag->GetName(), "animation" ) == 0 ){
 				if( tag->GetFirstData() ){
-					animator->SetAnimationPath( tag->GetFirstData()->GetData() );
+					animator.SetAnimationPath( GetCDataString( *tag ) );
 				}
 				
 			}else if( strcmp( tag->GetName(), "bone" ) == 0 ){
-				animator->AddBone( tag->GetFirstData()->GetData() );
+				animator.AddBone( GetCDataString( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "controller" ) == 0 ){
 				pLoadController( tag, animator );
@@ -1279,10 +1454,9 @@ void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator *animator )
 				pLoadLink( tag, animator );
 				
 			}else{
-				aeRule * const rule = pLoadRule( tag, animator );
+				const aeRule::Ref rule( aeRule::Ref::New( pLoadRule( tag, animator ) ) );
 				if( rule ){
-					animator->AddRule( rule );
-					rule->FreeReference();
+					animator.AddRule( rule );
 					
 				}else{
 					logger.LogWarnFormat( LOGSOURCE, "animator(%i:%i): Unknown Tag %s, ignoring",
@@ -1293,10 +1467,10 @@ void aeLSAnimator::pLoadAnimator( decXmlElementTag *root, aeAnimator *animator )
 		}
 	}
 	
-	pLoadSubAnimators( *animator );
+	pLoadSubAnimators( animator );
 }
 
-void aeLSAnimator::pLoadDisplay( decXmlElementTag *root, aeAnimator *animator ){
+void aeLSAnimator::pLoadDisplay( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	decXmlElementTag *tag;
 	int i;
@@ -1306,22 +1480,22 @@ void aeLSAnimator::pLoadDisplay( decXmlElementTag *root, aeAnimator *animator ){
 		if( tag ){
 			if( strcmp( tag->GetName(), "model" ) == 0 ){
 				if( tag->GetFirstData() ){
-					animator->SetDisplayModelPath( tag->GetFirstData()->GetData() );
+					animator.SetDisplayModelPath( GetCDataString( *tag ) );
 				}
 				
 			}else if( strcmp( tag->GetName(), "skin" ) == 0 ){
 				if( tag->GetFirstData() ){
-					animator->SetDisplaySkinPath( tag->GetFirstData()->GetData() );
+					animator.SetDisplaySkinPath( GetCDataString( *tag ) );
 				}
 				
 			}else if( strcmp( tag->GetName(), "rig" ) == 0 ){
 				if( tag->GetFirstData() ){
-					animator->SetDisplayRigPath( tag->GetFirstData()->GetData() );
+					animator.SetDisplayRigPath( GetCDataString( *tag ) );
 				}
 				
 			/*}else if( strcmp( tag->GetName(), "animation" ) == 0 ){
 				if( tag->GetFirstData() ){
-					animator->SetAnimationPath( tag->GetFirstData()->GetData() );
+					animator.SetAnimationPath( GetCDataString( *tag ) );
 				}*/
 				
 			}else if( strcmp( tag->GetName(), "locomotion" ) == 0 ){
@@ -1335,9 +1509,9 @@ void aeLSAnimator::pLoadDisplay( decXmlElementTag *root, aeAnimator *animator ){
 	}
 }
 
-void aeLSAnimator::pLoadLocomotion( decXmlElementTag *root, aeAnimator *animator ){
+void aeLSAnimator::pLoadLocomotion( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeAnimatorLocomotion &locomotion = animator->GetLocomotion();
+	aeAnimatorLocomotion &locomotion = animator.GetLocomotion();
 	decXmlElementTag *tag;
 	int i, leg = 0;
 	
@@ -1361,16 +1535,16 @@ void aeLSAnimator::pLoadLocomotion( decXmlElementTag *root, aeAnimator *animator
 				
 				
 			}else if( strcmp( tag->GetName(), "limitLookDown" ) == 0 ){
-				locomotion.SetLimitLookDown( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetLimitLookDown( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "limitLookUp" ) == 0 ){
-				locomotion.SetLimitLookUp( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetLimitLookUp( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "limitLookLeft" ) == 0 ){
-				locomotion.SetLimitLookLeft( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetLimitLookLeft( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "limitLookRight" ) == 0 ){
-				locomotion.SetLimitLookRight( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetLimitLookRight( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "limitLookUpDownSpeed" ) == 0 ){
 				// deprecated
@@ -1379,34 +1553,34 @@ void aeLSAnimator::pLoadLocomotion( decXmlElementTag *root, aeAnimator *animator
 				// deprecated
 				
 			}else if( strcmp( tag->GetName(), "adjustTimeUpDown" ) == 0 ){
-				locomotion.GetLookUpDown().SetAdjustTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.GetLookUpDown().SetAdjustTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "adjustTimeLeftRight" ) == 0 ){
-				locomotion.GetLookLeftRight().SetAdjustTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.GetLookLeftRight().SetAdjustTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "adjustTimeStance" ) == 0 ){
-				locomotion.GetStance().SetAdjustTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.GetStance().SetAdjustTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "adjustTimeTurnIP" ) == 0 ){
-				locomotion.SetAdjustTimeTurnIP( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetAdjustTimeTurnIP( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "adjustTimeOrientation" ) == 0 ){
-				locomotion.GetOrientation().SetAdjustTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.GetOrientation().SetAdjustTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "adjustTimeVelocity" ) == 0 ){
-				locomotion.GetLinearVelocity().SetAdjustTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.GetLinearVelocity().SetAdjustTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "speedWalk" ) == 0 ){
-				locomotion.SetWalkSpeed( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetWalkSpeed( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "speedRun" ) == 0 ){
-				locomotion.SetRunSpeed( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetRunSpeed( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "legBlendTime" ) == 0 ){
-				locomotion.SetLegBlendTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				locomotion.SetLegBlendTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "useLegPairs" ) == 0 ){
-				locomotion.SetUseLegPairCount( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
+				locomotion.SetUseLegPairCount( ( int )strtol( GetCDataString( *tag ), NULL, 10 ) );
 				
 			}else if( strcmp( tag->GetName(), "leg" ) == 0 ){
 				if( leg >= locomotion.GetLegCount() ){
@@ -1426,9 +1600,9 @@ void aeLSAnimator::pLoadLocomotion( decXmlElementTag *root, aeAnimator *animator
 	}
 }
 
-void aeLSAnimator::pLoadLocomotionLeg( decXmlElementTag *root, aeAnimator *animator, int legnum ){
+void aeLSAnimator::pLoadLocomotionLeg( decXmlElementTag *root, aeAnimator &animator, int legnum ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeAnimatorLocomotionLeg &leg = *animator->GetLocomotion().GetLegAt( legnum );
+	aeAnimatorLocomotionLeg &leg = *animator.GetLocomotion().GetLegAt( legnum );
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
@@ -1437,10 +1611,10 @@ void aeLSAnimator::pLoadLocomotionLeg( decXmlElementTag *root, aeAnimator *anima
 		tag = root->GetElementIfTag( i );
 		if( tag ){
 			if( strcmp( tag->GetName(), "liftOffTime" ) == 0 ){
-				leg.SetLiftOffTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				leg.SetLiftOffTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "putDownTime" ) == 0 ){
-				leg.SetPutDownTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				leg.SetPutDownTime( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "putDownPosition" ) == 0 ){ // depracted
 				vector.SetZero();
@@ -1470,33 +1644,22 @@ void aeLSAnimator::pLoadLocomotionLeg( decXmlElementTag *root, aeAnimator *anima
 	}
 }
 
-void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator *animator ){
+void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeController *controller = NULL;
 	decXmlElementTag *tag;
 	const char *cdata;
 	decVector vector;
 	int i, leg;
 	
-	// create and add controller
-	try{
-		controller = new aeController;
-		if( ! controller ) DETHROW( deeOutOfMemory );
-		
-		animator->AddController( controller );
-		controller->FreeReference();
-		
-	}catch( const deException & ){
-		if( controller ) controller->FreeReference();
-		throw;
-	}
+	const aeController::Ref controller( aeController::Ref::New( new aeController ) );
+	animator.AddController( controller );
 	
 	// parse tag
 	for( i=0; i<root->GetElementCount(); i++ ){
 		tag = root->GetElementIfTag( i );
 		if( tag ){
 			if( strcmp( tag->GetName(), "name" ) == 0 ){
-				controller->SetName( tag->GetFirstData()->GetData() );
+				controller->SetName( GetCDataString( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "clamp" ) == 0 ){
 				controller->SetClamp( GetCDataBool( *tag ) );
@@ -1512,7 +1675,7 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator *animator
 				controller->SetMaximumValue( pGetAttributeFloat( tag, "max" ) );
 				
 			}else if( strcmp( tag->GetName(), "locomotionAttribute" ) == 0 ){
-				cdata = tag->GetFirstData()->GetData();
+				cdata = GetCDataString( *tag );
 				
 				if( strcmp( cdata, "elapsedTime" ) == 0 ){
 					controller->SetLocomotionAttribute( aeAnimatorLocomotion::eaElapsedTime );
@@ -1577,9 +1740,9 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator *animator
 				}
 				
 			}else if( strcmp( tag->GetName(), "locomotionLeg" ) == 0 ){
-				leg = ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 );
+				leg = ( int )strtol( GetCDataString( *tag ), NULL, 10 );
 				
-				if( leg >= 0 && leg < animator->GetLocomotion().GetLegCount() ){
+				if( leg >= 0 && leg < animator.GetLocomotion().GetLegCount() ){
 					controller->SetLocomotionLeg( leg );
 				}
 				
@@ -1591,7 +1754,7 @@ void aeLSAnimator::pLoadController( decXmlElementTag *root, aeAnimator *animator
 	}
 }
 
-void aeLSAnimator::pLoadControllerLimit( decXmlElementTag *root, aeController *controller ){
+void aeLSAnimator::pLoadControllerLimit( decXmlElementTag *root, aeController &controller ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	decXmlElementTag *tag;
 	int i;
@@ -1600,10 +1763,10 @@ void aeLSAnimator::pLoadControllerLimit( decXmlElementTag *root, aeController *c
 		tag = root->GetElementIfTag( i );
 		if( tag ){
 			if( strcmp( tag->GetName(), "minimum" ) == 0 ){
-				controller->SetMinimumValue( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				controller.SetMinimumValue( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else if( strcmp( tag->GetName(), "maximum" ) == 0 ){
-				controller->SetMaximumValue( strtof( tag->GetFirstData()->GetData(), NULL ) );
+				controller.SetMaximumValue( strtof( GetCDataString( *tag ), NULL ) );
 				
 			}else{
 				logger.LogWarnFormat( LOGSOURCE, "limit(%i:%i): Unknown Tag %s, ignoring",
@@ -1613,59 +1776,95 @@ void aeLSAnimator::pLoadControllerLimit( decXmlElementTag *root, aeController *c
 	}
 }
 
-void aeLSAnimator::pLoadLink( decXmlElementTag *root, aeAnimator *animator ){
+void aeLSAnimator::pLoadLink( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeLink *link = NULL;
 	decXmlElementTag *tag;
 	int i, index;
 	
-	// create and add link
-	try{
-		link = new aeLink;
-		
-		animator->AddLink( link );
-		link->FreeReference();
-		
-	}catch( const deException & ){
-		if( link ) link->FreeReference();
-		throw;
-	}
+	const aeLink::Ref link( aeLink::Ref::New( new aeLink ) );
+	animator.AddLink( link );
 	
 	// parse tag
 	for( i=0; i<root->GetElementCount(); i++ ){
 		tag = root->GetElementIfTag( i );
-		if( tag ){
-			if( strcmp( tag->GetName(), "name" ) == 0 ){
-				link->SetName( tag->GetFirstData()->GetData() );
-				
-			}else if( strcmp( tag->GetName(), "controller" ) == 0 ){
-				index = ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 );
-				
-				if( index == -1 ){
-					link->SetController( NULL, false );
-					
-				}else{
-					link->SetController( animator->GetControllers().GetAt( index ), false );
-				}
-				
-			}else if( strcmp( tag->GetName(), "repeat" ) == 0 ){
-				link->SetRepeat( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-				
-			}else if( strcmp( tag->GetName(), "curve" ) == 0 ){
-				decCurveBezier curve;
-				ReadCurveBezier( *tag, curve );
-				link->SetCurve( curve );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "name" ){
+			link->SetName( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "controller" ){
+			index = ( int )strtol( GetCDataString( *tag ), NULL, 10 );
+			
+			if( index == -1 ){
+				link->SetController( NULL, false );
 				
 			}else{
-				logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-					root->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(),
-					tag->GetName().GetString() );
+				link->SetController( animator.GetControllers().GetAt( index ), false );
 			}
+			
+		}else if( tag->GetName() == "repeat" ){
+			link->SetRepeat( ( int )strtol( GetCDataString( *tag ), NULL, 10 ) );
+			
+		}else if( tag->GetName() == "curve" ){
+			decCurveBezier curve;
+			ReadCurveBezier( *tag, curve );
+			link->SetCurve( curve );
+			
+		}else if( tag->GetName() == "bone" ){
+			link->SetBone( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "boneParameter" ){
+			const char * const name = GetCDataString( *tag );
+			
+			if( strcmp( name, "positionX" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpPositionX );
+				
+			}else if( strcmp( name, "positionY" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpPositionY );
+				
+			}else if( strcmp( name, "positionZ" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpPositionZ );
+				
+			}else if( strcmp( name, "rotationX" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpRotationX );
+				
+			}else if( strcmp( name, "rotationY" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpRotationY );
+				
+			}else if( strcmp( name, "rotationZ" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpRotationZ );
+				
+			}else if( strcmp( name, "scaleX" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpScaleX );
+				
+			}else if( strcmp( name, "scaleY" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpScaleY );
+				
+			}else if( strcmp( name, "scaleZ" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpScaleZ );
+				
+			}else{
+				LogErrorUnknownValue( *tag, name );
+			}
+			
+		}else if( tag->GetName() == "boneLimits" ){
+			link->SetBoneMinimum( GetAttributeFloat( *tag, "min" ) );
+			link->SetBoneMaximum( GetAttributeFloat( *tag, "max" ) );
+			
+		}else if( tag->GetName() == "wrapY" ){
+			link->SetWrapY( GetCDataBool( *tag ) );
+			
+		}else{
+			logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+				root->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(),
+				tag->GetName().GetString() );
 		}
 	}
 }
 
-aeRule *aeLSAnimator::pLoadRule( decXmlElementTag *root, aeAnimator *animator ){
+aeRule *aeLSAnimator::pLoadRule( decXmlElementTag *root, aeAnimator &animator ){
 	if( strcmp( root->GetName(), "ruleAnimation" ) == 0 ){
 		return pLoadRuleAnimation( root, animator );
 		
@@ -1701,816 +1900,55 @@ aeRule *aeLSAnimator::pLoadRule( decXmlElementTag *root, aeAnimator *animator ){
 		
 	}else if( strcmp( root->GetName(), "ruleLimit" ) == 0 ){
 		return pLoadRuleLimit( root, animator );
+		
+	}else if( strcmp( root->GetName(), "ruleMirror" ) == 0 ){
+		return pLoadRuleMirror( root, animator );
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
-aeRule *aeLSAnimator::pLoadRuleAnimation( decXmlElementTag *root, aeAnimator *animator ){
+aeRule *aeLSAnimator::pLoadRuleAnimation( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleAnimation *rule = NULL;
+	const aeRuleAnimation::Ref rule( aeRuleAnimation::Ref::New( new aeRuleAnimation ) );
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
 	
-	try{
-		// create rule
-		rule = new aeRuleAnimation;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "moveName" ) == 0 ){
-						rule->SetMoveName( tag->GetFirstData()->GetData() );
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "moveName" ) == 0 ){
+					rule->SetMoveName( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "moveTime" ) == 0 ){
+					rule->SetMoveTime( strtof( GetCDataString( *tag ), NULL ) );
+					
+				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+					rule->SetEnablePosition( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+					rule->SetEnableOrientation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
 						
-					}else if( strcmp( tag->GetName(), "moveTime" ) == 0 ){
-						rule->SetMoveTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
-						
-					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "moveTime" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetMoveTime() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
+					}else if( strcmp( name, "moveTime" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetMoveTime() );
 						
 					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
 							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
 					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleAnimationDifference( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleAnimationDifference *rule = NULL;
-	decXmlElementTag *tag;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleAnimationDifference;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "leadingMoveName" ) == 0 ){
-						rule->SetLeadingMoveName( tag->GetFirstData()->GetData() );
-						
-					}else if( strcmp( tag->GetName(), "leadingMoveTime" ) == 0 ){
-						rule->SetLeadingMoveTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
-						
-					}else if( strcmp( tag->GetName(), "referenceMoveName" ) == 0 ){
-						rule->SetReferenceMoveName( tag->GetFirstData()->GetData() );
-						
-					}else if( strcmp( tag->GetName(), "referenceMoveTime" ) == 0 ){
-						rule->SetReferenceMoveTime( strtof( tag->GetFirstData()->GetData(), NULL ) );
-						
-					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "leadingMoveTime" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetLeadingMoveTime() );
-							
-						}else if( strcmp( name, "referenceMoveTime" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetReferenceMoveTime() );
-							
-						}else{
-							logger.LogErrorFormat( "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleAnimationSelect( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleAnimationSelect *rule = NULL;
-	decXmlElementTag *tag;
-	decStringList moves;
-	const char *name;
-	int i;
-	
-	try{
-		rule = new aeRuleAnimationSelect;
-		
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( ! tag ){
-				continue;
-			}
-			
-			if( pLoadRuleCommon( tag, animator, rule ) ){
-				continue;
-			}
-			
-			if( strcmp( tag->GetName(), "move" ) == 0 ){
-				moves.Add( tag->GetFirstData()->GetData() );
-				
-			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-				rule->SetEnablePosition( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-				rule->SetEnableOrientation( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-				rule->SetEnableSize( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-				name = pGetAttributeString( tag, "name" );
-				
-				if( strcmp( name, "blendFactor" ) == 0 ){
-					pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-					
-				}else if( strcmp( name, "moveTime" ) == 0 ){
-					pLoadControllerTarget( tag, animator, rule->GetTargetMoveTime() );
-					
-				}else if( strcmp( name, "selection" ) == 0 ){
-					pLoadControllerTarget( tag, animator, rule->GetTargetSelect() );
-					
-				}else{
-					logger.LogErrorFormat( "%s(%i:%i): Unknown target '%s'",
-						root->GetName().GetString(), tag->GetLineNumber(),
-						tag->GetPositionNumber(), name );
-					DETHROW( deeInvalidFileFormat );
-				}
-				
-			}else{
-				logger.LogWarnFormat( "%s(%i:%i): Unknown Tag %s, ignoring",
-					root->GetName().GetString(), tag->GetLineNumber(),
-					tag->GetPositionNumber(), tag->GetName().GetString() );
-			}
-		}
-		
-		rule->SetMoves( moves );
-		
-	}catch( const deException & ){
-		if( rule ){
-			rule->FreeReference();
-		}
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleBoneTransformator *rule = NULL;
-	decXmlCharacterData *cdata;
-	decXmlElementTag *tag;
-	decVector vector;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleBoneTransformator;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "minimumTranslation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumTranslation( vector );
-						
-					}else if( strcmp( tag->GetName(), "maximumTranslation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumTranslation( vector );
-						
-					}else if( strcmp( tag->GetName(), "minimumRotation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumRotation( vector );
-						
-					}else if( strcmp( tag->GetName(), "maximumRotation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumRotation( vector );
-						
-					}else if( strcmp( tag->GetName(), "minimumScaling" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumScaling( vector );
-						
-					}else if( strcmp( tag->GetName(), "maximumScaling" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumScaling( vector );
-						
-					}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "local" ) == 0 ){
-							rule->SetCoordinateFrame( deAnimatorRuleBoneTransformator::ecfBoneLocal );
-							
-						}else if( strcmp( name, "component" ) == 0 ){
-							rule->SetCoordinateFrame( deAnimatorRuleBoneTransformator::ecfComponent );
-							
-						}else if( strcmp( name, "target" ) == 0 ){
-							rule->SetCoordinateFrame( deAnimatorRuleBoneTransformator::ecfTargetBone );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
-						cdata = tag->GetFirstData();
-						
-						if( cdata ){
-							rule->SetTargetBone( cdata->GetData() );
-							
-						}else{
-							rule->SetTargetBone( "" );
-						}
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "translation" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetTranslation() );
-							
-						}else if( strcmp( name, "rotation" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetRotation() );
-							
-						}else if( strcmp( name, "scaling" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetScaling() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleStateManipulator( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleStateManipulator *rule = NULL;
-	decXmlElementTag *tag;
-	decVector vector;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleStateManipulator;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "positionMinimum" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "positionMaximum" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "rotationMinimum" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumRotation( vector );
-						
-					}else if( strcmp( tag->GetName(), "rotationMaximum" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumRotation( vector );
-						
-					}else if( strcmp( tag->GetName(), "sizeMinimum" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumSize( vector );
-						
-					}else if( strcmp( tag->GetName(), "sizeMaximum" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumSize( vector );
-						
-					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableRotation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "position" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetPosition() );
-							
-						}else if( strcmp( name, "orientation" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetRotation() );
-							
-						}else if( strcmp( name, "size" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetSize() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleStateSnapshot( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleStateSnapshot *rule = NULL;
-	decXmlElementTag *tag;
-	decVector vector;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleStateSnapshot;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "useLastState" ) == 0 ){
-						rule->SetUseLastState( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleInverseKinematic( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleInverseKinematic *rule = NULL;
-	decXmlCharacterData *cdata;
-	decXmlElementTag *tag;
-	decVector vector;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleInverseKinematic;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "goalPosition" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetGoalPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "goalOrientation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetGoalOrientation( vector );
-						
-					}else if( strcmp( tag->GetName(), "localPosition" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetLocalPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "localOrientation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetLocalOrientation( vector );
-						
-					}else if( strcmp( tag->GetName(), "adjustOrientation" ) == 0 ){
-						rule->SetAdjustOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "position" ) == 0 ){ // deprecated
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetGoalPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "orientation" ) == 0 ){ // deprecated
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetGoalOrientation( vector );
-						
-					}else if( strcmp( tag->GetName(), "offset" ) == 0 ){ // deprecated
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetLocalPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "solverBone" ) == 0 ){
-						cdata = tag->GetFirstData();
-						
-						if( cdata ){
-							rule->SetSolverBone( cdata->GetData() );
-							
-						}else{
-							rule->SetSolverBone( "" );
-						}
-						
-					}else if( strcmp( tag->GetName(), "useSolverBone" ) == 0 ){
-						rule->SetUseSolverBone( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "reachRange" ) == 0 ){
-						rule->SetReachRange( strtof( tag->GetFirstData()->GetData(), NULL ) );
-						
-					}else if( strcmp( tag->GetName(), "reachBone" ) == 0 ){
-						cdata = tag->GetFirstData();
-						
-						if( cdata ){
-							rule->SetReachBone( cdata->GetData() );
-							
-						}else{
-							rule->SetReachBone( "" );
-						}
-						
-					}else if( strcmp( tag->GetName(), "reachCenter" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetReachCenter( vector );
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "goalPosition" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetGoalPosition() );
-							
-						}else if( strcmp( name, "goalOrientation" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetGoalOrientation() );
-							
-						}else if( strcmp( name, "localPosition" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetLocalPosition() );
-							
-						}else if( strcmp( name, "localOrientation" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetLocalOrientation() );
-							
-						}else if( strcmp( name, "reachRange" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetReachRange() );
-							
-						}else if( strcmp( name, "reachCenter" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetReachCenter() );
-							
-						}else if( strcmp( name, "position" ) == 0 ){ // deprecated
-							pLoadControllerTarget( tag, animator, rule->GetTargetGoalPosition() );
-							
-						}else if( strcmp( name, "orientation" ) == 0 ){ // deprecated
-							pLoadControllerTarget( tag, animator, rule->GetTargetGoalOrientation() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleForeignState( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleForeignState *rule = NULL;
-	decXmlElementTag *tag;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleForeignState;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "scalePosition" ) == 0 ){
-						rule->SetScalePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "scaleOrientation" ) == 0 ){
-						rule->SetScaleOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "scaleSize" ) == 0 ){
-						rule->SetScaleSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-						rule->SetEnablePosition( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-						rule->SetEnableOrientation( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-						rule->SetEnableSize( GetCDataBool( *tag ) );
-						
-					}else if( strcmp( tag->GetName(), "foreignBone" ) == 0 ){
-						rule->SetForeignBone( tag->GetFirstData()->GetData() );
-						
-					}else if( strcmp( tag->GetName(), "srcCFrame" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "local" ) == 0 ){
-							rule->SetSourceCoordinateFrame( deAnimatorRuleForeignState::ecfBoneLocal );
-							
-						}else if( strcmp( name, "component" ) == 0 ){
-							rule->SetSourceCoordinateFrame( deAnimatorRuleForeignState::ecfComponent );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "destCFrame" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "local" ) == 0 ){
-							rule->SetDestCoordinateFrame( deAnimatorRuleForeignState::ecfBoneLocal );
-							
-						}else if( strcmp( name, "component" ) == 0 ){
-							rule->SetDestCoordinateFrame( deAnimatorRuleForeignState::ecfComponent );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "position" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetPosition() );
-							
-						}else if( strcmp( name, "orientation" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetOrientation() );
-							
-						}else if( strcmp( name, "size" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetSize() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleGroup( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const int elementCount = root->GetElementCount();
-	aeRuleGroup *rule = NULL;
-	int i;
-	
-	try{
-		rule = new aeRuleGroup;
-		
-		for( i=0; i<elementCount; i++ ){
-			decXmlElementTag * const tag = root->GetElementIfTag( i );
-			if( ! tag ){
-				continue;
-			}
-			
-			if( pLoadRuleCommon( tag, animator, rule ) ){
-				continue;
-			}
-			
-			if( strcmp( tag->GetName(), "applicationType" ) == 0 ){
-				const char * const name = tag->GetFirstData()->GetData();
-				
-				if( strcmp( name, "all" ) == 0 ){
-					rule->SetApplicationType( deAnimatorRuleGroup::eatAll );
-					
-				}else if( strcmp( name, "selection" ) == 0 ){
-					rule->SetApplicationType( deAnimatorRuleGroup::eatSelect );
-					
-				}else{
-					logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown type '%s'",
-						root->GetName().GetString(), tag->GetLineNumber(),
-						tag->GetPositionNumber(), name );
-					DETHROW( deeInvalidFileFormat );
-				}
-				
-			}else if( strcmp( tag->GetName(), "useCurrentState" ) == 0 ){
-				rule->SetUseCurrentState( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
-				rule->SetEnablePosition( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
-				rule->SetEnableOrientation( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
-				rule->SetEnableSize( GetCDataBool( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-				const char * const name = pGetAttributeString( tag, "name" );
-				
-				if( strcmp( name, "blendFactor" ) == 0 ){
-					pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-					
-				}else if( strcmp( name, "selection" ) == 0 ){
-					pLoadControllerTarget( tag, animator, rule->GetTargetSelect() );
-					
-				}else{
-					logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-						root->GetName().GetString(), tag->GetLineNumber(),
-						tag->GetPositionNumber(), name );
-					DETHROW( deeInvalidFileFormat );
-				}
-				
-			}else{
-				aeRule * const srule = pLoadRule( tag, animator );
-				
-				if( srule ){
-					rule->AddRule( srule );
-					srule->FreeReference();
 					
 				}else{
 					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -2519,56 +1957,368 @@ aeRule *aeLSAnimator::pLoadRuleGroup( decXmlElementTag *root, aeAnimator *animat
 				}
 			}
 		}
-		
-	}catch( const deException & ){
-		if( rule ){
-			rule->FreeReference();
-		}
-		throw;
 	}
 	
+	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleSubAnimator( decXmlElementTag *root, aeAnimator *animator ){
+aeRule *aeLSAnimator::pLoadRuleAnimationDifference( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleSubAnimator *rule = NULL;
-	decXmlCharacterData *cdata;
+	const aeRuleAnimationDifference::Ref rule( aeRuleAnimationDifference::Ref::New( new aeRuleAnimationDifference ) );
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
 	
-	try{
-		// create rule
-		rule = new aeRuleSubAnimator;
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "leadingMoveName" ) == 0 ){
+					rule->SetLeadingMoveName( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "leadingMoveTime" ) == 0 ){
+					rule->SetLeadingMoveTime( strtof( GetCDataString( *tag ), NULL ) );
+					
+				}else if( strcmp( tag->GetName(), "referenceMoveName" ) == 0 ){
+					rule->SetReferenceMoveName( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "referenceMoveTime" ) == 0 ){
+					rule->SetReferenceMoveTime( strtof( GetCDataString( *tag ), NULL ) );
+					
+				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+					rule->SetEnablePosition( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+					rule->SetEnableOrientation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else if( strcmp( name, "leadingMoveTime" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetLeadingMoveTime() );
+						
+					}else if( strcmp( name, "referenceMoveTime" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetReferenceMoveTime() );
+						
+					}else{
+						logger.LogErrorFormat( "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else{
+					logger.LogWarnFormat( "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
+				}
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleAnimationSelect( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleAnimationSelect::Ref rule( aeRuleAnimationSelect::Ref::New( new aeRuleAnimationSelect ) );
+	decXmlElementTag *tag;
+	decStringList moves;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
 		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( strcmp( tag->GetName(), "pathAnimator" ) == 0 ){
+		if( pLoadRuleCommon( tag, animator, rule ) ){
+			continue;
+		}
+		
+		if( strcmp( tag->GetName(), "move" ) == 0 ){
+			moves.Add( GetCDataString( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+			rule->SetEnablePosition( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+			rule->SetEnableOrientation( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+			name = pGetAttributeString( tag, "name" );
+			
+			if( strcmp( name, "blendFactor" ) == 0 ){
+				pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+				
+			}else if( strcmp( name, "moveTime" ) == 0 ){
+				pLoadControllerTarget( tag, animator, rule->GetTargetMoveTime() );
+				
+			}else if( strcmp( name, "selection" ) == 0 ){
+				pLoadControllerTarget( tag, animator, rule->GetTargetSelect() );
+				
+			}else{
+				logger.LogErrorFormat( "%s(%i:%i): Unknown target '%s'",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), name );
+				DETHROW( deeInvalidFileFormat );
+			}
+			
+		}else{
+			logger.LogWarnFormat( "%s(%i:%i): Unknown Tag %s, ignoring",
+				root->GetName().GetString(), tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
+		}
+	}
+	
+	rule->SetMoves( moves );
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleBoneTransformator::Ref rule( aeRuleBoneTransformator::Ref::New( new aeRuleBoneTransformator ) );
+	decXmlCharacterData *cdata;
+	decXmlElementTag *tag;
+	decVector vector;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "minimumTranslation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumTranslation( vector );
+					
+				}else if( strcmp( tag->GetName(), "maximumTranslation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumTranslation( vector );
+					
+				}else if( strcmp( tag->GetName(), "minimumRotation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumRotation( vector );
+					
+				}else if( strcmp( tag->GetName(), "maximumRotation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumRotation( vector );
+					
+				}else if( strcmp( tag->GetName(), "minimumScaling" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumScaling( vector );
+					
+				}else if( strcmp( tag->GetName(), "maximumScaling" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumScaling( vector );
+					
+				}else if( strcmp( tag->GetName(), "axis" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetAxis( vector );
+					
+				}else if( strcmp( tag->GetName(), "minimumAngle" ) == 0 ){
+					rule->SetMinimumAngle( GetCDataFloat( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "maximumAngle" ) == 0 ){
+					rule->SetMaximumAngle( GetCDataFloat( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "local" ) == 0 ){
+						rule->SetCoordinateFrame( deAnimatorRuleBoneTransformator::ecfBoneLocal );
+						
+					}else if( strcmp( name, "component" ) == 0 ){
+						rule->SetCoordinateFrame( deAnimatorRuleBoneTransformator::ecfComponent );
+						
+					}else if( strcmp( name, "target" ) == 0 ){
+						rule->SetCoordinateFrame( deAnimatorRuleBoneTransformator::ecfTargetBone );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+					rule->SetEnablePosition( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+					rule->SetEnableOrientation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "useAxis" ) == 0 ){
+					rule->SetUseAxis( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 					cdata = tag->GetFirstData();
 					
 					if( cdata ){
-						rule->SetPathSubAnimator( cdata->GetData() );
+						rule->SetTargetBone( cdata->GetData() );
 						
 					}else{
-						rule->SetPathSubAnimator( "" );
+						rule->SetTargetBone( "" );
 					}
 					
-				}else if( strcmp( tag->GetName(), "connection" ) == 0 ){
-					const int controller = pGetAttributeInt( tag, "controller" );
-					const decString target( GetCDataString( *tag ) );
-					if( target.IsEmpty() || ! rule->GetSubAnimator() ){
-						continue;
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else if( strcmp( name, "translation" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetTranslation() );
+						
+					}else if( strcmp( name, "rotation" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetRotation() );
+						
+					}else if( strcmp( name, "scaling" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetScaling() );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
 					}
 					
-					const int targetIndex = rule->GetSubAnimator()->IndexOfControllerNamed( target );
-					if( targetIndex == -1 ){
-						continue;
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
+				}
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleStateManipulator( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleStateManipulator::Ref rule( aeRuleStateManipulator::Ref::New( new aeRuleStateManipulator ) );
+	decXmlElementTag *tag;
+	decVector vector;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "positionMinimum" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "positionMaximum" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "rotationMinimum" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumRotation( vector );
+					
+				}else if( strcmp( tag->GetName(), "rotationMaximum" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumRotation( vector );
+					
+				}else if( strcmp( tag->GetName(), "sizeMinimum" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumSize( vector );
+					
+				}else if( strcmp( tag->GetName(), "sizeMaximum" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumSize( vector );
+					
+				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+					rule->SetEnablePosition( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+					rule->SetEnableRotation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else if( strcmp( name, "position" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetPosition() );
+						
+					}else if( strcmp( name, "orientation" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetRotation() );
+						
+					}else if( strcmp( name, "size" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetSize() );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
 					}
 					
-					rule->SetControllerAt( targetIndex, animator->GetControllers().GetAt( controller ) );
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
+				}
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleStateSnapshot( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleStateSnapshot::Ref rule( aeRuleStateSnapshot::Ref::New( new aeRuleStateSnapshot ) );
+	decXmlElementTag *tag;
+	decVector vector;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "useLastState" ) == 0 ){
+					rule->SetUseLastState( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
 					rule->SetEnablePosition( GetCDataBool( *tag ) );
@@ -2592,343 +2342,796 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator( decXmlElementTag *root, aeAnimator *
 						DETHROW( deeInvalidFileFormat );
 					}
 					
-				}else if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				}else{
 					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
 						root->GetName().GetString(), tag->GetLineNumber(),
 						tag->GetPositionNumber(), tag->GetName().GetString() );
 				}
 			}
 		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
 	}
 	
+	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleTrackTo( decXmlElementTag *root, aeAnimator *animator ){
+aeRule *aeLSAnimator::pLoadRuleInverseKinematic( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeRuleTrackTo *rule = NULL;
-	decXmlElementTag *tag;
-	const char *name;
-	int i;
-	
-	try{
-		// create rule
-		rule = new aeRuleTrackTo;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "trackBone" ) == 0 ){
-						if( tag->GetFirstData() ){
-							rule->SetTrackBone( tag->GetFirstData()->GetData() );
-						}
-						
-					}else if( strcmp( tag->GetName(), "trackAxis" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "posX" ) == 0 ){
-							rule->SetTrackAxis( deAnimatorRuleTrackTo::etaPosX );
-							
-						}else if( strcmp( name, "posY" ) == 0 ){
-							rule->SetTrackAxis( deAnimatorRuleTrackTo::etaPosY );
-							
-						}else if( strcmp( name, "posZ" ) == 0 ){
-							rule->SetTrackAxis( deAnimatorRuleTrackTo::etaPosZ );
-							
-						}else if( strcmp( name, "negX" ) == 0 ){
-							rule->SetTrackAxis( deAnimatorRuleTrackTo::etaNegX );
-							
-						}else if( strcmp( name, "negY" ) == 0 ){
-							rule->SetTrackAxis( deAnimatorRuleTrackTo::etaNegY );
-							
-						}else if( strcmp( name, "negZ" ) == 0 ){
-							rule->SetTrackAxis( deAnimatorRuleTrackTo::etaNegZ );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "upAxis" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "posX" ) == 0 ){
-							rule->SetUpAxis( deAnimatorRuleTrackTo::etaPosX );
-							
-						}else if( strcmp( name, "posY" ) == 0 ){
-							rule->SetUpAxis( deAnimatorRuleTrackTo::etaPosY );
-							
-						}else if( strcmp( name, "posZ" ) == 0 ){
-							rule->SetUpAxis( deAnimatorRuleTrackTo::etaPosZ );
-							
-						}else if( strcmp( name, "negX" ) == 0 ){
-							rule->SetUpAxis( deAnimatorRuleTrackTo::etaNegX );
-							
-						}else if( strcmp( name, "negY" ) == 0 ){
-							rule->SetUpAxis( deAnimatorRuleTrackTo::etaNegY );
-							
-						}else if( strcmp( name, "negZ" ) == 0 ){
-							rule->SetUpAxis( deAnimatorRuleTrackTo::etaNegZ );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "lockedAxis" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "none" ) == 0 ){
-							rule->SetLockedAxis( deAnimatorRuleTrackTo::elaNone );
-							
-						}else if( strcmp( name, "x" ) == 0 ){
-							rule->SetLockedAxis( deAnimatorRuleTrackTo::elaX );
-							
-						}else if( strcmp( name, "y" ) == 0 ){
-							rule->SetLockedAxis( deAnimatorRuleTrackTo::elaY );
-							
-						}else if( strcmp( name, "z" ) == 0 ){
-							rule->SetLockedAxis( deAnimatorRuleTrackTo::elaZ );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "upTarget" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "worldX" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutWorldX );
-							
-						}else if( strcmp( name, "worldY" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutWorldY );
-							
-						}else if( strcmp( name, "worldZ" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutWorldZ );
-							
-						}else if( strcmp( name, "componentX" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutComponentX );
-							
-						}else if( strcmp( name, "componentY" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutComponentY );
-							
-						}else if( strcmp( name, "componentZ" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutComponentZ );
-							
-						}else if( strcmp( name, "trackBoneX" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutTrackBoneX );
-							
-						}else if( strcmp( name, "trackBoneY" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutTrackBoneY );
-							
-						}else if( strcmp( name, "trackBoneZ" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutTrackBoneZ );
-							
-						}else if( strcmp( name, "controller" ) == 0 ){
-							rule->SetUpTarget( deAnimatorRuleTrackTo::eutController );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else if( strcmp( name, "position" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetPosition() );
-							
-						}else if( strcmp( name, "up" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetUp() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
-					}
-				}
-			}
-		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
-	}
-	
-	return rule;
-}
-
-aeRule *aeLSAnimator::pLoadRuleLimit( decXmlElementTag *root, aeAnimator *animator ){
-	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleInverseKinematic::Ref rule( aeRuleInverseKinematic::Ref::New( new aeRuleInverseKinematic ) );
 	decXmlCharacterData *cdata;
-	aeRuleLimit *rule = NULL;
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
 	int i;
 	
-	try{
-		// create rule
-		rule = new aeRuleLimit;
-		
-		// parse tag
-		for( i=0; i<root->GetElementCount(); i++ ){
-			tag = root->GetElementIfTag( i );
-			if( tag ){
-				if( ! pLoadRuleCommon( tag, animator, rule ) ){
-					if( strcmp( tag->GetName(), "minimumPosition" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "maximumPosition" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumPosition( vector );
-						
-					}else if( strcmp( tag->GetName(), "minimumRotation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumRotation( vector );
-						
-					}else if( strcmp( tag->GetName(), "maximumRotation" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumRotation( vector );
-						
-					}else if( strcmp( tag->GetName(), "minimumScaling" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMinimumScaling( vector );
-						
-					}else if( strcmp( tag->GetName(), "maximumScaling" ) == 0 ){
-						vector.SetZero();
-						pLoadVector( tag, vector );
-						rule->SetMaximumScaling( vector );
-						
-					}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
-						name = tag->GetFirstData()->GetData();
-						
-						if( strcmp( name, "local" ) == 0 ){
-							rule->SetCoordinateFrame( deAnimatorRuleLimit::ecfBoneLocal );
-							
-						}else if( strcmp( name, "component" ) == 0 ){
-							rule->SetCoordinateFrame( deAnimatorRuleLimit::ecfComponent );
-							
-						}else if( strcmp( name, "target" ) == 0 ){
-							rule->SetCoordinateFrame( deAnimatorRuleLimit::ecfTargetBone );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
-						
-					}else if( strcmp( tag->GetName(), "enablePosMin" ) == 0 ){
-						rule->SetEnablePositionXMin( pGetAttributeInt( tag, "x" ) != 0 );
-						rule->SetEnablePositionYMin( pGetAttributeInt( tag, "y" ) != 0 );
-						rule->SetEnablePositionZMin( pGetAttributeInt( tag, "z" ) != 0 );
-						
-					}else if( strcmp( tag->GetName(), "enablePosMax" ) == 0 ){
-						rule->SetEnablePositionXMax( pGetAttributeInt( tag, "x" ) != 0 );
-						rule->SetEnablePositionYMax( pGetAttributeInt( tag, "y" ) != 0 );
-						rule->SetEnablePositionZMax( pGetAttributeInt( tag, "z" ) != 0 );
-						
-					}else if( strcmp( tag->GetName(), "enableRotMin" ) == 0 ){
-						rule->SetEnableRotationXMin( pGetAttributeInt( tag, "x" ) != 0 );
-						rule->SetEnableRotationYMin( pGetAttributeInt( tag, "y" ) != 0 );
-						rule->SetEnableRotationZMin( pGetAttributeInt( tag, "z" ) != 0 );
-						
-					}else if( strcmp( tag->GetName(), "enableRotMax" ) == 0 ){
-						rule->SetEnableRotationXMax( pGetAttributeInt( tag, "x" ) != 0 );
-						rule->SetEnableRotationYMax( pGetAttributeInt( tag, "y" ) != 0 );
-						rule->SetEnableRotationZMax( pGetAttributeInt( tag, "z" ) != 0 );
-						
-					}else if( strcmp( tag->GetName(), "enableScaleMin" ) == 0 ){
-						rule->SetEnableScalingXMin( pGetAttributeInt( tag, "x" ) != 0 );
-						rule->SetEnableScalingYMin( pGetAttributeInt( tag, "y" ) != 0 );
-						rule->SetEnableScalingZMin( pGetAttributeInt( tag, "z" ) != 0 );
-						
-					}else if( strcmp( tag->GetName(), "enableScaleMax" ) == 0 ){
-						rule->SetEnableScalingXMax( pGetAttributeInt( tag, "x" ) != 0 );
-						rule->SetEnableScalingYMax( pGetAttributeInt( tag, "y" ) != 0 );
-						rule->SetEnableScalingZMax( pGetAttributeInt( tag, "z" ) != 0 );
-						
-					}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
-						cdata = tag->GetFirstData();
-						
-						if( cdata ){
-							rule->SetTargetBone( cdata->GetData() );
-							
-						}else{
-							rule->SetTargetBone( "" );
-						}
-						
-					}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-						name = pGetAttributeString( tag, "name" );
-						
-						if( strcmp( name, "blendFactor" ) == 0 ){
-							pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
-							
-						}else{
-							logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
-								root->GetName().GetString(), tag->GetLineNumber(),
-								tag->GetPositionNumber(), name );
-							DETHROW( deeInvalidFileFormat );
-						}
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "goalPosition" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetGoalPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "goalOrientation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetGoalOrientation( vector );
+					
+				}else if( strcmp( tag->GetName(), "localPosition" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetLocalPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "localOrientation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetLocalOrientation( vector );
+					
+				}else if( strcmp( tag->GetName(), "adjustOrientation" ) == 0 ){
+					rule->SetAdjustOrientation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "position" ) == 0 ){ // deprecated
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetGoalPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "orientation" ) == 0 ){ // deprecated
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetGoalOrientation( vector );
+					
+				}else if( strcmp( tag->GetName(), "offset" ) == 0 ){ // deprecated
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetLocalPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "solverBone" ) == 0 ){
+					cdata = tag->GetFirstData();
+					
+					if( cdata ){
+						rule->SetSolverBone( cdata->GetData() );
 						
 					}else{
-						logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), tag->GetName().GetString() );
+						rule->SetSolverBone( "" );
 					}
+					
+				}else if( strcmp( tag->GetName(), "useSolverBone" ) == 0 ){
+					rule->SetUseSolverBone( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "reachRange" ) == 0 ){
+					rule->SetReachRange( strtof( GetCDataString( *tag ), NULL ) );
+					
+				}else if( strcmp( tag->GetName(), "reachBone" ) == 0 ){
+					cdata = tag->GetFirstData();
+					
+					if( cdata ){
+						rule->SetReachBone( cdata->GetData() );
+						
+					}else{
+						rule->SetReachBone( "" );
+					}
+					
+				}else if( strcmp( tag->GetName(), "reachCenter" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetReachCenter( vector );
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else if( strcmp( name, "goalPosition" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetGoalPosition() );
+						
+					}else if( strcmp( name, "goalOrientation" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetGoalOrientation() );
+						
+					}else if( strcmp( name, "localPosition" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetLocalPosition() );
+						
+					}else if( strcmp( name, "localOrientation" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetLocalOrientation() );
+						
+					}else if( strcmp( name, "reachRange" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetReachRange() );
+						
+					}else if( strcmp( name, "reachCenter" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetReachCenter() );
+						
+					}else if( strcmp( name, "position" ) == 0 ){ // deprecated
+						pLoadControllerTarget( tag, animator, rule->GetTargetGoalPosition() );
+						
+					}else if( strcmp( name, "orientation" ) == 0 ){ // deprecated
+						pLoadControllerTarget( tag, animator, rule->GetTargetGoalOrientation() );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
 				}
 			}
 		}
-		
-	}catch( const deException & ){
-		if( rule ) rule->FreeReference();
-		throw;
 	}
 	
+	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator *animator, aeRule *rule ){
+aeRule *aeLSAnimator::pLoadRuleForeignState( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleForeignState::Ref rule( aeRuleForeignState::Ref::New( new aeRuleForeignState ) );
+	decXmlElementTag *tag;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "scalePosition" ) == 0 ){
+					rule->SetScalePosition( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "scaleOrientation" ) == 0 ){
+					rule->SetScaleOrientation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "scaleSize" ) == 0 ){
+					rule->SetScaleSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+					rule->SetEnablePosition( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+					rule->SetEnableOrientation( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+					rule->SetEnableSize( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "foreignBone" ) == 0 ){
+					rule->SetForeignBone( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "srcCFrame" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "local" ) == 0 ){
+						rule->SetSourceCoordinateFrame( deAnimatorRuleForeignState::ecfBoneLocal );
+						
+					}else if( strcmp( name, "component" ) == 0 ){
+						rule->SetSourceCoordinateFrame( deAnimatorRuleForeignState::ecfComponent );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "destCFrame" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "local" ) == 0 ){
+						rule->SetDestCoordinateFrame( deAnimatorRuleForeignState::ecfBoneLocal );
+						
+					}else if( strcmp( name, "component" ) == 0 ){
+						rule->SetDestCoordinateFrame( deAnimatorRuleForeignState::ecfComponent );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else if( strcmp( name, "position" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetPosition() );
+						
+					}else if( strcmp( name, "orientation" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetOrientation() );
+						
+					}else if( strcmp( name, "size" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetSize() );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
+				}
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleMirror( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleMirror::Ref rule( aeRuleMirror::Ref::New( new aeRuleMirror ) );
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		decXmlElementTag * const tag = root->GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( pLoadRuleCommon( tag, animator, rule ) ){
+			continue;
+		}
+		
+		if( tag->GetName() == "enablePosition" ){
+			rule->SetEnablePosition( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableOrientation" ){
+			rule->SetEnableOrientation( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableSize" ){
+			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "mirrorAxis" ){
+			const decString &name = GetCDataString( *tag );
+			
+			if( name == "x" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaX );
+				
+			}else if( name == "y" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaY );
+				
+			}else if( name == "z" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaZ );
+				
+			}else{
+				logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown mirror axis '%s'",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), name.GetString() );
+				DETHROW( deeInvalidFileFormat );
+			}
+			
+		}else if( tag->GetName() == "mirrorBone" ){
+			rule->SetMirrorBone( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "matchName" ){
+			const decString &first = GetAttributeString( *tag, "first" );
+			const decString &second = GetAttributeString( *tag, "second" );
+			const decString &strType = GetAttributeString( *tag, "type" );
+			deAnimatorRuleMirror::eMatchNameType type;
+			
+			if( strType == "first" ){
+				type = deAnimatorRuleMirror::emntFirst;
+				
+			}else if( strType == "last" ){
+				type = deAnimatorRuleMirror::emntLast;
+				
+			}else if( strType == "middle" ){
+				type = deAnimatorRuleMirror::emntMiddle;
+				
+			}else{
+				logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown match name type '%s'",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), strType.GetString() );
+				DETHROW( deeInvalidFileFormat );
+			}
+			
+			rule->AddMatchName( aeRuleMirror::cMatchName::Ref::New(
+				new aeRuleMirror::cMatchName( first, second, type ) ) );
+			
+		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+			const decString &name = pGetAttributeString( tag, "name" );
+			
+			if( name == "blendFactor" ){
+				pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+				
+			}else{
+				logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), name.GetString() );
+				DETHROW( deeInvalidFileFormat );
+			}
+			
+		}else{
+			logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+				root->GetName().GetString(), tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleGroup( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const int elementCount = root->GetElementCount();
+	const aeRuleGroup::Ref rule( aeRuleGroup::Ref::New( new aeRuleGroup ) );
+	int i;
+	
+	for( i=0; i<elementCount; i++ ){
+		decXmlElementTag * const tag = root->GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( pLoadRuleCommon( tag, animator, rule ) ){
+			continue;
+		}
+		
+		if( strcmp( tag->GetName(), "applicationType" ) == 0 ){
+			const char * const name = GetCDataString( *tag );
+			
+			if( strcmp( name, "all" ) == 0 ){
+				rule->SetApplicationType( deAnimatorRuleGroup::eatAll );
+				
+			}else if( strcmp( name, "selection" ) == 0 ){
+				rule->SetApplicationType( deAnimatorRuleGroup::eatSelect );
+				
+			}else{
+				logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown type '%s'",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), name );
+				DETHROW( deeInvalidFileFormat );
+			}
+			
+		}else if( strcmp( tag->GetName(), "useCurrentState" ) == 0 ){
+			rule->SetUseCurrentState( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+			rule->SetEnablePosition( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+			rule->SetEnableOrientation( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+			const char * const name = pGetAttributeString( tag, "name" );
+			
+			if( strcmp( name, "blendFactor" ) == 0 ){
+				pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+				
+			}else if( strcmp( name, "selection" ) == 0 ){
+				pLoadControllerTarget( tag, animator, rule->GetTargetSelect() );
+				
+			}else{
+				logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), name );
+				DETHROW( deeInvalidFileFormat );
+			}
+			
+		}else{
+			aeRule * const srule = pLoadRule( tag, animator );
+			
+			if( srule ){
+				rule->AddRule( srule );
+				srule->FreeReference();
+				
+			}else{
+				logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), tag->GetName().GetString() );
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleSubAnimator( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleSubAnimator::Ref rule( aeRuleSubAnimator::Ref::New( new aeRuleSubAnimator ) );
+	decXmlCharacterData *cdata;
+	decXmlElementTag *tag;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( strcmp( tag->GetName(), "pathAnimator" ) == 0 ){
+				cdata = tag->GetFirstData();
+				
+				if( cdata ){
+					rule->SetPathSubAnimator( cdata->GetData() );
+					
+				}else{
+					rule->SetPathSubAnimator( "" );
+				}
+				
+			}else if( strcmp( tag->GetName(), "connection" ) == 0 ){
+				const int controller = pGetAttributeInt( tag, "controller" );
+				const decString target( GetCDataString( *tag ) );
+				if( target.IsEmpty() || ! rule->GetSubAnimator() ){
+					continue;
+				}
+				
+				const int targetIndex = rule->GetSubAnimator()->IndexOfControllerNamed( target );
+				if( targetIndex == -1 ){
+					continue;
+				}
+				
+				rule->SetControllerAt( targetIndex, animator.GetControllers().GetAt( controller ) );
+				
+			}else if( strcmp( tag->GetName(), "enablePosition" ) == 0 ){
+				rule->SetEnablePosition( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableOrientation" ) == 0 ){
+				rule->SetEnableOrientation( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
+				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+				name = pGetAttributeString( tag, "name" );
+				
+				if( strcmp( name, "blendFactor" ) == 0 ){
+					pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+					
+				}else{
+					logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), name );
+					DETHROW( deeInvalidFileFormat );
+				}
+				
+			}else if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+					root->GetName().GetString(), tag->GetLineNumber(),
+					tag->GetPositionNumber(), tag->GetName().GetString() );
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleTrackTo( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	const aeRuleTrackTo::Ref rule( aeRuleTrackTo::Ref::New( new aeRuleTrackTo ) );
+	decXmlElementTag *tag;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "trackBone" ) == 0 ){
+					if( tag->GetFirstData() ){
+						rule->SetTrackBone( GetCDataString( *tag ) );
+					}
+					
+				}else if( strcmp( tag->GetName(), "trackAxis" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "posX" ) == 0 ){
+						rule->SetTrackAxis( deAnimatorRuleTrackTo::etaPosX );
+						
+					}else if( strcmp( name, "posY" ) == 0 ){
+						rule->SetTrackAxis( deAnimatorRuleTrackTo::etaPosY );
+						
+					}else if( strcmp( name, "posZ" ) == 0 ){
+						rule->SetTrackAxis( deAnimatorRuleTrackTo::etaPosZ );
+						
+					}else if( strcmp( name, "negX" ) == 0 ){
+						rule->SetTrackAxis( deAnimatorRuleTrackTo::etaNegX );
+						
+					}else if( strcmp( name, "negY" ) == 0 ){
+						rule->SetTrackAxis( deAnimatorRuleTrackTo::etaNegY );
+						
+					}else if( strcmp( name, "negZ" ) == 0 ){
+						rule->SetTrackAxis( deAnimatorRuleTrackTo::etaNegZ );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "upAxis" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "posX" ) == 0 ){
+						rule->SetUpAxis( deAnimatorRuleTrackTo::etaPosX );
+						
+					}else if( strcmp( name, "posY" ) == 0 ){
+						rule->SetUpAxis( deAnimatorRuleTrackTo::etaPosY );
+						
+					}else if( strcmp( name, "posZ" ) == 0 ){
+						rule->SetUpAxis( deAnimatorRuleTrackTo::etaPosZ );
+						
+					}else if( strcmp( name, "negX" ) == 0 ){
+						rule->SetUpAxis( deAnimatorRuleTrackTo::etaNegX );
+						
+					}else if( strcmp( name, "negY" ) == 0 ){
+						rule->SetUpAxis( deAnimatorRuleTrackTo::etaNegY );
+						
+					}else if( strcmp( name, "negZ" ) == 0 ){
+						rule->SetUpAxis( deAnimatorRuleTrackTo::etaNegZ );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "lockedAxis" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "none" ) == 0 ){
+						rule->SetLockedAxis( deAnimatorRuleTrackTo::elaNone );
+						
+					}else if( strcmp( name, "x" ) == 0 ){
+						rule->SetLockedAxis( deAnimatorRuleTrackTo::elaX );
+						
+					}else if( strcmp( name, "y" ) == 0 ){
+						rule->SetLockedAxis( deAnimatorRuleTrackTo::elaY );
+						
+					}else if( strcmp( name, "z" ) == 0 ){
+						rule->SetLockedAxis( deAnimatorRuleTrackTo::elaZ );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "upTarget" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "worldX" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutWorldX );
+						
+					}else if( strcmp( name, "worldY" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutWorldY );
+						
+					}else if( strcmp( name, "worldZ" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutWorldZ );
+						
+					}else if( strcmp( name, "componentX" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutComponentX );
+						
+					}else if( strcmp( name, "componentY" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutComponentY );
+						
+					}else if( strcmp( name, "componentZ" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutComponentZ );
+						
+					}else if( strcmp( name, "trackBoneX" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutTrackBoneX );
+						
+					}else if( strcmp( name, "trackBoneY" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutTrackBoneY );
+						
+					}else if( strcmp( name, "trackBoneZ" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutTrackBoneZ );
+						
+					}else if( strcmp( name, "controller" ) == 0 ){
+						rule->SetUpTarget( deAnimatorRuleTrackTo::eutController );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else if( strcmp( name, "position" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetPosition() );
+						
+					}else if( strcmp( name, "up" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetUp() );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
+				}
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+aeRule *aeLSAnimator::pLoadRuleLimit( decXmlElementTag *root, aeAnimator &animator ){
+	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
+	decXmlCharacterData *cdata;
+	const aeRuleLimit::Ref rule( aeRuleLimit::Ref::New( new aeRuleLimit ) );
+	decXmlElementTag *tag;
+	decVector vector;
+	const char *name;
+	int i;
+	
+	for( i=0; i<root->GetElementCount(); i++ ){
+		tag = root->GetElementIfTag( i );
+		if( tag ){
+			if( ! pLoadRuleCommon( tag, animator, rule ) ){
+				if( strcmp( tag->GetName(), "minimumPosition" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "maximumPosition" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumPosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "minimumRotation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumRotation( vector );
+					
+				}else if( strcmp( tag->GetName(), "maximumRotation" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumRotation( vector );
+					
+				}else if( strcmp( tag->GetName(), "minimumScaling" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMinimumScaling( vector );
+					
+				}else if( strcmp( tag->GetName(), "maximumScaling" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetMaximumScaling( vector );
+					
+				}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
+					name = GetCDataString( *tag );
+					
+					if( strcmp( name, "local" ) == 0 ){
+						rule->SetCoordinateFrame( deAnimatorRuleLimit::ecfBoneLocal );
+						
+					}else if( strcmp( name, "component" ) == 0 ){
+						rule->SetCoordinateFrame( deAnimatorRuleLimit::ecfComponent );
+						
+					}else if( strcmp( name, "target" ) == 0 ){
+						rule->SetCoordinateFrame( deAnimatorRuleLimit::ecfTargetBone );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else if( strcmp( tag->GetName(), "enablePosMin" ) == 0 ){
+					rule->SetEnablePositionXMin( pGetAttributeInt( tag, "x" ) != 0 );
+					rule->SetEnablePositionYMin( pGetAttributeInt( tag, "y" ) != 0 );
+					rule->SetEnablePositionZMin( pGetAttributeInt( tag, "z" ) != 0 );
+					
+				}else if( strcmp( tag->GetName(), "enablePosMax" ) == 0 ){
+					rule->SetEnablePositionXMax( pGetAttributeInt( tag, "x" ) != 0 );
+					rule->SetEnablePositionYMax( pGetAttributeInt( tag, "y" ) != 0 );
+					rule->SetEnablePositionZMax( pGetAttributeInt( tag, "z" ) != 0 );
+					
+				}else if( strcmp( tag->GetName(), "enableRotMin" ) == 0 ){
+					rule->SetEnableRotationXMin( pGetAttributeInt( tag, "x" ) != 0 );
+					rule->SetEnableRotationYMin( pGetAttributeInt( tag, "y" ) != 0 );
+					rule->SetEnableRotationZMin( pGetAttributeInt( tag, "z" ) != 0 );
+					
+				}else if( strcmp( tag->GetName(), "enableRotMax" ) == 0 ){
+					rule->SetEnableRotationXMax( pGetAttributeInt( tag, "x" ) != 0 );
+					rule->SetEnableRotationYMax( pGetAttributeInt( tag, "y" ) != 0 );
+					rule->SetEnableRotationZMax( pGetAttributeInt( tag, "z" ) != 0 );
+					
+				}else if( strcmp( tag->GetName(), "enableScaleMin" ) == 0 ){
+					rule->SetEnableScalingXMin( pGetAttributeInt( tag, "x" ) != 0 );
+					rule->SetEnableScalingYMin( pGetAttributeInt( tag, "y" ) != 0 );
+					rule->SetEnableScalingZMin( pGetAttributeInt( tag, "z" ) != 0 );
+					
+				}else if( strcmp( tag->GetName(), "enableScaleMax" ) == 0 ){
+					rule->SetEnableScalingXMax( pGetAttributeInt( tag, "x" ) != 0 );
+					rule->SetEnableScalingYMax( pGetAttributeInt( tag, "y" ) != 0 );
+					rule->SetEnableScalingZMax( pGetAttributeInt( tag, "z" ) != 0 );
+					
+				}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
+					cdata = tag->GetFirstData();
+					
+					if( cdata ){
+						rule->SetTargetBone( cdata->GetData() );
+						
+					}else{
+						rule->SetTargetBone( "" );
+					}
+					
+				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+					name = pGetAttributeString( tag, "name" );
+					
+					if( strcmp( name, "blendFactor" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetBlendFactor() );
+						
+					}else{
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown target '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
+					}
+					
+				}else{
+					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+						root->GetName().GetString(), tag->GetLineNumber(),
+						tag->GetPositionNumber(), tag->GetName().GetString() );
+				}
+			}
+		}
+	}
+	
+	rule->AddReference(); // caller inherits reference
+	return rule;
+}
+
+bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator&, aeRule &rule ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	
 	if( strcmp( tag->GetName(), "name" ) == 0 ){
-		rule->SetName( tag->GetFirstData()->GetData() );
+		rule.SetName( GetCDataString( *tag ) );
 		return true;
 		
 	}else if( strcmp( tag->GetName(), "enabled" ) == 0 ){
-		rule->SetEnabled( GetCDataBool( *tag ) );
+		rule.SetEnabled( GetCDataBool( *tag ) );
 		return true;
 		
 	}else if( strcmp( tag->GetName(), "blendMode" ) == 0 ){
@@ -2938,10 +3141,10 @@ bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator *animator,
 			const char * const blendMode = cdata->GetData();
 			
 			if( strcmp( blendMode, "blend" ) == 0 ){
-				rule->SetBlendMode( deAnimatorRule::ebmBlend );
+				rule.SetBlendMode( deAnimatorRule::ebmBlend );
 				
 			}else if( strcmp( blendMode, "overlay" ) == 0 ){
-				rule->SetBlendMode( deAnimatorRule::ebmOverlay );
+				rule.SetBlendMode( deAnimatorRule::ebmOverlay );
 				
 			}else{
 				logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown value '%s'",
@@ -2958,19 +3161,23 @@ bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator *animator,
 		
 		return true;
 		
-	}else if( strcmp( tag->GetName(), "blendFactor" ) == 0 ){
-		rule->SetBlendFactor( strtof( tag->GetFirstData()->GetData(), NULL ) );
+	}else if( tag->GetName() == "blendFactor" ){
+		rule.SetBlendFactor( GetCDataFloat( *tag ) );
+		return true;
+		
+	}else if( tag->GetName() == "invertBlendFactor" ){
+		rule.SetInvertBlendFactor( GetCDataBool( *tag ) );
 		return true;
 		
 	}else if( strcmp( tag->GetName(), "bone" ) == 0 ){
-		rule->AddBone( tag->GetFirstData()->GetData() );
+		rule.AddBone( GetCDataString( *tag ) );
 		return true;
 	}
 	
 	return false;
 }
 
-void aeLSAnimator::pLoadControllerTarget( decXmlElementTag *root, aeAnimator *animator, aeControllerTarget &target ){
+void aeLSAnimator::pLoadControllerTarget( decXmlElementTag *root, aeAnimator &animator, aeControllerTarget &target ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	decXmlElementTag *tag;
 	int i;
@@ -2980,7 +3187,7 @@ void aeLSAnimator::pLoadControllerTarget( decXmlElementTag *root, aeAnimator *an
 		tag = root->GetElementIfTag( i );
 		if( tag ){
 			if( strcmp( tag->GetName(), "link" ) == 0 ){
-				target.AddLink( animator->GetLinks().GetAt( tag->GetFirstData()->GetData().ToInt() ) );
+				target.AddLink( animator.GetLinks().GetAt( GetCDataInt( *tag ) ) );
 				
 			}else{
 				logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
@@ -3008,13 +3215,13 @@ void aeLSAnimator::pLoadVector( decXmlElementTag *root, decVector &vector ){
 			tag = root->GetElementIfTag( i );
 			if( tag ){
 				if( strcmp( tag->GetName(), "x" ) == 0 ){
-					vector.x = strtof( tag->GetFirstData()->GetData(), NULL );
+					vector.x = strtof( GetCDataString( *tag ), NULL );
 					
 				}else if( strcmp( tag->GetName(), "y" ) == 0 ){
-					vector.y = strtof( tag->GetFirstData()->GetData(), NULL );
+					vector.y = strtof( GetCDataString( *tag ), NULL );
 					
 				}else if( strcmp( tag->GetName(), "z" ) == 0 ){
-					vector.z = strtof( tag->GetFirstData()->GetData(), NULL );
+					vector.z = strtof( GetCDataString( *tag ), NULL );
 					
 				}else{
 					logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",

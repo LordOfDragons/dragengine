@@ -81,6 +81,12 @@ abstract class AnimationBuilder
 	end
 	
 	/**
+	 * \brief Add move.
+	 */
+	protected func void addMove( String name, float playTime, float fps )
+	end
+	
+	/**
 	 * \brief Set move keyframe list count.
 	 */
 	protected func void setKeyframeListCount( int move, int count )

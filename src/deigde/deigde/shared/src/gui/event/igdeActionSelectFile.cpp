@@ -71,6 +71,7 @@ void igdeActionSelectFile::OnAction(){
 	}
 	
 	decString path( pTextField.GetText() );
+	PrepareFile( path );
 	if( path.IsEmpty() ){
 		path = DefaultPath();
 	}
@@ -95,6 +96,9 @@ void igdeActionSelectFile::OnAction(){
 	
 	pTextField.SetText( path );
 	pTextField.NotifyTextChanged();
+}
+
+void igdeActionSelectFile::PrepareFile( decString& ){
 }
 
 bool igdeActionSelectFile::AcceptFile( decString& ){

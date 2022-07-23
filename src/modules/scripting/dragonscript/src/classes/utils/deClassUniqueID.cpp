@@ -376,7 +376,7 @@ deClassUniqueID::nfToString::nfToString( const sInitData &init ) : dsFunction( i
 }
 void deClassUniqueID::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decUniqueID &id = *( ( ( sUIDNatDat* )p_GetNativeData( myself ) )->id );
-	int b, byte, offset, value, byteCount = id.GetBitCount() / 8;
+	int b, offset, value, byteCount = id.GetBitCount() / 8;
 	char buffer[ 100 ];
 	
 	offset = 0;
@@ -385,9 +385,9 @@ void deClassUniqueID::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	buffer[ offset++ ] = 'h';
 	
 	for( b=byteCount-1; b>=0; b-- ){
-		byte = id.GetByteAt( b );
+		const int vbyte = id.GetByteAt( b );
 		
-		value = ( byte & 0xf0 ) >> 4;
+		value = ( vbyte & 0xf0 ) >> 4;
 		if( value < 10 ){
 			buffer[ offset++ ] = '0' + value;
 			
@@ -395,7 +395,7 @@ void deClassUniqueID::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 			buffer[ offset++ ] = 'A' + ( value - 10 );
 		}
 		
-		value = byte & 0x0f;
+		value = vbyte & 0x0f;
 		if( value < 10 ){
 			buffer[ offset++ ] = '0' + value;
 			

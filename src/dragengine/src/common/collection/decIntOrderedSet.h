@@ -22,11 +22,13 @@
 #ifndef _DECINTORDEREDSET_H_
 #define _DECINTORDEREDSET_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Ordered set of integer values. Each value can exists only once.
  */
-class decIntOrderedSet{
+class DE_DLL_EXPORT decIntOrderedSet{
 private:
 	int *pValues;
 	int pValueCount;

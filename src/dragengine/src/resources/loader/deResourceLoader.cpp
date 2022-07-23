@@ -317,7 +317,7 @@ void deResourceLoader::RemoveAllTasks(){
 		( ( deResourceLoaderTask* )pFinishedTasks.GetAt( i ) )->Cancel();
 	}
 	
-	const bool resumeParallel = not pEngine.GetParallelProcessing().GetPaused();
+	const bool resumeParallel = ! pEngine.GetParallelProcessing().GetPaused();
 	
 	if( resumeParallel ){
 		pEngine.GetParallelProcessing().Pause();

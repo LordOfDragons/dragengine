@@ -576,12 +576,12 @@ public:
 					continue;
 				}
 				
-				const ceConversationActor &conversationActor = *actorList.GetWithIDOrAliasID( actorID );
-				if( ! conversationActor.GetSpeechAnimation() ){
+				const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID( actorID );
+				if( ! conversationActor || ! conversationActor->GetSpeechAnimation() ){
 					continue;
 				}
 				
-				const ceSpeechAnimation &speechAnimation = *conversationActor.GetSpeechAnimation();
+				const ceSpeechAnimation &speechAnimation = *conversationActor->GetSpeechAnimation();
 				const ceSAWordList &saWordList = speechAnimation.GetWordList();
 				
 				for( j=0; j<wordCount; j++ ){
@@ -986,6 +986,7 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseLists();
 	UpdateCameraShotLists();
 	UpdateTargetLists();
+	OnConversationPathChanged();
 }
 
 
@@ -1010,11 +1011,12 @@ void ceWPTopic::UpdateFileList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			ceConversationFile * const file = list.GetAt( i );
-			pCBFile->AddItem( file->GetID(), NULL, file );
+			ceConversationFile * const file2 = list.GetAt( i );
+			pCBFile->AddItem( file2->GetID(), NULL, file2 );
 		}
 		
 		pCBFile->SortItems();
+		pCBFile->StoreFilterItems();
 	}
 	
 	SelectActiveFile();
@@ -1061,11 +1063,12 @@ void ceWPTopic::UpdateTopicList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			ceConversationTopic * const topic = list.GetAt( i );
-			pCBTopic->AddItem( topic->GetID(), NULL, topic );
+			ceConversationTopic * const topic2 = list.GetAt( i );
+			pCBTopic->AddItem( topic2->GetID(), NULL, topic2 );
 		}
 		
 		pCBTopic->SortItems();
+		pCBTopic->StoreFilterItems();
 	}
 	
 	SelectActiveTopic();
@@ -1284,7 +1287,7 @@ void ceWPTopic::UpdateActive(){
 		break;
 		
 	case epASetAParam:
-		pPanelASetVariable->UpdateAction();
+		pPanelASetAParam->UpdateAction();
 		break;
 		
 	case epAActorCmd:
@@ -1300,7 +1303,7 @@ void ceWPTopic::UpdateActive(){
 		break;
 		
 	case epATrigger:
-		pPanelASetVariable->UpdateAction();
+		pPanelATrigger->UpdateAction();
 		break;
 		
 	case epAActorAdd:
@@ -1406,6 +1409,10 @@ void ceWPTopic::UpdateTargetLists(){
 void ceWPTopic::UpdateConvoCoordSysLists(){
 	pPanelACoordSystemAdd->UpdateConvoCoordSysIDLists();
 	pPanelACoordSystemRemove->UpdateConvoCoordSysIDLists();
+}
+
+void ceWPTopic::OnConversationPathChanged(){
+	pPanelAActorSpeak->OnConversationPathChanged();
 }
 
 

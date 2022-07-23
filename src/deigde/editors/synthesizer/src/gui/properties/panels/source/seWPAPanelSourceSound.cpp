@@ -187,6 +187,16 @@ void seWPAPanelSourceSound::UpdateSynthesizer(){
 	UpdateSoundInfo();
 }
 
+void seWPAPanelSourceSound::OnSynthesizerPathChanged(){
+	seSynthesizer * const synthesizer = GetSynthesizer();
+	if( synthesizer ){
+		pEditPathSound->SetBasePath( synthesizer->GetDirectoryPath() );
+		
+	}else{
+		pEditPathSound->SetBasePath( "" );
+	}
+}
+
 void seWPAPanelSourceSound::UpdateSource(){
 	seWPAPanelSource::UpdateSource();
 	

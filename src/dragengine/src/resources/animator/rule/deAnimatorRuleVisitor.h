@@ -22,6 +22,8 @@
 #ifndef _DEANIMATORRULEVISITOR_H_
 #define _DEANIMATORRULEVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deAnimatorRule;
 class deAnimatorRuleAnimation;
 class deAnimatorRuleAnimationDifference;
@@ -33,15 +35,15 @@ class deAnimatorRuleStateSnapshot;
 class deAnimatorRuleForeignState;
 class deAnimatorRuleGroup;
 class deAnimatorRuleSubAnimator;
-class deAnimatorRuleRetarget;
 class deAnimatorRuleTrackTo;
 class deAnimatorRuleLimit;
+class deAnimatorRuleMirror;
 
 
 /**
  * \brief Animator rule visitor.
  */
-class deAnimatorRuleVisitor{
+class DE_DLL_EXPORT deAnimatorRuleVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -89,14 +91,17 @@ public:
 	/** \brief Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
-	
 	/** \brief Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

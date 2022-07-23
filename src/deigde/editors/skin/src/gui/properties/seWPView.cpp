@@ -200,6 +200,19 @@ public:
 	}
 };
 
+class cComboMove : public cBaseComboBoxListener{
+	bool &pPreventUpdate;
+public:
+	cComboMove( seWPView &panel, bool &preventUpdate ) :
+	cBaseComboBoxListener( panel ), pPreventUpdate( preventUpdate ){ }
+	
+	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ){
+		if( ! pPreventUpdate ){
+			skin.SetMoveName( comboBox.GetText() );
+		}
+	}
+};
+
 class cActionPlayback : public cBaseAction{
 public:
 	cActionPlayback( seWPView &panel ) : cBaseAction( panel, "Play back animation",
@@ -266,6 +279,7 @@ seWPView::seWPView( seWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
 pListener( NULL ),
+pPreventUpdate( false ),
 pSkin( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
@@ -292,7 +306,8 @@ pSkin( NULL )
 	helper.EditPath( groupBox, "Animation:", "Path to the animation resource to use.",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, new cEditAnimationPath( *this ) );
 	
-	helper.ComboBoxFilter( groupBox, "Move:", "Name of the animation move to play.", pCBAnimMoves, NULL );
+	helper.ComboBoxFilter( groupBox, "Move:", true, "Name of the animation move to play.",
+		pCBAnimMoves, new cComboMove( *this, pPreventUpdate ) );
 	pCBAnimMoves->SetDefaultSorter();
 	
 	helper.CheckBox( groupBox, pChkPlayback, new cActionPlayback( *this ), true );
@@ -393,23 +408,32 @@ void seWPView::UpdateMoveList(){
 	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator() : NULL;
 	const decString selection( pCBAnimMoves->GetText() );
 	
-	pCBAnimMoves->RemoveAllItems();
+	pPreventUpdate = true;
 	
-	if( engAnimator ){
-		const deAnimation * const animation = engAnimator->GetAnimation();
-		if( animation ){
-			const int count = animation->GetMoveCount();
-			int i;
-			for( i=0; i<count; i++ ){
-				pCBAnimMoves->AddItem( animation->GetMove( i )->GetName() );
+	try{
+		pCBAnimMoves->RemoveAllItems();
+		
+		if( engAnimator ){
+			const deAnimation * const animation = engAnimator->GetAnimation();
+			if( animation ){
+				const int count = animation->GetMoveCount();
+				int i;
+				for( i=0; i<count; i++ ){
+					pCBAnimMoves->AddItem( animation->GetMove( i )->GetName() );
+				}
 			}
+			
+			pCBAnimMoves->SortItems();
+			pCBAnimMoves->StoreFilterItems();
 		}
 		
-		pCBAnimMoves->SortItems();
-		pCBAnimMoves->StoreFilterItems();
+		pCBAnimMoves->SetText( selection );
+		pPreventUpdate = false;
+		
+	}catch( const deException & ){
+		pPreventUpdate = false;
+		throw;
 	}
-	
-	pCBAnimMoves->SetText( selection );
 }
 
 void seWPView::UpdateSky(){

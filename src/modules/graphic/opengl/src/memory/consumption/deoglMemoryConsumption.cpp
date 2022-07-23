@@ -35,7 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumption::deoglMemoryConsumption(){
+deoglMemoryConsumption::deoglMemoryConsumption() :
+texture1D( "Texture1D" ),
+texture2D( "Texture2D" ),
+texture3D( "Texture3D" ),
+textureArray( "ArrayTexture" ),
+textureCube( "CubeMap" ),
+texture1DRenderable( "Renderable Texture1D" ),
+texture2DRenderable( "Renderable Texture2D" ),
+texture3DRenderable( "Renderable Texture3D" ),
+textureArrayRenderable( "Renderable ArrayTexture" ),
+textureCubeRenderable( "Renderable CubeMap" ){
 }
 
 deoglMemoryConsumption::~deoglMemoryConsumption(){
@@ -46,3 +56,12 @@ deoglMemoryConsumption::~deoglMemoryConsumption(){
 // Management
 ///////////////
 
+unsigned long long deoglMemoryConsumption::Total() const{
+	return texture1D.all.GetConsumption()
+		+ texture2D.all.GetConsumption()
+		+ texture3D.all.GetConsumption()
+		+ textureArray.all.GetConsumption()
+		+ textureCube.all.GetConsumption()
+		+ renderbuffer.all.GetConsumption()
+		+ bufferObject.all.GetConsumption();
+}

@@ -39,7 +39,13 @@ class deNetworkValueVisitor;
  * the number of packets send over the network by predicting the upcoming
  * value of a value according to rules.
  */
-class deNetworkValue : public deObject{
+class DE_DLL_EXPORT deNetworkValue : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValue> Ref;
+	
+	
+	
 public:
 	/** \brief Value formats. */
 	enum eValueFormats{

@@ -31,9 +31,12 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
-#include "../texture/arraytexture/deoglRenderableArrayTexture.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMap.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
@@ -50,6 +53,19 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
+// #define DO_DEBUG_CALLS 1
+
+#ifdef DO_DEBUG_CALLS
+#define DBGCALL(m,t,f,u) pRenderThread.GetLogger().LogInfoFormat("ShadowMapper.%s: t=%p f=%p u=%p", m, t, f, u);
+#define DBGCALL2(m,t,f,u,p) pRenderThread.GetLogger().LogInfoFormat("ShadowMapper.%s: t=%p f=%p u=%p p=%p", m, t, f, u, p);
+#define DBGCALL3(m,f,u) pRenderThread.GetLogger().LogInfoFormat("ShadowMapper.%s: f=%p u=%p", m, f, u);
+#else
+#define DBGCALL(m,t,f,u)
+#define DBGCALL2(m,t,f,u,p)
+#define DBGCALL3(m,f,u)
+#endif
 
 
 // Class deoglShadowMapper
@@ -75,9 +91,7 @@ pUseTexColorTransp( NULL ),
 
 pFBOCube( NULL ),
 pCubeMapDepthSolid( NULL ),
-pCubeMapEncodedDepthSolid( NULL ),
 pCubeMapDepthTransp( NULL ),
-pCubeMapEncodedDepthTransp( NULL ),
 pCubeMapColorTransp( NULL ),
 pForeignCubeMapDepthSolid( NULL ),
 pForeignCubeMapDepthTransp( NULL ),
@@ -231,7 +245,7 @@ void deoglShadowMapper::DropForeignTextures(){
 	}
 }
 
-void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool withStencil ){
 	// drop the textures including the fbo if the size differs
 	if( pForeignTexDepthSolid ){
 		if( pForeignTexDepthSolid->GetWidth() != size
@@ -263,6 +277,9 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth ){
 	
 	pFBOTextureSolid->DetachAllImages();
 	pFBOTextureSolid->AttachDepthTexture( pUseTexDepthSolid );
+	if( withStencil ){
+		pFBOTextureSolid->AttachStencilTexture( pUseTexDepthSolid );
+	}
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -335,26 +352,15 @@ deoglCubeMap *deoglShadowMapper::GetSolidDepthCubeMap() const{
 	return pCubeMapDepthSolid->GetCubeMap();
 }
 
-deoglCubeMap *deoglShadowMapper::GetSolidEncodedDepthCubeMap() const{
-	if( ! pCubeMapEncodedDepthSolid ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pCubeMapEncodedDepthSolid->GetCubeMap();
-}
-
 void deoglShadowMapper::SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap ){
 	if( pCubeMapDepthSolid ){
 		pCubeMapDepthSolid->SetInUse( false );
 		pCubeMapDepthSolid = NULL;
 	}
-	if( pCubeMapEncodedDepthSolid ){
-		pCubeMapEncodedDepthSolid->SetInUse( false );
-		pCubeMapEncodedDepthSolid = NULL;
-	}
 	
 	pForeignCubeMapDepthSolid = cubemap;
 	pUseCubeMapDepthSolid = cubemap;
+	DBGCALL2("SetForeignSolidDepthCubeMap", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid, cubemap)
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
@@ -365,26 +371,15 @@ deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
 	return pCubeMapDepthTransp->GetCubeMap();
 }
 
-deoglCubeMap *deoglShadowMapper::GetTransparentEncodedDepthCubeMap() const{
-	if( ! pCubeMapEncodedDepthTransp ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pCubeMapEncodedDepthTransp->GetCubeMap();
-}
-
 void deoglShadowMapper::SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap ){
 	if( pCubeMapDepthTransp ){
 		pCubeMapDepthTransp->SetInUse( false );
 		pCubeMapDepthTransp = NULL;
 	}
-	if( pCubeMapEncodedDepthTransp ){
-		pCubeMapEncodedDepthTransp->SetInUse( false );
-		pCubeMapEncodedDepthTransp = NULL;
-	}
 	
 	pForeignCubeMapDepthTransp = cubemap;
 	pUseCubeMapDepthTransp = cubemap;
+	DBGCALL2("SetForeignTransparentDepthCubeMap", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp, cubemap)
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentColorCubeMap() const{
@@ -403,9 +398,15 @@ void deoglShadowMapper::SetForeignTransparentColorCubeMap( deoglCubeMap *cubemap
 	
 	pForeignCubeMapColorTransp = cubemap;
 	pUseCubeMapColorTransp = cubemap;
+	DBGCALL2("SetForeignTransparentColorCubeMap", pCubeMapColorTransp, pForeignCubeMapColorTransp, pUseCubeMapColorTransp, cubemap)
 }
 
 void deoglShadowMapper::DropCubeMaps(){
+	DropCubeMapsSolid();
+	DropCubeMapsTransparent();
+}
+
+void deoglShadowMapper::DropCubeMapsSolid(){
 	if( pFBOCube ){
 		pFBOCube->DecreaseUsageCount();
 		pFBOCube = NULL;
@@ -417,9 +418,13 @@ void deoglShadowMapper::DropCubeMaps(){
 		pCubeMapDepthSolid->SetInUse( false );
 		pCubeMapDepthSolid = NULL;
 	}
-	if( pCubeMapEncodedDepthSolid ){
-		pCubeMapEncodedDepthSolid->SetInUse( false );
-		pCubeMapEncodedDepthSolid = NULL;
+	DBGCALL("DropSolidCubeMaps", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
+}
+
+void deoglShadowMapper::DropCubeMapsTransparent(){
+	if( pFBOCube ){
+		pFBOCube->DecreaseUsageCount();
+		pFBOCube = NULL;
 	}
 	
 	pUseCubeMapDepthTransp = NULL;
@@ -428,10 +433,7 @@ void deoglShadowMapper::DropCubeMaps(){
 		pCubeMapDepthTransp->SetInUse( false );
 		pCubeMapDepthTransp = NULL;
 	}
-	if( pCubeMapEncodedDepthTransp ){
-		pCubeMapEncodedDepthTransp->SetInUse( false );
-		pCubeMapEncodedDepthTransp = NULL;
-	}
+	DBGCALL("DropTransparentCubeMaps1", pUseCubeMapDepthTransp, pForeignCubeMapDepthTransp, 0)
 	
 	pUseCubeMapColorTransp = NULL;
 	pForeignCubeMapColorTransp = NULL;
@@ -439,6 +441,7 @@ void deoglShadowMapper::DropCubeMaps(){
 		pCubeMapColorTransp->SetInUse( false );
 		pCubeMapColorTransp = NULL;
 	}
+	DBGCALL("DropTransparentCubeMaps2", pUseCubeMapColorTransp, pForeignCubeMapColorTransp, pCubeMapColorTransp)
 }
 
 void deoglShadowMapper::DropForeignCubeMaps(){
@@ -446,387 +449,178 @@ void deoglShadowMapper::DropForeignCubeMaps(){
 		pForeignCubeMapDepthSolid = NULL;
 		pUseCubeMapDepthSolid = NULL;
 	}
+	DBGCALL3("DropForeignCubeMaps1", pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 	
 	if( pForeignCubeMapDepthTransp ){
 		pForeignCubeMapDepthTransp = NULL;
 		pUseCubeMapDepthTransp = NULL;
 	}
+	DBGCALL3("DropForeignCubeMaps2", pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 	
 	if( pForeignCubeMapColorTransp ){
 		pForeignCubeMapColorTransp = NULL;
 		pUseCubeMapColorTransp = NULL;
 	}
+	DBGCALL3("DropForeignCubeMaps3", pForeignCubeMapColorTransp, pUseCubeMapColorTransp)
 }
 
 void deoglShadowMapper::ActivateSolidCubeMap( int size ){
-	const bool useDepthCubeMap = ! pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth();
-	
-	// if we can use depth cubemaps we can do things with only cubemaps
-	if( useDepthCubeMap ){
-		// drop the cubemaps including the fbo if the size differs
-		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pCubeMapDepthSolid && pCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOCube ){
-			pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// obtain solid depth cubemap if not existing already
-		if( ! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid ){
-			pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
-			pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOCube );
-		
-		pFBOCube->DetachAllImages();
-		pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthSolid );
-		
-		const GLenum buffers[ 1 ] = { GL_NONE };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-		
-		pFBOCube->Verify();
-		
-	// otherwise we render to a color cubemap holding encoded depth values
-	}else{
-		// drop the cubemaps and textures including the fbo if the size differs
-		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
-			DropTexturesSolid();
-		}
-		if( pCubeMapEncodedDepthSolid && pCubeMapEncodedDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
-			DropTexturesSolid();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOTextureSolid ){
-			pFBOTextureSolid = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// obtain solid depth texture and color cubemap if not existing already
-		if( ! pTextureDepthSolid && ! pForeignTexDepthSolid ){
-			pTextureDepthSolid = pRenderThread.GetTexture().GetRenderableDepthTexture()
-				.GetTextureWith( size, size, false, false );
-			pUseTexDepthSolid = pTextureDepthSolid->GetTexture();
-		}
-		if( ! pCubeMapEncodedDepthSolid && ! pForeignCubeMapDepthSolid ){
-			pCubeMapEncodedDepthSolid = pRenderThread.GetTexture().GetRenderableColorCubeMap()
-				.GetCubeMapWith( size, 4, false );
-			pUseCubeMapDepthSolid = pCubeMapEncodedDepthSolid->GetCubeMap();
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOTextureSolid );
-		
-		pFBOTextureSolid->DetachAllImages();
-		pFBOTextureSolid->AttachDepthTexture( pUseTexDepthSolid );
-		pFBOTextureSolid->AttachColorCubeMap( 0, pUseCubeMapDepthSolid );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBOTextureSolid->Verify();
+	DBGCALL("ActivateSolidCubeMap", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
+	// drop the cubemaps including the fbo if the size differs
+	if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
+		DropCubeMapsSolid();
 	}
+	if( pCubeMapDepthSolid && pCubeMapDepthSolid->GetSize() != size ){
+		DropCubeMapsSolid();
+	}
+	
+	// obtain a framebuffer for this size if not existing already
+	if( ! pFBOCube ){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	}
+	
+	// obtain solid depth cubemap if not existing already
+	if( ! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid ){
+		pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+		pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
+	}
+	
+	// switch to the framebuffer required by this shadow map
+	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	
+	pFBOCube->DetachAllImages();
+	pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthSolid );
+	
+	const GLenum buffers[ 1 ] = { GL_NONE };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	
+	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateSolidCubeMapFace( int size, int face ){
-	const bool useDepthCubeMap = ! pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth();
-	
-	// if we can use depth cubemaps we can do things with only cubemaps
-	if( useDepthCubeMap ){
-		// drop the cubemaps including the fbo if the size differs
-		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pCubeMapDepthSolid && pCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOCube ){
-			pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// obtain solid depth cubemap if not existing already
-		if( ! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid ){
-			pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
-			pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOCube );
-		
-		pFBOCube->DetachAllImages();
-		pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthSolid, face );
-		
-		const GLenum buffers[ 1 ] = { GL_NONE };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-		
-		pFBOCube->Verify();
-		
-	// otherwise we render to a color cubemap holding encoded depth values
-	}else{
-		// drop the cubemaps and textures including the fbo if the size differs
-		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
-			DropTexturesSolid();
-		}
-		if( pCubeMapEncodedDepthSolid && pCubeMapEncodedDepthSolid->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
-			DropTexturesSolid();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOTextureSolid ){
-			pFBOTextureSolid = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// obtain solid depth texture and color cubemap if not existing already
-		if( ! pTextureDepthSolid && ! pForeignTexDepthSolid ){
-			pTextureDepthSolid = pRenderThread.GetTexture().GetRenderableDepthTexture()
-				.GetTextureWith( size, size, false, false );
-			pUseTexDepthSolid = pTextureDepthSolid->GetTexture();
-		}
-		if( ! pCubeMapEncodedDepthSolid && ! pForeignCubeMapDepthSolid ){
-			pCubeMapEncodedDepthSolid = pRenderThread.GetTexture().GetRenderableColorCubeMap()
-				.GetCubeMapWith( size, 4, false );
-			pUseCubeMapDepthSolid = pCubeMapEncodedDepthSolid->GetCubeMap();
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOTextureSolid );
-		
-		pFBOTextureSolid->DetachAllImages();
-		pFBOTextureSolid->AttachDepthTexture( pUseTexDepthSolid );
-		pFBOTextureSolid->AttachColorCubeMapFace( 0, pUseCubeMapDepthSolid, face );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBOTextureSolid->Verify();
+	DBGCALL("ActivateSolidCubeMapFace", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
+	// drop the cubemaps including the fbo if the size differs
+	if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
+		DropCubeMapsSolid();
 	}
+	if( pCubeMapDepthSolid && pCubeMapDepthSolid->GetSize() != size ){
+		DropCubeMapsSolid();
+	}
+	
+	// obtain a framebuffer for this size if not existing already
+	if( ! pFBOCube ){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	}
+	
+	// obtain solid depth cubemap if not existing already
+	if( ! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid ){
+		pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+		pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
+	}
+	
+	// switch to the framebuffer required by this shadow map
+	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	
+	pFBOCube->DetachAllImages();
+	pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthSolid, face );
+	
+	const GLenum buffers[ 1 ] = { GL_NONE };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	
+	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateTransparentCubeMap( int size ){
-	const bool useDepthCubeMap = ! pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth();
-	
-	// if we can use depth cubemaps we can do things with only cubemaps
-	if( useDepthCubeMap ){
-		// drop the cubemaps including the fbo if the size differs
-		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pCubeMapDepthTransp && pCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		
-		// obtain transparent depth cubemap if not existing already
-		if( ! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp ){
-			pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
-			pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
-		}
-		
-		// obtain transparent color cubemap if not existing already
-		if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
-			pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith( size, 4, false );
-			pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOCube ){
-			pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOCube );
-		
-		pFBOCube->DetachAllImages();
-		pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthTransp );
-		pFBOCube->AttachColorCubeMap( 0, pUseCubeMapColorTransp );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBOCube->Verify();
-		
-	// otherwise we render to a color cubemap holding encoded depth values
-	}else{
-		// drop the cubemaps and textures including the fbo if the size differs
-		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
-			DropTexturesTransparent();
-		}
-		if( pCubeMapEncodedDepthTransp && pCubeMapEncodedDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
-			DropTexturesTransparent();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOTextureTransp ){
-			pFBOTextureTransp = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// obtain solid depth texture and color cubemap if not existing already
-		if( ! pTextureDepthSolid && ! pForeignTexDepthSolid ){
-			pTextureDepthSolid = pRenderThread.GetTexture().GetRenderableDepthTexture()
-				.GetTextureWith( size, size, false, false );
-			pUseTexDepthSolid = pTextureDepthSolid->GetTexture();
-		}
-		if( ! pCubeMapEncodedDepthTransp && ! pForeignCubeMapDepthTransp ){
-			pCubeMapEncodedDepthTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap()
-				.GetCubeMapWith( size, 4, false );
-			pUseCubeMapDepthTransp = pCubeMapEncodedDepthTransp->GetCubeMap();
-		}
-		if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
-			pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap()
-				.GetCubeMapWith( size, 4, false );
-			pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOTextureTransp );
-		
-		pFBOTextureTransp->DetachAllImages();
-		pFBOTextureTransp->AttachDepthTexture( pUseTexDepthSolid );
-		pFBOTextureTransp->AttachColorCubeMap( 0, pUseCubeMapColorTransp );
-		pFBOTextureTransp->AttachColorCubeMap( 1, pForeignCubeMapDepthTransp );
-		
-		GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 2, &buffers[ 0 ] ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( buffers[ 0 ] ) );
-		
-		pFBOTextureTransp->Verify();
+	DBGCALL("ActivateTransparentCubeMap", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
+	// drop the cubemaps including the fbo if the size differs
+	if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
+		DropCubeMapsTransparent();
 	}
+	if( pCubeMapDepthTransp && pCubeMapDepthTransp->GetSize() != size ){
+		DropCubeMapsTransparent();
+	}
+	
+	// obtain transparent depth cubemap if not existing already
+	if( ! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp ){
+		pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+		pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
+	}
+	
+	// obtain transparent color cubemap if not existing already
+	if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
+		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith( size, 4, false );
+		pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
+	}
+	
+	// obtain a framebuffer for this size if not existing already
+	if( ! pFBOCube ){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	}
+	
+	// switch to the framebuffer required by this shadow map
+	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	
+	pFBOCube->DetachAllImages();
+	pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthTransp );
+	pFBOCube->AttachColorCubeMap( 0, pUseCubeMapColorTransp );
+	
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, int face ){
-	const bool useDepthCubeMap = ! pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth();
-	
-	// if we can use depth cubemaps we can do things with only cubemaps
-	if( useDepthCubeMap ){
-		// drop the cubemaps including the fbo if the size differs
-		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pCubeMapDepthTransp && pCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		
-		// obtain transparent depth cubemap if not existing already
-		if( ! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp ){
-			pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
-			pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
-		}
-		
-		// obtain transparent color cubemap if not existing already
-		if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
-			pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith( size, 4, false );
-			pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOCube ){
-			pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOCube );
-		
-		pFBOCube->DetachAllImages();
-		pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthTransp, face );
-		pFBOCube->AttachColorCubeMapFace( 0, pUseCubeMapColorTransp, face );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBOCube->Verify();
-		
-	// otherwise we render to a color cubemap holding encoded depth values
-	}else{
-		// drop the cubemaps and textures including the fbo if the size differs
-		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
-			DropTexturesTransparent();
-		}
-		if( pCubeMapEncodedDepthTransp && pCubeMapEncodedDepthTransp->GetSize() != size ){
-			DropCubeMaps();
-		}
-		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
-			DropTexturesTransparent();
-		}
-		
-		// obtain a framebuffer for this size if not existing already
-		if( ! pFBOTextureTransp ){
-			pFBOTextureTransp = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
-		}
-		
-		// obtain solid depth texture and color cubemap if not existing already
-		if( ! pTextureDepthSolid && ! pForeignTexDepthSolid ){
-			pTextureDepthSolid = pRenderThread.GetTexture().GetRenderableDepthTexture()
-				.GetTextureWith( size, size, false, false );
-			pUseTexDepthSolid = pTextureDepthSolid->GetTexture();
-		}
-		if( ! pCubeMapEncodedDepthTransp && ! pForeignCubeMapDepthTransp ){
-			pCubeMapEncodedDepthTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap()
-				.GetCubeMapWith( size, 4, false );
-			pUseCubeMapDepthTransp = pCubeMapEncodedDepthTransp->GetCubeMap();
-		}
-		if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
-			pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap()
-				.GetCubeMapWith( size, 4, false );
-			pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
-		}
-		
-		// switch to the framebuffer required by this shadow map
-		pRenderThread.GetFramebuffer().Activate( pFBOTextureTransp );
-		
-		pFBOTextureTransp->DetachAllImages();
-		pFBOTextureTransp->AttachDepthTexture( pUseTexDepthSolid );
-		pFBOTextureTransp->AttachColorCubeMapFace( 0, pUseCubeMapColorTransp, face );
-		pFBOTextureTransp->AttachColorCubeMapFace( 1, pForeignCubeMapDepthTransp, face );
-		
-		GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 2, &buffers[ 0 ] ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( buffers[ 0 ] ) );
-		
-		pFBOTextureTransp->Verify();
+	DBGCALL("ActivateTransparentCubeMapFace", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
+	// drop the cubemaps including the fbo if the size differs
+	if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
+		DropCubeMapsTransparent();
 	}
+	if( pCubeMapDepthTransp && pCubeMapDepthTransp->GetSize() != size ){
+		DropCubeMapsTransparent();
+	}
+	
+	// obtain transparent depth cubemap if not existing already
+	if( ! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp ){
+		pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+		pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
+	}
+	
+	// obtain transparent color cubemap if not existing already
+	if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
+		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith( size, 4, false );
+		pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
+	}
+	
+	// obtain a framebuffer for this size if not existing already
+	if( ! pFBOCube ){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	}
+	
+	// switch to the framebuffer required by this shadow map
+	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	
+	pFBOCube->DetachAllImages();
+	pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthTransp, face );
+	pFBOCube->AttachColorCubeMapFace( 0, pUseCubeMapColorTransp, face );
+	
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
@@ -861,7 +655,7 @@ deoglArrayTexture *deoglShadowMapper::GetSolidDepthArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexSolidDepth->GetTexture();
+	return pArrTexSolidDepth->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignSolidDepthArrayTexture( deoglArrayTexture *texture ){
@@ -879,7 +673,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentDepthArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexTranspDepth->GetTexture();
+	return pArrTexTranspDepth->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignTransparentDepthArrayTexture( deoglArrayTexture *texture ){
@@ -897,7 +691,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentColorArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexTranspColor->GetTexture();
+	return pArrTexTranspColor->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignTransparentColorArrayTexture( deoglArrayTexture *texture ){
@@ -955,12 +749,14 @@ void deoglShadowMapper::DropForeignArrayTextures(){
 	}
 }
 
-void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
+void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, bool withStencil ){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size || pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size
+	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
-	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size || pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size
+	|| pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
 	
@@ -971,8 +767,9 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
 	
 	// obtain solid depth texture if not existing already
 	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
-		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexSolidDepth = pArrTexSolidDepth->GetTexture();
+		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( size, size, layerCount, withStencil, false );
+		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -980,6 +777,9 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTexture( pUseArrTexSolidDepth );
+	if( withStencil ){
+		pFBOArrTex->AttachStencilArrayTexture( pUseArrTexSolidDepth );
+	}
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -991,12 +791,14 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
-void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount, int layer ){
+void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount, int layer, bool withStencil ){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size || pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size
+	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
-	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size || pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size
+	|| pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
 	
@@ -1007,8 +809,9 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	
 	// obtain solid depth texture if not existing already
 	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
-		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexSolidDepth = pArrTexSolidDepth->GetTexture();
+		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( size, size, layerCount, withStencil, false );
+		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -1016,6 +819,9 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTextureLayer( pUseArrTexSolidDepth, layer );
+	if( withStencil ){
+		pFBOArrTex->AttachStencilArrayTextureLayer( pUseArrTexSolidDepth, layer );
+	}
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -1043,14 +849,16 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	
 	// obtain transparent depth texture if not existing already
 	if( ! pArrTexTranspDepth && ! pForeignArrTexTranspDepth ){
-		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexTranspDepth = pArrTexTranspDepth->GetTexture();
+		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture().
+			GetWith( size, size, layerCount, false, false );
+		pUseArrTexTranspDepth = pArrTexTranspDepth->GetArrayTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
 	if( ! pArrTexTranspColor && ! pForeignArrTexTranspColor ){
-		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfByte4 );
-		pUseArrTexTranspColor = pArrTexTranspColor->GetTexture();
+		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableColorArrayTexture().
+			GetWith( size, size, layerCount, 4, false );
+		pUseArrTexTranspColor = pArrTexTranspColor->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -1224,6 +1032,7 @@ void deoglShadowMapper::SetForeignAmbientCubeMap( deoglCubeMap *cubemap ){
 	
 	pForeignCubeMapAmbient = cubemap;
 	pUseCubeMapAmbient = cubemap;
+	DBGCALL2("SetForeignAmbientCubeMap", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient, cubemap)
 }
 
 void deoglShadowMapper::DropAmbientCubeMaps(){
@@ -1238,6 +1047,7 @@ void deoglShadowMapper::DropAmbientCubeMaps(){
 		pCubeMapAmbient->SetInUse( false );
 		pCubeMapAmbient = NULL;
 	}
+	DBGCALL("DropAmbientCubeMaps", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
 void deoglShadowMapper::DropForeignAmbientCubeMaps(){
@@ -1245,9 +1055,11 @@ void deoglShadowMapper::DropForeignAmbientCubeMaps(){
 		pForeignCubeMapAmbient = NULL;
 		pUseCubeMapAmbient = NULL;
 	}
+	DBGCALL3("DropForeignAmbientCubeMaps", pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
 void deoglShadowMapper::ActivateAmbientCubeMap( int size ){
+	DBGCALL("ActivateAmbientCubeMap", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
 	if( pForeignCubeMapAmbient && pForeignCubeMapAmbient->GetSize() != size ){
 		DropAmbientCubeMaps();
@@ -1284,6 +1096,7 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size ){
 }
 
 void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
+	DBGCALL("ActivateAmbientCubeMapFace", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
 	if( pForeignCubeMapAmbient && pForeignCubeMapAmbient->GetSize() != size ){
 		DropAmbientCubeMaps();
@@ -1317,6 +1130,57 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+}
+
+
+
+int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
+	switch( config.GetShadowQuality() ){
+	case deoglConfiguration::esqVeryHigh:
+		return 4096;
+		
+	case deoglConfiguration::esqHigh:
+	default:
+		return 2048;
+		
+	case deoglConfiguration::esqMedium:
+		return 1024;
+		
+	case deoglConfiguration::esqLow:
+		return 512;
+		
+	case deoglConfiguration::esqVeryLow:
+		return 256;
+	}
+}
+
+int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
+	// cube map sizes above 1024 are brutal on the memory consumption especially if many
+	// point lights are close to the cameras. later on this can be modified to use higher
+	// resolution if the count of active point light shadow cubes is low
+	// 
+	// the memory consumption of a cube map is 6x the memory consumption of a shadow map
+	// of the same size. if the cube map is half the size of the shadow map the memory
+	// consumption of the cube map is 1.5x the memory consumption of the shadow map
+	// 
+	// for the time being half the shadow map size is used.
+	switch( config.GetShadowQuality() ){
+	case deoglConfiguration::esqVeryHigh:
+		return 2048; //4096;
+		
+	case deoglConfiguration::esqHigh:
+	default:
+		return 1024; //2048;
+		
+	case deoglConfiguration::esqMedium:
+		return 512; //1024;
+		
+	case deoglConfiguration::esqLow:
+		return 256; //512;
+		
+	case deoglConfiguration::esqVeryLow:
+		return 128; //256;
+	}
 }
 
 

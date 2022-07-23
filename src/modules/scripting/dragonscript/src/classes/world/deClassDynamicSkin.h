@@ -98,6 +98,8 @@ private:
 	
 	DEF_NATFUNC( nfGetCanvasAt );
 	DEF_NATFUNC( nfSetCanvasAt );
+	DEF_NATFUNC( nfSetCanvasAt2 );
+	DEF_NATFUNC( nfSetCanvasAt3 );
 	
 	DEF_NATFUNC( nfSetCameraAt );
 	

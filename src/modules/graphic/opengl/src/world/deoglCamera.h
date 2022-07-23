@@ -34,7 +34,7 @@ class deCamera;
 
 
 /**
- * \brief Camera peer.
+ * Camera peer.
  */
 class deoglCamera : public deBaseGraphicCamera{
 private:
@@ -54,6 +54,9 @@ private:
 	bool pDirtyPropFields;
 	bool pDirtyEffects;
 	bool pResetAdaptedIntensity;
+	bool pDirtyVR;
+	
+	bool pEnableVR;
 	
 	decPointerSet pNotifyRenderables;
 	decPointerSet pNotifyCanvas;
@@ -63,10 +66,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new opengl camera peer. */
+	/** Create new opengl camera peer. */
 	deoglCamera( deGraphicOpenGl &ogl, const deCamera &camera );
 	
-	/** \brief Clean up camera peer. */
+	/** Clean up camera peer. */
 	virtual ~deoglCamera();
 	/*@}*/
 	
@@ -74,35 +77,35 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render camera. */
+	/** Render camera. */
 	inline deoglRCamera *GetRCamera() const{ return pRCamera; }
 	
-	/** \brief Camera. */
+	/** Camera. */
 	inline const deCamera &GetCamera() const{ return pCamera; }
 	
-	/** \brief Parent world or \em NULL. */
+	/** Parent world or \em NULL. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglWorld *world );
 	
 	
 	
-	/** \brief Updates the camera. */
+	/** Updates the camera. */
 	void Update( float elapsed );
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Renderables to notify about dirty events. */
+	/** Renderables to notify about dirty events. */
 	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
 	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
-	/** \brief Canvas to notify about dirty events. */
+	/** Canvas to notify about dirty events. */
 	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
 	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
@@ -111,34 +114,48 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Camera parameter changed. */
+	/** Camera parameter changed. */
 	virtual void ParameterChanged();
 	
-	/** \brief Adaption parameter changed. */
+	/** Adaption parameter changed. */
 	virtual void AdaptionChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
-	/** \brief Request graphic module to reset adapted intensity to optimal value. */
+	/** Request graphic module to reset adapted intensity to optimal value. */
 	virtual void ResetAdaptedIntensity();
 	
 	
 	
-	/** \brief Effect has been added. */
+	/** Effect has been added. */
 	virtual void EffectAdded( int index, deEffect *effect );
 	
-	/** \brief Effect has been removed. */
+	/** Effect has been removed. */
 	virtual void EffectRemoved( int index, deEffect *effect );
 	
-	/** \brief All effects have been removed. */
+	/** All effects have been removed. */
 	virtual void AllEffectsRemoved();
+	/*@}*/
+	
+	
+	
+	/** \name For use by VR Module only */
+	/*@{*/
+	/** Camera assigned to HMD. */
+	virtual void VRAssignedToHMD();
+	
+	/** Camera resigned from HMD. */
+	virtual void VRResignedFromHMD();
+	
+	/** VR Render parameters changed. */
+	virtual void VRRenderParametersChanged();
 	/*@}*/
 	
 	

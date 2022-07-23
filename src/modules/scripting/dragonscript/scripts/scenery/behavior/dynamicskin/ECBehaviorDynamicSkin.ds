@@ -43,12 +43,11 @@ pin Dragengine.Utils
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       ECBehaviorDynamicSkin.new(this)
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
+ *       ECBehaviorDynamicSkin.new(this, component)
  *       
- *       ECBehaviorComponent.new(this, "subComponent")
- *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, "subDynamicSkin")
- *       dynamicSkin.setComponentID("subComponent")
+ *       var ECBehaviorComponent subComponent = ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorDynamicSkin.new(this, subComponent)
  *    end
  * end
  * \endcode
@@ -169,8 +168,8 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorDynamicSkin getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorDynamicSkin
+		return eclass.findBehavior( block ECBehaviorDynamicSkin each
+			return true
 		end ) cast ECBehaviorDynamicSkin
 	end
 	
@@ -182,8 +181,7 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 */
 	static public func ECBehaviorDynamicSkin getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorDynamicSkin each
-			return each castable ECBehaviorDynamicSkin and \
-				( each cast ECBehaviorDynamicSkin ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorDynamicSkin
 	end
 	
@@ -194,13 +192,9 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorDynamicSkin
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorDynamicSkin each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -213,8 +207,8 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -225,9 +219,8 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * of type ECBehaviorDynamicSkin.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -238,13 +231,9 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

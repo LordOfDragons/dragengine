@@ -47,7 +47,13 @@ class deCollisionInfo;
  * The parent collider is ignored during collision tests. It is therefore not required to
  * explicitly exclude it from CanHitCollider call.
  */
-class deColliderCollisionTest : public deObject{
+class DE_DLL_EXPORT deColliderCollisionTest : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderCollisionTest> Ref;
+	
+	
+	
 private:
 	deTouchSensorReference pTouchSensor;
 	deColliderReference pCollider;

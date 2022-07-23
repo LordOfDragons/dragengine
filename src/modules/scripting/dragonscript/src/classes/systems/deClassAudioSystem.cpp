@@ -181,6 +181,16 @@ void deClassAudioSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *mys
 	rt->PushString( answer.ToUTF8() );
 }
 
+// public static func int getFPSRate()
+deClassAudioSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsAudSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassAudioSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassAudioSystem* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetGameEngine()->GetAudioSystem()->GetActiveModule()->GetFPSRate() );
+}
+
 
 
 // Class deClassAudioSystem
@@ -231,4 +241,5 @@ void deClassAudioSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetParameterValue( init ) );
 	
 	AddFunction( new nfSendCommand( init ) );
+	AddFunction( new nfGetFPSRate( init ) );
 }

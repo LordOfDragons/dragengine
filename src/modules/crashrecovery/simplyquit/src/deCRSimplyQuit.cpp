@@ -126,10 +126,11 @@ void deCRSimplyQuit::pPrintTracePoint(int number, deErrorTracePoint *point ){
 	
 	if( point->GetSourceModule() ){
 		LogErrorFormat( "%i) %s %s at %i\n", number, point->GetSourceModule()->GetName().GetString(),
-			point->GetSourceFunction(), point->GetSourceLine() );
+			point->GetSourceFunction().GetString(), point->GetSourceLine() );
 		
 	}else{
-		LogErrorFormat( "%i) game engine %s at %i\n", number, point->GetSourceFunction(), point->GetSourceLine() );
+		LogErrorFormat( "%i) game engine %s at %i\n", number,
+			point->GetSourceFunction().GetString(), point->GetSourceLine() );
 	}
 	
 	for( i=0; i<count; i++ ){
@@ -142,7 +143,8 @@ void deCRSimplyQuit::pPrintTraceValue( int level, deErrorTraceValue *value ){
 	decString text;
 	
 	for( i=0; i<level; i++ ) text.Append( "  " );
-	LogErrorFormat( "%s- %s = '%s'", text.GetString(), value->GetName(), value->GetValue() );
+	LogErrorFormat( "%s- %s = '%s'", text.GetString(),
+		value->GetName().GetString(), value->GetValue().GetString() );
 	
 	for( i=0; i<count; i++ ){
 		pPrintTraceValue( level + 1, value->GetSubValue( i ) );

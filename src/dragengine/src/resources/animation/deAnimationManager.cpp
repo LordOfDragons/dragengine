@@ -87,10 +87,13 @@ const char *filename, deAnimationBuilder &builder ){
 	deAnimation *anim=NULL, *findAnim;
 	
 	try{
-		// check if the animation with this filename already exists
-		findAnim = ( deAnimation* )pAnimations.GetWithFilename( vfs, filename );
-		if( findAnim && ! findAnim->GetOutdated() ){
-			DETHROW( deeInvalidParam );
+		// check if animation with filename already exists. check is only done if
+		// filename is not empty in which case an unnamed animation is created
+		if( filename[ 0 ] != '\0' ){
+			findAnim = ( deAnimation* )pAnimations.GetWithFilename( vfs, filename );
+			if( findAnim && ! findAnim->GetOutdated() ){
+				DETHROW( deeInvalidParam );
+			}
 		}
 		
 		// create animation using the builder
@@ -185,6 +188,19 @@ void deAnimationManager::AddLoadedAnimation( deAnimation *animation ){
 	}
 	
 	pAnimations.Add( animation );
+}
+
+void deAnimationManager::SaveAnimation( const deAnimation &animation, const char *filename ){
+	SaveAnimation( animation, *GetEngine()->GetVirtualFileSystem(), filename );
+}
+
+void deAnimationManager::SaveAnimation( const deAnimation &animation,
+deVirtualFileSystem &vfs, const char *filename ){
+	deBaseAnimationModule &module = *( ( deBaseAnimationModule* )
+		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtAnimation, filename ) );
+	
+	module.SaveAnimation( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting(
+		decPath::CreatePathUnix( filename ) ) ), animation );
 }
 
 

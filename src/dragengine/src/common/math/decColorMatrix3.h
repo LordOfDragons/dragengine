@@ -26,7 +26,7 @@
  * This kind of matrix is useful for transforming 3 component
  * color values.
  */
-class decColorMatrix3{
+class DE_DLL_EXPORT decColorMatrix3{
 public:
 	/**
 	 * \name Cells

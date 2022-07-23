@@ -24,9 +24,9 @@
 
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
-#include "../utils/deoalTimeHistory.h"
 
 #include <dragengine/common/utils/decTimer.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
 #include <dragengine/threading/deThread.h>
 
@@ -111,14 +111,16 @@ private:
 	float pElapsed;
 	
 	// time history
-	deoalTimeHistory pTimeHistoryMain;
-	deoalTimeHistory pTimeHistoryAudio;
-	deoalTimeHistory pTimeHistoryAudioEstimated;
+	decTimeHistory pTimeHistoryMain;
+	decTimeHistory pTimeHistoryAudio;
+	decTimeHistory pTimeHistoryAudioEstimated;
+	decTimeHistory pTimeHistoryUpdate;
 	decTimer pTimerMain;
 	decTimer pTimerAudio;
 	float pEstimatedAudioTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;
+	int pFPSRate;
 	bool pReadyToWait;
 	
 	// thread control
@@ -295,15 +297,18 @@ public:
 	/** \brief Elapsed time. */
 	inline float GetElapsed() const{ return pElapsed; }
 	
+	/** \brief FPS Rate. */
+	inline int GetFPSRate() const{ return pFPSRate; }
+	
 	
 	
 	/** \brief Main thread time history. */
-	inline deoalTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
-	inline const deoalTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
+	inline decTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
+	inline const decTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
 	
 	/** \brief Audio thread time history. */
-	inline deoalTimeHistory &GetTimeHistoryAudio(){ return pTimeHistoryAudio; }
-	inline const deoalTimeHistory &GetTimeHistoryAudio() const{ return pTimeHistoryAudio; }
+	inline decTimeHistory &GetTimeHistoryAudio(){ return pTimeHistoryAudio; }
+	inline const decTimeHistory &GetTimeHistoryAudio() const{ return pTimeHistoryAudio; }
 	/*@}*/
 	
 	

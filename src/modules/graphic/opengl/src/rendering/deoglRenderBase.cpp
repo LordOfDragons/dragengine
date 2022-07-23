@@ -32,9 +32,13 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTDebug.h"
+#include "../renderthread/deoglRTChoices.h"
+#include "../renderthread/deoglRTBufferObject.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../shaders/deoglShaderDefines.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -65,6 +69,40 @@ void deoglRenderBase::AddBasicDefines( deoglShaderDefines &defines ){
 	
 	if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
 		defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+	}
+}
+
+void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
+	const deoglRenderThread &renderThread = GetRenderThread();
+	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
+	decString value;
+	
+	defines.AddDefine( "SHARED_SPB", "1" );
+	
+	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
+		
+		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
+			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
+			defines.AddDefine( "SHARED_SPB_PADDING", value );
+		}
+		
+	}else{
+		// NOTE UBO requires array size to be constant, SSBO does not
+		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
+			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
+			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
+		}
+		
+		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
+			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
+			defines.AddDefine( "SHARED_SPB_PADDING", value );
+		}
+	}
+	
+	if( bo.GetInstanceArraySizeUBO() > 0 ){
+		value.SetValue( bo.GetInstanceArraySizeUBO() );
+		defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
 	}
 }
 
@@ -198,6 +236,18 @@ deoglDebugInformation &debugInfo, bool waitGPU ){
 void deoglRenderBase::DebugTimer4SampleCount( const deoglRenderPlan &plan,
 deoglDebugInformation &debugInfo, int count, bool waitGPU ){
 	pDebugTimerSampleCount( pDebugTimer[ 3 ], plan, debugInfo, count, waitGPU );
+}
+
+void deoglRenderBase::DebugTimerIncrement( const deoglRenderPlan &plan,
+deoglDebugInformation &debugInfo, float elapsed, int count ){
+	if( ! plan.GetDebugTiming() || ! debugInfo.GetVisible() ){
+		return;
+	}
+	
+	debugInfo.IncrementElapsedTime( elapsed );
+	if( count > 0 ){
+		debugInfo.IncrementCounter( count );
+	}
 }
 
 

@@ -51,7 +51,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deAISystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
-#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deInternalModule.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicModule.h>
@@ -97,19 +97,21 @@ pRenderCounter( 0 )
 	// create the engine and initialize as far as possible
 	try{
 		// create os
-#if defined( OS_UNIX ) && defined( HAS_LIB_X11 )
+#if defined OS_UNIX && defined HAS_LIB_X11
 		logger->LogInfo( LOGSOURCE, "Creating OS Unix." );
 		os = new deOSUnix();
-#elif defined( OS_W32 )
+#elif defined OS_W32
 		logger->LogInfo( LOGSOURCE, "Creating OS Windows." );
 		os = new deOSWindows();
+#else
+		logger->LogInfo( LOGSOURCE, "Creating OS Console." );
+		os = new deOSConsole();
 #endif
 		if( ! os ) DETHROW( deeOutOfMemory );
 		
 		// create game engine
 		logger->LogInfo( LOGSOURCE, "Creating Game Engine." );
 		pEngine = new deEngine( os );
-		if( ! pEngine ) DETHROW( deeOutOfMemory );
 		os = NULL;
 		
 		pEngine->SetLogger( logger );
@@ -304,9 +306,11 @@ void igdeEngineController::StartEngine(){
 		if( ! pEngine->GetSynthesizerSystem()->CanStart() ) DETHROW( deeInvalidParam );
 		if( ! pEngine->GetAISystem()->CanStart() ) DETHROW( deeInvalidParam );
 		if( ! pEngine->GetNetworkSystem()->CanStart() ) DETHROW( deeInvalidParam );
+		if( ! pEngine->GetVRSystem()->CanStart() ) DETHROW( deeInvalidParam );
 		
 		// set script module directory
 		pEngine->GetScriptingSystem()->SetScriptDirectory( scriptDirectory );
+		pEngine->GetScriptingSystem()->SetScriptVersion( "1.0" );
 		pEngine->GetScriptingSystem()->SetGameObject( gameObject );
 		
 		// bring up the crash recovery module. this module is required to ensure
@@ -343,6 +347,9 @@ void igdeEngineController::StartEngine(){
 		if( ! pEngine->GetNetworkSystem()->GetIsRunning() ){
 			pEngine->GetNetworkSystem()->Start();
 		}
+		if( ! pEngine->GetVRSystem()->GetIsRunning() ){
+			pEngine->GetVRSystem()->Start();
+		}
 		
 	}catch( const deException &e ){
 		e.PrintError();
@@ -377,6 +384,9 @@ void igdeEngineController::StopEngine(){
 		//	pEngine->GetScriptingSystem()->Stop();
 		//}
 		
+		if( pEngine->GetVRSystem()->GetIsRunning() ){
+			pEngine->GetVRSystem()->Stop();
+		}
 		if( pEngine->GetNetworkSystem()->GetIsRunning() ){
 			pEngine->GetNetworkSystem()->Stop();
 		}
@@ -426,8 +436,12 @@ deRenderWindow *igdeEngineController::CreateRenderWindow( igdeWidget &hostWindow
 		DETHROW( deeNullPointer );
 	}
 	
+	#ifdef IGDE_TOOLKIT_NULL
+	return pEngine->GetRenderWindowManager()->CreateRenderWindow();
+	#else
 	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
 		igdeNativeWidget::NativeWidgetParentID( hostWindow ) );
+	#endif
 }
 
 void igdeEngineController::UnparentMainRenderWindow(){
@@ -439,7 +453,7 @@ void igdeEngineController::UnparentMainRenderWindow(){
 	// we have to make sure the window still exists according to the graphic module. if it did
 	// already destroy it we do not attempt to modify the window. detach above works no matter
 	// if the window is still existing or not but not these calls here
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && defined HAS_LIB_X11
 	if( pMainRenderWindow->GetWindow() && pMainWindow.GetNativeWidget() ){
 		Display * const display = igdeNativeWidget::GetDisplayConnection();
 		Window window = pMainRenderWindow->GetWindow();
@@ -532,6 +546,10 @@ void igdeEngineController::ActivateModule( int system, const char *name ){
 		pEngine->GetScriptingSystem()->SetActiveModule( engineModule );
 		break;
 		
+	case esVR:
+		pEngine->GetVRSystem()->SetActiveModule( engineModule );
+		break;
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -543,174 +561,28 @@ void igdeEngineController::ActivateModule( int system, const char *name ){
 //////////////////////
 
 void igdeEngineController::pConfigModules(){
-	deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	deLoadableModule *bestModuleGra = NULL;
-	deLoadableModule *bestModuleAud = NULL;
-	deLoadableModule *bestModulePhy = NULL;
-	deLoadableModule *bestModuleAmr = NULL;
-	deLoadableModule *bestModuleAI = NULL;
-	deLoadableModule *bestModuleCR = NULL;
-	deLoadableModule *bestModuleSyn = NULL;
-	deLoadableModule *bestModuleNet = NULL;
-	int m, moduleCount;
-	
-	// load modules
 	pMainWindow.GetLogger()->LogInfo( LOGSOURCE, "Loading Modules." );
 	pEngine->LoadModules();
 	
-	// activate the best modules which currently is the first non-fallback module
-	// or the fallback module if no non-fallback module can be found
-	moduleCount = modsys.GetModuleCount();
+	#ifdef IGDE_TOOLKIT_NULL
+	pEngine->GetGraphicSystem()->SetActiveModule( pEngine->GetModuleSystem()->GetModuleNamed( "NullGraphic" ) );
+	#else
+	pEngine->GetGraphicSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtGraphic ) );
+	#endif
 	
-	for( m=0; m<moduleCount; m++ ){
-		deLoadableModule * const module = modsys.GetModuleAt( m );
-		if( ! module->IsLoaded() ){
-			continue;
-		}
-		
-		switch( module->GetType() ){
-		case deModuleSystem::emtGraphic:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleGra ){
-					bestModuleGra = module;
-				}
-				
-			}else{
-				if( ! bestModuleGra || bestModuleGra->GetIsFallback() ){
-					bestModuleGra = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtAudio:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleAud ){
-					bestModuleAud = module;
-				}
-				
-			}else{
-				if( ! bestModuleAud || bestModuleAud->GetIsFallback() ){
-					bestModuleAud = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtPhysics:
-			if( module->GetIsFallback() ){
-				if( ! bestModulePhy ){
-					bestModulePhy = module;
-				}
-				
-			}else{
-				if( ! bestModulePhy || bestModulePhy->GetIsFallback() ){
-					bestModulePhy = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtAnimator:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleAmr ){
-					bestModuleAmr = module;
-				}
-				
-			}else{
-				if( ! bestModuleAmr || bestModuleAmr->GetIsFallback() ){
-					bestModuleAmr = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtAI:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleAI ){
-					bestModuleAI = module;
-				}
-				
-			}else{
-				if( ! bestModuleAI || bestModuleAI->GetIsFallback() ){
-					bestModuleAI = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtCrashRecovery:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleCR ){
-					bestModuleCR = module;
-				}
-				
-			}else{
-				if( ! bestModuleCR || bestModuleCR->GetIsFallback() ){
-					bestModuleCR = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtSynthesizer:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleSyn ){
-					bestModuleSyn = module;
-				}
-				
-			}else{
-				if( ! bestModuleSyn || bestModuleSyn->GetIsFallback() ){
-					bestModuleSyn = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtNetwork:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleNet ){
-					bestModuleNet = module;
-				}
-				
-			}else{
-				if( ! bestModuleNet || bestModuleNet->GetIsFallback() ){
-					bestModuleNet = module;
-				}
-			}
-			break;
-			
-		default:
-			break;
-		}
-	}
+	pEngine->GetAudioSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAudio ) );
+	pEngine->GetPhysicsSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtPhysics ) );
+	pEngine->GetAnimatorSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAnimator ) );
+	pEngine->GetAISystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAI ) );
+	pEngine->GetSynthesizerSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtSynthesizer ) );
+	pEngine->GetCrashRecoverySystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtCrashRecovery ) );
+	pEngine->GetNetworkSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtNetwork ) );
 	
-	if( ! bestModuleGra ) DETHROW( deeInvalidAction );
-	pEngine->GetGraphicSystem()->SetActiveModule( bestModuleGra );
-	
-	if( ! bestModuleAud ) DETHROW( deeInvalidAction );
-	pEngine->GetAudioSystem()->SetActiveModule( bestModuleAud );
-	
-	if( ! bestModulePhy ) DETHROW( deeInvalidAction );
-	pEngine->GetPhysicsSystem()->SetActiveModule( bestModulePhy );
-	
-	if( ! bestModuleAmr ) DETHROW( deeInvalidAction );
-	pEngine->GetAnimatorSystem()->SetActiveModule( bestModuleAmr );
-	
-	if( ! bestModuleAI ) DETHROW( deeInvalidAction );
-	pEngine->GetAISystem()->SetActiveModule( bestModuleAI );
-	
-	if( ! bestModuleSyn ) DETHROW( deeInvalidAction );
-	pEngine->GetSynthesizerSystem()->SetActiveModule( bestModuleSyn );
-	
-	if( ! bestModuleCR ) DETHROW( deeInvalidAction );
-	pEngine->GetCrashRecoverySystem()->SetActiveModule( bestModuleCR );
-	
-	if( ! bestModuleNet ) DETHROW( deeInvalidAction );
-	pEngine->GetNetworkSystem()->SetActiveModule( bestModuleNet );
-	
-	// load default modules
-	/*
-	ActivateModule( esGraphic, "OpenGL" );
-	ActivateModule( esAudio, "NullAudio" ); //"OpenAL" );
-	ActivateModule( esPhysics, "Bullet" );
-	ActivateModule( esAnimator, "DEAnimator" );
-	ActivateModule( esAI, "DEAI" );
-	ActivateModule( esCrashRecovery, "BasicRecovery" );
-	*/
+	#ifdef IGDE_TOOLKIT_NULL
+	pEngine->GetVRSystem()->SetActiveModule( pEngine->GetModuleSystem()->GetModuleNamed( "NullVR" ) );
+	#else
+	pEngine->GetVRSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtVR ) );
+	#endif
 }
 
 void igdeEngineController::pCreateMainRenderWindow(){
@@ -718,12 +590,16 @@ void igdeEngineController::pCreateMainRenderWindow(){
 		return;
 	}
 	
-	if( ! igdeNativeWidget::HasNativeParent( pMainWindow ) ){
-		DETHROW( deeNullPointer );
-	}
-	
-	pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-		igdeNativeWidget::NativeWidgetID( pMainWindow ) );
+	#ifdef IGDE_TOOLKIT_NULL
+		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindow();
+	#else
+		if( ! igdeNativeWidget::HasNativeParent( pMainWindow ) ){
+			DETHROW( deeNullPointer );
+		}
+		
+		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
+			igdeNativeWidget::NativeWidgetID( pMainWindow ) );
+	#endif
 	
 	pMainRenderWindow->SetSize( 0, 0 );
 	pMainRenderWindow->SetPaint( false ); // disable painting since this is only a dummy window
@@ -736,4 +612,47 @@ void igdeEngineController::pDestroyMainRenderWindow(){
 	
 	pMainRenderWindow->FreeReference();
 	pMainRenderWindow = NULL;
+}
+
+deLoadableModule *igdeEngineController::GetBestModuleForType( deModuleSystem::eModuleTypes moduleType ) const{
+	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
+	const int count = modsys.GetModuleCount();
+	deLoadableModule *bestModule = nullptr;
+	int i;
+	
+	// for the time being we simply pick the first module which matches the type and is ready
+	// to be used. later on this has to be improved to use a matching metrics which tells
+	// how well a module matches a given set of feature requirements.
+	for( i=0; i<count; i++ ){
+		deLoadableModule * const module = modsys.GetModuleAt( i );
+		
+		if( module->GetType() != moduleType ){
+			continue;
+		}
+		if( module->GetErrorCode() != deLoadableModule::eecSuccess ){
+			continue;
+		}
+		
+		// no best module found. use this module
+		if( ! bestModule ){
+			bestModule = module;
+			
+		// best module has been found and this module is fallback. skip module
+		}else if( module->GetIsFallback() ){
+			
+		// best module has same name as this module
+		}else if( module->GetName() == bestModule->GetName() ){
+			// use this module if it has higher version than the best module
+			if( deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ){
+				bestModule = module;
+			}
+			
+		// best module has different name than this module. use this module if
+		// it has higher priority than the best module or best module is fallback
+		}else if( module->GetPriority() > bestModule->GetPriority() || bestModule->GetIsFallback() ){
+			bestModule = module;
+		}
+	}
+	
+	return bestModule;
 }

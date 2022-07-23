@@ -11,13 +11,14 @@
 	<texture name='texDepth' target='0'/>
 	<texture name='texDistance' target='1'/>
 	
-	<parameter name='pQuadTCTransform'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
-	<parameter name='pScaleDistance'/> <!-- 2 -->
-	<parameter name='pMatrixMVP'/> <!-- 3 -->
-	<parameter name='pMatrixMV'/> <!-- 4 -->
-	<parameter name='pEnvMapPosition'/> <!-- 5 -->
-	<parameter name='pEnvMapIndex'/> <!-- 6 -->
+	<parameter name='pQuadTCTransform'/>
+	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
+	<parameter name='pScaleDistance'/>
+	<parameter name='pMatrixMVP'/>
+	<parameter name='pMatrixMV'/>
+	<parameter name='pEnvMapPosition'/>
+	<parameter name='pEnvMapIndex'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

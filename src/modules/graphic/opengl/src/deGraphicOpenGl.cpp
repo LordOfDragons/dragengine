@@ -63,22 +63,20 @@
 #include "parameters/debug/deoglPDebugContext.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
-#include "parameters/debug/deoglPDebugUseShadow.h"
 #include "parameters/debug/deoglPQuickDebug.h"
 #include "parameters/debug/deoglPShowLightCB.h"
 #include "parameters/debug/deoglPOcclusionReduction.h"
 #include "parameters/debug/deoglPOccTestMode.h"
 #include "parameters/debug/deoglPWireframeMode.h"
-#include "parameters/defren/deoglPDefRenEncDepth.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
-#include "parameters/defren/deoglPDefRenUsePOTs.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
 #include "parameters/defren/deoglPRenderDownScale.h"
 #include "parameters/defren/deoglPTranspLayerLimit.h"
 #include "parameters/defren/deoglPAsyncRenderSkipSyncTimeRatio.h"
 #include "parameters/defren/deoglPFrameRateLimit.h"
+#include "parameters/gi/deoglPGIQuality.h"
+#include "parameters/gi/deoglPGIUpdateSpeed.h"
 #include "parameters/light/deoglPLightCutOffIntensity.h"
-#include "parameters/lod/deoglPLODMaxErrorPerLevel.h"
 #include "parameters/lod/deoglPLODMaxPixelError.h"
 #include "parameters/norRoughCorr/deoglPNorRougCorrStrength.h"
 #include "parameters/postprocessing/deoglPBrightness.h"
@@ -100,19 +98,19 @@
 #include "parameters/ssao/deoglPSSAOTapCount.h"
 #include "parameters/ssao/deoglPSSAOTurnCount.h"
 #include "parameters/shadow/deoglPShadowCubePCFSize.h"
-#include "parameters/shadow/deoglPShadowCubeSize.h"
+#include "parameters/shadow/deoglPShadowQuality.h"
 #include "parameters/shadow/deoglPShadowMapOffsetBias.h"
 #include "parameters/shadow/deoglPShadowMapOffsetScale.h"
-#include "parameters/shadow/deoglPShadowMapSize.h"
+#include "parameters/vr/deoglPVRRenderScale.h"
+#include "parameters/vr/deoglPVRForceFrameRate.h"
 
 #include "particle/deoglParticleEmitter.h"
 #include "particle/deoglParticleEmitterInstance.h"
 
 #include "propfield/deoglPropField.h"
 
-#include "rendering/cache/deoglRenderCache.h"
-
 #include "window/deoglRenderWindow.h"
+#include "window/deoglRRenderWindow.h"
 
 #include "sensor/deoglLumimeter.h"
 
@@ -128,9 +126,6 @@
 
 #include "texture/deoglImage.h"
 
-#include "video/deoglVideo.h"
-#include "video/deoglVideoPlayer.h"
-#include "envmap/deoglEnvMapProbe.h"
 #include "deoglCaches.h"
 #include "canvas/deoglCanvasImage.h"
 #include "canvas/deoglCanvasPaint.h"
@@ -140,9 +135,12 @@
 #include "canvas/deoglCanvasView.h"
 #include "canvas/deoglCanvasCanvasView.h"
 #include "canvas/capture/deoglCaptureCanvas.h"
+#include "configuration/deoglLSConfiguration.h"
+#include "envmap/deoglEnvMapProbe.h"
 #include "renderthread/deoglRenderThread.h"
 #include "renderthread/deoglRTContext.h"
-#include "configuration/deoglLSConfiguration.h"
+#include "video/deoglVideo.h"
+#include "video/deoglVideoPlayer.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -210,7 +208,8 @@ pCaptureCanvasList( *this ),
 
 pRenderThread( NULL ),
 pCaches( NULL ),
-pDebugOverlay( *this )
+pDebugOverlay( *this ),
+pVRCamera( nullptr )
 {
 	pCreateParameters();
 	pLoadConfig();
@@ -233,6 +232,13 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 	if( pConfiguration.GetDoLogInfo() ){
 		LogInfo( "Init" );
 	}
+	
+	#ifdef OGL_THREAD_CHECK
+	LogWarn( "OpenGL calls only in render thread check enabled. Disable for production builds." );
+	#endif
+	#ifdef OGL_CHECKCOMMANDS
+	LogWarn( "OpenGL command failure check enabled. Disable for production builds." );
+	#endif
 	
 	try{
 		pCaches = new deoglCaches( *this );
@@ -258,6 +264,8 @@ void deGraphicOpenGl::CleanUp(){
 		delete pRenderThread;
 		pRenderThread = NULL;
 	}
+	
+	SetVRCamera( nullptr );
 	
 	deoglLSConfiguration saveConfig( *this );
 	saveConfig.SaveConfig( pConfiguration );
@@ -300,8 +308,9 @@ void deGraphicOpenGl::TerminateAppWindow(){
 // Frame Management
 /////////////////////
 
-// #include <dragengine/common/utils/decTimer.h>
+// static decTimer timerInBetween;
 void deGraphicOpenGl::RenderWindows(){
+// 		LogInfoFormat( "RenderWindows: InBetween = %d ys", (int)(timerInBetween.GetElapsedTime() * 1e6f) );
 // 	decTimer timer;
 	// wait for rendering to finish. if done asynchronously uses time history to judge if
 	// rendering is finished soon enough to wait for this event or to skip synchronization
@@ -332,12 +341,17 @@ void deGraphicOpenGl::RenderWindows(){
 	pRenderWindowList.SyncToRender(); 
 // 		LogInfoFormat( "RenderWindows: RenderWindowList.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	
+	// synchronize VR
+	if( pVRCamera ){
+		pVRCamera->SyncToRender();
+	}
+	
 	// synchronize overlay canvas view if present
 	deCanvasView * const inputOverlayCanvas = GetGameEngine()->GetGraphicSystem()->GetInputOverlayCanvas();
 	if( inputOverlayCanvas ){
-		deoglCanvas &oglCanvas = *( ( deoglCanvas* )inputOverlayCanvas->GetPeerGraphic() );
+		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )inputOverlayCanvas->GetPeerGraphic() );
 		oglCanvas.SyncToRender();
-		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvas() );
+		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvasView() );
 	}
 	
 	pDebugOverlay.PrepareOverlay( *GetGameEngine()->GetGraphicSystem()->GetDebugOverlayCanvas() );
@@ -347,9 +361,14 @@ void deGraphicOpenGl::RenderWindows(){
 	pRenderThread->Synchronize();
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 // 		LogInfoFormat( "RenderWindows: RenderThread.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+// 		timerInBetween.Reset();
 #ifdef OS_ANDROID
 	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows EXIT" );
 #endif
+}
+
+int deGraphicOpenGl::GetFPSRate(){
+	return pRenderThread->GetFPSRate();
 }
 
 
@@ -512,6 +531,43 @@ deBaseGraphicWorld *deGraphicOpenGl::CreateWorld( deWorld *world ){
 	return new deoglWorld( *this, *world );
 }
 
+void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection ){
+	// WARNING should be only called from callback triggered by render thread in other modules
+	OGL_ON_RENDER_THREAD
+	
+	memset( &connection, 0, sizeof( connection ) );
+	
+	if( ! pRenderThread->HasContext() ){
+		return;
+	}
+	
+	#ifdef OS_BEOS
+	connection.opengl.dummy = nullptr;
+	
+	#elif defined OS_UNIX
+	const deoglRTContext &context = pRenderThread->GetContext();
+	
+	connection.opengl.display = context.GetDisplay();
+	connection.opengl.visualid = context.GetVisualInfo()->visualid;
+	connection.opengl.glxFBConfig = context.GetBestFBConfig();
+	connection.opengl.glxContext = context.GetContext();
+	
+	if( context.GetActiveRRenderWindow() ){
+		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
+	}
+	
+	#elif defined OS_W32
+	const deoglRTContext &context = pRenderThread->GetContext();
+	
+	connection.opengl.hGLRC = context.GetContext();
+	
+	if( context.GetActiveRRenderWindow() ){
+		connection.opengl.hDC = context.GetActiveRRenderWindow()->GetWindowDC();
+	}
+	#endif
+}
+
+
 
 
 // Parameters
@@ -553,11 +609,15 @@ void deGraphicOpenGl::SendCommand( const decUnicodeArgumentList &command, decUni
 
 
 
-// configuration
-//////////////////
+// Management
+///////////////
 
 bool deGraphicOpenGl::HasRenderThread() const{
 	return pRenderThread != NULL;
+}
+
+void deGraphicOpenGl::SetVRCamera( deoglCamera *camera ){
+	pVRCamera = camera;
 }
 
 
@@ -585,7 +645,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPRenderDownScale( *this ) );
 	
 	pParameters.AddParameter( new deoglPLODMaxPixelError( *this ) );
-	pParameters.AddParameter( new deoglPLODMaxErrorPerLevel( *this ) );
 	
 	pParameters.AddParameter( new deoglPNorRougCorrStrength( *this ) );
 	
@@ -609,24 +668,26 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPSSAOMipMapBase( *this ) );
 	pParameters.AddParameter( new deoglPSSAOTurnCount( *this ) );
 	
+	pParameters.AddParameter( new deoglPGIQuality( *this ) );
+	pParameters.AddParameter( new deoglPGIUpdateSpeed( *this ) );
+	
 	pParameters.AddParameter( new deoglPLightCutOffIntensity( *this ) );
-	pParameters.AddParameter( new deoglPShadowMapSize( *this ) );
+	pParameters.AddParameter( new deoglPShadowQuality( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapOffsetScale( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapOffsetBias( *this ) );
-	pParameters.AddParameter( new deoglPShadowCubeSize( *this ) );
 	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
 	
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
-	pParameters.AddParameter( new deoglPDefRenEncDepth( *this ) );
-	pParameters.AddParameter( new deoglPDefRenUsePOTs( *this ) );
 	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
+	
+	pParameters.AddParameter( new deoglPVRRenderScale( *this ) );
+	pParameters.AddParameter( new deoglPVRForceFrameRate( *this ) );
 	
 #ifdef WITH_DEBUG
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
-	pParameters.AddParameter( new deoglPDebugUseShadow( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
 	pParameters.AddParameter( new deoglPOccTestMode( *this ) );
 	pParameters.AddParameter( new deoglPQuickDebug( *this ) );

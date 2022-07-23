@@ -46,10 +46,11 @@ class deoglShaderParameterBlock;
  */
 class deoglSkinShader : public deObject{
 public:
-	static int REFLECTION_TEST_MODE;
-	static bool USE_SHARED_SPB;
+	typedef deTObjectReference<deoglSkinShader> Ref;
 	
-	/** \brief Texture targets. */
+	static int REFLECTION_TEST_MODE;
+	
+	/** Texture targets. */
 	enum eTextureTargets{
 		ettColor,
 		ettColorTintMask,
@@ -70,6 +71,8 @@ public:
 		ettEnvRoomEmissivity,
 		ettAbsorption,
 		ettRimEmissivity,
+		ettNonPbrAlbedo,
+		ettNonPbrMetalness,
 		ettDepth,
 		ettDepthTest,
 		ettSamples,
@@ -79,7 +82,7 @@ public:
 		ETT_COUNT
 	};
 	
-	/** \brief Render parameter uniform targets. */
+	/** Render parameter uniform targets. */
 	enum eRenderUniformTargets{
 		erutAmbient,
 		erutMatrixV,
@@ -103,7 +106,7 @@ public:
 		ERUT_COUNT
 	};
 	
-	/** \brief Texture parameter uniform targets. */
+	/** Texture parameter uniform targets. */
 	enum eTextureUniformTargets{
 		etutValueColorTransparency,
 		etutValueNormal,
@@ -160,7 +163,7 @@ public:
 		ETUT_COUNT
 	};
 	
-	/** \brief Instance parameter uniform targets. */
+	/** Instance parameter uniform targets. */
 	enum eInstanceUniformTargets{
 		eiutMatrixModel,
 		eiutMatrixNormal,
@@ -178,6 +181,8 @@ public:
 		eiutSamplesParams,
 		eiutBurstFactor,
 		eiutRibbonSheetCount,
+		
+		eiutIndexSPBTexParams,
 		
 		eiutTCTransformColor,
 		eiutTCTransformNormal,
@@ -212,19 +217,19 @@ public:
 		eiutInstOutlineColor,
 		eiutInstOutlineThickness,
 		eiutInstOutlineColorTint,
-		eiutInstOutlineSolidity,
 		eiutInstOutlineEmissivity,
+		eiutInstOutlineSolidity,
 		eiutInstOutlineEmissivityTint,
 		
 		EIUT_COUNT
 	};
 	
-	/** \brief Special parameter uniform targets. */
+	/** Special parameter uniform targets. */
 	enum eSpecialUniformTargets{
-		esutCubeFaceVisible
+		esutLayerVisibility
 	};
 	
-	/** \brief Uniform blocks. */
+	/** Uniform blocks. */
 	enum eUniformBlocks{
 		eubRenderParameters,
 		eubTextureParameters,
@@ -234,10 +239,11 @@ public:
 		EUB_COUNT
 	};
 	
-	/** \brief SSBO blocks. */
+	/** SSBO blocks. */
 	enum eSSBOBlocks{
 		essboInstanceParameters,
-		essboInstanceIndex
+		essboInstanceIndex,
+		essboTextureParameters
 	};
 	
 private:
@@ -247,8 +253,6 @@ private:
 	
 	int pTextureTargets[ ETT_COUNT ];
 	int pUsedTextureTargetCount;
-	int pTextureUniformTargets[ ETUT_COUNT ];
-	int pUsedTextureUniformTargetCount;
 	int pInstanceUniformTargets[ EIUT_COUNT ];
 	int pUsedInstanceUniformTargetCount;
 	
@@ -268,7 +272,7 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the configuration. */
@@ -283,62 +287,73 @@ public:
 	/** Sets the used texture target count. */
 	void SetUsedTextureTargetCount( int usedTextureTargetCount );
 	
-	/** Retrieves the index for a texture parameter uniform target or -1 if not used. */
-	int GetTextureUniformTarget( eTextureUniformTargets target ) const;
-	/** Sets the index for a texture parameter uniform target or -1 if not used. */
-	void SetTextureUniformTarget( eTextureUniformTargets target, int index );
 	/** Retrieves the index for an instance parameter uniform target or -1 if not used. */
 	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
 	/** Sets the index for an instance parameter uniform target or -1 if not used. */
 	void SetInstanceUniformTarget( eInstanceUniformTargets target, int index );
 	
-	/** \brief Target of shared SPB instance index base parameter or -1 if not used. */
+	/** Target of shared SPB instance index base parameter or -1 if not used. */
 	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }
 	
-	/** Ensures the shader is created if not existing already. */
-	void EnsureShaderExists();
-	/** Retrieves the shader generating it if not existing already. */
-	deoglShaderProgram *GetShader();
+	/** Prepare shader. */
+	void PrepareShader();
 	
-	/**
-	 * \brief Create render skin shader shader parameter block.
-	 * 
-	 * If \em cubeMap is \em true the created shader parameter block has transformation
-	 * matrices changed to a 6-element array.
-	 */
-	static deoglSPBlockUBO *CreateSPBRender(
-		deoglRenderThread &renderThread, bool cubeMap );
+	/** Shader. */
+	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
-	/** \brief Create occlusion map shader parameter block. */
+	/** Create render skin shader shader parameter block. */
+	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderCubeMap( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderCascaded( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderStereo( deoglRenderThread &renderThread );
+	
+	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread,
+		int matrixLayerCount, int depthOffsetLayerCount );
+	
+	/** Create occlusion map shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );
 	
-	/** \brief Create special shader parameter block. */
+	/** Create special shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBSpecial( deoglRenderThread &renderThread );
 	
-	/** \brief Create texture parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBTexParam() const;
+	/** Create texture parameter shader parameter block. */
+	static deoglSPBlockUBO *CreateSPBTexParam( deoglRenderThread &renderThread );
 	
-	/** \brief Create instance parameter shader parameter block. */
+	/** Create instance parameter shader parameter block. */
 	deoglSPBlockUBO *CreateSPBInstParam() const;
 	
-	/** \brief Create shared instance parameter shader storage buffer. */
+	/** Create shared instance parameter shader storage buffer. */
 	static deoglSPBlockUBO *CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread );
 	
-	/** \brief Create shared instance parameter shader storage buffer. */
+	/** Create shared instance parameter shader storage buffer. */
 	static deoglSPBlockSSBO *CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread );
 	
-	/** \brief Set dynamic texture parameters in instance parameter shader block. */
+	/** Create shared texture parameter shader storage buffer. */
+	static deoglSPBlockUBO *CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread );
+	
+	/** Create shared texture parameter shader storage buffer. */
+	static deoglSPBlockSSBO *CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread );
+	
+	/** Set texture parameters in instance parameter shader block. */
+	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
+		const deoglSkinTexture &skinTexture ) const;
+	
+	/** Set texture parameters in instance parameter shader block. */
+	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock, int element,
+		const deoglSkinTexture &skinTexture ) const;
+	
+	/** Set dynamic texture parameters in instance parameter shader block. */
 	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 		const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin );
+		deoglRDynamicSkin *dynamicSkin ) const;
 	
-	/** \brief Set dynamic texture parameters in instance parameter shader block. */
+	/** Set dynamic texture parameters in instance parameter shader block. */
 	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 		int element, const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin );
+		deoglRDynamicSkin *dynamicSkin ) const;
 	
 	/**
-	 * \brief Set texture unit configurations.
+	 * Set texture unit configurations.
 	 * 
 	 * This only sets units for targets used in this skin shader. All unused targets are
 	 * left untouched. The configs array has to contain at least GetUsedTextureTargetCount
@@ -348,7 +363,7 @@ public:
 		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin );
 	
 	/**
-	 * \brief Sets per-object environment map texture unit configurations.
+	 * Sets per-object environment map texture unit configurations.
 	 * 
 	 * This only sets units for targets used in this skin shader. All unused targets are
 	 * left untouched. The configs array has to contain at least GetUsedTextureTargetCount
@@ -377,9 +392,9 @@ public:
 	void GenerateGeometrySC();
 	/** Generate source code for the fragment unit. */
 	void GenerateFragmentSC();
-	/** \brief Generate source code for the tessellation control unit. */
+	/** Generate source code for the tessellation control unit. */
 	void GenerateTessellationControlSC();
-	/** \brief Generate source code for the tessellation evaluation unit. */
+	/** Generate source code for the tessellation evaluation unit. */
 	void GenerateTessellationEvaluationSC();
 	/** Update texture targets. */
 	void UpdateTextureTargets();

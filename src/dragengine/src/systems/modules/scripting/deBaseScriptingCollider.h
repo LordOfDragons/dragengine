@@ -22,6 +22,8 @@
 #ifndef _DEBASESCRIPTINGCOLLIDER_H_
 #define _DEBASESCRIPTINGCOLLIDER_H_
 
+#include "../../../dragengine_export.h"
+
 class deRigConstraint;
 class deColliderConstraint;
 class deCollisionInfo;
@@ -32,7 +34,7 @@ class deComponent;
 /**
  * \brief Scripting Module Collider Peer.
  */
-class deBaseScriptingCollider{
+class DE_DLL_EXPORT deBaseScriptingCollider{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

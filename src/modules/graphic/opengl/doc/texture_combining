@@ -1,0 +1,60 @@
+for shadow casting textures use only limited features. basically these parameters differ:
+- solid / transparent
+- with holes / without holes
+- double sided
+- decal
+
+hence multiple textures in a model which are unique for geometry rendering become similar
+for depth/shadow rendering. especially shadow rendering can cover many objects so the
+sub-instance count of render tasks build can easily go above 30k causing slow render
+task building. givin this observation it is possible to combine textures in components
+for depth shadow rendering if they are next to each other. in this case the face count
+of all combined textures can be rendered at one which replaces multiple texture instances
+added to render tasks with a single instance. this file contains information collected
+to decide how this combining can be done without getting too many headaches.
+
+- see: deoglRComponentTexture::PrepareParamBlocks()
+- see: deoglRComponentTexture::UpdateRTSInstances()
+- see: deoglRComponentLOD::pUpdateRenderTaskConfig(deoglRenderTaskConfig&, deoglSkinTexture::eShaderTypes, int, int, bool)
+
+
+
+ComponentTexture:
+  SharedSPBElement: unique instance per component texture
+    SharedSPB:
+      ParamBlockData:
+        matrices of component (same for all textures)
+        model texture double sided
+        env map fade
+        skin state variation seed
+        skin state texture parameters
+        skin state dynamic texture parameters
+  SharedSPBRTIGroupList: unique per component texture
+    SharedSPBRTIGroup: unique per component lod
+      obtained from modelLod sharedSPBRTI group list at index texture for each SharedSPB
+        each model texture has an sharedSPBRTI group list
+      RTSInstance:
+        SubInstanceSPB = SharedSPBElement.SharedSPB
+        data taken from matching model lod
+        
+texture rtsinstance can be combined if (for shadow shader types only):
+- render task filter matches with mask:
+  - ertfRender
+  - ertfSolid
+  - ertfShadowNone
+  - ertfHoles
+  - ertfDecal
+- render task filter bits:
+  - ertfRender: set
+  - ertfShadowNone: clear
+  - ertfDecal: clear
+
+while combining textures this is possible (as seen from the first texture to combine):
+- reuse SharedSPBElement
+  - thus reuse SharedSPB
+  - thus reuse ParamBlockData
+- obtain SharedSPBRTIGroup using textureCount > 1
+
+notes:
+- textures can combine if variation is used if solid is set and with holes is cleared.
+

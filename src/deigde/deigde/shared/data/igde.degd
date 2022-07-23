@@ -102,6 +102,7 @@
 		<component>
 			<model>/igde/models/testTerrain/testTerrain.demodel</model>
 			<rig>/igde/models/testTerrain/testTerrain.derig</rig>
+			<audioModel>/igde/models/testTerrain/testTerrain_audio.demodel</audioModel>
 			<texture name='floor'>
 				<skin>/igde/materials/stoneFloor/material.deskin</skin>
 			</texture>

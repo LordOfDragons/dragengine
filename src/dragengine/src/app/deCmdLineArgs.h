@@ -21,6 +21,7 @@
 
 #ifndef _DECMDLINEARGS_H_
 #define _DECMDLINEARGS_H_
+
 #include "../common/string/decStringList.h"
 
 
@@ -29,7 +30,7 @@
  * 
  * Basically wraps a string list with some additional helper methods.
  */
-class deCmdLineArgs{
+class DE_DLL_EXPORT deCmdLineArgs{
 private:
 	decStringList pArguments;
 	

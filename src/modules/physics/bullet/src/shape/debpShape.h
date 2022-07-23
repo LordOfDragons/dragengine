@@ -85,7 +85,7 @@ public:
 	inline debpDCollisionVolume *GetCollisionVolume() const{ return pCollisionVolume; }
 	
 	/** \brief Update collision volume using a transformation matrix. */
-	virtual void UpdateWithMatrix( const decDMatrix &transformation ) = 0;
+	virtual void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ) = 0;
 	
 	/** \brief Print out on console debugging information about shape. */
 	virtual void PrintDebug( dePhysicsBullet &module ) = 0;

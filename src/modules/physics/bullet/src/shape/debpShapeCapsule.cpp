@@ -38,11 +38,6 @@
 
 debpShapeCapsule::debpShapeCapsule( decShapeCapsule *shape ) : debpShape( estCapsule, shape ){
 	pSCapsule = shape;
-	
-	pCCapsule.SetHalfHeight( shape->GetHalfHeight() );
-	pCCapsule.SetTopRadius( shape->GetTopRadius() );
-	pCCapsule.SetBottomRadius( shape->GetBottomRadius() );
-	
 	SetCollisionVolume( &pCCapsule );
 }
 
@@ -54,9 +49,14 @@ debpShapeCapsule::~debpShapeCapsule(){
 // Management
 ///////////////
 
-void debpShapeCapsule::UpdateWithMatrix( const decDMatrix &transformation ){
+void debpShapeCapsule::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
 	pCCapsule.SetPosition( transformation * pSCapsule->GetPosition() );
 	pCCapsule.SetOrientation( pSCapsule->GetOrientation() * transformation.ToQuaternion() );
+	
+	const float scaleRadius = ( float )( ( scale.x + scale.z ) * 0.5 );
+	pCCapsule.SetHalfHeight( pSCapsule->GetHalfHeight() * ( float )scale.y );
+	pCCapsule.SetTopRadius( pSCapsule->GetTopRadius() * scaleRadius );
+	pCCapsule.SetBottomRadius( pSCapsule->GetBottomRadius() * scaleRadius );
 }
 
 void debpShapeCapsule::PrintDebug( dePhysicsBullet &module ){

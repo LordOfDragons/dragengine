@@ -26,21 +26,19 @@
 #include "declActionDelgaHelper.h"
 #include "../declLauncher.h"
 #include "../config/declConfiguration.h"
-#include "../engine/declEngine.h"
-#include "../game/declGame.h"
-#include "../game/declGameManager.h"
-#include "../game/patch/declPatch.h"
-#include "../game/patch/declPatchManager.h"
+
+#include <delauncher/engine/delEngine.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameManager.h>
+#include <delauncher/game/patch/delPatch.h>
+#include <delauncher/game/patch/delPatchManager.h>
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -75,17 +73,17 @@ declActionDelgaHelper::~declActionDelgaHelper(){
 void declActionDelgaHelper::Load(){
 	Unload();
 	
-	pLauncher.GetEngine()->Start( pLauncher.GetEngineLogger(), "" );
-	try{
-		pLauncher.GetGameManager()->LoadGameFromDisk( pFilename, pGames );
-		pLauncher.GetPatchManager().LoadPatchFromDisk( pFilename, pPatches );
-		
-	}catch( const deException &e ){
-		pLauncher.GetLogger()->LogException( LOGSOURCE, e );
-		pLauncher.GetEngine()->Stop();
-		throw;
-	}
-	pLauncher.GetEngine()->Stop();
+	const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
+			pLauncher, pLauncher.GetEngine().GetLogFile() ) ) );
+	instance->StartEngine();
+	instance->LoadModules();
+	
+	pLauncher.GetEngine().PutEngineIntoVFS( instance );
+	pLauncher.GetGameManager().CreateDefaultProfile();
+	
+	pLauncher.GetGameManager().LoadGameFromDisk( instance, pFilename, pGames );
+	pLauncher.GetPatchManager().LoadPatchFromDisk( instance, pFilename, pPatches );
 }
 
 void declActionDelgaHelper::Unload(){
@@ -98,18 +96,14 @@ bool declActionDelgaHelper::HasContent() const{
 }
 
 void declActionDelgaHelper::Install(){
-	deVFSContainerReference container;
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+		new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 	
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-		pLauncher.GetConfiguration()->GetPathGames() ) ) );
-	
-	decBaseFileReaderReference reader;
-	reader.TakeOver( new decDiskFileReader( pFilename ) );
+	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New( new decDiskFileReader( pFilename ) ) );
 	
 	decPath target( decPath::CreatePathUnix( "/" ) );
 	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
-	decBaseFileWriterReference writer;
-	writer.TakeOver( container->OpenFileForWriting( target ) );
+	const decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New( container->OpenFileForWriting( target ) ) );
 	
 	printf( "Installing" );
 	
@@ -147,8 +141,8 @@ void declActionDelgaHelper::Install(){
 			if( container->ExistsFile( target ) ){
 				container->DeleteFile( target );
 			}
-		}catch( const deException &e ){
-			e.PrintError();
+		}catch( const deException &e2 ){
+			e2.PrintError();
 		}
 		throw;
 	}
@@ -159,9 +153,9 @@ void declActionDelgaHelper::Install(){
 void declActionDelgaHelper::Uninstall(){
 	printf( "Uninstalling...\n" );
 	
-	deVFSContainerReference container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
-		decPath::CreatePathNative( pLauncher.GetConfiguration()->GetPathGames() ) ) );
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+		new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
+			decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 	
 	decPath target( decPath::CreatePathUnix( "/" ) );
 	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );

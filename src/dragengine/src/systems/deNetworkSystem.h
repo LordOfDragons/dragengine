@@ -37,7 +37,7 @@ class deNetworkState;
  *
  * Provides network communication support..
  */
-class deNetworkSystem : public deBaseSystem{
+class DE_DLL_EXPORT deNetworkSystem : public deBaseSystem{
 private:
 	deBaseNetworkModule *pActiveModule;
 	

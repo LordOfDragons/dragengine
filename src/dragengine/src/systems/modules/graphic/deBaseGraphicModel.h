@@ -22,12 +22,14 @@
 #ifndef _DEBASEGRAPHICMODEL_H_
 #define _DEBASEGRAPHICMODEL_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic Module Model Peer.
  *
  */
-class deBaseGraphicModel{
+class DE_DLL_EXPORT deBaseGraphicModel{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -282,6 +282,7 @@ debpBulletShape *debpColliderBone::pCreateBPShape(){
 		createBulletShape.SetShapeIndex( i );
 		pShapes.GetShapeAt( i )->GetShape()->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	
 	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
 	if( bulletShape ){

@@ -31,7 +31,6 @@
 #include "visitor/deoglVSRetainImageData.h"
 #include "../deoglBasics.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -80,12 +79,8 @@ pCastTranspShadow( false ),
 
 pVideoPlayerCount( 0 ),
 
-pMemoryUsageGPU( 0 ),
-pMemoryUsageGPUCompressed( 0 ),
-pMemoryUsageGPUUncompressed( 0 ),
-pMemoryUsageCount( 0 ),
-
-pVSRetainImageData( NULL )
+pVSRetainImageData( NULL ),
+pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -252,12 +247,6 @@ pVSRetainImageData( NULL )
 
 deoglRSkin::~deoglRSkin(){
 	LEAK_CHECK_FREE( pRenderThread, Skin );
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	consumption.DecrementGPU( pMemoryUsageGPU );
-	consumption.DecrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.DecrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.DecrementCountBy( pMemoryUsageCount );
-	
 	pCleanUp();
 }
 
@@ -296,77 +285,6 @@ deoglSkinTexture &deoglRSkin::GetTextureAt( int index ) const{
 	
 	return *pTextures[ index ];
 }
-
-void deoglRSkin::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	int t, c;
-	
-	consumption.DecrementGPU( pMemoryUsageGPU );
-	consumption.DecrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.DecrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.DecrementCountBy( pMemoryUsageCount );
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageGPUCompressed = 0;
-	pMemoryUsageGPUUncompressed = 0;
-	pMemoryUsageCount = 0;
-	
-	for( t=0; t<pTextureCount; t++ ){
-		const deoglSkinTexture &skinTexture = *pTextures[ t ];
-		
-		for( c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++ ){
-			deoglSkinChannel * const channel = skinTexture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )c );
-			if( ! channel ){
-				continue;
-			}
-			
-			deoglTexture * const texture = channel->GetTexture();
-			if( texture ){
-				pMemoryUsageGPU += texture->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( texture->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += texture->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += texture->GetMemoryUsageGPU();
-				}
-			}
-			
-			deoglCubeMap * const cubemap = channel->GetCubeMap();
-			if( cubemap ){
-				pMemoryUsageGPU += cubemap->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( cubemap->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += cubemap->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += cubemap->GetMemoryUsageGPU();
-				}
-			}
-			
-			deoglArrayTexture * const arrayTexture = channel->GetArrayTexture();
-			if( arrayTexture ){
-				pMemoryUsageGPU += arrayTexture->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( arrayTexture->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += arrayTexture->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += arrayTexture->GetMemoryUsageGPU();
-				}
-			}
-		}
-	}
-	
-	consumption.IncrementGPU( pMemoryUsageGPU );
-	consumption.IncrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.IncrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.IncrementCountBy( pMemoryUsageCount );
-}
-
 
 
 
@@ -448,32 +366,6 @@ int deoglRSkin::AddCalculatedProperty( deoglSkinCalculatedProperty *calculated )
 // Private Functions
 //////////////////////
 
-class deoglRSkinDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinTexture **textures;
-	int textureCount;
-	
-	deoglRSkinDeletion() :
-	textures( NULL ),
-	textureCount( 0 ){
-	}
-	
-	virtual ~deoglRSkinDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( textures ){
-			int i;
-			for( i=0; i<textureCount; i++ ){
-				if( textures[ i ] ){
-					delete textures[ i ];
-				}
-			}
-			delete [] textures;
-		}
-	}
-};
-
 void deoglRSkin::pCleanUp(){
 	if( pVSRetainImageData ){
 		delete pVSRetainImageData;
@@ -483,32 +375,14 @@ void deoglRSkin::pCleanUp(){
 	pRenderThread.GetDelayedOperations().RemoveInitSkin( this );
 	pRenderThread.GetDelayedOperations().RemoveAsyncResInitSkin( this );
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
 	if( pTextures ){
 		int i;
 		for( i=0; i<pTextureCount; i++ ){
 			if( pTextures[ i ] ){
-				pTextures[ i ]->DropDelayedDeletionObjects();
+				delete pTextures[ i ];
 			}
 		}
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRSkinDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRSkinDeletion;
-		delayedDeletion->textures = pTextures;
-		delayedDeletion->textureCount = pTextureCount;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+		delete [] pTextures;
 	}
 }
 

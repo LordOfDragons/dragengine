@@ -92,6 +92,26 @@ fixed class Vector2
 		return null
 	end
 	
+	/**
+	 * \brief Components rounded to the nearest unit.
+	 * \version 1.8
+	 */
+	public func Vector2 round(float unit)
+		return null
+	end
+	
+	/**
+	 * \brief Mix vector with another component wise.
+	 * \version 1.10
+	 * 
+	 * Factor 0 uses this vector, factor 1 the other vector.
+	 */
+	public func Vector2 mix(Vector2 other, float factor)
+		return null
+	end
+	
+	
+	
 	/** \brief Two vectors are equal. */
 	public func bool isEqualTo( Vector2 v, float delta )
 		return false
@@ -136,6 +156,18 @@ fixed class Vector2
 	 * \details Implements Object.toString()
 	 */
 	public func String toString()
+		return null
+	end
+	
+	/**
+	 * \brief String representation of vector with precision.
+	 * 
+	 * Same as toString() except the count of digits of each component is precision.
+	 * 
+	 * \param precision Precision in digits in the range from 0 to 9 inclusive.
+	 * \throws EInvalidParam precision is less than 0 or larger than 9.
+	 */
+	public func String toString( int precision )
 		return null
 	end
 	/*@}*/

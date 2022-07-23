@@ -41,7 +41,13 @@ class deWorld;
  * to a World or positionless if attached to a network player. Only attached
  * network states are updated and monitored.
  */
-class deNetworkState : public deResource{
+class DE_DLL_EXPORT deNetworkState : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkState> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pValues;
 	bool pReadOnly;

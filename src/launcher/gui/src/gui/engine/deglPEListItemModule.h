@@ -23,15 +23,17 @@
 #define _DEGLPELISTITEMMODULE_H_
 
 #include "../foxtoolkit.h"
+
+#include <delauncher/engine/modules/delEngineModule.h>
+
 #include <dragengine/common/string/decString.h>
 
-class deglEngineModule;
 class deglPanelEngine;
 
 
 
 /**
- * @brief Engine Panel List Item Module.
+ * Engine Panel List Item Module.
  */
 class deglPEListItemModule : public FXIconItem{
 	FXDECLARE( deglPEListItemModule )
@@ -40,31 +42,38 @@ protected:
 	
 private:
 	deglPanelEngine *pPanelEngine;
-	deglEngineModule *pModule;
+	const delEngineModule::Ref pModule;
 	decString pTypeString;
 	decString pStatusString;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new list item. */
-	deglPEListItemModule( deglPanelEngine *panelEngine, deglEngineModule *module );
-	/** Cleans up the list item. */
+	/** Create list item. */
+	deglPEListItemModule( deglPanelEngine *panelEngine, delEngineModule *module );
+	
+	/** Clean up list item. */
 	virtual ~deglPEListItemModule();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the engine panel. */
+	/** Engine panel. */
 	inline deglPanelEngine *GetPanelEngine() const{ return pPanelEngine; }
-	/** Retrieves the module object. */
-	inline deglEngineModule *GetModule() const{ return pModule; }
-	/** Retrieves the type string. */
+	
+	/** Module object. */
+	inline delEngineModule *GetModule() const{ return pModule; }
+	
+	/** Type string. */
 	inline const decString &GetTypeString() const{ return pTypeString; }
-	/** Retrieves the status string. */
+	
+	/** Status string. */
 	inline const decString &GetStatusString() const{ return pStatusString; }
 	/*@}*/
 };
 
-// end of include only once
 #endif

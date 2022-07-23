@@ -30,7 +30,7 @@ class decPointerList;
 /**
  * \brief Dictionary of pointers mapping objects to string keys.
  */
-class decPointerDictionary{
+class DE_DLL_EXPORT decPointerDictionary{
 private:
 	struct sDictEntry{
 		unsigned int hash;

@@ -28,11 +28,15 @@
 #include "deoglRParticleEmitterInstanceType.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../light/shader/deoglLightShader.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPB.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -45,7 +49,6 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -76,103 +79,59 @@ pUseSkin( NULL ),
 pUseTextureNumber( 0 ),
 pUseSkinTexture( NULL ),
 
-pParamBlockDepth( NULL ),
-pParamBlockGeometry( NULL ),
+pParamBlock( NULL ),
 pTUCDepth( NULL ),
 pTUCCounter( NULL ),
 pTUCGeometry( NULL ),
 pTUCGeometryDepthTest( NULL ),
 
-pValidParamBlockDepth( false ),
-pValidParamBlockGeometry( false ),
-pDirtyParamBlockGeometry( true ),
+pValidParamBlock( false ),
+pDirtyParamBlock( true ),
 
 pDirtyTUCDepth( true ),
 pDirtyTUCCounter( true ),
 pDirtyTUCGeometry( true ),
 pDirtyTUCGeometryDepthTest( true ),
 
-pParamBlockLightInstance( NULL ){
-	LEAK_CHECK_CREATE( instance.GetRenderThread(), ParticleEmitterInstanceType );
-}
+pParamBlockLightInstance( NULL ),
 
-class deoglRParticleEmitterInstanceTypeDeletion : public deoglDelayedDeletion{
-public:
-	deoglSPBlockUBO *paramBlockDepth;
-	deoglSPBlockUBO *paramBlockGeometry;
-	deoglTexUnitsConfig *tucDepth;
-	deoglTexUnitsConfig *tucCounter;
-	deoglTexUnitsConfig *tucGeometry;
-	deoglTexUnitsConfig *tucGeometryDepthTest;
-	deoglSPBlockUBO *paramBlockLightInstance;
+pRTSInstance( NULL )
+{
+	LEAK_CHECK_CREATE( instance.GetRenderThread(), ParticleEmitterInstanceType );
 	
-	deoglRParticleEmitterInstanceTypeDeletion() :
-	paramBlockDepth( NULL ),
-	paramBlockGeometry( NULL ),
-	tucDepth( NULL ),
-	tucCounter( NULL ),
-	tucGeometry( NULL ),
-	tucGeometryDepthTest( NULL ),
-	paramBlockLightInstance( NULL ){
-	}
-	
-	virtual ~deoglRParticleEmitterInstanceTypeDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( paramBlockLightInstance ){
-			paramBlockLightInstance->FreeReference();
-		}
-		if( tucGeometryDepthTest ){
-			tucGeometryDepthTest->RemoveUsage();
-		}
-		if( tucGeometry ){
-			tucGeometry->RemoveUsage();
-		}
-		if( tucDepth ){
-			tucDepth->RemoveUsage();
-		}
-		if( tucCounter ){
-			tucCounter->RemoveUsage();
-		}
-		if( paramBlockGeometry ){
-			paramBlockGeometry->FreeReference();
-		}
-		if( paramBlockDepth ){
-			paramBlockDepth->FreeReference();
-		}
-	}
-};
+	pRTSInstance = instance.GetRenderThread().GetRenderTaskSharedPool().GetInstance();
+}
 
 deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	LEAK_CHECK_FREE( pEmitterInstance.GetRenderThread(), ParticleEmitterInstanceType );
+	
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
+	
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
 	}
 	if( pUseSkin ){
 		pUseSkin->FreeReference();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRParticleEmitterInstanceTypeDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRParticleEmitterInstanceTypeDeletion;
-		delayedDeletion->paramBlockDepth = pParamBlockDepth;
-		delayedDeletion->paramBlockGeometry = pParamBlockGeometry;
-		delayedDeletion->paramBlockLightInstance = pParamBlockLightInstance;
-		delayedDeletion->tucDepth = pTUCDepth;
-		delayedDeletion->tucCounter = pTUCCounter;
-		delayedDeletion->tucGeometry = pTUCGeometry;
-		delayedDeletion->tucGeometryDepthTest = pTUCGeometryDepthTest;
-		pEmitterInstance.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pEmitterInstance.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pParamBlockLightInstance ){
+		pParamBlockLightInstance->FreeReference();
+	}
+	if( pTUCGeometryDepthTest ){
+		pTUCGeometryDepthTest->RemoveUsage();
+	}
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+	}
+	if( pTUCDepth ){
+		pTUCDepth->RemoveUsage();
+	}
+	if( pTUCCounter ){
+		pTUCCounter->RemoveUsage();
+	}
+	if( pParamBlock ){
+		pParamBlock->FreeReference();
 	}
 }
 
@@ -251,113 +210,74 @@ void deoglRParticleEmitterInstanceType::SetUseSkin( deoglRSkin *skin ){
 
 
 
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlockFor(
-deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estParticleGeometry:
-	case deoglSkinTexture::estParticleGeometryDepthTest:
-	case deoglSkinTexture::estParticleRibbonGeometry:
-	case deoglSkinTexture::estParticleRibbonGeometryDepthTest:
-	case deoglSkinTexture::estParticleBeamGeometry:
-	case deoglSkinTexture::estParticleBeamGeometryDepthTest:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estParticleDepth:
-	case deoglSkinTexture::estParticleDepthClipPlane:
-	case deoglSkinTexture::estParticleDepthReversed:
-	case deoglSkinTexture::estParticleDepthClipPlaneReversed:
-	case deoglSkinTexture::estParticleShadowProjection:
-	case deoglSkinTexture::estParticleShadowOrthogonal:
-	case deoglSkinTexture::estParticleShadowDistance:
-	case deoglSkinTexture::estParticleCounter:
-	case deoglSkinTexture::estParticleCounterClipPlane:
-	case deoglSkinTexture::estParticleRibbonDepth:
-	case deoglSkinTexture::estParticleRibbonDepthClipPlane:
-	case deoglSkinTexture::estParticleRibbonDepthReversed:
-	case deoglSkinTexture::estParticleRibbonDepthClipPlaneReversed:
-	case deoglSkinTexture::estParticleRibbonCounter:
-	case deoglSkinTexture::estParticleRibbonCounterClipPlane:
-	case deoglSkinTexture::estParticleBeamDepth:
-	case deoglSkinTexture::estParticleBeamDepthClipPlane:
-	case deoglSkinTexture::estParticleBeamDepthReversed:
-	case deoglSkinTexture::estParticleBeamDepthClipPlaneReversed:
-	case deoglSkinTexture::estParticleBeamCounter:
-	case deoglSkinTexture::estParticleBeamCounterClipPlane:
-		return GetParamBlockDepth();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlockDepth(){
-	if( ! pValidParamBlockDepth ){
-		if( pParamBlockDepth ){
-			pParamBlockDepth->FreeReference();
-			pParamBlockDepth = NULL;
+deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlock(){
+	if( ! pValidParamBlock ){
+		if( pParamBlock ){
+			pParamBlock->FreeReference();
+			pParamBlock = NULL;
 		}
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleDepth );
+			deoglSkinTexture::eShaderTypes shaderType;
+			switch( pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetSimulationType() ){
+			case deParticleEmitterType::estParticle:
+				shaderType = deoglSkinTexture::estParticleGeometry;
+				break;
+				
+			case deParticleEmitterType::estBeam:
+				shaderType = deoglSkinTexture::estParticleBeamGeometry;
+				break;
+				
+			case deParticleEmitterType::estRibbon:
+				shaderType = deoglSkinTexture::estParticleRibbonGeometry;
+				break;
+				
+			default:
+				DETHROW( deeInvalidParam );
+			}
+			
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
 				pParamBlockDepth = new deoglSPBlockUBO( *pEmitterInstance.GetRenderThread()
 					.GetBufferObject().GetLayoutSkinInstanceUBO() );
 				
 			}else{*/
-				pParamBlockDepth = skinShader.CreateSPBInstParam();
+				pParamBlock = skinShader.CreateSPBInstParam();
 			//}
 		}
 		
-		pValidParamBlockDepth = true;
-		pDirtyParamBlockDepth = true;
+		pValidParamBlock = true;
+		pDirtyParamBlock = true;
 	}
 	
-	if( pDirtyParamBlockDepth ){
-		if( pParamBlockDepth ){
-			UpdateInstanceParamBlock( *pParamBlockDepth,
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleDepth ) );
-		}
-		
-		pDirtyParamBlockDepth = false;
-	}
-	
-	return pParamBlockDepth;
-}
-
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleGeometry );
-			
-			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO( *pEmitterInstance.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO() );
+	if( pDirtyParamBlock ){
+		if( pParamBlock ){
+			deoglSkinTexture::eShaderTypes shaderType;
+			switch( pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetSimulationType() ){
+			case deParticleEmitterType::estParticle:
+				shaderType = deoglSkinTexture::estParticleGeometry;
+				break;
 				
-			}else{*/
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			//}
+			case deParticleEmitterType::estBeam:
+				shaderType = deoglSkinTexture::estParticleBeamGeometry;
+				break;
+				
+			case deParticleEmitterType::estRibbon:
+				shaderType = deoglSkinTexture::estParticleRibbonGeometry;
+				break;
+				
+			default:
+				DETHROW( deeInvalidParam );
+			}
+			
+			UpdateInstanceParamBlock( *pParamBlock, *pUseSkinTexture->GetShaderFor( shaderType ) );
 		}
 		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
+		pDirtyParamBlock = false;
 	}
 	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			UpdateInstanceParamBlock( *pParamBlockGeometry,
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleGeometry ) );
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
+	return pParamBlock;
 }
 
 deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCForShaderType(
@@ -470,84 +390,91 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 	}
 	
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
-	if( skinShader.GetUsedTextureTargetCount() == 0 ){
-		return NULL;
-	}
-	
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
-	
-	if( pDynamicSkin ){
-		dynamicSkin = pDynamicSkin;
-		//skinState = pSkinState;
-		
-	}else{
-		//dynamicSkin = pEmitterInstance->GetDynamicSkin();
-		//skinState = pEmitterInstance->GetSkinState();
-	}
-	
-	// set common textures. for these adjust the samplers to linear without mip mapping. this is
-	// required since particles are usually small and ribbons and beams usually narrow. in this
-	// situation opengl starts mip mapping a lot resulting in poor results
 	deoglRenderThread &renderThread = pEmitterInstance.GetRenderThread();
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-	int target;
+	deoglTexUnitsConfig *tuc = NULL;
 	
-	skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
-	
-	for( target=0; target<deoglSkinShader::ETT_COUNT; target++ ){
-		if( units[ target ].IsEnabled() ){
-			if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscClampNearestMipMap ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
-				
-			}else if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-				
-			}else if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMapNearest ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-				
-			}else if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscRepeatLinearMipMap ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscRepeatLinear ) );
-				
-			}else{ // not mip mapped or we don't know what it is. either way leave it as it is
+	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+		deoglRDynamicSkin *dynamicSkin = NULL;
+		deoglSkinState *skinState = NULL;
+		
+		if( pDynamicSkin ){
+			dynamicSkin = pDynamicSkin;
+			//skinState = pSkinState;
+			
+		}else{
+			//dynamicSkin = pEmitterInstance->GetDynamicSkin();
+			//skinState = pEmitterInstance->GetSkinState();
+		}
+		
+		// set common textures. for these adjust the samplers to linear without mip mapping. this is
+		// required since particles are usually small and ribbons and beams usually narrow. in this
+		// situation opengl starts mip mapping a lot resulting in poor results
+		deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+		int target;
+		
+		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
+		
+		for( target=0; target<deoglSkinShader::ETT_COUNT; target++ ){
+			if( units[ target ].IsEnabled() ){
+				if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscClampNearestMipMap ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+					
+				}else if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+					
+				}else if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMapNearest ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+					
+				}else if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscRepeatLinearMipMap ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscRepeatLinear ) );
+					
+				}else{ // not mip mapped or we don't know what it is. either way leave it as it is
+				}
 			}
 		}
+		
+		// set environment map textures
+		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
+			pEmitterInstance.GetParentWorld()->GetSkyEnvironmentMap(),
+			pEmitterInstance.GetRenderEnvMap(), pEmitterInstance.GetRenderEnvMap() );
+		
+		// set curve sampler texture
+		target = skinShader.GetTextureTarget( deoglSkinShader::ettSamples );
+		if( target != -1 ){
+			units[ target ].EnableTexture(
+				pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetTextureSamples(),
+				renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+		}
+		
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	
-	// set environment map textures
-	skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
-		pEmitterInstance.GetParentWorld()->GetSkyEnvironmentMap(),
-		pEmitterInstance.GetRenderEnvMap(), pEmitterInstance.GetRenderEnvMap() );
-	
-	// set curve sampler texture
-	target = skinShader.GetTextureTarget( deoglSkinShader::ettSamples );
-	if( target != -1 ){
-		units[ target ].EnableTexture(
-			pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetTextureSamples(),
-			renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	if( ! tuc ){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
+	tuc ->EnsureRTSTexture();
 	
-	return renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-		&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+	return tuc;
 }
 
 void deoglRParticleEmitterInstanceType::InvalidateParamBlocks(){
-	pValidParamBlockDepth = false;
-	pValidParamBlockGeometry = false;
-	
+	pValidParamBlock = false;
 	MarkParamBlocksDirty();
 }
 
 void deoglRParticleEmitterInstanceType::MarkParamBlocksDirty(){
-	pDirtyParamBlockGeometry = true;
+	pDirtyParamBlock = true;
 }
 
 void deoglRParticleEmitterInstanceType::MarkTUCsDirty(){
@@ -600,6 +527,8 @@ deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader ){
 			const int sheetCount = 3;
 			paramBlock.SetParameterDataInt( target, sheetCount );
 		}
+		
+		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
 		
 		// per texture dynamic texture properties
 		//skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );

@@ -456,21 +456,21 @@ FXIMPLEMENT( igdeNativeFoxFont, FXFont, igdeNativeFoxFontMap, ARRAYNUMBER( igdeN
 
 igdeNativeFoxFont::igdeNativeFoxFont(){ }
 
-igdeNativeFoxFont::igdeNativeFoxFont( igdeFont &owner ) :
+igdeNativeFoxFont::igdeNativeFoxFont( igdeFont &powner ) :
 // WARNING the documentation in fox is inconsistent. for both FXFontDesc and the FXFont
 //         constructor the documentation states the size is in 1/10 points. for FXFontDesc
 //         this is correct but FXFont constructor expects suddenly 1/1 points.
-FXFont( FXApp::instance(), owner.GetName().GetString(), owner.GetSize(),
-	owner.GetBold() ? FXFont::Bold : FXFont::Normal,
-	owner.GetItalic() ? FXFont::Italic : FXFont::Straight ),
-pOwner( &owner ){
+FXFont( FXApp::instance(), powner.GetName().GetString(), powner.GetSize(),
+	powner.GetBold() ? FXFont::Bold : FXFont::Normal,
+	powner.GetItalic() ? FXFont::Italic : FXFont::Straight ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxFont::~igdeNativeFoxFont(){
 }
 
-igdeNativeFoxFont *igdeNativeFoxFont::CreateNativeFont( igdeFont &owner ){
-	igdeNativeFoxFont * const native = new igdeNativeFoxFont( owner );
+igdeNativeFoxFont *igdeNativeFoxFont::CreateNativeFont( igdeFont &powner ){
+	igdeNativeFoxFont * const native = new igdeNativeFoxFont( powner );
 	native->create();
 	return native;
 }

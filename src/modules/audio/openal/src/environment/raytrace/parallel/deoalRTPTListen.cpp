@@ -58,6 +58,8 @@ pRayCount( 0 ),
 pListenProbe( NULL ),
 pSourceProbe( NULL )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	pRTWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
@@ -476,18 +478,18 @@ deoalWorldOctree &octree, const decVector &targetPositionWorld ){
 
 
 deoalRTPTListen::sSphereReceiverParams::sSphereReceiverParams(
-	const deoalSoundRayList& soundRayList, const decVector& targetPosition,
-	deoalWorldOctree& octree, const decVector& targetPositionWorld,
-	const decVector& gainPosition, float receiverRadius,
-	float receiverRadiusSquared, float invReceiverVolume ) :
-soundRayList( soundRayList ),
-targetPosition( targetPosition ),
-octree( octree ),
-targetPositionWorld( targetPositionWorld ),
-gainPosition( gainPosition ),
-receiverRadius( receiverRadius ),
-receiverRadiusSquared( receiverRadiusSquared ),
-invReceiverVolume( invReceiverVolume ){
+	const deoalSoundRayList& psoundRayList, const decVector& ptargetPosition,
+	deoalWorldOctree& poctree, const decVector& ptargetPositionWorld,
+	const decVector& pgainPosition, float preceiverRadius,
+	float preceiverRadiusSquared, float pinvReceiverVolume ) :
+soundRayList( psoundRayList ),
+targetPosition( ptargetPosition ),
+octree( poctree ),
+targetPositionWorld( ptargetPositionWorld ),
+gainPosition( pgainPosition ),
+receiverRadius( preceiverRadius ),
+receiverRadiusSquared( preceiverRadiusSquared ),
+invReceiverVolume( pinvReceiverVolume ){
 }
 
 deoalRTPTListen::sSphereReceiverImpinge::sSphereReceiverImpinge() :
@@ -800,7 +802,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// the artistic values to take effect we need to apply an artificial attenuation factor.
 		// this is done by taking the ratio between the artistic attenuation curve and the
 		// realistic attenuation curve. this is (1/r')/(1/r) = aa/(1/r) = aa*r
-		float factor = dri * params.invReceiverVolume;
+		factor = dri * params.invReceiverVolume;
 		#endif
 		#endif
 		

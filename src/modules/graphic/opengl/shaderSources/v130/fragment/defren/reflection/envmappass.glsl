@@ -4,6 +4,7 @@ precision highp int;
 
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform float pScaleDistance;
 uniform vec2 pBlendFactors; // multiply, add
 uniform mat3 pMatrixEnvMap;
@@ -14,14 +15,14 @@ uniform int pEnvMapIndex;
 
 
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
-uniform lowp isampler2D texIndices;
-uniform mediump sampler2D texDistance1;
-uniform mediump sampler2D texDistance2;
+uniform HIGHP sampler2DArray texDepth;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texReflectivity;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
+uniform lowp isampler2DArray texIndices;
+uniform mediump sampler2DArray texDistance1;
+uniform mediump sampler2DArray texDistance2;
 uniform mediump samplerCube texEnvMap;
 
 #ifdef FULLSCREENQUAD
@@ -30,19 +31,28 @@ uniform mediump samplerCube texEnvMap;
 	in vec3 vVolumePos;
 #endif
 
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
+
 out vec4 outColor;
 
+#include "v130/shared/normal.glsl"
 
 
 void main( void ){
+	vec3 tcScreen( vScreenCoord.xy, vLayer );
+	
 	// get indices and discard if this envmap is not matched
-	ivec2 indices = texture( texIndices, vScreenCoord.xy ).rg;
+	ivec2 indices = texture( texIndices, tcScreen ).rg;
 	if( all( notEqual( indices, ivec2( pEnvMapIndex ) ) ) ) discard;
 	
 	// get distances and calculate the blend weight according to them
 	vec2 distances;
-	distances.x = texture( texDistance1, vScreenCoord.xy ).r;
-	distances.y = texture( texDistance2, vScreenCoord.xy ).r;
+	distances.x = texture( texDistance1, tcScreen ).r;
+	distances.y = texture( texDistance2, tcScreen ).r;
 	distances *= vec2( pScaleDistance );
 	
 	float weight = clamp( ( distances.y - distances.x ) * pBlendFactors.x + pBlendFactors.y, 0.0, 1.0 );
@@ -52,7 +62,7 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	#ifdef DECODE_IN_DEPTH
 		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
@@ -61,25 +71,10 @@ void main( void ){
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+		position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	#else
 		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
 	#endif
-	
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	normal = normalize( normal );
 	
 	// fetch reflectivity
 	vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
@@ -92,6 +87,7 @@ void main( void ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal ) );
 	

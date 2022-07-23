@@ -36,3 +36,16 @@ deBaseModule( loadableModule ){
 
 deBaseGraphicModule::~deBaseGraphicModule(){
 }
+
+
+
+// Management
+///////////////
+
+int deBaseGraphicModule::GetFPSRate(){
+	return 0;
+}
+
+void deBaseGraphicModule::GetGraphicApiConnection( sGraphicApiConnection &connection ){
+	memset( &connection, 0, sizeof( connection ) );
+}

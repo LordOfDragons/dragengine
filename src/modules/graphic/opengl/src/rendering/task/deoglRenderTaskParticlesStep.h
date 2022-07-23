@@ -29,7 +29,7 @@
 
 class deoglCubeMap;
 class deoglRDynamicSkin;
-class deoglSPBlockUBO;
+class deoglShaderParameterBlock;
 class deoglShaderProgram;
 class deoglRSkin;
 class deoglTexture;
@@ -46,14 +46,14 @@ public:
 	};
 	
 private:
-	deoglShaderProgram *pShader;
-	deoglSPBlockUBO *pParamBlockTexture;
-	deoglSPBlockUBO *pParamBlockInstance;
-	deoglTexUnitsConfig *pTUC;
+	const deoglShaderProgram *pShader;
+	const deoglShaderParameterBlock *pParamBlockTexture;
+	const deoglShaderParameterBlock *pParamBlockInstance;
+	const deoglTexUnitsConfig *pTUC;
 	
-	deoglVAO *pVAO;
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	const deoglVAO *pVAO;
+	const deoglRSkin *pSkin;
+	const deoglRDynamicSkin *pDynamicSkin;
 	int pTexture;
 	
 	sInstance *pInstances;
@@ -79,34 +79,34 @@ public:
 	void Reset();
 	
 	/** Retrieves the shader. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	inline const deoglShaderProgram *GetShader() const{ return pShader; }
 	/** Sets the shader. */
-	void SetShader( deoglShaderProgram *shader );
+	void SetShader( const deoglShaderProgram *shader );
 	/** Retrieves the texture shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlockTexture() const{ return pParamBlockTexture; }
+	inline const deoglShaderParameterBlock *GetParameterBlockTexture() const{ return pParamBlockTexture; }
 	/** Sets the texture shader parameter block or NULL if not used. */
-	void SetParameterBlockTexture( deoglSPBlockUBO *block );
+	void SetParameterBlockTexture( const deoglShaderParameterBlock *block );
 	/** Retrieves the instance shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlockInstance() const{ return pParamBlockInstance; }
+	inline const deoglShaderParameterBlock *GetParameterBlockInstance() const{ return pParamBlockInstance; }
 	/** Sets the instance shader parameter block or NULL if not used. */
-	void SetParameterBlockInstance( deoglSPBlockUBO *block );
+	void SetParameterBlockInstance( const deoglShaderParameterBlock *block );
 	/** Retrieves the texture units configuration. */
-	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
+	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	/** Sets the texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
+	void SetTUC( const deoglTexUnitsConfig *tuc );
 	
 	/** Retrieves the vao. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deoglVAO *GetVAO() const{ return pVAO; }
 	/** Sets the vao. */
-	void SetVAO( deoglVAO *vao );
+	void SetVAO( const deoglVAO *vao );
 	/** Retrieves the skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin *GetSkin() const{ return pSkin; }
 	/** Sets the skin. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin( const deoglRSkin *skin );
 	/** Retrieves the dynamic skin. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	/** Sets the dynamic skin. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin( const deoglRDynamicSkin *dynamicSkin );
 	/** Retrieves the texture index. */
 	inline int GetTexture() const{ return pTexture; }
 	/** Sets the texture index. */

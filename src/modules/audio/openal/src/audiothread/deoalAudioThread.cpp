@@ -134,6 +134,7 @@ pElapsed( 0.0f ),
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryAudio( 29, 2 ),
 pTimeHistoryAudioEstimated( 29, 2 ),
+pTimeHistoryUpdate( 29, 2 ),
 pEstimatedAudioTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
@@ -350,6 +351,11 @@ void deoalAudioThread::Synchronize(){
 	
 	pDebugInfo->UpdateDebugInfo();
 	
+	pFPSRate = 0;
+	if( pTimeHistoryUpdate.HasMetrics() ){
+		pFPSRate = ( int )( 1.0f / pTimeHistoryUpdate.GetAverage() );
+	}
+	
 	if( pAsyncAudio ){
 		// begin audio next frame unless thread is not active
 		if( pThreadState == etsStopped ){
@@ -419,8 +425,8 @@ void deoalAudioThread::Run(){
 		try{
 			pCleanUpThread();
 			
-		}catch( const deException &exception ){
-			pLogger->LogException( exception );
+		}catch( const deException &exception2 ){
+			pLogger->LogException( exception2 );
 		}
 		
 		return;
@@ -621,7 +627,8 @@ void deoalAudioThread::pInitThreadPhase1(){
 	pWOVCollectElements = new deoalWOVCollectElements;
 	
 	// set default parameters
-	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+// 	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+	alDistanceModel( AL_NONE );
 }
 
 void deoalAudioThread::pCleanUpThread(){
@@ -770,6 +777,7 @@ void deoalAudioThread::pProcessAudio(){
 	pDelayed->ProcessFreeOperations( false );
 	
 	pElapsed = pTimerElapsed.GetElapsedTime();
+	pTimeHistoryUpdate.Add( pElapsed );
 	
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->ProcessDeactivate();

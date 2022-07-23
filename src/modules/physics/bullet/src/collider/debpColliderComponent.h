@@ -151,6 +151,8 @@ public:
 	/** Detect collision for a custom collision step. */
 	virtual void DetectCustomCollision( float elapsed );
 	
+	virtual bool GetRigidBodyDeactivated() const;
+	
 	/** \brief Apply gravity to linear velocity for kinematic simulation. */
 	void ApplyGravity( float elapsed );
 	

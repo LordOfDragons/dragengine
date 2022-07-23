@@ -38,7 +38,7 @@
  * is responsible to set the module information upon creation time best done
  * inside the constructor but at last before the module is added to the system.
  */
-class deInternalModule : public deLoadableModule{
+class DE_DLL_EXPORT deInternalModule : public deLoadableModule{
 private:
 public:
 	/** \name Constructors and Destructors */

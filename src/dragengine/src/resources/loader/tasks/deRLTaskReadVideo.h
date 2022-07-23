@@ -29,7 +29,7 @@
 /**
  * \brief Read video resource loader task.
  */
-class deRLTaskReadVideo : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadVideo : public deResourceLoaderTask {
 private:
 	deVideoReference pVideo;
 	bool pSucceeded;

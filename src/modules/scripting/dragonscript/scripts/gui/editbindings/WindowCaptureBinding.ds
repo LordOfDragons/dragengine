@@ -41,14 +41,28 @@ public class WindowCaptureBinding extends WindowDialog
 	/** \brief Capture result. */
 	public class CaptureResult
 		var EditBindingsListModelEntry.InputSource pInputSource
+		var InputEventSource pSystem
 		var int pDeviceIndex
 		var int pSourceIndex
 		var bool pInverseAxis
 		
-		/** \brief Create capture result. */
+		/**
+		 * \brief Create capture result.
+		 * \deprecated Use new(EditBindingsListModelEntry.InputSource,InputEventSource,int,int,bool)
+		 */
+		public func new( EditBindingsListModelEntry.InputSource inputSource, int deviceIndex, \
+		int sourceIndex, bool inverseAxis ) this( inputSource, InputEventSource.input, \
+		deviceIndex, sourceIndex, inverseAxis )
+		end
+		
+		/**
+		 * \brief Create capture result.
+		 * \version 1.6
+		 */
 		public func new( EditBindingsListModelEntry.InputSource inputSource, \
-		int deviceIndex, int sourceIndex, bool inverseAxis )
+		InputEventSource system, int deviceIndex, int sourceIndex, bool inverseAxis )
 			this.pInputSource = inputSource
+			this.pSystem = system
 			this.pDeviceIndex = deviceIndex
 			this.pSourceIndex = sourceIndex
 			this.pInverseAxis = inverseAxis
@@ -57,6 +71,14 @@ public class WindowCaptureBinding extends WindowDialog
 		/** \brief Input source. */
 		public func EditBindingsListModelEntry.InputSource getInputSource()
 			return this.pInputSource
+		end
+		
+		/**
+		 * \brief Captured device system.
+		 * \version 1.6
+		 */
+		public func InputEventSource getSystem()
+			return this.pSystem
 		end
 		
 		/** \brief Captured device index. */
@@ -73,18 +95,96 @@ public class WindowCaptureBinding extends WindowDialog
 		public func bool getInverseAxis()
 			return this.pInverseAxis
 		end
+		
+		
+		
+		/**
+		 * \brief Device or null if not set.
+		 * \version 1.6
+		 */
+		public func InputDevice getInputDevice()
+			if this.pDeviceIndex == -1
+				return null
+			end
+			
+			select this.pSystem
+			case InputEventSource.input
+				return InputSystem.getDeviceAt( this.pDeviceIndex )
+				
+			case InputEventSource.vr
+				return VRSystem.getDeviceAt( this.pDeviceIndex )
+			end
+			
+			return null
+		end
+		
+		/**
+		 * \brief Device axis or null if not set.
+		 * \version 1.6
+		 */
+		public func InputDeviceAxis getInputDeviceAxis()
+			if this.pSourceIndex != -1
+				var InputDevice device = this.getInputDevice()
+				if device != null
+					return device.getAxisAt( this.pSourceIndex )
+				end
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Device button or null if not set.
+		 * \version 1.6
+		 */
+		public func InputDeviceButton getInputDeviceButton()
+			if this.pSourceIndex != -1
+				var InputDevice device = this.getInputDevice()
+				if device != null
+					return device.getButtonAt( this.pSourceIndex )
+				end
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Device feedback or null if not set.
+		 * \version 1.6
+		 */
+		public func InputDeviceFeedback getInputDeviceFeedback()
+			if this.pSourceIndex != -1
+				var InputDevice device = this.getInputDevice()
+				if device != null
+					return device.getFeedbackAt( this.pSourceIndex )
+				end
+			end
+			return null
+		end
 	end
 	
 	/** \brief Close dialog listener setting capture. */
 	public class CaptureAxisListener extends DefaultMouseListener
 		private var WindowDialog pDialog
+		private var InputEventSource pSystem
 		private var int pDeviceIndex
 		private var int pAxisIndex
 		private var ToggleModel pInverseAxis
 		
-		/** \brief Create action listener with null result. */
-		public func new( WindowDialog dialog, int deviceIndex, int axisIndex, ToggleModel inverseAxis )
+		/**
+		 * \brief Create action listener with null result.
+		 * \deprecated Use new(WindowDialog,InputEventSource,int,int,ToggleModel)
+		 */
+		public func new( WindowDialog dialog, int deviceIndex, int axisIndex, ToggleModel inverseAxis ) \
+		this( dialog, InputEventSource.input, deviceIndex, axisIndex, inverseAxis )
+		end
+		
+		/**
+		 * \brief Create action listener with null result.
+		 * \version 1.6
+		 */
+		public func new( WindowDialog dialog, InputEventSource system, int deviceIndex, \
+		int axisIndex, ToggleModel inverseAxis )
 			this.pDialog = dialog
+			this.pSystem = system
 			this.pDeviceIndex = deviceIndex
 			this.pAxisIndex = axisIndex
 			this.pInverseAxis = inverseAxis
@@ -100,6 +200,42 @@ public class WindowCaptureBinding extends WindowDialog
 				EditBindingsListModelEntry.InputSource.axis, this.pDeviceIndex, \
 				this.pAxisIndex, this.pInverseAxis.getToggled() ) ) \
 					.onAction( ActionEvent.new( event.getSource(), ActionEvent.idAction, 0 ) )
+		end
+		
+		
+		
+		/**
+		 * \brief Device or null if not set.
+		 * \version 1.6
+		 */
+		public func InputDevice getInputDevice()
+			if this.pDeviceIndex == -1
+				return null
+			end
+			
+			select this.pSystem
+			case InputEventSource.input
+				return InputSystem.getDeviceAt( this.pDeviceIndex )
+				
+			case InputEventSource.vr
+				return VRSystem.getDeviceAt( this.pDeviceIndex )
+			end
+			
+			return null
+		end
+		
+		/**
+		 * \brief Device axis or null if not set.
+		 * \version 1.6
+		 */
+		public func InputDeviceAxis getInputDeviceAxis()
+			if this.pAxisIndex != -1
+				var InputDevice device = this.getInputDevice()
+				if device != null
+					return device.getAxisAt( this.pAxisIndex )
+				end
+			end
+			return null
 		end
 	end
 	
@@ -184,32 +320,28 @@ public class WindowCaptureBinding extends WindowDialog
 			if inputSource == EditBindingsListModelEntry.InputSource.axis
 				var int i, count = bindingManager.getDeviceCount()
 				var DefaultToggleModel inverseAxis = DefaultToggleModel.new()
-				var int mouse = -1
 				
-				for i = 0 to count
-					if bindingManager.getDeviceAt( i ).getType() == InputDeviceType.mouse
-						mouse = i
-						break
-					end
-				end
+				var InputDevice device = bindingManager.findDevice( block InputDevice each
+					return each.getType() == InputDeviceType.mouse
+				end )
 				
-				if mouse != -1
+				if device != null
 					dialog.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5 ), \
 					block Panel panelButton
 						panelButton.setDesignerSelector( "Panel.WindowDialogButtons.CaptureBinding" )
 						
-						var InputDevice device = bindingManager.getDeviceAt( mouse )
 						var DisplayInputSource dpi
-						
 						dpi = DisplayInputSource.new( 32, null, device.getAxisAt( 0 ) )
 						dpi.setDesignerSelector( "DisplayInputSource.WindowDialog.CaptureBinding" )
 						panelButton.addWidget( dpi )
-						dpi.addMouseListener( CaptureAxisListener.new( dialog, mouse, 0, inverseAxis ) )
+						dpi.addMouseListener( CaptureAxisListener.new( dialog, \
+							device.getSource(), device.getIndex(), 0, inverseAxis ) )
 						
 						dpi = DisplayInputSource.new( 32, null, device.getAxisAt( 1 ) )
 						dpi.setDesignerSelector( "DisplayInputSource.WindowDialog.CaptureBinding" )
 						panelButton.addWidget( dpi )
-						dpi.addMouseListener( CaptureAxisListener.new( dialog, mouse, 1, inverseAxis ) )
+						dpi.addMouseListener( CaptureAxisListener.new( dialog, \
+							device.getSource(), device.getIndex(), 1, inverseAxis ) )
 						
 						panelButton.addWidget( CheckBox.new( inverseAxis, "Invert" ) )
 					end ), BorderLayout.Area.bottom )
@@ -261,7 +393,7 @@ public class WindowCaptureBinding extends WindowDialog
 		end
 		
 		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.button, \
-			event.getDevice(), event.getButtonCode(), false ) )
+			event.getSystem(), event.getDevice(), event.getButtonCode(), false ) )
 		this.close()
 	end
 	
@@ -294,7 +426,7 @@ public class WindowCaptureBinding extends WindowDialog
 		end
 		
 		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.button, \
-			event.getDevice(), event.getButton(), false ) )
+			event.getSystem(), event.getDevice(), event.getButton(), false ) )
 		this.close()
 	end
 	
@@ -315,22 +447,22 @@ public class WindowCaptureBinding extends WindowDialog
 		
 		if position.getX() > 0
 			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), false ) )
+				event.getSystem(), event.getDevice(), event.getButton(), false ) )
 			this.close()
 			
 		elif position.getX() < 0
 			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), true ) )
+				event.getSystem(), event.getDevice(), event.getButton(), true ) )
 			this.close()
 			
 		elif position.getY() > 0
 			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), false ) )
+				event.getSystem(), event.getDevice(), event.getButton(), false ) )
 			this.close()
 			
 		elif position.getY() < 0
 			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), true ) )
+				event.getSystem(), event.getDevice(), event.getButton(), true ) )
 			this.close()
 		end
 	end
@@ -349,7 +481,7 @@ public class WindowCaptureBinding extends WindowDialog
 		end
 		
 		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-			event.getDevice(), event.getCode(), event.getAxisValue() < 0.0 ) )
+			event.getSystem(), event.getDevice(), event.getCode(), event.getAxisValue() < 0.0 ) )
 		this.close()
 	end
 	
@@ -361,7 +493,7 @@ public class WindowCaptureBinding extends WindowDialog
 		end
 		
 		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.button, \
-			event.getDevice(), event.getCode(), false ) )
+			event.getSystem(), event.getDevice(), event.getCode(), false ) )
 		this.close()
 	end
 end

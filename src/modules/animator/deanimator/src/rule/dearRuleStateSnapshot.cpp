@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleStateSnapshot.h"
 #include "../dearAnimatorInstance.h"
@@ -76,8 +75,8 @@
 /////////////////////////////////
 
 dearRuleStateSnapshot::dearRuleStateSnapshot( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleStateSnapshot &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleStateSnapshot &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 //pStateSnapshot( rule ),
 
 pAnimStates( NULL ),
@@ -221,10 +220,10 @@ void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName
 	const int boneCount = GetBoneMappingCount();
 	const dearAnimatorInstance &instance = GetInstance();
 	const dearBoneStateList &stateList = instance.GetBoneStateList();
-	dearAnimation * const animation = instance.GetAnimation();
-	dearAnimationMove *move = NULL;
 	int i;
 	
+	const dearAnimation * const animation = GetUseAnimation();
+	dearAnimationMove *move = nullptr;
 	if( animation ){
 		move = animation->GetMoveNamed( moveName );
 	}

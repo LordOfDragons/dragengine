@@ -36,11 +36,12 @@
 // constructor, destructor
 ////////////////////////////
 
-deAnimationMove::deAnimationMove(){
-	pPlaytime = 0;
-	pLists = NULL;
-	pListCount = 0;
-	pListSize = 0;
+deAnimationMove::deAnimationMove() :
+pPlaytime( 0 ),
+pFPS( 25.0f ),
+pLists( nullptr ),
+pListCount( 0 ),
+pListSize( 0 ){
 }
 
 deAnimationMove::~deAnimationMove(){
@@ -65,6 +66,10 @@ void deAnimationMove::SetName( const char *name ){
 void deAnimationMove::SetPlaytime( float playtime ){
 	if( playtime < 0 ) DETHROW( deeInvalidParam );
 	pPlaytime = playtime;
+}
+
+void deAnimationMove::SetFPS( float fps ){
+	pFPS = decMath::max( fps, 1.0f );
 }
 
 deAnimationKeyframeList *deAnimationMove::GetKeyframeList( int index ) const{

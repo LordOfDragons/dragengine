@@ -38,7 +38,13 @@ class deHeightTerrainSector;
  * collider. This object is reference counted because it does keep references to the
  * collision objects.
  */
-class deCollisionInfo : public deObject{
+class DE_DLL_EXPORT deCollisionInfo : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCollisionInfo> Ref;
+	
+	
+	
 private:
 	int pOwnerBone;
 	int pOwnerShape;

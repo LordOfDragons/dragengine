@@ -205,70 +205,70 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 		}
 		
 		if( pEnableDepth ){
-			dst.SaveDepthTexture( *defren.GetDepthTexture1(), pName + "depth", depthType );
+			dst.SaveDepthArrayTexture( *defren.GetDepthTexture1(), pName + "depth", depthType );
 		}
 		if( pEnableDepth2 ){
-			dst.SaveDepthTexture( *defren.GetDepthTexture2(), pName + "depth2", depthType );
+			dst.SaveDepthArrayTexture( *defren.GetDepthTexture2(), pName + "depth2", depthType );
 		}
 		if( pEnableDepth3 ){
-			dst.SaveDepthTexture( *defren.GetDepthTexture3(), pName + "depth3", depthType );
+			dst.SaveDepthArrayTexture( *defren.GetDepthTexture3(), pName + "depth3", depthType );
 		}
 	}
 	
 	if( pEnableStencil ){
-		dst.SaveStencilTexture( *defren.GetDepthTexture1(), pName + "stencil");
+		dst.SaveStencilArrayTexture( *defren.GetDepthTexture1(), pName + "stencil");
 	}
 	if( pEnableStencil2 ){
-		dst.SaveStencilTexture( *defren.GetDepthTexture2(), pName + "stencil2");
+		dst.SaveStencilArrayTexture( *defren.GetDepthTexture2(), pName + "stencil2");
 	}
 	
 	if( pEnableColor ){
-		dst.SaveTextureConversion( *defren.GetTextureColor(), pName + "color",
+		dst.SaveArrayTextureConversion( *defren.GetTextureColor(), pName + "color",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableDiffuse ){
-		dst.SaveTextureConversion( *defren.GetTextureDiffuse(), pName + "diffuse",
+		dst.SaveArrayTextureConversion( *defren.GetTextureDiffuse(), pName + "diffuse",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableNormal ){
-		dst.SaveTextureConversion( *defren.GetTextureNormal(), pName + "normal",
+		dst.SaveArrayTextureConversion( *defren.GetTextureNormal(), pName + "normal",
 			deoglDebugSaveTexture::ecNormal );
 	}
 	
 	if( pEnableReflectivity ){
-		dst.SaveTextureConversion( *defren.GetTextureReflectivity(), pName + "reflectivity",
+		dst.SaveArrayTextureConversion( *defren.GetTextureReflectivity(), pName + "reflectivity",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableRoughness ){
-		dst.SaveTextureConversion( *defren.GetTextureRoughness(), pName + "roughness",
+		dst.SaveArrayTextureConversion( *defren.GetTextureRoughness(), pName + "roughness",
 			deoglDebugSaveTexture::ecNoConversion );
 	}
 	
 	if( pEnableAOSolidity ){
-		dst.SaveTextureConversion( *defren.GetTextureAOSolidity(), pName + "aosolidity",
+		dst.SaveArrayTextureConversion( *defren.GetTextureAOSolidity(), pName + "aosolidity",
 			deoglDebugSaveTexture::ecNoConversion );
 	}
 	
 	if( pEnablePostProcess ){
-		dst.SaveTextureConversion( *defren.GetPostProcessTexture(), pName + "postprocess",
+		dst.SaveArrayTextureConversion( *defren.GetPostProcessTexture(), pName + "postprocess",
 			deoglDebugSaveTexture::ecNoConversion );
 	}
 	
 	if( pEnableTemporary1 ){
-		dst.SaveTextureConversion( *defren.GetTextureTemporary1(), pName + "temporary1",
+		dst.SaveArrayTextureConversion( *defren.GetTextureTemporary1(), pName + "temporary1",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableTemporary2 ){
-		dst.SaveTextureConversion( *defren.GetTextureTemporary2(), pName + "temporary2",
+		dst.SaveArrayTextureConversion( *defren.GetTextureTemporary2(), pName + "temporary2",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableTemporary3 ){
-		dst.SaveTextureConversion( *defren.GetTextureTemporary3(), pName + "temporary3",
+		dst.SaveArrayTextureConversion( *defren.GetTextureTemporary3(), pName + "temporary3",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 }

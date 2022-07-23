@@ -322,7 +322,7 @@ void deClassCanvas::nfGetBlendMode::RunFunction( dsRunTime *rt, dsValue *myself 
 // public func void setBlendMode( CanvasBlendMode blendMoe )
 deClassCanvas::nfSetBlendMode::nfSetBlendMode( const sInitData &init ) : dsFunction( init.clsCanvas,
 "setBlendMode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCanvasBlendMode ); // blendMoe
+	p_AddParameter( init.clsCanvasBlendMode ); // blendMode
 }
 void deClassCanvas::nfSetBlendMode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
@@ -333,6 +333,64 @@ void deClassCanvas::nfSetBlendMode::RunFunction( dsRunTime *rt, dsValue *myself 
 	nd.canvas->SetBlendMode( ( deCanvas::eBlendModes )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
+}
+
+// public func Canvas getMask()
+deClassCanvas::nfGetMask::nfGetMask( const sInitData &init ) : dsFunction( init.clsCanvas,
+"getMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvas ){
+}
+void deClassCanvas::nfGetMask::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.canvas ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deClassCanvas &clsCanvas = *( ( deClassCanvas* )GetOwnerClass() );
+	clsCanvas.PushCanvas( rt, nd.canvas->GetMask() );
+}
+
+// public func void setMask( Canvas mask )
+deClassCanvas::nfSetMask::nfSetMask( const sInitData &init ) : dsFunction( init.clsCanvas,
+"setMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCanvas ); // mask
+}
+void deClassCanvas::nfSetMask::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.canvas || ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deClassCanvas &clsCanvas = *( ( deClassCanvas* )GetOwnerClass() );
+	nd.canvas->SetMask( clsCanvas.GetCanvas( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
+// public func CanvasView getParentView()
+deClassCanvas::nfGetParentView::nfGetParentView( const sInitData &init ) :
+dsFunction( init.clsCanvas, "getParentView", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvasView ){
+}
+void deClassCanvas::nfGetParentView::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.canvas ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassCanvas* )GetOwnerClass() )->GetDS();
+	ds.GetClassCanvasView()->PushCanvas( rt, nd.canvas->GetParentView() );
+}
+
+// public func Canvas getParentMask()
+deClassCanvas::nfGetParentMask::nfGetParentMask( const sInitData &init ) :
+dsFunction( init.clsCanvas, "getParentMask", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvas ){
+}
+void deClassCanvas::nfGetParentMask::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.canvas ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	( ( deClassCanvas* )GetOwnerClass() )->PushCanvas( rt, nd.canvas->GetParentMask() );
 }
 
 
@@ -407,6 +465,7 @@ void deClassCanvas::CreateClassMembers( dsEngine *engine ){
 	init.clsTexMat2 = pDS.GetClassTexMatrix2();
 	init.clsClrMat = pDS.GetClassColorMatrix();
 	init.clsCanvasBlendMode = pClsCanvasBlendMode;
+	init.clsCanvasView = pDS.GetClassCanvasView();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -428,6 +487,10 @@ void deClassCanvas::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetTransparency( init ) );
 	AddFunction( new nfGetBlendMode( init ) );
 	AddFunction( new nfSetBlendMode( init ) );
+	AddFunction( new nfGetMask( init ) );
+	AddFunction( new nfSetMask( init ) );
+	AddFunction( new nfGetParentView( init ) );
+	AddFunction( new nfGetParentMask( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

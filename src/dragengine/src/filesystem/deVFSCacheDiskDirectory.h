@@ -32,7 +32,13 @@
  * Keeps track of the consumed disk space deleting the oldest files if too
  * much space would be consumed.
  */
-class deVFSCacheDiskDirectory : public deVFSDiskDirectory{
+class DE_DLL_EXPORT deVFSCacheDiskDirectory : public deVFSDiskDirectory{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSCacheDiskDirectory> Ref;
+	
+	
+	
 private:
 	int pMaxCacheSize;
 	int pCacheSize;

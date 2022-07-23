@@ -55,20 +55,16 @@ deTerrainHeightMap::deTerrainHeightMap(){
 	pSize.Set( 1.0f, 1.0f );
 	pScaling = 1.0f;
 	
-	pPathHeightImage = NULL;
 	pHeightImage = NULL;
 	
-	pPathVisImage = NULL;
 	pVisibleFaces = NULL;
 	pVFByteCount = 0;
 }
 
 deTerrainHeightMap::~deTerrainHeightMap(){
 	if( pVisibleFaces ) delete [] pVisibleFaces;
-	if( pPathVisImage ) delete [] pPathVisImage;
 	
 	if( pHeightImage ) pHeightImage->FreeReference();
-	if( pPathHeightImage ) delete [] pPathHeightImage;
 }
 
 
@@ -107,17 +103,7 @@ void deTerrainHeightMap::SetScaling( float scaling ){
 
 
 void deTerrainHeightMap::SetPathHeightImage( const char *path ){
-	if( pPathHeightImage ){
-		delete [] pPathHeightImage;
-		pPathHeightImage = NULL;
-	}
-	
-	if( path ){
-		pPathHeightImage = new char[ strlen( path ) + 1 ];
-		if( ! pPathHeightImage ) DETHROW( deeOutOfMemory );
-		
-		strcpy( pPathHeightImage, path );
-	}
+	pPathHeightImage = path;
 }
 
 void deTerrainHeightMap::SetHeightImage( deImage *heightImage ){
@@ -224,17 +210,7 @@ void deTerrainHeightMap::CalculateExtends( decVector &minExtend, decVector &maxE
 ////////////////////
 
 void deTerrainHeightMap::SetPathVisibilityImage( const char *path ){
-	if( pPathVisImage ){
-		delete [] pPathVisImage;
-		pPathVisImage = NULL;
-	}
-	
-	if( path ){
-		pPathVisImage = new char[ strlen( path ) + 1 ];
-		if( ! pPathVisImage ) DETHROW( deeOutOfMemory );
-		
-		strcpy( pPathVisImage, path );
-	}
+	pPathVisImage = path;
 }
 
 bool deTerrainHeightMap::GetFaceVisibleAt( int x, int y ){

@@ -49,94 +49,72 @@ pin Dragengine.Scenery
  * without the need to alter the instance itself.
  */
 class Desktop extends Container
-	/** \brief widget having the focus or \em null. */
 	private var Widget pFocusWidget
-	
-	/** \brief Grab focus in progress used to solve recusion-problems. */
 	private var Widget pFocusInProgress
 	
-	
-	
-	/** \brief Widget where the mouse hovers above or \em null. */
 	private var Widget pHoverWidget
-	
-	/** \brief Decoration whose state is tracked or \em null. */
 	private var Window pTrackDecoration
-	
-	/** \brief Tracked decoration area the mouse hovers above. */
 	private var Decoration.Area pTrackDecorationAreaHover
 	
-	
-	
-	/** \brief Widget having captured the mouse or \em null. */
 	private var Widget pCaptureWidget
 	
-	
-	
-	/** \brief Mouse pointer location. */
 	private var Point pMouseLocation
-	
-	/** \brief Active mouse pointer factory. */
 	private var MousePointerFactory pActiveMousePointer
-	
-	/** \brief Mouse pointer instance or null. */
 	private var MousePointer pMousePointerInstance
-	
-	/** \brief Mouse movement area restriction or \em null. */
 	private var RectArea pMouseArea
-	
-	/** \brief Mouse pointer is hidden. */
 	private var bool pMouseHidden
+	private var Array pMousePointerListeners
 	
-	
-	
-	/** \brief Drag window or \em null. */
 	private var Window pDragWindow
-	
-	/** \brief Drag offset. */
 	private var Point pDragOffset
-	
-	/** \brief Drag area. */
 	private var Decoration.Area pDragArea
 	
-	
-	
-	/** \brief Area along the borders no window can occupy. */
 	private var BorderSize pNoWindowBorder
 	
+	private var ToolTipManager pToolTipManager
+	private var WindowVirtualKeyboard pWindowVirtualKeyboard
+	
 	
 	
 	/** \brief Create desktop widget. */
-	public func new( int width, int height ) this( 0, 0, width, height )
+	public func new(int width, int height) this(0, 0, width, height)
 	end
 	
 	/** \brief Create desktop widget. */
-	public func new( Point size ) this( 0, 0, size.getX(), size.getY() )
+	public func new(Point size) this(0, 0, size.getX(), size.getY())
 	end
 	
 	/** \brief Create desktop widget. */
-	public func new( int x, int y, int width, int height ) super( x, y, width, height )
-		this.pDragOffset = Point.new()
-		this.pNoWindowBorder = BorderSize.new()
+	public func new(int x, int y, int width, int height) super(x, y, width, height)
+		pMousePointerListeners = Array.new()
+		pDragOffset = Point.new()
+		pNoWindowBorder = BorderSize.new()
 		
-		this.pTrackDecorationAreaHover = Decoration.Area.nothing
+		pTrackDecorationAreaHover = Decoration.Area.nothing
 		
-		this.setDesignerSelector( "Desktop" )
-		this.setLayout( FixedLayout.new() )
-		this.pMouseLocation = Point.new( width / 2, height / 2 )
-		this.pMouseHidden = false
+		setDesignerSelector("Desktop")
+		setLayout(FixedLayout.new())
+		pMouseLocation = Point.new(width / 2, height / 2)
+		pMouseHidden = false
+		
+		pToolTipManager = ToolTipManager.new(this)
+		setClipboard(Clipboard.new())
 	end
 	
 	
 	/** \brief Disposes of widget. */
 	public func void dispose()
-		this.pFocusWidget = null
-		this.pFocusInProgress = null
+		setWindowVirtualKeyboard(null)
+		setToolTipManager(null)
 		
-		this.pHoverWidget = null
-		this.pTrackDecoration = null
+		pMousePointerListeners = null
+		pFocusWidget = null
+		pFocusInProgress = null
 		
-		this.pCaptureWidget = null
+		pHoverWidget = null
+		pTrackDecoration = null
+		
+		pCaptureWidget = null
 		
 		super.dispose()
 	end
@@ -145,8 +123,9 @@ class Desktop extends Container
 	
 	/** \brief Active window or \em null. */
 	public func Window getActiveWindow()
-		if this.pFocusWidget != null
-			return this.pFocusWidget.getWindow()
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			return focusWidget.getWindow()
 			
 		else
 			return null
@@ -155,52 +134,63 @@ class Desktop extends Container
 	
 	/** \brief Focused widget or \em null. */
 	public func Widget getFocusWidget()
-		return this.pFocusWidget
+		if pFocusWidget != null
+			if pFocusWidget.getParent() == null /* removed or disposed while active */ \
+			or not pFocusWidget.getCanFocus() \
+			or not pFocusWidget.getEnabled() \
+			or not pFocusWidget.getVisible()
+				pFocusWidget = null
+			end
+		end
+		
+		return pFocusWidget
 	end
 	
 	
 	
 	/** \brief Widget the mouse hovers above or \em null. */
 	public func Widget getHoverWidget()
-		if this.pHoverWidget != null
-			return this.pHoverWidget
-			
-		else
-			return this
+		if pHoverWidget != null
+			if pHoverWidget.getParent() == null /* removed or disposed while active */ \
+			or not pHoverWidget.getVisible()
+				pHoverWidget = null
+			end
 		end
+		
+		return pHoverWidget != null if pHoverWidget else this
 	end
 	
 	/**
 	 * \brief Set widget the mouse hovers above.
 	 * \details If widget is different than the old one enter and leave messages are send.
 	 */
-	protected func void setHoverWidget( Widget widget, MouseEvent event )
-		if widget == this.pHoverWidget
+	protected func void setHoverWidget(Widget widget, MouseEvent event)
+		var Widget hoverWidget = getHoverWidget()
+		if widget == hoverWidget
 			return
 		end
 		
-		var Widget leaveWidget = this.pHoverWidget
+		var Widget leaveWidget = hoverWidget
 		
-		this.pHoverWidget = widget
+		pHoverWidget = widget
 		
 		if leaveWidget != null
 			// runWhileBlockingLayout added to deal with problem of layoutParent calling updateHoverWidget
 			// which in turn overwrites pHoverWidget while the next call is running. this results in
 			// pHoverWidget different than widget which is wrong
-			this.runWhileBlockingLayout( block
-				leaveWidget.sendEvent( MouseEvent.new( leaveWidget, \
-					MouseEvent.idMouseLeave, event.getButton(), \
-					event.getModifiers(), event.getDevice() ) )
-			end )
+			runWhileBlockingLayout(block
+				leaveWidget.sendEvent(MouseEvent.new(leaveWidget, MouseEvent.idMouseLeave, \
+					event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
+			end)
 		end
 		
 		if widget == null
-			this.setActiveMousePointer( this.getFirstMousePointer() )
+			setActiveMousePointer(getFirstMousePointer())
 			
 		else
-			this.setActiveMousePointer( widget.getFirstMousePointer() )
-			widget.sendEvent( MouseEvent.new( widget, MouseEvent.idMouseEnter, \
-				event.getButton(), event.getModifiers(), event.getDevice() ) )
+			setActiveMousePointer(widget.getFirstMousePointer())
+			widget.sendEvent(MouseEvent.new(widget, MouseEvent.idMouseEnter, \
+				event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
 		end
 	end
 	
@@ -211,23 +201,26 @@ class Desktop extends Container
 	public func void updateHoverWidget()
 		var Widget hoverWidget
 		
-		if this.pDragWindow != null
+		if pDragWindow != null
 			
-		elif this.pCaptureWidget != null
-			hoverWidget = this.pCaptureWidget
+		elif pCaptureWidget != null
+			hoverWidget = pCaptureWidget
 			
 		else
-			var int i, count = this.getWidgetCount()
+			var int i, count = getWidgetCount()
 			var Window window
 			var Widget widget
 			
 			for i = count - 1 downto 0
-				window = this.getWidget( i ) cast Window
+				window = getWidget(i) cast Window
 				if not window.getVisible()
 					continue
 				end
+				if not window.getEnabled()
+					break
+				end
 				
-				widget = window.getWidgetAt( this.pMouseLocation - window.getPosition() )
+				widget = window.getWidgetAt(pMouseLocation - window.getPosition())
 				if widget == null
 					continue
 				end
@@ -237,80 +230,80 @@ class Desktop extends Container
 			end
 		end
 		
-		if hoverWidget == this.pHoverWidget
+		if hoverWidget == getHoverWidget()
 			return
 		end
 		
-		var MouseEvent event = MouseEvent.new( hoverWidget, MouseEvent.idMouseMoved, 0, 0, Point.new(), -1 )
+		var MouseEvent event = MouseEvent.new(hoverWidget, MouseEvent.idMouseMoved, 0, 0, Point.new(), -1)
 		
 		if hoverWidget == null
-			this.setHoverWidget( null, event )
+			setHoverWidget(null, event)
 			
 		else
-			this.setHoverWidget( hoverWidget, event )
+			setHoverWidget(hoverWidget, event)
 		end
 	end
 	
 	/** \brief Clear hover widget. */
 	protected func void clearHoverWidget()
-		if this.pHoverWidget != null
-			this.setHoverWidget( null, MouseEvent.new( this.pHoverWidget, \
-				MouseEvent.idMouseLeave, 0, 0, -1 ) )
+		var Widget hoverWidget = getHoverWidget()
+		if hoverWidget != null
+			setHoverWidget(null, MouseEvent.new(hoverWidget, MouseEvent.idMouseLeave, 0, 0, -1))
 		end
 	end
 	
 	
 	/** \brief Decoration whose state is tracked or \em null. */
 	protected func Window getTrackDecoration()
-		return this.pTrackDecoration
+		return pTrackDecoration
 	end
 	
 	/** \brief Set decoration whose state is tracked or \em null. */
-	protected func void setTrackDecoration( Window window )
-		if window == this.pTrackDecoration
+	protected func void setTrackDecoration(Window window)
+		if window == pTrackDecoration
 			return
 		end
 		
-		this.setTrackDecorationAreaHover( Decoration.Area.nothing )
-		this.pTrackDecoration = window
+		setTrackDecorationAreaHover(Decoration.Area.nothing)
+		pTrackDecoration = window
 	end
 	
 	/** \brief Tracked decoration area the mouse hovers above. */
 	protected func Decoration.Area getTrackDecorationAreaHover()
-		return this.pTrackDecorationAreaHover
+		return pTrackDecorationAreaHover
 	end
 	
 	/** \brief Set tracked decoration area the mouse hovers above. */
-	protected func void setTrackDecorationAreaHover( Decoration.Area areaHover )
-		if areaHover == this.pTrackDecorationAreaHover
+	protected func void setTrackDecorationAreaHover(Decoration.Area areaHover)
+		if areaHover == pTrackDecorationAreaHover
 			return
 		end
 		
-		if this.pTrackDecoration != null
-			select this.pTrackDecorationAreaHover
+		if pTrackDecoration != null
+			select pTrackDecorationAreaHover
 			case Decoration.Area.close
-				this.pTrackDecoration.getDecoration().setButtonState( Decoration.Button.close, false, false )
+				pTrackDecoration.getDecoration().setButtonState(Decoration.Button.close, false, false)
 				
 			case Decoration.Area.maximize
-				this.pTrackDecoration.getDecoration().setButtonState( Decoration.Button.maximize, false, false )
+				pTrackDecoration.getDecoration().setButtonState(Decoration.Button.maximize, false, false)
 				
 			case Decoration.Area.minimize
-				this.pTrackDecoration.getDecoration().setButtonState( Decoration.Button.minimize, false, false )
+				pTrackDecoration.getDecoration().setButtonState(Decoration.Button.minimize, false, false)
 			end
 		end
 		
-		this.pTrackDecorationAreaHover = areaHover
+		pTrackDecorationAreaHover = areaHover
 		
-		if this.pTrackDecoration != null
+		if pTrackDecoration != null
 			select areaHover
 			case Decoration.Area.close
-				this.pTrackDecoration.getDecoration().setButtonState( Decoration.Button.close, true, false )
+				pTrackDecoration.getDecoration().setButtonState(Decoration.Button.close, true, false)
 				
 			case Decoration.Area.maximize
-				this.pTrackDecoration.getDecoration().setButtonState( Decoration.Button.maximize, true, false )
+				pTrackDecoration.getDecoration().setButtonState(Decoration.Button.maximize, true, false)
 				
 			case Decoration.Area.minimize
-				this.pTrackDecoration.getDecoration().setButtonState( Decoration.Button.minimize, true, false )
+				pTrackDecoration.getDecoration().setButtonState(Decoration.Button.minimize, true, false)
 			end
 		end
 	end
@@ -319,14 +312,14 @@ class Desktop extends Container
 	
 	/** Retrieves the widget having captured the mouse. */
 	public func Widget getMouseCaptureWidget()
-		return this.pCaptureWidget
+		return pCaptureWidget
 	end
 	
 	
 	
 	/** \brief Location of mouse pointer. */
 	public func Point getMouseLocation()
-		return this.pMouseLocation
+		return pMouseLocation
 	end
 	
 	/**
@@ -334,20 +327,23 @@ class Desktop extends Container
 	 * 
 	 * Location is clamped to the mouse movement area.
 	 */
-	public func void setMouseLocation( Point location )
-		if this.pMouseArea != null
-			location = this.pMouseArea.clamp( location )
+	public func void setMouseLocation(Point location)
+		if pMouseArea != null
+			location = pMouseArea.clamp(location)
 		end
-		location = RectArea.new( 0, 0, getWidth() - 1, getHeight() - 1 ).clamp( location )
-		if location.equals( this.pMouseLocation )
+		location = RectArea.new(0, 0, getWidth() - 1, getHeight() - 1).clamp(location)
+		if location.equals(pMouseLocation)
 			return
 		end
 		
-		this.pMouseLocation = location
+		pMouseLocation = location
 		
-		if this.pMousePointerInstance != null
-			this.pMousePointerInstance.setPosition( location )
+		if pMousePointerInstance != null
+			pMousePointerInstance.setPosition(location)
 		end
+		
+		onMousePointerMoved(MousePointerEvent.new(this,\
+			MousePointerEvent.idMousePointerMoved, pMousePointerInstance))
 	end
 	
 	/**
@@ -356,9 +352,13 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpMousePointer( Point location )
-		this.onMouseMove( MouseEvent.new( this, MouseEvent.idMouseMoved, 0, 0, \
-			location - this.pMouseLocation, -1 ) )
+	public func void warpMousePointer(Point location)
+		if InputSystem.getCaptureInputDevices()
+			onMouseMove(MouseEvent.new(this, MouseEvent.idMouseMoved, 0, 0, location - pMouseLocation, -1))
+			
+		else
+			onMouseMove(MouseEvent.new(this, MouseEvent.idMouseMoved, 0, 0, location, -1))
+		end
 	end
 	
 	/**
@@ -367,8 +367,8 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpMouseIn( Widget widget, Point location )
-		this.warpMousePointer( widget.getDesktopPosition() + location )
+	public func void warpMouseIn(Widget widget, Point location)
+		warpMousePointer(widget.getDesktopPosition() + location)
 	end
 	
 	/**
@@ -378,7 +378,7 @@ class Desktop extends Container
 	 * messages are not send.
 	 */
 	public func void warpCenterMouse()
-		this.warpMousePointer( this.getSize() / 2 )
+		warpMousePointer(getSize() / 2)
 	end
 	
 	/**
@@ -387,13 +387,13 @@ class Desktop extends Container
 	 * Use this method if you move the moue pointer directly as otherwise the appropriate
 	 * messages are not send.
 	 */
-	public func void warpCenterMouseIn( Widget widget )
-		this.warpMouseIn( widget, widget.getSize() / 2 )
+	public func void warpCenterMouseIn(Widget widget)
+		warpMouseIn(widget, widget.getSize() / 2)
 	end
 	
 	/** \brief Active mouse pointer factory or \em null. */
 	public func MousePointerFactory getActiveMousePointer()
-		return this.pActiveMousePointer
+		return pActiveMousePointer
 	end
 	
 	/**
@@ -401,121 +401,156 @@ class Desktop extends Container
 	 * 
 	 * If factory changes a new mouse pointer instance is created if not null.
 	 */
-	public func void setActiveMousePointer( MousePointerFactory mousePointer )
-		if mousePointer == this.pActiveMousePointer
+	public func void setActiveMousePointer(MousePointerFactory mousePointer)
+		if mousePointer == pActiveMousePointer
 			return
 		end
 		
-		if this.pMousePointerInstance != null
-			this.getCanvasWidget().removeCanvas( this.pMousePointerInstance.getCanvas() )
-			this.pMousePointerInstance = null
+		if pMousePointerInstance != null
+			getCanvasWidget().removeCanvas(pMousePointerInstance.getCanvas())
+			pMousePointerInstance = null
 		end
 		
-		this.pActiveMousePointer = mousePointer
+		pActiveMousePointer = mousePointer
 		
 		if mousePointer != null
-			this.pMousePointerInstance = mousePointer.createMousePointer()
-			this.pMousePointerInstance.setPosition( this.pMouseLocation )
+			pMousePointerInstance = mousePointer.createMousePointer()
+			pMousePointerInstance.setPosition(pMouseLocation)
 			
-			var Canvas canvas = this.pMousePointerInstance.getCanvas()
-			canvas.setOrder( 1.5 ) // between content and border
-			canvas.setVisible( not this.pMouseHidden )
-			this.getCanvasWidget().addCanvas( canvas )
+			var Canvas canvas = pMousePointerInstance.getCanvas()
+			canvas.setOrder(1.5) // between content and border
+			canvas.setVisible(not pMouseHidden)
+			getCanvasWidget().addCanvas(canvas)
 		end
+		
+		onMousePointerChanged(MousePointerEvent.new(this,\
+			MousePointerEvent.idMousePointerMoved, pMousePointerInstance))
 	end
 	
 	/** \brief Mouse pointer instance or null. */
 	public func MousePointer getMousePointerInstance()
-		return this.pMousePointerInstance
+		return pMousePointerInstance
 	end
 	
 	/** \brief Movement area of mouse pointer or \em null if not set. */
 	public func RectArea getMouseArea()
-		return this.pMouseArea
+		return pMouseArea
 	end
 	
 	/** \brief Set movement area of the mouse pointer or \em null to clear. */
-	public func void setMouseArea( RectArea area )
+	public func void setMouseArea(RectArea area)
 		if area != null
 			area = area.orientate()
 		end
-		this.pMouseArea = area
+		pMouseArea = area
 	end
 	
 	/** \brief Mouse pointer is hidden. */
 	public func bool getIsMouseHidden()
-		return this.pMouseHidden
+		return pMouseHidden
 	end
 	
 	/** \brief Set if mouse pointer is hidden. */
-	public func void setIsMouseHidden( bool hidden )
-		if hidden == this.pMouseHidden
+	public func void setIsMouseHidden(bool hidden)
+		if hidden == pMouseHidden
 			return
 		end
 		
-		this.pMouseHidden = hidden
+		pMouseHidden = hidden
 		
-		if this.pMousePointerInstance != null
-			this.pMousePointerInstance.getCanvas().setVisible( not hidden )
+		if pMousePointerInstance != null
+			pMousePointerInstance.getCanvas().setVisible(not hidden)
 		end
+		
+		if hidden
+			onMousePointerHidden(MousePointerEvent.new(this,\
+				MousePointerEvent.idMousePointerHidden, pMousePointerInstance))
+			
+		else
+			onMousePointerHidden(MousePointerEvent.new(this,\
+				MousePointerEvent.idMousePointerShown, pMousePointerInstance))
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add mouse pointer listener.
+	 * \version 1.7
+	 */
+	public func void addMousePointerListener(MousePointerListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pMousePointerListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove mouse pointer listener.
+	 * \version 1.7
+	 */
+	public func void removeMousePointerListener(MousePointerListener listener)
+		pMousePointerListeners.remove(listener)
 	end
 	
 	
 	
 	/** \brief Area along the borders no window can occupy. */
 	public func BorderSize getNoWindowBorder()
-		return this.pNoWindowBorder
+		return pNoWindowBorder
 	end
 	
 	/** \brief Set area along the borders no window can occupy. */
-	public func void setNoWindowBorder( BorderSize size )
+	public func void setNoWindowBorder(BorderSize size)
 		if size == null
 			throw EInvalidParam.new()
 		end
 		
-		if size.equals( this.pNoWindowBorder )
+		if size.equals(pNoWindowBorder)
 			return
 		end
 		
-		this.pNoWindowBorder = size
+		pNoWindowBorder = size
 	end
 	
 	/** \brief Top left position excluding no window border. */
 	public func Point getNoBorderPosition()
-		return Point.new( this.pNoWindowBorder.getLeft(), this.pNoWindowBorder.getTop() )
+		return Point.new(pNoWindowBorder.getLeft(), pNoWindowBorder.getTop())
 	end
 	
 	/** \brief Maximum size excluding no window border. */
 	public func Point getNoBorderSize()
-		return this.getSize() - this.pNoWindowBorder.getSize()
+		return getSize() - pNoWindowBorder.getSize()
 	end
 	
 	
 	
 	/** \brief Add window to desktop. */
-	public func void addWidget( Widget widget )
-		this.addWidget( widget, null )
+	public func void addWidget(Widget widget)
+		addWidget(widget, null)
 	end
 	
 	/**
 	 * \brief Add window to desktop.
 	 * \details To add windows use this function rather than addWidget.
 	 */
-	public func void addWindow( Window window )
-		this.addWidget( window, null )
+	public func void addWindow(Window window)
+		addWidget(window, null)
 	end
 	
 	/** \brief Add window to desktop. */
-	public func void addWidget( Widget widget, Object settings )
+	public func void addWidget(Widget widget, Object settings)
 		if not widget castable Window
 			throw EInvalidParam.new()
 		end
 		
-		super.addWidget( widget, settings )
+		super.addWidget(widget, settings)
 		
-		if ( widget cast Window ).getWindowState() == Window.WindowState.maximized
-			widget.setPosition( Point.new() )
-			widget.setSize( this.getSize() )
+		if (widget cast Window).getWindowState() == Window.WindowState.maximized
+			// TODO this is duplicate code. move this code and the one from updateMaximizedWindowSizes()
+			//      into Window class. then also store the restored position
+			widget.setPosition(Point.new())
+			widget.setSize(getSize())
 		end
 		
 		if widget.getVisible()
@@ -527,37 +562,37 @@ class Desktop extends Container
 	 * \brief Add window to desktop.
 	 * \details To add windows use this function rather than addWidget.
 	 */
-	public func void addWindow( Window window, Object settings )
-		this.addWidget( window, settings )
+	public func void addWindow(Window window, Object settings)
+		addWidget(window, settings)
 	end
 	
 	/** \brief Remove window from desktop. */
-	public func void removeWidget( Widget widget )
+	public func void removeWidget(Widget widget)
 		var Window window = widget cast Window
 		
-		if window == this.pTrackDecoration
-			this.setTrackDecoration( null )
+		if window == pTrackDecoration
+			setTrackDecoration(null)
 		end
 		if window.getActivated()
-			this.clearFocusWidget()
+			clearFocusWidget()
 		end
-		this.clearHoverWidget()
+		clearHoverWidget()
 		
-		if this.pHoverWidget != null
+		if pHoverWidget != null
 			throw EInvalidParam.new()
 		end
-		super.removeWidget( widget )
+		super.removeWidget(widget)
 		
-		if this.pFocusWidget == null
-			this.focusActiveWidgetOfFirstUsableWindow()
+		if getFocusWidget() == null
+			focusActiveWidgetOfFirstUsableWindow()
 		end
-		this.updateHoverWidget()
+		updateHoverWidget()
 	end
 	
 	/** \brief Remove all windows from desktop. */
 	public func void removeAllWidgets()
-		this.clearFocusWidget()
-		this.clearHoverWidget()
+		clearFocusWidget()
+		clearHoverWidget()
 		super.removeAllWidgets()
 	end
 	
@@ -565,30 +600,29 @@ class Desktop extends Container
 	
 	/** Notifies that the current focus widget can no longer hold the focus. */
 	public func void giveUpFocus()
-		this.clearFocusWidget()
-		this.focusActiveWidgetOfFirstUsableWindow()
+		clearFocusWidget()
+		focusActiveWidgetOfFirstUsableWindow()
 	end
 	
 	/** Clears the focus widget. */
 	public func void clearFocusWidget()
-		if this.pFocusWidget == null
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget == null
 			return
 		end
 		
-		var Window window = this.pFocusWidget.getWindow()
+		var Window window = focusWidget.getWindow()
 		if window != null
-			window.setActivated( false )
+			window.setActivated(false)
 		end
 		
-		var Widget focusWidget = this.pFocusWidget
-		
-		this.pFocusWidget = null
-		focusWidget.setHasFocus( false )
+		pFocusWidget = null
+		focusWidget.setHasFocus(false)
 	end
 	
 	/** \brief Focus the active widget of the top window supporting it if possible. */
 	public func void focusActiveWidgetOfFirstUsableWindow()
-		var int count = this.getWidgetCount()
+		var int count = getWidgetCount()
 		if count == 0
 			return
 		end
@@ -597,7 +631,7 @@ class Desktop extends Container
 		var int i
 		
 		for i = count - 1 downto 0
-			window = this.getWidget( i ) cast Window
+			window = getWidget(i) cast Window
 			if not window.getVisible() or not window.getCanActivate() \
 			or window.getBlockingWindow() != null
 				continue
@@ -614,15 +648,16 @@ class Desktop extends Container
 	
 	
 	/** Request to focus the specified widget. */
-	public func void requestGrabFocus( Widget widget )
-		super.requestGrabFocus( widget )
+	public func void requestGrabFocus(Widget widget)
+		super.requestGrabFocus(widget)
 		
 		// get the windows of the current and new focus widget if existing
 		var Window windowNew = widget.getWindow()
 		var Window windowOld
 		
-		if this.pFocusWidget != null
-			windowOld = this.pFocusWidget.getWindow()
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			windowOld = focusWidget.getWindow()
 		end
 		
 		// if window can not be activated stick with the old window
@@ -632,22 +667,20 @@ class Desktop extends Container
 		
 		// update focus and activation states if window changed
 		if windowOld != null and windowOld != windowNew
-			windowOld.setActivated( false )
+			windowOld.setActivated(false)
 		end
 		
 		// change focus widget sending events
-		var Widget focusWidget = this.pFocusWidget
-		
-		this.pFocusWidget = widget
+		pFocusWidget = widget
 		
 		if focusWidget != null
-			focusWidget.setHasFocus( false )
+			focusWidget.setHasFocus(false)
 		end
-		widget.setHasFocus( true )
+		widget.setHasFocus(true)
 		
 		// if window changed activate new window and move it to the top
 		if windowNew != windowOld
-			windowNew.setActivated( true )
+			windowNew.setActivated(true)
 			if windowNew.getCanReorder()
 				windowNew.moveToTop()
 			end
@@ -658,11 +691,11 @@ class Desktop extends Container
 	 * \brief Container allows child widgets to grab the focus.
 	 */
 	public func bool allowsChildGrabFocus()
-		if not this.getEnabled() or not this.getVisible()
+		if not getEnabled() or not getVisible()
 			return false
 		end
 		
-		var Container parent = this.getParent()
+		var Container parent = getParent()
 		if parent == null
 			return true
 		end
@@ -673,12 +706,13 @@ class Desktop extends Container
 	/**
 	 * \brief Request to capture the mouse for the specified widget.
 	 */
-	public func bool requestCaptureMouse( Widget widget )
-		if widget == null //or this.pCaptureWidget != null
+	public func bool requestCaptureMouse(Widget widget)
+		if widget == null //or pCaptureWidget != null
 			return false
 		end
 		
-		this.pCaptureWidget = widget
+		pCaptureWidget = widget
+		updateHoverWidget()
 		
 		return true
 	end
@@ -687,81 +721,140 @@ class Desktop extends Container
 	 * \brief Request to release mouse capture.
 	 * \returns \em true if the widget is the capture widget otherwise \em false.
 	 */
-	public func bool requestReleaseMouse( Widget widget )
-		if widget != this.pCaptureWidget
+	public func bool requestReleaseMouse(Widget widget)
+		if widget != pCaptureWidget
 			return false
 		end
 		
-		this.pCaptureWidget = null
-		
-		this.updateHoverWidget()
+		pCaptureWidget = null
+		updateHoverWidget()
 		
 		return true
 	end
 	
 	
 	
+	/**
+	 * \brief Tool tip manager or null.
+	 * \version 1.7
+	 */
+	public func ToolTipManager getToolTipManager()
+		return pToolTipManager
+	end
+	
+	/**
+	 * \brief Set tool tip manager or null.
+	 * \version 1.7
+	 */
+	public func void setToolTipManager(ToolTipManager tooltipManager)
+		if tooltipManager == pToolTipManager
+			return
+		end
+		
+		if pToolTipManager != null
+			pToolTipManager.dispose()
+			pToolTipManager = null
+		end
+		
+		pToolTipManager = tooltipManager
+	end
+	
+	
+	
+	/**
+	 * \brief Virtual keyboard window or null.
+	 * \version 1.7
+	 */
+	public func WindowVirtualKeyboard getWindowVirtualKeyboard()
+		return pWindowVirtualKeyboard
+	end
+	
+	/**
+	 * \brief Set virtual keyboard window or null.
+	 * \version 1.7
+	 */
+	public func void setWindowVirtualKeyboard(WindowVirtualKeyboard window)
+		if window == pWindowVirtualKeyboard
+			return
+		end
+		
+		if pWindowVirtualKeyboard != null
+			pWindowVirtualKeyboard.safeDispose()
+			pWindowVirtualKeyboard = null
+		end
+		
+		pWindowVirtualKeyboard = window
+		
+		if window != null
+			window.setVisible(false)
+			addWindow(window)
+		end
+	end
+	
+	
+	
 	/** Sends an Event to the focus widget or drop it. */
-	public func void processEvent( Event event )
+	public func void processEvent(Event event)
 		var int ident = event.getIdentifier()
 		var Widget eventWidget //, focusWidget
 		var Event eventToSend
 		
 		// check if the event has to work on the focused widget or active window
-		if KeyEvent.isKeyEvent( ident )
+		if KeyEvent.isKeyEvent(ident)
 			var KeyEvent keyEvent = event cast KeyEvent
-			eventWidget = this.pFocusWidget
-			eventToSend = KeyEvent.new( eventWidget, ident, keyEvent.getKeyCode(), \
+			eventWidget = getFocusWidget()
+			eventToSend = KeyEvent.new(eventWidget, ident, keyEvent.getKeyCode(), \
 				keyEvent.getModifiers(), keyEvent.getKeyChar(), \
-				keyEvent.getDevice() , keyEvent.getButtonCode() )
+				keyEvent.getSystem(), keyEvent.getDevice() , keyEvent.getButtonCode())
 			// send event if an appropriate widget has been found
 			if eventWidget != null
-				eventWidget.sendEvent( eventToSend )
+				eventWidget.sendEvent(eventToSend)
 			end
 			
-		elif GamepadEvent.isGamepadEvent( ident )
-			if this.pFocusWidget != null
+		elif GamepadEvent.isGamepadEvent(ident)
+			var Widget focusWidget = getFocusWidget()
+			if focusWidget != null
 				var GamepadEvent gevent = event cast GamepadEvent
-				eventToSend = GamepadEvent.new( this.pFocusWidget, ident, gevent.getDevice(), \
-					gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue() )
-				this.pFocusWidget.sendEvent( eventToSend )
+				eventToSend = GamepadEvent.new(focusWidget, ident, gevent.getSystem(), \
+					gevent.getDevice(), gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue())
+				focusWidget.sendEvent(eventToSend)
 			end
 			
 		elif ident == MouseEvent.idMouseWheeled
-			eventWidget = this.pCaptureWidget
+			eventWidget = pCaptureWidget
 			if eventWidget == null
 				// always update the hover widget. if we do not do this it is possible a widget
 				// changes while the mouse pointer does not move
-				this.updateHoverWidget()
-				eventWidget = this.pHoverWidget
+				updateHoverWidget()
+				eventWidget = getHoverWidget()
 			end
-			if eventWidget != null
+			if eventWidget != null and eventWidget.isFullEnabled()
 				var MouseEvent mevent = event cast MouseEvent
-				eventToSend = MouseEvent.new( eventWidget, ident, mevent.getButton(), \
-					mevent.getModifiers(), mevent.getPosition(), mevent.getDevice() )
-				eventWidget.sendEvent( eventToSend )
+				eventToSend = MouseEvent.new(eventWidget, ident, mevent.getButton(), \
+					mevent.getModifiers(), mevent.getPosition(), mevent.getSystem(), mevent.getDevice())
+				eventWidget.sendEvent(eventToSend)
 			end
 			
 		// check for events working with a screen location or to a capture widget
-		/*elif MouseEvent.isMouseEvent( ident )
+		/*elif MouseEvent.isMouseEvent(ident)
 			var MouseEvent mouseEvent = event cast MouseEvent
-			this.setMouseLocation( this.pMouseLocation + \
-				Point.new( mouseEvent.getX(), mouseEvent.getY() ) )
-			if this.pCaptureWidget == null
-				eventWidget = this.getWidgetAt( this.pMouseLocation )
+			setMouseLocation(pMouseLocation + \
+				Point.new(mouseEvent.getX(), mouseEvent.getY()))
+			if pCaptureWidget == null
+				eventWidget = getWidgetAt(pMouseLocation)
 			else
-				eventWidget = this.pCaptureWidget
+				eventWidget = pCaptureWidget
 			end
 			if eventWidget != null
-				eventToSend = MouseEvent.new( eventWidget, ident, mouseEvent.getButton(), \
-					mouseEvent.getModifiers(), this.pMouseLocation.getX() - eventWidget.getScreenX(), \
-					this.pMouseLocation.getY() - eventWidget.getScreenY() )
+				eventToSend = MouseEvent.new(eventWidget, ident, mouseEvent.getButton(), \
+					mouseEvent.getModifiers(), pMouseLocation.getX() - eventWidget.getScreenX(), \
+					pMouseLocation.getY() - eventWidget.getScreenY())
 			end
 			// store widget where the mouse is above at the moment
-			this.pHoverWidget = eventWidget
+			pHoverWidget = eventWidget
 			*/
 		else
-			this.sendEvent( event )
+			sendEvent(event)
 		end
 	end
 	
@@ -792,48 +885,48 @@ class Desktop extends Container
 	 */
 	public func void layoutParent()
 		// check if capture widget is no more existing
-		if this.pCaptureWidget != null
-			if not this.pCaptureWidget.hasParent( this )
-				this.pCaptureWidget = null
+		if pCaptureWidget != null
+			if not pCaptureWidget.hasParent(this)
+				pCaptureWidget = null
 			end
 		end
 		
 		// check if hover widget changed
-		this.updateHoverWidget()
+		updateHoverWidget()
 	end
 	
 	
 	
 	/** Notification that a mouse button has been pressed. */
-	public func void onButtonPress( MouseEvent event )
+	public func void onButtonPress(MouseEvent event)
 		if event.getSource() != this
 			return // if some lazy bum send his message up to the parent ignore it
 		end
 		
-		this.setMouseLocation( this.pMouseLocation + event.getPosition() )
+		setMouseLocation(pMouseLocation + event.getPosition())
 		
-		if this.pCaptureWidget != null
-			if this.pCaptureWidget != this
-				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
+		if pCaptureWidget != null
+			if pCaptureWidget != this
+				pCaptureWidget.sendEvent(MouseEvent.new(pCaptureWidget, \
 					event.getIdentifier(), event.getButton(), event.getModifiers(), \
-					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					pMouseLocation - pCaptureWidget.getScreenPosition(), \
+					event.getSystem(), event.getDevice()))
 			end
 			return
 		end
 		
-		var int i, count = this.getWidgetCount()
+		var int i, count = getWidgetCount()
 		var Window window
 		
 		for i = count - 1 downto 0
-			window = this.getWidget( i ) cast Window
+			window = getWidget(i) cast Window
 			if not window.getVisible()
 				continue
 			end
 			
 			var Decoration decoration = window.getDecoration()
 			if decoration != null
-				var Decoration.Area hitType = decoration.areaHitBy( this.pMouseLocation )
+				var Decoration.Area hitType = decoration.areaHitBy(pMouseLocation)
 				if hitType != Decoration.Area.nothing
 					if not window.getEnabled() or not window.getCanActivate()
 						return
@@ -846,40 +939,40 @@ class Desktop extends Container
 						return
 					end
 					
-					select decoration.areaHitBy( this.pMouseLocation )
+					select decoration.areaHitBy(pMouseLocation)
 					case Decoration.Area.close
 						if event.getButton() == InputEventMouseButton.left
-							decoration.setButtonState( Decoration.Button.close, true, true )
+							decoration.setButtonState(Decoration.Button.close, true, true)
 							
-							this.pDragWindow = window
-							this.pDragArea = Decoration.Area.close
-							this.requestCaptureMouse( this )
+							pDragWindow = window
+							pDragArea = Decoration.Area.close
+							requestCaptureMouse(this)
 						end
 						return
 						
 					case Decoration.Area.maximize
 						if event.getButton() == InputEventMouseButton.left
-							decoration.setButtonState( Decoration.Button.maximize, true, true )
+							decoration.setButtonState(Decoration.Button.maximize, true, true)
 							
-							this.pDragWindow = window
-							this.pDragArea = Decoration.Area.maximize
-							this.requestCaptureMouse( this )
+							pDragWindow = window
+							pDragArea = Decoration.Area.maximize
+							requestCaptureMouse(this)
 						end
 						return
 						
 					case Decoration.Area.minimize
 						if event.getButton() == InputEventMouseButton.left
-							decoration.setButtonState( Decoration.Button.minimize, true, true )
+							decoration.setButtonState(Decoration.Button.minimize, true, true)
 							
-							this.pDragWindow = window
-							this.pDragArea = Decoration.Area.minimize
-							this.requestCaptureMouse( this )
+							pDragWindow = window
+							pDragArea = Decoration.Area.minimize
+							requestCaptureMouse(this)
 						end
 						return
 						
 					case Decoration.Area.menu
 						if event.getButton() == InputEventMouseButton.left
-							BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Open window menu: " + window.className() + "\n" )
+							BaseGameApp.getApp().getConsole().addMessage("[DESKTOP] Open window menu: " + window.className() + "\n")
 							if window.getCanReorder()
 								window.moveToTop()
 							end
@@ -894,10 +987,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanMove()
-								this.pDragWindow = window
-								this.pDragOffset = this.pMouseLocation - window.getPosition()
-								this.pDragArea = Decoration.Area.title
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = pMouseLocation - window.getPosition()
+								pDragArea = Decoration.Area.title
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -909,10 +1002,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = Point.new( this.pMouseLocation.getX() - window.getX(), this.pDragOffset.getY() )
-								this.pDragArea = Decoration.Area.resizeLeft
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = Point.new(pMouseLocation.getX() - window.getX(), pDragOffset.getY())
+								pDragArea = Decoration.Area.resizeLeft
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -924,10 +1017,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = Point.new( this.pDragOffset.getX(), this.pMouseLocation.getY() - window.getY() )
-								this.pDragArea = Decoration.Area.resizeTop
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = Point.new(pDragOffset.getX(), pMouseLocation.getY() - window.getY())
+								pDragArea = Decoration.Area.resizeTop
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -939,10 +1032,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = Point.new( this.pMouseLocation.getX() - window.getX() - window.getWidth(), this.pDragOffset.getY() )
-								this.pDragArea = Decoration.Area.resizeRight
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = Point.new(pMouseLocation.getX() - window.getX() - window.getWidth(), pDragOffset.getY())
+								pDragArea = Decoration.Area.resizeRight
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -954,10 +1047,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = Point.new( this.pDragOffset.getX(), this.pMouseLocation.getY() - window.getY() - window.getHeight() )
-								this.pDragArea = Decoration.Area.resizeBottom
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = Point.new(pDragOffset.getX(), pMouseLocation.getY() - window.getY() - window.getHeight())
+								pDragArea = Decoration.Area.resizeBottom
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -969,10 +1062,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = this.pMouseLocation - window.getPosition()
-								this.pDragArea = Decoration.Area.resizeTopLeft
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = pMouseLocation - window.getPosition()
+								pDragArea = Decoration.Area.resizeTopLeft
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -984,10 +1077,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = this.pMouseLocation - window.getPosition() - Point.new( 0, window.getHeight() )
-								this.pDragArea = Decoration.Area.resizeBottomLeft
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = pMouseLocation - window.getPosition() - Point.new(0, window.getHeight())
+								pDragArea = Decoration.Area.resizeBottomLeft
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -999,10 +1092,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = this.pMouseLocation - window.getPosition() - Point.new( window.getWidth(), 0 )
-								this.pDragArea = Decoration.Area.resizeTopRight
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = pMouseLocation - window.getPosition() - Point.new(window.getWidth(), 0)
+								pDragArea = Decoration.Area.resizeTopRight
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -1014,10 +1107,10 @@ class Desktop extends Container
 							end
 							window.grabFocus()
 							if window.getCanResize()
-								this.pDragWindow = window
-								this.pDragOffset = this.pMouseLocation - window.getPosition() - window.getSize()
-								this.pDragArea = Decoration.Area.resizeBottomRight
-								this.requestCaptureMouse( this ) //this.captureMouse()
+								pDragWindow = window
+								pDragOffset = pMouseLocation - window.getPosition() - window.getSize()
+								pDragArea = Decoration.Area.resizeBottomRight
+								requestCaptureMouse(this) //captureMouse()
 							end
 						end
 						return
@@ -1026,7 +1119,7 @@ class Desktop extends Container
 			end
 			
 			// decoration not hit or no decoration present
-			var Widget widget = window.getWidgetAt( this.pMouseLocation - window.getPosition() )
+			var Widget widget = window.getWidgetAt(pMouseLocation - window.getPosition())
 			if widget == null
 				continue
 			end
@@ -1044,7 +1137,7 @@ class Desktop extends Container
 			end
 			
 			while widget != null and widget != this
-				if not this.isWidgetDeepEnabled( widget )
+				if not isWidgetDeepEnabled(widget)
 					widget = widget.getParent()
 					continue
 				end
@@ -1053,10 +1146,10 @@ class Desktop extends Container
 					window.moveToTop()
 				end
 				
-				widget.sendEvent( MouseEvent.new( widget, event.getIdentifier(), \
+				widget.sendEvent(MouseEvent.new(widget, event.getIdentifier(), \
 					event.getButton(), event.getModifiers(), \
-					this.pMouseLocation - widget.getScreenPosition(), \
-					event.getDevice() ) )
+					pMouseLocation - widget.getScreenPosition(), \
+					event.getSystem(), event.getDevice()))
 				return
 			end
 			
@@ -1065,89 +1158,102 @@ class Desktop extends Container
 	end
 	
 	/** Notification that a mouse button has been released. */
-	public func void onButtonRelease( MouseEvent event )
+	public func void onButtonRelease(MouseEvent event)
 		// if some lazy bum send his message up to the parent ignore it.
 		if event.getSource() != this
 			return
 		end
 		
-		var int i, count = this.getWidgetCount()
+		var int i, count = getWidgetCount()
 		var Window window
 		var Widget widget
 		
-		this.setMouseLocation( this.pMouseLocation + event.getPosition() )
+		setMouseLocation(pMouseLocation + event.getPosition())
 		
-		if this.pDragWindow != null
+		if pDragWindow != null
 			if event.getButton() != InputEventMouseButton.left
 				return
 			end
 			
-			this.requestReleaseMouse( this )
+			requestReleaseMouse(this)
 			
-			select this.pDragArea
+			select pDragArea
 			case Decoration.Area.close
-				if this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.close
-					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.close, true, false )
-					this.pDragWindow.close()
+				if pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.close
+					pDragWindow.getDecoration().setButtonState(Decoration.Button.close, true, false)
+					pDragWindow.close()
 					
 				else
-					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.close, false, false )
+					pDragWindow.getDecoration().setButtonState(Decoration.Button.close, false, false)
 				end
 				
 			case Decoration.Area.maximize
-				if this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.maximize
-					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.maximize, true, false )
+				if pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.maximize
+					pDragWindow.getDecoration().setButtonState(Decoration.Button.maximize, true, false)
 					
-					BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Maximize window: " + this.pDragWindow.className() + "\n" )
-					if this.pDragWindow.getCanReorder()
-						this.pDragWindow.moveToTop()
+					if pDragWindow.getCanReorder()
+						pDragWindow.moveToTop()
 					end
-					this.pDragWindow.grabFocus()
+					pDragWindow.grabFocus()
+					
+					if pDragWindow.getCanMaximize()
+						/*
+						// TODO not working correctly right now
+						
+						select pDragWindow.getWindowState()
+						case Window.WindowState.maximized
+							pDragWindow.setWindowState(Window.WindowState.normal)
+							
+						case Window.WindowState.normal
+							pDragWindow.setWindowState(Window.WindowState.maximized)
+						end
+						*/
+					end
 					
 				else
-					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.maximize, false, false )
+					pDragWindow.getDecoration().setButtonState(Decoration.Button.maximize, false, false)
 				end
 				
 			case Decoration.Area.minimize
-				if this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.minimize
-					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.minimize, true, false )
+				if pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.minimize
+					pDragWindow.getDecoration().setButtonState(Decoration.Button.minimize, true, false)
 					
-					BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Minimize window: " + this.pDragWindow.className() + "\n" )
-					if this.pDragWindow.getCanReorder()
-						this.pDragWindow.moveToTop()
+					//BaseGameApp.getApp().getConsole().addMessage("[DESKTOP] Minimize window: " + pDragWindow.className() + "\n")
+					if pDragWindow.getCanReorder()
+						pDragWindow.moveToTop()
 					end
-					this.pDragWindow.grabFocus()
+					pDragWindow.grabFocus()
 					
 				else
-					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.minimize, false, false )
+					pDragWindow.getDecoration().setButtonState(Decoration.Button.minimize, false, false)
 				end
 			end
 			
-			this.pDragArea = Decoration.Area.nothing
-			this.pDragWindow = null
+			pDragArea = Decoration.Area.nothing
+			pDragWindow = null
 			
-		elif this.pCaptureWidget != null
-			//this.pHoverWidget = this.pCaptureWidget // mouse move should do this already
+		elif pCaptureWidget != null
+			//pHoverWidget = pCaptureWidget // mouse move should do this already
 			
-			if this.pCaptureWidget != this
-				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
+			if pCaptureWidget != this
+				pCaptureWidget.sendEvent(MouseEvent.new(pCaptureWidget, \
 					event.getIdentifier(), event.getButton(), event.getModifiers(), \
-					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					pMouseLocation - pCaptureWidget.getScreenPosition(), \
+					event.getSystem(), event.getDevice()))
 			end
 			
 		else
 			for i = count - 1 downto 0
-				window = this.getWidget( i ) cast Window
+				window = getWidget(i) cast Window
 				if window.getVisible()
-					widget = window.getWidgetAt( this.pMouseLocation - window.getPosition() )
+					widget = window.getWidgetAt(pMouseLocation - window.getPosition())
 					if widget != null
-						if this.isWidgetDeepEnabled( widget )
-							//this.pHoverWidget = widget // mouse move should do this already
-							widget.sendEvent( MouseEvent.new( widget, event.getIdentifier(), \
+						if isWidgetDeepEnabled(widget)
+							//pHoverWidget = widget // mouse move should do this already
+							widget.sendEvent(MouseEvent.new(widget, event.getIdentifier(), \
 								event.getButton(), event.getModifiers(), \
-								this.pMouseLocation - widget.getScreenPosition(), \
-								event.getDevice() ) )
+								pMouseLocation - widget.getScreenPosition(), \
+								event.getSystem(), event.getDevice()))
 						end
 						
 						break
@@ -1158,104 +1264,104 @@ class Desktop extends Container
 	end
 	
 	/** Notification that the mouse has moved. */
-	public func void onMouseMove( MouseEvent event )
+	public func void onMouseMove(MouseEvent event)
 		// if some lazy bum send his message up to the parent ignore it.
 		if event.getSource() != this
 			return
 		end
 		
-		var int i, count = this.getWidgetCount()
+		var int i, count = getWidgetCount()
 		var Window window
 		var Widget widget
 		var int ncx, ncy
 		
 		if InputSystem.getCaptureInputDevices()
-			this.setMouseLocation( this.pMouseLocation + event.getPosition() )
+			setMouseLocation(pMouseLocation + event.getPosition())
 			
 		else
-			this.setMouseLocation( event.getPosition() )
+			setMouseLocation(event.getPosition())
 		end
 		
-		if this.pDragWindow != null
-			select this.pDragArea
+		if pDragWindow != null
+			select pDragArea
 			case Decoration.Area.close
-				this.pDragWindow.getDecoration().setButtonState( Decoration.Button.close, true, \
-					this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.close )
+				pDragWindow.getDecoration().setButtonState(Decoration.Button.close, true, \
+					pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.close)
 				
 			case Decoration.Area.maximize
-				this.pDragWindow.getDecoration().setButtonState( Decoration.Button.maximize, true, \
-					this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.maximize )
+				pDragWindow.getDecoration().setButtonState(Decoration.Button.maximize, true, \
+					pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.maximize)
 				
 			case Decoration.Area.minimize
-				this.pDragWindow.getDecoration().setButtonState( Decoration.Button.minimize, true, \
-					this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.minimize )
+				pDragWindow.getDecoration().setButtonState(Decoration.Button.minimize, true, \
+					pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.minimize)
 				
 			case Decoration.Area.title
-				this.pDragWindow.setPosition( this.pMouseLocation - this.pDragOffset )
+				pDragWindow.setPosition(pMouseLocation - pDragOffset)
 				
 			case Decoration.Area.resizeLeft
-				ncx = DEMath.max( this.pDragWindow.getX() + this.pDragWindow.getWidth() \
-					- this.pMouseLocation.getX() + this.pDragOffset.getX(), \
-						DEMath.max( 20, this.pDragWindow.getMinimumSize().getX() ) )
-				this.pDragWindow.setX( this.pDragWindow.getX() + this.pDragWindow.getWidth() - ncx )
-				this.pDragWindow.setWidth( ncx )
+				ncx = DEMath.max(pDragWindow.getX() + pDragWindow.getWidth() \
+					- pMouseLocation.getX() + pDragOffset.getX(), \
+						DEMath.max(20, pDragWindow.getMinimumSize().getX()))
+				pDragWindow.setX(pDragWindow.getX() + pDragWindow.getWidth() - ncx)
+				pDragWindow.setWidth(ncx)
 				
 			case Decoration.Area.resizeTop
-				ncy = DEMath.max( this.pDragWindow.getY() + this.pDragWindow.getHeight() \
-					- this.pMouseLocation.getY() + this.pDragOffset.getY(), \
-						DEMath.max( 10, this.pDragWindow.getMinimumSize().getY() ) )
-				this.pDragWindow.setY( this.pDragWindow.getY() + this.pDragWindow.getHeight() - ncy )
-				this.pDragWindow.setHeight( ncy )
+				ncy = DEMath.max(pDragWindow.getY() + pDragWindow.getHeight() \
+					- pMouseLocation.getY() + pDragOffset.getY(), \
+						DEMath.max(10, pDragWindow.getMinimumSize().getY()))
+				pDragWindow.setY(pDragWindow.getY() + pDragWindow.getHeight() - ncy)
+				pDragWindow.setHeight(ncy)
 				
 			case Decoration.Area.resizeRight
-				ncx = DEMath.max( this.pMouseLocation.getX() - this.pDragOffset.getX() \
-					- this.pDragWindow.getX(), DEMath.max( 20, this.pDragWindow.getMinimumSize().getX() ) )
-				this.pDragWindow.setWidth( ncx )
+				ncx = DEMath.max(pMouseLocation.getX() - pDragOffset.getX() \
+					- pDragWindow.getX(), DEMath.max(20, pDragWindow.getMinimumSize().getX()))
+				pDragWindow.setWidth(ncx)
 				
 			case Decoration.Area.resizeBottom
-				ncy = DEMath.max( this.pMouseLocation.getY() - this.pDragOffset.getY() \
-					- this.pDragWindow.getY(), DEMath.max( 10, this.pDragWindow.getMinimumSize().getY() ) )
-				this.pDragWindow.setHeight( ncy )
+				ncy = DEMath.max(pMouseLocation.getY() - pDragOffset.getY() \
+					- pDragWindow.getY(), DEMath.max(10, pDragWindow.getMinimumSize().getY()))
+				pDragWindow.setHeight(ncy)
 				
 			case Decoration.Area.resizeTopLeft
-				var Point nsize = ( this.pDragWindow.getPosition() + this.pDragWindow.getSize() \
-					- this.pMouseLocation + this.pDragOffset ).largest( 20, 10 ) \
-						.largest( this.pDragWindow.getMinimumSize() )
-				this.pDragWindow.setPosition( this.pDragWindow.getPosition() + this.pDragWindow.getSize() - nsize )
-				this.pDragWindow.setSize( nsize )
+				var Point nsize = (pDragWindow.getPosition() + pDragWindow.getSize() \
+					- pMouseLocation + pDragOffset).largest(20, 10) \
+						.largest(pDragWindow.getMinimumSize())
+				pDragWindow.setPosition(pDragWindow.getPosition() + pDragWindow.getSize() - nsize)
+				pDragWindow.setSize(nsize)
 				
 			case Decoration.Area.resizeBottomLeft
-				var Point minsize = this.pDragWindow.getMinimumSize()
-				ncx = DEMath.max( this.pDragWindow.getX() + this.pDragWindow.getWidth() \
-					- this.pMouseLocation.getX() + this.pDragOffset.getX(), DEMath.max( 20, minsize.getX() ) )
-				ncy = DEMath.max( this.pMouseLocation.getY() - this.pDragOffset.getY() \
-					- this.pDragWindow.getY(), DEMath.max( 10, minsize.getY() ) )
-				this.pDragWindow.setX( this.pDragWindow.getX() + this.pDragWindow.getWidth() - ncx )
-				this.pDragWindow.setSize( Point.new( ncx, ncy ) )
+				var Point minsize = pDragWindow.getMinimumSize()
+				ncx = DEMath.max(pDragWindow.getX() + pDragWindow.getWidth() \
+					- pMouseLocation.getX() + pDragOffset.getX(), DEMath.max(20, minsize.getX()))
+				ncy = DEMath.max(pMouseLocation.getY() - pDragOffset.getY() \
+					- pDragWindow.getY(), DEMath.max(10, minsize.getY()))
+				pDragWindow.setX(pDragWindow.getX() + pDragWindow.getWidth() - ncx)
+				pDragWindow.setSize(Point.new(ncx, ncy))
 				
 			case Decoration.Area.resizeTopRight
-				var Point minsize = this.pDragWindow.getMinimumSize()
-				ncx = DEMath.max( this.pMouseLocation.getX() - this.pDragOffset.getX() \
-					- this.pDragWindow.getX(), DEMath.max( 20, minsize.getX() ) )
-				ncy = DEMath.max( this.pDragWindow.getY() + this.pDragWindow.getHeight() \
-					- this.pMouseLocation.getY() + this.pDragOffset.getY(), DEMath.max( 10, minsize.getY() ) )
-				this.pDragWindow.setY( this.pDragWindow.getY() + this.pDragWindow.getHeight() - ncy )
-				this.pDragWindow.setSize( Point.new( ncx, ncy ) )
+				var Point minsize = pDragWindow.getMinimumSize()
+				ncx = DEMath.max(pMouseLocation.getX() - pDragOffset.getX() \
+					- pDragWindow.getX(), DEMath.max(20, minsize.getX()))
+				ncy = DEMath.max(pDragWindow.getY() + pDragWindow.getHeight() \
+					- pMouseLocation.getY() + pDragOffset.getY(), DEMath.max(10, minsize.getY()))
+				pDragWindow.setY(pDragWindow.getY() + pDragWindow.getHeight() - ncy)
+				pDragWindow.setSize(Point.new(ncx, ncy))
 				
 			case Decoration.Area.resizeBottomRight
-				var Point nsize = ( this.pMouseLocation - this.pDragOffset - this.pDragWindow.getPosition() ) \
-					.largest( 20, 10 ).largest( this.pDragWindow.getMinimumSize() )
-				this.pDragWindow.setSize( nsize )
+				var Point nsize = (pMouseLocation - pDragOffset - pDragWindow.getPosition()) \
+					.largest(20, 10).largest(pDragWindow.getMinimumSize())
+				pDragWindow.setSize(nsize)
 			end
 			
-		elif this.pCaptureWidget != null
-			this.setHoverWidget( this.pCaptureWidget, event )
+		elif pCaptureWidget != null
+			setHoverWidget(pCaptureWidget, event)
 			
-			if this.pCaptureWidget != this
-				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
+			if pCaptureWidget != this
+				pCaptureWidget.sendEvent(MouseEvent.new(pCaptureWidget, \
 					event.getIdentifier(), event.getButton(), event.getModifiers(), \
-					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					pMouseLocation - pCaptureWidget.getScreenPosition(), \
+					event.getSystem(), event.getDevice()))
 			end
 			
 		else
@@ -1265,7 +1371,7 @@ class Desktop extends Container
 			
 			// check if mouse hovers over window decoration
 			for i = count - 1 downto 0
-				window = this.getWidget( i ) cast Window
+				window = getWidget(i) cast Window
 				if not window.getVisible()
 					continue
 				end
@@ -1275,7 +1381,7 @@ class Desktop extends Container
 					continue
 				end
 				
-				decorationArea = decoration.areaHitBy( this.pMouseLocation )
+				decorationArea = decoration.areaHitBy(pMouseLocation)
 				if decorationArea == Decoration.Area.nothing
 					continue
 				end
@@ -1284,21 +1390,21 @@ class Desktop extends Container
 					return // do not alter hover widget
 				end
 				
-				this.setTrackDecoration( window )
-				this.setTrackDecorationAreaHover( decorationArea )
+				setTrackDecoration(window)
+				setTrackDecorationAreaHover(decorationArea)
 				return // do not alter hover widget
 			end
 			
-			this.setTrackDecoration( null )
+			setTrackDecoration(null)
 			
 			// find widget the mouse hovers above
 			for i = count - 1 downto 0
-				window = this.getWidget( i ) cast Window
+				window = getWidget(i) cast Window
 				if not window.getVisible()
 					continue
 				end
 				
-				widget = window.getWidgetAt( this.pMouseLocation - window.getPosition() )
+				widget = window.getWidgetAt(pMouseLocation - window.getPosition())
 				if widget == null
 					continue
 				end
@@ -1312,14 +1418,14 @@ class Desktop extends Container
 			end
 			
 			if hoverWidget == null
-				this.setHoverWidget( null, event )
+				setHoverWidget(null, event)
 				
 			else
-				this.setHoverWidget( hoverWidget, event )
-				hoverWidget.sendEvent( MouseEvent.new( hoverWidget, event.getIdentifier(), \
+				setHoverWidget(hoverWidget, event)
+				hoverWidget.sendEvent(MouseEvent.new(hoverWidget, event.getIdentifier(), \
 					event.getButton(), event.getModifiers(), \
-					this.pMouseLocation - hoverWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					pMouseLocation - hoverWidget.getScreenPosition(), \
+					event.getSystem(), event.getDevice()))
 			end
 		end
 	end
@@ -1329,20 +1435,98 @@ class Desktop extends Container
 	 * 
 	 * Sends event to listeners.
 	 */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
 		
-		this.updateMaximizedWindowSizes()
+		updateMaximizedWindowSizes()
 		
-		this.forEachWidget( block Window each
+		forEachWidget(block Window each
 			each.onDesktopResized()
-		end )
+		end)
+	end
+	
+	/**
+	 * \brief Mouse pointer moved.
+	 * \version 1.7
+	 */
+	public func void onMousePointerMoved(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	/**
+	 * \brief Mouse pointer has been hidden.
+	 * \version 1.7
+	 */
+	public func void onMousePointerHidden(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	/**
+	 * \brief Mouse pointer has been shown.
+	 * \version 1.7
+	 */
+	public func void onMousePointerShown(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	/**
+	 * \brief Mouse pointer changed.
+	 * \version 1.7
+	 */
+	public func void onMousePointerChanged(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	
+	
+	/**
+	 * \brief Send event to all appropriate listeners for events of its kind.
+	 * 
+	 * If there are no listeners the event is send to the parent if \em sendToParent is \em true.
+	 */
+	public func void sendEventToListeners(Event event, bool sendToParent)
+		var int identifier = event.getIdentifier()
+		
+		if MousePointerEvent.isMousePointerEvent(identifier)
+			if pMousePointerListeners != null and pMousePointerListeners.getCount() > 0
+				select identifier
+				case MousePointerEvent.idMousePointerMoved
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerMoved(event cast MousePointerEvent)
+					end)
+					
+				case MousePointerEvent.idMousePointerHidden
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerHidden(event cast MousePointerEvent)
+					end)
+					
+				case MousePointerEvent.idMousePointerShown
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerShown(event cast MousePointerEvent)
+					end)
+					
+				case MousePointerEvent.idMousePointerChanged
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerChanged(event cast MousePointerEvent)
+					end)
+				end
+				
+			elif sendToParent
+				var Container parent = this.getParent()
+				if parent != null
+					parent.sendEvent(event)
+				end
+			end
+			
+		else
+			super.sendEventToListeners(event, sendToParent)
+		end
 	end
 	
 	
 	 
 	/** Determines if a widget is enabled checking the parents too. */
-	public func bool isWidgetDeepEnabled( Widget widget )
+	public func bool isWidgetDeepEnabled(Widget widget)
 		if not widget.getEnabled()
 			return false
 		end
@@ -1364,17 +1548,20 @@ class Desktop extends Container
 	
 	/** \brief Update the size of all maximized windows to match desktop size. */
 	public func void updateMaximizedWindowSizes()
-		var Point size = this.getSize()
-		this.forEachWidget( block Window each
+		var Point size = getSize()
+		forEachWidget(block Window each
 			if each.getWindowState() == Window.WindowState.maximized
-				each.setPosition( Point.new() )
-				each.setSize( size )
+				// TODO we need a way to figure out the maximized area. the decoration boundary
+				//      size has to be ignored for this but the title bar has to be visible.
+				//      we need to store this somehow in the decoration
+				each.setPosition(Point.new())
+				each.setSize(size)
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Window state changed. */
-	public func void windowStateChanged( Window window )
+	public func void windowStateChanged(Window window)
 		select window.getWindowState()
 		case Window.WindowState.normal
 			// TODO
@@ -1383,8 +1570,8 @@ class Desktop extends Container
 			// TODO
 			
 		case Window.WindowState.maximized
-			window.setPosition( Point.new() )
-			window.setSize( this.getSize() )
+			window.setPosition(Point.new())
+			window.setSize(getSize())
 		end
 	end
 end

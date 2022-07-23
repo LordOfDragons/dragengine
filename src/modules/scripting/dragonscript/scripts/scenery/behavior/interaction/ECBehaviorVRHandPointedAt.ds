@@ -1,0 +1,374 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding support to track if VR hands point at element.
+ * \version 1.7
+ * 
+ * This behavior tracks if hand controllers are pointing at the element. If hand controllers
+ * start pointing at the element they are added to the list and listeners are notified.
+ * If the hand controllers stop pointing at the element they are removed from the list and
+ * listeners are notified. The behavior itself is passive. It requires to be triggered by
+ * the hand controllers elements. The ECBehaviorVRHandPointAt behavior provides this
+ * functionality.
+ * 
+ * This behavior supports persistable element classes (setPersistable).
+ */
+class ECBehaviorVRHandPointedAt extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Hand starts pointing at element. */
+		func void handStartsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
+		
+		/** \brief Hand stops pointing at element. */
+		func void handStopsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Hand starts pointing at element. */
+		public func void handStartsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
+		end
+		
+		/** \brief Hand stops pointing at element. */
+		public func void handStopsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create fhandy using block receiving Instance as parameter returning Listener. */
+		public func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorVRHandPointedAt pECBehavior
+		private var Array pPointingHands
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorVRHandPointedAt ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pPointingHands = Array.new()
+			pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of inventory. */
+		public func void dispose()
+			pListeners = null
+			pPointingHands = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRHandPointedAt getECBehavior()
+			return pECBehavior
+		end
+		
+		
+		
+		/** \brief Count of hands pointing at element. */
+		public func int getPointingHandCount()
+			return pPointingHands.getCount()
+		end
+		
+		/** \brief Hand pointing at element by index. */
+		public func ECBehaviorVRHandPointAt.Instance getPointingHandAt(int index)
+			return pPointingHands.getAt(index) cast ECBehaviorVRHandPointAt.Instance
+		end
+		
+		/** \brief Hand is pointing at element. */
+		public func bool hasPointingHand(ECBehaviorVRHandPointAt.Instance element)
+			return pPointingHands.has(element)
+		end
+		
+		/**
+		 * \brief Visit hands pointing at element using block.
+		 * 
+		 * Block receives as first argument each element of type ECBehaviorVRHandPointAt.Instance.
+		 */
+		public func void forEachPointingHand(Block ablock)
+			pPointingHands.forEach(ablock)
+		end
+		
+		/**
+		 * \brief Find hand pointing at element using block.
+		 * 
+		 * Block receives as first argument each element of type ECBehaviorVRHandPointAt.Instance
+		 * and has to return true if the hand is found otherwise false. Method returns the found
+		 * hand or null if not found.
+		 */
+		public func ECBehaviorVRHandPointAt.Instance findPointingHand(Block ablock)
+			return pPointingHands.find(ablock) cast ECBehaviorVRHandPointAt.Instance
+		end
+		
+		/**
+		 * \brief Checks if player is pointing at element and if so returns the player hand.
+		 * 
+		 * Checks each hand in the list of hands pointing at the element if it has
+		 * ECBehaviorPlayerControllable and it is the active player hand. If found
+		 * returns the player hand. If not found null is returned.
+		 */
+		public func ECBehaviorVRHandPointAt.Instance getPlayerPointing()
+			return pPointingHands.find(block ECBehaviorVRHandPointAt.Instance each
+				var ECBehaviorPlayerControllable.Instance behavior = \
+					ECBehaviorPlayerControllable.getInstanceIn(each.getElement())
+				return behavior != null and behavior.isPlayerControlled()
+			end) cast ECBehaviorVRHandPointAt.Instance
+		end
+		
+		/**
+		 * \brief Player is pointing at element.
+		 * 
+		 * Checks each hand in the list of hands pointing at the element if it has
+		 * ECBehaviorPlayerControllable and it is the active player hand.
+		 */
+		public func bool isPlayerPointing()
+			return getPlayerPointing() != null
+		end
+		
+		/**
+		 * \brief Add hand to list if absent.
+		 * 
+		 * If hand is added to the list handStartsPointingAt() is called on all listeners.
+		 */
+		public func void addPointingHand(ECBehaviorVRHandPointAt.Instance hand)
+			if hand == null
+				throw ENullPointer.new()
+			end
+			
+			if pPointingHands.has(hand)
+				return
+			end
+			
+			pPointingHands.add(hand)
+			
+			pListeners.forEach(block Listener each
+				each.handStartsPointingAt(this, hand)
+			end)
+		end
+		
+		/**
+		 * \brief Remove hand from list if present.
+		 * 
+		 * If hand is removed from list handStopsPointingAt() is called on all listeners.
+		 */
+		public func void removePointingHand(ECBehaviorVRHandPointAt.Instance hand)
+			if hand == null
+				throw ENullPointer.new()
+			end
+			
+			if not pPointingHands.has(hand)
+				return
+			end
+			
+			pPointingHands.remove(hand)
+			
+			pListeners.forEach(block Listener each
+				each.handStopsPointingAt(this, hand)
+			end)
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener(Listener listener)
+			if listener == null
+				throw ENullPointer.new("listener")
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				// 1.11.1 save/restore removed since this makes no sense
+				var int i, count = reader.readUShort()
+				if count == 0
+					return
+				end
+				
+				var ElementResolver resolver = ElementResolver.new()
+				for i = 0 to count
+					resolver.addBehavior(reader, block ECBehaviorVRHandPointAt.Instance instance
+					end)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			writer.writeUShort(0) // save/restore removed since this makes no sense
+		end
+	end
+	
+	
+	
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pListenerFactories = Array.new()
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Add listener fhandy. */
+	public func void addListenerFactory(ListenerFactory fhandy)
+		if fhandy == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(fhandy)
+	end
+	
+	/**
+	 * \brief Add listener fhandy using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener fhandies with block with argument ListenerFactory. */
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from fhandies adding them to behavior instance. */
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorVRHandPointedAt getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandPointedAt each
+			return true
+		end) cast ECBehaviorVRHandPointedAt
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandPointedAt.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

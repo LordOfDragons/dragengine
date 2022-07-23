@@ -1,0 +1,4 @@
+IMGWEBP {
+  global: WebpCreateModule;
+  local: *;
+};

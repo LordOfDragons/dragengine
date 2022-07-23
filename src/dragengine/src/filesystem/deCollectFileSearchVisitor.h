@@ -33,7 +33,7 @@
  * into directories if desired. Empty pattern list matches all files. Special files are
  * not supported.
  */
-class deCollectFileSearchVisitor : public deFileSearchVisitor{
+class DE_DLL_EXPORT deCollectFileSearchVisitor : public deFileSearchVisitor{
 private:
 	dePathList pPatterns;
 	bool pRecursive;

@@ -6,6 +6,7 @@
 	<version>VERSION</version>
 	<type>Physics</type>
 	<homepage>http://www.continuousphysics.com/Bullet/</homepage>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

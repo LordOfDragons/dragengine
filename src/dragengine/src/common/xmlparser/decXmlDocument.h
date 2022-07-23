@@ -37,7 +37,13 @@ class decXmlVisitorStripComments;
  * container which allows to have only one child element. All additional elements
  * are ignored.
  */
-class decXmlDocument : public decXmlContainer{
+class DE_DLL_EXPORT decXmlDocument : public decXmlContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlDocument> Ref;
+	
+	
+	
 private:
 	decString pEncoding;
 	decString pDocType;

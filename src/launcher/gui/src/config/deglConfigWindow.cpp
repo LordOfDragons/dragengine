@@ -28,18 +28,17 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class deglConfigWindow
 ///////////////////////////
 
 // Constructors and Destructors
 /////////////////////////////////
 
-deglConfigWindow::deglConfigWindow(){
-	pX = 10;
-	pY = 50;
-	pWidth = 800;
-	pHeight = 400;
+deglConfigWindow::deglConfigWindow() :
+pX( 10 ),
+pY( 50 ),
+pWidth( 800 ),
+pHeight( 400 ){
 }
 
 deglConfigWindow::~deglConfigWindow(){

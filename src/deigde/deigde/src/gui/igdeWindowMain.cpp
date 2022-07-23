@@ -34,6 +34,7 @@
 #include "../template/igdeTemplate.h"
 #include "../template/igdeTemplateList.h"
 
+#include <deigde/deigde_configuration.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
@@ -647,10 +648,6 @@ igdeWindowMain::~igdeWindowMain(){
 // Management
 ///////////////
 
-igdeLoggerHistory *igdeWindowMain::GetLoggerHistory() const{
-	return ( igdeLoggerHistory* )( deLogger* )pLoggerHistory;
-}
-
 igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed( const char *name ){
 	return ( igdeGuiTheme* )pGuiThemes.GetAt( name );
 }
@@ -668,24 +665,33 @@ void igdeWindowMain::ShowWindowLogger(){
 
 
 bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments ){
-	const int argCount = arguments.GetCount();
+	decUnicodeStringList args( arguments );
 	decString loadFile;
-	int i;
 	
-	for( i=0; i<argCount; i++ ){
-		const decString argument( arguments.GetAt( argCount - 1 ).ToUTF8() );
-		const int alen = argument.GetLength();
+	while( args.GetCount() > 0 ){
+		const decString arg( args.GetAt( 0 ).ToUTF8() );
+		args.RemoveFrom( 0 );
 		
-		if( argument == "--showFPS" ){
+		if( arg == "--showFPS" ){
 			pDisplayFPSInfo = true;
 			
-		}else if( ( alen > 0 && argument.GetAt( 0 ) != '-' ) || ( alen > 1 && argument.GetAt( 1 ) != '-' ) ){
-			loadFile = argument;
+		}else if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( loadFile.IsEmpty() ){
+			loadFile = arg;
 			break;
 		}
 	}
 	
 	if( loadFile.IsEmpty() ){
+		#ifdef IGDE_NULL_TOOLKIT
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
+		#endif
+		
 		igdeDialogReference dialog;
 		dialog.TakeOver( new igdeDialogStartUp( *this ) );
 		return dialog->Run( this );
@@ -693,7 +699,19 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 	
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", loadFile.GetString() );
 	
-	return LoadGameProject( loadFile );
+	if( ! LoadGameProject( loadFile ) ){
+		return false;
+	}
+	
+	pAfterLoadArguments = args;
+	
+	#ifdef IGDE_NULL_TOOLKIT
+	if( pAfterLoadArguments.GetCount() == 0 ){
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
+	}
+	#endif
+	return true;
 }
 
 
@@ -777,11 +795,10 @@ void igdeWindowMain::CreatePlaceholderGameProject(){
 }
 
 bool igdeWindowMain::LoadGameProject( const char *filename ){
-	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", filename );
-	
-	deObjectReference refProject;
+	GetLogger()->LogInfoFormat( LOGSOURCE, "Open game project %s", filename );
 	
 	try{
+		deObjectReference refProject;
 		refProject.TakeOver( pLoadSaveSystem->LoadGameProject( filename ) );
 		igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
 		
@@ -796,7 +813,20 @@ bool igdeWindowMain::LoadGameProject( const char *filename ){
 		return true;
 		
 	}catch( const deException &e ){
-		DisplayException( e );
+		GetLogger()->LogException( LOGSOURCE, e );
+		igdeCommonDialogs::ErrorFormat( this, "Open Game Project",
+			"Failed loading game project: %s", e.GetDescription().GetString() );
+		
+		const int index = pConfiguration.GetRecentProjectList().IndexOf( filename );
+		if( index != -1 ){
+			if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, "Open Game Project",
+			"Remove game project from recent file list?" ) == igdeCommonDialogs::ebYes ){
+				pConfiguration.GetRecentProjectList().RemoveFrom( index );
+				pConfiguration.SaveConfiguration();
+				UpdateRecentProjectMenu();
+			}
+		}
+		
 		return false;
 	}
 }
@@ -826,6 +856,7 @@ void igdeWindowMain::AddRecentGameProject( const char *filename ){
 	}else{
 		recentProjectList.Move( recentProjectIndex, 0 );
 	}
+	pConfiguration.SaveConfiguration();
 	
 	// update menu
 	UpdateRecentProjectMenu();
@@ -877,6 +908,19 @@ void igdeWindowMain::ActiveModuleSharedMenusChanged(){
 
 void igdeWindowMain::ActiveModuleSharedToolBarsChanged(){
 	RebuildToolBars();
+}
+
+void igdeWindowMain::ActivateEditor( igdeEditorModule *editor ){
+	DEASSERT_NOTNULL( editor )
+	
+	const int count = pModuleManager->GetModuleCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		if( pModuleManager->GetModuleAt( i )->GetModule() == editor ){
+			pModuleManager->SetActiveModule( pModuleManager->GetModuleAt( i ) );
+			break;
+		}
+	}
 }
 
 
@@ -1222,6 +1266,54 @@ void igdeWindowMain::OnFrameUpdate(){
 	if( engine.GetScriptFailed() || engine.GetSystemFailed() ){
 		engine.GetErrorTrace()->AddPoint( NULL, "igdeWindowMain::OnFrameUpdate", __LINE__ );
 		StopEngine();
+	}
+	
+	// process after start command line if present
+	if( pModuleManager->GetModuleCount() > 0 && pAfterLoadArguments.GetCount() > 0 ){
+		try{
+			const int moduleCount = pModuleManager->GetModuleCount();
+			int i;
+			
+			while( pAfterLoadArguments.GetCount() > 0 ){
+				const int argCount = pAfterLoadArguments.GetCount();
+				
+				for( i=0; i<moduleCount; i++ ){
+					igdeEditorModule * const module = pModuleManager->GetModuleAt( i )->GetModule();
+					if( module && ! module->ProcessCommandLine( pAfterLoadArguments ) ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+				}
+				
+				if( pAfterLoadArguments.GetCount() == argCount ){
+					if( pAfterLoadArguments.GetAt( 0 ).ToUTF8() == "--help" ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+					
+					decString message;
+					message.Format( "Unknown argument '%s'", pAfterLoadArguments.GetAt( 0 ).ToUTF8().GetString() );
+					DETHROW_INFO( deeInvalidParam, message );
+				}
+			}
+			
+		}catch( const deException &e ){
+			pAfterLoadArguments.RemoveAll();
+			#ifdef IGDE_NULL_TOOLKIT
+			throw e;
+			#else
+			DisplayException( e );
+			pEnvironmentIGDE.CloseApplication();
+			return;
+			#endif
+		}
+		
+		#ifdef IGDE_NULL_TOOLKIT
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing Arguments" );
+		#endif
 	}
 }
 
@@ -1598,55 +1690,27 @@ void igdeWindowMain::pCleanUp(){
 	}
 	
 	pWindowLogger = NULL;
-	pLoggerHistory = NULL;
 	pVFS = NULL;
 }
 
 void igdeWindowMain::pInitLogger(){
-	bool useConsole = false; //true;
-	bool useFile = true;
-	bool useHistory = true;
-	
-	// create history logger if not existing already
 	if( ! pLoggerHistory ){
 		pLoggerHistory.TakeOver( new igdeLoggerHistory );
-		( ( igdeLoggerHistory& )( deLogger& )pLoggerHistory ).SetHistorySize( 250 );
+		pLoggerHistory->SetHistorySize( 250 );
 	}
 	
-	// build the logger combining the requested loggers
+	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::New( new deLoggerChain ) );
 	
-	// create the chain logger
-	deLoggerReference loggerChainRef;
-	loggerChainRef.TakeOver( new deLoggerChain );
-	deLoggerChain &loggerChain = ( deLoggerChain& )( deLogger& )loggerChainRef;
+	loggerChain->AddLogger( pLoggerHistory );
 	
-	// add history logger if required
-	if( useHistory ){
-		loggerChain.AddLogger( pLoggerHistory );
-	}
+	//no console logging to support console use in scripts
+// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
 	
-	// add console logger if required
-	if( useConsole ){
-		deLoggerReference loggerConsole;
-		loggerConsole.TakeOver( new deLoggerConsoleColor );
-		loggerChain.AddLogger( loggerConsole );
-	}
+	loggerChain->AddLogger( deLoggerFile::Ref::New( new deLoggerFile(
+		decBaseFileWriter::Ref::New( pVFS->OpenFileForWriting(
+			decPath::CreatePathUnix( "/logs/deigde.log" ) ) ) ) ) );
 	
-	// add file logger if required
-	if( useFile ){
-		decBaseFileWriterReference fileWriter;
-		fileWriter.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( "/logs/deigde.log" ) ) );
-		
-		deLoggerReference loggerFile;
-		loggerFile.TakeOver( new deLoggerFile( fileWriter ) );
-		loggerChain.AddLogger( loggerFile );
-	}
-	
-	// set the logger
-	pEnvironmentIGDE.SetLogger( loggerChainRef );
-	
-	// engine does not exist yet we can not add the chain logger for it. actually needed?
-	// GetEngineController().GetEngine()->SetLogger( loggerChainRef );
+	pEnvironmentIGDE.SetLogger( loggerChain );
 }
 
 void igdeWindowMain::pLoadStockIcons(){

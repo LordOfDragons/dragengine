@@ -327,11 +327,11 @@ deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
 		engRule->SetAdjustOrientation( pAdjustOrientation );
 		
 		engRule->SetUseSolverBone( pUseSolverBone );
-		engRule->SetSolverBone( pSolverBone.GetString() );
+		engRule->SetSolverBone( pSolverBone );
 		
 		engRule->SetReachRange( pReachRange );
-		engRule->SetReachBone( pReachBone );
 		engRule->SetReachCenter( pReachCenter );
+		engRule->SetReachBone( pReachBone );
 		
 		pTargetGoalPosition.UpdateEngineTarget( animator, engRule->GetTargetGoalPosition() );
 		pTargetGoalOrientation.UpdateEngineTarget( animator, engRule->GetTargetGoalOrientation() );
@@ -359,10 +359,12 @@ aeRule *aeRuleInverseKinematic::CreateCopy() const{
 
 void aeRuleInverseKinematic::ListLinks( aeLinkList &list ){
 	aeRule::ListLinks( list );
-	pTargetGoalOrientation.AddLinksToList( list );
 	pTargetGoalPosition.AddLinksToList( list );
-	pTargetLocalOrientation.AddLinksToList( list );
+	pTargetGoalOrientation.AddLinksToList( list );
 	pTargetLocalPosition.AddLinksToList( list );
+	pTargetLocalOrientation.AddLinksToList( list );
+	pTargetReachRange.AddLinksToList( list );
+	pTargetReachCenter.AddLinksToList( list );
 }
 
 
@@ -378,10 +380,15 @@ aeRuleInverseKinematic &aeRuleInverseKinematic::operator=( const aeRuleInverseKi
 	SetAdjustOrientation( copy.pAdjustOrientation );
 	SetUseSolverBone( copy.pUseSolverBone );
 	SetSolverBone( copy.pSolverBone );
+	SetReachRange( copy.pReachRange );
+	SetReachCenter( copy.pReachCenter );
+	SetReachBone( copy.pReachBone );
 	pTargetGoalPosition = copy.pTargetGoalPosition;
 	pTargetGoalOrientation = copy.pTargetGoalOrientation;
 	pTargetLocalPosition = copy.pTargetLocalPosition;
 	pTargetLocalOrientation = copy.pTargetLocalOrientation;
+	pTargetReachRange = copy.pTargetReachRange;
+	pTargetReachCenter = copy.pTargetReachCenter;
 	aeRule::operator=( copy );
 	return *this;
 }

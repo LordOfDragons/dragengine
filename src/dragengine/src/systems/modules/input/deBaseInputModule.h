@@ -22,7 +22,7 @@
 #ifndef _DEBASEINPUTMODULE_H_
 #define _DEBASEINPUTMODULE_H_
 
-#include <sys/time.h>
+#include "../../../dragengine_configuration.h"
 
 #if defined OS_UNIX && defined HAS_LIB_X11
 #include <X11/Xlib.h>
@@ -35,6 +35,7 @@
 #include "../deBaseModule.h"
 
 class deInputDevice;
+class deInputDevicePose;
 class deInputEvent;
 
 #ifdef OS_ANDROID
@@ -59,7 +60,7 @@ class NSEvent;
 /**
  * \brief Base Input Module.
  */
-class deBaseInputModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseInputModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -107,17 +108,48 @@ public:
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
 	virtual int IndexOfFeedbackWithID( int device, const char *id ) = 0;
 	
-	/** \brief Button at index on device at index is pressed down. */
+	/**
+	 * \brief Index of component with identifier on device at index or -1 if absent.
+	 * \version 1.6
+	 */
+	virtual int IndexOfComponentWithID( int device, const char *id );
+	
+	/** \brief Button at index on device is pressed down. */
 	virtual bool GetButtonPressed( int device, int button ) = 0;
 	
-	/** \brief Value of axis at index on device at index. */
+	/**
+	 * \brief Button at index on device is touched.
+	 * \version 1.6
+	 */
+	virtual bool GetButtonTouched( int device, int button );
+	
+	/** \brief Value of axis at index on device. */
 	virtual float GetAxisValue( int device, int axis ) = 0;
 	
-	/** \brief Value of feedback at index on device at index. */
+	/** \brief Value of feedback at index on device. */
 	virtual float GetFeedbackValue( int device, int feedback ) = 0;
 	
-	/** \brief Set value of feedback at index on device at index. */
+	/** \brief Set value of feedback at index on device. */
 	virtual void SetFeedbackValue( int device, int feedback, float value ) = 0;
+	
+	/**
+	 * \brief Device pose or identity if not supported.
+	 * \version 1.6
+	 */
+	virtual void GetDevicePose( int device, deInputDevicePose &pose );
+	
+	/**
+	 * \brief Device bone pose or identity if not supported.
+	 * \version 1.6
+	 */
+	virtual void GetDeviceBonePose( int device, int bone,
+		bool withController, deInputDevicePose &pose );
+	
+	/**
+	 * \brief Device face expression or 0 if not supported.
+	 * \version 1.12
+	 */
+	virtual float GetDeviceFaceExpression( int device, int expression );
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -150,6 +182,26 @@ public:
 	 * layouts without the user pressing input keys.
 	 */
 	virtual int ButtonMatchingKeyChar( int device, int character ) = 0;
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+		deInputEvent::eKeyLocation location );
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	virtual int ButtonMatchingKeyChar( int device, int character,
+		deInputEvent::eKeyLocation location );
 	/*@}*/
 	
 	

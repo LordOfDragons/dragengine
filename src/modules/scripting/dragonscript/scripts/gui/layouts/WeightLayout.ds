@@ -234,7 +234,7 @@ class WeightLayout implements Layout
 		var int borderLeft
 		var int borderTop
 		
-		var int weightSum = this.getWeightSum()
+		var int weightSum = Math.max( this.getWeightSum(), 1 )
 		var int weightedSize
 		
 		select this.pAxis
@@ -361,6 +361,7 @@ class WeightLayout implements Layout
 	 */
 	protected func Point getMinimumSizeFor( Container container, int width, int height )
 		var int count = container.getWidgetCount()
+		var bool usePadding = false
 		var int i, cx = 0, cy = 0
 		var Point childSize
 		var Widget child
@@ -378,6 +379,7 @@ class WeightLayout implements Layout
 					cx += ( this.pWidgetSettings.getAt( child ) cast LayoutSettings ) \
 						.getFixedSize() + this.pGap
 					cy = DEMath.max( cy, childSize.getY() )
+					usePadding = true
 				end
 				cx -= this.pGap // because we added one gap too much
 			end
@@ -394,12 +396,17 @@ class WeightLayout implements Layout
 					cy += ( this.pWidgetSettings.getAt( child ) cast LayoutSettings ) \
 						.getFixedSize() + this.pGap
 					cx = DEMath.max( cx, childSize.getX() )
+					usePadding = true
 				end
 				cy -= this.pGap // because we added one gap too much
 			end
 		end
 		
-		return Point.new().largest( cx, cy ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cx, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	

@@ -46,6 +46,7 @@ class seWPView : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
 	seWPViewListener *pListener;
+	bool pPreventUpdate;
 	
 	seSkin *pSkin;
 	

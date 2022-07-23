@@ -22,7 +22,7 @@
 #ifndef _DEINPUTEVENTQUEUE_H_
 #define _DEINPUTEVENTQUEUE_H_
 
-#include <sys/time.h>
+#include "../dragengine_export.h"
 
 class deInputEvent;
 
@@ -33,7 +33,7 @@ class deInputEvent;
  * The queue does not grow since processing a large amount of events due to a short
  * time problem is more of a problem than discarding some events in such a situation.
  */
-class deInputEventQueue{
+class DE_DLL_EXPORT deInputEventQueue{
 private:
 	deInputEvent *pEvents;
 	int pEventCount;

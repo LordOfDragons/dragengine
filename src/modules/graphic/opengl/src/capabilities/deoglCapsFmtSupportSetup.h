@@ -27,15 +27,21 @@ enum eTestTextureFormats{
 	// integer formats
 	ettfR8, // GL_R8
 	ettfR16, // GL_R16
+	ettfR8_S, // GL_R8_SNORM
+	ettfR16_S, // GL_R16_SNORM
 	
 	ettfRG8, // GL_RG8
 	ettfRG16, // GL_RG16
+	ettfRG8_S, // GL_RG8_SNORM
+	ettfRG16_S, // GL_RG16_SNORM
 	
 	ettfR3_G3_B2, // GL_R3_G3_B2
 	ettfRGB4, // GL_RGB4
 	ettfRGB5, // GL_RGB5
 	ettfRGB8, // GL_RGB8
 	ettfRGB16, // GL_RGB16
+	ettfRGB8_S, // GL_RGB8_SNORM
+	ettfRGB16_S, // GL_RGB16_SNORM
 	
 	ettfRGBA2, // GL_RGBA2
 	ettfRGBA4, // GL_RGBA4
@@ -43,6 +49,8 @@ enum eTestTextureFormats{
 	ettfRGBA8, // GL_RGBA8
 	ettfRGB10_A2, // GL_RGB10_A2
 	ettfRGBA16, // GL_RGBA16
+	ettfRGBA8_S, // GL_RGBA8_SNORM
+	ettfRGBA16_S, // GL_RGBA16_SNORM
 	
 	// floating point formats
 	ettfR16F, // GL_R16F
@@ -184,25 +192,33 @@ struct sTestFallback{
 #define FLAG_NONE			0
 #define FLAG_DEPTH			0x1
 #define FLAG_DEPTH_FLOAT	0x2
-#define FLAG_COMPRESSED		0x4
+#define FLAG_STENCIL		0x4
+#define FLAG_COMPRESSED		0x8
 
 #define HAS_FLAG_DEPTH(flags)		( ( flags & FLAG_DEPTH ) == FLAG_DEPTH )
 #define HAS_FLAG_DEPTH_FLOAT(flags)	( ( flags & FLAG_DEPTH_FLOAT ) == FLAG_DEPTH_FLOAT )
+#define HAS_FLAG_STENCIL(flags)		( ( flags & FLAG_STENCIL ) == FLAG_STENCIL )
 #define HAS_FLAG_COMPRESSED(flags)	( ( flags & FLAG_COMPRESSED ) == FLAG_COMPRESSED )
 
 static const sTestTextureFormat vTestTextureFormats[ ETTF_COUNT ] = { // convert: (ettf[_\d\w]+)(, // )(GL_[_\d\w]+) => "\3", // \1
 	// integer formats
 	{ GL_R8, GL_RED, GL_UNSIGNED_BYTE, 8, FLAG_NONE, "GL_R8", etwColor }, // ettfR8
 	{ GL_R16, GL_RED, GL_UNSIGNED_SHORT, 16, FLAG_NONE, "GL_R16", etwColor }, // ettfR16
+	{ GL_R8_SNORM, GL_RED, GL_BYTE, 8, FLAG_NONE, "GL_R8_SNORM", etwColor }, // ettfR8_S
+	{ GL_R16_SNORM, GL_RED, GL_SHORT, 16, FLAG_NONE, "GL_R16_SNORM", etwColor }, // ettfR16_S
 	
 	{ GL_RG8, GL_RG, GL_UNSIGNED_BYTE, 16, FLAG_NONE, "GL_RG8", etwColor }, // ettfRG8
 	{ GL_RG16, GL_RG, GL_UNSIGNED_SHORT, 32, FLAG_NONE, "GL_RG16", etwColor }, // ettfRG16
+	{ GL_RG8_SNORM, GL_RG, GL_BYTE, 16, FLAG_NONE, "GL_RG8_SNORM", etwColor }, // ettfRG8_S
+	{ GL_RG16_SNORM, GL_RG, GL_SHORT, 32, FLAG_NONE, "GL_RG16_SNORM", etwColor }, // ettfRG16_S
 	
 	{ GL_R3_G3_B2, GL_RGB, GL_UNSIGNED_BYTE, 8, FLAG_NONE, "GL_R3_G3_B2", etwColor }, // ettfR3_G3_B2
 	{ GL_RGB4, GL_RGB, GL_UNSIGNED_BYTE, 12, FLAG_NONE, "GL_RGB4", etwColor }, // ettfRGB4
 	{ GL_RGB5, GL_RGB, GL_UNSIGNED_BYTE, 16, FLAG_NONE, "GL_RGB5", etwColor }, // ettfRGB5
 	{ GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, 24, FLAG_NONE, "GL_RGB8", etwColor }, // ettfRGB8
 	{ GL_RGB16, GL_RGB, GL_UNSIGNED_SHORT, 24, FLAG_NONE, "GL_RGB16", etwColor }, // ettfRGB16
+	{ GL_RGB8_SNORM, GL_RGB, GL_BYTE, 24, FLAG_NONE, "GL_RGB8_SNORM", etwColor }, // ettfRGB8_S
+	{ GL_RGB16_SNORM, GL_RGB, GL_SHORT, 24, FLAG_NONE, "GL_RGB16_SNORM", etwColor }, // ettfRGB16_S
 	
 	{ GL_RGBA2, GL_RGBA, GL_UNSIGNED_BYTE, 8, FLAG_NONE, "GL_RGBA2", etwColor }, // ettfRGBA2
 	{ GL_RGBA4, GL_RGBA, GL_UNSIGNED_BYTE, 16, FLAG_NONE, "GL_RGBA4", etwColor }, // ettfRGBA4
@@ -210,6 +226,8 @@ static const sTestTextureFormat vTestTextureFormats[ ETTF_COUNT ] = { // convert
 	{ GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, 32, FLAG_NONE, "GL_RGBA8", etwColor }, // ettfRGBA8
 	{ GL_RGB10_A2, GL_RGBA, GL_UNSIGNED_SHORT, 32, FLAG_NONE, "GL_RGB10_A2", etwColor }, // ettfRGB10_A2
 	{ GL_RGBA16, GL_RGBA, GL_UNSIGNED_SHORT, 64, FLAG_NONE, "GL_RGBA16", etwColor }, // ettfRGBA16
+	{ GL_RGBA8_SNORM, GL_RGBA, GL_BYTE, 32, FLAG_NONE, "GL_RGBA8_SNORM", etwColor }, // ettfRGBA8_S
+	{ GL_RGBA16_SNORM, GL_RGBA, GL_SHORT, 64, FLAG_NONE, "GL_RGBA16_SNORM", etwColor }, // ettfRGBA16_S
 	
 	// floating point formats
 	{ GL_R16F, GL_RED, GL_FLOAT, 16, FLAG_NONE, "GL_R16F", etwColor }, // ettfR16F
@@ -305,25 +323,27 @@ static const sTestTextureFormat vTestTextureFormats[ ETTF_COUNT ] = { // convert
 	{ GL_DEPTH_COMPONENT32F_NV, GL_DEPTH_COMPONENT, GL_FLOAT, 32, FLAG_DEPTH | FLAG_DEPTH_FLOAT, "GL_DEPTH_COMPONENT32F_NV", etwDepth }, // ettfNV_Depth_32F
 	
 	// combined depth+stencil formats
-	{ GL_DEPTH_STENCIL, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 32, FLAG_DEPTH, "GL_DEPTH_STENCIL", etwDepthStencil }, // ettfDepth_Stencil
-	{ GL_UNSIGNED_INT_24_8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 32, FLAG_DEPTH, "GL_UNSIGNED_INT_24_8", etwDepthStencil }, // ettfUnsignedInt_24_8
-	{ GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 32, FLAG_DEPTH, "GL_DEPTH24_STENCIL8", etwDepthStencil }, // ettfDepth24_Stencil8
+	{ GL_DEPTH_STENCIL, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 32, FLAG_DEPTH | FLAG_STENCIL, "GL_DEPTH_STENCIL", etwDepthStencil }, // ettfDepth_Stencil
+	{ GL_UNSIGNED_INT_24_8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 32, FLAG_DEPTH | FLAG_STENCIL, "GL_UNSIGNED_INT_24_8", etwDepthStencil }, // ettfUnsignedInt_24_8
+	{ GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 32, FLAG_DEPTH | FLAG_STENCIL, "GL_DEPTH24_STENCIL8", etwDepthStencil }, // ettfDepth24_Stencil8
 	
 	{ GL_DEPTH32F_STENCIL8, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, 64,
-		FLAG_DEPTH | FLAG_DEPTH_FLOAT, "GL_DEPTH32F_STENCIL8", etwDepthStencil }, // ettf_DepthF32_Stencil8
+		FLAG_DEPTH | FLAG_DEPTH_FLOAT | FLAG_STENCIL, "GL_DEPTH32F_STENCIL8", etwDepthStencil }, // ettf_DepthF32_Stencil8
 	{ GL_DEPTH32F_STENCIL8_NV, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, 64,
-		FLAG_DEPTH | FLAG_DEPTH_FLOAT, "GL_DEPTH32F_STENCIL8_NV", etwDepthStencil }, // ettfNV_DepthF32_Stencil8
+		FLAG_DEPTH | FLAG_DEPTH_FLOAT | FLAG_STENCIL, "GL_DEPTH32F_STENCIL8_NV", etwDepthStencil }, // ettfNV_DepthF32_Stencil8
 	
 	// stencil formats
-	{ GL_STENCIL_INDEX, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, 8, FLAG_DEPTH, "GL_STENCIL_INDEX", etwStencil }, // ettfStencil
-	{ GL_STENCIL_INDEX8, GL_STENCIL_INDEX8, GL_UNSIGNED_BYTE, 8, FLAG_DEPTH, "GL_STENCIL_INDEX8", etwStencil }, // ettfStencil8
-	{ GL_STENCIL_INDEX16, GL_STENCIL_INDEX16, GL_UNSIGNED_BYTE, 16, FLAG_DEPTH, "GL_STENCIL_INDEX16", etwStencil }, // ettfStencil16
+	{ GL_STENCIL_INDEX, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, 8, FLAG_STENCIL, "GL_STENCIL_INDEX", etwStencil }, // ettfStencil
+	{ GL_STENCIL_INDEX8, GL_STENCIL_INDEX8, GL_UNSIGNED_BYTE, 8, FLAG_STENCIL, "GL_STENCIL_INDEX8", etwStencil }, // ettfStencil8
+	{ GL_STENCIL_INDEX16, GL_STENCIL_INDEX16, GL_UNSIGNED_BYTE, 16, FLAG_STENCIL, "GL_STENCIL_INDEX16", etwStencil }, // ettfStencil16
 };
 
-#define TEST_PROGRAM_COUNT 81
+#define TEST_PROGRAM_COUNT 89
 static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfR8, ettfR8 },
 	{ deoglCapsFmtSupport::eutfR16, ettfR16 },
+	{ deoglCapsFmtSupport::eutfR8_S, ettfR8_S },
+	{ deoglCapsFmtSupport::eutfR16_S, ettfR16_S },
 	
 	{ deoglCapsFmtSupport::eutfR8_C, ettfCompress_Red_RGTC1 },
 	{ deoglCapsFmtSupport::eutfR8_C, ettfCompress_Lum_LATC1 },
@@ -344,6 +364,8 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	
 	{ deoglCapsFmtSupport::eutfRG8, ettfRG8 },
 	{ deoglCapsFmtSupport::eutfRG16, ettfRG16 },
+	{ deoglCapsFmtSupport::eutfRG8_S, ettfRG8_S },
+	{ deoglCapsFmtSupport::eutfRG16_S, ettfRG16_S },
 	
 	{ deoglCapsFmtSupport::eutfRG8_C, ettfCompress_Red_Green_RGTC1 },
 	{ deoglCapsFmtSupport::eutfRG8_C, ettfCompress_Lum_Alpha_LATC2 },
@@ -367,6 +389,8 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRGB5, ettfRGB5 },
 	{ deoglCapsFmtSupport::eutfRGB8, ettfRGB8 },
 	{ deoglCapsFmtSupport::eutfRGB16, ettfRGB16 },
+	{ deoglCapsFmtSupport::eutfRGB8_S, ettfRGB8_S },
+	{ deoglCapsFmtSupport::eutfRGB16_S, ettfRGB16_S },
 	
 	{ deoglCapsFmtSupport::eutfRGB8_C, ettfCompress_DXT1_RGB },
 //	{ deoglCapsFmtSupport::eutfRGB8_C, ettfCompress_RGB }, // generic format: potentially problematic
@@ -394,6 +418,8 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRGBA8, ettfRGBA8 },
 	{ deoglCapsFmtSupport::eutfRGB10A2, ettfRGB10_A2 },
 	{ deoglCapsFmtSupport::eutfRGBA16, ettfRGBA16 },
+	{ deoglCapsFmtSupport::eutfRGBA8_S, ettfRGBA8_S },
+	{ deoglCapsFmtSupport::eutfRGBA16_S, ettfRGBA16_S },
 	
 	{ deoglCapsFmtSupport::eutfRGBA8_C, ettfCompress_DXT3_RGBA },
 //	{ deoglCapsFmtSupport::eutfRGBA8_C, ettfCompress_RGBA }, // generic format: potentially problematic
@@ -456,6 +482,8 @@ static const char *vTextureFormatNames[ deoglCapsFmtSupport::UseTextureFormatCou
 	"eutfR16I", // eutfR16I
 	"eutfR8UI", // eutfR8UI
 	"eutfR16UI", // eutfR16UI
+	"eutfR8_S", // eutfR8_S
+	"eutfR16_S", // eutfR16_S
 	
 	"eutfRG8", // eutfRG8
 	"eutfRG16", // eutfRG16
@@ -466,6 +494,8 @@ static const char *vTextureFormatNames[ deoglCapsFmtSupport::UseTextureFormatCou
 	"eutfRG16I", // eutfRG16I
 	"eutfRG8UI", // eutfRG8UI
 	"eutfRG16UI", // eutfRG16UI
+	"eutfRG8_S", // eutfRG8_S
+	"eutfRG16_S", // eutfRG16_S
 	
 	"eutfR3G3B2", // eutfR3G3B2
 	"eutfRGB4", // eutfRGB4
@@ -480,6 +510,8 @@ static const char *vTextureFormatNames[ deoglCapsFmtSupport::UseTextureFormatCou
 	"eutfRGB16I", // eutfRGB16I
 	"eutfRGB8UI", // eutfRGB8UI
 	"eutfRGB16UI", // eutfRGB16UI
+	"eutfRGB8_S", // eutfRGB8_S
+	"eutfRGB16_S", // eutfRGB16_S
 	
 	"eutfRGBA2", // eutfRGBA2
 	"eutfRGBA4", // eutfRGBA4
@@ -494,6 +526,8 @@ static const char *vTextureFormatNames[ deoglCapsFmtSupport::UseTextureFormatCou
 	"eutfRGBA16I", // eutfRGBA16I
 	"eutfRGBA8UI", // eutfRGBA8UI
 	"eutfRGBA16UI", // eutfRGBA16UI
+	"eutfRGBA8_S", // eutfRGBA8_S
+	"eutfRGBA16_S", // eutfRGBA16_S
 	
 	"eutfDepth", // eutfDepth
 	"eutfDepth_Stencil", // eutfDepth_Stencil

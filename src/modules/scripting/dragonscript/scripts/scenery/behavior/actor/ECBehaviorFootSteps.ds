@@ -76,81 +76,88 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		private var float pRollOff
 		private var DVector pOffset
 		private var String pType
+		private var Sound pLastRandomSound
 		
 		
 		/** \brief Create foot step event. */
-		public func new( float time ) this( time, WeightedRandomList.new() )
+		public func new(float time) this(time, WeightedRandomList.new())
 		end
 		
-		public func new( float time, WeightedRandomList sounds ) this( time, sounds, 1, 10 )
+		public func new(float time, WeightedRandomList sounds) this(time, sounds, 1, 10)
 		end
 		
-		public func new( float time, WeightedRandomList sounds, float volume, float range ) \
-		this( time, sounds, volume, range, DVector.new( 0, 0.05, 0 ) )
+		public func new(float time, WeightedRandomList sounds, float volume, float range) \
+		this(time, sounds, volume, range, DVector.new(0, 0.05, 0))
 		end
 		
-		public func new( float time, WeightedRandomList sounds, float volume, float range, DVector offset ) \
-		this( time, sounds, volume, range, offset, 1 )
+		public func new(float time, WeightedRandomList sounds, float volume, float range, float rollOff) \
+		this(time, sounds, volume, range, DVector.new(0, 0.05, 0), rollOff)
 		end
 		
-		public func new( float time, WeightedRandomList sounds, float volume, float range, DVector offset, float rollOff )
+		public func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset) \
+		this(time, sounds, volume, range, offset, 0.5)
+		end
+		
+		public func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, float rollOff)
 			if sounds == null or offset == null
 				throw EInvalidParam.new()
 			end
 			
-			this.pTime = DEMath.max( time, 0.0 )
-			this.pSounds = sounds
-			this.pVolume = DEMath.max( volume, 0.0 )
-			this.pRange = DEMath.max( range, 0.0 )
-			this.pRollOff = DEMath.max( rollOff, 0.0 )
-			this.pOffset = offset
+			pTime = DEMath.max(time, 0.0)
+			pSounds = sounds
+			pVolume = DEMath.max(volume, 0.0)
+			pRange = DEMath.max(range, 0.0)
+			pRollOff = DEMath.max(rollOff, 0.0)
+			pOffset = offset
+			pLastRandomSound = null
 		end
 		
-		public func new( float time, String type ) this( time )
-			this.pType = type
+		public func new(float time, String type) this(time)
+			pType = type
 		end
 		
-		public func new( float time, WeightedRandomList sounds, String type ) this( time, sounds )
-			this.pType = type
+		public func new(float time, WeightedRandomList sounds, String type) this(time, sounds)
+			pType = type
 		end
 		
-		public func new( float time, WeightedRandomList sounds, float volume, float range, String type ) \
-		this( time, sounds, volume, range )
-			this.pType = type
+		public func new(float time, WeightedRandomList sounds, float volume, float range, String type) \
+		this(time, sounds, volume, range)
+			pType = type
 		end
 		
-		public func new( float time, WeightedRandomList sounds, float volume, float range, \
-		DVector offset, String type ) this( time, sounds, volume, range, offset )
-			this.pType = type
+		public func new(float time, WeightedRandomList sounds, float volume, float range, \
+		DVector offset, String type) this(time, sounds, volume, range, offset)
+			pType = type
 		end
 		
-		public func new( float time, WeightedRandomList sounds, float volume, float range, DVector offset, \
-		float rollOff, String type ) this( time, sounds, volume, range, offset, rollOff )
-			this.pType = type
+		public func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, \
+		float rollOff, String type) this(time, sounds, volume, range, offset, rollOff)
+			pType = type
 		end
 		
 		
 		/** \brief Activation time. */
 		public func float getTime()
-			return this.pTime
+			return pTime
 		end
 		
 		/** \brief List of sounds to pick one from to play this event. */
 		public func WeightedRandomList getSounds()
-			return this.pSounds
+			return pSounds
 		end
 		
 		/** \brief Set list of sounds to pick one from to play this event. */
-		public func void setSounds( WeightedRandomList sounds )
+		public func void setSounds(WeightedRandomList sounds)
 			if sounds == null
 				throw EInvalidParam.new()
 			end
-			this.pSounds = sounds
+			pSounds = sounds
+			pLastRandomSound = null
 		end
 		
 		/** \brief Volume to use for created speakers. */
 		public func float getVolume()
-			return this.pVolume
+			return pVolume
 		end
 		
 		/**
@@ -158,13 +165,13 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Volume will be clamped to 0 if negative. Default is 1.
 		 */
-		public func void setVolume( float volume )
-			this.pVolume = DEMath.max( volume, 0.0 )
+		public func void setVolume(float volume)
+			pVolume = DEMath.max(volume, 0.0)
 		end
 		
 		/** \brief Range to use for created speakers. */
 		public func float getRange()
-			return this.pRange
+			return pRange
 		end
 		
 		/**
@@ -172,13 +179,13 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Range will be clamped to 0 if negative. Default is 10.
 		 */
-		public func void setRange( float range )
-			this.pRange = DEMath.max( range, 0.0 )
+		public func void setRange(float range)
+			pRange = DEMath.max(range, 0.0)
 		end
 		
 		/** \brief Roll-off to use for created speakers. */
 		public func float getRollOff()
-			return this.pRollOff
+			return pRollOff
 		end
 		
 		/**
@@ -186,13 +193,13 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Roll-off will be clamped to 0 if negative. Default is 1.
 		 */
-		public func void setRollOff( float rollOff )
-			this.pRollOff = DEMath.max( rollOff, 0.0 )
+		public func void setRollOff(float rollOff)
+			pRollOff = DEMath.max(rollOff, 0.0)
 		end
 		
 		/** \brief Offset relative to actor coordinate system to play foot step at. */
 		public func DVector getOffset()
-			return this.pOffset
+			return pOffset
 		end
 		
 		/**
@@ -200,30 +207,48 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Default is 5cm above acter center on ground.
 		 */
-		public func void setOffset( DVector offset )
+		public func void setOffset(DVector offset)
 			if offset == null
 				throw EInvalidParam.new()
 			end
-			this.pOffset = offset
+			pOffset = offset
 		end
 		
 		
 		/** \brief Random sound from the list of sounds to play or null if list is empty. */
 		public func Sound randomSound()
-			if this.pSounds.getCount() > 0
-				return this.pSounds.random() cast Sound
+			var int count = pSounds.getCount()
+			if count == 0
+				return null
 			end
-			return null
+			
+			var Sound sound
+			
+			if pLastRandomSound == null or count == 1
+				sound = pSounds.random() cast Sound
+				
+			else
+				var int i
+				for i = 0 to 3
+					sound = pSounds.random() cast Sound
+					if sound != pLastRandomSound
+						break
+					end
+				end
+			end
+			
+			pLastRandomSound = sound
+			return sound
 		end
 		
 		/** \brief Optional type string (by default null). */
 		public func String getType()
-			return this.pType
+			return pType
 		end
 		
 		/** \brief Set optional type string or null if not needed. */
-		public func void setType( String type )
-			this.pType = type
+		public func void setType(String type)
+			pType = type
 		end
 	end
 	
@@ -240,74 +265,74 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Create foot steps configuration. */
-		public func new( String id )
+		public func new(String id)
 			if id.empty()
 				throw EInvalidParam.new()
 			end
 			
-			this.pID = id
-			this.pEvents = Array.new()
-			this.pInterval = 1
+			pID = id
+			pEvents = Array.new()
+			pInterval = 1
 		end
 		
 		
 		/** \brief ID. */
 		public func String getID()
-			return this.pID
+			return pID
 		end
 		
 		/** \brief Number of events. */
 		public func int getEventCount()
-			return this.pEvents.getCount()
+			return pEvents.getCount()
 		end
 		
 		/** \brief Event at index. */
-		public func Event getEventAt( int index )
-			return this.pEvents.getAt( index ) cast Event
+		public func Event getEventAt(int index)
+			return pEvents.getAt(index) cast Event
 		end
 		
 		/** \brief Add event. */
-		public func void addEvent( Event event )
+		public func void addEvent(Event event)
 			if event == null
 				throw EInvalidParam.new()
 			end
 			
-			var int i, count = this.pEvents.getCount()
+			var int i, count = pEvents.getCount()
 			var float time = event.getTime()
 			for i = 0 to count
-				if time < ( this.pEvents.getAt( i ) cast Event ).getTime()
-					this.pEvents.insert( i, event )
+				if time < (pEvents.getAt(i) cast Event).getTime()
+					pEvents.insert(i, event)
 					return
 				end
 			end
 			
-			this.pEvents.add( event )
+			pEvents.add(event)
 		end
 		
 		/** \brief Remove event. */
-		public func void removeEvent( Event event )
-			this.pEvents.remove( event )
+		public func void removeEvent(Event event)
+			pEvents.remove(event)
 		end
 		
 		/** \brief Remove all events. */
 		public func void removeAllEvents()
-			this.pEvents.removeAll()
+			pEvents.removeAll()
 		end
 		
 		/** \brief Visit events with block receiving argument Event. */
-		public func void forEachEvent( Block ablock )
-			this.pEvents.forEach( ablock )
+		public func void forEachEvent(Block ablock)
+			pEvents.forEach(ablock)
 		end
 		
 		/** \brief Find event with block receiving argument Event returning true if found. */
-		public func Event findEvent( Block ablock )
-			return this.pEvents.find( ablock ) cast Event
+		public func Event findEvent(Block ablock)
+			return pEvents.find(ablock) cast Event
 		end
 		
 		
 		/** \brief Interval in seconds before foot steps repeat. */
 		public func float getInterval()
-			return this.pInterval
+			return pInterval
 		end
 		
 		/**
@@ -315,8 +340,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Clamped to 0.1 if smaller.
 		 */
-		public func void setInterval( float interval )
-			this.pInterval = DEMath.max( interval, 0.1 )
+		public func void setInterval(float interval)
+			pInterval = DEMath.max(interval, 0.1)
 		end
 	end
 	
@@ -324,10 +349,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Foot step triggered. */
-		func void footStep( Instance instance, Configuration configuration, Event event )
+		func void footStep(Instance instance, Configuration configuration, Event event)
 		
 		/** \brief Configuration changed. */
-		func void configurationChanged( Instance instance, Configuration configuration )
+		func void configurationChanged(Instance instance, Configuration configuration)
 	end
 	
 	
@@ -338,11 +363,11 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/** \brief Foot step triggered. */
-		public func void footStep( Instance instance, Configuration configuration, Event event )
+		public func void footStep(Instance instance, Configuration configuration, Event event)
 		end
 		
 		/** \brief Configuration changed. */
-		public func void configurationChanged( Instance instance, Configuration configuration )
+		public func void configurationChanged(Instance instance, Configuration configuration)
 		end
 	end
 	
@@ -361,111 +386,111 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorFootSteps ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pConfigurations = Dictionary.new()
-			this.pElapsed = 0
-			this.pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
-			this.pListeners = Array.new()
+		public func new(ECBehaviorFootSteps ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pConfigurations = Dictionary.new()
+			pElapsed = 0
+			pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
+			pListeners = Array.new()
 			
-			this.setAutoUpdate( ecbehavior.getAutoUpdate() )
+			setAutoUpdate(ecbehavior.getAutoUpdate())
 		end
 		
 		/** \brief Dispose of composeable instance. */
 		public func void dispose()
-			this.pListeners = null
+			pListeners = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
+		public func void init(StubElement stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorFootSteps getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		
 		
 		/** \brief Call update() automatically on postThink(). */
 		public func bool getAutoUpdate()
-			return this.pAutoUpdate
+			return pAutoUpdate
 		end
 		
 		/** \brief Set if update() is automatically called on postThink(). */
-		public func void setAutoUpdate( bool autoUpdate )
-			if autoUpdate == this.pAutoUpdate
+		public func void setAutoUpdate(bool autoUpdate)
+			if autoUpdate == pAutoUpdate
 				return
 			end
-			this.pAutoUpdate = autoUpdate
-			this.setRequiresThink( autoUpdate )
+			pAutoUpdate = autoUpdate
+			setRequiresThink(autoUpdate)
 		end
 		
 		/** \brief Layer mask to use for created speakers. */
 		public func LayerMask getLayerMask()
-			return this.pLayerMask
+			return pLayerMask
 		end
 		
 		/** \brief Set layer mask to use for created speakers. */
-		public func void setLayerMask( LayerMask layerMask )
+		public func void setLayerMask(LayerMask layerMask)
 			if layerMask == null
 				throw EInvalidParam.new()
 			end
-			this.pLayerMask = layerMask
+			pLayerMask = layerMask
 		end
 		
 		
 		
 		/** \brief Number of configurations. */
 		public func int getConfigurationCount()
-			return this.pConfigurations.getCount()
+			return pConfigurations.getCount()
 		end
 		
 		/** \brief Configuration with ID or null if not found. */
-		public func Configuration getConfigurationAt( String id )
-			return this.pConfigurations.getAt( id, null ) cast Configuration
+		public func Configuration getConfigurationAt(String id)
+			return pConfigurations.getAt(id, null) cast Configuration
 		end
 		
 		/** \brief Add configuration. */
-		public func void addConfiguration( Configuration configuration )
-			if this.pConfigurations.has( configuration.getID() )
+		public func void addConfiguration(Configuration configuration)
+			if pConfigurations.has(configuration.getID())
 				throw EInvalidParam.new()
 			end
-			this.pConfigurations.setAt( configuration.getID(), configuration )
+			pConfigurations.setAt(configuration.getID(), configuration)
 		end
 		
 		/** \brief Remove configuration. */
-		public func void removeConfiguration( Configuration configuration )
-			this.pConfigurations.remove( configuration.getID() )
+		public func void removeConfiguration(Configuration configuration)
+			pConfigurations.remove(configuration.getID())
 		end
 		
 		/** \brief Remove all configurations. */
 		public func void removeAllConfigurations()
-			this.pConfigurations.removeAll()
+			pConfigurations.removeAll()
 		end
 		
 		/** \brief Visit configurations with block receiving argument Configuration. */
-		public func void forEachConfiguration( Block ablock )
-			this.pConfigurations.forEachValue( ablock )
+		public func void forEachConfiguration(Block ablock)
+			pConfigurations.forEachValue(ablock)
 		end
 		
 		/** \brief Find configuration with block receiving argument Configuration returning true if found. */
-		public func Configuration findConfiguration( Block ablock )
-			return this.pConfigurations.find( block String id, Configuration configuration
-				return ablock.run( configuration )
-			end ) cast Configuration
+		public func Configuration findConfiguration(Block ablock)
+			return pConfigurations.find(block String id, Configuration configuration
+				return ablock.run(configuration)
+			end) cast Configuration
 		end
 		
 		
 		
 		/** \brief Active configuration or null if none is active. */
 		public func Configuration getActiveConfiguration()
-			return this.pActiveConfiguration
+			return pActiveConfiguration
 		end
 		
 		/**
@@ -476,12 +501,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * \returns true if configuration changed or false if it is the same.
 		 */
-		public func bool setActiveConfigurationWithID( String id, bool resetIfChanged )
+		public func bool setActiveConfigurationWithID(String id, bool resetIfChanged)
 			if id != null
-				return this.setActiveConfiguration( this.getConfigurationAt( id ), resetIfChanged )
+				return setActiveConfiguration(getConfigurationAt(id), resetIfChanged)
 				
 			else
-				return this.clearActiveConfiguration()
+				return clearActiveConfiguration()
 			end
 		end
 		
@@ -490,20 +515,20 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * \returns true if configuration changed or false if it is the same.
 		 */
-		public func bool setActiveConfiguration( Configuration configuration, bool resetIfChanged )
-			if configuration == this.pActiveConfiguration
+		public func bool setActiveConfiguration(Configuration configuration, bool resetIfChanged)
+			if configuration == pActiveConfiguration
 				return false
 			end
 			
-			this.pActiveConfiguration = configuration
+			pActiveConfiguration = configuration
 			
 			if resetIfChanged
-				this.reset()
+				reset()
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.configurationChanged( this, configuration )
-			end )
+			pListeners.forEach(block Listener each
+				each.configurationChanged(this, configuration)
+			end)
 			
 			return true
 		end
@@ -514,24 +539,24 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * \returns true if configuration changed or false if it is the same.
 		 */
 		public func bool clearActiveConfiguration()
-			return this.setActiveConfiguration( null, true )
+			return setActiveConfiguration(null, true)
 		end
 		
 		
 		
 		/** \brief Elapsed time since start of interval. */
 		public func float getElapsed()
-			return this.pElapsed
+			return pElapsed
 		end
 		
 		/** \brief Set elapsed time since start of interval. */
-		public func void setElapsed( float elapsed )
-			this.pElapsed = DEMath.max( elapsed, 0.0 )
+		public func void setElapsed(float elapsed)
+			pElapsed = DEMath.max(elapsed, 0.0)
 		end
 		
 		/** \brief Index of next foot step event. */
 		public func int getNextEvent()
-			return this.pNextEvent
+			return pNextEvent
 		end
 		
 		/**
@@ -539,12 +564,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		* 
 		* Index will be clamped to range from 0 to getEventCount().
 		*/
-		protected func void setNextEvent( int index )
-			if this.pActiveConfiguration != null
-				this.pNextEvent = DEMath.clamp( index, 0, this.pActiveConfiguration.getEventCount() )
+		protected func void setNextEvent(int index)
+			if pActiveConfiguration != null
+				pNextEvent = DEMath.clamp(index, 0, pActiveConfiguration.getEventCount())
 				
 			else
-				this.pNextEvent = 0
+				pNextEvent = 0
 			end
 		end
 		
@@ -552,8 +577,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		/** \brief Reset to start of interval. */
 		public func void reset()
-			this.pElapsed = 0
-			this.pNextEvent = 0
+			pElapsed = 0
+			pNextEvent = 0
 		end
 		
 		/**
@@ -562,8 +587,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * Advances elapsed playing foot steps if events are trigered. Same as update(float,bool)
 		 * called with true as parameter for relative.
 		 */
-		public func void update( float elapsed )
-			this.update( elapsed, true )
+		public func void update(float elapsed)
+			update(elapsed, true)
 		end
 		
 		/**
@@ -576,47 +601,47 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 *                 the time is considered to have elapsed past the interval and
 		 *                 wrapped around.
 		 */
-		public func void update( float elapsed, bool relative )
-			if this.pActiveConfiguration == null
+		public func void update(float elapsed, bool relative)
+			if pActiveConfiguration == null
 				return
 			end
 			
-			var float interval = this.pActiveConfiguration.getInterval()
-			var int count = this.pActiveConfiguration.getEventCount()
+			var float interval = pActiveConfiguration.getInterval()
+			var int count = pActiveConfiguration.getEventCount()
 			var Event event
 			
 			if relative
-				this.pElapsed += elapsed
+				pElapsed += elapsed
 				
 			else
-				elapsed = DEMath.normalize( elapsed, 0.0, interval )
-				if elapsed < this.pElapsed
+				elapsed = DEMath.normalize(elapsed, 0.0, interval)
+				if elapsed < pElapsed
 					elapsed += interval
 				end
-				this.pElapsed = elapsed
+				pElapsed = elapsed
 			end
 			
 			while true
-				while this.pNextEvent < count
-					event = this.pActiveConfiguration.getEventAt( this.pNextEvent )
-					if event.getTime() > this.pElapsed
+				while pNextEvent < count
+					event = pActiveConfiguration.getEventAt(pNextEvent)
+					if event.getTime() > pElapsed
 						break
 					end
-					this.pNextEvent++
+					pNextEvent++
 					
-					this.playFootStepSound( event )
+					playFootStepSound(event)
 					
-					this.pListeners.forEach( block Listener each
-						each.footStep( this, this.pActiveConfiguration, event )
-					end )
+					pListeners.forEach(block Listener each
+						each.footStep(this, pActiveConfiguration, event)
+					end)
 				end
 				
-				if this.pElapsed < interval
+				if pElapsed < interval
 					return
 				end
 				
-				this.pElapsed -= interval
-				this.pNextEvent = 0
+				pElapsed -= interval
+				pNextEvent = 0
 			end
 		end
 		
@@ -627,8 +652,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		 * 
 		 * Creates a one-shot speaker and plays it in the actor game world.
 		 */
-		protected func void playFootStepSound( Event event )
-			var BehaviorElement element = this.getElement()
+		protected func void playFootStepSound(Event event)
+			var BehaviorElement element = getElement()
 			var GameWorld gameWorld = element.getGameWorld()
 			if gameWorld == null
 				return
@@ -640,68 +665,69 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			end
 			
 			var Speaker speaker = Speaker.new()
-			speaker.setSound( sound )
-			speaker.setPosition( element.getElementMatrix() * event.getOffset() )
-			speaker.setOrientation( element.getOrientation() )
-			speaker.setLooping( false )
-			speaker.setVolume( event.getVolume() )
-			speaker.setRange( event.getRange() )
-			speaker.setLayerMask( this.pLayerMask )
-			speaker.setOwner( element )
+			speaker.setSound(sound)
+			speaker.setPosition(element.getElementMatrix() * event.getOffset())
+			speaker.setOrientation(element.getOrientation())
+			speaker.setLooping(false)
+			speaker.setVolume(event.getVolume())
+			speaker.setRange(event.getRange())
+			speaker.setRollOff(event.getRollOff())
+			speaker.setLayerMask(pLayerMask)
+			speaker.setOwner(element)
 			
-			gameWorld.addOneShotSpeaker( speaker )
+			gameWorld.addOneShotSpeaker(speaker)
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		public func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Post thinking after physics processing is finished. */
-		public func void postThink( float elapsed )
-			if this.pAutoUpdate
-				this.update( elapsed )
+		public func void postThink(float elapsed)
+			if pAutoUpdate
+				update(elapsed)
 			end
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var String id = reader.readString16()
 				if not id.empty()
-					this.setActiveConfigurationWithID( id, false )
+					setActiveConfigurationWithID(id, false)
 				end
 				
-				this.pElapsed = reader.readFloat()
-				this.pNextEvent = reader.readInt()
+				pElapsed = reader.readFloat()
+				pNextEvent = reader.readInt()
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeString16( this.pActiveConfiguration != null if this.pActiveConfiguration.getID() else "" )
-			writer.writeFloat( this.pElapsed )
-			writer.writeInt( this.pNextEvent )
+			writer.writeString16(pActiveConfiguration != null if pActiveConfiguration.getID() else "")
+			writer.writeFloat(pElapsed)
+			writer.writeInt(pNextEvent)
 		end
 	end
 	
@@ -712,36 +738,36 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, "footSteps." )
+	public func new(BehaviorElementClass eclass) this(eclass, "footSteps.")
 	end
 	
-	public func new( BehaviorElementClass eclass, String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	public func new(BehaviorElementClass eclass, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pAutoUpdate = true
+		pAutoUpdate = true
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Call update() automatically on postThink(). */
 	public func bool getAutoUpdate()
-		return this.pAutoUpdate
+		return pAutoUpdate
 	end
 	
 	/** \brief Set if update() is automatically called on postThink(). */
-	public func void setAutoUpdate( bool autoUpdate )
-		this.pAutoUpdate = autoUpdate
+	public func void setAutoUpdate(bool autoUpdate)
+		pAutoUpdate = autoUpdate
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -752,10 +778,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorFootSteps.
 	 */
-	static public func ECBehaviorFootSteps getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorFootSteps
-		end ) cast ECBehaviorFootSteps
+	static public func ECBehaviorFootSteps getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorFootSteps each
+			return true
+		end) cast ECBehaviorFootSteps
 	end
 	
 	/**
@@ -764,16 +790,16 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorFootSteps.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

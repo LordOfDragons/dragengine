@@ -29,9 +29,14 @@
 
 
 /**
- * \brief Animator rule bone transformator.
+ * Animator rule bone transformator.
  */
 class aeRuleBoneTransformator : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleBoneTransformator> Ref;
+	
+	
+	
 private:
 	decVector pMinTranslation;
 	decVector pMaxTranslation;
@@ -39,11 +44,15 @@ private:
 	decVector pMaxRotation;
 	decVector pMinScaling;
 	decVector pMaxScaling;
+	decVector pAxis;
+	float pMinAngle;
+	float pMaxAngle;
 	
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pCoordinateFrame;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pUseAxis;
 	
 	decString pTargetBone;
 	
@@ -54,92 +63,121 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new bone transformator rule. */
+	/** Create a new bone transformator rule. */
 	aeRuleBoneTransformator();
-	/** \brief Create a copy of a bone transformator rule. */
+	/** Create a copy of a bone transformator rule. */
 	aeRuleBoneTransformator( const aeRuleBoneTransformator &copy );
-	/** \brief Clean up the bone transformator rule. */
+	/** Clean up the bone transformator rule. */
 	virtual ~aeRuleBoneTransformator();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the minimum translation. */
+	/** Retrieve the minimum translation. */
 	inline const decVector &GetMinimumTranslation() const{ return pMinTranslation; }
-	/** \brief Set the minimum translation. */
+	/** Set the minimum translation. */
 	void SetMinimumTranslation( const decVector &translation );
-	/** \brief Retrieve the maximum translation. */
+	/** Retrieve the maximum translation. */
 	inline const decVector &GetMaximumTranslation() const{ return pMaxTranslation; }
-	/** \brief Set the maximum translation. */
+	/** Set the maximum translation. */
 	void SetMaximumTranslation( const decVector &translation );
-	/** \brief Retrieve the minimum rotation. */
+	/** Retrieve the minimum rotation. */
 	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
-	/** \brief Set the minimum rotation. */
+	/** Set the minimum rotation. */
 	void SetMinimumRotation( const decVector &rotation );
-	/** \brief Retrieve the maximum rotation. */
+	/** Retrieve the maximum rotation. */
 	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
-	/** \brief Set the maximum rotation. */
+	/** Set the maximum rotation. */
 	void SetMaximumRotation( const decVector &rotation );
-	/** \brief Retrieve the minimum scaling. */
+	/** Retrieve the minimum scaling. */
 	inline const decVector &GetMinimumScaling() const{ return pMinScaling; }
-	/** \brief Set the minimum scaling. */
+	/** Set the minimum scaling. */
 	void SetMinimumScaling( const decVector &scaling );
-	/** \brief Retrieve the maximum scaling. */
+	/** Retrieve the maximum scaling. */
 	inline const decVector &GetMaximumScaling() const{ return pMaxScaling; }
-	/** \brief Set the maximum scaling. */
+	/** Set the maximum scaling. */
 	void SetMaximumScaling( const decVector &scaling );
 	
-	/** \brief Retrieve the coordinate frame to rotate around. */
+	/** Rotation axis. */
+	inline const decVector &GetAxis() const{ return pAxis; }
+	
+	/** Set rotation axis. */
+	void SetAxis( const decVector &axis );
+	
+	/** Minimum axis rotation angle. */
+	inline float GetMinimumAngle() const{ return pMinAngle; }
+	
+	/** Set minimum axis rotation angle. */
+	void SetMinimumAngle( float angle );
+	
+	/** Maximum axis rotation angle. */
+	inline float GetMaximumAngle() const{ return pMaxAngle; }
+	
+	/** Set maximum axis rotation angle. */
+	void SetMaximumAngle( float angle );
+	
+	/** Retrieve the coordinate frame to rotate around. */
 	inline deAnimatorRuleBoneTransformator::eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
-	/** \brief Set the coordinate frame to rotate around. */
+	/** Set the coordinate frame to rotate around. */
 	void SetCoordinateFrame( deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame );
 	
-	/** \brief Determine if position is altered. */
+	/** Determine if position is altered. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** \brief Set if position is altered. */
+	/** Set if position is altered. */
 	void SetEnablePosition( bool enabled );
-	/** \brief Determine if orientation is altered. */
+	/** Determine if orientation is altered. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** \brief Set if orientation is altered. */
+	/** Set if orientation is altered. */
 	void SetEnableOrientation( bool enabled );
-	/** \brief Determine if size manipulation is enabled. */
+	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** \brief Set if size manipulation is enabled. */
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
-	/** \brief Retrieve the name of the target bone. */
+	/** Use rotation axis instead of rotation directly. */
+	inline bool GetUseAxis() const{ return pUseAxis; }
+	
+	/** Set to use rotation axis instead of rotation directly. */
+	void SetUseAxis( bool useAxis );
+	
+	/** Retrieve the name of the target bone. */
 	inline const decString &GetTargetBone() const{ return pTargetBone; }
-	/** \brief Set the name of the target bone. */
+	/** Set the name of the target bone. */
 	void SetTargetBone( const char *boneName );
 	
-	/** \brief Retrieve the translation target. */
+	/** Retrieve the translation target. */
 	inline aeControllerTarget &GetTargetTranslation(){ return pTargetTranslation; }
-	/** \brief Retrieve the rotation target. */
-	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
-	/** \brief Retrieve the scaling target. */
-	inline aeControllerTarget &GetTargetScaling(){ return pTargetScaling; }
+	inline const aeControllerTarget &GetTargetTranslation() const{ return pTargetTranslation; }
 	
-	/** \brief Creates an engine animator rule. */
+	/** Retrieve the rotation target. */
+	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
+	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
+	
+	/** Retrieve the scaling target. */
+	inline aeControllerTarget &GetTargetScaling(){ return pTargetScaling; }
+	inline const aeControllerTarget &GetTargetScaling() const{ return pTargetScaling; }
+	
+	/** Creates an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Removes a link from all targets using it. */
+	/** Removes a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Removes all links from all targets. */
+	/** Removes all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another animation rule to this rule. */
+	/** Copy another animation rule to this rule. */
 	virtual aeRuleBoneTransformator &operator=( const aeRuleBoneTransformator &copy );
 	/*@}*/
 };

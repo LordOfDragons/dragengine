@@ -68,7 +68,7 @@ dedsResourceLoader::~dedsResourceLoader(){
 // Management
 ///////////////
 
-void dedsResourceLoader::Update(){
+void dedsResourceLoader::OnFrameUpdate(){
 	deResourceLoader &resourceLoader = *pDS->GetGameEngine()->GetResourceLoader();
 	const float maxUpdateTime = 0.25f;
 	float elapsedUpdateTime = 0.0f;

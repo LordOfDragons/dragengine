@@ -22,6 +22,7 @@
 #ifndef _DELOADABLEMODULEVISITOR_H_
 #define _DELOADABLEMODULEVISITOR_H_
 
+#include "../../dragengine_export.h"
 
 class deLoadableModule;
 class deInternalModule;
@@ -33,7 +34,7 @@ class deLibraryModule;
  *
  * Visits loadable modules.
  */
-class deLoadableModuleVisitor{
+class DE_DLL_EXPORT deLoadableModuleVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

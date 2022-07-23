@@ -45,7 +45,13 @@ class deWorld;
  * confused if path is constantly changing. The already calculates path are not affected
  * by a change. The game scripts have to react to the changes at their own discretion.
  */
-class deNavigationBlocker : public deResource{
+class DE_DLL_EXPORT deNavigationBlocker : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNavigationBlocker> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

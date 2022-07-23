@@ -42,7 +42,7 @@
  * required and for non filled shapes at least 2. If not enough
  * vertices are specified the face not drawn.
  */
-class deDebugDrawerShapeFace{
+class DE_DLL_EXPORT deDebugDrawerShapeFace{
 private:
 	decVector *pVertices;
 	int pVertexCount;

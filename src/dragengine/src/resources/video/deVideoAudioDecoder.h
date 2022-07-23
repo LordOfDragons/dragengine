@@ -37,7 +37,13 @@ class deBaseVideoAudioDecoder;
  * decoder exists. The user decides if the data is read synchronous or asynchronous.
  * The audio information is not replicated in the decoder but found in the source video resource.
  */
-class deVideoAudioDecoder : public deObject{
+class DE_DLL_EXPORT deVideoAudioDecoder : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideoAudioDecoder> Ref;
+	
+	
+	
 private:
 	deVideoManager &pVideoManager;
 	deVideoReference pVideo;

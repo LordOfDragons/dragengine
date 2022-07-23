@@ -27,7 +27,6 @@
 #include <dragengine/systems/modules/animator/deBaseAnimatorComponent.h>
 
 class dearComponentBoneState;
-class dearTaskApplyRules;
 class deDEAnimator;
 class deComponent;
 

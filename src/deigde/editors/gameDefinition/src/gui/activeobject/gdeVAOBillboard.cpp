@@ -29,6 +29,7 @@
 #include "../gdeWindowMain.h"
 #include "../../configuration/gdeConfiguration.h"
 #include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 #include "../../gdEditor.h"
 
@@ -58,8 +59,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOBillboard::gdeVAOBillboard( gdeViewActiveObject &view, gdeOCBillboard *ocbillboard ) :
-pView( view ),
+gdeVAOBillboard::gdeVAOBillboard( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCBillboard *ocbillboard ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCBillboard( ocbillboard )
 {
 	if( ! ocbillboard ){
@@ -145,11 +147,13 @@ void gdeVAOBillboard::pCreateBillboard(){
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	
 	deSkinReference skin;
-	if( ! pOCBillboard->GetSkinPath().IsEmpty() ){
+	decString path;
+	
+	path = PropertyString( pOCBillboard->GetPropertyName( gdeOCBillboard::epSkin ), pOCBillboard->GetSkinPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, pOCBillboard->GetSkinPath(), "/" ) );
+			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			skin = environment.GetErrorSkin();
@@ -160,11 +164,11 @@ void gdeVAOBillboard::pCreateBillboard(){
 	if( skin ){
 		pBillboard.TakeOver( engine.GetBillboardManager()->CreateBillboard() );
 		pBillboard->SetSkin( skin );
-		pBillboard->SetAxis( pOCBillboard->GetAxis() );
+		pBillboard->SetAxis( PropertyVector( pOCBillboard->GetPropertyName( gdeOCBillboard::epAxis ), pOCBillboard->GetAxis() ) );
 		pBillboard->SetSize( pOCBillboard->GetSize() );
-		pBillboard->SetOffset( pOCBillboard->GetOffset() );
-		pBillboard->SetLocked( pOCBillboard->GetLocked() );
-		pBillboard->SetSpherical( pOCBillboard->GetSpherical() );
+		pBillboard->SetOffset( PropertyVector2( pOCBillboard->GetPropertyName( gdeOCBillboard::epOffset ), pOCBillboard->GetOffset() ) );
+		pBillboard->SetLocked( PropertyBool( pOCBillboard->GetPropertyName( gdeOCBillboard::epLocked ), pOCBillboard->GetLocked() ) );
+		pBillboard->SetSpherical( PropertyBool( pOCBillboard->GetPropertyName( gdeOCBillboard::epSpherical ), pOCBillboard->GetSpherical() ) );
 		pBillboard->SetSizeFixedToScreen( pOCBillboard->GetSizeFixedToScreen() );
 		pView.GetGameDefinition()->GetWorld()->AddBillboard( pBillboard );
 	}

@@ -55,7 +55,7 @@
  * in that they have no limited range. The returned value is always the last change in
  * position reported which can be larger than 1.
  */
-class deInputDeviceAxis{
+class DE_DLL_EXPORT deInputDeviceAxis{
 public:
 	/** \brief Axis types. */
 	enum eAxisTypes{
@@ -89,7 +89,55 @@ public:
 		eatTouchPad,
 		
 		/** \brief Generic. */
-		eatGeneric
+		eatGeneric,
+		
+		/**
+		 * \brief Trigger.
+		 * \version 1.6
+		 */
+		eatTrigger,
+		
+		/**
+		 * \brief Controller grip grabing.
+		 * \version 1.6
+		 * 
+		 * Value 0 indicates open hand up to value 1 indicating closed hand.
+		 */
+		eatGripGrab,
+		
+		/**
+		 * \brief Controller grip squeezing.
+		 * \version 1.6
+		 * 
+		 * Value 0 indicates no force applied up to value 1 indicating maximum force applied.
+		 */
+		eatGripSqueeze,
+		
+		/**
+		 * \brief Controller grip pinching.
+		 * \version 1.6
+		 * 
+		 * Value 0 indicates no pinching to value 1 indicating maximum pinching.
+		 */
+		eatGripPinch,
+		
+		/**
+		 * \brief Finger bending.
+		 * \version 1.6
+		 * 
+		 * If finger bending is supported 5 axes of type eatFingerBend are added in this
+		 * order: thumb, index, middle, ring, pinky
+		 */
+		eatFingerBend,
+		
+		/**
+		 * \brief Finger spreading.
+		 * \version 1.6
+		 * 
+		 * If finger spreading is supported 4 axes of type eatFingerSpread are added in
+		 * this order: thumb-index, index-middle, middle-ring, ring-pinky.
+		 */
+		eatFingerSpread
 	};
 	
 	
@@ -103,6 +151,9 @@ private:
 	
 	/** \brief Axis type. */
 	eAxisTypes pType;
+	
+	/** \brief Identifier of component or empty string. */
+	decString pComponent;
 	
 	/**
 	 * \brief Image to represent the axis in 2D user interfaces or NULL if not set.
@@ -165,6 +216,18 @@ public:
 	
 	/** \brief Axis type. */
 	void SetType( eAxisTypes type );
+	
+	/**
+	 * \brief Identifier of component or empty string.
+	 * \version 1.6
+	 */
+	inline const decString &GetComponent() const{ return pComponent; }
+	
+	/**
+	 * \brief Set identifier of component or empty string.
+	 * \version 1.6
+	 */
+	void SetComponent( const char *component );
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.

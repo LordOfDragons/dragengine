@@ -22,12 +22,14 @@
 #ifndef _DEBASEAUDIOSPEAKER_H_
 #define _DEBASEAUDIOSPEAKER_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Audio Module Speaker Peer.
  */
-class deBaseAudioSpeaker{
+class DE_DLL_EXPORT deBaseAudioSpeaker{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -77,6 +79,9 @@ public:
 	
 	/** \brief Roll off factor changed. */
 	virtual void RollOffChanged();
+	
+	/** \brief Distance offset changed. */
+	virtual void DistanceOffsetChanged();
 	
 	/** \brief Shape changed. */
 	virtual void ShapeChanged();

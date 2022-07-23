@@ -35,12 +35,11 @@
 #include "../deglLauncher.h"
 #include "../config/deglConfiguration.h"
 #include "../config/deglConfigWindow.h"
-#include "../engine/deglEngine.h"
-#include "../engine/deglEngineInstance.h"
-#include "../game/deglGameManager.h"
-#include <dragengine/common/string/unicode/decUnicodeString.h>
+
+#include <delauncher/engine/delEngineInstance.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
@@ -84,6 +83,10 @@ deglWindowMain::deglWindowMain(){ }
 void deglWindowMain::create(){
 	FXMainWindow::create();
 	
+	if( pLauncher && pLauncher->GetCmdLineQuitNow() ){
+		return;
+	}
+	
 	pIconValidSmall->create();
 	pIconInvalidSmall->create();
 	pIconButtonInfo->create();
@@ -92,31 +95,35 @@ void deglWindowMain::create(){
 	pPanelEngine->UpdateModuleList();
 }
 
-deglWindowMain::deglWindowMain( FXApp *app, int argc, char **argv ) :
-FXMainWindow( app, "Drag[en]gine Launcher", NULL, NULL, DECOR_ALL, 10, 50, 800, 400 ){
-	pLauncher = NULL;
-	pPanelGames = NULL;
-	pGuiBuilder = NULL;
-	pWindowLogger = NULL;
+deglWindowMain::deglWindowMain( FXApp *papp, int argc, char **argv ) :
+FXMainWindow( papp, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50, 800, 400 ){
+	pLauncher = nullptr;
+	pPanelGames = nullptr;
+	pGuiBuilder = nullptr;
+	pWindowLogger = nullptr;
 	
-	pIconApp = NULL;
-	pIconValidSmall = NULL;
-	pIconInvalidSmall = NULL;
-	pIconButtonInfo = NULL;
+	pIconApp = nullptr;
+	pIconValidSmall = nullptr;
+	pIconInvalidSmall = nullptr;
+	pIconButtonInfo = nullptr;
 	
 	// load icons
-	pIconApp = new FXPNGIcon( app, icon_delauncher_gui );
-	pIconValidSmall = new FXPNGIcon( app, icon_icon_valid_small );
-	pIconInvalidSmall = new FXPNGIcon( app, icon_icon_invalid_small );
-	pIconButtonInfo = new FXPNGIcon( app, icon_button_info );
+	pIconApp = new FXPNGIcon( papp, icon_delauncher_gui );
+	pIconValidSmall = new FXPNGIcon( papp, icon_icon_valid_small );
+	pIconInvalidSmall = new FXPNGIcon( papp, icon_icon_invalid_small );
+	pIconButtonInfo = new FXPNGIcon( papp, icon_button_info );
 	
 	setIcon( pIconApp );
 	
 	// create launcher
 	pLauncher = new deglLauncher( this, argc, argv );
 	
+	if( pLauncher->GetCmdLineQuitNow() ){
+		return;
+	}
+	
 	// set window from configuration
-	const deglConfigWindow &configWindow = pLauncher->GetConfiguration()->GetWindowMain();
+	const deglConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
 	position( configWindow.GetX(), configWindow.GetY(), configWindow.GetWidth(), configWindow.GetHeight() );
 	
 	// create gui builder
@@ -131,24 +138,24 @@ FXMainWindow( app, "Drag[en]gine Launcher", NULL, NULL, DECOR_ALL, 10, 50, 800, 
 	pMenuBar = new FXMenuBar( this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X );
 	
 	FXMenuPane *menuFile = new FXMenuPane( this );
-	new FXMenuTitle( pMenuBar, "&File", NULL, menuFile );
+	new FXMenuTitle( pMenuBar, "&File", nullptr, menuFile );
 	
-	new FXMenuCommand( menuFile, "Install...\t\tInstall game/patch *.delga file", NULL, this, ID_FILE_INSTALL );
+// 	new FXMenuCommand( menuFile, "Install...\t\tInstall game/patch *.delga file", nullptr, this, ID_FILE_INSTALL );
 	
 	new FXMenuSeparator( menuFile );
-	new FXMenuCommand( menuFile, "&Quit\t\tQuits the launcher", NULL, this, ID_FILE_QUIT );
+	new FXMenuCommand( menuFile, "&Quit\t\tQuits the launcher", nullptr, this, ID_FILE_QUIT );
 	
 	FXMenuPane *menuView = new FXMenuPane( this );
-	new FXMenuTitle( pMenuBar, "&View", NULL, menuView );
+	new FXMenuTitle( pMenuBar, "&View", nullptr, menuView );
 	
-	new FXMenuCommand( menuView, "&Games\t\tShow Games", NULL, this, ID_VIEW_GAMES );
-	new FXMenuCommand( menuView, "&Engine\t\tShow Engine information", NULL, this, ID_VIEW_ENGINE );
-	new FXMenuCommand( menuView, "&Logging\t\tShow Logging", NULL, this, ID_VIEW_LOGGING );
+	new FXMenuCommand( menuView, "&Games\t\tShow Games", nullptr, this, ID_VIEW_GAMES );
+	new FXMenuCommand( menuView, "&Engine\t\tShow Engine information", nullptr, this, ID_VIEW_ENGINE );
+	new FXMenuCommand( menuView, "&Logging\t\tShow Logging", nullptr, this, ID_VIEW_LOGGING );
 	
 	FXMenuPane *menuSettings = new FXMenuPane( this );
-	new FXMenuTitle( pMenuBar, "&Settings", NULL, menuSettings );
+	new FXMenuTitle( pMenuBar, "&Settings", nullptr, menuSettings );
 	
-	new FXMenuCommand( menuSettings, "&Engine...\t\tChange Engine Settings", NULL, this, ID_SETTINGS_ENGINE );
+	new FXMenuCommand( menuSettings, "&Engine...\t\tChange Engine Settings", nullptr, this, ID_SETTINGS_ENGINE );
 	
 	// create content area
 	FXPacker *content = new FXPacker( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
@@ -156,7 +163,7 @@ FXMainWindow( app, "Drag[en]gine Launcher", NULL, NULL, DECOR_ALL, 10, 50, 800, 
 	pStatusBar = new FXStatusBar( content, LAYOUT_SIDE_BOTTOM | LAYOUT_FILL_X );
 	pStatusBar->getStatusLine()->setNormalText( "Ready" );
 	
-	pSBProgress = new FXProgressBar( pStatusBar, NULL, 0, PROGRESSBAR_HORIZONTAL | LAYOUT_FIX_WIDTH | LAYOUT_FILL_Y | FRAME_SUNKEN );
+	pSBProgress = new FXProgressBar( pStatusBar, nullptr, 0, PROGRESSBAR_HORIZONTAL | LAYOUT_FIX_WIDTH | LAYOUT_FILL_Y | FRAME_SUNKEN );
 	pSBProgress->setWidth( 200 );
 	pSBProgress->setTotal( 100 );
 	pSBProgress->setProgress( 0 );
@@ -167,7 +174,7 @@ FXMainWindow( app, "Drag[en]gine Launcher", NULL, NULL, DECOR_ALL, 10, 50, 800, 
 	pPanelEngine = new deglPanelEngine( this, pSwitcherPanels );
 	
 	// tool tips
-	pToolTip = new FXToolTip( app, 0 );
+	pToolTip = new FXToolTip( papp, 0 );
 }
 
 deglWindowMain::~deglWindowMain(){
@@ -176,7 +183,7 @@ deglWindowMain::~deglWindowMain(){
 	if( pGuiBuilder ) delete pGuiBuilder;
 	
 	if( pLauncher ){
-		deglConfigWindow &configWindow = pLauncher->GetConfiguration()->GetWindowMain();
+		deglConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
 		
 		configWindow.SetX( getX() );
 		configWindow.SetY( getY() );
@@ -195,6 +202,10 @@ deglWindowMain::~deglWindowMain(){
 ///////////////
 
 bool deglWindowMain::RunCommandLineActions(){
+	if( pLauncher->GetCmdLineQuitNow() ){
+		return false;
+	}
+	
 	if( ! pLauncher->GetCommandLineInstallDelga().IsEmpty() ){
 		show();
 		try{
@@ -223,21 +234,21 @@ void deglWindowMain::DisplayException( const deException &exception ){
 	pLauncher->GetLogger()->LogException( "Application Error", exception );
 	
 	decUnicodeString caption;
-	decUnicodeString message;
+	decUnicodeString mmessage;
 	decString foxCaption;
 	decString foxMessage;
 	
 	caption.SetFromUTF8( "Application Error" );
 	foxCaption = caption.ToUTF8();
 	
-	message.SetFromUTF8( "An exception occurred. File='" );
-	message.AppendFromUTF8( exception.GetFile() );
-	message.AppendFromUTF8( "', Line='" );
-	message.AppendValue( exception.GetLine() );
-	message.AppendFromUTF8( "', Reason='" );
-	message.AppendFromUTF8( exception.GetDescription() );
-	message.AppendFromUTF8( "'." );
-	foxMessage = message.ToUTF8();
+	mmessage.SetFromUTF8( "An exception occurred. File='" );
+	mmessage.AppendFromUTF8( exception.GetFile() );
+	mmessage.AppendFromUTF8( "', Line='" );
+	mmessage.AppendValue( exception.GetLine() );
+	mmessage.AppendFromUTF8( "', Reason='" );
+	mmessage.AppendFromUTF8( exception.GetDescription() );
+	mmessage.AppendFromUTF8( "'." );
+	foxMessage = mmessage.ToUTF8();
 	
 	if( isMinimized() || pLauncher->HasCommandLineRunGame() ){
 		FXMessageBox::error( getApp(), FX::MBOX_OK, foxCaption.GetString(), "%s", foxMessage.GetString() );
@@ -301,16 +312,18 @@ bool deglWindowMain::QuitRequest(){
 
 void deglWindowMain::ReloadGamesAndPatches(){
 	{
-	deglEngine &engine = *pLauncher->GetEngine();
-	deglEngineInstance instance( *pLauncher, engine.GetLogFile() );
-	instance.StartEngine();
-	instance.LoadModules();
-	pLauncher->GetGameManager()->LoadGameList( instance );
-	pLauncher->GetPatchManager().LoadPatchList( instance );
+	const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		pLauncher->GetEngineInstanceFactory().CreateEngineInstance(
+			*pLauncher, pLauncher->GetEngine().GetLogFile() ) ) );
+	instance->StartEngine();
+	instance->LoadModules();
+	
+	pLauncher->GetGameManager().LoadGames( instance );
+	pLauncher->GetPatchManager().LoadPatches( instance );
 	}
 	
-	pLauncher->GetGameManager()->LoadGameConfigs();
-	pLauncher->GetGameManager()->Verify();
+	pLauncher->GetGameManager().LoadGameConfigs();
+	pLauncher->GetGameManager().Verify();
 	
 	pPanelGames->UpdateGameList();
 }
@@ -322,7 +335,7 @@ void deglWindowMain::ReloadGamesAndPatches(){
 
 long deglWindowMain::onResize( FXObject*, FXSelector, void* ){
 	if( pLauncher ){
-		deglConfigWindow &configWindow = pLauncher->GetConfiguration()->GetWindowMain();
+		deglConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
 		
 		if( ! isMinimized() && ! isMaximized() ){
 			// while minimited the position is awefully off like -32000. to be on the
@@ -395,7 +408,7 @@ long deglWindowMain::onSettingsEngine( FXObject*, FXSelector, void* ){
 	
 	dialog.execute( PLACEMENT_OWNER );
 	
-	pLauncher->GetGameManager()->Verify();
+	pLauncher->GetGameManager().Verify();
 	GetPanelGames()->UpdateGameList();
 	
 	return 1;

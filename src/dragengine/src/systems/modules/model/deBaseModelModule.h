@@ -32,7 +32,7 @@ class deModel;
 /**
  * \brief Base model module providing load/save support for models.
  */
-class deBaseModelModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseModelModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

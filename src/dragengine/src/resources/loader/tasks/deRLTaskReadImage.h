@@ -29,7 +29,7 @@
 /**
  * \brief Read animation resource loader task.
  */
-class deRLTaskReadImage : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadImage : public deResourceLoaderTask {
 private:
 	deImageReference pImage;
 	bool pSucceeded;

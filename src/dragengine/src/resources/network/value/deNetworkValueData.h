@@ -35,7 +35,13 @@
  * of network value is useful for arbitrary data typically of files or
  * other complex data.
  */
-class deNetworkValueData : public deNetworkValue{
+class DE_DLL_EXPORT deNetworkValueData : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueData> Ref;
+	
+	
+	
 private:
 	uint8_t *pData;
 	int pLength;

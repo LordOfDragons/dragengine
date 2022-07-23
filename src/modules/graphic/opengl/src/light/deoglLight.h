@@ -22,12 +22,19 @@
 #ifndef _DEOGLLIGHT_H_
 #define _DEOGLLIGHT_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
+#include "../canvas/deoglCanvasViewListener.h"
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
+
+#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
 
 class deoglRLight;
 class deoglSkinStateController;
 class deoglWorld;
+class deoglDynamicSkin;
+class deoglCanvasView;
+class deoglSkin;
 
 class deGraphicOpenGl;
 class deLight;
@@ -37,13 +44,16 @@ class deLight;
 /**
  * \brief Light Resource Peer.
  */
-class deoglLight : public deBaseGraphicLight{
+class deoglLight : public deBaseGraphicLight, deoglDynamicSkinListener, deoglCanvasViewListener{
 public:
 	deGraphicOpenGl &pOgl;
 	const deLight &pLight;
 	deoglRLight *pRLight;
 	deoglSkinStateController *pSkinStateController;
 	deoglWorld *pParentWorld;
+	deoglDynamicSkin *pDynamicSkin;
+	deoglSkin *pLightSkin;
+	deoglCanvasView *pLightCanvas;
 	
 	float pAccumUpdate;
 	
@@ -60,10 +70,25 @@ public:
 	bool pDirtyShadowParameters;
 	bool pDirtyShadows;
 	bool pDirtySource;
+	bool pDirtyDynamicSkin;
 	bool pDirtyTouching;
 	bool pDirtyTransform;
 	bool pDirtyType;
+	bool pDirtyEnvMapNotifyLightChanged;
+	
+	bool pDirtyRenderableMapping;
 	bool pDirtySkinStateController;
+	bool pDirtySkinStateCalculatedProperties;
+	bool pSkinStatePrepareRenderables;
+	
+	bool pDynamicSkinRenderablesChanged;
+	bool pDynamicSkinRequiresSync;
+	
+	bool pLightCanvasRequiresSync;
+	
+	bool pRequiresUpdateEverySync;
+	
+	decPointerLinkedList::cListEntry pLLSyncWorld;
 	
 	
 	
@@ -105,6 +130,29 @@ public:
 	
 	/** \brief Update render thread counterpart if required. */
 	void SyncToRender();
+	
+	
+	
+	void DynamicSkinRequiresSync();
+	void DirtyRenderableMapping();
+	/*@}*/
+	
+	
+	
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	/*@}*/
+	
+	
+	
+	/** \name Canvas view listener */
+	/*@{*/
+	virtual void CanvasViewDestroyed();
+	virtual void CanvasViewRequiresSync();
 	/*@}*/
 	
 	
@@ -163,10 +211,23 @@ public:
 	
 	/** \brief Hint changed. */
 	virtual void HintChanged();
+	
+	
+	
+	/** World syncing linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
+	
+	void pSyncSource();
+	void pCheckRequiresUpdateEverySync();
+	
+	void pRequiresSync();
 };
 
 #endif

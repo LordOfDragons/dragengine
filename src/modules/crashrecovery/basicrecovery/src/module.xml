@@ -6,6 +6,7 @@
 	<author>Plüss Roland (roland@rptd.ch)</author>
 	<version>VERSION</version>
 	<type>CrashRecovery</type>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

@@ -22,10 +22,11 @@
 #ifndef _DEOGLSKINSHADERMANAGER_H_
 #define _DEOGLSKINSHADERMANAGER_H_
 
+#include "deoglSkinShader.h"
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class deoglRenderThread;
-class deoglSkinShader;
 class deoglSkinShaderConfig;
 class deoglShaderUnitSourceCode;
 
@@ -42,6 +43,7 @@ public:
 		euscpVertexDepth,
 		euscpVertexParticle,
 		euscpVertexPassThrough,
+		euscpVertexGIMaterialMap,
 		
 		euscpGeometryGeometry,
 		euscpGeometryDepth,
@@ -56,6 +58,7 @@ public:
 		
 		euscpFragmentGeometry,
 		euscpFragmentDepth,
+		euscpFragmentGIMaterialMap,
 		
 		EUSCP_COUNT
 	};
@@ -85,12 +88,12 @@ public:
 	/** Determines if a shader with the given configuration exists. */
 	bool HasShaderWith( deoglSkinShaderConfig &configuration ) const;
 	/** Retrieves the shader with the given configuration creating it if not existing. */
-	deoglSkinShader *GetShaderWith( deoglSkinShaderConfig &configuration );
+	deoglSkinShader::Ref GetShaderWith( deoglSkinShaderConfig &configuration );
 	
 	/** Retrieves the number of shaders. */
 	int GetShaderCount() const;
 	/** Retrieves shader by index. */
-	deoglSkinShader *GetShaderAt( int index ) const;
+	const deoglSkinShader &GetShaderAt( int index ) const;
 	/** Adds a shader. */
 	void AddShader( deoglSkinShader *shader );
 	/** Removes a shader. */

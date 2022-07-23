@@ -47,6 +47,7 @@ private:
 	igdeCheckBoxReference pChkDynamic;
 	igdeCheckBoxReference pChkModelCollision;
 	igdeEditVectorReference pEditCentralMassPoint;
+	igdeTextFieldReference pEditMass;
 	
 	
 	

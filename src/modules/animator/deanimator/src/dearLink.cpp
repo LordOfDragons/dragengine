@@ -22,9 +22,10 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearLink.h"
+#include "dearAnimatorInstance.h"
+#include "dearBoneState.h"
 #include "dearControllerStates.h"
 
 #include <dragengine/deEngine.h>
@@ -40,20 +41,26 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearLink::dearLink( const deAnimatorLink &link, const decIntList &controllerMapping ) :
+dearLink::dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
+	const decIntList &controllerMapping ) :
+pInstance( instance ),
 pLink( link ),
-pEvaluator( link.GetCurve() )
+pEvaluator( link.GetCurve() ),
+pBoneIndex( -1 ),
+pWrapY( link.GetWrapY() )
 {
 	const int controller = pLink.GetController();
-	if( controller == -1 ){
-		return;
+	if( controller != -1 ){
+		if( controller < controllerMapping.GetCount() ){
+			pLink.SetController( controllerMapping.GetAt( controller ) );
+			
+		}else{
+			pLink.SetController( -1 );
+		}
 	}
 	
-	if( controller < controllerMapping.GetCount() ){
-		pLink.SetController( controllerMapping.GetAt( controller ) );
-		
-	}else{
-		pLink.SetController( -1 );
+	if( ! pLink.GetBone().IsEmpty() ){
+		pBoneIndex = instance.GetBoneStateList().IndexOfStateNamed( pLink.GetBone() );
 	}
 }
 
@@ -73,39 +80,93 @@ int dearLink::GetController() const{
 	return pLink.GetController();
 }
 
+bool dearLink::HasBone() const{
+	return pBoneIndex != -1;
+}
 
 
-float dearLink::GetValue( const dearControllerStates &controllerStates, float defaultValue ) const{
-	float value = defaultValue;
+
+float dearLink::GetValue( float defaultValue ) const{
+	float value;
 	
 	if( pLink.HasController() ){
-		float controllerValue = controllerStates.GetValueAt( pLink.GetController() );
+		value = pInstance.GetControllerStates().GetValueAt( pLink.GetController() );
 		
-		const int repeat = pLink.GetRepeat();
-		if( repeat > 1 ){
-			controllerValue *= ( float )repeat;
-			controllerValue -= floorf( controllerValue );
-		}
+	}else if( pBoneIndex != -1 ){
+		const dearBoneState &state = *pInstance.GetBoneStateList().GetStateAt( pBoneIndex );
 		
-		if( pEvaluator.GetCurve().GetPointCount() == 0 ){
-			value = controllerValue;
+		switch( pLink.GetBoneParameter() ){
+		case deAnimatorLink::ebpPositionX:
+			value = state.GetPosition().x;
+			break;
 			
-		}else{
-			value = pEvaluator.EvaluateAt( controllerValue );
+		case deAnimatorLink::ebpPositionY:
+			value = state.GetPosition().y;
+			break;
+			
+		case deAnimatorLink::ebpPositionZ:
+			value = state.GetPosition().z;
+			break;
+			
+		case deAnimatorLink::ebpRotationX:
+			value = state.GetOrientation().GetEulerAngles().x;
+			break;
+			
+		case deAnimatorLink::ebpRotationY:
+			value = state.GetOrientation().GetEulerAngles().y;
+			break;
+			
+		case deAnimatorLink::ebpRotationZ:
+			value = state.GetOrientation().GetEulerAngles().z;
+			break;
+			
+		case deAnimatorLink::ebpScaleX:
+			value = state.GetScale().x;
+			break;
+			
+		case deAnimatorLink::ebpScaleY:
+			value = state.GetScale().y;
+			break;
+			
+		case deAnimatorLink::ebpScaleZ:
+			value = state.GetScale().z;
+			break;
+			
+		default:
+			value = pLink.GetBoneMinimumValue();
 		}
+		
+		value = decMath::linearStep( value, pLink.GetBoneMinimumValue(),  pLink.GetBoneMaximumValue() );
+		
+	}else{
+		return defaultValue;
+	}
+	
+	const int repeat = pLink.GetRepeat();
+	if( repeat > 1 ){
+		value *= ( float )repeat;
+		value -= floorf( value );
+	}
+	
+	if( pEvaluator.GetCurve().GetPointCount() > 0 ){
+		value = pEvaluator.EvaluateAt( value );
+	}
+	
+	if( pWrapY ){
+		value -= floorf( value );
 	}
 	
 	return value;
 }
 
-void dearLink::GetVector( const dearControllerStates &controllerStates, decVector &vector ) const{
+void dearLink::GetVector( decVector &vector ) const{
 	if( pLink.HasController() ){
-		vector = controllerStates.GetVectorAt( pLink.GetController() );
+		vector = pInstance.GetControllerStates().GetVectorAt( pLink.GetController() );
 	}
 }
 
-void dearLink::GetQuaternion( const dearControllerStates &controllerStates, decQuaternion &quaternion ) const{
+void dearLink::GetQuaternion( decQuaternion &quaternion ) const{
 	if( pLink.HasController() ){
-		quaternion.SetFromEuler( controllerStates.GetVectorAt( pLink.GetController() ) );
+		quaternion.SetFromEuler( pInstance.GetControllerStates().GetVectorAt( pLink.GetController() ) );
 	}
 }

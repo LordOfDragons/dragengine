@@ -22,15 +22,21 @@
 #ifndef _DECMEMORYFILE_H_
 #define _DECMEMORYFILE_H_
 
-#include "../../deObject.h"
 #include "../string/decString.h"
 #include "../utils/decDateTime.h"
+#include "../../deObject.h"
 
 
 /**
  * \brief Memory file.
  */
-class decMemoryFile : public deObject{
+class DE_DLL_EXPORT decMemoryFile : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decMemoryFile> Ref;
+	
+	
+	
 private:
 	decString pFilename;
 	char *pData;

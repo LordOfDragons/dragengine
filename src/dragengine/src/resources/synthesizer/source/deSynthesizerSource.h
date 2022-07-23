@@ -34,7 +34,13 @@ class deSynthesizerSourceVisitor;
 /**
  * \brief Synthesizer source.
  */
-class deSynthesizerSource : public deObject{
+class DE_DLL_EXPORT deSynthesizerSource : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSource> Ref;
+	
+	
+	
 public:
 	/** \brief Mixing modes. */
 	enum eMixModes{

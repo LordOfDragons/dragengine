@@ -33,7 +33,7 @@ class deoglFramebuffer;
 
 
 /**
- * \brief OpenGL developer mode..
+ * OpenGL developer mode..
  */
 class deoglDeveloperMode{
 public:
@@ -48,6 +48,7 @@ public:
 	static const int edimLightPoint = 0x100;
 	static const int edimLightSpot = 0x200;
 	static const int edimFrameLimiter = 0x400;
+	static const int edimGI = 0x800;
 	
 	
 	
@@ -74,6 +75,7 @@ private:
 	
 	bool pDebugRenderPlan;
 	bool pShowMemoryInfo;
+	bool pLogMemoryConsumption;
 	
 	int pShowOccMapLevel;
 	
@@ -87,7 +89,13 @@ private:
 	
 	bool pShowDebugInfo;
 	bool pDebugInfoSync;
+	bool pDebugInfoLog;
 	int pDebugInfoDetails;
+	
+	bool pGIShowProbes;
+	bool pGIShowProbeOffsets;
+	bool pGIShowProbeUpdate;
+	int pGIShowCascade;
 	
 	deoglTexture *pTextureDebugImage;
 	deoglFramebuffer *pFBODebugImage;
@@ -145,10 +153,13 @@ public:
 	/** Determines if the memory information are displayed. */
 	inline bool GetShowMemoryInfo() const{ return pShowMemoryInfo; }
 	
+	/** Log memory consumption. */
+	inline bool GetLogMemoryConsumption() const{ return pLogMemoryConsumption; }
+	
 	/** Retrieves the occlusion map level to show or -1 to disable. */
 	inline int GetShowOccMapLevel() const{ return pShowOccMapLevel; }
 	
-	/** \brief Environment maps are shown. */
+	/** Environment maps are shown. */
 	inline bool GetShowEnvMaps() const{ return pShowEnvMaps; }
 	
 	/** Determines if environment map hulls are shown. */
@@ -162,14 +173,24 @@ public:
 	
 	
 	
-	/** \brief Show debug information which also enables debug timing measurements. */
+	/** Show debug information which also enables debug timing measurements. */
 	inline bool GetShowDebugInfo() const{ return pShowDebugInfo; }
 	
-	/** \brief Call glFinish before each debug timing measurement for true GPU time measuring. */
+	/** Call glFinish before each debug timing measurement for true GPU time measuring. */
 	inline bool GetDebugInfoSync() const{ return pDebugInfoSync; }
 	
-	/** \brief Debug information details to show. */
+	/** Log debug timing measurement result per frame. */
+	inline bool GetDebugInfoLog() const{ return pDebugInfoLog; }
+	
+	/** Debug information details to show. */
 	inline int GetDebugInfoDetails() const{ return pDebugInfoDetails; }
+	
+	
+	
+	inline bool GetGIShowProbes() const{ return pGIShowProbes; }
+	inline bool GetGIShowProbeOffsets() const{ return pGIShowProbeOffsets; }
+	inline bool GetGIShowProbeUpdate() const{ return pGIShowProbeUpdate; }
+	inline int GetGIShowCascade() const{ return pGIShowCascade; }
 	
 	
 	
@@ -226,6 +247,7 @@ private:
 	
 	void pCmdDebugRenderPlan( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdLogMemoryConsumption( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowOccMapLevel( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
@@ -241,7 +263,18 @@ private:
 	
 	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugInfoLog( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		bool &variable, const char *commandName );
+	bool pBaseCmdInt( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		int &variable, const char *commandName );
 };
 
 #endif

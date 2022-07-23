@@ -35,7 +35,13 @@
  * 
  * \note Logger color console is thread safe.
  */
-class deLoggerConsoleColor : public deLogger{
+class DE_DLL_EXPORT deLoggerConsoleColor : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerConsoleColor> Ref;
+	
+	
+	
 public:
 	/** \brief Text attributes. */
 	enum eTextAttributes{
@@ -174,6 +180,10 @@ protected:
 	void pPrintMessage( const char *source, const char *message,
 		eTextAttributes attribute, eTextColors colorForeground,
 		eTextColors colorBackground, char lineEnd ) const;
+	
+	void LogMessage( const char *source, const char *message,
+		eTextAttributes attribute, eTextColors colorForeground,
+		eTextColors colorBackground );
 	
 	inline deMutex &GetMutex(){ return pMutex; }
 };

@@ -32,7 +32,7 @@ class deBillboard;
 /**
  * \brief Billboard Resource Manager.
  */
-class deBillboardManager : public deResourceManager{
+class DE_DLL_EXPORT deBillboardManager : public deResourceManager{
 private:
 	deResourceList pBillboards;
 	

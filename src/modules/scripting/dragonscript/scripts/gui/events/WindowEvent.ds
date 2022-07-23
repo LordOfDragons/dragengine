@@ -28,22 +28,22 @@ namespace Dragengine.Gui.Events
  */
 class WindowEvent extends Event
 	/** \brief Window activated event identifier. */
-	public fixed var int idWindowActivated = 80
+	public static fixed var int idWindowActivated = 80
 	
 	/** \brief Window deactivated event identifier. */
-	public fixed var int idWindowDeactivated = 81
+	public static fixed var int idWindowDeactivated = 81
 	
 	/** \brief Window closing event identifier. */
-	public fixed var int idWindowClosing = 82
+	public static fixed var int idWindowClosing = 82
 	
 	/** \brief Window restored event identifier. */
-	public fixed var int idWindowRestored = 83
+	public static fixed var int idWindowRestored = 83
 	
 	/** \brief Window minimized event identifier. */
-	public fixed var int idWindowMinimized = 84
+	public static fixed var int idWindowMinimized = 84
 	
 	/** \brief Window maximized event identifier. */
-	public fixed var int idWindowMaximized = 85
+	public static fixed var int idWindowMaximized = 85
 	
 	
 	

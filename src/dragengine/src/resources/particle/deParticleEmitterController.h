@@ -38,7 +38,7 @@
  * controller is frozen the current value can be changed. This is useful to prevent a controller
  * from changing without having to change all code path to account for the frozen state.
  */
-class deParticleEmitterController{
+class DE_DLL_EXPORT deParticleEmitterController{
 private:
 	decString pName;
 	float pLower;

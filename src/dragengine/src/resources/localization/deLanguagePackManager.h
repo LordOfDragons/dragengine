@@ -33,7 +33,7 @@ class deLanguagePackBuilder;
 /**
  * \brief Language pack resource manager.
  */
-class deLanguagePackManager : public deFileResourceManager{
+class DE_DLL_EXPORT deLanguagePackManager : public deFileResourceManager{
 private:
 	deFileResourceList pLangPacks;
 	

@@ -52,6 +52,7 @@ deoglPSSAORadius::deoglPSSAORadius( deGraphicOpenGl &ogl ) : deoglParameterFloat
 		" The default value of 0.5 (5dm) provides a reasonable balance between the two." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO Radius" );
+	SetDefaultValue( "0.5" );
 }
 
 deoglPSSAORadius::~deoglPSSAORadius(){

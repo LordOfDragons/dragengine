@@ -73,7 +73,7 @@ pByteCount( 0 )
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int nibbleCount = strlen( string );
+	const int nibbleCount = ( int )strlen( string );
 	
 	pByteCount = ( nibbleCount / 2 ) + ( nibbleCount % 2 );
 	pBytes = new unsigned char[ pByteCount ];
@@ -283,11 +283,11 @@ void decUniqueID::DecrementBy( const decUniqueID &id ){
 		}
 		
 		if( takeOver > pBytes[ i ] ){
-			pBytes[ i ] += 256 - takeOver;
+			pBytes[ i ] += ( unsigned char )( 256 - takeOver );
 			takeOver = 1;
 			
 		}else{
-			pBytes[ i ] -= takeOver;
+			pBytes[ i ] -= ( unsigned char )takeOver;
 			takeOver = 0;
 		}
 	}
@@ -310,10 +310,10 @@ decString decUniqueID::ToHexString() const{
 		const int value = ( pBytes[ index ] >> shift ) & 0xf;
 		
 		if( value < 10 ){
-			string[ i ] = '0' + value;
+			string[ i ] = ( char )( '0' + value );
 			
 		}else{
-			string[ i ] = 'a' + ( value - 10 );
+			string[ i ] = ( char )( 'a' + ( value - 10 ) );
 		}
 		
 		if( shift == 0 ){

@@ -43,139 +43,160 @@ class ADRuleSubAnimator extends ADRule
 	
 	/** \brief Create animation rule definition. */
 	public func new()
-		this.pConnections = Array.new()
-		this.pEnablePosition = true
-		this.pEnableOrientation = true
-		this.pEnableSize = true
+		pConnections = Array.new()
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = true
+	end
+	
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleSubAnimator rule) super(fromDef, toDef, rule)
+		pSubAnimator = rule.pSubAnimator
+		pConnections = Array.new(rule.pConnections)
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
 	end
 	
 	
 	
 	/** \brief Sub animator. */
 	public func Animator getSubAnimator()
-		return this.pSubAnimator
+		return pSubAnimator
 	end
 	
 	/** \brief Set sub animator. */
-	public func void setSubAnimator( Animator subAnimator )
-		this.pSubAnimator = subAnimator
+	public func void setSubAnimator(Animator subAnimator)
+		pSubAnimator = subAnimator
 	end
 	
 	/** \brief Count of connections. */
 	public func int getConnectionCount()
-		return this.pConnections.getCount()
+		return pConnections.getCount()
 	end
 	
 	/** \brief Connection. */
-	public func int getConnectionAt( int index )
-		return this.pConnections.getAt( index ) cast int
+	public func int getConnectionAt(int index)
+		return pConnections.getAt(index) cast int
 	end
 	
 	/** \brief Add connection. */
-	public func void addConnection( int subAnimatorController, int localController )
+	public func void addConnection(int subAnimatorController, int localController)
 		if subAnimatorController < 0
-			throw EInvalidParam.new( "subAnimatorController < 0" )
+			throw EInvalidParam.new("subAnimatorController < 0")
 		end
-		if subAnimatorController >= this.pSubAnimator.getControllerCount()
-			throw EInvalidParam.new( "subAnimatorController >= controllerCount" )
-		end
-		
-		while subAnimatorController >= this.pConnections.getCount()
-			this.pConnections.add( -1 )
+		if subAnimatorController >= pSubAnimator.getControllerCount()
+			throw EInvalidParam.new("subAnimatorController >= controllerCount")
 		end
 		
-		this.pConnections.setAt( subAnimatorController, localController )
+		while subAnimatorController >= pConnections.getCount()
+			pConnections.add(-1)
+		end
+		
+		pConnections.setAt(subAnimatorController, localController)
 	end
 	
 	/** \brief Add connection. */
-	public func void addConnection( String subAnimatorController, int localController )
-		if this.pSubAnimator == null
+	public func void addConnection(String subAnimatorController, int localController)
+		if pSubAnimator == null
 			return
 		end
 		
-		var int index = this.pSubAnimator.indexOfControllerNamed( subAnimatorController )
+		var int index = pSubAnimator.indexOfControllerNamed(subAnimatorController)
 		if index != -1
-			this.addConnection( index, localController )
+			addConnection(index, localController)
 		end
 	end
 	
 	/** \brief Remove all connections. */
 	public func void clearConnections()
-		this.pConnections.removeAll()
+		pConnections.removeAll()
 	end
 	
 	
 	
 	/** \brief Position manipulation is enabled. */
 	public func bool getEnablePosition()
-		return this.pEnablePosition
+		return pEnablePosition
 	end
 	
 	/** \brief Set if position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
 	end
 	
 	/** \brief Orientation manipulation is enabled. */
 	public func bool getEnableOrientation()
-		return this.pEnableOrientation
+		return pEnableOrientation
 	end
 	
 	/** \brief Set if orientation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
 	end
 	
 	/** \brief Size manipulation is enabled. */
 	public func bool getEnableSize()
-		return this.pEnableSize
+		return pEnableSize
 	end
 	
 	/** \brief Set if size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
 	end
 	
 	
 	
-	/**
-	 * \brief Build engine animator rule using the stored definition.
-	 */
-	public func AnimatorRule buildRule( Animator animator )
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARSubAnimator rule = ARSubAnimator.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARSubAnimatorTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARSubAnimatorTarget, each.getLink().getIndex())
+		end)
 		
-		if this.pSubAnimator != null
-			rule.setSubAnimator( this.pSubAnimator )
+		if pSubAnimator != null
+			rule.setSubAnimator(pSubAnimator)
 		end
 		
-		var int connectionCount = this.pConnections.getCount()
+		var int connectionCount = pConnections.getCount()
 		if connectionCount == 0
-			rule.setMatchingConnections( animator )
+			rule.setMatchingConnections(animator)
 			
 		else
 			var int i
 			for i = 0 to connectionCount
-				rule.setConnectionAt( i, this.pConnections.getAt( i ) cast int )
+				rule.setConnectionAt(i, pConnections.getAt(i) cast int)
 			end
 		end
 		
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Sub Animator" ) + " epos=" + this.pEnablePosition \
-			+ " eorient=" + this.pEnableOrientation + " esize=" + this.pEnableSize + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Sub Animator") + " epos=" + pEnablePosition \
+			+ " eorient=" + pEnableOrientation + " esize=" + pEnableSize + ")")
 	end
 end

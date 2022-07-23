@@ -62,6 +62,21 @@ void deClassCurveBezier::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! nd.curve ) DSTHROW( dueOutOfMemory );
 }
 
+// public func new(CurveBezier curve)
+deClassCurveBezier::nfNewCopy::nfNewCopy( const sInitData &init ) :
+dsFunction( init.clsCBe, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCBe );
+}
+void deClassCurveBezier::nfNewCopy::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sCBeNatDat &nd = *( ( sCBeNatDat* )p_GetNativeData( myself ) );
+	const deClassCurveBezier &clsCBe = *( ( deClassCurveBezier* )GetOwnerClass() );
+	
+	nd.curve = NULL;
+	
+	nd.curve = new decCurveBezier( clsCBe.GetCurve( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
 // public static func newDefaultLinear()
 deClassCurveBezier::nfNewDefaultLinear::nfNewDefaultLinear( const sInitData &init ) :
 dsFunction( init.clsCBe, "newDefaultLinear", DSFT_FUNCTION,
@@ -154,6 +169,34 @@ void deClassCurveBezier::nfGetPointAt::RunFunction( dsRunTime *rt, dsValue *myse
 	int position = rt->GetValue( 0 )->GetInt();
 	
 	ds->GetClassVector2()->PushVector2( rt, curve.GetPointAt( position ).GetPoint() );
+}
+
+// public func Vector2 getHandle1At( int position )
+deClassCurveBezier::nfGetHandle1At::nfGetHandle1At( const sInitData &init ) :
+dsFunction( init.clsCBe, "getHandle1At", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassCurveBezier::nfGetHandle1At::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decCurveBezier &curve = *( ( sCBeNatDat* )p_GetNativeData( myself ) )->curve;
+	const deScriptingDragonScript &ds = *( ( ( deClassCurveBezier* )GetOwnerClass() )->GetDS() );
+	
+	int position = rt->GetValue( 0 )->GetInt();
+	
+	ds.GetClassVector2()->PushVector2( rt, curve.GetPointAt( position ).GetHandle1() );
+}
+
+// public func Vector2 getHandle2At( int position )
+deClassCurveBezier::nfGetHandle2At::nfGetHandle2At( const sInitData &init ) :
+dsFunction( init.clsCBe, "getHandle2At", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassCurveBezier::nfGetHandle2At::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decCurveBezier &curve = *( ( sCBeNatDat* )p_GetNativeData( myself ) )->curve;
+	const deScriptingDragonScript &ds = *( ( ( deClassCurveBezier* )GetOwnerClass() )->GetDS() );
+	
+	int position = rt->GetValue( 0 )->GetInt();
+	
+	ds.GetClassVector2()->PushVector2( rt, curve.GetPointAt( position ).GetHandle2() );
 }
 
 // public func int findPointPriorTo( float coordinate )
@@ -441,12 +484,15 @@ void deClassCurveBezier::CreateClassMembers( dsEngine *engine ){
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewCopy( init ) );
 	AddFunction( new nfNewDefaultLinear( init ) );
 	AddFunction( new nfNewDefaultBezier( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetPointCount( init ) );
 	AddFunction( new nfGetPointAt( init ) );
+	AddFunction( new nfGetHandle1At( init ) );
+	AddFunction( new nfGetHandle2At( init ) );
 	AddFunction( new nfFindPointPriorTo( init ) );
 	AddFunction( new nfAddPoint( init ) );
 	AddFunction( new nfAddPoint2( init ) );

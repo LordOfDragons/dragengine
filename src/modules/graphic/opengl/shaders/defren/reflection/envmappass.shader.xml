@@ -18,16 +18,17 @@
 	<texture name='texDistance2' target='7'/>
 	<texture name='texEnvMap' target='8'/>
 	
-	<parameter name='pQuadTCTransform'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
-	<parameter name='pScaleDistance'/> <!-- 2 -->
-	<parameter name='pBlendFactors'/> <!-- 3 -->
-	<parameter name='pMatrixEnvMap'/> <!-- 4 -->
-	<parameter name='pEnvMapLodLevel'/> <!-- 5 -->
-	<parameter name='pMatrixMVP'/> <!-- 6 -->
-	<parameter name='pMatrixMV'/> <!-- 7 -->
-	<parameter name='pEnvMapPosition'/> <!-- 8 -->
-	<parameter name='pEnvMapIndex'/> <!-- 9 -->
+	<parameter name='pQuadTCTransform'/>
+	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
+	<parameter name='pScaleDistance'/>
+	<parameter name='pBlendFactors'/>
+	<parameter name='pMatrixEnvMap'/>
+	<parameter name='pEnvMapLodLevel'/>
+	<parameter name='pMatrixMVP'/>
+	<parameter name='pMatrixMV'/>
+	<parameter name='pEnvMapPosition'/>
+	<parameter name='pEnvMapIndex'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

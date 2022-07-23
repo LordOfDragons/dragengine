@@ -211,10 +211,6 @@ deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) : deoglRenderB
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderSkySphere = NULL;
-	pShaderSkyBox = NULL;
-	pShaderBody = NULL;
-	
 	try{
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
@@ -305,12 +301,6 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	// render sky
 	bool first = true;
 	int i, j;
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 2 && plan.GetWorld()->GetSkyEnvironmentMap() ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMap(
-			*plan.GetWorld()->GetSkyEnvironmentMap()->GetEnvironmentMap(), "environment_cubemap", false );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	DEBUG_PRINT_TIMER( "RenderSky: bind vao" );
@@ -553,7 +543,6 @@ int layerIndex, bool first ){
 	deoglSkinTexture *oglSkinTexture;
 	deoglRSkin *skin = layer.GetSkin();
 	deoglShaderCompiled *shader;
-	float constX, constY;
 	
 	if( ! skin ){
 		return false;
@@ -577,9 +566,9 @@ int layerIndex, bool first ){
 	}
 	
 	// calculate the parameters
-	float znear = plan.GetCameraImageDistance();
-	constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
-	constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
+// 	const float znear = plan.GetCameraImageDistance();
+// 	const float constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
+// 	const float constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
 	
 	// set the shaders
 	const float matGamma = oglSkinTexture->GetColorGamma();
@@ -599,7 +588,9 @@ int layerIndex, bool first ){
 	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader->SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
 	shader->SetParameterColor4( spsphLayerColor, layerColor );
-	shader->SetParameterFloat( spsphParams, constX, constY, znear );
+// 	shader->SetParameterFloat( spsphParams, constX, constY, znear );
+	shader->SetParameterFloat( spsphParams, plan.GetDepthToPosition().z, plan.GetDepthToPosition().w,
+		plan.GetDepthToPosition2().x, plan.GetDepthToPosition2().y );
 	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
 	shader->SetParameterFloat( spsphPositionZ, renderThread.GetDeferredRendering().GetClearDepthValueRegular() );
@@ -748,11 +739,10 @@ deoglEnvironmentMap &envmap ){
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );
 	plan.SetCameraMatrix( decDMatrix() );
 	plan.SetCameraAdaptedIntensity( 1.0f ); // only sky rendered. actual value not used
-	plan.SetViewport( 0, 0, size, size );
+	plan.SetViewport( size, size );
 	
-	plan.SetWorld( NULL ); // little hack since we only want the projection matrix to be updated
-	plan.PrepareRender();
 	plan.SetWorld( &world );
+	plan.PrepareRenderSkyOnly();
 	
 	//defren.Resize( size, size );
 	
@@ -951,13 +941,4 @@ decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool 
 //////////////////////
 
 void deoglRenderSky::pCleanUp(){
-	if( pShaderSkySphere ){
-		pShaderSkySphere->RemoveUsage();
-	}
-	if( pShaderSkyBox ){
-		pShaderSkyBox->RemoveUsage();
-	}
-	if( pShaderBody ){
-		pShaderBody->RemoveUsage();
-	}
 }

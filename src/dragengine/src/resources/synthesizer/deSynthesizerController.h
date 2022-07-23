@@ -39,7 +39,13 @@
  * calculated using an value curve set by the user. The play position is used to sample the
  * curve producing the controller values over time. 
  */
-class deSynthesizerController : public deObject{
+class DE_DLL_EXPORT deSynthesizerController : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerController> Ref;
+	
+	
+	
 private:
 	decString pName;
 	float pMinValue;

@@ -12,10 +12,12 @@ if envModule['OSBeOS']:
 	libs.append( 'network' )
 	
 elif envModule['OSWindows']:
-	libs.append( [ 'gdi32', 'kernel32', 'user32', 'wsock32', 'iphlpapi' ] )
+	libs.append('wsock32')
+	libs.append('iphlpapi')
+	libs.append('ws2_32')
 
 # fetch values in expanded form for later use
-versionString = '1.3'
+versionString = '1.14'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -44,6 +46,11 @@ for l in library:
 	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'netbasicnetwork.pdb'))
+	archive['{}/netbasicnetwork.pdb'.format(pathPdb)] = envModule.File('netbasicnetwork.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

@@ -32,6 +32,7 @@
 #include "collider/debpColliderComponent.h"
 #include "world/debpCollisionWorld.h"
 #include "world/debpDelayedOperation.h"
+#include "world/debpWorld.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -181,10 +182,15 @@ void debpPhysicsBody::SetPosition( const decDVector &position ){
 	
 	if( ! pPreventUpdate ){
 		pMotionState->SetPosition( position );
-		pUpdateTransform();
 		
-		if( pRigidBody && pResponseType == ertKinematic ){
-			pRigidBody->activate( true );
+		if( pRigidBody ){
+			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+				pUpdateTransform();
+			}
+			
+			if( pResponseType == ertKinematic ){
+				pRigidBody->activate( true );
+			}
 		}
 	}
 	
@@ -202,10 +208,15 @@ void debpPhysicsBody::SetOrientation( const decQuaternion &orientation ){
 	
 	if( ! pPreventUpdate ){
 		pMotionState->SetOrientation( orientation );
-		pUpdateTransform();
 		
-		if( pRigidBody && pResponseType == ertKinematic ){
-			pRigidBody->activate( true );
+		if( pRigidBody ){
+			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+				pUpdateTransform();
+			}
+			
+			if( pResponseType == ertKinematic ){
+				pRigidBody->activate( true );
+			}
 		}
 	}
 	
@@ -575,13 +586,9 @@ void debpPhysicsBody::pCleanUp(){
 }
 
 void debpPhysicsBody::pCreateRigidBody(){
-	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape ){
+	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape || ! pShape->GetShape() ){
 		return;
 	}
-	
-	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
-	float mass = 0.0f;
-	int c;
 	
 	SetDirtyAABB( true );
 	
@@ -590,38 +597,72 @@ void debpPhysicsBody::pCreateRigidBody(){
 	pMotionState->SetOrientation( pOrientation );
 	
 	// create rigid body
+	btCollisionShape * const shape = pShape->GetShape();
+	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
+	float mass = 0.0f;
+	
 	if( pResponseType == ertDynamic ){
 		mass = pMass;
-		pShape->GetShape()->calculateLocalInertia( mass, localInertia );
+		shape->calculateLocalInertia( mass, localInertia );
 	}
 	
-	pRigidBody = new btRigidBody( mass, pMotionState, pShape->GetShape(), localInertia );
+	btRigidBody::btRigidBodyConstructionInfo cinfo( mass, pMotionState, shape, localInertia );
+	
+	cinfo.m_linearDamping = 0.05f; /*0.001f, 0.3f*/ // default 0
+// 	cinfo.m_linearDamping = 0.0f;
+	
+	cinfo.m_angularDamping = 0.1f; /*0.01f, 0.3f*/ // default 0
+// 	cinfo.m_angularDamping = 0.0f;
+	
+	cinfo.m_friction = 0.5f; // default 0.5
+	
+// 	cinfo.m_rollingFriction = 0.1f; // this solves the rolling issue but totally breaks physics
+	                                // unless anisotropic rolling friction below is also used
+	cinfo.m_rollingFriction = 0.001f;
+	//cinfo.m_rollingFriction = 0.0f; // default 0, objects roll away and accelerate
+	
+// 	cinfo.m_spinningFriction = 0.1f; // default 0
+	cinfo.m_spinningFriction = 0.001f; // default 0
+	
+	cinfo.m_restitution = 0.0f; // default 0
+	
+	// sleeping thresholds. body goes to sleep if both linear and angular velocity magnitudes
+	// are less than threshold-squared for the entire sleep time (2s)
+	cinfo.m_linearSleepingThreshold = 0.8f; // default 0.8
+	cinfo.m_angularSleepingThreshold = 2.0f; // default 1
+	
+	pRigidBody = new btRigidBody( cinfo );
+	
+	pRigidBody->setAnisotropicFriction( shape->getAnisotropicRollingFrictionDirection(),
+		btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION );
 	
 	// set parameters
-	pRigidBody->setDamping( 0.01f /*0.001f, 0.3f*/, 0.1f /*0.01f, 0.3f*/ );
-	pRigidBody->setFriction( 0.5f ); // 0.5f
-	pRigidBody->setRollingFriction( 0.1f ); // 0.0f
-	pRigidBody->setRestitution( 0.0f );
 	pRigidBody->setGravity( btVector3( pGravity.x, pGravity.y, pGravity.z ) );
 	pRigidBody->setFlags( pRigidBody->getFlags() | BT_DISABLE_WORLD_GRAVITY );
 	
 	if( pResponseType == ertStatic ){
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_STATIC_OBJECT
 			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
-		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->setDeactivationTime( 0.1f );
+		pRigidBody->forceActivationState( ISLAND_SLEEPING ); // bullet demo
+		pRigidBody->setDeactivationTime( 0.0f );
 		
 	}else if( pResponseType == ertKinematic ){
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_KINEMATIC_OBJECT
 			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
-		//pRigidBody->setActivationState( DISABLE_DEACTIVATION );
-		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->setDeactivationTime( 0.1f );
+// 		pRigidBody->forceActivationState( DISABLE_DEACTIVATION ); // bullet demo but set by addRigidBody
+		pRigidBody->setDeactivationTime( 0.0f );
 		
 	}else{
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
-		pRigidBody->forceActivationState( ACTIVE_TAG );
+// 		pRigidBody->forceActivationState( ACTIVE_TAG ); // set by addRigidBody
+		pRigidBody->setDeactivationTime( 0.0f );
 	}
+	// NOTE actually forceActivationState helps nothing since addRigidBody() resets it
 	
-	pRigidBody->setDeactivationTime( 0.1f );
 	//pRigidBody->setCcdSquareMotionThreshold( pCcdThreshold );
 	//pRigidBody->setCcdSweptSphereRadius( pCcdRadius );
 	pRigidBody->setUserPointer( ( debpCollisionObject* )this );
@@ -644,8 +685,9 @@ void debpPhysicsBody::pCreateRigidBody(){
 	}
 	
 	// notify all constraints that the rigid body has been created
-	for( c=0; c<pConstraintCount; c++ ){
-		pConstraints[ c ]->RigidBodyCreated( this );
+	int i;
+	for( i=0; i<pConstraintCount; i++ ){
+		pConstraints[ i ]->RigidBodyCreated( this );
 	}
 }
 

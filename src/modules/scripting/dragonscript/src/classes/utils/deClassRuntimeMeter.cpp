@@ -46,7 +46,7 @@ struct sRuntimeMeterNatDat{
 	sCounter *counters;
 	int counterCount;
 	
-	decTimer &GetTimerAt( int index ){
+	decTimer &GetMeterAt( int index ){
 		if( index < 0 ){
 			DSTHROW( dueInvalidParam );
 		}
@@ -138,7 +138,7 @@ deClassRuntimeMeter::nfReset::nfReset( const sInitData &init ) : dsFunction( ini
 void deClassRuntimeMeter::nfReset::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	nd.GetTimerAt( meter ).Reset();
+	nd.GetMeterAt( meter ).Reset();
 }
 
 // public func void reset( int meterFirst, int meterCount )
@@ -154,7 +154,7 @@ void deClassRuntimeMeter::nfReset2::RunFunction( dsRunTime *rt, dsValue *myself 
 	int i;
 	
 	for( i=0; i<meterCount; i++ ){
-		nd.GetTimerAt( meterFirst + i ).Reset();
+		nd.GetMeterAt( meterFirst + i ).Reset();
 	}
 }
 
@@ -166,7 +166,7 @@ deClassRuntimeMeter::nfElapsed::nfElapsed( const sInitData &init ) : dsFunction(
 void deClassRuntimeMeter::nfElapsed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	const float elapsed = nd.GetTimerAt( meter ).GetElapsedTime();
+	const float elapsed = nd.GetMeterAt( meter ).GetElapsedTime();
 	rt->PushFloat( elapsed );
 }
 
@@ -178,7 +178,7 @@ deClassRuntimeMeter::nfElapsedMicroSec::nfElapsedMicroSec( const sInitData &init
 void deClassRuntimeMeter::nfElapsedMicroSec::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	const int elapsed = ( int )( nd.GetTimerAt( meter ).GetElapsedTime() * 1e6f );
+	const int elapsed = ( int )( nd.GetMeterAt( meter ).GetElapsedTime() * 1e6f );
 	rt->PushInt( elapsed );
 }
 
@@ -224,7 +224,7 @@ deClassRuntimeMeter::nfCounterAdd::nfCounterAdd( const sInitData &init ) : dsFun
 void deClassRuntimeMeter::nfCounterAdd::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	const int elapsed = ( int )( nd.GetTimerAt( meter ).GetElapsedTime() * 1e6f );
+	const int elapsed = ( int )( nd.GetMeterAt( meter ).GetElapsedTime() * 1e6f );
 	sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 1 )->GetInt() );
 	counter.time += elapsed;
 	counter.updates++;
@@ -239,6 +239,17 @@ void deClassRuntimeMeter::nfCounterTime::RunFunction( dsRunTime *rt, dsValue *my
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 0 )->GetInt() );
 	rt->PushInt( counter.time );
+}
+
+// public func float counterTimeSeconds( int counter )
+deClassRuntimeMeter::nfCounterTimeSeconds::nfCounterTimeSeconds( const sInitData &init ) :
+dsFunction( init.clsRTM, "counterTimeSeconds", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // counter
+}
+void deClassRuntimeMeter::nfCounterTimeSeconds::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
+	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 0 )->GetInt() );
+	rt->PushFloat( ( float )( 1e-6 * ( double )counter.time ) );
 }
 
 // public func int counterUpdates( int counter )
@@ -266,6 +277,23 @@ void deClassRuntimeMeter::nfCounterAverageTime::RunFunction( dsRunTime *rt, dsVa
 		
 	}else{
 		rt->PushInt( 0 );
+	}
+}
+
+// public func float counterAverageTimeSeconds( int counter )
+deClassRuntimeMeter::nfCounterAverageTimeSeconds::nfCounterAverageTimeSeconds( const sInitData &init ) :
+dsFunction( init.clsRTM, "counterAverageTimeSeconds", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // counter
+}
+void deClassRuntimeMeter::nfCounterAverageTimeSeconds::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
+	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 0 )->GetInt() );
+	
+	if( counter.updates > 0 ){
+		rt->PushFloat( ( float )( ( 1e-6 * ( double )counter.time ) / ( double )counter.updates ) );
+		
+	}else{
+		rt->PushFloat( 0.0f );
 	}
 }
 
@@ -324,8 +352,10 @@ void deClassRuntimeMeter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfCounterReset2( init ) );
 	AddFunction( new nfCounterAdd( init ) );
 	AddFunction( new nfCounterTime( init ) );
+	AddFunction( new nfCounterTimeSeconds( init ) );
 	AddFunction( new nfCounterUpdates( init ) );
 	AddFunction( new nfCounterAverageTime( init ) );
+	AddFunction( new nfCounterAverageTimeSeconds( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

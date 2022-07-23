@@ -50,31 +50,31 @@ FXIMPLEMENT( igdeNativeFoxContainerBorder, FXPacker,
 igdeNativeFoxContainerBorder::igdeNativeFoxContainerBorder(){ }
 
 igdeNativeFoxContainerBorder::igdeNativeFoxContainerBorder(
-igdeContainerBorder &owner, FXComposite *parent, int layoutFlags ) :
-FXPacker( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() ),
-pOwner( &owner ){
+igdeContainerBorder &powner, FXComposite *pparent, int layoutFlags ) :
+FXPacker( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxContainerBorder::~igdeNativeFoxContainerBorder(){
 }
 
-igdeNativeFoxContainerBorder *igdeNativeFoxContainerBorder::CreateNativeWidget( igdeContainerBorder &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxContainerBorder *igdeNativeFoxContainerBorder::CreateNativeWidget( igdeContainerBorder &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxContainerBorder( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxContainerBorder( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxContainerBorder::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -206,13 +206,13 @@ void igdeNativeFoxContainerBorder::layout(){
 // Events
 ///////////
 
-long igdeNativeFoxContainerBorder::onResize( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxContainerBorder::onResize( FXObject*, FXSelector, void* ){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerBorder::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerBorder::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	
 	if( pOwner->GetWidgetIn( igdeContainerBorder::eaTop ) == clflags.widget ){
 		clflags.flags = LAYOUT_SIDE_TOP | LAYOUT_FILL_X;

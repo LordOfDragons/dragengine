@@ -65,7 +65,9 @@ pDirtyLayerMask( true ),
 pDirtyPlanCamParams( true ),
 pDirtyPropFields( true ),
 pDirtyEffects( true ),
-pResetAdaptedIntensity( true )
+pResetAdaptedIntensity( true ),
+pDirtyVR( true ),
+pEnableVR( false )
 {
 	try{
 		pRCamera = new deoglRCamera( ogl.GetRenderThread() );
@@ -115,9 +117,11 @@ void deoglCamera::Update( float elapsed ){
 
 
 void deoglCamera::SyncToRender(){
+// 		decTimer timer;
 	if( pParentWorld ){
 		pParentWorld->SyncToRender();
 		pRCamera->SetParentWorld( pParentWorld->GetRWorld() );
+// 			pOgl.LogInfoFormat( "Camera.Sync world: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 		
 	}else{
 		pRCamera->SetParentWorld( NULL );
@@ -127,6 +131,7 @@ void deoglCamera::SyncToRender(){
 		pRCamera->SetPosition( pCamera.GetPosition() );
 		pDirtyGeometry = false;
 		pDirtyMatrices = true;
+// 			pOgl.LogInfoFormat( "Camera.Sync geometry: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyMatrices ){
@@ -135,6 +140,7 @@ void deoglCamera::SyncToRender(){
 		pRCamera->SetCameraMatrices( matrix );
 		pRCamera->GetPlan().SetCameraMatrix( matrix );
 		pDirtyMatrices = false;
+// 			pOgl.LogInfoFormat( "Camera.Sync matrices: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyAdaptionParams ){
@@ -143,12 +149,14 @@ void deoglCamera::SyncToRender(){
 		pRCamera->SetHighestIntensity( pCamera.GetHighestIntensity() );
 		pRCamera->SetAdaptionTime( pCamera.GetAdaptionTime() );
 		pDirtyAdaptionParams = false;
+// 			pOgl.LogInfoFormat( "Camera.Sync adaption params: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyLayerMask ){
 		pRCamera->GetPlan().SetLayerMask( pCamera.GetLayerMask() );
 		pRCamera->GetPlan().SetUseLayerMask( pCamera.GetLayerMask().IsNotEmpty() );
 		pDirtyLayerMask = false;
+// 			pOgl.LogInfoFormat( "Camera.Sync layer mask: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyPropFields ){
@@ -165,12 +173,18 @@ void deoglCamera::SyncToRender(){
 		}
 		
 		pDirtyPropFields = false;
+// 			pOgl.LogInfoFormat( "Camera.Sync prop fields: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyPlanCamParams ){
-		pRCamera->GetPlan().SetCameraParameters( pCamera.GetFov(), pCamera.GetFovRatio(),
-			pCamera.GetImageDistance(), pCamera.GetViewDistance() );
+		if( ! pEnableVR ){
+			pRCamera->GetPlan().SetCameraParameters( pCamera.GetFov(), pCamera.GetFovRatio(),
+				pCamera.GetImageDistance(), pCamera.GetViewDistance() );
+		}
+		pRCamera->SetEnableHDRR( pCamera.GetEnableHDRR() );
+		pRCamera->SetEnableGI( pCamera.GetEnableGI() );
 		pDirtyPlanCamParams = false;
+// 			pOgl.LogInfoFormat( "Camera.Sync plan cam params: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	pRCamera->GetPlan().GetDirectEnvMapFader().Update( pNextSyncUpdateTime );
@@ -191,10 +205,22 @@ void deoglCamera::SyncToRender(){
 		for( i=0; i<effectCount; i++ ){
 			pRCamera->AddEffect( ( ( deoglEffect* )pCamera.GetEffectAt( i )->GetPeerGraphic() )->GetREffect() );
 		}
+		pDirtyEffects = false;
+// 			pOgl.LogInfoFormat( "Camera.Sync effects structure: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	for( i=0; i<effectCount; i++ ){
 		( ( deoglEffect* )pCamera.GetEffectAt( i )->GetPeerGraphic() )->SyncToRender();
+	}
+// 		pOgl.LogInfoFormat( "Camera.Sync effects sync: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+	
+	// vr
+	if( pDirtyVR ){
+		pRCamera->EnableVR( pEnableVR );
+		if( pOgl.GetVRCamera() == this ){
+			pOgl.SetVRCamera( nullptr );
+		}
+		pDirtyVR = false;
 	}
 }
 
@@ -241,6 +267,29 @@ void deoglCamera::EffectRemoved( int index, deEffect *effect ){
 
 void deoglCamera::AllEffectsRemoved(){
 	pDirtyEffects = true;
+}
+
+
+
+
+// For use by VR Module only
+//////////////////////////////
+
+void deoglCamera::VRAssignedToHMD(){
+	pDirtyVR = true;
+	pEnableVR = true;
+	pOgl.SetVRCamera( this );
+}
+
+void deoglCamera::VRResignedFromHMD(){
+	//pOgl.SetVRCamera( nullptr ); // not done here or sync is missing
+	pDirtyPlanCamParams = true;
+	pDirtyVR = true;
+	pEnableVR = false;
+}
+
+void deoglCamera::VRRenderParametersChanged(){
+	pDirtyVR = true;
 }
 
 

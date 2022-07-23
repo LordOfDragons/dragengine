@@ -66,9 +66,9 @@ def sndioBuild( target, source, env ):
 	
 	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
 	
-	script.append( 'make install || exit 1' )
+	script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building sndio')
 
 if buildStaticLinking:
@@ -78,6 +78,8 @@ else:
 targets.extend(['include/sndio.h'])
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(sndioBuild, 'Build sndio' ) )
+
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_sndio', library )
 

@@ -311,7 +311,7 @@ public:
 		if( fabsf( value - controller->GetUpper() ) <= FLOAT_SAFE_EPSILON ){
 			return NULL;
 		}
-		return new peeUControllerSetLower( controller, value );
+		return new peeUControllerSetUpper( controller, value );
 	}
 };
 

@@ -81,6 +81,7 @@ private:
 	DEF_NATFUNC( nfBoneGetName );
 	DEF_NATFUNC( nfBoneGetPosition );
 	DEF_NATFUNC( nfBoneGetOrientation );
+	DEF_NATFUNC( nfBoneGetRotation );
 	DEF_NATFUNC( nfBoneGetMatrix );
 	DEF_NATFUNC( nfBoneGetInverseMatrix );
 	DEF_NATFUNC( nfBoneGetCentralMassPoint );
@@ -92,11 +93,17 @@ private:
 	DEF_NATFUNC( nfBoneGetIKLocked );
 	DEF_NATFUNC( nfBoneGetConstraintCount );
 	DEF_NATFUNC( nfBoneGetConstraintAt );
+	DEF_NATFUNC( nfBoneConstraintGetReferencePosition );
+	DEF_NATFUNC( nfBoneConstraintGetReferenceOrientation );
+	DEF_NATFUNC( nfBoneConstraintGetBoneOffset );
 	DEF_NATFUNC( nfBoneGetShapes );
 	DEF_NATFUNC( nfBoneShapeGetProperty );
+	DEF_NATFUNC( nfBoneGetParent );
 	
 	DEF_NATFUNC( nfGetShapes );
 	DEF_NATFUNC( nfShapeGetProperty );
+	DEF_NATFUNC( nfGetCentralMassPoint );
+	DEF_NATFUNC( nfGetRootBone );
 	
 	DEF_NATFUNC( nfSave );
 	

@@ -179,20 +179,23 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 		if binding == null
 			dpi = DisplayInputSource.new( this.pIconHeight )
 			
-		elif binding.getDeviceIndex() != -1 and binding.getSourceIndex() != -1
-			var InputDevice device = bindingManager.getDeviceAt( binding.getDeviceIndex() )
-			
+		else
 			select inputSource
 			case EditBindingsListModelEntry.InputSource.axis
-				dpi = DisplayInputSource.new( this.pIconHeight, null, \
-					device.getAxisAt( binding.getSourceIndex() ) )
+				var InputDeviceAxis axis = binding.getInputDeviceAxis()
+				if axis != null
+					dpi = DisplayInputSource.new( this.pIconHeight, null, axis )
+				end
 				
 			case EditBindingsListModelEntry.InputSource.button
-				dpi = DisplayInputSource.new( this.pIconHeight, null, \
-					device.getButtonAt( binding.getSourceIndex() ))
+				var InputDeviceButton button = binding.getInputDeviceButton()
+				if button != null
+					dpi = DisplayInputSource.new( this.pIconHeight, null, button )
+				end
 			end
-			
-		else
+		end
+		
+		if dpi == null
 			return this.createBindingWidgetFallback( model, entry, selected, binding, inputSource )
 		end
 		
@@ -227,18 +230,22 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 		var String sourceID = "??"
 		var String inverseAxis = ""
 		
-		if binding.getDeviceIndex() != -1
-			var InputDevice device = bindingManager.getDeviceAt( binding.getDeviceIndex() )
+		var InputDevice device = binding.getInputDevice()
+		if device != null
 			deviceID = device.getName()
+		end
+		
+		select inputSource
+		case EditBindingsListModelEntry.InputSource.axis
+			var InputDeviceAxis axis = binding.getInputDeviceAxis()
+			if axis != null
+				sourceID = axis.getName()
+			end
 			
-			if binding.getSourceIndex() != -1
-				select inputSource
-				case EditBindingsListModelEntry.InputSource.axis
-					sourceID = device.getAxisAt( binding.getSourceIndex() ).getName()
-					
-				case EditBindingsListModelEntry.InputSource.button
-					sourceID = device.getButtonAt( binding.getSourceIndex() ).getName()
-				end
+		case EditBindingsListModelEntry.InputSource.button
+			var InputDeviceButton button = binding.getInputDeviceButton()
+			if button != null
+				sourceID = button.getName()
 			end
 		end
 		

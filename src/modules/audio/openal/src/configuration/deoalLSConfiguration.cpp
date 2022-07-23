@@ -234,32 +234,45 @@ void deoalLSConfiguration::pLoadConfig( decBaseFileReader *file ){
 			
 		}else if( name == "aurealizationMode" ){
 			const decString value( pGetCData( *tag, "" ) );
+			
 			if( value == "disabled" ){
-				pConfig.SetAurealizationMode( deoalConfiguration::eaDisabled );
+				pConfig.SetAurealizationMode( deoalConfiguration::eamDisabled );
 				
 			}else if( value == "directSound" ){
-				pConfig.SetAurealizationMode( deoalConfiguration::eaDirectSound );
+				pConfig.SetAurealizationMode( deoalConfiguration::eamDirectSound );
 				
 			}else if( value == "full" ){
-				pConfig.SetAurealizationMode( deoalConfiguration::eaFull );
+				pConfig.SetAurealizationMode( deoalConfiguration::eamFull );
 				
 			}else{
 				pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Value '%s'.",
 				root->GetName().GetString(), tag->GetLineNumber(),
 				tag->GetPositionNumber(), tag->GetName().GetString() );
 			}
-		
-		}else if( name == "soundTraceRayCount" ){
-			pConfig.SetSoundTraceRayCount( pGetCDataInt( *tag,
-				pConfig.GetSoundTraceRayCount() ) );
-		
-		}else if( name == "soundTraceMaxBounceCount" ){
-			pConfig.SetSoundTraceMaxBounceCount( pGetCDataInt( *tag,
-				pConfig.GetSoundTraceMaxBounceCount() ) );
-		
-		}else if( name == "soundTraceMaxTransmitCount" ){
-			pConfig.SetSoundTraceMaxTransmitCount( pGetCDataInt( *tag,
-				pConfig.GetSoundTraceMaxTransmitCount() ) );
+			
+		}else if( name == "aurealizationQuality" ){
+			const decString value( pGetCData( *tag, "" ) );
+			
+			if( value == "veryLow" ){
+				pConfig.SetAurealizationQuality( deoalConfiguration::eaqVeryLow );
+				
+			}else if( value == "low" ){
+				pConfig.SetAurealizationQuality( deoalConfiguration::eaqLow );
+				
+			}else if( value == "medium" ){
+				pConfig.SetAurealizationQuality( deoalConfiguration::eaqMedium );
+				
+			}else if( value == "high" ){
+				pConfig.SetAurealizationQuality( deoalConfiguration::eaqHigh );
+				
+			}else if( value == "veryHigh" ){
+				pConfig.SetAurealizationQuality( deoalConfiguration::eaqVeryHigh );
+				
+			}else{
+				pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Value '%s'.",
+				root->GetName().GetString(), tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString() );
+			}
 			
 		}else if( name == "estimateRoomRayCount" ){
 			pConfig.SetEstimateRoomRayCount( pGetCDataInt( *tag,

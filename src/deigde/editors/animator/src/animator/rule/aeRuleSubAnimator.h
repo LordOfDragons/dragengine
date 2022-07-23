@@ -38,6 +38,9 @@ class deAnimatorRuleSubAnimator;
  * \brief Animator rule sub animator.
  */
 class aeRuleSubAnimator : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleSubAnimator> Ref;
+	
 private:
 	decString pPathSubAnimator;
 	deAnimator *pSubAnimator;

@@ -28,193 +28,204 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a state manipulator animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of state manipulator animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleStateManipulator extends ADRule
-	/** Minimum position. */
 	private var Vector pMinPos
-	/** Maximum position. */
 	private var Vector pMaxPos
-	/** Minimum rotation. */
 	private var Vector pMinRot
-	/** Maximum rotation. */
 	private var Vector pMaxRot
-	/** Minimum size. */
 	private var Vector pMinSize
-	/** Maximum size. */
 	private var Vector pMaxSize
-	/** Enables position manipulation. */
 	private var bool pEnablePos
-	/** Enables rotation manipulation. */
 	private var bool pEnableOrient
-	/** Enables size manipulation. */
 	private var bool pEnableSize
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pMinPos = Vector.new()
-		this.pMaxPos = Vector.new()
-		this.pMinRot = Vector.new()
-		this.pMaxRot = Vector.new()
-		this.pMinSize = Vector.new()
-		this.pMaxSize = Vector.new()
-		this.pEnablePos = false
-		this.pEnableOrient = true
-		this.pEnableSize = false
+		pMinPos = Vector.new()
+		pMaxPos = Vector.new()
+		pMinRot = Vector.new()
+		pMaxRot = Vector.new()
+		pMinSize = Vector.new(1, 1, 1)
+		pMaxSize = Vector.new(1, 1, 1)
+		pEnablePos = false
+		pEnableOrient = true
+		pEnableSize = false
 	end
-	
-	
-	
-	/** Retrieves the minimum position. */
-	public func Vector getMinimumPosition()
-		return this.pMinPos
-	end
-	
-	/** Sets the minimum position. */
-	public func void setMinimumPosition( Vector minimumPosition )
-		if minimumPosition == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMinPos = minimumPosition
-	end
-	
-	/** Retrieves the maximum position. */
-	public func Vector getMaximumPosition()
-		return this.pMaxPos
-	end
-	
-	/** Sets the maximum position. */
-	public func void setMaximumPosition( Vector maximumPosition )
-		if maximumPosition == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMaxPos = maximumPosition
-	end
-	
-	/** Retrieves the minimum rotation. */
-	public func Vector getMinimumOrientation()
-		return this.pMinRot
-	end
-	
-	/** Sets the minimum rotation. */
-	public func void setMinimumRotation( Vector minimumRotation )
-		if minimumRotation == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMinRot = minimumRotation
-	end
-	
-	/** Retrieves the maximum rotation. */
-	public func Vector getMaximumRotation()
-		return this.pMaxRot
-	end
-	
-	/** Sets the maximum rotation. */
-	public func void setMaximumRotation( Vector maximumRotation )
-		if maximumRotation == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMaxRot = maximumRotation
-	end
-	
-	/** Retrieves the minimum size. */
-	public func Vector getMinimumSize()
-		return this.pMinSize
-	end
-	
-	/** Sets the minimum size. */
-	public func void setMinimumSize( Vector minimumSize )
-		if minimumSize == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMinSize = minimumSize
-	end
-	
-	/** Retrieves the maximum size. */
-	public func Vector getMaximumSize()
-		return this.pMaxSize
-	end
-	
-	/** Sets the maximum size. */
-	public func void setMaximumSize( Vector maximumSize )
-		if maximumSize == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMaxSize = maximumSize
-	end
-	
-	/** Determines if the position manipulation is enabled. */
-	public func bool getEnablePosition()
-		return this.pEnablePos
-	end
-	
-	/** Sets if the position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePos = enable
-	end
-	
-	/** Determines if the rotation manipulation is enabled. */
-	public func bool getEnableOrientation()
-		return this.pEnableOrient
-	end
-	
-	/** Sets if the rotation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrient = enable
-	end
-	
-	/** Determines if the size manipulation is enabled. */
-	public func bool getEnableSize()
-		return this.pEnableSize
-	end
-	
-	/** Sets if the size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
-	end
-	
-	
 	
 	/**
-	 * Build engine animator rule using the stored definition.
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
 	 */
-	public func AnimatorRule buildRule( Animator animator )
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleStateManipulator rule) super(fromDef, toDef, rule)
+		pMinPos = rule.pMinPos
+		pMaxPos = rule.pMaxPos
+		pMinRot = rule.pMinRot
+		pMaxRot = rule.pMaxRot
+		pMinSize = rule.pMinSize
+		pMaxSize = rule.pMaxSize
+		pEnablePos = rule.pEnablePos
+		pEnableOrient = rule.pEnableOrient
+		pEnableSize = rule.pEnableSize
+	end
+	
+	
+	
+	/** \brief Minimum position. */
+	public func Vector getMinimumPosition()
+		return pMinPos
+	end
+	
+	/** \brief Set minimum position. */
+	public func void setMinimumPosition(Vector position)
+		if position == null
+			throw ENullPointer.new("position")
+		end
+		pMinPos = position
+	end
+	
+	/** \brief Maximum position. */
+	public func Vector getMaximumPosition()
+		return pMaxPos
+	end
+	
+	/** \brief Set maximum position. */
+	public func void setMaximumPosition(Vector position)
+		if position == null
+			throw ENullPointer.new("position")
+		end
+		pMaxPos = position
+	end
+	
+	/** \brief Minimum rotation. */
+	public func Vector getMinimumOrientation()
+		return pMinRot
+	end
+	
+	/** \brief Set minimum rotation. */
+	public func void setMinimumRotation(Vector rotation)
+		if rotation == null
+			throw ENullPointer.new("rotation")
+		end
+		pMinRot = rotation
+	end
+	
+	/** \brief Maximum rotation. */
+	public func Vector getMaximumRotation()
+		return pMaxRot
+	end
+	
+	/** \brief Set maximum rotation. */
+	public func void setMaximumRotation(Vector rotation)
+		if rotation == null
+			throw ENullPointer.new("rotation")
+		end
+		pMaxRot = rotation
+	end
+	
+	/** \brief Minimum size. */
+	public func Vector getMinimumSize()
+		return pMinSize
+	end
+	
+	/** \brief Set minimum size. */
+	public func void setMinimumSize(Vector size)
+		if size == null
+			throw ENullPointer.new("size")
+		end
+		pMinSize = size
+	end
+	
+	/** \brief Maximum size. */
+	public func Vector getMaximumSize()
+		return pMaxSize
+	end
+	
+	/** \brief Set maximum size. */
+	public func void setMaximumSize(Vector size)
+		if size == null
+			throw ENullPointer.new("size")
+		end
+		pMaxSize = size
+	end
+	
+	/** \brief Pposition manipulation is enabled. */
+	public func bool getEnablePosition()
+		return pEnablePos
+	end
+	
+	/** \brief Set if position manipulation is enabled. */
+	public func void setEnablePosition(bool enable)
+		pEnablePos = enable
+	end
+	
+	/** \brief Rotation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return pEnableOrient
+	end
+	
+	/** \brief Set if rotation manipulation is enabled. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrient = enable
+	end
+	
+	/** \brief Size manipulation is enabled. */
+	public func bool getEnableSize()
+		return pEnableSize
+	end
+	
+	/** \brief Set if size manipulation is enabled. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARStateManipulator rule = ARStateManipulator.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARStateManipulatorTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARStateManipulatorTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setMinimumPosition( this.pMinPos )
-		rule.setMaximumPosition( this.pMaxPos )
-		rule.setMinimumRotation( this.pMinRot )
-		rule.setMaximumRotation( this.pMaxRot )
-		rule.setMinimumSize( this.pMinSize )
-		rule.setMaximumSize( this.pMaxRot )
-		rule.setEnablePosition( this.pEnablePos )
-		rule.setEnableOrientation( this.pEnableOrient )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setMinimumPosition(pMinPos)
+		rule.setMaximumPosition(pMaxPos)
+		rule.setMinimumRotation(pMinRot)
+		rule.setMaximumRotation(pMaxRot)
+		rule.setMinimumSize(pMinSize)
+		rule.setMaximumSize(pMaxRot)
+		rule.setEnablePosition(pEnablePos)
+		rule.setEnableOrientation(pEnableOrient)
+		rule.setEnableSize(pEnableSize)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "State Manipulator" ) + \
-			" minp=" + this.pMinPos + " maxp=" + this.pMaxPos + " mino=" + this.pMinRot + " maxo=" + this.pMaxRot + \
-			" mins=" + this.pMinSize + " maxs=" + this.pMaxSize + " epos=" + this.pEnablePos + \
-			" eorient=" + this.pEnableOrient + " esize=" + this.pEnableSize + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("State Manipulator") + \
+			" minp=" + pMinPos + " maxp=" + pMaxPos + " mino=" + pMinRot + " maxo=" + pMaxRot + \
+			" mins=" + pMinSize + " maxs=" + pMaxSize + " epos=" + pEnablePos + \
+			" eorient=" + pEnableOrient + " esize=" + pEnableSize + ")")
 	end
 end

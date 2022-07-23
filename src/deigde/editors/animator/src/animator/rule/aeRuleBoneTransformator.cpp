@@ -43,10 +43,14 @@ aeRuleBoneTransformator::aeRuleBoneTransformator() :
 aeRule( deAnimatorRuleVisitorIdentify::ertBoneTransformator ),
 pMinScaling( 1.0f, 1.0f, 1.0f ),
 pMaxScaling( 1.0f, 1.0f, 1.0f ),
+pAxis( 0.0f, 0.0f, 1.0f ),
+pMinAngle( 0.0f ),
+pMaxAngle( 0.0f ),
 pCoordinateFrame( deAnimatorRuleBoneTransformator::ecfComponent ),
 pEnablePosition( false ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pUseAxis( false )
 {
 	SetName( "Bone Transformator" );
 }
@@ -59,10 +63,14 @@ pMinRotation( copy.pMinRotation ),
 pMaxRotation( copy.pMaxRotation ),
 pMinScaling( copy.pMinScaling ),
 pMaxScaling( copy.pMaxScaling ),
+pAxis( copy.pAxis ),
+pMinAngle( copy.pMinAngle ),
+pMaxAngle( copy.pMaxAngle ),
 pCoordinateFrame( copy.pCoordinateFrame ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pUseAxis( copy.pUseAxis ),
 pTargetBone( copy.pTargetBone ),
 pTargetTranslation( copy.pTargetTranslation ),
 pTargetRotation( copy.pTargetRotation ),
@@ -161,6 +169,48 @@ void aeRuleBoneTransformator::SetMaximumScaling( const decVector &scaling ){
 	}
 }
 
+void aeRuleBoneTransformator::SetAxis( const decVector &axis ){
+	if( axis.IsEqualTo( pAxis ) ){
+		return;
+	}
+	
+	pAxis = axis;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetAxis( axis );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetMinimumAngle( float angle ){
+	if( fabsf( angle - pMinAngle ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pMinAngle = angle;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetMinimumAngle( angle * DEG2RAD );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetMaximumAngle( float angle ){
+	if( fabsf( angle - pMaxAngle ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pMaxAngle = angle;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetMaximumAngle( angle * DEG2RAD );
+		NotifyRuleChanged();
+	}
+}
+
 
 
 void aeRuleBoneTransformator::SetCoordinateFrame( deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame ){
@@ -222,6 +272,20 @@ void aeRuleBoneTransformator::SetEnableSize( bool enable ){
 	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
 	if( rule ){
 		rule->SetEnableSize( enable );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetUseAxis( bool useAxis ){
+	if( useAxis == pUseAxis ){
+		return;
+	}
+	
+	pUseAxis = useAxis;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetUseAxis( useAxis );
 		NotifyRuleChanged();
 	}
 }
@@ -315,10 +379,14 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 		engRule->SetMaximumRotation( pMaxRotation * DEG2RAD );
 		engRule->SetMinimumScaling( pMinScaling );
 		engRule->SetMaximumScaling( pMaxScaling );
+		engRule->SetAxis( pAxis );
+		engRule->SetMinimumAngle( pMinAngle * DEG2RAD );
+		engRule->SetMaximumAngle( pMaxAngle * DEG2RAD );
 		engRule->SetCoordinateFrame( pCoordinateFrame );
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetUseAxis( pUseAxis );
 		engRule->SetTargetBone( pTargetBone.GetString() );
 		
 		pTargetTranslation.UpdateEngineTarget( GetAnimator(), engRule->GetTargetTranslation() );
@@ -361,10 +429,14 @@ aeRuleBoneTransformator &aeRuleBoneTransformator::operator=( const aeRuleBoneTra
 	SetMaximumRotation( copy.pMaxRotation );
 	SetMinimumScaling( copy.pMinScaling );
 	SetMaximumScaling( copy.pMaxScaling );
+	SetAxis( copy.pAxis );
+	SetMinimumAngle( copy.pMinAngle );
+	SetMaximumAngle( copy.pMaxAngle );
 	SetCoordinateFrame( copy.pCoordinateFrame );
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetUseAxis( copy.pUseAxis );
 	SetTargetBone( copy.pTargetBone );
 	pTargetTranslation = copy.pTargetTranslation;
 	pTargetRotation = copy.pTargetRotation;

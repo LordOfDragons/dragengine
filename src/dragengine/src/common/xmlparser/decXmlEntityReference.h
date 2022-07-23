@@ -29,7 +29,7 @@
 /**
  * \brief XML Entity Reference.
  */
-class decXmlEntityReference : public decXmlElement{
+class DE_DLL_EXPORT decXmlEntityReference : public decXmlElement{
 private:
 	decString pName;
 	

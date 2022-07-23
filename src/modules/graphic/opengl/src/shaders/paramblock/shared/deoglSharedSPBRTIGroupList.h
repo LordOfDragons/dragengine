@@ -22,18 +22,26 @@
 #ifndef _DEOGLSHAREDSPBRTIGROUPLIST_H_
 #define _DEOGLSHAREDSPBRTIGROUPLIST_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
 
+class deoglRenderThread;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroup;
 
 
 
 /**
- * \brief OpenGL shared SPB render task instance group list.
+ * OpenGL shared SPB render task instance group list.
  */
-class deoglSharedSPBRTIGroupList{
+class deoglSharedSPBRTIGroupList : public deObject{
+public:
+	typedef deTObjectReference<deoglSharedSPBRTIGroupList> Ref;
+	
+	
+	
 private:
+	deoglRenderThread &pRenderThread;
 	decPointerList pGroups;
 	
 	
@@ -41,37 +49,53 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared SPB render task instance group list. */
-	deoglSharedSPBRTIGroupList();
+	/** Create shared SPB render task instance group list. */
+	deoglSharedSPBRTIGroupList( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up shared SPB list. */
-	~deoglSharedSPBRTIGroupList();
+protected:
+	/** Clean up shared SPB list. */
+	virtual ~deoglSharedSPBRTIGroupList();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of groups. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Count of groups. */
 	int GetCount() const;
 	
-	/** \brief Group at index. */
+	/** Group at index. */
 	deoglSharedSPBRTIGroup *GetAt( int index ) const;
 	
 	/**
-	 * \brief Group group with shared SPB.
-	 * 
-	 * If group does not exist creates it first.
-	 * 
-	 * Caller obtains reference to the group. Release reference if not used anymore.
-	 * Group is removed from this list once all references are released.
+	 * Group group with shared SPB or NULL if not found. Caller obtains reference to the group.
+	 * Release reference if not used anymore. Group is removed from this list once all
+	 * references are released.
 	 */
-	deoglSharedSPBRTIGroup *GetWith( deoglSharedSPB &sharedSPB );
+	deoglSharedSPBRTIGroup *GetWith( deoglSharedSPB &sharedSPB, int textureCount = 1 ) const;
+	
+	/**
+	 * Group group with shared SPB. If group does not exist creates it first. Caller obtains
+	 * reference to the group. Release reference if not used anymore. Group is removed from
+	 * this list once all references are released.
+	 */
+	deoglSharedSPBRTIGroup *GetOrAddWith( deoglSharedSPB &sharedSPB, int textureCount = 1 );
+	
+	/**
+	 * Add group with shared SPB. Call only after GetWith returned NULL. If group does not
+	 * exist creates it first. Caller obtains reference to the group. Release reference if
+	 * not used anymore. Group is removed from this list once all references are released.
+	 */
+	deoglSharedSPBRTIGroup *AddWith( deoglSharedSPB &sharedSPB, int textureCount = 1 );
 	
 	
 	
 	/**
-	 * \brief Remove group.
+	 * Remove group.
 	 * 
 	 * \warning For use by deoglSharedSPBRTIGroup only.
 	 */

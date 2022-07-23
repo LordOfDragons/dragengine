@@ -240,7 +240,7 @@ void deClassDMatrix::nfNewRotation2::RunFunction( dsRunTime *rt, dsValue *myself
 	clsDMatrix.PushDMatrix( rt, decDMatrix::CreateRotation( rx, ry, rz ) );
 }
 
-// public static func Matrix newRotationAxis( Vector axis, float rotation )
+// public static func Matrix newRotationAxis( DVector axis, float rotation )
 deClassDMatrix::nfNewRotationAxis::nfNewRotationAxis( const sInitData &init ) : dsFunction( init.clsDMatrix,
 "newRotationAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsDMatrix ){
 	p_AddParameter( init.clsDVec ); // axis
@@ -815,6 +815,17 @@ void deClassDMatrix::nfGetInverse::RunFunction( dsRunTime *rt, dsValue *myself )
 	clsDMatrix.PushDMatrix( rt, matrix.Invert() );
 }
 
+// public func DMatrix getRotation()
+deClassDMatrix::nfGetRotation::nfGetRotation( const sInitData &init ) : dsFunction( init.clsDMatrix,
+"getRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix ){
+}
+void deClassDMatrix::nfGetRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	deClassDMatrix &clsDMatrix = *( ( deClassDMatrix* )GetOwnerClass() );
+	
+	clsDMatrix.PushDMatrix( rt, matrix.GetRotationMatrix() );
+}
+
 // public func DMatrix normalize()
 deClassDMatrix::nfNormalize::nfNormalize( const sInitData &init ) :
 dsFunction( init.clsDMatrix, "normalize", DSFT_FUNCTION,
@@ -1099,6 +1110,39 @@ void deClassDMatrix::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushString( str );
 }
 
+// public func String toString( int precision )
+deClassDMatrix::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsDMatrix, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassDMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 17 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 17" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 106 ];
+	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
+		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
+	
+	const decDMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13, matrix.a14, matrix.a21, matrix.a22, matrix.a23, matrix.a24,
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34, matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
+	
+	rt->PushString( str );
+}
+
 
 
 // Class deClassDMatrix
@@ -1199,6 +1243,7 @@ void deClassDMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfTransformNormal( init ) );
 	AddFunction( new nfGetEulerAngles( init ) );
 	AddFunction( new nfGetInverse( init ) );
+	AddFunction( new nfGetRotation( init ) );
 	AddFunction( new nfNormalize( init ) );
 	AddFunction( new nfToQuaternion( init ) );
 	AddFunction( new nfToDMatrix4( init ) );
@@ -1218,6 +1263,7 @@ void deClassDMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decDMatrix &deClassDMatrix::GetDMatrix( dsRealObject *myself ) const{

@@ -22,6 +22,8 @@
 #ifndef _DECOLLIDERVISITOR_H_
 #define _DECOLLIDERVISITOR_H_
 
+#include "../../dragengine_export.h"
+
 class deCollider;
 class deColliderVolume;
 class deColliderRig;
@@ -31,7 +33,7 @@ class deColliderComponent;
 /**
  * \brief Collider visitor.
  */
-class deColliderVisitor{
+class DE_DLL_EXPORT deColliderVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

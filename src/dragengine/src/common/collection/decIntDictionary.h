@@ -30,7 +30,7 @@ class decIntList;
 /**
  * \brief Dictionary mapping integers to string keys.
  */
-class decIntDictionary{
+class DE_DLL_EXPORT decIntDictionary{
 private:
 	struct sDictEntry{
 		unsigned int hash;

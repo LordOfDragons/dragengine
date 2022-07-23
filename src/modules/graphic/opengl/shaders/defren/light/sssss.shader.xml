@@ -7,6 +7,7 @@
 	
 	<parameter name='pQuadParams'/>
 	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
 	<parameter name='pTCTransform'/>
 	<parameter name='pTCClamp'/>
 	<parameter name='pDropSubSurfaceThreshold'/>

@@ -46,6 +46,7 @@ class deClassARForeignState;
 class deClassARGroup;
 class deClassARInverseKinematic;
 class deClassARLimit;
+class deClassARMirror;
 class deClassARStateManipulator;
 class deClassARStateSnapshot;
 class deClassARSubAnimator;
@@ -116,6 +117,7 @@ class deClassInputDevice;
 class deClassInputDeviceAxis;
 class deClassInputDeviceButton;
 class deClassInputDeviceFeedback;
+class deClassInputDeviceComponent;
 class deClassInputEvent;
 class deClassInputSystem;
 class deClassLanguagePack;
@@ -205,6 +207,7 @@ class deClassVector;
 class deClassVector2;
 class deClassVideo;
 class deClassVideoPlayer;
+class deClassVRSystem;
 class deClassWorld;
 
 class deCollisionInfo;
@@ -223,7 +226,7 @@ class deErrorTraceValue;
 
 // scripting dragonscript class
 class deScriptingDragonScript : public deBaseScriptingModule{
-private:
+public:
 	enum eKeyEventIdentifiers{
 		eeiKeyPress,
 		eeiKeyRelease,
@@ -233,8 +236,21 @@ private:
 		eeiMouseMove,
 		eeiCount, // no value, just count of entries
 	};
-
+	
+	struct sModuleVersion{
+		decString version;
+		int major;
+		int minor;
+		int patch;
+		
+		sModuleVersion();
+		void SetVersion( const char *version );
+	};
+	
 private:
+	sModuleVersion pCompatibleVersion;
+	sModuleVersion pModuleVersion;
+	
 	deClassAISystem *pClsAISys;
 	deClassAnimation *pClsAnim;
 	deClassAnimationBuilder *pClsAnimBuilder;
@@ -247,10 +263,11 @@ private:
 	deClassARAnimationDifference *pClsARAnimDiff;
 	deClassARAnimationSelect *pClsARAnimSelect;
 	deClassARBoneTransformator *pClsARBoneTrans;
-	deClassARForeignState *pClsFSta;
+	deClassARForeignState *pClsARFSta;
 	deClassARGroup *pClsARGroup;
 	deClassARInverseKinematic *pClsARIK;
 	deClassARLimit *pClsARLimit;
+	deClassARMirror *pClsARMirror;
 	deClassARStateManipulator *pClsARStaM;
 	deClassARStateSnapshot *pClsARSnap;
 	deClassARSubAnimator *pClsARSubA;
@@ -322,6 +339,7 @@ private:
 	deClassInputDeviceAxis *pClsInpDevAxis;
 	deClassInputDeviceButton *pClsInpDevBtn;
 	deClassInputDeviceFeedback *pClsInpDevFb;
+	deClassInputDeviceComponent *pClsInpDevComp;
 	deClassInputSystem *pClsInpSys;
 	deClassLanguagePack *pClsLP;
 	deClassLanguagePackBuilder *pClsLangPackBuilder;
@@ -411,7 +429,10 @@ private:
 	deClassVector2 *pClsVec2;
 	deClassVideo *pClsVid;
 	deClassVideoPlayer *pClsVP;
+	deClassVRSystem *pClsVRSys;
 	deClassWorld *pClsWorld;
+	
+	dsClass *pClsResourceLoaderType;
 	
 	dsEngine *pScriptEngine;
 	dsClass *pClsGameObj;
@@ -508,7 +529,15 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/** Requested compatible module version. */
+	inline const sModuleVersion &GetModuleVersion() const{ return pModuleVersion; }
+	
+	/** Module version. */
+	inline const sModuleVersion &GetCompatibleVersion() const{ return pCompatibleVersion; }
 	/*@}*/
+	
+	
 	
 public:
 	// script management
@@ -542,7 +571,8 @@ public:
 	inline deClassARAnimationDifference *GetClassARAnimationDifference() const{ return pClsARAnimDiff; }
 	inline deClassARAnimationSelect *GetClassARAnimationSelect() const{ return pClsARAnimSelect; }
 	inline deClassARBoneTransformator *GetClassARBoneTransformator() const{ return pClsARBoneTrans; }
-	inline deClassARForeignState *GetClassARForeignState() const{ return pClsFSta; }
+	inline deClassARForeignState *GetClassARForeignState() const{ return pClsARFSta; }
+	inline deClassARMirror *GetClassARMirror() const{ return pClsARMirror; }
 	inline deClassARGroup *GetClassARGroup() const{ return pClsARGroup; }
 	inline deClassARInverseKinematic *GetClassARInverseKinematic() const{ return pClsARIK; }
 	inline deClassARLimit *GetClassARLimit() const{ return pClsARLimit; }
@@ -617,6 +647,7 @@ public:
 	inline deClassInputDeviceAxis *GetClassInputDeviceAxis() const{ return pClsInpDevAxis; }
 	inline deClassInputDeviceButton *GetClassInputDeviceButton() const{ return pClsInpDevBtn; }
 	inline deClassInputDeviceFeedback *GetClassInputDeviceFeedback() const{ return pClsInpDevFb; }
+	inline deClassInputDeviceComponent *GetClassInputDeviceComponent() const{ return pClsInpDevComp; }
 	inline deClassInputEvent *GetClassInputEvent() const{ return pClsInpEvent; }
 	inline deClassInputSystem *GetClassInputSystem() const{ return pClsInpSys; }
 	inline deClassLanguagePack *GetClassLanguagePack() const{ return pClsLP; }
@@ -706,7 +737,10 @@ public:
 	inline deClassVector2 *GetClassVector2() const{ return pClsVec2; }
 	inline deClassVideo *GetClassVideo() const{ return pClsVid; }
 	inline deClassVideoPlayer *GetClassVideoPlayer() const{ return pClsVP; }
+	inline deClassVRSystem *GetClassVRSystem() const{ return pClsVRSys; }
 	inline deClassWorld *GetClassWorld() const{ return pClsWorld; }
+	
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	/** @name Management */
 	/*@{*/

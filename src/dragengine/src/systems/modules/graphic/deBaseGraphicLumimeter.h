@@ -29,7 +29,7 @@
  * \brief Graphic Module Lumimeter Peer.
  *
  */
-class deBaseGraphicLumimeter{
+class DE_DLL_EXPORT deBaseGraphicLumimeter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

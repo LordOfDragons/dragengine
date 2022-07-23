@@ -22,6 +22,8 @@
 #ifndef _DECOLLIDERCONSTRAINTDOF_H_
 #define _DECOLLIDERCONSTRAINTDOF_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Collider Constraint Degree of Freedom.
@@ -64,7 +66,7 @@
  * spring damping determines the amount of energy lost over time. A stiffness of 0
  * disables spring behavior.
  */
-class deColliderConstraintDof{
+class DE_DLL_EXPORT deColliderConstraintDof{
 private:
 	float pLowerLimit;
 	float pUpperLimit;

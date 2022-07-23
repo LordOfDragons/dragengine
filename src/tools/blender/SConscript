@@ -18,16 +18,21 @@ def archiveZip(env, target, source):
 		for path, node in archiveFiles.items():
 			arcfile.write(node.srcnode().abspath, path)
 
-targetBuild = envAddon.Command('blender-addon.zip', files,
-	envAddon.Action(archiveZip, 'Archiving $TARGET'))
+versionString = envAddon['version']
+if envAddon['force_version']:
+        versionString = envAddon['force_version']
+
+filename = '{}-{}.zip'.format(envAddon['addon_name_blender'], versionString)
+
+targetBuild = envAddon.Command(filename, files, envAddon.Action(archiveZip, 'Archiving $TARGET'))
 
 install = envAddon.Install(os.path.join(pathShare, 'tools'), targetBuild)
 targetInstall = envAddon.Alias('blender-addon', install)
 
-filename = os.path.join(pathShare, 'tools', 'blender-addon.zip')
+filename = os.path.join(pathShare, 'tools', filename)
 
 archiveDevelop = {}
-archiveDevelop[os.path.join(pathShare, 'tools', 'blender-addon.zip')] = targetBuild[0]
+archiveDevelop[os.path.join(pathShare, 'tools', filename)] = targetBuild[0]
 
 parent_targets['blender-addon'] = {
 	'name' : 'Drag[en]gine Blender AddOn',

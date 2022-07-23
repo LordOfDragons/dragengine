@@ -160,6 +160,24 @@ public:
 	 * layouts without the user pressing input keys.
 	 */
 	virtual int ButtonMatchingKeyChar( int device, int character );
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * 
+	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+		deInputEvent::eKeyLocation location );
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * 
+	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	virtual int ButtonMatchingKeyChar( int device, int character,
+		deInputEvent::eKeyLocation location );
 	/*@}*/
 	
 	
@@ -225,6 +243,8 @@ private:
 	
 	void pUpdateAutoRepeat();
 	void pSetAutoRepeatEnabled( bool enabled );
+	
+	WPARAM pMapLeftRightKeys( WPARAM virtKey, LPARAM lParam ) const;
 };
 
 #endif

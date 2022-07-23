@@ -178,41 +178,64 @@ class EditModuleParametersPanel extends Panel
 			this.pButtonGroup = ToggleButtonGroup.new()
 			this.pButtonGroup.addListener( SwitchPanel.SwitchToggleGroup.new( this.pPanelSystems ) )
 			
-			// add systems
-			this.addButtonSystem( panelButtons, "AI" )
-			this.pPanelSystems.addWidget( EMPSystem.new( AISysParamWrapper.new() ) )
+			// add systems if they have parameters in order of preference
+			if GraphicSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Graphic" )
+				this.pPanelSystems.addWidget( EMPSystem.new( GraSysParamWrapper.new() ) )
+			end
 			
-			this.addButtonSystem( panelButtons, "Animator" )
-			this.pPanelSystems.addWidget( EMPSystem.new( AmrSysParamWrapper.new() ) )
+			if AudioSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Audio" )
+				this.pPanelSystems.addWidget( EMPSystem.new( AudSysParamWrapper.new() ) )
+			end
 			
-			this.addButtonSystem( panelButtons, "Audio" )
-			this.pPanelSystems.addWidget( EMPSystem.new( AudSysParamWrapper.new() ) )
+			if PhysicsSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Physics" )
+				this.pPanelSystems.addWidget( EMPSystem.new( PhySysParamWrapper.new() ) )
+			end
+			
+			if InputSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Input" )
+				this.pPanelSystems.addWidget( EMPSystem.new( InpSysParamWrapper.new() ) )
+			end
+			
+			if NetworkSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Network" )
+				this.pPanelSystems.addWidget( EMPSystem.new( NetSysParamWrapper.new() ) )
+			end
+			
+			if AnimatorSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Animator" )
+				this.pPanelSystems.addWidget( EMPSystem.new( AmrSysParamWrapper.new() ) )
+			end
+			
+			if AISystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "AI" )
+				this.pPanelSystems.addWidget( EMPSystem.new( AISysParamWrapper.new() ) )
+			end
+			
+			if SynthesizerSystem.getParameterCount() > 0
+				this.addButtonSystem( panelButtons, "Synthesizer" )
+				this.pPanelSystems.addWidget( EMPSystem.new( SynthSysParamWrapper.new() ) )
+			end
 			
 			//this.addButtonSystem( panelButtons, "Crash Recovery" )
 			//this.pPanelSystems.addWidget( EMPSystem.new( CRSysParamWrapper.new() ) )
 			
-			this.addButtonSystem( panelButtons, "Graphic" )
-			this.pPanelSystems.addWidget( EMPSystem.new( GraSysParamWrapper.new() ) )
-			
-			this.addButtonSystem( panelButtons, "Input" )
-			this.pPanelSystems.addWidget( EMPSystem.new( InpSysParamWrapper.new() ) )
-			
-			this.addButtonSystem( panelButtons, "Network" )
-			this.pPanelSystems.addWidget( EMPSystem.new( NetSysParamWrapper.new() ) )
-			
-			this.addButtonSystem( panelButtons, "Physics" )
-			this.pPanelSystems.addWidget( EMPSystem.new( PhySysParamWrapper.new() ) )
-			
 			//this.addButtonSystem( panelButtons, "Script" )
 			//this.pPanelSystems.addWidget( EMPSystem.new( ScrSysParamWrapper.new() ) )
-			
-			this.addButtonSystem( panelButtons, "Synthesizer" )
-			this.pPanelSystems.addWidget( EMPSystem.new( SynthSysParamWrapper.new() ) )
 			
 			// rebuild parameters of systems
 			this.pPanelSystems.forEachWidget( block EMPSystem each
 				each.rebuildParametersList( this.pAdvanced )
 			end )
+			
+			// add check box to enable advanced parameters
+			this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 20 ), block Panel panel
+				var CheckBox checkAdvanced = CheckBox.new( "Advanced Parameters" )
+				checkAdvanced.getToggleModel().addListener( ToggleAdvancedListener.new( this ) )
+				panel.addWidget( checkAdvanced )
+			end ), BorderLayout.Area.bottom )
 		end )
 	end
 	

@@ -28,6 +28,7 @@
 #include "decString.h"
 #include "decStringList.h"
 #include "../exceptions.h"
+#include "../../dragengine_configuration.h"
 
 #if defined OS_BEOS && ! defined va_copy
 #define va_copy __va_copy
@@ -58,26 +59,39 @@ decString::decString( const char *string ){
 	if( ! string ){
 		DETHROW( deeInvalidParam );
 	}
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	
 	pString = new char[ length + 1 ];
-	strcpy( pString, string );
+	#ifdef OS_W32_VS
+		strcpy_s( pString, length + 1, string );
+	#else
+		strcpy( pString, string );
+	#endif
 }
 
 decString::decString( const decString &string ){
-	const int length = strlen( string.pString );
+	const int length = ( int )strlen( string.pString );
 	
 	pString = new char[ length + 1 ];
-	strcpy( pString, string.pString );
+	#ifdef OS_W32_VS
+		strcpy_s( pString, length + 1, string.pString );
+	#else
+		strcpy( pString, string.pString );
+	#endif
 }
 
 decString::decString( const decString &string1, const decString &string2 ){
-	const int length1 = strlen( string1.pString );
-	const int length2 = strlen( string2.pString );
+	const int length1 = ( int )strlen( string1.pString );
+	const int length2 = ( int )strlen( string2.pString );
 	
 	pString = new char[ length1 + length2 + 1 ];
-	strcpy( pString, string1.pString );
-	strcpy( pString + length1, string2.pString );
+	#ifdef OS_W32_VS
+		strcpy_s( pString, length1, string1.pString );
+		strcpy_s( pString + length1, length2 + 1, string2.pString );
+	#else
+		strcpy( pString, string1.pString );
+		strcpy( pString + length1, string2.pString );
+	#endif
 }
 
 decString::decString( const decString &string1, const char *string2 ){
@@ -85,12 +99,17 @@ decString::decString( const decString &string1, const char *string2 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int length1 = strlen( string1.pString );
-	const int length2 = strlen( string2 );
+	const int length1 = ( int )strlen( string1.pString );
+	const int length2 = ( int )strlen( string2 );
 	
 	pString = new char[ length1 + length2 + 1 ];
-	strcpy( pString, string1.pString );
-	strcpy( pString + length1, string2 );
+	#ifdef OS_W32_VS
+		strcpy_s( pString, length1, string1.pString );
+		strcpy_s( pString + length1, length2 + 1, string2 );
+	#else
+		strcpy( pString, string1.pString );
+		strcpy( pString + length1, string2 );
+	#endif
 }
 
 decString::~decString(){
@@ -120,7 +139,7 @@ void decString::Empty(){
 }
 
 int decString::GetLength() const{
-	return strlen( pString );
+	return ( int )strlen( pString );
 }
 
 int decString::GetAt( int position ) const{
@@ -158,10 +177,14 @@ void decString::SetAt( int position, int character ){
 
 
 void decString::Set( const decString &string ){
-	const int length = strlen( string.pString );
+	const int length = ( int )strlen( string.pString );
 	
 	char * const newString = new char[ length + 1 ];
-	strcpy( newString, string.pString );
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length + 1, string.pString );
+	#else
+		strcpy( newString, string.pString );
+	#endif
 	
 	delete [] pString;
 	pString = newString;
@@ -172,10 +195,14 @@ void decString::Set( const char *string ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	
 	char * const newString = new char[ length + 1 ];
-	strcpy( newString, string );
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length + 1, string );
+	#else
+		strcpy( newString, string );
+	#endif
 	
 	delete [] pString;
 	pString = newString;
@@ -344,12 +371,17 @@ void decString::FormatUsing( const char *format, va_list args ){
 
 
 void decString::Append( const decString &string ){
-	const int length1 = strlen( pString );
-	const int length2 = strlen( string.pString );
+	const int length1 = ( int )strlen( pString );
+	const int length2 = ( int )strlen( string.pString );
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
-	strcpy( newString + length1, string.pString );
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+		strcpy_s( newString + length1, length2 + 1, string.pString );
+	#else
+		strcpy( newString, pString );
+		strcpy( newString + length1, string.pString );
+	#endif
 	
 	delete [] pString;
 	pString = newString;
@@ -360,22 +392,31 @@ void decString::Append( const char *string ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int length1 = strlen( pString );
-	const int length2 = strlen( string );
+	const int length1 = ( int )strlen( pString );
+	const int length2 = ( int )strlen( string );
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
-	strcpy( newString + length1, string );
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+		strcpy_s( newString + length1, length2 + 1, string );
+	#else
+		strcpy( newString, pString );
+		strcpy( newString + length1, string );
+	#endif
 	
 	delete [] pString;
 	pString = newString;
 }
 
 void decString::AppendCharacter( char character ){
-	const int length = strlen( pString );
+	const int length = ( int )strlen( pString );
 	
 	char * const newString = new char[ length + 2 ];
-	strcpy( newString, pString );
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	newString[ length ] = character;
 	newString[ length + 1 ] = '\0';
 	
@@ -392,16 +433,22 @@ void decString::AppendCharacter( int character ){
 }
 
 void decString::AppendValue( char value ){
-	int length1 = strlen( pString );
+	const int length1 = ( int )strlen( pString );
 #ifdef OS_W32
-	int length2 = snprintf( NULL, 0, "%hi", value );
+	const int length2 = snprintf( NULL, 0, "%hi", value );
 #else
 	int length2 = snprintf( NULL, 0, "%hhi", value );
 #endif
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 #ifdef OS_W32
 	if( snprintf( newString + length1, length2 + 1, "%hi", value ) != length2 ){
 		delete [] newString;
@@ -420,16 +467,22 @@ void decString::AppendValue( char value ){
 }
 
 void decString::AppendValue( unsigned char value ){
-	int length1 = strlen( pString );
+	const int length1 = ( int )strlen( pString );
 #ifdef OS_W32
-	int length2 = snprintf( NULL, 0, "%hu", value );
+	const int length2 = snprintf( NULL, 0, "%hu", value );
 #else
 	int length2 = snprintf( NULL, 0, "%hhu", value );
 #endif
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 #ifdef OS_W32
 	if( snprintf( newString + length1, length2 + 1, "%hu", value ) != length2 ){
 		delete [] newString;
@@ -448,12 +501,18 @@ void decString::AppendValue( unsigned char value ){
 }
 
 void decString::AppendValue( short value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%hi", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%hi", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( snprintf( newString + length1, length2 + 1, "%hi", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -465,12 +524,18 @@ void decString::AppendValue( short value ){
 }
 
 void decString::AppendValue( short unsigned value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%hu", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%hu", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( snprintf( newString + length1, length2 + 1, "%hu", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -482,12 +547,18 @@ void decString::AppendValue( short unsigned value ){
 }
 
 void decString::AppendValue( int value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%i", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%i", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( snprintf( newString + length1, length2 + 1, "%i", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -499,12 +570,18 @@ void decString::AppendValue( int value ){
 }
 
 void decString::AppendValue( unsigned int value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%u", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%u", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( snprintf( newString + length1, length2 + 1, "%u", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -516,12 +593,18 @@ void decString::AppendValue( unsigned int value ){
 }
 
 void decString::AppendValue( float value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%g", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%g", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( snprintf( newString + length1, length2 + 1, "%g", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -533,12 +616,18 @@ void decString::AppendValue( float value ){
 }
 
 void decString::AppendValue( double value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%g", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%g", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	strcpy( newString, pString );
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( snprintf( newString + length1, length2 + 1, "%g", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -557,18 +646,24 @@ void decString::AppendFormat( const char *format, ... ){
 }
 
 void decString::AppendFormatUsing( const char *format, va_list args ){
-	int length1 = strlen( pString );
+	const int length1 = ( int )strlen( pString );
 	va_list copyargs;
 	
 	va_copy( copyargs, args );
-	int length2 = vsnprintf( NULL, 0, format, copyargs );
+	const int length2 = vsnprintf( NULL, 0, format, copyargs );
 	va_end( copyargs );
 	
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	}
 	
-	char *newString = new char[ length1 + length2 + 1 ];
+	char * const newString = new char[ length1 + length2 + 1 ];
 	
-	strcpy( newString, pString );
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
 	if( vsnprintf( newString + length1, length2 + 1, format, args ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
@@ -628,7 +723,7 @@ int decString::Find( const char *characters, int start, int end ) const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int ccount = strlen( characters );
+	const int ccount = ( int )strlen( characters );
 	int i, found, foundBest = -1;
 	
 	for( i=0; i<ccount; i++ ){
@@ -702,7 +797,7 @@ int decString::FindReverse( const char *characters, int start, int end ) const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int ccount = strlen( characters );
+	const int ccount = ( int )strlen( characters );
 	int i, found, foundBest = -1;
 	
 	for( i=0; i<ccount; i++ ){
@@ -741,7 +836,7 @@ int decString::FindString( const char *string, int start, int end ) const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int slen = strlen( string );
+	const int slen = ( int )strlen( string );
 	const int rlen = GetLength();
 	int i;
 	
@@ -797,7 +892,7 @@ int decString::FindStringReverse( const char *string, int start, int end ) const
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int slen = strlen( string );
+	const int slen = ( int )strlen( string );
 	const int rlen = GetLength();
 	int i;
 	
@@ -889,7 +984,11 @@ decString decString::GetMiddle( int start, int end ) const{
 		const int count = end - start;
 		
 		string.Set( ' ', count );
-		strncpy( string.pString, pString + start, count );
+		#ifdef OS_W32_VS
+			strncpy_s( string.pString, count + 1, pString + start, count + 1 );
+		#else
+			strncpy( string.pString, pString + start, count );
+		#endif
 	}
 	
 	return string;
@@ -903,7 +1002,7 @@ void decString::Reverse(){
 	for( start=0, end=GetLength()-1; start<end; start++, end-- ){
 		swap = pString[ start ];
 		pString[ start ] = pString[ end ];
-		pString[ end ] = swap;
+		pString[ end ] = ( char )swap;
 	}
 }
 
@@ -955,7 +1054,7 @@ decStringList decString::Split( const char *characters ) const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int clen = strlen( characters );
+	const int clen = ( int )strlen( characters );
 	const int len = GetLength();
 	decStringList list;
 	int i, j, start = -1;
@@ -1013,7 +1112,7 @@ void decString::Replace( const char *replaceCharacters, int withCharacter ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( replaceCharacters );
+	const int len = ( int )strlen( replaceCharacters );
 	int i;
 	
 	for( i=0; i<len; i++ ){
@@ -1030,13 +1129,13 @@ void decString::ReplaceString( const char *replaceString, const char *withString
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int rlen = strlen( replaceString );
+	const int rlen = ( int )strlen( replaceString );
 	const int len = GetLength();
 	if( rlen == 0 || len < rlen ){
 		return;
 	}
 	
-	const int wlen = strlen( withString );
+	const int wlen = ( int )strlen( withString );
 	const int difflen = wlen - rlen;
 	const decString string( *this );
 	int newlen = len;
@@ -1055,7 +1154,11 @@ void decString::ReplaceString( const char *replaceString, const char *withString
 	for( npos=0, i=0; i<end; i++ ){
 		if( strncmp( string.pString + i, replaceString, rlen ) == 0 ){
 			if( wlen > 0 ){
-				strcpy( pString + npos, withString );
+				#ifdef OS_W32_VS
+					strcpy_s( pString + npos, wlen + 1, withString );
+				#else
+					strcpy( pString + npos, withString );
+				#endif
 				npos += wlen;
 			}
 			i += rlen - 1;
@@ -1102,7 +1205,7 @@ decString decString::GetReplaced( const char *replaceCharacters, int withCharact
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( replaceCharacters );
+	const int len = ( int )strlen( replaceCharacters );
 	decString string;
 	
 	if( len > 0 ){
@@ -1127,13 +1230,13 @@ decString decString::GetReplacedString( const char *replaceString, const char *w
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int rlen = strlen( replaceString );
+	const int rlen = ( int )strlen( replaceString );
 	const int len = GetLength();
 	if( rlen == 0 || len < rlen ){
 		return *this;
 	}
 	
-	const int wlen = strlen( withString );
+	const int wlen = ( int )strlen( withString );
 	const int difflen = wlen - rlen;
 	decString string;
 	int newlen = len;
@@ -1152,7 +1255,11 @@ decString decString::GetReplacedString( const char *replaceString, const char *w
 	for( npos=0, i=0; i<end; i++ ){
 		if( strncmp( pString + i, replaceString, rlen ) == 0 ){
 			if( wlen > 0 ){
-				strcpy( string.pString + npos, withString );
+				#ifdef OS_W32_VS
+					strcpy_s( string.pString + npos, wlen + 1, withString );
+				#else
+					strcpy( string.pString + npos, withString );
+				#endif
 				npos += wlen;
 			}
 			i += rlen - 1;
@@ -1648,14 +1755,14 @@ int decString::pCompareInsensitive( const char *string ) const{
 }
 
 bool decString::pBeginsWith( const char *string ) const{
-	const int len = strlen( pString );
-	const int len2 = strlen( string );
+	const int len = ( int )strlen( pString );
+	const int len2 = ( int )strlen( string );
 	return len2 <= len && strncmp( pString, string, len2 ) == 0;
 }
 
 bool decString::pBeginsWithInsensitive( const char *string ) const{
-	const int len = strlen( pString );
-	const int len2 = strlen( string );
+	const int len = ( int )strlen( pString );
+	const int len2 = ( int )strlen( string );
 	
 	if( len2 > len ){
 		return false;
@@ -1672,14 +1779,14 @@ bool decString::pBeginsWithInsensitive( const char *string ) const{
 }
 
 bool decString::pEndsWith( const char *string ) const{
-	const int len = strlen( pString );
-	const int len2 = strlen( string );
+	const int len = ( int )strlen( pString );
+	const int len2 = ( int )strlen( string );
 	return len2 <= len && strncmp( pString + len - len2, string, len2 ) == 0;
 }
 
 bool decString::pEndsWithInsensitive( const char *string ) const{
-	const int len = strlen( pString );
-	const int len2 = strlen( string );
+	const int len = ( int )strlen( pString );
+	const int len2 = ( int )strlen( string );
 	
 	if( len2 > len ){
 		return false;

@@ -22,10 +22,9 @@
 #ifndef _DEOALDEBUGINFO_H_
 #define _DEOALDEBUGINFO_H_
 
-#include "../utils/deoalTimeHistory.h"
-
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
@@ -44,11 +43,11 @@ private:
 	deoalAudioThread &pAudioThread;
 	
 	deDebugBlockInfo *pDIModule;
-	deoalTimeHistory pDebugTimeMainThread;
-	deoalTimeHistory pDebugTimeMainThreadWaitFinish;
-	deoalTimeHistory pDebugTimeMainThreadSynchronize;
-	deoalTimeHistory pDebugTimeAudioThread;
-	deoalTimeHistory pDebugTimeAudioThreadAudio;
+	decTimeHistory pDebugTimeMainThread;
+	decTimeHistory pDebugTimeMainThreadWaitFinish;
+	decTimeHistory pDebugTimeMainThreadSynchronize;
+	decTimeHistory pDebugTimeAudioThread;
+	decTimeHistory pDebugTimeAudioThreadAudio;
 	float pDebugTimeFrameLimiterMain;
 	float pDebugTimeFrameLimiterAudio;
 	float pDebugTimeFrameLimiterAudioEstimated;
@@ -93,8 +92,8 @@ public:
 	void ResetTimersAudioThread();
 	void StoreTimeAudioThreadAudio();
 	void StoreTimeAudioThread();
-	void StoreTimeFrameLimiter( const deoalTimeHistory &main, const deoalTimeHistory &audio,
-		const deoalTimeHistory &audioEstimated );
+	void StoreTimeFrameLimiter( const decTimeHistory &main, const decTimeHistory &audio,
+		const decTimeHistory &audioEstimated );
 	
 	
 	

@@ -51,16 +51,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-projDialogDistribute::projDialogDistribute( projWindowMain &windowMain ) :
+projDialogDistribute::projDialogDistribute( projWindowMain &windowMain, projProfile *profile ) :
 igdeDialog( windowMain.GetEnvironment(), "Distribute" ),
 
 pWindowMain( windowMain ),
-pProfile( windowMain.GetProject()->GetActiveProfile() ),
-pTaskDistribute( NULL )
+pProfile( profile ),
+pTaskDistribute( NULL ),
+pCloseDialogOnFinished( false ),
+pPrintToConsole( false ),
+pSuccess( true )
 {
-	if( ! pProfile ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pProfile )
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
@@ -71,7 +72,7 @@ pTaskDistribute( NULL )
 	
 	
 	igdeContainerReference content;
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esNone, 5 ) );
+	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
 	
 	// build information
 	igdeContainerReference groupBox;
@@ -89,24 +90,28 @@ pTaskDistribute( NULL )
 	helper.EditString( groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL );
 	pEditDelgaDirCount->SetEditable( false );
 	
-	// logs
-	helper.GroupBoxStaticFlow( content, groupBox, "Logs:", true );
+	// logs and info line
+	igdeContainerReference containerLogs;
+	containerLogs.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
+	
+	helper.GroupBoxStaticFlow( containerLogs, groupBox, "Logs:", true );
 	
 	helper.EditString( groupBox, "Building logs.", pEditLogs, 80, 12, NULL );
 	pEditLogs->SetEditable( false );
 	
 	// info line
 	groupBox.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, 5 ) );
-	content->AddChild( groupBox );
+	containerLogs->AddChild( groupBox );
 	
 	helper.Button( groupBox, pActionShowInFSManager );
+	
+	content->AddChild( containerLogs );
 	
 	// button line
 	igdeContainerReference buttonBar;
 	CreateButtonBar( buttonBar, "Close" );
 	
 	AddContent( content, buttonBar );
-	
 	
 	pStartBuilding();
 }
@@ -123,14 +128,21 @@ projDialogDistribute::~projDialogDistribute(){
 ///////////////
 
 void projDialogDistribute::LogMessage( const char *message ){
-	if( ! message ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( message )
 	
+	// add to text widget
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
-	pEditLogs->AppendText( message );
+	pEditLogs->AppendText( decString( message ) + "\n" );
 	if( atBottom ){
 		pEditLogs->SetBottomLine( pEditLogs->GetLineCount() - 1 );
+	}
+	
+	// log to log file
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, message );
+	
+	// print on console
+	if( pPrintToConsole ){
+		printf( "%s\n", message );
 	}
 }
 
@@ -146,6 +158,10 @@ void projDialogDistribute::OnFrameUpdate(){
 			path.AddUnixPath( pProfile->GetDelgaPath() );
 			path.RemoveLastComponent();
 			pActionShowInFSManager->SetPath( path.GetPathNative() );
+			
+			if( pCloseDialogOnFinished ){
+				Cancel();
+			}
 			return;
 		}
 		
@@ -162,13 +178,15 @@ void projDialogDistribute::OnFrameUpdate(){
 		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
 		if( taskMessage != pLastTaskMessage ){
-			LogMessage( taskMessage + "\n" );
+			LogMessage( taskMessage );
 		}
 		
 	}catch( const deException &e ){
+		pSuccess = false;
+		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
 		if( taskMessage != pLastTaskMessage ){
-			LogMessage( taskMessage + "\n" );
+			LogMessage( taskMessage );
 		}
 		
 		LogMessage( igdeCommonDialogs::FormatException( e ) );
@@ -176,6 +194,14 @@ void projDialogDistribute::OnFrameUpdate(){
 		
 		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
 	}
+}
+
+void projDialogDistribute::SetCloseDialogOnFinished( bool closeDialogOnFinished ){
+	pCloseDialogOnFinished = closeDialogOnFinished;
+}
+
+void projDialogDistribute::SetPrintToConsole( bool printToConsole ){
+	pPrintToConsole = printToConsole;
 }
 
 

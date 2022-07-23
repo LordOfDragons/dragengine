@@ -26,7 +26,7 @@
 
 
 /**
- * \brief OpenGL shader parameter block based on Shader Storage Buffer Object.
+ * OpenGL shader parameter block based on Shader Storage Buffer Object.
  */
 class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
@@ -45,14 +45,14 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader storage buffer object. */
+	/** Create shader storage buffer object. */
 	deoglSPBlockSSBO( deoglRenderThread &renderThread );
 	
-	/** \brief Create copy of shader storage buffer object. */
+	/** Create copy of shader storage buffer object. */
 	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock );
 	
 protected:
-	/** \brief Clean up shader storage buffer object. */
+	/** Clean up shader storage buffer object. */
 	virtual ~deoglSPBlockSSBO();
 	/*@}*/
 	
@@ -61,44 +61,53 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Shader storage buffer object or 0 if not created yet. */
+	/** Shader storage buffer object or 0 if not created yet. */
 	inline GLuint GetSSBO() const{ return pSSBO; }
 	
-	/** \brief Binding point. */
+	/** Binding point. */
 	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
-	/** \brief Set binding point. */
+	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
-	/** \brief Activate buffer. */
-	virtual void Activate();
+	/** Activate buffer. */
+	virtual void Activate() const;
 	
-	/** \brief Deactivate buffer. */
-	virtual void Deactivate();
+	/** Activate buffer overriding binding point. */
+	virtual void Activate( int bindingPoint ) const;
 	
-	/** \brief Map buffer discarding content. */
+	/** Deactivate buffer. */
+	virtual void Deactivate() const;
+	
+	/** Deactivate buffer overriding binding point. */
+	virtual void Deactivate( int bindingPoint ) const;
+	
+	/** Map buffer discarding content. */
 	virtual void MapBuffer();
 	
 	/**
-	 * \brief Map buffer for specific element discarding content.
+	 * Map buffer for specific element discarding content.
 	 * 
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
 	virtual void MapBuffer( int element );
 	
-	/** \brief Unmap buffer uploading data to GPU. */
+	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
-	/** \brief Map the parameter block definition to a shader uniform block using std430 layout. */
+	/** Get platform alignment requirements. */
+	virtual int GetAlignmentRequirements() const;
+	
+	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
 	
 	
 	
-	/** \brief GPU memory consumption for the VBO. */
+	/** GPU memory consumption for the VBO. */
 	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUSSBO; }
 	
-	/** \brief Debug print configuration. */
+	/** Debug print configuration. */
 	void DebugPrintConfig( const char *name );
 	/*@}*/
 	

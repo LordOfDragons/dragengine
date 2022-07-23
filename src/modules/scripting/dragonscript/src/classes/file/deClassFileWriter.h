@@ -69,6 +69,7 @@ private:
 		dsClass *clsObject;
 		dsClass *clsInt;
 		dsClass *clsFloat;
+		dsClass *clsTimeDate;
 		
 		dsClass *clsFileReader;
 	};
@@ -80,6 +81,7 @@ private:
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC( nfNew );
+	DEF_NATFUNC( nfNewZCompressed );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetFilename );
@@ -99,6 +101,7 @@ private:
 	DEF_NATFUNC( nfWriteString );
 	DEF_NATFUNC( nfWriteData );
 	DEF_NATFUNC( nfWriteData2 );
+	DEF_NATFUNC( nfWriteTimeDate );
 #undef DEF_NATFUNC
 };
 

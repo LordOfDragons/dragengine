@@ -16,7 +16,7 @@ appendLibrary(envEditor, parent_targets['lib_zlib'], libs)
 if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
-versionString = '1.3'
+versionString = '1.10'
 if envEditor['force_version']:
 	versionString = envEditor['force_version']
 
@@ -63,7 +63,6 @@ libsTestRun = []
 appendLibrary(envTestRun, parent_targets['dragengine'], libsTestRun)
 libsTestRun.extend(parent_targets['dragengine']['binlibs'])
 if envTestRun['OSWindows']:
-	libsTestRun.extend(['kernel32', 'user32'])
 	envTestRun.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
 sourcesTestRun = []
@@ -87,6 +86,15 @@ pathBin = envEditor.subst(envEditor['path_igde_bin'])
 install.append(envTestRun.Install(pathModule, programTestRun))
 for p in programTestRun:
 	archive[os.path.join(pathModule, p.name)] = p
+
+if 'lib_mingw_runtime' in parent_targets:
+	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
+		archive[os.path.join(pathModule, l.name)] = l
+
+if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
+	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
+	install.append(envEditor.Install(pathPdb, 'testrunner.pdb'))
+	archive['{}/testrunner.pdb'.format(pathPdb)] = envEditor.File('testrunner.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

@@ -161,5 +161,5 @@ bool reDialogImportBone::Accept(){
 		return false;
 	}
 	
-	return true;
+	return igdeDialog::Accept();
 }

@@ -22,6 +22,8 @@
 #ifndef _DEBASENETWORKSERVER_H_
 #define _DEBASENETWORKSERVER_H_
 
+#include "../../../dragengine_export.h"
+
 class deConnection;
 class deNetworkState;
 
@@ -29,7 +31,7 @@ class deNetworkState;
 /**
  * \brief Network Module Server Peer.
  */
-class deBaseNetworkServer{
+class DE_DLL_EXPORT deBaseNetworkServer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

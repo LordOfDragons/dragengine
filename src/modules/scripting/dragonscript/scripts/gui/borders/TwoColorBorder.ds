@@ -31,10 +31,10 @@ class TwoColorBorder extends DefaultBorder
 	/** Raised or lowered edge. */
 	private var bool pRaised
 	
-	/** Highlight color or null to use the widget gui theme highlight color. */
+	/** Highlight color or null to not draw. */
 	private var Color pColorHighlight
 	
-	/** Shadow color or null to use the widget gui theme shadow color. */
+	/** Shadow color or null to not draw. */
 	private var Color pColorShadow
 	
 	
@@ -85,7 +85,7 @@ class TwoColorBorder extends DefaultBorder
 		return this.pColorHighlight
 	end
 	
-	/** Sets the highlight color or null to use the widget gui theme highlight color. */
+	/** Sets the highlight color or null to not draw. */
 	public func void setColorHighlight( Color color )
 		if color == this.pColorHighlight
 			return
@@ -100,7 +100,7 @@ class TwoColorBorder extends DefaultBorder
 		return this.pColorShadow
 	end
 	
-	/** Sets the shadow color or null to use the widget gui theme shadow color. */
+	/** Sets the shadow color or null to not draw. */
 	public func void setColorShadow( Color color )
 		if color == this.pColorShadow
 			return

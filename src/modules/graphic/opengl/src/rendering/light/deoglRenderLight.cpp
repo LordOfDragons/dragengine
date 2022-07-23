@@ -28,6 +28,7 @@
 #include "deoglRenderLightSky.h"
 #include "deoglRenderLightPoint.h"
 #include "deoglRenderLightParticles.h"
+#include "deoglRenderGI.h"
 #include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
@@ -39,8 +40,9 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
+#include "../../gi/deoglGIState.h"
+#include "../../gi/deoglGICascade.h"
 #include "../../light/deoglRLight.h"
-#include "../../light/probes/deoglLightProbeTexture.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
@@ -70,6 +72,7 @@
 enum pSPAOLocal{
 	spaolQuadParams,
 	spaolPosTransform,
+	spaolPosTransform2,
 	spaolTCTransform,
 	spaolTCClamp,
 	spaolRadiusFactor,
@@ -105,6 +108,7 @@ enum pSPDebugAO{
 enum pSPSSSSS{
 	spsssssQuadParams,
 	spsssssPosTransform,
+	spsssssPosTransform2,
 	spsssssTCTransform,
 	spsssssTCClamp,
 	spsssssDropSubSurfaceThreshold,
@@ -127,39 +131,21 @@ deoglRenderLight::deoglRenderLight( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
 deoglRenderLightBase( renderThread ),
 
-pShaderCopyDepth( NULL ),
-
-pShaderAOLocal( NULL ),
-pShaderAOBlur1( NULL ),
-pShaderAOBlur2( NULL ),
-pShaderDebugAO( NULL ),
-
-pShaderSSSSS( NULL ),
-
 pRenderLightSpot( NULL ),
 pRenderLightSky( NULL ),
 pRenderLightPoint( NULL ),
 pRenderLightParticles( NULL ),
+pRenderGI( NULL ),
 
 pLightPB( NULL ),
 pShadowPB( NULL ),
+pShadowCascadedPB( nullptr ),
 pShadowCubePB( NULL ),
 pOccMapPB( NULL ),
 pRenderTask( NULL ),
-pAddToRenderTask( NULL ),
-pLightProbesTexture( NULL ),
-
-pDebugInfoSolid( NULL ),
-pDebugInfoSolidCopyDepth( NULL ),
-pDebugInfoSolidParticle( NULL ),
-pDebugInfoSolidSSSSS( NULL ),
-
-pDebugInfoTransparent( NULL ),
-pDebugInfoTransparentCopyDepth( NULL ),
-pDebugInfoTransparentSSSSS( NULL )
+pAddToRenderTask( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
@@ -168,18 +154,19 @@ pDebugInfoTransparentSSSSS( NULL )
 		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
 		
 		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
-		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
+		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
+		pShadowCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
 		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
-		pLightProbesTexture = new deoglLightProbeTexture( renderThread );
 		
 		pRenderLightSky = new deoglRenderLightSky( renderThread );
 		pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
 		pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
 		pRenderLightParticles = new deoglRenderLightParticles( renderThread );
+		pRenderGI = new deoglRenderGI( renderThread );
 		
 		
 		
@@ -189,10 +176,6 @@ pDebugInfoTransparentSSSSS( NULL )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
 		defines.AddDefine( "SSAO_RESOLUTION_COUNT", "1" ); // 1-4
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
@@ -203,6 +186,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		defines.AddDefine( "OUT_DATA_SIZE", "1" );
 		defines.AddDefine( "TEX_DATA_SIZE", "1" );
 		defines.AddDefine( "TEX_DATA_SWIZZLE", "g" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURES", "1" );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -211,6 +195,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		defines.AddDefine( "OUT_DATA_SIZE", "3" );
 		defines.AddDefine( "OUT_DATA_SWIZZLE", "g" );
 		defines.AddDefine( "TEX_DATA_SIZE", "1" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURES", "1" );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -227,36 +212,36 @@ pDebugInfoTransparentSSSSS( NULL )
 		
 		// debug information
 		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-		const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		
-		pDebugInfoSolid = new deoglDebugInformation( "Lights Solid", colorText, colorBg );
+		pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Lights Solid", colorText, colorBg ) );
 		
-		pDebugInfoSolidCopyDepth = new deoglDebugInformation( "Copy Depth", colorText, colorBgSub );
+		pDebugInfoSolidCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
 		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidCopyDepth );
 		
 		pDebugInfoSolid->GetChildren().Add( pRenderLightSky->GetDebugInfoSolid() );
 		pDebugInfoSolid->GetChildren().Add( pRenderLightPoint->GetDebugInfoSolid() );
 		pDebugInfoSolid->GetChildren().Add( pRenderLightSpot->GetDebugInfoSolid() );
 		
-		pDebugInfoSolidParticle = new deoglDebugInformation( "Particle", colorText, colorBgSub );
+		pDebugInfoSolidParticle.TakeOver( new deoglDebugInformation( "Particle", colorText, colorBgSub ) );
 		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidParticle );
 		
-		pDebugInfoSolidSSSSS = new deoglDebugInformation( "SSSSS", colorText, colorBgSub );
+		pDebugInfoSolidSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
 		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidSSSSS );
 		
 		
 		
-		pDebugInfoTransparent = new deoglDebugInformation( "Lights Transp", colorText, colorBg );
+		pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Lights Transp", colorText, colorBg ) );
 		
-		pDebugInfoTransparentCopyDepth = new deoglDebugInformation( "Copy Depth", colorText, colorBgSub );
+		pDebugInfoTransparentCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
 		pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentCopyDepth );
 		
 		pDebugInfoTransparent->GetChildren().Add( pRenderLightSky->GetDebugInfoTransparent() );
 		pDebugInfoTransparent->GetChildren().Add( pRenderLightPoint->GetDebugInfoTransparent() );
 		pDebugInfoTransparent->GetChildren().Add( pRenderLightSpot->GetDebugInfoTransparent() );
 		
-		pDebugInfoTransparentSSSSS = new deoglDebugInformation( "SSSSS", colorText, colorBgSub );
+		pDebugInfoTransparentSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
 		pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentSSSSS );
 		
 		
@@ -278,7 +263,7 @@ deoglRenderLight::~deoglRenderLight(){
 // Rendering
 //////////////
 
-void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
+void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();
@@ -302,6 +287,13 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	// render lights
+	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
+	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
+	
+	if( solid && ! mask && hasGIStateUpdate ){
+		pRenderGI->ClearProbes( plan );
+	}
+	
 	RestoreFBO( plan );
 	
 	if( sssssEnable ){
@@ -319,10 +311,29 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	PrepareRenderParamBlockLight( plan );
+	if( hasGIStateRender ){
+		pRenderGI->PrepareUBORenderLight( plan );
+	}
 	
-	pRenderLightSky->RenderLights( plan, solid );
-	pRenderLightPoint->RenderLights( plan, solid );
-	pRenderLightSpot->RenderLights( plan, solid );
+	pRenderLightPoint->RenderLights( plan, solid, mask );
+	pRenderLightSpot->RenderLights( plan, solid, mask );
+	
+	// sky light requires large render tasks that can be expensive to build. to do this as
+	// fast as possible the render task building is done using parallel tasks. by rendering
+	// sky light as last light type before GI reduces the time waiting for the parallel
+	// tasks to finish
+	pRenderLightSky->RenderLights( plan, solid, mask );
+	
+	if( solid && ! mask && hasGIStateUpdate ){
+		if( hasGIStateRender ){
+			pRenderGI->RenderLightGIRay( plan );
+		}
+		pRenderGI->UpdateProbes( plan );
+		pRenderGI->MoveProbes( plan );
+	}
+	if( hasGIStateRender ){
+		pRenderGI->RenderLight( plan, solid );
+	}
 	
 	DebugTimer2Reset( plan, false );
 	
@@ -403,6 +414,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	defren.SetShaderParamFSQuad( *shader, spaolQuadParams );
 	shader->SetParameterVector4( spaolPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( spaolPosTransform2, plan.GetDepthToPosition2() );
 	shader->SetParameterFloat( spaolTCTransform,
 		2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 	defren.SetShaderViewport( *shader, spaolTCClamp, true );
@@ -429,16 +441,16 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spaolMipMapParams,
 		( float )width, ( float )height, mipMapBase, mipMapMaxLevel );
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureAOSolidity(), "ao_local" );
 	}
 	
@@ -458,8 +470,8 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( pShaderAOBlur1 );
 	shader = pShaderAOBlur1->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	
@@ -488,7 +500,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureTemporary3(), "ao_local_blur1" );
 	}
 	
@@ -500,7 +512,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( pShaderAOBlur2 );
 	shader = pShaderAOBlur2->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
@@ -541,7 +553,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		renderThread.GetShader().ActivateShader( pShaderDebugAO );
 		shader = pShaderDebugAO->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
@@ -560,7 +572,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureAOSolidity(), "ao_local_blur2" );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
@@ -595,6 +607,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	
 	defren.SetShaderParamFSQuad( *shader, spsssssQuadParams );
 	shader->SetParameterVector4( spsssssPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( spsssssPosTransform2, plan.GetDepthToPosition2() );
 	shader->SetParameterFloat( spsssssTCTransform, 2.0f / defren.GetScalingU(),
 		2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 	defren.SetShaderViewport( *shader, spsssssTCClamp, true );
@@ -616,20 +629,20 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spsssssTapDropRadiusThreshold, tapDropRadiusThreshold * largestPixelSize );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 1122 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureDiffuse(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
 			"sssss_texture1", deoglDebugSaveTexture::ecColorLinear2sRGB );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureSubSurface(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureSubSurface(),
 			"sssss_subsurface", deoglDebugSaveTexture::ecNoConversion );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureTemporary2(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureTemporary2(),
 			"sssss_temporary2", deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
@@ -644,6 +657,8 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	pLightPB->MapBuffer();
 	try{
 		pLightPB->SetParameterDataVec4( deoglLightShader::erutPosTransform, plan.GetDepthToPosition() );
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutPosTransform2, plan.GetDepthToPosition2() );
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 		
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
 			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
@@ -652,6 +667,23 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
 			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+		
+		// global illumination
+		const deoglGIState * const giState = plan.GetRenderGIState();
+		if( giState ){
+			// ray
+			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
+				* plan.GetCameraMatrix() );
+			
+			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
+			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
+				matrix.GetRotationMatrix().QuickInvert() );
+			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
+				plan.GetProjectionMatrix() );
+			
+			// general
+			pLightPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
+		}
 		
 	}catch( const deException & ){
 		pLightPB->UnmapBuffer();
@@ -675,6 +707,7 @@ void deoglRenderLight::ResetDebugInfo(){
 	pRenderLightSky->ResetDebugInfo();
 	pRenderLightPoint->ResetDebugInfo();
 	pRenderLightSpot->ResetDebugInfo();
+	pRenderGI->ResetDebugInfo();
 }
 
 void deoglRenderLight::AddTopLevelDebugInfo(){
@@ -689,6 +722,8 @@ void deoglRenderLight::AddTopLevelDebugInfo(){
 	pRenderLightSky->AddTopLevelDebugInfoTransparent();
 	pRenderLightPoint->AddTopLevelDebugInfoTransparent();
 	pRenderLightSpot->AddTopLevelDebugInfoTransparent();
+	
+	pRenderGI->AddTopLevelDebugInfo();
 }
 
 void deoglRenderLight::DevModeDebugInfoChanged(){
@@ -701,6 +736,7 @@ void deoglRenderLight::DevModeDebugInfoChanged(){
 	pRenderLightSky->DevModeDebugInfoChanged();
 	pRenderLightPoint->DevModeDebugInfoChanged();
 	pRenderLightSpot->DevModeDebugInfoChanged();
+	pRenderGI->DevModeDebugInfoChanged();
 }
 
 
@@ -709,6 +745,9 @@ void deoglRenderLight::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLight::pCleanUp(){
+	if( pRenderGI ){
+		delete pRenderGI;
+	}
 	if( pRenderLightParticles ){
 		delete pRenderLightParticles;
 	}
@@ -722,9 +761,6 @@ void deoglRenderLight::pCleanUp(){
 		delete pRenderLightSky;
 	}
 	
-	if( pLightProbesTexture ){
-		delete pLightProbesTexture;
-	}
 	if( pAddToRenderTask ){
 		delete pAddToRenderTask;
 	}
@@ -737,6 +773,9 @@ void deoglRenderLight::pCleanUp(){
 	if( pShadowCubePB ){
 		pShadowCubePB->FreeReference();
 	}
+	if( pShadowCascadedPB ){
+		pShadowCascadedPB->FreeReference();
+	}
 	if( pShadowPB ){
 		pShadowPB->FreeReference();
 	}
@@ -744,48 +783,7 @@ void deoglRenderLight::pCleanUp(){
 		pLightPB->FreeReference();
 	}
 	
-	if( pShaderSSSSS ){
-		pShaderSSSSS->RemoveUsage();
-	}
-	
-	if( pShaderDebugAO ){
-		pShaderDebugAO->RemoveUsage();
-	}
-	if( pShaderAOBlur2 ){
-		pShaderAOBlur2->RemoveUsage();
-	}
-	if( pShaderAOBlur1 ){
-		pShaderAOBlur1->RemoveUsage();
-	}
-	if( pShaderAOLocal ){
-		pShaderAOLocal->RemoveUsage();
-	}
-	if( pShaderCopyDepth ){
-		pShaderCopyDepth->RemoveUsage();
-	}
-	
-	if( pDebugInfoSolid ){
-		GetRenderThread().GetDebug().GetDebugInformationList().Remove( pDebugInfoSolid );
-		pDebugInfoSolid->FreeReference();
-	}
-	if( pDebugInfoSolidCopyDepth ){
-		pDebugInfoSolidCopyDepth->FreeReference();
-	}
-	if( pDebugInfoSolidParticle ){
-		pDebugInfoSolidParticle->FreeReference();
-	}
-	if( pDebugInfoSolidSSSSS ){
-		pDebugInfoSolidSSSSS->FreeReference();
-	}
-	
-	if( pDebugInfoTransparent ){
-		GetRenderThread().GetDebug().GetDebugInformationList().Remove( pDebugInfoTransparent );
-		pDebugInfoTransparent->FreeReference();
-	}
-	if( pDebugInfoTransparentCopyDepth ){
-		pDebugInfoTransparentCopyDepth->FreeReference();
-	}
-	if( pDebugInfoTransparentSSSSS ){
-		pDebugInfoTransparentSSSSS->FreeReference();
-	}
+	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
+	dilist.RemoveIfPresent( pDebugInfoSolid );
+	dilist.RemoveIfPresent( pDebugInfoTransparent );
 }

@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleAnimationDifference.h"
 #include "../dearBoneState.h"
@@ -71,8 +70,8 @@
 /////////////////////////////////
 
 dearRuleAnimationDifference::dearRuleAnimationDifference( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimationDifference &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimationDifference &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pAnimationDifference( rule ),
 
@@ -94,6 +93,12 @@ pEnableSize( rule.GetEnableSize() )
 
 dearRuleAnimationDifference::~dearRuleAnimationDifference(){
 //	if( pAnimStates ) delete [] pAnimStates;
+	if( pMove1 ){
+		pMove1->FreeReference();
+	}
+	if( pMove2 ){
+		pMove2->FreeReference();
+	}
 }
 	
 
@@ -116,18 +121,17 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
-//	bool useRefMove = pAnimationDifference.GetUseReferenceMove();
 	const int boneCount = GetBoneMappingCount();
 	int i;
 	
 	bool newBlendMode = true;//true; // temporary hack
 	
 	// move times
-	const float ltime = pMove1->GetPlaytime() *
-		decMath::clamp( pTargetLeadingMoveTime.GetValue( GetInstance(), pAnimationDifference.GetLeadingMoveTime() ), 0.0f, 1.0f );
+	const float ltime = pMove1->GetPlaytime() * decMath::clamp(
+		pTargetLeadingMoveTime.GetValue( GetInstance(), pAnimationDifference.GetLeadingMoveTime() ), 0.0f, 1.0f );
 	
-	const float rtime = pMove2->GetPlaytime() *
-		decMath::clamp( pTargetReferenceMoveTime.GetValue( GetInstance(), pAnimationDifference.GetReferenceMoveTime() ), 0.0f, 1.0f );
+	const float rtime = pMove2->GetPlaytime() * decMath::clamp(
+		pTargetReferenceMoveTime.GetValue( GetInstance(), pAnimationDifference.GetReferenceMoveTime() ), 0.0f, 1.0f );
 	
 	// step through all bones and set animation
 	for( i=0; i<boneCount; i++ ){
@@ -240,7 +244,7 @@ void dearRuleAnimationDifference::pUpdateMove(){
 		pMove2 = NULL;
 	}
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( animation ){
 		pMove1 = animation->GetMoveNamed( pAnimationDifference.GetLeadingMoveName() );
 		if( pMove1 ){

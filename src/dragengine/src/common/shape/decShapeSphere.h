@@ -33,7 +33,7 @@
  * optionally axs scaling to turn it into an ellipsoid. The axis scaling is
  * applied to the radius in the x and z direction.
  */
-class decShapeSphere : public decShape{
+class DE_DLL_EXPORT decShapeSphere : public decShape{
 private:
 	float pRadius;
 	decVector2 pAxisScaling;

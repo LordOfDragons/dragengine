@@ -45,7 +45,7 @@ class deDecalList;
  * hidden. If the height image is missing all grid points take on the height of
  * the offset parameter.
  */
-class deHeightTerrainSector{
+class DE_DLL_EXPORT deHeightTerrainSector{
 private:
 	decPoint pSector;
 	deHeightTerrain *pParentHeightTerrain;

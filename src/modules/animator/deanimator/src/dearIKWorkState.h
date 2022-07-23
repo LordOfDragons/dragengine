@@ -25,23 +25,24 @@
 #include <dragengine/common/math/decMath.h>
 
 class dearBoneState;
+class deRigBone;
 
 
 
 /**
- * \brief Working state of bone for inverse kinematic solving.
+ * Working state of bone for inverse kinematic solving.
  */
 class dearIKWorkState{
 public:
-	/** \brief Axis Types. */
+	/** Axis Types. */
 	enum eAxisTypes{
-		/** \brief Locked. */
+		/** Locked. */
 		eatLocked,
 		
-		/** \brief Limited. */
+		/** Limited. */
 		eatLimited,
 		
-		/** \brief Free. */
+		/** Free. */
 		eatFree
 	};
 	
@@ -51,21 +52,27 @@ private:
 	int pBoneStateIndex;
 	decMatrix pGlobalMatrix;
 	decMatrix pInvGlobalMatrix;
-	decVector pRefRotation;
-	int pAxisTypeX;
-	int pAxisTypeY;
-	int pAxisTypeZ;
+	eAxisTypes pAxisTypeX;
+	eAxisTypes pAxisTypeY;
+	eAxisTypes pAxisTypeZ;
 	bool pHasLimits;
+	decVector pDampening;
+	bool pHasDampening;
+	decVector pLimitLower;
+	decVector pLimitUpper;
+	decQuaternion pLimitZeroQuat;
+	decQuaternion pLimitZeroQuatInv;
+	decVector pLockedRotation;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create bone state. */
+	/** Create bone state. */
 	dearIKWorkState();
 	
-	/** \brief Clean up bone state. */
+	/** Clean up bone state. */
 	~dearIKWorkState();
 	/*@}*/
 	
@@ -73,55 +80,79 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Bone state index. */
+	/** Bone state index. */
 	inline int GetBoneStateIndex() const{ return pBoneStateIndex; }
 	
-	/** \brief Set bone state index. */
+	/** Set bone state index. */
 	void SetBoneStateIndex( int index );
 	
-	/** \brief Global matrix. */
+	/** Global matrix. */
 	inline const decMatrix &GetGlobalMatrix() const{ return pGlobalMatrix; }
 	
-	/** \brief Set global matrix. */
+	/** Set global matrix. */
 	void SetGlobalMatrix( const decMatrix &matrix );
 	
-	/** \brief Inverse global matrix. */
+	/** Inverse global matrix. */
 	inline const decMatrix &GetInverseGlobalMatrix() const{ return pInvGlobalMatrix; }
 	
-	/** \brief Set inverse global matrix. */
+	/** Set inverse global matrix. */
 	void SetInverseGlobalMatrix( const decMatrix &matrix );
 	
 	
 	
-	/** \brief Reference rotation. */
-	inline const decVector &GetReferenceRotation() const{ return pRefRotation; }
+	/** X axis type. */
+	inline eAxisTypes GetAxisTypeX() const{ return pAxisTypeX; }
 	
-	/** \brief Set reference rotation. */
-	void SetReferenceRotation( const decVector &rotation );
+	/** Set X axis type. */
+	void SetAxisTypeX( eAxisTypes type );
 	
-	/** \brief X axis type. */
-	inline int GetAxisTypeX() const{ return pAxisTypeX; }
+	/** Y axis type. */
+	inline eAxisTypes GetAxisTypeY() const{ return pAxisTypeY; }
 	
-	/** \brief Set X axis type. */
-	void SetAxisTypeX( int type );
+	/** Set Y axis type. */
+	void SetAxisTypeY( eAxisTypes type );
 	
-	/** \brief Y axis type. */
-	inline int GetAxisTypeY() const{ return pAxisTypeY; }
+	/** Z axis type. */
+	inline eAxisTypes GetAxisTypeZ() const{ return pAxisTypeZ; }
 	
-	/** \brief Set Y axis type. */
-	void SetAxisTypeY( int type );
+	/** Set Z axis type. */
+	void SetAxisTypeZ( eAxisTypes type );
 	
-	/** \brief Z axis type. */
-	inline int GetAxisTypeZ() const{ return pAxisTypeZ; }
-	
-	/** \brief Set Z axis type. */
-	void SetAxisTypeZ( int type );
-	
-	/** \brief Any limits in effect. */
+	/** Any limits in effect. */
 	inline bool GetHasLimits() const{ return pHasLimits; }
 	
-	/** \brief Set if any limits are in effect. */
+	/** Set if any limits are in effect. */
 	void SetHasLimits( bool hasLimits );
+	
+	/** Dampening. */
+	inline const decVector &GetDampening() const{ return pDampening; }
+	
+	/** Set dampening. */
+	void SetDampening( const decVector &resistance );
+	
+	/** Has dampening. */
+	inline bool HasDampening() const{ return pHasDampening; }
+	
+	/** Lower limit. */
+	inline const decVector &GetLimitLower() const{ return pLimitLower; }
+	
+	/** Upper limit. */
+	inline const decVector &GetLimitUpper() const{ return pLimitUpper; }
+	
+	/** Limit center quaternion. */
+	inline const decQuaternion &GetLimitZeroQuat() const{ return  pLimitZeroQuat; }
+	
+	/** Inverse limit center quaternion. */
+	inline const decQuaternion &GetLimitZeroQuatInv() const{ return pLimitZeroQuatInv; }
+	
+	/** Update limits from rig bone. */
+	void UpdateLimits( const deRigBone &bone );
+	
+	/** Locked rotation. */
+	inline const decVector &GetLockedRotation() const{ return pLockedRotation; }
+	
+	/** Set locked rotation. */
+	void SetLockedRotation( const decVector &rotation );
 	/*@}*/
 };
 

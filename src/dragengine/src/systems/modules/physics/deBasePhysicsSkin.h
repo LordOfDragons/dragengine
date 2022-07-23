@@ -22,12 +22,14 @@
 #ifndef _DEBASEPHYSICSSKIN_H_
 #define _DEBASEPHYSICSSKIN_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics Module Skin Peer.
  *
  */
-class deBasePhysicsSkin{
+class DE_DLL_EXPORT deBasePhysicsSkin{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

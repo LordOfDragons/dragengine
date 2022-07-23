@@ -71,6 +71,9 @@ public:
 	
 	/** \brief Set conversation. */
 	void SetConversation( ceConversation *conversation );
+	
+	/** \brief Conversation path changed. */
+	void OnConversationPathChanged();
 	/*@}*/
 };
 

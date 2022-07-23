@@ -36,7 +36,7 @@ class deSkinPropertyNodeText;
  * 
  * \warning For internal use only.
  */
-class deRLTaskReadSkinInternal : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadSkinInternal : public deResourceLoaderTask {
 public:
 	/**
 	 * \brief For internal use only.
@@ -46,7 +46,7 @@ public:
 	 * creating a cInternalTask instance since AddLoadRequest does not add a reference
 	 * for the caller
 	 */
-	class cInternalTask : public deThreadSafeObject{
+	class DE_DLL_EXPORT cInternalTask : public deThreadSafeObject{
 	private:
 		deSkinPropertyImage *pPropertyImage;
 		deSkinPropertyNodeImage *pNodeImage;

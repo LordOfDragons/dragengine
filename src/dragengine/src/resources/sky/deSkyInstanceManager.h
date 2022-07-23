@@ -32,7 +32,7 @@ class deSkyInstance;
 /**
  * \brief Sky instance resource manager.
  */
-class deSkyInstanceManager : public deResourceManager{
+class DE_DLL_EXPORT deSkyInstanceManager : public deResourceManager{
 private:
 	deResourceList pInstances;
 	

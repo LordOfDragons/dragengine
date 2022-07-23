@@ -33,41 +33,43 @@ class deoglDebugInformation;
  */
 class deoglRenderWorldInfo : public deoglRenderBase{
 public:
-	deoglDebugInformation *infoWorld;
-	deoglDebugInformation *infoPrepare;
-	deoglDebugInformation *infoPassMasked;
-	deoglDebugInformation *infoSolidGeometry;
-	deoglDebugInformation *infoReflection;
-	deoglDebugInformation *infoSSR;
-	deoglDebugInformation *infoSolidGeometryLights;
-	deoglDebugInformation *infoTransparent;
-	deoglDebugInformation *infoToneMapping;
-	deoglDebugInformation *infoDebugDrawers;
-	deoglDebugInformation *infoPostProcessing;
+	deoglDebugInformation::Ref infoWorld;
+	deoglDebugInformation::Ref infoPassMasked;
+	deoglDebugInformation::Ref infoGITraceRays;
+	deoglDebugInformation::Ref infoSolidGeometry;
+	deoglDebugInformation::Ref infoReflection;
+	deoglDebugInformation::Ref infoSSR;
+	deoglDebugInformation::Ref infoLuminancePrepare;
+	deoglDebugInformation::Ref infoSolidGeometryLights;
+	deoglDebugInformation::Ref infoTransparent;
+	deoglDebugInformation::Ref infoToneMapping;
+	deoglDebugInformation::Ref infoDebugDrawers;
+	deoglDebugInformation::Ref infoPostProcessing;
+	deoglDebugInformation::Ref infoDeveloperMode;
+	deoglDebugInformation::Ref infoDeveloperModeTemp;
 	
-	deoglDebugInformation *infoSolidGeometryDetails;
-	deoglDebugInformation *infoSolidGeometryClear;
-	deoglDebugInformation *infoSolidGeometryDepthTask;
-	deoglDebugInformation *infoSolidGeometryDepthRender;
-	deoglDebugInformation *infoSolidGeometryOcclusion;
-	deoglDebugInformation *infoSolidGeometryTranspCounter;
-	deoglDebugInformation *infoSolidGeometrySky;
-	deoglDebugInformation *infoSolidGeometryTask;
-	deoglDebugInformation *infoSolidGeometryRender;
-	deoglDebugInformation *infoSolidGeometryDecals;
-	deoglDebugInformation *infoSolidGeometryDownsampleDepth;
-	deoglDebugInformation *infoSolidGeometrySSAO;
+	deoglDebugInformation::Ref infoSolidGeometryDetails;
+	deoglDebugInformation::Ref infoSolidGeometryDepthTask;
+	deoglDebugInformation::Ref infoSolidGeometryDepthRender;
+	deoglDebugInformation::Ref infoSolidGeometryOcclusion;
+	deoglDebugInformation::Ref infoSolidGeometryTranspCounter;
+	deoglDebugInformation::Ref infoSolidGeometrySky;
+	deoglDebugInformation::Ref infoSolidGeometryTask;
+	deoglDebugInformation::Ref infoSolidGeometryRender;
+	deoglDebugInformation::Ref infoSolidGeometryDecals;
+	deoglDebugInformation::Ref infoSolidGeometryDownsampleDepth;
+	deoglDebugInformation::Ref infoSolidGeometrySSAO;
 	
-	deoglDebugInformation *infoTransparentDetails;
-	deoglDebugInformation *infoTransparentClear;
-	deoglDebugInformation *infoTransparentDepthTask;
-	deoglDebugInformation *infoTransparentDepthRender;
-	deoglDebugInformation *infoTransparentCopyDepth;
-	deoglDebugInformation *infoTransparentTask;
-	deoglDebugInformation *infoTransparentRender;
-	deoglDebugInformation *infoTransparentSSR;
-	deoglDebugInformation *infoTransparentLights;
-	deoglDebugInformation *infoTransparentVolumetric;
+	deoglDebugInformation::Ref infoTransparentDetails;
+	deoglDebugInformation::Ref infoTransparentClear;
+	deoglDebugInformation::Ref infoTransparentDepthTask;
+	deoglDebugInformation::Ref infoTransparentDepthRender;
+	deoglDebugInformation::Ref infoTransparentCopyDepth;
+	deoglDebugInformation::Ref infoTransparentTask;
+	deoglDebugInformation::Ref infoTransparentRender;
+	deoglDebugInformation::Ref infoTransparentSSR;
+	deoglDebugInformation::Ref infoTransparentLights;
+	deoglDebugInformation::Ref infoTransparentVolumetric;
 	
 	
 	

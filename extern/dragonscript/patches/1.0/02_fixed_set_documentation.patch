@@ -1,0 +1,26 @@
+diff --git a/doc/nativeclasses/Set.ds b/doc/nativeclasses/Set.ds
+index 3ff4dc7..0eba5ab 100644
+--- a/doc/nativeclasses/Set.ds
++++ b/doc/nativeclasses/Set.ds
+@@ -22,10 +22,6 @@ fixed class Set
+ 	public func new( Set set )
+ 	end
+ 	
+-	/** \brief Create set with values added from array. */
+-	public func new( Array array )
+-	end
+-	
+ 	
+ 	
+ 	/** \brief Create set with one object added. */
+@@ -77,6 +73,10 @@ fixed class Set
+ 	public static func Set newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8, Object obj9, Object obj10 )
+ 		return null
+ 	end
++	
++	/** \brief Create set with values added from array. */
++	public static func Set newFrom( Array array )
++	end
+ 	/*@}*/
+ 	
+ 	

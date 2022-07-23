@@ -31,7 +31,7 @@ class igdeStepableTask;
 class deEngine;
 class deLogger;
 class deException;
-
+class decUnicodeStringList;
 
 
 /**
@@ -186,6 +186,17 @@ public:
 	 * The default implementation returns NULL.
 	 */
 	virtual igdeStepableTask *OnGameDefinitionChanged();
+	
+	/**
+	 * \brief Process command line arguments.
+	 * 
+	 * This method can be called multiple times. Module has to process arguments from the
+	 * first argument in the list and has to stop at the first unsupported argument. The
+	 * consumed arguments have to be removed from the beginning of the list. If the module
+	 * wishes to close the application it has to return false. Return true to continue
+	 * processing command line arguments.
+	 */
+	virtual bool ProcessCommandLine( decUnicodeStringList &arguments );
 	/*@}*/
 	
 	

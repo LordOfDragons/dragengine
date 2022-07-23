@@ -38,7 +38,13 @@ class decUnicodeString;
  * Fonts are image based and can be colored or not colored in which case they can be
  * colorized. Colored fonts can not be colorized.
  */
-class deFont : public deFileResource{
+class DE_DLL_EXPORT deFont : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deFont> Ref;
+	
+	
+	
 private:
 	deFontGlyph pUndefinedGlyph;
 	deFontGlyph *pGlyphs;

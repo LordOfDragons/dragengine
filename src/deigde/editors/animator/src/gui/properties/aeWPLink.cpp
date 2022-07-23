@@ -36,13 +36,20 @@
 #include "../../undosys/link/aeULinkAdd.h"
 #include "../../undosys/link/aeULinkRemove.h"
 #include "../../undosys/link/aeULinkSetRepeat.h"
+#include "../../undosys/link/aeULinkSetBone.h"
+#include "../../undosys/link/aeULinkSetBoneParameter.h"
+#include "../../undosys/link/aeULinkSetBoneMinimum.h"
+#include "../../undosys/link/aeULinkSetBoneMaximum.h"
+#include "../../undosys/link/aeULinkToggleWrapY.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
@@ -61,8 +68,10 @@
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndoReference.h>
 
-#include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/rig/deRigBone.h>
 
 
 
@@ -155,6 +164,33 @@ public:
 		
 		igdeUndoReference undo;
 		undo.TakeOver( new aeULinkSetName( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+ 
+class cComboBone : public igdeComboBoxListener{
+	aeWPLink &pPanel;
+	bool &pPreventUpdate;
+	
+public:
+	cComboBone( aeWPLink &panel, bool &preventUpdate ) :
+		pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		if( pPreventUpdate ){
+			return;
+		}
+		
+		const decString &bone = comboBox->GetText();
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || link->GetBone() == bone ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetBone( link, bone ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -275,6 +311,107 @@ public:
 	}
 };
 
+class cTextBone : public igdeTextFieldListener{
+	aeWPLink &pPanel;
+	
+public:
+	cTextBone( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		const decString value( textField->GetText() );
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || link->GetBone() == value ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetBone( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+class cComboBoneParameter : public igdeComboBoxListener{
+	aeWPLink &pPanel;
+	
+public:
+	cComboBoneParameter( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		deAnimatorLink::eBoneParameter parameter = comboBox->GetSelectedItem()
+			? ( deAnimatorLink::eBoneParameter )( intptr_t )comboBox->GetSelectedItem()->GetData()
+			: deAnimatorLink::ebpPositionZ;
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || link->GetBoneParameter() == parameter ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetBoneParameter( link, parameter ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+class cTextBoneMinimum : public igdeTextFieldListener{
+	aeWPLink &pPanel;
+	
+public:
+	cTextBoneMinimum( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		const float value = textField->GetFloat();
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || fabsf( link->GetBoneMinimum() - value ) < FLOAT_SAFE_EPSILON ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetBoneMinimum( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+class cTextBoneMaximum : public igdeTextFieldListener{
+	aeWPLink &pPanel;
+	
+public:
+	cTextBoneMaximum( aeWPLink &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		const float value = textField->GetFloat();
+		aeLink * const link = pPanel.GetLink();
+		if( ! link || fabsf( link->GetBoneMaximum() - value ) < FLOAT_SAFE_EPSILON ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkSetBoneMaximum( link, value ) );
+		if( undo ){
+			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		}
+	}
+};
+
+
+class cCheckWrapY : public cBaseAction{
+public:
+	cCheckWrapY( aeWPLink &panel ) : cBaseAction( panel, "Wrap Y", nullptr,
+		"Wrap Y value instead of clamping" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
+		return new aeULinkToggleWrapY( link );
+	}
+	
+	virtual void Update( const aeAnimator &animator, const aeLink &link ){
+		cBaseAction::Update( animator, link );
+		SetSelected( link.GetWrapY() );
+	}
+};
 }
 
 
@@ -319,6 +456,30 @@ pPreventUpdate( false )
 	helper.EditSpinInteger( groupBox, "Repeat:", "Repeat curve along X direction", 1, 99,
 		pSpinRepeat, new cSpinRepeat( *this ) );
 	
+	helper.ComboBoxFilter( groupBox, "Bone:", true,
+		"Set bone to use parameter of as input or empty string to not use",
+		pCBBone, new cComboBone( *this, pPreventUpdate ) );
+	pCBBone->SetDefaultSorter();
+	
+	helper.ComboBox( groupBox, "Bone Parameter:", "Set bone parameter to use as input",
+		pCBBoneParameter, new cComboBoneParameter( *this ) );
+	pCBBoneParameter->AddItem( "Position X", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpPositionX );
+	pCBBoneParameter->AddItem( "Position Y", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpPositionY );
+	pCBBoneParameter->AddItem( "Position Z", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpPositionZ );
+	pCBBoneParameter->AddItem( "Rotation X", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpRotationX );
+	pCBBoneParameter->AddItem( "Rotation Y", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpRotationY );
+	pCBBoneParameter->AddItem( "Rotation Z", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpRotationZ );
+	pCBBoneParameter->AddItem( "Scale X", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpScaleX );
+	pCBBoneParameter->AddItem( "Scale Y", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpScaleY );
+	pCBBoneParameter->AddItem( "Scale Z", nullptr, ( void* )( intptr_t )deAnimatorLink::ebpScaleZ );
+	
+	helper.EditFloat( groupBox, "Bone Minimum Value:", "Minimum bone value",
+		pEditBoneMinimum, new cTextBoneMinimum( *this ) );
+	helper.EditFloat( groupBox, "Bone Maximum Value:", "Maximum bone value",
+		pEditBoneMaximum, new cTextBoneMaximum( *this ) );
+	
+	helper.CheckBox( groupBox, pChkWrapY, new cCheckWrapY( *this ), true );
+	
 	
 	helper.GroupBoxFlow( content, groupBox, "Link Curve:" );
 	
@@ -360,6 +521,7 @@ void aeWPLink::SetAnimator( aeAnimator *animator ){
 		animator->AddReference();
 	}
 	
+	UpdateRigBoneList();
 	UpdateControllerList();
 	UpdateLinkList();
 }
@@ -404,12 +566,20 @@ void aeWPLink::UpdateLink(){
 		pEditName->SetText( link->GetName() );
 		pCBController->SetSelectionWithData( link->GetController() );
 		pSpinRepeat->SetValue( link->GetRepeat() );
+		pCBBone->SetText( link->GetBone() );
+		pCBBoneParameter->SetSelectionWithData( ( void* )( intptr_t )link->GetBoneParameter() );
+		pEditBoneMinimum->SetFloat( link->GetBoneMinimum() );
+		pEditBoneMaximum->SetFloat( link->GetBoneMaximum() );
 		pEditCurve->SetCurve( link->GetCurve() );
 		
 	}else{
 		pEditName->ClearText();
 		pCBController->SetSelectionWithData( NULL );
 		pSpinRepeat->SetValue( 1 );
+		pCBBone->ClearText();
+		pCBBoneParameter->SetSelectionWithData( ( void* )( intptr_t )deAnimatorLink::ebpPositionZ );
+		pEditBoneMinimum->ClearText();
+		pEditBoneMaximum->ClearText();
 		pEditCurve->ClearCurve();
 	}
 	
@@ -417,7 +587,42 @@ void aeWPLink::UpdateLink(){
 	pEditName->SetEnabled( enabled );
 	pCBController->SetEnabled( enabled );
 	pSpinRepeat->SetEnabled( enabled );
+	pCBBone->SetEnabled( enabled );
+	pCBBoneParameter->SetEnabled( enabled );
+	pEditBoneMinimum->SetEnabled( enabled );
+	pEditBoneMaximum->SetEnabled( enabled );
 	pEditCurve->SetEnabled( enabled );
+	
+	pChkWrapY->GetAction()->Update();
+}
+
+void aeWPLink::UpdateRigBoneList(){
+	const decString selection( pCBBone->GetText() );
+	
+	pPreventUpdate = true;
+	try{
+		pCBBone->RemoveAllItems();
+		
+		if( pAnimator ){
+			const deRig * const rig = pAnimator->GetEngineRig();
+			if( rig ){
+				const int count = rig->GetBoneCount();
+				int i;
+				for( i=0; i<count; i++ ){
+					pCBBone->AddItem( rig->GetBoneAt( i ).GetName() );
+				}
+			}
+			pCBBone->SortItems();
+		}
+		
+		pCBBone->StoreFilterItems();
+		pCBBone->SetText( selection );
+		pPreventUpdate = false;
+		
+	}catch( const deException & ){
+		pPreventUpdate = false;
+		throw;
+	}
 }
 
 void aeWPLink::UpdateControllerList(){

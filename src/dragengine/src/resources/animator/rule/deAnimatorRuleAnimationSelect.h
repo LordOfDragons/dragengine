@@ -29,7 +29,7 @@
 /**
  * \brief Animator animation select rule.
  * 
- * Apply animation state from an animation move selected from a list of animation movers.
+ * Apply animation state from an animation move selected from a list of animation moves.
  * 
  * The animation move to use is selected using a link. The animation moves are distributed
  * evenly across the 0 to 1 link value range in the order they are defined. The closest
@@ -40,7 +40,13 @@
  * a list of animations. This can be for example a motion matching system using a database
  * of animations.
  */
-class deAnimatorRuleAnimationSelect : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleAnimationSelect : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleAnimationSelect> Ref;
+	
+	
+	
 private:
 	decStringList pMoves;
 	

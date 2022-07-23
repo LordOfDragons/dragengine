@@ -22,6 +22,8 @@
 #ifndef _DECUNICODESTRING_H_
 #define _DECUNICODESTRING_H_
 
+#include "../../../dragengine_export.h"
+
 #ifdef ANDROID
 #include <stdarg.h>
 #endif
@@ -33,7 +35,7 @@ class decString;
 /**
  * \brief Unicode string supporting encoding and decoding UTF8 formatted strings.
  */
-class decUnicodeString{
+class DE_DLL_EXPORT decUnicodeString{
 private:
 	void *pString; // string stored in 1, 2 or 4 byte array
 	int pLength; // number of characters in the string

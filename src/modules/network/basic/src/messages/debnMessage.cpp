@@ -19,14 +19,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "debnMessage.h"
-#include "dragengine/resources/network/deNetworkMessage.h"
-#include "dragengine/common/exceptions.h"
 
+#include <dragengine/common/exceptions.h>
 
 
 // Class debnMessage
@@ -35,38 +30,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnMessage::debnMessage(){
-	pMessage = NULL;
-	pNumber = -1;
-	pState = emsPending;
-	pType = 0;
-	pSecSinceSend = 0.0f;
-	
-	try{
-		pMessage = new deNetworkMessage;
-		if( ! pMessage ) DETHROW( deeOutOfMemory );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+debnMessage::debnMessage() :
+pMessage( deNetworkMessage::Ref::New( new deNetworkMessage ) ),
+pNumber( -1 ),
+pState( emsPending ),
+pType( 0 ),
+pResendElapsed( 0.0f ),
+pTimeoutElapsed( 0 ){
 }
 
-debnMessage::debnMessage( deNetworkMessage *message ){
-	if( ! message ) DETHROW( deeInvalidParam );
-	
-	pMessage = NULL;
-	pNumber = -1;
-	pState = emsPending;
-	pType = 0;
-	pSecSinceSend = 0.0f;
-	
-	pMessage = message;
-	message->AddReference();
-}
-
-debnMessage::~debnMessage(){
-	pCleanUp();
+debnMessage::debnMessage( deNetworkMessage *message ) :
+pMessage( message ),
+pNumber( -1 ),
+pState( emsPending ),
+pType( 0 ),
+pResendElapsed( 0.0f ),
+pTimeoutElapsed( 0 )
+{
+	DEASSERT_NOTNULL( message )
 }
 
 
@@ -78,9 +59,7 @@ void debnMessage::SetNumber( int number ){
 	pNumber = number;
 }
 
-void debnMessage::SetState( int state ){
-	if( state < emsPending || state > emsDone ) DETHROW( deeInvalidParam );
-	
+void debnMessage::SetState( eMessageStates state ){
 	pState = state;
 }
 
@@ -88,19 +67,20 @@ void debnMessage::SetType( int type ){
 	pType = type;
 }
 
-void debnMessage::SetSecondsSinceSend( float seconds ){
-	pSecSinceSend = seconds;
+void debnMessage::SetResendElapsed( float elapsed ){
+	pResendElapsed = elapsed;
 }
 
-void debnMessage::IncreaseSecondsSinceSend( float seconds ){
-	pSecSinceSend += seconds;
+void debnMessage::SetTimeoutElapsed( float elapsed ){
+	pTimeoutElapsed = elapsed;
 }
 
+void debnMessage::IncrementElapsed( float elapsed ){
+	pResendElapsed += elapsed;
+	pTimeoutElapsed += elapsed;
+}
 
-
-// Private Functions
-//////////////////////
-
-void debnMessage::pCleanUp(){
-	if( pMessage ) pMessage->FreeReference();
+void debnMessage::ResetElapsed(){
+	pResendElapsed = 0.0f;
+	pTimeoutElapsed = 0.0f;
 }

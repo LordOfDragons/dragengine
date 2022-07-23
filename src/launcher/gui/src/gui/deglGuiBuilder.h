@@ -28,7 +28,7 @@
 
 
 /**
- * @brief GUI Builder.
+ * GUI Builder.
  */
 class deglGuiBuilder{
 private:
@@ -50,7 +50,7 @@ private:
 	int pPaddingButtonVert;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new gui builder. */
 	deglGuiBuilder();
@@ -60,7 +60,7 @@ public:
 	~deglGuiBuilder();
 	/*@}*/
 
-	/** @name Parameters */
+	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the font to use. */
 	inline FXFont *GetFont() const{ return pFont; }
@@ -148,7 +148,7 @@ public:
 	void SetPaddingButtonVert( int padding );
 	/*@}*/
 	
-	/** @name Creation */
+	/** \name Creation */
 	/*@{*/
 	/** Creates a scrolling window filling the entire parent container. */
 	FXScrollWindow *CreateScrollWindow( FXComposite *container ) const;

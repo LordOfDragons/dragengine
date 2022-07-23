@@ -45,86 +45,111 @@ class EMPSystem extends Panel
 		func void applyChanges()
 	end
 	
+	/**
+	 * \brief Parameter edit widget listener.
+	 * \version 1.7
+	 */
+	public interface ParameterValueEditor2 implements ParameterValueEditor
+		/** \brief Reset parameter to default value. */
+		func void resetDefault()
+	end
+	
 	/** \brief Text field supporting ParameterValueEditor. */
-	public class PVETextField extends TextField implements ParameterValueEditor
+	public class PVETextField extends TextField implements ParameterValueEditor2
 		private var SysParamWrapper pWrapper
 		private var ModuleParameter pParameter
 		
 		/** \brief Create text field. */
-		public func new( SysParamWrapper wrapper, ModuleParameter parameter )
-			this.pWrapper = wrapper
-			this.pParameter = parameter
-			this.setDesignerSelector( "TextField.EMPSystem.Value" )
-			this.getModel().setText( wrapper.getParameterValue( parameter.getName() ) )
+		public func new(SysParamWrapper wrapper, ModuleParameter parameter)
+			pWrapper = wrapper
+			pParameter = parameter
+			setDesignerSelector("TextField.EMPSystem.Value")
+			getModel().setText(wrapper.getParameterValue(parameter.getName()))
 		end
 		
 		/** \brief Reset parameter changes. */
 		public func void resetChanges()
-			this.getModel().setText( this.pWrapper.getParameterValue( this.pParameter.getName() ) )
+			getModel().setText(pWrapper.getParameterValue(pParameter.getName()))
+		end
+		
+		/**
+		 * \brief Reset parameter to default value.
+		 * \version 1.7
+		 */
+		public func void resetDefault()
+			getModel().setText(pParameter.getDefaultValue())
 		end
 		
 		/** \brief Apply parameter changes. */
 		public func void applyChanges()
-			var String oldValue = this.pWrapper.getParameterValue( this.pParameter.getName() )
-			var String newValue = this.getModel().getText()
-			if not newValue.equals( oldValue )
-				this.pWrapper.setParameterValue( this.pParameter.getName(), newValue )
+			var String oldValue = pWrapper.getParameterValue(pParameter.getName())
+			var String newValue = getModel().getText()
+			if not newValue.equals(oldValue)
+				pWrapper.setParameterValue(pParameter.getName(), newValue)
 			end
 		end
 	end
 	
 	/** \brief CheckBox supporting ParameterValueEditor. */
-	public class PVECheckBox extends Panel implements ParameterValueEditor
+	public class PVECheckBox extends Panel implements ParameterValueEditor2
 		private var SysParamWrapper pWrapper
 		private var ModuleParameter pParameter
 		private var CheckBox pCheckBox
 		
 		/** \brief Create text field. */
-		public func new( SysParamWrapper wrapper, ModuleParameter parameter )
-			this.pWrapper = wrapper
-			this.pParameter = parameter
-			this.pCheckBox = CheckBox.new()
-			this.pCheckBox.setDesignerSelector( "CheckBox.EMPSystem.Value" )
-			this.pCheckBox.setToggled( wrapper.getParameterValue( parameter.getName() ).equals( "1" ) )
-			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
-			this.addWidget( this.pCheckBox )
+		public func new(SysParamWrapper wrapper, ModuleParameter parameter)
+			pWrapper = wrapper
+			pParameter = parameter
+			pCheckBox = CheckBox.new()
+			pCheckBox.setDesignerSelector("CheckBox.EMPSystem.Value")
+			pCheckBox.setToggled(wrapper.getParameterValue(parameter.getName()).equals("1"))
+			setLayout(CentrizedBoxLayout.new(LayoutAxis.x))
+			addWidget(pCheckBox)
 		end
 		
 		/** \brief Dispose of widget. */
 		public func void dispose()
-			this.pCheckBox = null
+			pCheckBox = null
 			super.dispose()
 		end
 		
 		/** \brief Reset parameter changes. */
 		public func void resetChanges()
-			this.pCheckBox.setToggled( this.pWrapper.getParameterValue( this.pParameter.getName() ).equals( "1" ) )
+			pCheckBox.setToggled(pWrapper.getParameterValue(pParameter.getName()).equals("1"))
+		end
+		
+		/**
+		 * \brief Reset parameter to default value.
+		 * \version 1.7
+		 */
+		public func void resetDefault()
+			pCheckBox.setToggled(pParameter.getDefaultValue().equals("1"))
 		end
 		
 		/** \brief Apply parameter changes. */
 		public func void applyChanges()
-			var bool oldValue = this.pWrapper.getParameterValue( this.pParameter.getName() ).equals( "1" )
-			var bool newValue = this.pCheckBox.getToggled()
+			var bool oldValue = pWrapper.getParameterValue(pParameter.getName()).equals("1")
+			var bool newValue = pCheckBox.getToggled()
 			if newValue != oldValue
-				this.pWrapper.setParameterValue( this.pParameter.getName(), newValue if "1" else "0" )
+				pWrapper.setParameterValue(pParameter.getName(), newValue if "1" else "0")
 			end
 		end
 	end
 	
 	/** \brief Cycle value supporting ParameterValueEditor. */
-	public class PVECycleValue extends Panel implements ParameterValueEditor
+	public class PVECycleValue extends Panel implements ParameterValueEditor2
 		/** \brief Select previous value. */
 		public class SelectPrevValue implements ActionListener
 			private var PVECycleValue pCycleValue
 			
 			/** \brief Create action listener. */
-			public func new( PVECycleValue cycleValue )
-				this.pCycleValue = cycleValue
+			public func new(PVECycleValue cycleValue)
+				pCycleValue = cycleValue
 			end
 			
 			/** \brief Action triggered. */
-			public func void onAction( ActionEvent event )
-				this.pCycleValue.selectPrevValue()
+			public func void onAction(ActionEvent event)
+				pCycleValue.selectPrevValue()
 			end
 		end
 		
@@ -133,28 +158,50 @@ class EMPSystem extends Panel
 			private var PVECycleValue pCycleValue
 			
 			/** \brief Create action listener. */
-			public func new( PVECycleValue cycleValue )
-				this.pCycleValue = cycleValue
+			public func new(PVECycleValue cycleValue)
+				pCycleValue = cycleValue
 			end
 			
 			/** \brief Action triggered. */
-			public func void onAction( ActionEvent event )
-				this.pCycleValue.selectNextValue()
+			public func void onAction(ActionEvent event)
+				pCycleValue.selectNextValue()
 			end
 		end
 		
 		/** \brief Pick value from list action. */
-		class SelectFromList extends DefaultMouseListener
+		class SelectFromList extends ClickedActionListener
 			private var PVECycleValue pCycleValue
 			
 			/** \brief Create listener. */
-			public func new( PVECycleValue cycleValue )
-				this.pCycleValue = cycleValue
+			public func new(PVECycleValue cycleValue)
+				pCycleValue = cycleValue
 			end
 			
-			/** \brief Mouse button has been released. */
-			public func void onButtonRelease( MouseEvent event )
-				this.pCycleValue.selectFromList()
+			/** \brief User clicked on label. */
+			public func void onAction()
+				pCycleValue.selectFromList()
+			end
+		end
+		
+		/** \brief Design parent on mouse enter, move and leave. */
+		class ForwardMouseEnterMoveLeave extends DefaultMouseListener
+			private var Widget pWidget
+			
+			/** \brief Create listener. */
+			public func new(Widget widget)
+				pWidget = widget
+			end
+			
+			public func void onMouseEnter(MouseEvent event)
+				pWidget.sendEvent(event)
+			end
+			
+			public func void onMouseMove(MouseEvent event)
+				pWidget.sendEvent(event)
+			end
+			
+			public func void onMouseLeave(MouseEvent event)
+				pWidget.sendEvent(event)
 			end
 		end
 		
@@ -165,35 +212,35 @@ class EMPSystem extends Panel
 			private var String pDescription
 			
 			/** \brief Create selection entry. */
-			public func new( String value, String displayName, String description )
-				this.pValue = value
-				this.pDisplayName = displayName
-				this.pDescription = description
+			public func new(String value, String displayName, String description)
+				pValue = value
+				pDisplayName = displayName
+				pDescription = description
 			end
 			
 			/** \brief Value of entry. */
 			public func String getValue()
-				return this.pValue
+				return pValue
 			end
 			
 			/** \brief Display name of entry. */
 			public func String getDisplayName()
-				return this.pDisplayName
+				return pDisplayName
 			end
 			
 			/** \brief Description of entry. */
 			public func String getDescription()
-				return this.pDescription
+				return pDescription
 			end
 			
 			/** \brief String represntation. */
 			public func String toString()
-				return this.pDisplayName
+				return pDisplayName
 			end
 			
 			/** \brief Entry equals another entry. */
-			public func bool equals( Object other )
-				return other castable SelectionEntry and this.pValue.equals( ( other cast SelectionEntry ).pValue )
+			public func bool equals(Object other)
+				return other castable SelectionEntry and pValue.equals((other cast SelectionEntry).pValue)
 			end
 		end
 		
@@ -206,160 +253,175 @@ class EMPSystem extends Panel
 		private var Label pLabelValue
 		
 		/** \brief Create widget. */
-		public func new( EMPSystem empSystem, ModuleParameter parameter )
-			this.pEMPSystem = empSystem
-			this.pParameter = parameter
+		public func new(EMPSystem empSystem, ModuleParameter parameter)
+			pEMPSystem = empSystem
+			pParameter = parameter
 			
-			this.pModelValues = DefaultListModel.new()
+			pModelValues = DefaultListModel.new()
 			
 			select parameter.getType()
 			case ModuleParameterType.ranged
 				var float minValue = parameter.getMinimumValue()
 				var float maxValue = parameter.getMaximumValue()
 				var float valueStep = parameter.getValueStepSize()
-				var int i, count = ( ( maxValue - minValue ) / valueStep + 0.5 ) cast int
+				var int i, count = (((maxValue - minValue) / valueStep + 0.5) cast int) + 1
 				var String value
 				
 				for i = 0 to count
-					value = DEMath.min( minValue + valueStep * i, maxValue ).toString()
-					this.pModelValues.add( SelectionEntry.new( value, value, "" ) )
+					value = DEMath.min(minValue + valueStep * i, maxValue).toString()
+					pModelValues.add(SelectionEntry.new(value, value, ""))
 				end
 				
 			case ModuleParameterType.selection
 				var int i, count = parameter.getSelectionEntryCount()
 				for i = 0 to count
-					this.pModelValues.add( SelectionEntry.new( \
-						parameter.getSelectionEntryValueAt( i ), \
-						parameter.getSelectionEntryDisplayNameAt( i ), \
-						parameter.getSelectionEntryDescriptionAt( i ) ) )
+					pModelValues.add(SelectionEntry.new(\
+						parameter.getSelectionEntryValueAt(i), \
+						parameter.getSelectionEntryDisplayNameAt(i), \
+						parameter.getSelectionEntryDescriptionAt(i)))
 				end
 				
 			else
-				throw EInvalidParam.new( "Unsupported module parameter type " + parameter.getType() )
+				throw EInvalidParam.new("Unsupported module parameter type " + parameter.getType())
 			end
 			
-			this.pModelSelectedValue = DefaultTextModel.new()
+			pModelSelectedValue = DefaultTextModel.new()
 			
-			this.runWhileBlockingLayout( block
-				this.setDesignerSelector( "Panel.EMPSystem.CycleValue" )
-				this.setLayout( BorderLayout.new() )
+			runWhileBlockingLayout(block
+				setDesignerSelector("Panel.EMPSystem.CycleValue")
+				setLayout(BorderLayout.new())
 				
-				this.pButtonPrev = Button.new( "", \
-					Image.new( "/shareddata/guithemes/modern/arrows/left_normal.png" ), \
-					SelectPrevValue.new( this ) )
-				this.pButtonPrev.setDesignerSelector( "Button.EMPSystem.CycleValue.Prev" )
-				this.addWidget( this.pButtonPrev, BorderLayout.Area.left )
+				pButtonPrev = Button.new("", \
+					Image.new("/shareddata/guithemes/modern/arrows/left_normal.png"), \
+					SelectPrevValue.new(this))
+				pButtonPrev.setDesignerSelector("Button.EMPSystem.CycleValue.Prev")
+				addWidget(pButtonPrev, BorderLayout.Area.left)
 				
-				this.pLabelValue = Label.new( this.pModelSelectedValue )
-				this.pLabelValue.setDesignerSelector( "Label.EMPSystem.CycleValue.Value" )
-				this.pLabelValue.addMouseListener( SelectFromList.new( this ) )
-				this.pLabelValue.addMouseListener( ParentWheelActionListener.new() )
-				this.addWidget( this.pLabelValue, BorderLayout.Area.content )
+				pLabelValue = Label.new(pModelSelectedValue)
+				pLabelValue.setDesignerSelector("Label.EMPSystem.CycleValue.Value")
+				pLabelValue.addMouseListener(SelectFromList.new(this))
+				pLabelValue.addMouseListener(ParentWheelActionListener.new())
+				pLabelValue.addMouseListener(ForwardMouseEnterMoveLeave.new(this))
+				addWidget(pLabelValue, BorderLayout.Area.content)
 				
-				this.pButtonNext = Button.new( "", \
-					Image.new( "/shareddata/guithemes/modern/arrows/right_normal.png" ), \
-					SelectNextValue.new( this ) )
-				this.pButtonNext.setDesignerSelector( "Button.EMPSystem.CycleValue.Next" )
-				this.addWidget( this.pButtonNext, BorderLayout.Area.right )
-			end )
+				pButtonNext = Button.new("", \
+					Image.new("/shareddata/guithemes/modern/arrows/right_normal.png"), \
+					SelectNextValue.new(this))
+				pButtonNext.setDesignerSelector("Button.EMPSystem.CycleValue.Next")
+				addWidget(pButtonNext, BorderLayout.Area.right)
+			end)
 			
-			this.resetChanges()
+			resetChanges()
 		end
 		
 		/** \brief Dispose of widget. */
 		public func void dispose()
-			this.pModelSelectedValue = null
-			this.pModelValues = null
-			this.pButtonPrev = null
-			this.pButtonNext = null
-			this.pLabelValue = null
+			pModelSelectedValue = null
+			pModelValues = null
+			pButtonPrev = null
+			pButtonNext = null
+			pLabelValue = null
 			super.dispose()
 		end
 		
 		/** \brief Previous value button. */
 		public func Button getButtonPrev()
-			return this.pButtonPrev
+			return pButtonPrev
 		end
 		
 		/** \brief Next value button. */
 		public func Button getButtonNext()
-			return this.pButtonNext
+			return pButtonNext
 		end
 		
 		/** \brief Selected value label. */
 		public func Label getLabelValue()
-			return this.pLabelValue
+			return pLabelValue
 		end
 		
 		/** \brief Select previous value. */
 		public func void selectPrevValue()
-			if this.pModelValues.getSelected() == 0
+			if pModelValues.getSelected() == 0
 				return
 			end
 			
-			this.pModelValues.setSelected( this.pModelValues.getSelected() - 1 )
-			this.pModelSelectedValue.setText( ( this.pModelValues.getAt( \
-				this.pModelValues.getSelected() ) cast SelectionEntry ).getDisplayName() )
+			pModelValues.setSelected(pModelValues.getSelected() - 1)
+			pModelSelectedValue.setText((pModelValues.getAt(\
+				pModelValues.getSelected()) cast SelectionEntry).getDisplayName())
 		end
 		
 		/** \brief Select next value. */
 		public func void selectNextValue()
-			if this.pModelValues.getSelected() == this.pModelValues.getCount() - 1
+			if pModelValues.getSelected() == pModelValues.getCount() - 1
 				return
 			end
 			
-			this.pModelValues.setSelected( this.pModelValues.getSelected() + 1 )
-			this.pModelSelectedValue.setText( ( this.pModelValues.getAt( \
-				this.pModelValues.getSelected() ) cast SelectionEntry ).getDisplayName() )
+			pModelValues.setSelected(pModelValues.getSelected() + 1)
+			pModelSelectedValue.setText((pModelValues.getAt(\
+				pModelValues.getSelected()) cast SelectionEntry).getDisplayName())
 		end
 		
 		/** \brief Select value from list. */
 		public func void selectFromList()
-			WindowDialog.chooseList( this.pEMPSystem.getWindow(), \
-				"Select Parameter Value", "Select value.", null, this.pModelValues, \
-				DefaultListElementRenderer.new( String.new( 'X', 20 ) ), null, null, \
-					WindowDialog.BlockResultListener.new( block int result
+			WindowDialog.chooseList(pEMPSystem.getWindow(), \
+				"Select Parameter Value", "Select value.", null, pModelValues, \
+				DefaultListElementRenderer.new(String.new('X', 20)), null, null, \
+					WindowDialog.BlockResultListener.new(block int result
 						if result == -1
 							return null
 						end
 						
-						this.pModelValues.setSelected( result )
-						this.pModelSelectedValue.setText( ( this.pModelValues.getAt( result ) \
-							cast SelectionEntry ).getDisplayName() )
-					end ) )
+						pModelValues.setSelected(result)
+						pModelSelectedValue.setText((pModelValues.getAt(result) \
+							cast SelectionEntry).getDisplayName())
+					end))
 		end
 		
 		/** \brief Reset parameter changes. */
 		public func void resetChanges()
-			var String value = this.pEMPSystem.getWrapper().getParameterValue( this.pParameter.getName() )
-			
-			select this.pParameter.getType()
+			setValue(pEMPSystem.getWrapper().getParameterValue(pParameter.getName()))
+		end
+		
+		/**
+		 * \brief Reset parameter to default value.
+		 * \version 1.7
+		 */
+		public func void resetDefault()
+			setValue(pParameter.getDefaultValue())
+		end
+		
+		/**
+		 * \brief Select value.
+		 * \version 1.7
+		 */
+		protected func void setValue(String value)
+			select pParameter.getType()
 			case ModuleParameterType.ranged
-				var float minValue = this.pParameter.getMinimumValue()
-				var float maxValue = this.pParameter.getMaximumValue()
-				var float valueStep = this.pParameter.getValueStepSize()
-				this.pModelValues.setSelected( \
-					( ( DEMath.clamp( value.toFloat(), minValue, maxValue ) \
-						- minValue ) / valueStep + 0.5 ) cast int )
+				var float minValue = pParameter.getMinimumValue()
+				var float maxValue = pParameter.getMaximumValue()
+				var float valueStep = pParameter.getValueStepSize()
+				pModelValues.setSelected(\
+					((DEMath.clamp(value.toFloat(), minValue, maxValue) \
+						- minValue) / valueStep + 0.5) cast int)
 				
 			case ModuleParameterType.selection
-				this.pModelValues.setSelected( DEMath.max( this.pModelValues.indexOf( \
-					this.pModelValues.find( block SelectionEntry each
-						return each.getValue().equals( value )
-					end ) ), 0 ) )
+				pModelValues.setSelected(DEMath.max(pModelValues.indexOf(\
+					pModelValues.find(block SelectionEntry each
+						return each.getValue().equals(value)
+					end)), 0))
 			end
 			
-			this.pModelSelectedValue.setText( ( this.pModelValues.getAt( \
-				this.pModelValues.getSelected() ) cast SelectionEntry ).getDisplayName() )
+			pModelSelectedValue.setText((pModelValues.getAt(\
+				pModelValues.getSelected()) cast SelectionEntry).getDisplayName())
 		end
 		
 		/** \brief Apply parameter changes. */
 		public func void applyChanges()
-			var String oldValue = this.pEMPSystem.getWrapper().getParameterValue( this.pParameter.getName() )
-			var String newValue = ( this.pModelValues.getAt( \
-				this.pModelValues.getSelected() ) cast SelectionEntry ).getValue()
-			if not newValue.equals( oldValue )
-				this.pEMPSystem.getWrapper().setParameterValue( this.pParameter.getName(), newValue )
+			var String oldValue = pEMPSystem.getWrapper().getParameterValue(pParameter.getName())
+			var String newValue = (pModelValues.getAt(\
+				pModelValues.getSelected()) cast SelectionEntry).getValue()
+			if not newValue.equals(oldValue)
+				pEMPSystem.getWrapper().setParameterValue(pParameter.getName(), newValue)
 			end
 		end
 	end
@@ -370,14 +432,14 @@ class EMPSystem extends Panel
 		private var EMPSystem pEMPSystem
 		
 		/** \brief Create listener. */
-		public func new( ModuleParameter parameter, EMPSystem empSystem )
-			this.pParameter = parameter
-			this.pEMPSystem = empSystem
+		public func new(ModuleParameter parameter, EMPSystem empSystem)
+			pParameter = parameter
+			pEMPSystem = empSystem
 		end
 		
 		/** \brief Mouse button has been pressed. */
-		public func void onButtonPress( MouseEvent event )
-			this.pEMPSystem.showParameterInfo( this.pParameter )
+		public func void onButtonPress(MouseEvent event)
+			pEMPSystem.showParameterInfo(pParameter)
 		end
 	end
 	
@@ -387,14 +449,32 @@ class EMPSystem extends Panel
 		private var EMPSystem pEMPSystem
 		
 		/** \brief Create listener. */
-		public func new( ModuleParameter parameter, EMPSystem empSystem )
-			this.pParameter = parameter
-			this.pEMPSystem = empSystem
+		public func new(ModuleParameter parameter, EMPSystem empSystem)
+			pParameter = parameter
+			pEMPSystem = empSystem
 		end
 		
 		/** \brief Widget received focus. */
-		public func void onFocusReceived( FocusEvent event )
-			this.pEMPSystem.showParameterInfo( this.pParameter )
+		public func void onFocusReceived(FocusEvent event)
+			pEMPSystem.showParameterInfo(pParameter)
+		end
+	end
+	
+	/**
+	 * \brief Reset parameter action.
+	 * \version 1.7
+	 */
+	public class ResetParameter implements ActionListener
+		private var ParameterValueEditor2 pEditor
+		
+		/** \brief Create listener. */
+		public func new(ParameterValueEditor2 editor)
+			pEditor = editor
+		end
+		
+		/** \brief Action triggered. */
+		public func void onAction(ActionEvent event)
+			pEditor.resetDefault()
 		end
 	end
 	
@@ -402,20 +482,23 @@ class EMPSystem extends Panel
 	
 	private var SysParamWrapper pWrapper
 	private var Panel pPanelParameters
+	private var Array pEditorWidgets
 	private var DefaultTextModel pModelInfo
 	
 	
 	
 	/** \brief Create edit module parameters panel. */
-	public func new( SysParamWrapper wrapper )
-		this.pWrapper = wrapper
-		this.createContent()
+	public func new(SysParamWrapper wrapper)
+		pWrapper = wrapper
+		pEditorWidgets = Array.new()
+		createContent()
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		this.pPanelParameters = null
-		this.pModelInfo = null
+		pPanelParameters = null
+		pEditorWidgets = null
+		pModelInfo = null
 		super.dispose()
 	end
 	
@@ -423,183 +506,221 @@ class EMPSystem extends Panel
 	
 	/** \brief System parameter wrapper. */
 	public func SysParamWrapper getWrapper()
-		return this.pWrapper
+		return pWrapper
 	end
 	
 	
 	
 	/** \brief Rebuild parameters list. */
-	public func void rebuildParametersList( bool withAdvanced )
-		this.pPanelParameters.runWhileBlockingLayout( block
-			var int i, count = this.pWrapper.getParameterCount()
+	public func void rebuildParametersList(bool withAdvanced)
+		pPanelParameters.runWhileBlockingLayout(block
+			var int i, count = pWrapper.getParameterCount()
 			var Array parameters = Array.new()
 			
 			for i = 0 to count
-				var ModuleParameter parameter = this.pWrapper.getParameterAt( i )
+				var ModuleParameter parameter = pWrapper.getParameterAt(i)
 				
 				select parameter.getCategory()
 				case ModuleParameterCategory.basic
-					parameters.add( parameter )
+					parameters.add(parameter)
 					
 				case ModuleParameterCategory.advanced
 					if withAdvanced
-						parameters.add( parameter )
+						parameters.add(parameter)
 					end
 				end
 			end
 			
-			parameters.sort( block ModuleParameter a, ModuleParameter b
-				return a.getName().compare( b.getName() )
-			end )
+			parameters.sort(block ModuleParameter a, ModuleParameter b
+				return a.getName().compare(b.getName())
+			end)
 			
-			this.pPanelParameters.removeAllWidgets()
+			pEditorWidgets.removeAll()
+			pPanelParameters.removeAllWidgets()
 			
-			parameters.forEach( block ModuleParameter each
-				this.pPanelParameters.addWidget( this.createNameWidget( each ) )
-				this.pPanelParameters.addWidget( this.createEditWidget( each ) )
-			end )
-		end )
-		this.pPanelParameters.doLayoutIfBlocked()
+			parameters.forEach(block ModuleParameter each
+				pPanelParameters.addWidget(createNameWidget(each))
+				
+				pPanelParameters.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x, 2, FlowLayout.Stretch.first), block Panel p
+					var Widget widget = createEditWidget(each)
+					p.addWidget(widget)
+					
+					if widget castable ParameterValueEditor2
+						p.addWidget(createResetButton(widget cast ParameterValueEditor2))
+					end
+					
+					pEditorWidgets.add(widget)
+				end))
+			end)
+		end)
+		pPanelParameters.doLayoutIfBlocked()
 	end
 	
 	/** \brief Reset parameter changes. */
 	public func void resetChanges()
-		this.pPanelParameters.runWhileBlockingLayout( block
-			this.pPanelParameters.forEachWidget( block Widget each
-				if each castable ParameterValueEditor
-					( each cast ParameterValueEditor ).resetChanges()
-				end
-			end )
-		end )
+		pPanelParameters.runWhileBlockingLayout(block
+			pEditorWidgets.forEachCastable(block ParameterValueEditor each
+				each.resetChanges()
+			end)
+		end)
 	end
 	
 	/** \brief Apply parameter changes. */
 	public func void applyChanges()
-		this.pPanelParameters.runWhileBlockingLayout( block
-			this.pPanelParameters.forEachWidget( block Widget each
-				if each castable ParameterValueEditor
-					( each cast ParameterValueEditor ).applyChanges()
-				end
-			end )
-		end )
+		pPanelParameters.runWhileBlockingLayout(block
+			pEditorWidgets.forEachCastable(block ParameterValueEditor each
+				each.applyChanges()
+			end)
+		end)
 	end
 	
 	/** \brief Show module parameter information. */
-	public func void showParameterInfo( ModuleParameter parameter )
+	public func void showParameterInfo(ModuleParameter parameter)
 		var String text = parameter.getDescription()
 		
 		if parameter.getType() == ModuleParameterType.selection
 			var int i, count = parameter.getSelectionEntryCount()
 			
 			for i = 0 to count
-				text = text + "\n\n" + parameter.getSelectionEntryDisplayNameAt( i ) \
-					+ ": " + parameter.getSelectionEntryDescriptionAt( i )
+				text = text + "\n\n" + parameter.getSelectionEntryDisplayNameAt(i) \
+					+ ": " + parameter.getSelectionEntryDescriptionAt(i)
 			end
 		end
 		
-		this.pModelInfo.setText( text )
+		pModelInfo.setText(text)
+	end
+	
+	/**
+	 * \brief Reset parameter value.
+	 * \version 1.7
+	 */
+	public func void resetParameter(ModuleParameter parameter)
+		
+		var String text = parameter.getDescription()
+		
+		if parameter.getType() == ModuleParameterType.selection
+			var int i, count = parameter.getSelectionEntryCount()
+			
+			for i = 0 to count
+				text = text + "\n\n" + parameter.getSelectionEntryDisplayNameAt(i) \
+					+ ": " + parameter.getSelectionEntryDescriptionAt(i)
+			end
+		end
+		
+		pModelInfo.setText(text)
 	end
 	
 	
 	
 	/** \brief Create content with a ScrollPanel and FormLayout. */
 	protected func void createContent()
-		this.runWhileBlockingLayout( block
-			this.setLayout( BorderLayout.new( 5 ) )
-			this.setDesignerSelector( "Panel.EMPSystem" )
+		runWhileBlockingLayout(block
+			setLayout(BorderLayout.new(5))
+			setDesignerSelector("Panel.EMPSystem.Content")
 			
-			this.pPanelParameters = Panel.new()
-			this.pPanelParameters.setLayout( FormLayout.new( true, 20, 2 ) )
-			var Viewport viewport = Viewport.new( this.pPanelParameters, BoxLayout.new( LayoutAxis.y ) )
-			this.addWidget( ScrollPanel.new( viewport, ScrollPanel.Policy.hidden, \
-				ScrollPanel.Policy.visible ), BorderLayout.Area.content )
+			pPanelParameters = Panel.new(FormLayout.new(true, 20, 2))
+			pPanelParameters.setDesignerSelector("Panel.EMPSystem.Parameters")
+			var Viewport viewport = Viewport.new(pPanelParameters, BoxLayout.new(LayoutAxis.y))
+			addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, \
+				ScrollPanel.Policy.visible), BorderLayout.Area.content)
 			
-			this.pModelInfo = DefaultTextModel.new()
+			pModelInfo = DefaultTextModel.new()
 			
-			var TextArea textArea = TextArea.new( this.pModelInfo )
-			textArea.setReadOnly( true )
-			textArea.setRowCount( 5 )
-			textArea.setDesignerSelector( "TextArea.EMPSystem.ParameterInfo" )
-			this.addWidget( ScrollPanel.new( textArea, ScrollPanel.Policy.hidden, \
-				ScrollPanel.Policy.visible ), BorderLayout.Area.bottom )
-		end )
+			var TextArea textArea = TextArea.new(pModelInfo)
+			textArea.setReadOnly(true)
+			textArea.setRowCount(5)
+			textArea.setDesignerSelector("TextArea.EMPSystem.ParameterInfo")
+			addWidget(ScrollPanel.new(textArea, ScrollPanel.Policy.hidden, \
+				ScrollPanel.Policy.visible), BorderLayout.Area.bottom)
+		end)
 	end
 	
 	/** \brief Create name widget for parameter. */
-	protected func Widget createNameWidget( ModuleParameter parameter )
+	protected func Widget createNameWidget(ModuleParameter parameter)
 		var String name = parameter.getDisplayName()
 		if name.empty()
 			name = parameter.getName()
 		end
 		
-		var Label label = Label.new( name, "Label.EMPSystem.Name" )
-		label.addMouseListener( ClickShowInfo.new( parameter, this ) )
-		label.addMouseListener( ParentWheelActionListener.new() )
+		var Label label = Label.new(name, "Label.EMPSystem.Name")
+		label.addMouseListener(ClickShowInfo.new(parameter, this))
+		label.addMouseListener(ParentWheelActionListener.new())
 		return label
 	end
 	
 	/** \brief Create edit widget for parameter. */
-	protected func Widget createEditWidget( ModuleParameter parameter )
+	protected func Widget createEditWidget(ModuleParameter parameter)
 		select parameter.getType()
 		case ModuleParameterType.boolean
-			return this.createEditWidgetBoolean( parameter )
+			return createEditWidgetBoolean(parameter)
 			
 		case ModuleParameterType.numeric
-			return this.createEditWidgetNumeric( parameter )
+			return createEditWidgetNumeric(parameter)
 			
 		case ModuleParameterType.ranged
-			return this.createEditWidgetRanged( parameter )
+			return createEditWidgetRanged(parameter)
 			
 		case ModuleParameterType.string
-			return this.createEditWidgetString( parameter )
+			return createEditWidgetString(parameter)
 			
 		case ModuleParameterType.selection
-			return this.createEditWidgetSelection( parameter )
+			return createEditWidgetSelection(parameter)
 			
 		else
-			return this.createEditWidgetString( parameter )
+			return createEditWidgetString(parameter)
 		end
 	end
 	
 	/** \brief Create widget to edit parameter as string. */
-	protected func Widget createEditWidgetString( ModuleParameter parameter )
-		var PVETextField widget = PVETextField.new( this.pWrapper, parameter )
-		widget.addFocusListener( FocusShowInfo.new( parameter, this ) )
+	protected func Widget createEditWidgetString(ModuleParameter parameter)
+		var PVETextField widget = PVETextField.new(pWrapper, parameter)
+		widget.addFocusListener(FocusShowInfo.new(parameter, this))
 		return widget
 	end
 	
 	/** \brief Create widget to edit parameter as numeric. */
-	protected func Widget createEditWidgetNumeric( ModuleParameter parameter )
-		var PVETextField widget = PVETextField.new( this.pWrapper, parameter )
-		widget.setValidator( SimpleTextValidator.new( 12, SimpleTextValidator.CharacterClass.number ) )
-		widget.addFocusListener( FocusShowInfo.new( parameter, this ) )
+	protected func Widget createEditWidgetNumeric(ModuleParameter parameter)
+		var PVETextField widget = PVETextField.new(pWrapper, parameter)
+		widget.setValidator(SimpleTextValidator.new(12, SimpleTextValidator.CharacterClass.number))
+		widget.addFocusListener(FocusShowInfo.new(parameter, this))
 		return widget
 	end
 	
 	/** \brief Create widget to edit parameter as boolean. */
-	protected func Widget createEditWidgetBoolean( ModuleParameter parameter )
-		var PVECheckBox widget = PVECheckBox.new( this.pWrapper, parameter )
-		widget.addFocusListener( FocusShowInfo.new( parameter, this ) )
+	protected func Widget createEditWidgetBoolean(ModuleParameter parameter)
+		var PVECheckBox widget = PVECheckBox.new(pWrapper, parameter)
+		widget.addFocusListener(FocusShowInfo.new(parameter, this))
 		return widget
 	end
 	
 	/** \brief Create widget to edit parameter as ranged. */
-	protected func Widget createEditWidgetRanged( ModuleParameter parameter )
-		var PVECycleValue widget = PVECycleValue.new( this, parameter )
-		var FocusShowInfo showInfo = FocusShowInfo.new( parameter, this )
-		widget.getButtonPrev().addFocusListener( showInfo )
-		widget.getButtonNext().addFocusListener( showInfo )
-		widget.getLabelValue().addFocusListener( showInfo )
+	protected func Widget createEditWidgetRanged(ModuleParameter parameter)
+		var PVECycleValue widget = PVECycleValue.new(this, parameter)
+		var FocusShowInfo showInfo = FocusShowInfo.new(parameter, this)
+		widget.getButtonPrev().addFocusListener(showInfo)
+		widget.getButtonNext().addFocusListener(showInfo)
+		widget.getLabelValue().addMouseListener(ClickShowInfo.new(parameter, this))
 		return widget
 	end
 	
 	/** \brief Create widget to edit parameter as selection. */
-	protected func Widget createEditWidgetSelection( ModuleParameter parameter )
-		var PVECycleValue widget = PVECycleValue.new( this, parameter )
-		var FocusShowInfo showInfo = FocusShowInfo.new( parameter, this )
-		widget.getButtonPrev().addFocusListener( showInfo )
-		widget.getButtonNext().addFocusListener( showInfo )
-		widget.getLabelValue().addFocusListener( showInfo )
+	protected func Widget createEditWidgetSelection(ModuleParameter parameter)
+		var PVECycleValue widget = PVECycleValue.new(this, parameter)
+		var FocusShowInfo showInfo = FocusShowInfo.new(parameter, this)
+		widget.getButtonPrev().addFocusListener(showInfo)
+		widget.getButtonNext().addFocusListener(showInfo)
+		widget.getLabelValue().addMouseListener(ClickShowInfo.new(parameter, this))
 		return widget
+	end
+	
+	/**
+	 * \brief Create reset button.
+	 * \version 1.7
+	 */
+	protected func Widget createResetButton(ParameterValueEditor2 editor)
+		var Button button = Button.new(" ", ResetParameter.new(editor))
+		button.setDesignerSelector("Button.EMPSystem.Reset")
+		button.setToolTip("Reset to default value")
+		return button
 	end
 end

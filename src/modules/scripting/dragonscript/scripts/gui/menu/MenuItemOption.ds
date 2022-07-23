@@ -1,0 +1,60 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Option box menu item.
+ * \version 1.11
+ * 
+ * Shows label and option box and optionally an icon. Option box reflects state of ToggleModel.
+ * Toggles model if clicked.
+ */
+class MenuItemOption extends MenuItemToggle
+	/** \brief Create menu item command. */
+	public func new(String text) super(text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text) super(icon, text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(ToggleModel model, String text) super(model, null, text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(ToggleModel model, Image icon, String text) super(model, icon, text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
+	end
+end

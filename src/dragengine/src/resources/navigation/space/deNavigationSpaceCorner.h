@@ -22,11 +22,13 @@
 #ifndef _DENAVIGATIONSPACECORNER_H_
 #define _DENAVIGATIONSPACECORNER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Navigation Space Corner.
  */
-class deNavigationSpaceCorner{
+class DE_DLL_EXPORT deNavigationSpaceCorner{
 private:
 	unsigned short pVertex;
 	unsigned short pType;

@@ -362,7 +362,7 @@ decXmlWriter &writer, const decString &basePath ){
 	const decVector2 &tcscaling = texture.GetTexCoordScaling();
 	const bool hasTCOffset = ! tcoffset.IsEqualTo( decVector2() );
 	const bool hasTCRotation = fabsf( tcrotation ) > FLOAT_SAFE_EPSILON;
-	const bool hasTCScaling = ! tcoffset.IsEqualTo( decVector2( 1.0f, 1.0f ) );
+	const bool hasTCScaling = ! tcscaling.IsEqualTo( decVector2( 1.0f, 1.0f ) );
 	if( hasTCOffset || hasTCRotation || hasTCScaling ){
 		writer.WriteOpeningTagStart( "map" );
 		writer.WriteAttributeString( "key", "transform" );

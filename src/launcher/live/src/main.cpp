@@ -24,6 +24,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "dellLauncher.h"
+
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #endif
@@ -31,8 +33,6 @@
 #ifdef OS_BEOS
 #include <app/Application.h>
 #endif
-
-#include "dellLauncher.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deCmdLineArgs.h>
@@ -50,8 +50,6 @@
 /////////////////////
 
 #ifdef OS_BEOS
-
-#include "engine/dellEngine.h"
 
 #include <dragengine/app/deOSBeOS.h>
 
@@ -93,8 +91,8 @@ public:
 	}
 	
 	virtual void MessageReceived( BMessage *message ){
-		if( pLauncher.GetEngine().GetEngine() ){
-			pLauncher.GetEngine().GetEngine()->GetOS()->CastToOSBeOS()->MessageReceived( message );
+		if( pLauncher.runningGame && pLauncher.runningGame->GetEngineInstance() ){
+			pLauncher.runningGame->GetEngineInstance()->BeosMessageReceived( message );
 		}
 	}
 	

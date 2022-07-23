@@ -1,0 +1,86 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief InputEvent type.
+ */
+enum InputEventType
+	/** \brief Key pressed on keyboard. */
+	keyPress
+	
+	/** \brief Key released on keyboard. */
+	keyRelease
+	
+	/** \brief Mouse button pressed. */
+	mousePress
+	
+	/** \brief Mouse button released. */
+	mouseRelease
+	
+	/** \brief Mouse moved. */
+	mouseMove
+	
+	/** \brief Mouse wheele moved. */
+	mouseWheel
+	
+	/** \brief Device axis moved. */
+	axisMove
+	
+	/** \brief Device button pressed. */
+	buttonPress
+	
+	/** \brief Device button released. */
+	buttonRelease
+	
+	/** \deprecated Use deviceAttachedDetached. */
+	deviceAttached
+	
+	/** \deprecated Use deviceAttachedDetached. */
+	deviceDetached
+	
+	/** \brief Input device parameters changed. */
+	deviceParamsChanged
+	
+	/**
+	 * \brief Device button touched.
+	 * \version 1.6
+	 */
+	buttonTouch
+	
+	/**
+	 * \brief Device button untouched.
+	 * \version 1.6
+	 */
+	buttonUntouch
+	
+	/**
+	 * \brief Devices have been attached or detached.
+	 * \version 1.10
+	 * 
+	 * Device list has been refreshed in the engine systems. Listeners have to synchronize
+	 * devices and device lists held.
+	 */
+	deviceAttachedDetached
+end

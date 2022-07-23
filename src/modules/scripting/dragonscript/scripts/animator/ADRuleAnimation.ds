@@ -28,115 +28,131 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of an animation animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of animation animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleAnimation extends ADRule
-	/** Move name. */
 	private var String pMoveName
-	/** Move time. */
 	private var float pMoveTime
-	/** Enables position manipulation. */
 	private var bool pEnablePosition
-	/** Enables orientation manipulation. */
 	private var bool pEnableOrientation
-	/** Enables size manipulation. */
 	private var bool pEnableSize
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pMoveName = "idle"
-		this.pMoveTime = 0.0
-		this.pEnablePosition = true
-		this.pEnableOrientation = true
-		this.pEnableSize = false
+		pMoveName = "idle"
+		pMoveTime = 0
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = false
 	end
-	
-	
-	
-	/** Retrieves the move name. */
-	public func String getMoveName()
-		return this.pMoveName
-	end
-	
-	/** Sets the move name. */
-	public func void setMoveName( String name )
-		if name == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pMoveName = name
-	end
-	
-	/** Retrieves the move time. */
-	public func float getMoveTime()
-		return this.pMoveTime
-	end
-	
-	/** Sets the move time. */
-	public func void setMoveTime( float time )
-		this.pMoveTime = time
-	end
-	
-	/** Determines if the position manipulation is enabled. */
-	public func bool getEnablePosition()
-		return this.pEnablePosition
-	end
-	
-	/** Sets if the position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
-	end
-	
-	/** Determines if the orientation manipulation is enabled. */
-	public func bool getEnableOrientation()
-		return this.pEnableOrientation
-	end
-	
-	/** Sets if the orientation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
-	end
-	
-	/** Determines if the size manipulation is enabled. */
-	public func bool getEnableSize()
-		return this.pEnableSize
-	end
-	
-	/** Sets if the size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
-	end
-	
-	
 	
 	/**
-	 * Build engine animator rule using the stored definition.
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
 	 */
-	public func AnimatorRule buildRule( Animator animator )
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleAnimation rule) super(fromDef, toDef, rule)
+		pMoveName = rule.pMoveName
+		pMoveTime = rule.pMoveTime
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
+	end
+	
+	
+	
+	/** \brief Move name. */
+	public func String getMoveName()
+		return pMoveName
+	end
+	
+	/** \brief Set move name. */
+	public func void setMoveName(String name)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		pMoveName = name
+	end
+	
+	/** \brief Move time. */
+	public func float getMoveTime()
+		return pMoveTime
+	end
+	
+	/** \brief Set move time. */
+	public func void setMoveTime(float time)
+		pMoveTime = time
+	end
+	
+	/** \brief Position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return pEnablePosition
+	end
+	
+	/** \brief Setif position manipulation is enabled. */
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
+	end
+	
+	/** \brief Orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return pEnableOrientation
+	end
+	
+	/** \brief Set if orientation manipulation is enabled. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
+	end
+	
+	/** \brief Size manipulation is enabled. */
+	public func bool getEnableSize()
+		return pEnableSize
+	end
+	
+	/** \brief Set if size manipulation is enabled. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARAnimation rule = ARAnimation.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARAnimationTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARAnimationTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setMoveName( this.pMoveName )
-		rule.setMoveTime( this.pMoveTime )
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setMoveName(pMoveName)
+		rule.setMoveTime(pMoveTime)
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Animation" ) + " move=" + this.pMoveName + ":" + this.pMoveTime \
-			 + " epos=" + this.pEnablePosition + " eorient=" + this.pEnableOrientation + " esize=" + this.pEnableSize + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Animation") + " move=" + pMoveName + ":" + pMoveTime \
+			 + " epos=" + pEnablePosition + " eorient=" + pEnableOrientation + " esize=" + pEnableSize + ")")
 	end
 end

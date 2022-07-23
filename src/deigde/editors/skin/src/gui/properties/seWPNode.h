@@ -116,6 +116,9 @@ public:
 	/** \brief Set skin. */
 	void SetSkin( seSkin *skin );
 	
+	/** \brief Skin path changed. */
+	void OnSkinPathChanged();
+	
 	/** \brief Active texture or \em NULL if none. */
 	seTexture *GetTexture() const;
 	

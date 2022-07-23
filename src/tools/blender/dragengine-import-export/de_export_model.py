@@ -46,8 +46,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 	bl_label = "Model (.demodel)"
 	__doc__ = """Export as Drag[en]gine Model Resource"""
 	filename_ext = ".demodel"
-	filter_glob = bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })
-	debug_level = bpy.props.EnumProperty(items = (
+	filter_glob: bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })
+	debug_level: bpy.props.EnumProperty(items = (
 		('0', "None", "Output no debug messages."),
 		('1', "Basic", "Output basic amount of debug messages."),
 		('2', "Verbose", "Output lots of debug messages."),
@@ -85,7 +85,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		return { 'FINISHED' }
 	
 	def export(self, context):
-		self.initFindMeshArmRef(context)
+		if not self.initFindMeshArmRef(context):
+			return False
+		if not self.initChecksEarly(context):
+			return False
 		self.prepareProgress(context)
 		try:
 			self.initExporterObjects(context)
@@ -108,12 +111,14 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 					self.armature = Armature(object)
 		if self.mesh and self.armature:
 			self.mesh.armature = self.armature
-		self.initLODs(context)
+		return self.initLODs(context)
 	
 	def initLODs(self, context):
 		if self.mesh:
 			loopProtection = [self.mesh.object.name]
 			testmesh = self.mesh
+			prevLodLevelHasLodError = False
+			predLodError = 0
 			while testmesh and testmesh.object and testmesh.object.dragengine_lodmesh in bpy.data.objects:
 				if testmesh.object.dragengine_lodmesh in loopProtection:
 					self.report({ 'INFO', 'ERROR' }, "Loop in LOD meshes!")
@@ -124,6 +129,16 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				
 				if testmesh.lodMesh.object.dragengine_hasloderror:
 					testmesh.lodMesh.lodError = testmesh.lodMesh.object.dragengine_loderror
+					prevLodLevelHasLodError = True
+					if testmesh.lodMesh.lodError < predLodError:
+						self.report({'INFO', 'ERROR'}, ("LOD mesh '{}' has lower custom LOD error "
+							+ "than previous LOD mesh!").format(testmesh.object.name))
+						return False
+					predLodError = testmesh.lodMesh.lodError
+				elif prevLodLevelHasLodError:
+					self.report({'INFO', 'ERROR'}, ("LOD mesh '{}' has custom LOD error disabled "
+						+ "but previous LOD mesh has LOD error enabled!").format(testmesh.object.name))
+					return False
 				
 				if testmesh.lodMesh.object.parent:
 					if (testmesh.lodMesh.object.parent.type == 'ARMATURE'
@@ -133,6 +148,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				testmesh.lodMesh.armature = self.armature
 				
 				testmesh = testmesh.lodMesh
+		return True
 	
 	def initExporterObjects(self, context):
 		class Timer:
@@ -146,6 +162,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				self.timer = timer
 		timer = Timer()
 		
+		self.depsgraph = context.evaluated_depsgraph_get()
+		
 		if self.armature:
 			self.armature.ignoreBones = self.ignoreBones
 			self.armature.initAddBones()
@@ -154,6 +172,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		
 		mesh = self.mesh
 		while mesh:
+			# get object with modifiers applied. original object can be found at mesh.object.original
+			mesh.object = mesh.object.evaluated_get(self.depsgraph)
+			mesh.mesh = mesh.object.data
+			
 			self.lodMeshCount = self.lodMeshCount + 1
 			
 			mesh.initAddTextures()
@@ -175,6 +197,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			mesh.initAddFaces()
 			timer.logTime('mesh.initAddFaces')
 			self.progress.advance("Prepare faces")
+			
+			mesh.applyAutoSmooth()
+			timer.logTime('mesh.applyAutoSmooth')
+			self.progress.advance("Apply auto-smoothing")
 			
 			mesh.initCalcCornerNormals()
 			timer.logTime('mesh.initCalcCornerNormals')
@@ -198,10 +224,26 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		pm = 3  # bones, textures, tex-coord-sets
 		mesh = self.mesh
 		while mesh:
-			pm = pm + 11  # weights, vertices, faces, prepare(8)
+			pm = pm + 12  # weights, vertices, faces, prepare(9)
 			mesh = mesh.lodMesh
 		self.progress = ProgressDisplay(pm, self)
 		self.progress.show()
+	
+	def initChecksEarly(self, context):
+		if self.mesh.mesh.use_auto_smooth and any(x.type == 'EDGE_SPLIT' for x in self.mesh.object.modifiers):
+			self.report({'INFO', 'ERROR'}, ("Edge Split modifier found on object '{}'"
+				+ " while Auto-Smooth is enabled.".format(self.mesh.object.name)))
+			return False
+		
+		lodMesh = self.mesh.lodMesh
+		while lodMesh:
+			if lodMesh.mesh.use_auto_smooth and any(x.type == 'EDGE_SPLIT' for x in lodMesh.object.modifiers):
+				self.report({'INFO', 'ERROR'}, ("Edge Split modifier found on object '{}'"
+					+ " while Auto-Smooth is enabled.".format(lodMesh.object.name)))
+				return False
+			lodMesh = lodMesh.lodMesh
+		
+		return True
 	
 	def checkInitState(self, context):
 		if not self.mesh:
@@ -212,9 +254,6 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			return False
 		if self.mesh.degeneratedFaces:
 			self.report({ 'INFO', 'ERROR' }, "Degenerated Faces found.")
-			return False
-		if self.mesh.ngons:
-			self.report({ 'INFO', 'ERROR' }, "NGon faces found.")
 			return False
 		if not self.mesh.textures:
 			self.report({ 'INFO', 'ERROR' }, "No materials found. Add at last one material.")
@@ -234,34 +273,62 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			self.report({ 'INFO', 'ERROR' }, "No UV-Seams found. Add at least one UV-Seam for Tanget-Calculation to work.")
 			return False
 		
+		self.mesh.realTriCount = len(self.mesh.triangles)
+		self.mesh.realQuadCount = len(self.mesh.quads)
+		for face in self.mesh.ngons:
+			count = len(face.vertices)
+			self.mesh.realQuadCount += (count - 2) // 2
+			self.mesh.realTriCount += (count - 2) % 2
+		
 		self.mesh.largeModel = (self.mesh.normalCount > 65000
 			or self.mesh.tangentCount > 65000
 			or len(self.mesh.weights) > 65000
 			or len(self.mesh.vertices) > 65000
-			or len(self.mesh.faces) > 65000
-			or [tcs for tcs in self.mesh.texCoordSets if len(tcs.texCoords) > 65000])
+			or self.mesh.realTriCount + self.mesh.realQuadCount > 65000
+			or any(len(tcs.texCoords) > 65000 for tcs in self.mesh.texCoordSets))
 		
 		lodMesh = self.mesh.lodMesh
 		while lodMesh:
+			if lodMesh.multiFoldMesh:
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Can not Multi-Fold meshes"
+					" (Edges used by more than 2 faces).").format(lodMesh.object.name))
+				return False
+			
+			if lodMesh.degeneratedFaces:
+				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Degenerated Faces found.".format(lodMesh.object.name))
+				return False
+			
 			if not self.checkLODMeshSameTextures(lodMesh):
-				self.report({ 'INFO', 'ERROR' }, "LOD Mesh textures do not match base mesh textures.")
+				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Textures do not match base mesh '{}' textures.".format(
+					lodMesh.object.name, self.mesh.object.name))
 				return False
+			
 			if not self.checkLODMeshSameTexCoordSets(lodMesh):
-				self.report({ 'INFO', 'ERROR' }, "LOD Mesh texture coordinate sets do not match base mesh texture coordinate sets.")
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Texture coordinate sets do not"
+					+ " match base mesh '{}' texture coordinate sets.").format(lodMesh.object.name, self.mesh.object.name))
 				return False
+			
+			lodMesh.realTriCount = len(lodMesh.triangles)
+			lodMesh.realQuadCount = len(lodMesh.quads)
+			for face in lodMesh.ngons:
+				count = len(face.vertices)
+				lodMesh.realQuadCount += (count - 2) // 2
+				lodMesh.realTriCount += (count - 2) % 2
 			
 			lodMesh.largeModel = (lodMesh.normalCount > 65000
 				or lodMesh.tangentCount > 65000
 				or len(lodMesh.weights) > 65000
 				or len(lodMesh.vertices) > 65000
-				or len(lodMesh.faces) > 65000
-				or [tcs for tcs in lodMesh.texCoordSets if len(tcs.texCoords) > 65000])
+				or lodMesh.realTriCount + lodMesh.realQuadCount > 65000
+				or any(len(tcs.texCoords) > 65000 for tcs in lodMesh.texCoordSets))
 			
 			if not lodMesh.hasUVSeams and not lodMesh.object.dragengine_hasnoseams:
-				self.report({ 'INFO', 'ERROR' }, "No UV-Seams found. Add at least one UV-Seam for Tanget-Calculation to work.")
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': No UV-Seams. Add at least"
+					+ " one UV-Seam for Tanget-Calculation to work.").format(lodMesh.object.name))
 				return False
 			
 			lodMesh = lodMesh.lodMesh
+		
 		return True
 	
 	def checkLODMeshSameTextures(self, lodMesh):
@@ -409,7 +476,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		
 		f.write(struct.pack(("i" if mesh.largeModel else "H")*6,
 			mesh.normalCount, mesh.tangentCount, len(mesh.weights),
-			len(mesh.vertices), len(mesh.triangles), len(mesh.quads)))
+			len(mesh.vertices), mesh.realTriCount, mesh.realQuadCount))
 		return True
 	
 	# write weights
@@ -454,26 +521,45 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			print("saving faces...")
 		fmt = "iii" if mesh.largeModel else "HHH"
 		for face in mesh.triangles:
-			"""if self.debugLevel > 1:
-				print("- tri %i: %i %i %i" % (face.face.material_index, face.vertices[0], face.vertices[1], face.vertices[2]))"""
-			f.write(struct.pack("<H", face.face.material_index))
-			f.write(struct.pack(fmt, face.vertices[2], face.vertices[1], face.vertices[0]))
-			f.write(struct.pack(fmt, face.normals[2], face.normals[1], face.normals[0]))
-			f.write(struct.pack(fmt, face.tangents[2], face.tangents[1], face.tangents[0]))
-			for tcs in face.texCoordSets:
-				f.write(struct.pack(fmt, tcs[2].index, tcs[1].index, tcs[0].index))
+			self.writeTriangle(f, mesh, face, fmt, 0, 1, 2)
+		
+		for face in mesh.ngons:
+			if (len(face.vertices) - 2) % 2:
+				self.writeTriangle(f, mesh, face, fmt, 0, -2, -1)
 		
 		fmt = "iiii" if mesh.largeModel else "HHHH"
 		for face in mesh.quads:
-			"""if self.debugLevel > 1:
-				print("- quad %i: %i %i %i %i" % (face.face.material_index, face.vertices[3], face.vertices[2], face.vertices[1], face.vertices[0]))"""
-			f.write(struct.pack("<H", face.face.material_index))
-			f.write(struct.pack(fmt, face.vertices[3], face.vertices[2], face.vertices[1], face.vertices[0]))
-			f.write(struct.pack(fmt, face.normals[3], face.normals[2], face.normals[1], face.normals[0]))
-			f.write(struct.pack(fmt, face.tangents[3], face.tangents[2], face.tangents[1], face.tangents[0]))
-			for tcs in face.texCoordSets:
-				f.write(struct.pack(fmt, tcs[3].index, tcs[2].index, tcs[1].index, tcs[0].index))
+			self.writeQuad(f, mesh, face, fmt, 0, 1, 2, 3)
+		
+		for face in mesh.ngons:
+			for i in range(2, len(face.vertices) - 1, 2):  # (len()-2)+1 since range skips last index
+				self.writeQuad(f, mesh, face, fmt, 0, i - 1, i, i + 1)
 		
 		self.progress.advance("Writing faces: '{}'".format(mesh.object.name))
 		return True
+	
+	def writeTriangle(self, f, mesh, face, fmt, i1, i2, i3):
+		"""
+		if self.debugLevel > 1:
+			print("- tri {}: {} {} {}".format(face.face.material_index, face.vertices[i1], face.vertices[i2], face.vertices[i3]))
+		"""
+		f.write(struct.pack("<H", face.face.material_index))
+		f.write(struct.pack(fmt, face.vertices[i3], face.vertices[i2], face.vertices[i1]))
+		f.write(struct.pack(fmt, face.normals[i3], face.normals[i2], face.normals[i1]))
+		f.write(struct.pack(fmt, face.tangents[i3], face.tangents[i2], face.tangents[i1]))
+		for tcs in face.texCoordSets:
+			f.write(struct.pack(fmt, tcs[i3].index, tcs[i2].index, tcs[i1].index))
+	
+	def writeQuad(self, f, mesh, face, fmt, i1, i2, i3, i4):
+		"""
+		if self.debugLevel > 1:
+			print("- quad {}: {} {} {} {}".format(face.face.material_index, face.vertices[3], face.vertices[2], face.vertices[1], face.vertices[0]))
+		"""
+		f.write(struct.pack("<H", face.face.material_index))
+		f.write(struct.pack(fmt, face.vertices[i4], face.vertices[i3], face.vertices[i2], face.vertices[i1]))
+		f.write(struct.pack(fmt, face.normals[i4], face.normals[i3], face.normals[i2], face.normals[i1]))
+		f.write(struct.pack(fmt, face.tangents[i4], face.tangents[i3], face.tangents[i2], face.tangents[i1]))
+		for tcs in face.texCoordSets:
+			f.write(struct.pack(fmt, tcs[i4].index, tcs[i3].index, tcs[i2].index, tcs[i1].index))
+	
 registerClass(OBJECT_OT_ExportModel)

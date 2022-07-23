@@ -305,19 +305,56 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 	
 	/** \brief Index of the first visible element. */
 	public func int getFirstElement()
-		select this.pType
+		select pType
 		case Type.vertical
-			return this.pVertRangeModel.getValue() / this.getElementHeight()
+			return pVertRangeModel.getValue() / getElementHeight()
 			
 		case Type.verticalWrap
-			return this.pVisibleColumns * ( this.pVertRangeModel.getValue() / this.getElementHeight() )
+			return pVisibleColumns * (pVertRangeModel.getValue() / getElementHeight())
 			
 		case Type.horizontalWrap
-			return this.pVisibleRows * ( this.pHorzRangeModel.getValue() / this.getElementWidth() )
+			return pVisibleRows * (pHorzRangeModel.getValue() / getElementWidth())
 			
 		else
 			throw EInvalidParam.new()
 		end
+	end
+	
+	/**
+	 * \brief Index of the last visible element.
+	 * \version 1.11
+	 */
+	public func int getLastElement()
+		var int index = getFirstElement()
+		
+		select this.pType
+		case Type.vertical
+			var int containerHeight = getContainerHeight()
+			var int elementHeight = getElementHeight()
+			var int y = index * elementHeight - pVertRangeModel.getValue()
+			index += (containerHeight - y - 2) / elementHeight
+			
+		case Type.verticalWrap
+			var int containerHeight = getContainerHeight()
+			var int elementHeight = getElementHeight()
+			var int row = index / pVisibleColumns
+			var int y = row * elementHeight - pVertRangeModel.getValue()
+			row += (containerHeight - y - 2) / elementHeight
+			index = (row + 1) * pVisibleColumns - 1
+			
+		case Type.horizontalWrap
+			var int containerWidth = getContainerWidth()
+			var int elementWidth = getElementWidth()
+			var int column = index / pVisibleRows
+			var int x = column * elementWidth - pHorzRangeModel.getValue()
+			column += (containerWidth - x - 2) / elementWidth
+			index = (column + 1) * pVisibleRows - 1
+			
+		else
+			throw EInvalidParam.new()
+		end
+		
+		return DEMath.min(index, pListModel.getCount() - 1)
 	end
 	
 	/** \brief Index of selected item or -1 if none is selected. */
@@ -339,36 +376,32 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 	
 	/** \brief Index of the element at position or -1 if not found. */
 	public func int getElementAt( Point position )
-		if not this.isPointInside( position )
-			return -1
-		end
-		
 		var int elementIndex
 		
-		select this.pType
+		select pType
 		case Type.vertical
-			var int elementHeight = this.getElementHeight()
-			elementIndex = ( this.pVertRangeModel.getValue() + position.getY() ) / elementHeight
+			var int elementHeight = getElementHeight()
+			elementIndex = (pVertRangeModel.getValue() + position.getY()) / elementHeight
 			
 		case Type.verticalWrap
-			var int elementWidth = this.getElementWidth()
-			var int elementHeight = this.getElementHeight()
-			var int row = ( this.pVertRangeModel.getValue() + position.getY() ) / elementHeight
+			var int elementWidth = getElementWidth()
+			var int elementHeight = getElementHeight()
+			var int row = (pVertRangeModel.getValue() + position.getY()) / elementHeight
 			var int column = position.getX() / elementWidth
-			elementIndex = this.pVisibleColumns * row + column
+			elementIndex = pVisibleColumns * row + column
 			
 		case Type.horizontalWrap
-			var int elementWidth = this.getElementWidth()
-			var int elementHeight = this.getElementHeight()
-			var int column = ( this.pHorzRangeModel.getValue() + position.getX() ) / elementWidth
+			var int elementWidth = getElementWidth()
+			var int elementHeight = getElementHeight()
+			var int column = (pHorzRangeModel.getValue() + position.getX()) / elementWidth
 			var int row = position.getY() / elementHeight
-			elementIndex = this.pVisibleRows * column + row
+			elementIndex = pVisibleRows * column + row
 			
 		else
 			throw EInvalidParam.new()
 		end
 		
-		if elementIndex < 0 or elementIndex >= this.pListModel.getCount()
+		if elementIndex < 0 or elementIndex >= pListModel.getCount()
 			elementIndex = -1
 		end
 		
@@ -755,15 +788,16 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 		select event.getButton()
 		case InputEventMouseButton.left
 			var Widget source = event.getSource() cast Widget
-			var int elementIndex = this.getElementAt( source.getRelativePosition( this ) + event.getPosition() )
+			var Point position = source.getRelativePosition(this) + event.getPosition()
+			var int elementIndex = getElementAt(position)
 			
-			if elementIndex != -1
-				this.setSelectedElement( elementIndex )
-				this.makeSelectedElementVisible()
+			if elementIndex != -1 and isPointInside(position)
+				setSelectedElement( elementIndex )
+				makeSelectedElementVisible()
 			end
 			
-			this.grabFocus()
-			this.sendEventToListeners( event, false )
+			grabFocus()
+			sendEventToListeners( event, false )
 			
 		else
 			super.onButtonPress( event )
@@ -846,7 +880,6 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 	public func void onStateChanged( StateChangeEvent event )
 		this.runWhileBlockingLayout( block
 			this.notifyBorderParametersChanged()
-			this.notifyChildrenParentStateChanged()
 			super.onStateChanged( event )
 		end )
 		this.doLayoutIfBlocked()
@@ -994,6 +1027,45 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 		return this.pElementHeight
 	end
 	
+	/**
+	 * \brief Position of element at index.
+	 * \version 1.11
+	 * 
+	 * Returns top left corner.
+	 */
+	public func Point getElementPositionAt(int index)
+		if index < 0
+			throw EInvalidParam.new("index < 0")
+		end
+		if index >= pListModel.getCount()
+			throw EInvalidParam.new("index >= model.count")
+		end
+		
+		var Point position = Point.new(getPadding().getLeft(), getPadding().getTop())
+		
+		select this.pType
+		case Type.vertical
+			position = position + Point.new(0, index * getElementHeight() - pVertRangeModel.getValue())
+			
+		case Type.verticalWrap
+			var int column = index % pVisibleColumns
+			var int row = index / pVisibleColumns
+			position = position + Point.new(column * getElementWidth(),\
+				row * getElementHeight() - pVertRangeModel.getValue())
+			
+		case Type.horizontalWrap
+			var int row = index % pVisibleRows
+			var int column = index / pVisibleRows
+			position = position + Point.new(column * getElementWidth()\
+				- pHorzRangeModel.getValue(), row * getElementHeight())
+			
+		else
+			throw EInvalidParam.new()
+		end
+		
+		return position
+	end
+	
 	/** \brief Update element size. */
 	protected func void updateElementSize()
 		this.pElementWidth = 1
@@ -1074,7 +1146,6 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 				var int elementCount = this.pListModel.getCount()
 				var int firstElement = this.getFirstElement()
 				var int i, elementIndex
-				var Widget widget
 				
 				// set position
 				this.pPanelVisibleElements.setPosition( Point.new( \
@@ -1092,9 +1163,7 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 				
 				while widgetCount > visibleElementCount
 					widgetCount--
-					widget = this.pPanelVisibleElements.getWidget( widgetCount )
-					this.pPanelVisibleElements.removeWidget( widget )
-					widget.dispose()
+					this.pPanelVisibleElements.getWidget( widgetCount ).safeDispose()
 				end
 				
 				select this.pType

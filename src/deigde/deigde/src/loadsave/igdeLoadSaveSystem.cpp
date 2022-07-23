@@ -182,7 +182,7 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 					showAllFormat[ i ].Append( patternList.GetAt( k ) );
 				}
 				
-				if( showAllDefaultExtension[ i ].IsEmpty() ){
+				if( showAllDefaultExtension[ i ].IsEmpty() && ! loadableModule.GetNoSaving() ){
 					showAllDefaultExtension[ i ] = loadableModule.GetDefaultExtension();
 				}
 			}
@@ -201,7 +201,10 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 			
 			if( loadableModule.GetType() == vFPLMappings[ i ].moduleType ){
 				pAddPattern( pFPLOpen[ vFPLMappings[ i ].list ], loadableModule );
-				pAddPattern( pFPLSave[ vFPLMappings[ i ].list ], loadableModule );
+				
+				if( ! loadableModule.GetNoSaving() ){
+					pAddPattern( pFPLSave[ vFPLMappings[ i ].list ], loadableModule );
+				}
 			}
 		}
 	}

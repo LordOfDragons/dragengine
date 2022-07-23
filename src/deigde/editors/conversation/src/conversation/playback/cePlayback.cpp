@@ -71,6 +71,7 @@ pActorCount( 0 ),
 pRunning( false ),
 pPaused( false ),
 pActionWaiting( false ),
+pAutoAdvanceCommands( true ),
 pCameraHandling( echFree ),
 pActionTime( 0.0f ),
 pTextBoxText( NULL ),
@@ -161,6 +162,15 @@ void cePlayback::SetPaused( bool paused ){
 
 void cePlayback::SetCameraHandling( eCameraHandling handling ){
 	pCameraHandling = handling;
+}
+
+void cePlayback::SetAutoAdvanceCommands( bool autoAdvance ){
+	if( autoAdvance == pAutoAdvanceCommands ){
+		return;
+	}
+	
+	pAutoAdvanceCommands = autoAdvance;
+	pConversation.NotifyPlaybackChanged();
 }
 
 void cePlayback::Rewind(){

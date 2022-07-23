@@ -34,7 +34,7 @@ class deForceField;
  *
  * Manages a list of force fields.
  */
-class deForceFieldManager : public deResourceManager{
+class DE_DLL_EXPORT deForceFieldManager : public deResourceManager{
 private:
 	deResourceList pFields;
 	

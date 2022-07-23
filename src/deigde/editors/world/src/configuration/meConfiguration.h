@@ -88,6 +88,8 @@ private:
 	bool pAutoUpdate;
 	float pSensitivity;
 	
+	bool pEnableGI;
+	
 	deInputEvent::eKeyCodes pHotKeys[ EHK_COUNT ];
 	
 	bool pPreventSaving;
@@ -166,6 +168,14 @@ public:
 	
 	/** \brief Set mouse sensitivity. */
 	void SetSensitivity( float sensitivity );
+	
+	
+	
+	/** \brief Enable GI in cameras. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set enable GI in cameras. */
+	void SetEnableGI( bool enable );
 	
 	
 	

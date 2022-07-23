@@ -141,11 +141,12 @@ pWindowMain( windowMain )
 	try{
 		SetFilePath( "new.deanimator" );
 		
-		pCreateWorld();
+		pCreateWorld(); // creates animator
 		pCreateCamera();
 		pCreateCollider();
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance->SetAnimator( pEngAnimator );
 		
 		pLocomotion = new aeAnimatorLocomotion( this );
 		pWakeboard = new aeWakeboard( this );

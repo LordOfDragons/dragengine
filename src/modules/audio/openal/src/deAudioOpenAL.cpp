@@ -34,6 +34,7 @@
 #include "parameters/deoalParameterList.h"
 #include "parameters/deoalPEnableEFX.h"
 #include "parameters/deoalPAurealizationMode.h"
+#include "parameters/deoalPAurealizationQuality.h"
 #include "microphone/deoalMicrophone.h"
 #include "model/deoalModel.h"
 #include "skin/deoalSkin.h"
@@ -121,6 +122,7 @@ pActiveMicrophone( NULL )
 		pParameters = new deoalParameterList;
 		pParameters->AddParameter( new deoalPEnableEFX( *this ) );
 		pParameters->AddParameter( new deoalPAurealizationMode( *this ) );
+		pParameters->AddParameter( new deoalPAurealizationQuality( *this ) );
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -163,6 +165,13 @@ deoalWorld *deAudioOpenAL::GetActiveWorld() const{
 
 
 bool deAudioOpenAL::Init( deMicrophone *activeMic ){
+	#ifdef OAL_THREAD_CHECK
+	LogWarn( "OpenAL calls only in audio thread check enabled. Disable for production builds." );
+	#endif
+	#ifdef OAL_CHECKCOMMANDS
+	LogWarn( "OpenAL command failure check enabled. Disable for production builds." );
+	#endif
+	
 	try{
 		// on android set VM for the contrib android library
 		#ifdef OS_ANDROID
@@ -257,6 +266,10 @@ void deAudioOpenAL::SetActiveMicrophone( deMicrophone *microphone ){
 	if( oalMicrophone ){
 		oalMicrophone->SetActive( true );
 	}
+}
+
+int deAudioOpenAL::GetFPSRate(){
+	return pAudioThread->GetFPSRate();
 }
 
 

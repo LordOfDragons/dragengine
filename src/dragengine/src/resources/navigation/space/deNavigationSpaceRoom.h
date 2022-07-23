@@ -22,12 +22,14 @@
 #ifndef _DENAVIGATIONSPACEROOM_H_
 #define _DENAVIGATIONSPACEROOM_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Navigation Space Room.
  * Room in a navigation space. A valid room composes of 4 or more faces and has to be closed.
  */
-class deNavigationSpaceRoom{
+class DE_DLL_EXPORT deNavigationSpaceRoom{
 private:
 	unsigned short pFrontWallCount;
 	unsigned short pBackWallCount;

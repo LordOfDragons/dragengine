@@ -37,13 +37,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorRuleBoneTransformator::deAnimatorRuleBoneTransformator(){
-	pCoordinateFrame = ecfComponent;
-	pMinScaling.Set( 1.0f, 1.0f, 1.0f );
-	pMaxScaling.Set( 1.0f, 1.0f, 1.0f );
-	pEnablePosition = false;
-	pEnableOrientation = true;
-	pEnableSize = false;
+deAnimatorRuleBoneTransformator::deAnimatorRuleBoneTransformator() :
+pMinScaling( 1.0f, 1.0f, 1.0f ),
+pMaxScaling( 1.0f, 1.0f, 1.0f ),
+pAxis( 0.0f, 0.0f, 1.0f ),
+pMinAngle( 0.0f ),
+pMaxAngle( 0.0f ),
+pCoordinateFrame( ecfComponent ),
+pEnablePosition( false ),
+pEnableOrientation( true ),
+pEnableSize( false ),
+pUseAxis( false ){
 }
 
 deAnimatorRuleBoneTransformator::~deAnimatorRuleBoneTransformator(){
@@ -78,17 +82,25 @@ void deAnimatorRuleBoneTransformator::SetMaximumScaling( const decVector &scalin
 	pMaxScaling = scaling;
 }
 
-
-
-void deAnimatorRuleBoneTransformator::SetCoordinateFrame( eCoordinateFrames coordinateFrame ){
-	if( coordinateFrame < ecfBoneLocal || coordinateFrame > ecfTargetBone ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pCoordinateFrame = coordinateFrame;
+void deAnimatorRuleBoneTransformator::SetAxis( const decVector &axis ){
+	pAxis = axis;
 }
 
+void deAnimatorRuleBoneTransformator::SetMinimumAngle( float angle ){
+	pMinAngle = angle;
+}
 
+void deAnimatorRuleBoneTransformator::SetMaximumAngle( float angle ){
+	pMaxAngle = angle;
+}
+
+void deAnimatorRuleBoneTransformator::SetUseAxis( bool useAxis ){
+	pUseAxis = useAxis;
+}
+
+void deAnimatorRuleBoneTransformator::SetCoordinateFrame( eCoordinateFrames coordinateFrame ){
+	pCoordinateFrame = coordinateFrame;
+}
 
 void deAnimatorRuleBoneTransformator::SetEnablePosition( bool enable ){
 	pEnablePosition = enable;
@@ -101,8 +113,6 @@ void deAnimatorRuleBoneTransformator::SetEnableOrientation( bool enable ){
 void deAnimatorRuleBoneTransformator::SetEnableSize( bool enabled ){
 	pEnableSize = enabled;
 }
-
-
 
 void deAnimatorRuleBoneTransformator::SetTargetBone( const char *boneName ){
 	pTargetBone = boneName;

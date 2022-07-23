@@ -56,7 +56,7 @@
  * can be specified. If such a bone is defined it is used to attach the collider
  * instead of the collider origin itself. For all other resource types this is not used.
  */
-class deColliderAttachment{
+class DE_DLL_EXPORT deColliderAttachment{
 public:
 	/** \brief Attachment types. */
 	enum eAttachType{
@@ -111,7 +111,7 @@ public:
 	};
 	
 	/** \brief Weighted bone used for eatBone. */
-	struct sWeight{
+	struct DE_DLL_EXPORT sWeight{
 		/** \brief Name of the bone to match with the target bone. */
 		decString bone;
 		/** \brief Bone weight in the range from 0 to 1. */

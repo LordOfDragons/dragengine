@@ -42,12 +42,12 @@
 
 dexsiDeviceButton::dexsiDeviceButton( deXSystemInput &module ) :
 pModule( module ),
-
 pPressed( false ),
 pX11Code( 0 ),
 pEvdevCode( 0 ),
 pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ){
+pMatchPriority( 10 ),
+pKeyLocation( deInputEvent::eklNone ){
 }
 
 dexsiDeviceButton::~dexsiDeviceButton(){
@@ -124,6 +124,10 @@ void dexsiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
 
 void dexsiDeviceButton::SetMatchPriority( int priority ){
 	pMatchPriority = priority;
+}
+
+void dexsiDeviceButton::SetKeyLocation( deInputEvent::eKeyLocation location ){
+	pKeyLocation = location;
 }
 
 

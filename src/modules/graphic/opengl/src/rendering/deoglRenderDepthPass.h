@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderTranspCounting.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 
 class deoglRenderPlan;
@@ -78,7 +77,7 @@ public:
 	 * - count transparency
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidDepthPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	
 	
@@ -89,7 +88,7 @@ public:
 	 * - render geometry
 	 * Invalidates no attachments.
 	 */
-	void RenderDepth( deoglRenderPlan &plan, deoglRenderPlanMasked *mask,
+	void RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
 		bool solid, bool maskedOnly, bool reverseDepthTest );
 	
 	
@@ -108,7 +107,7 @@ public:
 	 * Using FBO Def-Ren Depth set by RenderSolidGeometryPass. No clearing.
 	 * Invalidates no attachments.
 	 */
-	void RenderOcclusionQueryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderOcclusionQueryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	/*@}*/
 };
 

@@ -75,7 +75,13 @@ class deWorld;
  * CollisionResponse function you are responsible for specifying
  * the effect of the collision on the object.
  */
-class deCollider : public deResource{
+class DE_DLL_EXPORT deCollider : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCollider> Ref;
+	
+	
+	
 public:
 	/** \brief Collision Response Types. */
 	enum eResponseType{

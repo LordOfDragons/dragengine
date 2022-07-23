@@ -36,7 +36,7 @@ class decShape;
  *
  * Peer for the height terrain resource used by the physics system.
  */
-class deBasePhysicsHeightTerrain{
+class DE_DLL_EXPORT deBasePhysicsHeightTerrain{
 private:
 	
 public:

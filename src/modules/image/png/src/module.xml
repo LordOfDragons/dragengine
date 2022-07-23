@@ -6,6 +6,8 @@
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.png</pattern>
+	<noCompress/>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

@@ -29,26 +29,29 @@
 
 
 /**
- * @brief Memory Manager.
- * Keeps track of the current memory consumption and allows to adjust usage
- * patterns if memory gets low.
+ * Keeps track of the current memory consumption.
  */
 class deoglMemoryManager{
 private:
 	deoglMemoryConsumption pConsumption;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new memory manager. */
+	/** Create memory manager. */
 	deoglMemoryManager();
-	/** Cleans up the memory manager. */
+	
+	/** Clean up memory manager. */
 	~deoglMemoryManager();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the memory consumption. */
+	/** Memory consumption. */
 	inline deoglMemoryConsumption &GetConsumption(){ return pConsumption; }
 	/*@}*/
 };

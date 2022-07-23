@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Pixel Buffer Mip Map.
+ * \brief Pixel Buffer Mip Map.
  * Mip map chain of pixel buffers.
  */
 class deoglPixelBufferMipMap{
@@ -36,7 +36,7 @@ private:
 	int pPixelBufferCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer mip map. */
 	deoglPixelBufferMipMap( deoglPixelBuffer::ePixelFormats format, int width, int height, int depth, int maxLevel );
@@ -44,40 +44,42 @@ public:
 	~deoglPixelBufferMipMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of pixel buffers which is the mip map level count. */
 	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
 	/** Retrieves the pixel buffer for a mip map level. */
 	deoglPixelBuffer *GetPixelBuffer( int level ) const;
 	
-	/**
-	 * \brief Create mip maps from the base level using simple box filtering.
-	 * 
-	 * Only components with their mask set to true are processed.
-	 */
+	/** Reduce maximum mip map level count. */
+	void ReducePixelBufferCount( int reduceByCount );
+	
+	/** Create mip maps from the base level using simple box filtering. */
 	void CreateMipMaps();
 	
 	/**
-	 * \brief Create mip maps from the base level using simple box filtering.
-	 * 
+	 * Create mip maps from the base level using simple box filtering.
 	 * Only components with their mask set to true are processed.
 	 */
 	void CreateMipMaps( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
 	
-	/**
-	 * \brief Create mip maps from the base level using maximum filtering.
-	 * 
-	 * Only components with their mask set to true are processed.
-	 */
+	/** Create mip maps from the base level using maximum filtering. */
 	void CreateMipMapsMax();
 	
 	/**
-	 * \brief Create mip maps from the base level using maximum filtering.
-	 * 
+	 * Create mip maps from the base level using maximum filtering.
 	 * Only components with their mask set to true are processed.
 	 */
 	void CreateMipMapsMax( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
+	
+	/** Create mip maps from the base level using minimum filtering. */
+	void CreateMipMapsMin();
+	
+	/**
+	 * Create mip maps from the base level using minimum filtering.
+	 * Only components with their mask set to true are processed.
+	 */
+	void CreateMipMapsMin( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
 	
 	/**
 	 * Create normal mip maps from the base level using simple box filtering. In addition
@@ -92,6 +94,8 @@ public:
 	 */
 	void CreateRoughnessMipMaps( deoglPixelBufferMipMap &normalPixeBufferMipMap );
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

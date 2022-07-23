@@ -54,7 +54,11 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 
-pWorldMarkedRemove( false ){
+pTypesRequirePrepareForRender( true ),
+
+pWorldMarkedRemove( false ),
+pLLPrepareForRenderWorld( this )
+{
 	LEAK_CHECK_CREATE( renderThread, PropField );
 }
 
@@ -137,11 +141,15 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 
 
 void deoglRPropField::PrepareForRender(){
-	const int typeCount = pTypes.GetCount();
-	int t;
-	
-	for( t=0; t<typeCount; t++ ){
-		( ( deoglRPropFieldType* )pTypes.GetAt( t ) )->PrepareForRender();
+	if( pTypesRequirePrepareForRender ){
+		pTypesRequirePrepareForRender = false;
+		
+		const int count = pTypes.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->PrepareForRender();
+		}
 	}
 }
 
@@ -189,6 +197,12 @@ void deoglRPropField::AddType( deoglRPropFieldType *type ){
 		DETHROW( deeInvalidParam );
 	}
 	pTypes.Add( type );
+	TypeRequiresPrepareForRender();
+}
+
+void deoglRPropField::TypeRequiresPrepareForRender(){
+	pTypesRequirePrepareForRender = true;
+	pRequiresPrepareForRender();
 }
 
 
@@ -202,11 +216,17 @@ void deoglRPropField::WorldReferencePointChanged(){
 	}
 }
 
-
-
-// Render world usage
-///////////////////////
-
 void deoglRPropField::SetWorldMarkedRemove( bool marked ){
 	pWorldMarkedRemove = marked;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRPropField::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderPropField( this );
+	}
 }

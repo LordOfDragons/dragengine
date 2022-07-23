@@ -56,7 +56,13 @@ class decShape;
  * in the game world. Model textures are mapped to skin textures. Rig bones define the
  * available component bones. Model bones are mapped to Rig bones.
  */
-class deComponent : public deResource{
+class DE_DLL_EXPORT deComponent : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deComponent> Ref;
+	
+	
+	
 public:
 	/** \brief Movement hints. */
 	enum eMovementHints{

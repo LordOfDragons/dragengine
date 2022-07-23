@@ -164,24 +164,23 @@ void igdeApplication::CleanUp(){
 //////////////////////
 
 void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
-	( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
-	
 	try{
+		( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
+		
 		if( Initialize( arguments ) ){
 			( ( igdeNativeApplication* )pNativeApplication )->Run();
 		}
 		
 	}catch( const deException &e ){
-		e.PrintError();
 		( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
 		
 		try{
 			CleanUp();
 			pMainWindow = NULL;
 			
-		}catch( const deException &e ){
-			e.PrintError();
-			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
+		}catch( const deException &e2 ){
+			e2.PrintError();
+			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e2 );
 		}
 		
 		( ( igdeNativeApplication* )pNativeApplication )->Quit();

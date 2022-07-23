@@ -28,6 +28,8 @@
 
 #include "deLoggerConsole.h"
 #include "../common/exceptions.h"
+#include "../common/utils/decDateTime.h"
+#include "../threading/deMutexGuard.h"
 
 #ifdef ANDROID
 #include <android/log.h>
@@ -54,76 +56,29 @@ deLoggerConsole::~deLoggerConsole(){
 ///////////////
 
 void deLoggerConsole::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		const int len = strlen( message );
-		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			printf( "II [%s] %s", source, message );
-			
-		}else{
-			printf( "II [%s] %s\n", source, message );
-		}
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogPrefix( source, message, "II " );
 }
 
 void deLoggerConsole::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		const int len = strlen( message );
-		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			printf( "WW [%s] %s", source, message );
-			
-		}else{
-			printf( "WW [%s] %s\n", source, message );
-		}
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogPrefix( source, message, "WW " );
 }
 
 void deLoggerConsole::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
+	LogPrefix( source, message, "EE " );
+}
+
+void deLoggerConsole::LogPrefix( const char *source, const char *message, const char *prefix ){
+	if( ! source || ! message || ! prefix ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const int len = ( int )strlen( message );
+	const decDateTime timestamp;
 	
-	try{
-		const int len = strlen( message );
-		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			printf( "EE [%s] %s", source, message );
-			
-		}else{
-			printf( "EE [%s] %s\n", source, message );
-		}
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	const deMutexGuard lock( pMutex );
+	
+	printf( "%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
+		timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
+		timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(),
+		message, ( len == 0 || message[ len - 1 ] != '\n' ) ? "\n" : "" );
 }

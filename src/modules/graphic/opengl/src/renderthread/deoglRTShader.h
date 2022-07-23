@@ -93,7 +93,7 @@ private:
 	deoglShaderManager *pShaderManager;
 	deoglSkinShaderManager *pSkinShaderManager;
 	deoglLightShaderManager *pLightShaderManager;
-	deoglShaderProgram *pCurShaderProg;
+	const deoglShaderProgram *pCurShaderProg;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -125,10 +125,10 @@ public:
 	inline deoglLightShaderManager &GetLightShaderManager() const{ return *pLightShaderManager; }
 	
 	/** \brief Current shader program or NULL if none is set. */
-	inline deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
+	inline const deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
 	
 	/** \brief Activate shader if not active yet. */
-	void ActivateShader( deoglShaderProgram *shader );
+	void ActivateShader( const deoglShaderProgram *shader );
 	/*@}*/
 	
 private:

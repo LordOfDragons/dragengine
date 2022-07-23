@@ -31,7 +31,7 @@ class decBaseFileWriter;
 /**
  * \brief Visitor writing xml document to file using decXmlWriter.
  */
-class decXmlVisitorWriter : public decXmlVisitor{
+class DE_DLL_EXPORT decXmlVisitorWriter : public decXmlVisitor{
 private:
 	bool pCompact;
 	decXmlWriter *pWriter;

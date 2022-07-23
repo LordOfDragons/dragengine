@@ -36,7 +36,6 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../texture/deoglTextureStageManager.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -70,57 +69,15 @@ deoglREffect( renderThread ),
 pKernel( NULL ),
 pKernelRows( 0 ),
 pKernelCols( 0 ),
-pScale( 1.0f ),
-pShader( NULL ),
-pShaderDownsample( NULL )
+pScale( 1.0f )
 {
 	LEAK_CHECK_CREATE( renderThread, EffectFilterKernel );
 }
-
-class deoglREffectFilterKernelDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	deoglShaderProgram *shaderDownsample;
-	
-	deoglREffectFilterKernelDeletion() :
-	shader( NULL ),
-	shaderDownsample( NULL ){
-	}
-	
-	virtual ~deoglREffectFilterKernelDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shaderDownsample ){
-			shaderDownsample->RemoveUsage();
-		}
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
 
 deoglREffectFilterKernel::~deoglREffectFilterKernel(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectFilterKernel );
 	if( pKernel ){
 		delete [] pKernel;
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectFilterKernelDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectFilterKernelDeletion;
-		delayedDeletion->shader = pShader;
-		delayedDeletion->shaderDownsample = pShaderDownsample;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
 	}
 }
 
@@ -223,7 +180,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	
 	// source texture in case downsampling is required
 	defren.SwapPostProcessTarget();
-	deoglTexture *sourceTexture = defren.GetPostProcessTexture();
+	deoglArrayTexture *sourceTexture = defren.GetPostProcessTexture();
 	
 	// down sample if required
 	int height = defren.GetHeight();
@@ -245,7 +202,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		defren.SetShaderParamFSQuad( shaderDownsample, spedsQuadParams );
 		
 		for( i=0; i<downsampleCount; i++ ){
-			tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+			tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 			
 			if( ( i % 2 ) == 0 ){
 				defren.ActivateFBOReflectivity( false );
@@ -288,7 +245,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	
 	// set shader program
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
 	// set program
 	deoglShaderProgram * const shaderProgram = GetShader();

@@ -44,4 +44,12 @@ interface SysParamWrapper
 	
 	/** \brief Send command. */
 	func String sendCommand( String command )
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	func int getFPSRate()
 end

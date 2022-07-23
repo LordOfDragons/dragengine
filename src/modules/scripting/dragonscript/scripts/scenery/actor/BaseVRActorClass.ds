@@ -1,0 +1,358 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief VR Actor element class.
+ * \version 1.6
+ * 
+ * Extends BaseActorClass with VR behaviors.
+ */
+class BaseVRActorClass extends BaseActorClass
+	/**
+	 * \brief Behavior ID used for right hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorVRHand
+	 * - ECBehaviorVRHandPointAt
+	 * - ECBehaviorVRHandLaserPointer
+	 * 
+	 * Value is "right".
+	 */
+	public static fixed var String idVRRightHand = "right"
+	
+	/**
+	 * \brief Behavior ID used for left hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorVRHand
+	 * - ECBehaviorVRHandPointAt
+	 * - ECBehaviorVRHandLaserPointer
+	 * 
+	 * Value is "left".
+	 */
+	public static fixed var String idVRLeftHand = "left"
+	
+	/**
+	 * \brief Behavior ID used for non-VR based behaviors for right hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorAttachSlot
+	 * - ECBehaviorGrabber
+	 * 
+	 * Value is "vrHandRight".
+	 */
+	public static fixed var String idNonVRRightHand = "vrHandRight"
+	
+	/**
+	 * \brief Behavior ID used for non-VR based behaviors for left hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorAttachSlot
+	 * - ECBehaviorGrabber
+	 * 
+	 * Value is "vrHandLeft".
+	 */
+	public static fixed var String idNonVRLeftHand = "vrHandLeft"
+	
+	
+	
+	private var ECBehaviorVRPlayspace pVRPlayspace
+	private var ECBehaviorVRHMD pVRHMD
+	private var ECBehaviorVRHand pVRRightHand
+	private var ECBehaviorVRHand pVRLeftHand
+	private var ECBehaviorVRHandPointAt pVRRightHandPointAt
+	private var ECBehaviorVRHandPointAt pVRLeftHandPointAt
+	private var ECBehaviorVRHandLaserPointer pVRRightHandLaserPointer
+	private var ECBehaviorVRHandLaserPointer pVRLeftHandLaserPointer
+	private var ECBehaviorAttachSlot pVRRightHandAttachSlot
+	private var ECBehaviorAttachSlot pVRLeftHandAttachSlot
+	private var ECBehaviorGrabber pVRRightHandGrabber
+	private var ECBehaviorGrabber pVRLeftHandGrabber
+	private var ECBehaviorVRHandPose pVRRightHandPose
+	private var ECBehaviorVRHandPose pVRLeftHandPose
+	private var ECBehaviorActorAnimated pVRRightHandAnimated
+	private var ECBehaviorActorAnimated pVRLeftHandAnimated
+	private var ECBehaviorVRHandAction pVRRightHandAction
+	private var ECBehaviorVRHandAction pVRLeftHandAction
+	
+	
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new() this("VRActor", BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor())
+	end
+	
+	/** \brief Create element class. */
+	public func new(Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
+	this("VRActor", loaders, tracker)
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new(String className) this(className, BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor())
+	end
+	
+	/** \brief Create element class. */
+	public func new(String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
+	super(className, loaders, tracker)
+		getAIAction().setActionFactory(BAAFirstPersonVR.Factory.new())
+		
+		// change horizontal looking speed to 90 degrees per second
+		getPlayerInputLook().getSpeedLookHorizontal().setValue(90)
+		
+		// add VR Playspace. this is the base for all VR related behaviors
+		pVRPlayspace = ECBehaviorVRPlayspace.new(this)
+		
+		// add HMD behavior allowing to track player head
+		pVRHMD = ECBehaviorVRHMD.new(this, pVRPlayspace)
+		
+		// add right and left hand controllers
+		pVRRightHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrRightHand, idVRRightHand)
+		pVRLeftHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrLeftHand, idVRLeftHand)
+		
+		// add support to know what element hand controllers point at
+		pVRRightHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRRightHand, idVRRightHand)
+		pVRLeftHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRLeftHand, idVRLeftHand)
+		
+		// ignore actor collider for point at behaviors. this avoids problems if the actor
+		// has a full body collider touching the hands
+		pVRRightHandPointAt.setIgnoreCollider(getCollider())
+		pVRLeftHandPointAt.setIgnoreCollider(getCollider())
+		
+		// add support for laser pointers on hand controllers
+		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, idVRRightHand)
+		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, idVRLeftHand)
+		
+		// add support for grabbing grab slots using hand controllers. the aim pose for
+		// controllers is located above and in front of the hand. move the grab position
+		// into the hand. this is a static offset. users can instead use a hand model
+		// bone to attach objects to which is better
+		// 
+		// the grip center is usually located -11cm along grab orientation, which is 45 degrees
+		// upwards. this yields (0, -0.078, -0.078). this is though a bit lower on the palm
+		// and for this reason it is lifted slightly up to better line up with where the palm
+		// usually is located.
+		var Vector position = Vector.new(0, -0.058, -0.078)
+		var Vector rotation = Vector.new(0, 0, 0)
+		
+		var ShapeList shape = ShapeList.new()
+		shape.addSphere(Vector.new(), 0.05)
+		
+		pVRRightHandGrabber = ECBehaviorGrabber.new(this, pVRRightHand, idNonVRRightHand)
+		pVRRightHandGrabber.getShape().setShapeList(shape)
+		pVRRightHandGrabber.getAttach().getPosition().setVector(position + Vector.new(-0.02, 0, 0.02))
+		pVRRightHandGrabber.getAttach().getOrientation().setVector(rotation)
+		
+		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, pVRLeftHand, idNonVRLeftHand)
+		pVRLeftHandGrabber.getShape().setShapeList(shape)
+		pVRLeftHandGrabber.getAttach().getPosition().setVector(position + Vector.new(0.02, 0, 0.02))
+		pVRLeftHandGrabber.getAttach().getOrientation().setVector(rotation)
+		
+		// add attach slot for attaching objects to the hands
+		pVRRightHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRRightHand,\
+			idNonVRRightHand, "attachSlot(" + idNonVRRightHand + ").")
+		pVRRightHandAttachSlot.getPosition().setVector(position)
+		pVRRightHandAttachSlot.getOrientation().setVector(rotation)
+		
+		pVRLeftHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRLeftHand,\
+			idNonVRLeftHand, "attachSlot(" + idNonVRLeftHand + ").")
+		pVRLeftHandAttachSlot.getPosition().setVector(position)
+		pVRLeftHandAttachSlot.getOrientation().setVector(rotation)
+		
+		// add hand pose support
+		pVRRightHandPose = ECBehaviorVRHandPose.new(this, pVRRightHand, idNonVRRightHand,\
+			"vrHandPose(" + idNonVRRightHand + ").")
+		
+		pVRLeftHandPose = ECBehaviorVRHandPose.new(this, pVRLeftHand, idNonVRLeftHand,\
+			"vrHandPose(" + idNonVRLeftHand + ").")
+		
+		// add animation support to hands
+		pVRRightHandAnimated = ECBehaviorActorAnimated.new(this, pVRRightHand.getComponent(),\
+			getLocomotion(), idNonVRRightHand, "actorAnimated(" + idNonVRRightHand + ").")
+		pVRRightHandAnimated.getControllerMapping().setAt("idle", LocomotionAttribute.elapsedTime)
+		pVRRightHandAnimated.getControllerMapping().setAt("interaction", LocomotionAttribute.elapsedTime)
+		
+		pVRLeftHandAnimated = ECBehaviorActorAnimated.new(this, pVRLeftHand.getComponent(),\
+			getLocomotion(), idNonVRLeftHand, "actorAnimated(" + idNonVRLeftHand + ").")
+		pVRLeftHandAnimated.getControllerMapping().setAt("idle", LocomotionAttribute.elapsedTime)
+		pVRLeftHandAnimated.getControllerMapping().setAt("interaction", LocomotionAttribute.elapsedTime)
+		
+		// add action support to both hands
+		pVRRightHandAction = ECBehaviorVRHandAction.new(this, pVRRightHand,\
+			getConversationActor(), idVRRightHand)
+		pVRLeftHandAction = ECBehaviorVRHandAction.new(this, pVRLeftHand,\
+			getConversationActor(), idVRLeftHand)
+	end
+	
+	
+	
+	/** \brief VR Playspace behavior. */
+	public func ECBehaviorVRPlayspace getVRPlayspace()
+		return pVRPlayspace
+	end
+	
+	/** \brief VR HMD. */
+	public func ECBehaviorVRHMD getVRHMD()
+		return pVRHMD
+	end
+	
+	/** \brief VR Right Hand Controller. */
+	public func ECBehaviorVRHand getVRRightHand()
+		return pVRRightHand
+	end
+	
+	/** \brief VR Left Hand Controller. */
+	public func ECBehaviorVRHand getVRLeftHand()
+		return pVRLeftHand
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Point-At.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandPointAt getVRRightHandPointAt()
+		return pVRRightHandPointAt
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Point-At.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandPointAt getVRLeftHandPointAt()
+		return pVRLeftHandPointAt
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Laser Pointer.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandLaserPointer getVRRightHandLaserPointer()
+		return pVRRightHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Laser Pointer.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandLaserPointer getVRLeftHandLaserPointer()
+		return pVRLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot getVRRightHandAttachSlot()
+		return pVRRightHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot getVRLeftHandAttachSlot()
+		return pVRLeftHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber getVRRightHandGrabber()
+		return pVRRightHandGrabber
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber getVRLeftHandGrabber()
+		return pVRLeftHandGrabber
+	end
+	
+	/**
+	 * \brief VR Right Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose getVRRightHandPose()
+		return pVRRightHandPose
+	end
+	
+	/**
+	 * \brief VR Left Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose getVRLeftHandPose()
+		return pVRLeftHandPose
+	end
+	
+	/**
+	 * \brief VR Right Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated getVRRightHandAnimated()
+		return pVRRightHandAnimated
+	end
+	
+	/**
+	 * \brief VR Left Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated getVRLeftHandAnimated()
+		return pVRLeftHandAnimated
+	end
+	
+	/**
+	 * \brief VR Right Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction getVRRightHandAction()
+		return pVRRightHandAction
+	end
+	
+	/**
+	 * \brief VR Left Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction getVRLeftHandAction()
+		return pVRLeftHandAction
+	end
+	
+	
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return BaseVRActor.new(this)
+	end
+end

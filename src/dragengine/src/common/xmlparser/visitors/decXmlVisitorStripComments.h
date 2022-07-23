@@ -28,7 +28,7 @@
 /**
  * \brief Visitor for stripping comments from any container elements.
  */
-class decXmlVisitorStripComments : public decXmlVisitor{
+class DE_DLL_EXPORT decXmlVisitorStripComments : public decXmlVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

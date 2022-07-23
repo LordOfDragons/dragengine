@@ -107,10 +107,10 @@ decString decUuid::ToHexString( bool condensed ) const{
 		const int value = ( pValues[ index ] >> shift ) & 0xf;
 		
 		if( value < 10 ){
-			string[ position++ ] = '0' + value;
+			string[ position++ ] = ( char )( '0' + value );
 			
 		}else{
-			string[ position++ ] = 'a' + ( value - 10 );
+			string[ position++ ] = ( char )( 'a' + ( value - 10 ) );
 		}
 		
 		if( shift == 0 ){
@@ -130,7 +130,7 @@ void decUuid::SetFromHexString( const char *string, bool condensed ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( string );
+	const int len = ( int )strlen( string );
 	if( ( condensed && len != 32 ) || ( ! condensed && len != 36 ) ){
 		DETHROW( deeInvalidFormat );
 	}

@@ -1,0 +1,199 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Option group model.
+ * \version 1.11
+ * 
+ * Links a ToggleModel to a ListModel entry. If the list model entry is selected the toggle
+ * model is toggled otherwise untoggled. If the toggle model is toggled while untoggled
+ * the respective element in the list model is selected.
+ * 
+ * Example of how to use this model:
+ * \code{.ds}
+ * class MyClass
+ *    enum MyEnum
+ *       option1
+ *       option2
+ *       option3
+ *    end
+ *    
+ *    private var DefaultListModel modelOptions
+ *    
+ *    private func createUI(Container container)
+ *       // create model containing the options
+ *       modelOptions = DefaultListModel.new(MyEnum.all())
+ *       modelOptions.setSelectedElement(MyEnum.option2)
+ *       
+ *       // create and add option boxes for each option. the toggled state of the
+ *       // option boxes is synchronized with the list model selection
+ *       container.addWidget(OptionBox.new(OptionGroupModel.newFor(modelOptions, MyEnum.option1), "Option 1"))
+ *       container.addWidget(OptionBox.new(OptionGroupModel.newFor(modelOptions, MyEnum.option2), "Option 2"))
+ *       container.addWidget(OptionBox.new(OptionGroupModel.newFor(modelOptions, MyEnum.option3), "Option 3"))
+ *       
+ *       // you could also use direct indices instead of looking up list elements.
+ *       // looking up list elements is safer. using indices can be useful if you
+ *       // want to add options by iterating of the list model elements
+ *       // 
+ *       // container.addWidget(OptionBox.new(OptionGroupModel.new(modelOptions, 0), "Option 1"))
+ *       // ...
+ *       
+ *       // you can use this class for all instance accepting toggle models.
+ *       // for example to add an option menu entry you can do this:
+ *       // 
+ *       // menuPanel.addWidget(MenuItemOption.new(OptionGroupModel.new(modelOptions, 0), "Option 1"))
+ *    end
+ * end
+ * \endcode
+ */
+class OptionGroupModel extends DefaultToggleModel
+	/**
+	 * \brief List changed listener.
+	 * 
+	 * Separate class is used to avoid leak problems.
+	 */
+	private class ListChangedListener extends DefaultListModelListener
+		private var WeakReference pOwner
+		
+		public func new(OptionGroupModel owner)
+			pOwner = WeakReference.new(owner)
+		end
+		
+		public func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
+			var OptionGroupModel owner = pOwner.get() cast OptionGroupModel
+			if owner == null
+				return
+			end
+			
+			var int index = owner.getIndexElement()
+			if index >= fromIndex
+				owner.setIndexElement(index + (toIndex - fromIndex + 1))
+			end
+		end
+		
+		public func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
+			var OptionGroupModel owner = pOwner.get() cast OptionGroupModel
+			if owner == null
+				return
+			end
+			
+			var int index = owner.getIndexElement()
+			if index >= fromIndex and index <= toIndex
+				// element lost
+				owner.setIndexElement(-1)
+				owner.setToggled(false)
+				
+			elif index > toIndex
+				owner.setIndexElement(index - (toIndex - fromIndex + 1))
+			end
+		end
+		
+		public func void selectionChanged(ListModel listModel)
+			var OptionGroupModel owner = pOwner.get() cast OptionGroupModel
+			if owner == null
+				return
+			end
+			
+			var int index = owner.getIndexElement()
+			owner.setToggled(index != -1 and listModel.getSelected() == index)
+		end
+	end
+	
+	
+	
+	private var ListModel pListModel
+	private var int pIndexElement
+	
+	
+	
+	/** \brief Create option group model linked to ListModel element at index. */
+	public func new(ListModel listModel, int indexElement)
+		if listModel == null
+			throw ENullPointer.new("listModel")
+		end
+		if indexElement < 0
+			throw EInvalidParam.new("indexElement < 0")
+		end
+		if indexElement >= listModel.getCount()
+			throw EInvalidParam.new("indexElement >= listModel.count")
+		end
+		
+		pListModel = listModel
+		pIndexElement = indexElement
+		
+		setToggled(listModel.getSelected() == indexElement)
+		
+		listModel.addListener(ListChangedListener.new(this))
+	end
+	
+	/** \brief Create option group model linked to ListModel element. */
+	public static func OptionGroupModel newFor(ListModel listModel, Object element)
+		return new(listModel, listModel.indexOf(element))
+	end
+	
+	
+	
+	/** \brief List model. */
+	public func ListModel getListModel()
+		return pListModel
+	end
+	
+	/** \brief List model element index or -1 if lost. */
+	public func int getIndexElement()
+		return pIndexElement
+	end
+	
+	/**
+	 * \brief Set list model element index or -1 if lost.
+	 * \warning For internal use only.
+	 */
+	public func void setIndexElement(int indexElement)
+		if indexElement < -1
+			throw EInvalidParam.new("indexElement < -1")
+		end
+		if indexElement >= pListModel.getCount()
+			throw EInvalidParam.new("indexElement >= listModel.count")
+		end
+		
+		pIndexElement = indexElement
+	end
+	
+	
+	
+	/** \brief Set toggled state. */
+	public func void setToggled(bool toggled)
+		if toggled == getToggled()
+			return
+		end
+		
+		super.setToggled(toggled)
+		
+		if getToggled() and pIndexElement != -1
+			pListModel.setSelected(pIndexElement)
+		end
+	end
+end

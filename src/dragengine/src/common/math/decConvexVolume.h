@@ -35,7 +35,7 @@ class decConvexVolumeFace;
  * faces of arbitrary vertex count. Convex volumes can be split
  * up using planes.
  */
-class decConvexVolume{
+class DE_DLL_EXPORT decConvexVolume{
 private:
 	decVector *pVertices;
 	int pVertexCount;

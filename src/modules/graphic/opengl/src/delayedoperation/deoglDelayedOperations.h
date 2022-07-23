@@ -22,6 +22,9 @@
 #ifndef _DEOGLDELAYEDOPERATIONS_H_
 #define _DEOGLDELAYEDOPERATIONS_H_
 
+#include "../deoglBasics.h"
+#include "../shaders/deoglShaderProgramUsage.h"
+
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
@@ -32,16 +35,14 @@ class deoglRImage;
 class deoglRModel;
 class deoglRenderThread;
 class deoglRSkin;
-class deoglShaderProgram;
 class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
-class deoglDelayedDeletion;
 
 
 
 /**
- * \brief Delayed operations.
+ * Delayed operations.
  * 
  * Resources can be created at any time including asynchronously. OpenGL doesn't allow or
  * reacts badly to creating or manipulating OpenGL related objects outside a well defined
@@ -51,7 +52,32 @@ class deoglDelayedDeletion;
  * It is garanteed that all pending delayed operations are carried out during this time.
  */
 class deoglDelayedOperations{
+public:
+	enum eOpenGLObjectType{
+		eoglotBuffer,
+		eoglotTexture,
+		eoglotVertexArray,
+		eoglotFramebuffer,
+		eoglotQuery,
+		eoglotSampler,
+		eoglotRenderBuffer,
+		eoglotProgram,
+		eoglotShader
+	};
+	
+	
+	
 private:
+	struct sOpenGLObject{
+		eOpenGLObjectType type;
+		GLuint name;
+		
+		inline void Set( eOpenGLObjectType ptype, GLuint pname ){
+			type = ptype;
+			name = pname;
+		}
+	};
+	
 	deoglRenderThread &pRenderThread;
 	
 	deMutex pMutexAsyncResInit;
@@ -65,30 +91,31 @@ private:
 	decPointerOrderedSet pInitSkinList;
 	decPointerOrderedSet pInitModelList;
 	
-	deMutex pMutexFree;
-	bool pHasFreeOperations;
-	deoglDelayedDeletion *pRootDeletion;
-	deoglDelayedDeletion *pTailDeletion;
-	int pDeletionCount;
+	deMutex pMutexOGLObjects;
+	sOpenGLObject *pOGLObjects;
+	int pOGLObjectCount;
+	int pOGLObjectSize;
+	
+	deMutex pMutexCameras;
+	decObjectOrderedSet pCleanUpCameraList;
 	
 	deMutex pMutexSynchronize;
 	bool pHasSynchronizeOperations;
 	decPointerOrderedSet pFileWriteList;
 	decPointerOrderedSet pSaveImageList;
-	decObjectOrderedSet pCleanUpCameraList;
 	
-	deoglShaderProgram *pShaderGenConeMap;
-	deoglShaderProgram *pShaderGenConeMapLayer;
+	deoglShaderProgramUsage pShaderGenConeMap;
+	deoglShaderProgramUsage pShaderGenConeMapLayer;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create delayed operations object. */
+	/** Create delayed operations object. */
 	deoglDelayedOperations( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up delayed operations object. */
+	/** Clean up delayed operations object. */
 	~deoglDelayedOperations();
 	/*@}*/
 	
@@ -96,10 +123,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Mutex. */
+	/** Mutex. */
 	inline deMutex &GetMutex(){ return pMutexInit; }
 	/*@}*/
 	
@@ -107,11 +134,11 @@ public:
 	
 	/** \name Delayed main thread asynchronous resources initialization. */
 	/*@{*/
-	/** \brief Has asynchronous resource init operations (not thread-safe). */
+	/** Has asynchronous resource init operations (not thread-safe). */
 	inline bool GetHasAsyncResInitOperations() const{ return pHasAsyncResInitOperations; }
 	
 	/**
-	 * \brief Process asynchronous resource init operations (thread-safe).
+	 * Process asynchronous resource init operations (thread-safe).
 	 * \details Called from main thread to finalize initialize asynchronously loaded resources.
 	 *          This is required to deal with accessing render objects in a safe way.
 	 *          Operates on the following lists:
@@ -122,24 +149,24 @@ public:
 	
 	
 	
-	/** \brief Async res init skin list (not thread-safe). */
+	/** Async res init skin list (not thread-safe). */
 	inline const decPointerOrderedSet &GetAsyncResInitSkinList() const{ return pAsyncResInitSkinList; }
 	
-	/** \brief Add skin to async res initialize if not existing already (thread-safe). */
+	/** Add skin to async res initialize if not existing already (thread-safe). */
 	void AddAsyncResInitSkin( deoglRSkin *skin );
 	
-	/** \brief Remove skin to async res initialize if existing (thread-safe). */
+	/** Remove skin to async res initialize if existing (thread-safe). */
 	void RemoveAsyncResInitSkin( deoglRSkin *skin );
 	
 	
 	
-	/** \brief Async res init font list (not thread-safe). */
+	/** Async res init font list (not thread-safe). */
 	inline const decPointerOrderedSet &GetAsyncResInitFontList() const{ return pAsyncResInitFontList; }
 	
-	/** \brief Add font to async res initialize if not existing already (thread-safe). */
+	/** Add font to async res initialize if not existing already (thread-safe). */
 	void AddAsyncResInitFont( deoglRFont *font );
 	
-	/** \brief Remove font to async res initialize if existing (thread-safe). */
+	/** Remove font to async res initialize if existing (thread-safe). */
 	void RemoveAsyncResInitFont( deoglRFont *font );
 	/*@}*/
 	
@@ -147,11 +174,11 @@ public:
 	
 	/** \name Delayed render thread OpengGL initialization */
 	/*@{*/
-	/** \brief Has init operations (not thread-safe). */
+	/** Has init operations (not thread-safe). */
 	inline bool GetHasInitOperations() const{ return pHasInitOperations; }
 	
 	/**
-	 * \brief Process init operations (thread-safe).
+	 * Process init operations (thread-safe).
 	 * \details Called from render thread to initialize OpenGL related objects.
 	 *          Operates on the following lists:
 	 *          - Render Images (deoglRImage)
@@ -162,96 +189,97 @@ public:
 	
 	
 	
-	/** \brief Init image list (not thread-safe). */
+	/** Init image list (not thread-safe). */
 	inline const decPointerOrderedSet &GetInitImageList() const{ return pInitImageList; }
 	
-	/** \brief Add image to initialize if not existing already (thread-safe). */
+	/** Add image to initialize if not existing already (thread-safe). */
 	void AddInitImage( deoglRImage *image );
 	
-	/** \brief Remove image to initialize if existing (thread-safe). */
+	/** Remove image to initialize if existing (thread-safe). */
 	void RemoveInitImage( deoglRImage *image );
 	
 	
 	
-	/** \brief Init skin list (not thread-safe). */
+	/** Init skin list (not thread-safe). */
 	inline const decPointerOrderedSet &GetInitSkinList() const{ return pInitSkinList; }
 	
-	/** \brief Add skin to initialize if not existing already (thread-safe). */
+	/** Add skin to initialize if not existing already (thread-safe). */
 	void AddInitSkin( deoglRSkin *skin );
 	
-	/** \brief Remove skin to initialize if existing (thread-safe). */
+	/** Remove skin to initialize if existing (thread-safe). */
 	void RemoveInitSkin( deoglRSkin *skin );
 	
 	
 	
-	/** \brief Init model list (not thread-safe). */
+	/** Init model list (not thread-safe). */
 	inline const decPointerOrderedSet &GetInitModelList() const{ return pInitModelList; }
 	
-	/** \brief Add model to initialize if not existing already (thread-safe). */
+	/** Add model to initialize if not existing already (thread-safe). */
 	void AddInitModel( deoglRModel *model );
 	
-	/** \brief Remove model to initialize if existing (thread-safe). */
+	/** Remove model to initialize if existing (thread-safe). */
 	void RemoveInitModel( deoglRModel *model );
 	/*@}*/
 	
 	
 	
-	/** \name Delayed render thread OpengGL deletion */
-	/*@{*/
-	/** \brief Has free operations (not thread-safe). */
-	inline bool GetHasFreeOperations() const{ return pHasFreeOperations; }
+	/** Process free operations (thread-safe). */
+	void ProcessFreeOperations( bool deleteAll = false );
 	
-	/**
-	 * \brief Process free operations (thread-safe).
-	 * 
-	 * \param deleteAll Set to \em true to delete all pending tasks. If set to \em false only
-	 *                  a maximum number of objects is deleted to avoid hickups if a large
-	 *                  amount of delete task piled up.
-	 */
-	void ProcessFreeOperations( bool deleteAll );
-	
-	
-	
-	/** \brief Add deletion (thread-safe). */
-	void AddDeletion( deoglDelayedDeletion *deletion );
+	/** Add OpenGL object deletion if not 0 (thread-safe). */
+	void DeleteOpenGLObject( eOpenGLObjectType type, GLuint name );
+	inline void DeleteOpenGLBuffer( GLuint name ){ DeleteOpenGLObject( eoglotBuffer, name ); }
+	inline void DeleteOpenGLTexture( GLuint name ){ DeleteOpenGLObject( eoglotTexture, name ); }
+	inline void DeleteOpenGLVertexArray( GLuint name ){ DeleteOpenGLObject( eoglotVertexArray, name ); }
+	inline void DeleteOpenGLFramebuffer( GLuint name ){ DeleteOpenGLObject( eoglotFramebuffer, name ); }
+	inline void DeleteOpenGLQuery( GLuint name ){ DeleteOpenGLObject( eoglotQuery, name ); }
+	inline void DeleteOpenGLSampler( GLuint name ){ DeleteOpenGLObject( eoglotSampler, name ); }
+	inline void DeleteOpenGLRenderBuffer( GLuint name ){ DeleteOpenGLObject( eoglotRenderBuffer, name ); }
+	inline void DeleteOpenGLProgram( GLuint name ){ DeleteOpenGLObject( eoglotProgram, name ); }
+	inline void DeleteOpenGLShader( GLuint name ){ DeleteOpenGLObject( eoglotShader, name ); }
 	/*@}*/
 	
 	
 	
 	/** \name Delayed main thread synchronization. */
 	/*@{*/
-	/** \brief Has synchronize operations (not thread-safe). */
+	/** Has synchronize operations (not thread-safe). */
 	inline bool GetHasSynchronizeOperations() const{ return pHasSynchronizeOperations; }
 	
 	/**
-	 * \brief Process synchronize operations (thread-safe).
+	 * Process synchronize operations (thread-safe).
 	 * \details Main thread call.
 	 */
 	void ProcessSynchronizeOperations();
 	
 	
 	
-	/** \brief File write list (not thread-safe). */
+	/** File write list (not thread-safe). */
 	inline const decPointerOrderedSet &GetFileWriteList() const{ return pFileWriteList; }
 	
-	/** \brief Add file write (thread-safe). */
+	/** Add file write (thread-safe). */
 	void AddFileWrite( deoglDelayedFileWrite *fileWrite );
 	
 	
 	
-	/** \brief Save image list (not thread-safe). */
+	/** Save image list (not thread-safe). */
 	inline const decPointerOrderedSet &GetSaveImageList() const{ return pSaveImageList; }
 	
-	/** \brief Add save image (thread-safe). */
+	/** Add save image (thread-safe). */
 	void AddSaveImage( deoglDelayedSaveImage *saveImage );
 	
 	
 	
-	/** \brief Clean up camera list (not thread-safe). */
+	/** Clean up camera list (not thread-safe). */
 	inline const decObjectOrderedSet &GetCleanUpCameraList() const{ return pCleanUpCameraList; }
 	
-	/** \brief Add clean up camera (thread-safe). */
+	/** Add clean up camera (thread-safe). */
 	void AddCleanUpCamera( deoglRCamera *camera );
+	
+	
+	
+	/** Clear during cleaning up. */
+	void Clear();
 	/*@}*/
 	
 private:
@@ -261,6 +289,7 @@ private:
 	void pProcessSkin( deoglRSkin &skin );
 	void pProcessModel( deoglRModel &model );
 	void pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture );
+	void pDeleteOpenGLObjects();
 };
 
 #endif

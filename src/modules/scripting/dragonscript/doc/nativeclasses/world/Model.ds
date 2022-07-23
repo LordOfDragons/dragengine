@@ -83,6 +83,22 @@ fixed class Model
 		return 0
 	end
 	
+	/**
+	 * \brief Calculate minimum extend of LOD 0.
+	 * \version 1.7
+	 */
+	public func Vector getMinimumExtend()
+		return null
+	end
+	
+	/**
+	 * \brief Calculate maximum extend of LOD 0.
+	 * \version 1.7
+	 */
+	public func Vector getMaximumExtend()
+		return null
+	end
+	
 	
 	
 	/**

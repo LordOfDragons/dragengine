@@ -35,7 +35,7 @@ class deVideo;
 /**
  * \brief Base video module provding load/save support for videos.
  */
-class deBaseVideoModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseVideoModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

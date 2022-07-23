@@ -45,7 +45,7 @@ class deRigConstraint;
  * content and format of the string. By default all shapes have an empty string assigned.
  *
  */
-class deRigBone{
+class DE_DLL_EXPORT deRigBone{
 private:
 	decString pName;
 	int pParent; // -1=no-parent, otherwise id=parent

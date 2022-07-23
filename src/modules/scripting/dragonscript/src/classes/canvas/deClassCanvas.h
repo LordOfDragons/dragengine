@@ -82,6 +82,7 @@ private:
 		dsClass *clsCanvas, *clsVoid, *clsInt, *clsFlt, *clsStr, *clsObj, *clsBool;
 		dsClass *clsPoint, *clsTexMat2, *clsClrMat;
 		dsClass *clsCanvasBlendMode;
+		dsClass *clsCanvasView;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -108,6 +109,10 @@ private:
 	DEF_NATFUNC( nfSetTransparency );
 	DEF_NATFUNC( nfGetBlendMode );
 	DEF_NATFUNC( nfSetBlendMode );
+	DEF_NATFUNC( nfGetMask );
+	DEF_NATFUNC( nfSetMask );
+	DEF_NATFUNC( nfGetParentView );
+	DEF_NATFUNC( nfGetParentMask );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

@@ -29,7 +29,7 @@
  * 
  * Distance over time is used as change speed.
  */
-class decSmoothDVector{
+class DE_DLL_EXPORT decSmoothDVector{
 private:
 	decDVector pValue;
 	decDVector pGoal;
@@ -38,7 +38,7 @@ private:
 	double pChangeSpeed;
 	double pFactorTime;
 	double pFactorLimit;
-	float pFactorDrop;
+	double pFactorDrop;
 	bool pSmoothed;
 	
 	

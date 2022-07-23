@@ -30,11 +30,11 @@ class deoglCollideList;
 class deoglComponentLOD;
 class deoglDepthTriangleList;
 class deoglFramebuffer;
+class deoglPersistentRenderTask;
 class deoglRComponent;
 class deoglRenderPlan;
 class deoglRenderTask;
 class deoglRLight;
-class deoglShaderProgram;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexture;
@@ -44,23 +44,23 @@ class deoglVAO;
 
 
 /**
- * @brief OpenGL Geometry Renderer.
+ * \brief OpenGL Geometry Renderer.
  * Renderer for 3D geometry.
  */
 class deoglRenderGeometry : public deoglRenderBase{
 private:
 	decColor pAmbient;
 	
-	deoglShaderProgram *pShaderParticle;
+	deoglShaderProgramUsage pShaderParticle;
 	
-	deoglShaderProgram *pShaderTransformPositions;
-	deoglShaderProgram *pShaderCalcNormalsTangents;
-	deoglShaderProgram *pShaderWriteSkinnedVBO;
+	deoglShaderProgramUsage pShaderTransformPositions;
+	deoglShaderProgramUsage pShaderCalcNormalsTangents;
+	deoglShaderProgramUsage pShaderWriteSkinnedVBO;
 	
-	deoglShaderProgram *pShaderApproxTransformVNT;
+	deoglShaderProgramUsage pShaderApproxTransformVNT;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderGeometry( deoglRenderThread &renderThread );
@@ -68,7 +68,7 @@ public:
 	~deoglRenderGeometry();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the ambient. */
 	inline const decColor &GetAmbient() const{ return pAmbient; }
@@ -76,25 +76,28 @@ public:
 	void SetAmbient( const decColor &color );
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Render a render task. */
 	void RenderTask( const deoglRenderTask &renderTask );
 	
-	/** \brief Transform model posititions using component weight matrices using transform feedback. */
+	/** Render a persistent render task. */
+	void RenderTask( const deoglPersistentRenderTask &renderTask );
+	
+	/** Transform model posititions using component weight matrices using transform feedback. */
 	void TransformPositions( const deoglVAO &vao, GLuint tboWeightMatrices,
 		GLuint vboTransformed, int firstPoint, int pointCount );
 	
-	/** \brief Calculate normals and tangents for a component. */
+	/** Calculate normals and tangents for a component. */
 	void CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions, deoglFramebuffer *fbo,
 		int outputWidth, int outputHeight, int positionCount, int normalCount,
 		int tangentCount, int firstPoint, int pointCount );
 	
-	/** \brief Write skinned vbo using transform feedback. */
+	/** Write skinned vbo using transform feedback. */
 	void WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions, deoglTexture &texNorTan,
 		GLuint vboSkinned, int positionCount, int normalCount, int firstPoint, int pointCount );
 	/**
-	 * \brief Approximately transform model posititions, normals and tangents
+	 * Approximately transform model posititions, normals and tangents
 	 *        using component weight matrices using transform feedback.
 	 */
 	void ApproxTransformVNT( const deoglVAO &vao, GLuint tboWeightMatrices,

@@ -23,11 +23,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <unistd.h>
-#include <dirent.h>
-
 #include "../dragengine_configuration.h"
-#ifdef OS_MACOS
+
+#ifndef OS_W32_VS
+#	include <unistd.h>
+#	include <dirent.h>
+#endif
+
+#if defined OS_MACOS
 #	include <sys/time.h>
 #	include <fnmatch.h>
 #	include <errno.h>
@@ -90,6 +93,12 @@ pDiskPath( diskPath ),
 pReadOnly( false ){
 }
 
+deVFSDiskDirectory::deVFSDiskDirectory( const decPath &rootPath, const decPath &diskPath, bool readonly ) :
+deVFSContainer( rootPath ),
+pDiskPath( diskPath ),
+pReadOnly( readonly ){
+}
+
 deVFSDiskDirectory::~deVFSDiskDirectory(){
 }
 
@@ -106,7 +115,11 @@ bool deVFSDiskDirectory::ExistsFile( const decPath &path ){
 #ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( ( pDiskPath + path ).GetPathNative(), widePath, MAX_PATH );
+	#ifdef OS_W32_VS
+	return _waccess_s( widePath, 0 ) == 0; // file exists
+	#else
 	return _waccess( widePath, F_OK ) == 0;
+	#endif
 	
 #else
 	return access( ( pDiskPath + path ).GetPathNative(), F_OK ) == 0;
@@ -117,7 +130,11 @@ bool deVFSDiskDirectory::CanReadFile( const decPath &path ){
 #ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( ( pDiskPath + path ).GetPathNative(), widePath, MAX_PATH );
+	#ifdef OS_W32_VS
+	return _waccess_s( widePath, 4 ) == 0; // read only
+	#else
 	return _waccess( widePath, R_OK ) == 0;
+	#endif
 	
 #else
 	return access( ( pDiskPath + path ).GetPathNative(), R_OK ) == 0;
@@ -136,9 +153,15 @@ bool deVFSDiskDirectory::CanWriteFile( const decPath &path ){
 	wchar_t widePath[ MAX_PATH ];
 	
 	deOSWindows::Utf8ToWide( diskPath.GetPathNative(), widePath, MAX_PATH );
-	if( _waccess( widePath, F_OK ) == 0 ){
-		canWrite = ( _waccess( widePath, W_OK ) == 0 );
+	#ifdef OS_W32_VS
+	if( _waccess_s( widePath, 0 ) == 0 ){ // file exists
+		canWrite = _waccess_s( widePath, 2 ) == 0; // write-only allowed
 	}
+	#else
+	if( _waccess( widePath, F_OK ) == 0 ){
+		canWrite = _waccess( widePath, W_OK ) == 0;
+	}
+	#endif
 	
 	if( canWrite ){
 		while( diskPath.GetComponentCount() > 0 ){
@@ -147,7 +170,11 @@ bool deVFSDiskDirectory::CanWriteFile( const decPath &path ){
 			deOSWindows::Utf8ToWide( diskPath.GetPathNative(), widePath, MAX_PATH );
 			if( GetFileAttributesExW( widePath, GetFileExInfoStandard, &fa ) ){
 				if( ( fa.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
+					#ifdef OS_W32_VS
+					canWrite = _waccess_s( widePath, 2 ) == 0; // write-only allowed
+					#else
 					canWrite = _waccess( widePath, W_OK ) == 0;
+					#endif
 					break;
 					
 				}else{
@@ -207,14 +234,23 @@ bool deVFSDiskDirectory::CanDeleteFile( const decPath &path ){
 	wchar_t widePath[ MAX_PATH ];
 	
 	deOSWindows::Utf8ToWide( diskPath.GetPathNative(), widePath, MAX_PATH );
+	#ifdef OS_W32_VS
+	if( _waccess_s( widePath, 0 ) == 0 ){ // file exists
+		canDelete = _waccess_s( widePath, 2 ) == 0; // write only
+	#else
 	if( _waccess( widePath, F_OK ) == 0 ){
 		canDelete = _waccess( widePath, W_OK ) == 0;
+	#endif
 		
 		if( canDelete ){
 			diskPath.RemoveLastComponent();
 			
 			deOSWindows::Utf8ToWide( diskPath.GetPathNative(), widePath, MAX_PATH );
+			#ifdef OS_W32_VS
+			canDelete = _waccess_s( widePath, 2 ) == 0; // write only
+			#else
 			canDelete = _waccess( widePath, W_OK ) == 0;
+			#endif
 		}
 	}
 	
@@ -303,7 +339,11 @@ void deVFSDiskDirectory::TouchFile( const decPath &path ){
 #ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( npath, widePath, MAX_PATH );
+	#ifdef OS_W32_VS
+	if( _waccess_s( widePath, 0 ) == 0 ){ // file exists
+	#else
 	if( _waccess( widePath, F_OK ) == 0 ){
+	#endif
 		HANDLE hfile = CreateFileW( widePath, FILE_WRITE_ATTRIBUTES, 0, NULL,
 			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 		SYSTEMTIME systime;

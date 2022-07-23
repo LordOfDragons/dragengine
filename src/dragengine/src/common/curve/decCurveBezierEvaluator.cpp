@@ -118,8 +118,6 @@ float decCurveBezierEvaluator::EvaluateAt( float x ) const{
 				const double c3 = 3.0 * ( double )p2.x - 3.0 * ( double )p1.x;
 				const double c4 = ( double )p1.x - ( double )x;
 				
-				double factor;
-				double disc;
 				double t = 0.0;
 				
 				if( c1 == 0.0 ){
@@ -129,8 +127,8 @@ float decCurveBezierEvaluator::EvaluateAt( float x ) const{
 						}
 						
 					}else{
-						factor = 1.0 / ( 2.0 * c2 );
-						disc = c3 * c3 - 4.0 * c2 * c4;
+						const double factor = 1.0 / ( 2.0 * c2 );
+						double disc = c3 * c3 - 4.0 * c2 * c4;
 						
 						if( disc >= 0.0 ){
 							disc = sqrt( disc );

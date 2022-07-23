@@ -37,7 +37,6 @@
 #include "../skin/deoglRSkin.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -68,48 +67,8 @@ pSkin( NULL ),
 pEmitLight( false ),
 pParamBlockLight( NULL )
 {
-	int i;
-	
-	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
-	}
-	
 	LEAK_CHECK_CREATE( emitter.GetRenderThread(), ParticleEmitterType );
 }
-
-class deoglRParticleEmitterTypeDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *textureSamples;
-	deoglLightShader *shaders[ deoglRParticleEmitterType::EST_COUNT ];
-	deoglSPBlockUBO *paramBlockLight;
-	
-	deoglRParticleEmitterTypeDeletion() :
-	textureSamples( NULL ),
-	paramBlockLight( NULL ){
-		int i;
-		for( i=0; i<deoglRParticleEmitterType::EST_COUNT; i++ ){
-			shaders[ i ] = NULL;
-		}
-	}
-	
-	virtual ~deoglRParticleEmitterTypeDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		int i;
-		if( textureSamples ){
-			delete textureSamples;
-		}
-		if( paramBlockLight ){
-			paramBlockLight->FreeReference();
-		}
-		for( i=0; i<deoglRParticleEmitterType::EST_COUNT; i++ ){
-			if( shaders[ i ] ){
-				shaders[ i ]->FreeReference();
-			}
-		}
-	}
-};
 
 deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 	LEAK_CHECK_FREE( pEmitter.GetRenderThread(), ParticleEmitterType );
@@ -125,25 +84,11 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 		pSkin->FreeReference();
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRParticleEmitterTypeDeletion *delayedDeletion = NULL;
-	int i;
-	
-	try{
-		delayedDeletion = new deoglRParticleEmitterTypeDeletion;
-		delayedDeletion->textureSamples = pTextureSamples;
-		delayedDeletion->paramBlockLight = pParamBlockLight;
-		for( i=0; i<EST_COUNT; i++ ){
-			delayedDeletion->shaders[ i ] = pShaders[ i ];
-		}
-		pEmitter.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pEmitter.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTextureSamples ){
+		delete pTextureSamples;
+	}
+	if( pParamBlockLight ){
+		pParamBlockLight->FreeReference();
 	}
 }
 
@@ -368,7 +313,8 @@ deoglLightShader *deoglRParticleEmitterType::GetShaderFor( int shaderType ){
 		deoglLightShaderConfig config;
 		
 		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pEmitter.GetRenderThread().GetShader().GetLightShaderManager().GetShaderWith( config );
+			pShaders[ shaderType ].TakeOver( pEmitter.GetRenderThread().GetShader()
+				.GetLightShaderManager().GetShaderWith( config ) );
 		}
 	}
 	
@@ -384,7 +330,8 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	
 	config.Reset();
 	
-	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
+	config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmIntBasic );
+	config.SetMaterialNormalModeEnc( deoglLightShaderConfig::emnmFloat );
 	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	
 	config.SetLightMode( deoglLightShaderConfig::elmParticle );
@@ -404,22 +351,12 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	
 	config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esmaCube );
 	config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esmaCube );
-	
-	if( oglconfig.GetUseShadowCubeEncodeDepth() ){
-		config.SetHWDepthCompare( false );
-		config.SetDecodeInShadow( true );
-		config.SetShadowMatrix2EqualsMatrix1( true );
-		
-	}else{
-		config.SetHWDepthCompare( true );
-		config.SetDecodeInShadow( false );
-		config.SetShadowMatrix2EqualsMatrix1( true );
-	}
+	config.SetHWDepthCompare( true );
+	config.SetDecodeInShadow( false );
+	config.SetShadowMatrix2EqualsMatrix1( true );
 	
 	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
 	config.SetTextureNoise( false );
-	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
 	
 	config.SetTextureShadow1Solid( false );
 	config.SetTextureShadow1Transparent( false );
@@ -431,7 +368,7 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 
 deoglSPBlockUBO *deoglRParticleEmitterType::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		deoglLightShader *shader = NULL;
+		deoglLightShader *shader = nullptr;
 		int i;
 		
 		for( i=0; i<EST_COUNT; i++ ){
@@ -452,31 +389,13 @@ deoglSPBlockUBO *deoglRParticleEmitterType::GetLightParameterBlock(){
 }
 
 void deoglRParticleEmitterType::DropLightShaders(){
-	// WARNING called during synchronization by main thread
-	
-	deoglRParticleEmitterTypeDeletion *delayedDeletion = NULL;
-	int i;
-	
-	try{
-		delayedDeletion = new deoglRParticleEmitterTypeDeletion;
-		delayedDeletion->paramBlockLight = pParamBlockLight;
-		for( i=0; i<EST_COUNT; i++ ){
-			delayedDeletion->shaders[ i ] = pShaders[ i ];
-		}
-		pEmitter.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pEmitter.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
-	}
-	
 	if( pParamBlockLight ){
-		pParamBlockLight = NULL;
+		pParamBlockLight->FreeReference();
+		pParamBlockLight = nullptr;
 	}
+	
+	int i;
 	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
+		pShaders[ i ] = nullptr;
 	}
 }

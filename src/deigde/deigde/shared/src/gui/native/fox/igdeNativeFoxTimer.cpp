@@ -54,16 +54,16 @@ FXIMPLEMENT( igdeNativeFoxTimer, FXObject, igdeNativeFoxTimerMap, ARRAYNUMBER( i
 igdeNativeFoxTimer::igdeNativeFoxTimer(){
 }
 
-igdeNativeFoxTimer::igdeNativeFoxTimer( igdeTimer &owner, FXApp *app ) :
+igdeNativeFoxTimer::igdeNativeFoxTimer( igdeTimer &powner, FXApp *app ) :
 pApp( app ),
-pOwner( &owner ){
+pOwner( &powner ){
 }
 
 igdeNativeFoxTimer::~igdeNativeFoxTimer(){
 }
 
-igdeNativeFoxTimer *igdeNativeFoxTimer::CreateNativeTimer( igdeTimer &owner ){
-	return new igdeNativeFoxTimer( owner, FXApp::instance() );
+igdeNativeFoxTimer *igdeNativeFoxTimer::CreateNativeTimer( igdeTimer &powner ){
+	return new igdeNativeFoxTimer( powner, FXApp::instance() );
 }
 
 void igdeNativeFoxTimer::DestroyNativeTimer(){

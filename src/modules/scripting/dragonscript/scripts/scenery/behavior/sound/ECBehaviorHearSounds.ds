@@ -519,8 +519,8 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 * of type ECBehaviorHearSounds.
 	 */
 	static public func ECBehaviorHearSounds getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorHearSounds
+		return eclass.findBehavior( block ECBehaviorHearSounds each
+			return true
 		end ) cast ECBehaviorHearSounds
 	end
 	
@@ -531,8 +531,8 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 * of type ECBehaviorHearSounds.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

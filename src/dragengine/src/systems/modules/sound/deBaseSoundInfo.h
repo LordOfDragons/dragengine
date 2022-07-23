@@ -32,7 +32,7 @@
  * by the sound module to store additional data structures needed for loading
  * in a subclasses object.
  */
-class deBaseSoundInfo{
+class DE_DLL_EXPORT deBaseSoundInfo{
 private:
 	int pBytesPerSample;
 	int pSampleCount;

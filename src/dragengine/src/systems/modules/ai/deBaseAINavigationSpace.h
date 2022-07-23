@@ -22,12 +22,14 @@
 #ifndef _DEBASEAINAVIGATIONSPACE_H_
 #define _DEBASEAINAVIGATIONSPACE_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief AI module navigation space peer.
  */
-class deBaseAINavigationSpace{
+class DE_DLL_EXPORT deBaseAINavigationSpace{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

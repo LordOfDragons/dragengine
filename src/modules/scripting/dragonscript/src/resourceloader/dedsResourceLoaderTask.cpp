@@ -67,26 +67,24 @@
 ////////////////////////////
 
 dedsResourceLoaderTask::dedsResourceLoaderTask( deScriptingDragonScript *ds,
-const char *filename, deResourceLoader::eResourceType resourceType ){
-	if( ! ds || ! filename ){
+const char *filename, deResourceLoader::eResourceType resourceType ) :
+pDS( ds ),
+pFilename( filename ),
+pResourceType( resourceType ),
+pListeners( NULL ),
+pListenerCount( 0 ),
+pListenerSize( 0 )
+{
+	if( ! ds ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	pDS = ds;
-	pFilename = NULL;
-	pResourceType = resourceType;
-	
-	pListeners = NULL;
-	pListenerCount = 0;
-	pListenerSize = 0;
-	
-	pFilename = new char[ strlen( filename ) + 1 ];
-	strcpy( pFilename, filename );
 }
 
 dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 	pClearListeners();
-	if( pListeners ) delete [] pListeners;
+	if( pListeners ){
+		delete [] pListeners;
+	}
 }
 
 
@@ -96,11 +94,7 @@ dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 
 bool dedsResourceLoaderTask::Matches( const char *filename,
 deResourceLoader::eResourceType resourceType ) const{
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return strcmp( filename, pFilename ) == 0 && resourceType == pResourceType;
+	return resourceType == pResourceType && pFilename == filename;
 }
 
 void dedsResourceLoaderTask::AddListener( dsRealObject *listener ){
@@ -199,7 +193,7 @@ void dedsResourceLoaderTask::NotifyLoadingFinished( deFileResource *resource ){
 		default:
 			DETHROW( deeInvalidParam ); // TODO do something more smart here
 		}
-		rt->PushInt( pResourceType );
+		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
 		rt->PushString( pFilename );
 		rt->RunFunctionFast( pListeners[ i ], funcIndex );
 	}
@@ -214,7 +208,7 @@ void dedsResourceLoaderTask::NotifyLoadingFailed(){
 	
 	for( i=0; i<pListenerCount; i++ ){
 		// failedLoading( filename, resourceType )
-		rt->PushInt( pResourceType );
+		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
 		rt->PushString( pFilename );
 		rt->RunFunctionFast( pListeners[ i ], funcIndex );
 	}

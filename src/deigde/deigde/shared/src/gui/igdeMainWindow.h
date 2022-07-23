@@ -29,6 +29,7 @@
 
 
 class igdeEngineController;
+class igdeApplication;
 
 
 

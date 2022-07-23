@@ -41,7 +41,7 @@ class OBJECT_OT_ExportConfig( bpy.types.Operator, ExportHelper ):
 	bl_label = "Configuration (.txt)"
 	__doc__ = """Export configuration as text file"""
 	filename_ext = ".txt"
-	filter_glob = bpy.props.StringProperty( default="*.txt", options={ 'HIDDEN' } )
+	filter_glob: bpy.props.StringProperty( default="*.txt", options={ 'HIDDEN' } )
 	
 	@classmethod
 	def poll( cls, context ):

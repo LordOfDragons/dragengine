@@ -737,7 +737,12 @@ deClassLocomotion::nfGetMovingSpeed::nfGetMovingSpeed( const sInitData &init ) :
 void deClassLocomotion::nfGetMovingSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
 	
-	rt->PushFloat( locomotion.GetMovingSpeed() );
+	if( fabsf( locomotion.GetMovingDirection() ) > 90.0f ){
+		rt->PushFloat( -locomotion.GetMovingSpeed() );
+		
+	}else{
+		rt->PushFloat( locomotion.GetMovingSpeed() );
+	}
 }
 
 // public func float getAbsMovingSpeed()
@@ -748,7 +753,7 @@ deClassLocomotion::nfGetAbsMovingSpeed::nfGetAbsMovingSpeed( const sInitData &in
 void deClassLocomotion::nfGetAbsMovingSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
 	
-	rt->PushFloat( fabsf( locomotion.GetMovingSpeed() ) );
+	rt->PushFloat( locomotion.GetMovingSpeed() );
 }
 
 // public func void setMovingSpeed( float speed )

@@ -33,10 +33,10 @@
 #include "deAnimatorRuleForeignState.h"
 #include "deAnimatorRuleGroup.h"
 #include "deAnimatorRuleSubAnimator.h"
-#include "deAnimatorRuleRetarget.h"
 #include "deAnimatorRuleVisitor.h"
 #include "deAnimatorRuleTrackTo.h"
 #include "deAnimatorRuleLimit.h"
+#include "deAnimatorRuleMirror.h"
 
 #include "../../../common/exceptions.h"
 
@@ -59,7 +59,7 @@ deAnimatorRuleVisitor::~deAnimatorRuleVisitor(){
 // Visiting
 /////////////
 
-void deAnimatorRuleVisitor::VisitRule( deAnimatorRule &rule ){
+void deAnimatorRuleVisitor::VisitRule( deAnimatorRule& ){
 }
 
 void deAnimatorRuleVisitor::VisitAnimation( deAnimatorRuleAnimation &rule ){
@@ -102,14 +102,14 @@ void deAnimatorRuleVisitor::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
 	VisitRule( rule );
 }
 
-void deAnimatorRuleVisitor::VisitRetarget( deAnimatorRuleRetarget &rule ){
-	VisitRule( rule );
-}
-
 void deAnimatorRuleVisitor::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
 	VisitRule( rule );
 }
 
 void deAnimatorRuleVisitor::VisitLimit( deAnimatorRuleLimit &rule ){
+	VisitRule( rule );
+}
+
+void deAnimatorRuleVisitor::VisitMirror( deAnimatorRuleMirror &rule ){
 	VisitRule( rule );
 }

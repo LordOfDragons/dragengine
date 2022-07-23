@@ -33,7 +33,7 @@ class deSky;
  * \brief Sky Resource Manager.
  *
  */
-class deSkyManager : public deResourceManager{
+class DE_DLL_EXPORT deSkyManager : public deResourceManager{
 private:
 	deResourceList pSkies;
 	

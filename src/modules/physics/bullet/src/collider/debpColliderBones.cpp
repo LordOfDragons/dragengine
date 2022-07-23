@@ -512,12 +512,12 @@ void debpColliderBones::PrepareForDetection( float elapsed ){
 		}
 		goalMatrix = goalMatrix.QuickMultiply( colMatrix );
 		
+		const decDMatrix diffMatrix( goalMatrix.QuickMultiply(
+			decDMatrix::CreateWorld( colbone.GetPosition(), colbone.GetOrientation() ).QuickInvert() ) );
+		
 		colbone.SetPosition( goalMatrix.GetPosition() );
 		colbone.SetOrientation( goalMatrix.ToQuaternion() );
 		colbone.UpdateMatrix();
-		
-		const decDMatrix diffMatrix( goalMatrix.QuickMultiply(
-			decDMatrix::CreateWorld( colbone.GetPosition(), colbone.GetOrientation() ).QuickInvert() ) );
 		
 		colbone.SetLinearVelocity( diffMatrix.GetPosition().ToVector() * factor );
 		colbone.SetAngularVelocity( diffMatrix.GetEulerAngles().ToVector() * factor );
@@ -1265,6 +1265,7 @@ void debpColliderBones::pSetBoneShape( int index, deRigBone &bone, decVector &sc
 		shape->Visit( createBulletShape );
 		shape->Visit( shapeSurface );
 	}
+	createBulletShape.Finish();
 	
 	phyBody->SetShape( createBulletShape.GetBulletShape() );
 	phyBody->SetShapeSurface( shapeSurface.GetSurface() );

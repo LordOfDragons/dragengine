@@ -14,7 +14,7 @@ envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 
 # fetch values in expanded form for later use
-versionString = '1.2'
+versionString = '1.8'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -63,6 +63,11 @@ for l in library:
 	if l.name.endswith(envModule['SHLIBSUFFIX']):
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'mdlfbx.pdb'))
+	archive['{}/mdlfbx.pdb'.format(pathPdb)] = envModule.File('mdlfbx.pdb')
 
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
@@ -116,6 +121,11 @@ for l in library:
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'rigfbx.pdb'))
+	archive['{}/rigfbx.pdb'.format(pathPdb)] = envModule.File('rigfbx.pdb')
+
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
 	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
@@ -167,6 +177,11 @@ for l in library:
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'animfbx.pdb'))
+	archive['{}/animfbx.pdb'.format(pathPdb)] = envModule.File('animfbx.pdb')
+
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
 	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
@@ -185,6 +200,62 @@ targetInstall = envModule.Alias('anim_fbx', install)
 
 parent_targets['anim_fbx'] = {
 	'name': 'FBX Animation Module',
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-engine-runtime': targetInstall,
+	'archive-engine': archive}
+
+
+
+# skin module
+###############
+
+pathModule = os.path.join(pathModules, 'skin', 'fbxskin', versionString)
+
+sources = []
+headers = []
+globFiles(envModule, 'src/skin', '*.cpp', sources)
+globFiles(envModule, 'src/skin', '*.h', headers)
+
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+objects = [envModule.SharedObject(s) for s in sources]
+objects.extend(objshared)
+
+library = envModule.LoadableModule('skinfbx', objects)
+targetBuild = envModule.Alias('skin_fbx_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'skinfbx.pdb'))
+	archive['{}/skinfbx.pdb'.format(pathPdb)] = envModule.File('skinfbx.pdb')
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+manifest = envModule.File('src/skin/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('skin_fbx', install)
+
+parent_targets['skin_fbx'] = {
+	'name': 'FBX Skin Module',
 	'build': targetBuild,
 	'install': targetInstall,
 	'install-engine-runtime': targetInstall,

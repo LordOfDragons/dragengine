@@ -70,6 +70,11 @@ private:
 	decVector pCMP;
 	float pMass;
 	
+	decVector pIKLimitsLower;
+	decVector pIKLimitsUpper;
+	decVector pIKResistance;
+	bool pIKLocked[ 3 ];
+	
 	reRigShapeList pShapes;
 	reRigConstraintList pConstraints;
 	
@@ -205,6 +210,53 @@ public:
 	void RemoveShape( reRigShape *shape );
 	/** \brief Removes all shapes. */
 	void RemoveAllShapes();
+	/*@}*/
+	
+	
+	
+	/** \name Inverse Kinematics */
+	/*@{*/
+	/** \brief Lower ik limits. */
+	inline const decVector &GetIKLimitsLower() const{ return pIKLimitsLower; }
+	
+	/** \brief Set lower ik limits. */
+	void SetIKLimitsLower( const decVector &lower );
+	
+	/** \brief Upper ik limits. */
+	inline const decVector &GetIKLimitsUpper() const{ return pIKLimitsUpper; }
+	
+	/** \brief Set upper ik limits. */
+	void SetIKLimitsUpper( const decVector &upper );
+	
+	/** \brief IK resistance. */
+	inline const decVector &GetIKResistance() const{ return pIKResistance; }
+	
+	/** \brief Set ik resistance. */
+	void SetIKResistance( const decVector &resistance );
+	
+	/** \brief X rotation is locked under IK. */
+	inline bool GetIKLockedX() const{ return pIKLocked[ 0 ]; }
+	
+	/** \brief Set if X rotation is locked under IK. */
+	void SetIKLockedX( bool locked );
+	
+	/** \brief Y rotation is locked under IK. */
+	inline bool GetIKLockedY() const{ return pIKLocked[ 1 ]; }
+	
+	/** \brief Set if y rotation is locked under IK. */
+	void SetIKLockedY( bool locked );
+	
+	/** \brief Z rotation is locked under IK. */
+	inline bool GetIKLockedZ() const{ return pIKLocked[ 2 ]; }
+	
+	/** \brief Set z rotation is locked under IK. */
+	void SetIKLockedZ( bool locked );
+	
+	/** \brief Rotation is locked under IK. */
+	inline bool GetIKLocked( int axis ) const{ return pIKLocked[ axis ]; }
+	
+	/** \brief Set if rotation is locked under IK. */
+	void SetIKLocked( int axis, bool locked );
 	/*@}*/
 	
 	/** \name Constraints */

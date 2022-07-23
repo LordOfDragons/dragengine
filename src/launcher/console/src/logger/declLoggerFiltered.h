@@ -27,38 +27,57 @@
 
 
 /**
- * @brief Logger Filtered.
  * A logger passing messages to other loggers depending on the message type.
  */
 class declLoggerFiltered : public deLogger{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<declLoggerFiltered> Ref;
+	
+	
+	
 private:
-	deLogger *pLoggerInfo;
-	deLogger *pLoggerWarn;
-	deLogger *pLoggerError;
+	deLogger::Ref pLoggerInfo;
+	deLogger::Ref pLoggerWarn;
+	deLogger::Ref pLoggerError;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new logger. */
+	/** Create logger. */
 	declLoggerFiltered();
-	/** Cleans up the logger. */
+	
+protected:
+	/** Clean up logger. */
 	virtual ~declLoggerFiltered();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the logger to pass information to or NULL to ignore them. */
-	inline deLogger *GetLoggerInfo() const{ return pLoggerInfo; }
-	/** Sets the logger to pass information to or NULL to ignore them. */
+	/** Logger to pass information to or NULL to ignore them. */
+	inline const deLogger::Ref &GetLoggerInfo() const{ return pLoggerInfo; }
+	
+	/** Set logger to pass information to or NULL to ignore them. */
 	void SetLoggerInfo( deLogger *logger );
-	/** Retrieves the logger to pass warnings to or NULL to ignore them. */
-	inline deLogger *GetLoggerWarning() const{ return pLoggerWarn; }
-	/** Sets the logger to pass warnings to or NULL to ignore them. */
+	
+	/** Logger to pass warnings to or NULL to ignore them. */
+	inline const deLogger::Ref &GetLoggerWarning() const{ return pLoggerWarn; }
+	
+	/** Set logger to pass warnings to or NULL to ignore them. */
 	void SetLoggerWarning( deLogger *logger );
-	/** Retrieves the logger to pass errors to or NULL to ignore them. */
-	inline deLogger *GetLoggerError() const{ return pLoggerError; }
-	/** Sets the logger to pass errors to or NULL to ignore them. */
+	
+	/** Logger to pass errors to or NULL to ignore them. */
+	inline const deLogger::Ref &GetLoggerError() const{ return pLoggerError; }
+	
+	/** Set logger to pass errors to or NULL to ignore them. */
 	void SetLoggerError( deLogger *logger );
+	
+	
 	
 	/** Log an information message. */
 	virtual void LogInfo( const char *source, const char *message );

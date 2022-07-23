@@ -49,7 +49,7 @@ class decUnicodeArgumentList;
  * Parameters are required to be error safe. If a certain value is not
  * accepted it has to be converted to the nearest feasible one.
  */
-class deBaseModule{
+class DE_DLL_EXPORT deBaseModule{
 private:
 	deLoadableModule &pLoadableModule; // loadable module hosting us
 	deVirtualFileSystem *pVFS;
@@ -187,6 +187,16 @@ public:
 	 * grows old files are automatically removed without asking first to keep the size limit.
 	 */
 	inline deVirtualFileSystem &GetVFS() const { return *pVFS; }
+	
+	/**
+	 * \brief Native path to read only shares directory.
+	 * \version 1.6
+	 * 
+	 * Always use "/shared" directory inside GetVFS(). This path is provided only for
+	 * certain libraries requiring absolute native path. If the shared directory is not
+	 * physically present on a hard disk this call returns empty string.
+	 */
+	decString GetNativePathShare() const;
 	/*@}*/
 	
 	

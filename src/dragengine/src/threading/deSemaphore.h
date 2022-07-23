@@ -22,6 +22,7 @@
 #ifndef _DESEMAPHORE_H_
 #define _DESEMAPHORE_H_
 
+#include "../dragengine_export.h"
 #include "../dragengine_configuration.h"
 
 #if defined OS_UNIX || defined OS_BEOS
@@ -39,7 +40,7 @@
  * This class also counts the number of signals called to ensure the same number (or more)
  * wait calls are returned no matter in what order these calls are issued.
  */
-class deSemaphore{
+class DE_DLL_EXPORT deSemaphore{
 private:
 	int pCounter;
 	int pSignalCounter;

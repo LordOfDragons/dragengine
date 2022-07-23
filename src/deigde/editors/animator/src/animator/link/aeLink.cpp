@@ -45,7 +45,11 @@ pAnimator( NULL ),
 pEngLink( NULL ),
 pName( name ),
 pController( NULL ),
-pRepeat( 1 )
+pRepeat( 1 ),
+pBoneParameter( deAnimatorLink::ebpPositionZ ),
+pBoneMinimum( 0.0f ),
+pBoneMaximum( 1.0f ),
+pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
 }
@@ -56,7 +60,12 @@ pEngLink( NULL ),
 pName( copy.pName ),
 pController( NULL ),
 pRepeat( copy.pRepeat ),
-pCurve( copy.pCurve )
+pCurve( copy.pCurve ),
+pBone( copy.pBone ),
+pBoneParameter( copy.pBoneParameter ),
+pBoneMinimum( copy.pBoneMinimum ),
+pBoneMaximum( copy.pBoneMaximum ),
+pWrapY( copy.pWrapY )
 {
 	pController = copy.pController;
 	if( pController ){
@@ -107,6 +116,11 @@ void aeLink::SetAnimator( aeAnimator *animator ){
 		UpdateController();
 		
 		pEngLink->SetRepeat( pRepeat );
+		pEngLink->SetBone( pBone );
+		pEngLink->SetBoneParameter( pBoneParameter );
+		pEngLink->SetWrapY( pWrapY );
+		pUpdateBoneLimits();
+		
 		NotifyLinkChanged();
 		
 		pUpdateCurve();
@@ -182,6 +196,92 @@ void aeLink::SetCurve( const decCurveBezier &curve ){
 	}
 }
 
+void aeLink::SetBone( const char *bone ){
+	if( pBone == bone ){
+		return;
+	}
+	
+	pBone = bone;
+	
+	if( pEngLink ){
+		pEngLink->SetBone( pBone );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetBoneParameter( deAnimatorLink::eBoneParameter parameter ){
+	if( pBoneParameter == parameter ){
+		return;
+	}
+	
+	pBoneParameter = parameter;
+	
+	if( pEngLink ){
+		pEngLink->SetBoneParameter( pBoneParameter );
+		pUpdateBoneLimits();
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetBoneMinimum( float value ){
+	if( fabsf( pBoneMinimum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBoneMinimum = value;
+	
+	if( pEngLink ){
+		pUpdateBoneLimits();
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetBoneMaximum( float value ){
+	if( fabsf( pBoneMaximum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBoneMaximum = value;
+	
+	if( pEngLink ){
+		pUpdateBoneLimits();
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetWrapY( bool wrap ){
+	if( wrap == pWrapY ){
+		return;
+	}
+	
+	pWrapY = wrap;
+	
+	if( pEngLink ){
+		pEngLink->SetWrapY( wrap );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
 
 
 void aeLink::NotifyLinkChanged(){
@@ -221,6 +321,11 @@ aeLink &aeLink::operator=( const aeLink &copy ){
 	SetController( copy.pController );
 	SetRepeat( copy.pRepeat );
 	pCurve = copy.pCurve;
+	pBone = copy.pBone;
+	pBoneParameter = copy.pBoneParameter;
+	pBoneMinimum = copy.pBoneMinimum;
+	pBoneMaximum = copy.pBoneMaximum;
+	pWrapY = copy.pWrapY;
 	return *this;
 }
 
@@ -232,4 +337,21 @@ void aeLink::pUpdateCurve(){
 	pEngLink->SetCurve( pCurve );
 	
 	NotifyLinkChanged();
+}
+
+void aeLink::pUpdateBoneLimits(){
+	if( ! pEngLink ){
+		return;
+	}
+	
+	switch( pBoneParameter ){
+	case deAnimatorLink::ebpRotationX:
+	case deAnimatorLink::ebpRotationY:
+	case deAnimatorLink::ebpRotationZ:
+		pEngLink->SetBoneValueRange( pBoneMinimum * DEG2RAD, pBoneMaximum * DEG2RAD );
+		break;
+		
+	default:
+		pEngLink->SetBoneValueRange( pBoneMinimum, pBoneMaximum );
+	}
 }

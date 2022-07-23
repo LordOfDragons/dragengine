@@ -36,7 +36,7 @@
  * value  of feedback can be requested to be changed. The input module itself decides if the
  * request is honored or not. The current value of the feedback can be read any time.
  */
-class deInputDeviceFeedback{
+class DE_DLL_EXPORT deInputDeviceFeedback{
 public:
 	/** \brief Feedback types. */
 	enum eFeedbackTypes{
@@ -61,6 +61,9 @@ private:
 	
 	/** \brief Feedback type. */
 	eFeedbackTypes pType;
+	
+	/** \brief Identifier of component or empty string. */
+	decString pComponent;
 	
 	/**
 	 * \brief Image to represent the feedback in 2D user interfaces or NULL if not set.
@@ -123,6 +126,18 @@ public:
 	
 	/** \brief Feedback type. */
 	void SetType( eFeedbackTypes type );
+	
+	/**
+	 * \brief Identifier of component or empty string.
+	 * \version 1.6
+	 */
+	inline const decString &GetComponent() const{ return pComponent; }
+	
+	/**
+	 * \brief Set identifier of component or empty string.
+	 * \version 1.6
+	 */
+	void SetComponent( const char *component );
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.

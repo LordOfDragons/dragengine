@@ -6,18 +6,24 @@ Import('parent_env parent_targets parent_report')
 # setup the environment matching the OS
 envDragengine = parent_env.Clone()
 
+libs = []
+
 if envDragengine['OSBeOS']:
-	libs = ['root', 'be']
+	libs.extend(['root', 'be'])
 	
 elif envDragengine['OSMacOS']:
 	envDragengine.Append(FRAMEWORKS = ['Cocoa'])
-	libs = []
 	
 elif envDragengine['OSPosix']:
-	libs = []
+	pass
 	
 elif envDragengine['OSWindows']:
-	libs = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32']
+	libs.extend(envDragengine['WINDOWS_LIBS'])
+	libs.append('winmm')
+	#libs.extend(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
+	"""if envDragengine['with_debug']:
+		lib.append('dbghelp')
+		envDragengine.Append(CXXFLAGS = ['-DWITH_DBGHELP'])"""
 	
 else:
 	Exit('No supported OS found!')
@@ -31,7 +37,7 @@ linklibs = ['dragengine']
 # do configure stuff
 conf = envDragengine.Configure()
 
-if envDragengine['OSPosix']:
+if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	hasDL = False
 	if envDragengine['with_dl'] != TernaryVariableNo:
 		hasDL = conf.CheckLibWithHeader('dl', 'dlfcn.h', 'c++', 'dlerror();')
@@ -94,16 +100,37 @@ if envDragengine['OSPosix']:
 
 conf.Finish()
 
+# fetch values in expanded form for later use
+pathLib = envDragengine.subst(envDragengine['path_de_lib'])
+pathInclude = envDragengine.subst(envDragengine['path_de_include'])
+pathConfig = envDragengine.subst(envDragengine['path_de_config'])
+pathEngine = envDragengine.subst(envDragengine['path_de_data'])
+pathShare = envDragengine.subst(envDragengine['path_de_share'])
+pathCache = envDragengine.subst(envDragengine['path_de_cache'])
+
+if envDragengine['OSWindows']:
+	pathSysLib = envDragengine.subst(envDragengine['systemroot'])
+	#pathSysLib = envDragengine.subst(envDragengine['path_de'])
+
+versionString = envDragengine['version']
+if envDragengine['force_version']:
+	versionString = envDragengine['force_version']
+
+libVersionString = versionString
+while len(libVersionString.split('.')) < 3:
+	libVersionString = '{}.0'.format(libVersionString)
+
 # write the configuration file required by a few source files
 def buildWriteConfig(source, target, env):
 	configFilePath = target[0].abspath
 	configFileDefines = {}
+	configFileDefines['DE_VERSION'] = versionString
 	configFileDefines['OS_UNIX'] = env['OSPosix']
 	configFileDefines['OS_W32'] = env['OSWindows']
 	configFileDefines['OS_BEOS'] = env['OSBeOS']
 	configFileDefines['OS_MACOS'] = env['OSMacOS']
 	configFileDefines['OS_ANDROID'] = env['platform_android'] != 'no'
-	if env['OSPosix']:
+	if env['OSPosix'] or env['OSMacOS']:
 		configFileDefines['HAS_LIB_X11'] = hasX11
 		configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
 		configFileDefines['HAS_LIB_DL'] = hasDL
@@ -117,24 +144,6 @@ def buildWriteConfig(source, target, env):
 targetConfig = envDragengine.Command(
 	envDragengine.File('src/dragengine_configuration.h').srcnode(),
 	'SConscript', buildWriteConfig)
-
-# fetch values in expanded form for later use
-pathLib = envDragengine.subst(envDragengine['path_de_lib'])
-pathInclude = envDragengine.subst(envDragengine['path_de_include'])
-pathConfig = envDragengine.subst(envDragengine['path_de_config'])
-pathEngine = envDragengine.subst(envDragengine['path_de_data'])
-pathShare = envDragengine.subst(envDragengine['path_de_share'])
-pathCache = envDragengine.subst(envDragengine['path_de_cache'])
-
-if envDragengine['OSWindows']:
-	pathSysLib = envDragengine.subst(envDragengine['systemroot'])
-	#pathSysLib = envDragengine.subst(envDragengine['path_de'])
-
-versionString = '1.4'
-if envDragengine['force_version']:
-	versionString = envModule['force_version']
-
-libVersionString = '{}.0'.format(versionString)
 
 # update the compile flags
 # envDragengine.Append(CXXFLAGS=' -D__DEBUG__')
@@ -243,6 +252,11 @@ elif envDragengine['OSWindows']:
 	archiveEngine['{}/dragengine.dll'.format(pathSysLib)] = envDragengine.File('dragengine.dll')
 	archiveDevelop['{}/dragengine.lib'.format(pathLib)] = envDragengine.File('dragengine.lib')
 	archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
+	
+	if envDragengine['CROSSCOMPILE_CLANG'] and envDragengine['with_install_pdb']:
+		pathPdb = envDragengine.subst(envDragengine['path_pdb'])
+		installRuntime.append(envDragengine.Install(pathPdb, 'dragengine.pdb'))
+		archiveEngine['{}/dragengine.pdb'.format(pathPdb)] = envDragengine.File('dragengine.pdb')
 
 
 if envDragengine['OSPosix'] and not envDragengine['OSBeOS']:
@@ -275,8 +289,12 @@ targetInstall = envDragengine.Alias('dragengine', [targetInstallRuntime, targetI
 srcdir = Dir('src').srcnode().abspath
 
 # doxygen
+doxyfile = envDragengine.Command(envDragengine.File('Doxyfile').srcnode(), 'Doxyfile.in',
+	Action(UpdateModuleManifest),
+	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+
 targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
-	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
+	'doc/html/index.html', doxyfile, 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
 #parent_targets['dragengine_doc'] = ['Drag[en]gine Documentation', targetDoxygen]
 
 # cloc
@@ -313,7 +331,7 @@ parent_targets['dragengine'] = {
 	'clocReport' : '{}/clocreport.csv'.format(srcdir) }
 
 # report
-if envDragengine['OSPosix']:
+if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	if hasDL:
 		parent_report['use dynamic libraries'] = 'yes'
 	else:

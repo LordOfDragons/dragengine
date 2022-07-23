@@ -54,8 +54,8 @@ if envLauncher['OSMacOS']:
 
 objects = [envLauncher.StaticObject(s) for s in sources]
 
-appendLibrary(envLauncher, parent_targets['dragengine'], libs)
-libs.extend(parent_targets['dragengine']['binlibs'])
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
+libs.extend(parent_targets['delauncher']['binlibs'])
 
 if envLauncher['OSBeOS']:
 	program = envLauncher.Program(target='delauncher-console-org', source=objects, LIBS=libs)
@@ -91,6 +91,10 @@ if envLauncher['OSPosix']:
 	source = 'man/delauncher-console.1'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
+	
+if envLauncher['OSWindows'] and envLauncher['CROSSCOMPILE_CLANG'] and envLauncher['with_install_pdb']:
+	install.append(envLauncher.Install(pathBin, 'delauncher-console.pdb'))
+	archive['{}/delauncher-console.pdb'.format(pathBin)] = envLauncher.File('delauncher-console.pdb')
 
 targetInstall = envLauncher.Alias('launcher_console', install)
 

@@ -45,7 +45,7 @@ class deModelTextureCoordinatesSet;
  * the count for all weight sets with two bones and so forth. The weight sets are indexed
  * in the sequence they are stored.
  */
-class deModelLOD{
+class DE_DLL_EXPORT deModelLOD{
 private:
 	deModelWeight *pWeights;
 	int pWeightCount;

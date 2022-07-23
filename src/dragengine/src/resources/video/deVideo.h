@@ -42,7 +42,13 @@ class deBaseGraphicVideo;
  * of the video data can be RGB or YUV. The same data structures as in the image
  * resource can be found. For the YUV format the mapping r=y, g=u and b=v is used.
  */
-class deVideo : public deFileResource{
+class DE_DLL_EXPORT deVideo : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideo> Ref;
+	
+	
+	
 public:
 	/** \brief Pixel format. */
 	enum ePixelFormat{

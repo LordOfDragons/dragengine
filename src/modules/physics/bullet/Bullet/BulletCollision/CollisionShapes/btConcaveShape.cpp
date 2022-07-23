@@ -13,17 +13,14 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-
 #include "btConcaveShape.h"
 
 btConcaveShape::btConcaveShape() : m_collisionMargin(btScalar(0.))
 {
-
 }
 
 btConcaveShape::~btConcaveShape()
 {
-
 }
 
 void btConcaveShape::processRaycastAllTriangles( btTriangleRaycastCallback *callback,

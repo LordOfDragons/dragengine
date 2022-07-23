@@ -31,6 +31,8 @@
 #include "plan/deoglRenderPlanDebug.h"
 #include "plan/deoglRenderPlanEnvMap.h"
 #include "plan/deoglRenderPlan.h"
+#include "light/deoglRenderGI.h"
+#include "light/deoglRenderLight.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskShader.h"
@@ -44,11 +46,14 @@
 #include "../extensions/deoglExtensions.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
+#include "../gi/deoglGICascade.h"
+#include "../gi/deoglGIState.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTDefaultTextures.h"
 #include "../renderthread/deoglRTFramebuffer.h"
+#include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -112,6 +117,7 @@ enum eSPMinMapMipMap{
 enum pSPScreenSpace{
 	spssQuadTCTransform,
 	spssPosTransform,
+	spssPosTransform2,
 	spssMatrixP,
 	spssMatrixBackProjection,
 	spssClipReflDirNearDist,
@@ -129,6 +135,7 @@ enum pSPScreenSpace{
 enum pSPApplyReflections{
 	sparQuadTCTransform,
 	sparPosTransform,
+	sparPosTransform2,
 	sparMatrixEnvMap,
 	sparEnvMapLodLevel,
 	sparMipMapLevelParams,
@@ -154,6 +161,7 @@ enum pSPBReflection{
 	spbr2MatrixEnvMap,
 	spbr2QuadTCTransform,
 	spbr2PosTransform,
+	spbr2PosTransform2,
 	spbr2BlendFactors,
 	spbr2EnvMapLodLevel,
 	spbr2LayerCount,
@@ -202,6 +210,15 @@ enum eSPEnvMapMask{
 	speemMatrixMaskBox
 };
 
+enum eSPCopyMaterial{
+	spcmPosTransform,
+	spcmPosTransform2,
+	spcmSCTransform,
+	spcmTCTransform,
+	spcmMatrixPosition,
+	spcmMatrixNormal
+};
+
 /*
 static const int vCubeFaces[] = {
 	deoglCubeMap::efPositiveX, deoglCubeMap::efNegativeX,
@@ -230,26 +247,6 @@ deoglRenderBase( renderThread )
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderIndexPass1 = NULL;
-	pShaderIndexPass2 = NULL;
-	/*
-	pShaderRenderEnvMaps = NULL;
-	*/
-	
-	pShaderCopyColor = NULL;
-	pShaderCopyColorMipMap = NULL;
-	pShaderMinMaxMipMapMin = NULL;
-	pShaderMinMaxMipMapMax = NULL;
-	pShaderMinMaxMipMapInitial = NULL;
-	pShaderMinMaxMipMapDownsample = NULL;
-	pShaderScreenSpace = NULL;
-	pShaderApplyReflections = NULL;
-	
-	pShaderReflection = NULL;
-	pShaderCubeMap2EquiMap = NULL;
-	pShaderBuildEnvMap = NULL;
-	pShaderEnvMapMask = NULL;
-	
 	pRenderParamBlock = NULL;
 	pRenderTask = NULL;
 	pAddToRenderTask = NULL;
@@ -272,45 +269,11 @@ deoglRenderBase( renderThread )
 	//printf( "EQUI: %i %i %i\n", pUseEquiEnvMap?1:0, config.GetEnvMapUseEqui()?1:0, extensions.GetHasArrayCubeMap()?1:0 );
 	
 	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Reflection Index Pass" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
-		if( indirectMatrixAccessBug ){
-			defines.AddDefine( "UBO_IDMATACCBUG", "1" );
-		}
-		if( bugUBODirectLinkDeadloop ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
-		}
-		defines.AddDefine( "FULLSCREENQUAD", "1" );
-		pShaderIndexPass1 = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "CLAMP_AGAINST_DISTANCE", "1" );
-		pShaderIndexPass2 = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.RemoveAllDefines();
-		
-		
-		/*
-		sources = shaderManager.GetSourcesNamed( "DefRen Reflection EnvMap Pass" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
-		if( indirectMatrixAccessBug ){
-			defines.AddDefine( "UBO_IDMATACCBUG", "1" );
-		}
-		if( bugUBODirectLinkDeadloop ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
-		}
-		defines.AddDefine( "FULLSCREENQUAD", "1" );
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
-		pShaderRenderEnvMaps = shaderManager.GetProgramWith( sources, defines );
-		*/
-		
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
 		pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "MIPMAP", "1" );
+		defines.AddDefine( "MIPMAP", true );
 		pShaderCopyColorMipMap = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -321,19 +284,13 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-			}
-			defines.AddDefine( "NO_TEXCOORD", "1" );
-			defines.AddDefine( "INITIAL", "1" );
+			defines.AddDefine( "NO_TEXCOORD", true );
+			defines.AddDefine( "INITIAL", true );
 			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-			}
-			defines.AddDefine( "NO_TEXCOORD", "1" );
-			defines.AddDefine( "DOWNSAMPLE", "1" );
+			defines.AddDefine( "NO_TEXCOORD", true );
+			defines.AddDefine( "DOWNSAMPLE", true );
 			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
@@ -342,21 +299,15 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-			}
-			defines.AddDefine( "NO_TEXCOORD", "1" );
-			defines.AddDefine( "CLAMP_TC", "1" );
-			defines.AddDefine( "FUNC_MIN", "1" );
+			defines.AddDefine( "NO_TEXCOORD", true );
+			defines.AddDefine( "CLAMP_TC", true );
+			defines.AddDefine( "FUNC_MIN", true );
 			pShaderMinMaxMipMapMin = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-			}
-			defines.AddDefine( "NO_TEXCOORD", "1" );
-			defines.AddDefine( "CLAMP_TC", "1" );
-			defines.AddDefine( "FUNC_MAX", "1" );
+			defines.AddDefine( "NO_TEXCOORD", true );
+			defines.AddDefine( "CLAMP_TC", true );
+			defines.AddDefine( "FUNC_MAX", true );
 			pShaderMinMaxMipMapMax = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
@@ -365,21 +316,15 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-			}
-			defines.AddDefine( "NO_TEXCOORD", "1" );
-			defines.AddDefine( "CLAMP_TC", "1" );
-			defines.AddDefine( "SPLIT_VERSION", "1" );
-			defines.AddDefine( "SPLIT_SHIFT_TC", "1" );
+			defines.AddDefine( "NO_TEXCOORD", true );
+			defines.AddDefine( "CLAMP_TC", true );
+			defines.AddDefine( "SPLIT_VERSION", true );
+			defines.AddDefine( "SPLIT_SHIFT_TC", true );
 			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-			}
-			defines.AddDefine( "NO_TEXCOORD", "1" );
-			defines.AddDefine( "SPLIT_VERSION", "1" );
+			defines.AddDefine( "NO_TEXCOORD", true );
+			defines.AddDefine( "SPLIT_VERSION", true );
 			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 		}
@@ -396,34 +341,30 @@ deoglRenderBase( renderThread )
 		// version will be used using screen-space stepping with z-position
 		// 
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
 		if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", "1" );
+			defines.AddDefine( "ENVMAP_EQUI", true );
 		}
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.AddDefine( "INVERSE_DEPTH", true );
 		}
 		
 		if( config.GetSSRMethod() == 0 ){ // 0 = groundTruth
 			defines.AddDefine( "SSR_VERSION", "0" );
 			
 		}else if( config.GetSSRMethod() == 1 ){ // 1 = stepedSS
-			defines.AddDefine( "SSR_VERSION", "1" );
-			//defines.AddDefine( "RESULT_AFTER_FIRST_LOOP", "1" ); // this yields wrong results (moving reflections)
-				defines.AddDefine( "NESTED_LOOP", "1" ); // enabled slows down on Radeon 4870 but can't do better quality
-				defines.AddDefine( "MULTI_STEPPING", "1" );
+			defines.AddDefine( "SSR_VERSION", true );
+			//defines.AddDefine( "RESULT_AFTER_FIRST_LOOP", true ); // this yields wrong results (moving reflections)
+				defines.AddDefine( "NESTED_LOOP", true ); // enabled slows down on Radeon 4870 but can't do better quality
+				defines.AddDefine( "MULTI_STEPPING", true );
 				// integrated seems worse with SSR_VERSION=1 but required as otherwise NaN/Inf polutes the rendering
-				//defines.AddDefine( "INTEGRATED_THRESHOLD_TEST", "1" );
+				//defines.AddDefine( "INTEGRATED_THRESHOLD_TEST", true );
 			
 			if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-				defines.AddDefine( "USE_DEPTH_MIPMAP", "1" );
+				defines.AddDefine( "USE_DEPTH_MIPMAP", true );
 			}
 		}
 		
-		//defines.AddDefine( "ROUGHNESS_TAPPING", "1" );
+		//defines.AddDefine( "ROUGHNESS_TAPPING", true );
 		
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
@@ -432,28 +373,24 @@ deoglRenderBase( renderThread )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections" );
 		if( indirectMatrixAccessBug ){
-			defines.AddDefine( "UBO_IDMATACCBUG", "1" );
+			defines.AddDefine( "UBO_IDMATACCBUG", true );
 		}
 		if( bugUBODirectLinkDeadloop ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
 		}
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
 		if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", "1" );
+			defines.AddDefine( "ENVMAP_EQUI", true );
 		}
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.AddDefine( "INVERSE_DEPTH", true );
 		}
-		//defines.AddDefine( "HACK_NO_SSR", "1" ); // set to 1 to examine env-map reflection only
+		//defines.AddDefine( "HACK_NO_SSR", true ); // set to 1 to examine env-map reflection only
 		
 		if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
-			defines.AddDefine( "ENVMAP_SINGLE", "1" ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
+			defines.AddDefine( "ENVMAP_SINGLE", true ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 			
 		}else if( config.GetEnvMapMethod() == deoglConfiguration::eemmMultipleBoxProjection ){
-			defines.AddDefine( "ENVMAP_BOX_PROJECTION", "1" ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
+			defines.AddDefine( "ENVMAP_BOX_PROJECTION", true ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
 			
 		//}else{ // not ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 		}
@@ -463,23 +400,40 @@ deoglRenderBase( renderThread )
 		
 		
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Reflection" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
+		// input is framebuffer normal format (usually float). output is hard-coded shifted-int
+		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Material Copy" );
+		pShaderCopyMaterial = shaderManager.GetProgramWith( sources, defines );
+		
+		
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Light GI" );
+		if( pUseEquiEnvMap ){
+			defines.AddDefine( "ENVMAP_EQUI", true );
 		}
+		if( renderThread.GetExtensions().SupportsGSInstancing() ){
+			defines.AddDefine( "GS_INSTANCING", true );
+		}
+		pShaderEnvMapCopy = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "WITH_GI", true );
+		pShaderEnvMapLightGI = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Reflection" );
 		if( indirectMatrixAccessBug ){
-			defines.AddDefine( "UBO_IDMATACCBUG", "1" );
+			defines.AddDefine( "UBO_IDMATACCBUG", true );
 		}
 		if( bugUBODirectLinkDeadloop ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
 		}
 		//if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", "1" );
+			defines.AddDefine( "ENVMAP_EQUI", true );
 		//}
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.AddDefine( "INVERSE_DEPTH", true );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -493,7 +447,7 @@ deoglRenderBase( renderThread )
 		
 		if( pUseEquiEnvMap ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap Equi" );
-			defines.AddDefine( "ENVMAP_EQUI", "1" );
+			defines.AddDefine( "ENVMAP_EQUI", true );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap" );
@@ -504,7 +458,7 @@ deoglRenderBase( renderThread )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection EnvMap Mask" );
-		//defines.AddDefine( "FULLSCREENQUAD", "1" );
+		//defines.AddDefine( "FULLSCREENQUAD", true );
 		pShaderEnvMapMask = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -512,37 +466,40 @@ deoglRenderBase( renderThread )
 		
 		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pRenderParamBlock->SetParameterCount( 7 );
+		pRenderParamBlock->SetParameterCount( 8 );
 		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3 pMatrixEnvMap
 		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pQuadTCTransform
 		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pPosTransform
-		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
-		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
-		pRenderParamBlock->GetParameterAt( 5 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
-		pRenderParamBlock->GetParameterAt( 6 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
+		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pPosTransform2
+		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
+		pRenderParamBlock->GetParameterAt( 5 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
+		pRenderParamBlock->GetParameterAt( 6 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
+		pRenderParamBlock->GetParameterAt( 7 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
 		pRenderParamBlock->MapToStd140();
 		pRenderParamBlock->SetBindingPoint( 0 );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		
 		if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
 			if( pUseEquiEnvMap ){
 				pEnvMapEqui = new deoglTexture( renderThread );
 				pEnvMapEqui->SetSize( config.GetEnvMapSize() * 4, config.GetEnvMapSize() * 2 );
-				//pEnvMapEqui->SetFBOFormat( 3, true );
+				//pEnvMapEqui->SetFBOFormat( 3
 				pEnvMapEqui->SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG11B10F );
 				pEnvMapEqui->SetMipMapped( true );
 				
 			}else{
 				pEnvMap = new deoglCubeMap( renderThread );
 				pEnvMap->SetSize( config.GetEnvMapSize() );
-				//pEnvMap->SetFBOFormat( 3, true );
+				//pEnvMap->SetFBOFormat( 3
 				pEnvMap->SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG11B10F );
 				pEnvMap->SetMipMapped( true );
 			}
 		}
 		
+		(void)pIndexTextureWidth;
+		(void)pIndexTextureHeight;
 		/*
 		// create textures
 		pIndexTextureWidth = 512;
@@ -551,7 +508,7 @@ deoglRenderBase( renderThread )
 		// create indices
 		pTextureIndices = new deoglTexture( ogl );
 		pTextureIndices->SetSize( pIndexTextureWidth, pIndexTextureHeight );
-		pTextureIndices->SetFBOFormatIntegral( 2, 8, true );
+		pTextureIndices->SetFBOFormatIntegral( 2, 8
 		pTextureIndices->CreateTexture();
 		
 		// create distances
@@ -760,15 +717,10 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	}else{
 		pDirectEnvMapFading = NULL;
 	}
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 63 ){
-		return;
-	}
 	
 	if( renderThread.GetConfiguration().GetEnvMapMethod() != deoglConfiguration::eemmSingle ){
 		return;
 	}
-	
-	
 	
 	if( pEnvMapEqui ){
 		pEnvMapEqui->CreateTexture();
@@ -777,8 +729,8 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 		pEnvMap->CreateCubeMap();
 	}
 	
-	deoglTexture *blendEnvMapEqui[ 4 ] = { NULL, NULL, NULL, NULL };
-	deoglCubeMap *blendEnvMap[ 4 ] = { NULL, NULL, NULL, NULL };
+	const deoglTexture *blendEnvMapEqui[ 4 ] = { NULL, NULL, NULL, NULL };
+	const deoglCubeMap *blendEnvMap[ 4 ] = { NULL, NULL, NULL, NULL };
 	const decDVector &cameraPosition = plan.GetCameraPosition();
 	deoglTexSamplerConfig *blendSampler[ 4 ];
 	float blendWeights[ 4 ] = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -1389,35 +1341,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 		DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Copy EnvMap" );
 	}
 	DEBUG_PRINT_TIMER_TOTAL( "Reflection: Update Env Map" );
-	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 65 ){
-		decString text;
-		
-		if( pEnvMapEqui ){
-			count = pEnvMapEqui->GetRealMipMapLevelCount();
-			for( i=0; i<count; i++ ){
-				text.Format( "envmap_equimap_l%.2i", i );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
-					*pEnvMapEqui, i, text.GetString(), deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-				text.Format( "envmap_equimap_source1_l%.2i", i );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
-					*blendEnvMapEqui[0], i, text.GetString(), deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-			}
-			
-		}else{
-			count = pEnvMap->GetRealMipMapLevelCount();
-			for( i=0; i<count; i++ ){
-				text.Format( "envmap_l%.2i", i );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMapLevelConversion(
-					*pEnvMap, i, text.GetString(), true, deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-				text.Format( "envmap_source1_l%.2i", i );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMapLevelConversion(
-					*blendEnvMap[0], i, text.GetString(), true, deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-			}
-		}
-		
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
 }
 
 
@@ -1489,18 +1412,18 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	
 	// set textures
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 4, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
@@ -1513,7 +1436,7 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	DEBUG_PRINT_TIMER( "Reflection: Render" );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 60 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary1(), "refl_reflection" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "refl_reflection" );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 }
@@ -1591,6 +1514,7 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 			plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
 		defren.SetShaderParamFSQuad( *pRenderParamBlock, spbr2QuadTCTransform );
 		pRenderParamBlock->SetParameterDataVec4( spbr2PosTransform, plan.GetDepthToPosition() );
+		pRenderParamBlock->SetParameterDataVec2( spbr2PosTransform2, plan.GetDepthToPosition2() );
 		
 		// we use a blend zone of width 1m
 		pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
@@ -1626,252 +1550,6 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 }
 
 
-
-void deoglRenderReflection::RenderIndices( deoglRenderPlan &plan ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglEnvironmentMapList &list = plan.GetWorld()->GetEnvMapList();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
-	GLuint clearColor[ 4 ] = { 0, 0, 0, 0 };
-	const int count = list.GetCount();
-	deoglShaderCompiled *shader;
-	int i;
-	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	//OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	//SetCullMode( false );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
-	}
-	
-	OGL_CHECK( renderThread, glEnable( GL_POLYGON_OFFSET_FILL ) );
-	OGL_CHECK( renderThread, pglPolygonOffset( 0.0f, 1.0f ) );
-	
-	DEBUG_PRINT_TIMER( "Index Pass 1: Set States" );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, pIndexTextureWidth, pIndexTextureHeight ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, pIndexTextureWidth, pIndexTextureHeight ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	DEBUG_PRINT_TIMER( "Index Pass 1: Viewport/Scissor" );
-	
-	// bind full screen quad for testing purpose. later on this will be improved
-	// with using only the bounding box around the environment map
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	DEBUG_PRINT_TIMER( "Index Pass 1: Bind Full-Screen VAO" );
-	
-	
-	
-	// activate first pass fbo
-	renderThread.GetFramebuffer().Activate( pFBOIndexPass1 );
-	DEBUG_PRINT_TIMER( "Index Pass 1: Activate FBO" );
-	
-	// clear the first distance texture and the indices texture
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	
-	clearColor[ 0 ] = ( 1 << 8 ) - 1; // ( 1 << 16 ) - 1;
-	clearColor[ 1 ] = clearColor[ 0 ];
-	clearColor[ 2 ] = clearColor[ 0 ];
-	clearColor[ 3 ] = clearColor[ 0 ];
-	OGL_CHECK( renderThread, pglClearBufferuiv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	DEBUG_PRINT_TIMER( "Index Pass 1: Clear" );
-	
-	// activate first pass shader and set common parameters
-	renderThread.GetShader().ActivateShader( pShaderIndexPass1 );
-	shader = pShaderIndexPass1->GetCompiled();
-	
-	defren.SetShaderParamFSQuad( *shader, spipQuadTCTransform );
-	shader->SetParameterVector4( spipPosTransform, plan.GetDepthToPosition() );
-	
-	//defren.SetShaderParamFSQuad( *shader, spipPosTransform );
-	shader->SetParameterFloat( spipScaleDistance, 1.0f / 20.0f /*( float )plan.GetCameraImageDistance()*/ );
-	DEBUG_PRINT_TIMER( "Index Pass 1: Activate Shader" );
-	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	DEBUG_PRINT_TIMER( "Index Pass 1: Enable Depth Texture" );
-	
-	for( i=0; i<count; i++ ){
-		const deoglEnvironmentMap &envmap = *list.GetAt( i );
-		
-		if( ! envmap.GetSkyOnly() ){
-			shader->SetParameterMatrix4x4( spipMatrixMVP, decMatrix() );
-			shader->SetParameterMatrix4x3( spipMatrixMV, decMatrix() );
-			shader->SetParameterDVector3( spipEnvMapPosition, matrixCamera * envmap.GetPosition() );
-			shader->SetParameterInt( spipEnvMapIndex, i );
-			//DEBUG_PRINT_TIMER( "Index Pass 1: Level Set Uniform" );
-			
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-			//DEBUG_PRINT_TIMER( "Index Pass 1: Level Draw Quad" );
-		}
-	}
-	DEBUG_PRINT_TIMER( "Index Pass 1: Draw Env Maps" );
-	
-	
-	
-	// activate second pass fbo
-	renderThread.GetFramebuffer().Activate( pFBOIndexPass2 );
-	DEBUG_PRINT_TIMER( "Index Pass 2: Activate FBO" );
-	
-	// clear the second dinstance texture 
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_TRUE, GL_FALSE, GL_FALSE ) );
-	DEBUG_PRINT_TIMER( "Index Pass 2: Clear" );
-	
-	// activate second pass shader and set common parameters
-	renderThread.GetShader().ActivateShader( pShaderIndexPass2 );
-	shader = pShaderIndexPass2->GetCompiled();
-	
-	defren.SetShaderParamFSQuad( *shader, spipQuadTCTransform );
-	shader->SetParameterVector4( spipPosTransform, plan.GetDepthToPosition() );
-	
-	//defren.SetShaderParamFSQuad( *shader, spipPosTransform );
-	shader->SetParameterFloat( spipScaleDistance, 1.0f / 20.0f /*( float )plan.GetCameraImageDistance()*/ );
-	DEBUG_PRINT_TIMER( "Index Pass 2: Activate Shader" );
-	
-	tsmgr.EnableTexture( 1, *pTextureDistance1, GetSamplerClampNearest() );
-	DEBUG_PRINT_TIMER( "Index Pass 2: Enable Distance 1 Texture" );
-	
-	for( i=0; i<count; i++ ){
-		const deoglEnvironmentMap &envmap = *list.GetAt( i );
-		
-		if( ! envmap.GetSkyOnly() ){
-			shader->SetParameterMatrix4x4( spipMatrixMVP, decMatrix() );
-			shader->SetParameterMatrix4x3( spipMatrixMV, decMatrix() );
-			shader->SetParameterDVector3( spipEnvMapPosition, matrixCamera * envmap.GetPosition() );
-			shader->SetParameterInt( spipEnvMapIndex, i );
-			//DEBUG_PRINT_TIMER( "Index Pass 2: Level Set Uniform" );
-			
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-			//DEBUG_PRINT_TIMER( "Index Pass 2: Level Draw Quad" );
-		}
-	}
-	DEBUG_PRINT_TIMER( "Index Pass 2: Draw Env Maps" );
-	
-	
-	
-	// restore opengl states
-	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
-	
-	// debug
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 60 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTexture(
-			*pTextureDistance1, "refl_pass1_distance", deoglDebugSaveTexture::edtLinear );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *pTextureIndices, "refl_pass1_indices" );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTexture(
-			*pTextureDistance2, "refl_pass2_distance", deoglDebugSaveTexture::edtLinear );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *pTextureIndices, "refl_pass2_indices" );
-	}
-}
-
-#if 0
-void deoglRenderReflection::RenderEnvMaps( deoglRenderPlan &plan ){
-	const deoglEnvironmentMapList &list = plan.GetWorld()->GetEnvMapList();
-	deoglTextureStageManager &tsmgr = *renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = *renderThread.GetDeferredRendering();
-	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
-//	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	const int count = list.GetCount();
-	deoglShaderCompiled *shader;
-	int i;
-	
-	// set states
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-//	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Set States" );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Viewport/Scissor" );
-	
-	// activate temporary 2 fbo
-//	defren.ActivateFBOTemporary2( false );
-	defren.ActivateFBOColor( false, false );
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Activate FBO" );
-	
-	// clear the temporary 2 texture
-//	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-//	DEBUG_PRINT_TIMER( "EnvMap Pass: Clear" );
-	
-	// activate envmap pass shader and set common parameters
-	renderThread.GetShader().ActivateShader( pShaderRenderEnvMaps );
-	shader = pShaderRenderEnvMaps->GetCompiled();
-	
-	const float znear = plan.GetCameraImageDistance();
-	const float zfar = plan.GetCameraViewDistance();
-	const float aspectRatio = plan.GetAspectRatio();
-	const float fovRatio = plan.GetCameraFovRatio();
-	const float fov = plan.GetCameraFov();
-	const float q = zfar / ( zfar - znear );
-	
-	shader->SetParameterFloat( spipQuadTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
-	shader->SetParameterVector4( spempPosTransform, plan.GetDepthToPosition() );
-	
-	//defren.SetShaderParamFSQuad( *shader, spipPosTransform );
-	shader->SetParameterFloat( spempScaleDistance, 20.0f /*( float )plan.GetCameraImageDistance()*/ );
-	shader->SetParameterFloat( spempBlendFactors, 1.0f / ( 2.0f * /*blendWidth[m]=*/1.0f ), 0.5f );
-	shader->SetParameterMatrix3x3( spempMatrixEnvMap, plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Activate Shader" );
-	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 3, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 4, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 5, *pTextureIndices, GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 6, *pTextureDistance1, deoglTextureStageManager::etfLinear, GL_CLAMP_TO_EDGE );
-	tsmgr.EnableTexture( 7, *pTextureDistance2, deoglTextureStageManager::etfLinear, GL_CLAMP_TO_EDGE );
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Enable Textures" );
-	
-	for( i=0; i<count; i++ ){
-		const deoglEnvironmentMap &envmap = *list.GetAt( i );
-		
-		if( ! envmap.GetSkyOnly() ){
-			shader->SetParameterFloat( spempEnvMapLodLevel, ( float )envmap.GetEnvironmentMap()->GetSize() * 1.0f );
-			
-			shader->SetParameterMatrix4x4( spempMatrixMVP, decMatrix() );
-			shader->SetParameterMatrix4x3( spempMatrixMV, decMatrix() );
-			shader->SetParameterDVector3( spempEnvMapPosition, matrixCamera * envmap.GetPosition() );
-			shader->SetParameterInt( spempEnvMapIndex, i );
-			//DEBUG_PRINT_TIMER( "EnvMap Pass: Level Set Uniform" );
-			
-			tsmgr.EnableCubeMap( 7, *envmap.GetEnvironmentMap(), deoglTextureStageManager::etfLinearMipMap );
-			
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-			//DEBUG_PRINT_TIMER( "EnvMap Pass: Level Draw Quad" );
-		}
-	}
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Draw Env Maps" );
-	
-	// restore opengl states
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	DEBUG_PRINT_TIMER( "EnvMap Pass: Disable VAO" );
-	
-	// debug
-	if( renderThread.GetConfiguration()->GetDebugSnapshot() == 60 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary2(), "refl_envmappass", false );
-	}
-}
-
-void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
-}
-#endif
 
 void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 	if( deoglDRDepthMinMax::USAGE_VERSION == -1 ){
@@ -1917,7 +1595,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapInitial );
 		shader = pShaderMinMaxMipMapInitial->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
 		shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 		
@@ -1928,7 +1606,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapDownsample );
 		shader = pShaderMinMaxMipMapDownsample->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
 		for( i=1; i<mipMapLevelCount; i++ ){
 			renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( i ) );
@@ -1952,7 +1630,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			width = depthMinMap.GetWidth();
 			
 			text.Format( "depth_minmax_level0_%ix%i", width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
 				*depthMinMap.GetTexture(), 0, text.GetString(), defren.GetUseInverseDepth() ?
 					deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion );
 			
@@ -1961,7 +1639,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				height = decMath::max( height >> 1, 1 );
 				
 				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
 					*depthMinMap.GetTexture(), i, text.GetString(), defren.GetUseInverseDepth() ?
 						deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion	);
 			}
@@ -1994,14 +1672,14 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, 0 );
 				
-				tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 				
 			}else{
 				shader->SetParameterInt( spmmmmTCClamp, width - 1, height - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, i - 1 );
 				
 				if( i == 1 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
 				}
 				
 				width >>= 1;
@@ -2021,10 +1699,10 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
 				text.Format( "depth_minmax_min_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 					*depthMinMap.GetTextureMin(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
 				if( i > 0 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
 				}
 			}
 		}
@@ -2043,14 +1721,14 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, 0 );
 				
-				tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 				
 			}else{
 				shader->SetParameterInt( spmmmmTCClamp, width - 1, height - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, i - 1 );
 				
 				if( i == 1 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
 				}
 				
 				width >>= 1;
@@ -2070,10 +1748,10 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
 				text.Format( "depth_minmax_max_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 					*depthMinMap.GetTextureMax(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
 				if( i > 0 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
 				}
 			}
 		}
@@ -2101,7 +1779,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapInitial );
 		shader = pShaderMinMaxMipMapInitial->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
 		shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 		shader->SetParameterInt( spmmmmMipMapLevel, 0 );
@@ -2112,7 +1790,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 			decString text;
 			text.Format( "depth_minmax_level0_%ix%i", width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 				*depthMinMap.GetTexture(), 0, text.GetString(), deoglDebugSaveTexture::edtDepth );
 		}
 		
@@ -2120,7 +1798,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapDownsample );
 		shader = pShaderMinMaxMipMapDownsample->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
 		for( i=1; i<mipMapLevelCount; i++ ){
 			renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( i ) );
@@ -2146,9 +1824,9 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
 				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 					*depthMinMap.GetTexture(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
-				tsmgr.EnableTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 			}
 		}
 	}
@@ -2190,7 +1868,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.RenderFSQuadVAO();
 	
@@ -2208,7 +1886,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 		level = 0;
 		
 		text.Format( "refl_ssr_copycolor_level0_%ix%i", width, height );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(), 0,
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(), 0,
 			text.GetString(), deoglDebugSaveTexture::ecColorLinear2sRGB );
 		
 		while( width > 1 && height > 1 ){
@@ -2223,7 +1901,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 			level++;
 			
 			text.Format( "refl_ssr_copycolor_level%i_%ix%i", level, width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(), level,
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(), level,
 				text.GetString(), deoglDebugSaveTexture::ecColorLinear2sRGB );
 		}
 		
@@ -2362,6 +2040,210 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 }
 #endif
 
+void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
+	if( ! plan.GetFBOMaterial() || ! solid ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	
+	renderThread.GetFramebuffer().Activate( plan.GetFBOMaterial() );
+	
+	renderThread.GetShader().ActivateShader( pShaderCopyMaterial );
+	
+	deoglShaderCompiled &shader = *pShaderCopyMaterial->GetCompiled();
+	shader.SetParameterVector4( spcmPosTransform, plan.GetDepthToPosition() );
+	shader.SetParameterVector2( spcmPosTransform2, plan.GetDepthToPosition2() );
+	shader.SetParameterMatrix4x3( spcmMatrixPosition, plan.GetFBOMaterialMatrix() );
+	shader.SetParameterMatrix3x3( spcmMatrixNormal,
+		plan.GetInverseCameraMatrix().GetRotationMatrix().QuickInvert() );
+	
+	if( plan.GetUpsideDown() ){
+		shader.SetParameterFloat( spcmSCTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+		defren.SetShaderParamFSQuad( shader, spcmTCTransform );
+		
+	}else{
+		shader.SetParameterFloat( spcmSCTransform, 1.0f, -1.0f, 0.0f, 0.0f );
+		defren.SetShaderParamFSQuadUpsideDown( shader, spcmTCTransform );
+	}
+	
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, plan.GetViewportWidth(), plan.GetViewportHeight() ) );
+	
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+	
+	defren.RenderFSQuadVAO();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+}
+
+void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
+	if( plan.GetNoReflections() ){
+		return;
+	}
+	
+	const deoglGIState * const giState = plan.GetRenderGIState();
+	if( ! giState ){
+		return;
+	}
+	
+	DEBUG_RESET_TIMERS;
+	
+	// determine envmap to update. updating envmap takes around 350-400ys including rendering
+	// and mipmap generation. doing this 8 times per frame costs up to 3ms which is a lot.
+	// to reduce this cost only one envmap is updated per frame update. to ensure all envmaps
+	// are regularily updated and none missed a last update counter is used. each frame update
+	// the counter is incremented by one. then the envmap with the largest value is picked.
+	// upon rerendeing the envmap the counter is set to the maximum value to give it highest
+	// priority. envmaps with maximum priority are always updated.
+	deoglEnvironmentMap *lightEnvMap = NULL;
+	const int count = plan.GetEnvMapCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglEnvironmentMap * const envmap = plan.GetEnvMapAt( i ).GetEnvMap();
+		if( ! envmap || ! envmap->GetReady() || ! envmap->GetMaterialReady() || envmap->GetSkyOnly() ){
+			continue;
+		}
+		
+		envmap->IncLastGILightUpdate();
+		if( envmap->IsLastGILightUpdateAtMax() ){
+			continue; // will be always updated
+		}
+		
+		if( ! lightEnvMap || envmap->GetLastGILightUpdate() > lightEnvMap->GetLastGILightUpdate() ){
+			lightEnvMap = envmap;
+		}
+	}
+	
+	// update envmap
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
+	
+	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
+	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	
+	renderThread.GetFramebuffer().Activate( &fbo );
+	fbo.DetachAllImages();
+	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderEnvMapLightGI );
+	deoglShaderCompiled &shader = *pShaderEnvMapLightGI->GetCompiled();
+	
+	shader.SetParameterInt( 0, giState->GetCascadeCount() - 1 );
+	
+	tsmgr.EnableArrayTexture( 4, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 5, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 6, giState->GetTextureProbeOffset(), GetSamplerClampLinear() );
+	
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+// 	renderThread.GetLogger().LogInfoFormat( "RenderGIEnvMaps: %d envmaps", count );
+	for( i=0; i<count; i++ ){
+		deoglEnvironmentMap * const envmap = plan.GetEnvMapAt( i ).GetEnvMap();
+		if( ! envmap || ! envmap->GetReady() || ! envmap->GetMaterialReady() || envmap->GetSkyOnly() ){
+			continue;
+		}
+		
+		if( ! envmap->IsLastGILightUpdateAtMax() && envmap != lightEnvMap ){
+			continue;
+		}
+		
+		if( pUseEquiEnvMap ){
+			continue; // not supported
+		}
+		
+// 		renderThread.GetLogger().LogInfoFormat( "- LightEnvMap: %p (%g,%g,%g)", envmap,
+// 			envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
+		
+		fbo.DetachAllImages();
+		fbo.AttachColorCubeMap( 0, envmap->GetEnvironmentMap() );
+		fbo.Verify();
+		
+		OGL_CHECK( renderThread, glViewport( 0, 0, envmap->GetSize(), envmap->GetSize() ) );
+		
+		tsmgr.EnableArrayTexture( 0, *envmap->GetEnvironmentMapPosition(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *envmap->GetEnvironmentMapDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *envmap->GetEnvironmentMapNormal(), GetSamplerClampNearest() ); // int-shifted
+		tsmgr.EnableArrayTexture( 3, *envmap->GetEnvironmentMapEmissive(), GetSamplerClampNearest() );
+		
+		renderGI.PrepareUBORenderLight( *giState, envmap->GetPosition() );
+		renderGI.GetUBORenderLight().Activate();
+		
+		defren.RenderFSQuadVAO();
+		
+		envmap->GetEnvironmentMap()->CreateMipMaps();
+		
+		envmap->ResetLastGILightUpdate();
+	}
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	renderThread.GetFramebuffer().Activate( oldfbo );
+	
+	DEBUG_PRINT_TIMER( "Reflection RenderGIEnvMaps: Render" );
+}
+
+void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap &target ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	
+	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
+	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderEnvMapCopy );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	renderThread.GetFramebuffer().Activate( &fbo );
+	fbo.DetachAllImages();
+	fbo.AttachColorCubeMap( 0, &target );
+	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	fbo.Verify();
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, target.GetSize(), target.GetSize() ) );
+	
+	tsmgr.EnableArrayTexture( 3, source, GetSamplerClampNearest() ); // texEmissive
+	
+	defren.RenderFSQuadVAO();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	renderThread.GetFramebuffer().Activate( oldfbo );
+}
+
 void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	if( plan.GetNoReflections() ){
 		return;
@@ -2369,10 +2251,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
-	if( config.GetDebugSnapshot() == 63 ){
-		return;
-	}
 	if( ! config.GetSSREnable() ){
 		return;
 	}
@@ -2420,6 +2298,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( *shader, spssQuadTCTransform );
 	shader->SetParameterVector4( spssPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( spssPosTransform2, plan.GetDepthToPosition2() );
 	
 	// NOTE back projection matrix is not used right now. what has it been added for in the first place?
 	shader->SetParameterDMatrix4x4( spssMatrixP, plan.GetProjectionMatrix() );
@@ -2467,22 +2346,22 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	shader->SetParameterFloat( spssRoughnessTapCountScale, ( float )roughnessTapMax / roughnessTapRange );
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-			tsmgr.EnableTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
 		}
-		tsmgr.EnableTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-			tsmgr.EnableTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
 		}
-		tsmgr.EnableTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 4, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
@@ -2496,61 +2375,11 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	// only ARB_copy_image supports this not NV_copy_image
 	//defren.GetTextureColor()->CopyFrom( *defren.GetTextureTemporary1(), false, defren.GetWidth(), defren.GetHeight(), 0, 0, 0, 0 );
 	
-	if( config.GetDebugSnapshot() == 60 ){
-#if 1
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary2(), "refl_ssr" );
-		/*
-		deoglPixelBuffer pbuf( deoglPixelBuffer::epfFloat3, defren.GetTextureTemporary2()->GetWidth(), defren.GetTextureTemporary2()->GetHeight(), 1 );
-		defren.GetTextureTemporary2()->GetPixelsLevel( 0, pbuf );
-		const deoglPixelBuffer::sFloat3 * const data = pbuf.GetPointerFloat24();
-		const deoglPixelBuffer::sFloat3 &v1 = data[ defren.GetTextureTemporary2()->GetWidth() * ( defren.GetTextureTemporary2()->GetHeight() - 1 - 300 ) + 518 ];
-		const deoglPixelBuffer::sFloat3 &v2 = data[ defren.GetTextureTemporary2()->GetWidth() * ( defren.GetTextureTemporary2()->GetHeight() - 1 - 288 ) + 205 ];
-		const deoglPixelBuffer::sFloat3 &v3 = data[ defren.GetTextureTemporary2()->GetWidth() * ( defren.GetTextureTemporary2()->GetHeight() - 1 - 233 ) + 570 ];
-		const deoglPixelBuffer::sFloat3 &v4 = data[ defren.GetTextureTemporary2()->GetWidth() * ( defren.GetTextureTemporary2()->GetHeight() - 1 - 245 ) + 620 ];
-		const deoglPixelBuffer::sFloat3 &v5 = data[ defren.GetTextureTemporary2()->GetWidth() * ( defren.GetTextureTemporary2()->GetHeight() - 1 - 323 ) + 413 ];
-		const deoglPixelBuffer::sFloat3 &v6 = data[ defren.GetTextureTemporary2()->GetWidth() * ( defren.GetTextureTemporary2()->GetHeight() - 1 - 321 ) + 413 ];
-		if( false ) printf( "v1(%f,%f,%f) v2(%f,%f,%f)\n", v1.r, v1.g, v1.b, v2.r, v2.g, v2.b );
-		if( false ) printf( "v3(%f,%f,%f) v4(%f,%f,%f)\n", v3.r, v3.g, v3.b, v4.r, v4.g, v4.b );
-		if( true ) printf( "v5(%f,%f,%f) v6(%f,%f,%f)\n", v5.r, v5.g, v5.b, v6.r, v6.g, v6.b );
-		*/
-		
-#else
-		decString text;
-		int level = 0;
-		
-		int width = defren.GetWidth();
-		int height = defren.GetHeight();
-		
-		text.Format( "refl_ssr_level0_%ix%i", width, height );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary2(), 0,
-			text.GetString(), false, deoglDebugSaveTexture::ecColorLinear2sRGB );
-		
-		while( width > 1 && height > 1 ){
-			width >>= 1;
-			if( width < 1 ){
-				width = 1;
-			}
-			height >>= 1;
-			if( height < 1 ){
-				height = 1;
-			}
-			level++;
-			
-			text.Format( "refl_ssr_level%i_%ix%i", level, width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary2(), level,
-				text.GetString(), false, deoglDebugSaveTexture::ecColorLinear2sRGB );
-		}
-#endif
-		
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	
-	
 	
 	// prepare vbo for applying reflections
 	int i, envMapCount = 0;
-	deoglTexture *envMapEquis[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
-	deoglCubeMap *envMapCubes[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+	const deoglTexture *envMapEquis[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+	const deoglCubeMap *envMapCubes[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 	const float envMapRoughnessBase = ( float )PI * 0.5f;
 	
 	pEnvMapsParamBlock->MapBuffer();
@@ -2629,6 +2458,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( *shader, sparQuadTCTransform );
 	shader->SetParameterVector4( sparPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( sparPosTransform2, plan.GetDepthToPosition2() );
 	
 	float envMapLodLevel = 1.0f;
 	deoglEnvironmentMap * const envmapSky = plan.GetWorld()->GetSkyEnvironmentMap();
@@ -2680,25 +2510,25 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	*/
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 6, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 6, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 6, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
 	
-	tsmgr.EnableTexture( 7, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMap() );
+	tsmgr.EnableArrayTexture( 7, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMap() );
 	
 	if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
 		if( pEnvMapEqui ){
@@ -2751,58 +2581,6 @@ void deoglRenderReflection::pCleanUp(){
 	}
 	if( pEnvMap ){
 		delete pEnvMap;
-	}
-	
-	if( pShaderEnvMapMask ){
-		pShaderEnvMapMask->RemoveUsage();
-	}
-	if( pShaderBuildEnvMap ){
-		pShaderBuildEnvMap->RemoveUsage();
-	}
-	if( pShaderCubeMap2EquiMap ){
-		pShaderCubeMap2EquiMap->RemoveUsage();
-	}
-	if( pShaderReflection ){
-		pShaderReflection->RemoveUsage();
-	}
-	
-	if( pShaderApplyReflections ){
-		pShaderApplyReflections->RemoveUsage();
-	}
-	if( pShaderScreenSpace ){
-		pShaderScreenSpace->RemoveUsage();
-	}
-	if( pShaderMinMaxMipMapMax ){
-		pShaderMinMaxMipMapMax->RemoveUsage();
-	}
-	if( pShaderMinMaxMipMapMin ){
-		pShaderMinMaxMipMapMin->RemoveUsage();
-	}
-	
-	if( pShaderMinMaxMipMapDownsample ){
-		pShaderMinMaxMipMapDownsample->RemoveUsage();
-	}
-	if( pShaderMinMaxMipMapInitial ){
-		pShaderMinMaxMipMapInitial->RemoveUsage();
-	}
-	
-	if( pShaderCopyColorMipMap ){
-		pShaderCopyColorMipMap->RemoveUsage();
-	}
-	if( pShaderCopyColor ){
-		pShaderCopyColor->RemoveUsage();
-	}
-	
-	/*
-	if( pShaderRenderEnvMaps ){
-		pShaderRenderEnvMaps->RemoveUsage();
-	}
-	*/
-	if( pShaderIndexPass2 ){
-		pShaderIndexPass2->RemoveUsage();
-	}
-	if( pShaderIndexPass1 ){
-		pShaderIndexPass1->RemoveUsage();
 	}
 	
 	if( pEnvMapsParamBlock ){

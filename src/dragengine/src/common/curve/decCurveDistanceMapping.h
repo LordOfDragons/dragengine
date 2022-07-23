@@ -22,6 +22,8 @@
 #ifndef _DECCURVEBEZIER3DDISTANCEEVALUATOR_H_
 #define _DECCURVEBEZIER3DDISTANCEEVALUATOR_H_
 
+#include "../../dragengine_export.h"
+
 class decCurveBezier3D;
 
 
@@ -32,7 +34,7 @@ class decCurveBezier3D;
  * basis instead of local coordinates.
  * 
  */
-class decCurveDistanceMapping{
+class DE_DLL_EXPORT decCurveDistanceMapping{
 private:
 	float pResolution;
 	float pLength;

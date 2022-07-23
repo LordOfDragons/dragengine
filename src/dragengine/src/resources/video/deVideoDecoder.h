@@ -37,7 +37,13 @@ class deBaseVideoDecoder;
  * user decides if the data is read synchronous or asynchronous. The video information is
  * not replicated in the decoder but found in the source video resource.
  */
-class deVideoDecoder : public deObject{
+class DE_DLL_EXPORT deVideoDecoder : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideoDecoder> Ref;
+	
+	
+	
 private:
 	deVideoManager &pVideoManager;
 	deVideoReference pVideo;

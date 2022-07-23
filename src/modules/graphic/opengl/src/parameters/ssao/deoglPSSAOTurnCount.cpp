@@ -51,6 +51,7 @@ deoglParameterFloat( ogl )
 		" This is an advanced parameter that is best left to the default value of 7 turns." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO Turn Count" );
+	SetDefaultValue( "7" );
 }
 
 deoglPSSAOTurnCount::~deoglPSSAOTurnCount(){

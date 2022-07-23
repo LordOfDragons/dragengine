@@ -60,110 +60,110 @@ class WindowOverColor extends Window
 	
 	/** \brief Create window. */
 	public func new()
-		this.pTimeFadeIn = 1.0
-		this.pTimeStay = 1.0
-		this.pTimeFadeOut = 1.0
-		this.pElapsed = 0.0
-		this.pRunning = false
-		this.pUseSmoothStep = true
+		pTimeFadeIn = 1
+		pTimeStay = 1
+		pTimeFadeOut = 1
+		pElapsed = 0
+		pRunning = false
+		pUseSmoothStep = true
 		
-		this.updateThresholds()
+		updateThresholds()
 		
-		this.setWindowState( Window.WindowState.maximized )
-		this.setCanActivate( false )
-		this.setCanFocus( false )
-		this.setTransparency( 0.0 )
-		this.setDesignerSelector( "Window.OverColor" )
+		setWindowState(Window.WindowState.maximized)
+		setCanActivate(false)
+		setCanFocus(false)
+		setTransparency(0)
+		setDesignerSelector("Window.OverColor")
 	end
 	
 	
 	
 	/** \brief Time in seconds to fade in. */
 	public func float getTimeFadeIn()
-		return this.pTimeFadeIn
+		return pTimeFadeIn
 	end
 	
 	/** \brief Set time in seconds to fade in. */
-	public func void setTimeFadeIn( float time )
-		this.pTimeFadeIn = DEMath.max( time, 0.0 )
-		this.updateThresholds()
+	public func void setTimeFadeIn(float time)
+		pTimeFadeIn = DEMath.max(time, 0.0)
+		updateThresholds()
 	end
 	
 	/** \brief Time in seconds to stay at color. */
 	public func float getTimeStay()
-		return this.pTimeStay
+		return pTimeStay
 	end
 	
 	/** \brief Set time in seconds to stay at color. */
-	public func void setTimeStay( float time )
-		this.pTimeStay = DEMath.max( time, 0.0 )
-		this.updateThresholds()
+	public func void setTimeStay(float time)
+		pTimeStay = DEMath.max(time, 0.0)
+		updateThresholds()
 	end
 	
 	/** \brief Time in seconds to fade out. */
 	public func float getTimeFadeOut()
-		return this.pTimeFadeOut
+		return pTimeFadeOut
 	end
 	
 	/** \brief Set time in seconds to fade out. */
-	public func void setTimeFadeOut( float time )
-		this.pTimeFadeOut = DEMath.max( time, 0.0 )
-		this.updateThresholds()
+	public func void setTimeFadeOut(float time)
+		pTimeFadeOut = DEMath.max(time, 0.0)
+		updateThresholds()
 	end
 	
 	/** \brief Use smooth step instead of linear step. */
 	public func bool getUseSmoothStep()
-		return this.pUseSmoothStep
+		return pUseSmoothStep
 	end
 	
 	/** \brief Set to use smooth step instead of linear step. */
-	public func void setUseSmoothStep( bool useSmoothStep )
-		this.pUseSmoothStep = useSmoothStep
+	public func void setUseSmoothStep(bool useSmoothStep)
+		pUseSmoothStep = useSmoothStep
 	end
 	
 	
 	
 	/** \brief Elapsed time. */
 	public func float getElapsed()
-		return this.pElapsed
+		return pElapsed
 	end
 	
 	/** \brief Set elapsed time. */
-	protected func void setElapsed( float elapsed )
-		this.pElapsed = elapsed
+	protected func void setElapsed(float elapsed)
+		pElapsed = elapsed
 	end
 	
 	/** \brief Running. */
 	public func bool getRunning()
-		return this.pRunning
+		return pRunning
 	end
 	
 	
 	
 	/** \brief Start fading if not running. */
 	public func void startFading()
-		if this.pRunning
+		if pRunning
 			return
 		end
 		
-		this.pElapsed = 0.0
-		this.pRunning = true
-		this.setTransparency( 0.0 )
-		this.setVisible( true )
-		this.startFrameUpdater()
+		pElapsed = 0
+		pRunning = true
+		setTransparency(0)
+		setVisible(true)
+		startFrameUpdater()
 	end
 	
 	/** \brief Stop fading immediatly if running. */
 	public func void stopFading()
-		if not this.pRunning
+		if not pRunning
 			return
 		end
 		
-		this.stopFrameUpdater()
-		this.setTransparency( 0.0 )
-		this.pRunning = false
-		this.pElapsed = 0.0
-		this.setVisible( false )
+		stopFrameUpdater()
+		setTransparency(0)
+		pRunning = false
+		pElapsed = 0
+		setVisible(false)
 	end
 	
 	/**
@@ -171,43 +171,62 @@ class WindowOverColor extends Window
 	 * 
 	 * Update fading
 	 */
-	public func void onFrameUpdate( float elapsed )
-		if not this.pRunning
-			this.stopFading()
+	public func void onFrameUpdate(float elapsed)
+		if not pRunning
+			stopFading()
 			return
 		end
 		
-		this.pElapsed += elapsed
+		pElapsed += elapsed
 		
-		if this.pElapsed < this.pTimeFadeIn
-			if this.pUseSmoothStep
-				this.setTransparency( DEMath.smoothStep( this.pElapsed, 0.0, this.pTimeFadeIn ) )
+		if pElapsed < pTimeFadeIn
+			if pUseSmoothStep
+				setTransparency(DEMath.smoothStep(pElapsed, 0.0, pTimeFadeIn))
 				
 			else
-				this.setTransparency( DEMath.linearStep( this.pElapsed, 0.0, this.pTimeFadeIn ) )
+				setTransparency(DEMath.linearStep(pElapsed, 0.0, pTimeFadeIn))
 			end
 			
-		elif this.pElapsed < this.pThreshold1
-			this.setTransparency( 1.0 )
+		elif pElapsed < pThreshold1
+			setTransparency(1.0)
 			
-		elif this.pElapsed < this.pThreshold2
-			if this.pUseSmoothStep
-				this.setTransparency( DEMath.smoothStep( \
-					this.pElapsed, this.pThreshold1, this.pThreshold2, 1.0, 0.0 ) )
+		elif pElapsed < pThreshold2
+			if pUseSmoothStep
+				setTransparency(DEMath.smoothStep(pElapsed, pThreshold1, pThreshold2, 1.0, 0.0))
 				
 			else
-				this.setTransparency( DEMath.linearStep( \
-					this.pElapsed, this.pThreshold1, this.pThreshold2, 1.0, 0.0 ) )
+				setTransparency(DEMath.linearStep(pElapsed, pThreshold1, pThreshold2, 1.0, 0.0))
 			end
 			
 		else
-			this.stopFading()
+			stopFading()
 		end
 	end
 	
 	/** \brief Update thresholds. */
 	protected func void updateThresholds()
-		this.pThreshold1 = this.pTimeFadeIn + this.pTimeStay
-		this.pThreshold2 = this.pThreshold1 + this.pTimeFadeOut
+		pThreshold1 = pTimeFadeIn + pTimeStay
+		pThreshold2 = pThreshold1 + pTimeFadeOut
+	end
+	
+	
+	
+	/**
+	 * \brief Widget at coordinates or \em null if not found.
+	 * 
+	 * Returns null to prevent widget from hovering. Keep this in mind if you try to call
+	 * this method. It might not work. If you need original getWidgetAt behavior from
+	 * super class use realGetWidgetAt().
+	 */
+	public func Widget getWidgetAt(Point position)
+		return null
+	end
+	
+	/**
+	 * \brief Super class getWidgetAt without overwritten behavior.
+	 * \version 1.12
+	 */
+	public func Widget realGetWidgetAt(Point position)
+		return super.getWidgetAt(position)
 	end
 end

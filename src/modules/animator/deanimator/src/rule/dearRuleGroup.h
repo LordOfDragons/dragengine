@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleGroup( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleGroup &rule,
-		const deAnimator &animator, const decIntList &controllerMapping );
+	dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleGroup();
@@ -97,7 +97,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCreateRules( int firstLink, const deAnimator &animator, const decIntList &controllerMapping );
+	void pCreateRules( int firstLink, const decIntList &controllerMapping );
 };
 
 #endif

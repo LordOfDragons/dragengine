@@ -42,12 +42,19 @@
  * point located reference-offset from the tail bone ( this imaginary point would be
  * the finger tip ). There are no additional controllers in this rule.
  */
-class deAnimatorRuleInverseKinematic : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleInverseKinematic : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleInverseKinematic> Ref;
+	
+	
+	
 private:
 	decVector pGoalPosition;
 	decQuaternion pGoalOrientation;
 	decVector pLocalPosition;
 	decQuaternion pLocalOrientation;
+	bool pAdjustPosition;
 	bool pAdjustOrientation;
 	
 	bool pUseSolverBone;
@@ -111,11 +118,23 @@ public:
 	/** \brief Set local orientation. */
 	void SetLocalOrientation( const decQuaternion &orientation );
 	
+	/**
+	 * \brief Adjust position.
+	 * \version 1.6
+	 */
+	inline bool GetAdjustPosition() const{ return pAdjustPosition; }
+	
+	/**
+	 * \brief Set if the position is adjusted.
+	 * \version 1.6
+	 */
+	void SetAdjustPosition( bool adjust );
+	
 	/** \brief Adjust orientation. */
 	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
 	
 	/** \brief Set if the orientation is adjusted. */
-	void SetAdjustOrientation( bool adjustOrientation );
+	void SetAdjustOrientation( bool adjust );
 	
 	
 	

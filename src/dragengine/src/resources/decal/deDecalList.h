@@ -34,7 +34,13 @@ class deDecal;
  * Stores a list of decals. This class is used to collect decals from collision
  * test into a list for later processing.
  */
-class deDecalList : public deObject{
+class DE_DLL_EXPORT deDecalList : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deDecalList> Ref;
+	
+	
+	
 private:
 	deDecal **pDecals;
 	int pDecalCount;

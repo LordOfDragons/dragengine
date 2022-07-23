@@ -22,12 +22,9 @@
 #ifndef _MEUNDODATAOBJECT_H_
 #define _MEUNDODATAOBJECT_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
+#include "../../../world/object/meObject.h"
+
 #include <dragengine/common/math/decMath.h>
-
-class meObject;
-
 
 
 /**
@@ -39,12 +36,18 @@ class meObject;
  * a pointer which will not be freed. By default the object is not owned.
  */
 class meUndoDataObject : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<meUndoDataObject> Ref;
+	
+	
+	
 private:
-	deObjectReference pObject;
+	meObject::Ref pObject;
 	decDVector pOldPosition;
 	decVector pOldOrientation;
 	decVector pOldSize;
-	deObjectReference pAttachedTo;
+	meObject::Ref pAttachedTo;
 	
 	
 	
@@ -65,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object pointer. */
-	inline meObject *GetObject() const{ return ( meObject* )( deObject* )pObject; }
+	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Position before redo action. */
 	inline const decDVector &GetOldPosition() const{ return pOldPosition; }
@@ -77,12 +80,11 @@ public:
 	inline const decVector &GetOldSize() const{ return pOldSize; }
 	
 	/** \brief Attached to before redo action. */
-	inline meObject *GetAttachedTo() const{ return ( meObject* )( deObject* )pAttachedTo; }
+	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set attached to before redo action. */
 	void SetAttachedTo( meObject *object );
 	/*@}*/
 };
 
-// end of include only once
 #endif

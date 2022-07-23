@@ -28,7 +28,7 @@
 /**
  * \brief Synthesizer controller target.
  */
-class deSynthesizerControllerTarget{
+class DE_DLL_EXPORT deSynthesizerControllerTarget{
 private:
 	decIntList pLinks;
 	

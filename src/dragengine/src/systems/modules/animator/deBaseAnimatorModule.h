@@ -38,7 +38,7 @@ class deComponent;
 /**
  * \brief Base animator module providing support for producing animations.
  */
-class deBaseAnimatorModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseAnimatorModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

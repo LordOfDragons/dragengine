@@ -1,0 +1,614 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui.Events
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding support to control desktop by player.
+ * \version 1.7
+ * 
+ * The behavior allows player (or other actors) to move the mouse pointer on a
+ * ECBehaviorRenderableDesktop by looking or pointing at the desired position. Also the
+ * player can simulate a left or right mouse click by using an input binding defined
+ * by the actor himself. This kind of input is typically used for VR games but can be
+ * also used for non VR games like first person shooters.
+ * 
+ * The behavior defines three corner points of a virtual rectangular plane. The player
+ * looking or pointing direction is intersected with this virtual plane. The relative
+ * position of this hit point is mapped to the Desktop widget. The three corners of the
+ * virtual plane are the lower left, lower right and upper left corner.
+ * 
+ * Optionally a bone name can be specified. If the bone name is not empty the virtual
+ * plane corners are relative to the bone. This allows to create desktop input zones
+ * which can be displaced.
+ * 
+ * The behavior can be optionally disabled to allow the input to be available to the
+ * player only if certain conditions are fulfilled.
+ * 
+ * The actor is responsible to move the mouse pointer. This behavior provides convenience
+ * methods to do the calculation and updating of the mouse pointer.
+ * 
+ * A typical usage of this behavior looks like this:
+ * 
+ * \code{.ds}
+ * class MyPlayerAction extends BAAFirstPersonVR
+ *    public func new()
+ *    end
+ *    
+ *    public func void playerThink(float elapsed)
+ *       super.think(elapsed)
+ *       
+ *       // Check if right hand controller is pointing at an element
+ *       if vrRightHandPointAt.hasVRHandPointAtElement()
+ *          
+ *          // Store the hit element and hit point in world space. Typically you want
+ *          // to test them against mulitple supported interactions.
+ *          var BehaviorElement element = vrRightHandPointAt.getPointAtBehaviorElement()
+ *          var DVector hitPoint = vrRightHandPointAt.getPointAtHitPoint()
+ *          
+ *          // Move mouse on the desktop controller if present in the pointed at element
+ *          var ECBehaviorControlDesktop.Instance controlDesktop = ECBehaviorControlDesktop.getInstanceIn(element)
+ *          if controlDesktop != null
+ *             // The call moveMouse() converts the hit point in world space to desktop
+ *             // coordinates. If the world position is outside the desktop area nothing
+ *             // is done and false is returned. Otherwise the mouse position is updated
+ *             // and true is returned. In this example we stop here if we updated the
+ *             // desktop mouse position in case more interactions are check below
+ *             if controlDesktop.moveMouse(hitPoint)
+ *                return
+ *             end
+ *          end
+ *          
+ *          // Here you could check for other supported interactions
+ *          
+ *       end
+ *       
+ *       // The same could be done for vrLeftHandPointAt too
+ *    end
+ * end
+ * \endcode
+ * 
+ * The same example can be done using ECBehaviorLookAt instead of ECBehaviorVRHandPointAt.
+ * 
+ * This behavior can be used multiple times for example to control different renderable
+ * desktops. Element class properties have the prefix "controlDesktop{(id)}.".
+ * 
+ * This behavior requires ECBehaviorRenderableDesktop to be present.
+ * 
+ * This behavior require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorControlDesktop extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorControlDesktop pECBehavior
+		private var ECBehaviorRenderableDesktop.Instance pRenderableDesktop
+		private var Vector pLowerLeft
+		private var Vector pLowerRight
+		private var Vector pUpperLeft
+		private var String pBone
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorControlDesktop ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			pRenderableDesktop = ecbehavior.getRenderableDesktop().instance(element)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			pRenderableDesktop = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			pLowerLeft = pECBehavior.getLowerLeft().getVector(stub, codec)
+			pLowerRight = pECBehavior.getLowerRight().getVector(stub, codec)
+			pUpperLeft = pECBehavior.getUpperLeft().getVector(stub, codec)
+			pBone = pECBehavior.getBone().getValue(stub)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorControlDesktop getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Renderable desktop behavior instance. */
+		public func ECBehaviorRenderableDesktop.Instance getRenderableDesktop()
+			return pRenderableDesktop
+		end
+		
+		/** \brief Virtual plane lower left position. */
+		public func Vector getLowerLeft()
+			return pLowerLeft
+		end
+		
+		/** \brief Virtual plane lower right position. */
+		public func Vector getLowerRight()
+			return pLowerRight
+		end
+		
+		/** \brief Virtual plane upper left position. */
+		public func Vector getUpperLeft()
+			return pUpperLeft
+		end
+		
+		/** \brief Bone name or empty string if not set. */
+		public func String getBone()
+			return pBone
+		end
+		
+		/** \brief Virtual plane matrix in world space. */
+		public func DMatrix getWorldMatrix()
+			var DMatrix matrix = getElement().getElementMatrix()
+			if not pBone.empty()
+				matrix = pRenderableDesktop.getDynamicSkin().getComponent() \
+					.getComponent().getBoneMatrix(pBone).toDMatrix() * matrix
+			end
+			return matrix
+		end
+		
+		/** \brief Virtual plane lower left position in world space. */
+		public func DVector getWorldLowerLeft()
+			return getWorldMatrix() * DVector.new(pLowerLeft)
+		end
+		
+		/** \brief Virtual plane lower right position in world space. */
+		public func DVector getWorldLowerRight()
+			return getWorldMatrix() * DVector.new(pLowerRight)
+		end
+		
+		/** \brief Virtual plane upper left position in world space. */
+		public func DVector getWorldUpperLeft()
+			return getWorldMatrix() * DVector.new(pUpperLeft)
+		end
+		
+		
+		
+		/**
+		 * \brief Calculate virtual plane coordinates for world position or null if outside.
+		 * 
+		 * If the world position is not on the virtual plane the position is projected down
+		 * to the virtual plane along the virtual plane normal.
+		 * 
+		 * The virtual plane coordinates map the lower left corner to (0,0), the lower right
+		 * corner to (1,0) and the upper left corner to (0,1).
+		 */
+		public func Vector2 planePosition(DVector worldPosition)
+			var Vector2 position = planePositionEverywhere(worldPosition)
+			
+			/*
+			// this code would reject points behind the screen
+			var DVector axisZ = (axisY.normalize() % axisX.normalize()).normalize()
+			if localPosition * axisZ < -0.001
+				return null
+			end
+			*/
+			
+			if isInsidePlane(position)
+				return position
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Determines if virtual plane coordinates are inside virtual plane.
+		 * 
+		 * Typically used with position returned by planePositionEverywhere(). The position
+		 * returned by planePosition() is guaranteed to be inside the virtual plane.
+		 * 
+		 * Returns true if position is inside the inclusive range from (0,0) to (1,1).
+		 */
+		public func bool isInsidePlane(Vector2 position)
+			return position >= Vector2.new() and position <= Vector2.new(1, 1)
+		end
+		
+		/**
+		 * \brief Calculate virtual plane coordinates for world position.
+		 * 
+		 * Same as planePosition() but always returns also plane positions outside the virtual
+		 * plane. This is useful if the player simulated a mouse click event but not yet a
+		 * mouse released event. Tracking the virtual plane position outside the virtual plane
+		 * allows then to provide a reasonable mouse position until the mouse release event
+		 * is simulated
+		 */
+		public func Vector2 planePositionEverywhere(DVector worldPosition)
+			var DMatrix matrix = getWorldMatrix()
+			var DVector lowerLeft = matrix * DVector.new(pLowerLeft)
+			var DVector lowerRight = matrix * DVector.new(pLowerRight)
+			var DVector upperLeft = matrix * DVector.new(pUpperLeft)
+			var DVector localPosition = worldPosition - lowerLeft
+			
+			var DVector axisX = lowerRight - lowerLeft
+			var DVector axisY = upperLeft - lowerLeft
+			return Vector2.new(\
+				localPosition * (axisX / axisX.getLengthSquared()), \
+				localPosition * (axisY / axisY.getLengthSquared()))
+		end
+		
+		/**
+		 * \brief Calculate virtual plane coordinates for world ray intersection with plan.
+		 * \version 1.9
+		 * 
+		 * Calculates the intersection point of the ray with the plane. Returns position
+		 * similar to planePositionEverywhere without clamping.
+		 */
+		public func Vector2 planePositionRay(DVector origin, DVector direction)
+			var DMatrix matrix = getWorldMatrix()
+			
+			var DVector lowerLeft = matrix * DVector.new(pLowerLeft)
+			var DVector lowerRight = matrix * DVector.new(pLowerRight)
+			var DVector upperLeft = matrix * DVector.new(pUpperLeft)
+			
+			var DVector axisX = lowerRight - lowerLeft
+			var DVector axisY = upperLeft - lowerLeft
+			
+			var DVector axisZ = (axisY.normalize() % axisX.normalize()).normalize()
+			var float denom = axisZ * direction
+			if DEMath.fabs(denom) < 0.0001
+				return planePositionEverywhere(origin)
+			end
+			
+			var float numer = axisZ * (origin - lowerLeft)
+			var float distance = -(numer / denom)
+			
+			var DVector localPosition = origin + direction * distance - lowerLeft
+			
+			return Vector2.new(\
+				localPosition * (axisX / axisX.getLengthSquared()), \
+				localPosition * (axisY / axisY.getLengthSquared()))
+		end
+		
+		/**
+		 * \brief Calculate desktop position from virtual plane coordinates.
+		 * 
+		 * Virtual plane Y axis runs from bottom (0) to top(1). Desktop Y axis runs from
+		 * top (0) to bottom (height-1).
+		 * 
+		 * Returned position is clamped to desktop size.
+		 */
+		public func Point planeToDesktop(Vector2 position)
+			var Point size = pRenderableDesktop.getDesktop().getSize()
+			return Vector2.new(position.getX() * size.getX(), (1.0 - position.getY()) * size.getY()) \
+				.round().smallest(size - Point.new(1, 1)).largest(Point.new())
+		end
+		
+		/**
+		 * \brief Calculate desktop position for world position or null if outside.
+		 * 
+		 * Convenience method for calling planePosition() then planeToDesktop() if
+		 * virtual plane position is not null.
+		 */
+		public func Point desktopPoint(DVector worldPosition)
+			var Vector2 position = planePosition(worldPosition)
+			if position == null
+				return null
+			end
+			return planeToDesktop(position)
+		end
+		
+		/**
+		 * \brief Calculate desktop position for world position.
+		 * 
+		 * Same as desktopPoint() but returns desktop position also if the world position
+		 * is outside the virtual plane. The returned position is clamped to the desktop size.
+		 */
+		public func Point desktopPointEverywhere(DVector worldPosition)
+			return planeToDesktop(planePositionEverywhere(worldPosition))
+		end
+		
+		/**
+		 * \brief Calculate desktop position for world ray intersection.
+		 * \version 1.9
+		 * 
+		 * Same as desktopPoint() but returns desktop position also if the world position
+		 * is outside the virtual plane. The returned position is clamped to the desktop size.
+		 */
+		public func Point desktopPointRay(DVector origin, DVector direction)
+			return planeToDesktop(planePositionRay(origin, direction))
+		end
+		
+		/** \brief Move desktop mouse to new position. */
+		public func void moveMouse(Point position)
+			pRenderableDesktop.getDesktop().warpMousePointer(position)
+		end
+		
+		/**
+		 * \brief Move mouse position if world position is inside virtual plane.
+		 * 
+		 * Convenience method for calling desktopPoint() then moveMouse() if desktop
+		 * point is not null.
+		 * 
+		 * Returns true if the world position is inside the virtual plane.
+		 */
+		public func bool moveMouse(DVector worldPosition)
+			var Point point = desktopPoint(worldPosition)
+			if point == null
+				return false
+			end
+			moveMouse(point)
+			return true
+		end
+		
+		/**
+		 * \brief Move mouse position.
+		 * 
+		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
+		 */
+		public func void moveMouseEverywhere(DVector worldPosition)
+			moveMouse(desktopPointEverywhere(worldPosition))
+		end
+		
+		/**
+		 * \brief Move mouse position.
+		 * \version 1.9
+		 * 
+		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
+		 */
+		public func void moveMouseRay(DVector origin, DVector direction)
+			moveMouse(desktopPointRay(origin, direction))
+		end
+		
+		/**
+		 * \brief Simulate mouse button click on desktop at current desktop mouse location.
+		 * 
+		 * Sends mouse pressed event immediately followed by a mouse release event.
+		 * 
+		 * \param button Button to click. Value from InputEventMouseButton.
+		 */
+		public func void mouseClick(int button)
+			var Desktop desktop = pRenderableDesktop.getDesktop()
+			
+			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMousePressed, \
+				button, InputEventModifier.none, -1))
+			
+			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMouseReleased, \
+				button, InputEventModifier.none, -1))
+		end
+		
+		/**
+		 * \brief Simulate left mouse button click on desktop at current desktop mouse location.
+		 * 
+		 * Sends mouse pressed event immediately followed by a mouse release event.
+		 */
+		public func void leftMouseClick()
+			mouseClick(InputEventMouseButton.left)
+		end
+		
+		/**
+		 * \brief Simulate mouse button press on desktop at current desktop mouse location.
+		 * \param button Button to press. Value from InputEventMouseButton.
+		 */
+		public func void mousePress(int button)
+			var Desktop desktop = pRenderableDesktop.getDesktop()
+			
+			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMousePressed, \
+				button, InputEventModifier.none, -1))
+		end
+		
+		/**
+		 * \brief Simulate left mouse button press on desktop at current desktop mouse location.
+		 */
+		public func void leftMousePress()
+			mousePress(InputEventMouseButton.left)
+		end
+		
+		/**
+		 * \brief Simulate mouse button release on desktop at current desktop mouse location.
+		 * \param button Button to release. Value from InputEventMouseButton.
+		 */
+		public func void mouseRelease(int button)
+			var Desktop desktop = pRenderableDesktop.getDesktop()
+			
+			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMouseReleased, \
+				button, InputEventModifier.none, -1))
+		end
+		
+		/**
+		 * \brief Simulate left mouse button release on desktop at current desktop mouse location.
+		 */
+		public func void leftMouseRelease()
+			mouseRelease(InputEventMouseButton.left)
+		end
+	end
+	
+	
+	
+	private var ECBehaviorRenderableDesktop pRenderableDesktop
+	private var ECPVector pLowerLeft
+	private var ECPVector pLowerRight
+	private var ECPVector pUpperLeft
+	private var ECPString pBone
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 */
+	public func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop) \
+	this(eclass, renderableDesktop, "")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop, String id) \
+	this(eclass, renderableDesktop, id, id.empty() if "controlDesktop." else "controlDesktop(" + id + ").")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop, \
+	String id, String prefix) super(eclass, id)
+		if renderableDesktop == null
+			throw ENullPointer.new("renderableDesktop")
+		end
+		
+		pRenderableDesktop = renderableDesktop
+		
+		pLowerLeft = ECPVector.new(prefix + "lowerLeft", Vector.new(-0.5, -0.5, 0))
+		eclass.addProperty(pLowerLeft)
+		
+		pLowerRight = ECPVector.new(prefix + "lowerRight", Vector.new(0.5, -0.5, 0))
+		eclass.addProperty(pLowerRight)
+		
+		pUpperLeft = ECPVector.new(prefix + "upperLeft", Vector.new(-0.5, 0.5, 0))
+		eclass.addProperty(pUpperLeft)
+		
+		pBone = ECPString.new(prefix + "bone", "")
+		eclass.addProperty(pBone)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pRenderableDesktop = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Renderable desktop behavior. */
+	public func ECBehaviorRenderableDesktop getRenderableDesktop()
+		return pRenderableDesktop
+	end
+	
+	/** \brief Virtual plane lower left position. */
+	public func ECPVector getLowerLeft()
+		return pLowerLeft
+	end
+	
+	/** \brief Virtual plane lower right position. */
+	public func ECPVector getLowerRight()
+		return pLowerRight
+	end
+	
+	/** \brief Virtual plane upper left position. */
+	public func ECPVector getUpperLeft()
+		return pUpperLeft
+	end
+	
+	/** \brief Bone name or empty string to not use. */
+	public func ECPString getBone()
+		return pBone
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorControlDesktop getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorControlDesktop each
+			return true
+		end) cast ECBehaviorControlDesktop
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorControlDesktop with specific identifier.
+	 */
+	static public func ECBehaviorControlDesktop getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorControlDesktop each
+			return each.getID().equals(id)
+		end) cast ECBehaviorControlDesktop
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorControlDesktop behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorControlDesktop each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorControlDesktop.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorControlDesktop.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorControlDesktop.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

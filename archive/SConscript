@@ -24,6 +24,8 @@ def normalizePath(path):
 	match = reWindowsDrive.match(path)
 	if match:
 		path = path[match.end():]
+	elif path[0] == '/':
+		path = path[1:]  # no root path in archives
 	
 	return path
 
@@ -72,6 +74,8 @@ for target in parent_targets.values():
 		filesEngineDev.update(target['archive-engine-develop'])
 	if 'archive-launcher' in target:
 		filesEngine.update(target['archive-launcher'])
+	if 'archive-launcher-develop' in target:
+		filesEngineDev.update(target['archive-launcher-develop'])
 	if 'archive-igde' in target:
 		filesIGDE.update(target['archive-igde'])
 	if 'archive-igde-develop' in target:

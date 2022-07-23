@@ -1,0 +1,381 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Popup menu with MenuItem subclass instances.
+ * \version 1.11
+ */
+class MenuPopup extends WindowPopup
+	private var MenuItemSubMenu pParentMenuItem
+	private var MenuBarItem pParentMenuBarItem
+	private var MenuItemSubMenu pOpenSubMenu
+	private var MenuPopupAutoCloseSubMenu pAutoCloseSubMenu
+	private var bool pCloseButtonReleaseOutside
+	
+	
+	
+	/** \brief Create popup menu. */
+	public func new()
+		setDesignerSelector("MenuPopup")
+	end
+	
+	/**
+	 * \brief Create popup menu calling block to add content.
+	 * 
+	 * Block receives MenuPopup as argument. Block call is wrapped inside runWhileBlockingLayout()
+	 * for efficiency. doLayout() will be called after leaving the block.
+	 */
+	public func new(Block blockAddContent) this()
+		blockAddContent.run(this)
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		setOpenSubMenu(null)
+		pParentMenuItem = null
+		pParentMenuBarItem = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Add widget. */
+	public func void addWidget(Widget widget)
+		super.addWidget(widget)
+		
+		if getVisible()
+			fitToContent()
+		end
+	end
+	
+	/** \brief Add widget. */
+	public func void addWidget(Widget widget, Object settings)
+		super.addWidget(widget, settings)
+		
+		if getVisible()
+			fitToContent()
+		end
+	end
+	
+	
+	
+	/** \brief Fit to content. Modified to update show icon count before fitting. */
+	public func void fitToContent()
+		updateShowIconCount()
+		super.fitToContent()
+	end
+	
+	/** \brief Capture mouse. */
+	public func void captureMouse()
+		// capture mouse only if this is the top level popup menu
+		if pParentMenuItem == null
+			super.captureMouse()
+		end
+	end
+	
+	/** \brief Release mouse capture. */
+	public func void releaseMouse()
+		// capture mouse only if this is the top level popup menu
+		if pParentMenuItem == null
+			super.releaseMouse()
+		end
+	end
+	
+	
+	
+	/** \brief Update menu items show icon count. */
+	protected func void updateShowIconCount()
+		var int showLeftIconCount = injectWidget(0, block int count, Widget widget
+			if widget castable MenuItem
+				return DEMath.max(count, (widget cast MenuItem).getLeftIconCount())
+			end
+			return count
+		end) cast int
+		
+		var int showRightIconCount = injectWidget(0, block int count, Widget widget
+			if widget castable MenuItem
+				return DEMath.max(count, (widget cast MenuItem).getRightIconCount())
+			end
+			return count
+		end) cast int
+		
+		runWhileBlockingLayout(block
+			forEachWidget(block Widget widget
+				if widget castable MenuItem
+					var MenuItem menuItem = widget cast MenuItem
+					menuItem.setShowLeftIconCount(showLeftIconCount)
+					menuItem.setShowRightIconCount(showRightIconCount)
+				end
+			end)
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/** \brief Parent menu item or null. */
+	public func MenuItemSubMenu getParentMenuItem()
+		return pParentMenuItem
+	end
+	
+	/** \brief Set parent menu item or null. */
+	public func void setParentMenuItem(MenuItemSubMenu menuItem)
+		pParentMenuItem = menuItem
+	end
+	
+	/** \brief Parent menu bar item or null. */
+	public func MenuBarItem getParentMenuBarItem()
+		return pParentMenuBarItem
+	end
+	
+	/** \brief Set parent menu bar item or null. */
+	public func void setParentMenuBarItem(MenuBarItem menuBarItem)
+		pParentMenuBarItem = menuBarItem
+	end
+	
+	/** \brief Open sub menu item or null. */
+	public func MenuItemSubMenu getOpenSubMenu()
+		return pOpenSubMenu
+	end
+	
+	/**
+	 * \brief Set open sub menu or null.
+	 * 
+	 * If null hides sub menu. If not null shows submenu.
+	 */
+	public func void setOpenSubMenu(MenuItemSubMenu subMenu)
+		if subMenu == pOpenSubMenu
+			return
+		end
+		
+		if pOpenSubMenu != null
+			if pAutoCloseSubMenu != null
+				pAutoCloseSubMenu.giveUp()
+				pAutoCloseSubMenu = null
+			end
+			
+			pOpenSubMenu.hideSubMenu()
+		end
+		
+		pOpenSubMenu = subMenu
+		
+		if subMenu != null
+			subMenu.showSubMenu()
+			
+			if pParentMenuItem == null and pAutoCloseSubMenu == null
+				pAutoCloseSubMenu = MenuPopupAutoCloseSubMenu.new(this, 0.5)
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Lowest level open sub menu or null. */
+	public func MenuPopup getLowestOpenSubMenu()
+		if pOpenSubMenu == null
+			return null
+		end
+		
+		var MenuPopup subMenu = pOpenSubMenu.getSubMenu()
+		if subMenu == null
+			return null
+		end
+		
+		subMenu = subMenu.getLowestOpenSubMenu()
+		if subMenu != null
+			return subMenu
+			
+		else
+			return pOpenSubMenu.getSubMenu()
+		end
+	end
+	
+	/** \brief Set hover widget in parent menus to open sub menu. */
+	public func void parentMenusSetHoverOpenSubMenu()
+		if pOpenSubMenu != null
+			setHoverWidget(pOpenSubMenu, MouseEvent.new(pOpenSubMenu,\
+				MouseEvent.idMouseMoved, 0, 0, Point.new(), -1))
+		end
+		
+		if pParentMenuItem != null
+			var MenuPopup menu = pParentMenuItem.getParentMenuPopup()
+			if menu != null
+				menu.parentMenusSetHoverOpenSubMenu()
+			end
+		end
+	end
+	
+	/** \brief Clear hover widget on open sub menus. */
+	public func void openSubMenusClearHover()
+		if pOpenSubMenu != null
+			var MenuPopup menu = pOpenSubMenu.getSubMenu()
+			if menu != null
+				menu.clearHoverWidget()
+				menu.openSubMenusClearHover()
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Popup inside. */
+	public func void popupInside(Point position, RectArea boundary)
+		pCloseButtonReleaseOutside = false
+		super.popupInside(position, boundary)
+	end
+	
+	/**
+	 * \brief Pop down window.
+	 * 
+	 * Release mouse and hide window. If close on popdown is true close() is called too.
+	 */
+	public func void popdown()
+		if not getVisible()
+			// prevent MenuBar.setOpenSubMenu(null) to cause a stack overflow.
+			// required since MenuBar.setOpenSubMenu() calls popdown()
+			return
+		end
+		
+		setOpenSubMenu(null)
+		
+		super.popdown()
+		
+		if pParentMenuBarItem != null
+			var MenuBar bar = pParentMenuBarItem.getParentMenuBar()
+			if bar != null
+				bar.setOpenSubMenu(null)
+			end
+		end
+	end
+	
+	/** \brief Send event to the widget. */
+	public func void sendEvent(Event event)
+		if event.getSource() != this
+			return // child widget did not handle event
+		end
+		
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			if MouseEvent.isMouseEvent(event.getIdentifier())
+				if sendEvent(desktop, event cast MouseEvent)
+					return
+				end
+			end
+		end
+		
+		super.sendEvent(event)
+	end
+	
+	/**
+	 * \brief Handle mouse event.
+	 * \returns true to stop handle event
+	 */
+	protected func bool sendEvent(Desktop desktop, MouseEvent event)
+		// check if mouse pointer is hovering above a sub menu
+		var Point mouseLocation = desktop.getMouseLocation()
+		var int i, count = desktop.getWidgetCount()
+		var int ident = event.getIdentifier()
+		var Point localPosition
+		var Window window
+		var Widget widget
+		
+		for i = count - 1 downto 0
+			window = desktop.getWidget(i) cast Window
+			if not window.getVisible() or not window castable MenuPopup
+				continue
+			end
+			
+			localPosition = mouseLocation - window.getPosition()
+			if not window.isPointInside(localPosition)
+				continue
+			end
+			
+			pCloseButtonReleaseOutside = true
+			
+			if not window.getEnabled() or window == this
+				return false
+			end
+			
+			if ident == MouseEvent.idMouseWheeled
+				window.sendEvent(MouseEvent.new(window, ident,\
+					event.getButton(), event.getModifiers(),\
+					event.getPosition(), event.getSystem(), event.getDevice()))
+				
+			else
+				window.sendEvent(MouseEvent.new(window, ident, \
+					event.getButton(), event.getModifiers(), \
+					localPosition, event.getSystem(), event.getDevice()))
+			end
+			return true
+		end
+		
+		select ident
+		case MouseEvent.idMouseMoved
+			openSubMenusClearHover()
+			
+		case MouseEvent.idMouseReleased
+			if pCloseButtonReleaseOutside
+				popdown()
+				return true
+			end
+		end
+		
+		// check if mouse pointer is hovering above menu bar item in parent menu bar
+		if pParentMenuBarItem != null
+			var MenuBar bar = pParentMenuBarItem.getParentMenuBar()
+			if bar != null
+				var Point localPosition = mouseLocation - bar.getDesktopPosition()
+				
+				var MenuBarItem item = bar.findWidget(block Widget each
+					return each.isPointInside(localPosition - each.getRelativePosition(bar))\
+						and each castable MenuBarItem
+				end) cast MenuBarItem
+				
+				select ident
+				case MouseEvent.idMouseMoved
+					if item != null
+						// open sub menu. after this call we are popped down so stop processing event
+						bar.setOpenSubMenu(item)
+						return true
+					end
+					
+				case MouseEvent.idMousePressed
+					if item != null
+						// close sub menu. after this call we are popped down so stop processing event
+						bar.setOpenSubMenu(null)
+						return true
+					end
+				end
+			end
+		end
+		
+		// continue processing event according to super class logic
+		return false
+	end
+end

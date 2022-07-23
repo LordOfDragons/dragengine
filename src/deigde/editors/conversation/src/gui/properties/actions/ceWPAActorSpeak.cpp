@@ -290,6 +290,17 @@ ceCAActorSpeak *ceWPAActorSpeak::GetAction() const{
 	}
 }
 
+void ceWPAActorSpeak::OnConversationPathChanged(){
+	ceConversation * const conversation = GetParentPanel().GetConversation();
+	
+	if( conversation ){
+		pEditPathSound->SetBasePath( conversation->GetDirectoryPath() );
+		
+	}else{
+		pEditPathSound->SetBasePath( "" );
+	}
+}
+
 void ceWPAActorSpeak::UpdateAction(){
 	const ceCAActorSpeak * const action = GetAction();
 	

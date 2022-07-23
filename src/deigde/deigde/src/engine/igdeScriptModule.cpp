@@ -51,6 +51,7 @@ pWindowMain( windowMain ){
 	SetAuthor( "Plüss Roland" );
 	SetVersion( "1.0" );
 	SetDirectoryName( "IGDEScript" );
+	SetPriority( 1000 );
 }
 igdeScriptModule::cModule::~cModule(){ }
 void igdeScriptModule::cModule::CreateModule(){
@@ -157,7 +158,7 @@ bool igdeScriptModule::OnResizeRenderWindow(){
 	return true;
 }
 
-bool igdeScriptModule::SendEvent( deInputEvent *event ){
+bool igdeScriptModule::SendEvent( deInputEvent* ){
 	return true;
 }
 

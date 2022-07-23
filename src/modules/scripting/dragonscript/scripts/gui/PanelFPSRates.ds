@@ -1,0 +1,206 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display FPS rates as reported by the game engine updated in regular intervals.
+ * 
+ * Display these rates if present:
+ * - Game engine (main thread, scripting)
+ * - Graphic module (render thread if present)
+ * - Audio module (audio thread if present)
+ * - Physics module (physics thread if present)
+ * - Network module (network thread if present)
+ * 
+ * Uses designer selectors:
+ * - "Panel.FPSRates": Entire panel
+ * - "Label.Panel.FPSRates.Label.{Module}": Label for module
+ * - "Label.Panel.FPSRates.Rate.{Module}": Rate for module
+ * 
+ * Where "{Module}" can be:
+ * - "Script": Scripting module (Engine itself)
+ * - "Graphic": Graphic module
+ * - "Audio": Audio module
+ * - "Physics": Physics module
+ * - "Network": Network module
+ */
+class PanelFPSRates extends Panel
+	/** \brief FPS Rate consisting of label and rate widget. */
+	protected class FPSRate
+		private var SysParamWrapper pModule
+		private var Label pLabel
+		private var Label pRate
+		private var String pDesignerPrefix
+		
+		
+		/** \brief Create FPS Rate widgets. */
+		public func new( SysParamWrapper module, String label, String designerPrefix )
+			this.pModule = module
+			this.pLabel = Label.new( label + ":" )
+			this.pRate = Label.new( "" )
+			this.pDesignerPrefix = designerPrefix
+		end
+		
+		
+		/** \brief Module wrapper. */
+		public func SysParamWrapper getModule()
+			return this.pModule
+		end
+		
+		/** \brief Label widget. */
+		public func Label getLabel()
+			return this.pLabel
+		end
+		
+		/** \brief Rate widget. */
+		public func Label getRate()
+			return this.pRate
+		end
+		
+		/** \brief Designer selector prefix. */
+		public func String getDesignerPrefix()
+			return this.pDesignerPrefix
+		end
+		
+		
+		/** \brief Update widgets. */
+		public func void update()
+			var int rate = this.pModule.getFPSRate()
+			
+			if rate > 0
+				this.pRate.setText( "" + rate )
+				
+			else
+				this.pRate.setText( "-" )
+			end
+		end
+		
+		/** \brief Update designer selectors. */
+		public func void updateDesignerSelectors( String baseSelector )
+			this.pLabel.setDesignerSelector( "Label." + baseSelector + this.pDesignerPrefix )
+			this.pRate.setDesignerSelector( "Label." + baseSelector + ".Rate" + this.pDesignerPrefix )
+		end
+	end
+	
+	
+	
+	/** \brief Array of FPSRate. */
+	private var Array pFPSRates
+	
+	
+	
+	/** \brief Create fps rates panel. */
+	public func new()
+		this.pFPSRates = Array.new()
+		
+		this.runWhileBlockingLayout( block
+			this.createContent()
+			this.setDesignerSelector( "Panel.FPSRates" )
+		end )
+		
+		this.startFrameUpdater()
+	end
+	
+	/** \brief Dispose. */
+	public func void dispose()
+		this.stopFrameUpdater()
+		this.pFPSRates = null
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Calls updateDesignerSelectors() on each FPSRate using getDesignerSelector() as base selector.
+	 */
+	public func void onDesignerSelectorChanged()
+		this.runWhileBlockingLayout( block
+			var String baseSelector = this.getDesignerSelector()
+			this.pFPSRates.forEach( block FPSRate each
+				each.updateDesignerSelectors( baseSelector )
+			end )
+		end )
+	end
+	
+	/**
+	 * \brief Frame update.
+	 * 
+	 * Calls update() on each FPSRate.
+	 */
+	public func void onFrameUpdate( float elapsed )
+		this.runWhileBlockingLayout( block
+			this.pFPSRates.forEach( block FPSRate each
+				each.update()
+			end )
+		end )
+		this.doLayout()
+	end
+	
+	
+	/** \brief Create content. */
+	protected func void createContent()
+		this.setLayout( FormLayout.new( true, 10, 0 ) )
+		this.addFPSRates()
+	end
+	
+	/**
+	 * \brief Add FPS rates.
+	 * 
+	 * Adds FPS rates for Script, Graphic, Audio, Physics, Network in this order.
+	 */
+	protected func void addFPSRates()
+		this.addFPSRate( FPSRate.new( ScrSysParamWrapper.new(), "Script", ".Script" ) )
+		this.addFPSRate( FPSRate.new( GraSysParamWrapper.new(), "Graphic", ".Graphic" ) )
+		this.addFPSRate( FPSRate.new( AudSysParamWrapper.new(), "Audio", ".Audio" ) )
+		this.addFPSRate( FPSRate.new( PhySysParamWrapper.new(), "Physics", ".Physics" ) )
+		this.addFPSRate( FPSRate.new( NetSysParamWrapper.new(), "Network", ".Network" ) )
+	end
+	
+	/** \brief Add FPS rate. */
+	protected func void addFPSRate( FPSRate rate )
+		if rate == null
+			throw ENullPointer.new( "rate" )
+		end
+		
+		this.pFPSRates.add( rate )
+		this.addFPSWidgets( rate )
+	end
+	
+	/** \brief Visit FPS rates with block receiving parameter FPSRate. */
+	protected func void forEachFPSRate( Block ablock )
+		this.pFPSRates.forEach( ablock )
+	end
+	
+	/** \brief Add FPS widgets to panel. */
+	protected func void addFPSWidgets( FPSRate rate )
+		this.addWidget( rate.getLabel() )
+		this.addWidget( rate.getRate() )
+	end
+end

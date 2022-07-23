@@ -7,6 +7,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat3 pMatrixEnvMap;
 	vec4 pQuadTCTransform;
 	vec4 pPosTransform;
+	vec2 pPosTransform2;
 	vec2 pBlendFactors; // x=multiply, y=add
 	float pEnvMapLodLevel;
 	int pLayerCount;

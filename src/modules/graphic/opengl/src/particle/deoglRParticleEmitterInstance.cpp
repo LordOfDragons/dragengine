@@ -41,7 +41,6 @@
 #include "../visitors/deoglFindBestEnvMap.h"
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -97,39 +96,6 @@ pWorldMarkedRemove( false ){
 	LEAK_CHECK_CREATE( renderThread, ParticleEmitterInstance );
 }
 
-class deoglRParticleEmitterInstanceDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vboShared;
-	GLuint vboLocal;
-	GLuint ibo;
-	deoglVAO *vao;
-	
-	deoglRParticleEmitterInstanceDeletion() :
-	vboShared( 0 ),
-	vboLocal( 0 ),
-	ibo( 0 ),
-	vao( NULL ){
-	}
-	
-	virtual ~deoglRParticleEmitterInstanceDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( vao ){
-			delete vao;
-		}
-		if( ibo ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &ibo ) );
-		}
-		if( vboLocal ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboLocal ) );
-		}
-		if( vboShared ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboShared ) );
-		}
-	}
-};
-
 deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	LEAK_CHECK_FREE( pRenderThread, ParticleEmitterInstance );
 	SetParentWorld( NULL );
@@ -143,25 +109,14 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	if( pRenderEnvMap ){
 		pRenderEnvMap->FreeReference();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRParticleEmitterInstanceDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRParticleEmitterInstanceDeletion;
-		delayedDeletion->ibo = pIBO;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vboLocal = pVBOLocal;
-		delayedDeletion->vboShared = pVBOShared;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pVAO ){
+		delete pVAO;
 	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pIBO );
+	dops.DeleteOpenGLBuffer( pVBOLocal );
+	dops.DeleteOpenGLBuffer( pVBOShared );
 }
 
 
@@ -212,7 +167,7 @@ void deoglRParticleEmitterInstance::SetOctreeNode( deoglWorldOctree *node ){
 void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 	if( pParentWorld ){
 		//if( pParticleEmitter->GetVisible() ){
-			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this, 8 );
+			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
 			
 		/*}else{
 			if( pOctreeNode ){
@@ -579,6 +534,8 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
 		
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		
+		pVAO->EnsureRTSVAO();
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );

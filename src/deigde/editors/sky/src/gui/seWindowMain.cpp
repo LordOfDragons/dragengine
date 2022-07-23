@@ -220,6 +220,8 @@ void seWindowMain::CreateNewSky(){
 }
 
 void seWindowMain::SaveSky( const char *filename ){
+	const decString basePath( pSky->GetDirectoryPath() );
+	
 	GetEditorModule().LogInfoFormat( "Saving sky %s", filename );
 	pLoadSaveSystem->SaveSky( pSky, filename );
 	
@@ -227,6 +229,11 @@ void seWindowMain::SaveSky( const char *filename ){
 	pSky->UpdateRelativeResources();
 	pSky->SetChanged( false );
 	pSky->SetSaved( true );
+	
+	if( pSky->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnSkyPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -372,6 +379,7 @@ public:
 		sky->SetFilePath( filename );
 		sky->SetChanged( false );
 		sky->SetSaved( true );
+		pWindow.GetWindowProperties().OnSkyPathChanged();
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };

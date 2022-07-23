@@ -67,6 +67,8 @@ private:
 	
 	igdeTextFieldReference pEditBreakingThreshold;
 	
+	bool pPreventUpdate;
+	
 	
 	
 public:

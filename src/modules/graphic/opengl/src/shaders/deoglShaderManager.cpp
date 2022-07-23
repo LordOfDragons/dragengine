@@ -24,6 +24,7 @@
 
 #include "deoglShaderManager.h"
 #include "deoglShaderProgram.h"
+#include "deoglShaderProgramUsage.h"
 #include "deoglShaderDefines.h"
 #include "deoglShaderSources.h"
 #include "deoglShaderCompiled.h"
@@ -286,12 +287,12 @@ void deoglShaderManager::LoadSources(){
 // Programs
 /////////////
 
-deoglShaderProgram *deoglShaderManager::GetProgramAt( int index ) const{
+const deoglShaderProgram &deoglShaderManager::GetProgramAt( int index ) const{
 	if( index < 0 || index >= pProgramCount ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pPrograms[ index ];
+	return *pPrograms[ index ];
 }
 /*
 bool deoglShaderManager::HasProgramWith( deoglShaderUnitProgram *fragment, deoglShaderUnitProgram *vertex,
@@ -405,32 +406,30 @@ bool deoglShaderManager::HasProgramWith( deoglShaderSources *sources, const deog
 	return false;
 }
 
-deoglShaderProgram *deoglShaderManager::GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ){
+deoglShaderProgramUsage deoglShaderManager::GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ){
 	if( ! sources ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeNullPointer, "sources" );
 	}
 	
 	int i;
-	
 	for( i=0; i<pProgramCount; i++ ){
 		if( sources == pPrograms[ i ]->GetSources() && defines.Equals( pPrograms[ i ]->GetDefines() ) ){
 			if( pPrograms[ i ]->GetUsageCount() < 0 ){
-				pRenderThread.GetLogger().LogWarnFormat( "ShaderManager.GetProgramWith(): Program '%s' has usage count %i!",
+				pRenderThread.GetLogger().LogWarnFormat( "ShaderManager.GetProgramWith(): Program '%s' has usage count %d!",
 					pPrograms[ i ]->GetSources()->GetName().GetString(), pPrograms[ i ]->GetUsageCount() );
 				
 				while( pPrograms[ i ]->GetUsageCount() < 0 ){
 					pPrograms[ i ]->AddUsage();
 				}
 			}
-			pPrograms[ i ]->AddUsage();
-			return pPrograms[ i ];
+			return deoglShaderProgramUsage( pPrograms[ i ] );
 		}
 	}
 	
 	deoglShaderProgram *program = NULL;
 	
 	try{
-		program = new deoglShaderProgram( sources, defines );
+		program = new deoglShaderProgram( pRenderThread, sources, defines );
 		
 		if( ! sources->GetPathGeometrySourceCode().IsEmpty() ){
 			program->SetGeometrySourceCode( GetUnitSourceCodeWithPath( sources->GetPathGeometrySourceCode().GetString() ) );
@@ -486,7 +485,7 @@ deoglShaderProgram *deoglShaderManager::GetProgramWith( deoglShaderSources *sour
 		}
 	}
 	
-	return program;
+	return deoglShaderProgramUsage::New( program );
 }
 
 void deoglShaderManager::AddProgram( deoglShaderProgram *program ){

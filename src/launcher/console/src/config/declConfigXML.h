@@ -22,7 +22,7 @@
 #ifndef _DECLCONFIGXML_H_
 #define _DECLCONFIGXML_H_
 
-#include "../declBaseXML.h"
+#include <delauncher/utils/delBaseXML.h>
 
 #include <dragengine/common/string/decString.h>
 
@@ -37,7 +37,7 @@ class decXmlElementTag;
 /**
  * @brief Load/Save Configuration XML.
  */
-class declConfigXML : public declBaseXML{
+class declConfigXML : public delBaseXML{
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/

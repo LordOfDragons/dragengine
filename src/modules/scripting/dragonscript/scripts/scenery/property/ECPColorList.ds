@@ -1,0 +1,175 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+
+/**
+ * \brief Color list element class property for use with XML loading.
+ * \version 1.5
+ * 
+ * Color list is stored as Array of Color. From XML the color list is read using an encoded
+ * string decoded using CodecPropertyString. The following example defines a list with
+ * three colors:
+ * 
+ * \code{.xml}
+ * <list name='propertyName'>
+ *    <list>
+ *       <color r='1' g='0' b='0'/>
+ *       <color r='0' g='1' b='0.5'/>
+ *       <color r='0.25' g='0.5' b='1'/>
+ *    </list>
+ * </list>
+ * \endcode
+ * 
+ * In stub properties the coding is of the form "r1,g1,b1 r2,g2,b2 ...". The following
+ * example defines the same three colors as above in sub property string form:
+ * 
+ * "1,0,0 0,1,0.5 0.25,0.5,1"
+ * 
+ * Optionally newline can be used instead of whitespace. This can be easier to write with
+ * long list of colors.
+ */
+class ECPColorList extends ElementClassProperty
+	/** \brief Coded used to decode color string. */
+	private var CodecPropertyString pCodec
+	
+	/** \brief Array of Color. */
+	private var Array pColorList
+	
+	
+	
+	/** \brief Create property. */
+	public func new(String name, CodecPropertyString codec) super(name)
+		pCodec = codec
+		pColorList = Array.new()
+	end
+	
+	/** \brief Create property with initial path. */
+	public func new(String name, CodecPropertyString codec, Array colors) super(name)
+		pCodec = codec
+		pColorList = colors
+	end
+	
+	
+	
+	/** \brief Coded used to decode color string. */
+	public func CodecPropertyString getCodec()
+		return pCodec
+	end
+	
+	/** \brief Colors as Array of Color. */
+	public func Array getColors()
+		return pColorList
+	end
+	
+	/** \brief Set colors as Array of Color. */
+	public func void setColors(Array colors)
+		pColorList = colors
+	end
+	
+	/** \brief Count of colors. */
+	public func int getColorCount()
+		return pColorList.getCount()
+	end
+	
+	/** \brief Color at index. */
+	public func Color getColorAt(int index)
+		return pColorList.getAt(index) cast Color
+	end
+	
+	/** \brief Random color or null if list is empty. */
+	public func Color randomColor()
+		if pColorList.getCount() > 0
+			return pColorList.random() cast Color
+			
+		else
+			return null
+		end
+	end
+	
+	/** \brief Add color. */
+	public func void addColor(Color color)
+		if color == null
+			throw ENullPointer.new("color")
+		end
+		pColorList.add(color)
+	end
+	
+	/** \brief Color list string. */
+	public func String getColorsString()
+		return pCodec.encodeStringList(pColorList.map(block Color each
+			return pCodec.encodeColor3(each)
+		end))
+	end
+	
+	/** \brief Set color list from color string. */
+	public func void setColorsFromString(String string)
+		pColorList = pCodec.decodeStringList(string).map(block String each
+			return pCodec.decodeColor3(each)
+		end)
+	end
+	
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	public func void setValue(Object value)
+		setColorsFromString(value cast String)
+	end
+	
+	
+	
+	/**
+	 * \brief Color list modified by stub property if present.
+	 * 
+	 * If named stub property is not present the stored color list is returned. If the named
+	 * stub property is present it is decoded using the stored decoder and the result returned.
+	 * 
+	 * Uses the stored property name as stub property name.
+	 */
+	public func Array getColors(StubWithProperties stub)
+		return getColors(stub, getName())
+	end
+	
+	/**
+	 * \brief Color list modified by stub property if present.
+	 * 
+	 * If named stub property is not present the stored color list is returned. If the named
+	 * stub property is present it is decoded using the stored decoder and the result returned.
+	 */
+	public func Array getColors(StubWithProperties stub, String name)
+		var String value = stub.getPropertyValueFor(name, null)
+		if value != null
+			return pCodec.decodeStringList(value).map(block String each
+				return pCodec.decodeColor3(each)
+			end)
+			
+		else
+			return pColorList
+		end
+	end
+end

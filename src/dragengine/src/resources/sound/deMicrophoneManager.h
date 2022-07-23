@@ -33,7 +33,7 @@ class deMicrophone;
  * \brief Scene Microphone Resource Manager.
  *
  */
-class deMicrophoneManager : public deResourceManager{
+class DE_DLL_EXPORT deMicrophoneManager : public deResourceManager{
 private:
 	deResourceList pMicrophones;
 	

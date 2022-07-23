@@ -159,6 +159,7 @@ private:
 	DEF_NATFUNC( nfIndexOfTextureNamed );
 	DEF_NATFUNC( nfIndexOfTextureClosedTo );
 	DEF_NATFUNC( nfGetTextureCount );
+	DEF_NATFUNC( nfGetTextureNameAt );
 	DEF_NATFUNC( nfGetTextureSkinAt );
 	DEF_NATFUNC( nfGetTextureTextureAt );
 	DEF_NATFUNC( nfSetTextureSkinAt );

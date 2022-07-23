@@ -25,12 +25,12 @@
 #include "../../foxtoolkit.h"
 
 class deglDialogGameProblems;
-class deglFileFormat;
+class delFileFormat;
 
 
 
 /**
- * @brief Game Problems Dialog File Formats Panel.
+ * Game Problems Dialog File Formats Panel.
  * Shows problems with the file formats used by the game.
  */
 class deglDGPPanelFileFormats : public FXVerticalFrame{
@@ -52,33 +52,31 @@ private:
 	FXIconList *pListFormats;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new dialog. */
+	/** Create dialog. */
 	deglDGPPanelFileFormats( deglDialogGameProblems *parentDialog, FXComposite *container );
-	/** Cleans up the dialog. */
+	
+	/** Clean up dialog. */
 	virtual ~deglDGPPanelFileFormats();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent dialog. */
+	/** Parent dialog. */
 	inline deglDialogGameProblems *GetParentDialog() const{ return pParentDialog; }
-	/** Determines if the system is working. */
+	
+	/** System is working. */
 	inline bool GetStatusWorking() const{ return pStatusWorking; }
 	
 	/** Update panel. */
 	void UpdatePanel();
+	
 	/** Rebuild file format list. */
 	void RebuildFormatList();
 	/*@}*/
-	
-	/** @name Events */
-	/*@{*/
-	/*@}*/
-	
-private:
 };
 
-// end of include only once
 #endif

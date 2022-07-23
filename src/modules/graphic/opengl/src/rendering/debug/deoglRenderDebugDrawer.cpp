@@ -78,17 +78,9 @@ deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread 
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderShapeXRay = NULL;
-	pShaderShapeSolid = NULL;
-	pShaderMeshXRay = NULL;
-	pShaderMeshSolid = NULL;
-	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
@@ -100,9 +92,6 @@ deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread 
 		
 		
 		
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
@@ -155,7 +144,7 @@ void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 	const double depthShift = -1.0f / ( double )( 1 << 21 ); // 24bits minus 3 bits
 	
 	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	// render debug drawers
 	const decDMatrix matrixCP( plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() )
@@ -203,18 +192,6 @@ void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderDebugDrawer::pCleanUp(){
-	if( pShaderMeshXRay ){
-		pShaderMeshXRay->RemoveUsage();
-	}
-	if( pShaderMeshSolid ){
-		pShaderMeshSolid->RemoveUsage();
-	}
-	if( pShaderShapeXRay ){
-		pShaderShapeXRay->RemoveUsage();
-	}
-	if( pShaderShapeSolid ){
-		pShaderShapeSolid->RemoveUsage();
-	}
 }
 
 

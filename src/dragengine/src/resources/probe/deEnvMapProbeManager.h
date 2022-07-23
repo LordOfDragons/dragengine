@@ -32,7 +32,7 @@ class deEnvMapProbe;
 /**
  * \brief Environment Map Probe Resourse Manager.
  */
-class deEnvMapProbeManager : public deResourceManager{
+class DE_DLL_EXPORT deEnvMapProbeManager : public deResourceManager{
 private:
 	deResourceList pEnvMapProbes;
 	

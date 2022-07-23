@@ -32,7 +32,7 @@ class decShape;
 /**
  * \brief Physics module component peer.
  */
-class deBasePhysicsComponent{
+class DE_DLL_EXPORT deBasePhysicsComponent{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

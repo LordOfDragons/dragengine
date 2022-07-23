@@ -76,5 +76,6 @@ class BorderFactories
 		this.add( "Line", LineBorderFactory.new() )
 		this.add( "CanvasCreator", CanvasCreatorBorderFactory.new() )
 		this.add( "Combined", CombinedBorderFactory.new() )
+		this.add( "TitledEtched", TitledEtchedBorderFactory.new() )
 	end
 end

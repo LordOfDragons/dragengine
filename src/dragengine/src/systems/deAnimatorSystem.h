@@ -41,7 +41,7 @@ class deAnimatorInstance;
  * for the engine. An animator module is able to carry out the actions
  * stored in an animator object.
  */
-class deAnimatorSystem : public deBaseSystem{
+class DE_DLL_EXPORT deAnimatorSystem : public deBaseSystem{
 private:
 	deBaseAnimatorModule *pActiveModule;
 	

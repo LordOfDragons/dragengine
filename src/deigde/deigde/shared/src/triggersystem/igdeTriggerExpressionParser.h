@@ -61,10 +61,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Determines if an exception is thrown on errors or if the parse continues as good as possible. */
+	/** \brief Throws exception on error otherwise returns partially parsed tree. */
 	inline bool GetExceptionOnErrors() const{ return pExceptionOnErrors; }
 	
-	/** \brief Sets if an exception is thrown on errors or if the parse continues as good as possible. */
+	/** \brief Set to throws exception on error otherwise returns partially parsed tree. */
 	void SetExceptionOnErrors( bool exceptionsOnErrors );
 	
 	/** \brief Create trigger expression from a string. */

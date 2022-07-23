@@ -24,7 +24,7 @@
  * \brief 4x4 Component Matrix double precision.
  * Same as the decDMatrix class but with double precision.
  */
-class decDMatrix{
+class DE_DLL_EXPORT decDMatrix{
 public:
 	/**
 	 * \name Cells
@@ -631,6 +631,9 @@ public:
 	/*@{*/
 	/** \brief Quick multiplies this matrix with another one. */
 	decDMatrix QuickMultiply( const decDMatrix &matrix ) const;
+	
+	/** \brief Quick multiplies this matrix rotation part with another one. */
+	decDMatrix QuickMultiplyRotation( const decDMatrix &matrix ) const;
 	
 	/** \brief Quick multiplies this matrix with a value k. */
 	decDMatrix QuickMultiply( double k ) const;

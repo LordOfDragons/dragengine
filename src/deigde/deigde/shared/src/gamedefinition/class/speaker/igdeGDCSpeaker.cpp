@@ -41,6 +41,7 @@ pPlaying( true ),
 pVolume( 1.0f ),
 pRange( 1.0f ),
 pRollOff( 1.0f ),
+pDistanceOffset( 0.0f ),
 pPlaySpeed( 1.0f ){
 }
 
@@ -54,6 +55,7 @@ pPlaying( speaker.pPlaying ),
 pVolume( speaker.pVolume ),
 pRange( speaker.pRange ),
 pRollOff( speaker.pRollOff ),
+pDistanceOffset( speaker.pDistanceOffset ),
 pPlaySpeed( speaker.pPlaySpeed )
 {
 	int i;
@@ -106,7 +108,11 @@ void igdeGDCSpeaker::SetRange( float range ){
 }
 
 void igdeGDCSpeaker::SetRollOff( float rollOff ){
-	pRollOff = decMath::clamp( rollOff, 0.0f, 1.0f );
+	pRollOff = decMath::max( rollOff, 0.0f );
+}
+
+void igdeGDCSpeaker::SetDistanceOffset( float distanceOffset ){
+	pDistanceOffset = decMath::max( distanceOffset, 0.0f );
 }
 
 void igdeGDCSpeaker::SetPlaySpeed( float playSpeed ){

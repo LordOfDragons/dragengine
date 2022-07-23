@@ -59,19 +59,18 @@ pRenderThread( renderThread ),
 pShapeManager( NULL ),
 pSharedVBOListList( NULL ),
 
-pLayoutSkinInstanceUBO( NULL ),
 pInstanceArraySizeUBO( 0 ),
-
-pLayoutSkinInstanceSSBO( NULL ),
 pInstanceArraySizeSSBO( 0 ),
 
+pLayoutSkinInstanceUBO( NULL ),
+pLayoutSkinInstanceSSBO( NULL ),
 pLayoutOccMeshInstanceUBO( NULL ),
-pOccMeshInstanceArraySizeUBO( 0 ),
-
 pLayoutOccMeshInstanceSSBO( NULL ),
-pOccMeshInstanceArraySizeSSBO( 0 ),
+pLayoutSkinTextureUBO( NULL ),
+pLayoutSkinTextureSSBO( NULL ),
 
 pBillboardSPBListUBO( NULL ),
+pBillboardRTIGroups( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
 
 pTemporaryVBOData( NULL ),
 pTemporaryVBODataSize( 0 )
@@ -90,12 +89,13 @@ deoglRTBufferObject::~deoglRTBufferObject(){
 ///////////////
 
 void deoglRTBufferObject::Init(){
-	pSharedVBOListList = new deoglSharedVBOListList( pRenderThread, 4194304 ); // 8388608
+	pSharedVBOListList = new deoglSharedVBOListList( pRenderThread, 4194304, 4194304 ); // 8388608
 	pCreateSharedVBOLists();
 	
 	pCreateShapes();
 	
 	pCreateLayoutSkinInstance();
+	pCreateLayoutTextureInstance();
 	pCreateLayoutOccMeshInstance();
 	pCreateLayoutInstanceIndex();
 	
@@ -151,6 +151,13 @@ void deoglRTBufferObject::pCleanUp(){
 		delete pBillboardSPBListUBO;
 	}
 	
+	if( pLayoutSkinTextureUBO ){
+		pLayoutSkinTextureUBO->FreeReference();
+	}
+	if( pLayoutSkinTextureSSBO ){
+		pLayoutSkinTextureSSBO->FreeReference();
+	}
+	
 	if( pLayoutOccMeshInstanceUBO ){
 		pLayoutOccMeshInstanceUBO->FreeReference();
 	}
@@ -167,7 +174,7 @@ void deoglRTBufferObject::pCleanUp(){
 	
 	// pSharedVBOListByType are not deleted since they are shared from pSharedVBOListList
 	
-	for( i=esspblSkinInstanceUBO; i<=esspblOccMeshInstanceSSBO; i++ ){
+	for( i=esspblSkinInstanceUBO; i<=esspblSkinTextureSSBO; i++ ){
 		if( pSharedSPBList[ i ] ){
 			delete pSharedSPBList[ i ];
 		}
@@ -204,6 +211,17 @@ void deoglRTBufferObject::pCleanUpReports(){
 	if( pSharedSPBList[ esspblOccMeshInstanceSSBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblOccMeshInstanceSSBO ];
 		logger.LogInfoFormat( "pSharedSPBList(OccMeshInstanceSSBO): count=%d size=%.2fMB",
+			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+	}
+	
+	if( pSharedSPBList[ esspblSkinTextureUBO ] ){
+		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinTextureUBO ];
+		logger.LogInfoFormat( "pSharedSPBList(SkinTextureUBO): count=%d size=%.2fMB",
+			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+	}
+	if( pSharedSPBList[ esspblSkinTextureSSBO ] ){
+		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinTextureSSBO ];
+		logger.LogInfoFormat( "pSharedSPBList(SkinTextureSSBO): count=%d size=%.2fMB",
 			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
 	}
 }
@@ -256,7 +274,6 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	pLayoutOccMeshInstanceUBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 	
 	pLayoutOccMeshInstanceUBO->MapToStd140();
-	pLayoutOccMeshInstanceUBO->CalculateOffsetPadding();
 	pLayoutOccMeshInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
 		uboMaxSize / pLayoutOccMeshInstanceUBO->GetElementStride() ) );
 	pLayoutOccMeshInstanceUBO->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
@@ -277,7 +294,6 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 		pLayoutOccMeshInstanceSSBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 		
 		pLayoutOccMeshInstanceSSBO->MapToStd140();
-		pLayoutOccMeshInstanceSSBO->CalculateOffsetPadding();
 		pLayoutOccMeshInstanceSSBO->SetBindingPoint( deoglSkinShader::essboInstanceParameters );
 		
 		pLayoutOccMeshInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
@@ -287,6 +303,38 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 			"pLayoutOccMeshInstanceSSBO: uboMaxSize=%d elementStride=%d maxCount=%d",
 			uboMaxSize, pLayoutOccMeshInstanceSSBO->GetElementStride(),
 			pLayoutOccMeshInstanceSSBO->GetElementCount() );
+	}
+}
+
+void deoglRTBufferObject::pCreateLayoutTextureInstance(){
+	const int uboMaxSize = pRenderThread.GetCapabilities().GetUBOMaxSize();
+	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	
+	pLayoutSkinTextureUBO = deoglSkinShader::CreateLayoutSkinTextureUBO( pRenderThread );
+	pLayoutSkinTextureUBO->SetElementCount( decMath::min( maxUBOIndexCount,
+		uboMaxSize / pLayoutSkinTextureUBO->GetElementStride() ) );
+	pLayoutSkinTextureUBO->SetBindingPoint( deoglSkinShader::eubTextureParameters );
+// 	pLayoutSkinTextureUBO->DebugPrintConfig( "pLayoutSkinInstanceUBO" );
+	
+	pRenderThread.GetLogger().LogInfoFormat(
+		"pLayoutSkinTextureUBO: uboMaxSize=%d elementStride=%d maxCount=%d",
+		uboMaxSize, pLayoutSkinTextureUBO->GetElementStride(),
+		pLayoutSkinTextureUBO->GetElementCount() );
+	
+	// shared spb layout using SSBO if supported
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
+		
+		pLayoutSkinTextureSSBO = deoglSkinShader::CreateLayoutSkinTextureSSBO( pRenderThread );
+		pLayoutSkinTextureSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
+			ssboMaxSize / pLayoutSkinTextureSSBO->GetElementStride() ) );
+		pLayoutSkinTextureSSBO->SetBindingPoint( deoglSkinShader::essboTextureParameters );
+		
+		pRenderThread.GetLogger().LogInfoFormat(
+			"pLayoutSkinTextureSSBO: uboMaxSize=%d elementStride=%d maxCount=%d",
+			ssboMaxSize, pLayoutSkinTextureSSBO->GetElementStride(),
+			pLayoutSkinTextureSSBO->GetElementCount() );
 	}
 }
 
@@ -300,8 +348,7 @@ void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
 	pRenderThread.GetLogger().LogInfoFormat( "pInstanceArraySizeUBO %d", pInstanceArraySizeUBO );
 	
 	// spb instance constant using int32 indices and ivec4 packing.
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 		pInstanceArraySizeSSBO = decMath::min( maxSSBOIndexCount,
 			pRenderThread.GetCapabilities().GetSSBOMaxSize() / 16 );
 		pRenderThread.GetLogger().LogInfoFormat( "pInstanceArraySizeSSBO %d", pInstanceArraySizeSSBO );
@@ -315,6 +362,9 @@ void deoglRTBufferObject::pCreateSharedSPBLists(){
 	pSharedSPBList[ esspblOccMeshInstanceUBO ] = new deoglSharedSPBListUBO(
 		pRenderThread, pLayoutOccMeshInstanceUBO );
 	
+	pSharedSPBList[ esspblSkinTextureUBO ] = new deoglSharedSPBListUBO(
+		pRenderThread, pLayoutSkinTextureUBO );
+	
 	if( pRenderThread.GetExtensions().GetHasExtension(
 	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 		pSharedSPBList[ esspblSkinInstanceSSBO ] = new deoglSharedSPBListSSBO(
@@ -322,6 +372,9 @@ void deoglRTBufferObject::pCreateSharedSPBLists(){
 		
 		pSharedSPBList[ esspblOccMeshInstanceSSBO ] = new deoglSharedSPBListSSBO(
 			pRenderThread, pLayoutOccMeshInstanceSSBO );
+		
+		pSharedSPBList[ esspblSkinTextureSSBO ] = new deoglSharedSPBListSSBO(
+			pRenderThread, pLayoutSkinTextureSSBO );
 	}
 }
 

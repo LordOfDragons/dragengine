@@ -35,7 +35,7 @@ class deParallelTask;
  * Thread stores only a weak reference to the task in progress. Only deParallelProcessing is
  * storing strong references to tasks.
  */
-class deParallelThread : public deThread{
+class DE_DLL_EXPORT deParallelThread : public deThread{
 private:
 	deParallelProcessing &pParallelProcessing;
 	

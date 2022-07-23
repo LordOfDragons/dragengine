@@ -218,7 +218,7 @@ public:
 	
 	
 	/** \brief Prepare for rendering. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/** \brief Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );

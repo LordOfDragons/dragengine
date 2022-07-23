@@ -29,7 +29,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
 #include <dragengine/threading/deMutexGuard.h>
@@ -43,25 +42,18 @@
 ////////////////////////////
 
 deglCalculateDirectorySize::deglCalculateDirectorySize( const char *directory ) :
+pDirectory( directory ),
+pVFS( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) ),
 pSize( 0 ),
 pAbort( false ),
 pFailed( false )
 {
-	if( ! directory ){
-		DETHROW( deeNullPointer );
-	}
-	
 	if( ! directory[ 0 ] ){
 		return;
 	}
 	
-	pVFS.TakeOver( new deVirtualFileSystem );
-	
-	deVFSContainerReference container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative( directory ) ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-	
-	pVFS->AddContainer( container );
+	pVFS->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
+		decPath::CreatePathUnix( "/" ), decPath::CreatePathNative( directory ), true ) ) );
 }
 
 deglCalculateDirectorySize::~deglCalculateDirectorySize(){
@@ -72,14 +64,24 @@ deglCalculateDirectorySize::~deglCalculateDirectorySize(){
 // Management
 ///////////////
 
+decString deglCalculateDirectorySize::GetDirectory(){
+	const deMutexGuard guard( pMutex );
+	return pDirectory;
+}
+
 uint64_t deglCalculateDirectorySize::GetSize(){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	return pSize;
 }
 
 bool deglCalculateDirectorySize::GetFailed(){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	return pFailed;
+}
+
+decStringList deglCalculateDirectorySize::GetException(){
+	const deMutexGuard guard( pMutex );
+	return pException;
 }
 
 void deglCalculateDirectorySize::Abort(){
@@ -90,13 +92,13 @@ void deglCalculateDirectorySize::Abort(){
 
 void deglCalculateDirectorySize::Run(){
 	if( pAbort ){
-		deMutexGuard guard( pMutex );
+		const deMutexGuard guard( pMutex );
 		pFailed = true;
 		return;
 	}
 	
 	const decPath path( decPath::CreatePathUnix( "/" ) );
-	if( ! pVFS || ! pVFS->ExistsFile( path ) ){
+	if( ! pVFS->ExistsFile( path ) ){
 		return;
 	}
 	
@@ -104,14 +106,15 @@ void deglCalculateDirectorySize::Run(){
 		pScanDirectory( path );
 		
 	}catch( const deException &e ){
-		deMutexGuard guard( pMutex );
+		const deMutexGuard guard( pMutex );
 		pSize = 0;
 		pFailed = true;
+		pException = e.FormatOutput();
 	}
 }
 
 void deglCalculateDirectorySize::IncrementSize( int size ){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	pSize += size;
 }
 
@@ -121,7 +124,7 @@ void deglCalculateDirectorySize::IncrementSize( int size ){
 //////////////////////
 
 void deglCalculateDirectorySize::pSetSize( int size ){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	pSize = size;
 }
 

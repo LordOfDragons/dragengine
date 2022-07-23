@@ -32,7 +32,7 @@ class deHeightTerrain;
 /**
  * \brief Height terrain manager.
  */
-class deHeightTerrainManager : public deResourceManager{
+class DE_DLL_EXPORT deHeightTerrainManager : public deResourceManager{
 private:
 	deResourceList pTerrains;
 	

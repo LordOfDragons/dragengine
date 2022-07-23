@@ -54,10 +54,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Occupier has claimed spot. */
-		func void spotClaimed( Instance instance, ECBehaviorOccupier.Instance occupier )
+		func void spotClaimed(Instance instance, ECBehaviorOccupier.Instance occupier)
 		
 		/** \brief Occupier has release spot. */
-		func void spotReleased( Instance instance, ECBehaviorOccupier.Instance occupier )
+		func void spotReleased(Instance instance, ECBehaviorOccupier.Instance occupier)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -67,18 +67,18 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		end
 		
 		/** \brief Occupier has claimed spot. */
-		public func void spotClaimed( Instance instance, ECBehaviorOccupier.Instance occupier )
+		public func void spotClaimed(Instance instance, ECBehaviorOccupier.Instance occupier)
 		end
 		
 		/** \brief Occupier has release spot. */
-		public func void spotReleased( Instance instance, ECBehaviorOccupier.Instance occupier )
+		public func void spotReleased(Instance instance, ECBehaviorOccupier.Instance occupier)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
@@ -86,16 +86,16 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		private var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		public func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -116,17 +116,17 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorInteractionSpot ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pListeners = Array.new()
+		public func new(ECBehaviorInteractionSpot ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.release()
+			release()
 			
-			this.pListeners = null
-			this.pElementResolver = null
+			pListeners = null
+			pElementResolver = null
 			
 			super.dispose()
 		end
@@ -134,102 +134,102 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
-			this.pPosition = this.pECBehavior.getPosition().getVector( stub, codec )
-			this.pOrientation = Quaternion.newFromEuler( this.pECBehavior.getOrientation().getVector( stub, codec ) )
-			this.pLookAt = this.pECBehavior.getLookAt().getVector( stub, codec )
+		public func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			pPosition = pECBehavior.getPosition().getVector(stub, codec)
+			pOrientation = Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec))
+			pLookAt = pECBehavior.getLookAt().getVector(stub, codec)
 			
-			this.pECBehavior.createListeners( this )
+			pECBehavior.createListeners(this)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorInteractionSpot getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Interaction position. */
 		public func Vector getPosition()
-			return this.pPosition
+			return pPosition
 		end
 		
 		/** \brief Interaction orientation. */
 		public func Quaternion getOrientation()
-			return this.pOrientation
+			return pOrientation
 		end
 		
 		/** \brief Interaction matrix relative to element. */
 		public func Matrix getMatrix()
-			if this.pMatrix == null
-				this.pMatrix = Matrix.newWorld( this.pPosition, this.pOrientation )
+			if pMatrix == null
+				pMatrix = Matrix.newWorld(pPosition, pOrientation)
 			end
-			return this.pMatrix
+			return pMatrix
 		end
 		
 		/** \brief Inverse interaction matrix relative to element. */
 		public func Matrix getInverseMatrix()
-			if this.pInverseMatrix == null
-				this.pInverseMatrix = this.getMatrix().getInverse()
+			if pInverseMatrix == null
+				pInverseMatrix = getMatrix().getInverse()
 			end
-			return this.pInverseMatrix
+			return pInverseMatrix
 		end
 		
 		/** \brief Interaction matrix in world space. */
 		public func DMatrix getWorldMatrix()
-			return DMatrix.newWorld( DVector.new( this.pPosition ), this.pOrientation ) \
-				* this.getElement().getElementMatrix()
+			return DMatrix.newWorld(DVector.new(pPosition), pOrientation) \
+				* getElement().getElementMatrix()
 		end
 		
 		/** \brief Inverse interaction matrix in world space. */
 		public func DMatrix getInverseWorldMatrix()
-			return this.getWorldMatrix().getInverse()
+			return getWorldMatrix().getInverse()
 		end
 		
 		/** \brief Look-at position for element to use while approaching or null if not used. */
 		public func Vector getLookAt()
-			return this.pLookAt
+			return pLookAt
 		end
 		
 		/** \brief Look-at position in world space for element to use while approaching or null if not used. */
 		public func DVector getLookAtWorld()
-			if this.pLookAt != null
-				return this.getElement().getElementMatrix() * DVector.new( this.pLookAt )
+			if pLookAt != null
+				return getElement().getElementMatrix() * DVector.new(pLookAt)
 			end
 			return null
 		end
 		
 		/** \brief Element resolver used during loading or \em null if not set. */
 		public func ElementResolver getElementResolver()
-			return this.pElementResolver
+			return pElementResolver
 		end
 		
 		
 		
 		/** \brief Occupier or \em null. */
 		public func ECBehaviorOccupier.Instance getOccupier()
-			return this.pOccupier
+			return pOccupier
 		end
 		
 		/** \brief Spot is empty. */
 		public func bool isEmpty()
-			return this.pOccupier == null
+			return pOccupier == null
 		end
 		
 		/** \brief Spot is occupied. */
 		public func bool isNotEmpty()
-			return this.pOccupier != null
+			return pOccupier != null
 		end
 		
 		/** \brief Element is occupying spot. */
-		public func bool isOccupying( BehaviorElement element )
-			return this.pOccupier != null and this.pOccupier.getElement() == element
+		public func bool isOccupying(BehaviorElement element)
+			return pOccupier != null and pOccupier.getElement() == element
 		end
 		
 		/** \brief Element is not occupying spot. */
-		public func bool isNotOccupying( BehaviorElement element )
-			return this.pOccupier == null or this.pOccupier.getElement() != element
+		public func bool isNotOccupying(BehaviorElement element)
+			return pOccupier == null or pOccupier.getElement() != element
 		end
 		
 		/**
@@ -238,8 +238,8 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		 * \retval false Occupier is already occupying another spot.
 		 * \retval true Claiming is possible
 		 */
-		public func bool canClaim( ECBehaviorOccupier.Instance occupier )
-			return this.pOccupier == null and not occupier.isOccupying()
+		public func bool canClaim(ECBehaviorOccupier.Instance occupier)
+			return pOccupier == null and not occupier.isOccupying()
 		end
 		
 		
@@ -249,87 +249,90 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		 * \throws EInvalidParam Spot is not empty.
 		 * \throws EInvalidParam \em occupier is already occupying another spot.
 		 */
-		public func void claim( ECBehaviorOccupier.Instance occupier )
-			if this.pOccupier != null or occupier.isOccupying()
+		public func void claim(ECBehaviorOccupier.Instance occupier)
+			if pOccupier != null or occupier.isOccupying()
 				throw EInvalidParam.new()
 			end
 			
-			occupier.setInteractionSpot( this )
-			this.pOccupier = occupier
+			occupier.setInteractionSpot(this)
+			pOccupier = occupier
 			
-			this.pListeners.forEach( block Listener each
-				each.spotClaimed( this, occupier )
-			end )
+			pListeners.forEach(block Listener each
+				each.spotClaimed(this, occupier)
+			end)
 		end
 		
 		/** \brief Release spot if claimed. */
 		public func void release()
-			if this.pOccupier == null
+			if pOccupier == null
 				return
 			end
 			
-			var ECBehaviorOccupier.Instance occupier = this.pOccupier
-			occupier.setInteractionSpot( null )
-			this.pOccupier = null
+			var ECBehaviorOccupier.Instance occupier = pOccupier
+			occupier.setInteractionSpot(null)
+			pOccupier = null
 			
-			this.pListeners.forEach( block Listener each
-				each.spotReleased( this, occupier )
-			end )
+			pListeners.forEach(block Listener each
+				each.spotReleased(this, occupier)
+			end)
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		public func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				if not env.readBool( reader )
-					return
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				if flags.getAt(0)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorOccupier.Instance occupier
+						pOccupier = occupier
+					end)
+					setRequiresEnterFrame(true)
 				end
 				
-				this.pElementResolver = ElementResolver.new()
-				this.pElementResolver.addBehavior( reader, block ECBehaviorOccupier.Instance occupier
-					this.claim( occupier )
-				end )
-				this.setRequiresEnterFrame( true )
-				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			env.writeBool( writer, this.pOccupier != null )
-			if this.pOccupier != null
-				ElementResolver.writeToFileBehavior( writer, this.pOccupier )
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pOccupier != null)
+			flags.writeToFile(writer)
+			
+			if pOccupier != null
+				ElementResolver.writeToFileBehavior(writer, pOccupier)
 			end
 		end
 	end
@@ -346,31 +349,31 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	/**
 	 * \brief Create behavior element class.
 	 */
-	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	public func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, id, id.empty() if "interactionSpot." else "interactionSpot(" + id + ")." )
+	public func new(BehaviorElementClass eclass, String id) \
+	this(eclass, id, id.empty() if "interactionSpot." else "interactionSpot(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
-		this.pListenerFactories = Array.new()
+	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pListenerFactories = Array.new()
 		
-		this.pPosition = ECPVector.new( prefix + "position" )
-		eclass.addProperty( this.pPosition )
+		pPosition = ECPVector.new(prefix + "position")
+		eclass.addProperty(pPosition)
 		
-		this.pOrientation = ECPVector.new( prefix + "orientation" )
-		eclass.addProperty( this.pOrientation )
+		pOrientation = ECPVector.new(prefix + "orientation")
+		eclass.addProperty(pOrientation)
 		
-		this.pLookAt = ECPVector.new( prefix + "lookAt", null )
-		eclass.addProperty( this.pLookAt )
+		pLookAt = ECPVector.new(prefix + "lookAt", null)
+		eclass.addProperty(pLookAt)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pListenerFactories = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -378,25 +381,25 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	
 	/** \brief Interaction position. */
 	public func ECPVector getPosition()
-		return this.pPosition
+		return pPosition
 	end
 	
 	/** \brief Interaction orientation. */
 	public func ECPVector getOrientation()
-		return this.pOrientation
+		return pOrientation
 	end
 	
 	/** \brief Look-at position for element to use while approaching. */
 	public func ECPVector getLookAt()
-		return this.pLookAt
+		return pLookAt
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	public func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -404,27 +407,27 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -435,10 +438,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorInteractionSpot getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorInteractionSpot
-		end ) cast ECBehaviorInteractionSpot
+	static public func ECBehaviorInteractionSpot getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorInteractionSpot each
+			return true
+		end) cast ECBehaviorInteractionSpot
 	end
 	
 	/**
@@ -447,11 +450,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorInteractionSpot with specific identifier.
 	 */
-	static public func ECBehaviorInteractionSpot getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorInteractionSpot each
-			return each castable ECBehaviorInteractionSpot and \
-				( each cast ECBehaviorInteractionSpot ).getID().equals( id )
-		end ) cast ECBehaviorInteractionSpot
+	static public func ECBehaviorInteractionSpot getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorInteractionSpot each
+			return each.getID().equals(id)
+		end) cast ECBehaviorInteractionSpot
 	end
 	
 	/**
@@ -460,14 +462,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractionSpot behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorInteractionSpot
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorInteractionSpot each
+			return true
+		end)
 	end
 	
 	
@@ -479,10 +477,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * of type ECBehaviorInteractionSpot.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -491,11 +489,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorInteractionSpot.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -504,20 +501,16 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractionSpot.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

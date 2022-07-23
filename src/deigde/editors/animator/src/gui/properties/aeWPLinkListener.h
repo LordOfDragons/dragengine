@@ -53,6 +53,9 @@ protected:
 public:
 	/** \name Notifications */
 	/*@{*/
+	/** \brief Rig changed. */
+	virtual void RigChanged( aeAnimator *animator );
+	
 	/** \brief Controller name changed. */
 	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
 	

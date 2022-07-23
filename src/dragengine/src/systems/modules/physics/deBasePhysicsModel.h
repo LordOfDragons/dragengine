@@ -22,11 +22,13 @@
 #ifndef _DEBASEPHYSICSMODEL_H_
 #define _DEBASEPHYSICSMODEL_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics Module Model Peer.
  */
-class deBasePhysicsModel{
+class DE_DLL_EXPORT deBasePhysicsModel{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

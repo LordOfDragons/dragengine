@@ -52,7 +52,13 @@ class deFileSearchVisitor;
  * If you need to change the containers while using the VFS use the deVFSModular
  * container. This container is safe to be modified while in use.
  */
-class deVirtualFileSystem : public deObject{
+class DE_DLL_EXPORT deVirtualFileSystem : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVirtualFileSystem> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pContainers;
 	

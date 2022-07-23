@@ -34,7 +34,7 @@ class deCollider;
  * Defines the motion state of a bone in a collider of the rigged
  * or component type.
  */
-class deColliderBone{
+class DE_DLL_EXPORT deColliderBone{
 private:
 	deCollider *pCollider;
 	int pIndex;

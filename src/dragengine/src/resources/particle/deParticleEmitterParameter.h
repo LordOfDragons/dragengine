@@ -33,7 +33,7 @@
  * spread therefore gives the distance from the smallest possible value to the highest
  * possible value. Hence the random value can be spread-half above or below value at most.
  */
-class deParticleEmitterParameter{
+class DE_DLL_EXPORT deParticleEmitterParameter{
 private:
 	float pValue;
 	float pSpread;

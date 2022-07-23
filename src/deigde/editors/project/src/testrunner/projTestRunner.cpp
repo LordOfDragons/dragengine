@@ -60,6 +60,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -549,8 +550,8 @@ void projTestRunner::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void projTestRunner::WriteFloatToPipe( float value ){
@@ -594,9 +595,9 @@ int projTestRunner::ReadUCharFromPipe(){
 }
 
 int projTestRunner::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
 float projTestRunner::ReadFloatFromPipe(){
@@ -798,6 +799,7 @@ void projTestRunner::pSendLaunchParameters(){
 	WriteString16ToPipe( path.GetPathNative() );
 	
 	WriteString16ToPipe( pProfile->GetScriptDirectory() );
+	WriteString16ToPipe( project.GetScriptModuleVersion() );
 	WriteString16ToPipe( pProfile->GetGameObject() );
 	WriteString16ToPipe( pProfile->GetPathConfig() );
 	WriteString16ToPipe( pProfile->GetPathCapture() );
@@ -846,6 +848,7 @@ void projTestRunner::pSendLaunchParameters(){
 		WriteString16ToPipe( pLauncherProfile->GetModuleAudio() );
 		WriteString16ToPipe( pLauncherProfile->GetModuleSynthesizer() );
 		WriteString16ToPipe( pLauncherProfile->GetModuleNetwork() );
+		WriteString16ToPipe( pLauncherProfile->GetModuleVR() );
 		
 	}else{
 		WriteString16ToPipe( "" ); // default graphic
@@ -857,11 +860,13 @@ void projTestRunner::pSendLaunchParameters(){
 		WriteString16ToPipe( "" ); // default audio
 		WriteString16ToPipe( "" ); // default synthesizer
 		WriteString16ToPipe( "" ); // default network
+		WriteString16ToPipe( "" ); // default vr
 		
 		/*
 		const deEngine &engine = *pWindowMain.GetEngine();
 		WriteString16ToPipe( engine.GetGraphicSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetInputSystem()->GetActiveLoadableModule()->GetName() );
+		WriteString16ToPipe( engine.GetVRSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetPhysicsSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetAnimatorSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetAISystem()->GetActiveLoadableModule()->GetName() );

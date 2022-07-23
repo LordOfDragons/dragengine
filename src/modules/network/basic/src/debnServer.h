@@ -67,7 +67,7 @@ public:
 	inline debnSocket *GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
-	void ProcessConnectionRequest( debnAddress *address, decBaseFileReader &reader );
+	void ProcessConnectionRequest( debnAddress &address, decBaseFileReader &reader );
 	
 	/**
 	 * \brief Start listening on address for incoming connections.

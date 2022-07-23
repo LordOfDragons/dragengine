@@ -64,6 +64,7 @@ public:
 		decString pathCapture;
 		
 		decString scriptDirectory;
+		decString scriptVersion;
 		decString gameObject;
 		decString vfsPathConfig;
 		decString vfsPathCapture;
@@ -94,6 +95,7 @@ public:
 		decString moduleAudio;
 		decString moduleSynthesizer;
 		decString moduleNetwork;
+		decString moduleVR;
 		
 		sRunParameters();
 		~sRunParameters();

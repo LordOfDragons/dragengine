@@ -31,11 +31,11 @@ class deoglRenderPlan;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglTexture;
-
+class deoglVR;
 
 
 /**
- * \brief Render camera.
+ * Render camera.
  */
 class deoglRCamera : public deObject{
 private:
@@ -50,10 +50,13 @@ private:
 	float pElapsedToneMapAdaption;
 	bool pForceToneMapAdaption;
 	
+	bool pEnableHDRR;
 	float pExposure;
 	float pLowestIntensity;
 	float pHighestIntensity;
 	float pAdaptionTime;
+	
+	bool pEnableGI;
 	
 	deoglRenderPlan *pPlan;
 	
@@ -64,15 +67,17 @@ private:
 	float pLastAverageLuminance;
 	bool pDirtyLastAverageLuminance;
 	
+	deoglVR *pVR;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render camera. */
+	/** Create render camera. */
 	deoglRCamera( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render camera. */
+	/** Clean up render camera. */
 	virtual ~deoglRCamera();
 	/*@}*/
 	
@@ -80,87 +85,112 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent world or \em NULL if not set. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Parent world or \em NULL if not set. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or \em NULL if not set. */
+	/** Set parent world or \em NULL if not set. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
 	
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decDVector &position );
 	
-	/** \brief Camera matrix. */
+	/** Camera matrix. */
 	inline const decDMatrix &GetCameraMatrix() const{ return pCameraMatrix; }
 	
-	/** \brief Inverse camera matrix. */
+	/** Inverse camera matrix. */
 	inline const decDMatrix &GetInverseCameraMatrix() const{ return pInverseCameraMatrix; }
 	
-	/** \brief Set camera matrix and calculate calvulate inverse camera matrix. */
+	/** Set camera matrix and calculate calvulate inverse camera matrix. */
 	void SetCameraMatrices( const decDMatrix &matrix );
 	
 	
 	
-	/** \brief Render plan. */
+	/** Render plan. */
 	inline deoglRenderPlan &GetPlan() const{ return *pPlan; }
 	
 	
 	
-	/** \brief Tone mapping parameters texture. */
+	/** Tone mapping parameters texture. */
 	inline deoglTexture *GetToneMapParamsTexture() const{ return pTextureToneMapParams; }
 	
-	/** \brief Set tone mapping parameters texture. */
+	/** Set tone mapping parameters texture. */
 	void SetToneMapParamsTexture( deoglTexture *texture );
 	
-	/** \brief Elapsed time since the last adaption of the tone mapping parameters. */
+	/** Elapsed time since the last adaption of the tone mapping parameters. */
 	inline float GetElapsedToneMapAdaption() const{ return pElapsedToneMapAdaption; }
 	
-	/** \brief Set elapsed time since the last adaption of the tone mapping parameters. */
+	/** Set elapsed time since the last adaption of the tone mapping parameters. */
 	void SetElapsedToneMapAdaption( float elapsed );
 	
-	/** \brief Force full tone mapping adaption for the next rendering. */
+	/** Force full tone mapping adaption for the next rendering. */
 	inline bool GetForceToneMapAdaption() const{ return pForceToneMapAdaption; }
 	
-	/** \brief Set if a full tone mapping adaption is forced for the next rendering. */
+	/** Set if a full tone mapping adaption is forced for the next rendering. */
 	void SetForceToneMapAdaption( bool forceAdaption );
 	
-	/** \brief Reset elapsed tone mapping adaption time. */
+	/** Reset elapsed tone mapping adaption time. */
 	void ResetElapsedToneMapAdaption();
 	
 	
 	
-	/** \brief Exposure. */
+	/** Enable HDRR. */
+	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
+	
+	/** Set enable HDRR. */
+	void SetEnableHDRR( bool enable );
+	
+	/** Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
-	/** \brief Set exposure. */
+	/** Set exposure. */
 	void SetExposure( float exposure );
 	
-	/** \brief Lowest intensity the eye can adapt to. */
+	/** Lowest intensity the eye can adapt to. */
 	inline float GetLowestIntensity() const{ return pLowestIntensity; }
 	
-	/** \brief Set lowest intensity the eye can adapt to. */
+	/** Set lowest intensity the eye can adapt to. */
 	void SetLowestIntensity( float lowestIntensity );
 	
-	/** \brief Highest intensity the eye can adapt to. */
+	/** Highest intensity the eye can adapt to. */
 	inline float GetHighestIntensity() const{ return pHighestIntensity; }
 	
-	/** \brief Set highest intensity the eye can adapt to. */
+	/** Set highest intensity the eye can adapt to. */
 	void SetHighestIntensity( float highestIntensity );
 	
-	/** \brief Adaption time of the eye in seconds. */
+	/** Adaption time of the eye in seconds. */
 	inline float GetAdaptionTime() const{ return pAdaptionTime; }
 	
-	/** \brief Set adaption time of the eye in seconds. */
+	/** Set adaption time of the eye in seconds. */
 	void SetAdaptionTime( float adaptionTime );
 	
 	
 	
+	/** Enable GI. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** Set enable GI. */
+	void SetEnableGI( bool enable );
+	
+	
+	
+	/** VR or nullptr. */
+	inline deoglVR *GetVR() const{ return pVR; }
+	
+	/** Enable/Disable VR. */
+	void EnableVR( bool enable );
+	
+	
+	
 	/**
-	 * \brief Last average scene luminance.
+	 * Last average scene luminance.
 	 * 
 	 * If dirty reads back the adaption parameters from the GPU and stores the last used
 	 * average scene luminance. This has a slight performance impact so this method should
@@ -180,24 +210,24 @@ public:
 	
 	
 	
-	/** \brief Number of effects. */
+	/** Number of effects. */
 	int GetEffectCount() const;
 	
-	/** \brief Effect at index. */
+	/** Effect at index. */
 	deoglREffect &GetEffectAt( int index ) const;
 	
-	/** \brief Add effect. */
+	/** Add effect. */
 	void AddEffect( deoglREffect *effect );
 	
-	/** \brief Remove all effects. */
+	/** Remove all effects. */
 	void RemoveAllEffects();
 	
 	
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	void PrepareForRender();
 	/*@}*/
 	

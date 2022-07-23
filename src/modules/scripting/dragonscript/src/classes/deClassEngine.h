@@ -19,40 +19,70 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DECLASSENGINE_H_
 #define _DECLASSENGINE_H_
 
-// includes
 #include <libdscript/libdscript.h>
 #include <dragengine/common/utils/decTimer.h>
 
-// predefinitions
-class deEngine;
 class deScriptingDragonScript;
 
-// engine script class
+
+/**
+ * Game engine.
+ */
 class deClassEngine : public dsClass{
 private:
-	deEngine *p_gameEngine;
-	deScriptingDragonScript *p_scrMgr;
+	deScriptingDragonScript &pDS;
 	decTimer pDebugTimer;
+	bool pDefaultEnableGI;
+	
+	
 	
 public:
-	// constructor
-	deClassEngine(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassEngine();
-	// management
-	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return p_scrMgr; }
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create script class. */
+	deClassEngine( deScriptingDragonScript &ds );
+	
+	/** Clean up script class. */
+	virtual ~deClassEngine();
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Script module. */
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	
+	/** Create class members. */
+	void CreateClassMembers( dsEngine *engine );
+	
+	/** Debug timer. */
 	inline decTimer &GetDebugTimer(){ return pDebugTimer; }
-
+	
+	/** Default enable GI. */
+	inline bool GetDefaultEnableGI() const{ return pDefaultEnableGI; }
+	
+	/** Set default enable GI. */
+	void SetDefaultEnableGI( bool enable );
+	/*@}*/
+	
+	
+	
 private:
 	struct sInitData{
-		dsClass *clsEng, *clsVoid, *clsInt, *clsFlt, *clsStr;
-		dsClass *clsWin, *clsGame, *clsBool;
-		dsClass *clsDict;
+		dsClass *clsEngine;
+		
+		dsClass *clsVoid;
+		dsClass *clsInteger;
+		dsClass *clsFloat;
+		dsClass *clsString;
+		dsClass *clsBoolean;
+		dsClass *clsDictionary;
+		
+		dsClass *clsWindow;
+		dsClass *clsGame;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -70,8 +100,24 @@ private:
 	DEF_NATFUNC( nfLoadingResourceCount );
 	DEF_NATFUNC( nfLog );
 	DEF_NATFUNC( nfGetScriptModuleStats );
+	
+	DEF_NATFUNC( nfGetCompatibleVersion );
+	DEF_NATFUNC( nfGetCompatibleVersionMajor );
+	DEF_NATFUNC( nfGetCompatibleVersionMinor );
+	DEF_NATFUNC( nfGetCompatibleVersionPatch );
+	DEF_NATFUNC( nfIsCompatibleVersionOlder );
+	DEF_NATFUNC( nfIsCompatibleVersionNewer );
+	
+	DEF_NATFUNC( nfGetModuleVersion );
+	DEF_NATFUNC( nfGetModuleVersionMajor );
+	DEF_NATFUNC( nfGetModuleVersionMinor );
+	DEF_NATFUNC( nfGetModuleVersionPatch );
+	DEF_NATFUNC( nfIsModuleVersionOlder );
+	DEF_NATFUNC( nfIsModuleVersionNewer );
+	
+	DEF_NATFUNC( nfGetDefaultEnableGI );
+	DEF_NATFUNC( nfSetDefaultEnableGI );
 #undef DEF_NATFUNC
 };
 
-// end of include only once
 #endif

@@ -79,7 +79,7 @@ int64_t fbxPropertyInteger::GetValueAsLong() const{
 }
 
 float fbxPropertyInteger::GetValueAsFloat() const{
-	return pValue;
+	return ( float )pValue;
 }
 
 double fbxPropertyInteger::GetValueAsDouble() const{

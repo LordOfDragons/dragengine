@@ -45,6 +45,8 @@ deoalCaches::deoalCaches( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
 pSound( NULL )
 {
+	(void)pAudioThread; // silence compiler warning
+	
 	try{
 		pSound = new deCacheHelper( &audioThread.GetOal().GetVFS(),
 			decPath::CreatePathUnix( "/cache/local/sound" ) );

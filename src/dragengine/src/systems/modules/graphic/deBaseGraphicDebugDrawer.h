@@ -22,13 +22,15 @@
 #ifndef _DEBASEGRAPHICDEBUGDRAWER_H_
 #define _DEBASEGRAPHICDEBUGDRAWER_H_
 
+#include "../../../dragengine_export.h"
+
 class deDebugDrawerShape;
 
 
 /**
  * \brief Graphic module debug drawer peer.
  */
-class deBaseGraphicDebugDrawer{
+class DE_DLL_EXPORT deBaseGraphicDebugDrawer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

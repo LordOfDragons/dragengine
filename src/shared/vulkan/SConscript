@@ -1,0 +1,68 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+# setup the environment
+envShared = parent_env.Clone()
+
+libs = []
+
+if envShared['OSBeOS']:
+	libs.extend(['be', 'game'])
+
+# do configure stuff
+#hasVulkan = False
+
+conf = envShared.Configure()
+
+#hasVulkan = conf.CheckCHeader('vulkan/vulkan.h')
+
+conf.Finish()
+
+# build library
+if envShared['with_debug']:
+	envShared.Append(CPPFLAGS = ['-DWITH_DEBUG'])
+
+envShared.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envShared.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+envShared.Append(CPPFLAGS = ['-DVK_NO_PROTOTYPES'])
+
+# always use included vulkan headers. ignore system provided ones if present
+envShared.Append(CPPPATH = [envShared.Dir('extern/include').srcnode()])
+
+if envShared['OSMacOS']:
+	# Enable C++-11 for those compilers not doing it
+	envShared.Append(CXXFLAGS = ['-std=c++11'])
+
+sources = []
+globFiles(envShared, 'src', '*.cpp', sources)
+
+headers = []
+globFiles(envShared, 'src', '*.h', headers)
+
+objects = [envShared.SharedObject(s) for s in sources]
+
+appendLibrary(envShared, parent_targets['dragengine'], libs, False)
+
+library = envShared.StaticLibrary(target='sharedvulkan', source=objects, LIBS=libs)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envShared, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envShared.Alias('shared_vulkan_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['shared_vulkan'] =  {
+	'name' : 'Vulkan Shared',
+	'cpppath' : [
+		envShared.Dir('src').srcnode(),
+		envShared.Dir('extern/include').srcnode()],
+	'libs' : library,
+	'depends' : parent_env.Alias('shared_vulkan', library),
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir) }

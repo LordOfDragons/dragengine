@@ -22,7 +22,6 @@
 #ifndef _DEOALRAYTRACEPARALLEL_H_
 #define _DEOALRAYTRACEPARALLEL_H_
 
-#include "../../../utils/deoalTimeHistory.h"
 #include "../../../audiothread/deoalATRayTracing.h"
 
 #include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
@@ -30,6 +29,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/utils/decTimer.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deBarrier.h>
 
@@ -122,9 +122,9 @@ private:
 	decPointerList pTasksRunningRoomEstimateFinish;
 	
 	decTimer pTimer;
-	deoalTimeHistory pTimeHistoryTraceSoundRays;
-	deoalTimeHistory pTimeHistoryEstimateRoom;
-	deoalTimeHistory pTimeHistoryListen;
+	decTimeHistory pTimeHistoryTraceSoundRays;
+	decTimeHistory pTimeHistoryEstimateRoom;
+	decTimeHistory pTimeHistoryListen;
 	int pCounterTraceSoundRays;
 	int pCounterEstimateRoom;
 	int pCounterListen;
@@ -156,8 +156,8 @@ public:
 	/** \brief Trace sound rays. */
 	void TraceSoundRays( sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
 		const decDVector &position, float range, float refDist, float rollOff,
-		deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask,
-		const deoalATRayTracing::sConfigSoundTracing &config );
+		float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
 	
 // 	void TraceSoundRays( sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
 // 		const decDVector &position, float range, deoalAWorld &world,
@@ -188,16 +188,16 @@ public:
 	
 	
 	/** \brief Time history of trace sound rays calls. */
-	inline deoalTimeHistory &GetTimeHistoryTraceSoundRays(){ return pTimeHistoryTraceSoundRays; }
-	inline const deoalTimeHistory &GetTimeHistoryTraceSoundRays() const{ return pTimeHistoryTraceSoundRays; }
+	inline decTimeHistory &GetTimeHistoryTraceSoundRays(){ return pTimeHistoryTraceSoundRays; }
+	inline const decTimeHistory &GetTimeHistoryTraceSoundRays() const{ return pTimeHistoryTraceSoundRays; }
 	
 	/** \brief Time history of estimate room calls. */
-	inline deoalTimeHistory &GetTimeHistoryEstimateRoom(){ return pTimeHistoryEstimateRoom; }
-	inline const deoalTimeHistory &GetTimeHistoryEstimateRoom() const{ return pTimeHistoryEstimateRoom; }
+	inline decTimeHistory &GetTimeHistoryEstimateRoom(){ return pTimeHistoryEstimateRoom; }
+	inline const decTimeHistory &GetTimeHistoryEstimateRoom() const{ return pTimeHistoryEstimateRoom; }
 	
 	/** \brief Time history of listen calls. */
-	inline deoalTimeHistory &GetTimeHistoryListen(){ return pTimeHistoryListen; }
-	inline const deoalTimeHistory &GetTimeHistoryListen() const{ return pTimeHistoryListen; }
+	inline decTimeHistory &GetTimeHistoryListen(){ return pTimeHistoryListen; }
+	inline const decTimeHistory &GetTimeHistoryListen() const{ return pTimeHistoryListen; }
 	
 	/** \brief Number of trace sound rays calls this frame update. */
 	inline int GetCounterTraceSoundRays() const{ return pCounterTraceSoundRays; }
@@ -242,7 +242,7 @@ public:
 private:
 	void pRunTraceSoundRaysUsingTasks( sRoomParameters &roomParameters,
 		deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
-		float rollOff, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+		float rollOff, float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
 		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
 	
 	void pRunListenUsingTasks( const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,

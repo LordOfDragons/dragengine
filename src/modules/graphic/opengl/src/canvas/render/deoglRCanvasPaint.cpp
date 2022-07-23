@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglRCanvasPaint.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/deoglRenderCanvasContext.h"
@@ -145,11 +144,12 @@ void deoglRCanvasPaint::SetPointCount( int count ){
 
 
 
-void deoglRCanvasPaint::PrepareForRender(){
+void deoglRCanvasPaint::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pFillColor.a < FLOAT_SAFE_EPSILON && pLineColor.a < FLOAT_SAFE_EPSILON ){
 		return;
 	}
 	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
 	pPrepareVBOBlock();
 }
 
@@ -167,36 +167,13 @@ void deoglRCanvasPaint::Render( const deoglRenderCanvasContext &context ){
 // Private Functions
 //////////////////////
 
-class deoglRCanvasPaintDeletion : public deoglDelayedDeletion{
-public:
-	deoglSharedVBOBlock *vboBlock;
-	
-	deoglRCanvasPaintDeletion() : vboBlock( NULL ){ }
-	virtual ~deoglRCanvasPaintDeletion(){ }
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( vboBlock ){
-			vboBlock->GetVBO()->RemoveBlock( vboBlock );
-			vboBlock->FreeReference();
-		}
-	}
-};
-
 void deoglRCanvasPaint::pCleanUp(){
-	// delayed deletion of opengl containing objects
-	deoglRCanvasPaintDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCanvasPaintDeletion;
-		delayedDeletion->vboBlock = pVBOBlock;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pPoints ){
+		delete [] pPoints;
+	}
+	if( pVBOBlock ){
+		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->FreeReference();
 	}
 }
 
@@ -293,8 +270,8 @@ void deoglRCanvasPaint::pWriteVBOData(){
 		if( pIsThick ){
 			const float ht = thickness * 0.5f;
 			const decVector2 shift[ 6 ] = {
-				{ -ht, -ht }, { ht, -ht }, { ht, ht },
-				{ -ht, -ht }, { ht, ht }, { -ht, ht } };
+				decVector2( -ht, -ht ), decVector2( ht, -ht ), decVector2( ht, ht ),
+				decVector2( -ht, -ht ), decVector2( ht, ht ), decVector2( -ht, ht ) };
 			int j;
 			
 			pDrawModeLine = GL_TRIANGLES;

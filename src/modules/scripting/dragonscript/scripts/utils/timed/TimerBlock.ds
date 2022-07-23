@@ -28,7 +28,6 @@ namespace Dragengine.Utils
  * \brief Timer running block.
  */
 class TimerBlock extends Timer
-	/** \brief Block to run. */
 	private var Block pBlock
 	
 	
@@ -40,12 +39,11 @@ class TimerBlock extends Timer
 	 * \param periodic Reschedule trigger once finished.
 	 * \param blockFire Block to run. Block has no parameters.
 	 */
-	public func new( float triggerTime, bool periodic, Block blockFire ) \
-	super( triggerTime, periodic )
+	public func new(float triggerTime, bool periodic, Block blockFire) super(triggerTime, periodic)
 		if blockFire == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("blockFire")
 		end
-		this.pBlock = blockFire
+		pBlock = blockFire
 	end
 	
 	/**
@@ -56,18 +54,30 @@ class TimerBlock extends Timer
 	 * \param periodic True if this timer is periodic
 	 * \param blockFire Block to run. Block has no parameters.
 	 */
-	public func new( TimerManager manager, float triggerTime, bool periodic, Block blockFire ) \
-	super( manager, triggerTime, periodic )
+	public func new(TimerManager manager, float triggerTime, bool periodic, Block blockFire) \
+	super(manager, triggerTime, periodic)
 		if blockFire == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("blockFire")
 		end
-		this.pBlock = blockFire
+		pBlock = blockFire
 	end
 	
 	
 	
+	/**
+	 * \brief Give up timer if registered with a timer manager.
+	 * 
+	 * Call to give up pending timer. Dropping the reference alone does not give up the timer.
+	 */
+	public func void giveUp()
+		pBlock = null
+		super.giveUp()
+	end
+	
 	/** \brief Timer time elapsed. */
 	public func void fire()
-		this.pBlock.run()
+		if pBlock != null
+			pBlock.run()
+		end
 	end
 end

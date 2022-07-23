@@ -28,149 +28,164 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of an animation difference animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of animation difference animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleAnimationDifference extends ADRule
-	/** Leading move name. */
 	private var String pLeadMoveName
-	/** Leading move time. */
 	private var float pLeadMoveTime
-	/** Reference move name. */
 	private var String pRefMoveName
-	/** Reference move time. */
 	private var float pRefMoveTime
-	/** Enables position manipulation. */
 	private var bool pEnablePosition
-	/** Enables orientation manipulation. */
 	private var bool pEnableOrientation
-	/** Enables size manipulation. */
 	private var bool pEnableSize
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create new animation rule definition. */
 	public func new()
-		this.pLeadMoveName = "idle"
-		this.pLeadMoveTime = 0.0
-		this.pRefMoveName = "idle"
-		this.pRefMoveTime = 0.0
-		this.pEnablePosition = true
-		this.pEnableOrientation = true
-		this.pEnableSize = false
+		pLeadMoveName = "idle"
+		pLeadMoveTime = 0
+		pRefMoveName = "idle"
+		pRefMoveTime = 0
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = false
 	end
-	
-	
-	
-	/** Retrieves the leading move name. */
-	public func String getLeadingMoveName()
-		return this.pLeadMoveName
-	end
-	
-	/** Sets the leading move name. */
-	public func void setLeadingMoveName( String name )
-		if name == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pLeadMoveName = name
-	end
-	
-	/** Retrieves the leading move time. */
-	public func float getLeadingMoveTime()
-		return this.pLeadMoveTime
-	end
-	
-	/** Sets the leading move time. */
-	public func void setLeadingMoveTime( float time )
-		this.pLeadMoveTime = time
-	end
-	
-	/** Retrieves the reference move name. */
-	public func String getReferenceMoveName()
-		return this.pRefMoveName
-	end
-	
-	/** Sets the reference move name. */
-	public func void setReferenceMoveName( String name )
-		if name == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pRefMoveName = name
-	end
-	
-	/** Retrieves the reference move time. */
-	public func float getReferenceMoveTime()
-		return this.pRefMoveTime
-	end
-	
-	/** Sets the reference move time. */
-	public func void setReferenceMoveTime( float time )
-		this.pRefMoveTime = time
-	end
-	
-	/** Determines if the position manipulation is enabled. */
-	public func bool getEnablePosition()
-		return this.pEnablePosition
-	end
-	
-	/** Sets if the position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
-	end
-	
-	/** Determines if the orientation manipulation is enabled. */
-	public func bool getEnableOrientation()
-		return this.pEnableOrientation
-	end
-	
-	/** Sets if the orientation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
-	end
-	
-	/** Determines if the size manipulation is enabled. */
-	public func bool getEnableSize()
-		return this.pEnableSize
-	end
-	
-	/** Sets if the size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
-	end
-	
-	
 	
 	/**
-	 * Build engine animator rule using the stored definition.
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
 	 */
-	public func AnimatorRule buildRule( Animator animator )
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleAnimationDifference rule) super(fromDef, toDef, rule)
+		pLeadMoveName = rule.pLeadMoveName
+		pLeadMoveTime = rule.pLeadMoveTime
+		pRefMoveName = rule.pRefMoveName
+		pRefMoveTime = rule.pRefMoveTime
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
+	end
+	
+	
+	
+	/** \brief Leading move name. */
+	public func String getLeadingMoveName()
+		return pLeadMoveName
+	end
+	
+	/** \brief Set leading move name. */
+	public func void setLeadingMoveName(String name)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		pLeadMoveName = name
+	end
+	
+	/** \brief Leading move time. */
+	public func float getLeadingMoveTime()
+		return pLeadMoveTime
+	end
+	
+	/** \brief Set leading move time. */
+	public func void setLeadingMoveTime(float time)
+		pLeadMoveTime = time
+	end
+	
+	/** \brief Reference move name. */
+	public func String getReferenceMoveName()
+		return pRefMoveName
+	end
+	
+	/** \brief Set reference move name. */
+	public func void setReferenceMoveName(String name)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		pRefMoveName = name
+	end
+	
+	/** \brief Reference move time. */
+	public func float getReferenceMoveTime()
+		return pRefMoveTime
+	end
+	
+	/** \brief Set reference move time. */
+	public func void setReferenceMoveTime(float time)
+		pRefMoveTime = time
+	end
+	
+	/** \brief Position manipulation is enabled. */
+	public func bool getEnablePosition()
+		return pEnablePosition
+	end
+	
+	/** \brief Set if position manipulation is enabled. */
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
+	end
+	
+	/** \brief Orientation manipulation is enabled. */
+	public func bool getEnableOrientation()
+		return pEnableOrientation
+	end
+	
+	/** \brief Set if orientation manipulation is enabled. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
+	end
+	
+	/** \brief Size manipulation is enabled. */
+	public func bool getEnableSize()
+		return pEnableSize
+	end
+	
+	/** \brief Set if size manipulation is enabled. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARAnimationDifference rule = ARAnimationDifference.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARAnimationDifferenceTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARAnimationDifferenceTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setLeadingMoveName( this.pLeadMoveName )
-		rule.setLeadingMoveTime( this.pLeadMoveTime )
-		rule.setReferenceMoveName( this.pRefMoveName )
-		rule.setReferenceMoveTime( this.pRefMoveTime )
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setLeadingMoveName(pLeadMoveName)
+		rule.setLeadingMoveTime(pLeadMoveTime)
+		rule.setReferenceMoveName(pRefMoveName)
+		rule.setReferenceMoveTime(pRefMoveTime)
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Animation Difference" ) + \
-			" lmove=" + this.pLeadMoveName + ":" + this.pLeadMoveTime + \
-			" rmove=" + this.pRefMoveName + ":" + this.pRefMoveTime + \
-			" epos=" + this.pEnablePosition + " eorient=" + this.pEnableOrientation + " esize=" + this.pEnableSize + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Animation Difference") + \
+			" lmove=" + pLeadMoveName + ":" + pLeadMoveTime + \
+			" rmove=" + pRefMoveName + ":" + pRefMoveTime + \
+			" epos=" + pEnablePosition + " eorient=" + pEnableOrientation + " esize=" + pEnableSize + ")")
 	end
 end

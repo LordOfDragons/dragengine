@@ -5,10 +5,14 @@ from SConsPlatformAndroid import androidUpdateEnv
 tools = ARGUMENTS.get( 'tools', '' )
 if tools:
 	if tools == 'mingw64':
-		parent_env = Environment( CPPPATH='.', LIBPATH='.', tools=['mingw'] )
+		import os, shutil
+		
+		# import os. llvm-mingw needs to be installed outside /usr . required PATH to be respected
+		parent_env = Environment(ENV = {'PATH': os.environ['PATH']}, CPPPATH='.', LIBPATH='.', tools=['mingw'])
+		#parent_env = Environment(CPPPATH='.', LIBPATH='.', tools=['mingw'])
 		
 		compiler = 'x86_64-w64-mingw32'
-		if not parent_env.Detect( '{}-g++'.format( compiler ) ):
+		if not parent_env.Detect('{}-g++'.format(compiler)):
 			print( 'Windows 64-bit Cross-Compiler not found.' )
 			Return()
 		
@@ -34,12 +38,30 @@ if tools:
 		parent_env[ 'OS_NAME' ] = 'win32'
 		parent_env[ 'SYS_PLATFORM' ] = 'win32'
 		parent_env[ 'CROSSCOMPILE_HOST' ] = compiler
-		parent_env[ 'CROSSCOMPILE_SYSROOT' ] = '/usr/{}'.format( compiler )
+		
+		parent_env['CROSSCOMPILE_CLANG'] = parent_env.Detect('{}-clang++'.format(compiler)) != None
+		
+		# try to guess the sysroot
+		pathCompiler = shutil.which(parent_env['CXX'])
+		dirCompiler = os.path.split(pathCompiler)[0]
+		dirCompilerUp = os.path.split(dirCompiler)[0]
+		parent_env['CROSSCOMPILE_SYSROOT'] = os.path.join(dirCompilerUp, compiler)
+		#print('sysroot: ' + parent_env['CROSSCOMPILE_SYSROOT'])
 		
 		# prevent stdc++6 problems with missnig symbols on different compilers
 		#parent_env.Append( CPPFLAGS = [ '-std=c++11' ] )
 		#parent_env.Append( CROSSCOMPILE_CFLAGS = [ '-std=c++11' ] )
 		#parent_env.Append( CROSSCOMPILE_CPPFLAGS = [ '-std=c++11' ] )
+		
+		# app store requirements
+		parent_env.Append(LINKFLAGS = ['-Wl,--dynamicbase'])
+		parent_env.Append(LINKFLAGS = ['-Wl,--nxcompat'])
+		parent_env['WINDOWS_LIBS'] = []
+		#parent_env.Append(WINDOWS_LIBS = ['winstorecompat'])
+		#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
+		
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = ['-Wl,--dynamicbase'])
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = ['-Wl,--nxcompat'])
 		
 		print( '*** Using Windows 64 Cross Compiler' )
 		
@@ -47,6 +69,8 @@ if tools:
 		parent_env = Environment( CPPPATH='.', LIBPATH='.', tools=[ tools ] )
 		parent_env[ 'OS_NAME' ] = os.name
 		parent_env[ 'SYS_PLATFORM' ] = sys.platform
+		parent_env['WINDOWS_LIBS'] = []
+		#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 
 elif sys.platform == 'win32':
 	print( 'Windows detected. Setting up MinGW64 toolchain' )
@@ -64,11 +88,16 @@ elif sys.platform == 'win32':
 	##parent_env.Append( ENV = { 'PATH' : 'C:\MinGW\bin;' + os.environ[ 'PATH' ] } )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+	parent_env['WINDOWS_LIBS'] = []
+	#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 	
 else:
 	parent_env = Environment( CPPPATH='.', LIBPATH='.' )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+
+if not 'CROSSCOMPILE_CLANG' in parent_env:
+	parent_env['CROSSCOMPILE_CLANG'] = False
 
 # Haiku: The PATH found by SCons are wrong in many ways causing binaries to be not found.
 #        Replace them with sane values. This is not a 'good' solution but should work.
@@ -79,7 +108,7 @@ parent_env.Tool('logStdOut')
 if parent_env['LogStdOut_Enabled']:
 	parent_env['LOG_STD_OUT_FILE'] = open('build.log', 'w')
 
-parent_env.Tool('runIsolated')
+parent_env.Tool('runExternalCommand')
 
 parent_env.Tool('macos_bundle')
 
@@ -121,7 +150,7 @@ if not (parent_env['OSPosix'] or parent_env['OSWindows'] or parent_env['OSBeOS']
 
 # parameters
 #params = Variables( [ 'parameters.cache', 'custom.py' ] )
-params = Variables( [ 'custom.py' ] )
+params = Variables(['custom.py']) 
 
 params.Add( EnumVariable( 'platform_android', 'Build for Android platform', 'no', ['no','armv7','x86'] ) )
 params.Add( BoolVariable( 'with_tests', 'Build engine tests', False ) )
@@ -130,7 +159,10 @@ params.Add( BoolVariable( 'with_warnerrors', 'Treat warnings as errors ( dev-bui
 params.Add( BoolVariable( 'with_sanitize', 'Enable sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_verbose', 'Verbose compilation showing command lines( dev-builds )', False ) )
+params.Add( BoolVariable( 'with_ci', 'Build CI', False ) )
+params.Add(StringVariable('version', 'Version', '9999'))
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
+params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 
 params.Add( TernaryVariable( 'with_system_zlib', 'Use System Zlib' ) )
 params.Add( TernaryVariable( 'with_system_libpng', 'Use System libpng' ) )
@@ -161,6 +193,7 @@ params.Add( TernaryVariable( 'with_system_libhidapi', 'Use System libhidapi' ) )
 params.Add( TernaryVariable( 'with_system_libopenhmd', 'Use System libopenhmd' ) )
 params.Add( TernaryVariable( 'with_system_fftw', 'Use System fftw' ) )
 params.Add( TernaryVariable( 'with_system_soundtouch', 'Use System soundtouch' ) )
+params.Add( TernaryVariable( 'with_system_libwebp', 'Use System libwebp' ) )
 
 params.Add( TernaryVariable( 'with_opengl', 'Use OpenGL' ) )
 params.Add( TernaryVariable( 'with_python', 'Use Python' ) )
@@ -171,6 +204,7 @@ params.Add( TernaryVariable( 'build_graphics_opengl', 'Build OpenGL Graphics Mod
 params.Add( TernaryVariable( 'build_image_png', 'Build PNG Image Module' ) )
 params.Add( TernaryVariable( 'build_image_png3d', 'Build PNG-3D Image Module' ) )
 params.Add( TernaryVariable( 'build_image_jpeg', 'Build JPEG Image Module' ) )
+params.Add( TernaryVariable( 'build_image_webp', 'Build WebP Image Module' ) )
 params.Add( TernaryVariable( 'build_input_x', 'Build X Input Module' ) )
 params.Add( TernaryVariable( 'build_input_w32', 'Build Windows Input Module' ) )
 params.Add( TernaryVariable( 'build_input_beos', 'Build BeOS Input Module' ) )
@@ -183,10 +217,25 @@ params.Add( TernaryVariable( 'build_script_smalltalk', 'Build Smalltalk Script M
 params.Add( TernaryVariable( 'build_sound_ogg', 'Build OGG Vorbis Sound Module' ) )
 params.Add( TernaryVariable( 'build_video_theora', 'Build Theora Video Module' ) )
 params.Add( TernaryVariable( 'build_video_apng', 'Build Animated PNG Video Module' ) )
-params.Add( TernaryVariable( 'build_igde', 'Build IGDE' ) )
 params.Add( TernaryVariable( 'build_guilauncher', 'Build GUI Launcher' ) )
 params.Add( TernaryVariable( 'build_launcher_android', 'Build Android Launcher' ) )
 params.Add( TernaryVariable( 'build_archive_delga', 'Build DELGA Archive Module' ) )
+params.Add( TernaryVariable( 'build_vr_openvr', 'Build OpenVR VR Module' ) )
+params.Add( TernaryVariable( 'build_vr_openxr', 'Build OpenXR VR Module' ) )
+
+params.Add( TernaryVariable( 'build_igde', 'Build IGDE' ) )
+params.Add( TernaryVariable( 'build_editor_animator', 'Build IGDE Animator Editor' ) )
+params.Add( TernaryVariable( 'build_editor_conversation', 'Build IGDE Conversation Editor' ) )
+params.Add( TernaryVariable( 'build_editor_font', 'Build IGDE Font Editor' ) )
+params.Add( TernaryVariable( 'build_editor_gamedefinition', 'Build IGDE Game Definition Editor' ) )
+params.Add( TernaryVariable( 'build_editor_langpack', 'Build IGDE Language Pack Editor' ) )
+params.Add( TernaryVariable( 'build_editor_particleemitter', 'Build IGDE Particle Emitter Editor' ) )
+params.Add( TernaryVariable( 'build_editor_rig', 'Build IGDE Rig Editor' ) )
+params.Add( TernaryVariable( 'build_editor_skin', 'Build IGDE Skin Editor' ) )
+params.Add( TernaryVariable( 'build_editor_sky', 'Build IGDE Sky Editor' ) )
+params.Add( TernaryVariable( 'build_editor_speechanimation', 'Build IGDE Speech Animation Editor' ) )
+params.Add( TernaryVariable( 'build_editor_synthesizer', 'Build IGDE Synthesizer Editor' ) )
+params.Add( TernaryVariable( 'build_editor_world', 'Build IGDE World Editor' ) )
 
 params.Add( EnumVariable( 'archive_format', 'Archive file format', 'tarbz2', ['tarbz2', 'zip'] ) )
 params.Add( StringVariable( 'archive_name_engine',
@@ -199,10 +248,16 @@ params.Add( StringVariable( 'archive_name_igde_dev',
 	'Archive file name without extension for IGDE Development archive', 'deigde_dev' ) )
 params.Add( StringVariable( 'archive_name_special',
 	'Archive file name without extension for Special archive', 'despecial' ) )
+
+params.Add(StringVariable('addon_name_blender',
+	'Blender addon file name without extension', 'blender-addon-dragengine'))
+
 params.Add( StringVariable( 'installer_name_engine',
 	'Installer file name without extension for Drag[en]gine installer', 'install-dragengine' ) )
 params.Add( StringVariable( 'installer_name_engine_dev',
 	'Installer file name without extension for Drag[en]gine Development installer', 'install-dragengine-dev' ) )
+params.Add( StringVariable( 'installer_name_launcher',
+	'Installer file name without extension for Drag[en]gine Launcher installer', 'install-dragengine-launcher' ) )
 params.Add( StringVariable( 'installer_name_igde',
 	'Installer file name without extension for IGDE installer', 'install-deigde' ) )
 params.Add( StringVariable( 'installer_name_igde_dev',
@@ -265,7 +320,8 @@ if parent_env['OSMacOS']:
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
-
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${includedir}/delauncher', PathVariable.PathAccept ) )
 	
 elif parent_env['OSBeOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -324,6 +380,8 @@ elif parent_env['OSBeOS']:
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'${sysvardir}/delauncher/games', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${includedir}/delauncher', PathVariable.PathAccept ) )
 	
 elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -381,6 +439,8 @@ elif parent_env['OSPosix']:
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${includedir}/delauncher', PathVariable.PathAccept ) )
 	
 elif parent_env['OSWindows']:
 	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
@@ -449,7 +509,21 @@ elif parent_env['OSWindows']:
 	params.Add( PathVariable( 'path_launcher_share', 'Path to the Launcher shares',
 		'${path_launcher}/Share', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
-		'${path_launcher}/Games', PathVariable.PathAccept ) )
+		'@Public/DELaunchers/Games', PathVariable.PathAccept ) )
+	
+	params.Add( PathVariable( 'path_launcher_sdk', 'Path to Drag[en]gine Launcher SDK directory',
+		'${path_launcher}/SDK', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_sdk_lib', 'Path to Drag[en]gine Launcher SDK libraries',
+		'${path_launcher_sdk}/lib', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_sdk_inc', 'Path to Drag[en]gine Launcher SDK includes',
+		'${path_launcher_sdk}/include', PathVariable.PathAccept ) )
+	
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${path_de_sdk_inc}/delauncher', PathVariable.PathAccept ) )
+	
+	params.Add(BoolVariable('with_install_pdb', 'Install/archive PDB files', False))
+	params.Add(PathVariable('path_pdb', 'Path to the PDBs',
+		'${path_de}/PDB', PathVariable.PathAccept))
 	
 else:
 	Exit( 'No supported OS found!')
@@ -459,20 +533,21 @@ params.Update( parent_env )
 
 # determine sanitize flags to use
 parent_env.Replace(SANITIZE_FLAGS = [])
+parent_env.Replace(SANITIZE_LINK_FLAGS = [])
 
 if parent_env['with_debug'] and parent_env['with_sanitize']:
 	if parent_env['with_sanitize_thread']:
 		parent_env.Append(SANITIZE_FLAGS = ['-fsanitize=thread'])
 		
 	else:
-		parent_env.Append(SANITIZE_FLAGS = [
+		flags = [
 			'-fsanitize=address',
 			'-fsanitize-address-use-after-scope',
 			'-fsanitize=pointer-compare',
-			'-fsanitize=pointer-subtract'])
-		parent_env.Append(SANITIZE_FLAGS = [
+			'-fsanitize=pointer-subtract']
+		flags.extend([
 			'-fsanitize=leak'])
-		parent_env.Append(SANITIZE_FLAGS = [
+		flags.extend([
 			'-fsanitize=undefined',
 			'-fsanitize=shift',
 			'-fsanitize=shift-exponent',
@@ -496,6 +571,19 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 			'-fsanitize=vptr',
 			'-fsanitize=pointer-overflow',
 			'-fsanitize=builtin'])
+		
+		if parent_env['CROSSCOMPILE_CLANG']:
+			"""
+			unsupported = [
+				'-fsanitize=leak',
+				'-fsanitize=bounds-strict',
+				'-fsanitize=object-size']
+			
+			flags = [f for f in flags if not f in unsupported]
+			"""
+			flags = ['-fsanitize=address']
+		
+		parent_env.Append(SANITIZE_FLAGS = flags)
 
 # for modules hide everything except the entry point. for this the default visibility
 # is set to hidden and only the entry point is qualified with normal visibility.
@@ -503,13 +591,21 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 # the version script is required to hide symbols of linked static libraries.
 # the -s flag eventually strips unused code linked in by static libraries
 
+if 'CROSSCOMPILE_CPPFLAGS' in parent_env:
+	parent_env.Append(CROSSCOMPILE_NOSAN_CPPFLAGS = parent_env['CROSSCOMPILE_CPPFLAGS'])
+	
+if 'CROSSCOMPILE_LINKFLAGS' in parent_env:
+	parent_env.Append(CROSSCOMPILE_NOSAN_LINKFLAGS = parent_env['CROSSCOMPILE_LINKFLAGS'])
+
 if parent_env['with_debug']:
 	parent_env.Append(MODULE_CPPFLAGS = ['-DMOD_ENTRY_POINT_ATTR='])
 	if parent_env['with_sanitize']:
 		parent_env.Append(MODULE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(MODULE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
+		parent_env.Append(MODULE_LINKFLAGS = parent_env['SANITIZE_LINK_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_LINK_FLAGS'])
 	
 else:
 	parent_env.Append(MODULE_CPPFLAGS = ['-fvisibility=hidden'])
@@ -540,7 +636,11 @@ if not parent_env[ 'with_verbose' ]:
 
 if parent_env['with_debug']:
 	if parent_env['OSWindows']:
-		parent_env.Append(CPPFLAGS = ['-g', '-gstabs', '-ggdb'])
+		if parent_env['CROSSCOMPILE_CLANG']:
+			parent_env.Append(CPPFLAGS = ['-g', '-gcodeview'])
+			parent_env.Append(LINKFLAGS = ['-Wl,-pdb='])
+		else:
+			parent_env.Append(CPPFLAGS = ['-g', '-gstabs', '-ggdb'])
 	else:
 		parent_env.Append(CPPFLAGS = ['-g'])
 		# mingw produces internal compiler errors on 8.x GCC. disabled until fixed or a check is present
@@ -551,12 +651,17 @@ if parent_env[ 'platform_android' ] == 'no':
 	parent_env.Append( CPPFLAGS = [ '-O2' ] )  # because android platform script defines this already
 parent_env.Append( CPPFLAGS = [ '-Wall' ] )
 
+parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
+
 # disable the new (and truely stupid) new gcc 8.1 shenanigans.
 # see https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#index-Wclass-memaccess .
 # the idea behind all this is all nice and dandy but it prevents legit fast memory handling
 # trying to pretend idiots from shooting themselves in the foot. if somebody uses memcpy then
 # he should know what he is doing so stop breaking builds with non-sense errors.
-parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
+# 
+# and to add insult to injury MacOS does not understand the flag. great... just great
+if not parent_env['OSMacOS'] and not parent_env['CROSSCOMPILE_CLANG']:
+	parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
 
 if parent_env[ 'with_warnerrors' ]:
 	parent_env.Append( CPPFLAGS = [ '-Werror' ] )
@@ -564,6 +669,11 @@ if parent_env[ 'with_warnerrors' ]:
 if parent_env[ 'platform_android' ] != 'no':
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 	parent_env.Append(CPPFLAGS = ['-Wno-tautological-constant-compare'])
+
+# clang uses some warnings we do not care about right now
+if parent_env['CROSSCOMPILE_CLANG']:
+	parent_env.Append(CPPFLAGS = ['-Wno-unused-function'])
+	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 
 # no default targets
 Default( None )
@@ -602,6 +712,7 @@ elif parent_env['OSWindows']:
 	parent_report[ 'deigde shared data path' ] = parent_env.subst( parent_env[ 'path_igde_share' ] )
 	parent_report[ 'dragengine cache path' ] = parent_env.subst( parent_env[ 'path_de_cache' ] )
 	#parent_report[ 'program files' ] = parent_env.subst( parent_env[ 'programfiles' ] )
+	parent_report['delauncher games'] = parent_env.subst(parent_env['path_launcher_games'])
 
 parent_report[ 'platform_android' ] = parent_env[ 'platform_android' ]
 if parent_env[ 'platform_android' ] != 'no':
@@ -614,6 +725,7 @@ parent_report[ 'treat warnings as errors' ] = 'yes' if parent_env[ 'with_warnerr
 parent_report[ 'build with debug symbols' ] = 'yes' if parent_env[ 'with_debug' ] else 'no'
 parent_report[ 'build with sanitizing' ] = 'yes' if parent_env[ 'with_sanitize' ] else 'no'
 parent_report[ 'build with thread sanitizing' ] = 'yes' if parent_env[ 'with_sanitize_thread' ] else 'no'
+parent_report['version'] = parent_env['version']
 
 
 
@@ -625,6 +737,7 @@ extdirs.append( 'extern/libapng' )
 extdirs.append( 'extern/libjpeg' )
 extdirs.append( 'extern/sndio' )
 extdirs.append( 'extern/openal' )
+extdirs.append( 'extern/openvr' )
 extdirs.append( 'extern/libogg' )
 extdirs.append( 'extern/libvorbis' )
 extdirs.append( 'extern/libtheora' )
@@ -640,6 +753,8 @@ extdirs.append( 'extern/libhidapi' )
 extdirs.append( 'extern/libopenhmd' )
 extdirs.append( 'extern/fftw' )
 extdirs.append( 'extern/soundtouch' )
+extdirs.append( 'extern/libwebp' )
+extdirs.append( 'extern/openxr' )
 
 for extdir in extdirs:
 	SConscript( dirs=extdir, variant_dir='{}/build'.format( extdir ),
@@ -653,6 +768,9 @@ SConscript( dirs='src/dragengine', variant_dir='src/dragengine/build', duplicate
 	exports='parent_env parent_targets parent_report' )
 
 scdirs = []
+
+# shared libraries
+scdirs.append( 'src/shared/vulkan' )
 
 # game engine modules
 scdirs.append( 'src/modules/animator/deanimator' )
@@ -677,6 +795,7 @@ scdirs.append( 'src/modules/image/png3d' )
 scdirs.append( 'src/modules/image/tga' )
 scdirs.append( 'src/modules/image/jpeg' )
 scdirs.append( 'src/modules/image/ies' )
+scdirs.append( 'src/modules/image/webp' )
 
 scdirs.append( 'src/modules/input/console' )
 scdirs.append( 'src/modules/input/xsystem' )
@@ -714,7 +833,12 @@ scdirs.append( 'src/modules/archive/delga' )
 
 scdirs.append( 'src/modules/combined/fbx' )
 
+scdirs.append( 'src/modules/vr/null' )
+scdirs.append( 'src/modules/vr/openvr' )
+scdirs.append( 'src/modules/vr/openxr' )
+
 # launchers
+scdirs.append( 'src/launcher/shared' )
 scdirs.append( 'src/launcher/console' )
 scdirs.append( 'src/launcher/gui' )
 #scdirs.append( 'src/launcher/android' )

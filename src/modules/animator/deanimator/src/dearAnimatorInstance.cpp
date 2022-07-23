@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearAnimator.h"
 #include "dearAnimatorInstance.h"
@@ -64,7 +63,7 @@ dearAnimatorInstance::dearAnimatorInstance( deDEAnimator &module, deAnimatorInst
 pModule( module ),
 pAnimatorInstance( instance ),
 
-pAnimator( NULL ),
+pAnimator( nullptr ),
 
 pDirtyMappings( true ),
 pDirtyAnimator( true ),
@@ -76,8 +75,8 @@ pUseAllBones( true ),
 
 pAnimatorUpdateTracker( 0 ),
 
-pAnimation( NULL ),
-pComponent( NULL ),
+pAnimation( nullptr ),
+pComponent( nullptr ),
 
 pRules( NULL ),
 pRuleCount( 0 ),
@@ -422,16 +421,9 @@ void dearAnimatorInstance::BlendFactorChanged(){
 
 void dearAnimatorInstance::AnimationChanged(){
 	// this is safe with parallel tasks since animation is only accessed during prepare
-	deAnimation *animation = pAnimatorInstance.GetAnimation();
-	if( ! animation && pAnimator ){
-		animation = pAnimator->GetAnimator().GetAnimation();
-	}
-	
-	if( animation ){
-		pAnimation = ( dearAnimation* )animation->GetPeerAnimator();
-		
-	}else{
-		pAnimation = NULL;
+	pAnimation = nullptr;
+	if( pAnimatorInstance.GetAnimation() ){
+		pAnimation = ( dearAnimation* )pAnimatorInstance.GetAnimation()->GetPeerAnimator();
 	}
 	
 	pDirtyRuleParams = true;
@@ -651,12 +643,12 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 			}
 			
 			for( i=0; i<linkCount; i++ ){
-				link = new dearLink( *animator.GetLinkAt( i ), controllerMapping );
+				link = new dearLink( *this, *animator.GetLinkAt( i ), controllerMapping );
 				AddLink( link );
 				link = NULL;
 			}
 			
-		}catch( const deException &exception ){
+		}catch( const deException & ){
 			if( link ){
 				delete link;
 			}
@@ -703,7 +695,7 @@ void dearAnimatorInstance::pUpdateRules(){
 				controllerMapping.Add( i );
 			}
 			
-			dearCreateRuleVisitor visitor( *this, animator, controllerMapping, 0 );
+			dearCreateRuleVisitor visitor( *this, *pAnimator, controllerMapping, 0 );
 			
 			pRules = new dearRule*[ ruleCount ];
 			
@@ -829,7 +821,10 @@ void dearAnimatorInstance::pWaitTaskApplyRules(){
 	}
 	
 	deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
-	if( ! parallelProcessing.GetPaused() ){
+	if( parallelProcessing.GetPaused() ){
+		pActiveTaskApplyRule->Drop();
+		
+	}else{
 		// parallel processing is paused if the engine is in progress of being stopped.
 		// in this case all tasks have been waited for already and no tasks are running
 		parallelProcessing.WaitForTask( pActiveTaskApplyRule );

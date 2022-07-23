@@ -112,7 +112,7 @@ void reCLRigSimulation::CollisionResponse( deCollider *owner, deCollisionInfo *i
 		}break;
 		
 	case deCollider::ertStatic:
-		break;;
+		break;
 	}
 }
 

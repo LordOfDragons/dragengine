@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICDECAL_H_
 #define _DEBASEGRAPHICDECAL_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic Module Decal Peer.
  */
-class deBaseGraphicDecal{
+class DE_DLL_EXPORT deBaseGraphicDecal{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

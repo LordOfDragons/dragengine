@@ -185,6 +185,7 @@ private:
 	reCLRigSimulation pCLSimulation;
 	decVector pGravity;
 	decVector pLocalGravity;
+	float pMass;
 	bool pDynamic;
 	float pSlowmotion;
 	decDMatrix pPoseMatrix;
@@ -327,6 +328,12 @@ public:
 	inline bool GetDynamic() const{ return pDynamic; }
 	/** Sets if dynamic mode has to be used. */
 	void SetDynamic( bool dynamic );
+	
+	/** Mass. */
+	inline float GetMass() const{ return pMass; }
+	
+	/** Set mass. */
+	void SetMass( float mass );
 	
 	/** Retrieves the current pose matrix. */
 	inline const decDMatrix &GetPoseMatrix() const{ return pPoseMatrix; }

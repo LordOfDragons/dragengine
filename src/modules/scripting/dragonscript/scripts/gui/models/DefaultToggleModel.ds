@@ -36,38 +36,38 @@ class DefaultToggleModel implements ToggleModel
 	
 	
 	/** \brief Create toggle model with false toggled state. */
-	public func new() this( false )
+	public func new() this(false)
 	end
 	
 	/** \brief Create toggle model. */
-	public func new( bool toggled )
-		this.pToggled = toggled
-		this.pListeners = Array.new()
+	public func new(bool toggled)
+		pToggled = toggled
+		pListeners = Array.new()
 	end
 	
 	
 	
 	/** \brief Get toggled state. */
 	public func bool getToggled()
-		return this.pToggled
+		return pToggled
 	end
 	
 	/** \brief Set toggled state. */
-	public func void setToggled( bool toggled )
-		if toggled == this.pToggled
+	public func void setToggled(bool toggled)
+		if toggled == pToggled
 			return
 		end
 		
-		this.pToggled = toggled
+		pToggled = toggled
 		
-		this.pListeners.forEach( block ToggleModelListener each
-			each.toggledChanged( this )
-		end )
+		pListeners.forEach(block ToggleModelListener each
+			each.toggledChanged(this)
+		end)
 	end
 	
 	/** \brief Switch toggled state. */
 	public func void toggle()
-		this.setToggled( not this.pToggled )
+		setToggled(not pToggled)
 	end
 	
 	
@@ -77,18 +77,18 @@ class DefaultToggleModel implements ToggleModel
 	 * \throws ENullPointer \em listener is \em null.
 	 * \throws EInvalidParam \em listener is present.
 	 */
-	public func void addListener( ToggleModelListener listener )
+	public func void addListener(ToggleModelListener listener)
 		if listener == null
 			throw ENullPointer.new()
 		end
-		this.pListeners.add( listener )
+		pListeners.add(listener)
 	end
 	
 	/**
 	 * \brief Remove listener.
 	 * \throws EInvalidParam \em listener is absent.
 	 */
-	public func void removeListener( ToggleModelListener listener )
-		this.pListeners.remove( listener )
+	public func void removeListener(ToggleModelListener listener)
+		pListeners.remove(listener)
 	end
 end

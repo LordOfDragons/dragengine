@@ -33,7 +33,7 @@
  * camera. Post processing effects are not applied since they are
  * screen space which is not given here.
  */
-class deDSRenderableCamera : public deDSRenderable{
+class DE_DLL_EXPORT deDSRenderableCamera : public deDSRenderable{
 private:
 	deCameraReference pCamera;
 	

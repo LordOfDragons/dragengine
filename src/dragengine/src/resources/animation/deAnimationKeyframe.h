@@ -28,7 +28,7 @@
 /**
  * \brief Animation bone keyframe.
  */
-class deAnimationKeyframe{
+class DE_DLL_EXPORT deAnimationKeyframe{
 private:
 	float pTime;
 	decVector pPosition;

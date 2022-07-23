@@ -151,6 +151,19 @@ void meConfiguration::SetSensitivity( float sensitivity ){
 
 
 
+void meConfiguration::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	SaveConfiguration();
+	
+	pWindowMain.ConfigEnableGIChanged();
+}
+
+
+
 deInputEvent::eKeyCodes meConfiguration::GetHotKeyAt( int hotkey ) const{
 	if( hotkey < 0 || hotkey >= EHK_COUNT ){
 		DETHROW( deeInvalidParam );
@@ -244,6 +257,8 @@ void meConfiguration::pReset(){
 	
 	pAutoUpdate = false;
 	pSensitivity = 1.0f;
+	
+	pEnableGI = false;
 	
 	pHotKeys[ ehkSelectWorkMode ] = deInputEvent::ekcW;
 	pHotKeys[ ehkSelectElementMode ] = deInputEvent::ekcE;

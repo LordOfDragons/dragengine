@@ -34,6 +34,7 @@
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderProgramUsage.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
@@ -152,7 +153,6 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfRGBA8 );
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglSPBlockUBO *spb = NULL;
-	deoglShaderProgram *shader = NULL;
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	decMatrix matrix1, matrix2;
@@ -165,7 +165,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		deoglShaderProgramUsage shader( shaderManager.GetProgramWith( sources, defines ) );
 		
 		// generate shader parameter block
 		spb = new deoglSPBlockUBO( renderThread );
@@ -268,19 +268,13 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		spb->FreeReference();
 		spb = NULL;
 		
-		shader->RemoveUsage();
-		
 	}catch( const deException & ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			glDeleteTextures( 1, &texture );
 		}
 		if( spb ){
 			spb->FreeReference();
 		}
-		
 		throw;
 	}
 	

@@ -23,6 +23,7 @@
 #define _DEOGLDSRENDERABLECANVAS_H_
 
 #include "deoglDSRenderable.h"
+#include "../../../canvas/deoglCanvasViewListener.h"
 
 class deoglCanvasView;
 class deoglRDSRenderableCanvas;
@@ -32,9 +33,9 @@ class deDSRenderableCanvas;
 
 
 /**
- * \brief Dynamic skin canvas renderable.
+ * Dynamic skin canvas renderable.
  */
-class deoglDSRenderableCanvas : public deoglDSRenderable{
+class deoglDSRenderableCanvas : public deoglDSRenderable, deoglCanvasViewListener{
 public:
 	const deDSRenderableCanvas &pRenderableCanvas;
 	deoglRDSRenderableCanvas *pRRenderableCanvas;
@@ -46,10 +47,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable. */
+	/** Create renderable. */
 	deoglDSRenderableCanvas( deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDSRenderableCanvas();
 	/*@}*/
 	
@@ -57,23 +58,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable. */
+	/** Renderable. */
 	inline const deDSRenderableCanvas &GetRenderableCanvas() const{ return pRenderableCanvas; }
 	
-	/** \brief Render renderable. */
+	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;
 	
-	/** \brief Renderable changed. */
+	/** Renderable changed. */
 	virtual void RenderableChanged();
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
+	/*@}*/
 	
-	/** \brief Canvas view requires sync. */
-	void CanvasViewRequiresSync();
 	
-	/** \brief Drop canvas view. */
-	void DropCanvasView();
+	
+	/** \name Canvas view listener */
+	/*@{*/
+	virtual void CanvasViewDestroyed();
+	virtual void CanvasViewRequiresSync();
 	/*@}*/
 	
 	

@@ -51,7 +51,7 @@ struct sCINatDat{
 
 // public func new()
 deClassCollisionInfo::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsCI,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid ){
 }
 void deClassCollisionInfo::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sCINatDat *nd = ( sCINatDat* )p_GetNativeData( myself );
@@ -59,26 +59,6 @@ void deClassCollisionInfo::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	nd->info = NULL;
 	// create info
 	nd->info = new deCollisionInfo;
-	if( ! nd->info ) DSTHROW( dueOutOfMemory );
-}
-
-// public func new( CollisionInfo info )
-deClassCollisionInfo::nfNewCopy::nfNewCopy( const sInitData &init ) : dsFunction( init.clsCI,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCI ); // info
-}
-void deClassCollisionInfo::nfNewCopy::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassCollisionInfo &clsCI = *( ( deClassCollisionInfo* )GetOwnerClass() );
-	sCINatDat &nd = *( ( sCINatDat* )p_GetNativeData( myself ) );
-	
-	nd.info = NULL;
-	
-	const deCollisionInfo * const info = clsCI.GetInfo( rt->GetValue( 0 )->GetRealObject() );
-	if( ! info ){
-		DSTHROW( dueNullPointer );
-	}
-	
-	nd.info = new deCollisionInfo( *info );
 }
 
 // public func destructor()
@@ -467,7 +447,6 @@ void deClassCollisionInfo::CreateClassMembers( dsEngine *engine ){
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
-	AddFunction( new nfNewCopy( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetOwnerBone( init ) );

@@ -22,6 +22,8 @@
 #ifndef _DESKINPROPERTYNODEVISITOR_H_
 #define _DESKINPROPERTYNODEVISITOR_H_
 
+#include "../../../../dragengine_export.h"
+
 class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 class deSkinPropertyNodeImage;
@@ -32,7 +34,7 @@ class deSkinPropertyNodeText;
 /**
  * \brief Visitor for skin constructed proprty nodes.
  */
-class deSkinPropertyNodeVisitor{
+class DE_DLL_EXPORT deSkinPropertyNodeVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

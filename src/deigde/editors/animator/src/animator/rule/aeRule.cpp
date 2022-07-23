@@ -37,6 +37,7 @@
 #include "aeRuleStateSnapshot.h"
 #include "aeRuleSubAnimator.h"
 #include "aeRuleTrackTo.h"
+#include "aeRuleMirror.h"
 #include "../aeAnimator.h"
 #include "../link/aeLinkList.h"
 
@@ -69,10 +70,8 @@ pName( "Rule" ),
 pType( type ),
 pBlendMode( deAnimatorRule::ebmBlend ),
 pBlendFactor( 1.0f ),
+pInvertBlendFactor( false ),
 pEnabled( true ){
-	if( type < deAnimatorRuleVisitorIdentify::ertAnimation || type > deAnimatorRuleVisitorIdentify::ertLimit ){
-		DETHROW( deeInvalidParam );
-	}
 }
 
 aeRule::aeRule( const aeRule &copy ) :
@@ -84,6 +83,7 @@ pType( copy.pType ),
 pListBones( copy.pListBones ),
 pBlendMode( copy.pBlendMode ),
 pBlendFactor( copy.pBlendFactor ),
+pInvertBlendFactor( copy.pInvertBlendFactor ),
 pEnabled( copy.pEnabled ),
 pTargetBlendFactor( copy.pTargetBlendFactor ){
 }
@@ -133,6 +133,7 @@ void aeRule::InitEngineRule( deAnimatorRule *engRule ) const{
 	engRule->SetEnabled( pEnabled );
 	engRule->SetBlendMode( pBlendMode );
 	engRule->SetBlendFactor( pBlendFactor );
+	engRule->SetInvertBlendFactor( pInvertBlendFactor );
 	engRule->GetListBones() = pListBones;
 	
 	pTargetBlendFactor.UpdateEngineTarget( animator, engRule->GetTargetBlendFactor() );
@@ -195,6 +196,20 @@ void aeRule::SetBlendFactor( float factor ){
 		
 		NotifyRuleChanged();
 	}
+}
+
+void aeRule::SetInvertBlendFactor( bool invert ){
+	if( invert == pInvertBlendFactor ){
+		return;
+	}
+	
+	pInvertBlendFactor = invert;
+	
+	if( pEngRule ){
+		pEngRule->SetInvertBlendFactor( invert );
+	}
+	
+	NotifyRuleChanged();
 }
 
 
@@ -322,6 +337,7 @@ aeRule &aeRule::operator=( const aeRule &copy ){
 	pListBones = copy.pListBones;
 	SetBlendMode( copy.pBlendMode );
 	SetBlendFactor( copy.pBlendFactor );
+	SetInvertBlendFactor( copy.pInvertBlendFactor );
 	SetEnabled( copy.pEnabled );
 	pTargetBlendFactor = copy.pTargetBlendFactor;
 	NotifyRuleChanged();
@@ -359,9 +375,6 @@ aeRule *aeRule::CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes ty
 	case deAnimatorRuleVisitorIdentify::ertLimit:
 		return new aeRuleLimit;
 		
-//	case deAnimatorRuleVisitorIdentify::ertRetarget:
-//		return new aeRuleRetarget;
-		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
 		return new aeRuleStateManipulator;
 		
@@ -373,6 +386,9 @@ aeRule *aeRule::CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes ty
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
 		return new aeRuleTrackTo;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		return aeRuleMirror::CreateDefault();
 		
 	default:
 		DETHROW( deeInvalidParam );

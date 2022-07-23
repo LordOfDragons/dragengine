@@ -23,35 +23,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef OS_W32
-#include <shlobj.h>
-//#include <tchar.h>
-#endif
-
 #include "deglConfigXML.h"
 #include "deglConfiguration.h"
 #include "../deglLauncher.h"
 
 #include <dragengine/logger/deLogger.h>
-#include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#ifdef OS_W32
-#include <dragengine/common/string/decString.h>
-#include <dragengine/common/string/unicode/decUnicodeString.h>
-#endif
-#include <dragengine/common/exceptions.h>
-#ifdef OS_W32
-#include <dragengine/app/deOSWindows.h>
-#endif
-
-#ifdef OS_W32
-#ifndef SHGFP_TYPE_CURRENT
-#define SHGFP_TYPE_CURRENT 0
-#endif
-#endif
 
 
 // Definitions
@@ -60,9 +39,6 @@
 #define FILE_LAUNCHER_CONFIG_SYSTEM		"/config/system/delaunchergui.xml"
 #define FILE_LAUNCHER_CONFIG_USER		"/config/user/delaunchergui.xml"
 
-#define LOGSOURCE "Launcher"
-
-
 
 // Class deglConfiguration
 ////////////////////////////
@@ -70,15 +46,13 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deglConfiguration::deglConfiguration( deglLauncher *launcher ){
-	if( ! launcher ) DETHROW( deeInvalidParam );
-	
-	pLauncher = launcher;
-	
-	pClrValidBack = FXRGB( 87, 217, 87 );
-	pClrValidText = FXRGB( 0, 0, 0 );
-	pClrProblemBack = FXRGB( 255, 128, 128 );
-	pClrProblemText = FXRGB( 0, 0, 0 );
+deglConfiguration::deglConfiguration( deglLauncher &launcher ) :
+pLauncher( launcher ),
+pCanSave( false ),
+pClrValidBack( FXRGB( 87, 217, 87 ) ),
+pClrValidText( FXRGB( 0, 0, 0 ) ),
+pClrProblemBack( FXRGB( 255, 128, 128 ) ),
+pClrProblemText( FXRGB( 0, 0, 0 ) ){
 }
 
 deglConfiguration::~deglConfiguration(){
@@ -89,314 +63,74 @@ deglConfiguration::~deglConfiguration(){
 // Management
 ///////////////
 
-void deglConfiguration::SetPathConfigSystem( const char *path ){
-	pPathConfigSystem = path;
-}
-
-void deglConfiguration::SetPathConfigUser( const char *path ){
-	pPathConfigUser = path;
-}
-
-void deglConfiguration::SetPathShares( const char *path ){
-	pPathShares = path;
-}
-
-void deglConfiguration::SetPathGames( const char *path ){
-	pPathGames = path;
-}
-
-void deglConfiguration::SetPathLogs( const char *path ){
-	pPathLogs = path;
-}
-
-
-
-void deglConfiguration::LocatePath(){
-	const char *value;
-	decPath path;
-	
-	// the system wide configuration directory is hard coded at compile time.
-	// can be changed at runtime using an environment parameter.
-	pPathConfigSystem = LAUNCHER_CONFIG_PATH;
-#ifdef OS_W32
-	const decString pathEngineBase( deOSWindows().GetPathEngineBase() );
-	
-	//pPathConfigSystem = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-	//	"PathLauncherConfig", pPathConfigSystem );
-	pPathConfigSystem = pathEngineBase + "\\Launchers\\Config";
-#endif
-	
-	value = getenv( "DELAUNCHER_SYS_CONFIG" );
-	if( value ){
-		pPathConfigSystem = value;
-	}
-#ifdef OS_W32
-	pPathConfigSystem = deOSWindows::ParseNativePath( pPathConfigSystem );
-#endif
-	
-#ifdef OS_W32
-	pPathConfigUser = "@RoamingAppData\\DELaunchers\\Config";
-	
-#else
-	// the user configuration directory is located under the user home directory.
-	// can be changed at runtime using an environment parameter.
-	value = getenv( "HOME" );
-	if( value ){
-		path.SetFromNative( value );
-		
-	}else{
-		value = getenv( "USER" );
-		
-		if( value ){
-			path.SetFromNative( "/home" );
-			path.AddComponent( value );
-			
-		}else{
-			value = getenv( "LOGUSER" );
-			
-			if( value ){
-				path.SetFromNative( "/home" );
-				path.AddComponent( value );
-			}
-		}
-	}
-	
-	if( path.GetComponentCount() > 0 ){
-		path.AddComponent( ".config" );
-		path.AddComponent( "delauncher" );
-		pPathConfigUser = path.GetPathNative();
-	}
-#endif
-	
-	value = getenv( "DELAUNCHER_USER_CONFIG" );
-	if( value ){
-		pPathConfigUser = value;
-	}
-#ifdef OS_W32
-	pPathConfigUser = deOSWindows::ParseNativePath( pPathConfigUser );
-#endif
-	
-	// the shares directory is hard coded at compile time. can be changed at runtime
-	// using an environment parameter.
-	pPathShares = LAUNCHER_SHARE_PATH;
-#ifdef OS_W32
-	pPathShares = pathEngineBase + "\\Launchers\\Share";
-	
-	//pPathShares = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-	//	"PathLauncherShares", pPathShares );
-#endif
-	
-	value = getenv( "DELAUNCHER_SHARES" );
-	if( value ){
-		pPathShares = value;
-	}
-#ifdef OS_W32
-	pPathShares = deOSWindows::ParseNativePath( pPathShares );
-#endif
-	
-	// the games directory is hard coded at compile time. can be changed at runtime
-	// using an environment parameter.
-	pPathGames = LAUNCHER_GAMES_PATH;
-#ifdef OS_W32
-	pPathGames = pathEngineBase + "\\Launchers\\Games";
-	
-	pPathGames = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-		"PathLauncherGames", pPathGames );
-#endif
-	
-	value = getenv( "DELAUNCHER_GAMES" );
-	if( value ){
-		pPathGames = value;
-	}
-#ifdef OS_W32
-	pPathGames = deOSWindows::ParseNativePath( pPathGames );
-#endif
-	
-	// the logs directory is located right under the user configuration directory.
-	// can be changed at runtime using an environment parameter
-	path.SetFromNative( pPathConfigUser );
-	path.AddComponent( "logs" );
-	pPathLogs = path.GetPathNative();
-#ifdef OS_W32
-	pPathLogs = "@LocalAppData\\DELaunchers\\Logs";
-#endif
-	
-	value = getenv( "DELAUNCHER_LOGS" );
-	if( value ){
-		pPathLogs = value;
-	}
-#ifdef OS_W32
-	pPathLogs = deOSWindows::ParseNativePath( pPathLogs );
-#endif
-}
-
-void deglConfiguration::InitVirtualFileSystem(){
-	deVirtualFileSystem &vfs = *pLauncher->GetFileSystem();
-	deVFSDiskDirectory *diskDir = NULL;
-	decPath pathRootDir, pathDiskDir;
-	
-	// add the found path to the virtual file system. this makes it easier
-	// to find the files later on without having to deal with file system
-	// specific quirks.
-	try{
-		// add the configuration containers. the containers are added in
-		// separate locations as we want to read the config files one
-		// by one and mapping both containers to the same path would
-		// shadow the system config files.
-		if( ! pPathConfigSystem.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/system" );
-			pathDiskDir.SetFromNative( pPathConfigSystem );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( true );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		if( ! pPathConfigUser.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/user" );
-			pathDiskDir.SetFromNative( pPathConfigUser );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		// add the data directory. currently there exists only one which
-		// is the system shares directory. a user one could be layered
-		// on top of it though if required later on. the shares container
-		// is set to read-write as the launcher has to potentiall install
-		// new games or uninstall them.
-		if( ! pPathShares.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/data" );
-			pathDiskDir.SetFromNative( pPathShares );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		// add the logs directory. this is read-write
-		if( ! pPathLogs.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/logs" );
-			pathDiskDir.SetFromNative( pPathLogs );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( diskDir ){
-			diskDir->FreeReference();
-		}
-		throw;
-	}
-}
-
-void deglConfiguration::LogImportantValues(){
-	deLogger &logger = *pLauncher->GetLogger();
-	
-	logger.LogInfoFormat( LOGSOURCE, "System config path = '%s'", pPathConfigSystem.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "User config path = '%s'", pPathConfigUser.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Shares path = '%s'", pPathShares.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Games path = '%s'", pPathGames.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Logs path = '%s'", pPathLogs.GetString() );
-}
-
-
-
 void deglConfiguration::LoadConfiguration(){
-	deglConfigXML configXML( pLauncher->GetLogger(), LOGSOURCE );
-	deVirtualFileSystem &vfs = *pLauncher->GetFileSystem();
-	deLogger &logger = *pLauncher->GetLogger();
-	decBaseFileReader *reader = NULL;
+	const decString &logSource = pLauncher.GetLogSource();
+	deglConfigXML configXML( pLauncher.GetLogger(), logSource );
+	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
+	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
 	
-	// read the system wide config file if existing
+	// read system configuration
 	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_SYSTEM );
 	
 	if( vfs.ExistsFile( pathFile ) ){
 		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			 logger.LogInfo( LOGSOURCE, "Reading system configuration file" );
-			try{
-				reader = vfs.OpenFileForReading( pathFile );
-				configXML.ReadFromFile( *reader, *this );
-				
-				reader->FreeReference();
-				
-			}catch( const deException & ){
-				if( reader ){
-					reader->FreeReference();
-				}
-				throw;
-			}
+			logger.LogInfo( logSource, "Reading system configuration file" );
+			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
 			
 		}else{
-			logger.LogError( LOGSOURCE, "System configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogError( logSource, "System configuration file is not a regular file" );
+			DETHROW_INFO( deeInvalidParam, "System configuration file is not a regular file" );
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "System configuration file not found, skipped" );
+		logger.LogInfo( logSource, "System configuration file not found, skipped" );
 	}
 	
-	// read the user config file if existing
+	// read user configuration
 	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
 	
 	if( vfs.ExistsFile( pathFile ) ){
 		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( LOGSOURCE, "Reading user configuration file" );
-			reader = NULL;
-			
-			try{
-				reader = vfs.OpenFileForReading( pathFile );
-				configXML.ReadFromFile( *reader, *this );
-				
-				reader->FreeReference();
-				
-			}catch( const deException & ){
-				if( reader ){
-					reader->FreeReference();
-				}
-				throw;
-			}
+			logger.LogInfo( logSource, "Reading user configuration file" );
+			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
 			
 		}else{
-			logger.LogError( LOGSOURCE, "User configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogError( logSource, "User configuration file is not a regular file" );
+			DETHROW_INFO( deeInvalidParam, "User configuration file is not a regular file" );
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "User configuration file not found, will be created upon exiting" );
+		logger.LogInfo( logSource, "User configuration file not found, will be created upon exiting" );
 	}
+	
+	pCanSave = true;
 }
 
 void deglConfiguration::SaveConfiguration(){
-	deglConfigXML configXML( pLauncher->GetLogger(), LOGSOURCE );
-	deVirtualFileSystem &vfs = *pLauncher->GetFileSystem();
-	deLogger &logger = *pLauncher->GetLogger();
-	decBaseFileWriter *writer = NULL;
+	if( ! pCanSave ){
+		// this can happen due to loading error or due to an early quite requested.
+		// for this reason no warning is logged
+		return;
+	}
+	
+	const decString &logSource = pLauncher.GetLogSource();
+	deLogger &logger = *pLauncher.GetLogger();
+	
+	deglConfigXML configXML( pLauncher.GetLogger(), logSource );
+	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	decPath pathFile;
 	
 	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
+	
 	if( vfs.CanWriteFile( pathFile ) ){
-		logger.LogInfo( LOGSOURCE, "Writing user configuration file" );
+		logger.LogInfo( logSource, "Writing user configuration file" );
 		
 		try{
-			writer = vfs.OpenFileForWriting( pathFile );
-			configXML.WriteToFile( *writer, *this );
-			
-			writer->FreeReference();
+			configXML.WriteToFile( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathFile ) ), *this );
 			
 		}catch( const deException & ){
-			if( writer ){
-				writer->FreeReference();
-			}
-			logger.LogError( LOGSOURCE, "Failed to write user configuration file (file permission problem)" );
+			logger.LogError( logSource, "Failed to write user configuration file (file permission problem)" );
 			// DIALOG BOX
 			// "User configuration can not be written!\n"
 			// "Make sure you have write permission for the file and parent directory.\n"
@@ -404,15 +138,10 @@ void deglConfiguration::SaveConfiguration(){
 		}
 		
 	}else{
-		logger.LogError( LOGSOURCE, "Failed to write user configuration file (file writing problem)" );
+		logger.LogError( logSource, "Failed to write user configuration file (file writing problem)" );
 		// DIALOG BOX
 		// "User configuration can not be written!\n"
 		// "Make sure you have write permission for the file and parent directory.\n"
 		// "User configuration has not been saved!\n"
 	}
 }
-
-
-
-// Private Functions
-//////////////////////

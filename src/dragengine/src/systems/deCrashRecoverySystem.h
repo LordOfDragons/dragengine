@@ -35,7 +35,7 @@ class deBaseCrashRecoveryModule;
  * during run time. Such modules take over the run time during an error and try
  * to reach a working state again so the engine can continue running.
  */
-class deCrashRecoverySystem : public deBaseSystem{
+class DE_DLL_EXPORT deCrashRecoverySystem : public deBaseSystem{
 private:
 	deBaseCrashRecoveryModule *pActiveModule;
 public:

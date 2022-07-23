@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../../dragengine_configuration.h"
+
 #ifdef OS_W32
 	#include <direct.h>
 	#include "../string/unicode/decUnicodeString.h"
@@ -180,7 +182,7 @@ void decPath::SetWorkingDirectory(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	const int count = wcslen( buffer );
+	const int count = ( int )wcslen( buffer );
 	decUnicodeString unicode;
 	int i;
 	unicode.Set( 0, count );
@@ -334,6 +336,99 @@ decPath decPath::RelativePath( const decPath &baseDirectory, bool onlyBelow ) co
 		newPath.pComponents.Add( pComponents.GetAt( i ) );
 	}
 	return newPath;
+}
+
+bool decPath::IsParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount <= count ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsEqualOrParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount < count ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsDirectParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount != count + 1 ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsEqualOrDirectParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount < count || pathDirCount > count + 1 ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+decPath decPath::GetParent() const{
+	DEASSERT_TRUE( pComponents.GetCount() > 0 )
+	
+	decPath path;
+	path.pPrefix = pPrefix;
+	path.pComponents = pComponents.Splice( 0, -1 );
+	return path;
 }
 
 

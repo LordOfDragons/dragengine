@@ -134,7 +134,14 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_viewport_array",
 	"GL_ARB_clip_control",
 	"GL_ARB_shader_storage_buffer_object",
+	"GL_ARB_program_interface_query",
 	"GL_ARB_shader_image_load_store",
+	"GL_ARB_compute_shader",
+	"GL_ARB_draw_indirect",
+	"GL_ARB_multi_draw_indirect",
+	"GL_ARB_indirect_parameters",
+	"GL_ARB_bindless_texture",
+	"GL_ARB_fragment_layer_viewport",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -167,7 +174,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_NV_transform_feedback2",
 	"GL_NV_transform_feedback3",
 	
-	"GL_KHR_debug",
+	"GL_KHR_debug"
 };
 
 
@@ -195,7 +202,8 @@ pHasArrayCubeMap( false ),
 pHasSeamlessCubeMap( false ),
 pHasCopyImage( false ),
 pSupportsGeometryShader( false ),
-pSupportsGSInstancing( false )
+pSupportsGSInstancing( false ),
+pSupportsComputeShader( false )
 {
 	int i;
 	for( i=0; i<EXT_COUNT; i++ ){
@@ -221,6 +229,7 @@ void deoglExtensions::Initialize(){
 	if( ! pInitialized ){
 		pFetchRequiredFunctions();
 		pFetchOptionalFunctions();
+		pOptionalDisableExtensions();
 		pFixBuggedFunctions();
 		
 		pInitialized = true;
@@ -246,16 +255,24 @@ void deoglExtensions::PrintSummary(){
 	pRenderThread.GetLogger().LogInfo( "Supported Extensions:" );
 	for( i=0; i<EXT_COUNT; i++ ){
 		if( pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "%s", vExtensionNames[ i ] );
+			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
 		}
 	}
 	
 	pRenderThread.GetLogger().LogInfo( "Not Supported Extensions:" );
 	for( i=0; i<EXT_COUNT; i++ ){
 		if( ! pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "%s", vExtensionNames[ i ] );
+			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
 		}
 	}
+	
+	pRenderThread.GetLogger().LogInfo( "Extension Choices:" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No" );
 }
 
 bool deoglExtensions::VerifyPresence(){
@@ -277,8 +294,18 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 	pDisableExtension[ extension ] = true;
 	
 	switch( extension ){
+	case ext_ARB_compute_shader:
+		pglDispatchCompute = NULL;
+		pglDispatchComputeIndirect = NULL;
+		break;
+		
 	case ext_ARB_shader_storage_buffer_object:
 		pglShaderStorageBlockBinding = NULL;
+		break;
+		
+	case ext_ARB_program_interface_query:
+		pglGetProgramInterfaceiv = NULL;
+		pglGetProgramResourceIndex = NULL;
 		break;
 		
 	case ext_ARB_uniform_buffer_object:
@@ -583,9 +610,15 @@ void deoglExtensions::pScanExtensions(){
 		|| pHasExtension[ ext_ARB_geometry_shader4 ]
 		|| pHasExtension[ ext_EXT_gpu_shader4 ];
 	
-	pSupportsGSInstancing = pGLVersion >= evgl4p0
+	// "core since" = "4.0". "core in" = "4.6". 4.0 is not working
+	pSupportsGSInstancing = pGLVersion >= evgl4p6
 		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_gpu_shader5 ];
+	
+	// "core since" = "4.3". "core in" = "4.6"
+	pSupportsComputeShader = pGLVersion >= evgl4p6
+		|| pGLESVersion >= evgles3p2
+		|| pHasExtension[ ext_ARB_compute_shader ];
 	
 	#ifdef OS_ANDROID
 	/*
@@ -671,6 +704,11 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglBeginQuery, "glBeginQuery" );
 	pGetRequiredFunction( (void**)&pglEndQuery, "glEndQuery" );
 	pGetRequiredFunction( (void**)&pglGetQueryObjectuiv, "glGetQueryObjectuiv" );
+	
+	// opengl version 2.0
+	pGetRequiredFunction( (void**)&pglStencilOpSeparate, "glStencilOpSeparate" );
+	pGetRequiredFunction( (void**)&pglStencilFuncSeparate, "glStencilFuncSeparate" );
+	pGetRequiredFunction( (void**)&pglStencilMaskSeparate, "glStencilMaskSeparate" );
 	
 	// GL_ARB_vertex_program . opengl version 2.0
 	pGetRequiredFunction( (void**)&pglVertexAttribPointer, "glVertexAttribPointer" );
@@ -770,6 +808,12 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockiv, "glGetActiveUniformBlockiv" );
 	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockName, "glGetActiveUniformBlockName" );
 	pGetRequiredFunction( (void**)&pglUniformBlockBinding, "glUniformBlockBinding" );
+	
+	// OpenGL 3.2 core stuff
+	pGetRequiredFunction( (void**)&pglFenceSync, "glFenceSync" );
+	pGetRequiredFunction( (void**)&pglDeleteSync, "glDeleteSync" );
+	pGetRequiredFunction( (void**)&pglClientWaitSync, "glClientWaitSync" );
+	pGetRequiredFunction( (void**)&pglWaitSync, "glWaitSync" );
 	
 	// GL_ARB_timer_query : opengl version 3.3
 	pGetRequiredFunction( (void**)&pglQueryCounter, "glQueryCounter" );
@@ -920,9 +964,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_shader_storage_buffer_object : opengl version 4.3
-	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p1 ){
-		pHasExtension[ ext_ARB_shader_storage_buffer_object ] = ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
-	}
+	pHasExtension[ ext_ARB_shader_storage_buffer_object ] &= ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
 	if( pHasExtension[ ext_ARB_shader_storage_buffer_object ] ){
 		#ifdef ANDROID
 		pglShaderStorageBlockBinding = eglShaderStorageBlockBinding;
@@ -932,9 +974,53 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		#endif
 	}
 	
+	// GL_ARB_program_interface_query : opengl version 4.3
+	pHasExtension[ ext_ARB_program_interface_query ] &= ! pDisableExtension[ ext_ARB_program_interface_query ];
+	if( pHasExtension[ ext_ARB_program_interface_query ] ){
+		#ifdef ANDROID
+		pglGetProgramInterfaceiv = eglGetProgramInterfaceiv;
+		pglGetProgramResourceIndex = eglGetProgramResourceIndex;
+		#else
+		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
+			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );
+		pGetOptionalFunction( (void**)&pglGetProgramResourceIndex,
+			"glGetProgramResourceIndex", ext_ARB_program_interface_query );
+		#endif
+	}
+	
+	// GL_ARB_compute_shader : opengl version 4.3
+	pHasExtension[ ext_ARB_compute_shader ] &= ! pDisableExtension[ ext_ARB_compute_shader ];
+	if( pHasExtension[ ext_ARB_compute_shader ] ){
+		#ifdef ANDROID
+		pglDispatchCompute = eglDispatchCompute;
+		pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+		#else
+		pGetOptionalFunction( (void**)&pglDispatchCompute, "glDispatchCompute", ext_ARB_compute_shader );
+		pGetOptionalFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect", ext_ARB_compute_shader );
+		#endif
+	}
+	
+	// GL_ARB_draw_indirect : opengl version 4.3
+	if( pHasExtension[ ext_ARB_draw_indirect ] ){
+		pGetOptionalFunction( (void**)&pglDrawArraysIndirect, "glDrawArraysIndirect", ext_ARB_draw_indirect );
+		pGetOptionalFunction( (void**)&pglDrawElementsIndirect, "glDrawElementsIndirect", ext_ARB_draw_indirect );
+	}
+	
+	// GL_ARB_multi_draw_indirect : opengl version 4.3
+	if( pHasExtension[ ext_ARB_multi_draw_indirect ] ){
+		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", ext_ARB_multi_draw_indirect );
+		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", ext_ARB_multi_draw_indirect );
+	}
+	
 	// GL_ARB_clip_control : opengl version 4.5
 	if( pHasExtension[ ext_ARB_clip_control ] ){
 		pGetOptionalFunction( (void**)&pglClipControl, "glClipControl", ext_ARB_clip_control );
+	}
+	
+	// GL_ARB_indirect_parameters : opengl version 4.6
+	if( pHasExtension[ ext_ARB_indirect_parameters ] ){
+		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirectCountARB, "glMultiDrawArraysIndirectCountARB", ext_ARB_indirect_parameters );
+		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirectCountARB, "glMultiDrawElementsIndirectCountARB", ext_ARB_indirect_parameters );
 	}
 	
 	// GL_ARB_geometry_shader4 : no opengl version
@@ -1044,6 +1130,31 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// OpenGL 3.2 : no extension
 	if( pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0 ){
 		pGetRequiredFunction( (void**)&pglGetInteger64v, "glGetInteger64v" );
+	}
+	
+	// GL_ARB_bindless_texture : opengl version 4.6
+	if( pHasExtension[ ext_ARB_bindless_texture ] ){
+		pGetOptionalFunction( (void**)&pglGetTextureHandleARB, "glGetTextureHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetTextureSamplerHandleARB, "glGetTextureSamplerHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeTextureHandleResidentARB, "glMakeTextureHandleResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeTextureHandleNonResidentARB, "glMakeTextureHandleNonResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetImageHandleARB, "glGetImageHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeImageHandleResidentARB, "glMakeImageHandleResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeImageHandleNonResidentARB, "glMakeImageHandleNonResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglUniformHandleui64ARB, "glUniformHandleui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglUniformHandleui64vARB, "glUniformHandleui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglProgramUniformHandleui64ARB, "glProgramUniformHandleui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglProgramUniformHandleui64vARB, "glProgramUniformHandleui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64ARB, "glVertexAttribL1ui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64vARB, "glVertexAttribL1ui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture );
+	}
+}
+
+void deoglExtensions::pOptionalDisableExtensions(){
+	// ext_ARB_compute_shader without ext_ARB_shader_image_load_store is useless
+	if( ! pglBindImageTexture ){
+		DisableExtension( ext_ARB_compute_shader );
 	}
 }
 

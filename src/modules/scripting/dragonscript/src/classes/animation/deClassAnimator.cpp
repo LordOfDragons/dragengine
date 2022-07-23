@@ -328,6 +328,93 @@ void deClassAnimator::nfSetLinkRepeat::RunFunction( dsRunTime *rt, dsValue *myse
 	animator.NotifyLinkChangedAt( index );
 }
 
+// public func void setLinkBone( int link, String bone );
+deClassAnimator::nfSetLinkBone::nfSetLinkBone( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsStr ); // bone
+}
+void deClassAnimator::nfSetLinkBone::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBone( rt->GetValue( 1 )->GetString() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkBoneParameter( int link, AnimatorLinkBoneParameter parameter );
+deClassAnimator::nfSetLinkBoneParameter::nfSetLinkBoneParameter( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBoneParameter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsAnimatorLinkBoneParameter ); // parameter
+}
+void deClassAnimator::nfSetLinkBoneParameter::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBoneParameter( ( deAnimatorLink::eBoneParameter )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 1 )->GetRealObject() ) );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkBoneValueRange( int link, float minimum, float maximum );
+deClassAnimator::nfSetLinkBoneValueRange::nfSetLinkBoneValueRange( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBoneValueRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsFlt ); // minimum
+	p_AddParameter( init.clsFlt ); // maximum
+}
+void deClassAnimator::nfSetLinkBoneValueRange::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBoneValueRange( rt->GetValue( 1 )->GetFloat(), rt->GetValue( 2 )->GetFloat() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkBoneValueRangeRotation( int link, float minimum, float maximum );
+deClassAnimator::nfSetLinkBoneValueRangeRotation::nfSetLinkBoneValueRangeRotation( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBoneValueRangeRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsFlt ); // minimum
+	p_AddParameter( init.clsFlt ); // maximum
+}
+void deClassAnimator::nfSetLinkBoneValueRangeRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBoneValueRange( rt->GetValue( 1 )->GetFloat() * DEG2RAD, rt->GetValue( 2 )->GetFloat() * DEG2RAD );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkWrapY( int link, bool wrap );
+deClassAnimator::nfSetLinkWrapY::nfSetLinkWrapY( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkWrapY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsBool ); // wrap
+}
+void deClassAnimator::nfSetLinkWrapY::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	animator.GetLinkAt( index )->SetWrapY( rt->GetValue( 1 )->GetBool() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
 
 
 // public func int getRuleCount()
@@ -498,6 +585,8 @@ deClassAnimator::~deClassAnimator(){
 ///////////////
 
 void deClassAnimator::CreateClassMembers( dsEngine *engine ){
+	pClsAnimatorLinkBoneParameter = engine->GetClass( "Dragengine.Scenery.AnimatorLinkBoneParameter" );
+	
 	sInitData init;
 	
 	// store classes
@@ -513,6 +602,7 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	init.clsAni = pDS->GetClassAnimation();
 	init.clsCurveBezier = pDS->GetClassCurveBezier();
 	init.clsAnimatorCtrl = pDS->GetClassAnimatorController();
+	init.clsAnimatorLinkBoneParameter = pClsAnimatorLinkBoneParameter;
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -535,6 +625,11 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetLinkController( init ) );
 	AddFunction( new nfSetLinkCurve( init ) );
 	AddFunction( new nfSetLinkRepeat( init ) );
+	AddFunction( new nfSetLinkBone( init ) );
+	AddFunction( new nfSetLinkBoneParameter( init ) );
+	AddFunction( new nfSetLinkBoneValueRange( init ) );
+	AddFunction( new nfSetLinkBoneValueRangeRotation( init ) );
+	AddFunction( new nfSetLinkWrapY( init ) );
 	
 	AddFunction( new nfGetRuleCount( init ) );
 	AddFunction( new nfAddRule( init ) );

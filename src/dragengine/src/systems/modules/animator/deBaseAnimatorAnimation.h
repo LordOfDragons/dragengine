@@ -22,12 +22,14 @@
 #ifndef _DEBASEANIMATORANIMATION_H_
 #define _DEBASEANIMATORANIMATION_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Animator module animation peer.
  */
-class deBaseAnimatorAnimation{
+class DE_DLL_EXPORT deBaseAnimatorAnimation{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -146,14 +146,14 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-	long onLeftMousePress( FXObject *sender, FXSelector selector, void *data );
-	long onLeftMouseRelease( FXObject *sender, FXSelector selector, void *data );
-	long onMouseMoved( FXObject *sender, FXSelector selector, void *data );
-	long onRightMousePress( FXObject *sender, FXSelector selector, void *data );
-	long onRightMouseRelease( FXObject *sender, FXSelector selector, void *data );
+	long onPaint( FXObject*, FXSelector, void* );
+	long onResize( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onLeftMousePress( FXObject*, FXSelector, void* );
+	long onLeftMouseRelease( FXObject*, FXSelector, void* );
+	long onMouseMoved( FXObject*, FXSelector, void* );
+	long onRightMousePress( FXObject*, FXSelector, void* );
+	long onRightMouseRelease( FXObject*, FXSelector, void* );
 	
 	
 	

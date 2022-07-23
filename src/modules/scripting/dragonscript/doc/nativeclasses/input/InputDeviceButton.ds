@@ -73,6 +73,22 @@ class InputDeviceButton
 	end
 	
 	/**
+	 * \brief Button type.
+	 * \version 1.6
+	 */
+	public func InputDeviceButtonType getType()
+		return null
+	end
+	
+	/**
+	 * \brief Identifier of component or empty string if standalone.
+	 * \version 1.6
+	 */
+	public func String getComponent()
+		return null
+	end
+	
+	/**
 	 * \brief Image to represent the button in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
@@ -118,6 +134,14 @@ class InputDeviceButton
 		return null
 	end
 	
+	/**
+	 * \brief Button can send touch/untouch events.
+	 * \version 1.11.1
+	 */
+	public func bool getTouchable()
+		return false
+	end
+	
 	
 	
 	/**
@@ -130,6 +154,20 @@ class InputDeviceButton
 	 * If reattached the device properly works again.
 	 */
 	public func bool isPressed()
+		return false
+	end
+	
+	/**
+	 * \brief Get touched state.
+	 * \version 1.6
+	 * 
+	 * This obtains the current touched state from the input module. If the device has been
+	 * detached from the host platform in the mean time false is returned. In contrary to
+	 * InputSystem.getButtonTouched() no exception is thrown. This allows to keep a reference
+	 * to this instance without worrying about the device being detached from the system.
+	 * If reattached the device properly works again.
+	 */
+	public func bool isTouched()
 		return false
 	end
 	/*@}*/

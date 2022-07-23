@@ -29,7 +29,7 @@
 /**
  * \brief Read occlusionMesh resource loader task.
  */
-class deRLTaskReadOcclusionMesh : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadOcclusionMesh : public deResourceLoaderTask {
 private:
 	deOcclusionMeshReference pOcclusionMesh;
 	bool pSucceeded;

@@ -28,7 +28,7 @@
 /**
  * \brief Identify synthesizer effect visitor.
  */
-class deSynthesizerEffectVisitorIdentify : public deSynthesizerEffectVisitor{
+class DE_DLL_EXPORT deSynthesizerEffectVisitorIdentify : public deSynthesizerEffectVisitor{
 public:
 	enum eEffectTypes{
 		eetUnknown,

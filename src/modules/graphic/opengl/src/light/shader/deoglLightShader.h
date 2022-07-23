@@ -39,6 +39,8 @@ class deoglSPBlockUBO;
  */
 class deoglLightShader : public deObject{
 public:
+	typedef deTObjectReference<deoglLightShader> Ref;
+	
 	/** Texture targets. */
 	enum eTextureTargets{
 		ettDepth,
@@ -63,14 +65,28 @@ public:
 		ettShadow2Ambient,
 		ettLightDepth1,
 		ettLightDepth2,
+		ettPosition,
+		ettOTOcclusion,
+		ettOTDistance,
 		ETT_COUNT
 	};
 	
 	/** Render parameter uniform targets. */
 	enum eRenderUniformTargets{
 		erutPosTransform,
+		erutPosTransform2,
+		erutDepthSampleOffset,
 		erutAOSelfShadow,
 		erutLumFragCoordScale,
+		
+		// global illumination ray
+		erutGIRayMatrix,
+		erutGIRayMatrixNormal,
+		erutGICameraProjection,
+		
+		// global illumination
+		erutGIHighestCascade,
+		
 		ERUT_COUNT
 	};
 	
@@ -84,6 +100,7 @@ public:
 		
 		eiutLightPosition,
 		eiutLightView,
+		eiutDepthCompare,
 		
 		eiutShadowMatrix1,
 		eiutShadowMatrix2,
@@ -101,6 +118,9 @@ public:
 		eiutShadowDepthTransform,
 		eiutShadowDepthTransform2,
 		
+		eiutGIShadowMatrix,
+		eiutGIShadowParams,
+		
 		EIUT_COUNT
 	};
 	
@@ -110,6 +130,7 @@ public:
 		elutLightRange,
 		elutLightColorAmbient,
 		elutLightAmbientRatio,
+		elutLightGIAmbientRatio,
 		elutLightAttenuationCoefficient,
 		elutLightDampingCoefficient,
 		elutLightDampingThreshold,

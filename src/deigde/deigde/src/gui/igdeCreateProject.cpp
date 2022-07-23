@@ -240,16 +240,64 @@ void igdeCreateProject::pCreateDirectories(){
 
 void igdeCreateProject::pCopyDefaultFiles(){
 	// save ignore files for revisioning systems
-	decBaseFileWriterReference writer;
-	
 	decPath path( pNativePathProject );
 	path.AddComponent( ".gitignore" );
 	
+	decBaseFileWriterReference writer;
 	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
 	writer->WriteString( "distribute\n" );
 	writer->WriteString( "testRun.log\n" );
+	writer->WriteString( "*.kdev*\n" );
+	writer->WriteString( "*.blend[1-9]\n" );
+	writer->WriteString( "*.delga\n" );
+	
+	// save lfs files for revisioning systems
+	path = pNativePathProject;
+	path.AddComponent( ".gitattributes" );
+	
+	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
+	
+	const char * const extensions[] = {
+		// images
+		"apng", "jpg", "jpeg", "png", "png3d", "tga", "exr", "gif", "webp",
+		// vector graphics
+		"svg", "svgz",
+		// videos
+		"ogg", "ogv", "m4a", "webm",
+		// audio
+		"mp3", "mp4",
+		// animation
+		"deanim",
+		// models
+		"demodel", "deoccmesh", "fbx",
+		// text documents
+		"odg", "ods", "odt", "pdf", "doc", "docx", "docm", "xls", "xlsx", "xlsm",
+		"ppt", "pps", "pptx", "pptm", "ppsx", "ppsm", "sldx", "sldm",
+		// dragengine specific
+		"denavspace", "depfc",
+		// audio editing
+		"au", "aup",
+		// 3d model editing
+		"blend", "blend[1-9]",
+		// image editing
+		"kra", "psd", "xcf", "xcfbz2",
+		// archives
+		"7z", "zip", "tar", "gz", "bz2",
+		// programming intermetiate files
+		"o", "os", "lo", "pyc",
+		// dragengine specific
+		"delga",
+		// end of list
+		NULL };
+	
+	int i;
+	decString line;
+	for( i=0; extensions[ i ]; i++ ){
+		line.Format( "*.%s filter=lfs diff=lfs merge=lfs -text\n", extensions[ i ] );
+		writer->WriteString( line );
+	}
 }
 
 void igdeCreateProject::pCreateGameDefinition(){
@@ -262,22 +310,20 @@ void igdeCreateProject::pCreateGameDefinition(){
 	pSharedGameDefContentReplace();
 	
 	// save project game definition
-	decBaseFileWriterReference writer;
 	
 	decPath path( pNativePathProject );
 	path.AddUnixPath( pPathGameDefProject );
 	
-	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
-	writer->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
+	( decDiskFileWriter::Ref::New( new decDiskFileWriter( path.GetPathNative(), false ) ) )
+		->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
 }
 
 void igdeCreateProject::pLoadSharedGameDefContent(){
-	decBaseFileReaderReference reader;
 	decPath path;
-	
 	path.SetFromNative( pWindowMain.GetConfiguration().GetPathShares() );
 	path.AddComponent( "newproject.degd" );
-	reader.TakeOver( new decDiskFileReader( path.GetPathNative() ) );
+	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
+		new decDiskFileReader( path.GetPathNative() ) ) );
 	
 	const int contentLen = reader->GetLength();
 	pSharedGameDefContent.Set( ' ', contentLen );
@@ -370,6 +416,9 @@ void igdeCreateProject::pApplyTemplate(){
 	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
 	pVFS->AddContainer( container );
 	
+	// create file renames
+	pCreateFileRenames();
+	
 	// create files
 	const igdeTemplateFileList &files = pTemplate->GetFiles();
 	const int fileCount = files.GetCount();
@@ -383,6 +432,13 @@ void igdeCreateProject::pApplyTemplate(){
 void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	dePathList list;
 	
+	// set up replacements if present
+	decStringList replaceTokens, replaceValues;
+	pCreateFileReplacements( file, replaceTokens, replaceValues );
+	const bool hasReplacements = replaceTokens.GetCount() > 0;
+	decString renamePath;
+	
+	// find files
 	if( ! file.GetPattern().IsEmpty() ){
 		deVirtualFileSystemReference vfs;
 		vfs.TakeOver( new deVirtualFileSystem );
@@ -393,12 +449,11 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 		
 	}else{
 		list.Add( decPath::CreatePathUnix( file.GetPath() ) );
+		
+		if( ! file.GetPathRename().IsEmpty() ){
+			renamePath = pReplaceTokens( file.GetPathRename(), pFileRenameTokens, pFileRenameValues );
+		}
 	}
-	
-	// set up replacements if present
-	decStringList replaceTokens, replaceValues;
-	pCreateFileReplacements( file, replaceTokens, replaceValues );
-	const bool hasReplacements = replaceTokens.GetCount() > 0;
 	
 	// process files
 	const int count = list.GetCount();
@@ -407,9 +462,8 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const decPath &path = list.GetAt( i );
-		
 		// read file from template
+		decPath path( list.GetAt( i ) );
 		reader.TakeOver( pVFS->OpenFileForReading( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ) + path ) );
 		
 		int contentLen = reader->GetLength();
@@ -425,6 +479,10 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 		}
 		
 		// create project file with content
+		if( ! renamePath.IsEmpty() ){
+			path = decPath::CreatePathUnix( renamePath );
+		}
+		
 		switch( file.GetDirectory() ){
 		case igdeTemplateFile::edData:
 			writer.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( VFS_DIR_DATA ) + path ) );
@@ -443,6 +501,20 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	}
 }
 
+void igdeCreateProject::pCreateFileRenames(){
+	pFileRenameTokens.Add( "{projectPathDirectory}" );
+	pFileRenameValues.Add( pNativePathProject.GetLastComponent() );
+	
+	pFileRenameTokens.Add( "{projectName}" );
+	pFileRenameValues.Add( pName );
+	
+	pFileRenameTokens.Add( "{gameId}" );
+	pFileRenameValues.Add( pGameId );
+	
+	pFileRenameTokens.Add( "{gameAliasId}" );
+	pFileRenameValues.Add( pGameAliasId );
+}
+
 void igdeCreateProject::pCreateFileReplacements( const igdeTemplateFile &file,
 decStringList &tokens, decStringList &values ){
 	const igdeTemplateReplaceList &list = file.GetReplacements();
@@ -458,6 +530,10 @@ decStringList &tokens, decStringList &values ){
 		switch( replace.GetValue() ){
 		case igdeTemplateReplace::evProjectPath:
 			value = pNativePathProject.GetPathNative();
+			break;
+			
+		case igdeTemplateReplace::evProjectPathDirectory:
+			value = pNativePathProject.GetLastComponent();
 			break;
 			
 		case igdeTemplateReplace::evDataPath:

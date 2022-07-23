@@ -130,6 +130,16 @@ void deClassPhysicsSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *m
 	rt->PushString( answer.ToUTF8().GetString() );
 }
 
+// public static func int getFPSRate()
+deClassPhysicsSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsPhySys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassPhysicsSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassPhysicsSystem* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetGameEngine()->GetPhysicsSystem()->GetActiveModule()->GetFPSRate() );
+}
+
 
 
 // Class deClassPhysicsSystem
@@ -173,4 +183,5 @@ void deClassPhysicsSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetParameterValue( init ) );
 	
 	AddFunction( new nfSendCommand( init ) );
+	AddFunction( new nfGetFPSRate( init ) );
 }

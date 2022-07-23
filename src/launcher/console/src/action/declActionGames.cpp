@@ -27,11 +27,12 @@
 #include "declActionDelgaHelper.h"
 #include "../declLauncher.h"
 #include "../config/declConfiguration.h"
-#include "../engine/declEngine.h"
-#include "../game/declGame.h"
-#include "../game/declGameManager.h"
-#include "../game/patch/declPatch.h"
-#include "../game/patch/declPatchManager.h"
+
+#include <delauncher/engine/delEngine.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameManager.h>
+#include <delauncher/game/patch/delPatch.h>
+#include <delauncher/game/patch/delPatchManager.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReaderReference.h>
@@ -87,48 +88,34 @@ void declActionGames::PrintSyntax(){
 	printf( "   Queries if game with identifier or alias is installed\n" );
 	printf( "   Return code 0: Game is installed\n" );
 	printf( "   Return code 1: Game is not installed\n" );
+	/*
 	printf( "\n" );
 	printf( "delauncher-console games uninstall (<identifier> | <alias>)\n" );
 	printf( "   Uninstall game. If game is not installed or multiple games match the call fails.\n" );
 	printf( "   Game patches and local files (like saves or caches) are not uninstalled.\n" );
 	printf( "   Return code 0: Game uninstalled successfully\n" );
 	printf( "   Return code 1: Uninstalling game failed\n" );
-}
-
-
-
-void declActionGames::InitLauncher(){
-	pLauncher.GetEngine()->LoadModuleList();
-	pLauncher.GetEngine()->LoadConfig();
-	pLauncher.GetEngine()->Start( pLauncher.GetEngineLogger(), "" );
-	try{
-		pLauncher.GetGameManager()->LoadGameList();
-		pLauncher.GetPatchManager().LoadPatchList();
-		pLauncher.GetGameManager()->LoadGameConfigs();
-		
-	}catch( const deException & ){
-		pLauncher.GetEngine()->Stop();
-		throw;
-	}
-	pLauncher.GetEngine()->Stop();
+	*/
 }
 
 int declActionGames::Run(){
 	const decUnicodeArgumentList &argumentList = pLauncher.GetArgumentList();
 	if( argumentList.GetArgumentCount() < 2 ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pListGames();
 	}
 	
 	const decString action( argumentList.GetArgumentAt( 1 )->ToUTF8() );
 	
 	if( action == "installed" ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pIsInstalled();
 		
+		/*
 	}else if( action == "uninstall" ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pUninstall();
+		*/
 		
 	}else{
 		PrintSyntax();
@@ -142,14 +129,14 @@ int declActionGames::Run(){
 //////////////////////
 
 int declActionGames::pListGames(){
-	const declGameList &gameList = pLauncher.GetGameManager()->GetGameList();
+	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
 	const int gameCount = gameList.GetCount();
 	int i;
 	
 	printf( "Available Games (alias (identifier) => title):\n" );
 	
 	for( i=0; i<gameCount; i++ ){
-		const declGame &game = *gameList.GetAt( i );
+		const delGame &game = *gameList.GetAt( i );
 		printf( "- '%s' (%s) => %s\n", game.GetAliasIdentifier().GetString(),
 			game.GetIdentifier().ToHexString( false ).GetString(),
 			game.GetTitle().ToUTF8().GetString() );
@@ -165,7 +152,7 @@ int declActionGames::pIsInstalled(){
 		return -2;
 	}
 	
-	const declGameList &gameList = pLauncher.GetGameManager()->GetGameList();
+	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
 	const decString identifier( argumentList.GetArgumentAt( 2 )->ToUTF8() );
 	
 	try{
@@ -195,12 +182,12 @@ int declActionGames::pUninstall(){
 	}
 	
 	// find game to uninstall
-	const declGameList &gameList = pLauncher.GetGameManager()->GetGameList();
+	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
 	const decString identifier( argumentList.GetArgumentAt( 2 )->ToUTF8() );
-	declGameList games;
+	delGameList games;
 	
 	try{
-		declGame * const game = gameList.GetWithID( decUuid( identifier, false ) );
+		delGame * const game = gameList.GetWithID( decUuid( identifier, false ) );
 		if( game ){
 			games.Add( game );
 		}
@@ -223,7 +210,7 @@ int declActionGames::pUninstall(){
 		const int count = games.GetCount();
 		int i;
 		for( i=0; i<count; i++ ){
-			const declGame &game = *games.GetAt( i );
+			const delGame &game = *games.GetAt( i );
 			printf( "- %s => %s\n", game.GetTitle().ToUTF8().GetString(),
 				game.GetIdentifier().ToHexString( false ).GetString() );
 		}
@@ -231,7 +218,7 @@ int declActionGames::pUninstall(){
 	}
 	
 	// check if the game is located in a delga file
-	const declGame &game = *games.GetAt( 0 );
+	const delGame &game = *games.GetAt( 0 );
 	if( game.GetDelgaFile().IsEmpty() ){
 		printf( "Game is not located in a *.delga file. Can not uninstall\n" );
 		return -1;
@@ -241,7 +228,7 @@ int declActionGames::pUninstall(){
 	bool hasSharedGamesPatches = false;
 	int i, count = gameList.GetCount();
 	for( i=0; i<count; i++ ){
-		const declGame &checkGame = *gameList.GetAt( i );
+		const delGame &checkGame = *gameList.GetAt( i );
 		if( &checkGame == &game || checkGame.GetDelgaFile() != game.GetDelgaFile() ){
 			continue;
 		}
@@ -252,20 +239,20 @@ int declActionGames::pUninstall(){
 		hasSharedGamesPatches = true;
 	}
 	
-	const declPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
+	const delPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
 	count = patchList.GetCount();
 	
 	for( i=0; i<count; i++ ){
-		const declPatch &checkPatch = *patchList.GetAt( i );
+		const delPatch &checkPatch = *patchList.GetAt( i );
 		if( checkPatch.GetDelgaFile() != game.GetDelgaFile() ){
 			continue;
 		}
 		
-		const declGame * const game = pLauncher.GetGameManager()->GetGameList().GetWithID( checkPatch.GetGameID() );
+		const delGame * const pgame = pLauncher.GetGameManager().GetGames().GetWithID( checkPatch.GetGameID() );
 		printf( "Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString( false ).GetString(),
-			game ? game->GetTitle().ToUTF8().GetString() : "?" );
+			pgame ? pgame->GetTitle().ToUTF8().GetString() : "?" );
 		hasSharedGamesPatches = true;
 	}
 	

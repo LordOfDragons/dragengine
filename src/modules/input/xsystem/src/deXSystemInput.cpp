@@ -259,6 +259,55 @@ int deXSystemInput::ButtonMatchingKeyChar( int device, int character ){
 	return pDevices->GetX11CoreKeyboard()->ButtonMatchingKeyChar( character );
 }
 
+int deXSystemInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetX11CoreKeyboard()->GetIndex() ){
+		return -1;
+	}
+	
+	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dexsiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetKeyCode() == keyCode && button.GetKeyLocation() == location ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+int deXSystemInput::ButtonMatchingKeyChar( int device, int character,
+deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetX11CoreKeyboard()->GetIndex() ){
+		return -1;
+	}
+	if( character < 0x20 || character > 0xff ){
+		return -1;
+	}
+	
+	Display * const display = GetOSUnix()->GetDisplay();
+	const KeyCode x11code = XKeysymToKeycode( display, ( KeySym )character );
+	if( x11code == 0 ){
+		return -1;
+	}
+	
+	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dexsiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetX11Code() == x11code && button.GetKeyLocation() == location ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
 
 
 // events
