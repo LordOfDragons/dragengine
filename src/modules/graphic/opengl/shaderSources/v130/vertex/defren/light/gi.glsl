@@ -5,9 +5,18 @@ precision highp int;
 
 in vec3 inPosition;
 
-out vec2 vScreenCoord;
+#ifdef GS_RENDER_STEREO
+	out vec2 vGSScreenCoord;
+#else
+	out vec2 vScreenCoord;
+#endif
 
 void main( void ){
 	gl_Position = vec4( inPosition, 1.0 );
-	vScreenCoord = inPosition.xy;
+	
+	#ifdef GS_RENDER_STEREO
+		vGSScreenCoord = inPosition.xy;
+	#else
+		vScreenCoord = inPosition.xy;
+	#endif
 }

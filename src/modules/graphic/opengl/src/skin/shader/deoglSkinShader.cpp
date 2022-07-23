@@ -483,23 +483,23 @@ void deoglSkinShader::PrepareShader(){
 
 
 deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 1, 1 );
+	return CreateSPBRender( renderThread, 1, 1, 1 );
 }
 
 deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderCubeMap( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 6, 1 );
+	return CreateSPBRender( renderThread, 6, 1, 1 );
 }
 
 deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderCascaded( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 4, 4 );
+	return CreateSPBRender( renderThread, 4, 1, 4 );
 }
 
 deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderStereo( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 2, 1 );
+	return CreateSPBRender( renderThread, 2, 2, 1 );
 }
 
 deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread,
-int matrixLayerCount, int depthOffsetLayerCount ){
+int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount ){
 	if( ! pglUniformBlockBinding ){
 		DETHROW( deeInvalidParam );
 	}
@@ -517,7 +517,7 @@ int matrixLayerCount, int depthOffsetLayerCount ){
 		
 		spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, matrixLayerCount ); // mat4x3
-		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
+		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, projectionMatrixLayerCount ); // mat4
 		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
 		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, matrixLayerCount ); // mat3
 		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3

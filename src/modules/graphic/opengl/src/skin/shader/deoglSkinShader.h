@@ -308,7 +308,7 @@ public:
 	static deoglSPBlockUBO *CreateSPBRenderStereo( deoglRenderThread &renderThread );
 	
 	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread,
-		int matrixLayerCount, int depthOffsetLayerCount );
+		int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount );
 	
 	/** Create occlusion map shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );

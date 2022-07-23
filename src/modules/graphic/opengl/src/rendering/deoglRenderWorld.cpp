@@ -666,17 +666,21 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// fill the parameter block parameters with the found values. only used parameters are set
 	pRenderStereoPB->MapBuffer();
 	try{
+		const decDMatrix &matrixCameraCorrection = plan.GetCameraCorrectionMatrix();
+		
 		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
-		pRenderStereoPB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matrixProjection );
 		pRenderStereoPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
 		
 		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 0, matrixCamera );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 0, matrixProjection );
 		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
 		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
 		
-		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCamera );
-		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCamera * matrixProjection );
-		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCamera.GetRotationMatrix().Invert() );
+		const decDMatrix matrixCameraCorrected( matrixCamera * matrixCameraCorrection );
+		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCameraCorrected );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 1, matrixProjection );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCameraCorrected * matrixProjection );
+		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCameraCorrected.GetRotationMatrix().Invert() );
 		
 		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
 		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );

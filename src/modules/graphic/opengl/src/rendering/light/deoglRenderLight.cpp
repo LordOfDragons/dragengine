@@ -150,9 +150,6 @@ pAddToRenderTask( NULL )
 	deoglShaderDefines defines;
 	
 	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
-		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
-		
 		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
 		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
@@ -173,37 +170,46 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
 		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderSSSSSStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
-		defines.AddDefine( "SSAO_RESOLUTION_COUNT", "1" ); // 1-4
+		defines.AddDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderAOLocalStereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
-		defines.AddDefine( "TAP_COUNT", "9" );
-		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", "1" );
-		defines.AddDefine( "OUT_DATA_SIZE", "1" );
-		defines.AddDefine( "TEX_DATA_SIZE", "1" );
+		defines.AddDefine( "TAP_COUNT", 9 );
+		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", true );
+		defines.AddDefine( "OUT_DATA_SIZE", 1 );
+		defines.AddDefine( "TEX_DATA_SIZE", 1 );
 		defines.AddDefine( "TEX_DATA_SWIZZLE", "g" );
-		defines.AddDefine( "INPUT_ARRAY_TEXTURES", "1" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURES", true );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
-		defines.AddDefine( "TAP_COUNT", "9" );
-		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", "1" );
-		defines.AddDefine( "OUT_DATA_SIZE", "3" );
+		defines.AddDefine( "TAP_COUNT", 9 );
+		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", true );
+		defines.AddDefine( "OUT_DATA_SIZE", 3 );
 		defines.AddDefine( "OUT_DATA_SWIZZLE", "g" );
-		defines.AddDefine( "TEX_DATA_SIZE", "1" );
-		defines.AddDefine( "INPUT_ARRAY_TEXTURES", "1" );
+		defines.AddDefine( "TEX_DATA_SIZE", 1 );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURES", true );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
 		
 		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-		defines.AddDefine( "TEXTURELEVEL", "1" );
-		defines.AddDefine( "OUT_COLOR_SIZE", "3" );
+		defines.AddDefine( "TEXTURELEVEL", 1 );
+		defines.AddDefine( "OUT_COLOR_SIZE", 3 );
 		defines.AddDefine( "TEX_DATA_SWIZZLE", "ggg" );
 		pShaderDebugAO = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
@@ -409,8 +415,9 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_TRUE, GL_FALSE, GL_FALSE ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderAOLocal );
-	shader = pShaderAOLocal->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderAOLocalStereo : pShaderAOLocal;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	defren.SetShaderParamFSQuad( *shader, spaolQuadParams );
 	shader->SetParameterVector4( spaolPosTransform, plan.GetDepthToPosition() );
@@ -602,8 +609,9 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 	defren.ActivateFBOColor( false, false );
 	
-	renderThread.GetShader().ActivateShader( pShaderSSSSS );
-	deoglShaderCompiled * const shader = pShaderSSSSS->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderSSSSSStereo : pShaderSSSSS;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
 	defren.SetShaderParamFSQuad( *shader, spsssssQuadParams );
 	shader->SetParameterVector4( spsssssPosTransform, plan.GetDepthToPosition() );

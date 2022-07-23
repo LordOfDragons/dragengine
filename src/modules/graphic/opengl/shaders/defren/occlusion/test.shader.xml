@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>DefRen Occlusion Test</name>
 	
@@ -18,6 +17,8 @@
 	<parameter name='pScaleSize2'/>
 	<parameter name='pBaseLevel2'/>
 	<parameter name='pClipNear2'/>
+	<parameter name='pMatrixStereo'/>
+	<parameter name='pMatrix2Stereo'/>
 	
 	<attribute name='inMinExtend' target='0'/>
 	<attribute name='inMaxExtend' target='1'/>

@@ -86,10 +86,6 @@ enum eSPDepthOnly{
 	spdoPFMatrix
 };
 
-enum eSPCopyDepth{
-	spcdQuadParams
-};
-
 enum eSPDepthDownsample{
 	spddsTCClamp,
 	spddsMipMapLevel
@@ -133,41 +129,38 @@ deoglRenderBase( renderThread )
 	
 	
 	
-	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
-	
-	defines.AddDefine( "DEPTH_TEST", "1" );
-	pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.AddDefine( "COPY_COLOR", "1" );
+	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
 	if( defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
+		defines.AddDefine( "INVERSE_DEPTH", true );
 	}
-	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
+	defines.AddDefine( "NO_TEXCOORD", true );
+	defines.AddDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
+	pShaderDepthDownsample = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
-	
-	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
+	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
+	defines.AddDefine( "GS_RENDER_STEREO", true );
 	if( defren.GetUseInverseDepth() ){
-		defines.AddDefine( "INVERSE_DEPTH", "1" );
+		defines.AddDefine( "INVERSE_DEPTH", true );
 	}
-	defines.AddDefine( "NO_TEXCOORD", "1" );
-	defines.AddDefine( "USE_MIN_FUNCTION", "1" ); // so it works for SSR. should also work for SSAO
-	pShaderDepthDownsample = shaderManager.GetProgramWith( sources, defines );
+	defines.AddDefine( "NO_TEXCOORD", true );
+	defines.AddDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
+	pShaderDepthDownsampleStereo = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth-Only V3" );
 	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_DEPTH", true );
 	}
 	
 	pShaderDepthSolid = shaderManager.GetProgramWith( sources, defines );
 	
-	defines.AddDefine( "USE_CLIP_PLANE", "1" );
+	defines.AddDefine( "USE_CLIP_PLANE", true );
 	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_DEPTH", true );
 	}
 	
 	pShaderDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
@@ -176,42 +169,42 @@ deoglRenderBase( renderThread )
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Particle Depth" );
 	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_DEPTH", true );
 	}
 	pShaderParticleDepthSolid = shaderManager.GetProgramWith( sources, defines );
 	
-	defines.AddDefine( "CLIP_DEPTH", "1" );
+	defines.AddDefine( "CLIP_DEPTH", true );
 	pShaderParticleDepthSolidCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
-	defines.AddDefine( "IGNORE_HOLES", "1" );
+	defines.AddDefine( "IGNORE_HOLES", true );
 	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_DEPTH", true );
 	}
 	pShaderParticleDepthHoles = shaderManager.GetProgramWith( sources, defines );
 	
-	defines.AddDefine( "CLIP_DEPTH", "1" );
+	defines.AddDefine( "CLIP_DEPTH", true );
 	pShaderParticleDepthHolesCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
-	defines.AddDefine( "USE_CLIP_PLANE", "1" );
+	defines.AddDefine( "USE_CLIP_PLANE", true );
 	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_DEPTH", true );
 	}
 	pShaderParticleDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
 	
-	defines.AddDefine( "CLIP_DEPTH", "1" );
+	defines.AddDefine( "CLIP_DEPTH", true );
 	pShaderParticleDepthClipSolidCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
-	defines.AddDefine( "USE_CLIP_PLANE", "1" );
-	defines.AddDefine( "IGNORE_HOLES", "1" );
+	defines.AddDefine( "USE_CLIP_PLANE", true );
+	defines.AddDefine( "IGNORE_HOLES", true );
 	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_DEPTH", true );
 	}
 	pShaderParticleDepthClipHoles = shaderManager.GetProgramWith( sources, defines );
 	
-	defines.AddDefine( "CLIP_DEPTH", "1" );
+	defines.AddDefine( "CLIP_DEPTH", true );
 	pShaderParticleDepthClipHolesCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 }
@@ -316,30 +309,6 @@ void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const de
 		renderThread.GetRenderers().GetTransparencyCounter().CountTransparency( plan, mask );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryTranspCounter, true );
 	}
-	
-	// copy the first depth texture to the second for later usage. this will be improved later on by adding a
-	// render pass decoding the depth into a proper float texture for faster access without the need to worry
-	// about stencil masks or using the same depth texture for testing as used for tapping
-	#if 0
-	if( config.GetDebugSnapshot() == 62 ){
-		defren.GetDepthTexture2()->CopyFrom( *defren.GetDepthTexture1(), false, defren.GetWidth(), defren.GetHeight(), 0, 0, 0, 0 );
-		/*
-		defren.ActivateFBOTemporary2( true );
-		
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		
-		renderThread.GetShader().ActivateShader( pShaderCopyDepthColor );
-		renderThread.GetTexture().GetStages()->EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		defren.SetShaderParamFSQuad( *pShaderCopyDepthColor->GetCompiled(), spcdQuadParams );
-		defren.RenderFSQuadVAO();
-		*/
-	}
-	#endif
 	
 	QUICK_DEBUG_END
 }
@@ -694,7 +663,7 @@ DBG_EXIT("RenderDepthPass")
 
 
 
-void deoglRenderDepthPass::DownsampleDepth(){
+void deoglRenderDepthPass::DownsampleDepth( deoglRenderPlan &plan ){
 DBG_ENTER("DownsampleDepth")
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -721,8 +690,9 @@ DBG_ENTER("DownsampleDepth")
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderDepthDownsample );
-	shader = pShaderDepthDownsample->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderDepthDownsampleStereo : pShaderDepthDownsample;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	tsmgr.EnableArrayTexture( 0, texture, GetSamplerClampNearest() );
 	

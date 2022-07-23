@@ -50,9 +50,13 @@ private:
 	deoglShaderProgramUsage pShaderOccMapOrtho;
 	deoglShaderProgramUsage pShaderOccMapOrthoClipPlane;
 	deoglShaderProgramUsage pShaderOccMapDownSample;
+	deoglShaderProgramUsage pShaderOccMapDownSampleStereo;
 	deoglShaderProgramUsage pShaderOccTest;
 	deoglShaderProgramUsage pShaderOccTestDual;
 	deoglShaderProgramUsage pShaderOccTestSun;
+	deoglShaderProgramUsage pShaderOccTestStereo;
+	deoglShaderProgramUsage pShaderOccTestDualStereo;
+	deoglShaderProgramUsage pShaderOccTestSunStereo;
 	deoglShaderProgramUsage pShaderOccTestTFB;
 	deoglShaderProgramUsage pShaderOccTestTFBDual;
 	deoglShaderProgramUsage pShaderOccTestTFBSun;
@@ -95,18 +99,20 @@ public:
 	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
 	
 	/** Render occlusion tests. */
-	void RenderOcclusionTests( deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap,
-		int baselevel, float clipNear, const decMatrix &matrixCamera );
+	void RenderOcclusionTests( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
+		const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo );
 	
 	/** Render occlusion tests with frustum check. */
-	void RenderOcclusionTestsSun( deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap,
-		int baselevel, float clipNear, const decMatrix &matrixCamera, float clipNear2,
-		const decMatrix &matrixCamera2, deoglRenderPlan &plan );
+	void RenderOcclusionTestsSun( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
+		const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
+		const decMatrix &matrixCamera2Stereo );
 	
 	/** Render occlusion tests using dual occlusion maps. */
-	void RenderOcclusionTestsDual( deoglOcclusionTest &occlusioNTest, deoglOcclusionMap &occlusionMap,
-		int baselevel, float clipNear, const decMatrix &matrixCamera, deoglOcclusionMap &occlusionMap2,
-		int baselevel2, float clipNear2, const decMatrix &matrixCamera2 );
+	void RenderOcclusionTestsDual( deoglRenderPlan &plan, deoglOcclusionTest &occlusioNTest,
+		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
+		deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatrix &matrixCamera2 );
 	
 	/** Debug render plan occlusion map. */
 	void DebugOcclusionMap( deoglRenderPlan &plan );

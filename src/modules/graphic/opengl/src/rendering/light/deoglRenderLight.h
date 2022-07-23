@@ -42,14 +42,14 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgramUsage pShaderCopyDepth;
-	
 	deoglShaderProgramUsage pShaderAOLocal;
+	deoglShaderProgramUsage pShaderAOLocalStereo;
 	deoglShaderProgramUsage pShaderAOBlur1;
 	deoglShaderProgramUsage pShaderAOBlur2;
 	deoglShaderProgramUsage pShaderDebugAO;
 	
 	deoglShaderProgramUsage pShaderSSSSS;
+	deoglShaderProgramUsage pShaderSSSSSStereo;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;

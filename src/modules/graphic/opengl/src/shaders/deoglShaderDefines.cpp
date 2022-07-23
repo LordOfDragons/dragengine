@@ -229,6 +229,15 @@ deoglShaderDefines &deoglShaderDefines::operator=( const deoglShaderDefines &def
 	return *this;
 }
 
+deoglShaderDefines deoglShaderDefines::operator+( const deoglShaderDefines &defines ) const{
+	deoglShaderDefines combined( *this );
+	int i;
+	for( i=0; i<defines.pDefineCount; i++ ){
+		combined.AddDefine( defines.pDefines[ i ].name, defines.pDefines[ i ].value );
+	}
+	return combined;
+}
+
 
 
 // Private functions

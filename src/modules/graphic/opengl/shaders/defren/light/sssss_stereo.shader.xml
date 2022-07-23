@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>DefRen ScreenSpace SubSurface Scattering</name>
+	<name>DefRen ScreenSpace SubSurface Scattering Stereo</name>
 	
 	<version>150</version>
 	
@@ -26,5 +26,6 @@
 	<output name='outColor' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/light/sssss.glsl</sourceCode>
 </shader>

@@ -277,6 +277,15 @@ deoglRenderBase( renderThread )
 		pShaderCopyColorMipMap = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
+		pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "MIPMAP", true );
+		pShaderCopyColorMipMapStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		
 		
 		if( deoglDRDepthMinMax::USAGE_VERSION == 0 ){
@@ -396,6 +405,10 @@ deoglRenderBase( renderThread )
 		}
 		
 		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderApplyReflectionsStereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
@@ -1863,8 +1876,9 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderCopyColor );
-	shader = pShaderCopyColor->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyColorStereo : pShaderCopyColor;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
 	
@@ -1938,8 +1952,9 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderCopyColor );
-	shader = pShaderCopyColor->GetCompiled();
+	deoglShaderProgram *program = plan.GetStereoRender() ? pShaderCopyColorStereo : pShaderCopyColor;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
 	
@@ -1948,8 +1963,9 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	// downsample mip-map levels
-	renderThread.GetShader().ActivateShader( pShaderCopyColorMipMap );
-	shader = pShaderCopyColorMipMap->GetCompiled();
+	deoglShaderProgram *program = plan.GetStereoRender() ? pShaderCopyColorMipMapStereo : pShaderCopyColorMipMap;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), deoglTextureStageManager::etfLinearMipMap, GL_CLAMP_TO_EDGE );
 	
@@ -2453,8 +2469,9 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
 	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderApplyReflections );
-	shader = pShaderApplyReflections->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderApplyReflectionsStereo : pShaderApplyReflections;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	defren.SetShaderParamFSQuad( *shader, sparQuadTCTransform );
 	shader->SetParameterVector4( sparPosTransform, plan.GetDepthToPosition() );

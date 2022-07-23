@@ -44,12 +44,15 @@ class deoglRenderReflection : public deoglRenderBase{
 private:
 	deoglShaderProgramUsage pShaderCopyColor;
 	deoglShaderProgramUsage pShaderCopyColorMipMap;
+	deoglShaderProgramUsage pShaderCopyColorStereo;
+	deoglShaderProgramUsage pShaderCopyColorMipMapStereo;
 	deoglShaderProgramUsage pShaderMinMaxMipMapMin;
 	deoglShaderProgramUsage pShaderMinMaxMipMapMax;
 	deoglShaderProgramUsage pShaderMinMaxMipMapInitial;
 	deoglShaderProgramUsage pShaderMinMaxMipMapDownsample;
 	deoglShaderProgramUsage pShaderScreenSpace;
 	deoglShaderProgramUsage pShaderApplyReflections;
+	deoglShaderProgramUsage pShaderApplyReflectionsStereo;
 	
 	deoglShaderProgramUsage pShaderCopyMaterial;
 	deoglShaderProgramUsage pShaderEnvMapLightGI;

@@ -22,6 +22,8 @@
 	<parameter name='pFrustumNormal4'/>
 	<parameter name='pFrustumTestAdd'/>
 	<parameter name='pFrustumTestMul'/>
+	<parameter name='pMatrixStereo'/>
+	<parameter name='pMatrix2Stereo'/>
 	
 	<attribute name='inMinExtend' target='0'/>
 	<attribute name='inMaxExtend' target='1'/>

@@ -53,6 +53,7 @@ private:
 	deoglShaderProgramUsage pShaderProbeOffset;
 	deoglShaderProgramUsage pShaderProbeExtends;
 	deoglShaderProgramUsage pShaderLight;
+	deoglShaderProgramUsage pShaderLightStereo;
 	deoglShaderProgramUsage pShaderLightGIRay;
 	deoglShaderProgramUsage pShaderDebugProbe;
 	deoglShaderProgramUsage pShaderDebugProbeOffset;

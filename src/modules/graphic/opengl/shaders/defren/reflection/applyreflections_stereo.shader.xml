@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>DefRen Reflection ApplyReflections</name>
+	<name>DefRen Reflection ApplyReflections Stereo</name>
 	
 	<version>150</version>
 	
@@ -36,5 +36,6 @@
 	<output name='outColor' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/reflection/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/defren/reflection/screenspace.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/reflection/applyreflections.glsl</sourceCode>
 </shader>

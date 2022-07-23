@@ -34,8 +34,11 @@ class deoglRenderPlanMasked;
 class deoglRenderTransparentPasses : public deoglRenderBase{
 private:
 	deoglShaderProgramUsage pShaderCopyDepthLimit;
+	deoglShaderProgramUsage pShaderCopyDepthLimitStereo;
 	deoglShaderProgramUsage pShaderCopyDepthColor;
+	deoglShaderProgramUsage pShaderCopyDepthColorStereo;
 	deoglShaderProgramUsage pShaderCopyColor;
+	deoglShaderProgramUsage pShaderCopyColorStereo;
 	
 	
 	
@@ -66,7 +69,7 @@ public:
 	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
 	
 	/** \brief Copy color texture to temporary texture. */
-	void CopyColorToTemporary();
+	void CopyColorToTemporary( deoglRenderPlan &plan );
 	/*@}*/
 };
 

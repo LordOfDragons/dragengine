@@ -114,7 +114,7 @@ pIsRendering( false ),
 pLevel( 0 ),
 
 pUseGIState( false ),
-pStereoRender( false ),
+pRenderStereo( false ),
 pUseConstGIState( NULL ),
 pRenderVR( ervrNone ),
 pSkyLightCount( 0 ),
@@ -1627,8 +1627,8 @@ void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
 	pUseConstGIState = giState;
 }
 
-void deoglRenderPlan::SetStereoRender( bool stereoRender ){
-	pStereoRender = stereoRender;
+void deoglRenderPlan::SetRenderStereo ( bool stereoRender ){
+	pRenderStereo = stereoRender;
 }
 
 void deoglRenderPlan::SetRenderVR( eRenderVR renderVR ){
@@ -1776,6 +1776,10 @@ void deoglRenderPlan::SetOcclusionMapBaseLevel( int level ){
 
 void deoglRenderPlan::SetOcclusionTestMatrix( const decMatrix &matrix ){
 	pOcclusionTestMatrix = matrix;
+}
+
+void deoglRenderPlan::SetOcclusionTestMatrixStereo( const decMatrix &matrix ){
+	pOcclusionTestMatrixStereo = matrix;
 }
 
 

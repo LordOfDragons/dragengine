@@ -122,7 +122,7 @@ private:
 	bool pNoReflections;
 	bool pNoAmbientLight;
 	bool pUseGIState;
-	bool pStereoRender;
+	bool pRenderStereo;
 	deoglGIState *pUseConstGIState;
 	eRenderVR pRenderVR;
 	
@@ -194,6 +194,7 @@ private:
 	deoglOcclusionTest *pOcclusionTest;
 	int pOcclusionMapBaseLevel;
 	decMatrix pOcclusionTestMatrix;
+	decMatrix pOcclusionTestMatrixStereo;
 	deoglGIState *pGIState;
 	
 	deoglRenderPlanTasks pTasks;
@@ -468,10 +469,10 @@ public:
 	void SetUseConstGIState( deoglGIState *giState );
 	
 	/** Use stereo rendering. */
-	inline bool GetStereoRender() const{ return pStereoRender; }
+	inline bool GetRenderStereo() const{ return pRenderStereo; }
 	
 	/** Set use stereo rendering. */
-	void SetStereoRender( bool stereoRender );
+	void SetRenderStereo ( bool stereoRender );
 	
 	/** Render VR. */
 	inline eRenderVR GetRenderVR() const{ return pRenderVR; }
@@ -639,6 +640,12 @@ public:
 	
 	/** Set occlusion test matrix. */
 	void SetOcclusionTestMatrix( const decMatrix &matrix );
+	
+	/** Occlusion test matrix stereo. */
+	inline const decMatrix &GetOcclusionTestMatrixStereo() const{ return pOcclusionTestMatrixStereo; }
+	
+	/** Set occlusion test matrix. */
+	void SetOcclusionTestMatrixStereo( const decMatrix &matrix );
 	
 	
 	

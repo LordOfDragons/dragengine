@@ -147,7 +147,9 @@ enum eSPTest{
 	sptFrustumNormal3,
 	sptFrustumNormal4,
 	sptFrustumTestAdd,
-	sptFrustumTestMul
+	sptFrustumTestMul,
+	sptMatrixStereo,
+	sptMatrix2Stereo
 };
 
 enum eSPTestTFB{
@@ -164,7 +166,9 @@ enum eSPTestTFB{
 	spttfbFrustumNormal3,
 	spttfbFrustumNormal4,
 	spttfbFrustumTestAdd,
-	spttfbFrustumTestMul
+	spttfbFrustumTestMul,
+	spttfbMatrixStereo,
+	spttfbMatrix2Stereo
 };
 
 static const int vCubeFaces[] = {
@@ -201,18 +205,18 @@ pAddToRenderTask( NULL )
 		pShaderOccMapOrtho->EnsureRTSShader();
 		pShaderOccMapOrtho->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefine( "USE_CLIP_PLANE", "1" );
+		defines.AddDefine( "USE_CLIP_PLANE", true );
 		pShaderOccMapOrthoClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoClipPlane->EnsureRTSShader();
 		pShaderOccMapOrthoClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
-		defines.AddDefine( "PERSPECTIVE_TO_LINEAR", "1" );
+		defines.AddDefine( "PERSPECTIVE_TO_LINEAR", true );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMap->EnsureRTSShader();
 		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefine( "USE_CLIP_PLANE", "1" );
+		defines.AddDefine( "USE_CLIP_PLANE", true );
 		pShaderOccMapClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapClipPlane->EnsureRTSShader();
 		pShaderOccMapClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
@@ -221,25 +225,47 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
 		pShaderOccMapDownSample = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test" );
-		defines.AddDefine( "ENSURE_MIN_SIZE", "1" );
-		pShaderOccTest = shaderManager.GetProgramWith( sources, defines );
-		defines.AddDefine( "DUAL_OCCMAP", "1" );
-		pShaderOccTestDual = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderOccMapDownSampleStereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
-		defines.AddDefine( "ENSURE_MIN_SIZE", "1" );
-		defines.AddDefine( "FRUSTUM_TEST", "1" );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test" );
+		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		pShaderOccTest = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "DUAL_OCCMAP", true );
+		pShaderOccTestDual = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.RemoveAllDefines();
+		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		defines.AddDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestSun = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
+		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderOccTestStereo = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "DUAL_OCCMAP", true );
+		defines.AddDefine( "DUAL_OCCMAP_STEREO", true );
+		pShaderOccTestDualStereo = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.RemoveAllDefines();
+		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		defines.AddDefine( "FRUSTUM_TEST", true );
+		defines.AddDefine( "FRUSTUM_TEST_STEREO", true );
+		pShaderOccTestSunStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test TFB" );
-		defines.AddDefine( "ENSURE_MIN_SIZE", "1" );
+		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		pShaderOccTestTFB = shaderManager.GetProgramWith( sources, defines );
-		defines.AddDefine( "DUAL_OCCMAP", "1" );
+		defines.AddDefine( "DUAL_OCCMAP", true );
 		pShaderOccTestTFBDual = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
-		defines.AddDefine( "ENSURE_MIN_SIZE", "1" );
-		defines.AddDefine( "FRUSTUM_TEST", "1" );
+		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		defines.AddDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestTFBSun = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -250,12 +276,12 @@ pAddToRenderTask( NULL )
 		if( useGSRenderCube ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Cube" );
 			AddOccMapDefines( defines );
-			defines.AddDefine( "PERSPECTIVE_TO_LINEAR", "1" );
+			defines.AddDefine( "PERSPECTIVE_TO_LINEAR", true );
 			
-			defines.AddDefine( "GS_RENDER_CUBE", "1" );
-			defines.AddDefine( "GS_RENDER_CUBE_CULLING", "1" );
+			defines.AddDefine( "GS_RENDER_CUBE", true );
+			defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
 			if( renderThread.GetExtensions().SupportsGSInstancing() ){
-				defines.AddDefine( "GS_INSTANCING", "1" );
+				defines.AddDefine( "GS_INSTANCING", true );
 			}
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
@@ -357,10 +383,10 @@ void deoglRenderOcclusion::AddOccMapDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
 	decString value;
 	
-	defines.AddDefine( "SHARED_SPB", "1" );
+	defines.AddDefine( "SHARED_SPB", true );
 	
 	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
+		defines.AddDefine( "SHARED_SPB_USE_SSBO", true );
 		
 		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
@@ -443,6 +469,11 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	// update render parameter block
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	
+	decDMatrix matrixCameraStereo( matrixCamera );
+	if( plan.GetRenderStereo() ){
+		matrixCameraStereo *= plan.GetCameraCorrectionMatrix();
+	}
+	
 	// linear depth: use non-infinite projection matrix 
 	const decDMatrix &matrixProjection = plan.GetFrustumMatrix();
 	
@@ -451,9 +482,9 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		// 0: pMatrixVP[ 0 ]
 		// 1: pMatrixV[ 0 ]
 		// 2: pTransformZ[ 0 ]
-		pRenderParamBlock->SetParameterDataMat4x4( 0, matrixCamera * matrixProjection );
-		pRenderParamBlock->SetParameterDataMat4x3( 1, matrixCamera );
-		pRenderParamBlock->SetParameterDataVec4( 2, ( float )matrixCamera.a31 * zscale,
+		pRenderParamBlock->SetParameterDataArrayMat4x4( 0, 0, matrixCamera * matrixProjection );
+		pRenderParamBlock->SetParameterDataArrayMat4x3( 1, 0, matrixCamera );
+		pRenderParamBlock->SetParameterDataArrayVec4( 2, 0, ( float )matrixCamera.a31 * zscale,
 			( float )matrixCamera.a32 * zscale, ( float )matrixCamera.a33 * zscale,
 			( float )matrixCamera.a34 * zscale + occmapResolution * occmapBias );
 		pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset + occmapResolution * occmapBias );
@@ -463,6 +494,14 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 			
 		}else{
 			pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
+		}
+		
+		if( plan.GetRenderStereo() ){
+			pRenderParamBlock->SetParameterDataArrayMat4x4( 0, 1, matrixCameraStereo * matrixProjection );
+			pRenderParamBlock->SetParameterDataArrayMat4x3( 1, 1, matrixCameraStereo );
+			pRenderParamBlock->SetParameterDataArrayVec4( 2, 1, ( float )matrixCameraStereo.a31 * zscale,
+				( float )matrixCameraStereo.a32 * zscale, ( float )matrixCameraStereo.a33 * zscale,
+				( float )matrixCameraStereo.a34 * zscale + occmapResolution * occmapBias );
 		}
 		
 	}catch( const deException & ){
@@ -515,10 +554,16 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	testMatrix.a33 = matrixCamera.a33 * zscale;
 	testMatrix.a34 = zoffset; // no bias while sampling
 	
-	plan.SetOcclusionTestMatrix( testMatrix );
+	decDMatrix testMatrixStereo( matrixCameraStereo.GetRotationMatrix() * matrixProjection );
+	testMatrixStereo.a31 = matrixCameraStereo.a31 * zscale;
+	testMatrixStereo.a32 = matrixCameraStereo.a32 * zscale;
+	testMatrixStereo.a33 = matrixCameraStereo.a33 * zscale;
 	
-	RenderOcclusionTests( *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),
-		plan.GetOcclusionMapBaseLevel(), -1.0f, testMatrix );
+	plan.SetOcclusionTestMatrix( testMatrix );
+	plan.SetOcclusionTestMatrixStereo( testMatrixStereo );
+	
+	RenderOcclusionTests( plan, *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),
+		plan.GetOcclusionMapBaseLevel(), -1.0f, testMatrix, testMatrixStereo );
 	if( renderPlanDebug ){
 		renderPlanDebug->SetOccTestTime( timer.GetElapsedTime() );
 	}
@@ -669,13 +714,15 @@ deoglRenderPlanSkyLight &planSkyLight ){
 	// be transformed into world space relative to camera position. now the position is
 	// in the same space as the camera tests used. then the occlusion matrix is applied
 	// the same way as camera tests did
-	const decMatrix matrixCamera2( ( matrixCamera.Invert()
-		* decDMatrix::CreateTranslation( referencePosition - camPos ) ).ToMatrix()
-		* plan.GetOcclusionTestMatrix() );
+	const decMatrix matrixLightToCamera( matrixCamera.Invert()
+		* decDMatrix::CreateTranslation( referencePosition - camPos ) );
+	
+	const decMatrix matrixCamera2( matrixLightToCamera * plan.GetOcclusionTestMatrix() );
+	const decMatrix matrixCamera2Stereo( matrixLightToCamera * plan.GetOcclusionTestMatrixStereo() );
 	DEBUG_PRINT_TIMER( "Prepare" );
 	
-	RenderOcclusionTestsSun( *planSkyLight.GetOcclusionTest(), *plan.GetOcclusionMap(),
-		plan.GetOcclusionMapBaseLevel(), -100.0f, matrixCamera, -1.0f, matrixCamera2, plan );
+	RenderOcclusionTestsSun( plan, *planSkyLight.GetOcclusionTest(), *plan.GetOcclusionMap(),
+		plan.GetOcclusionMapBaseLevel(), -100.0f, matrixCamera, -1.0f, matrixCamera2, matrixCamera2Stereo );
 	DEBUG_PRINT_TIMER( "Render" );
 }
 
@@ -817,8 +864,9 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Render" );
 	
 	// create mipmap level (z-pyramid)
-	renderThread.GetShader().ActivateShader( pShaderOccMapDownSample );
-	shader = pShaderOccMapDownSample->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderOccMapDownSampleStereo : pShaderOccMapDownSample;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
 	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) ); // ati bug, disabling depth testing gets you in hell's kitchen
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -844,8 +892,9 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 
 
 
-void deoglRenderOcclusion::RenderOcclusionTests( deoglOcclusionTest &occlusionTest,
-deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera ){
+void deoglRenderOcclusion::RenderOcclusionTests( deoglRenderPlan &plan,
+deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap, int baselevel,
+float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	
 	// render tests if required
@@ -865,6 +914,9 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		shader->SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
 		shader->SetParameterFloat( spttfbClipNear, clipNear );
+		if( plan.GetRenderStereo() ){
+			shader->SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
+		}
 		
 		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
@@ -896,8 +948,9 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
-		renderThread.GetShader().ActivateShader( pShaderOccTest );
-		shader = pShaderOccTest->GetCompiled();
+		deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderOccTestStereo : pShaderOccTest;
+		renderThread.GetShader().ActivateShader( program );
+		shader = program->GetCompiled();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
@@ -905,6 +958,9 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
 		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
+		if( plan.GetRenderStereo() ){
+			shader->SetParameterDMatrix4x4( sptMatrixStereo, matrixCameraStereo );
+		}
 		
 		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
@@ -915,9 +971,10 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 	DEBUG_PRINT_TIMER( "RenderOcclusionTests Render" );
 }
 
-void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglOcclusionTest &occlusionTest,
-deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
-float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
+void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglRenderPlan &plan,
+deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
+const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
+const decMatrix &matrixCamera2Stereo ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	
 	if( occlusionTest.GetInputDataCount() == 0 ){
@@ -994,6 +1051,9 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 			frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
 		shader->SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ],
 			frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
+		if( plan.GetRenderStereo() ){
+			shader->SetParameterMatrix4x4( spttfbMatrix2Stereo, matrixCamera2Stereo );
+		}
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
 		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
@@ -1028,8 +1088,9 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
-		renderThread.GetShader().ActivateShader( pShaderOccTestSun );
-		shader = pShaderOccTestSun->GetCompiled();
+		deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderOccTestSunStereo : pShaderOccTestSun;
+		renderThread.GetShader().ActivateShader( program );
+		shader = program->GetCompiled();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
@@ -1055,7 +1116,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 	}
 }
 
-void deoglRenderOcclusion::RenderOcclusionTestsDual( deoglOcclusionTest &occlusionTest,
+void deoglRenderOcclusion::RenderOcclusionTestsDual( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
 deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
 deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatrix& matrixCamera2 ){
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -1112,8 +1173,9 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 			const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			
-			renderThread.GetShader().ActivateShader( pShaderOccTestDual );
-			shader = pShaderOccTestDual->GetCompiled();
+			deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderOccTestDualStereo : pShaderOccTestDual;
+			renderThread.GetShader().ActivateShader( program );
+			shader = program->GetCompiled();
 			
 			// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
 			shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );

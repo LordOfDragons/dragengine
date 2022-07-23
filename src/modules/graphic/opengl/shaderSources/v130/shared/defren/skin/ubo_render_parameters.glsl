@@ -18,7 +18,7 @@ UBOLAYOUT uniform RenderParameters{
 	#elif defined GS_RENDER_STEREO
 		vec4 pAmbient;
 		mat4x3 pMatrixV[ 2 ];
-		mat4 pMatrixP;
+		mat4 pMatrixP[ 2 ];
 		mat4 pMatrixVP[ 2 ];
 		mat3 pMatrixVn[ 2 ];
 		mat3 pMatrixEnvMap;

@@ -26,15 +26,13 @@ uniform vec3 pFrustumNormal4;
 uniform vec4 pFrustumTestAdd;
 uniform vec4 pFrustumTestMul;
 #endif
+#if defined GS_RENDER_STEREO || defined DUAL_OCCMAP_STEREO || defined FRUSTUM_TEST_STEREO
+uniform mat4 pMatrixStereo;
+uniform mat4 pMatrix2Stereo;
+#endif
 
 in vec3 inMinExtend;
 in vec3 inMaxExtend;
-
-#ifdef GS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
 
 out float fbResult;
 
@@ -88,7 +86,7 @@ const vec2 vOneTwoThird = vec2( 1.0 / 3.0, 2.0 / 3.0 );
 
 // test box against occlusion map
 bool testBox( out float largestSample, in vec2 minExtend, in vec2 maxExtend,
-in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap ){
+in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap, in int layer ){
 	vec2 size = ( maxExtend - minExtend ) * scaleSize;
 	
 	//if( min( size.x, size.y ) < 0.01 ){ //0.1 ){
@@ -124,7 +122,7 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap 
 		float level = baseLevel + max( ceil( log2( maxSize ) - baselog ), 0.0 );
 		vec4 steps = mix( minExtend.xxyy, maxExtend.xxyy, vOneTwoThird.xyxy );
 		vec4 samples, samplesAll;
-		vec3 tc = vec3( 0, 0, vLayer );
+		vec3 tc = vec3( 0, 0, layer );
 		
 		// test pattern where we have to change only one texture coordinate component at the time:
 		// [ 6 7 10 11 ]
@@ -188,8 +186,8 @@ const vec2 vScale = vec2( 0.5 );
 const vec2 vOffset = vec2( 0.5 );
 
 void main( void ){
-	gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 ); // keep broken compilers happy
-	fbResult = 1.0;
+	gl_Position = vec4( 0, 0, 0, 1 ); // keep broken compilers happy
+	fbResult = 1;
 	
 	#ifdef ENSURE_MIN_SIZE
 		//vec3 adjustExtends = step( ( inMaxExtend - inMinExtend ), epsilonSize ) * epsilonSize;
@@ -204,7 +202,17 @@ void main( void ){
 	
 	vec3 testMinExtend;
 	vec3 testMaxExtend;
-	if( ! calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend ) ){
+	#ifdef GS_RENDER_STEREO
+		vec3 testMinExtendStereo;
+		vec3 testMaxExtendStereo;
+	#endif
+	
+	bool result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend );
+	#ifdef GS_RENDER_STEREO
+		bool resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
+		result = result | resultStereo;
+	#endif
+	if( ! result ){
 		return;
 	}
 	
@@ -230,15 +238,27 @@ void main( void ){
 		testMaxExtend.z = min( testMinExtend.z + min( lambda.x, lambda.y ), testMaxExtend.z );
 		*/
 		
-		if( ! calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend ) ){
+		result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend );
+		if( ! result ){
 			return;
 		}
 		
 		float occmapMaxDepth;
 		vec2 occmapMinExtend = testMinExtend.xy * vScale + vOffset;
 		vec2 occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
-		if( ! testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap ) ){
-			fbResult = 0.0;
+		
+		result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap, 0 );
+		
+		#ifdef GS_RENDER_STEREO
+			float occmapMaxDepthStereo;
+			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
+			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
+			result = result | testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
+				occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseLevel, texOccMap, 1 );
+		#endif
+		
+		if( ! result ){
+			fbResult = 0;
 			return;
 		}
 		
@@ -246,21 +266,42 @@ void main( void ){
 		float occmapMaxDepth;
 		vec2 occmapMinExtend = testMinExtend.xy * vScale + vOffset;
 		vec2 occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
-		if( ! testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap ) ){
-			fbResult = 0.0;
+		
+		if( result ){
+			result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
+				testMinExtend.z, pScaleSize, pBaseLevel, texOccMap, 0 );
+		}
+		
+		#ifdef GS_RENDER_STEREO
+			float occmapMaxDepthStereo;
+			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
+			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
+			
+			if( resultStereo ){
+				resultStereo = testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
+					occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseLevel, texOccMap, 1 );
+			}
+			result = result | resultStereo;
+		#endif
+		
+		if( ! result ){
+			fbResult = 0;
 			return;
 		}
 		
 		#ifdef DUAL_OCCMAP
 			testMaxExtend.z = max( testMaxExtend.z, occmapMaxDepth );
-			if( ! calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend ) ){
+			result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend );
+			if( ! result ){
 				return;
 			}
 			
 			occmapMinExtend = testMinExtend.xy * vScale + vOffset;
 			occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
-			if( ! testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize2, pBaseLevel2, texOccMap2 ) ){
-				fbResult = 0.0;
+			result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
+				testMinExtend.z, pScaleSize2, pBaseLevel2, texOccMap2, 0 );
+			if( ! result ){
+				fbResult = 0;
 				return;
 			}
 		#endif

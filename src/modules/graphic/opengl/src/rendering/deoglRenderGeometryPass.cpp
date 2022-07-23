@@ -325,7 +325,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	// geometry pass since this writes to the stencil mask of the depth texture. writing to the stencil part
 	// trashes mip map levels although no depth writing is enabled
 	if( config.GetSSAOEnable() && ! plan.GetNoReflections() ){
-		rendepth.DownsampleDepth();
+		rendepth.DownsampleDepth( plan );
 		//OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 		//OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 		//OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );

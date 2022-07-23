@@ -247,16 +247,20 @@ deoglRenderLightBase( renderThread )
 		
 		defines.AddDefine( "PASS2", true );
 		pShaderDebugProbeUpdatePass2 = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "PASS2" );
+		defines.RemoveAllDefines();
 		
 		// render light
-		defines.RemoveAllDefines();
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
 		
 		defines.AddDefine( "GI_RAY", true );
 		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "GI_RAY" );
+		defines.RemoveAllDefines();
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderLightStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
 		
 		
 		// debug information
@@ -1039,7 +1043,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE ) );
 	}
 	
-	renderThread.GetShader().ActivateShader( pShaderLight );
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLightStereo : pShaderLight );
 	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
 	GetUBORenderLight().Activate();
 	
