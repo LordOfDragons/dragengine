@@ -535,16 +535,30 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
+		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		
+		spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		
 		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, depthOffsetLayerCount ); // vec4
 		
 		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		
+		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
 		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
-		spb->GetParameterAt( erutFullScreenQuad ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutFSQuadTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutFSQuadTCTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutFSQuadTCClamp ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		
+		spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutSSAOParams3 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		
+		spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
@@ -2529,13 +2543,22 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pViewport" ); // erutViewport
 		parameterList.Add( "pClipPlane" ); // erutClipPlane
 		parameterList.Add( "pScreenSpace" ); // erutScreenSpace
+		parameterList.Add( "pRenderSize" ); // erutRenderSize
+		parameterList.Add( "pMipMapParams" ); // erutMipMapParams
 		parameterList.Add( "pDepthOffset" ); // erutDepthOffset
 		parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
 		parameterList.Add( "pFadeRange" ); // erutFadeRange
 		parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
 		parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
 		parameterList.Add( "pDepthSampleOffset" ); // erutDepthSampleOffset
-		parameterList.Add( "pFullScreenQuad" ); // erutFullScreenQuad
+		parameterList.Add( "pFSQuadTransform" ); // erutFSQuadTransform
+		parameterList.Add( "pFSQuadTCTransform" ); // erutFSQuadTCTransform
+		parameterList.Add( "pFSQuadTCClamp" ); // erutFSQuadTCClamp
+		parameterList.Add( "pSSAOParams1" ); // erutSSAOParams1
+		parameterList.Add( "pSSAOParams2" ); // erutSSAOParams2
+		parameterList.Add( "pSSAOParams3" ); // erutSSAOParams3
+		parameterList.Add( "pSSSSSParams1" ); // erutSSSSSParams1
+		parameterList.Add( "pSSSSSParams2" ); // erutSSSSSParams2
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){

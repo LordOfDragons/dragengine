@@ -41,7 +41,7 @@ void main( void ){
 		#ifdef NO_TCTRANSFORM
 			vTexCoord = inPosition;
 		#elif defined FULLSCREENQUAD
-			vTexCoord = inPosition * pFullScreenQuad.xy + pFullScreenQuad.zw;
+			vTexCoord = inPosition * pFSQuadTransform.xy + pFSQuadTransform.zw;
 		#else
 			vTexCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
 		#endif

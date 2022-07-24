@@ -100,13 +100,22 @@ public:
 		erutViewport,
 		erutClipPlane,
 		erutScreenSpace,
+		erutRenderSize,
+		erutMipMapParams,
 		erutDepthOffset,
 		erutParticleLightHack,
 		erutFadeRange,
 		erutBillboardZScale,
 		erutCameraAdaptedIntensity,
 		erutDepthSampleOffset,
-		erutFullScreenQuad,
+		erutFSQuadTransform,
+		erutFSQuadTCTransform,
+		erutFSQuadTCClamp,
+		erutSSAOParams1,
+		erutSSAOParams2,
+		erutSSAOParams3,
+		erutSSSSSParams1,
+		erutSSSSSParams2,
 		ERUT_COUNT
 	};
 	

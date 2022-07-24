@@ -47,9 +47,61 @@ UBOLAYOUT uniform RenderParameters{
 	bool pSkinDoesReflections;
 	bool pFlipCulling;
 	
-	vec4 pViewport; // minX, minY, maxX, maxY
-	vec4 pClipPlane; // normal.xyz, distance
-	vec4 pScreenSpace; // x=scaleU, y=scaleV, z=pixelSizeU, w=pixelSizeV
+	// normalize viewport texture coordinates.
+	// x: minX = 0
+	// y: minY = 0
+	// z: maxX = (renderWidth - 1) / realTextureWidth
+	// w: maxY = (renderHeight - 1) / realTextureHeight
+	vec4 pViewport;
+	// (minX, minY) = (0, 0)
+	#define pViewportMin (pViewport.xy)
+	// (maxX, MinY) = ((renderWidth - 1) / realTextureWidth, (renderHeight - 1) / realTextureHeight)
+	#define pViewportMax (pViewport.zw)
+	
+	// clip plane if used.
+	// xyz: normal
+	// w: distance
+	vec4 pClipPlane;
+	
+	// screen space conversion parameters
+	// x: scaleU = renderWidth / realTextureWidth
+	// y: scaleV = renderHeight / realTextureHeight
+	// z: pixelSizeU = 1 / realTextureWidth
+	// w: pixelSizeV = 1 / realTextureHeight
+	vec4 pScreenSpace;
+	// (scaleU, scaleV) = (renderWidth / realTextureWidth, renderHeight / realTextureHeight)
+	#define pScreenSpaceScale (pScreenSpace.xy)
+	// (pixelSizeU, pixelSizeV) = (1 / realTextureWidth, 1 / realTextureHeight)
+	#define pScreenSpacePixelSize (pScreenSpace.zw)
+	// pixelSizeU = 1 / realTextureWidth
+	#define pScreenSpacePixelSizeU (pScreenSpace.z)
+	// pixelSizeV = 1 / realTextureHeight
+	#define pScreenSpacePixelSizeV (pScreenSpace.w)
+	
+	// render size.
+	// x: width (pixels)
+	// y: height (pixels)
+	// z: layerCount
+	vec3 pRenderSize;
+	// layerCount
+	#define pRenderLayerCount (pRenderSize.z)
+	
+	// mip map parameters.
+	// x: pixelSizeU (size of pixel of mip map level 0 in meters)
+	// y: pixelSizeV (size of pixel of mip map level 0 in meters)
+	// z: maxLevel (level index of highest mip map)
+	// w: maxScale (scale factor from lowest to highest mip map level) = pow(2, maxLevel)
+	vec4 pMipMapParams;
+	// (pixelSizeU, pixelSizeV)
+	#define pMipMapPixelSize (pMipMapParams.xy)
+	// pixelSizeU
+	#define pMipMapPixelSizeU (pMipMapParams.x)
+	// pixelSizeV
+	#define pMipMapPixelSizeV (pMipMapParams.y)
+	// maxLevel
+	#define pMipMapMaxLevel (pMipMapParams.z)
+	// maxScale = pow(2, maxLevel)
+	#define pMipMapMaxScale (pMipMapParams.w)
 	
 	#ifdef GS_RENDER_CASCADED
 		vec4 pDepthOffset[ 4 ]; // x=frontScale, y=frontOffset, z=backScale, w=backOffset
@@ -58,11 +110,24 @@ UBOLAYOUT uniform RenderParameters{
 	#endif
 	
 	vec3 pParticleLightHack; // temporary hack
-	vec3 pFadeRange; // x=fadeNear, y=farFar, z=1/(fadeFar-fadeNear)
 	float pBillboardZScale; // billboard z scale if size is fixed to screen
+	
+	vec3 pFadeRange; // x=fadeNear, y=farFar, z=1/(fadeFar-fadeNear)
 	float pCameraAdaptedIntensity;
 	
 	vec2 pDepthSampleOffset;
 	
-	vec4 pFullScreenQuad; // for use in vertex shader to transform vertices
+	// full screen quad rendering
+	vec4 pFSQuadTransform; // vertex shader transform position
+	vec4 pFSQuadTCTransform; // fragment shader transform texture coordinates
+	vec4 pFSQuadTCClamp; // fragment shader clamp texture coordinates
+	
+	// ssao
+	vec4 pSSAOParams1; // self-occlusion, epsilon, scale, randomAngleConstant
+	vec4 pSSAOParams2; // count, radius, radius-influence, radius-limit
+	vec3 pSSAOParams3; // radiusFactor, mipMapBase, mipMapMaxLevel
+	
+	// sssss
+	vec4 pSSSSSParams1; // dropSubSurfaceThreshold, tapRadiusFactor, tapRadiusLimit, tapDropRadiusThreshold
+	ivec2 pSSSSSParams2; // tapCount, turnCount
 };

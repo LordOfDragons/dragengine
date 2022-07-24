@@ -4,17 +4,6 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 
-uniform vec4 pTCTransform;
-uniform vec4 pTCClamp;
-
-uniform float pDropSubSurfaceThreshold;
-
-uniform int pTapCount;
-uniform float pAngleConstant;
-uniform float pTapRadiusFactor;
-uniform float pTapRadiusLimit;
-uniform float pTapDropRadiusThreshold;
-
 uniform HIGHP sampler2DArray texDepth;
 uniform lowp sampler2DArray texDiffuse;
 uniform mediump sampler2DArray texSubSurface;
@@ -32,13 +21,20 @@ out mediump vec3 outColor;
 
 #include "v130/shared/defren/depth_to_position.glsl"
 
+#define pDropSubSurfaceThreshold pSSSSSParams1.x
+#define pTapRadiusFactor pSSSSSParams1.y
+#define pTapRadiusLimit pSSSSSParams1.z
+#define pTapDropRadiusThreshold pSSSSSParams1.w
+
+#define pTapCount pSSSSSParams2.x
+#define pTurnCount pSSSSSParams2.y
 
 
 // Sub-surface scattering calculation
 ///////////////////////////////////////
 
 void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sumLight, inout vec3 sumWeight ){
-	tc.xy = clamp( tc.xy, pTCClamp.xy, pTCClamp.zw );
+	tc.xy = clamp( tc.xy, pFSQuadTCClamp.xy, pFSQuadTCClamp.zw );
 	
 	float depth = sampleDepth( texDepth, tc );
 	
@@ -48,7 +44,7 @@ void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sum
 		return;
 	}
 	
-	vec2 screenCoord = tc.xy * pTCTransform.xy + pTCTransform.zw;
+	vec2 screenCoord = tc.xy * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
 	vec3 spos = depthToPosition( depth, screenCoord, vLayer ) - position;
 	
 	vec3 scatDist = vec3( length( spos ) ) * scatterScale;
@@ -62,6 +58,7 @@ void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sum
 }
 
 vec3 subSurfaceScattering( in vec3 position, in float tapRadius, in vec3 scatterScale, in int tapCount ){
+	const float angleConstant = 6.2831853 * float( pTurnCount ); // pi * 2.0
 	ivec2 tcint = ivec2( gl_FragCoord.xy );
 	
 	vec3 sumLight = textureLod( texLight, vec3( vTexCoord, vLayer ), 0 ).rgb;
@@ -73,7 +70,7 @@ vec3 subSurfaceScattering( in vec3 position, in float tapRadius, in vec3 scatter
 	
 	for( i=0; i<tapCount; i++ ){
 		float v1 = factor1.x * float( i ) + factor1.y;
-		float v2 = pAngleConstant * v1 + c1;
+		float v2 = angleConstant * v1 + c1;
 		
 		vec2 tcoff = vec2( tapRadius * v1 ) * vec2( cos( v2 ), sin( v2 ) );
 		
@@ -108,11 +105,10 @@ void main( void ){
 		
 	}else{
 		// determine position of fragment to light
-		vec2 screenCoord = vTexCoord * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
+		vec2 screenCoord = vTexCoord * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw; // convert to -1..1 range
 		vec3 position = depthToPosition( texDepth, screenCoord, vLayer );
 		
 		// calculate tap radius
-		float pTapRadiusLimit = 0.5; // 50% screen size
 		float tapRadius = min( pTapRadiusFactor * largestAbsorptionRadius / position.z, pTapRadiusLimit );
 		
 		// if the tap radius is too small drop the sss calculation altogether to increase performance

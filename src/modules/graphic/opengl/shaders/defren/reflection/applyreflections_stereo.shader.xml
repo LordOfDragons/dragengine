@@ -7,9 +7,6 @@
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='EnvironmentMaps' target='1'/>
 	
-	<parameter name='pMipMapLevelParams'/>
-	<parameter name='pMipMapTCClamp'/>
-	
 	<texture name='texDiffuse' target='0'/>
 	<texture name='texDepth' target='1'/>
 	<texture name='texReflection' target='2'/>

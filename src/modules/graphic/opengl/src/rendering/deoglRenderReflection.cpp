@@ -133,15 +133,6 @@ enum pSPScreenSpace{
 	spssRoughnessTapCountScale
 };
 
-enum pSPApplyReflections{
-	sparMipMapLevelParams,
-	sparMipMapTCClamp,
-	//sparMatrixReflectionBox,
-	//sparMatrixReflectionBoxNormal,
-	//sparEnvMapPosition,
-	//sparHasReflectionBox
-};
-
 enum eSPBApplyReflections{
 	spbarEnvMapMatrixInfluence,
 	spbarEnvMapMatrixReflBox,
@@ -2472,27 +2463,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	pEnvMapsParamBlock->Activate();
-	
-	const float mmlpFactor1 = plan.GetProjectionMatrix().a11 * 0.5f;
-	int height = defren.GetHeight();
-	int width = defren.GetWidth();
-	int mipmapMaxLevel = 0;
-	while( width > 1 && height > 1 ){
-		width >>= 1;
-		if( width < 1 ){
-			width = 1;
-		}
-		height >>= 1;
-		if( height < 1 ){
-			height = 1;
-		}
-		mipmapMaxLevel++;
-	}
-	
-	shader->SetParameterFloat( sparMipMapLevelParams, mmlpFactor1 * ( float)defren.GetWidth(),
-		mmlpFactor1 * ( float )defren.GetHeight(), ( float )( 1 << mipmapMaxLevel ) );
-	shader->SetParameterFloat( sparMipMapTCClamp, defren.GetPixelSizeU() * ( float )( defren.GetWidth() - 1 ),
-		defren.GetPixelSizeV() * ( float )( defren.GetHeight() - 1 ), 1.0f / defren.GetRealWidth(), 1.0f / defren.GetRealHeight() );
 	
 	/*
 	decDMatrix matrixReflectionBox, matrixReflectionBoxNormal;

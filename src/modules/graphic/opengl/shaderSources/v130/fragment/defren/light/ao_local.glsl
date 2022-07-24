@@ -4,14 +4,6 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 
-uniform vec4 pTCTransform;
-uniform vec4 pTCClamp;
-uniform float pRadiusFactor;
-
-uniform vec4 pParamSSAO; // self-occlusion, epsilon, scale, randomAngleConstant
-uniform vec4 pParamTap; // count, radius, radius-influence, radius-limit
-uniform vec4 pMipMapParams; // tcScaleU, tcScaleV, logBase, maxLevel
-
 uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP
 uniform HIGHP sampler2DArray texDepthMinMax;
@@ -37,34 +29,38 @@ out vec3 outAO; // ao, ssao, solidity
 #include "v130/shared/normal.glsl"
 #include "v130/shared/defren/depth_to_position.glsl"
 
-#define pSSAOSelfOcclusion pParamSSAO.x
-#define pSSAOEpsilon pParamSSAO.y
-#define pSSAOScale pParamSSAO.z
-#define pSSAORandomAngleConstant pParamSSAO.w
+#define pSSAOSelfOcclusion pSSAOParams1.x
+#define pSSAOEpsilon pSSAOParams1.y
+#define pSSAOScale pSSAOParams1.z
+#define pSSAORandomAngleConstant pSSAOParams1.w
 
-#define pTapCount int( pParamTap.x )
-#define pTapRadius pParamTap.y
-#define pTapRadiusInfluence pParamTap.z
-#define pTapRadiusLimit pParamTap.w
+#define pTapCount int( pSSAOParams2.x )
+#define pTapRadius pSSAOParams2.y
+#define pTapRadiusInfluence pSSAOParams2.z
+#define pTapRadiusLimit pSSAOParams2.w
+
+#define pSSAORadiusFactor pSSAOParams3.x
+#define pSSAOMipMapBase pSSAOParams3.y
+#define pSSAOMipMapMaxLevel pSSAOParams3.z
 
 float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
-	tc = clamp( tc, pTCClamp.xy, pTCClamp.zw );
+	tc = clamp( tc, pFSQuadTCClamp.xy, pFSQuadTCClamp.zw );
 	
 	float depth = sampleDepth( texDepth, vec3( tc, vLayer ), level );
-	vec2 screenCoord = tc * pTCTransform.xy + pTCTransform.zw;
+	vec2 screenCoord = tc * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
 	vec3 spos = depthToPosition( depth, screenCoord, vLayer ) - position;
 	
 	float slen = max( length( spos ), pSSAOEpsilon );
 	
-	return clamp( mix( 0.0, ( dot( normal, spos ) / slen ) - pSSAOSelfOcclusion, slen < pTapRadiusInfluence ), 0.0, 1.0 );
+	return clamp( mix( 0, ( dot( normal, spos ) / slen ) - pSSAOSelfOcclusion, slen < pTapRadiusInfluence ), 0, 1 );
 }
 
 float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radius, in int tapCount ){
-	vec2 factor1 = vec2( 1.0, 0.5 ) / vec2( tapCount );
-	ivec2 tcint = ivec2( tc * pMipMapParams.xy );
-	float c1 = 30.0 * float( tcint.x ^ tcint.y ) + 10.0 * float( tcint.x ) * float( tcint.y );
+	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
+	ivec2 tcint = ivec2( tc * pRenderSize.xy );
+	float c1 = float( tcint.x ^ tcint.y ) * 20 + float( tcint.x ) * float( tcint.y ) * 10;
 	
-	float occaccum = 0.0;
+	float occaccum = 0;
 	float v1, v2;
 	float level;
 	vec2 tcoff;
@@ -76,13 +72,13 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 		
 		tcoff = vec2( radius * v1 ) * vec2( cos( v2 ), sin( v2 ) );
 		
-		level = min( floor( log2( length( tcoff * pMipMapParams.xy ) ) - pMipMapParams.z ), pMipMapParams.w );
+		level = min( floor( log2( length( tcoff * pRenderSize.xy ) ) - pSSAOMipMapBase ), pSSAOMipMapMaxLevel );
 		
 		occaccum += occlusion( tc + tcoff, level, position, normal );
 	}
 	
-	return clamp( 1.0 - occaccum * pSSAOScale / float( tapCount ), 0.0, 1.0 );
-	//return clamp( 1.0 - occaccum * pSSAOScale / ( float( tapCount ) * pSSAOSelfOcclusion ), 0.0, 1.0 );
+	return clamp( 1.0 - occaccum * pSSAOScale / float( tapCount ), 0, 1 );
+	//return clamp( 1.0 - occaccum * pSSAOScale / ( float( tapCount ) * pSSAOSelfOcclusion ), 0, 1 );
 	// // this version scales by the self occlusion since with larger self occlusion values images get brighter
 }
 
@@ -102,7 +98,7 @@ void main( void ){
 		return;
 	}
 	
-	vec3 position = depthToPosition( texDepth, vTexCoord * pTCTransform.xy + pTCTransform.zw, vLayer );
+	vec3 position = depthToPosition( texDepth, vTexCoord * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw, vLayer );
 	
 	// calculate the parameters
 #if 1
@@ -111,7 +107,7 @@ void main( void ){
 	vec3 normal = normalize( cross( dFdy( position ), dFdx( position ) ) );
 #endif
 	
-	float radius = min( pRadiusFactor * pTapRadius / position.z, pTapRadiusLimit );
+	float radius = min( pSSAORadiusFactor * pTapRadius / position.z, pTapRadiusLimit );
 	
 	// calculate the screen space ambient occlusion
 	#ifndef SSAO_RESOLUTION_COUNT

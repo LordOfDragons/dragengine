@@ -4,8 +4,6 @@
 	
 	<version>150</version>
 	
-	<parameter name='pTCTransform'/>
-	<parameter name='pTCClamp'/>
 	<parameter name='pDropSubSurfaceThreshold'/>
 	<parameter name='pTapCount'/>
 	<parameter name='pAngleConstant'/>

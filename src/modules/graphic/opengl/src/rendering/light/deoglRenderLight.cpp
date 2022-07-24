@@ -70,15 +70,6 @@
 // Definitions
 ////////////////
 
-enum pSPAOLocal{
-	spaolTCTransform,
-	spaolTCClamp,
-	spaolRadiusFactor,
-	spaolParamSSAO,
-	spaolParamTap,
-	spaolMipMapParams
-};
-
 enum eSPAOBlur{
 	spaobQuadParams,
 	spaobOffsets1,
@@ -101,17 +92,6 @@ enum pSPDebugAO{
 	spdaoGamma,
 	spdaoLevel,
 	spdaoLayer
-};
-
-enum pSPSSSSS{
-	spsssssTCTransform,
-	spsssssTCClamp,
-	spsssssDropSubSurfaceThreshold,
-	spsssssTapCount,
-	spsssssAngleConstant,
-	spsssssTapRadiusFactor,
-	spsssssTapRadiusLimit,
-	spsssssTapDropRadiusThreshold
 };
 
 
@@ -416,35 +396,8 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderAOLocalStereo : pShaderAOLocal;
 	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
 	
 	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
-	
-	shader->SetParameterFloat( spaolTCTransform,
-		2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
-	defren.SetShaderViewport( *shader, spaolTCClamp, true );
-	shader->SetParameterFloat( spaolRadiusFactor, plan.GetProjectionMatrix().a11 * 0.5f );
-	
-	const float ssaoRandomAngleConstant = 6.2831853 * config.GetSSAOTurnCount(); // 2 * pi * turns
-	const float ssaoSelfOcclusion = 1.0f - cosf( config.GetSSAOSelfOcclusionAngle() * DEG2RAD );
-	const float ssaoEpsilon = 1e-5f;
-	const float ssaoScale = 2.0f; // sigma * 2.0
-	const float ssaoTapCount = ( float )config.GetSSAOTapCount();
-	const float ssaoRadius = config.GetSSAORadius();
-	const float ssaoInfluenceRadius = config.GetSSAORadius();
-	const float ssaoRadiusLimit = config.GetSSAORadiusLimit();
-	
-	shader->SetParameterFloat( spaolParamSSAO,
-		ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant );
-	shader->SetParameterFloat( spaolParamTap,
-		ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit );
-	
-	const int maxSize = ( width > height ) ? width : height;
-	const float mipMapMaxLevel = floorf( log2f( ( float )maxSize ) - 3.0f );
-	const float mipMapBase = log2f( config.GetSSAOMipMapBase() );
-	
-	shader->SetParameterFloat( spaolMipMapParams,
-		( float )width, ( float )height, mipMapBase, mipMapMaxLevel );
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
@@ -609,29 +562,8 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	
 	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderSSSSSStereo : pShaderSSSSS;
 	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled * const shader = program->GetCompiled();
 	
 	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
-	
-	shader->SetParameterFloat( spsssssTCTransform, 2.0f / defren.GetScalingU(),
-		2.0f / defren.GetScalingV(), -1.0f, -1.0f );
-	defren.SetShaderViewport( *shader, spsssssTCClamp, true );
-	
-	const float largestPixelSize = decMath::max( defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-	const float dropSubSurfaceThreshold = 0.001f; // config
-	const int tapCount = 18; //9; //18; // config: 9-18
-	const int turnCount = 7; //5; //7; // config
-	const float angleConstant = 6.2831853f * float( turnCount ); // pi * 2.0
-	const float tapRadiusLimit = 0.5f; // 50% of screen size
-	const float tapDropRadiusThreshold = 1.5f; // 1 pixel radius (1.44 at square boundary)
-	
-	shader->SetParameterFloat( spsssssDropSubSurfaceThreshold, dropSubSurfaceThreshold );
-	
-	shader->SetParameterInt( spsssssTapCount, tapCount );
-	shader->SetParameterFloat( spsssssAngleConstant, angleConstant );
-	shader->SetParameterFloat( spsssssTapRadiusFactor, plan.GetProjectionMatrix().a11 * 0.5f );
-	shader->SetParameterFloat( spsssssTapRadiusLimit, tapRadiusLimit );
-	shader->SetParameterFloat( spsssssTapDropRadiusThreshold, tapDropRadiusThreshold * largestPixelSize );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 1122 ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
