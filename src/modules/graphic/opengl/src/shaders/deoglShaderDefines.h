@@ -75,6 +75,11 @@ public:
 	void AddDefine( const char *name, int value );
 	void AddDefine( const char *name, bool value );
 	
+	/** Add multiple defines set to '1'. */
+	void AddDefines( const char *name1, const char *name2 );
+	void AddDefines( const char *name1, const char *name2, const char *name3 );
+	void AddDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	
 	/** Remove define. */
 	void RemoveDefine( const char *name );
 	

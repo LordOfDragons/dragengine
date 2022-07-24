@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 
 UBOLAYOUT uniform EnvironmentMaps{
 	mat4x3 pEnvMapMatrixInfluence[ 8 ];
@@ -14,10 +15,6 @@ UBOLAYOUT uniform EnvironmentMaps{
 	int pEnvMapCount;
 };
 
-uniform vec4 pPosTransform;
-uniform vec2 pPosTransform2;
-uniform mat3 pMatrixEnvMap;
-uniform float pEnvMapLodLevel;
 uniform vec3 pMipMapLevelParams; // matProj.a11*0.5*pixelCountX, matProj.a11*0.5*pixelCountY, 2^maxLevel
 uniform vec4 pMipMapTCClamp; // mipMapTCClampX, mipMapTCClampY, scaleU, scaleV
 
@@ -57,9 +54,6 @@ out vec3 outColor;
 
 
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
 #ifdef ENVMAP_EQUI
 	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 #endif
@@ -67,6 +61,7 @@ const float roughnessToBlur = 3.14159265; // pi | 1.570796; // pi/2
 
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
 
 
 void calculateReflectionParameters( in ivec3 tc, in vec3 position,
@@ -536,14 +531,7 @@ void main( void ){
 		discard;
 	}
 	
-	// determine position of fragment
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord.zw, vLayer );
 	
 	// calculate the reflection for the given point using the results found in the screen space reflection pass
 	vec3 reflection = texelFetch( texReflection, tc, 0 ).rgb;
@@ -579,13 +567,7 @@ void main( void ){
 	// more and more blurred with increasing distance. using the linear definition the roughness simply
 	// scales linearly with the distance clamped to a maximum of 1 obviously.
 	/*
-	#ifdef DECODE_IN_DEPTH
-		vec3 hitPosition = vec3( dot( textureLod( texDepth, vec3( reflection.xy, vLayer ), 0.0 ).rgb, unpackDepth ) );
-	#else
-		vec3 hitPosition = vec3( textureLod( texDepth, vec3( reflection.xy, vLayer ), 0.0 ).r );
-	#endif
-	hitPosition.z = pPosTransform.x / ( pPosTransform.y - hitPosition.z );
-	hitPosition.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * hitPosition.zz;
+	vec3 hitPosition = depthToPosition( texDepth, vScreenCoord.zw, vLayer );
 	
 	vec2 mipMapLevel = vec2( distance( position, hitPosition )
 		* tan( min( roughness, 0.5 ) * roughnessToAngle ) / position.z );
@@ -642,14 +624,8 @@ void main( void ){
 			calculateBouncedReflectivity( tcRefl, reflectDir,
 				bouncedReflectivity, bouncedRoughness, bouncedReflectDir );
 			
-			#ifdef DECODE_IN_DEPTH
-				vec3 hitPosition = vec3( dot( textureLod( texDepth, tcRefl, 0.0 ).rgb, unpackDepth ) );
-			#else
-				vec3 hitPosition = vec3( textureLod( texDepth, tcRefl, 0.0 ).r );
-			#endif
-			hitPosition.z = pPosTransform.x / ( pPosTransform.y - hitPosition.z );
-			hitPosition.xy = ( reflection.xy / pMipMapTCClamp.xy * vec2( 2.0 ) - vec2( 1.0 )
-				+ pPosTransform2 ) * pPosTransform.zw * vec2( hitPosition.z );
+			vec2 reflScreenCoord = ( reflection.xy / pMipMapTCClamp.xy ) * vec2( 2 ) - vec2( 1 );
+			vec3 hitPosition = depthToPosition( texDepth, tcRefl, reflScreenCoord, vLayer );
 			
 			colorEnvMapReflection( hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor );
 			

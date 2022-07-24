@@ -626,6 +626,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		pRenderPB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera * matrixProjection );
 		pRenderPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
 		pRenderPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutDepthToPosition, plan.GetDepthToPosition() );
+		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutDepthToPosition2, plan.GetDepthToPosition2() );
 		
 		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
 		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
@@ -652,6 +654,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 				plan.GetCameraAdaptedIntensity() );
 		}
 		
+		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
+		defren.SetShaderParamFSQuad( *pRenderPB, deoglSkinShader::erutFullScreenQuad );
+		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
 		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
@@ -666,7 +671,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// fill the parameter block parameters with the found values. only used parameters are set
 	pRenderStereoPB->MapBuffer();
 	try{
-		const decDMatrix &matrixCameraCorrection = plan.GetCameraCorrectionMatrix();
+		const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraCorrectionMatrix() );
+		const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
 		
 		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
 		pRenderStereoPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
@@ -675,12 +681,15 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 0, matrixProjection );
 		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
 		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
+		pRenderStereoPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+		pRenderStereoPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
 		
-		const decDMatrix matrixCameraCorrected( matrixCamera * matrixCameraCorrection );
-		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCameraCorrected );
-		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 1, matrixProjection );
-		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCameraCorrected * matrixProjection );
-		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCameraCorrected.GetRotationMatrix().Invert() );
+		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCameraStereo );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 1, matrixProjectionStereo );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCameraStereo * matrixProjectionStereo );
+		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCameraStereo.GetRotationMatrix().Invert() );
+		pRenderStereoPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
+		pRenderStereoPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2() );
 		
 		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
 		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
@@ -708,6 +717,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 				plan.GetCameraAdaptedIntensity() );
 		}
 		
+		pRenderStereoPB->SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
+		defren.SetShaderParamFSQuad( *pRenderStereoPB, deoglSkinShader::erutFullScreenQuad );
+		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
 		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
@@ -729,6 +741,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		pRenderLuminancePB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera * matrixProjection );
 		pRenderLuminancePB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
 		pRenderLuminancePB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+		pRenderLuminancePB->SetParameterDataVec4( deoglSkinShader::erutDepthToPosition, plan.GetDepthToPosition() );
+		pRenderLuminancePB->SetParameterDataVec2( deoglSkinShader::erutDepthToPosition2, plan.GetDepthToPosition2() );
 		
 		pRenderLuminancePB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
 		pRenderLuminancePB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, 0.0f );
@@ -751,6 +765,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		
 		pRenderLuminancePB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
 		
+		pRenderLuminancePB->SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
+		defren.SetShaderParamFSQuad( *pRenderLuminancePB, deoglSkinShader::erutFullScreenQuad );
+		
 		const float znear = plan.GetCameraImageDistance();
 		const float zfar = plan.GetCameraViewDistance();
 		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
@@ -763,6 +780,10 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	
 	pRenderLuminancePB->UnmapBuffer();
 DBG_EXIT("PrepareRenderParamBlock")
+}
+
+void deoglRenderWorld::ActivateRenderPB ( const deoglRenderPlan &plan ) const{
+	( plan.GetRenderStereo() ? pRenderStereoPB : pRenderPB )->Activate();
 }
 
 

@@ -50,6 +50,7 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -70,9 +71,6 @@
 ////////////////
 
 enum pSPAOLocal{
-	spaolQuadParams,
-	spaolPosTransform,
-	spaolPosTransform2,
 	spaolTCTransform,
 	spaolTCClamp,
 	spaolRadiusFactor,
@@ -106,9 +104,6 @@ enum pSPDebugAO{
 };
 
 enum pSPSSSSS{
-	spsssssQuadParams,
-	spsssssPosTransform,
-	spsssssPosTransform2,
 	spsssssTCTransform,
 	spsssssTCClamp,
 	spsssssDropSubSurfaceThreshold,
@@ -138,6 +133,7 @@ pRenderLightParticles( NULL ),
 pRenderGI( NULL ),
 
 pLightPB( NULL ),
+pLightStereoPB( NULL ),
 pShadowPB( NULL ),
 pShadowCascadedPB( nullptr ),
 pShadowCubePB( NULL ),
@@ -151,6 +147,7 @@ pAddToRenderTask( NULL )
 	
 	try{
 		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
+		pLightStereoPB = deoglLightShader::CreateSPBRenderStereo( renderThread );
 		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
 		pShadowCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
@@ -168,6 +165,7 @@ pAddToRenderTask( NULL )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
+		defines.AddDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
@@ -179,6 +177,7 @@ pAddToRenderTask( NULL )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
 		defines.AddDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
+		defines.AddDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
@@ -419,9 +418,8 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	defren.SetShaderParamFSQuad( *shader, spaolQuadParams );
-	shader->SetParameterVector4( spaolPosTransform, plan.GetDepthToPosition() );
-	shader->SetParameterVector2( spaolPosTransform2, plan.GetDepthToPosition2() );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	shader->SetParameterFloat( spaolTCTransform,
 		2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 	defren.SetShaderViewport( *shader, spaolTCClamp, true );
@@ -613,9 +611,8 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	defren.SetShaderParamFSQuad( *shader, spsssssQuadParams );
-	shader->SetParameterVector4( spsssssPosTransform, plan.GetDepthToPosition() );
-	shader->SetParameterVector2( spsssssPosTransform2, plan.GetDepthToPosition2() );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	shader->SetParameterFloat( spsssssTCTransform, 2.0f / defren.GetScalingU(),
 		2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 	defren.SetShaderViewport( *shader, spsssssTCClamp, true );
@@ -662,10 +659,11 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
 	
+	// regular parameter block
 	pLightPB->MapBuffer();
 	try{
-		pLightPB->SetParameterDataVec4( deoglLightShader::erutPosTransform, plan.GetDepthToPosition() );
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutPosTransform2, plan.GetDepthToPosition2() );
+		pLightPB->SetParameterDataVec4( deoglLightShader::erutDepthToPosition, plan.GetDepthToPosition() );
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthToPosition2, plan.GetDepthToPosition2() );
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 		
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
@@ -698,6 +696,48 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		throw;
 	}
 	pLightPB->UnmapBuffer();
+	
+	// stereo parameter block
+	pLightStereoPB->MapBuffer();
+	try{
+		pLightStereoPB->SetParameterDataArrayVec4( deoglLightShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+		pLightStereoPB->SetParameterDataArrayVec2( deoglLightShader::erutDepthToPosition2, 0 , plan.GetDepthToPosition2() );
+		
+		pLightStereoPB->SetParameterDataArrayVec4( deoglLightShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
+		pLightStereoPB->SetParameterDataArrayVec2( deoglLightShader::erutDepthToPosition2, 1 , plan.GetDepthToPositionStereo2() );
+		
+		pLightStereoPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
+		
+		pLightStereoPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
+			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
+			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
+		
+		pLightStereoPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
+			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
+			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+		
+		// global illumination
+		const deoglGIState * const giState = plan.GetRenderGIState();
+		if( giState ){
+			// ray
+			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
+				* plan.GetCameraMatrix() );
+			
+			pLightStereoPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
+			pLightStereoPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
+				matrix.GetRotationMatrix().QuickInvert() );
+			pLightStereoPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
+				plan.GetProjectionMatrix() );
+			
+			// general
+			pLightStereoPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
+		}
+		
+	}catch( const deException & ){
+		pLightStereoPB->UnmapBuffer();
+		throw;
+	}
+	pLightStereoPB->UnmapBuffer();
 }
 
 
@@ -789,6 +829,9 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pLightPB ){
 		pLightPB->FreeReference();
+	}
+	if( pLightStereoPB ){
+		pLightStereoPB->FreeReference();
 	}
 	
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();

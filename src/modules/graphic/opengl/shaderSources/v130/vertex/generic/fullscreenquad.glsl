@@ -4,6 +4,7 @@ precision highp int;
 // DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED //
 //                                                        //
 //             use screenspace.glsl instead               //
+//    using defines: FULLSCREENQUAD, NO_POSTRANSFORM      //
 //                                                        //
 // DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED //
 

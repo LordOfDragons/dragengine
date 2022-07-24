@@ -521,6 +521,8 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
 		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, matrixLayerCount ); // mat3
 		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, projectionMatrixLayerCount ); // vec4
+		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, projectionMatrixLayerCount ); // vec2
 		
 		spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
@@ -539,6 +541,10 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+		
+		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
+		spb->GetParameterAt( erutFullScreenQuad ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
@@ -2516,6 +2522,8 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pMatrixV" ); // erutMatrixV
 		parameterList.Add( "pMatrixVn" ); // erutMatrixVn
 		parameterList.Add( "pMatrixEnvMap" ); // erutMatrixEnvMap
+		parameterList.Add( "pDepthToPosition" ); // erutDepthToPosition
+		parameterList.Add( "pDepthToPosition2" ); // erutDepthToPosition2
 		parameterList.Add( "pDepthTransform" ); // erutDepthTransform
 		parameterList.Add( "pEnvMapLodLevel" ); // erutEnvMapLodLevel
 		parameterList.Add( "pViewport" ); // erutViewport
@@ -2526,6 +2534,8 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pFadeRange" ); // erutFadeRange
 		parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
 		parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
+		parameterList.Add( "pDepthSampleOffset" ); // erutDepthSampleOffset
+		parameterList.Add( "pFullScreenQuad" ); // erutFullScreenQuad
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){

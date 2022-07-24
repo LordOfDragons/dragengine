@@ -90,6 +90,8 @@ public:
 		erutMatrixVP,
 		erutMatrixVn,
 		erutMatrixEnvMap,
+		erutDepthToPosition,
+		erutDepthToPosition2,
 		erutDepthTransform,
 		erutEnvMapLodLevel,
 		erutNorRoughCorrStrength,
@@ -103,6 +105,8 @@ public:
 		erutFadeRange,
 		erutBillboardZScale,
 		erutCameraAdaptedIntensity,
+		erutDepthSampleOffset,
+		erutFullScreenQuad,
 		ERUT_COUNT
 	};
 	

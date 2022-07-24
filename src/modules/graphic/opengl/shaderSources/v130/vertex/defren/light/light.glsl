@@ -8,18 +8,24 @@ precision highp int;
 
 in vec3 inPosition;
 
-#ifdef FULLSCREENQUAD
-	out vec2 vScreenCoord;
-#else
-	out vec3 vLightVolumePos;
+#ifndef GS_RENDER_STEREO
+	#ifdef FULLSCREENQUAD
+		out vec2 vScreenCoord;
+	#else
+		out vec3 vLightVolumePos;
+	#endif
 #endif
 
 void main( void ){
-	#ifdef FULLSCREENQUAD
+	#ifdef GS_RENDER_STEREO
 		gl_Position = vec4( inPosition, 1 );
-		vScreenCoord = inPosition.xy;
 	#else
-		gl_Position = pMatrixMVP * vec4( inPosition, 1 );
-		vLightVolumePos = pMatrixMV * vec4( inPosition, 1 );
+		#ifdef FULLSCREENQUAD
+			gl_Position = vec4( inPosition, 1 );
+			vScreenCoord = inPosition.xy;
+		#else
+			gl_Position = pMatrixMVP * vec4( inPosition, 1 );
+			vLightVolumePos = pMatrixMV * vec4( inPosition, 1 );
+		#endif
 	#endif
 }

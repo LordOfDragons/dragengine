@@ -25,6 +25,7 @@
 
 #include "deoglRenderGeometry.h"
 #include "deoglRenderReflection.h"
+#include "deoglRenderWorld.h"
 #include "debug/deoglRenderDebug.h"
 #include "defren/deoglDeferredRendering.h"
 #include "defren/deoglDRDepthMinMax.h"
@@ -133,11 +134,6 @@ enum pSPScreenSpace{
 };
 
 enum pSPApplyReflections{
-	sparQuadTCTransform,
-	sparPosTransform,
-	sparPosTransform2,
-	sparMatrixEnvMap,
-	sparEnvMapLodLevel,
 	sparMipMapLevelParams,
 	sparMipMapTCClamp,
 	//sparMatrixReflectionBox,
@@ -381,6 +377,7 @@ deoglRenderBase( renderThread )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections" );
+		defines.AddDefine( "FULLSCREENQUAD", true );
 		if( indirectMatrixAccessBug ){
 			defines.AddDefine( "UBO_IDMATACCBUG", true );
 		}
@@ -578,7 +575,7 @@ deoglRenderBase( renderThread )
 		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapPriority ).SetAll( deoglSPBParameter::evtInt, 1, 1, 8 );
 		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 		pEnvMapsParamBlock->MapToStd140();
-		pEnvMapsParamBlock->SetBindingPoint( 0 );
+		pEnvMapsParamBlock->SetBindingPoint( 1 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -2473,17 +2470,8 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	defren.SetShaderParamFSQuad( *shader, sparQuadTCTransform );
-	shader->SetParameterVector4( sparPosTransform, plan.GetDepthToPosition() );
-	shader->SetParameterVector2( sparPosTransform2, plan.GetDepthToPosition2() );
-	
-	float envMapLodLevel = 1.0f;
-	deoglEnvironmentMap * const envmapSky = plan.GetWorld()->GetSkyEnvironmentMap();
-	if( envmapSky ){
-		envMapLodLevel = ( float )envmapSky->GetSize() * 1.0f;
-	}
-	shader->SetParameterMatrix3x3( sparMatrixEnvMap, plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
-	shader->SetParameterFloat( sparEnvMapLodLevel, envMapLodLevel );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	pEnvMapsParamBlock->Activate();
 	
 	const float mmlpFactor1 = plan.GetProjectionMatrix().a11 * 0.5f;
 	int height = defren.GetHeight();
@@ -2506,7 +2494,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	shader->SetParameterFloat( sparMipMapTCClamp, defren.GetPixelSizeU() * ( float )( defren.GetWidth() - 1 ),
 		defren.GetPixelSizeV() * ( float )( defren.GetHeight() - 1 ), 1.0f / defren.GetRealWidth(), 1.0f / defren.GetRealHeight() );
 	
-	pEnvMapsParamBlock->Activate();
 	/*
 	decDMatrix matrixReflectionBox, matrixReflectionBoxNormal;
 	decDVector envMapPosition;

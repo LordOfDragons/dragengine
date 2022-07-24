@@ -191,7 +191,7 @@ precision highp int;
 	#define pLightRange vParticleLightRange
 #endif
 
-#if definedGS_RENDER_STEREO && ! defined GI_RAY
+#if defined GS_RENDER_STEREO && ! defined GI_RAY
 	flat in int vLayer;
 #else
 	const int vLayer = 0;
@@ -267,6 +267,7 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 #endif
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
 
 
 // Macros to increase readability and extendibility
@@ -688,11 +689,7 @@ void main( void ){
 		}
 		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
-		#ifdef DECODE_IN_DEPTH
-			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
-		#else
-			float depth = texelFetch( texDepth, tc, 0 ).r;
-		#endif
+		float depth = sampleDepth( texDepth, tc );
 		
 		#ifndef PARTICLE_LIGHT
 			if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
@@ -700,12 +697,10 @@ void main( void ){
 			}
 		#endif
 		
-		vec3 position = vec3( depth );
-		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 		#ifdef FULLSCREENQUAD
-			position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
+			vec3 position = depthToPosition( depth, vScreenCoord, vLayer );
 		#else
-			position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
+			vec3 position = depthToPositionVolume( depth, vLightVolumePos, vLayer );
 		#endif
 	#endif
 	

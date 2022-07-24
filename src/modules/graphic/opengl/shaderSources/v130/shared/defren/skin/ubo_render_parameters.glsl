@@ -6,6 +6,8 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP[ 6 ];
 		mat3 pMatrixVn[ 6 ];
 		mat3 pMatrixEnvMap;
+		vec4 pDepthToPosition;
+		vec2 pDepthToPosition2; // for use by shifted projection matrix
 		
 	#elif defined GS_RENDER_CASCADED
 		vec4 pAmbient;
@@ -14,6 +16,8 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP[ 4 ]; // same as pCascadeMatrixV
 		mat3 pMatrixVn[ 4 ];
 		mat3 pMatrixEnvMap;
+		vec4 pDepthToPosition;
+		vec2 pDepthToPosition2; // for use by shifted projection matrix
 		
 	#elif defined GS_RENDER_STEREO
 		vec4 pAmbient;
@@ -22,6 +26,8 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP[ 2 ];
 		mat3 pMatrixVn[ 2 ];
 		mat3 pMatrixEnvMap;
+		vec4 pDepthToPosition[ 2 ];
+		vec2 pDepthToPosition2[ 2 ]; // for use by shifted projection matrix
 		
 	#else
 		vec4 pAmbient;
@@ -30,6 +36,8 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP;
 		mat3 pMatrixVn;
 		mat3 pMatrixEnvMap;
+		vec4 pDepthToPosition;
+		vec2 pDepthToPosition2; // for use by shifted projection matrix
 	#endif
 	
 	vec2 pDepthTransform; // x=scale, y=offset
@@ -53,4 +61,8 @@ UBOLAYOUT uniform RenderParameters{
 	vec3 pFadeRange; // x=fadeNear, y=farFar, z=1/(fadeFar-fadeNear)
 	float pBillboardZScale; // billboard z scale if size is fixed to screen
 	float pCameraAdaptedIntensity;
+	
+	vec2 pDepthSampleOffset;
+	
+	vec4 pFullScreenQuad; // for use in vertex shader to transform vertices
 };

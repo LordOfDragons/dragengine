@@ -4,9 +4,6 @@
 	
 	<version>150</version>
 	
-	<parameter name='pQuadParams'/>
-	<parameter name='pPosTransform'/>
-	<parameter name='pPosTransform2'/>
 	<parameter name='pTCTransform'/>
 	<parameter name='pTCClamp'/>
 	<parameter name='pDropSubSurfaceThreshold'/>
@@ -21,11 +18,13 @@
 	<texture name='texSubSurface' target='2'/>
 	<texture name='texLight' target='3'/>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<attribute name='inPosition' target='0'/>
 	
 	<output name='outColor' target='0'/>
 	
-	<sourceCode unit='vertex'>v130/vertex/generic/fullscreenquad.glsl</sourceCode>
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
 	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/light/sssss.glsl</sourceCode>
 </shader>

@@ -95,7 +95,9 @@ private:
 	decDMatrix pCameraInverseMatrix;
 	decDMatrix pCameraMatrixNonMirrored;
 	decDMatrix pProjectionMatrix;
+	decDMatrix pProjectionMatrixStereo;
 	decDMatrix pFrustumMatrix;
+	decDMatrix pFrustumMatrixStereo;
 	decDMatrix pRefPosCameraMatrix;
 	decDMatrix pRefPosCameraMatrixNonMirrored;
 	decDMatrix pCameraCorrectionMatrix;
@@ -106,6 +108,8 @@ private:
 	float pCameraAdaptedIntensity;
 	decVector4 pDepthToPosition;
 	decVector2 pDepthToPosition2;
+	decVector4 pDepthToPositionStereo;
+	decVector2 pDepthToPositionStereo2;
 	decVector2 pDepthSampleOffset;
 	int pViewportX;
 	int pViewportY;
@@ -314,9 +318,11 @@ public:
 	
 	/** Projection matrix. */
 	inline const decDMatrix &GetProjectionMatrix() const{ return pProjectionMatrix; }
+	inline const decDMatrix &GetProjectionMatrixStereo() const{ return pProjectionMatrixStereo; }
 	
 	/** Frustum matrix. */
 	inline const decDMatrix &GetFrustumMatrix() const{ return pFrustumMatrix; }
+	inline const decDMatrix &GetFrustumMatrixStereo() const{ return pFrustumMatrixStereo; }
 	
 	/** Reference position camera matrix. */
 	inline const decDMatrix &GetRefPosCameraMatrix() const{ return pRefPosCameraMatrix; }
@@ -365,6 +371,9 @@ public:
 	/** Depth to position transformation factors. */
 	inline const decVector4 &GetDepthToPosition() const{ return pDepthToPosition; }
 	inline const decVector2 &GetDepthToPosition2() const{ return pDepthToPosition2; }
+	
+	inline const decVector4 &GetDepthToPositionStereo() const{ return pDepthToPositionStereo; }
+	inline const decVector2 &GetDepthToPositionStereo2() const{ return pDepthToPositionStereo2; }
 	
 	/** Depth sample offset. */
 	inline const decVector2 &GetDepthSampleOffset() const{ return pDepthSampleOffset; }

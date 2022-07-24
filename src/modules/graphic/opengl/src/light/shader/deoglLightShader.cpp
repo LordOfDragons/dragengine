@@ -279,6 +279,14 @@ deoglShaderProgram *deoglLightShader::GetShader(){
 
 
 deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThread ){
+	return CreateSPBRender( renderThread, 1 );
+}
+
+deoglSPBlockUBO *deoglLightShader::CreateSPBRenderStereo( deoglRenderThread &renderThread ){
+	return CreateSPBRender( renderThread, 2 );
+}
+
+deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThread, int posTransformCount ) {
 	// this shader parameter block will not be optimzed. the layout is always the same
 	// no matter what configuration is used for skins. this is also why this method is
 	// a static method not an regular method
@@ -293,8 +301,8 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThr
 		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
 		spb->SetParameterCount( ERUT_COUNT );
 		
-		spb->GetParameterAt( erutPosTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutPosTransform2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, posTransformCount ); // vec4
+		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, posTransformCount ); // vec2
 		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
@@ -633,6 +641,9 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetGIRay() ){
 		defines.AddDefine( "GI_RAY", true );
 	}
+	if( pConfig.GetRenderStereo() ){
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+	}
 	
 	switch( pConfig.GetShadowTapMode() ){
 	case deoglLightShaderConfig::estmPcf4:
@@ -717,16 +728,18 @@ void deoglLightShader::GenerateVertexSC(){
 		unitSourceCodePath = deoglLightShaderManager::euscpVertexLight;
 	}
 	
-	pSources->SetPathVertexSourceCode( pRenderThread.GetShader().GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
+	pSources->SetPathVertexSourceCode( pRenderThread.GetShader().
+		GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
 }
 
 void deoglLightShader::GenerateGeometrySC(){
 	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmParticle ){
-		int unitSourceCodePath;
+		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().
+			GetUnitSourceCodePath( deoglLightShaderManager::euscpGeometryParticle ) );
 		
-		unitSourceCodePath = deoglLightShaderManager::euscpGeometryParticle;
-		
-		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
+	}else if( pConfig.GetRenderStereo() ){
+		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().
+			GetUnitSourceCodePath( deoglLightShaderManager::euscpGeometryStereo ) );
 	}
 }
 
@@ -921,8 +934,8 @@ void deoglLightShader::InitShaderParameters(){
 	}
 	
 	// uniforms
-	parameterList.Add( "pPosTransform" ); // erutPosTransform
-	parameterList.Add( "pPosTransform2" ); // erutPosTransform2
+	parameterList.Add( "pDepthToPosition" ); // erutDepthToPosition
+	parameterList.Add( "pDepthToPosition2" ); // erutDepthToPosition2
 	
 	for( i=0; i<EIUT_COUNT; i++ ){
 		if( pInstanceUniformTargets[ i ] != -1 ){

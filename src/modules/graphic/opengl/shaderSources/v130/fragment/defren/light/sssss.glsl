@@ -1,8 +1,9 @@
 precision highp float;
 precision highp int;
 
-uniform vec4 pPosTransform;
-uniform vec2 pPosTransform2;
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+
 uniform vec4 pTCTransform;
 uniform vec4 pTCClamp;
 
@@ -29,14 +30,7 @@ in mediump vec2 vTexCoord;
 
 out mediump vec3 outColor;
 
-
-
-// Constants
-//////////////
-
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
+#include "v130/shared/defren/depth_to_position.glsl"
 
 
 
@@ -46,24 +40,16 @@ out mediump vec3 outColor;
 void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sumLight, inout vec3 sumWeight ){
 	tc.xy = clamp( tc.xy, pTCClamp.xy, pTCClamp.zw );
 	
-	// calculate distance to the center point
-	#ifdef DECODE_IN_DEPTH
-		vec3 spos = vec3( dot( textureLod( texDepth, tc, 0.0 ).rgb, unpackDepth ) );
-	#else
-		vec3 spos = vec3( textureLod( texDepth, tc, 0.0 ).r );
-	#endif
+	float depth = sampleDepth( texDepth, tc );
 	
 	// the position to sample can happen to be at z-far. in this case the denominator
 	// becomes 0 causing inf/nan values. skip such pixels altogether
-	if( pPosTransform.y == spos.z ){
+	if( dpethIsZFar( depth, vLayer ) ){
 		return;
 	}
 	
-	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
-	spos.xy = tc.xy * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
-	spos.xy = ( spos.xy + pPosTransform2 ) * pPosTransform.zw * spos.zz;
-	
-	spos -= position;
+	vec2 screenCoord = tc.xy * pTCTransform.xy + pTCTransform.zw;
+	vec3 spos = depthToPosition( depth, screenCoord, vLayer ) - position;
 	
 	vec3 scatDist = vec3( length( spos ) ) * scatterScale;
 	
@@ -122,14 +108,8 @@ void main( void ){
 		
 	}else{
 		// determine position of fragment to light
-		#ifdef DECODE_IN_DEPTH
-			vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-		#else
-			vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-		#endif
-		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-		position.xy = vTexCoord * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
-		position.xy *= ( pPosTransform.zw + pPosTransform2 ) * position.zz;
+		vec2 screenCoord = vTexCoord * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
+		vec3 position = depthToPosition( texDepth, screenCoord, vLayer );
 		
 		// calculate tap radius
 		float pTapRadiusLimit = 0.5; // 50% screen size

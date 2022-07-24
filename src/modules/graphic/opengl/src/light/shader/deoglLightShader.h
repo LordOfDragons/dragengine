@@ -73,8 +73,8 @@ public:
 	
 	/** Render parameter uniform targets. */
 	enum eRenderUniformTargets{
-		erutPosTransform,
-		erutPosTransform2,
+		erutDepthToPosition,
+		erutDepthToPosition2,
 		erutDepthSampleOffset,
 		erutAOSelfShadow,
 		erutLumFragCoordScale,
@@ -208,6 +208,9 @@ public:
 	
 	/** \brief Create render light shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderStereo( deoglRenderThread &renderThread );
+	
+	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread, int posTransformCount );
 	
 	/** \brief Create instance parameter shader parameter block. */
 	deoglSPBlockUBO *CreateSPBInstParam() const;

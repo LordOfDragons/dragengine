@@ -27,82 +27,82 @@ class decString;
 
 
 /**
- * \brief Light Shader Config.
+ * Light Shader Config.
  */
 class deoglLightShaderConfig{
 public:
-	/** \brief Light modes. */
+	/** Light modes. */
 	enum eLightModes{
-		/** \brief Point light mode. */
+		/** Point light mode. */
 		elmPoint,
 		
-		/** \brief Spot light mode. */
+		/** Spot light mode. */
 		elmSpot,
 		
-		/** \brief Projector light mode. */
+		/** Projector light mode. */
 		elmProjector,
 		
-		/** \brief Sky light mode. */
+		/** Sky light mode. */
 		elmSky,
 		
-		/** \brief Particle light mode. */
+		/** Particle light mode. */
 		elmParticle
 	};
 	
-	/** \brief Shadow tap mode. */
+	/** Shadow tap mode. */
 	enum eShadowTapModes{
-		/** \brief Single tap. */
+		/** Single tap. */
 		estmSingle,
 		
-		/** \brief PCF 4-tap. */
+		/** PCF 4-tap. */
 		estmPcf4,
 		
-		/** \brief PCF 9-tap. */
+		/** PCF 9-tap. */
 		estmPcf9,
 		
-		/** \brief PCF with depth distance based variable tap width. */
+		/** PCF with depth distance based variable tap width. */
 		estmPcfVariableTap
 	};
 	
-	/** \brief Shadow mapping algorithm. */
+	/** Shadow mapping algorithm. */
 	enum eShadowMappingAlgorithms{
-		/** \brief 2D texture mapping. */
+		/** 2D texture mapping. */
 		esma2D,
 		
-		/** \brief Cube mapping. */
+		/** Cube mapping. */
 		esmaCube,
 		
-		/** \brief Dual paraboloid shadow mapping. */
+		/** Dual paraboloid shadow mapping. */
 		esmaDualParaboloid,
 		
-		/** \brief Pyramid shadow mapping. */
+		/** Pyramid shadow mapping. */
 		esmaPyramid
 	};
 	
-	/** \brief Material normal modes. */
+	/** Material normal modes. */
 	enum eMaterialNormalModes{
-		/** \brief Float mode for 3-component float textures. */
+		/** Float mode for 3-component float textures. */
 		emnmFloat,
 		
-		/** \brief Basic encoding for 3-component int textures. */
+		/** Basic encoding for 3-component int textures. */
 		emnmIntBasic,
 		
-		/** \brief Basic encoding for 3-component float textures. */
+		/** Basic encoding for 3-component float textures. */
 		emnmFloatBasic,
 		
-		/** \brief Spheremap encoding for fitting normals into a 2-component int texture. */
+		/** Spheremap encoding for fitting normals into a 2-component int texture. */
 		emnmSpheremap
 	};
 	
-	/** \brief Particle mode. */
+	/** Particle mode. */
 	enum eParticleModes{
-		/** \brief Particle particle mode. */
+		/** Particle particle mode. */
 		epmParticle,
 		
-		/** \brief Ribbon particle mode. */
+		/** Ribbon particle mode. */
 		epmRibbon,
 		
-		/** \brief Beam particle mode. */
+		/** Beam particle mode. */
 		epmBeam
 	};
 	
@@ -128,6 +128,7 @@ public:
 	bool pSubSurface;
 	bool pLuminanceOnly;
 	bool pGIRay;
+	bool pRenderStereo;
 	
 	bool pTextureNoise;
 	bool pTextureColor;
@@ -145,10 +146,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create light shader configuration. */
+	/** Create light shader configuration. */
 	deoglLightShaderConfig();
 	
-	/** \brief Clean up light shader configuration. */
+	/** Clean up light shader configuration. */
 	~deoglLightShaderConfig();
 	/*@}*/
 	
@@ -156,187 +157,193 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Reset configuration. */
+	/** Reset configuration. */
 	void Reset();
 	
 	
 	
-	/** \brief Light mode. */
+	/** Light mode. */
 	inline eLightModes GetLightMode() const{ return pLightMode; }
 	
-	/** \brief Set light mode. */
+	/** Set light mode. */
 	void SetLightMode( eLightModes lightMode );
 	
-	/** \brief Shadow tap mode. */
+	/** Shadow tap mode. */
 	inline eShadowTapModes GetShadowTapMode() const{ return pShadowTapMode; }
 	
-	/** \brief Set shadow tap mode. */
+	/** Set shadow tap mode. */
 	void SetShadowTapMode( eShadowTapModes shadowTapMode );
 	
-	/** \brief Shadow mapping algorithm for the first texture set. */
+	/** Shadow mapping algorithm for the first texture set. */
 	inline eShadowMappingAlgorithms GetShadowMappingAlgorithm1() const{
 		return pShadowMappingAlgorithm1; }
 	
-	/** \brief Set shadow mapping algorithm for the first texture set. */
+	/** Set shadow mapping algorithm for the first texture set. */
 	void SetShadowMappingAlgorithm1( eShadowMappingAlgorithms shadowMappingAlgorithm );
 	
-	/** \brief Shadow mapping algorithm for the second texture set. */
+	/** Shadow mapping algorithm for the second texture set. */
 	inline eShadowMappingAlgorithms GetShadowMappingAlgorithm2() const{
 		return pShadowMappingAlgorithm2; }
 	
-	/** \brief Set shadow mapping algorithm for the second texture set. */
+	/** Set shadow mapping algorithm for the second texture set. */
 	void SetShadowMappingAlgorithm2( eShadowMappingAlgorithms shadowMappingAlgorithm );
 	
-	/** \brief Material normal mode. */
+	/** Material normal mode. */
 	inline eMaterialNormalModes GetMaterialNormalModeDec() const{ return pMaterialNormalModeDec; }
 	
-	/** \brief Set material normal mode. */
+	/** Set material normal mode. */
 	void SetMaterialNormalModeDec( eMaterialNormalModes materialNormalMode );
 	
-	/** \brief Material normal mode. */
+	/** Material normal mode. */
 	inline eMaterialNormalModes GetMaterialNormalModeEnc() const{ return pMaterialNormalModeEnc; }
 	
-	/** \brief Set material normal mode. */
+	/** Set material normal mode. */
 	void SetMaterialNormalModeEnc( eMaterialNormalModes materialNormalMode );
 	
-	/** \brief Particle mode. */
+	/** Particle mode. */
 	inline eParticleModes GetParticleMode() const{ return pParticleMode; }
 	
-	/** \brief Set particle mode. */
+	/** Set particle mode. */
 	void SetParticleMode( eParticleModes mode );
 	
 	
 	
-	/** \brief Input depth has to be decoded. */
+	/** Input depth has to be decoded. */
 	inline bool GetDecodeInDepth() const{ return pDecodeInDepth; }
 	
-	/** \brief Set if input depth has to be decoded. */
+	/** Set if input depth has to be decoded. */
 	void SetDecodeInDepth( bool decodeInDepth );
 	
-	/** \brief Input shadow has to be decoded. */
+	/** Input shadow has to be decoded. */
 	inline bool GetDecodeInShadow() const{ return pDecodeInShadow; }
 	
-	/** \brief Set if input shadow has to be decoded. */
+	/** Set if input shadow has to be decoded. */
 	void SetDecodeInShadow( bool decodeInShadow );
 	
-	/** \brief Output depth has to be encoded. */
+	/** Output depth has to be encoded. */
 	inline bool GetEncodeOutDepth() const{ return pEncodeOutDepth; }
 	
-	/** \brief Set if output depth has to be encoded. */
+	/** Set if output depth has to be encoded. */
 	void SetEncodeOutDepth( bool encodeOutDepth );
 	
-	/** \brief Hardware depth comparison is used. */
+	/** Hardware depth comparison is used. */
 	inline bool GetHWDepthCompare() const{ return pHWDepthCompare; }
 	
-	/** \brief Set hardware depth comparison is used. */
+	/** Set hardware depth comparison is used. */
 	void SetHWDepthCompare( bool hwDepthCompare );
 	
-	/** \brief Second shadow matrix equals the first one. */
+	/** Second shadow matrix equals the first one. */
 	inline bool GetShadowMatrix2EqualsMatrix1() const{ return pShadowMatrix2EqualsMatrix1; }
 	
-	/** \brief Set if second shadow matrix equals the first one. */
+	/** Set if second shadow matrix equals the first one. */
 	void SetShadowMatrix2EqualsMatrix1( bool shadowMatrix2EqualsMatrix1 );
 	
-	/** \brief Use inverse depth for shadow maps. */
+	/** Use inverse depth for shadow maps. */
 	inline bool GetShadowInverseDepth() const{ return pShadowInverseDepth; }
 	
-	/** \brief Set if inverse depth is used for shadow maps. */
+	/** Set if inverse depth is used for shadow maps. */
 	void SetShadowInverseDepth( bool shadowInverseDepth );
 	
-	/** \brief Ambient lighting has to be used. */
+	/** Ambient lighting has to be used. */
 	inline bool GetAmbientLighting() const{ return pAmbientLighting; }
 	
-	/** \brief Set ambient lighting has to be used. */
+	/** Set ambient lighting has to be used. */
 	void SetAmbientLighting( bool ambientLighting );
 	
-	/** \brief Full screen quad rendering has to be used. */
+	/** Full screen quad rendering has to be used. */
 	inline bool GetFullScreenQuad() const{ return pFullScreenQuad; }
 	
-	/** \brief Set if full screen quad rendering has to be used. */
+	/** Set if full screen quad rendering has to be used. */
 	void SetFullScreenQuad( bool fullScreenQuad );
 	
-	/** \brief Sub-surface separation has to be used. */
+	/** Sub-surface separation has to be used. */
 	inline bool GetSubSurface() const{ return pSubSurface; }
 	
-	/** \brief Set if sub-surface separation has to be used. */
+	/** Set if sub-surface separation has to be used. */
 	void SetSubSurface( bool subSurface );
 	
-	/** \brief Luminance only. */
+	/** Luminance only. */
 	inline bool GetLuminanceOnly() const{ return pLuminanceOnly; }
 	
-	/** \brief Set luminance only. */
+	/** Set luminance only. */
 	void SetLuminanceOnly( bool luminanceOnly );
 	
-	/** \brief GI ray. */
+	/** GI ray. */
 	inline bool GetGIRay() const{ return pGIRay; }
 	
-	/** \brief Set GI ray. */
+	/** Set GI ray. */
 	void SetGIRay( bool giRay );
 	
+	/** Render stereo. */
+	inline bool GetRenderStereo() const{ return pRenderStereo; }
+	
+	/** Set render stereo. */
+	void SetRenderStereo( bool renderStereo );
 	
 	
-	/** \brief Noise texture is used. */
+	
+	/** Noise texture is used. */
 	inline bool GetTextureNoise() const{ return pTextureNoise; }
 	
-	/** \brief Set if noise texture is used. */
+	/** Set if noise texture is used. */
 	void SetTextureNoise( bool isUsed );
 	
 	
 	
-	/** \brief Color texture is used. */
+	/** Color texture is used. */
 	inline bool GetTextureColor() const{ return pTextureColor; }
 	
-	/** \brief Set if color texture is used. */
+	/** Set if color texture is used. */
 	void SetTextureColor( bool useTexture );
 	
-	/** \brief Omni-direction color cube texture is used. */
+	/** Omni-direction color cube texture is used. */
 	inline bool GetTextureColorOmnidirCube() const{ return pTextureColorOmniCube; }
 	
-	/** \brief Set if omni-direction color cube texture is used. */
+	/** Set if omni-direction color cube texture is used. */
 	void SetTextureColorOmnidirCube( bool useTexture );
 	
-	/** \brief Omni-direction color equi-rectangular texture is used. */
+	/** Omni-direction color equi-rectangular texture is used. */
 	inline bool GetTextureColorOmnidirEquirect() const{ return pTextureColorOmniEquirect; }
 	
-	/** \brief Set if omni-direction color equi-rectangular texture is used. */
+	/** Set if omni-direction color equi-rectangular texture is used. */
 	void SetTextureColorOmnidirEquirect( bool useTexture );
 	
 	
 	
-	/** \brief First shadow map solid texture are used. */
+	/** First shadow map solid texture are used. */
 	inline bool GetTextureShadow1Solid() const{ return pTextureShadow1Solid; }
 	
-	/** \brief Set if first shadow map solid texture is used. */
+	/** Set if first shadow map solid texture is used. */
 	void SetTextureShadow1Solid( bool isUsed );
 	
-	/** \brief First shadow map transparent textures is used. */
+	/** First shadow map transparent textures is used. */
 	inline bool GetTextureShadow1Transparent() const{ return pTextureShadow1Transparent; }
 	
-	/** \brief Set if first shadow map transparent textures is used. */
+	/** Set if first shadow map transparent textures is used. */
 	void SetTextureShadow1Transparent( bool isUsed );
 	
-	/** \brief Second shadow map solid texture is used. */
+	/** Second shadow map solid texture is used. */
 	inline bool GetTextureShadow2Solid() const{ return pTextureShadow2Solid; }
 	
-	/** \brief Set if second shadow map solid texture is used. */
+	/** Set if second shadow map solid texture is used. */
 	void SetTextureShadow2Solid( bool isUsed );
 	
-	/** \brief Second shadow map transparent textures is used. */
+	/** Second shadow map transparent textures is used. */
 	inline bool GetTextureShadow2Transparent() const{ return pTextureShadow2Transparent; }
 	
-	/** \brief Set if second shadow map transparent textures is used. */
+	/** Set if second shadow map transparent textures is used. */
 	void SetTextureShadow2Transparent( bool isUsed );
 	
-	/** \brief Shadow ambient map texture is used. */
+	/** Shadow ambient map texture is used. */
 	inline bool GetTextureShadow1Ambient() const{ return pTextureShadow1Ambient; }
 	
-	/** \brief Set if shadow ambient map is used. */
+	/** Set if shadow ambient map is used. */
 	void SetTextureShadow1Ambient( bool isUsed );
 	
-	/** \brief Shadow ambient map texture is used. */
+	/** Shadow ambient map texture is used. */
 	inline bool GetTextureShadow2Ambient() const{ return pTextureShadow2Ambient; }
 	
-	/** \brief Set if shadow ambient map is used. */
+	/** Set if shadow ambient map is used. */
 	void SetTextureShadow2Ambient( bool isUsed );
 	/*@}*/
 	
@@ -344,7 +351,7 @@ public:
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Create short string list with the configuration. */
+	/** Create short string list with the configuration. */
 	void DebugGetConfigString( decString &string ) const;
 	/*@}*/
 	
@@ -352,10 +359,10 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy the shader configuration to this shader configuration. */
+	/** Copy the shader configuration to this shader configuration. */
 	deoglLightShaderConfig &operator=( const deoglLightShaderConfig &config );
 	
-	/** \brief Shader configuration is the same as this shader configuration. */
+	/** Shader configuration is the same as this shader configuration. */
 	bool operator==( const deoglLightShaderConfig &config ) const;
 	/*@}*/
 };

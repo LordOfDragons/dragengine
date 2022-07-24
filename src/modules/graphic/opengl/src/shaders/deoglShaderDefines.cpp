@@ -132,6 +132,24 @@ void deoglShaderDefines::AddDefine( const char *name, bool value ){
 	AddDefine( name, value ? "1" : "0" );
 }
 
+void deoglShaderDefines::AddDefines( const char *name1, const char *name2 ){
+	AddDefine( name1, true );
+	AddDefine( name2, true );
+}
+
+void deoglShaderDefines::AddDefines( const char *name1, const char *name2, const char *name3 ){
+	AddDefine( name1, true );
+	AddDefine( name2, true );
+	AddDefine( name3, true );
+}
+
+void deoglShaderDefines::AddDefines( const char *name1, const char *name2, const char *name3, const char *name4 ){
+	AddDefine( name1, true );
+	AddDefine( name2, true );
+	AddDefine( name3, true );
+	AddDefine( name4, true );
+}
+
 void deoglShaderDefines::RemoveDefine( const char *name ){
 	int i;
 	for( i=0; i<pDefineCount; i++ ){

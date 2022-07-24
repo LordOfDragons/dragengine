@@ -12,9 +12,6 @@
 	#endif
 #endif
 
-#include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/gi/ubo_gi.glsl"
-
 #ifndef NO_TEXCOORD
 	in vec2 vGSTexCoord[ 3 ];
 #endif

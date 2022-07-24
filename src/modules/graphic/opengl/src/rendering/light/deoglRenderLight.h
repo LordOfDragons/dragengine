@@ -58,6 +58,7 @@ private:
 	deoglRenderGI *pRenderGI;
 	
 	deoglSPBlockUBO *pLightPB;
+	deoglSPBlockUBO *pLightStereoPB;
 	deoglSPBlockUBO *pShadowPB;
 	deoglSPBlockUBO *pShadowCascadedPB;
 	deoglSPBlockUBO *pShadowCubePB;

@@ -4,13 +4,9 @@
 	
 	<version>150</version>
 	
-	<uniformBlock name='EnvironmentMaps' target='0'/>
+	<uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='EnvironmentMaps' target='1'/>
 	
-	<parameter name='pQuadTCTransform'/>
-	<parameter name='pPosTransform'/>
-	<parameter name='pPosTransform2'/>
-	<parameter name='pMatrixEnvMap'/>
-	<parameter name='pEnvMapLodLevel'/>
 	<parameter name='pMipMapLevelParams'/>
 	<parameter name='pMipMapTCClamp'/>
 	

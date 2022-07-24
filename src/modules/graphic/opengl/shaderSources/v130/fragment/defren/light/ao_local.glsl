@@ -1,10 +1,9 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 
-
-uniform vec4 pPosTransform;
-uniform vec2 pPosTransform2;
 uniform vec4 pTCTransform;
 uniform vec4 pTCClamp;
 uniform float pRadiusFactor;
@@ -32,21 +31,11 @@ out vec3 outAO; // ao, ssao, solidity
 
 
 
-// Constants
-//////////////
-
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
-
-#define TC_CLAMPED(tc) clamp(tc, ivec2(0,0), pTCClamp.zw)
-
-
-
 // Calculate the screen space ambient occlusion
 /////////////////////////////////////////////////
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
 
 #define pSSAOSelfOcclusion pParamSSAO.x
 #define pSSAOEpsilon pParamSSAO.y
@@ -61,16 +50,9 @@ out vec3 outAO; // ao, ssao, solidity
 float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 	tc = clamp( tc, pTCClamp.xy, pTCClamp.zw );
 	
-	#ifdef DECODE_IN_DEPTH
-		vec3 spos = vec3( dot( textureLod( texDepth, vec3( tc, vLayer ), level ).rgb, unpackDepth ) );
-	#else
-		vec3 spos = vec3( textureLod( texDepth, vec3( tc, vLayer ), level ).r );
-	#endif
-	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
-	spos.xy = tc * pTCTransform.xy + pTCTransform.zw;
-	spos.xy = ( spos.xy + pPosTransform2 ) * pPosTransform.zw * spos.zz;
-	
-	spos -= position;
+	float depth = sampleDepth( texDepth, vec3( tc, vLayer ), level );
+	vec2 screenCoord = tc * pTCTransform.xy + pTCTransform.zw;
+	vec3 spos = depthToPosition( depth, screenCoord, vLayer ) - position;
 	
 	float slen = max( length( spos ), pSSAOEpsilon );
 	
@@ -120,15 +102,7 @@ void main( void ){
 		return;
 	}
 	
-	// determine depth and z-position of fragment
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vTexCoord * pTCTransform.xy + pTCTransform.zw;
-	position.xy = ( position.xy + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	vec3 position = depthToPosition( texDepth, vTexCoord * pTCTransform.xy + pTCTransform.zw, vLayer );
 	
 	// calculate the parameters
 #if 1
