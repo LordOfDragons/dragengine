@@ -71,14 +71,6 @@ private:
 	deoglTexture *pEnvMapEqui;
 	deoglSPBlockUBO *pEnvMapsParamBlock;
 	
-	int pIndexTextureWidth;
-	int pIndexTextureHeight;
-	deoglTexture *pTextureIndices;
-	deoglTexture *pTextureDistance1;
-	deoglTexture *pTextureDistance2;
-	deoglFramebuffer *pFBOIndexPass1;
-	deoglFramebuffer *pFBOIndexPass2;
-	
 	deoglEnvironmentMap *pDirectEnvMapActive; ///< weak reference
 	deoglEnvironmentMap *pDirectEnvMapFading; ///< weak reference
 	

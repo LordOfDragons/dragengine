@@ -155,31 +155,6 @@ enum pSPBReflection{
 	spbr2EnvMapPosLayer
 };
 
-enum eSPIndexPass{
-	spipQuadTCTransform,
-	spipPosTransform,
-	spipScaleDistance,
-	spipMatrixMVP,
-	spipMatrixMV,
-	spipEnvMapPosition,
-	spipEnvMapIndex
-};
-
-/*
-enum eSPEnvMapPass{
-	spempQuadTCTransform,
-	spempPosTransform,
-	spempScaleDistance,
-	spempBlendFactors,
-	spempMatrixEnvMap,
-	spempEnvMapLodLevel,
-	spempMatrixMVP,
-	spempMatrixMV,
-	spempEnvMapPosition,
-	spempEnvMapIndex
-};
-*/
-
 enum eSPCubeMap2EquiMap{
 	spcm2emLevel
 };
@@ -205,14 +180,6 @@ enum eSPCopyMaterial{
 	spcmMatrixPosition,
 	spcmMatrixNormal
 };
-
-/*
-static const int vCubeFaces[] = {
-	deoglCubeMap::efPositiveX, deoglCubeMap::efNegativeX,
-	deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
-	deoglCubeMap::efPositiveZ, deoglCubeMap::efNegativeZ
-};
-*/
 
 
 
@@ -242,12 +209,6 @@ deoglRenderBase( renderThread )
 	pEnvMap = NULL;
 	pEnvMapEqui = NULL;
 	pEnvMapsParamBlock = NULL;
-	
-	pTextureIndices = NULL;
-	pTextureDistance1 = NULL;
-	pTextureDistance2 = NULL;
-	pFBOIndexPass1 = NULL;
-	pFBOIndexPass2 = NULL;
 	
 	pDirectEnvMapActive  = NULL;
 	pDirectEnvMapFading = NULL;
@@ -499,60 +460,6 @@ deoglRenderBase( renderThread )
 			}
 		}
 		
-		(void)pIndexTextureWidth;
-		(void)pIndexTextureHeight;
-		/*
-		// create textures
-		pIndexTextureWidth = 512;
-		pIndexTextureHeight = 512;
-		
-		// create indices
-		pTextureIndices = new deoglTexture( ogl );
-		pTextureIndices->SetSize( pIndexTextureWidth, pIndexTextureHeight );
-		pTextureIndices->SetFBOFormatIntegral( 2, 8
-		pTextureIndices->CreateTexture();
-		
-		// create distances
-		pTextureDistance1 = new deoglTexture( ogl );
-		pTextureDistance1->SetSize( pIndexTextureWidth, pIndexTextureHeight );
-		pTextureDistance1->SetDepthFormat( false );
-		pTextureDistance1->CreateTexture();
-		
-		pTextureDistance2 = new deoglTexture( ogl );
-		pTextureDistance2->SetSize( pIndexTextureWidth, pIndexTextureHeight );
-		pTextureDistance2->SetDepthFormat( false );
-		pTextureDistance2->CreateTexture();
-		
-		// create fbo index pass 1
-		pFBOIndexPass1 = new deoglFramebuffer( ogl, false );
-		
-		renderThread.GetFramebuffer().Activate( pFBOIndexPass1 );
-		
-		pFBOIndexPass1->AttachDepthTexture( pTextureDistance1 );
-		pFBOIndexPass1->AttachColorTexture( 0, pTextureIndices );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBOIndexPass1->Verify();
-		
-		// create fbo index pass 2
-		pFBOIndexPass2 = new deoglFramebuffer( ogl, false );
-		
-		renderThread.GetFramebuffer().Activate( pFBOIndexPass2 );
-		
-		pFBOIndexPass2->AttachDepthTexture( pTextureDistance2 );
-		pFBOIndexPass2->AttachColorTexture( 0, pTextureIndices );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBOIndexPass2->Verify();
-		*/
-		
-		
 		
 		pEnvMapsParamBlock = new deoglSPBlockUBO( renderThread );
 		pEnvMapsParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
@@ -743,45 +650,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	for( i=0; i<4; i++ ){
 		blendSampler[ i ] = &GetSamplerClampNearestMipMap();
 	}
-	
-#if 0
-	const deoglEnvironmentMapList &list = plan.GetCollideList().GetEnvironmentMapList();
-	deoglEnvironmentMap *closestEnvMap[ 4 ] = { NULL, NULL, NULL, NULL };
-	float closestDistance[ 4 ] = { 1000.0f, 1000.0f, 1000.0f, 1000.0f };
-	int i, j, k, count;
-	
-	count = list.GetCount();
-	
-	for( i=0; i<4; i++ ){
-		for( j=0; j<count; j++ ){
-			envmap = list.GetAt( j );
-			
-			//for( k=0; envmap!=closestEnvMap[ k ] && k<i; k++ );
-			for( k=0; ( envmap->GetPosition() - envMapPosition[ k ] ).Length()>FLOAT_SAFE_EPSILON && k<i; k++ );
-			
-			if( k == i && ! envmap->GetSkyOnly() ){
-				const float distance = ( float )( ( envmap->GetPosition() - cameraPosition ).Length() );
-				
-				if( /*distance > nearDistLimit && */ ( ! closestEnvMap[ i ] || distance < closestDistance[ i ] ) ){
-					closestEnvMap[ i ] = envmap;
-					closestDistance[ i ] = distance;
-					envMapPosition[ i ] = envmap->GetPosition();
-					
-					if( envmap->GetEquiEnvMap() ){
-						blendEnvMap[ i ] = envmap->GetEquiEnvMap();
-						
-					}else{
-						blendEnvMap[ i ] = ogl.GetTextureDefaultEmissivity();
-					}
-				}
-			}
-		}
-		
-		if( ! closestEnvMap[ i ] ){
-			break;
-		}
-	}
-#endif
 	
 	count = 0;
 	
@@ -1010,33 +878,10 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 		}
 	}
 	
-	/*
-	if( count > 1 ){
-		renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
-		shader = pShaderBuildEnvMap->GetCompiled();
-	}
-	
-	if( count < 2 && ! pglCopyImageSubData ){
-		// nVidia has a bug with the copy somewhere. most probably it can not correctly copy the RG11B10 format.
-		// in this case the rendering would be broken due to the resulting env-map containing garbage. on ATI
-		// this works without a problem
-		renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
-		shader = pShaderBuildEnvMap->GetCompiled();
-	}
-	*/
 	// for the sake of simplicity we use the shader always even for simple cases. there is no real speed
 	// gain in trying to use a copy especially since envmaps can have different dimensions
 	renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
 	shader = pShaderBuildEnvMap->GetCompiled();
-	
-	/*
-	if( pEnvMapEqui ){
-		printf( "envmapequi %p %p %p %p\n", blendEnvMapEqui[ 0 ], blendEnvMapEqui[ 1 ], blendEnvMapEqui[ 2 ], blendEnvMapEqui[ 3 ] );
-	}else{
-		printf( "envmap %p %p %p %p\n", blendEnvMap[ 0 ], blendEnvMap[ 1 ], blendEnvMap[ 2 ], blendEnvMap[ 3 ] );
-	}
-	printf( "weight %f %f %f %f\n", blendWeights[ 0 ], blendWeights[ 1 ], blendWeights[ 2 ], blendWeights[ 3 ] );
-	*/
 	
 	// for the time beeing we need all textures set
 	for( i=1; i<4; i++ ){
@@ -1052,123 +897,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 		}
 	}
 	
-#if 0
-	if( blendEnvMap[ 3 ] ){
-		const decDVector q = cameraPosition - envMapPosition[ 3 ];
-		const decDVector q1 = envMapPosition[ 0 ] - envMapPosition[ 3 ];
-		const decDVector q2 = envMapPosition[ 1 ] - envMapPosition[ 3 ];
-		const decDVector q3 = envMapPosition[ 2 ] - envMapPosition[ 3 ];
-		decDMatrix matrix;
-		
-		renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
-		shader = pShaderBuildEnvMap->GetCompiled();
-		
-		/*
-		double det = matrix.a13 * ( matrix.a22 * matrix.a31 + matrix.a21 * matrix.a32 )
-			+ matrix.a12 * ( matrix.a23 * matrix.a31 - matrix.a21 * matrix.a33 )
-			+ matrix.a11 * ( matrix.a22 * matrix.a33 - matrix.a23 * matrix.a32 );
-		*/
-		
-		matrix.a11 = q1.x; matrix.a12 = q1.y; matrix.a13 = q1.z;
-		matrix.a21 = q2.x; matrix.a22 = q2.y; matrix.a23 = q2.z;
-		matrix.a31 = q3.x; matrix.a32 = q3.y; matrix.a33 = q3.z;
-		double factor = matrix.Determinant();
-		if( factor != 0.0 ){
-			factor = 1.0 / factor;
-		}
-		
-		matrix.a11 = q.x; matrix.a12 = q.y; matrix.a13 = q.z;
-		blendWeights[ 0 ] = ( float )( matrix.Determinant() * factor );
-		
-		matrix.a11 = q1.x; matrix.a12 = q1.y; matrix.a13 = q1.z;
-		matrix.a21 = q.x; matrix.a22 = q.y; matrix.a23 = q.z;
-		blendWeights[ 1 ] = ( float )( matrix.Determinant() * factor );
-		
-		matrix.a21 = q2.x; matrix.a22 = q2.y; matrix.a23 = q2.z;
-		matrix.a31 = q.x; matrix.a32 = q.y; matrix.a33 = q.z;
-		blendWeights[ 2 ] = ( float )( matrix.Determinant() * factor );
-		
-		blendWeights[ 3 ] = 1.0 - blendWeights[ 0 ] - blendWeights[ 1 ] - blendWeights[ 2 ];
-		
-	}else if( blendEnvMap[ 2 ] ){
-		// three environment maps found. use barycentric coordinates on a triangle
-		renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
-		shader = pShaderBuildEnvMap->GetCompiled();
-		
-		const decDVector temp = envMapPosition[ 2 ] - envMapPosition[ 1 ];
-		decDVector vn = ( envMapPosition[ 1 ] - envMapPosition[ 0 ] ) % temp;
-		const double area = vn.Length();
-		vn /= area * area;
-		const decDVector cp = cameraPosition + vn * ( ( envMapPosition[ 1 ] - cameraPosition ) * vn );
-		
-		blendWeights[ 0 ] = ( float )( ( temp % ( cp - envMapPosition[ 1 ] ) ) * vn );
-		if( blendWeights[ 0 ] > 1.0f ){
-			blendWeights[ 0 ] = 1.0f;
-		}
-		if( blendWeights[ 0 ] < 0.0f ){
-			blendWeights[ 0 ] = 0.0f;
-		}
-		
-		blendWeights[ 1 ] = ( float )( ( ( envMapPosition[ 0 ] - envMapPosition[ 2 ] ) % ( cp - envMapPosition[ 2 ] ) ) * vn );
-		if( blendWeights[ 0 ] > 1.0f ){
-			blendWeights[ 0 ] = 1.0f;
-		}
-		if( blendWeights[ 0 ] < 0.0f ){
-			blendWeights[ 0 ] = 0.0f;
-		}
-		
-		blendWeights[ 2 ] = 1.0 - blendWeights[ 0 ] - blendWeights[ 1 ];
-		if( blendWeights[ 2 ] > 1.0f ){
-			blendWeights[ 2 ] = 1.0f;
-		}
-		if( blendWeights[ 2 ] < 0.0f ){
-			blendWeights[ 2 ] = 0.0f;
-		}
-		// this doesn't work shit since values can go beyond [0..1] ... U_U
-		
-		printf( "blend %f %f %f\n", blendWeights[ 0 ], blendWeights[ 1 ], blendWeights[ 2 ] );
-		
-		blendEnvMap[ 3 ] = blendEnvMap[ 2 ]; // for the time being we need all textures set
-		
-	}else if( blendEnvMap[ 1 ] ){
-		// two environment maps found. use barycentric coordinates on a line
-		const decDVector q = cameraPosition - envMapPosition[ 1 ];
-		const decDVector q1 = envMapPosition[ 0 ] - envMapPosition[ 1 ];
-		const double len = q1.Length();
-		
-		renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
-		shader = pShaderBuildEnvMap->GetCompiled();
-		
-		blendWeights[ 0 ] = ( float )( ( q * q1 ) / ( len * len ) );
-		if( blendWeights[ 0 ] > 1.0f ){
-			// degenrated into the case of a single environment map
-			blendWeights[ 0 ] = 1.0f;
-			shader = NULL;
-			
-		}else{
-			blendWeights[ 1 ] = 1.0f - blendWeights[ 0 ];
-			
-			blendEnvMap[ 2 ] = blendEnvMap[ 1 ]; // for the time being we need all textures set
-			blendEnvMap[ 3 ] = blendEnvMap[ 1 ]; // for the time being we need all textures set
-		}
-		
-	}else if( blendEnvMap[ 0 ] ){
-		// a single environment map found. use it without blending. a copy is faster
-		
-	}else{
-		// no environment maps found. use the sky environment map instead if existing.
-		// use it without blending. a copy is faster
-		deoglRSkyInstance * const sky = plan.GetWorld()->GetSky();
-		
-		if( sky && sky->GetEnvironmentMap() ){
-			blendEnvMap[ 0 ] = sky->GetEnvironmentMap()->GetEquiEnvMap();
-		}
-		
-		if( ! blendEnvMap[ 0 ] ){
-			blendEnvMap[ 0 ] = ogl.GetTextureDefaultEmissivity();
-		}
-	}
-#endif
 	DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Prepare" );
 	
 	// build the environment map
@@ -1237,51 +965,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			shader->SetParameterFloat( spbemBlendWeights, blendWeights[ 0 ],
 				blendWeights[ 1 ], blendWeights[ 2 ], blendWeights[ 3 ] );
 			
-//#define RENDER_MIPMAP_LEVELS 1
-#ifdef RENDER_MIPMAP_LEVELS
-			int j;
-			
-			if( pEnvMapEqui ){
-				count = pEnvMapEqui->GetRealMipMapLevelCount();
-				
-			}else{
-				count = pEnvMap->GetRealMipMapLevelCount();
-			}
-			
-			for( i=0; i<count; i++ ){
-				if( pEnvMapEqui ){
-					fbo->AttachColorTextureLevel( 0, pEnvMapEqui, i );
-					
-				}else{
-					for( j=0; j<6; j++ ){
-						fbo->AttachColorCubeMapLevel( j, pEnvMap, i, i );
-					}
-				}
-				fbo->Verify();
-				
-				OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-				
-				if( pEnvMapEqui ){
-					tsmgr.EnableTexture( 0, *blendEnvMapEqui[ 0 ], blendFiltering[ 0 ], GL_CLAMP_TO_EDGE );
-					
-				}else{
-					tsmgr.EnableCubeMap( 0, *blendEnvMap[ 0 ], blendFiltering[ 0 ] );
-				}
-				
-				shader->SetParameterFloat( spbemMipMapLevel, ( float )i );
-				
-				defren.RenderFSQuadVAO();
-				
-				width >>= 1;
-				if( width < 1 ){
-					width = 1;
-				}
-				height >>= 1;
-				if( height < 1 ){
-					height = 1;
-				}
-			}
-#else
 			if( pEnvMapEqui ){
 				fbo->AttachColorTexture( 0, pEnvMapEqui );
 				
@@ -1306,21 +989,18 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Prepare" );
 			defren.RenderFSQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Render" );
-#endif
 			
 			renderThread.GetFramebuffer().Activate( oldfbo );
 			if( fbo ){
 				fbo->DecreaseUsageCount();
 			}
 			
-#ifndef RENDER_MIPMAP_LEVELS
 			if( pEnvMapEqui ){
 				pEnvMapEqui->CreateMipMaps();
 				
 			}else{
 				pEnvMap->CreateMipMaps();
 			}
-#endif
 			
 		}catch( const deException & ){
 			renderThread.GetFramebuffer().Activate( oldfbo );
@@ -1347,7 +1027,10 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 
 
 void deoglRenderReflection::RenderReflections( deoglRenderPlan &plan ){
-if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+		return;
+	}
+	
 	deoglRenderThread &renderThread = GetRenderThread();
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		return;
@@ -1372,12 +1055,6 @@ if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
 	if( ! envMapSky ){
 		envMapSky = renderThread.GetDefaultTextures().GetEmissivity();
 	}
-	
-	// HACK
-	/*if( renderThread.GetConfiguration()->GetDebugSnapshot() != 62 ){
-		RenderIndices( plan );
-	}*/
-	// HACK
 	
 	// set states
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
@@ -1440,44 +1117,6 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "refl_reflection" );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
-}
-
-#if 0
-	if( renderThread.GetConfiguration()->GetDebugSnapshot() == 61 ){
-		return;
-	}
-	
-	// resize the textures. for testing purpose we use the same size as the render plan size
-	/*
-	const int vpWidth = plan.GetViewportWidth();
-	const int vpHeight = plan.GetViewportHeight();
-	
-	if( vpWidth > pIndexTextureWidth || vpHeight > pIndexTextureHeight ){
-		pTextureIndices->SetSize( vpWidth, vpHeight );
-		pTextureIndices->CreateTexture();
-		pTextureDistance1->SetSize( vpWidth, vpHeight );
-		pTextureDistance1->CreateTexture();
-		pTextureDistance2->SetSize( vpWidth, vpHeight );
-		pTextureDistance2->CreateTexture();
-		pIndexTextureWidth = vpWidth;
-		pIndexTextureHeight = vpHeight;
-	}
-	*/
-	
-	DEBUG_RESET_TIMERS;
-	
-	RenderIndices( plan );
-	RenderEnvMaps( plan );
-	RenderScreenSpace( plan );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	
-	DEBUG_PRINT_TIMER_TOTAL( "RenderReflections Total" );
-	
-	if( renderThread.GetConfiguration()->GetDebugSnapshot() == 60 ){
-		renderThread.GetConfiguration()->SetDebugSnapshot( 0 );
-	}
-#endif
 }
 
 void deoglRenderReflection::UpdateEnvMapSlots( deoglRenderPlan &plan ){
@@ -1837,7 +1476,6 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 	}
 }
 
-#if 1
 void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -1910,139 +1548,6 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 }
-
-#else
-void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = *renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = *renderThread.GetTexture().GetStages();
-	deoglShaderCompiled *shader;
-	int realHeight = defren.GetRealHeight();
-	int realWidth = defren.GetRealWidth();
-	int height = defren.GetHeight();
-	int width = defren.GetWidth();
-	int lastWidth, lastHeight;
-	float hsu, hsv;
-	int level = 0;
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	// copy base level
-	defren.ActivateFBOTemporary1Level( 0 );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	
-	deoglShaderProgram *program = plan.GetStereoRender() ? pShaderCopyColorStereo : pShaderCopyColor;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
-	
-	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
-	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
-	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	
-	// downsample mip-map levels
-	deoglShaderProgram *program = plan.GetStereoRender() ? pShaderCopyColorMipMapStereo : pShaderCopyColorMipMap;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
-	
-	tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), deoglTextureStageManager::etfLinearMipMap, GL_CLAMP_TO_EDGE );
-	
-	while( width > 1 && height > 1 ){
-		// this might look a bit strange but there is a reason for all this here. the mip map dimensions
-		// can be odd resulting in a non-matching downsample. to sample the correct values the following
-		// calculation is required. the last width and height is first stripped of the last bit. this
-		// bit will be lost in a right shift of 1. stripping the last bit is the same as doing first a
-		// right shift by 1 followed by a left shift by 1 just cheaper. this is now the size of the
-		// rectangle to sample from compared to the real width of the previous mip map level. we can not
-		// calculate this in a different way since the shifted dimension looses the last bit but the
-		// real size still has the last bit. not doing this calculation can produce an error of a single
-		// pixel. this is most probably not bad but it ensures the lost pixel is at the border of the
-		// screen where you hardly notice it and not somewhere in the middle of the screen.
-		lastWidth = width & ~1;
-		if( lastWidth < 1 ){
-			lastWidth = 1;
-		}
-		lastHeight = height & ~1;
-		if( lastHeight < 1 ){
-			lastHeight = 1;
-		}
-		
-		hsu = 0.5f * ( float )lastWidth / ( float )realWidth;
-		hsv = 0.5f * ( float )lastHeight / ( float )realHeight;
-		
-		realWidth >>= 1;
-		if( realWidth < 1 ){
-			realWidth = 1;
-		}
-		realHeight >>= 1;
-		if( realHeight < 1 ){
-			realHeight = 1;
-		}
-		
-		width >>= 1;
-		if( width < 1 ){
-			width = 1;
-		}
-		height >>= 1;
-		if( height < 1 ){
-			height = 1;
-		}
-		
-		level++;
-		
-		defren.ActivateFBOTemporary1Level( level );
-		
-		OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-		
-		shader->SetParameterFloat( spccQuadParams, hsu, hsv, hsu, hsv );
-		shader->SetParameterFloat( spccMipMapLevel, ( float )( level - 1 ) );
-		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	}
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	
-	if( renderThread.GetConfiguration()->GetDebugSnapshot() == 64 ){
-		decString text;
-		
-		width = defren.GetWidth();
-		height = defren.GetHeight();
-		level = 0;
-		
-		text.Format( "refl_ssr_copycolor_level0_%ix%i", width, height );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(), 0,
-			text.GetString(), false, deoglDebugSaveTexture::ecColorLinear2sRGB );
-		
-		while( width > 1 && height > 1 ){
-			width >>= 1;
-			if( width < 1 ){
-				width = 1;
-			}
-			height >>= 1;
-			if( height < 1 ){
-				height = 1;
-			}
-			level++;
-			
-			text.Format( "refl_ssr_copycolor_level%i_%ix%i", level, width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(), level,
-				text.GetString(), false, deoglDebugSaveTexture::ecColorLinear2sRGB );
-		}
-		
-		renderThread.GetConfiguration()->SetDebugSnapshot( 0 );
-	}
-}
-#endif
 
 void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	if( ! plan.GetFBOMaterial() || ! solid ){
@@ -2533,23 +2038,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderReflection::pCleanUp(){
-	if( pFBOIndexPass2 ){
-		delete pFBOIndexPass2;
-	}
-	if( pFBOIndexPass1 ){
-		delete pFBOIndexPass1;
-	}
-	
-	if( pTextureDistance2 ){
-		delete pTextureDistance2;
-	}
-	if( pTextureDistance1 ){
-		delete pTextureDistance1;
-	}
-	if( pTextureIndices ){
-		delete pTextureIndices;
-	}
-	
 	if( pEnvMapEqui ){
 		delete pEnvMapEqui;
 	}
