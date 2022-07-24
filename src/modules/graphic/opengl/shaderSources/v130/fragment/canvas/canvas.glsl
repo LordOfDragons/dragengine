@@ -35,10 +35,10 @@ void main( void ){
 	// fragment color
 	#ifdef WITH_TEXTURE
 		outColor = pow( texture( texColor, clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ) ), pGamma );
-		outColor *= pColorTransform;
+		outColor = pColorTransform * outColor;
 	#elif defined WITH_RENDER_WORLD
 		outColor = pow( texture( texColor, vec3( clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ), 0 ) ), pGamma );
-		outColor *= pColorTransform;
+		outColor = pColorTransform * outColor;
 	#else
 		outColor = vec4( pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3] );
 	#endif
