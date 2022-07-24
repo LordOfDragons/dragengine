@@ -294,11 +294,6 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 	pDisableExtension[ extension ] = true;
 	
 	switch( extension ){
-	case ext_ARB_compute_shader:
-		pglDispatchCompute = NULL;
-		pglDispatchComputeIndirect = NULL;
-		break;
-		
 	case ext_ARB_shader_storage_buffer_object:
 		pglShaderStorageBlockBinding = NULL;
 		break;
@@ -874,6 +869,18 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_EXT_copy_texture : no opengl version
 	
 	// GL_EXT_texture_object : no opengl version
+	
+	// GL_ARB_compute_shader : opengl version 4.3 but to find on most GPUs with 3.3 onwards
+	#ifdef ANDROID
+	if( ! pSupportsComputeShader ){
+		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
+	}
+	pglDispatchCompute = eglDispatchCompute;
+	pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+	#else
+	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
+	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
+	#endif
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){
@@ -985,18 +992,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );
 		pGetOptionalFunction( (void**)&pglGetProgramResourceIndex,
 			"glGetProgramResourceIndex", ext_ARB_program_interface_query );
-		#endif
-	}
-	
-	// GL_ARB_compute_shader : opengl version 4.3
-	pHasExtension[ ext_ARB_compute_shader ] &= ! pDisableExtension[ ext_ARB_compute_shader ];
-	if( pHasExtension[ ext_ARB_compute_shader ] ){
-		#ifdef ANDROID
-		pglDispatchCompute = eglDispatchCompute;
-		pglDispatchComputeIndirect = eglDispatchComputeIndirect;
-		#else
-		pGetOptionalFunction( (void**)&pglDispatchCompute, "glDispatchCompute", ext_ARB_compute_shader );
-		pGetOptionalFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect", ext_ARB_compute_shader );
 		#endif
 	}
 	
