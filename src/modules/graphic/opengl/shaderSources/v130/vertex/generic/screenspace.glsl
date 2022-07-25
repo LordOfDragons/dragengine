@@ -27,8 +27,17 @@ in vec2 inPosition;
 	#ifdef GEOMETRY_SHADER
 		out vec2 vGSTexCoord;
 		#define vTexCoord vGSTexCoord
+		
+		#ifdef FULLSCREENQUAD
+			out vec2 vGSScreenCoord;
+			#define vScreenCoord vGSScreenCoord
+		#endif
 	#else
 		out vec2 vTexCoord;
+		
+		#ifdef FULLSCREENQUAD
+			out vec2 vScreenCoord;
+		#endif
 	#endif
 #endif
 
@@ -43,7 +52,8 @@ void main( void ){
 		#ifdef NO_TCTRANSFORM
 			vTexCoord = inPosition;
 		#elif defined FULLSCREENQUAD
-			vTexCoord = fsquadPosToTexCoord( inPosition );
+			vTexCoord = fsquadScreenCoordToTexCoord( inPosition );
+			vScreenCoord = inPosition;
 		#else
 			vTexCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
 		#endif

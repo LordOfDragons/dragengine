@@ -721,7 +721,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 			spb.SetParameterDataVec4( deoglSkinShader::erutFSTexCoordToScreenCoord,
 				2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
-			defren.SetShaderParamFSQuad( spb, deoglSkinShader::erutFSQuadPosToTexCoord );
+			defren.SetShaderParamFSQuad( spb, deoglSkinShader::erutFSScreenCoordToTexCoord );
 			
 			const float znear = plan.GetCameraImageDistance();
 			const float zfar = plan.GetCameraViewDistance();

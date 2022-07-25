@@ -23,6 +23,7 @@ uniform mediump sampler2D texEnvMapSky;
 
 
 in vec2 vTexCoord;
+in vec2 vScreenCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -231,7 +232,7 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	vec3 position = depthToPosition( texDepth, tc, vTexCoord, vLayer );
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	
 	// calculate the reflection parameters. these are the same no matter which solution is used later on
 	// to obtain the reflected color from
@@ -312,7 +313,7 @@ void main( void ){
 	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	#ifdef FULLSCREENQUAD
-	vec3 position = depthToPosition( texDepth, tc, vTexCoord, vLayer );
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	#else
 	vec3 position = depthToPositionVolume( texDepth, tc, vVolumePos, vLayer );
 	#endif

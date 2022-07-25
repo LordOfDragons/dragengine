@@ -24,6 +24,7 @@ uniform lowp sampler2DArray texRoughness;
 uniform lowp sampler2DArray texAOSolidity;
 
 in vec2 vTexCoord;
+in vec2 vScreenCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -735,7 +736,7 @@ void main( void ){
 	#endif
 	
 	// determine position of fragment
-	vec3 position = depthToPosition( texDepth, tc, fsquadTexCoordToScreenCoord( vTexCoord ), vLayer );
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	
 	// calculate the reflection parameters
 	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );

@@ -138,14 +138,13 @@ UBOLAYOUT uniform RenderParameters{
 	
 	// full screen quad rendering
 	
-	// transform quad coordinates (-1..1) into texture coordinates (0..pScreenSpaceScale)
+	// transform screen coordinates (-1..1) into texture coordinates (0..pScreenSpaceScale)
 	// 
-	// vec2 texCoord = inPosition.xy * pFSQuadPosToTexCoord.xy + pFSQuadPosToTexCoord.zw
+	// vec2 texCoord = inPosition.xy * pFSScreenCoordToTexCoord.xy + pFSScreenCoordToTexCoord.zw
 	// 
 	// x, z: pScreenSpaceScale.x / 2
 	// y, w: pScreenSpaceScale.y / 2
-	vec4 pFSQuadPosToTexCoord;
-	#define pFSScreenCoordToTexCoord pFSQuadPosToTexCoord
+	vec4 pFSScreenCoordToTexCoord;
 	
 	// transform texture coordinates (0..pScreenSpaceScale) to screen coordinates (-1..1).
 	// 
@@ -184,14 +183,10 @@ UBOLAYOUT uniform RenderParameters{
 };
 
 // helper functions
-vec2 fsquadPosToTexCoord( in vec2 position ){
-	return position * pFSQuadPosToTexCoord.xy + pFSQuadPosToTexCoord.zw;
+vec2 fsquadScreenCoordToTexCoord( in vec2 screenCoord ){
+	return screenCoord * pFSScreenCoordToTexCoord.xy + pFSScreenCoordToTexCoord.zw;
 }
 
 vec2 fsquadTexCoordToScreenCoord( in vec2 texCoord ){
 	return texCoord * pFSTexCoordToScreenCoord.xy + pFSTexCoordToScreenCoord.zw;
-}
-
-vec2 fsquadScreenCoordToTexCoord( in vec2 screenCoord ){
-	return screenCoord * pFSScreenCoordToTexCoord.xy + pFSScreenCoordToTexCoord.zw;
 }

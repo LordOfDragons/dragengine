@@ -109,7 +109,7 @@ public:
 		erutCameraAdaptedIntensity,
 		erutCameraRange,
 		erutDepthSampleOffset,
-		erutFSQuadPosToTexCoord,
+		erutFSScreenCoordToTexCoord,
 		erutFSTexCoordToScreenCoord,
 		erutSSAOParams1,
 		erutSSAOParams2,

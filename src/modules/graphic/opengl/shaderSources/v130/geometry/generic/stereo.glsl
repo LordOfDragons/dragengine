@@ -14,10 +14,18 @@
 
 #ifndef NO_TEXCOORD
 	in vec2 vGSTexCoord[ 3 ];
+	
+	#ifdef FULLSCREENQUAD
+		in vec2 vGSScreenCoord[ 3 ];
+	#endif
 #endif
 
 #ifndef NO_TEXCOORD
 	out vec2 vTexCoord;
+	
+	#ifdef FULLSCREENQUAD
+		out vec2 vScreenCoord;
+	#endif
 #endif
 
 flat out int vLayer;
@@ -36,6 +44,10 @@ void main( void ){
 			
 			#ifndef NO_TEXCOORD
 				vTexCoord = vGSTexCoord[ corner ];
+				
+				#ifdef FULLSCREENQUAD
+					vScreenCoord = vGSScreenCoord[ corner ];
+				#endif
 			#endif
 			
 			vLayer = corner;

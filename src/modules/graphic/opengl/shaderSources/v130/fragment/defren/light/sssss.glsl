@@ -10,6 +10,7 @@ uniform mediump sampler2DArray texSubSurface;
 uniform mediump sampler2DArray texLight;
 
 in mediump vec2 vTexCoord;
+in mediump vec2 vScreenCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -96,7 +97,7 @@ void main( void ){
 		
 	}else{
 		// determine position of fragment to light
-		vec3 position = depthToPosition( texDepth, fsquadTexCoordToScreenCoord( vTexCoord ), vLayer );
+		vec3 position = depthToPosition( texDepth, vScreenCoord, vLayer );
 		
 		// calculate tap radius
 		float tapRadius = min( pTapRadiusFactor * largestAbsorptionRadius / position.z, pTapRadiusLimit );

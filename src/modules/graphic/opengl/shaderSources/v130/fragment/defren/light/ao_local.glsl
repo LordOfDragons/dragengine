@@ -12,6 +12,7 @@ uniform lowp sampler2DArray texDiffuse;
 uniform lowp sampler2DArray texNormal;
 
 in vec2 vTexCoord;
+in vec2 vScreenCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -97,7 +98,7 @@ void main( void ){
 		return;
 	}
 	
-	vec3 position = depthToPosition( texDepth, fsquadTexCoordToScreenCoord( vTexCoord ), vLayer );
+	vec3 position = depthToPosition( texDepth, vScreenCoord, vLayer );
 	
 	// calculate the parameters
 #if 1
