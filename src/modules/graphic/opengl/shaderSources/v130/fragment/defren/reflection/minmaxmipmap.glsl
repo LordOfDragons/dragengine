@@ -1,6 +1,8 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/ubo_defines.glsl"
+
 uniform ivec2 pTCClamp;
 uniform int pMipMapLevel;
 #ifdef SPLIT_VERSION
@@ -9,15 +11,26 @@ uniform int pMipMapLevel;
 
 uniform HIGHP sampler2DArray texDepth;
 
+// WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+//
+//       STEREO SUPPORT NOT ENABLED FOR THIS SHADER !!!
+//
+// WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+
+// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+// 
+//       SHADER IS CURRENTLY DISABLED AND MOST PROBABLY BROKEN
+// 
+// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
+#include "v130/shared/defren/sample_depth.glsl"
+
 const ivec4 tcScale = ivec4( 2 );
 const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
 
@@ -29,7 +42,6 @@ const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
 
 void main( void ){
 	ivec4 tc = ivec4( gl_FragCoord.xyxy );
-	vec4 depth;
 	
 	#ifdef SPLIT_VERSION
 		bool splitUseRight = ( tc.x >= pSplitPos );
@@ -45,17 +57,11 @@ void main( void ){
 		tc = min( tc, pTCClamp.xyxy );
 	#endif
 	
-	#ifdef DECODE_IN_DEPTH
-		depth.x = dot( texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).rgb, unpackDepth );
-		depth.y = dot( texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).rgb, unpackDepth );
-		depth.z = dot( texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).rgb, unpackDepth );
-		depth.w = dot( texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).rgb, unpackDepth );
-	#else
-		depth.x = texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).r; // (s*2, t*2)
-		depth.y = texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2)
-		depth.z = texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).r; // (s*2, t*2+1)
-		depth.w = texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2+1)
-	#endif
+	vec4 depth;
+	depth.x = sampleDepth( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ); // (s*2, t*2)
+	depth.y = sampleDepth( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ); // (s*2+1, t*2)
+	depth.z = sampleDepth( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ); // (s*2, t*2+1)
+	depth.w = sampleDepth( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ); // (s*2+1, t*2+1)
 	
 	#ifdef SPLIT_VERSION
 		if( splitUseRight ){

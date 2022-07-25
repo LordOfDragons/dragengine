@@ -268,7 +268,7 @@ deoglRenderBase( renderThread )
 			pShaderMinMaxMipMapMax = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-		}else{ // deoglDRDepthMinMax::USAGE_VERSION == 2
+		}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
@@ -1398,7 +1398,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		
 		
 		
-	}else{ // deoglDRDepthMinMax::USAGE_VERSION == 2
+	}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
 		const int mipMapLevelCount = depthMinMap.GetMaxLevelCount();
 		
 		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );

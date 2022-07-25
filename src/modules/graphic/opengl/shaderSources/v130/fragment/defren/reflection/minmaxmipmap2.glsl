@@ -1,6 +1,8 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/ubo_defines.glsl"
+
 uniform ivec2 pTCClamp;
 #ifdef DOWNSAMPLE
 	uniform int pMipMapLevel;
@@ -14,11 +16,22 @@ uniform HIGHP sampler2DArray texData;
 	const int vLayer = 0;
 #endif
 
+// WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+//
+//       STEREO SUPPORT NOT ENABLED FOR THIS SHADER !!!
+//
+// WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+
+// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+// 
+//       SHADER IS CURRENTLY DISABLED AND MOST PROBABLY BROKEN
+// 
+// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+
 out vec2 outData;
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
+#include "v130/shared/defren/sample_depth.glsl"
+
 const ivec4 tcScale = ivec4( 2 );
 const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
 
@@ -27,17 +40,10 @@ void main( void ){
 	vec4 data1, data2;
 	
 	#ifdef INITIAL
-		#ifdef DECODE_IN_DEPTH
-			data1.x = dot( texelFetch( texData, ivec3( tc.xy, vLayer ), 0 ).rgb, unpackDepth );
-			data1.y = dot( texelFetch( texData, ivec3( tc.zy, vLayer ), 0 ).rgb, unpackDepth );
-			data1.z = dot( texelFetch( texData, ivec3( tc.xw, vLayer ), 0 ).rgb, unpackDepth );
-			data1.w = dot( texelFetch( texData, ivec3( tc.zw, vLayer ), 0 ).rgb, unpackDepth );
-		#else
-			data1.x = texelFetch( texData, ivec3( tc.xy, vLayer ), 0 ).r; // (s*2, t*2)
-			data1.y = texelFetch( texData, ivec3( tc.zy, vLayer ), 0 ).r; // (s*2+1, t*2)
-			data1.z = texelFetch( texData, ivec3( tc.xw, vLayer ), 0 ).r; // (s*2, t*2+1)
-			data1.w = texelFetch( texData, ivec3( tc.zw, vLayer ), 0 ).r; // (s*2+1, t*2+1)
-		#endif
+		data1.x = sampleDepth( texData, ivec3( tc.xy, vLayer ) ); // (s*2, t*2)
+		data1.y = sampleDepth( texData, ivec3( tc.zy, vLayer ) ); // (s*2+1, t*2)
+		data1.z = sampleDepth( texData, ivec3( tc.xw, vLayer ) ); // (s*2, t*2+1)
+		data1.w = sampleDepth( texData, ivec3( tc.zw, vLayer ) ); // (s*2+1, t*2+1)
 		
 		data2.xz = min( data1.xy, data1.zw );
 		data2.yw = max( data1.xy, data1.zw );

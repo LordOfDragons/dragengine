@@ -40,7 +40,7 @@ void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sum
 	
 	// the position to sample can happen to be at z-far. in this case the denominator
 	// becomes 0 causing inf/nan values. skip such pixels altogether
-	if( dpethIsZFar( depth, vLayer ) ){
+	if( depthIsZFar( depth, vLayer ) ){
 		return;
 	}
 	

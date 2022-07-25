@@ -1,27 +1,4 @@
-#ifdef DECODE_IN_DEPTH
-	const vec3 _sampleDepth_unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
-
-// sample depth value
-float sampleDepth( sampler2DArray samplerDepth, in ivec3 texCoord ){
-	#ifdef DECODE_IN_DEPTH
-		return dot( texelFetch( samplerDepth, texCoord, 0 ).rgb, _sampleDepth_unpackDepth );
-	#else
-		return texelFetch( samplerDepth, texCoord, 0 ).r;
-	#endif
-}
-
-float sampleDepth( sampler2DArray samplerDepth, in vec3 texCoord, in float level ){
-	#ifdef DECODE_IN_DEPTH
-		return dot( textureLod( samplerDepth, texCoord, level ).rgb, _sampleDepth_unpackDepth );
-	#else
-		return textureLod( samplerDepth, texCoord, level ).r;
-	#endif
-}
-
-float sampleDepth( sampler2DArray samplerDepth, in vec3 texCoord ){
-	return sampleDepth( samplerDepth, texCoord, 0 );
-}
+#include "v130/shared/defren/sample_depth.glsl"
 
 // calculate position from depth value. requires sampleDepth to be called to get depth value
 vec3 depthToPosition( in float depth, in vec2 screenCoord, in int layer ){
@@ -47,6 +24,10 @@ vec3 depthToPositionVolume( in float depth, in vec3 volumePosition, in int layer
 	return position;
 }
 
+vec3 depthToPositionVolume( sampler2DArray samplerDepth, in ivec3 texCoord, in vec3 volumePosition, in int layer ){
+	return depthToPositionVolume( sampleDepth( samplerDepth, texCoord ), volumePosition, layer );
+}
+
 vec3 depthToPosition( sampler2DArray samplerDepth, in ivec3 texCoord, in vec2 screenCoord, in int layer ){
 	return depthToPosition( sampleDepth( samplerDepth, texCoord ), screenCoord, layer );
 }
@@ -61,7 +42,7 @@ vec3 depthToPosition( sampler2DArray samplerDepth, in vec2 screenCoord, in int l
 }
 
 // depth is z-far. use this test to avoid div-by-zero when calling depthToPosition
-bool dpethIsZFar( in float depth, in int layer ){
+bool depthIsZFar( in float depth, in int layer ){
 	#ifdef GS_RENDER_STEREO
 		return depth == pDepthToPosition[ layer ].y;
 	#else

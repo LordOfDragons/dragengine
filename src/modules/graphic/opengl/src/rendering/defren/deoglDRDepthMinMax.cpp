@@ -40,6 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
+// WARNING DO NOT ENABLE FOR THE TIME BEING!!!
 int deoglDRDepthMinMax::USAGE_VERSION = -1; // 0=2pixel, 1=2texture, 2=splitTexture, -1=disabled
 
 deoglDRDepthMinMax::deoglDRDepthMinMax( deoglRenderThread &renderThread,
@@ -188,13 +189,16 @@ void deoglDRDepthMinMax::pCreateTextures(){
 		pTextureMax->SetMipMapLevelCount( pLevelCount - 1 );
 		pTextureMax->CreateTexture();
 		
-	}else{ // USAGE_VERSION == 2
+	}else if( USAGE_VERSION == 2 ){
 		pTexture = new deoglArrayTexture( pRenderThread );
 		pTexture->SetSize( pWidth << 1, pHeight, pLayerCount );
 		pTexture->SetDepthFormat( false, false );
 		pTexture->SetMipMapped( true );
 		pTexture->SetMipMapLevelCount( pLevelCount - 1 );
 		pTexture->CreateTexture();
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, "Disabled" );
 	}
 }
 
@@ -266,7 +270,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 				pFBOMax[ i ]->Verify();
 			}
 			
-		}else{ // USAGE_VERSION == 2
+		}else if( USAGE_VERSION == 2 ){
 			pFBOs = new deoglFramebuffer*[ pLevelCount ];
 			
 			for( i=0; i<pLevelCount; i++ ){
@@ -286,6 +290,9 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 				
 				pFBOs[ i ]->Verify();
 			}
+			
+		}else{
+			DETHROW_INFO( deeInvalidParam, "Disabled" );
 		}
 	}
 }

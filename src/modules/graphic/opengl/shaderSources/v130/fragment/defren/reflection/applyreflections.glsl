@@ -39,7 +39,7 @@ uniform SAMPLER_ENVMAP texEnvMap7;
 uniform SAMPLER_ENVMAP texEnvMap8;
 #endif
 
-in vec4 vScreenCoord;
+in vec2 vTexCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -528,7 +528,7 @@ void main( void ){
 		discard;
 	}
 	
-	vec3 position = depthToPosition( texDepth, tc, vScreenCoord.zw, vLayer );
+	vec3 position = depthToPosition( texDepth, tc, vTexCoord, vLayer );
 	
 	// calculate the reflection for the given point using the results found in the screen space reflection pass
 	vec3 reflection = texelFetch( texReflection, tc, 0 ).rgb;
@@ -564,7 +564,7 @@ void main( void ){
 	// more and more blurred with increasing distance. using the linear definition the roughness simply
 	// scales linearly with the distance clamped to a maximum of 1 obviously.
 	/*
-	vec3 hitPosition = depthToPosition( texDepth, vScreenCoord.zw, vLayer );
+	vec3 hitPosition = depthToPosition( texDepth, vTexCoord, vLayer );
 	
 	vec2 mipMapLevel = vec2( distance( position, hitPosition )
 		* tan( min( roughness, 0.5 ) * roughnessToAngle ) / position.z );
