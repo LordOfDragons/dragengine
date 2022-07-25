@@ -25,11 +25,14 @@
 #include <string.h>
 
 #include "deoglREffectColorMatrix.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -46,7 +49,6 @@
 ////////////////
 
 enum eSPEffect{
-	speQuadParams,
 	speColorMatrix,
 	speColorOffset
 };
@@ -81,16 +83,27 @@ void deoglREffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix 
 deoglShaderProgram *deoglREffectColorMatrix::GetShader(){
 	if( ! pShader ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
 		
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
 	return pShader;
+}
+
+deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
+	if( ! pShaderStereo ){
+		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
+		
+		deoglShaderSources *sources = shaderManager.GetSourcesNamed( "Effect Color Matrix Stereo" );
+		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD", "GS_RENDER_STEREO" );
+		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+	}
+	
+	return pShaderStereo;
 }
 
 void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
@@ -149,11 +162,12 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program
-	deoglShaderProgram * const shaderProgram = GetShader();
+	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	defren.SetShaderParamFSQuad( shader, speQuadParams );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	
 	defren.RenderFSQuadVAO();

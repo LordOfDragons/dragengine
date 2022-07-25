@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>Effect Color Matrix</name>
+	<name>Effect Color Matrix Stereo</name>
 	
 	<version>130</version>
 	
@@ -16,5 +16,6 @@
 	<output name="outColor" target="0"/>
 	
 	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
 	<sourceCode unit="fragment">v130/fragment/effect/colormatrix.glsl</sourceCode>
 </shader>

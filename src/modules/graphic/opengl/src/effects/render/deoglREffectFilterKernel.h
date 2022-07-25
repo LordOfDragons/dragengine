@@ -37,7 +37,9 @@ private:
 	float pScale;
 	
 	deoglShaderProgramUsage pShader;
+	deoglShaderProgramUsage pShaderStereo;
 	deoglShaderProgramUsage pShaderDownsample;
+	deoglShaderProgramUsage pShaderDownsampleStereo;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -78,9 +80,11 @@ public:
 	
 	/** \brief Get shader creating it if required. */
 	deoglShaderProgram *GetShader();
+	deoglShaderProgram *GetShaderStereo();
 	
 	/** \brief Get downsample shader creating it if required. */
 	deoglShaderProgram *GetShaderDownsample();
+	deoglShaderProgram *GetShaderDownsampleStereo();
 	
 	/** \brief Render effect. */
 	virtual void Render( deoglRenderPlan &plan );

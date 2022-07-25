@@ -19,7 +19,7 @@ in vec2 vTexCoord;
 out mediump vec4 outColor;
 
 void main( void ){
-	vec3 tc( vTexCoord, vLayer );
+	vec3 tc = vec3( vTexCoord, vLayer );
 	
 	outColor = vec4( texture( texColor, tc + vec3( -pOptions.z, -pOptions.w, 0 ) ).rgb * pKernel1.x, 1 );
 	outColor.rgb += texture( texColor, tc + vec3( 0, -pOptions.w, 0 ) ).rgb * pKernel1.y;

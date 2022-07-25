@@ -39,6 +39,7 @@ private:
 	deoglRImage *pImage;
 	
 	deoglShaderProgramUsage pShader;
+	deoglShaderProgramUsage pShaderStereo;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -70,6 +71,7 @@ public:
 	
 	/** \brief Get shader creating it if required. */
 	deoglShaderProgram *GetShader();
+	deoglShaderProgram *GetShaderStereo();
 	
 	/** \brief Prepare for render. */
 	virtual void PrepareForRender();

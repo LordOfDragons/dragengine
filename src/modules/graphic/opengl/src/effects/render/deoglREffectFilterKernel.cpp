@@ -25,11 +25,14 @@
 #include <string.h>
 
 #include "deoglREffectFilterKernel.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -46,15 +49,15 @@
 ////////////////
 
 enum eSPEffect{
-	speQuadParams,
+	speTCTransform,
 	speOptions,
 	speKernel1,
 	speKernel2,
 	speKernel3
 };
 
-enum eSPEffectDownSample{
-	spedsQuadParams,
+enum eSPEffectDownsample{
+	spedsTCTransform,
 	spedsTCClamp
 };
 
@@ -131,31 +134,53 @@ void deoglREffectFilterKernel::SetScale( float scale ){
 deoglShaderProgram *deoglREffectFilterKernel::GetShader(){
 	if( ! pShader ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
 		
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		defines.AddDefines( "NO_POSTRANSFORM" );
+		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
 	return pShader;
 }
 
+deoglShaderProgram *deoglREffectFilterKernel::GetShaderStereo(){
+	if( ! pShaderStereo ){
+		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
+		
+		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel Stereo" );
+		defines.AddDefines( "NO_POSTRANSFORM", "GS_RENDER_STEREO" );
+		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+	}
+	
+	return pShaderStereo;
+}
+
 deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsample(){
 	if( ! pShaderDownsample ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
 		
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pShaderDownsample = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		defines.AddDefines( "NO_POSTRANSFORM" );
+		pShaderDownsample = shaderManager.GetProgramWith( sources, defines );
 	}
 	
 	return pShaderDownsample;
+}
+
+deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsampleStereo(){
+	if( ! pShaderDownsampleStereo ){
+		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
+		
+		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample Stereo" );
+		defines.AddDefines( "NO_POSTRANSFORM", "GS_RENDER_STEREO" );
+		pShaderDownsampleStereo = shaderManager.GetProgramWith( sources, defines );
+	}
+	
+	return pShaderDownsampleStereo;
 }
 
 void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
@@ -195,11 +220,13 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	if( downsampleCount > 0 ){
 		int i;
 		
-		deoglShaderProgram * const shaderProgramDownsample = GetShaderDownsample();
+		deoglShaderProgram * const shaderProgramDownsample = plan.GetRenderStereo() ? GetShaderDownsampleStereo() : GetShaderDownsample();
 		rtshader.ActivateShader( shaderProgramDownsample );
 		deoglShaderCompiled &shaderDownsample = *shaderProgramDownsample->GetCompiled();
 		
-		defren.SetShaderParamFSQuad( shaderDownsample, spedsQuadParams );
+		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		
+		defren.SetShaderParamFSQuad( shaderDownsample, spedsTCTransform );
 		
 		for( i=0; i<downsampleCount; i++ ){
 			tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
@@ -248,12 +275,14 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
 	// set program
-	deoglShaderProgram * const shaderProgram = GetShader();
+	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	//defren.SetShaderParamFSQuad( shader, speQuadParams );
-	defren.SetShaderParamFSQuad( shader, speQuadParams, width, height );
+	defren.SetShaderParamFSQuad( shader, speTCTransform, width, height );
 	shader.SetParameterFloat( speOptions, ( float )pKernelRows, ( float )pKernelCols,
 		defren.GetPixelSizeU() * downsampleSize/*pScale*/, defren.GetPixelSizeV() * downsampleSize/*pScale*/ );
 	shader.SetParameterFloat( speKernel1, GetKernelValueAt( 0, 0 ), GetKernelValueAt( 0, 1 ), GetKernelValueAt( 0, 2 ) );

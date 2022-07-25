@@ -17,8 +17,8 @@ in vec2 vTexCoord;
 out mediump vec4 outColor;
 
 void main( void ){
-	vec3 tc( vTexCoord, vLayer );
-	tc.xy += texture( texDistort, vTexCoord ).rg * pDistortTransform.xy + pDistortTransform.zw;
+	vec2 distortion = texture( texDistort, vTexCoord ).rg;
+	distortion = distortion * pDistortTransform.xy + pDistortTransform.zw;
 	
-	outColor = texture( texColor, tc );
+	outColor = texture( texColor, vec3( vTexCoord + distortion, vLayer ) );
 }

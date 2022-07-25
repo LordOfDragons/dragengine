@@ -9,8 +9,6 @@ uniform ivec2 pTCClamp;
 
 uniform mediump sampler2DArray texColor;
 
-in vec2 vTexCoord;
-
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
 #else

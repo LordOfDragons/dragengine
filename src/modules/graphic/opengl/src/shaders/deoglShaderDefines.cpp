@@ -132,6 +132,10 @@ void deoglShaderDefines::AddDefine( const char *name, bool value ){
 	AddDefine( name, value ? "1" : "0" );
 }
 
+void deoglShaderDefines::AddDefines( const char *name1 ){
+	AddDefine( name1, true );
+}
+
 void deoglShaderDefines::AddDefines( const char *name1, const char *name2 ){
 	AddDefine( name1, true );
 	AddDefine( name2, true );
