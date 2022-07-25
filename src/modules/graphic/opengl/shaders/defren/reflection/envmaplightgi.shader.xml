@@ -4,6 +4,9 @@
 	
 	<version>150</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='GIParameters' target='1'/>
+	
 	<texture name='texPosition' target='0'/>
 	<texture name='texDiffuse' target='1'/>
 	<texture name='texNormal' target='2'/>
@@ -12,10 +15,6 @@
 	<texture name='texGIIrradiance' target='4'/>
 	<texture name='texGIDistance' target='5'/>
 	<texture name='texGIProbeOffset' target='6'/>
-	
-	<parameter name='pGIHighestCascade'/> <!-- 0 -->
-	
-	<uniformBlock name='GIParameters' target='1'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

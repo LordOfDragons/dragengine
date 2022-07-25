@@ -2,10 +2,8 @@ precision highp float;
 precision highp int;
 
 #ifdef WITH_GI
-	int pGIHighestCascade; // index of highest cascade
-	
 	#include "v130/shared/ubo_defines.glsl"
-// 	#include "v130/shared/defren/light/ubo_render_parameters.glsl"
+	#include "v130/shared/defren/ubo_render_parameters.glsl"
 	#include "v130/shared/defren/light/ubo_gi.glsl"
 	#include "v130/shared/defren/gi/probe_flags.glsl"
 	#include "v130/shared/octahedral.glsl"

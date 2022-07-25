@@ -1652,9 +1652,6 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	
 	renderThread.GetShader().ActivateShader( pShaderEnvMapLightGI );
-	deoglShaderCompiled &shader = *pShaderEnvMapLightGI->GetCompiled();
-	
-	shader.SetParameterInt( 0, giState->GetCascadeCount() - 1 );
 	
 	tsmgr.EnableArrayTexture( 4, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 5, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
@@ -1701,6 +1698,10 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 		
 		renderGI.PrepareUBORenderLight( *giState, envmap->GetPosition() );
 		renderGI.GetUBORenderLight().Activate();
+		
+		// NOTE always non-stereo!
+		// WARNING do not move this outside of the loop or the GPU may freeze/crash!
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		
 		defren.RenderFSQuadVAO();
 		
