@@ -14,9 +14,11 @@ precision mediump int;
 	uniform vec4 pTCTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
 
-#if ! defined NO_TEXCOORD && defined FULLSCREENQUAD
-	#include "v130/shared/ubo_defines.glsl"
-	#include "v130/shared/defren/ubo_render_parameters.glsl"
+#ifndef NO_TEXCOORD
+	#ifdef FULLSCREENQUAD
+		#include "v130/shared/ubo_defines.glsl"
+		#include "v130/shared/defren/ubo_render_parameters.glsl"
+	#endif
 #endif
 
 in vec2 inPosition;
@@ -41,7 +43,7 @@ void main( void ){
 		#ifdef NO_TCTRANSFORM
 			vTexCoord = inPosition;
 		#elif defined FULLSCREENQUAD
-			vTexCoord = inPosition * pFSQuadTransform.xy + pFSQuadTransform.zw;
+			vTexCoord = fsquadPosToTexCoord( inPosition );
 		#else
 			vTexCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
 		#endif

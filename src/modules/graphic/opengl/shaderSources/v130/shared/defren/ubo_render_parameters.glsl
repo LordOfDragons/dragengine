@@ -134,19 +134,42 @@ UBOLAYOUT uniform RenderParameters{
 	
 	vec2 pDepthSampleOffset;
 	
+	
+	
 	// full screen quad rendering
-	vec4 pFSQuadTransform; // vertex shader transform position
-	vec4 pFSQuadTCTransform; // fragment shader transform texture coordinates
-	vec4 pFSQuadTCClamp; // fragment shader clamp texture coordinates
+	
+	// transform quad coordinates (-1..1) into texture coordinates (0..pScreenSpaceScale)
+	// 
+	// vec2 texCoord = inPosition.xy * pFSQuadPosToTexCoord.xy + pFSQuadPosToTexCoord.zw
+	// 
+	// x, z: pScreenSpaceScale.x / 2
+	// y, w: pScreenSpaceScale.y / 2
+	vec4 pFSQuadPosToTexCoord;
+	#define pFSScreenCoordToTexCoord pFSQuadPosToTexCoord
+	
+	// transform texture coordinates (0..pScreenSpaceScale) to screen coordinates (-1..1).
+	// 
+	// vec2 screenCoord = texCoord * pFSTexCoordToScreenCoord.xy + pFSTexCoordToScreenCoord.zw
+	// 
+	// x: 2 / pScreenSpaceScale.x
+	// y: 2 / pScreenSpaceScale.y
+	// z, w: -1
+	vec4 pFSTexCoordToScreenCoord;
+	
+	
 	
 	// ssao
 	vec4 pSSAOParams1; // self-occlusion, epsilon, scale, randomAngleConstant
 	vec4 pSSAOParams2; // count, radius, radius-influence, radius-limit
 	vec3 pSSAOParams3; // radiusFactor, mipMapBase, mipMapMaxLevel
 	
+	
+	
 	// sssss
 	vec4 pSSSSSParams1; // dropSubSurfaceThreshold, tapRadiusFactor, tapRadiusLimit, tapDropRadiusThreshold
 	ivec2 pSSSSSParams2; // tapCount, turnCount
+	
+	
 	
 	// lighting
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
@@ -159,3 +182,16 @@ UBOLAYOUT uniform RenderParameters{
 	// global illumination
 	int pGIHighestCascade; // index of highest cascade
 };
+
+// helper functions
+vec2 fsquadPosToTexCoord( in vec2 position ){
+	return position * pFSQuadPosToTexCoord.xy + pFSQuadPosToTexCoord.zw;
+}
+
+vec2 fsquadTexCoordToScreenCoord( in vec2 texCoord ){
+	return texCoord * pFSTexCoordToScreenCoord.xy + pFSTexCoordToScreenCoord.zw;
+}
+
+vec2 fsquadScreenCoordToTexCoord( in vec2 screenCoord ){
+	return screenCoord * pFSScreenCoordToTexCoord.xy + pFSScreenCoordToTexCoord.zw;
+}

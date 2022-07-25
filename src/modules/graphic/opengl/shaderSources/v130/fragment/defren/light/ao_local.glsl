@@ -44,11 +44,10 @@ out vec3 outAO; // ao, ssao, solidity
 #define pSSAOMipMapMaxLevel pSSAOParams3.z
 
 float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
-	tc = clamp( tc, pFSQuadTCClamp.xy, pFSQuadTCClamp.zw );
+	tc = clamp( tc, pViewportMin, pViewportMax );
 	
 	float depth = sampleDepth( texDepth, vec3( tc, vLayer ), level );
-	vec2 screenCoord = tc * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
-	vec3 spos = depthToPosition( depth, screenCoord, vLayer ) - position;
+	vec3 spos = depthToPosition( depth, fsquadTexCoordToScreenCoord( tc ), vLayer ) - position;
 	
 	float slen = max( length( spos ), pSSAOEpsilon );
 	
@@ -98,7 +97,7 @@ void main( void ){
 		return;
 	}
 	
-	vec3 position = depthToPosition( texDepth, vTexCoord * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw, vLayer );
+	vec3 position = depthToPosition( texDepth, fsquadTexCoordToScreenCoord( vTexCoord ), vLayer );
 	
 	// calculate the parameters
 #if 1

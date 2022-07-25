@@ -342,8 +342,8 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	}
 	
 	// apply some scaling factors staying the same for the remainder of the shader
-	tcReflDir.xy *= pFSQuadTCTransform.xy;
-	tcFrom.xy = tcFrom.st * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
+	tcReflDir.xy *= pFSScreenCoordToTexCoord.xy;
+	tcFrom.xy = fsquadScreenCoordToTexCoord( tcFrom.st );
 	
 	// search for the position to sample from.
 	// 
@@ -478,7 +478,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	for(i=1; i<1000; i++){
 		p = pMatrixPLayer * vec4( position + rd*vec3(i), 1.0 );
 		p = vec4( p.xyz, 1.0 ) / vec4( p.w );
- 		p.st = p.st * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
+ 		p.st = fsquadScreenCoordToTexCoord( p.st );
 		//geomZ = pPosTransform.x / ( pPosTransform.y - sampleDepth( texDepth, vec3( p.st, vLayer ) ) );
 		//rayZ = position.z + rd.z * float(i);
 		geomZ = sampleDepth( texDepth, vec3( p.st, vLayer ) );
@@ -735,7 +735,7 @@ void main( void ){
 	#endif
 	
 	// determine position of fragment
-	vec3 position = depthToPosition( texDepth, tc, vTexCoord, vLayer );
+	vec3 position = depthToPosition( texDepth, tc, fsquadTexCoordToScreenCoord( vTexCoord ), vLayer );
 	
 	// calculate the reflection parameters
 	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );

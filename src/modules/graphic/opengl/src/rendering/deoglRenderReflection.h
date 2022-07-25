@@ -58,6 +58,7 @@ private:
 	deoglShaderProgramUsage pShaderEnvMapLightGI;
 	deoglShaderProgramUsage pShaderEnvMapCopy;
 	deoglShaderProgramUsage pShaderReflection;
+	deoglShaderProgramUsage pShaderReflectionStereo;
 	deoglShaderProgramUsage pShaderCubeMap2EquiMap;
 	deoglShaderProgramUsage pShaderBuildEnvMap;
 	deoglShaderProgramUsage pShaderEnvMapMask;

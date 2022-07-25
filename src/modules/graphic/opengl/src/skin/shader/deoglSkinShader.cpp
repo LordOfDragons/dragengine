@@ -551,9 +551,8 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		
 		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
-		spb->GetParameterAt( erutFSQuadTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutFSQuadTCTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutFSQuadTCClamp ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutFSQuadPosToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
 		spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -2562,9 +2561,8 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
 		parameterList.Add( "pCameraRange" ); // erutCameraRange
 		parameterList.Add( "pDepthSampleOffset" ); // erutDepthSampleOffset
-		parameterList.Add( "pFSQuadTransform" ); // erutFSQuadTransform
-		parameterList.Add( "pFSQuadTCTransform" ); // erutFSQuadTCTransform
-		parameterList.Add( "pFSQuadTCClamp" ); // erutFSQuadTCClamp
+		parameterList.Add( "pFSQuadPosToTexCoord" ); // erutFSQuadPosToTexCoord
+		parameterList.Add( "pFSTexCoordToScreenCoord" ); // erutFSTexCoordToScreenCoord
 		parameterList.Add( "pSSAOParams1" ); // erutSSAOParams1
 		parameterList.Add( "pSSAOParams2" ); // erutSSAOParams2
 		parameterList.Add( "pSSAOParams3" ); // erutSSAOParams3

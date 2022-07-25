@@ -139,10 +139,6 @@ enum eSPBApplyReflections{
 };
 
 enum pSPBReflection{
-	spbr2MatrixEnvMap,
-	spbr2QuadTCTransform,
-	spbr2PosTransform,
-	spbr2PosTransform2,
 	spbr2BlendFactors,
 	spbr2EnvMapLodLevel,
 	spbr2LayerCount,
@@ -391,7 +387,12 @@ deoglRenderBase( renderThread )
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", true );
 		}
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderReflectionStereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
@@ -423,17 +424,13 @@ deoglRenderBase( renderThread )
 		
 		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pRenderParamBlock->SetParameterCount( 8 );
-		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3 pMatrixEnvMap
-		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pQuadTCTransform
-		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pPosTransform
-		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pPosTransform2
-		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
-		pRenderParamBlock->GetParameterAt( 5 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
-		pRenderParamBlock->GetParameterAt( 6 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
-		pRenderParamBlock->GetParameterAt( 7 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
+		pRenderParamBlock->SetParameterCount( 4 );
+		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
+		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
+		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
+		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
 		pRenderParamBlock->MapToStd140();
-		pRenderParamBlock->SetBindingPoint( 0 );
+		pRenderParamBlock->SetBindingPoint( 1 );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -1078,8 +1075,9 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	DEBUG_PRINT_TIMER( "Reflection: Activate FBO" );
 	
 	// activate shader and set the parameters
-	renderThread.GetShader().ActivateShader( pShaderReflection );
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderReflectionStereo : pShaderReflection );
 	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	pRenderParamBlock->Activate();
 	DEBUG_PRINT_TIMER( "Reflection: Activate Shader" );
 	
@@ -1135,7 +1133,6 @@ void deoglRenderReflection::UpdateEnvMapSlots( deoglRenderPlan &plan ){
 
 void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
 	const int count = decMath::min( envMapSlotMgr.GetUsedSlotCount(), 100 );
@@ -1144,13 +1141,6 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 	pRenderParamBlock->MapBuffer();
 	
 	try{
-		// general parameters required for the full screen quad and position reconstruction
-		pRenderParamBlock->SetParameterDataMat3x3( spbr2MatrixEnvMap,
-			plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
-		defren.SetShaderParamFSQuad( *pRenderParamBlock, spbr2QuadTCTransform );
-		pRenderParamBlock->SetParameterDataVec4( spbr2PosTransform, plan.GetDepthToPosition() );
-		pRenderParamBlock->SetParameterDataVec2( spbr2PosTransform2, plan.GetDepthToPosition2() );
-		
 		// we use a blend zone of width 1m
 		pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
 			1.0f / ( 2.0f * /*blendWidth[m]=*/1.0f ), 0.5f );

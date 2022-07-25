@@ -34,10 +34,9 @@ out mediump vec3 outColor;
 ///////////////////////////////////////
 
 void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sumLight, inout vec3 sumWeight ){
-	tc.xy = clamp( tc.xy, pFSQuadTCClamp.xy, pFSQuadTCClamp.zw );
+	tc.xy = clamp( tc.xy, pViewportMin, pViewportMax );
 	
-	vec2 screenCoord = tc.xy * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
-	vec3 spos = depthToPosition( texDepth, tc, screenCoord, vLayer ) - position;
+	vec3 spos = depthToPosition( texDepth, tc, fsquadTexCoordToScreenCoord( tc.xy ), vLayer ) - position;
 	
 	vec3 scatDist = vec3( length( spos ) ) * scatterScale;
 	
@@ -97,8 +96,7 @@ void main( void ){
 		
 	}else{
 		// determine position of fragment to light
-		vec2 screenCoord = vTexCoord * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw; // convert to -1..1 range
-		vec3 position = depthToPosition( texDepth, screenCoord, vLayer );
+		vec3 position = depthToPosition( texDepth, fsquadTexCoordToScreenCoord( vTexCoord ), vLayer );
 		
 		// calculate tap radius
 		float tapRadius = min( pTapRadiusFactor * largestAbsorptionRadius / position.z, pTapRadiusLimit );
