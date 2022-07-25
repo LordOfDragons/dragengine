@@ -1044,7 +1044,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLightStereo : pShaderLight );
-	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	GetUBORenderLight().Activate();
 	
 	tsmgr.EnableArrayTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
@@ -1078,7 +1078,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	RestoreFBOGITraceRays( *giStateUpdate );
 	
 	renderThread.GetShader().ActivateShader( pShaderLightGIRay );
-	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	GetUBORenderLight().Activate();
 	
 	tsmgr.EnableArrayTexture( 6, giStateRender->GetTextureProbeIrradiance(), GetSamplerClampLinear() );

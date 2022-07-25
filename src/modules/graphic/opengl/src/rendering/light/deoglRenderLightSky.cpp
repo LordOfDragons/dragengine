@@ -439,7 +439,7 @@ const deoglRenderPlanMasked *mask ){
 	UpdateLightParamBlock( *lightShader, *spbLight, plan );
 	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, shadowMapSize, passCount );
 	
-	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan.GetPlan() );
 	spbLight->Activate();
 	spbInstance->Activate();
 	
@@ -514,7 +514,7 @@ const deoglRenderPlanMasked *mask ){
 			if( lightShader ){
 				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 				
-				GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+				renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan.GetPlan() );
 				spbLight->Activate();
 				spbInstance->Activate();
 				

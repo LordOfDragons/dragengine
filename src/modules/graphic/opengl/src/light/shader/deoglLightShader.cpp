@@ -278,56 +278,6 @@ deoglShaderProgram *deoglLightShader::GetShader(){
 
 
 
-deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 1 );
-}
-
-deoglSPBlockUBO *deoglLightShader::CreateSPBRenderStereo( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 2 );
-}
-
-deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThread, int posTransformCount ) {
-	// this shader parameter block will not be optimzed. the layout is always the same
-	// no matter what configuration is used for skins. this is also why this method is
-	// a static method not an regular method
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglSPBlockUBO *spb = NULL;
-	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( ERUT_COUNT );
-		
-		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, posTransformCount ); // vec4
-		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, posTransformCount ); // vec2
-		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		// gloal illumination ray
-		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		spb->GetParameterAt( erutGICameraProjection ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
-		
-		// gloal illumination
-		spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
-	
-	return spb;
-}
-
 deoglSPBlockUBO *deoglLightShader::CreateSPBInstParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
@@ -934,9 +884,6 @@ void deoglLightShader::InitShaderParameters(){
 	}
 	
 	// uniforms
-	parameterList.Add( "pDepthToPosition" ); // erutDepthToPosition
-	parameterList.Add( "pDepthToPosition2" ); // erutDepthToPosition2
-	
 	for( i=0; i<EIUT_COUNT; i++ ){
 		if( pInstanceUniformTargets[ i ] != -1 ){
 			parameterList.Add( vInstanceUniformTargetNames[ i ] );

@@ -28,6 +28,7 @@
 #include "deoglRenderGI.h"
 #include "../deoglRenderGeometry.h"
 #include "../deoglRenderOcclusion.h"
+#include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../lod/deoglLODCalculator.h"
 #include "../plan/deoglRenderPlan.h"
@@ -864,7 +865,7 @@ const deoglRenderPlanMasked *mask ){
 	if( lightGeometry ){
 		renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 		
-		GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 		spbLight->Activate();
 		spbInstance->Activate();
 		
@@ -903,7 +904,7 @@ const deoglRenderPlanMasked *mask ){
 		if( lightShader ){
 			renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 			
-			GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+			renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 			spbLight->Activate();
 			spbInstance->Activate();
 			

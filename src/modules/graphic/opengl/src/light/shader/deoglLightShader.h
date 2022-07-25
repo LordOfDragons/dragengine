@@ -71,25 +71,6 @@ public:
 		ETT_COUNT
 	};
 	
-	/** Render parameter uniform targets. */
-	enum eRenderUniformTargets{
-		erutDepthToPosition,
-		erutDepthToPosition2,
-		erutDepthSampleOffset,
-		erutAOSelfShadow,
-		erutLumFragCoordScale,
-		
-		// global illumination ray
-		erutGIRayMatrix,
-		erutGIRayMatrixNormal,
-		erutGICameraProjection,
-		
-		// global illumination
-		erutGIHighestCascade,
-		
-		ERUT_COUNT
-	};
-	
 	/** Instance parameter uniform targets. */
 	enum eInstanceUniformTargets{
 		eiutMatrixMVP,
@@ -205,12 +186,6 @@ public:
 	void EnsureShaderExists();
 	/** Retrieves the shader generating it if not existing already. */
 	deoglShaderProgram *GetShader();
-	
-	/** \brief Create render light shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
-	static deoglSPBlockUBO *CreateSPBRenderStereo( deoglRenderThread &renderThread );
-	
-	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread, int posTransformCount );
 	
 	/** \brief Create instance parameter shader parameter block. */
 	deoglSPBlockUBO *CreateSPBInstParam() const;

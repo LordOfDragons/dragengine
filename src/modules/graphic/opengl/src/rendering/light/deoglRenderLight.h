@@ -57,8 +57,6 @@ private:
 	deoglRenderLightParticles *pRenderLightParticles;
 	deoglRenderGI *pRenderGI;
 	
-	deoglSPBlockUBO *pLightPB;
-	deoglSPBlockUBO *pLightStereoPB;
 	deoglSPBlockUBO *pShadowPB;
 	deoglSPBlockUBO *pShadowCascadedPB;
 	deoglSPBlockUBO *pShadowCubePB;
@@ -107,9 +105,6 @@ public:
 	inline deoglRenderGI &GetRenderGI() const{ return *pRenderGI; }
 	
 	
-	
-	/** Light render parameter block. */
-	inline deoglSPBlockUBO *GetLightPB() const{ return pLightPB; }
 	
 	/** Shadow render parameter block. */
 	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
@@ -163,9 +158,6 @@ public:
 	
 	/** Render screen space sub surface scattering. */
 	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
-	
-	/** Prepare light render parameter shader parameter block. */
-	void PrepareRenderParamBlockLight( deoglRenderPlan &plan );
 	
 	
 	

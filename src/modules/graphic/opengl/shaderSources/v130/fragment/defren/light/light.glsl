@@ -44,7 +44,7 @@ precision highp int;
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/light/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/light/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/light/ubo_light_parameters.glsl"
 
@@ -937,7 +937,7 @@ void main( void ){
 					//      the problematic hits are located behind the camera. for this reason
 					//      the GI-ShadowMap is always used although the quality is inferior than
 					//      using the view shadow map
-// 					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
+// 					vec4 projPos = pMatrixPDefault * vec4( position, 1.0 );
 // 					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
 						//shadow = min( shadow, SHATEX( texShadow1SolidDepth, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
 						vec4 gishapos = pGIShadowMatrix * vec4( position, 1.0 );

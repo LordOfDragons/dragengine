@@ -112,8 +112,6 @@ pRenderLightPoint( NULL ),
 pRenderLightParticles( NULL ),
 pRenderGI( NULL ),
 
-pLightPB( NULL ),
-pLightStereoPB( NULL ),
 pShadowPB( NULL ),
 pShadowCascadedPB( nullptr ),
 pShadowCubePB( NULL ),
@@ -126,8 +124,6 @@ pAddToRenderTask( NULL )
 	deoglShaderDefines defines;
 	
 	try{
-		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
-		pLightStereoPB = deoglLightShader::CreateSPBRenderStereo( renderThread );
 		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
 		pShadowCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
@@ -295,7 +291,6 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	}
 	
-	PrepareRenderParamBlockLight( plan );
 	if( hasGIStateRender ){
 		pRenderGI->PrepareUBORenderLight( plan );
 	}
@@ -587,93 +582,6 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 
 
 
-void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
-	
-	// regular parameter block
-	pLightPB->MapBuffer();
-	try{
-		pLightPB->SetParameterDataVec4( deoglLightShader::erutDepthToPosition, plan.GetDepthToPosition() );
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthToPosition2, plan.GetDepthToPosition2() );
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
-		
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
-			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
-			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
-		
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
-			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
-			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
-		
-		// global illumination
-		const deoglGIState * const giState = plan.GetRenderGIState();
-		if( giState ){
-			// ray
-			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
-				* plan.GetCameraMatrix() );
-			
-			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
-			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
-				matrix.GetRotationMatrix().QuickInvert() );
-			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
-				plan.GetProjectionMatrix() );
-			
-			// general
-			pLightPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
-		}
-		
-	}catch( const deException & ){
-		pLightPB->UnmapBuffer();
-		throw;
-	}
-	pLightPB->UnmapBuffer();
-	
-	// stereo parameter block
-	pLightStereoPB->MapBuffer();
-	try{
-		pLightStereoPB->SetParameterDataArrayVec4( deoglLightShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
-		pLightStereoPB->SetParameterDataArrayVec2( deoglLightShader::erutDepthToPosition2, 0 , plan.GetDepthToPosition2() );
-		
-		pLightStereoPB->SetParameterDataArrayVec4( deoglLightShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
-		pLightStereoPB->SetParameterDataArrayVec2( deoglLightShader::erutDepthToPosition2, 1 , plan.GetDepthToPositionStereo2() );
-		
-		pLightStereoPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
-		
-		pLightStereoPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
-			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
-			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
-		
-		pLightStereoPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
-			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
-			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
-		
-		// global illumination
-		const deoglGIState * const giState = plan.GetRenderGIState();
-		if( giState ){
-			// ray
-			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
-				* plan.GetCameraMatrix() );
-			
-			pLightStereoPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
-			pLightStereoPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
-				matrix.GetRotationMatrix().QuickInvert() );
-			pLightStereoPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
-				plan.GetProjectionMatrix() );
-			
-			// general
-			pLightStereoPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
-		}
-		
-	}catch( const deException & ){
-		pLightStereoPB->UnmapBuffer();
-		throw;
-	}
-	pLightStereoPB->UnmapBuffer();
-}
-
-
-
 void deoglRenderLight::ResetDebugInfo(){
 	pDebugInfoSolid->Clear();
 	pDebugInfoSolidCopyDepth->Clear();
@@ -758,12 +666,6 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pShadowPB ){
 		pShadowPB->FreeReference();
-	}
-	if( pLightPB ){
-		pLightPB->FreeReference();
-	}
-	if( pLightStereoPB ){
-		pLightStereoPB->FreeReference();
 	}
 	
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
