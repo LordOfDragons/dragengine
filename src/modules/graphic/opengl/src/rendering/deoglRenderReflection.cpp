@@ -116,13 +116,7 @@ enum eSPMinMapMipMap{
 };
 
 enum pSPScreenSpace{
-	spssQuadTCTransform,
-	spssPosTransform,
-	spssPosTransform2,
-	spssMatrixP,
-	spssMatrixBackProjection,
 	spssClipReflDirNearDist,
-	spssPixelSize,
 	spssStepCount,
 	spssSubStepCount,
 	spssMaxRayLength,
@@ -323,13 +317,13 @@ deoglRenderBase( renderThread )
 		
 		//defines.AddDefine( "ROUGHNESS_TAPPING", true );
 		
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections" );
-		defines.AddDefine( "FULLSCREENQUAD", true );
 		if( indirectMatrixAccessBug ){
 			defines.AddDefine( "UBO_IDMATACCBUG", true );
 		}
@@ -353,6 +347,7 @@ deoglRenderBase( renderThread )
 		//}else{ // not ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 		}
 		
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
@@ -1806,16 +1801,9 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderScreenSpace );
 	shader = pShaderScreenSpace->GetCompiled();
 	
-	defren.SetShaderParamFSQuad( *shader, spssQuadTCTransform );
-	shader->SetParameterVector4( spssPosTransform, plan.GetDepthToPosition() );
-	shader->SetParameterVector2( spssPosTransform2, plan.GetDepthToPosition2() );
-	
-	// NOTE back projection matrix is not used right now. what has it been added for in the first place?
-	shader->SetParameterDMatrix4x4( spssMatrixP, plan.GetProjectionMatrix() );
-	shader->SetParameterMatrix4x4( spssMatrixBackProjection, decMatrix() ); // plan.GetProjectionMatrix().GetInverse() * lastFrameProjMat
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	shader->SetParameterFloat( spssClipReflDirNearDist, plan.GetCameraImageDistance() * 0.9f );
-	shader->SetParameterFloat( spssPixelSize, ( float )defren.GetRealWidth(), ( float )defren.GetRealHeight() );
 	
 	const int stepCount = config.GetSSRStepCount();
 	const int maxRayLength = decMath::max( stepCount, ( int )(

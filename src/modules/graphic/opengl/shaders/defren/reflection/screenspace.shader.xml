@@ -4,13 +4,7 @@
 	
 	<version>150</version>
 	
-	<parameter name='pQuadTCTransform'/>
-	<parameter name='pPosTransform'/>
-	<parameter name='pPosTransform2'/>
-	<parameter name='pMatrixP'/>
-	<parameter name='pMatrixBackProjection'/>
 	<parameter name='pClipReflDirNearDist'/>
-	<parameter name='pPixelSize'/>
 	<parameter name='pStepCount'/>
 	<parameter name='pSubStepCount'/>
 	<parameter name='pMaxRayLength'/>
@@ -31,6 +25,6 @@
 	
 	<output name='outResult' target='0'/>
 	
-	<sourceCode unit='vertex'>v130/vertex/defren/reflection/screenspace.glsl</sourceCode>
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/reflection/screenspace.glsl</sourceCode>
 </shader>

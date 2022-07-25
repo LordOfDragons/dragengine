@@ -1,15 +1,10 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
-
-uniform vec4 pQuadTCTransform;
-uniform vec4 pPosTransform;
-uniform vec2 pPosTransform2;
-uniform mat4 pMatrixP;
-uniform mat4 pMatrixBackProjection;
 uniform float pClipReflDirNearDist;
-uniform vec2 pPixelSize; // pixelCountX, pixelCountY
 uniform int pStepCount;
 uniform int pSubStepCount;
 uniform int pMaxRayLength;
@@ -28,7 +23,7 @@ uniform lowp sampler2DArray texNormal;
 uniform lowp sampler2DArray texRoughness;
 uniform lowp sampler2DArray texAOSolidity;
 
-in vec4 vScreenCoord;
+in vec2 vTexCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -39,13 +34,8 @@ in vec4 vScreenCoord;
 out vec3 outResult;
 
 
-
 // Constants
 //////////////
-
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
 
 const vec4 clipSpaceBorder = vec4( 1.0, -1.0, 1.0, -1.0 );
 const vec3 clipThreshold = vec3( 1e-5 );
@@ -53,17 +43,18 @@ const vec3 invClipThreshold = vec3( 1e5 );
 const vec4 ignoreDistance = vec4( 5.0 ); // anything larger than length(vec3(2,2,2)) = sqrt(12) ~= 3.46
 const vec4 distanceBorder = vec4( 0.0 );
 
-#ifdef DECODE_IN_DEPTH
-	#define TAP_DEPTH(tc,level)		dot( textureLod( texDepth, vec3( tc, vLayer ), level ).rgb, unpackDepth )
-#else
-	#define TAP_DEPTH(tc,level)		textureLod( texDepth, vec3( tc, vLayer ), level ).r
-#endif
-
 #ifdef ROUGHNESS_TAPPING
 const vec4 roughnessToAngleBase = vec4( 3.14159265, 3.14159265, -1.5707963, -1.5707963 ); // scaleX, scaleY, offsetX, offsetY
 #endif
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
+
+#ifdef GS_RENDER_STEREO
+	#define pMatrixPLayer pMatrixP[ vLayer ]
+#else
+	#define pMatrixPLayer pMatrixP
+#endif
 
 
 // Calculate the screen space reflection
@@ -87,7 +78,7 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 	tcReflDir /= vec4( rayLength );
 	
 	for( i=0; i<rayLength; i++ ){
-		geomZ = TAP_DEPTH( tcTo.st, 0.0 );
+		geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		dt = dtFactor * tcTo.w * tcTo.w;
 		
 		#ifdef INVERSE_DEPTH
@@ -139,7 +130,7 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 		/*#ifdef USE_DEPTH_MIPMAP
 			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pMinMaxTCFactor, vLayer ), mipMapLod ).rg;
 		#else*/
-			geomZ = TAP_DEPTH( tcTo.st, 0.0 );
+			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		//#endif
 		
 		#ifdef INTEGRATED_THRESHOLD_TEST
@@ -201,7 +192,7 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 			// especially a problem with binary search on mip-map depth. to deal with
 			// this the neighbor step along the ray is calculated too and used to
 			// find the better depth to test
-			geomZ = TAP_DEPTH( tcTo.st, 0.0 );
+			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 			dt = dtFactor * tcTo.w * tcTo.w;
 			
 			#ifdef INVERSE_DEPTH
@@ -219,9 +210,9 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 			}
 			
 			// try the neighbor pixel along the ray
-			tcTo += tcReflDir / vec4( length( tcReflDir.xy * pPixelSize ) );
+			tcTo += tcReflDir / vec4( length( tcReflDir.xy / pScreenSpacePixelSize ) );
 			
-			geomZ = TAP_DEPTH( tcTo.st, 0.0 );
+			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 			dt = dtFactor * tcTo.w * tcTo.w;
 			
 			#ifdef INVERSE_DEPTH
@@ -276,13 +267,13 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	// negative. this prevents the need to check for division by zero or incorrect projection due to a
 	// negative z coordinate. this works since in the clip space the reflection vector is stretched to
 	// touch the nearest boundary face and for this the initial vector length is irrelevant
-	vec4 tcFrom = pMatrixP * vec4( position, 1.0 );
+	vec4 tcFrom = pMatrixPLayer * vec4( position, 1.0 );
 	tcFrom = vec4( tcFrom.xyz, 1.0 ) / vec4( tcFrom.w );
 	#ifndef INVERSE_DEPTH
 	tcFrom.z = tcFrom.z * 0.5 + 0.5;
 	#endif
 	
-	vec4 tcTo = pMatrixP * vec4( position + reflectDir * pClipReflDirNearDist, 1.0 );
+	vec4 tcTo = pMatrixPLayer * vec4( position + reflectDir * pClipReflDirNearDist, 1.0 );
 	tcTo = vec4( tcTo.xyz, 1.0 ) / vec4( tcTo.w );
 	#ifndef INVERSE_DEPTH
 	tcTo.z = tcTo.z * 0.5 + 0.5;
@@ -351,8 +342,8 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	}
 	
 	// apply some scaling factors staying the same for the remainder of the shader
-	tcReflDir.xy *= pQuadTCTransform.xy;
-	tcFrom.xy = tcFrom.st * pQuadTCTransform.xy + pQuadTCTransform.zw;
+	tcReflDir.xy *= pFSQuadTCTransform.xy;
+	tcFrom.xy = tcFrom.st * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
 	
 	// search for the position to sample from.
 	// 
@@ -372,7 +363,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	// texels). this is based on looking at the displacement required for a single pixel if the reflected ray
 	// is 45 degrees towards the view direction. in this case the same number of steps along the smaller
 	// distance in screen space is also the number of steps along the entire z range which is 1. {MOVE TO UNIFORM}.
-	tcTo.xy = ceil( abs( tcReflDir.xy ) * pPixelSize );
+	tcTo.xy = ceil( abs( tcReflDir.xy ) / pScreenSpacePixelSize );
 	float realRayLength = max( max( tcTo.x, tcTo.y ), 2.0 );
 	
 	tcFrom += tcReflDir / vec4( realRayLength ); // start 1 pixel away from start pixel to not tap yourself
@@ -427,7 +418,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	//   dt = abs( projMat[3][2] ) * depthThreshold * pz * pz
 	// 
 	// no divs and only muls. sounds good
-	float dtFactor = abs( pMatrixP[3][2] ) * depthThreshold;
+	float dtFactor = abs( pMatrixPLayer[3][2] ) * depthThreshold;
 	
 	// determine the test parameters. the goal is to obtain an upper limit to the number of taps required.
 	// currently 20 taps is the maximum. this value can be changed though to balance the quality versus the
@@ -485,12 +476,12 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	tcFrom.w = 2.0; // nothing found
 	
 	for(i=1; i<1000; i++){
-		p = pMatrixP * vec4( position + rd*vec3(i), 1.0 );
+		p = pMatrixPLayer * vec4( position + rd*vec3(i), 1.0 );
 		p = vec4( p.xyz, 1.0 ) / vec4( p.w );
- 		p.st = p.st * pQuadTCTransform.xy + pQuadTCTransform.zw;
-		//geomZ = pPosTransform.x / ( pPosTransform.y - TAP_DEPTH( p.st, 0.0 ) );
+ 		p.st = p.st * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
+		//geomZ = pPosTransform.x / ( pPosTransform.y - sampleDepth( texDepth, vec3( p.st, vLayer ) ) );
 		//rayZ = position.z + rd.z * float(i);
-		geomZ = TAP_DEPTH( p.st, 0.0 );
+		geomZ = sampleDepth( texDepth, vec3( p.st, vLayer ) );
 		#ifdef INVERSE_DEPTH
 		rayZ = p.z;
 		if( rayZ <= geomZ ){ //&& rayZ - geomZ <= depthThreshold ){
@@ -513,7 +504,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	tcFrom.w = 2.0; // nothing found
 	
 	for( i=0; i<rayLength; i++ ){
-		geomZ = TAP_DEPTH( tcTo.st, 0.0 );
+		geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		dt = dtFactor * tcTo.w * tcTo.w;
 		
 		#ifdef INVERSE_DEPTH
@@ -579,7 +570,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 			#endif
 			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pMinMaxTCFactor, vLayer ), 5.0 ).rg;
 		#else
-			geomZ = TAP_DEPTH( tcTo.st, 0.0 );
+			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		#endif
 		
 		#if ! defined USE_DEPTH_MIPMAP && defined RESULT_AFTER_FIRST_LOOP
@@ -696,7 +687,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	
 	//color = vec3( float(stepCount) / 1000.0, float(i.z)/255.0, sqrt(coverage) );
 	
-	//color = vec3( tcTo.xy * pPixelSize, tcTo.z );
+	//color = vec3( tcTo.xy / pScreenSpacePixelSize, tcTo.z );
 	//color = vec3( depth, depthThreshold, 0.0 );
 	
 	//color = vec3( float(stepCount)/1000.0, float(i.z-1)/255.0, sqrt(coverage) );
@@ -722,7 +713,7 @@ void main( void ){
 		discard;
 	}
 	
-	outResult = vec3( 0.0 );
+	outResult = vec3( 0 );
 	
 	// local reflection is a huge problem for rough surfaces right now. if the depth discontinuity is small using
 	// a down-sampled version of the rendered image with the roughness scaled by the distance to the hit point
@@ -744,13 +735,7 @@ void main( void ){
 	#endif
 	
 	// determine position of fragment
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	vec3 position = depthToPosition( texDepth, tc, vTexCoord, vLayer );
 	
 	// calculate the reflection parameters
 	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
