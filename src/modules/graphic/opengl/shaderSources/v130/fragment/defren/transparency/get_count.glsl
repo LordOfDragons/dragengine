@@ -3,8 +3,6 @@ precision lowp int;
 
 uniform lowp sampler2DArray texValues;
 
-in lowp float vThreshold;
-
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
 #else
@@ -13,10 +11,8 @@ in lowp float vThreshold;
 
 out lowp float outDummy;
 
-//const vec2 TC = vec2( 0.0, 1.0 );
-
 void main( void ){
-	//if( texture( texValues, vec2( 0.0 ) ).r < vThreshold ) discard;
-	if( texelFetch( texValues, ivec3( 0, 0, vLayer ), 0 ).r < vThreshold ) discard;
-	outDummy = 1.0;
+	// the 0.1 more than 255 is only use to ensure rounding
+	if( int( texelFetch( texValues, ivec3( 0, 0, vLayer ), 0 ).r * 255.1 ) < int( gl_FragCoord.x ) ) discard;
+	outDummy = 1;
 }

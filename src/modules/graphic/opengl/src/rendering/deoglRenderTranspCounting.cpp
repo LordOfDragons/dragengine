@@ -66,18 +66,11 @@
 ////////////////
 
 enum eSPTraCountMaxCount{
-	sptcmcPosTransform,
-	sptcmcTCTransform,
 	sptcmcClampTC,
 	sptcmcOffsets1,
 	sptcmcOffsets2,
 	sptcmcOffsets3,
 	sptcmcOffsets4
-};
-
-enum eSPTraCountGetCount{
-	sptcgcPosTransform,
-	sptcgcThresholdTransform
 };
 
 
@@ -118,20 +111,23 @@ pCount( 0 )
 	deoglShaderDefines defines;
 	
 	
-	
-	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Count Layers Particles" );
-	pShaderTraCountDepthParticle = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.AddDefine( "USE_CLIP_PLANE", "1" );
-	pShaderTraCountDepthParticleClip = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
-	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
+	defines.AddDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
 	
+	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
+	defines.AddDefine( "GS_RENDER_STEREO", true );
+	pShaderTraCountMaxCountStereo = shaderManager.GetProgramWith( sources, defines );
+	defines.RemoveAllDefines();
+	
+	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
+	defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
 	
+	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
+	defines.AddDefine( "GS_RENDER_STEREO", true );
+	pShaderTraCountGetCountStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	pOccQuery = new deoglOcclusionQuery( renderThread );
@@ -193,7 +189,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	deoglRenderTask &renderTask = *renworld.GetRenderTask();
 	int realWidth = defren.GetWidth();
 	int realHeight = defren.GetHeight();
-	deoglShaderCompiled *shader;
 	int curWidth, curHeight;
 	bool useTexture1;
 	int nextSize;
@@ -329,11 +324,9 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	
 	// calculate the maximum layer count. uses ping pong between diffuse and reflectivity buffer.
-	renderThread.GetShader().ActivateShader( pShaderTraCountMaxCount );
-	shader = pShaderTraCountMaxCount->GetCompiled();
-	
-	shader->SetParameterFloat( sptcmcPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader->SetParameterFloat( sptcmcTCTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderTraCountMaxCountStereo : pShaderTraCountMaxCount;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
@@ -457,11 +450,9 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		OGL_CHECK( renderThread, glViewport( 0, 0, 100, 1 ) );
 // 		OGL_CHECK( renderThread, glScissor( 0, 0, 100, 1 ) );
 		
-		renderThread.GetShader().ActivateShader( pShaderTraCountGetCount );
-		shader = pShaderTraCountGetCount->GetCompiled();
+		renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderTraCountGetCountStereo : pShaderTraCountGetCount );
 		
-		shader->SetParameterFloat( sptcgcPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-		shader->SetParameterFloat( sptcgcThresholdTransform, 50.0f / 255.0f, 50.5f / 255.0f ); // test [0..100]
+		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 		
 		const GLfloat clearColor2[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor2[ 0 ] ) );
