@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>DefRen Reflection ScreenSpace</name>
+	<name>DefRen Reflection ScreenSpace Stereo</name>
 	
 	<version>150</version>
 	
@@ -18,5 +18,6 @@
 	<output name='outResult' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/reflection/screenspace.glsl</sourceCode>
 </shader>

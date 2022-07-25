@@ -34,6 +34,7 @@
 #include "deoglRenderVR.h"
 #include "debug/deoglRenderDebugDrawer.h"
 #include "defren/deoglDeferredRendering.h"
+#include "defren/deoglDRDepthMinMax.h"
 #include "light/deoglRenderLight.h"
 #include "light/deoglRenderGI.h"
 #include "plan/deoglRenderPlan.h"
@@ -658,6 +659,36 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float sssssTapRadiusFactor = plan.GetProjectionMatrix().a11 * 0.5f;
 	const float sssssTapDropRadiusThreshold = sssssLargestPixelSize * 1.5f; // 1 pixel radius (1.44 at square boundary)
 	
+	// ssr
+	const float ssrInvCoverageEdgeSize = 1.0f / config.GetSSRCoverageEdgeSize();
+	const decVector2 ssrCoverageFactor( -ssrInvCoverageEdgeSize, ssrInvCoverageEdgeSize * 0.5f );
+	const float ssrPowerEdge = config.GetSSRCoveragePowerEdge();
+	const float ssrPowerRayLength = config.GetSSRCoveragePowerRayLength();
+	const float ssrClipReflDirNearDist = plan.GetCameraImageDistance() * 0.9f;
+	const int ssrRoughnessTapMax = 5; //20;
+	const float ssrRoughnessTapRange = 0.1f;
+	const float ssrRoughnessTapCountScale = ( float )ssrRoughnessTapMax / ssrRoughnessTapRange;
+	const int ssrStepCount = config.GetSSRStepCount();
+	const int ssrMaxRayLength = decMath::max( ssrStepCount, ( int )(
+		config.GetSSRMaxRayLength() * decMath::max( defren.GetWidth(), defren.GetHeight() ) ) );
+	const int ssrSubStepCount = int( floorf( log2f( ( float )ssrMaxRayLength / ( float )ssrStepCount ) ) ) + 1;
+	decVector2 ssrMinMaxTCFactor;
+	
+	if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
+		// the mip-max texture is the largest factor-of-2 texture size equal to or smaller
+		// than the deferred rendering size. the pixels are sampled by factor two which is:
+		//   realTC = mipMapTC * 2
+		// 
+		// to get from realTC back to mipMapTC:
+		//   mipMapTC = realTC * 0.5
+		// 
+		// realTC is in relative texture coordinates. mipMapTC also has to be in relative
+		// texture coordinates. this requires an appropriate scaling:
+		//   mipMapTC = realTC * ( 0.5 * realSize / mipMapSize )
+		ssrMinMaxTCFactor.x = 0.5f * ( float )defren.GetRealWidth() / ( float )defren.GetDepthMinMax().GetWidth();
+		ssrMinMaxTCFactor.y = 0.5f * ( float )defren.GetRealHeight() / ( float )defren.GetDepthMinMax().GetHeight();
+	}
+	
 	// lighting
 	const deoglGIState * const giState = plan.GetRenderGIState();
 	decDMatrix giMatrix, giMatrixNormal;
@@ -729,14 +760,25 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataVec3( deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange );
 			
 			// ssao
-			spb.SetParameterDataVec4( deoglSkinShader::erutSSAOParams1, ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant );
-			spb.SetParameterDataVec4( deoglSkinShader::erutSSAOParams2, ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit );
-			spb.SetParameterDataVec3( deoglSkinShader::erutSSAOParams3, ssaoRadiusFactor, ssaoMipMapBase, ssaoMipMapMaxLevel );
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSAOParams1,
+				ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant );
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSAOParams2,
+				ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit );
+			spb.SetParameterDataVec3( deoglSkinShader::erutSSAOParams3,
+				ssaoRadiusFactor, ssaoMipMapBase, ssaoMipMapMaxLevel );
 			
 			// sssss
 			spb.SetParameterDataVec4( deoglSkinShader::erutSSSSSParams1, sssssDropSubSurfaceThreshold,
 				sssssTapRadiusFactor, sssssTapRadiusLimit, sssssTapDropRadiusThreshold );
 			spb.SetParameterDataIVec2( deoglSkinShader::erutSSSSSParams2, sssssTapCount, sssssTurnCount );
+			
+			// ssr
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSRParams1,
+				ssrCoverageFactor.x, ssrCoverageFactor.y, ssrPowerEdge, ssrPowerRayLength );
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSRParams2, ssrClipReflDirNearDist,
+				ssrRoughnessTapCountScale, ssrMinMaxTCFactor.x, ssrMinMaxTCFactor.y );
+			spb.SetParameterDataIVec4( deoglSkinShader::erutSSRParams3,
+				ssrStepCount, ssrSubStepCount, ssrMaxRayLength, ssrRoughnessTapMax );
 			
 			// lighting
 			spb.SetParameterDataVec2( deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1 : 1.0,

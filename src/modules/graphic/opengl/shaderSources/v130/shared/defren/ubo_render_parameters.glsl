@@ -170,6 +170,25 @@ UBOLAYOUT uniform RenderParameters{
 	
 	
 	
+	// ssr
+	vec4 pSSRParams1; // -1 / edgeSize, 0.5 / edgeSize, powEdge, powRayLen
+	#define pSSRCoverageFactor (pSSRParams1.xy)
+	#define pSSRPowEdge (pSSRParams1.z)
+	#define pSSRPowRayLen (pSSRParams1.w)
+	
+	vec4 pSSRParams2; // clipReflDirNearDist, roughnessTapCountScale, minMaxTCFactor(xy)
+	#define pSSRClipReflDirNearDist (pSSRParams2.x)
+	#define pSSRRoughnessTapCountScale (pSSRParams2.y)
+	#define pSSRMinMaxTCScale (pSSRParams2.zw)
+	
+	ivec4 pSSRParams3; // stepCount, subStepCount, maxRayLength, roughnessMaxTaps
+	#define pSSRStepCount (pSSRParams3.x)
+	#define pSSRSubStepCount (pSSRParams3.y)
+	#define pSSRMaxRayLength (pSSRParams3.z)
+	#define pSSRRoughnessMapTaps (pSSRParams3.w)
+	
+	
+	
 	// lighting
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
 	vec2 pLumFragCoordScale;

@@ -4,16 +4,6 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/ubo_render_parameters.glsl"
 
-uniform float pClipReflDirNearDist;
-uniform int pStepCount;
-uniform int pSubStepCount;
-uniform int pMaxRayLength;
-uniform vec2 pMinMaxTCFactor; // scaleU, scaleV
-uniform vec4 pCoverageFactor1; // 1/pTCClamp.x, 1/pTCClamp.y, 1, 0
-uniform vec4 pCoverageFactor2; // -1 / edgeSize, 0.5 / edgeSize, powEdge, powRayLen
-uniform int pRoughnessMaxTaps;
-uniform float pRoughnessTapCountScale;
-
 uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP
 uniform HIGHP sampler2DArray texDepthMinMax;
@@ -127,9 +117,9 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 	float mipMapLod = 2.5; // 5.0 * 0.5
 	#endif*/
 	
-	for( i=0; i<pSubStepCount; i++ ){
+	for( i=0; i<pSSRSubStepCount; i++ ){
 		/*#ifdef USE_DEPTH_MIPMAP
-			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pMinMaxTCFactor, vLayer ), mipMapLod ).rg;
+			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pSSRMinMaxTCScale, vLayer ), mipMapLod ).rg;
 		#else*/
 			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		//#endif
@@ -264,7 +254,7 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 
 void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 result ){
 	// determine the reflection direction in screen space. using a scaling of less than the near distance
-	// (pClipReflDirNearDist is nearDistance * 0.9) the terminal position can never reach zero or become
+	// (pSSRClipReflDirNearDist is nearDistance * 0.9) the terminal position can never reach zero or become
 	// negative. this prevents the need to check for division by zero or incorrect projection due to a
 	// negative z coordinate. this works since in the clip space the reflection vector is stretched to
 	// touch the nearest boundary face and for this the initial vector length is irrelevant
@@ -274,7 +264,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	tcFrom.z = tcFrom.z * 0.5 + 0.5;
 	#endif
 	
-	vec4 tcTo = pMatrixPLayer * vec4( position + reflectDir * pClipReflDirNearDist, 1.0 );
+	vec4 tcTo = pMatrixPLayer * vec4( position + reflectDir * pSSRClipReflDirNearDist, 1.0 );
 	tcTo = vec4( tcTo.xyz, 1.0 ) / vec4( tcTo.w );
 	#ifndef INVERSE_DEPTH
 	tcTo.z = tcTo.z * 0.5 + 0.5;
@@ -369,7 +359,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	
 	tcFrom += tcReflDir / vec4( realRayLength ); // start 1 pixel away from start pixel to not tap yourself
 	
-	int rayLength = min( int( realRayLength ) - 1, pMaxRayLength );
+	int rayLength = min( int( realRayLength ) - 1, pSSRMaxRayLength );
 	tcReflDir *= vec4( float( rayLength ) / realRayLength );
 	
 	// determine depth threshold. this is a tricky parameter. in general each pixel requires a different
@@ -458,14 +448,14 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	//    the number of ray steps. the number of ray steps is considered to apply for the case of 100%
 	//    ray length.
 	// 
-	// uniform parameter pStepCount:
-	//    pStepCount = int( ssrStepCount )
+	// uniform parameter pSSRStepCount:
+	//    pSSRStepCount = int( ssrStepCount )
 	// 
-	// uniform parameter pMaxRayLength:
-	//    pMaxRayLength = int( float( max( screenWidth, screenHeight ) ) * ssrMaxRayLength )
+	// uniform parameter pSSRMaxRayLength:
+	//    pSSRMaxRayLength = int( float( max( screenWidth, screenHeight ) ) * ssrMaxRayLength )
 	// 
-	// uniform parameter pSubStepCount:
-	//    pSubStepCount = int( floor( log( max( pMaxRayLength / float( pStepCount ), 1.0 ) ) / log( 2.0 ) ) ) + 1
+	// uniform parameter pSSRSubStepCount:
+	//    pSSRSubStepCount = int( floor( log( max( pSSRMaxRayLength / float( pSSRStepCount ), 1.0 ) ) / log( 2.0 ) ) ) + 1
 	
 #if SSR_VERSION == 0
 	// ground GROUND truth
@@ -522,7 +512,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	}
 	
 #elif SSR_VERSION == 1
-	int stepCount = min( rayLength, pStepCount ); // avoid heavy undersampling
+	int stepCount = min( rayLength, pSSRStepCount ); // avoid heavy undersampling
 	#ifdef USE_DEPTH_MIPMAP
 	vec2 geomZ;
 	#else
@@ -569,7 +559,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 					continue;
 				}
 			#endif
-			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pMinMaxTCFactor, vLayer ), 5.0 ).rg;
+			geomZ = textureLod( texDepthMinMax, vec3( tcTo.st * pSSRMinMaxTCScale, vLayer ), 5.0 ).rg;
 		#else
 			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		#endif
@@ -660,20 +650,21 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 		//    fades out towards the edges of the screen inside a range of roughly 10% of the screen size. this is
 		//    required since rays towards the edge can not retrieve well results and thus tends to look ugly.
 		#if 0
-			tcTo = tcFrom * pCoverageFactor1 + vec4( -0.5, -0.5, 0.0, 1.0 );
+			tcTo = vec4( tcFrom.xy / pScreenSpaceScale - vec2( 0.5 ), tcFrom.z, 1 );
 			tcTo.xy = abs( tcTo.xy );
-			tcTo.xy = tcTo.xy * pCoverageFactor2.xx + pCoverageFactor2.yy;
+			tcTo.xy = tcTo.xy * pSSRCoverageFactor.xx + pSSRCoverageFactor.yy;
 			tcTo.xyz = clamp( tcTo.xyz, vec3( 0.0 ), vec3( 1.0 ) );
-			tcTo.xyz = pow( tcTo.xyz, pCoverageFactor2.zzw );
+			tcTo.xy = pow( tcTo.xy, vec2( pSSRPowEdge ) );
+			tcTo.z = pow( tcTo.z, pSSRPowRayLen );
 			tcTo.z = 1.0 - tcTo.z;
 			
 			tcTo.xy = tcTo.xz * tcTo.yw;
 			
 		#else
 			// version without ray length coverage
-			tcTo.xy = abs( tcFrom.xy * pCoverageFactor1.xy + vec2( -0.5 ) );
-			tcTo.xy = clamp( tcTo.xy * pCoverageFactor2.xx + pCoverageFactor2.yy, vec2( 0.0 ), vec2( 1.0 ) );
-			tcTo.xy = pow( tcTo.xy, pCoverageFactor2.zz );
+			tcTo.xy = abs( tcFrom.xy / pScreenSpaceScale - vec2( 0.5 ) );
+			tcTo.xy = clamp( tcTo.xy * pSSRCoverageFactor.xx + pSSRCoverageFactor.yy, vec2( 0 ), vec2( 1 ) );
+			tcTo.xy = pow( tcTo.xy, vec2( pSSRPowEdge ) );
 		#endif
 		
 		result.xy = tcFrom.xy;
@@ -753,7 +744,7 @@ void main( void ){
 		vec2 rval;
 		int i;
 		
-		stepCount = clamp( int( pRoughnessTapCountScale * roughness ), 1, pRoughnessMaxTaps );
+		stepCount = clamp( int( pSSRRoughnessTapCountScale * roughness ), 1, pSSRRoughnessMapTaps );
 		
 		for( i=0; i<stepCount; i++ ){
 			rval.x = rand( gl_FragCoord.xy + vec2( 0.001*float(i), -0.002*float(i) ) );

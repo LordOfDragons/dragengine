@@ -561,6 +561,10 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
 		
+		spb->GetParameterAt( erutSSRParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutSSRParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutSSRParams3 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
+		
 		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
@@ -2568,6 +2572,9 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pSSAOParams3" ); // erutSSAOParams3
 		parameterList.Add( "pSSSSSParams1" ); // erutSSSSSParams1
 		parameterList.Add( "pSSSSSParams2" ); // erutSSSSSParams2
+		parameterList.Add( "pSSRParams1" ); // erutSSRParams1
+		parameterList.Add( "pSSRParams2" ); // erutSSRParams2
+		parameterList.Add( "pSSRParams3" ); // erutSSRParams3
 		parameterList.Add( "pAOSelfShadow" ); // erutAOSelfShadow
 		parameterList.Add( "pLumFragCoordScale" ); // erutLumFragCoordScale
 		parameterList.Add( "pGIRayMatrix" ); // erutGIRayMatrix

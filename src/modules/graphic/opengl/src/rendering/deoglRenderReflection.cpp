@@ -315,6 +315,10 @@ deoglRenderBase( renderThread )
 		
 		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		pShaderScreenSpaceStereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
@@ -1752,7 +1756,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglShaderCompiled *shader;
 	
 	DEBUG_RESET_TIMERS;
 	
@@ -1788,50 +1791,9 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderScreenSpace );
-	shader = pShaderScreenSpace->GetCompiled();
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderScreenSpaceStereo : pShaderScreenSpace );
 	
 	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
-	
-	shader->SetParameterFloat( spssClipReflDirNearDist, plan.GetCameraImageDistance() * 0.9f );
-	
-	const int stepCount = config.GetSSRStepCount();
-	const int maxRayLength = decMath::max( stepCount, ( int )(
-		( float )decMath::max( defren.GetWidth(), defren.GetHeight() ) * config.GetSSRMaxRayLength() ) );
-	const int subStepCount = int( floorf( log2f( ( float )maxRayLength / ( float )stepCount ) ) ) + 1;
-	
-	shader->SetParameterInt( spssStepCount, stepCount );
-	shader->SetParameterInt( spssSubStepCount, subStepCount );
-	shader->SetParameterInt( spssMaxRayLength, maxRayLength );
-	
-	if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-		// the mip-max texture is the largest factor-of-2 texture size equal to or smaller
-		// than the deferred rendering size. the pixels are sampled by factor two which is:
-		//   realTC = mipMapTC * 2
-		// 
-		// to get from realTC back to mipMapTC:
-		//   mipMapTC = realTC * 0.5
-		// 
-		// realTC is in relative texture coordinates. mipMapTC also has to be in relative
-		// texture coordinates. this requires an appropriate scaling:
-		//   mipMapTC = realTC * ( 0.5 * realSize / mipMapSize )
-		shader->SetParameterFloat( spssMinMaxTCFactor,
-			0.5f * ( float )defren.GetRealWidth() / ( float )defren.GetDepthMinMax().GetWidth(),
-			0.5f * ( float )defren.GetRealHeight() / ( float )defren.GetDepthMinMax().GetHeight() );
-		
-	}else{
-		shader->SetParameterFloat( spssMinMaxTCFactor, 0.0f, 0.0f );
-	}
-	
-	const float invCoverageEdgeSize = 1.0f / config.GetSSRCoverageEdgeSize();
-	shader->SetParameterFloat( spssCoverageFactor1, 1.0f / defren.GetScalingU(), 1.0f / defren.GetScalingV(), 1.0f, 0.0f );
-	shader->SetParameterFloat( spssCoverageFactor2, -invCoverageEdgeSize, invCoverageEdgeSize * 0.5f,
-		config.GetSSRCoveragePowerEdge(), config.GetSSRCoveragePowerRayLength() );
-	
-	const int roughnessTapMax = 5; //20;
-	const float roughnessTapRange = 0.1f;
-	shader->SetParameterInt( spssRoughnessMaxTaps, roughnessTapMax );
-	shader->SetParameterFloat( spssRoughnessTapCountScale, ( float )roughnessTapMax / roughnessTapRange );
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
@@ -1943,7 +1905,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderApplyReflectionsStereo : pShaderApplyReflections;
 	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
 	
 	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	pEnvMapsParamBlock->Activate();

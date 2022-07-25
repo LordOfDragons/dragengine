@@ -51,6 +51,7 @@ private:
 	deoglShaderProgramUsage pShaderMinMaxMipMapInitial;
 	deoglShaderProgramUsage pShaderMinMaxMipMapDownsample;
 	deoglShaderProgramUsage pShaderScreenSpace;
+	deoglShaderProgramUsage pShaderScreenSpaceStereo;
 	deoglShaderProgramUsage pShaderApplyReflections;
 	deoglShaderProgramUsage pShaderApplyReflectionsStereo;
 	
