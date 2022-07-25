@@ -16,7 +16,7 @@ precision mediump int;
 
 #if ! defined NO_TEXCOORD && defined FULLSCREENQUAD
 	#include "v130/shared/ubo_defines.glsl"
-	#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+	#include "v130/shared/defren/ubo_render_parameters.glsl"
 #endif
 
 in vec2 inPosition;

@@ -49,6 +49,8 @@
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../gi/deoglGIState.h"
+#include "../gi/deoglGICascade.h"
 #include "../particle/deoglParticleSorter.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDebug.h"
@@ -656,6 +658,17 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float sssssTapRadiusFactor = plan.GetProjectionMatrix().a11 * 0.5f;
 	const float sssssTapDropRadiusThreshold = sssssLargestPixelSize * 1.5f; // 1 pixel radius (1.44 at square boundary)
 	
+	// lighting
+	const deoglGIState * const giState = plan.GetRenderGIState();
+	decDMatrix giMatrix, giMatrixNormal;
+	int giHighestCascade = 0;
+	
+	if( giState ){
+		giMatrix = decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() ) * plan.GetCameraMatrix();
+		giMatrixNormal = giMatrix.GetRotationMatrix().QuickInvert();
+		giHighestCascade = giState->GetCascadeCount() - 1;
+	}
+	
 	// fill parameter blocks
 	deoglSPBlockUBO * const spblocks[ 3 ] = { pRenderPB, pRenderStereoPB, pRenderLuminancePB };
 	int b;
@@ -703,6 +716,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 					plan.GetCameraAdaptedIntensity() );
 			}
 			
+			spb.SetParameterDataVec2( deoglSkinShader::erutCameraRange, plan.GetCameraImageDistance(), plan.GetCameraViewDistance() );
+			
 			spb.SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 			spb.SetParameterDataVec4( deoglSkinShader::erutFSQuadTCTransform,
 				2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
@@ -723,6 +738,19 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataVec4( deoglSkinShader::erutSSSSSParams1, sssssDropSubSurfaceThreshold,
 				sssssTapRadiusFactor, sssssTapRadiusLimit, sssssTapDropRadiusThreshold );
 			spb.SetParameterDataIVec2( deoglSkinShader::erutSSSSSParams2, sssssTapCount, sssssTurnCount );
+			
+			// lighting
+			spb.SetParameterDataVec2( deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
+				1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
+			
+			spb.SetParameterDataVec2( deoglSkinShader::erutLumFragCoordScale,
+				( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
+				( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+			
+			// global illumination
+			spb.SetParameterDataMat4x3( deoglSkinShader::erutGIRayMatrix, giMatrix );
+			spb.SetParameterDataMat3x3( deoglSkinShader::erutGIRayMatrixNormal, giMatrixNormal );
+			spb.SetParameterDataInt( deoglSkinShader::erutGIHighestCascade, giHighestCascade );
 			
 			// stereo rendering
 			if( &spb == pRenderStereoPB ){

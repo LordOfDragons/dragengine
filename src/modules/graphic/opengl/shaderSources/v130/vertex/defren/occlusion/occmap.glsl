@@ -4,7 +4,7 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 
 #ifdef WITH_SHADOWMAP
-	#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+	#include "v130/shared/defren/ubo_render_parameters.glsl"
 	
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		#define MATRIX_VP_0 pMatrixVP[0]

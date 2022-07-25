@@ -547,6 +547,8 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
+		spb->GetParameterAt( erutCameraRange ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
 		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
 		spb->GetParameterAt( erutFSQuadTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -559,6 +561,14 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		
 		spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
+		
+		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
+		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+		
+		spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
@@ -2550,6 +2560,7 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pFadeRange" ); // erutFadeRange
 		parameterList.Add( "pBillboardZScale" ); // erutBillboardZScale
 		parameterList.Add( "pCameraAdaptedIntensity" ); // erutCameraAdaptedIntensity
+		parameterList.Add( "pCameraRange" ); // erutCameraRange
 		parameterList.Add( "pDepthSampleOffset" ); // erutDepthSampleOffset
 		parameterList.Add( "pFSQuadTransform" ); // erutFSQuadTransform
 		parameterList.Add( "pFSQuadTCTransform" ); // erutFSQuadTCTransform
@@ -2559,6 +2570,11 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pSSAOParams3" ); // erutSSAOParams3
 		parameterList.Add( "pSSSSSParams1" ); // erutSSSSSParams1
 		parameterList.Add( "pSSSSSParams2" ); // erutSSSSSParams2
+		parameterList.Add( "pAOSelfShadow" ); // erutAOSelfShadow
+		parameterList.Add( "pLumFragCoordScale" ); // erutLumFragCoordScale
+		parameterList.Add( "pGIRayMatrix" ); // erutGIRayMatrix
+		parameterList.Add( "pGIRayMatrixNormal" ); // erutGIRayMatrixNormal
+		parameterList.Add( "pGIHighestCascade" ); // erutGIHighestCascade
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){

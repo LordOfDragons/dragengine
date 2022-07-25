@@ -2,7 +2,7 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
 uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP

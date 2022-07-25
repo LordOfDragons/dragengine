@@ -4,7 +4,7 @@
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
 #ifdef SHARED_SPB

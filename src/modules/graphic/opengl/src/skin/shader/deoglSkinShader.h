@@ -104,9 +104,10 @@ public:
 		erutMipMapParams,
 		erutDepthOffset,
 		erutParticleLightHack,
-		erutFadeRange,
 		erutBillboardZScale,
+		erutFadeRange,
 		erutCameraAdaptedIntensity,
+		erutCameraRange,
 		erutDepthSampleOffset,
 		erutFSQuadTransform,
 		erutFSQuadTCTransform,
@@ -116,6 +117,11 @@ public:
 		erutSSAOParams3,
 		erutSSSSSParams1,
 		erutSSSSSParams2,
+		erutAOSelfShadow,
+		erutLumFragCoordScale,
+		erutGIRayMatrix,
+		erutGIRayMatrixNormal,
+		erutGIHighestCascade,
 		ERUT_COUNT
 	};
 	

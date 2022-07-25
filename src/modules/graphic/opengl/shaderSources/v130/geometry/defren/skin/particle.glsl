@@ -10,7 +10,7 @@ layout( triangle_strip, max_vertices=4 ) out;
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 
 #ifdef NODE_GEOMETRY_UNIFORMS
