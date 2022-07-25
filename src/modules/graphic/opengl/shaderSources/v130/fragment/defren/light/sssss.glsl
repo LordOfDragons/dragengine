@@ -36,16 +36,8 @@ out mediump vec3 outColor;
 void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sumLight, inout vec3 sumWeight ){
 	tc.xy = clamp( tc.xy, pFSQuadTCClamp.xy, pFSQuadTCClamp.zw );
 	
-	float depth = sampleDepth( texDepth, tc );
-	
-	// the position to sample can happen to be at z-far. in this case the denominator
-	// becomes 0 causing inf/nan values. skip such pixels altogether
-	if( depthIsZFar( depth, vLayer ) ){
-		return;
-	}
-	
 	vec2 screenCoord = tc.xy * pFSQuadTCTransform.xy + pFSQuadTCTransform.zw;
-	vec3 spos = depthToPosition( depth, screenCoord, vLayer ) - position;
+	vec3 spos = depthToPosition( texDepth, tc, screenCoord, vLayer ) - position;
 	
 	vec3 scatDist = vec3( length( spos ) ) * scatterScale;
 	

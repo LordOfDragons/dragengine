@@ -1,13 +1,16 @@
 #include "v130/shared/defren/sample_depth.glsl"
 
 // calculate position from depth value. requires sampleDepth to be called to get depth value
+// call is protected against "depth == zfar".
 vec3 depthToPosition( in float depth, in vec2 screenCoord, in int layer ){
 	vec3 position = vec3( depth );
 	#ifdef GS_RENDER_STEREO
-		position.z = pDepthToPosition[ layer ].x / ( pDepthToPosition[ layer ].y - position.z );
+		float divisor = pDepthToPosition[ layer ].y - position.z;
+		position.z = divisor != 0 ? pDepthToPosition[ layer ].x / divisor : pCameraViewDistance;
 		position.xy = ( screenCoord + pDepthToPosition2[ layer ] ) * pDepthToPosition[ layer ].zw * position.zz;
 	#else
-		position.z = pDepthToPosition.x / ( pDepthToPosition.y - position.z );
+		float divisor = pDepthToPosition.y - position.z;
+		position.z = divisor != 0 ? pDepthToPosition.x / divisor : pCameraViewDistance;
 		position.xy = ( screenCoord + pDepthToPosition2 ) * pDepthToPosition.zw * position.zz;
 	#endif
 	return position;
@@ -16,9 +19,11 @@ vec3 depthToPosition( in float depth, in vec2 screenCoord, in int layer ){
 vec3 depthToPositionVolume( in float depth, in vec3 volumePosition, in int layer ){
 	vec3 position = vec3( depth );
 	#ifdef GS_RENDER_STEREO
-		position.z = pDepthToPosition[ layer ].x / ( pDepthToPosition[ layer ].y - position.z );
+		float divisor = pDepthToPosition[ layer ].y - position.z;
+		position.z = divisor != 0 ? pDepthToPosition[ layer ].x / divisor : pCameraViewDistance;
 	#else
-		position.z = pDepthToPosition.x / ( pDepthToPosition.y - position.z );
+		float divisor = pDepthToPosition.y - position.z;
+		position.z = divisor != 0 ? pDepthToPosition.x / divisor : pCameraViewDistance;
 	#endif
 	position.xy = volumePosition.xy * position.zz / volumePosition.zz;
 	return position;
@@ -36,7 +41,7 @@ vec3 depthToPosition( sampler2DArray samplerDepth, in vec3 texCoord, in vec2 scr
 	return depthToPosition( sampleDepth( samplerDepth, texCoord ), screenCoord, layer );
 }
 
-// calculate position from pixel to shader
+// calculate position from pixel to shader. call is protected against "depth == zfar".
 vec3 depthToPosition( sampler2DArray samplerDepth, in vec2 screenCoord, in int layer ){
 	return depthToPosition( sampleDepth( samplerDepth, ivec3( gl_FragCoord.xy, layer ) ), screenCoord, layer );
 }
