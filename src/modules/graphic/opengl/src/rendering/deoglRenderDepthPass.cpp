@@ -164,49 +164,6 @@ deoglRenderBase( renderThread )
 	}
 	
 	pShaderDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
-	
-	
-	
-	sources = shaderManager.GetSourcesNamed( "DefRen Particle Depth" );
-	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", true );
-	}
-	pShaderParticleDepthSolid = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.AddDefine( "CLIP_DEPTH", true );
-	pShaderParticleDepthSolidCD = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
-	
-	defines.AddDefine( "IGNORE_HOLES", true );
-	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", true );
-	}
-	pShaderParticleDepthHoles = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.AddDefine( "CLIP_DEPTH", true );
-	pShaderParticleDepthHolesCD = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
-	
-	defines.AddDefine( "USE_CLIP_PLANE", true );
-	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", true );
-	}
-	pShaderParticleDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.AddDefine( "CLIP_DEPTH", true );
-	pShaderParticleDepthClipSolidCD = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
-	
-	defines.AddDefine( "USE_CLIP_PLANE", true );
-	defines.AddDefine( "IGNORE_HOLES", true );
-	if( config.GetUseEncodeDepth() ){
-		defines.AddDefine( "ENCODE_DEPTH", true );
-	}
-	pShaderParticleDepthClipHoles = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.AddDefine( "CLIP_DEPTH", true );
-	pShaderParticleDepthClipHolesCD = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
 }
 
 deoglRenderDepthPass::~deoglRenderDepthPass(){

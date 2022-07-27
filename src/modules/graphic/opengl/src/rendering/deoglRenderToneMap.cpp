@@ -159,7 +159,6 @@ enum eSPToneMap{
 };
 
 enum eSPFinalize{
-	spfinPosTransform,
 	spfinTCTransform,
 	spfinGamma,
 	spfinBrightness,
@@ -358,7 +357,13 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
+		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
 		
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
@@ -1057,10 +1062,12 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderFinalize );
-	shader = pShaderFinalize->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 	shader->SetParameterFloat( spfinGamma, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, 1.0f );
 	shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );

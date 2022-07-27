@@ -121,9 +121,6 @@ NODE_FRAGMENT_SAMPLERS
 #ifdef ENCODE_OUT_DEPTH
 	out vec4 outDepth;
 #endif
-#ifdef NODE_FRAGMENT_OUTPUTS
-NODE_FRAGMENT_OUTPUTS
-#endif
 
 
 
@@ -134,9 +131,6 @@ NODE_FRAGMENT_OUTPUTS
 	const vec3 packShift = vec3( 1.0, 256.0, 65536.0 );
 	const vec3 packMask = vec3( 1.0 / 256.0, 1.0 / 256.0, 0.0 );
 #endif
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
 
 
 
@@ -146,6 +140,8 @@ NODE_FRAGMENT_OUTPUTS
 #if defined REQUIRES_NORMAL && ! defined HAS_TESSELLATION_SHADER
 	#include "v130/shared/defren/skin/relief_mapping.glsl"
 #endif
+
+#include "v130/shared/defren/depth_to_position.glsl"
 
 /*
 #if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
@@ -348,11 +344,7 @@ void main( void ){
 	#ifdef DEPTH_TEST
 		ivec2 tc = ivec2( gl_FragCoord.xy );
 		
-		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot( texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).rgb, unpackDepth );
-		#else
-		float depthTestValue = texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).r;
-		#endif
+		float depthTestValue = sampleDepth( texDepthTest, ivec3( tc, vLayer ) );
 		
 		#ifdef INVERSE_DEPTH
 			#ifdef DEPTH_TEST_LARGER

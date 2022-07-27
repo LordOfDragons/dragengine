@@ -42,15 +42,6 @@ private:
 	deoglShaderProgramUsage pShaderDepthSolid;
 	deoglShaderProgramUsage pShaderDepthClipSolid;
 	
-	deoglShaderProgramUsage pShaderParticleDepthSolid;
-	deoglShaderProgramUsage pShaderParticleDepthSolidCD;
-	deoglShaderProgramUsage pShaderParticleDepthHoles;
-	deoglShaderProgramUsage pShaderParticleDepthHolesCD;
-	deoglShaderProgramUsage pShaderParticleDepthClipSolid;
-	deoglShaderProgramUsage pShaderParticleDepthClipSolidCD;
-	deoglShaderProgramUsage pShaderParticleDepthClipHoles;
-	deoglShaderProgramUsage pShaderParticleDepthClipHolesCD;
-	
 	
 	
 public:

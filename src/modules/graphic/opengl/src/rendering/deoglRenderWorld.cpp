@@ -109,7 +109,6 @@ enum eSPTraCountGetCount{
 };
 
 enum eSPFinalize{
-	spfinPosTransform,
 	spfinTCTransform,
 	spfinGamma,
 	spfinBrightness,
@@ -191,7 +190,13 @@ pDebugInfo( renderThread )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
+		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
 		
 		
 		DevModeDebugInfoChanged();
@@ -490,10 +495,12 @@ DEBUG_RESET_TIMER
 			defren.ActivateFBOTemporary2( false );
 			tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 			
-			renderThread.GetShader().ActivateShader( pShaderFinalize );
-			shader = pShaderFinalize->GetCompiled();
+			deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
+			renderThread.GetShader().ActivateShader( program );
+			shader = program->GetCompiled();
 			
-			shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+			ActivateRenderPB( plan );
+			
 			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 			shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 			shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
@@ -1075,10 +1082,11 @@ DBG_ENTER("RenderFinalizeFBO")
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program and parameters
-	renderThread.GetShader().ActivateShader( pShaderFinalize );
-	shader = pShaderFinalize->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	ActivateRenderPB( plan );
 	
 	if( withGammaCorrection ){
 		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
@@ -1174,10 +1182,12 @@ DBG_ENTER("RenderFinalizeContext")
 	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	// set program and parameters
-	renderThread.GetShader().ActivateShader( pShaderFinalize );
-	shader = pShaderFinalize->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	ActivateRenderPB( plan );
+	
 	shader->SetParameterFloat( spfinGamma, gamma, gamma, gamma, 1.0f );
 	shader->SetParameterFloat( spfinBrightness, pbn, pbn, pbn, 0.0f );
 	shader->SetParameterFloat( spfinContrast, contrast, contrast, contrast, 1.0f );

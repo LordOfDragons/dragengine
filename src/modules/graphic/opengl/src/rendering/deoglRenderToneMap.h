@@ -55,6 +55,7 @@ private:
 	deoglShaderProgramUsage pShaderToneMap;
 	deoglShaderProgramUsage pShaderToneMapStereo;
 	deoglShaderProgramUsage pShaderFinalize;
+	deoglShaderProgramUsage pShaderFinalizeStereo;
 	
 	deoglShaderProgramUsage pShaderLumPrepare;
 	deoglShaderProgramUsage pShaderLumPrepareStereo;

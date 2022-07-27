@@ -44,10 +44,6 @@
 	in vec2 inTexCoord;
 #endif
 
-#ifdef NODE_VERTEX_INPUTS
-NODE_VERTEX_INPUTS
-#endif
-
 
 
 // Outputs
