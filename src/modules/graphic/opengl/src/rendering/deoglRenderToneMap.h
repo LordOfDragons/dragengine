@@ -42,16 +42,22 @@ private:
 	deoglTexture *pTextureToneMapParams;
 	
 	deoglShaderProgramUsage pShaderColor2LogLum;
+	deoglShaderProgramUsage pShaderColor2LogLumStereo;
 	deoglShaderProgramUsage pShaderAvgLogLum;
+	deoglShaderProgramUsage pShaderAvgLogLumStereo;
 	deoglShaderProgramUsage pShaderParameters;
 	deoglShaderProgramUsage pShaderBrightPass;
+	deoglShaderProgramUsage pShaderBrightPassStereo;
 	deoglShaderProgramUsage pShaderBloomReduce;
 	deoglShaderProgramUsage pShaderBloomBlur;
+	deoglShaderProgramUsage pShaderBloomBlurStereo;
 	deoglShaderProgramUsage pShaderBloomAdd;
 	deoglShaderProgramUsage pShaderToneMap;
+	deoglShaderProgramUsage pShaderToneMapStereo;
 	deoglShaderProgramUsage pShaderFinalize;
 	
 	deoglShaderProgramUsage pShaderLumPrepare;
+	deoglShaderProgramUsage pShaderLumPrepareStereo;
 	
 	
 public:

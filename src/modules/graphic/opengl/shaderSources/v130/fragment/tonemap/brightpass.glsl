@@ -1,8 +1,6 @@
 precision highp float;
 precision highp int;
 
-uniform vec2 pOptions;
-
 uniform mediump sampler2DArray texColor;
 uniform mediump sampler2D texToneMapParams;
 
@@ -20,6 +18,8 @@ const float epsilon = 0.0001;
 const ivec2 tcParams = ivec2( 0 );
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 //const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
+
+const vec2 options = vec2( 2.5, 1.0 ); // m$: 5, 10 // ogre: 2.5, 1
 
 void main( void ){
 	vec4 params = texelFetch( texToneMapParams, tcParams, 0 ); // r=avgLum, g=imageKey, b=lwhite, a=brightPassThreshold
@@ -41,8 +41,8 @@ void main( void ){
 	
 	color *= vec3( finalLum / ( luminance + epsilon ) );
 	
-	outColor = max( color - vec3( pOptions.x ), c0_0 );
+	outColor = max( color - vec3( options.x ), c0_0 );
 	*/
-	//color = max( color * vec3( params.g - pOptions.x ), c0_0 );
-	//outColor = color / ( color + vec3( pOptions.y ) );
+	//color = max( color * vec3( params.g - options.x ), c0_0 );
+	//outColor = color / ( color + vec3( options.y ) );
 }

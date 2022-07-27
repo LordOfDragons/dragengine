@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>Gauss Separable Fixed</name>
+	<name>Gauss Separable Fixed Stereo</name>
 	
 	<version>150</version>
 	
@@ -26,5 +26,6 @@
 	<output name='outData' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/generic/gauss_sep_fixed.glsl</sourceCode>
 </shader>

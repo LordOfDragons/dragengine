@@ -101,6 +101,7 @@ public:
 		erutClipPlane,
 		erutScreenSpace,
 		erutRenderSize,
+		erutRenderLayerCount,
 		erutMipMapParams,
 		erutDepthOffset,
 		erutParticleLightHack,
@@ -124,6 +125,9 @@ public:
 		erutGIRayMatrix,
 		erutGIRayMatrixNormal,
 		erutGIHighestCascade,
+		erutToneMapSceneKey,
+		erutToneMapAdaption,
+		erutToneMapBloom,
 		ERUT_COUNT
 	};
 	

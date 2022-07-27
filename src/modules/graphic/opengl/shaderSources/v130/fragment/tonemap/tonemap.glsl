@@ -1,14 +1,17 @@
 precision highp float;
 precision highp int;
 
-uniform vec4 pOptions; // exposure, 1/(lwhite^2), overbrightLimit, overbrightFactor
-uniform vec2 pTCBloomClamp; // clampU, clampV
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
+
+uniform vec4 pTCBloomTransform;
+uniform vec2 pTCBloomClamp;
 
 uniform mediump sampler2DArray texColor;
 uniform mediump sampler2D texToneMapParams;
 uniform mediump sampler2DArray texBloom;
 
-in vec2 vTCBloom;
+in vec2 vTexCoord;
 
 #ifdef GS_RENDER_STEREO
 	flat in int vLayer;
@@ -94,12 +97,14 @@ void main( void ){
 	vec3 params = texelFetch( texToneMapParams, tcParams, 0 ).rgb; // r=avgLum, g=scaleLum, b=lwhite, a=n/a
 	vec4 color = texelFetch( texColor, tc, 0 );
 	
+	vec2 tcBloom = min( vTexCoord * pTCBloomTransform.xy + pTCBloomTransform.zw, pTCBloomClamp );
+	
 	// classic reinhard
-//	float luminance = dot( color, lumiFactors ) * pOptions.x;
+//	float luminance = dot( color, lumiFactors ) * pToneMapBloomStrength;
 //	luminance = luminance / ( 1.0 + luminance );
 	
 	// enhanced reinhard
-// 	color.rgb += textureLod( texBloom, vec3( min( vTCBloom, pTCBloomClamp ), vLayer ), 0 ).rgb * vec3( pOptions.x );
+// 	color.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0 ).rgb * vec3( pToneMapBloomStrength );
 // 	
 // 	float luminance = dot( color.rgb, lumiFactors );
 // 	float adjLum = luminance * params.g;
@@ -114,7 +119,7 @@ void main( void ){
 	outColor.a = color.a;
 	
 	// bloom
-	outColor.rgb += textureLod( texBloom, vec3( min( vTCBloom, pTCBloomClamp ), vLayer ), 0 ).rgb * vec3( pOptions.x );
+	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0 ).rgb * vec3( pToneMapBloomStrength );
 	
 	// NOTE nice comparison of curves: https://www.shadertoy.com/view/WdjSW3
 	//      the uchimura curve is the only one which has a linear left side. all others try

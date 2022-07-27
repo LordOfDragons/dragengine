@@ -700,6 +700,32 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		giHighestCascade = giState->GetCascadeCount() - 1;
 	}
 	
+	// tone mapping
+	const deoglRCamera * const oglCamera = plan.GetCamera();
+	const float toneMapLWhite = config.GetHDRRMaximumIntensity();
+	const float toneMapBloomStrength = 1.0f;
+	float toneMapAdaptationTime = 0.0f;
+	float toneMapExposure = 1.0f;
+	float toneMapLowInt = 0.0f;
+	float toneMapHighInt = 1.0f;
+	
+	if( oglCamera ){
+		toneMapAdaptationTime = oglCamera->GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
+		
+		if( toneMapAdaptationTime < 0.001f || oglCamera->GetForceToneMapAdaption() ){
+			//toneMapAdaptationTime = 4.0; //1.0f; // required for the time being for the longer darkness adjust hack
+			toneMapAdaptationTime = 100.0f; // hack for the time being. shader does clamp(value*0.25,0,1) in the worst case
+			
+		}else{
+			toneMapAdaptationTime = 1.0f - expf( -oglCamera->GetElapsedToneMapAdaption() / toneMapAdaptationTime );
+			//toneMapAdaptationTime = oglCamera->GetElapsedToneMapAdaption() * adaptationTime;
+		}
+		
+		toneMapExposure = oglCamera->GetExposure();
+		toneMapLowInt = oglCamera->GetLowestIntensity();
+		toneMapHighInt = oglCamera->GetHighestIntensity();
+	}
+	
 	// fill parameter blocks
 	deoglSPBlockUBO * const spblocks[ 3 ] = { pRenderPB, pRenderStereoPB, pRenderLuminancePB };
 	int b;
@@ -730,7 +756,8 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 				defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 			spb.SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
 			
-			spb.SetParameterDataVec3( deoglSkinShader::erutRenderSize, defren.GetWidth(), defren.GetHeight(), defren.GetLayerCount() );
+			spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, defren.GetWidth(), defren.GetHeight() );
+			spb.SetParameterDataInt( deoglSkinShader::erutRenderLayerCount, defren.GetLayerCount() );
 			
 			spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, mipmapMaxLevel, mipMapMaxScale );
 			
@@ -792,6 +819,11 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataMat4x3( deoglSkinShader::erutGIRayMatrix, giMatrix );
 			spb.SetParameterDataMat3x3( deoglSkinShader::erutGIRayMatrixNormal, giMatrixNormal );
 			spb.SetParameterDataInt( deoglSkinShader::erutGIHighestCascade, giHighestCascade );
+			
+			// tone mapping
+			spb.SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapLWhite );
+			spb.SetParameterDataVec3( deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime );
+			spb.SetParameterDataVec2( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, 0.0f );
 			
 			// stereo rendering
 			if( &spb == pRenderStereoPB ){

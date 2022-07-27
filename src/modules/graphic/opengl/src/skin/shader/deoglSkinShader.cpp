@@ -535,7 +535,8 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
-		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutRenderLayerCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 		
 		spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
@@ -572,6 +573,10 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
 		
 		spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+		
+		spb->GetParameterAt( erutToneMapSceneKey ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+		spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
@@ -2557,6 +2562,7 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pClipPlane" ); // erutClipPlane
 		parameterList.Add( "pScreenSpace" ); // erutScreenSpace
 		parameterList.Add( "pRenderSize" ); // erutRenderSize
+		parameterList.Add( "pRenderLayerCount" ); // erutRenderLayerCount
 		parameterList.Add( "pMipMapParams" ); // erutMipMapParams
 		parameterList.Add( "pDepthOffset" ); // erutDepthOffset
 		parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack
@@ -2580,6 +2586,9 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pGIRayMatrix" ); // erutGIRayMatrix
 		parameterList.Add( "pGIRayMatrixNormal" ); // erutGIRayMatrixNormal
 		parameterList.Add( "pGIHighestCascade" ); // erutGIHighestCascade
+		parameterList.Add( "pToneMapSceneKey" ); // erutToneMapSceneKey
+		parameterList.Add( "pToneMapAdaption" ); // erutToneMapAdaption
+		parameterList.Add( "pToneMapBloom" ); // erutToneMapBloom
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){

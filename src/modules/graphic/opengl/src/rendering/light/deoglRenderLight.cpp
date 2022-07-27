@@ -71,7 +71,6 @@
 ////////////////
 
 enum eSPAOBlur{
-	spaobQuadParams,
 	spaobOffsets1,
 	spaobOffsets2,
 	spaobOffsets3,
@@ -82,7 +81,7 @@ enum eSPAOBlur{
 	spaobWeights1,
 	spaobWeights2,
 	spaobClamp,
-	spaobDepthTransform
+	spaobDepthDifferenceThreshold
 };
 
 enum pSPDebugAO{
@@ -163,21 +162,30 @@ pAddToRenderTask( NULL )
 		
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
 		defines.AddDefine( "TAP_COUNT", 9 );
-		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", true );
 		defines.AddDefine( "OUT_DATA_SIZE", 1 );
 		defines.AddDefine( "TEX_DATA_SIZE", 1 );
 		defines.AddDefine( "TEX_DATA_SWIZZLE", "g" );
-		defines.AddDefine( "INPUT_ARRAY_TEXTURES", true );
+		defines.AddDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderAOBlur1Stereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
 		defines.AddDefine( "TAP_COUNT", 9 );
-		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", true );
 		defines.AddDefine( "OUT_DATA_SIZE", 3 );
 		defines.AddDefine( "OUT_DATA_SWIZZLE", "g" );
 		defines.AddDefine( "TEX_DATA_SIZE", 1 );
-		defines.AddDefine( "INPUT_ARRAY_TEXTURES", true );
+		defines.AddDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderAOBlur2Stereo = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
@@ -389,8 +397,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_TRUE, GL_FALSE, GL_FALSE ) );
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderAOLocalStereo : pShaderAOLocal;
-	renderThread.GetShader().ActivateShader( program );
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderAOLocalStereo : pShaderAOLocal );
 	
 	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
@@ -420,8 +427,11 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderAOBlur1 );
-	shader = pShaderAOBlur1->GetCompiled();
+	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderAOBlur1Stereo : pShaderAOBlur1;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
+	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
@@ -431,11 +441,9 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
 	
-	defren.SetShaderParamFSQuad( *shader, spaobQuadParams );
 	shader->SetParameterFloat( spaobClamp,
 		pixelSizeU * ( ( float )width - 0.5f ), pixelSizeV * ( ( float )height - 0.5f ) );
-	shader->SetParameterFloat( spaobDepthTransform,
-		plan.GetDepthToPosition().x, plan.GetDepthToPosition().y, edgeBlurThreshold );
+	shader->SetParameterFloat( spaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
 	shader->SetParameterFloat( spaobWeights1,
 		0.1963806f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
@@ -462,19 +470,20 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	// gaussian blur with 9 taps (17 pixels size): pass 2
 	defren.ActivateFBOAOSolidity( false );
 	
-	renderThread.GetShader().ActivateShader( pShaderAOBlur2 );
-	shader = pShaderAOBlur2->GetCompiled();
+	program = plan.GetRenderStereo() ? pShaderAOBlur2Stereo : pShaderAOBlur2;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
+	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
 	
-	defren.SetShaderParamFSQuad( *shader, spaobQuadParams );
 	shader->SetParameterFloat( spaobClamp,
 		pixelSizeU * ( ( float )width - 0.5f ), pixelSizeV * ( ( float )height - 0.5f ) );
-	shader->SetParameterFloat( spaobDepthTransform,
-		plan.GetDepthToPosition().x, plan.GetDepthToPosition().y, edgeBlurThreshold );
+	shader->SetParameterFloat( spaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
 	shader->SetParameterFloat( spaobWeights1,
 		0.1963806f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );

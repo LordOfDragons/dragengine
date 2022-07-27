@@ -89,10 +89,9 @@ UBOLAYOUT uniform RenderParameters{
 	// render size.
 	// x: width (pixels)
 	// y: height (pixels)
-	// z: layerCount
-	vec3 pRenderSize;
-	// layerCount
-	#define pRenderLayerCount (pRenderSize.z)
+	vec2 pRenderSize;
+	// render layer count
+	int pRenderLayerCount;
 	
 	// mip map parameters.
 	// x: pixelSizeU (size of pixel of mip map level 0 in meters)
@@ -199,6 +198,31 @@ UBOLAYOUT uniform RenderParameters{
 	
 	// global illumination
 	int pGIHighestCascade; // index of highest cascade
+	
+	
+	
+	// tone mapping
+	
+	// scene key parameters
+	// x: exposure
+	// y: max white luminance
+	vec2 pToneMapSceneKey;
+	#define pToneMapExposure (pToneMapSceneKey.x)
+	#define pToneMapMaxWhiteLum (pToneMapSceneKey.y)
+	
+	// adaption parameters
+	// x: lowest luminance
+	// y: highest luminance
+	// z: adaption time
+	vec3 pToneMapAdaption;
+	#define pToneMapLowLuminance (pToneMapAdaption.x)
+	#define pToneMapHighLuminance (pToneMapAdaption.y)
+	#define pToneMapAdaptionTime (pToneMapAdaption.z)
+	
+	// bloom parameters
+	// x: strength
+	vec2 pToneMapBloom;
+	#define pToneMapBloomStrength (pToneMapBloom.x)
 };
 
 // helper functions

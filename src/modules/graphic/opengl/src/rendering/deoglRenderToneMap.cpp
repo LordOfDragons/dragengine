@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include "deoglRenderToneMap.h"
+#include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
 #include "plan/deoglRenderPlan.h"
@@ -37,6 +38,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTRenderers.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -117,27 +119,17 @@ normal: bloom texture ( blocked after the bloom pass )
 ////////////////
 
 enum eSPColor2LogLum{
-	spc2llPosTransform,
-	spc2llTCTransform,
 	spc2llParam1,
 	spc2llParam2
 };
 
 enum eSPAverageLogLum{
-	spallPosTransform,
 	spallTCTransform,
 	spallOffsets
 };
 
 enum eSPParameters{
-	sppAvgLogLumTCs,
-	sppOptions,
-	sppAdaption
-};
-
-enum eSPBrightPass{
-	spbpPosToTC,
-	spbpOptions
+	sppAvgLogLumTCs
 };
 
 enum eSPBloomReduce{
@@ -146,7 +138,6 @@ enum eSPBloomReduce{
 };
 
 enum eSPBloomBlur{
-	spbbPosTransform,
 	spbbTCTransform,
 	spbbOffsets1,
 	spbbOffsets2,
@@ -163,8 +154,7 @@ enum eSPBloomAdd{
 };
 
 enum eSPToneMap{
-	sptmPosToBloom,
-	sptmOptions,
+	sptmTCBloomTransform,
 	sptmTCBloomClamp
 };
 
@@ -174,11 +164,6 @@ enum eSPFinalize{
 	spfinGamma,
 	spfinBrightness,
 	spfinContrast
-};
-
-enum eSPLumPrepare{
-	splpPosTransform,
-	splpTCTransform
 };
 
 
@@ -310,34 +295,81 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	
 	try{
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderColor2LogLumStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
+		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderAvgLogLumStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
+		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderParameters = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
+		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Reduce" );
-		pShaderBloomReduce = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderBrightPassStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur" );
-		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Reduce" );
+		pShaderBloomReduce = shaderManager.GetProgramWith( sources, defines ); // not used
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add" );
-		pShaderBloomAdd = shaderManager.GetProgramWith( sources, defines );
+		pShaderBloomAdd = shaderManager.GetProgramWith( sources, defines ); // not used
+		
+		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur" );
+		defines.AddDefines( "NO_POSTRANSFORM" );
+		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderBloomBlurStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
+		defines.AddDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderToneMapStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
+		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
+		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderLumPrepareStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
 		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );
 		
@@ -384,11 +416,9 @@ DEBUG_RESET_TIMERS;
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderLumPrepare );
-	deoglShaderCompiled &shader = *pShaderLumPrepare->GetCompiled();
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLumPrepareStereo : pShaderLumPrepare );
 	
-	shader.SetParameterFloat( splpPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	defren.SetShaderParamFSQuad( shader, splpTCTransform );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
@@ -497,11 +527,12 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 // 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderColor2LogLum );
-	shader = pShaderColor2LogLum->GetCompiled();
+	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderColor2LogLumStereo : pShaderColor2LogLum;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	shader->SetParameterFloat( spc2llPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	defren.SetShaderParamFSQuad( *shader, spc2llTCTransform, 0.0f, 0.0f, ( float )realWidth, ( float )realHeight );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	shader->SetParameterFloat( spc2llParam1, tcOffsetU, 0.0f, 0.0f, tcOffsetV );
 	shader->SetParameterFloat( spc2llParam2, tcOffsetU, tcOffsetV, clampU, clampV );
 	
@@ -514,8 +545,11 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	
 	// average the log luminances
-	renderThread.GetShader().ActivateShader( pShaderAvgLogLum );
-	shader = pShaderAvgLogLum->GetCompiled();
+	program = plan.GetRenderStereo() ? pShaderAvgLogLumStereo : pShaderAvgLogLum;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
+	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	modeTarget = false;
 	
@@ -570,7 +604,6 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 			}
 		}
 		
-		shader->SetParameterFloat( spallPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
 		defren.SetShaderParamFSQuad( *shader, spallTCTransform, ( float )tcPingPongOffset, 0.0f,
 			( float )( tcPingPongOffset + lastWidth ), ( float )lastHeight );
 		shader->SetParameterFloat( spallOffsets, -tcOffsetU, tcOffsetU, -tcOffsetV, tcOffsetV );
@@ -613,24 +646,13 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	deoglRCamera &oglCamera = *plan.GetCamera();
 	deoglTexture * const lastParams = oglCamera.GetToneMapParamsTexture();
-	float adaptationTime = oglCamera.GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
-	
-	if( adaptationTime < 0.001f || oglCamera.GetForceToneMapAdaption() ){
-		//adaptationTime = 4.0; //1.0f; // required for the time being for the longer darkness adjust hack
-		adaptationTime = 100.0f; // hack for the time being. shader does clamp(value*0.25,0,1) in the worst case
-		
-	}else{
-		adaptationTime = 1.0f - expf( -oglCamera.GetElapsedToneMapAdaption() / adaptationTime );
-		//adaptationTime = oglCamera->GetElapsedToneMapAdaption() * adaptationTime;
-	}
-	
-	// const float fTau = 0.5f;
-	// float fAdaptedLum = fLastLum + (fCurrentLum - fLastLum) * (1 - exp(-g_fDT * fTau));
 	
 	oglCamera.SetForceToneMapAdaption( false );
 	
 	renderThread.GetShader().ActivateShader( pShaderParameters );
 	shader = pShaderParameters->GetCompiled();
+	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	if( modeTarget ){
 		viewportPingPongOffset = 0;
@@ -659,9 +681,6 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	}
 	
 	shader->SetParameterFloat( sppAvgLogLumTCs, pixelSizeU * ( ( float )tcPingPongOffset + 1.0f ), pixelSizeV, tcOffsetU, tcOffsetV );
-	shader->SetParameterFloat( sppOptions, oglCamera.GetExposure(), config.GetHDRRMaximumIntensity() );
-	shader->SetParameterFloat( sppAdaption, oglCamera.GetLowestIntensity(),
-		oglCamera.GetHighestIntensity(), adaptationTime, 0.0f );
 	
 	oglCamera.ResetElapsedToneMapAdaption();
 	
@@ -749,11 +768,9 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	bloomWidth = curWidth;
 	bloomHeight = curHeight;
 	
-	renderThread.GetShader().ActivateShader( pShaderBrightPass );
-	shader = pShaderBrightPass->GetCompiled();
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderBrightPassStereo : pShaderBrightPass );
 	
-	defren.SetShaderParamFSQuad( *shader, spbpPosToTC );
-	shader->SetParameterFloat( spbpOptions, 2.5f, 1.0f ); // m$: 5, 10 // ogre: 2.5, 1
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	defren.ActivateFBOTemporary1( false );
 	
@@ -794,10 +811,12 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	const float blurTCOffsets[] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
 	const float blurWeights[] = { 1.232953f, 3.278228e-1f, 8.461847e-2f, 1.874333e-2f, 3.136081e-3f };
 	
-	renderThread.GetShader().ActivateShader( pShaderBloomBlur );
-	shader = pShaderBloomBlur->GetCompiled();
+	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderBloomBlurStereo : pShaderBloomBlur;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	shader->SetParameterFloat( spbbPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )lastWidth, ( float )lastHeight );
 	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )lastWidth - 0.5f ), pixelSizeV * ( ( float )lastHeight - 0.5f ) );
 	
@@ -1000,8 +1019,6 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	float clampBloomU, clampBloomV;
 	deoglShaderCompiled *shader;
 	
-	bool bloomStrength = 1.0f;
-	
 	clampBloomU = defren.GetPixelSizeU() * ( ( float )bloomWidth - 0.5f );
 	clampBloomV = defren.GetPixelSizeV() * ( ( float )bloomHeight - 0.5f );
 	
@@ -1011,10 +1028,13 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	renderThread.GetShader().ActivateShader( pShaderToneMap );
-	shader = pShaderToneMap->GetCompiled();
-	defren.SetShaderParamFSQuad( *shader, sptmPosToBloom, bloomWidth, bloomHeight );
-	shader->SetParameterFloat( sptmOptions, bloomStrength, 0.0f, 0.0f, 0.0f );
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderToneMapStereo : pShaderToneMap;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
+	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
+	defren.SetShaderParamFSQuad( *shader, sptmTCBloomTransform, bloomWidth, bloomHeight );
 	shader->SetParameterFloat( sptmTCBloomClamp, clampBloomU, clampBloomV );
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );

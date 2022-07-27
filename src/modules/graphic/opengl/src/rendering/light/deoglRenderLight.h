@@ -45,7 +45,9 @@ private:
 	deoglShaderProgramUsage pShaderAOLocal;
 	deoglShaderProgramUsage pShaderAOLocalStereo;
 	deoglShaderProgramUsage pShaderAOBlur1;
+	deoglShaderProgramUsage pShaderAOBlur1Stereo;
 	deoglShaderProgramUsage pShaderAOBlur2;
+	deoglShaderProgramUsage pShaderAOBlur2Stereo;
 	deoglShaderProgramUsage pShaderDebugAO;
 	
 	deoglShaderProgramUsage pShaderSSSSS;
