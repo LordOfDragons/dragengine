@@ -926,7 +926,9 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		pAddToRenderTask->Reset();
 		pAddToRenderTask->SetSolid( true );
-		pAddToRenderTask->SetSkinShaderType( deoglSkinTexture::estComponentDepth );
+		pAddToRenderTask->SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoComponentDepth
+			: deoglSkinTexture::estComponentDepth );
 		pAddToRenderTask->SetNoRendered( false );
 		
 		pAddToRenderTask->AddComponentFaces( maskedPlan->GetComponent()->GetLODAt( 0 ),

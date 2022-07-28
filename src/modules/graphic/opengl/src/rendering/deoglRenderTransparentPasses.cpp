@@ -637,21 +637,35 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetNoRendered( mask );
 	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoComponentGeometry
+		: deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoBillboardGeometry
+		: deoglSkinTexture::estBillboardGeometry );
 	addToRenderTask.AddBillboards( collideList );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoPropFieldGeometry
+		: deoglSkinTexture::estPropFieldGeometry );
 	addToRenderTask.AddPropFields( collideList, false );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoPropFieldImposterGeometry
+		: deoglSkinTexture::estPropFieldImposterGeometry );
 	addToRenderTask.AddPropFields( collideList, true );
 	
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleGeometry );
-		addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry );
-		addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoParticleGeometry
+			: deoglSkinTexture::estParticleGeometry );
+		addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoParticleRibbonGeometry
+			: deoglSkinTexture::estParticleRibbonGeometry );
+		addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoParticleBeamGeometry
+			: deoglSkinTexture::estParticleBeamGeometry );
 		addToRenderTask.AddParticles( collideList );
 	}
 	
@@ -673,7 +687,9 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoRendered( true );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoOutlineGeometry
+		: deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
 	renderTask.PrepareForRender();
@@ -916,14 +932,26 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		renderTaskParticles.SetRenderParamBlock( renworld.GetRenderPB() );
 		
 		if( inbetween ){
-			addToRenderTaskParticles.SetSkinShaderType( deoglSkinTexture::estParticleGeometryDepthTest );
-			addToRenderTaskParticles.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometryDepthTest );
-			addToRenderTaskParticles.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometryDepthTest );
+			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleGeometryDepthTest
+				: deoglSkinTexture::estParticleGeometryDepthTest );
+			addToRenderTaskParticles.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleRibbonGeometryDepthTest
+				: deoglSkinTexture::estParticleRibbonGeometryDepthTest );
+			addToRenderTaskParticles.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleBeamGeometryDepthTest
+				: deoglSkinTexture::estParticleBeamGeometryDepthTest );
 			
 		}else{
-			addToRenderTaskParticles.SetSkinShaderType( deoglSkinTexture::estParticleGeometry );
-			addToRenderTaskParticles.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry );
-			addToRenderTaskParticles.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry );
+			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleGeometry
+				: deoglSkinTexture::estParticleGeometry );
+			addToRenderTaskParticles.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleRibbonGeometry
+				: deoglSkinTexture::estParticleRibbonGeometry );
+			addToRenderTaskParticles.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleBeamGeometry
+				: deoglSkinTexture::estParticleBeamGeometry );
 		}
 		
 		particleSorter.AddToRenderTask( addToRenderTaskParticles );

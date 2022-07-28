@@ -247,20 +247,28 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// components
 	if( mask && mask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentCounterClipPlane );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoComponentCounterClipPlane
+			: deoglSkinTexture::estComponentCounterClipPlane );
 		
 	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentCounter );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoComponentCounter
+			: deoglSkinTexture::estComponentCounter );
 	}
 	
 	addToRenderTask.AddComponents( collideList );
 	
 	// billboards
 	if( mask && mask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardCounterClipPlane );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoBillboardCounterClipPlane
+			: deoglSkinTexture::estBillboardCounterClipPlane );
 		
 	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardCounter );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoBillboardCounter
+			: deoglSkinTexture::estBillboardCounter );
 	}
 	
 	addToRenderTask.AddBillboards( collideList );
@@ -270,15 +278,23 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		if( mask && mask->GetUseClipPlane() ){
 			addToRenderTask.SetSkinShaderType(
 				deoglSkinTexture::estParticleCounterClipPlane );
-			addToRenderTask.SetSkinShaderTypeRibbon(
-				deoglSkinTexture::estParticleRibbonCounterClipPlane );
-			addToRenderTask.SetSkinShaderTypeBeam(
-				deoglSkinTexture::estParticleBeamCounterClipPlane );
+			addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleRibbonCounterClipPlane
+				: deoglSkinTexture::estParticleRibbonCounterClipPlane );
+			addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleBeamCounterClipPlane
+				: deoglSkinTexture::estParticleBeamCounterClipPlane );
 			
 		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleCounter );
-			addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonCounter );
-			addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamCounter );
+			addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleCounter
+				: deoglSkinTexture::estParticleCounter );
+			addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleRibbonCounter
+				: deoglSkinTexture::estParticleRibbonCounter );
+			addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleBeamCounter
+				: deoglSkinTexture::estParticleBeamCounter );
 		}
 		addToRenderTask.AddParticles( collideList );
 	}
@@ -307,10 +323,14 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 	
 	if( mask && mask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineCounterClipPlane );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoOutlineCounterClipPlane
+			: deoglSkinTexture::estOutlineCounterClipPlane );
 		
 	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineCounter );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoOutlineCounter
+			: deoglSkinTexture::estOutlineCounter );
 	}
 	
 	addToRenderTask.AddComponents( collideList );
