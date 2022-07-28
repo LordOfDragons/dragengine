@@ -12,7 +12,7 @@ in vec3 inPosition;
 #endif
 
 void main( void ){
-	gl_Position = vec4( inPosition, 1.0 );
+	gl_Position = vec4( inPosition, 1 );
 	
 	#ifdef GS_RENDER_STEREO
 		vGSScreenCoord = inPosition.xy;

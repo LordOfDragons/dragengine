@@ -348,6 +348,8 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled * const shader = program->GetCompiled();
 	
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );

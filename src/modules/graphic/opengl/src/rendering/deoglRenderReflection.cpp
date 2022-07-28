@@ -1688,7 +1688,7 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 		renderGI.PrepareUBORenderLight( *giState, envmap->GetPosition() );
 		renderGI.GetUBORenderLight().Activate();
 		
-		// NOTE always non-stereo!
+		// WARNING always non-stereo!
 		// WARNING do not move this outside of the loop or the GPU may freeze/crash!
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		

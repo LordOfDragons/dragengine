@@ -1078,7 +1078,10 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	RestoreFBOGITraceRays( *giStateUpdate );
 	
 	renderThread.GetShader().ActivateShader( pShaderLightGIRay );
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
+	// WARNING always non-stereo!
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	GetUBORenderLight().Activate();
 	
 	tsmgr.EnableArrayTexture( 6, giStateRender->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
