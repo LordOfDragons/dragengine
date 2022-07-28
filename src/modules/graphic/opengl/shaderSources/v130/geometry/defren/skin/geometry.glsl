@@ -18,6 +18,9 @@
 	layout( triangle_strip, max_vertices=3 ) out;
 #endif
 
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
+
 
 
 // Inputs
@@ -50,17 +53,11 @@ in vec3 vGSNormal[ 3 ];
 #ifdef WITH_BITANGENT
 	in vec3 vGSBitangent[ 3 ];
 #endif
-#ifdef WITH_REFLECT_DIR
-	in vec3 vGSReflectDir[ 3 ];
-#endif
 #ifdef HEIGHT_MAP
 	in float vGSHTMask[ 3 ];
 #endif
-#ifdef FADEOUT_RANGE
-	in float vGSFadeZ[ 3 ];
-#endif
 
-in float vGSRenderCondition[ 3 ];
+// in float vGSRenderCondition[ 3 ];
 
 #ifdef SHARED_SPB
 	flat in int vGSSPBIndex[ 3 ];
@@ -79,24 +76,24 @@ in float vGSRenderCondition[ 3 ];
 // Outputs
 ////////////
 
-in vec2 vTCColor;
+out vec2 vTCColor;
 #ifdef TEXTURE_COLOR_TINT_MASK
-	in vec2 vTCColorTintMask;
+	out vec2 vTCColorTintMask;
 #endif
 #ifdef TEXTURE_NORMAL
-	in vec2 vTCNormal;
+	out vec2 vTCNormal;
 #endif
 #ifdef WITH_REFLECTIVITY
-	in vec2 vTCReflectivity;
+	out vec2 vTCReflectivity;
 #endif
 #ifdef WITH_EMISSIVITY
-	in vec2 vTCEmissivity;
+	out vec2 vTCEmissivity;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
-	in vec2 vTCRefractionDistort;
+	out vec2 vTCRefractionDistort;
 #endif
 #ifdef TEXTURE_AO
-	in vec2 vTCAO;
+	out vec2 vTCAO;
 #endif
 
 out vec3 vNormal;
@@ -132,7 +129,7 @@ out vec3 vNormal;
 #ifdef GS_RENDER_STEREO
 
 void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
-	gl_Position = pMatrixV[ layer ] * preTransformedPosition;
+	gl_Position = preTransformedPosition;
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
@@ -165,8 +162,9 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	#ifdef WITH_BITANGENT
 		vBitangent = normalize( vGSBitangent[ corner ] * pMatrixVn[ layer ] );
 	#endif
+	
 	#ifdef WITH_REFLECT_DIR
-		vReflectDir = normalize( vGSReflectDir[ corner ] * pMatrixVn[ layer ] );
+		vReflectDir = pMatrixV[ layer ] * position;
 	#endif
 	#ifdef HEIGHT_MAP
 		vHTMask = vGSHTMask[ corner ];
@@ -175,7 +173,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = pMatrixV[ layer ] * position.z;
+			vFadeZ = ( pMatrixV[ layer ] * position ).z;
 		#endif
 	#endif
 	
@@ -195,7 +193,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 	vec4 preTransformedPosition;
 	
 	#ifdef BILLBOARD
-		preTransformedPosition = pMatrixP * position;
+		preTransformedPosition = pMatrixP[ layer ] * position;
 	#else
 		preTransformedPosition = pMatrixVP[ layer ] * position;
 	#endif
@@ -213,9 +211,9 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 #ifdef GS_RENDER_STEREO
 
 void main( void ){
-	if( vGSRenderCondition[ 0 ] >= 5.0 ){
-		return;
-	}
+// 	if( vGSRenderCondition[ 0 ] >= 5.0 ){
+// 		return;
+// 	}
 	
 	int eye;
 	
@@ -239,9 +237,9 @@ void main( void ){
 #else
 
 void main( void ){
-	if( vGSRenderCondition[ 0 ] >= 5.0 ){
-		return;
-	}
+// 	if( vGSRenderCondition[ 0 ] >= 5.0 ){
+// 		return;
+// 	}
 	
 	int i;
 	for( i=0; i<3; i++ ){

@@ -366,16 +366,24 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eSh
 	switch( shaderType ){
 	case deoglSkinTexture::estBillboardGeometry:
 	case deoglSkinTexture::estDecalGeometry:
+	case deoglSkinTexture::estStereoBillboardGeometry:
+	case deoglSkinTexture::estStereoDecalGeometry:
 		return GetTUCGeometry();
 		
 	case deoglSkinTexture::estBillboardDepth:
 	case deoglSkinTexture::estBillboardDepthClipPlane:
 	case deoglSkinTexture::estBillboardDepthReversed:
 	case deoglSkinTexture::estBillboardDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoBillboardDepth:
+	case deoglSkinTexture::estStereoBillboardDepthClipPlane:
+	case deoglSkinTexture::estStereoBillboardDepthReversed:
+	case deoglSkinTexture::estStereoBillboardDepthClipPlaneReversed:
 		return GetTUCDepth();
 		
 	case deoglSkinTexture::estBillboardCounter:
 	case deoglSkinTexture::estBillboardCounterClipPlane:
+	case deoglSkinTexture::estStereoBillboardCounter:
+	case deoglSkinTexture::estStereoBillboardCounterClipPlane:
 		return GetTUCCounter();
 		
 	case deoglSkinTexture::estBillboardEnvMap:

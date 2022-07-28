@@ -562,16 +562,24 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 	switch( shaderType ){
 	case deoglSkinTexture::estComponentGeometry:
 	case deoglSkinTexture::estDecalGeometry:
+	case deoglSkinTexture::estStereoComponentGeometry:
+	case deoglSkinTexture::estStereoDecalGeometry:
 		return GetTUCGeometry();
 		
 	case deoglSkinTexture::estComponentDepth:
 	case deoglSkinTexture::estComponentDepthClipPlane:
 	case deoglSkinTexture::estComponentDepthReversed:
 	case deoglSkinTexture::estComponentDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoComponentDepth:
+	case deoglSkinTexture::estStereoComponentDepthClipPlane:
+	case deoglSkinTexture::estStereoComponentDepthReversed:
+	case deoglSkinTexture::estStereoComponentDepthClipPlaneReversed:
 		return GetTUCDepth();
 		
 	case deoglSkinTexture::estComponentCounter:
 	case deoglSkinTexture::estComponentCounterClipPlane:
+	case deoglSkinTexture::estStereoComponentCounter:
+	case deoglSkinTexture::estStereoComponentCounterClipPlane:
 		return GetTUCCounter();
 		
 	case deoglSkinTexture::estComponentShadowProjection:
@@ -587,16 +595,23 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 		return GetTUCEnvMap();
 		
 	case deoglSkinTexture::estOutlineGeometry:
+	case deoglSkinTexture::estStereoOutlineGeometry:
 		return GetTUCOutlineGeometry();
 		
 	case deoglSkinTexture::estOutlineDepth:
 	case deoglSkinTexture::estOutlineDepthClipPlane:
 	case deoglSkinTexture::estOutlineDepthReversed:
 	case deoglSkinTexture::estOutlineDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoOutlineDepth:
+	case deoglSkinTexture::estStereoOutlineDepthClipPlane:
+	case deoglSkinTexture::estStereoOutlineDepthReversed:
+	case deoglSkinTexture::estStereoOutlineDepthClipPlaneReversed:
 		return GetTUCOutlineDepth();
 		
 	case deoglSkinTexture::estOutlineCounter:
 	case deoglSkinTexture::estOutlineCounterClipPlane:
+	case deoglSkinTexture::estStereoOutlineCounter:
+	case deoglSkinTexture::estStereoOutlineCounterClipPlane:
 		return GetTUCOutlineCounter();
 		
 	case deoglSkinTexture::estComponentLuminance:

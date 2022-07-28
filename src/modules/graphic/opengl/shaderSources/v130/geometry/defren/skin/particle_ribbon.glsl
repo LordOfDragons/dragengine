@@ -1,7 +1,19 @@
+#ifdef GS_INSTANCING
+	#extension GL_ARB_gpu_shader5 : require
+#endif
+
 #include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // layout specifications
-layout( lines_adjacency ) in;
+#ifdef GS_RENDER_STEREO
+	#ifdef GS_INSTANCING
+		layout( lines_adjacency, invocations=2 ) in;
+	#else
+		layout( lines_adjacency ) in;
+	#endif
+#else
+	layout( lines_adjacency ) in;
+#endif
 
 #define USE_SHEETS 1
 
@@ -15,10 +27,26 @@ layout( lines_adjacency ) in;
 	// sice 4 vertices are required for a full sheet the maximum number of sheets is:
 	//   floor(35 / 4) = 8
 	// and thus maximum number of vertixes 32 (8*4)
-	layout( triangle_strip, max_vertices=32 ) out;
+	#ifdef GS_RENDER_STEREO
+		#ifdef GS_INSTANCING
+			layout( triangle_strip, max_vertices=32 ) out;
+		#else
+			layout( triangle_strip, max_vertices=64 ) out;
+		#endif
+	#else
+		layout( triangle_strip, max_vertices=32 ) out;
+	#endif
 	
 #else
-	layout( triangle_strip, max_vertices=4 ) out;
+	#ifdef GS_RENDER_STEREO
+		#ifdef GS_INSTANCING
+			layout( triangle_strip, max_vertices=4 ) out;
+		#else
+			layout( triangle_strip, max_vertices=8 ) out;
+		#endif
+	#else
+		layout( triangle_strip, max_vertices=4 ) out;
+	#endif
 #endif
 
 
@@ -116,8 +144,10 @@ out vec4 vParticleColor; // from curve property
 	flat out int vSPBIndex;
 #endif
 
-#ifdef NODE_GEOMETRY_OUTPUTS
-NODE_GEOMETRY_OUTPUTS
+#ifdef GS_RENDER_STEREO
+	flat out int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 
@@ -125,16 +155,16 @@ NODE_GEOMETRY_OUTPUTS
 // Constants
 //////////////
 
-const vec3 particleNormal = vec3( 0.0, 0.0, -1.0 );
-const vec3 particleTangent = vec3( 1.0, 0.0, 0.0 );
-const vec3 particleBitangent = vec3( 0.0, -1.0, 0.0 );
+const vec3 particleNormal = vec3( 0, 0, -1 );
+const vec3 particleTangent = vec3( 1, 0, 0 );
+const vec3 particleBitangent = vec3( 0, -1, 0 );
 
-const vec2 tc1 = vec2( 0.0, 0.0 );
-const vec2 tc2 = vec2( 1.0, 0.0 );
-const vec2 tc3 = vec2( 0.0, 1.0 );
-const vec2 tc4 = vec2( 1.0, 1.0 );
+const vec2 tc1 = vec2( 0, 0 );
+const vec2 tc2 = vec2( 1, 0 );
+const vec2 tc3 = vec2( 0, 1 );
+const vec2 tc4 = vec2( 1, 1 );
 
-const vec3 lup = vec3( 0.0, 1.0, 0.0 );
+const vec3 lup = vec3( 0, 1, 0 );
 const float epsilon = 0.00001;
 const float pi = 3.14159265;
 
@@ -143,11 +173,14 @@ const float pi = 3.14159265;
 // Main Function
 //////////////////
 
-void emitCorner( in int corner, in vec3 offset, in vec2 tc ){
-	vec4 position = gl_in[ corner ].gl_Position;
+void emitCorner( in int corner, in vec4 position, in vec3 offset, in vec2 tc, in int layer ){
 	position.xyz -= offset;
 	
-	gl_Position = pMatrixP * position;
+	#ifdef GS_RENDER_STEREO
+		gl_Position = pMatrixP[ layer ] * position;
+	#else
+		gl_Position = pMatrixP * position;
+	#endif
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
@@ -186,11 +219,11 @@ void emitCorner( in int corner, in vec3 offset, in vec2 tc ){
 	#ifdef CLIP_PLANE
 		vClipCoord = position.xyz;
 	#endif
-	#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+	#ifndef GS_RENDER_STEREO
 		#ifdef DEPTH_ORTHOGONAL
 			#ifdef NO_ZCLIP
 				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-				gl_Position.z = 0.0;
+				gl_Position.z = 0;
 			#else
 				vZCoord = gl_Position.z;
 			#endif
@@ -208,18 +241,19 @@ void emitCorner( in int corner, in vec3 offset, in vec2 tc ){
 		vBitangent = particleBitangent;
 	#endif
 	
-	gl_Layer = 0;
+	#ifdef GS_RENDER_STEREO
+		vLayer = layer;
+	#endif
+	
+	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
 	EmitVertex();
 }
 
-
-
-void main( void ){
+void emitRibbon( in int layer ){
 	// calculate the ribbon properties
 	vec3 ribbonAxis1, ribbonAxis2;
-	vec4 position;
 	
 	#ifdef USE_SHEETS
 		mat3 matRot1, matRot2;
@@ -232,27 +266,39 @@ void main( void ){
 		vec3 c1 = vec3( 1.0 - sSc.z );
 	#endif
 	
+	// calculate positions
+	vec4 p[ 4 ];
+	int i;
+	
+	for( i=0; i<4; i++ ){
+		#ifdef GS_RENDER_STEREO
+			p[ i ] = vec4( pMatrixV[ layer ] * gl_in[ i ].gl_Position, 1 );
+		#else
+			p[ i ] = vec4( pMatrixV * gl_in[ i ].gl_Position, 1 );
+		#endif
+	}
+	
 	
 	
 	// calculate first ribbon axis and rotation matrix
-	vec3 up = normalize( vec3( -gl_in[ 1 ].gl_Position ) );
+	vec3 up = normalize( vec3( -p[ 1 ] ) );
 	
-	ribbonAxis1 = cross( up, vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) );
+	ribbonAxis1 = cross( up, vec3( p[ 2 ] ) - vec3( p[ 0 ] ) );
 	float len = length( ribbonAxis1 );
 	if( len < epsilon ){
-		ribbonAxis1 = vec3( 1.0, 0.0, 0.0 );
+		ribbonAxis1 = vec3( 1, 0, 0 );
 		
 	}else{
 		ribbonAxis1 /= len;
 	}
-	if( ribbonAxis1.y < 0.0 ){
+	if( ribbonAxis1.y < 0 ){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
 	#ifdef USE_SHEETS
-		//vec4 view2 = vec4( cross( ribbonAxis1, up ), 1.0 );
-		//vec4 view2 = vec4( normalize( cross( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ), up ) ), 1.0 );
-		vec4 view2 = vec4( normalize( vec3( gl_in[ 2 ].gl_Position ) - vec3( gl_in[ 0 ].gl_Position ) ), 1.0 );
+		//vec4 view2 = vec4( cross( ribbonAxis1, up ), 1 );
+		//vec4 view2 = vec4( normalize( cross( vec3( p[ 2 ] ) - vec3( p[ 0 ] ), up ) ), 1 );
+		vec4 view2 = vec4( normalize( vec3( p[ 2 ] ) - vec3( p[ 0 ] ) ), 1 );
 		vec3 v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
 		vec3 v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
 		vec3 v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
@@ -264,28 +310,28 @@ void main( void ){
 	
 	
 	// calculate second ribbon axis and rotation matrix
-	up = normalize( vec3( -gl_in[ 2 ].gl_Position ) );
+	up = normalize( vec3( -p[ 2 ] ) );
 	
-	ribbonAxis2 = cross( up, vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) );
+	ribbonAxis2 = cross( up, vec3( p[ 3 ] ) - vec3( p[ 1 ] ) );
 	len = length( ribbonAxis2 );
 	if( len < epsilon ){
-		ribbonAxis2 = vec3( 1.0, 0.0, 0.0 );
+		ribbonAxis2 = vec3( 1, 0, 0 );
 		
 	}else{
 		ribbonAxis2 /= len;
 	}
-	if( ribbonAxis1.y < 0.0 ){
+	if( ribbonAxis1.y < 0 ){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
-	if( dot( vec2( ribbonAxis1 ), vec2( ribbonAxis2 ) ) < 0.0 ){
+	if( dot( vec2( ribbonAxis1 ), vec2( ribbonAxis2 ) ) < 0 ){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
 	#ifdef USE_SHEETS
-		//view2 = vec4( cross( ribbonAxis2, up ), 1.0 );
-		//view2 = vec4( normalize( cross( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ), up ) ), 1.0 );
-		view2 = vec4( normalize( vec3( gl_in[ 3 ].gl_Position ) - vec3( gl_in[ 1 ].gl_Position ) ), 1.0 );
+		//view2 = vec4( cross( ribbonAxis2, up ), 1 );
+		//view2 = vec4( normalize( cross( vec3( p[ 3 ] ) - vec3( p[ 1 ] ), up ) ), 1 );
+		view2 = vec4( normalize( vec3( p[ 3 ] ) - vec3( p[ 1 ] ) ), 1 );
 		v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
 		v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
 		v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
@@ -298,18 +344,42 @@ void main( void ){
 	
 	// generate billboard(s)
 	#ifdef USE_SHEETS
-	for( s=0; s<sheetCount; s++ ){
+	for( i=0; i<sheetCount; i++ ){
 	#endif
-		emitCorner( 1, -ribbonAxis1, tc1 );
-		emitCorner( 2, -ribbonAxis2, tc2 );
-		emitCorner( 1, ribbonAxis1, tc3 );
-		emitCorner( 2, ribbonAxis2, tc4 );
+		emitCorner( 1, p[ 1 ], -ribbonAxis1, tc1, layer );
+		emitCorner( 2, p[ 2 ], -ribbonAxis2, tc2, layer );
+		emitCorner( 1, p[ 1 ], ribbonAxis1, tc3, layer );
+		emitCorner( 2, p[ 2 ], ribbonAxis2, tc4, layer );
 		
 		EndPrimitive();
 		
 	#ifdef USE_SHEETS
 		ribbonAxis1 = matRot1 * ribbonAxis1;
 		ribbonAxis2 = matRot2 * ribbonAxis2;
+	}
+	#endif
+}
+
+
+
+void main( void ){
+	// emit ribbons
+	int layer;
+	
+	#ifdef GS_INSTANCING
+	layer = gl_InvocationID;
+	#else
+	#ifdef GS_RENDER_STEREO
+		#define LAYER_COUNT 2
+	#else
+		#define LAYER_COUNT 1
+	#endif
+	for( layer=0; layer<LAYER_COUNT; layer++ ){
+	#endif
+		
+		emitRibbon( layer );
+		
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }

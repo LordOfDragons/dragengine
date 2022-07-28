@@ -41,10 +41,6 @@ in float inParticle4; // beamLocation
 #endif
 */
 
-#ifdef NODE_VERTEX_INPUTS
-NODE_VERTEX_INPUTS
-#endif
-
 
 
 // Outputs
@@ -54,9 +50,6 @@ out vec3 vParticle0; // size, emissivity, rotation
 out vec4 vParticle1; // red, green, blue, transparency
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
-#endif
-#ifdef NODE_VERTEX_OUTPUTS
-NODE_VERTEX_OUTPUTS
 #endif
 
 
@@ -103,16 +96,9 @@ void main( void ){
 	vParticle1.w *= pattrs3.x; // transparency
 	#endif
 	
-	vec4 position = vec4( inParticle0.yzw, 1.0 );
-	
-	position.xyz = pMatrixModel * position;
-	gl_Position = vec4( pMatrixV * position, 1.0 );
+	gl_Position = vec4( pMatrixModel * vec4( inParticle0.yzw, 1 ), 1 );
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
-	#endif
-	
-	#ifdef NODE_VERTEX_MAIN
-	NODE_VERTEX_MAIN
 	#endif
 }

@@ -672,6 +672,10 @@ void deoglRenderThread::Synchronize(){
 		pBarrierSyncOut.Wait();
 		DEBUG_SYNC_MT_PASS("out");
 		
+		if( pThreadFailure ){
+			DETHROW_INFO( deeInvalidAction, "Render thread failed. See logs" );
+		}
+		
 		pTimerMain.Reset();
 		
 		if( hasVR ){

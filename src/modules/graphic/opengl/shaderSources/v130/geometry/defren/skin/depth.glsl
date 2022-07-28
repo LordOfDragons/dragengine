@@ -50,12 +50,6 @@
 #ifdef REQUIRES_TEX_COLOR
 	in vec2 vGSTCColor[ 3 ];
 #endif
-#ifdef CLIP_PLANE
-	in vec3 vGSClipCoord[ 3 ];
-#endif
-#ifdef DEPTH_DISTANCE
-	in vec3 vGSPosition[ 3 ];
-#endif
 #ifdef HEIGHT_MAP
 	in float vGSHTMask[ 3 ];
 #endif
@@ -110,6 +104,9 @@
 		out vec3 vBitangent;
 	#endif
 #endif
+#ifdef WITH_REFLECT_DIR
+	out vec3 vReflectDir;
+#endif
 #ifdef FADEOUT_RANGE
 	out float vFadeZ;
 #endif
@@ -138,35 +135,6 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		vTCColor = vGSTCColor[ corner ];
 	#endif
 	
-	#ifdef CLIP_PLANE
-		#ifdef BILLBOARD
-			vClipCoord = vGSClipCoord[ corner ];
-		#else
-			vClipCoord = pMatrixV[ layer ] * vec4( vGSClipCoord[ corner ], 1.0 );
-		#endif
-	#endif
-	
-	#ifdef DEPTH_ORTHOGONAL
-		#ifdef NO_ZCLIP
-			vZCoord = preTransformedPosition.z * 0.5 + 0.5; // we have to do the normalization ourself
-			gl_Position.z = 0.0;
-		#else
-			vZCoord = preTransformedPosition.z;
-		#endif
-	#endif
-	
-	#ifdef DEPTH_DISTANCE
-		#ifdef BILLBOARD
-			vPosition = position;
-		#else
-			vPosition = pMatrixV[ layer ] * position;
-		#endif
-	#endif
-	
-	#ifdef HEIGHT_MAP
-		vHTMask = vGSHTMask[ corner ];
-	#endif
-	
 	#ifdef REQUIRES_NORMAL
 		vNormal = normalize( vGSNormal[ corner ] * pMatrixVn[ layer ] );
 		#ifdef WITH_TANGENT
@@ -177,12 +145,49 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#endif
 	#endif
 	
+	#ifdef WITH_REFLECT_DIR
+		#ifdef BILLBOARD
+			vReflectDir = position.xyz;
+		#else
+			vReflectDir = pMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
+	#ifdef DEPTH_ORTHOGONAL
+		#ifdef NO_ZCLIP
+			vZCoord = preTransformedPosition.z * 0.5 + 0.5; // we have to do the normalization ourself
+			gl_Position.z = 0;
+		#else
+			vZCoord = preTransformedPosition.z;
+		#endif
+	#endif
+	
+	#ifdef DEPTH_DISTANCE
+		#ifdef BILLBOARD
+			vPosition = position.xyz;
+		#else
+			vPosition = pMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
+	#ifdef CLIP_PLANE
+		#ifdef BILLBOARD
+			vClipCoord = position.xyz;
+		#else
+			vClipCoord = pMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
 	#ifdef FADEOUT_RANGE
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = pMatrixV[ layer ] * position.z;
+			vFadeZ = ( pMatrixV[ layer ] * position ).z;
 		#endif
+	#endif
+	
+	#ifdef HEIGHT_MAP
+		vHTMask = vGSHTMask[ corner ];
 	#endif
 	
 	vLayer = layer;
@@ -197,7 +202,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 	vec4 preTransformedPosition;
 	
 	#ifdef BILLBOARD
-		preTransformedPosition = pMatrixP * position;
+		preTransformedPosition = pMatrixP[ layer ] * position;
 	#else
 		preTransformedPosition = pMatrixVP[ layer ] * position;
 	#endif

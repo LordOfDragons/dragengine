@@ -1,9 +1,22 @@
+#ifdef GS_INSTANCING
+	#extension GL_ARB_gpu_shader5 : require
+#endif
+
 #include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // layout specifications
-layout( points ) in;
-layout( triangle_strip, max_vertices=4 ) out;
-
+#ifdef GS_RENDER_STEREO
+	#ifdef GS_INSTANCING
+		layout( points, invocations=2 ) in;
+		layout( triangle_strip, max_vertices=4 ) out;
+	#else
+		layout( points ) in;
+		layout( triangle_strip, max_vertices=8 ) out;
+	#endif
+#else
+	layout( points ) in;
+	layout( triangle_strip, max_vertices=4 ) out;
+#endif
 
 
 // Uniform Parameters
@@ -12,10 +25,6 @@ layout( triangle_strip, max_vertices=4 ) out;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-
-#ifdef NODE_GEOMETRY_UNIFORMS
-NODE_GEOMETRY_UNIFORMS
-#endif
 
 
 
@@ -94,8 +103,10 @@ out vec4 vParticleColor; // from curve property
 	flat out int vSPBIndex;
 #endif
 
-#ifdef NODE_GEOMETRY_OUTPUTS
-NODE_GEOMETRY_OUTPUTS
+#ifdef GS_RENDER_STEREO
+	flat out int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 
@@ -111,30 +122,26 @@ const vec2 tc[4] = vec2[4]( vec2(  0.0,  0.0 ), vec2(  0.0,  1.0 ), vec2(  1.0, 
 // Main Function
 //////////////////
 
-void main( void ){
-	// generate billboard
-	vec4 tempRotMat; // cos(z), -sin(z), sin(z), cos(z)
-	tempRotMat.xw = cos( vec2( vParticle0[ 0 ].z ) );
-	tempRotMat.yz = sin( vec2( vParticle0[ 0 ].z ) ) * vec2( -1.0, 1.0 );
-	tempRotMat *= vec4( vParticle0[ 0 ].x ); // tempRotMat * size
-	mat2 rotmat = mat2( tempRotMat.x, tempRotMat.y, tempRotMat.z, tempRotMat.w );
-	
-	vec4 position = gl_in[ 0 ].gl_Position; // z and w stays the same for all vertices
-	
-	// calculate normal, tangent and bitangent. the same for all vertices
-	vec3 normal = vec3( 0.0, 0.0, -1.0 );
-	#ifdef WITH_TANGENT
-		vec3 tangent = vec3( rotmat * vec2( 1.0, 0.0 ), 0.0 );
+void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent, in vec3 bitangent ){
+	// z and w stays the same for all vertices
+	#ifdef GS_RENDER_STEREO
+		vec3 transformed = pMatrixV[ layer ] * gl_in[ 0 ].gl_Position;
+	#else
+		vec3 transformed = pMatrixV * gl_in[ 0 ].gl_Position;
 	#endif
-	#ifdef WITH_BITANGENT
-		vec3 bitangent = vec3( rotmat * vec2( 0.0, -1.0 ), 0.0 );
-	#endif
+	
+	vec4 position = vec4( transformed, 1 );
 	
 	// emit vertices
 	int i;
 	for( i=0; i<4; i++ ){
-		position.xy = rotmat * bc[i] + gl_in[ 0 ].gl_Position.xy;
-		gl_Position = pMatrixP * position;
+		position.xy = rotmat * bc[i] + transformed.xy;
+		
+		#ifdef GS_RENDER_STEREO
+			gl_Position = pMatrixP[ layer ] * position;
+		#else
+			gl_Position = pMatrixP * position;
+		#endif
 		
 		vTCColor = tc[i];
 		#ifdef SHARED_SPB
@@ -195,11 +202,57 @@ void main( void ){
 			vBitangent = bitangent;
 		#endif
 		
-		gl_Layer = 0;
+		#ifdef GS_RENDER_STEREO
+			vLayer = layer;
+		#endif
+		
+		gl_Layer = layer;
 		gl_PrimitiveID = gl_PrimitiveIDIn;
 		
 		EmitVertex();
 	}
 	
 	EndPrimitive();
+}
+
+void main( void ){
+	vec4 tempRotMat; // cos(z), -sin(z), sin(z), cos(z)
+	tempRotMat.xw = cos( vec2( vParticle0[ 0 ].z ) );
+	tempRotMat.yz = sin( vec2( vParticle0[ 0 ].z ) ) * vec2( -1.0, 1.0 );
+	tempRotMat *= vec4( vParticle0[ 0 ].x ); // tempRotMat * size
+	mat2 rotmat = mat2( tempRotMat.x, tempRotMat.y, tempRotMat.z, tempRotMat.w );
+	
+	vec3 normal = vec3( 0, 0, -1 );
+	
+	#ifdef WITH_TANGENT
+		vec3 tangent = vec3( rotmat * vec2( 1, 0 ), 0 );
+	#else
+		vec3 tangent = vec3( 0 );
+	#endif
+	
+	#ifdef WITH_BITANGENT
+		vec3 bitangent = vec3( rotmat * vec2( 0, -1 ), 0 );
+	#else
+		vec3 bitangent = vec3( 0 );
+	#endif
+	
+	// emit particles
+	int layer;
+	
+	#ifdef GS_INSTANCING
+	layer = gl_InvocationID;
+	#else
+	#ifdef GS_RENDER_STEREO
+		#define LAYER_COUNT 2
+	#else
+		#define LAYER_COUNT 1
+	#endif
+	for( layer=0; layer<LAYER_COUNT; layer++ ){
+	#endif
+		
+		emitParticle( layer, rotmat, normal, tangent, bitangent );
+		
+	#ifndef GS_INSTANCING
+	}
+	#endif
 }

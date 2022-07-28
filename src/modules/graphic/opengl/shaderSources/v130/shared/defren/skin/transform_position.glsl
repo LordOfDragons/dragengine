@@ -9,6 +9,12 @@
 	#define NO_TRANSFORMATION 1
 #endif
 
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+	#define P_MATRIX_V pMatrixV[ 0 ]
+#else
+	#define P_MATRIX_V pMatrixV
+#endif
+
 
 
 // position transformation required by various vertex shaders to achieve the same result.
@@ -45,7 +51,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			#else
 				#define DISCARD_OP >
 			#endif
-			if( length( pMatrixV * vec4( pMatrixModel * vec4( instance1.xyz, 1.0 ), 1.0 ) ) DISCARD_OP 5.0 ){
+			if( length( P_MATRIX_V * vec4( pMatrixModel * vec4( instance1.xyz, 1.0 ), 1.0 ) ) DISCARD_OP 5.0 ){
 				position = vec3( 0.0, 0.0, 2.0 );
 				gl_Position = vec4( position, 1.0 );
 				return;
@@ -62,7 +68,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 		
 		#ifdef BILLBOARD
 			// precalculate some matrices used often
-			mat4x3 matMV = mat4x3( mat4( pMatrixV ) * mat4( pMatrixModel ) );
+			mat4x3 matMV = mat4x3( mat4( P_MATRIX_V ) * mat4( pMatrixModel ) );
 			mat4x3 matRSMV = mat4x3( mat4( matMV ) * mat4( pfiRotScale ) );
 			
 			// calculate new instance matrix
@@ -113,14 +119,14 @@ void transformPosition( out vec3 position, in int spbIndex )
 			
 		#else
 			vec2 coord = position.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw;
-			vec3 refPos = pMatrixV * vec4( pMatrixModel[ 3 ], 1.0 );
+			vec3 refPos = P_MATRIX_V * vec4( pMatrixModel[ 3 ], 1.0 );
 			
 			if( pBillboardParams.z ){ // sizeFixedToScreen
 				coord *= vec2( refPos.z * pBillboardZScale );
 			}
 			
 			if( pBillboardParams.x ){ // locked
-				vec3 up = normalize( mat3( pMatrixV ) * pMatrixModel[ 1 ] );
+				vec3 up = normalize( mat3( P_MATRIX_V ) * pMatrixModel[ 1 ] );
 				vec3 view = pBillboardParams.y ? normalize( refPos ) : vec3( 0.0, 0.0, 1.0 ); // spherical
 				vec3 right = normalize( cross( up, view ) );
 				
@@ -149,7 +155,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			float outlineThickness = pOutlineThickness;
 			#ifdef WITH_OUTLINE_THICKNESS_SCREEN
 				// we can use pBillboardZScale since this is tan(camera.fov / 2)
-				outlineThickness *= ( pMatrixV * vec4( position, 1.0 ) ).z * pBillboardZScale;
+				outlineThickness *= ( P_MATRIX_V * vec4( position, 1.0 ) ).z * pBillboardZScale;
 			#endif
 			position.xyz += normalize( inRealNormal * pMatrixNormal ) * vec3( outlineThickness );
 		#endif

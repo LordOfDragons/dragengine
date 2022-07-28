@@ -54,16 +54,12 @@ in vec3 vTESNormal[];
 	in vec3 vTESBitangent[];
 #endif
 
-#ifdef WITH_REFLECT_DIR
-	in vec3 vTESReflectDir[];
-#endif
-
 #ifdef HEIGHT_MAP
 	in float vTESHTMask[];
 #endif
 
 #ifdef PROP_FIELD
-	in float vTESRenderCondition[];
+// 	in float vTESRenderCondition[];
 #endif
 
 
@@ -72,6 +68,7 @@ in vec3 vTESNormal[];
 ////////////
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+	#define PASS_ON_NEXT_STAGE 1
 	out vec2 vGSTCColor;
 	#define vTCColor vGSTCColor
 	#ifdef TEXTURE_NORMAL
@@ -106,18 +103,13 @@ in vec3 vTESNormal[];
 		#define vBitangent vGSBitangent
 	#endif
 	
-	#ifdef WITH_REFLECT_DIR
-		out vec3 vGSReflectDir;
-		#define vReflectDir vGSReflectDir
-	#endif
-	
 	#ifdef HEIGHT_MAP
 		out float vGSHTMask;
 		#define vHTMask vGSHTMask
 	#endif
 	
 	#ifdef PROP_FIELD
-		out float vGSRenderCondition;
+// 		out float vGSRenderCondition;
 	#endif
 	
 #else
@@ -164,7 +156,6 @@ in vec3 vTESNormal[];
 #include "v130/shared/defren/sanitize_position.glsl"
 
 void main(){
-	//#ifdef TESSELLATION_LINEAR
 	// tessellate varying parameters
 	TESS_VAR_LINEAR_TRI( vTCColor, vTESTCColor );
 	#ifdef TEXTURE_NORMAL
@@ -191,16 +182,12 @@ void main(){
 		TESS_VAR_LINEAR_TRI( vBitangent, vTESBitangent );
 	#endif
 	
-	#ifdef WITH_REFLECT_DIR
-		TESS_VAR_LINEAR_TRI( vReflectDir, vTESReflectDir );
-	#endif
-	
 	#ifdef HEIGHT_MAP
 		TESS_VAR_LINEAR_TRI( vHTMask, vTESHTMask );
 	#endif
 	
 	#ifdef PROP_FIELD
-		TESS_VAR_LINEAR_TRI( vRenderCondition, vTESRenderCondition );
+// 		TESS_VAR_LINEAR_TRI( vRenderCondition, vTESRenderCondition );
 	#endif
 	
 	// tessellate position
@@ -211,24 +198,38 @@ void main(){
 		gl_Position.xyz += displacement;
 	#endif
 	
-	#ifdef BILLBOARD
-		gl_Position = pMatrixP * gl_Position;
-	#else
-		gl_Position = sanitizePosition( pMatrixVP * gl_Position );
-	#endif
-	
-	#ifdef WITH_REFLECT_DIR
-		#ifndef BILLBOARD
-			vReflectDir = pMatrixV * vec4( vReflectDir, 1.0 );
+	#ifndef PASS_ON_NEXT_STAGE
+		// normalize normals. this has to be done after position adjustment since otherwise the coordinate system is wrong
+		vNormal = normalize( vNormal * pMatrixVn );
+		#ifdef WITH_TANGENT
+			vTangent = normalize( vTangent * pMatrixVn );
 		#endif
-	#endif
-	
-	// normalize normals. this has to be done after position adjustment since otherwise the coordinate system is wrong
-	vNormal = normalize( vNormal * pMatrixVn );
-	#ifdef WITH_TANGENT
-		vTangent = normalize( vTangent * pMatrixVn );
-	#endif
-	#ifdef WITH_BITANGENT
-		vBitangent = normalize( vBitangent * pMatrixVn );
+		#ifdef WITH_BITANGENT
+			vBitangent = normalize( vBitangent * pMatrixVn );
+		#endif
+		
+		#ifndef BILLBOARD
+			#ifdef WITH_REFLECT_DIR
+				#ifdef BILLBOARD
+					vReflectDir = gl_Position.xyz;
+				#else
+					vReflectDir = pMatrixV * gl_Position;
+				#endif
+			#endif
+			
+			#ifdef FADEOUT_RANGE
+				#ifdef BILLBOARD
+					vFadeZ = gl_Position.z;
+				#else
+					vFadeZ = ( pMatrixV * gl_Position ).z;
+				#endif
+			#endif
+		#endif
+		
+		#ifdef BILLBOARD
+			gl_Position = pMatrixP * gl_Position;
+		#else
+			gl_Position = sanitizePosition( pMatrixVP * gl_Position );
+		#endif
 	#endif
 }
