@@ -51,9 +51,9 @@ void transformPosition( out vec3 position, in int spbIndex )
 			#else
 				#define DISCARD_OP >
 			#endif
-			if( length( P_MATRIX_V * vec4( pMatrixModel * vec4( instance1.xyz, 1.0 ), 1.0 ) ) DISCARD_OP 5.0 ){
-				position = vec3( 0.0, 0.0, 2.0 );
-				gl_Position = vec4( position, 1.0 );
+			if( length( P_MATRIX_V * vec4( pMatrixModel * vec4( instance1.xyz, 1 ), 1 ) ) DISCARD_OP 5 ){
+				position = vec3( 0, 0, 2 );
+				gl_Position = vec4( position, 1 );
 				return;
 			}
 		#endif
@@ -86,17 +86,17 @@ void transformPosition( out vec3 position, in int spbIndex )
 			vec2 bbAxis = normalize( matBBAxis[ 0 ].xz );
 			float bbRot = dot( bendState1.xy, bbAxis );
 			mat2 matBend = mat2( cos( bbRot ), -sin( bbRot ), sin( bbRot ), cos( bbRot ) );
-			position = bbMat * vec3( inPosition.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw, 0.0 );
+			position = bbMat * vec3( inPosition.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw, 0 );
 			
 			transformTransfer.matRSMV = matRSMV;
 			transformTransfer.bbMat = bbMat;
 			
 		#else
 			// create bend matrix
-			vec2 bend = bendState1.xy * vec2( min( pPropFieldParams * length( inPosition ), 1.0 ) );
+			vec2 bend = bendState1.xy * vec2( min( pPropFieldParams * length( inPosition ), 1 ) );
 			vec4 bs = sin( vec4( bend, -bend ) );
 			vec2 bc = cos( bend );
-			mat3 matBend = mat3( bc.y, bs.y, 0.0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );
+			mat3 matBend = mat3( bc.y, bs.y, 0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );
 			
 			// calculate vertex position
 			position = matBend * ( pfiRotScale * inPosition ) + pfiPos;

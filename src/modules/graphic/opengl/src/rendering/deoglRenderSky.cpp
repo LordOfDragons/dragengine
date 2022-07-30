@@ -45,6 +45,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -200,12 +201,18 @@ enum eSPBody{
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) :
+deoglRenderBase( renderThread ),
+pRenderSkyIntoEnvMapPB( nullptr )
+{
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	
 	try{
+		pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
+		
+		
 		renderThread.GetShader().AddCommonDefines( commonDefines );
 		
 		defines = commonDefines;
@@ -333,13 +340,13 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 			
 			switch( layer.GetLayerType() ){
 			case deoglRSkyLayer::eltSkyBox:
-				if( RenderSkyBox( plan, instance, j, first ) ){
+				if( RenderSkyBox( plan, instance, j, first, false ) ){
 					first = false;
 				}
 				break;
 				
 			case deoglRSkyLayer::eltSkySphere:
-				if( RenderSkySphere( plan, instance, j, first ) ){
+				if( RenderSkySphere( plan, instance, j, first, false ) ){
 					first = false;
 				}
 				break;
@@ -349,7 +356,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 			}
 			
 			if( layer.GetBodyCount() > 0 ){
-				RenderSkyLayerBodies( plan, instance, j );
+				RenderSkyLayerBodies( plan, instance, j, false );
 			}
 		}
 		DEBUG_PRINT_TIMER( "RenderSky: render sky layer" );
@@ -534,12 +541,12 @@ DEBUG_PRINT_TIMER( "RenderSky: unbind vao" );
 #endif
 
 bool deoglRenderSky::RenderSkyBox( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-int layerIndex, bool first ){
+int layerIndex, bool first, bool renderIntoEnvMap ){
 	return false;
 }
 
 bool deoglRenderSky::RenderSkySphere( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-int layerIndex, bool first ){
+int layerIndex, bool first, bool renderIntoEnvMap ){
 	if( ! instance.GetRSky() ){
 		return false;
 	}
@@ -580,7 +587,12 @@ int layerIndex, bool first ){
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	if( renderIntoEnvMap ){
+		pRenderSkyIntoEnvMapPB->Activate();
+		
+	}else{
+		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	}
 	
 	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader->SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
@@ -605,7 +617,7 @@ int layerIndex, bool first ){
 }
 
 void deoglRenderSky::RenderSkyLayerBodies( deoglRenderPlan &plan,
-deoglRSkyInstance &instance, int layerIndex ){
+deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	if( ! instance.GetRSky() ){
 		return;
 	}
@@ -640,7 +652,12 @@ deoglRSkyInstance &instance, int layerIndex ){
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	if( renderIntoEnvMap ){
+		pRenderSkyIntoEnvMapPB->Activate();
+		
+	}else{
+		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	}
 	
 	// render bodies
 	deoglTexture * const defTexColor = renderThread.GetDefaultTextures().GetColor();
@@ -805,6 +822,8 @@ deoglEnvironmentMap &envmap ){
 			
 			plan.SetCameraMatrix( matrixCamera );
 			
+			PreparepRenderSkyIntoEnvMapParamBlock( plan );
+			
 			for( s=0; s<skyCount; s++ ){
 				deoglRSkyInstance &instance = *( ( deoglRSkyInstance* )pSkyInstances.GetAt( s ) );
 				deoglRSky &sky = *instance.GetRSky();
@@ -818,11 +837,11 @@ deoglEnvironmentMap &envmap ){
 					
 					switch( layer.GetLayerType() ){
 					case deoglRSkyLayer::eltSkyBox:
-						RenderSkyBox( plan, instance, l, false );
+						RenderSkyBox( plan, instance, l, false, true );
 						break;
 						
 					case deoglRSkyLayer::eltSkySphere:
-						RenderSkySphere( plan, instance, l, false );
+						RenderSkySphere( plan, instance, l, false, true );
 						break;
 						
 					default:
@@ -830,7 +849,7 @@ deoglEnvironmentMap &envmap ){
 					}
 					
 					if( layer.GetBodyCount() > 0 ){
-						RenderSkyLayerBodies( plan, instance, l );
+						RenderSkyLayerBodies( plan, instance, l, true );
 					}
 				}
 			}
@@ -926,10 +945,34 @@ decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool 
 		skyColor.a );
 }
 
+void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan ){
+	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
+	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
+	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
+	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	
+	pRenderSkyIntoEnvMapPB->MapBuffer();
+	try{
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
+		
+	}catch( const deException & ){
+		pRenderSkyIntoEnvMapPB->UnmapBuffer();
+		throw;
+	}
+	pRenderSkyIntoEnvMapPB->UnmapBuffer();
+}
+
 
 
 // Private Functions
 //////////////////////
 
 void deoglRenderSky::pCleanUp(){
+	if( pRenderSkyIntoEnvMapPB ){
+		pRenderSkyIntoEnvMapPB->FreeReference();
+	}
 }

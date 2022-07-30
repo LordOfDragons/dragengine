@@ -32,14 +32,17 @@ class deoglRenderPlan;
 class deoglEnvironmentMap;
 class deoglRWorld;
 class decLayerMask;
+class deoglSPBlockUBO;
 
 
 
 /**
- * \brief OpenGL sky renderer.
+ * OpenGL sky renderer.
  */
 class deoglRenderSky : public deoglRenderBase{
 private:
+	deoglSPBlockUBO *pRenderSkyIntoEnvMapPB;
+	
 	deoglShaderProgramUsage pShaderSkySphere;
 	deoglShaderProgramUsage pShaderSkySphereStereo;
 	
@@ -56,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderSky( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	~deoglRenderSky();
 	/*@}*/
 	
@@ -68,7 +71,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Render sky.
+	 * Render sky.
 	 * 
 	 * Uses FBO Depth+Color. Clears color buffer. Depth used for rendering only background.
 	 * - RenderSkyBox
@@ -77,30 +80,33 @@ public:
 	 */
 	void RenderSky( deoglRenderPlan &plan );
 	
-	/** \brief Render sky. */
+	/** Render sky. */
 	//void RenderSkyOld( deoglRenderPlan &plan );
 	
-	/** \brief Render sky box layer. */
+	/** Render sky box layer. */
 	bool RenderSkyBox( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool first );
+		int layerIndex, bool first, bool renderIntoEnvMap );
 	
-	/** \brief Render sky sphere layer. */
+	/** Render sky sphere layer. */
 	bool RenderSkySphere( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool first );
+		int layerIndex, bool first, bool renderIntoEnvMap );
 	
-	/** \brief Render sky bodies layer. */
+	/** Render sky bodies layer. */
 	void RenderSkyLayerBodies( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex );
+		int layerIndex, bool renderIntoEnvMap );
 	
-	/** \brief Render sky into an environment map. */
+	/** Render sky into an environment map. */
 	void RenderSkyIntoEnvMap( deoglRWorld &world, const decLayerMask &layerMask,
 		deoglEnvironmentMap &envmap );
 	
-	/** \brief Render empty sky into an environment map. */
+	/** Render empty sky into an environment map. */
 	void RenderEmptySkyIntoEnvMap( deoglRWorld &world, deoglEnvironmentMap &envmap );
 	
-	/** \brief Get sky background color in linear space. */
+	/** Get sky background color in linear space. */
 	decColor LinearBgColor( const deoglRSkyInstance &instance, bool first ) const;
+	
+	/** Prepare render sky into env map parameter block. */
+	void PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan );
 	/*@}*/
 	
 	
