@@ -34,14 +34,14 @@ out float vParticleLightRange;
 flat out int vLayer;
 
 
-void emitCorner( in vec3 position, in int layer ){
-	vParticleLightPosition = gl_in[ 0 ].gl_Position.xyz;
+void emitCorner( in vec3 position, in vec3 range, in int layer ){
+	vParticleLightPosition = position;
 	vParticleLightColor = vGSParticleLightColor[ 0 ];
 	vParticleLightRange = vGSParticleLightRange[ 0 ];
 	
-	vLightVolumePos = position;
+	vLightVolumePos = position + range;
 	
-	gl_Position = pMatrixMVP[ layer ] * vec4( position, 1 );
+	gl_Position = pMatrixMVP[ layer ] * vec4( vLightVolumePos, 1 );
 	
 	vLayer = layer;
 	
@@ -55,10 +55,10 @@ void emitParticle( in int layer ){
 	vec3 position = pMatrixMV[ layer ] * vec4( gl_in[ 0 ].gl_Position.xyz, 1 );
 	vec3 range = vec3( vGSParticleLightRange[ 0 ], -vGSParticleLightRange[ 0 ], 0 );
 	
-	emitCorner( position + range.yyz, layer ); // -range, -range
-	emitCorner( position + range.yxz, layer ); // -range, +range
-	emitCorner( position + range.xyz, layer ); // +range, -range
-	emitCorner( position + range.xxz, layer ); // +range, +range
+	emitCorner( position, range.yyz, layer ); // -range, -range
+	emitCorner( position, range.yxz, layer ); // -range, +range
+	emitCorner( position, range.xyz, layer ); // +range, -range
+	emitCorner( position, range.xxz, layer ); // +range, +range
 	
 	EndPrimitive();
 }

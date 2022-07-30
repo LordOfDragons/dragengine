@@ -286,13 +286,16 @@ static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArra
 
 deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	pFBOToneMapParams = NULL;
 	pTextureToneMapParams = NULL;
 	
 	try{
+		renderThread.GetShader().AddCommonDefines( commonDefines );
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
 		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
@@ -300,9 +303,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderColor2LogLumStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
 		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
@@ -310,15 +313,15 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderAvgLogLumStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
 		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderParameters = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
 		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
@@ -326,9 +329,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderBrightPassStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Reduce" );
 		pShaderBloomReduce = shaderManager.GetProgramWith( sources, defines ); // not used
 		
@@ -343,9 +346,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderBloomBlurStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
 		defines.AddDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
@@ -353,9 +356,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderToneMapStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
@@ -363,9 +366,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
 		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
@@ -373,7 +376,6 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderLumPrepareStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );

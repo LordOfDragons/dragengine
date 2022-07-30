@@ -124,11 +124,14 @@ deoglRenderBase( renderThread )
 	deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	
+	renderThread.GetShader().AddCommonDefines( commonDefines );
 	
+	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "INVERSE_DEPTH", true );
@@ -136,9 +139,9 @@ deoglRenderBase( renderThread )
 	defines.AddDefine( "NO_TEXCOORD", true );
 	defines.AddDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
 	pShaderDepthDownsample = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
 	
 	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
 	defines.AddDefine( "GS_RENDER_STEREO", true );
 	if( defren.GetUseInverseDepth() ){
@@ -147,10 +150,10 @@ deoglRenderBase( renderThread )
 	defines.AddDefine( "NO_TEXCOORD", true );
 	defines.AddDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
 	pShaderDepthDownsampleStereo = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
 	
 	
 	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth-Only V3" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", true );

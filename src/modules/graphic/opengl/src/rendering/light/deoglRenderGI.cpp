@@ -149,13 +149,16 @@ deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().AddCommonDefines( commonDefines );
+		
 		pCreateUBORenderLight();
 		
 		// resize materials
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Resize Materials" );
 		pShaderResizeMaterials = shaderManager.GetProgramWith( sources, defines );
 		
@@ -247,20 +250,20 @@ deoglRenderLightBase( renderThread )
 		
 		defines.AddDefine( "PASS2", true );
 		pShaderDebugProbeUpdatePass2 = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		// render light
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
 		
 		defines.AddDefine( "GI_RAY", true );
 		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 		pShaderLightStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		
 		
 		
 		// debug information

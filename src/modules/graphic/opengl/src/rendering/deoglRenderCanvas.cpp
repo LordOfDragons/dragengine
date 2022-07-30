@@ -719,8 +719,8 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetUpsideDown( false );
 		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 		plan.SetLodLevelOffset( 0 );
-			/* TESTING */ plan.SetRenderStereo( true );
-			              plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
+// 			/* TESTING */ plan.SetRenderStereo( true );
+// 			              plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );

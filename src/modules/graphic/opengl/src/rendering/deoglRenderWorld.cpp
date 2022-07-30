@@ -172,10 +172,12 @@ pAddToRenderTaskParticles( NULL ),
 pDebugInfo( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().AddCommonDefines( commonDefines );
+		
 		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread );
 		pRenderCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
@@ -189,6 +191,7 @@ pDebugInfo( renderThread )
 		pAddToRenderTaskParticles = new deoglAddToRenderTaskParticles( renderThread, pRenderTaskParticles );
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
@@ -196,7 +199,6 @@ pDebugInfo( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		DevModeDebugInfoChanged();

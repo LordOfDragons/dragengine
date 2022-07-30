@@ -119,10 +119,12 @@ pRenderTask( NULL ),
 pAddToRenderTask( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().AddCommonDefines( commonDefines );
+		
 		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
 		pShadowCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
@@ -139,6 +141,7 @@ pAddToRenderTask( NULL )
 		
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
 		defines.AddDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
@@ -146,10 +149,10 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 		pShaderSSSSSStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
 		defines.AddDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
 		defines.AddDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
@@ -158,8 +161,8 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 		pShaderAOLocalStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
 		defines.AddDefine( "TAP_COUNT", 9 );
 		defines.AddDefine( "OUT_DATA_SIZE", 1 );
@@ -172,8 +175,8 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderAOBlur1Stereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
 		defines.AddDefine( "TAP_COUNT", 9 );
 		defines.AddDefine( "OUT_DATA_SIZE", 3 );
@@ -186,16 +189,15 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderAOBlur2Stereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
 		defines.AddDefine( "TEXTURELEVEL", 1 );
 		defines.AddDefine( "OUT_COLOR_SIZE", 3 );
 		defines.AddDefine( "TEX_DATA_SWIZZLE", "ggg" );
 		pShaderDebugAO = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		

@@ -1742,20 +1742,7 @@ void deoglSkinShader::GenerateShader(){
 }
 
 void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
-	// general definitions
-	defines.AddDefine( "HIGH_PRECISION", true );
-	defines.AddDefine( "HIGHP", "highp" ); // if not supported by GPU medp
-	
-	if( pglUniformBlockBinding ){
-		defines.AddDefine( "UBO", true );
-		
-		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-			defines.AddDefine( "UBO_IDMATACCBUG", true );
-		}
-		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
-		}
-	}
+	pRenderThread.GetShader().AddCommonDefines( defines );
 	
 	// tessellation
 	if( pConfig.GetTessellationMode() != deoglSkinShaderConfig::etmNone ){
@@ -1932,10 +1919,6 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.AddDefine( "GS_RENDER_CUBE", true );
 		defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
 		
-		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_INSTANCING", true );
-		}
-		
 	}else if( pConfig.GetGSRenderCascaded() ){
 		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
 			DETHROW( deeInvalidParam );
@@ -1943,20 +1926,12 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		
 		defines.AddDefine( "GS_RENDER_CASCADED", true );
 		
-		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_INSTANCING", true );
-		}
-		
 	}else if( pConfig.GetGSRenderStereo() ){
 		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
 			DETHROW( deeInvalidParam );
 		}
 		
 		defines.AddDefine( "GS_RENDER_STEREO", true );
-		
-		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_INSTANCING", true );
-		}
 	}
 	
 	// shared parameter blocks

@@ -136,6 +136,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShader(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().AddCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel" );
 		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShader = shaderManager.GetProgramWith( sources, defines );
@@ -149,6 +150,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShaderStereo(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().AddCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel Stereo" );
 		defines.AddDefines( "NO_POSTRANSFORM", "GS_RENDER_STEREO" );
 		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
@@ -162,6 +164,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsample(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().AddCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample" );
 		defines.AddDefines( "NO_POSTRANSFORM" );
 		pShaderDownsample = shaderManager.GetProgramWith( sources, defines );
@@ -175,6 +178,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsampleStereo(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().AddCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample Stereo" );
 		defines.AddDefines( "NO_POSTRANSFORM", "GS_RENDER_STEREO" );
 		pShaderDownsampleStereo = shaderManager.GetProgramWith( sources, defines );

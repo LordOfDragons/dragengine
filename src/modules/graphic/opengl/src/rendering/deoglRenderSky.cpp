@@ -202,35 +202,37 @@ enum eSPBody{
 
 deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().AddCommonDefines( commonDefines );
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderSkySphereStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
 		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Body" );
 		pShaderBody = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
 		defines.AddDefines( "GS_RENDER_STEREO" );
 		pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 	}catch( const deException & ){
 		pCleanUp();

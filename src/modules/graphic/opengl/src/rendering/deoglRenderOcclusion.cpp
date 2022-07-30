@@ -195,10 +195,13 @@ pAddToRenderTask( NULL )
 {
 	const bool indirectMatrixAccessBug = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().AddCommonDefines( commonDefines );
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		AddOccMapDefines( defines );
 		pShaderOccMapOrtho = shaderManager.GetProgramWith( sources, defines );
@@ -220,16 +223,16 @@ pAddToRenderTask( NULL )
 		pShaderOccMapClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapClipPlane->EnsureRTSShader();
 		pShaderOccMapClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
 		pShaderOccMapDownSample = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 		pShaderOccMapDownSampleStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test" );
 		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		pShaderOccTest = shaderManager.GetProgramWith( sources, defines );
@@ -237,12 +240,12 @@ pAddToRenderTask( NULL )
 		defines.AddDefine( "DUAL_OCCMAP", true );
 		pShaderOccTestDual = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.RemoveAllDefines();
+		defines = commonDefines;
 		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		defines.AddDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestSun = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 		pShaderOccTestStereo = shaderManager.GetProgramWith( sources, defines );
@@ -251,27 +254,27 @@ pAddToRenderTask( NULL )
 		defines.AddDefine( "DUAL_OCCMAP_STEREO", true );
 		pShaderOccTestDualStereo = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.RemoveAllDefines();
+		defines = commonDefines;
 		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		defines.AddDefine( "FRUSTUM_TEST", true );
 		defines.AddDefine( "FRUSTUM_TEST_STEREO", true );
 		pShaderOccTestSunStereo = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test TFB" );
 		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		pShaderOccTestTFB = shaderManager.GetProgramWith( sources, defines );
 		defines.AddDefine( "DUAL_OCCMAP", true );
 		pShaderOccTestTFBDual = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		
+		defines = commonDefines;
 		defines.AddDefine( "ENSURE_MIN_SIZE", true );
 		defines.AddDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestTFBSun = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();
-		const bool useGSRenderCube = renderThread.GetExtensions().SupportsGeometryShader()
-			&& ! bugClearEntireCubeMap;
+		const bool useGSRenderCube = renderThread.GetExtensions().SupportsGeometryShader() && ! bugClearEntireCubeMap;
 		
 		if( useGSRenderCube ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Cube" );
@@ -280,14 +283,10 @@ pAddToRenderTask( NULL )
 			
 			defines.AddDefine( "GS_RENDER_CUBE", true );
 			defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
-			if( renderThread.GetExtensions().SupportsGSInstancing() ){
-				defines.AddDefine( "GS_INSTANCING", true );
-			}
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
 			pShaderOccMapCube->EnsureRTSShader();
 			pShaderOccMapCube->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
-			defines.RemoveAllDefines();
 		}
 		
 		

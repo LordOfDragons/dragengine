@@ -105,6 +105,7 @@ deoglShaderProgram *deoglREffectDistortImage::GetShader(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().AddCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
 		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShader = shaderManager.GetProgramWith( sources, defines );
@@ -118,6 +119,7 @@ deoglShaderProgram *deoglREffectDistortImage::GetShaderStereo(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().AddCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Distort Image Stereo" );
 		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "GS_RENDER_STEREO" );
 		pShaderStereo = shaderManager.GetProgramWith( sources, defines );

@@ -275,14 +275,12 @@ deoglRenderLightBase( renderThread )
 		
 		if( useGSRenderCube ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Cube" );
+			renderThread.GetShader().AddCommonDefines( defines );
 			renderers.GetOcclusion().AddOccMapDefines( defines );
 			defines.AddDefine( "DEPTH_DISTANCE", "1" );
 			
 			defines.AddDefine( "GS_RENDER_CUBE", "1" );
 			defines.AddDefine( "GS_RENDER_CUBE_CULLING", "1" );
-			if( renderThread.GetExtensions().SupportsGSInstancing() ){
-				defines.AddDefine( "GS_INSTANCING", "1" );
-			}
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
 			pShaderOccMapCube->EnsureRTSShader();

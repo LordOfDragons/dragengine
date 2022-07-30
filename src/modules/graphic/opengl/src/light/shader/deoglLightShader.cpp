@@ -443,19 +443,7 @@ void deoglLightShader::GenerateShader(){
 }
 
 void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
-	defines.AddDefine( "HIGH_PRECISION", true );
-	defines.AddDefine( "HIGHP", "highp" ); // if not supported by GPU medp
-	
-	if( pglUniformBlockBinding ){
-		defines.AddDefine( "UBO", true );
-		
-		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-			defines.AddDefine( "UBO_IDMATACCBUG", true );
-		}
-		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
-		}
-	}
+	pRenderThread.GetShader().AddCommonDefines( defines );
 	
 	switch( pConfig.GetLightMode() ){
 	case deoglLightShaderConfig::elmPoint:

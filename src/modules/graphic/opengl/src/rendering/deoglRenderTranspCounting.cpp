@@ -107,10 +107,12 @@ pHasCount( false ),
 pCount( 0 )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
+	renderThread.GetShader().AddCommonDefines( commonDefines );
 	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
 	defines.AddDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
@@ -118,9 +120,9 @@ pCount( 0 )
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
 	defines.AddDefine( "GS_RENDER_STEREO", true );
 	pShaderTraCountMaxCountStereo = shaderManager.GetProgramWith( sources, defines );
-	defines.RemoveAllDefines();
 	
 	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
 	defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );

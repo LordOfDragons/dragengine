@@ -28,6 +28,7 @@ class deoglLightShaderManager;
 class deoglRenderThread;
 class deoglShaderManager;
 class deoglShaderProgram;
+class deoglShaderDefines;
 class deoglSkinShaderManager;
 class deoglTexSamplerConfig;
 class deoglTexUnitsConfigList;
@@ -35,52 +36,52 @@ class deoglTexUnitsConfigList;
 
 
 /**
- * \brief Render thread shader related objects.
+ * Render thread shader related objects.
  */
 class deoglRTShader{
 public:
-	/** \brief Texture sampler configurations. */
+	/** Texture sampler configurations. */
 	enum eTextureSamplerConfigurations{
-		/** \brief Clamp to edge with nearest filtering without mip mapping. */
+		/** Clamp to edge with nearest filtering without mip mapping. */
 		etscClampNearest,
 		
-		/** \brief Clamp to edge with linear filtering without mip mapping. */
+		/** Clamp to edge with linear filtering without mip mapping. */
 		etscClampLinear,
 		
-		/** \brief Clamp to edge with nearest filtering with mip mapping. */
+		/** Clamp to edge with nearest filtering with mip mapping. */
 		etscClampNearestMipMap,
 		
-		/** \brief Clamp to edge with linear filtering with mip mapping. */
+		/** Clamp to edge with linear filtering with mip mapping. */
 		etscClampLinearMipMap,
 		
-		/** \brief Clamp to edge with linear filtering with nearest mip mapping. */
+		/** Clamp to edge with linear filtering with nearest mip mapping. */
 		etscClampLinearMipMapNearest,
 		
-		/** \brief Repeating with nearest filtering without mip mapping. */
+		/** Repeating with nearest filtering without mip mapping. */
 		etscRepeatNearest,
 		
-		/** \brief Repeating with linear filtering without mip mapping. */
+		/** Repeating with linear filtering without mip mapping. */
 		etscRepeatLinear,
 		
-		/** \brief Repeating with linear filtering with mip mapping. */
+		/** Repeating with linear filtering with mip mapping. */
 		etscRepeatLinearMipMap,
 		
-		/** \brief Clamped shadow testing with nearest filtering. */
+		/** Clamped shadow testing with nearest filtering. */
 		etscShadowClampNearest,
 		
-		/** \brief Clamped shadow testing with linear filtering. */
+		/** Clamped shadow testing with linear filtering. */
 		etscShadowClampLinear,
 		
-		/** \brief Clamped shadow testing with linear filtering for inverse depth testing. */
+		/** Clamped shadow testing with linear filtering for inverse depth testing. */
 		etscShadowClampLinearInverse,
 		
-		/** \brief Repeating shadow testing with nearest filtering. */
+		/** Repeating shadow testing with nearest filtering. */
 		etscShadowRepeatNearest,
 		
-		/** \brief Repeating shadow testing with linear filtering. */
+		/** Repeating shadow testing with linear filtering. */
 		etscShadowRepeatLinear,
 		
-		/** \brief Number of texture sampler configurations. */
+		/** Number of texture sampler configurations. */
 		ETSC_COUNT
 	};
 	
@@ -95,13 +96,15 @@ private:
 	deoglLightShaderManager *pLightShaderManager;
 	const deoglShaderProgram *pCurShaderProg;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread texture related object. */
+	/** Create render thread texture related object. */
 	deoglRTShader( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread texture related object. */
+	/** Clean up render thread texture related object. */
 	virtual ~deoglRTShader();
 	/*@}*/
 	
@@ -109,26 +112,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture units configuration manager. */
+	/** Texture units configuration manager. */
 	inline deoglTexUnitsConfigList &GetTexUnitsConfigList() const{ return *pTexUnitsConfigList; }
 	
-	/** \brief Texture sampler configuration. */
+	/** Texture sampler configuration. */
 	deoglTexSamplerConfig *GetTexSamplerConfig( const eTextureSamplerConfigurations type ) const;
 	
-	/** \brief Shader manager. */
+	/** Shader manager. */
 	inline deoglShaderManager &GetShaderManager() const{ return *pShaderManager; }
 	
-	/** \brief Skin shader manager. */
+	/** Skin shader manager. */
 	inline deoglSkinShaderManager &GetSkinShaderManager() const{ return *pSkinShaderManager; }
 	
-	/** \brief Light shader manager. */
+	/** Light shader manager. */
 	inline deoglLightShaderManager &GetLightShaderManager() const{ return *pLightShaderManager; }
 	
-	/** \brief Current shader program or NULL if none is set. */
+	/** Current shader program or NULL if none is set. */
 	inline const deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
 	
-	/** \brief Activate shader if not active yet. */
+	/** Activate shader if not active yet. */
 	void ActivateShader( const deoglShaderProgram *shader );
+	
+	/** Add common defines. */
+	void AddCommonDefines( deoglShaderDefines &defines ) const;
 	/*@}*/
 	
 private:
