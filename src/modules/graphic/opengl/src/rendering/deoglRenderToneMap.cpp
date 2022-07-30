@@ -44,6 +44,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/deoglTextureStageManager.h"
@@ -319,6 +320,9 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
 		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderParameters = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefines( "SAMPLE_STEREO" );
+		pShaderParametersStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
@@ -656,10 +660,17 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	oglCamera.SetForceToneMapAdaption( false );
 	
-	renderThread.GetShader().ActivateShader( pShaderParameters );
-	shader = pShaderParameters->GetCompiled();
+	program = plan.GetRenderStereo() ? pShaderParametersStereo : pShaderParameters;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	// WARNING we have to use the non-stereo version always even if we sample stereo. the reason
+	//         is that to use the stereo render param block we have to use the GS_RENDER_STEREO
+	//         shader define to get the right block layout. this in turn though would cause
+	//         the vertex shader to use a geometry shader which this shader is not using.
+	//         to avoid problems the GS_RENDER_STEREO is not used, which requires us to always
+	//         use the non-stereo block. instead a special define SAMPLE_STEREO is used
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	if( modeTarget ){
 		viewportPingPongOffset = 0;

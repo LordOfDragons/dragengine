@@ -46,6 +46,7 @@ private:
 	deoglShaderProgramUsage pShaderAvgLogLum;
 	deoglShaderProgramUsage pShaderAvgLogLumStereo;
 	deoglShaderProgramUsage pShaderParameters;
+	deoglShaderProgramUsage pShaderParametersStereo;
 	deoglShaderProgramUsage pShaderBrightPass;
 	deoglShaderProgramUsage pShaderBrightPassStereo;
 	deoglShaderProgramUsage pShaderBloomReduce;

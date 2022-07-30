@@ -736,6 +736,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		toneMapHighInt = oglCamera->GetHighestIntensity();
 	}
 	
+	// stereo rendering
+	const decMatrix &cameraStereoMatrix = plan.GetCameraStereoMatrix();
+	
 	// fill parameter blocks
 	deoglSPBlockUBO * const spblocks[ 3 ] = { pRenderPB, pRenderStereoPB, pRenderLuminancePB };
 	int b;
@@ -839,7 +842,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			
 			// stereo rendering
 			if( &spb == pRenderStereoPB ){
-				const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
+				const decDMatrix matrixCameraStereo( matrixCamera * cameraStereoMatrix );
 				const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
 				const decMatrix matrixSkyBodyStereo( matrixCameraStereo.GetRotationMatrix() * matrixProjectionStereo );
 				
@@ -850,9 +853,13 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 1, matrixSkyBodyStereo );
 				spb.SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
 				spb.SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2() );
+				spb.SetParameterDataMat4x3( deoglSkinShader::erutCameraStereoMatrix, cameraStereoMatrix );
 				
 			// luminance rendering. right now the same as regular rendering
 // 			}else if( &spb == pRenderLuminancePB ){
+				
+			}else{
+				spb.SetParameterDataMat4x3( deoglSkinShader::erutCameraStereoMatrix, decMatrix() );
 			}
 			
 		}catch( const deException & ){

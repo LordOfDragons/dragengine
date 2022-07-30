@@ -25,14 +25,13 @@ void main( void ){
 	avgLums.z = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 0 ), 0 ).r; // tc2.s, tc1.t
 	avgLums.w = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 0 ), 0 ).r; // tc2.s, tc2.t
 	
-	if( pRenderLayerCount == 2 ){
-		avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0 ).r; // tc1.s, tc1.t
-		avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0 ).r; // tc1.s, tc2.t
-		avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0 ).r; // tc2.s, tc1.t
-		avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0 ).r; // tc2.s, tc2.t
-		
-		avgLums /= vec4( 2 );
-	}
+	#ifdef SAMPLE_STEREO
+	avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0 ).r; // tc1.s, tc1.t
+	avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0 ).r; // tc1.s, tc2.t
+	avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0 ).r; // tc2.s, tc1.t
+	avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0 ).r; // tc2.s, tc2.t
+	avgLums /= vec4( 2 );
+	#endif
 	
 	//vec3 envLight = texture( texEnvMap, vec3( 0.0, 1.0, 0.0 ) ).rgb;
 	//float envLuminance = dot( envLight, lumiFactors );

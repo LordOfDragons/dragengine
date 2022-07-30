@@ -109,6 +109,7 @@ public:
 		erutParticleLightHack,
 		erutBillboardZScale,
 		erutFadeRange,
+		erutCameraStereoMatrix,
 		erutCameraAdaptedIntensity,
 		erutCameraRange,
 		erutDepthSampleOffset,

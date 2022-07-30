@@ -72,7 +72,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			mat4x3 matRSMV = mat4x3( mat4( matMV ) * mat4( pfiRotScale ) );
 			
 			// calculate new instance matrix
-			vec3 bbPos = matMV * vec4( pfiPos, 1.0 );
+			vec3 bbPos = matMV * vec4( pfiPos, 1 );
 			mat3 matBBAxis = transpose( mat3( matRSMV ) );
 			vec3 bbView = normalize( matBBAxis * bbPos ); // used to select the layer
 			//vec3 bbView = normalize( matBBAxis[ 2 ] ); // used to select the layer
@@ -103,7 +103,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 		#endif
 		
 	// height maps
-	#elif defined( HEIGHT_MAP )
+	#elif defined HEIGHT_MAP
 		position = vec3( inPosition.x, inHeight, inPosition.y );
 		
 	// everything else
@@ -113,13 +113,17 @@ void transformPosition( out vec3 position, in int spbIndex )
 	
 	#ifdef BILLBOARD
 		#ifdef PROP_FIELD
-			position.xyz = matMV * vec4( pfiRotScale * position.xyz + pfiPos, 1.0 ) - bbPos;
+			position.xyz = matMV * vec4( pfiRotScale * position.xyz + pfiPos, 1 ) - bbPos;
 			position.xy = matBend * position.xy;
 			position.xyz += bbPos;
 			
 		#else
+			// using stereo rendering the left and right view have to use the same billboard
+			// orientation or the rendering breaks. for this reason the left view camera matrix
+			// is used. during geometry shader the position has to be fixed for the right view
+			// otherwise rendering breaks
 			vec2 coord = position.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw;
-			vec3 refPos = P_MATRIX_V * vec4( pMatrixModel[ 3 ], 1.0 );
+			vec3 refPos = P_MATRIX_V * vec4( pMatrixModel[ 3 ], 1 );
 			
 			if( pBillboardParams.z ){ // sizeFixedToScreen
 				coord *= vec2( refPos.z * pBillboardZScale );
@@ -127,13 +131,13 @@ void transformPosition( out vec3 position, in int spbIndex )
 			
 			if( pBillboardParams.x ){ // locked
 				vec3 up = normalize( mat3( P_MATRIX_V ) * pMatrixModel[ 1 ] );
-				vec3 view = pBillboardParams.y ? normalize( refPos ) : vec3( 0.0, 0.0, 1.0 ); // spherical
+				vec3 view = pBillboardParams.y ? normalize( refPos ) : vec3( 0, 0, 1 ); // spherical
 				vec3 right = normalize( cross( up, view ) );
 				
 				position = refPos + right * coord.x + up * coord.y;
 				
 			}else{
-				position = refPos + vec3( coord, 0.0 );
+				position = refPos + vec3( coord, 0 );
 			}
 		#endif
 		
@@ -141,21 +145,24 @@ void transformPosition( out vec3 position, in int spbIndex )
 		position = sanitizePosition( position );
 		
 		#ifdef NO_TRANSFORMATION
-			gl_Position = vec4( position, 1.0 );
+			gl_Position = vec4( position, 1 );
 			
 		#else
-			gl_Position = pMatrixP * vec4( position, 1.0 );
+			gl_Position = pMatrixP * vec4( position, 1 );
 		#endif
 		
 	#else
-		position = pMatrixModel * vec4( position, 1.0 );
+		position = pMatrixModel * vec4( position, 1 );
 		
 		// outline. done after matrix model to avoid scaling affecting the result
 		#ifdef WITH_OUTLINE
 			float outlineThickness = pOutlineThickness;
 			#ifdef WITH_OUTLINE_THICKNESS_SCREEN
 				// we can use pBillboardZScale since this is tan(camera.fov / 2)
-				outlineThickness *= ( P_MATRIX_V * vec4( position, 1.0 ) ).z * pBillboardZScale;
+				// using the first camera matrix since the stereo camera matrix produces the
+				// same result. even if slightly different both views have to use the same
+				// thickness or it looks wrong
+				outlineThickness *= ( P_MATRIX_V * vec4( position, 1 ) ).z * pBillboardZScale;
 			#endif
 			position.xyz += normalize( inRealNormal * pMatrixNormal ) * vec3( outlineThickness );
 		#endif
@@ -164,10 +171,10 @@ void transformPosition( out vec3 position, in int spbIndex )
 		position = sanitizePosition( position );
 		
 		#ifdef NO_TRANSFORMATION
-			gl_Position = vec4( position, 1.0 );
+			gl_Position = vec4( position, 1 );
 			
 		#else
-			gl_Position = pMatrixVP * vec4( position, 1.0 );
+			gl_Position = pMatrixVP * vec4( position, 1 );
 		#endif
 	#endif
 }

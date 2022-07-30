@@ -125,7 +125,9 @@ UBOLAYOUT uniform RenderParameters{
 	float pBillboardZScale; // billboard z scale if size is fixed to screen
 	
 	vec3 pFadeRange; // x=fadeNear, y=fadeFar, z=1/(fadeFar-fadeNear)
-	float pCameraAdaptedIntensity;
+	
+	// transforms from left eye camera space to right eye camera space
+	mat4x3 pCameraStereoTransform;
 	
 	// camera range.
 	// x: image distance in meters
@@ -135,6 +137,8 @@ UBOLAYOUT uniform RenderParameters{
 	#define pCameraImageDistance (pCameraRange.x)
 	// view distance in meters
 	#define pCameraViewDistance (pCameraRange.y)
+	
+	float pCameraAdaptedIntensity;
 	
 	vec2 pDepthSampleOffset;
 	
