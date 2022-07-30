@@ -471,7 +471,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	
 	decDMatrix matrixCameraStereo( matrixCamera );
 	if( plan.GetRenderStereo() ){
-		matrixCameraStereo *= plan.GetCameraCorrectionMatrix();
+		matrixCameraStereo *= plan.GetCameraStereoMatrix();
 	}
 	
 	// linear depth: use non-infinite projection matrix 

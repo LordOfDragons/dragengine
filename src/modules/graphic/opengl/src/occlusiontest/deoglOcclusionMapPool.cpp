@@ -58,7 +58,9 @@ deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height, int layerC
 	
 	for( i=count-1; i>=0; i-- ){
 		deoglOcclusionMap * const occlusionMap = ( deoglOcclusionMap* )pOcclusionMaps.GetAt( i );
-		if( occlusionMap->GetWidth() == width && occlusionMap->GetHeight() == height ){
+		if( occlusionMap->GetWidth() == width
+		&& occlusionMap->GetHeight() == height
+		&& occlusionMap->GetLayerCount() == layerCount ){
 			pOcclusionMaps.RemoveFrom( i );
 			return occlusionMap;
 		}

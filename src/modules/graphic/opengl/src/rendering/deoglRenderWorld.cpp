@@ -590,6 +590,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
+	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
 	decVector clipPlaneNormal( 0.0f, 0.0f, 1.0f );
 	float clipPlaneDistance = 0.0f;
 	float envMapLodLevel = 1.0f;
@@ -748,6 +749,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 0, matrixProjection );
 			spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
 			spb.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
+			spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
 			spb.SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
 			spb.SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
 			
@@ -756,6 +758,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			
 			spb.SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
 			spb.SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
+			spb.SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
 			
 			defren.SetShaderViewport( spb, deoglSkinShader::erutViewport, true );
 			spb.SetParameterDataVec4( deoglSkinShader::erutClipPlane, clipPlaneNormal, clipPlaneDistance );
@@ -834,13 +837,15 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			
 			// stereo rendering
 			if( &spb == pRenderStereoPB ){
-				const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraCorrectionMatrix() );
+				const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
 				const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
+				const decMatrix matrixSkyBodyStereo( matrixCameraStereo.GetRotationMatrix() * matrixProjectionStereo );
 				
 				spb.SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCameraStereo );
 				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 1, matrixProjectionStereo );
 				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCameraStereo * matrixProjectionStereo );
 				spb.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCameraStereo.GetRotationMatrix().Invert() );
+				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 1, matrixSkyBodyStereo );
 				spb.SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
 				spb.SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2() );
 				
@@ -857,8 +862,12 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 DBG_EXIT("PrepareRenderParamBlock")
 }
 
+deoglSPBlockUBO *deoglRenderWorld::RenderPB( const deoglRenderPlan &plan ) const{
+	return plan.GetRenderStereo() ? pRenderStereoPB : pRenderPB;
+}
+
 void deoglRenderWorld::ActivateRenderPB ( const deoglRenderPlan &plan ) const{
-	( plan.GetRenderStereo() ? pRenderStereoPB : pRenderPB )->Activate();
+	RenderPB( plan )->Activate();
 }
 
 

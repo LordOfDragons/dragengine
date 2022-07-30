@@ -1,13 +1,19 @@
 precision highp float;
 precision highp int;
 
-uniform float pPositionZ;
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
 in vec2 inPosition;
 
-out vec2 vTexCoord;
+#ifdef GS_RENDER_STEREO
+	out vec2 vGSTexCoord;
+	#define vTexCoord vGSTexCoord
+#else
+	out vec2 vTexCoord;
+#endif
 
 void main( void ){
-	gl_Position = vec4( vec3( inPosition, pPositionZ ), 1.0 );
+	gl_Position = vec4( vec3( inPosition, pClearDepthValue ), 1 );
 	vTexCoord = inPosition;
 }

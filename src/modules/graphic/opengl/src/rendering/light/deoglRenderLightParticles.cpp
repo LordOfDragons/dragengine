@@ -162,7 +162,9 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	*/
 	
 	// set shader
-	deoglLightShader * const lightShader = etype.GetShaderFor( deoglRParticleEmitterType::estNoShadow );
+	deoglLightShader * const lightShader = etype.GetShaderFor( plan.GetRenderStereo()
+		? deoglRParticleEmitterType::estStereoNoShadow
+		: deoglRParticleEmitterType::estNoShadow );
 	if( ! lightShader ){
 		DETHROW( deeInvalidParam );
 	}
@@ -234,24 +236,33 @@ deoglRenderPlan &plan, deoglRParticleEmitter &emitter, deoglRParticleEmitterType
 	paramBlock.UnmapBuffer();
 }
 
-void deoglRenderLightParticles::UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &type ){
+void deoglRenderLightParticles::UpdateInstanceParamBlock( deoglLightShader &lightShader,
+deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance,
+deoglRParticleEmitterInstanceType &type ){
 	int target;
 	
 	// calculate matrices
-	const decDMatrix matrixMV( decDMatrix::CreateTranslation( instance.GetReferencePosition() ) * plan.GetCameraMatrix() );
+	const decDMatrix matrixRefPos( decDMatrix::CreateTranslation( instance.GetReferencePosition() ) );
+	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
+	
+	const decDMatrix matrixMV( matrixRefPos * matrixCamera );
+	
+	const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
+	const decDMatrix matrixMVStereo( matrixRefPos * matrixCameraStereo );
 	
 	// set values
 	paramBlock.MapBuffer();
 	try{
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMVP );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, plan.GetProjectionMatrix() );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, plan.GetProjectionMatrix() );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, plan.GetProjectionMatrixStereo() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMV );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixMV);
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixMV );
+			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixMVStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutSamplesParams );

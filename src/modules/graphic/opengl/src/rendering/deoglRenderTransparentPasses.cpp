@@ -155,6 +155,7 @@ deoglRenderBase( renderThread )
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
+	defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
 	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
@@ -630,7 +631,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
@@ -678,7 +679,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	// outline
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
@@ -929,7 +930,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		}
 		
 		renderTaskParticles.Clear();
-		renderTaskParticles.SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTaskParticles.SetRenderParamBlock( renworld.RenderPB( plan ) );
 		
 		if( inbetween ){
 			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()

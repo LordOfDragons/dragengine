@@ -239,7 +239,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// render transparent scene elements
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
@@ -313,7 +313,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// outline
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );

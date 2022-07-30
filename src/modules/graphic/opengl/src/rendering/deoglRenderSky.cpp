@@ -24,9 +24,9 @@
 #include <string.h>
 
 #include "deoglRenderSky.h"
+#include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlan.h"
-
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -39,6 +39,7 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTRenderers.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -170,30 +171,23 @@ n = ( matRotCam^-1 * matLayer^-1 ) * a
 ////////////////
 
 enum eSPSphere{
-	spsphMatrixCamera,
 	spsphMatrixLayer,
 	spsphLayerPosition,
 	spsphLayerColor,
-	spsphParams,
 	spsphMaterialGamma,
-	spsphSkyBgColor,
-	spsphPositionZ
+	spsphSkyBgColor
 };
 
 enum eSPBox{
-	spboxMatrixCamera,
 	spboxMatrixLayer,
 	spboxLayerPosition,
 	spboxLayerColor,
-	spboxParams,
 	spboxMaterialGamma,
-	spboxSkyBgColor,
-	spboxPositionZ
+	spboxSkyBgColor
 };
 
 enum eSPBody{
-	spbodyMatrixMVP,
-	spbodyScalePosition,
+	spbodyMatrixBody,
 	spbodyColor,
 	spbodyMaterialGamma
 };
@@ -215,11 +209,28 @@ deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) : deoglRenderB
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderSkySphereStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
 		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		
 		sources = shaderManager.GetSourcesNamed( "Sky Body" );
 		pShaderBody = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -540,17 +551,12 @@ int layerIndex, bool first ){
 	const int * const textures = layer.GetTextures();
 	decColor layerColor( instanceLayer.GetColor() );
 	float layerIntensity = instanceLayer.GetIntensity();
-	deoglSkinTexture *oglSkinTexture;
-	deoglRSkin *skin = layer.GetSkin();
-	deoglShaderCompiled *shader;
+	const deoglRSkin * const skin = layer.GetSkin();
 	
-	if( ! skin ){
+	if( ! skin || skin->GetTextureCount() == 0 ){
 		return false;
 	}
-	if( skin->GetTextureCount() == 0 ){
-		return false;
-	}
-	oglSkinTexture = &skin->GetTextureAt( 0 );
+	deoglSkinTexture * const oglSkinTexture = &skin->GetTextureAt( 0 );
 	
 	// adjust gamma
 	layerColor.r = powf( layerColor.r, OGL_RENDER_GAMMA );
@@ -565,35 +571,20 @@ int layerIndex, bool first ){
 		layerColor.b *= layerIntensity;
 	}
 	
-	// calculate the parameters
-// 	const float znear = plan.GetCameraImageDistance();
-// 	const float constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
-// 	const float constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
-	
 	// set the shaders
 	const float matGamma = oglSkinTexture->GetColorGamma();
 	
-	renderThread.GetShader().ActivateShader( pShaderSkySphere );
-	shader = pShaderSkySphere->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderSkySphereStereo : pShaderSkySphere;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-//	shader->SetParameterDMatrix3x3( spsphMatrixLayer,
-//		decDMatrix::CreateFromQuaternion( layer.GetOrientation() )
-//		* plan.GetInverseCameraMatrix().GetRotationMatrix() );
-//	shader->SetParameterDMatrix3x3( spsphMatrixLayer,
-//		plan.GetInverseCameraMatrix().GetRotationMatrix()
-//		* decDMatrix::CreateFromQuaternion( layer.GetOrientation() ) );
-	// normalMatrix = transpose( invert( invCamRot * invLayerMat ) )
-	// normalMatrix = transpose( layerMat * camRot )
-	shader->SetParameterDMatrix3x3( spsphMatrixCamera, plan.GetInverseCameraMatrix() );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	
 	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader->SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
 	shader->SetParameterColor4( spsphLayerColor, layerColor );
-// 	shader->SetParameterFloat( spsphParams, constX, constY, znear );
-	shader->SetParameterFloat( spsphParams, plan.GetDepthToPosition().z, plan.GetDepthToPosition().w,
-		plan.GetDepthToPosition2().x, plan.GetDepthToPosition2().y );
 	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
-	shader->SetParameterFloat( spsphPositionZ, renderThread.GetDeferredRendering().GetClearDepthValueRegular() );
 	
 	// set texture
 	if( textures[ deoglRSkyLayer::eiSphere ] == -1 ){
@@ -626,11 +617,8 @@ deoglRSkyInstance &instance, int layerIndex ){
 	const deoglRSkyLayer::sBody * const bodies = layer.GetBodies();
 	int b, bodyCount = layer.GetBodyCount();
 	decColor layerColor = instanceLayer.GetColor();
-	float layerIntensity = instanceLayer.GetIntensity();
-	deoglSkinTexture *oglSkinTexture;
-	decDMatrix matrixLCP, matrixBody;
-	deoglShaderCompiled *shader;
-	decColor bodyColor;
+	const float layerIntensity = instanceLayer.GetIntensity();
+	const decMatrix &matrixLayer = instanceLayer.GetMatrix();
 	
 	// adjust gamma
 	layerColor.r = powf( layerColor.r, OGL_RENDER_GAMMA );
@@ -646,14 +634,11 @@ deoglRSkyInstance &instance, int layerIndex ){
 	}
 	
 	// set the shaders
-	renderThread.GetShader().ActivateShader( pShaderBody );
-	shader = pShaderBody->GetCompiled();
+	const deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderBodyStereo : pShaderBody;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	// set matrix
-	//matrixLCP = decDMatrix::CreateFromQuaternion( engLayer.GetOrientation() )
-	matrixLCP = instanceLayer.GetMatrix()
-		* plan.GetCameraMatrix().GetRotationMatrix()
-		* decDMatrix( plan.GetProjectionMatrix() );
+	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
 	
 	// render bodies
 	deoglTexture * const defTexColor = renderThread.GetDefaultTextures().GetColor();
@@ -668,23 +653,27 @@ deoglRSkyInstance &instance, int layerIndex ){
 		
 		deoglRSkin &skin = *bodies[ b ].skin;
 		
-		if( skin.GetTextureCount() == 0 ) continue;
-		oglSkinTexture = &skin.GetTextureAt( 0 );
+		if( skin.GetTextureCount() == 0 ){
+			continue;
+		}
+		
+		const deoglSkinTexture &oglSkinTexture = skin.GetTextureAt( 0 );
 		const decVector2 &size = bodies[ b ].size;
-		float matGamma = oglSkinTexture->GetColorGamma();
+		const float matGamma = oglSkinTexture.GetColorGamma();
 		
-		bodyColor.r = powf( bodies[ b ].color.r, OGL_RENDER_GAMMA ) * layerColor.r;
-		bodyColor.g = powf( bodies[ b ].color.g, OGL_RENDER_GAMMA ) * layerColor.g;
-		bodyColor.b = powf( bodies[ b ].color.b, OGL_RENDER_GAMMA ) * layerColor.b;
-		bodyColor.a = bodies[ b ].color.a * layerColor.a;
+		const decColor bodyColor(
+			powf( bodies[ b ].color.r, OGL_RENDER_GAMMA ) * layerColor.r,
+			powf( bodies[ b ].color.g, OGL_RENDER_GAMMA ) * layerColor.g,
+			powf( bodies[ b ].color.b, OGL_RENDER_GAMMA ) * layerColor.b,
+			bodies[ b ].color.a * layerColor.a );
 		
-		matrixBody.SetFromQuaternion( bodies[ b ].orientation );
+		const decMatrix matrixBody( decMatrix::CreateScale( size.x, size.y, 1.0f )
+			* decMatrix::CreateFromQuaternion( bodies[ b ].orientation ) * matrixLayer );
 		
 		tsmgr.EnableSkin( 0, skin, 0, deoglSkinChannel::ectColor, defTexColor, tscClampLinear );
 		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency, defTexTransparency, tscClampLinear );
 		
-		shader->SetParameterDMatrix4x4( spbodyMatrixMVP, matrixBody * matrixLCP );
-		shader->SetParameterFloat( spbodyScalePosition, size.x, size.y );
+		shader->SetParameterMatrix4x3( spbodyMatrixBody, matrixBody );
 		shader->SetParameterColor4( spbodyColor, bodyColor );
 		shader->SetParameterFloat( spbodyMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 		

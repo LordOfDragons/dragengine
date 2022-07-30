@@ -112,6 +112,9 @@ public:
 	/** Prepare render parameter shader parameter block. */
 	void PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
+	/** Render parameter block. */
+	deoglSPBlockUBO *RenderPB( const deoglRenderPlan &plan ) const;
+	
 	/** Activate RenderPB or RenderStereoPB depending on render plan. */
 	void ActivateRenderPB( const deoglRenderPlan &plan ) const;
 	

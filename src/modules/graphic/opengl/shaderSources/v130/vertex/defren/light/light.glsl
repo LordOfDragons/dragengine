@@ -24,8 +24,8 @@ void main( void ){
 			gl_Position = vec4( inPosition, 1 );
 			vScreenCoord = inPosition.xy;
 		#else
-			gl_Position = pMatrixMVP * vec4( inPosition, 1 );
-			vLightVolumePos = pMatrixMV * vec4( inPosition, 1 );
+			gl_Position = pMatrixMVP[ 0 ] * vec4( inPosition, 1 );
+			vLightVolumePos = pMatrixMV[ 0 ] * vec4( inPosition, 1 );
 		#endif
 	#endif
 }

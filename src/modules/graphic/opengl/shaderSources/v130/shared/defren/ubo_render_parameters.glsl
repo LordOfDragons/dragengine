@@ -6,6 +6,7 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP[ 6 ];
 		mat3 pMatrixVn[ 6 ];
 		mat3 pMatrixEnvMap;
+		mat4 pMatrixSkyBody[ 6 ];
 		vec4 pDepthToPosition;
 		vec2 pDepthToPosition2; // for use by shifted projection matrix
 		
@@ -18,6 +19,7 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP[ 4 ]; // same as pCascadeMatrixV
 		mat3 pMatrixVn[ 4 ];
 		mat3 pMatrixEnvMap;
+		mat4 pMatrixSkyBody[ 4 ];
 		vec4 pDepthToPosition;
 		vec2 pDepthToPosition2; // for use by shifted projection matrix
 		
@@ -30,6 +32,7 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP[ 2 ];
 		mat3 pMatrixVn[ 2 ];
 		mat3 pMatrixEnvMap;
+		mat4 pMatrixSkyBody[ 2 ];
 		vec4 pDepthToPosition[ 2 ];
 		vec2 pDepthToPosition2[ 2 ]; // for use by shifted projection matrix
 		
@@ -42,6 +45,7 @@ UBOLAYOUT uniform RenderParameters{
 		mat4 pMatrixVP;
 		mat3 pMatrixVn;
 		mat3 pMatrixEnvMap;
+		mat4 pMatrixSkyBody;
 		vec4 pDepthToPosition;
 		vec2 pDepthToPosition2; // for use by shifted projection matrix
 		
@@ -54,6 +58,7 @@ UBOLAYOUT uniform RenderParameters{
 	
 	bool pSkinDoesReflections;
 	bool pFlipCulling;
+	float pClearDepthValue;
 	
 	// normalize viewport texture coordinates.
 	// x: minX = 0

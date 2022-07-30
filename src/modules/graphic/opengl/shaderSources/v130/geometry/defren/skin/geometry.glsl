@@ -179,11 +179,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	vLayer = layer;
 	
-	#ifdef GS_RENDER_STEREO
-		gl_ViewportIndex = layer;
-	#else
-		gl_Layer = layer;
-	#endif
+	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
 	EmitVertex();

@@ -26,9 +26,9 @@ void main( void ){
 		for( corner=0; corner<3; corner++ ){
 			gl_Position = gl_in[ corner ].gl_Position;
 			
-			vLayer = corner;
+			vLayer = eye;
 			
-			gl_Layer = corner;
+			gl_Layer = eye;
 			gl_PrimitiveID = gl_PrimitiveIDIn;
 			
 			EmitVertex();

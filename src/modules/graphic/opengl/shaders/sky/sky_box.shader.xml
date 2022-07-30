@@ -1,20 +1,18 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>Sky Sky-Box</name>
 	
 	<version>130</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<texture name='texSky' target='0'/>
 	
-	<parameter name='pMatrixCamera'/>
 	<parameter name='pMatrixLayer'/>
 	<parameter name='pLayerPosition'/>
 	<parameter name='pLayerColor'/>
-	<parameter name='pParams'/>
 	<parameter name='pMaterialGamma'/>
 	<parameter name='pSkyBgColor'/>
-	<parameter name='pPositionZ'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

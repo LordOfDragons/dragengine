@@ -30,9 +30,9 @@ void main( void ){
 			gl_Position = gl_in[ corner ].gl_Position;
 			
 			vScreenCoord = vGSScreenCoord[ corner ];
-			vLayer = corner;
+			vLayer = eye;
 			
-			gl_Layer = corner;
+			gl_Layer = eye;
 			gl_PrimitiveID = gl_PrimitiveIDIn;
 			
 			EmitVertex();

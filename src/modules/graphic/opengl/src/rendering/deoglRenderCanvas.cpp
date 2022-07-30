@@ -719,7 +719,8 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetUpsideDown( false );
 		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 		plan.SetLodLevelOffset( 0 );
-			/* TESTING */ // plan.SetStereoRender( true );
+			/* TESTING */ plan.SetRenderStereo( true );
+			              plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
@@ -727,6 +728,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.PrepareRender( context.GetRenderPlanMask() );
 		
 		defren.Resize( rwidth, rheight );
+			/* TESTING */ defren.Resize( rwidth, rheight, 2 );
 		plan.Render();
 	}
 	

@@ -521,6 +521,7 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
 		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, matrixLayerCount ); // mat3
 		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+		spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
 		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, projectionMatrixLayerCount ); // vec4
 		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, projectionMatrixLayerCount ); // vec2
 		
@@ -530,6 +531,7 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		
 		spb->GetParameterAt( erutSkinDoesReflections ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
 		spb->GetParameterAt( erutFlipCulling ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
+		spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
 		spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -2554,10 +2556,15 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pMatrixV" ); // erutMatrixV
 		parameterList.Add( "pMatrixVn" ); // erutMatrixVn
 		parameterList.Add( "pMatrixEnvMap" ); // erutMatrixEnvMap
+		parameterList.Add( "pMatrixSkyBody" ); // erutMatrixSkyBody
 		parameterList.Add( "pDepthToPosition" ); // erutDepthToPosition
 		parameterList.Add( "pDepthToPosition2" ); // erutDepthToPosition2
 		parameterList.Add( "pDepthTransform" ); // erutDepthTransform
 		parameterList.Add( "pEnvMapLodLevel" ); // erutEnvMapLodLevel
+		parameterList.Add( "pNorRoughCorrStrength" ); // erutNorRoughCorrStrength
+		parameterList.Add( "pSkinDoesReflections" ); // erutSkinDoesReflections
+		parameterList.Add( "pFlipCulling" ); // erutFlipCulling
+		parameterList.Add( "pClearDepthValue" ); // erutClearDepthValue
 		parameterList.Add( "pViewport" ); // erutViewport
 		parameterList.Add( "pClipPlane" ); // erutClipPlane
 		parameterList.Add( "pScreenSpace" ); // erutScreenSpace

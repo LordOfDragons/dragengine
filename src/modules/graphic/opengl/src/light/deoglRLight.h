@@ -65,63 +65,40 @@ class deoglRLight : public deObject{
 public:
 	/** Shader Types. */
 	enum eShaderTypes{
-		/** No shadow casting. */
-		estNoShadow,
+		estNoShadow, //<! No shadow casting.
+		estSolid1, //<! Single solid no transparent shadow.
+		estSolid1Transp1, //<! Single solid and transparent shadow.
+		estSolid1NoAmbient, //<! Single solid no transparent shadow without ambient lighting.
+		estSolid1Transp1NoAmbient, //<! Single solid and transparent shadow without ambient lighting.
+		estSolid2, //<! Double solid no transparent shadow.
+		estSolid2Transp1, //<! Double solid and single transparent shadow.
+		estSolid2Transp2, //<! Double solid and transparent shadow.
+		estSolid2NoAmbient, //<! Double solid no transparent shadow.
+		estSolid2Transp1NoAmbient, //<! Double solid and single transparent shadow.
+		estSolid2Transp2NoAmbient, //<! Double solid and transparent shadow.
+		estLumSolid1, //<! Luminance only single solid (unused).
+		estLumSolid1NoAmbient, //<! Luminance only single solid without ambient lighting (unused).
+		estLumSolid2, //<! Luminance only double solid (unused).
+		estLumSolid2NoAmbient, //<! Luminance only double solid (unused).
+		estGIRayNoShadow, //<! GI rays no shadow casting.
+		estGIRaySolid1, //<! GI rays single solid shadow.
+		estGIRaySolid2, //<! GI rays double solid shadow.
 		
-		/** Single solid no transparent shadow. */
-		estSolid1,
-		
-		/** Single solid and transparent shadow. */
-		estSolid1Transp1,
-		
-		/** Single solid no transparent shadow without ambient lighting. */
-		estSolid1NoAmbient,
-		
-		/** Single solid and transparent shadow without ambient lighting. */
-		estSolid1Transp1NoAmbient,
-		
-		/** Double solid no transparent shadow. */
-		estSolid2,
-		
-		/** Double solid and single transparent shadow. */
-		estSolid2Transp1,
-		
-		/** Double solid and transparent shadow. */
-		estSolid2Transp2,
-		
-		/** Double solid no transparent shadow. */
-		estSolid2NoAmbient,
-		
-		/** Double solid and single transparent shadow. */
-		estSolid2Transp1NoAmbient,
-		
-		/** Double solid and transparent shadow. */
-		estSolid2Transp2NoAmbient,
-		
-		/** Luminance only single solid. */
-		estLumSolid1,
-		
-		/** Luminance only single solid without ambient lighting. */
-		estLumSolid1NoAmbient,
-		
-		/** Luminance only double solid. */
-		estLumSolid2,
-		
-		/** Luminance only double solid. */
-		estLumSolid2NoAmbient,
-		
-		/** GI rays no shadow casting. */
-		estGIRayNoShadow,
-		
-		/** GI rays single solid shadow. */
-		estGIRaySolid1,
-		
-		/** GI rays double solid shadow. */
-		estGIRaySolid2,
-		
-		/** Number of shaders. */
-		EST_COUNT
+		// stereo
+		estStereoNoShadow, //<! No shadow casting.
+		estStereoSolid1, //<! Single solid no transparent shadow.
+		estStereoSolid1Transp1, //<! Single solid and transparent shadow.
+		estStereoSolid1NoAmbient, //<! Single solid no transparent shadow without ambient lighting.
+		estStereoSolid1Transp1NoAmbient, //<! Single solid and transparent shadow without ambient lighting.
+		estStereoSolid2, //<! Double solid no transparent shadow.
+		estStereoSolid2Transp1, //<! Double solid and single transparent shadow.
+		estStereoSolid2Transp2, //<! Double solid and transparent shadow.
+		estStereoSolid2NoAmbient, //<! Double solid no transparent shadow.
+		estStereoSolid2Transp1NoAmbient, //<! Double solid and single transparent shadow.
+		estStereoSolid2Transp2NoAmbient, //<! Double solid and transparent shadow.
 	};
+	
+	static const int ShaderTypeCount = estStereoSolid2Transp2NoAmbient + 1;
 	
 	
 	
@@ -203,7 +180,7 @@ public:
 	
 	bool pUpdateOnRemoveComponent;
 	
-	deoglLightShader::Ref pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	

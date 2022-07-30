@@ -325,7 +325,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
 		tasks.WaitFinishBuildingTasksDepth();
 		
-		tasks.GetSolidDepthTask().SetRenderParamBlock( renworld.GetRenderPB() );
+		tasks.GetSolidDepthTask().SetRenderParamBlock( renworld.RenderPB( plan ) );
 		renderTask = &tasks.GetSolidDepthTask();
 		
 	}else{
@@ -531,7 +531,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if( renderTask->GetShaderCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( renworld.RenderPB( plan ) );
 		
 		if( planDebug && plan.GetRenderPassNumber() == 1 ){
 			const int componentCount = collideList.GetComponentCount();
@@ -581,7 +581,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	// outline
 	if( solid ){
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
-		tasks.GetSolidDepthOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
+		tasks.GetSolidDepthOutlineTask().SetRenderParamBlock( renworld.RenderPB( plan ) );
 		renderTask = &tasks.GetSolidDepthOutlineTask();
 		
 	}else{
@@ -630,7 +630,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if( renderTask->GetShaderCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( renworld.RenderPB( plan ) );
 		
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( *renderTask );

@@ -48,9 +48,9 @@ void main( void ){
 				vLightVolumePos = pMatrixMV[ eye ] * position;
 			#endif
 			
-			vLayer = corner;
+			vLayer = eye;
 			
-			gl_Layer = corner;
+			gl_Layer = eye;
 			gl_PrimitiveID = gl_PrimitiveIDIn;
 			
 			EmitVertex();

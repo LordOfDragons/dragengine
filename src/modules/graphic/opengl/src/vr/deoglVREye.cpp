@@ -445,8 +445,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 		
 	case deBaseVRModule::evreRight:
 		plan.SetRenderVR( deoglRenderPlan::ervrRightEye );
-		plan.SetCameraCorrectionMatrix( pMatrixViewToEye.QuickInvert().QuickMultiply(
-			pVR.GetLeftEye().GetMatrixViewToEye() ) );
+		plan.SetCameraStereoMatrix( pVR.GetLeftEye().pMatrixViewToEye.QuickInvert().QuickMultiply( pMatrixViewToEye ) );
 		break;
 	}
 	

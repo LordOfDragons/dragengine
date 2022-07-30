@@ -186,9 +186,12 @@ precision highp int;
 	in vec3 vParticleLightColor;
 	in float vParticleLightRange;
 	
-	#define pLightPosition vParticleLightPosition
+	#define vLightPosition vParticleLightPosition
 	#define pLightColor vParticleLightColor
 	#define pLightRange vParticleLightRange
+	
+#else
+	#define vLightPosition pLightPosition[ vLayer ]
 #endif
 
 #if defined GS_RENDER_STEREO && ! defined GI_RAY
@@ -706,9 +709,9 @@ void main( void ){
 	
 	// calculate light direction and distance
 	#ifdef SKY_LIGHT
-		#define lightDir pLightView
+		#define lightDir pLightView[ vLayer ]
 	#else
-		vec3 lightDir = pLightPosition - position;
+		vec3 lightDir = vLightPosition - position;
 		float dist = length( lightDir );
 		
 		// discard if pre-lit (length = 0) or outside the light range
@@ -721,7 +724,7 @@ void main( void ){
 		// NOTE this does not work anymore since spot cone can be squashed now
 		/*
 		#if defined SPOT_LIGHT
-			float spotFactor = dot( pLightView, -lightDir ) - pLightSpotBase;
+			float spotFactor = dot( lightView, -lightDir ) - pLightSpotBase;
 			if( spotFactor <= 0.0 ){
 				discard;
 			}
@@ -738,29 +741,29 @@ void main( void ){
 			vec4 shapos1;
 			
 			if( position.z < pLayerBorder.x ){
-				shapos1 = ( pShadowMatrix1 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 0.0; // layer 0
+				shapos1 = ( pShadowMatrix1[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 0; // layer 0
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.x;
 				#endif
 				
 			}else if( position.z < pLayerBorder.y ){
-				shapos1 = ( pShadowMatrix2 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 1.0; // layer 1
+				shapos1 = ( pShadowMatrix2[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 1; // layer 1
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.y;
 				#endif
 				
 			}else if( position.z < pLayerBorder.z ){
-				shapos1 = ( pShadowMatrix3 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 2.0; // layer 2
+				shapos1 = ( pShadowMatrix3[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 2; // layer 2
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.x;
 				#endif
 				
 			}else{
-				shapos1 = ( pShadowMatrix4 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 3.0; // layer 3
+				shapos1 = ( pShadowMatrix4[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 3; // layer 3
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.y;
 				#endif
@@ -773,7 +776,7 @@ void main( void ){
 		vec4 shapos1 = vec4( position - vParticleLightPosition, 1.0 );
 		
 	#else
-		vec4 shapos1 = pShadowMatrix1 * vec4( position, 1.0 );
+		vec4 shapos1 = pShadowMatrix1[ vLayer ] * vec4( position, 1.0 );
 		
 		#ifndef POINT_LIGHT
 			#ifdef SHADOW_INVERSE_DEPTH
@@ -819,7 +822,7 @@ void main( void ){
 			#ifdef SHAMAT2_EQUALS_SHAMAT1
 				#define shapos2 shapos1
 			#else
-				vec4 shapos2 = pShadowMatrix2 * vec4( position, 1.0 );
+				vec4 shapos2 = pShadowMatrix2[ vLayer ] * vec4( position, 1.0 );
 				
 				#ifdef SMA2_CUBE
 					shapos2.w = length( shapos2.xyz );
@@ -1137,13 +1140,13 @@ void main( void ){
 	#elif defined TEXTURE_COLOR_CUBEMAP
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec3 lightImageTC = normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) );
+		vec3 lightImageTC = normalize( pLightImageOmniMatrix[ vLayer ] * vec4( position, 1.0 ) );
 		lightColor *= pow( texture( texColorCubemap, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 		
 	#elif defined TEXTURE_COLOR_EQUIRECT
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) ) );
+		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageOmniMatrix[ vLayer ] * vec4( position, 1.0 ) ) );
 		lightColor *= pow( texture( texColorEquirect, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 	#endif
 	

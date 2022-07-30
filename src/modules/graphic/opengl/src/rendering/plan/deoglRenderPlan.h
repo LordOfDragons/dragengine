@@ -77,7 +77,8 @@ public:
 	enum eRenderVR{
 		ervrNone,
 		ervrLeftEye,
-		ervrRightEye
+		ervrRightEye,
+		ervrStereo
 	};
 	
 	
@@ -100,7 +101,8 @@ private:
 	decDMatrix pFrustumMatrixStereo;
 	decDMatrix pRefPosCameraMatrix;
 	decDMatrix pRefPosCameraMatrixNonMirrored;
-	decDMatrix pCameraCorrectionMatrix;
+	decMatrix pCameraStereoMatrix;
+	decMatrix pCameraStereoInverseMatrix;
 	float pCameraFov;
 	float pCameraFovRatio;
 	float pCameraImageDistance;
@@ -330,11 +332,14 @@ public:
 	/** Reference position camera matrix mirror free. */
 	inline const decDMatrix &GetRefPosCameraMatrixNonMirrored() const{ return pRefPosCameraMatrixNonMirrored; }
 	
-	/** Camera correction matrix. */
-	inline const decDMatrix &GetCameraCorrectionMatrix() const{ return pCameraCorrectionMatrix; }
+	/** Camera stereo matrix. Transforms from left eye camera matrix to right eye camera matrix. */
+	inline const decMatrix &GetCameraStereoMatrix() const{ return pCameraStereoMatrix; }
 	
-	/** Set camera correction matrix. */
-	void SetCameraCorrectionMatrix( const decDMatrix &matrix );
+	/** Set camera stereo matrix. Transforms from left eye camera matrix to right eye camera matrix. */
+	void SetCameraStereoMatrix( const decMatrix &matrix );
+	
+	/** Inverse camera stereo matrix. Transforms from right eye camera matrix to left eye camera matrix. */
+	inline const decMatrix &GetCameraStereoInverseMatrix() const{ return pCameraStereoInverseMatrix; }
 	
 	/** Camera position in world space. */
 	inline const decDVector &GetCameraPosition() const{ return pCameraPosition; }

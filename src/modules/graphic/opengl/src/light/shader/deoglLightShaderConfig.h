@@ -128,7 +128,7 @@ public:
 	bool pSubSurface;
 	bool pLuminanceOnly;
 	bool pGIRay;
-	bool pRenderStereo;
+	bool pGSRenderStereo;
 	
 	bool pTextureNoise;
 	bool pTextureColor;
@@ -274,11 +274,11 @@ public:
 	/** Set GI ray. */
 	void SetGIRay( bool giRay );
 	
-	/** Render stereo. */
-	inline bool GetRenderStereo() const{ return pRenderStereo; }
+	/** Render dual view using geometry shader. */
+	inline bool GetGSRenderStereo() const{ return pGSRenderStereo; }
 	
-	/** Set render stereo. */
-	void SetRenderStereo( bool renderStereo );
+	/** Set render dual view using geometry shader. */
+	void SetGSRenderStereo( bool gsRenderStereo );
 	
 	
 	

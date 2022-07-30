@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>Sky Body</name>
+	<name>Sky Body Stereo</name>
 	
 	<version>130</version>
 	
@@ -18,5 +18,6 @@
 	<output name='outColor' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/sky/body.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/sky/body.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/sky/body.glsl</sourceCode>
 </shader>

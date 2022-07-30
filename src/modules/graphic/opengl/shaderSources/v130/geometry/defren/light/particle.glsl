@@ -1,10 +1,24 @@
+#ifdef GS_INSTANCING
+	#extension GL_ARB_gpu_shader5 : require
+#endif
+
 #ifdef HIGH_PRECISION
 precision highp float;
 precision highp int;
 #endif
 
-layout( points ) in;
-layout( triangle_strip, max_vertices=4 ) out;
+#ifdef GS_RENDER_STEREO
+	#ifdef GS_INSTANCING
+		layout( points, invocations=2 ) in;
+		layout( triangle_strip, max_vertices=4 ) out;
+	#else
+		layout( points ) in;
+		layout( triangle_strip, max_vertices=8 ) out;
+	#endif
+#else
+	layout( points ) in;
+	layout( triangle_strip, max_vertices=4 ) out;
+#endif
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/light/ubo_instance_parameters.glsl"
@@ -17,30 +31,52 @@ out vec3 vParticleLightPosition;
 out vec3 vParticleLightColor;
 out float vParticleLightRange;
 
+flat out int vLayer;
 
-void emitCorner( in vec3 position ){
+
+void emitCorner( in vec3 position, in int layer ){
 	vParticleLightPosition = gl_in[ 0 ].gl_Position.xyz;
 	vParticleLightColor = vGSParticleLightColor[ 0 ];
 	vParticleLightRange = vGSParticleLightRange[ 0 ];
 	
 	vLightVolumePos = position;
 	
-	gl_Position = pMatrixMVP * vec4( position, 1.0 );
+	gl_Position = pMatrixMVP[ layer ] * vec4( position, 1 );
 	
-	gl_Layer = 0;
+	vLayer = layer;
+	
+	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
 	EmitVertex();
 }
 
-void main( void ){
-	vec3 position = gl_in[ 0 ].gl_Position.xyz;
-	vec3 range = vec3( vGSParticleLightRange[ 0 ], -vGSParticleLightRange[ 0 ], 0.0 );
+void emitParticle( in int layer ){
+	vec3 position = pMatrixMV[ layer ] * vec4( gl_in[ 0 ].gl_Position.xyz, 1 );
+	vec3 range = vec3( vGSParticleLightRange[ 0 ], -vGSParticleLightRange[ 0 ], 0 );
 	
-	emitCorner( position + range.yyz ); // -range, -range
-	emitCorner( position + range.yxz ); // -range, +range
-	emitCorner( position + range.xyz ); // +range, -range
-	emitCorner( position + range.xxz ); // +range, +range
+	emitCorner( position + range.yyz, layer ); // -range, -range
+	emitCorner( position + range.yxz, layer ); // -range, +range
+	emitCorner( position + range.xyz, layer ); // +range, -range
+	emitCorner( position + range.xxz, layer ); // +range, +range
 	
 	EndPrimitive();
+}
+
+void main( void ){
+	#ifdef GS_RENDER_STEREO
+		int eye;
+		#ifdef GS_INSTANCING
+		eye = gl_InvocationID;
+		#else
+		for( eye=0; eye<2; eye++ ){
+		#endif
+			emitParticle( eye );
+		#ifndef GS_INSTANCING
+		}
+		#endif
+		
+	#else
+		emitParticle( 0 );
+	#endif
 }

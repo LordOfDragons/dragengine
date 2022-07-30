@@ -132,11 +132,7 @@ bool deoglRSkyInstanceLayer::GetHasLightAmbient() const{
 
 
 
-deoglLightShader *deoglRSkyInstanceLayer::GetShaderFor( int shaderType ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+deoglLightShader *deoglRSkyInstanceLayer::GetShaderFor( eShaderTypes shaderType ){
 	if( ! pShaders[ shaderType ] ){
 		deoglLightShaderConfig config;
 		
@@ -149,11 +145,7 @@ deoglLightShader *deoglRSkyInstanceLayer::GetShaderFor( int shaderType ){
 	return pShaders[ shaderType ];
 }
 
-bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+bool deoglRSkyInstanceLayer::GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config ){
 	const deoglConfiguration &oglconfig = pInstance.GetRenderThread().GetConfiguration();
 	
 	config.Reset();
@@ -163,6 +155,17 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	
 	config.SetHWDepthCompare( true );
 	config.SetDecodeInShadow( false );
+	
+	switch( shaderType ){
+	case estStereoNoShadow:
+	case estStereoAmbient:
+	case estStereoSolid:
+		config.SetGSRenderStereo( true );
+		break;
+		
+	default:
+		break;
+	}
 	
 	switch( shaderType ){
 	case estGIRayNoShadow:
@@ -193,14 +196,17 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	
 	switch( shaderType ){
 	case estNoShadow:
+	case estStereoNoShadow:
 		config.SetAmbientLighting( true );
 		break;
 		
 	case estAmbient:
+	case estStereoAmbient:
 		config.SetAmbientLighting( true );
 		break;
 		
 	case estSolid:
+	case estStereoSolid:
 		config.SetAmbientLighting( true );
 		config.SetTextureShadow1Solid( true );
 		break;
@@ -229,7 +235,7 @@ deoglSPBlockUBO *deoglRSkyInstanceLayer::GetLightParameterBlock(){
 		deoglLightShader *shader = nullptr;
 		int i;
 		
-		for( i=0; i<EST_COUNT; i++ ){
+		for( i=0; i<ShaderTypeCount; i++ ){
 			if( pShaders[ i ] ){
 				shader = pShaders[ i ];
 				break;
@@ -251,7 +257,7 @@ deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 		deoglLightShader *shader = nullptr;
 		int i;
 		
-		for( i=0; i<EST_COUNT; i++ ){
+		for( i=0; i<ShaderTypeCount; i++ ){
 			if( pShaders[ i ] ){
 				shader = pShaders[ i ];
 				break;

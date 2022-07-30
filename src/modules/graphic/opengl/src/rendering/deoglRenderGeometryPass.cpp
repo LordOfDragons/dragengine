@@ -165,7 +165,7 @@ DBG_ENTER("RenderDecals")
 	deoglRenderPlanTasks &tasks = plan.GetTasks();
 	tasks.WaitFinishBuildingTasksGeometry();
 	
-	tasks.GetSolidDecalsTask().SetRenderParamBlock( renworld.GetRenderPB() );
+	tasks.GetSolidDecalsTask().SetRenderParamBlock( renworld.RenderPB( plan ) );
 	rengeom.RenderTask( tasks.GetSolidDecalsTask() );
 	
 	// cleanup
@@ -280,12 +280,12 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// height terrain has to come first since it has to be handled differently
 	if( tasks.GetSolidGeometryHeight1Task().GetShaderCount() > 0 ){
-		tasks.GetSolidGeometryHeight1Task().SetRenderParamBlock( renworld.GetRenderPB() );
+		tasks.GetSolidGeometryHeight1Task().SetRenderParamBlock( renworld.RenderPB( plan ) );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		rengeom.RenderTask( tasks.GetSolidGeometryHeight1Task() );
 	}
 	if( tasks.GetSolidGeometryHeight2Task().GetShaderCount() > 0 ){
-		tasks.GetSolidGeometryHeight2Task().SetRenderParamBlock( renworld.GetRenderPB() );
+		tasks.GetSolidGeometryHeight2Task().SetRenderParamBlock( renworld.RenderPB( plan ) );
 		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 		rengeom.RenderTask( tasks.GetSolidGeometryHeight2Task() );
@@ -300,12 +300,12 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	}
 	
-	tasks.GetSolidGeometryTask().SetRenderParamBlock( renworld.GetRenderPB() );
+	tasks.GetSolidGeometryTask().SetRenderParamBlock( renworld.RenderPB( plan ) );
 	rengeom.RenderTask( tasks.GetSolidGeometryTask() );
 	
 	// outline
 	if( tasks.GetSolidGeometryOutlineTask().GetShaderCount() > 0 ){
-		tasks.GetSolidGeometryOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
+		tasks.GetSolidGeometryOutlineTask().SetRenderParamBlock( renworld.RenderPB( plan ) );
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( tasks.GetSolidGeometryOutlineTask() );
 		SetCullMode( plan.GetFlipCulling() );

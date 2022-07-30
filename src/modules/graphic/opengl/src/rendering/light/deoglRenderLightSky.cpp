@@ -411,14 +411,20 @@ const deoglRenderPlanMasked *mask ){
 	// set shader
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	if( useShadow ){
-		lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estSolid );
+		lightShader = skyLayer.GetShaderFor( plan.GetPlan().GetRenderStereo()
+			? deoglRSkyInstanceLayer::estStereoSolid
+			: deoglRSkyInstanceLayer::estSolid );
 		
 	}else{
 		if( skyLayer.GetHasLightDirect() ){
-			lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estNoShadow );
+			lightShader = skyLayer.GetShaderFor( plan.GetPlan().GetRenderStereo()
+				? deoglRSkyInstanceLayer::estStereoNoShadow
+				: deoglRSkyInstanceLayer::estNoShadow );
 			
 		}else{
-			lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estAmbient );
+			lightShader = skyLayer.GetShaderFor( plan.GetPlan().GetRenderStereo()
+				? deoglRSkyInstanceLayer::estStereoAmbient
+				: deoglRSkyInstanceLayer::estAmbient );
 		}
 	}
 	
@@ -514,7 +520,9 @@ const deoglRenderPlanMasked *mask ){
 			if( lightShader ){
 				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 				
-				renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan.GetPlan() );
+				// WARNING always non-stereo!
+				renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+				
 				spbLight->Activate();
 				spbInstance->Activate();
 				
@@ -1336,25 +1344,48 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan ){
 
 void deoglRenderLightSky::UpdateInstanceParamBlock( deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount ){
-	// otherwise set shadow parameters
+	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	const deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	float pixelSize, noiseScale;
 	int target;
 	
 	// calculate matrices
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	
-	// set values
-	decMatrix matrix[ 4 ], giMatrixShadow;
-	deoglGIState * const giState = plan.GetPlan().GetRenderGIState();
+	decMatrix matrixShadow[ 4 ], matrixShadowStereo[ 4 ], giMatrixShadow;
 	float layerBorder[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	float scaleZ[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	
+	const decDMatrix matrixLayer( decMatrix::CreateFromQuaternion(
+		skyLayer.GetLightOrientation() ).QuickMultiply( skyLayer.GetMatrix() ) );
+	const decDMatrix matrixLV( matrixLayer.QuickMultiply( plan.GetPlan().GetRefPosCameraMatrix() ) );
+	
+	// for VR rendering the shadow maps have been calculated against the left eye. when the right
+	// eye is rendered the geometry has to be transformed into the left eye for the shadow maps
+	// to work correctly.
+	decMatrix transformShadow, transformShadowStereo;
+	decDMatrix matrixLVStereo;
+	
+	if( plan.GetPlan().GetRenderStereo() ){
+		// using stereo rendering the camera matrix is the left eye camera matrix. the stereo
+		// matrix has then to transform from the right eye to the left eye. the stored plan
+		// camera stereo matrix transforms from the left eye to the right eye
+		matrixLVStereo = matrixLV.QuickMultiply( plan.GetPlan().GetCameraStereoMatrix() );
+		transformShadowStereo = plan.GetPlan().GetCameraStereoInverseMatrix();
+		
+	}else{
+		// using non-stereo rendering the situation is slightly different. if the left eye is
+		// rendered we are in the correct eye already and do not modify the shadow matrix.
+		// if the right eye is rendered the shadow matrix has to be transformed from right eye
+		// to left eye. in contrary to stereo rendering this modification has to be applied to
+		// the base shadow map not the stereo shadow map
+		transformShadow = plan.GetPlan().GetCameraStereoInverseMatrix();
+	}
 	
 	if( plan.GetUseShadow() ){
 		// planSkyLight is only properly set up if shadow casting is used
 		if( 0 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 0 );
-			matrix[ 0 ] = sl.matrix;
+			matrixShadow[ 0 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 0 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 0 ] = sl.layerBorder;
 			scaleZ[ 0 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1363,7 +1394,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		if( 1 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 1 );
-			matrix[ 1 ] = sl.matrix;
+			matrixShadow[ 1 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 1 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 1 ] = sl.layerBorder;
 			scaleZ[ 1 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1372,7 +1404,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		if( 2 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 2 );
-			matrix[ 2 ] = sl.matrix;
+			matrixShadow[ 2 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 2 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 2 ] = sl.layerBorder;
 			scaleZ[ 2 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1381,7 +1414,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		if( 3 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 3 );
-			matrix[ 3 ] = sl.matrix;
+			matrixShadow[ 3 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 3 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 3 ] = sl.layerBorder;
 			scaleZ[ 3 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1390,7 +1424,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		
 		// only properly set up if plan has GI
-		if( giState ){
+		if( plan.GetPlan().GetRenderGIState() ){
 			giMatrixShadow = plan.GetGIShadowLayer().matrix;
 		}
 	}
@@ -1399,32 +1433,32 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 	try{
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
 		if( target != -1 ){
-			const decMatrix matrixL =
-				decMatrix::CreateFromQuaternion( skyLayer.GetLightOrientation() )
-				* skyLayer.GetMatrix() * plan.GetPlan().GetRefPosCameraMatrix()
-				* plan.GetPlan().GetCameraCorrectionMatrix();
-			
-			paramBlock.SetParameterDataVec3( target, matrixL.TransformView().Normalized() );
+			paramBlock.SetParameterDataArrayVec3( target, 0, matrixLV.TransformView().Normalized() );
+			paramBlock.SetParameterDataArrayVec3( target, 1, matrixLVStereo.TransformView().Normalized() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 0 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 0 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 0 ] );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 1 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 1 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 1 ] );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix3 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 2 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 2 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 2 ] );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix4 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 3 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 3 ] );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 3 ] );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );

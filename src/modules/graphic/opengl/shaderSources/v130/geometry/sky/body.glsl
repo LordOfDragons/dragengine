@@ -12,21 +12,12 @@
 	#endif
 #endif
 
-#ifndef NO_TEXCOORD
-	in vec2 vGSTexCoord[ 3 ];
-	
-	#ifdef FULLSCREENQUAD
-		in vec2 vGSScreenCoord[ 3 ];
-	#endif
-#endif
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
-#ifndef NO_TEXCOORD
-	out vec2 vTexCoord;
-	
-	#ifdef FULLSCREENQUAD
-		out vec2 vScreenCoord;
-	#endif
-#endif
+in vec2 vGSTexCoord[ 3 ];
+
+out vec2 vTexCoord;
 
 flat out int vLayer;
 
@@ -40,16 +31,13 @@ void main( void ){
 		
 		int corner;
 		for( corner=0; corner<3; corner++ ){
-			gl_Position = gl_in[ corner ].gl_Position;
-			
-			#ifndef NO_TEXCOORD
-				vTexCoord = vGSTexCoord[ corner ];
-				
-				#ifdef FULLSCREENQUAD
-					vScreenCoord = vGSScreenCoord[ corner ];
-				#endif
+			#ifdef GS_RENDER_STEREO
+			gl_Position = pMatrixSkyBody[ eye ] * gl_in[ corner ].gl_Position;
+			#else
+			gl_Position = pMatrixSkyBody * gl_in[ corner ].gl_Position;
 			#endif
 			
+			vTexCoord = vGSTexCoord[ corner ];
 			vLayer = eye;
 			
 			gl_Layer = eye;

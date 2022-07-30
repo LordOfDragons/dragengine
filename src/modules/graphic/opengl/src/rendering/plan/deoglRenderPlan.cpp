@@ -1480,15 +1480,17 @@ void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 		pCameraPosition = pCameraInverseMatrix.GetPosition();
 //	}
 	
-	pCameraCorrectionMatrix.SetIdentity();
+	pCameraStereoMatrix.SetIdentity();
+	pCameraStereoInverseMatrix.SetIdentity();
 }
 
 void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
 	pCameraMatrixNonMirrored = matrix;
 }
 
-void deoglRenderPlan::SetCameraCorrectionMatrix( const decDMatrix &matrix ){
-	pCameraCorrectionMatrix = matrix;
+void deoglRenderPlan::SetCameraStereoMatrix( const decMatrix &matrix ){
+	pCameraStereoMatrix = matrix;
+	pCameraStereoInverseMatrix = matrix.QuickInvert();
 }
 
 void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){

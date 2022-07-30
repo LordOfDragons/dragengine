@@ -124,54 +124,55 @@ struct sSPBParameterDefinition{
 	deoglSPBParameter::eValueTypes dataType;
 	int componentCount;
 	int vectorCount;
+	int arrayCount;
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EIUT_COUNT ] = {
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pMatrixMVP ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 3 }, // pMatrixMV ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pMatrixMVP ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pMatrixMV ( mat4x3 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 1 }, // pSamplesParams ( vec4 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pBurstFactor ( float )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pSamplesParams ( vec4 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pBurstFactor ( float )
 	
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightPosition ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightView ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pDepthCompare ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightPosition ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightView ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pDepthCompare ( float )
 	
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix2 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix3 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix4 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 1 }, // pLayerBorder ( vec4 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix2 ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix3 ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix4 ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pLayerBorder ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 3 }, // pLightImageOmniMatrix ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pLightImageOmniMatrix ( mat4x3 )
 	
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Solid ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Transparent ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow2Solid ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow2Transparent ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow1Solid ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow1Transparent ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow2Solid ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow2Transparent ( vec3 )
 	
-	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform ( vec2 )
-	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform2 ( vec2 )
+	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // pShadowDepthTransform ( vec2 )
+	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // pShadowDepthTransform2 ( vec2 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pGIShadowMatrix ( mat4 )
-	{ deoglSPBParameter::evtFloat, 3, 1 } // pGIShadowParams ( vec3 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 1 }, // pGIShadowMatrix ( mat4 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 } // pGIShadowParams ( vec3 )
 };
 
 static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_COUNT ] = {
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightColor ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightRange ( float )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightColorAmbient ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightAmbientRatio ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightGIAmbientRatio ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pLightColor ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightRange ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pLightColorAmbient ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightAmbientRatio ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightGIAmbientRatio ( float )
 	
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightAttenuationCoefficient ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightDampingCoefficient ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightDampingThreshold ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightImageGamma ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightAttenuationCoefficient ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightDampingCoefficient ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightDampingThreshold ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightImageGamma ( float )
 	
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightSpotFactor ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightSpotBase ( vec2 )
-	{ deoglSPBParameter::evtFloat, 1, 1 } // pLightSpotExponent ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightSpotFactor ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightSpotBase ( vec2 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 } // pLightSpotExponent ( float )
 };
 
 
@@ -297,9 +298,9 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBInstParam() const{
 			target = pInstanceUniformTargets[ i ];
 			
 			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
-					vInstanceSPBParamDefs[ i ].componentCount,
-					vInstanceSPBParamDefs[ i ].vectorCount, 1 );
+				spb->GetParameterAt( target ).SetAll(
+					vInstanceSPBParamDefs[ i ].dataType, vInstanceSPBParamDefs[ i ].componentCount,
+					vInstanceSPBParamDefs[ i ].vectorCount, vInstanceSPBParamDefs[ i ].arrayCount );
 			}
 		}
 		
@@ -335,9 +336,9 @@ deoglSPBlockUBO *deoglLightShader::CreateSPBLightParam() const{
 			target = pLightUniformTargets[ i ];
 			
 			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vLightSPBParamDefs[ i ].dataType,
-					vLightSPBParamDefs[ i ].componentCount,
-					vLightSPBParamDefs[ i ].vectorCount, 1 );
+				spb->GetParameterAt( target ).SetAll(
+					vLightSPBParamDefs[ i ].dataType, vLightSPBParamDefs[ i ].componentCount,
+					vLightSPBParamDefs[ i ].vectorCount, vLightSPBParamDefs[ i ].arrayCount );
 			}
 		}
 		
@@ -591,7 +592,7 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetGIRay() ){
 		defines.AddDefine( "GI_RAY", true );
 	}
-	if( pConfig.GetRenderStereo() ){
+	if( pConfig.GetGSRenderStereo() ){
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 	}
 	
@@ -687,7 +688,7 @@ void deoglLightShader::GenerateGeometrySC(){
 		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().
 			GetUnitSourceCodePath( deoglLightShaderManager::euscpGeometryParticle ) );
 		
-	}else if( pConfig.GetRenderStereo() ){
+	}else if( pConfig.GetGSRenderStereo() ){
 		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().
 			GetUnitSourceCodePath( deoglLightShaderManager::euscpGeometryStereo ) );
 	}

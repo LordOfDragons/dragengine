@@ -776,50 +776,72 @@ DEBUG_RESET_TIMER
 		if( texSolidDepth2 ){
 			if( texTranspDepth2 ){
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp2
+						: deoglRLight::estSolid2Transp2 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp2NoAmbient
+						: deoglRLight::estSolid2Transp2NoAmbient );
 				}
 				
 			}else if( texTranspDepth1 ){
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp1
+						: deoglRLight::estSolid2Transp1 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp1NoAmbient
+						: deoglRLight::estSolid2Transp1NoAmbient );
 				}
 				
 			}else{
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2
+						: deoglRLight::estSolid2 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2NoAmbient
+						: deoglRLight::estSolid2NoAmbient );
 				}
 			}
 			
 		}else{
 			if( texTranspDepth1 ){
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1Transp1 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1Transp1
+						: deoglRLight::estSolid1Transp1 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1Transp1NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1Transp1NoAmbient
+						: deoglRLight::estSolid1Transp1NoAmbient );
 				}
 				
 			}else{
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1
+						: deoglRLight::estSolid1 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1NoAmbient
+						: deoglRLight::estSolid1NoAmbient );
 				}
 			}
 		}
 		
 	}else{
-		lightShader = light.GetShaderFor( deoglRLight::estNoShadow );
+		lightShader = light.GetShaderFor( plan.GetRenderStereo()
+			? deoglRLight::estStereoNoShadow
+			: deoglRLight::estNoShadow );
 	}
 	
 	if( ! lightShader ){
@@ -889,7 +911,9 @@ DEBUG_RESET_TIMER
 		if( lightShader ){
 			renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 			
-			renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+			// WARNING always non-stereo!
+			renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+			
 			spbLight->Activate();
 			spbInstance->Activate();
 			
@@ -2025,57 +2049,79 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight ){
 
 void deoglRenderLightPoint::UpdateInstanceParamBlock( deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps ){
+	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
+	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
-	deoglRenderPlan &plan = planLight.GetPlan();
+	const deoglRenderPlan &plan = planLight.GetPlan();
+	
+	const bool isDepthCompareLEqual = defren.GetDepthCompareFuncRegular() == GL_LEQUAL;
+	const bool isCameraInside = planLight.GetLight()->GetCameraInside();
+	const decDMatrix &matrixLight = light.GetMatrix();
+	const decDVector &lightPosition = matrixLight.GetPosition();
+	const deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
+	
 	float noiseScale;
 	int target;
 	
 	// calculate matrices
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
+	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
 	
-	const decDMatrix matrixMV( light.GetMatrix() * plan.GetCameraMatrix() );
+	const decDMatrix matrixMV( matrixLight * matrixCamera );
 	const decDMatrix matrixMVP( matrixMV * plan.GetProjectionMatrix() );
 	
-	decDMatrix matrixShadow( ( decDMatrix::CreateTranslation( light.GetMatrix().GetPosition() )
-		* plan.GetCameraMatrix() ).QuickInvert() );
+	const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
+	const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
+	const decDMatrix matrixMVStereo( matrixLight * matrixCameraStereo );
+	const decDMatrix matrixMVPStereo( matrixMVStereo * matrixProjectionStereo );
+	
+	decDMatrix matrixShadow( ( decDMatrix::CreateTranslation( lightPosition ) * matrixCamera ).QuickInvert() );
 	matrixShadow.a21 = -matrixShadow.a21;
 	matrixShadow.a22 = -matrixShadow.a22;
 	matrixShadow.a23 = -matrixShadow.a23;
 	matrixShadow.a24 = -matrixShadow.a24;
+	
+	decDMatrix matrixShadowStereo( ( decDMatrix::CreateTranslation( lightPosition ) * matrixCameraStereo ).QuickInvert() );
+	matrixShadowStereo.a21 = -matrixShadowStereo.a21;
+	matrixShadowStereo.a22 = -matrixShadowStereo.a22;
+	matrixShadowStereo.a23 = -matrixShadowStereo.a23;
+	matrixShadowStereo.a24 = -matrixShadowStereo.a24;
 	
 	// set values
 	paramBlock.MapBuffer();
 	try{
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMVP );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrixMVP );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixMVP );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixMVPStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMV );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixMV );
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixMV );
+			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixMVStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightPosition );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec3( target, matrixMV.GetPosition() );
+			paramBlock.SetParameterDataArrayVec3( target, 0, matrixMV.GetPosition() );
+			paramBlock.SetParameterDataArrayVec3( target, 1, matrixMVStereo.GetPosition() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, planLight.GetLight()->GetCameraInside() ? 0.0f
-				: ( GetRenderThread().GetDeferredRendering().GetDepthCompareFuncRegular() == GL_LEQUAL ? 1.0f : -1.0f ) );
+			paramBlock.SetParameterDataFloat( target, isCameraInside ? 0.0f : ( isDepthCompareLEqual ? 1.0f : -1.0f ) );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightImageOmniMatrix );
@@ -2084,7 +2130,9 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			if( light.GetUseSkinTexture() ){
 				rotate = light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI;
 			}
-			paramBlock.SetParameterDataMat4x3( target, ( decMatrix::CreateRotation( rotate ) * matrixMV ).QuickInvert() );
+			const decMatrix matrixRotate( decMatrix::CreateRotation( rotate ) );
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixRotate.QuickMultiply( matrixMV ).QuickInvert() );
+			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixRotate.QuickMultiply( matrixMVStereo ).QuickInvert() );
 		}
 		
 		/*
@@ -2160,10 +2208,9 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			// with:
 			//   param1 = 1 / GetStaticScale()
 			//   param2 = -GetStaticOffset() / GetStaticScale()
-			const float invDepthScale = 1.0f / shadowCaster.GetStaticScale();
+			const float scale = 1.0f / shadowCaster.GetStaticScale();
 			
-			paramBlock.SetParameterDataVec2( target, invDepthScale,
-				-shadowCaster.GetStaticOffset() * invDepthScale );
+			paramBlock.SetParameterDataVec2( target, scale, scale * -shadowCaster.GetStaticOffset() );
 		}
 		
 	}catch( const deException & ){

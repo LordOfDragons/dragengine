@@ -59,7 +59,7 @@ private:
 	double pProjectionTop;
 	double pProjectionBottom;
 	
-	decDMatrix pMatrixViewToEye;
+	decMatrix pMatrixViewToEye;
 	deModel::Ref pHiddenMesh;
 	deoglRModel::Ref pHiddenRMesh;
 	
@@ -107,7 +107,7 @@ public:
 	inline double GetProjectionBottom() const{ return pProjectionBottom; }
 	
 	/** Matrix transforming from view space to eye space. */
-	inline const decDMatrix &GetMatrixViewToEye() const{ return pMatrixViewToEye; }
+	inline const decMatrix &GetMatrixViewToEye() const{ return pMatrixViewToEye; }
 	
 	/** Hidden area mesh or nullptr. */
 	inline deoglRModel *GetHiddenMesh() const{ return pHiddenRMesh; }

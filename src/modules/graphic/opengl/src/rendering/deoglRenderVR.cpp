@@ -96,7 +96,11 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 		}
 		break;
 		
-	default:
+	case deoglRenderPlan::ervrStereo:
+		// TODO render both at the same time
+		break;
+		
+	case deoglRenderPlan::ervrNone:
 		break;
 	}
 	

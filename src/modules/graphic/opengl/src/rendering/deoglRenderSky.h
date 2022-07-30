@@ -41,8 +41,13 @@ class decLayerMask;
 class deoglRenderSky : public deoglRenderBase{
 private:
 	deoglShaderProgramUsage pShaderSkySphere;
+	deoglShaderProgramUsage pShaderSkySphereStereo;
+	
 	deoglShaderProgramUsage pShaderSkyBox;
+	deoglShaderProgramUsage pShaderSkyBoxStereo;
+	
 	deoglShaderProgramUsage pShaderBody;
+	deoglShaderProgramUsage pShaderBodyStereo;
 	
 	decPointerList pSkyInstances;
 	
