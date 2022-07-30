@@ -38,21 +38,30 @@ precision highp int;
 
 in vec3 inPosition;
 
-#if defined PERSPECTIVE_TO_LINEAR && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
-out float vDepth;
-#endif
-#ifdef DEPTH_DISTANCE
-out vec3 vPosition;
-#endif
-#ifdef USE_CLIP_PLANE
-out vec3 vClipCoord;
-#endif
-
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
-	flat out int vSPBIndex;
-#endif
-#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
-	flat out int vSPBFlags;
+	#ifdef SHARED_SPB
+		flat out int vGSSPBIndex;
+		#define vSPBIndex vGSSPBIndex
+		
+		#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
+			flat out int vGSSPBFlags;
+		#endif
+	#endif
+	
+#else
+	#ifdef PERSPECTIVE_TO_LINEAR
+		out float vDepth;
+	#endif
+	#ifdef DEPTH_DISTANCE
+		out vec3 vPosition;
+	#endif
+	#ifdef USE_CLIP_PLANE
+		out vec3 vClipCoord;
+	#endif
+	
+	#ifdef SHARED_SPB
+		flat out int vSPBIndex;
+	#endif
 #endif
 
 #include "v130/shared/defren/sanitize_position.glsl"
@@ -60,9 +69,11 @@ out vec3 vClipCoord;
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
-	vec4 position = vec4( pMatrixModel * vec4( inPosition, 1.0 ), 1.0 );
+	vec4 position = vec4( pMatrixModel * vec4( inPosition, 1 ), 1 );
+	
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		gl_Position = sanitizePosition( position );
+		
 	#else
 		gl_Position = sanitizePosition( MATRIX_VP_0 * position );
 		#ifdef PERSPECTIVE_TO_LINEAR
@@ -71,16 +82,15 @@ void main( void ){
 		#ifdef DEPTH_DISTANCE
 			vPosition = MATRIX_V_0 * position;
 		#endif
+		#ifdef USE_CLIP_PLANE
+			vClipCoord = MATRIX_V_0 * position;
+		#endif
 	#endif
 	
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+	#ifdef SHARED_SPB
 		vSPBIndex = spbIndex;
-	#endif
-	#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
-		vSPBFlags = spbFlags;
-	#endif
-	
-	#ifdef USE_CLIP_PLANE
-		vClipCoord = MATRIX_V_0 * position;
+		#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
+			vGSSPBFlags = spbFlags;
+		#endif
 	#endif
 }

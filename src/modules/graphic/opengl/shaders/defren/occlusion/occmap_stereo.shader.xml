@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>DefRen Occlusion OccMap Cube</name>
+	<name>DefRen Occlusion OccMap Stereo</name>
 	
-	<version>150</version>
+	<version>140</version>
 	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='OcclusionMeshParameters' target='2'/>
-	<uniformBlock name='SpecialParameters' target='3'/>
 	<uniformBlock name='InstanceIndex' target='4'/>
 	
 	<shaderStorageBlock name='OcclusionMeshParametersSSBO' target='0'/>

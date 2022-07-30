@@ -200,29 +200,57 @@ pAddToRenderTask( NULL )
 	
 	try{
 		renderThread.GetShader().AddCommonDefines( commonDefines );
+		AddOccMapDefines( commonDefines );
+		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
-		AddOccMapDefines( defines );
 		pShaderOccMapOrtho = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrtho->EnsureRTSShader();
 		pShaderOccMapOrtho->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefine( "USE_CLIP_PLANE", true );
+		defines.AddDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapOrthoClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoClipPlane->EnsureRTSShader();
 		pShaderOccMapOrthoClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
-		defines.AddDefine( "PERSPECTIVE_TO_LINEAR", true );
+		defines.AddDefines( "PERSPECTIVE_TO_LINEAR" );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMap->EnsureRTSShader();
 		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefine( "USE_CLIP_PLANE", true );
+		defines.AddDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapClipPlane->EnsureRTSShader();
 		pShaderOccMapClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		
+		
+		
+		defines = commonDefines;
+		defines.AddDefines( "GS_RENDER_STEREO" );
+		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
+		pShaderOccMapOrthoStereo = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapOrthoStereo->EnsureRTSShader();
+		pShaderOccMapOrthoStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		
+		defines.AddDefines( "USE_CLIP_PLANE" );
+		pShaderOccMapOrthoClipPlaneStereo = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapOrthoClipPlaneStereo->EnsureRTSShader();
+		pShaderOccMapOrthoClipPlaneStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		defines.RemoveDefine( "USE_CLIP_PLANE" );
+		
+		defines.AddDefines( "PERSPECTIVE_TO_LINEAR" );
+		pShaderOccMapStereo = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapStereo->EnsureRTSShader();
+		pShaderOccMapStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		
+		defines.AddDefines( "USE_CLIP_PLANE" );
+		pShaderOccMapClipPlaneStereo = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapClipPlaneStereo->EnsureRTSShader();
+		pShaderOccMapClipPlaneStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		
+		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
@@ -231,6 +259,8 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
 		defines.AddDefine( "GS_RENDER_STEREO", true );
 		pShaderOccMapDownSampleStereo = shaderManager.GetProgramWith( sources, defines );
+		
+		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test" );
@@ -272,14 +302,14 @@ pAddToRenderTask( NULL )
 		defines.AddDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestTFBSun = shaderManager.GetProgramWith( sources, defines );
 		
+#if 0
 		defines = commonDefines;
 		const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();
 		const bool useGSRenderCube = renderThread.GetExtensions().SupportsGeometryShader() && ! bugClearEntireCubeMap;
 		
 		if( useGSRenderCube ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Cube" );
-			AddOccMapDefines( defines );
-			defines.AddDefine( "PERSPECTIVE_TO_LINEAR", true );
+			defines.AddDefines( "PERSPECTIVE_TO_LINEAR" );
 			
 			defines.AddDefine( "GS_RENDER_CUBE", true );
 			defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
@@ -288,6 +318,7 @@ pAddToRenderTask( NULL )
 			pShaderOccMapCube->EnsureRTSShader();
 			pShaderOccMapCube->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		}
+#endif
 		
 		
 		
@@ -727,21 +758,21 @@ deoglRenderPlanSkyLight &planSkyLight ){
 
 
 deoglRenderTaskSharedShader *deoglRenderOcclusion::GetRenderOcclusionMapRTS(
-const deoglRenderPlanMasked *mask, bool perspective ) const{
+const deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective ) const{
 	if( perspective ){
 		if( mask && mask->GetUseClipPlane() ){
-			return pShaderOccMapClipPlane->GetRTSShader();
+			return ( plan.GetRenderStereo() ? pShaderOccMapClipPlaneStereo : pShaderOccMapClipPlane )->GetRTSShader();
 			
 		}else{
-			return pShaderOccMap->GetRTSShader();
+			return ( plan.GetRenderStereo() ? pShaderOccMapStereo : pShaderOccMap )->GetRTSShader();
 		}
 		
 	}else{
 		if( mask && mask->GetUseClipPlane() ){
-			return pShaderOccMapOrthoClipPlane->GetRTSShader();
+			return ( plan.GetRenderStereo() ? pShaderOccMapOrthoClipPlaneStereo : pShaderOccMapOrthoClipPlane )->GetRTSShader();
 			
 		}else{
-			return pShaderOccMapOrtho->GetRTSShader();
+			return ( plan.GetRenderStereo() ? pShaderOccMapOrthoStereo : pShaderOccMapOrtho )->GetRTSShader();
 		}
 	}
 }
@@ -753,7 +784,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deog
 	pAddToRenderTask->SetSolid( true );
 	pAddToRenderTask->SetNoRendered( plan.GetNoRenderedOccMesh() );
 	
-	pAddToRenderTask->SetEnforceShader( GetRenderOcclusionMapRTS( mask, true ) );
+	pAddToRenderTask->SetEnforceShader( GetRenderOcclusionMapRTS( plan, mask, true ) );
 	
 	pAddToRenderTask->AddOcclusionMeshes( plan.GetComponentsOccMap() );
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Build RT" );
@@ -821,14 +852,15 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	// using a scaling matrix filled with the far frustum point coordinates. only the back faces of the
 	// frustum are rendered.
 	if( renderFrustumPlanesMatrix ){// && false ){
+		deoglShaderProgram *program;
 		if( perspective ){
-			renderThread.GetShader().ActivateShader( pShaderOccMap );
-			shader = pShaderOccMap->GetCompiled();
+			program = plan.GetRenderStereo() ? pShaderOccMapStereo : pShaderOccMap;
 			
 		}else{
-			renderThread.GetShader().ActivateShader( pShaderOccMapOrtho );
-			shader = pShaderOccMapOrtho->GetCompiled();
+			program = plan.GetRenderStereo() ? pShaderOccMapOrthoStereo : pShaderOccMapOrtho;
 		}
+		renderThread.GetShader().ActivateShader( program );
+		shader = program->GetCompiled();
 		
 		pOccMapFrustumParamBlock->MapBuffer();
 		try{
@@ -1229,6 +1261,7 @@ void deoglRenderOcclusion::DebugOcclusionMap( deoglRenderPlan &plan ){
 
 
 
+#if 0
 void deoglRenderOcclusion::RenderOcclusionCubeMap( const deoglCollideList &collideList,
 deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float viewDistance ){
 	if( ! cubemap ){
@@ -1398,6 +1431,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 		throw;
 	}
 }
+#endif
 
 
 

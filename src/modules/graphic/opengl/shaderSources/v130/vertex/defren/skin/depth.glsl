@@ -141,10 +141,6 @@
 	#endif
 #endif
 
-#ifdef NODE_VERTEX_OUTPUTS
-NODE_VERTEX_OUTPUTS
-#endif
-
 
 
 // Constants

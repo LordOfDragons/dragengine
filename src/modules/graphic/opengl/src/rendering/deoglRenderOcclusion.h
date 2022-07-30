@@ -46,9 +46,13 @@ class deoglRenderTaskSharedShader;
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
 	deoglShaderProgramUsage pShaderOccMap;
+	deoglShaderProgramUsage pShaderOccMapStereo;
 	deoglShaderProgramUsage pShaderOccMapClipPlane;
+	deoglShaderProgramUsage pShaderOccMapClipPlaneStereo;
 	deoglShaderProgramUsage pShaderOccMapOrtho;
+	deoglShaderProgramUsage pShaderOccMapOrthoStereo;
 	deoglShaderProgramUsage pShaderOccMapOrthoClipPlane;
+	deoglShaderProgramUsage pShaderOccMapOrthoClipPlaneStereo;
 	deoglShaderProgramUsage pShaderOccMapDownSample;
 	deoglShaderProgramUsage pShaderOccMapDownSampleStereo;
 	deoglShaderProgramUsage pShaderOccTest;
@@ -91,7 +95,7 @@ public:
 	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
 	
 	/** Shader to use for occlusion map rendering. */
-	deoglRenderTaskSharedShader *GetRenderOcclusionMapRTS(
+	deoglRenderTaskSharedShader *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
 		const deoglRenderPlanMasked *mask, bool perspective ) const;
 	
 	/** Render occlusion meshes into the occlusion map. */
@@ -118,8 +122,8 @@ public:
 	void DebugOcclusionMap( deoglRenderPlan &plan );
 	
 	/** Render occlusion meshes into a cube map. The position is relative to the reference position. */
-	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,
-		const decDVector &position, float imageDistance, float viewDistance );
+// 	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,
+// 		const decDVector &position, float imageDistance, float viewDistance );
 	/*@}*/
 	
 private:
