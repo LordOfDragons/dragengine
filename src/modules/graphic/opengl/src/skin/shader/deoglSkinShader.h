@@ -103,7 +103,6 @@ public:
 		erutClipPlane,
 		erutScreenSpace,
 		erutRenderSize,
-		erutRenderLayerCount,
 		erutMipMapParams,
 		erutDepthOffset,
 		erutParticleLightHack,

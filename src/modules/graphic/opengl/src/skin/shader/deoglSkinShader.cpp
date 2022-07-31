@@ -538,7 +538,6 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
 		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutRenderLayerCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 		
 		spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
@@ -2546,7 +2545,6 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pClipPlane" ); // erutClipPlane
 		parameterList.Add( "pScreenSpace" ); // erutScreenSpace
 		parameterList.Add( "pRenderSize" ); // erutRenderSize
-		parameterList.Add( "pRenderLayerCount" ); // erutRenderLayerCount
 		parameterList.Add( "pMipMapParams" ); // erutMipMapParams
 		parameterList.Add( "pDepthOffset" ); // erutDepthOffset
 		parameterList.Add( "pParticleLightHack" ); // erutParticleLightHack

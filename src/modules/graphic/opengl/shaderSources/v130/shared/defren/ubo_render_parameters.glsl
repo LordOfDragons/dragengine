@@ -95,8 +95,6 @@ UBOLAYOUT uniform RenderParameters{
 	// x: width (pixels)
 	// y: height (pixels)
 	vec2 pRenderSize;
-	// render layer count
-	int pRenderLayerCount;
 	
 	// mip map parameters.
 	// x: pixelSizeU (size of pixel of mip map level 0 in meters)

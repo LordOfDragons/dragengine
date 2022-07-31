@@ -772,7 +772,6 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
 			
 			spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, defren.GetWidth(), defren.GetHeight() );
-			spb.SetParameterDataInt( deoglSkinShader::erutRenderLayerCount, defren.GetLayerCount() );
 			
 			spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, mipmapMaxLevel, mipMapMaxScale );
 			
@@ -940,7 +939,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		// render solid content
 		pRenderTask->Clear();
-		pRenderTask->SetRenderParamBlock( pRenderPB );
+		pRenderTask->SetRenderParamBlock( RenderPB( plan ) );
 		
 		pAddToRenderTask->Reset();
 		pAddToRenderTask->SetSolid( true );

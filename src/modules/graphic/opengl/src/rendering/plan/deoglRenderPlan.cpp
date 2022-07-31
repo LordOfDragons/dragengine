@@ -777,8 +777,7 @@ void deoglRenderPlan::pStartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, defren.GetLayerCount() ) ); // 512
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
@@ -1535,6 +1534,8 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 	pFrustumMatrixStereo = plan.pFrustumMatrixStereo;
 	pDepthToPosition = plan.pDepthToPosition;
 	pDepthToPosition2 = plan.pDepthToPosition2;
+	pDepthToPositionStereo = plan.pDepthToPositionStereo;
+	pDepthToPositionStereo2 = plan.pDepthToPositionStereo2;
 	pDepthSampleOffset = plan.pDepthSampleOffset;
 	
 	pDirtyProjMat = false;

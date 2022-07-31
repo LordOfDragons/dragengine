@@ -728,7 +728,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.PrepareRender( context.GetRenderPlanMask() );
 		
 		defren.Resize( rwidth, rheight );
-			/* TESTING */ defren.Resize( rwidth, rheight, 2 );
+// 			/* TESTING */ defren.Resize( rwidth, rheight, 2 );
 		plan.Render();
 	}
 	
