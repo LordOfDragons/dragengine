@@ -134,7 +134,7 @@ public:
 	void ActivateShader( const deoglShaderProgram *shader );
 	
 	/** Add common defines. */
-	void AddCommonDefines( deoglShaderDefines &defines ) const;
+	void SetCommonDefines( deoglShaderDefines &defines ) const;
 	/*@}*/
 	
 private:

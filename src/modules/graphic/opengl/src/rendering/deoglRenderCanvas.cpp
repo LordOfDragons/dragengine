@@ -129,32 +129,34 @@ pDebugTimeCanvasCanvasView( 0.0f ),
 pDebugCountCanvasCanvasView( 0 )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
 		pCreateShapesVAO();
 		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Canvas" );
 		pShaderCanvasColor = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_TEXTURE", "1" );
+		defines.SetDefines( "WITH_TEXTURE" );
 		pShaderCanvasImage = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
-		defines.AddDefine( "WITH_MASK", "1" );
+		defines = commonDefines;
+		defines.SetDefines( "WITH_MASK" );
 		pShaderCanvasColorMask = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_TEXTURE", "1" );
+		defines.SetDefines( "WITH_TEXTURE" );
 		pShaderCanvasImageMask = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
-		defines.AddDefine( "WITH_RENDER_WORLD", "1" );
+		defines = commonDefines;
+		defines.SetDefines( "WITH_RENDER_WORLD" );
 		pShaderCanvasRenderWorld = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_MASK", "1" );
+		defines.SetDefines( "WITH_MASK" );
 		pShaderCanvasRenderWorldMask = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -753,7 +755,9 @@ const deoglRCanvasRenderWorld &canvas ){
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( size ) );
 	const float transparency = context.GetTransparency();
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasRenderWorldMask : pShaderCanvasRenderWorld;
+	deoglShaderProgram * const program = context.GetMask()
+		? ( vr ? pShaderCanvasImageMask : pShaderCanvasRenderWorldMask )
+		: ( vr ? pShaderCanvasImage : pShaderCanvasRenderWorld );
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled &shader = *program->GetCompiled();
 	

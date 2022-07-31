@@ -169,7 +169,7 @@ pSolidShadowMap( NULL )
 	try{
 // 		sources = shaderManager.GetSourcesNamed( "DefRen AO Sky" );
 // 		if( useEncodeDepth ){
-// 			defines.AddDefine( "GEOM_ENCODED_DEPTH", "1" );
+// 			defines.SetDefine( "GEOM_ENCODED_DEPTH", "1" );
 // 		}
 // 		pShaderAO = shaderManager.GetProgramWith( sources, defines );
 // 		defines.RemoveAllDefines();
@@ -179,7 +179,7 @@ pSolidShadowMap( NULL )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		AddSharedSPBDefines( defines );
-		defines.AddDefine( "WITH_SHADOWMAP", true );
+		defines.SetDefine( "WITH_SHADOWMAP", true );
 		pShaderOccMesh = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMesh->EnsureRTSShader();
 		pShaderOccMesh->GetRTSShader()->SetSPBInstanceIndexBase( 0 );

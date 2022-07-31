@@ -64,11 +64,11 @@ deoglRenderBase::~deoglRenderBase(){
 
 void deoglRenderBase::AddBasicDefines( deoglShaderDefines &defines ){
 	if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-		defines.AddDefine( "UBO_IDMATACCBUG", "1" );
+		defines.SetDefine( "UBO_IDMATACCBUG", "1" );
 	}
 	
 	if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-		defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+		defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
 	}
 }
 
@@ -77,32 +77,32 @@ void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
 	decString value;
 	
-	defines.AddDefine( "SHARED_SPB", "1" );
+	defines.SetDefine( "SHARED_SPB", "1" );
 	
 	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
+		defines.SetDefine( "SHARED_SPB_USE_SSBO", "1" );
 		
 		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", value );
 		}
 		
 	}else{
 		// NOTE UBO requires array size to be constant, SSBO does not
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
-			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
+			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", value );
 		}
 		
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", value );
 		}
 	}
 	
 	if( bo.GetInstanceArraySizeUBO() > 0 ){
 		value.SetValue( bo.GetInstanceArraySizeUBO() );
-		defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
+		defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
 	}
 }
 

@@ -294,44 +294,44 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	pTextureToneMapParams = NULL;
 	
 	try{
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderColor2LogLumStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
-		defines.AddDefines( "NO_POSTRANSFORM" );
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderAvgLogLumStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
-		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderParameters = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefines( "SAMPLE_STEREO" );
+		defines.SetDefines( "SAMPLE_STEREO" );
 		pShaderParametersStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderBrightPassStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -344,41 +344,41 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur" );
-		defines.AddDefines( "NO_POSTRANSFORM" );
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderBloomBlurStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
-		defines.AddDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderToneMapStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
-		defines.AddDefines( "NO_POSTRANSFORM" );
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
-		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderLumPrepareStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		

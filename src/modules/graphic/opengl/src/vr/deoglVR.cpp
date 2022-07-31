@@ -48,6 +48,26 @@
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 
+
+// #define DO_TIMING
+
+#ifdef DO_TIMING
+#include <dragengine/common/utils/decTimer.h>
+static decTimer dtimer;
+static decTimer dtimerTotal;
+
+#define DEBUG_RESET_TIMER dtimer.Reset(); dtimerTotal.Reset();
+#define DEBUG_PRINT_TIMER(what) renderThread.GetLogger().LogInfoFormat( "VR %s = %iys",\
+	what, ( int )( dtimer.GetElapsedTime() * 1000000.0 ) ); dtimer.Reset();
+#define DEBUG_PRINT_TIMER_TOTAL(what) renderThread.GetLogger().LogInfoFormat( "VR %s = %iys",\
+		what, ( int )( dtimerTotal.GetElapsedTime() * 1000000.0 ) ); dtimerTotal.Reset();
+#else
+#define DEBUG_RESET_TIMER
+#define DEBUG_PRINT_TIMER(what)
+#define DEBUG_PRINT_TIMER_TOTAL(what)
+#endif
+
+
 // Class deoglVR
 //////////////////
 
@@ -64,7 +84,8 @@ pState( esBeginFrame ),
 pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
 pTargetFPSHysteresis( 0.1f ), // 0.2f
-pUseRenderStereo( false )
+pUseRenderStereo( false ),
+pFBOStereo( nullptr )
 {
 	// WARNING called from main thread.
 	// 
@@ -72,6 +93,10 @@ pUseRenderStereo( false )
 }
 
 deoglVR::~deoglVR(){
+	if( pFBOStereo ){
+		delete pFBOStereo;
+		pFBOStereo = nullptr;
+	}
 }
 
 
@@ -109,6 +134,13 @@ void deoglVR::UpdateTargetFPS( float elapsed ){
 	pTimeHistoryFrame.Add( elapsed );
 }
 
+void deoglVR::DropFBOStereo(){
+	if( pFBOStereo ){
+		delete pFBOStereo;
+		pFBOStereo = nullptr;
+	}
+}
+
 
 
 void deoglVR::BeginFrame(){
@@ -143,10 +175,44 @@ void deoglVR::Render(){
 	
 	pState = esSubmit;
 	
-	if( pCamera.GetPlan().GetWorld() ){
+	if( ! pCamera.GetPlan().GetWorld() ){
+		return;
+	}
+	
+	if( ! pUseRenderStereo ){
 		pLeftEye.Render();
 		pRightEye.Render();
+		return;
 	}
+	
+	// render using stereo rendering
+	const deoglConfiguration &config = pCamera.GetRenderThread().GetConfiguration();
+	
+	const decPoint &targetSize = pLeftEye.GetTargetSize();
+	pRenderStereoSize = ( decVector2( targetSize ) * config.GetVRRenderScale() ).Round();
+	
+	deoglRenderPlan &plan = pCamera.GetPlan();
+	plan.SetViewport( pRenderStereoSize.x, pRenderStereoSize.y );
+	plan.SetUpscaleSize( targetSize.x, targetSize .y );
+	plan.SetUseUpscaling( pRenderStereoSize != targetSize );
+	plan.SetUpsideDown( true );
+	plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
+	plan.SetLodLevelOffset( 0 );
+	plan.SetRenderStereo( true );
+	
+	try{
+		pRenderStereo();
+		
+	}catch( const deException & ){
+		plan.SetFBOTarget( nullptr );
+		plan.SetRenderVR( deoglRenderPlan::ervrNone );
+		plan.SetRenderStereo( false );
+		throw;
+	}
+	
+	plan.SetFBOTarget( nullptr );
+	plan.SetRenderVR( deoglRenderPlan::ervrNone );
+	plan.SetRenderStereo( false );
 }
 
 void deoglVR::Submit(){
@@ -229,4 +295,56 @@ int deoglVR::pCalcTargetFPS( float frameTime ) const{
 	}else{
 		return 15; // we can reach 15Hz
 	}
+}
+
+void deoglVR::pRenderStereo(){
+	deoglRenderThread &renderThread = pCamera.GetRenderThread();
+	
+	DEBUG_RESET_TIMER
+	// prepare render target and fbo
+	pLeftEye.GetRenderTarget()->PrepareFramebuffer();
+	pRightEye.GetRenderTarget()->PrepareFramebuffer();
+	
+	if( ! pFBOStereo ){
+		pFBOStereo = new deoglFramebuffer( renderThread, false );
+		
+		renderThread.GetFramebuffer().Activate( pFBOStereo );
+		
+		pFBOStereo->AttachColorTexture( 0, pLeftEye.GetRenderTarget()->GetTexture() );
+		pFBOStereo->AttachColorTexture( 1, pRightEye.GetRenderTarget()->GetTexture() );
+		
+		const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		OGL_CHECK( renderThread, pglDrawBuffers( 2, buffers ) );
+		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		
+		pFBOStereo->Verify();
+	}
+	
+	// render using render plan
+	deoglRenderPlan &plan = pCamera.GetPlan();
+	
+	plan.SetRenderVR( deoglRenderPlan::ervrStereo );
+	
+	const decMatrix &matrixViewToLeftEye = pLeftEye.GetMatrixViewToEye();
+	const decMatrix &matrixViewToRightEye = pRightEye.GetMatrixViewToEye();
+	
+	plan.SetCameraMatrix( pCamera.GetCameraMatrix().QuickMultiply( matrixViewToLeftEye ) );
+	plan.SetCameraStereoMatrix( matrixViewToLeftEye.QuickInvert().QuickMultiply( matrixViewToRightEye ) );
+	
+	plan.SetFBOTarget( pFBOStereo );
+	
+	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
+	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );
+	DEBUG_PRINT_TIMER( "Prepare" )
+	
+	plan.PrepareRender( nullptr );
+	DEBUG_PRINT_TIMER( "RenderPlan Prepare" )
+	
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	defren.Resize( pRenderStereoSize.x, pRenderStereoSize.y, 2 );
+	
+	plan.Render();
+	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, pLeftEye.GetUseGammaCorrection() );
+	DEBUG_PRINT_TIMER( "RenderWorld" )
+	// set render target dirty?
 }

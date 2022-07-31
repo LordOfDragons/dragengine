@@ -8,13 +8,13 @@ uniform vec4 pClipRect; // left, top, right, bottom
 uniform vec4 pTCClamp; // left, top, right, bottom
 
 #ifdef WITH_TEXTURE
-uniform lowp sampler2D texColor;
+	uniform lowp sampler2D texColor;
 #endif
 #ifdef WITH_RENDER_WORLD
-uniform lowp sampler2DArray texColor;
+	uniform lowp sampler2DArray texColor;
 #endif
 #ifdef WITH_MASK
-uniform lowp sampler2D texMask;
+	uniform lowp sampler2D texMask;
 #endif
 
 #if defined WITH_TEXTURE || defined WITH_RENDER_WORLD

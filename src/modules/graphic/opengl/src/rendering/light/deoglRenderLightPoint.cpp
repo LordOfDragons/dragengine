@@ -246,11 +246,11 @@ deoglRenderLightBase( renderThread )
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
-		defines.AddDefine( "DEPTH_INPUT", "1" );
-		defines.AddDefine( "DEPTH_CUBEMAP", "1" );
+		defines.SetDefine( "DEPTH_INPUT", "1" );
+		defines.SetDefine( "DEPTH_CUBEMAP", "1" );
 		pShaderBoxBoundary1 = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "AMBIENT_MAP", "1" );
+		defines.SetDefine( "AMBIENT_MAP", "1" );
 		pShaderBoxBoundary1Ambient = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -261,7 +261,7 @@ deoglRenderLightBase( renderThread )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		renderers.GetOcclusion().AddOccMapDefines( defines );
-		defines.AddDefine( "DEPTH_DISTANCE", "1" );
+		defines.SetDefine( "DEPTH_DISTANCE", "1" );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMap->EnsureRTSShader();
 		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
@@ -275,12 +275,12 @@ deoglRenderLightBase( renderThread )
 		
 		if( useGSRenderCube ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Cube" );
-			renderThread.GetShader().AddCommonDefines( defines );
+			renderThread.GetShader().SetCommonDefines( defines );
 			renderers.GetOcclusion().AddOccMapDefines( defines );
-			defines.AddDefine( "DEPTH_DISTANCE", "1" );
+			defines.SetDefine( "DEPTH_DISTANCE", "1" );
 			
-			defines.AddDefine( "GS_RENDER_CUBE", "1" );
-			defines.AddDefine( "GS_RENDER_CUBE_CULLING", "1" );
+			defines.SetDefine( "GS_RENDER_CUBE", "1" );
+			defines.SetDefine( "GS_RENDER_CUBE_CULLING", "1" );
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
 			pShaderOccMapCube->EnsureRTSShader();

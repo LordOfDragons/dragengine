@@ -558,7 +558,7 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	// VR modifies the matrices
 	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
 		const deoglVR &vr = *pCamera->GetVR();
-		const deoglVREye &vreye = pRenderVR == ervrLeftEye ? vr.GetLeftEye() : vr.GetRightEye();
+		const deoglVREye &vreye = pRenderVR == ervrRightEye ? vr.GetRightEye() : vr.GetLeftEye();
 		
 		pCameraFov = vr.GetCameraFov();
 		pCameraFovRatio = vr.GetCameraFovRatio();

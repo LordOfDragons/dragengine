@@ -96,38 +96,42 @@ void deoglRenderTarget::SetSize( const decPoint &size ){
 
 
 
-void deoglRenderTarget::PrepareFramebuffer(){
-	if( ! pTexture ){
-		pTexture = new deoglTexture( pRenderThread );
-		pTexture->SetSize( pTextureSize );
-		pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
-		pTexture->SetMipMapped( false );
-		pTexture->CreateTexture(); // require or framebuffer attaching fails
+void deoglRenderTarget::PrepareTexture(){
+	if( pTexture ){
+		return;
 	}
 	
-	if( ! pFBO ){
-		pFBO = new deoglFramebuffer( pRenderThread, false );
-		
-		pRenderThread.GetFramebuffer().Activate( pFBO );
-		
-		pFBO->AttachColorTexture( 0, pTexture );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBO->Verify();
+	pTexture = new deoglTexture( pRenderThread );
+	pTexture->SetSize( pTextureSize );
+	pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
+	pTexture->SetMipMapped( false );
+	pTexture->CreateTexture(); // require or framebuffer attaching fails
+}
+
+void deoglRenderTarget::PrepareFramebuffer(){
+	if( pFBO ){
+		return;
 	}
+	
+	PrepareTexture();
+	
+	pFBO = new deoglFramebuffer( pRenderThread, false );
 	
 	pRenderThread.GetFramebuffer().Activate( pFBO );
+	
+	pFBO->AttachColorTexture( 0, pTexture );
+	
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBO->Verify();
 }
 
 void deoglRenderTarget::ReleaseFramebuffer(){
-	pRenderThread.GetFramebuffer().Activate( NULL );
-	
 	if( pFBO ){
 		delete pFBO;
-		pFBO = NULL;
+		pFBO = nullptr;
 	}
 }
 

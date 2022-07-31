@@ -15,12 +15,22 @@ in vec2 vTexCoord;
 	const int vLayer = 0;
 #endif
 
-out vec4 outColor;
+#ifdef SPLIT_LAYERS
+	out vec4 outColor1;
+	out vec4 outColor2;
+#else
+	out vec4 outColor;
+#endif
 
 void main( void ){
 	// gamma correction only
 	//outColor = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma );
 	
 	// gamma, contrast and brightness correction
-	outColor = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma ) * pContrast + pBrightness;
+	#ifdef SPLIT_LAYERS
+		outColor1 = pow( texture( texColor, vec3( vTexCoord, 0 ) ), pGamma ) * pContrast + pBrightness;
+		outColor2 = pow( texture( texColor, vec3( vTexCoord, 1 ) ), pGamma ) * pContrast + pBrightness;
+	#else
+		outColor = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma ) * pContrast + pBrightness;
+	#endif
 }

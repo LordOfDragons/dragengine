@@ -116,11 +116,11 @@ pTBORenderRectangle2( NULL )
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Debug Color-Only" );
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.SetDefine( "INVERSE_DEPTH", "1" );
 		}
 		pShaderXRay = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_DEPTH", "1" );
+		defines.SetDefine( "WITH_DEPTH", "1" );
 		pShaderSolid = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -134,12 +134,12 @@ pTBORenderRectangle2( NULL )
 		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
 		pShaderOutTex = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "TEXTURELEVEL", "1" );
+		defines.SetDefine( "TEXTURELEVEL", "1" );
 		pShaderOutTexLayer = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
-		defines.AddDefine( "TEXTURELEVEL", "1" );
-		defines.AddDefine( "ARRAYTEXTURE", "1" );
+		defines.SetDefine( "TEXTURELEVEL", "1" );
+		defines.SetDefine( "ARRAYTEXTURE", "1" );
 		pShaderOutArrTex = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		

@@ -207,23 +207,23 @@ deoglRenderBase( renderThread )
 	//printf( "EQUI: %i %i %i\n", pUseEquiEnvMap?1:0, config.GetEnvMapUseEqui()?1:0, extensions.GetHasArrayCubeMap()?1:0 );
 	
 	try{
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-		defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
+		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
 		pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "MIPMAP", true );
+		defines.SetDefine( "MIPMAP", true );
 		pShaderCopyColorMipMap = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
-		defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
 		pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "MIPMAP", true );
+		defines.SetDefine( "MIPMAP", true );
 		pShaderCopyColorMipMapStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -234,13 +234,13 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			defines.AddDefine( "NO_TEXCOORD", true );
-			defines.AddDefine( "INITIAL", true );
+			defines.SetDefine( "NO_TEXCOORD", true );
+			defines.SetDefine( "INITIAL", true );
 			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
 			
 			defines = commonDefines;
-			defines.AddDefine( "NO_TEXCOORD", true );
-			defines.AddDefine( "DOWNSAMPLE", true );
+			defines.SetDefine( "NO_TEXCOORD", true );
+			defines.SetDefine( "DOWNSAMPLE", true );
 			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
@@ -249,15 +249,15 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			defines.AddDefine( "NO_TEXCOORD", true );
-			defines.AddDefine( "CLAMP_TC", true );
-			defines.AddDefine( "FUNC_MIN", true );
+			defines.SetDefine( "NO_TEXCOORD", true );
+			defines.SetDefine( "CLAMP_TC", true );
+			defines.SetDefine( "FUNC_MIN", true );
 			pShaderMinMaxMipMapMin = shaderManager.GetProgramWith( sources, defines );
 			
 			defines = commonDefines;
-			defines.AddDefine( "NO_TEXCOORD", true );
-			defines.AddDefine( "CLAMP_TC", true );
-			defines.AddDefine( "FUNC_MAX", true );
+			defines.SetDefine( "NO_TEXCOORD", true );
+			defines.SetDefine( "CLAMP_TC", true );
+			defines.SetDefine( "FUNC_MAX", true );
 			pShaderMinMaxMipMapMax = shaderManager.GetProgramWith( sources, defines );
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
@@ -266,15 +266,15 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			defines.AddDefine( "NO_TEXCOORD", true );
-			defines.AddDefine( "CLAMP_TC", true );
-			defines.AddDefine( "SPLIT_VERSION", true );
-			defines.AddDefine( "SPLIT_SHIFT_TC", true );
+			defines.SetDefine( "NO_TEXCOORD", true );
+			defines.SetDefine( "CLAMP_TC", true );
+			defines.SetDefine( "SPLIT_VERSION", true );
+			defines.SetDefine( "SPLIT_SHIFT_TC", true );
 			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
 			
 			defines = commonDefines;
-			defines.AddDefine( "NO_TEXCOORD", true );
-			defines.AddDefine( "SPLIT_VERSION", true );
+			defines.SetDefine( "NO_TEXCOORD", true );
+			defines.SetDefine( "SPLIT_VERSION", true );
 			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
 		}
 		
@@ -292,68 +292,68 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace" );
 		if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", true );
+			defines.SetDefine( "ENVMAP_EQUI", true );
 		}
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", true );
+			defines.SetDefine( "INVERSE_DEPTH", true );
 		}
 		
 		if( config.GetSSRMethod() == 0 ){ // 0 = groundTruth
-			defines.AddDefine( "SSR_VERSION", "0" );
+			defines.SetDefine( "SSR_VERSION", "0" );
 			
 		}else if( config.GetSSRMethod() == 1 ){ // 1 = stepedSS
-			defines.AddDefine( "SSR_VERSION", true );
-			//defines.AddDefine( "RESULT_AFTER_FIRST_LOOP", true ); // this yields wrong results (moving reflections)
-				defines.AddDefine( "NESTED_LOOP", true ); // enabled slows down on Radeon 4870 but can't do better quality
-				defines.AddDefine( "MULTI_STEPPING", true );
+			defines.SetDefine( "SSR_VERSION", true );
+			//defines.SetDefine( "RESULT_AFTER_FIRST_LOOP", true ); // this yields wrong results (moving reflections)
+				defines.SetDefine( "NESTED_LOOP", true ); // enabled slows down on Radeon 4870 but can't do better quality
+				defines.SetDefine( "MULTI_STEPPING", true );
 				// integrated seems worse with SSR_VERSION=1 but required as otherwise NaN/Inf polutes the rendering
-				//defines.AddDefine( "INTEGRATED_THRESHOLD_TEST", true );
+				//defines.SetDefine( "INTEGRATED_THRESHOLD_TEST", true );
 			
 			if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-				defines.AddDefine( "USE_DEPTH_MIPMAP", true );
+				defines.SetDefine( "USE_DEPTH_MIPMAP", true );
 			}
 		}
 		
-		//defines.AddDefine( "ROUGHNESS_TAPPING", true );
+		//defines.SetDefine( "ROUGHNESS_TAPPING", true );
 		
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderScreenSpaceStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections" );
 		if( indirectMatrixAccessBug ){
-			defines.AddDefine( "UBO_IDMATACCBUG", true );
+			defines.SetDefine( "UBO_IDMATACCBUG", true );
 		}
 		if( bugUBODirectLinkDeadloop ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
+			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
 		}
 		if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", true );
+			defines.SetDefine( "ENVMAP_EQUI", true );
 		}
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", true );
+			defines.SetDefine( "INVERSE_DEPTH", true );
 		}
-		//defines.AddDefine( "HACK_NO_SSR", true ); // set to 1 to examine env-map reflection only
+		//defines.SetDefine( "HACK_NO_SSR", true ); // set to 1 to examine env-map reflection only
 		
 		if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
-			defines.AddDefine( "ENVMAP_SINGLE", true ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
+			defines.SetDefine( "ENVMAP_SINGLE", true ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 			
 		}else if( config.GetEnvMapMethod() == deoglConfiguration::eemmMultipleBoxProjection ){
-			defines.AddDefine( "ENVMAP_BOX_PROJECTION", true ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
+			defines.SetDefine( "ENVMAP_BOX_PROJECTION", true ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
 			
 		//}else{ // not ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 		}
 		
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderApplyReflectionsStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -367,11 +367,11 @@ deoglRenderBase( renderThread )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Light GI" );
 		if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", true );
+			defines.SetDefine( "ENVMAP_EQUI", true );
 		}
 		pShaderEnvMapCopy = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_GI", true );
+		defines.SetDefine( "WITH_GI", true );
 		pShaderEnvMapLightGI = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -379,22 +379,22 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection" );
 		if( indirectMatrixAccessBug ){
-			defines.AddDefine( "UBO_IDMATACCBUG", true );
+			defines.SetDefine( "UBO_IDMATACCBUG", true );
 		}
 		if( bugUBODirectLinkDeadloop ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
+			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
 		}
 		//if( pUseEquiEnvMap ){
-			defines.AddDefine( "ENVMAP_EQUI", true );
+			defines.SetDefine( "ENVMAP_EQUI", true );
 		//}
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", true );
+			defines.SetDefine( "INVERSE_DEPTH", true );
 		}
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderReflectionStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -408,7 +408,7 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		if( pUseEquiEnvMap ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap Equi" );
-			defines.AddDefine( "ENVMAP_EQUI", true );
+			defines.SetDefine( "ENVMAP_EQUI", true );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap" );
@@ -419,7 +419,7 @@ deoglRenderBase( renderThread )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection EnvMap Mask" );
-		//defines.AddDefine( "FULLSCREENQUAD", true );
+		//defines.SetDefine( "FULLSCREENQUAD", true );
 		pShaderEnvMapMask = shaderManager.GetProgramWith( sources, defines );
 		
 		

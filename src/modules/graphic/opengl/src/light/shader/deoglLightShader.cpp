@@ -443,35 +443,35 @@ void deoglLightShader::GenerateShader(){
 }
 
 void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
-	pRenderThread.GetShader().AddCommonDefines( defines );
+	pRenderThread.GetShader().SetCommonDefines( defines );
 	
 	switch( pConfig.GetLightMode() ){
 	case deoglLightShaderConfig::elmPoint:
-		defines.AddDefine( "POINT_LIGHT", true );
+		defines.SetDefine( "POINT_LIGHT", true );
 		break;
 		
 	case deoglLightShaderConfig::elmSpot:
-		defines.AddDefine( "SPOT_LIGHT", true );
+		defines.SetDefine( "SPOT_LIGHT", true );
 		break;
 		
 	case deoglLightShaderConfig::elmProjector:
-		defines.AddDefine( "PROJECTOR_LIGHT", true );
+		defines.SetDefine( "PROJECTOR_LIGHT", true );
 		break;
 		
 	case deoglLightShaderConfig::elmSky:
-		defines.AddDefine( "SKY_LIGHT", true );
+		defines.SetDefine( "SKY_LIGHT", true );
 		break;
 		
 	case deoglLightShaderConfig::elmParticle:
-		defines.AddDefine( "PARTICLE_LIGHT", true );
+		defines.SetDefine( "PARTICLE_LIGHT", true );
 		
 		switch( pConfig.GetParticleMode() ){
 		case deoglLightShaderConfig::epmRibbon:
-			defines.AddDefine( "PARTICLE_RIBBON", true );
+			defines.SetDefine( "PARTICLE_RIBBON", true );
 			break;
 			
 		case deoglLightShaderConfig::epmBeam:
-			defines.AddDefine( "PARTICLE_BEAM", true );
+			defines.SetDefine( "PARTICLE_BEAM", true );
 			break;
 			
 		case deoglLightShaderConfig::epmParticle:
@@ -482,15 +482,15 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeDec() ){
 	case deoglLightShaderConfig::emnmIntBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
+		defines.SetDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloatBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_FLOATBASIC", true );
+		defines.SetDefine( "MATERIAL_NORMAL_DEC_FLOATBASIC", true );
 		break;
 		
 	case deoglLightShaderConfig::emnmSpheremap:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", true );
+		defines.SetDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", true );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloat:
@@ -499,15 +499,15 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeEnc() ){
 	case deoglLightShaderConfig::emnmIntBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_INTBASIC", true );
+		defines.SetDefine( "MATERIAL_NORMAL_ENC_INTBASIC", true );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloatBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_FLOATBASIC", true );
+		defines.SetDefine( "MATERIAL_NORMAL_ENC_FLOATBASIC", true );
 		break;
 		
 	case deoglLightShaderConfig::emnmSpheremap:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", true );
+		defines.SetDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", true );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloat:
@@ -515,86 +515,86 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetHWDepthCompare() ){
-		defines.AddDefine( "HW_DEPTH_COMPARE", true );
+		defines.SetDefine( "HW_DEPTH_COMPARE", true );
 	}
 	
 	if( pConfig.GetTextureNoise() ){
-		defines.AddDefine( "TEXTURE_NOISE", true );
+		defines.SetDefine( "TEXTURE_NOISE", true );
 	}
 	if( pConfig.GetTextureColor() ){
-		defines.AddDefine( "TEXTURE_COLOR", true );
+		defines.SetDefine( "TEXTURE_COLOR", true );
 	}
 	if( pConfig.GetTextureColorOmnidirCube() ){
-		defines.AddDefine( "TEXTURE_COLOR_CUBEMAP", true );
+		defines.SetDefine( "TEXTURE_COLOR_CUBEMAP", true );
 	}
 	if( pConfig.GetTextureColorOmnidirEquirect() ){
-		defines.AddDefine( "TEXTURE_COLOR_EQUIRECT", true );
+		defines.SetDefine( "TEXTURE_COLOR_EQUIRECT", true );
 	}
 	
 	if( pConfig.GetTextureShadow1Solid() ){
-		defines.AddDefine( "TEXTURE_SHADOW1_SOLID", true );
+		defines.SetDefine( "TEXTURE_SHADOW1_SOLID", true );
 	}
 	if( pConfig.GetTextureShadow1Transparent() ){
-		defines.AddDefine( "TEXTURE_SHADOW1_TRANSPARENT", true );
+		defines.SetDefine( "TEXTURE_SHADOW1_TRANSPARENT", true );
 	}
 	if( pConfig.GetTextureShadow2Solid() ){
-		defines.AddDefine( "TEXTURE_SHADOW2_SOLID", true );
+		defines.SetDefine( "TEXTURE_SHADOW2_SOLID", true );
 	}
 	if( pConfig.GetTextureShadow2Transparent() ){
-		defines.AddDefine( "TEXTURE_SHADOW2_TRANSPARENT", true );
+		defines.SetDefine( "TEXTURE_SHADOW2_TRANSPARENT", true );
 	}
 	if( pConfig.GetTextureShadow1Ambient() ){
-		defines.AddDefine( "TEXTURE_SHADOW1_AMBIENT", true );
+		defines.SetDefine( "TEXTURE_SHADOW1_AMBIENT", true );
 	}
 	if( pConfig.GetTextureShadow2Ambient() ){
-		defines.AddDefine( "TEXTURE_SHADOW2_AMBIENT", true );
+		defines.SetDefine( "TEXTURE_SHADOW2_AMBIENT", true );
 	}
 	
 	if( pConfig.GetDecodeInDepth() ){
-		defines.AddDefine( "DECODE_IN_DEPTH", true );
+		defines.SetDefine( "DECODE_IN_DEPTH", true );
 	}
 	if( pConfig.GetDecodeInShadow() ){
-		defines.AddDefine( "DECODE_IN_SHADOW", true );
+		defines.SetDefine( "DECODE_IN_SHADOW", true );
 	}
 	if( pConfig.GetEncodeOutDepth() ){
-		defines.AddDefine( "ENCODE_OUT_DEPTH", true );
+		defines.SetDefine( "ENCODE_OUT_DEPTH", true );
 	}
 	if( pConfig.GetShadowMatrix2EqualsMatrix1() ){
-		defines.AddDefine( "SHAMAT2_EQUALS_SHAMAT1", true );
+		defines.SetDefine( "SHAMAT2_EQUALS_SHAMAT1", true );
 	}
 	if( pConfig.GetShadowInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", true );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	if( pConfig.GetAmbientLighting() ){
-		defines.AddDefine( "AMBIENT_LIGHTING", true );
+		defines.SetDefine( "AMBIENT_LIGHTING", true );
 	}
 	if( pConfig.GetFullScreenQuad() ){
-		defines.AddDefine( "FULLSCREENQUAD", true );
+		defines.SetDefine( "FULLSCREENQUAD", true );
 	}
 	if( pConfig.GetSubSurface() ){
-		defines.AddDefine( "WITH_SUBSURFACE", true );
+		defines.SetDefine( "WITH_SUBSURFACE", true );
 	}
 	if( pConfig.GetLuminanceOnly() ){
-		defines.AddDefine( "LUMINANCE_ONLY", true );
+		defines.SetDefine( "LUMINANCE_ONLY", true );
 	}
 	if( pConfig.GetGIRay() ){
-		defines.AddDefine( "GI_RAY", true );
+		defines.SetDefine( "GI_RAY", true );
 	}
 	if( pConfig.GetGSRenderStereo() ){
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 	}
 	
 	switch( pConfig.GetShadowTapMode() ){
 	case deoglLightShaderConfig::estmPcf4:
-		defines.AddDefine( "PCF_4TAP", true );
+		defines.SetDefine( "PCF_4TAP", true );
 		break;
 		
 	case deoglLightShaderConfig::estmPcf9:
-		defines.AddDefine( "PCF_9TAP", true );
+		defines.SetDefine( "PCF_9TAP", true );
 		break;
 		
 	case deoglLightShaderConfig::estmPcfVariableTap:
-		defines.AddDefine( "PCF_VARTAP", true );
+		defines.SetDefine( "PCF_VARTAP", true );
 		break;
 		
 	case deoglLightShaderConfig::estmSingle:
@@ -602,13 +602,13 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetTextureNoise() ){
-		defines.AddDefine( "NOISE_TAP", true );
+		defines.SetDefine( "NOISE_TAP", true );
 	}
 	
 	// this symbol activates an optimization for shadow casting lights. if set fragments facing
 	// away from the light source are not send through shadow taping and are simply considered
 	// fully in shadow. if no ambient lighting is used this ends up in a quick discard statement
-	//defines.AddDefine( "OPTIMIZE_SHADOW_BACKFACE", true );
+	//defines.SetDefine( "OPTIMIZE_SHADOW_BACKFACE", true );
 	
 	// Definition of shadow mapping algorithm to use (* = 1 or 2):
 	// SMA*_2D: Use 2D texture mapping with sampler2D{Shadow}
@@ -617,43 +617,43 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	// SMA*_PYRAMID: Use pyramid shadow mapping using sampler2D{Shadow}
 	switch( pConfig.GetShadowMappingAlgorithm1() ){
 	case deoglLightShaderConfig::esma2D:
-		defines.AddDefine( "SMA1_2D", true );
+		defines.SetDefine( "SMA1_2D", true );
 		break;
 		
 	case deoglLightShaderConfig::esmaCube:
-		defines.AddDefine( "SMA1_CUBE", true );
+		defines.SetDefine( "SMA1_CUBE", true );
 		break;
 		
 	case deoglLightShaderConfig::esmaDualParaboloid:
-		defines.AddDefine( "SMA1_DUALPARA", true );
+		defines.SetDefine( "SMA1_DUALPARA", true );
 		break;
 		
 	case deoglLightShaderConfig::esmaPyramid:
-		defines.AddDefine( "SMA1_PYRAMID", true );
+		defines.SetDefine( "SMA1_PYRAMID", true );
 		break;
 	}
 	
 	switch( pConfig.GetShadowMappingAlgorithm2() ){
 	case deoglLightShaderConfig::esma2D:
-		defines.AddDefine( "SMA2_2D", true );
+		defines.SetDefine( "SMA2_2D", true );
 		break;
 		
 	case deoglLightShaderConfig::esmaCube:
-		defines.AddDefine( "SMA2_CUBE", true );
+		defines.SetDefine( "SMA2_CUBE", true );
 		break;
 		
 	case deoglLightShaderConfig::esmaDualParaboloid:
-		defines.AddDefine( "SMA2_DUALPARA", true );
+		defines.SetDefine( "SMA2_DUALPARA", true );
 		break;
 		
 	case deoglLightShaderConfig::esmaPyramid:
-		defines.AddDefine( "SMA2_PYRAMID", true );
+		defines.SetDefine( "SMA2_PYRAMID", true );
 		break;
 	}
 	
 	// occlusion tracing
 	#ifdef ENABLE_OCCTRACING
-	defines.AddDefine( "ENABLE_OCCTRACING", true );
+	defines.SetDefine( "ENABLE_OCCTRACING", true );
 	#endif
 }
 

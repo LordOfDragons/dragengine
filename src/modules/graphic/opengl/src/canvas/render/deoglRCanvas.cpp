@@ -30,6 +30,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../target/deoglRenderTarget.h"
 
 #include <dragengine/common/exceptions.h>
@@ -156,6 +157,7 @@ void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask
 			context.SetTransform( pMask->GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
 			context.UpdateTransformMask();
 			
+			GetRenderThread().GetFramebuffer().Activate( pMaskRenderTarget->GetFBO() );
 			GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
 			pMask->Render( context );
 			

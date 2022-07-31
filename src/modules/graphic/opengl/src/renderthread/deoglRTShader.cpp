@@ -115,23 +115,23 @@ void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	pCurShaderProg = shader;
 }
 
-void deoglRTShader::AddCommonDefines( deoglShaderDefines &defines ) const{
-	defines.AddDefine( "HIGH_PRECISION", true );
-	defines.AddDefine( "HIGHP", "highp" ); // if not supported by GPU medp
+void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
+	defines.SetDefine( "HIGH_PRECISION", true );
+	defines.SetDefine( "HIGHP", "highp" ); // if not supported by GPU medp
 	
 	if( pglUniformBlockBinding ){
-		defines.AddDefine( "UBO", true );
+		defines.SetDefine( "UBO", true );
 		
 		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-			defines.AddDefine( "UBO_IDMATACCBUG", true );
+			defines.SetDefine( "UBO_IDMATACCBUG", true );
 		}
 		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
+			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
 		}
 	}
 	
 	if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-		defines.AddDefine( "GS_INSTANCING", true );
+		defines.SetDefine( "GS_INSTANCING", true );
 	}
 }
 

@@ -147,11 +147,11 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pShaderSolidColor3D = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
-		defines.AddDefine( "WITH_SELECTOR", "1" );
+		defines.SetDefine( "WITH_SELECTOR", "1" );
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.SetDefine( "INVERSE_DEPTH", "1" );
 		}
-		//defines.AddDefine( "WITH_DEPTH", "1" );
+		//defines.SetDefine( "WITH_DEPTH", "1" );
 		pShaderShape = shaderManager.GetProgramWith( sources, defines );
 		
 	}catch( const deException & ){

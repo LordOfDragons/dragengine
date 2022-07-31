@@ -123,7 +123,7 @@ pAddToRenderTask( NULL )
 	deoglShaderSources *sources;
 	
 	try{
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
@@ -143,60 +143,60 @@ pAddToRenderTask( NULL )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
-		defines.AddDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderSSSSSStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
-		defines.AddDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
-		defines.AddDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+		defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
+		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderAOLocalStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
-		defines.AddDefine( "TAP_COUNT", 9 );
-		defines.AddDefine( "OUT_DATA_SIZE", 1 );
-		defines.AddDefine( "TEX_DATA_SIZE", 1 );
-		defines.AddDefine( "TEX_DATA_SWIZZLE", "g" );
-		defines.AddDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefine( "TAP_COUNT", 9 );
+		defines.SetDefine( "OUT_DATA_SIZE", 1 );
+		defines.SetDefine( "TEX_DATA_SIZE", 1 );
+		defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
+		defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderAOBlur1Stereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
-		defines.AddDefine( "TAP_COUNT", 9 );
-		defines.AddDefine( "OUT_DATA_SIZE", 3 );
-		defines.AddDefine( "OUT_DATA_SWIZZLE", "g" );
-		defines.AddDefine( "TEX_DATA_SIZE", 1 );
-		defines.AddDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
-		defines.AddDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefine( "TAP_COUNT", 9 );
+		defines.SetDefine( "OUT_DATA_SIZE", 3 );
+		defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
+		defines.SetDefine( "TEX_DATA_SIZE", 1 );
+		defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderAOBlur2Stereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-		defines.AddDefine( "TEXTURELEVEL", 1 );
-		defines.AddDefine( "OUT_COLOR_SIZE", 3 );
-		defines.AddDefine( "TEX_DATA_SWIZZLE", "ggg" );
+		defines.SetDefine( "TEXTURELEVEL", 1 );
+		defines.SetDefine( "OUT_COLOR_SIZE", 3 );
+		defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
 		pShaderDebugAO = shaderManager.GetProgramWith( sources, defines );
 		
 		

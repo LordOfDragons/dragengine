@@ -115,23 +115,23 @@ deoglRenderBase( renderThread )
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	
-	renderThread.GetShader().AddCommonDefines( commonDefines );
+	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
-	defines.AddDefine( "DEPTH_TEST", true );
-	defines.AddDefine( "COPY_COLOR", true );
+	defines.SetDefine( "DEPTH_TEST", true );
+	defines.SetDefine( "COPY_COLOR", true );
 	if( defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", true );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	
 	defines = commonDefines;
-	defines.AddDefine( "DEPTH_TEST", true );
+	defines.SetDefine( "DEPTH_TEST", true );
 	if( ! defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", true );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pShaderCopyDepthLimit = shaderManager.GetProgramWith( sources, defines );
 	
@@ -139,30 +139,30 @@ deoglRenderBase( renderThread )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	
-	defines.AddDefine( "GS_RENDER_STEREO", true );
-	defines.AddDefine( "DEPTH_TEST", true );
-	defines.AddDefine( "COPY_COLOR", true );
+	defines.SetDefine( "GS_RENDER_STEREO", true );
+	defines.SetDefine( "DEPTH_TEST", true );
+	defines.SetDefine( "COPY_COLOR", true );
 	if( defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", true );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pShaderCopyDepthColorStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	defines = commonDefines;
-	defines.AddDefine( "GS_RENDER_STEREO", true );
-	defines.AddDefine( "DEPTH_TEST", true );
+	defines.SetDefine( "GS_RENDER_STEREO", true );
+	defines.SetDefine( "DEPTH_TEST", true );
 	if( ! defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", true );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pShaderCopyDepthLimitStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-	defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
+	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
 	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
-	defines.AddDefine( "GS_RENDER_STEREO", true );
+	defines.SetDefine( "GS_RENDER_STEREO", true );
 	pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
 }
 

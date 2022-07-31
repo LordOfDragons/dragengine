@@ -176,7 +176,7 @@ pDebugInfo( renderThread )
 	deoglShaderSources *sources;
 	
 	try{
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread );
 		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread );
@@ -193,12 +193,17 @@ pDebugInfo( renderThread )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
-		defines.AddDefines( "NO_POSTRANSFORM" );
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
+		
+		defines = commonDefines;
+		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Split" );
+		defines.SetDefines( "NO_POSTRANSFORM", "SPLIT_LAYERS" );
+		pShaderFinalizeSplit = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		DevModeDebugInfoChanged();
@@ -1067,8 +1072,6 @@ DBG_ENTER("RenderFinalizeFBO")
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	deoglShaderCompiled *shader;
-	deoglTexSamplerConfig *sampler;
 	
 	const bool upscale = plan.GetUseUpscaling();
 	const int upscaleWidth = plan.GetUpscaleWidth();
@@ -1084,12 +1087,8 @@ DBG_ENTER("RenderFinalizeFBO")
 	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	if( plan.GetUseUpscaling() ){
-		sampler = &GetSamplerClampLinear();
-		
-	}else{
-		sampler = &GetSamplerClampNearest();
-	}
+	deoglTexSamplerConfig * const sampler = plan.GetUseUpscaling()
+		? &GetSamplerClampLinear() : &GetSamplerClampNearest();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
 	
@@ -1101,9 +1100,10 @@ DBG_ENTER("RenderFinalizeFBO")
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program and parameters
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
+	deoglShaderProgram * const program = plan.GetRenderVR() == deoglRenderPlan::ervrStereo
+		? pShaderFinalizeSplit : ( plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize );
 	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
 	ActivateRenderPB( plan );
 	

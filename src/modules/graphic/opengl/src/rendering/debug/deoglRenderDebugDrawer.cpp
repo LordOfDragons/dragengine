@@ -80,24 +80,24 @@ deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread 
 	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
-		defines.AddDefine( "WITH_SELECTOR", "1" );
+		defines.SetDefine( "WITH_SELECTOR", "1" );
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.SetDefine( "INVERSE_DEPTH", "1" );
 		}
 		pShaderShapeXRay = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_DEPTH", "1" );
+		defines.SetDefine( "WITH_DEPTH", "1" );
 		pShaderShapeSolid = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
 		
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.SetDefine( "INVERSE_DEPTH", "1" );
 		}
 		pShaderMeshXRay = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "WITH_DEPTH", "1" );
+		defines.SetDefine( "WITH_DEPTH", "1" );
 		pShaderMeshSolid = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		

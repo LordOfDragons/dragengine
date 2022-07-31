@@ -162,9 +162,9 @@ deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : de
 	
 	try{
 // 		sources = shaderManager.GetSourcesNamed( "DefRen Geometry Particle Old" );
-// 		defines.AddDefine( "HAS_MAP_EMISSIVE", "1" );
+// 		defines.SetDefine( "HAS_MAP_EMISSIVE", "1" );
 // 		if( useEncodeDepth ){
-// 			defines.AddDefine( "GEOM_ENCODED_DEPTH", "1" );
+// 			defines.SetDefine( "GEOM_ENCODED_DEPTH", "1" );
 // 		}
 // 		pShaderParticle = shaderManager.GetProgramWith( sources, defines );
 // 		defines.RemoveAllDefines();

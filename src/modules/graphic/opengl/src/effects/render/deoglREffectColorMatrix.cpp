@@ -85,9 +85,9 @@ deoglShaderProgram *deoglREffectColorMatrix::GetShader(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().AddCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
-		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
@@ -99,9 +99,9 @@ deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().AddCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		deoglShaderSources *sources = shaderManager.GetSourcesNamed( "Effect Color Matrix Stereo" );
-		defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD", "GS_RENDER_STEREO" );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD", "GS_RENDER_STEREO" );
 		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
 	}
 	

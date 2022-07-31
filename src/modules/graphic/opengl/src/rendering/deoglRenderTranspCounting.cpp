@@ -110,25 +110,25 @@ pCount( 0 )
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	
-	renderThread.GetShader().AddCommonDefines( commonDefines );
+	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
-	defines.AddDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
+	defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
-	defines.AddDefine( "GS_RENDER_STEREO", true );
+	defines.SetDefine( "GS_RENDER_STEREO", true );
 	pShaderTraCountMaxCountStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
-	defines.AddDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+	defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
-	defines.AddDefine( "GS_RENDER_STEREO", true );
+	defines.SetDefine( "GS_RENDER_STEREO", true );
 	pShaderTraCountGetCountStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	

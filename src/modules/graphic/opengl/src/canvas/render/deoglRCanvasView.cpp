@@ -29,6 +29,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../target/deoglRenderTarget.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
@@ -150,6 +151,7 @@ int componentCount, int bitCount ){
 		context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
 		context.UpdateTransformMask();
 		
+		GetRenderThread().GetFramebuffer().Activate( pRenderTarget->GetFBO() );
 		GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
 		
 		// clear the render target. this is required for situations where transparent overlays

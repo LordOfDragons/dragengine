@@ -213,14 +213,14 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
 		
 		
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderSkySphereStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -229,7 +229,7 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -238,7 +238,7 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		pShaderBody = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
 		
 	}catch( const deException & ){

@@ -153,7 +153,7 @@ deoglRenderLightBase( renderThread )
 	deoglShaderSources *sources;
 	
 	try{
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		pCreateUBORenderLight();
 		
@@ -163,15 +163,15 @@ deoglRenderLightBase( renderThread )
 		pShaderResizeMaterials = shaderManager.GetProgramWith( sources, defines );
 		
 		// trace rays
-		defines.AddDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
+		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		#ifdef GI_RENDERDOC_DEBUG
-		defines.AddDefine( "GI_RENDERDOC_DEBUG", true );
+		defines.SetDefine( "GI_RENDERDOC_DEBUG", true );
 		#endif
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		#ifdef GI_USE_RAY_CACHE
-			defines.AddDefine( "GI_USE_RAY_CACHE", true );
+			defines.SetDefine( "GI_USE_RAY_CACHE", true );
 		#endif
 		pShaderTraceRays = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "GI_USE_RAY_CACHE" );
@@ -186,34 +186,34 @@ deoglRenderLightBase( renderThread )
 		
 		// clear probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", true );
+		defines.SetDefine( "MAP_IRRADIANCE", true );
 		pShaderClearProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
-		defines.AddDefine( "MAP_DISTANCE", true );
+		defines.SetDefine( "MAP_DISTANCE", true );
 		pShaderClearProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		// copy probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", true );
+		defines.SetDefine( "MAP_IRRADIANCE", true );
 		pShaderCopyProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", true );
+		defines.SetDefine( "MAP_IRRADIANCE", true );
 		pShaderUpdateProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
-		defines.AddDefine( "MAP_DISTANCE", true );
+		defines.SetDefine( "MAP_DISTANCE", true );
 		pShaderUpdateProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		// move probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Move Probes" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.AddDefine( "WITH_RAY_CACHE", true );
+			defines.SetDefine( "WITH_RAY_CACHE", true );
 		}
 		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
@@ -225,7 +225,7 @@ deoglRenderLightBase( renderThread )
 		// probe offset
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Offset" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.AddDefine( "WITH_RAY_CACHE", true );
+			defines.SetDefine( "WITH_RAY_CACHE", true );
 		}
 		pShaderProbeOffset = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
@@ -233,7 +233,7 @@ deoglRenderLightBase( renderThread )
 		// probe extends
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.AddDefine( "WITH_RAY_CACHE", true );
+			defines.SetDefine( "WITH_RAY_CACHE", true );
 		}
 		pShaderProbeExtends = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
@@ -248,7 +248,7 @@ deoglRenderLightBase( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
 		pShaderDebugProbeUpdatePass1 = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "PASS2", true );
+		defines.SetDefine( "PASS2", true );
 		pShaderDebugProbeUpdatePass2 = shaderManager.GetProgramWith( sources, defines );
 		
 		// render light
@@ -256,12 +256,12 @@ deoglRenderLightBase( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "GI_RAY", true );
+		defines.SetDefine( "GI_RAY", true );
 		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderLightStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		

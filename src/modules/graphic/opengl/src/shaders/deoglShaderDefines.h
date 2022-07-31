@@ -70,16 +70,16 @@ public:
 	/** Value of named define or default value if absent. */
 	const char *GetDefineValueFor( const char *name, const char *defaultValue ) const;
 	
-	/** Add define. */
-	void AddDefine( const char *name, const char *value );
-	void AddDefine( const char *name, int value );
-	void AddDefine( const char *name, bool value );
+	/** Set define. */
+	void SetDefine( const char *name, const char *value );
+	void SetDefine( const char *name, int value );
+	void SetDefine( const char *name, bool value );
 	
-	/** Add multiple defines set to '1'. */
-	void AddDefines( const char *name1 );
-	void AddDefines( const char *name1, const char *name2 );
-	void AddDefines( const char *name1, const char *name2, const char *name3 );
-	void AddDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	/** Set multiple defines set to '1'. */
+	void SetDefines( const char *name1 );
+	void SetDefines( const char *name1, const char *name2 );
+	void SetDefines( const char *name1, const char *name2, const char *name3 );
+	void SetDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
 	
 	/** Remove define. */
 	void RemoveDefine( const char *name );

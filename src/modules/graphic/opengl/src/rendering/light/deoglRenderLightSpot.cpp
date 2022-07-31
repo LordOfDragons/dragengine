@@ -255,12 +255,12 @@ deoglRenderLightBase( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
+			defines.SetDefine( "SHADOW_INVERSE_DEPTH", "1" );
 		}
-		defines.AddDefine( "DEPTH_INPUT", "1" );
+		defines.SetDefine( "DEPTH_INPUT", "1" );
 		pShaderBoxBoundary1 = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "AMBIENT_MAP", "1" );
+		defines.SetDefine( "AMBIENT_MAP", "1" );
 		pShaderBoxBoundary1Ambient = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		

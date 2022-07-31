@@ -58,12 +58,23 @@ deoglRenderVR::deoglRenderVR( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "VR Hidden Area" );
 		pShaderHiddenArea = shaderManager.GetProgramWith( sources, defines );
+		
+		
+		sources = shaderManager.GetSourcesNamed( "VR Hidden Area Stereo" );
+		defines.SetDefine( "RENDER_TO_LAYER", 0 );
+		pShaderHiddenAreaStereoLeft = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.SetDefine( "RENDER_TO_LAYER", 1 );
+		pShaderHiddenAreaStereoRight = shaderManager.GetProgramWith( sources, defines );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -81,59 +92,66 @@ deoglRenderVR::~deoglRenderVR(){
 //////////////
 
 void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
+	if( ! plan.GetCamera() || ! plan.GetCamera()->GetVR() ){
+		return;
+	}
+	
+	const deoglVR &vr = *plan.GetCamera()->GetVR();
 	deoglRModel *model = nullptr;
+	deoglRModel *modelLeft = nullptr;
+	deoglRModel *modelRight = nullptr;
 	
 	switch( plan.GetRenderVR() ){
 	case deoglRenderPlan::ervrLeftEye:
-		if( plan.GetCamera() && plan.GetCamera()->GetVR() ){
-			model = plan.GetCamera()->GetVR()->GetLeftEye().GetHiddenMesh();
-		}
+		model = vr.GetLeftEye().GetHiddenMesh();
 		break;
 		
 	case deoglRenderPlan::ervrRightEye:
-		if( plan.GetCamera() && plan.GetCamera()->GetVR() ){
-			model = plan.GetCamera()->GetVR()->GetRightEye().GetHiddenMesh();
-		}
+		model = vr.GetRightEye().GetHiddenMesh();
 		break;
 		
 	case deoglRenderPlan::ervrStereo:
-		// TODO render both at the same time
+		modelLeft = vr.GetLeftEye().GetHiddenMesh();
+		modelRight = vr.GetRightEye().GetHiddenMesh();
 		break;
 		
 	case deoglRenderPlan::ervrNone:
-		break;
+		return;
 	}
 	
-	if( ! model ){
+	if( ! model && ! modelLeft && ! modelRight ){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderHiddenArea );
-	
-	deoglModelLOD &lod = model->GetLODAt( 0 );
-	lod.PrepareVBOBlock();
-	const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
-	if( ! vboBlock ){
-		return;
-	}
-	
-	deoglVAO * const vao = vboBlock->GetVBO()->GetVAO();
-	pglBindVertexArray( vao->GetVAO() );
-	
-	if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
-		OGL_CHECK( renderThread, pglDrawElementsBaseVertex( GL_TRIANGLES,
-			vboBlock->GetIndexCount(), vao->GetIndexGLType(),
-			( GLvoid* )( intptr_t )( vao->GetIndexSize() * vboBlock->GetIndexOffset() ),
-			vboBlock->GetOffset() ) );
+	if( model ){
+		deoglModelLOD &lod = model->GetLODAt( 0 );
+		lod.PrepareVBOBlock();
+		const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
+		if( vboBlock ){
+			pRenderHiddenArea( *vboBlock, pShaderHiddenArea );
+		}
 		
 	}else{
-		OGL_CHECK( renderThread, glDrawElements( GL_TRIANGLES,
-			vboBlock->GetIndexCount(), vao->GetIndexGLType(),
-			( GLvoid* )( intptr_t )( vao->GetIndexSize() * vboBlock->GetIndexOffset() ) ) );
+		if( modelLeft ){
+			deoglModelLOD &lod = modelLeft->GetLODAt( 0 );
+			lod.PrepareVBOBlock();
+			const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
+			if( vboBlock ){
+				pRenderHiddenArea( *vboBlock, pShaderHiddenAreaStereoLeft );
+			}
+		}
+		
+		if( modelRight ){
+			deoglModelLOD &lod = modelRight->GetLODAt( 0 );
+			lod.PrepareVBOBlock();
+			const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
+			if( vboBlock ){
+				pRenderHiddenArea( *vboBlock, pShaderHiddenAreaStereoRight );
+			}
+		}
 	}
 	
 	pglBindVertexArray( 0 );
@@ -146,4 +164,24 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderVR::pCleanUp(){
+}
+
+void deoglRenderVR::pRenderHiddenArea( const deoglSharedVBOBlock &vboBlock,deoglShaderProgram &shader ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	renderThread.GetShader().ActivateShader( &shader );
+	
+	const deoglVAO &vao = *vboBlock.GetVBO()->GetVAO();
+	pglBindVertexArray( vao.GetVAO() );
+	
+	if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+		OGL_CHECK( renderThread, pglDrawElementsBaseVertex( GL_TRIANGLES,
+			vboBlock.GetIndexCount(), vao.GetIndexGLType(),
+			( GLvoid* )( intptr_t )( vao.GetIndexSize() * vboBlock.GetIndexOffset() ),
+			vboBlock.GetOffset() ) );
+		
+	}else{
+		OGL_CHECK( renderThread, glDrawElements( GL_TRIANGLES,
+			vboBlock.GetIndexCount(), vao.GetIndexGLType(),
+			( GLvoid* )( intptr_t )( vao.GetIndexSize() * vboBlock.GetIndexOffset() ) ) );
+	}
 }

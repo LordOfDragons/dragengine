@@ -199,7 +199,7 @@ pAddToRenderTask( NULL )
 	deoglShaderSources *sources;
 	
 	try{
-		renderThread.GetShader().AddCommonDefines( commonDefines );
+		renderThread.GetShader().SetCommonDefines( commonDefines );
 		AddOccMapDefines( commonDefines );
 		
 		
@@ -209,18 +209,18 @@ pAddToRenderTask( NULL )
 		pShaderOccMapOrtho->EnsureRTSShader();
 		pShaderOccMapOrtho->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefines( "USE_CLIP_PLANE" );
+		defines.SetDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapOrthoClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoClipPlane->EnsureRTSShader();
 		pShaderOccMapOrthoClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
-		defines.AddDefines( "PERSPECTIVE_TO_LINEAR" );
+		defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMap->EnsureRTSShader();
 		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefines( "USE_CLIP_PLANE" );
+		defines.SetDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapClipPlane = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapClipPlane->EnsureRTSShader();
 		pShaderOccMapClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
@@ -228,24 +228,24 @@ pAddToRenderTask( NULL )
 		
 		
 		defines = commonDefines;
-		defines.AddDefines( "GS_RENDER_STEREO" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
 		pShaderOccMapOrthoStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoStereo->EnsureRTSShader();
 		pShaderOccMapOrthoStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefines( "USE_CLIP_PLANE" );
+		defines.SetDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapOrthoClipPlaneStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoClipPlaneStereo->EnsureRTSShader();
 		pShaderOccMapOrthoClipPlaneStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
-		defines.AddDefines( "PERSPECTIVE_TO_LINEAR" );
+		defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 		pShaderOccMapStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapStereo->EnsureRTSShader();
 		pShaderOccMapStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
-		defines.AddDefines( "USE_CLIP_PLANE" );
+		defines.SetDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapClipPlaneStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapClipPlaneStereo->EnsureRTSShader();
 		pShaderOccMapClipPlaneStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
@@ -257,49 +257,49 @@ pAddToRenderTask( NULL )
 		pShaderOccMapDownSample = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderOccMapDownSampleStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test" );
-		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		defines.SetDefine( "ENSURE_MIN_SIZE", true );
 		pShaderOccTest = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "DUAL_OCCMAP", true );
+		defines.SetDefine( "DUAL_OCCMAP", true );
 		pShaderOccTestDual = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
-		defines.AddDefine( "ENSURE_MIN_SIZE", true );
-		defines.AddDefine( "FRUSTUM_TEST", true );
+		defines.SetDefine( "ENSURE_MIN_SIZE", true );
+		defines.SetDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestSun = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
-		defines.AddDefine( "ENSURE_MIN_SIZE", true );
-		defines.AddDefine( "GS_RENDER_STEREO", true );
+		defines.SetDefine( "ENSURE_MIN_SIZE", true );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
 		pShaderOccTestStereo = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "DUAL_OCCMAP", true );
-		defines.AddDefine( "DUAL_OCCMAP_STEREO", true );
+		defines.SetDefine( "DUAL_OCCMAP", true );
+		defines.SetDefine( "DUAL_OCCMAP_STEREO", true );
 		pShaderOccTestDualStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
-		defines.AddDefine( "ENSURE_MIN_SIZE", true );
-		defines.AddDefine( "FRUSTUM_TEST", true );
-		defines.AddDefine( "FRUSTUM_TEST_STEREO", true );
+		defines.SetDefine( "ENSURE_MIN_SIZE", true );
+		defines.SetDefine( "FRUSTUM_TEST", true );
+		defines.SetDefine( "FRUSTUM_TEST_STEREO", true );
 		pShaderOccTestSunStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test TFB" );
-		defines.AddDefine( "ENSURE_MIN_SIZE", true );
+		defines.SetDefine( "ENSURE_MIN_SIZE", true );
 		pShaderOccTestTFB = shaderManager.GetProgramWith( sources, defines );
-		defines.AddDefine( "DUAL_OCCMAP", true );
+		defines.SetDefine( "DUAL_OCCMAP", true );
 		pShaderOccTestTFBDual = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
-		defines.AddDefine( "ENSURE_MIN_SIZE", true );
-		defines.AddDefine( "FRUSTUM_TEST", true );
+		defines.SetDefine( "ENSURE_MIN_SIZE", true );
+		defines.SetDefine( "FRUSTUM_TEST", true );
 		pShaderOccTestTFBSun = shaderManager.GetProgramWith( sources, defines );
 		
 #if 0
@@ -309,10 +309,10 @@ pAddToRenderTask( NULL )
 		
 		if( useGSRenderCube ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Cube" );
-			defines.AddDefines( "PERSPECTIVE_TO_LINEAR" );
+			defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 			
-			defines.AddDefine( "GS_RENDER_CUBE", true );
-			defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
+			defines.SetDefine( "GS_RENDER_CUBE", true );
+			defines.SetDefine( "GS_RENDER_CUBE_CULLING", true );
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
 			pShaderOccMapCube->EnsureRTSShader();
@@ -413,32 +413,32 @@ void deoglRenderOcclusion::AddOccMapDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
 	decString value;
 	
-	defines.AddDefine( "SHARED_SPB", true );
+	defines.SetDefine( "SHARED_SPB", true );
 	
 	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.AddDefine( "SHARED_SPB_USE_SSBO", true );
+		defines.SetDefine( "SHARED_SPB_USE_SSBO", true );
 		
 		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", value );
 		}
 		
 	}else{
 		// NOTE UBO requires array size to be constant, SSBO does not
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
-			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
+			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", value );
 		}
 		
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", value );
 		}
 	}
 	
 	if( bo.GetInstanceArraySizeUBO() > 0 ){
 		value.SetValue( bo.GetInstanceArraySizeUBO() );
-		defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
+		defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
 	}
 }
 

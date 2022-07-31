@@ -51,6 +51,7 @@ private:
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
 	deoglShaderProgramUsage pShaderFinalize;
+	deoglShaderProgramUsage pShaderFinalizeSplit;
 	deoglShaderProgramUsage pShaderFinalizeStereo;
 	
 	deoglRenderWorldInfo pDebugInfo;

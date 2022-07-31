@@ -110,7 +110,7 @@ pHasSynchronizeOperations( false )
 		pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
-		defines.AddDefine( "WITH_LAYER", "1" );
+		defines.SetDefine( "WITH_LAYER", "1" );
 		pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		

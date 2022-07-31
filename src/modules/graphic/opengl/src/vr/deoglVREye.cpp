@@ -195,6 +195,8 @@ void deoglVREye::BeginFrame( deBaseVRModule &vrmodule ){
 		pLogParameters( renderThread );
 		
 		// examples on the internet use RGBA8
+		pVR.DropFBOStereo();
+		
 		if( pRenderTarget ){
 			pRenderTarget->SetSize( pTargetSize );
 			
@@ -220,6 +222,7 @@ void deoglVREye::Render(){
 	plan.SetUpsideDown( true );
 	plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 	plan.SetLodLevelOffset( 0 );
+	plan.SetRenderStereo( false );
 	
 	try{
 		pRender( renderThread );
