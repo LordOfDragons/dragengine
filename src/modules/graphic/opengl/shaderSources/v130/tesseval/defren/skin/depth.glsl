@@ -151,12 +151,12 @@ void main(){
 		
 		// normalize normals again. required since for displacement
 		// the normals have to be in the proper coordinate system
-		vNormal = normalize( vNormal * pMatrixVn );
+		vNormal = normalize( vNormal * pMatrixVn[ 0 ] );
 		#ifdef WITH_TANGENT
-			vTangent = normalize( vTangent * pMatrixVn );
+			vTangent = normalize( vTangent * pMatrixVn[ 0 ] );
 		#endif
 		#ifdef WITH_BITANGENT
-			vBitangent = normalize( vBitangent * pMatrixVn );
+			vBitangent = normalize( vBitangent * pMatrixVn[ 0 ] );
 		#endif
 	#endif
 	
@@ -175,36 +175,36 @@ void main(){
 				#ifdef BILLBOARD
 					vPosition = gl_Position.xyz;
 				#else
-					vPosition = pMatrixV * gl_Position;
+					vPosition = pMatrixV[ 0 ] * gl_Position;
 				#endif
 			#endif
 			#ifdef WITH_REFLECT_DIR
 				#ifdef BILLBOARD
 					vReflectDir = gl_Position.xyz;
 				#else
-					vReflectDir = pMatrixV * gl_Position;
+					vReflectDir = pMatrixV[ 0 ] * gl_Position;
 				#endif
 			#endif
 			#ifdef CLIP_PLANE
 				#ifdef BILLBOARD
 					vClipCoord = gl_Position.xyz;
 				#else
-					vClipCoord = pMatrixV * gl_Position;
+					vClipCoord = pMatrixV[ 0 ] * gl_Position;
 				#endif
 			#endif
 			#ifdef FADEOUT_RANGE
 				#ifdef BILLBOARD
 					vFadeZ = gl_Position.z;
 				#else
-					vFadeZ = ( pMatrixV * gl_Position ).z;
+					vFadeZ = ( pMatrixV[ 0 ] * gl_Position ).z;
 				#endif
 			#endif
 		#endif
 		
 		#ifdef BILLBOARD
-			gl_Position = pMatrixP * gl_Position;
+			gl_Position = pMatrixP[ 0 ] * gl_Position;
 		#else
-			gl_Position = sanitizePosition( pMatrixVP * gl_Position );
+			gl_Position = sanitizePosition( pMatrixVP[ 0 ] * gl_Position );
 		#endif
 	#endif
 }

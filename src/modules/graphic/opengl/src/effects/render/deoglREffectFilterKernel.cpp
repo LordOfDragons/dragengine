@@ -38,6 +38,7 @@
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
@@ -228,7 +229,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		rtshader.ActivateShader( shaderProgramDownsample );
 		deoglShaderCompiled &shaderDownsample = *shaderProgramDownsample->GetCompiled();
 		
-		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		
 		defren.SetShaderParamFSQuad( shaderDownsample, spedsTCTransform );
 		
@@ -283,7 +284,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	//defren.SetShaderParamFSQuad( shader, speQuadParams );
 	defren.SetShaderParamFSQuad( shader, speTCTransform, width, height );

@@ -1,56 +1,13 @@
 UBOLAYOUT uniform RenderParameters{
-	#ifdef GS_RENDER_CUBE
-		vec4 pAmbient;
-		mat4x3 pMatrixV[ 6 ];
-		mat4 pMatrixP;
-		mat4 pMatrixVP[ 6 ];
-		mat3 pMatrixVn[ 6 ];
-		mat3 pMatrixEnvMap;
-		mat4 pMatrixSkyBody[ 6 ];
-		vec4 pDepthToPosition;
-		vec2 pDepthToPosition2; // for use by shifted projection matrix
-		
-		#define pMatrixPDefault pMatrixP
-		
-	#elif defined GS_RENDER_CASCADED
-		vec4 pAmbient;
-		mat4x3 pMatrixV[ 4 ];
-		mat4 pMatrixP; // identify
-		mat4 pMatrixVP[ 4 ]; // same as pCascadeMatrixV
-		mat3 pMatrixVn[ 4 ];
-		mat3 pMatrixEnvMap;
-		mat4 pMatrixSkyBody[ 4 ];
-		vec4 pDepthToPosition;
-		vec2 pDepthToPosition2; // for use by shifted projection matrix
-		
-		#define pMatrixPDefault pMatrixP
-		
-	#elif defined GS_RENDER_STEREO
-		vec4 pAmbient;
-		mat4x3 pMatrixV[ 2 ];
-		mat4 pMatrixP[ 2 ];
-		mat4 pMatrixVP[ 2 ];
-		mat3 pMatrixVn[ 2 ];
-		mat3 pMatrixEnvMap;
-		mat4 pMatrixSkyBody[ 2 ];
-		vec4 pDepthToPosition[ 2 ];
-		vec2 pDepthToPosition2[ 2 ]; // for use by shifted projection matrix
-		
-		#define pMatrixPDefault pMatrixP[ 0 ]
-		
-	#else
-		vec4 pAmbient;
-		mat4x3 pMatrixV;
-		mat4 pMatrixP;
-		mat4 pMatrixVP;
-		mat3 pMatrixVn;
-		mat3 pMatrixEnvMap;
-		mat4 pMatrixSkyBody;
-		vec4 pDepthToPosition;
-		vec2 pDepthToPosition2; // for use by shifted projection matrix
-		
-		#define pMatrixPDefault pMatrixP
-	#endif
+	vec4 pAmbient;
+	mat4x3 pMatrixV[ 6 ];
+	mat4 pMatrixP[ 2 ];
+	mat4 pMatrixVP[ 6 ];
+	mat3 pMatrixVn[ 6 ];
+	mat3 pMatrixEnvMap;
+	mat4 pMatrixSkyBody[ 6 ];
+	vec4 pDepthToPosition[ 2 ];
+	vec2 pDepthToPosition2[ 2 ]; // for use by shifted projection matrix
 	
 	vec2 pDepthTransform; // x=scale, y=offset
 	float pEnvMapLodLevel;
@@ -74,7 +31,7 @@ UBOLAYOUT uniform RenderParameters{
 	// clip plane if used.
 	// xyz: normal
 	// w: distance
-	vec4 pClipPlane;
+	vec4 pClipPlane[ 2 ];
 	
 	// screen space conversion parameters
 	// x: scaleU = renderWidth / realTextureWidth
@@ -113,11 +70,7 @@ UBOLAYOUT uniform RenderParameters{
 	// maxScale = pow(2, maxLevel)
 	#define pMipMapMaxScale (pMipMapParams.w)
 	
-	#ifdef GS_RENDER_CASCADED
-		vec4 pDepthOffset[ 4 ]; // x=frontScale, y=frontOffset, z=backScale, w=backOffset
-	#else
-		vec4 pDepthOffset; // x=frontScale, y=frontOffset, z=backScale, w=backOffset
-	#endif
+	vec4 pDepthOffset[ 4 ]; // x=frontScale, y=frontOffset, z=backScale, w=backOffset
 	
 	vec3 pParticleLightHack; // temporary hack
 	float pBillboardZScale; // billboard z scale if size is fixed to screen

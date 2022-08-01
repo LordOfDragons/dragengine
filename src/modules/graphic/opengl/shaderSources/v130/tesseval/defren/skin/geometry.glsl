@@ -200,12 +200,12 @@ void main(){
 	
 	#ifndef PASS_ON_NEXT_STAGE
 		// normalize normals. this has to be done after position adjustment since otherwise the coordinate system is wrong
-		vNormal = normalize( vNormal * pMatrixVn );
+		vNormal = normalize( vNormal * pMatrixVn[ 0 ] );
 		#ifdef WITH_TANGENT
-			vTangent = normalize( vTangent * pMatrixVn );
+			vTangent = normalize( vTangent * pMatrixVn[ 0 ] );
 		#endif
 		#ifdef WITH_BITANGENT
-			vBitangent = normalize( vBitangent * pMatrixVn );
+			vBitangent = normalize( vBitangent * pMatrixVn[ 0 ] );
 		#endif
 		
 		#ifndef BILLBOARD
@@ -213,7 +213,7 @@ void main(){
 				#ifdef BILLBOARD
 					vReflectDir = gl_Position.xyz;
 				#else
-					vReflectDir = pMatrixV * gl_Position;
+					vReflectDir = pMatrixV[ 0 ] * gl_Position;
 				#endif
 			#endif
 			
@@ -221,15 +221,15 @@ void main(){
 				#ifdef BILLBOARD
 					vFadeZ = gl_Position.z;
 				#else
-					vFadeZ = ( pMatrixV * gl_Position ).z;
+					vFadeZ = ( pMatrixV[ 0 ] * gl_Position ).z;
 				#endif
 			#endif
 		#endif
 		
 		#ifdef BILLBOARD
-			gl_Position = pMatrixP * gl_Position;
+			gl_Position = pMatrixP[ 0 ] * gl_Position;
 		#else
-			gl_Position = sanitizePosition( pMatrixVP * gl_Position );
+			gl_Position = sanitizePosition( pMatrixVP[ 0 ] * gl_Position );
 		#endif
 	#endif
 }

@@ -885,7 +885,7 @@ const deoglRenderPlanMasked *mask ){
 	if( lightGeometry ){
 		renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 		
-		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		spbLight->Activate();
 		spbInstance->Activate();
 		

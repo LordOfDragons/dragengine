@@ -60,8 +60,6 @@ private:
 	deoglRenderGI *pRenderGI;
 	
 	deoglSPBlockUBO *pShadowPB;
-	deoglSPBlockUBO *pShadowCascadedPB;
-	deoglSPBlockUBO *pShadowCubePB;
 	deoglSPBlockUBO *pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
@@ -110,12 +108,6 @@ public:
 	
 	/** Shadow render parameter block. */
 	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
-	
-	/** Shadow render parameter block. */
-	inline deoglSPBlockUBO *GetShadowCascadedPB() const{ return pShadowCascadedPB; }
-	
-	/** Shadow render parameter block cubemap. */
-	inline deoglSPBlockUBO *GetShadowCubePB() const{ return pShadowCubePB; }
 	
 	/** Occmap render parameter block. */
 	inline deoglSPBlockUBO *GetOccMapPB() const{ return pOccMapPB; }

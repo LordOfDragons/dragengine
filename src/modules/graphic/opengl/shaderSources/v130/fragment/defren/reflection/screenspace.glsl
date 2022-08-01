@@ -41,12 +41,6 @@ const vec4 roughnessToAngleBase = vec4( 3.14159265, 3.14159265, -1.5707963, -1.5
 #include "v130/shared/normal.glsl"
 #include "v130/shared/defren/depth_to_position.glsl"
 
-#ifdef GS_RENDER_STEREO
-	#define pMatrixPLayer pMatrixP[ vLayer ]
-#else
-	#define pMatrixPLayer pMatrixP
-#endif
-
 
 // Calculate the screen space reflection
 //////////////////////////////////////////
@@ -258,13 +252,13 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	// negative. this prevents the need to check for division by zero or incorrect projection due to a
 	// negative z coordinate. this works since in the clip space the reflection vector is stretched to
 	// touch the nearest boundary face and for this the initial vector length is irrelevant
-	vec4 tcFrom = pMatrixPLayer * vec4( position, 1.0 );
+	vec4 tcFrom = pMatrixP[ vLayer ] * vec4( position, 1.0 );
 	tcFrom = vec4( tcFrom.xyz, 1.0 ) / vec4( tcFrom.w );
 	#ifndef INVERSE_DEPTH
 	tcFrom.z = tcFrom.z * 0.5 + 0.5;
 	#endif
 	
-	vec4 tcTo = pMatrixPLayer * vec4( position + reflectDir * pSSRClipReflDirNearDist, 1.0 );
+	vec4 tcTo = pMatrixP[ vLayer ] * vec4( position + reflectDir * pSSRClipReflDirNearDist, 1.0 );
 	tcTo = vec4( tcTo.xyz, 1.0 ) / vec4( tcTo.w );
 	#ifndef INVERSE_DEPTH
 	tcTo.z = tcTo.z * 0.5 + 0.5;
@@ -409,7 +403,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	//   dt = abs( projMat[3][2] ) * depthThreshold * pz * pz
 	// 
 	// no divs and only muls. sounds good
-	float dtFactor = abs( pMatrixPLayer[3][2] ) * depthThreshold;
+	float dtFactor = abs( pMatrixP[ vLayer ][3][2] ) * depthThreshold;
 	
 	// determine the test parameters. the goal is to obtain an upper limit to the number of taps required.
 	// currently 20 taps is the maximum. this value can be changed though to balance the quality versus the
@@ -467,7 +461,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	tcFrom.w = 2.0; // nothing found
 	
 	for(i=1; i<1000; i++){
-		p = pMatrixPLayer * vec4( position + rd*vec3(i), 1.0 );
+		p = pMatrixP[ vLayer ] * vec4( position + rd*vec3(i), 1.0 );
 		p = vec4( p.xyz, 1.0 ) / vec4( p.w );
  		p.st = fsquadScreenCoordToTexCoord( p.st );
 		//geomZ = pPosTransform.x / ( pPosTransform.y - sampleDepth( texDepth, vec3( p.st, vLayer ) ) );

@@ -721,6 +721,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetUpsideDown( false );
 		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 		plan.SetLodLevelOffset( 0 );
+		plan.SetRenderStereo( false );
 // 			/* TESTING */ plan.SetRenderStereo( true );
 // 			              plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
 		

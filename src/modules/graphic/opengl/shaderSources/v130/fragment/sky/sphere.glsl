@@ -27,19 +27,9 @@ const float INV_TWO_PI = 1.0 / ( PI * 2.0 );
 const float INV_HALF_PI = 1.0 / ( PI * 0.5 );
 const float INV_PI = 1.0 / PI;
 
-#ifdef GS_RENDER_STEREO
-	#define vSkyMatrix pMatrixVn[ vLayer ]
-#else
-	#define vSkyMatrix pMatrixVn
-#endif
-
 void main( void ){
 	// x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
-	#ifdef GS_RENDER_STEREO
-		vec4 params = vec4( pDepthToPosition[ vLayer ].zw, pDepthToPosition2[ vLayer ] );
-	#else
-		vec4 params = vec4( pDepthToPosition.zw, pDepthToPosition2 );
-	#endif
+	vec4 params = vec4( pDepthToPosition[ vLayer ].zw, pDepthToPosition2[ vLayer ] );
 	
 	//vec3 position = pMatrixLayer * normalize( vec3( vTexCoord, 1.0 ) * params );
 	//vec3 position = normalize( pMatrixLayer * vec4( vec3( vTexCoord, 1.0 ) * params, 1.0 ) );
@@ -70,10 +60,10 @@ void main( void ){
 	// vTexCoord = {-1..1}
 	// params = {tanf(fov / 2) * znear, tanf(fov * fovRatio / 2) * znear / aspectRatio, znear}
 	//         = {znear / projMat.a11, znear / projMat.a22, znear}
-	// vSkyMatrix = rot(inv(camMatrix))
-	normal = vSkyMatrix * normalize( vec3( vTexCoord, 1.0 ) * params )
+	// pMatrixVn[ vLayer ] = rot(inv(camMatrix))
+	normal = pMatrixVn[ vLayer ] * normalize( vec3( vTexCoord, 1.0 ) * params )
 	
-	// aligning the two normals (without vSkyMatrix) yields
+	// aligning the two normals (without pMatrixVn[ vLayer ]) yields
 	normalize( vec3(vTexCoord, 1) * params ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
 	
 	// where params' = params / znear = {1 / projMat.a11, 1 / projMat.a22, 1}
@@ -85,8 +75,8 @@ void main( void ){
 	// hence we can simply add pPosTransform2 and get the right result
 	*/
 	
-// 	normal = vSkyMatrix * normalize( vec3( vTexCoord, 1.0 ) * params );
-	normal = vSkyMatrix * normalize( vec3( ( vTexCoord + params.zw ) * params.xy, 1.0 ) );
+// 	normal = pMatrixVn[ vLayer ] * normalize( vec3( vTexCoord, 1.0 ) * params );
+	normal = pMatrixVn[ vLayer ] * normalize( vec3( ( vTexCoord + params.zw ) * params.xy, 1.0 ) );
 	
 	p = 2.0 * dot( pLayerPosition, normal );
 	q = dot( pLayerPosition, pLayerPosition ) - 1.0;

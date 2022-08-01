@@ -31,11 +31,7 @@ void main( void ){
 		
 		int corner;
 		for( corner=0; corner<3; corner++ ){
-			#ifdef GS_RENDER_STEREO
 			gl_Position = pMatrixSkyBody[ eye ] * gl_in[ corner ].gl_Position;
-			#else
-			gl_Position = pMatrixSkyBody * gl_in[ corner ].gl_Position;
-			#endif
 			
 			vTexCoord = vGSTexCoord[ corner ];
 			vLayer = eye;

@@ -591,7 +591,7 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 		pRenderSkyIntoEnvMapPB->Activate();
 		
 	}else{
-		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	}
 	
 	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
@@ -656,7 +656,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 		pRenderSkyIntoEnvMapPB->Activate();
 		
 	}else{
-		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	}
 	
 	// render bodies

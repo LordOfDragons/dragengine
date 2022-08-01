@@ -186,27 +186,23 @@ void main( void ){
 	
 	#ifdef DEPTH_OFFSET
 		/*if( gl_FrontFacing ){
-			gl_FragDepth += length( depthDeriv ) * pDepthOffset.x + pDepthOffset.y;
+			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].x + pDepthOffset[ vLayer ].y;
 			
 		}else{
-			gl_FragDepth += length( depthDeriv ) * pDepthOffset.z + pDepthOffset.w;
+			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].z + pDepthOffset[ vLayer ].w;
 		}*/
-		#ifdef GS_RENDER_CASCADED
-			vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
-				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
-		#else
-			vec2 depthOffset = mix( pDepthOffset.zw, pDepthOffset.xy, bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
-		#endif
+		vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
+			bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
 		gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
 	#endif
 	
 	#ifdef NO_ZCLIP
-		gl_FragDepth = max( gl_FragDepth, 0.0 );
+		gl_FragDepth = max( gl_FragDepth, 0 );
 	#endif
 	
 	// discard fragments using the clip plane
 	#ifdef CLIP_PLANE
-		if( dot( vClipCoord, pClipPlane.xyz ) <= pClipPlane.w ) discard;
+		if( dot( vClipCoord, pClipPlane[ vLayer ].xyz ) <= pClipPlane[ vLayer ].w ) discard;
 	#endif
 	
 	

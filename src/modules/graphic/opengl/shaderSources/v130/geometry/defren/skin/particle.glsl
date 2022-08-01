@@ -124,11 +124,7 @@ const vec2 tc[4] = vec2[4]( vec2(  0.0,  0.0 ), vec2(  0.0,  1.0 ), vec2(  1.0, 
 
 void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent, in vec3 bitangent ){
 	// z and w stays the same for all vertices
-	#ifdef GS_RENDER_STEREO
-		vec3 transformed = pMatrixV[ layer ] * gl_in[ 0 ].gl_Position;
-	#else
-		vec3 transformed = pMatrixV * gl_in[ 0 ].gl_Position;
-	#endif
+	vec3 transformed = pMatrixV[ layer ] * gl_in[ 0 ].gl_Position;
 	
 	vec4 position = vec4( transformed, 1 );
 	
@@ -137,11 +133,7 @@ void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent
 	for( i=0; i<4; i++ ){
 		position.xy = rotmat * bc[i] + transformed.xy;
 		
-		#ifdef GS_RENDER_STEREO
-			gl_Position = pMatrixP[ layer ] * position;
-		#else
-			gl_Position = pMatrixP * position;
-		#endif
+		gl_Position = pMatrixP[ layer ] * position;
 		
 		vTCColor = tc[i];
 		#ifdef SHARED_SPB

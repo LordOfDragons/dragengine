@@ -44,7 +44,7 @@
 		mat4x3 pMatrixV[ 6 ];
 		vec4 pTransformZ[ 6 ];
 		vec2 pZToDepth;
-		vec4 pClipPlane; // normal.xyz, distance
+		vec4 pClipPlane[ 2 ]; // normal.xyz, distance
 	};
 #endif
 

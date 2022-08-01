@@ -194,7 +194,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				vReflectDir = pMatrixV * vec4( position, 1.0 );
+				vReflectDir = pMatrixV[ 0 ] * vec4( position, 1.0 );
 			#endif
 		#endif
 		
@@ -213,7 +213,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vPosition = position;
 			#else
-				vPosition = pMatrixV * vec4( position, 1.0 );
+				vPosition = pMatrixV[ 0 ] * vec4( position, 1.0 );
 			#endif
 		#endif
 		
@@ -222,7 +222,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vClipCoord = position;
 			#else
-				vClipCoord = pMatrixV * vec4( position, 1.0 );
+				vClipCoord = pMatrixV[ 0 ] * vec4( position, 1.0 );
 			#endif
 		#endif
 		
@@ -231,7 +231,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vFadeZ = position.z;
 			#else
-				vFadeZ = ( pMatrixV * vec4( position, 1.0 ) ).z;
+				vFadeZ = ( pMatrixV[ 0 ] * vec4( position, 1.0 ) ).z;
 			#endif
 		#endif
 	#endif

@@ -871,7 +871,7 @@ DEBUG_RESET_TIMER
 	if( lightGeometry ){
 		renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 		
-		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		spbLight->Activate();
 		spbInstance->Activate();
 		
@@ -1485,9 +1485,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		&& ! bugClearEntireCubeMap;
 	
 	// setup render parameters
-	deoglSPBlockUBO * const renderParamBlock = useGSRenderCube
-		? renderThread.GetRenderers().GetLight().GetShadowCubePB()
-		: renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 	
 	if( useGSRenderCube ){
 		// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this

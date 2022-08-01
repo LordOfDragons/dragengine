@@ -109,8 +109,8 @@ public:
 		erutBillboardZScale,
 		erutFadeRange,
 		erutCameraStereoMatrix,
-		erutCameraAdaptedIntensity,
 		erutCameraRange,
+		erutCameraAdaptedIntensity,
 		erutDepthSampleOffset,
 		erutFSScreenCoordToTexCoord,
 		erutFSTexCoordToScreenCoord,
@@ -330,12 +330,6 @@ public:
 	
 	/** Create render skin shader shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
-	static deoglSPBlockUBO *CreateSPBRenderCubeMap( deoglRenderThread &renderThread );
-	static deoglSPBlockUBO *CreateSPBRenderCascaded( deoglRenderThread &renderThread );
-	static deoglSPBlockUBO *CreateSPBRenderStereo( deoglRenderThread &renderThread );
-	
-	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread,
-		int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount );
 	
 	/** Create occlusion map shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );

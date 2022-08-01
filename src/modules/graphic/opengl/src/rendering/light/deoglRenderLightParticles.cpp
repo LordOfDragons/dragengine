@@ -181,7 +181,7 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	UpdateLightParamBlock( *lightShader, *spbLight, plan, emitter, etype );
 	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, instance, itype );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	spbLight->Activate();
 	spbInstance->Activate();
 	

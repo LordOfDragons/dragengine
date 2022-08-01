@@ -209,6 +209,9 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 		// we use only the left eye frustum for the time being
 		//pFrustumFromTexture( width, height, projX, projY, projNear, projFar, matrixInvCamera, matrixMVP );
 		
+		maskedPlan.SetClipNormalStereo( mirrorMatrixStereo.mirrorNormal.ToVector() );
+		maskedPlan.SetClipDistanceStereo( mirrorMatrixStereo.mirrorNormal * mirrorMatrixStereo.mirrorRefPoint );
+		
 	}else{
 		pPlan->SetRenderStereo( false );
 	}

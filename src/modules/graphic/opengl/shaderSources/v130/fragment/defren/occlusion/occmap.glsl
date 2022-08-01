@@ -12,7 +12,7 @@ precision highp int;
 		mat4x3 pMatrixV[ 6 ];
 		vec4 pTransformZ[ 6 ];
 		vec2 pZToDepth;
-		vec4 pClipPlane; // normal.xyz, distance
+		vec4 pClipPlane[ 2 ]; // normal.xyz, distance
 	};
 #endif
 
@@ -26,9 +26,15 @@ in vec3 vPosition;
 in vec3 vClipCoord;
 #endif
 
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
+
 void main( void ){
 	#ifdef USE_CLIP_PLANE
-	if( dot( vClipCoord, pClipPlane.xyz ) <= pClipPlane.w ) discard;
+	if( dot( vClipCoord, pClipPlane[ vLayer ].xyz ) <= pClipPlane[ vLayer ].w ) discard;
 	#endif
 	#ifdef PERSPECTIVE_TO_LINEAR
 	gl_FragDepth = vDepth;

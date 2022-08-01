@@ -1047,7 +1047,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLightStereo : pShaderLight );
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	GetUBORenderLight().Activate();
 	
 	tsmgr.EnableArrayTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );

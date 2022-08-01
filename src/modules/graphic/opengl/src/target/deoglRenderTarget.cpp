@@ -105,7 +105,7 @@ void deoglRenderTarget::PrepareTexture(){
 	pTexture->SetSize( pTextureSize );
 	pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
 	pTexture->SetMipMapped( false );
-	pTexture->CreateTexture(); // require or framebuffer attaching fails
+	pTexture->CreateTexture(); // required or framebuffer attaching fails
 }
 
 void deoglRenderTarget::PrepareFramebuffer(){
@@ -129,10 +129,16 @@ void deoglRenderTarget::PrepareFramebuffer(){
 }
 
 void deoglRenderTarget::ReleaseFramebuffer(){
-	if( pFBO ){
-		delete pFBO;
-		pFBO = nullptr;
+	if( ! pFBO ){
+		return;
 	}
+	
+	if( pRenderThread.GetFramebuffer().GetActive() == pFBO ){
+		pRenderThread.GetFramebuffer().Activate( nullptr );
+	}
+	
+	delete pFBO;
+	pFBO = nullptr;
 }
 
 

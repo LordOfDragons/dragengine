@@ -329,7 +329,7 @@ pAddToRenderTask( NULL )
 		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
 		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
 		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
-		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pClipPlane
+		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4 pClipPlane[ 2 ]
 		pRenderParamBlock->MapToStd140();
 		pRenderParamBlock->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
@@ -520,10 +520,10 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset + occmapResolution * occmapBias );
 		
 		if( mask && mask->GetUseClipPlane() ){
-			pRenderParamBlock->SetParameterDataVec4( 4, mask->GetClipNormal(), mask->GetClipDistance() );
+			pRenderParamBlock->SetParameterDataArrayVec4( 4, 0, mask->GetClipNormal(), mask->GetClipDistance() );
 			
 		}else{
-			pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
+			pRenderParamBlock->SetParameterDataArrayVec4( 4, 0, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
 		}
 		
 		if( plan.GetRenderStereo() ){
@@ -532,6 +532,13 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 			pRenderParamBlock->SetParameterDataArrayVec4( 2, 1, ( float )matrixCameraStereo.a31 * zscale,
 				( float )matrixCameraStereo.a32 * zscale, ( float )matrixCameraStereo.a33 * zscale,
 				( float )matrixCameraStereo.a34 * zscale + occmapResolution * occmapBias );
+			
+			if( mask && mask->GetUseClipPlane() ){
+				pRenderParamBlock->SetParameterDataArrayVec4( 4, 1, mask->GetClipNormalStereo(), mask->GetClipDistanceStereo() );
+				
+			}else{
+				pRenderParamBlock->SetParameterDataArrayVec4( 4, 1, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
+			}
 		}
 		
 	}catch( const deException & ){

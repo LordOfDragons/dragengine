@@ -53,22 +53,23 @@
 ////////////////////////////
 
 deoglRTRenderers::deoglRTRenderers( deoglRenderThread &renderThread ) :
-pCanvas( NULL ),
-pDebugDrawer( NULL ),
-pDebug( NULL ),
-pDepthPass( NULL ),
-pDevMode( NULL ),
-pGeometry( NULL ),
-pGeometryPass( NULL ),
-pLight( NULL ),
-pOcclusion( NULL ),
-pParticles( NULL ),
-pReflection( NULL ),
-pSky( NULL ),
-pToneMap( NULL ),
-pTransparencyCounter( NULL ),
+pCanvas( nullptr ),
+pDebugDrawer( nullptr ),
+pDebug( nullptr ),
+pDepthPass( nullptr ),
+pDevMode( nullptr ),
+pGeometry( nullptr ),
+pGeometryPass( nullptr ),
+pLight( nullptr ),
+pOcclusion( nullptr ),
+pParticles( nullptr ),
+pReflection( nullptr ),
+pSky( nullptr ),
+pToneMap( nullptr ),
+pTransparencyCounter( nullptr ),
+pTransparentPasses( nullptr ),
 pVR( nullptr ),
-pWorld( NULL )
+pWorld( nullptr )
 {
 	try{
 		pCanvas = new deoglRenderCanvas( renderThread );

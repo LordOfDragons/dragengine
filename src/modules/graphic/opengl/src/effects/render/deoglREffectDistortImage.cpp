@@ -38,6 +38,7 @@
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglRImage.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -182,7 +183,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	shader.SetParameterFloat( speDistortTransform, 2.0f * su, -2.0f * sv, -su, sv );
 	

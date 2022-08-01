@@ -41,9 +41,6 @@ class deoglSPBlockUBO;
 class deoglRenderWorld : public deoglRenderBase{
 private:
 	deoglSPBlockUBO *pRenderPB;
-	deoglSPBlockUBO *pRenderLuminancePB;
-	deoglSPBlockUBO *pRenderCubePB;
-	deoglSPBlockUBO *pRenderStereoPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
@@ -78,15 +75,6 @@ public:
 	/** Render parameter block. */
 	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
 	
-	/** Render luminance parameter block. */
-	inline deoglSPBlockUBO *GetRenderLuminancePB() const{ return pRenderLuminancePB; }
-	
-	/** Render parameter block cube map. */
-	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }
-	
-	/** Render parameter block dual view. */
-	inline deoglSPBlockUBO *GetRenderStereoPB() const{ return pRenderStereoPB; }
-	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }
 	
@@ -112,12 +100,6 @@ public:
 	
 	/** Prepare render parameter shader parameter block. */
 	void PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
-	
-	/** Render parameter block. */
-	deoglSPBlockUBO *RenderPB( const deoglRenderPlan &plan ) const;
-	
-	/** Activate RenderPB or RenderStereoPB depending on render plan. */
-	void ActivateRenderPB( const deoglRenderPlan &plan ) const;
 	
 	/** Render masked pass. */
 	void RenderMaskedPass( deoglRenderPlan &plan );

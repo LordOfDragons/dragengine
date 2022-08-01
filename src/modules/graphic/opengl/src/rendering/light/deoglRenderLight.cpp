@@ -112,8 +112,6 @@ pRenderLightParticles( NULL ),
 pRenderGI( NULL ),
 
 pShadowPB( NULL ),
-pShadowCascadedPB( nullptr ),
-pShadowCubePB( NULL ),
 pOccMapPB( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL )
@@ -126,8 +124,6 @@ pAddToRenderTask( NULL )
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
-		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
-		pShadowCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
 		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
@@ -401,7 +397,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderAOLocalStereo : pShaderAOLocal );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
@@ -433,7 +429,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
@@ -476,7 +472,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
 	
@@ -569,7 +565,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderSSSSSStereo : pShaderSSSSS;
 	renderThread.GetShader().ActivateShader( program );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 1122 ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
@@ -668,12 +664,6 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pOccMapPB ){
 		pOccMapPB->FreeReference();
-	}
-	if( pShadowCubePB ){
-		pShadowCubePB->FreeReference();
-	}
-	if( pShadowCascadedPB ){
-		pShadowCascadedPB->FreeReference();
 	}
 	if( pShadowPB ){
 		pShadowPB->FreeReference();

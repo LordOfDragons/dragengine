@@ -429,7 +429,7 @@ DEBUG_RESET_TIMERS;
 	
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLumPrepareStereo : pShaderLumPrepare );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
@@ -542,7 +542,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	shader->SetParameterFloat( spc2llParam1, tcOffsetU, 0.0f, 0.0f, tcOffsetV );
 	shader->SetParameterFloat( spc2llParam2, tcOffsetU, tcOffsetV, clampU, clampV );
@@ -560,7 +560,7 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	modeTarget = false;
 	
@@ -788,7 +788,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderBrightPassStereo : pShaderBrightPass );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	defren.ActivateFBOTemporary1( false );
 	
@@ -833,7 +833,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )lastWidth, ( float )lastHeight );
 	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )lastWidth - 0.5f ), pixelSizeV * ( ( float )lastHeight - 0.5f ) );
@@ -1050,7 +1050,7 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	defren.SetShaderParamFSQuad( *shader, sptmTCBloomTransform, bloomWidth, bloomHeight );
 	shader->SetParameterFloat( sptmTCBloomClamp, clampBloomU, clampBloomV );
@@ -1079,7 +1079,7 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 	shader->SetParameterFloat( spfinGamma, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, 1.0f );

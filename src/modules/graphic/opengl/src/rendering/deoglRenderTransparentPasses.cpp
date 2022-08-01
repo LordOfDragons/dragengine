@@ -633,7 +633,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
@@ -681,7 +681,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	// outline
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
@@ -932,7 +932,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		}
 		
 		renderTaskParticles.Clear();
-		renderTaskParticles.SetRenderParamBlock( renworld.RenderPB( plan ) );
+		renderTaskParticles.SetRenderParamBlock( renworld.GetRenderPB() );
 		
 		if( inbetween ){
 			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()

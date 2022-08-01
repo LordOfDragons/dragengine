@@ -483,23 +483,6 @@ void deoglSkinShader::PrepareShader(){
 
 
 deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 1, 1, 1 );
-}
-
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderCubeMap( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 6, 1, 1 );
-}
-
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderCascaded( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 4, 1, 4 );
-}
-
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderStereo( deoglRenderThread &renderThread ){
-	return CreateSPBRender( renderThread, 2, 2, 1 );
-}
-
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread,
-int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount ){
 	if( ! pglUniformBlockBinding ){
 		DETHROW( deeInvalidParam );
 	}
@@ -508,7 +491,7 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 	// same no matter what configuration is used for skins. this is also why this
 	// method is a static method not an regular method
 	
-	deoglSPBlockUBO *spb = NULL;
+	deoglSPBlockUBO *spb = nullptr;
 	
 	try{
 		spb = new deoglSPBlockUBO( renderThread );
@@ -516,14 +499,14 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->SetParameterCount( ERUT_COUNT );
 		
 		spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, matrixLayerCount ); // mat4x3
-		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, projectionMatrixLayerCount ); // mat4
-		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
-		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, matrixLayerCount ); // mat3
+		spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3
+		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 2 ); // mat4
+		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
+		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 6 ); // mat3
 		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, matrixLayerCount ); // mat4
-		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, projectionMatrixLayerCount ); // vec4
-		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, projectionMatrixLayerCount ); // vec2
+		spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
+		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
+		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 2 ); // vec2
 		
 		spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
@@ -534,14 +517,14 @@ int matrixLayerCount, int projectionMatrixLayerCount, int depthOffsetLayerCount 
 		spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 		
 		spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
 		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
 		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
 		spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
 		
-		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, depthOffsetLayerCount ); // vec4
+		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 4 ); // vec4
 		
 		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float

@@ -1079,7 +1079,7 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	// activate shader and set the parameters
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderReflectionStereo : pShaderReflection );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	pRenderParamBlock->Activate();
 	DEBUG_PRINT_TIMER( "Reflection: Activate Shader" );
 	
@@ -1791,7 +1791,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderScreenSpaceStereo : pShaderScreenSpace );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
@@ -1904,7 +1904,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderApplyReflectionsStereo : pShaderApplyReflections;
 	renderThread.GetShader().ActivateShader( program );
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	pEnvMapsParamBlock->Activate();
 	
 	/*

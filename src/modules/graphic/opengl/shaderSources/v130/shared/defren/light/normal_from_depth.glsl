@@ -71,17 +71,10 @@ vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPos
 		positionY = vec3( samples.w );
 	}
 	
-	#ifdef GS_RENDER_STEREO
-		positionX.z = pDepthToPosition[ vLayer ].x / ( pDepthToPosition[ vLayer ].y - positionX.z );
-		positionY.z = pDepthToPosition[ vLayer ].x / ( pDepthToPosition[ vLayer ].y - positionY.z );
-		positionX.xy = ( vScreenCoord + offsetX + pDepthToPosition2[ vLayer ] ) * pDepthToPosition[ vLayer ].zw * positionX.zz;
-		positionY.xy = ( vScreenCoord + offsetY + pDepthToPosition2[ vLayer ] ) * pDepthToPosition[ vLayer ].zw * positionY.zz;
-	#else
-		positionX.z = pDepthToPosition.x / ( pDepthToPosition.y - positionX.z );
-		positionY.z = pDepthToPosition.x / ( pDepthToPosition.y - positionY.z );
-		positionX.xy = ( vScreenCoord + offsetX + pDepthToPosition2 ) * pDepthToPosition.zw * positionX.zz;
-		positionY.xy = ( vScreenCoord + offsetY + pDepthToPosition2 ) * pDepthToPosition.zw * positionY.zz;
-	#endif
+	positionX.z = pDepthToPosition[ vLayer ].x / ( pDepthToPosition[ vLayer ].y - positionX.z );
+	positionY.z = pDepthToPosition[ vLayer ].x / ( pDepthToPosition[ vLayer ].y - positionY.z );
+	positionX.xy = ( vScreenCoord + offsetX + pDepthToPosition2[ vLayer ] ) * pDepthToPosition[ vLayer ].zw * positionX.zz;
+	positionY.xy = ( vScreenCoord + offsetY + pDepthToPosition2[ vLayer ] ) * pDepthToPosition[ vLayer ].zw * positionY.zz;
 	
 	vec3 normal = normalize( cross( positionY - centerPosition, positionX - centerPosition ) );
 	

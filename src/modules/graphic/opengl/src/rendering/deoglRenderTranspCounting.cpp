@@ -52,6 +52,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/shader/deoglSkinShader.h"
@@ -241,7 +242,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// render transparent scene elements
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
@@ -315,7 +316,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// outline
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.RenderPB( plan ) );
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
@@ -350,7 +351,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
@@ -476,7 +477,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		
 		renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderTraCountGetCountStereo : pShaderTraCountGetCount );
 		
-		renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		
 		const GLfloat clearColor2[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor2[ 0 ] ) );

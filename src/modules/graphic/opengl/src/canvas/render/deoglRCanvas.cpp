@@ -146,6 +146,7 @@ void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask
 			pMaskRenderTarget->SetTextureDirty( false );
 			
 			pMaskRenderTarget->PrepareFramebuffer();
+			GetRenderThread().GetFramebuffer().Activate( pMaskRenderTarget->GetFBO() );
 			
 			deoglRenderCanvasContext context( *pMask, pMaskRenderTarget->GetFBO(),
 				decPoint(), pMaskRenderTarget->GetSize(), false, renderPlanMask );
@@ -157,7 +158,6 @@ void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask
 			context.SetTransform( pMask->GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
 			context.UpdateTransformMask();
 			
-			GetRenderThread().GetFramebuffer().Activate( pMaskRenderTarget->GetFBO() );
 			GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
 			pMask->Render( context );
 			

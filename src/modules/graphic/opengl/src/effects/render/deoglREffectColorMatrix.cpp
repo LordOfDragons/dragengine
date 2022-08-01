@@ -38,6 +38,7 @@
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
@@ -168,7 +169,7 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	renderThread.GetRenderers().GetWorld().ActivateRenderPB( plan );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	

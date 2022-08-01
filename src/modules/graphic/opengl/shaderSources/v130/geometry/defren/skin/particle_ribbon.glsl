@@ -176,11 +176,7 @@ const float pi = 3.14159265;
 void emitCorner( in int corner, in vec4 position, in vec3 offset, in vec2 tc, in int layer ){
 	position.xyz -= offset;
 	
-	#ifdef GS_RENDER_STEREO
-		gl_Position = pMatrixP[ layer ] * position;
-	#else
-		gl_Position = pMatrixP * position;
-	#endif
+	gl_Position = pMatrixP[ layer ] * position;
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
@@ -271,11 +267,7 @@ void emitRibbon( in int layer ){
 	int i;
 	
 	for( i=0; i<4; i++ ){
-		#ifdef GS_RENDER_STEREO
-			p[ i ] = vec4( pMatrixV[ layer ] * gl_in[ i ].gl_Position, 1 );
-		#else
-			p[ i ] = vec4( pMatrixV * gl_in[ i ].gl_Position, 1 );
-		#endif
+		p[ i ] = vec4( pMatrixV[ layer ] * gl_in[ i ].gl_Position, 1 );
 	}
 	
 	
