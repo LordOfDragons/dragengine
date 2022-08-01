@@ -123,8 +123,7 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	deoglRenderThread &renderThread = GetRenderThread();
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( GetRenderThread(), glDisable( GL_CULL_FACE ) );
 	
 	if( model ){
 		deoglModelLOD &lod = model->GetLODAt( 0 );
@@ -155,7 +154,7 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 	}
 	
 	pglBindVertexArray( 0 );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	OGL_CHECK( GetRenderThread(), glEnable( GL_CULL_FACE ) );
 }
 
 
