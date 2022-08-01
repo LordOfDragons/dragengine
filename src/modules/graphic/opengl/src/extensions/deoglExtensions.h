@@ -251,6 +251,7 @@ public:
 		 * <ul>
 		 * <li>GL_ARB_shader_image_load_store</li>
 		 * <li>ARB_indirect_parameters</li>
+		 * <li>ARB_shader_draw_parameters</li>
 		 * </ul>
 		 */
 		evgl4p6,
@@ -326,6 +327,7 @@ public:
 		ext_ARB_indirect_parameters,
 		ext_ARB_bindless_texture,
 		ext_ARB_fragment_layer_viewport,
+		ext_ARB_shader_draw_parameters,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

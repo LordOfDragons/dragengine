@@ -142,6 +142,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_indirect_parameters",
 	"GL_ARB_bindless_texture",
 	"GL_ARB_fragment_layer_viewport",
+	"GL_ARB_shader_draw_parameters",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
