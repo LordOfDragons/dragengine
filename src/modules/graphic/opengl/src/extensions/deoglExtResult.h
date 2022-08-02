@@ -612,6 +612,11 @@ extern GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v;
 // extern GLAPI PFNGLBLENDFUNCIARBPROC pglBlendFunci;
 // extern GLAPI PFNGLBLENDFUNCSEPARATEIARBPROC pglBlendFuncSeparatei;
 
+// OpenGL version 1.4
+///////////////////////
+
+extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
+
 
 
 // GL_ARB_tessellation_shader : opengl version 4.0

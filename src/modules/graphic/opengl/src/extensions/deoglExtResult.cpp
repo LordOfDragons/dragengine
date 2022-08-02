@@ -363,6 +363,11 @@ GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v = nullptr;
 // GL_ARB_draw_buffers_blend : opengl version 4.0
 ///////////////////////////////////////////////////
 
+// OpenGL version 1.4
+///////////////////////
+
+GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
+
 
 
 // GL_ARB_tessellation_shader : opengl version 4.0
