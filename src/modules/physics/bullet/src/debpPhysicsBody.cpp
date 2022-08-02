@@ -102,6 +102,7 @@ void debpPhysicsBody::SetShape( debpBulletShape *shape ){
 		if( pRigidBody ){
 			pRigidBody->setCollisionShape( shape->GetShape() );
 			pRigidBody->updateInertiaTensor();
+			SetDirtyAABB( true );
 		}
 		
 	}else{
