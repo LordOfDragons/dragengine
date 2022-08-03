@@ -712,6 +712,13 @@ GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount 
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
+	
+	// WARNING temporary hack. without this line below some immediately following rendering
+	//         into render targets result in strange results where texture data is not written
+	//         to framebuffers although the result is correct.
+	//         
+	// NOTE we have to replace this with compute shaders. TBF is unstable and error prone
+	glFlush();
 }
 
 
