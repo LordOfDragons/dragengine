@@ -936,6 +936,11 @@ extern GLAPI PFNGLGETVARYINGLOCATIONNVPROC pglGetVaryingLocationNV;
 extern GLAPI PFNGLBINDIMAGETEXTUREPROC pglBindImageTexture;
 
 
+// OpenGL 4.2 : no extension
+//////////////////////////////
+
+extern GLAPI PFNGLMEMORYBARRIERPROC pglMemoryBarrier;
+
 
 // OpenGL 4.3 : no extension
 //////////////////////////////

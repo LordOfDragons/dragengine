@@ -1121,6 +1121,11 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	#endif
 	
+	// OpenGL 4.2 : no extension
+	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
+		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
+	}
+	
 	// OpenGL 4.3 : no extension
 	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0 ){
 		pGetRequiredFunction( (void**)&pglInvalidateFramebuffer, "glInvalidateFramebuffer" );

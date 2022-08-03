@@ -586,6 +586,12 @@ GLAPI PFNGLGETVARYINGLOCATIONNVPROC pglGetVaryingLocationNV = nullptr;
 GLAPI PFNGLBINDIMAGETEXTUREPROC pglBindImageTexture = nullptr;
 
 
+// OpenGL 4.2 : no extension
+//////////////////////////////
+
+GLAPI PFNGLMEMORYBARRIERPROC pglMemoryBarrier = nullptr;
+
+
 
 // OpenGL 4.3 : no extension
 //////////////////////////////
