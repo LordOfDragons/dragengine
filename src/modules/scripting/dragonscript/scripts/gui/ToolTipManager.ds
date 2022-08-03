@@ -150,14 +150,18 @@ class ToolTipManager
 		
 		pToolTip = toolTip
 		
-		updatePopup()
-		
-		if toolTip != null
-			pPopup.popup(calculateToolTipPosition())
+		if pPopup != null
+			updatePopup()
 			
-		else
-			pPopup.popdown()
+			if toolTip != null
+				pPopup.popup(calculateToolTipPosition())
+				
+			else
+				pPopup.popdown()
+			end
 		end
+		
+		onToolTipChanged()
 	end
 	
 	
@@ -174,7 +178,7 @@ class ToolTipManager
 		
 		setToolTip(toolTip)
 		
-		if pPopup.getVisible()
+		if pPopup != null and pPopup.getVisible()
 			pPopup.setPosition(calculateToolTipPosition())
 		end
 	end
@@ -244,6 +248,13 @@ class ToolTipManager
 		end
 		
 		pPopup.fitToContent()
+	end
+	
+	/**
+	 * \brief Tool tip changed.
+	 * \version 1.14
+	 */
+	public func void onToolTipChanged()
 	end
 end
 
