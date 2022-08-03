@@ -26,6 +26,7 @@
 #include "deoglDRDepthMinMax.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../framebuffer/deoglFramebuffer.h"
+#include "../../framebuffer/deoglRestoreFramebuffer.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
@@ -203,6 +204,7 @@ void deoglDRDepthMinMax::pCreateTextures(){
 }
 
 void deoglDRDepthMinMax::pCreateFBOs(){
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	int i;
 	
 	if( pLevelCount > 0 ){

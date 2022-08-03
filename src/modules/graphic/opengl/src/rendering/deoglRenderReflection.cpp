@@ -47,6 +47,7 @@
 #include "../extensions/deoglExtensions.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../gi/deoglGICascade.h"
 #include "../gi/deoglGIState.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -1628,8 +1629,8 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
+	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
-	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
@@ -1698,7 +1699,6 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	renderThread.GetFramebuffer().Activate( oldfbo );
 	
 	DEBUG_PRINT_TIMER( "Reflection RenderGIEnvMaps: Render" );
 }
@@ -1707,8 +1707,8 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
-	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
@@ -1738,7 +1738,6 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	defren.RenderFSQuadVAO();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	renderThread.GetFramebuffer().Activate( oldfbo );
 }
 
 void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){

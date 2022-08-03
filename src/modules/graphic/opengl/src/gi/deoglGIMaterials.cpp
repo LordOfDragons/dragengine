@@ -25,6 +25,7 @@
 
 #include "deoglGIMaterials.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -146,7 +147,7 @@ void deoglGIMaterials::pCleanUp(){
 }
 
 void deoglGIMaterials::pCreateFBOMaterial(){
-	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 3 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	
 	const int size = pMaterialMapSize * pRowsPerImage;
@@ -196,8 +197,6 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDiffTintMask[ 0 ] ) );
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearReflRough[ 1 ] ) );
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearEmiss[ 2 ] ) );
-	
-	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }
 
 void deoglGIMaterials::pEnlarge(){

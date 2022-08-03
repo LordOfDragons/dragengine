@@ -28,6 +28,7 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
 #include "../rendering/deoglRenderWorld.h"
@@ -233,12 +234,9 @@ void deoglVR::Submit(){
 	//      GL_SCISSOR_TEST fixes this problem. this is also save if OpenVR is fixed
 	OGL_CHECK( pCamera.GetRenderThread(), glDisable( GL_SCISSOR_TEST ) );
 	
-	deoglFramebuffer * const oldFbo = pCamera.GetRenderThread().GetFramebuffer().GetActive();
-	
+	const deoglRestoreFramebuffer restoreFbo( pCamera.GetRenderThread() ); 
 	pLeftEye.Submit( *vrmodule );
 	pRightEye.Submit( *vrmodule );
-	
-	pCamera.GetRenderThread().GetFramebuffer().Activate( oldFbo );
 }
 
 void deoglVR::EndFrame(){

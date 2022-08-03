@@ -27,6 +27,7 @@
 #include "deoglGITraceRays.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 
@@ -141,8 +142,8 @@ void deoglGITraceRays::pCreateFBORay(){
 	// diffuse and reflectivity: (15M, 4M) [14680064, 3670016]
 	// 
 	// total: (63M, 16M) [62914560, 15728640]
-	// 
-	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	//
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
 		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 	
@@ -195,6 +196,4 @@ void deoglGITraceRays::pCreateFBORay(){
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBOLight.Verify();
-	
-	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }

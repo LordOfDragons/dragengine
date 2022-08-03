@@ -28,6 +28,7 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
 #include "../rendering/deoglRenderWorld.h"
@@ -391,7 +392,7 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 		return;
 	}
 	
-	deoglFramebuffer * const oldFbo = renderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
 	pVRViewImages = new sViewImage[ count ];
 	
@@ -410,8 +411,6 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 		
 		viewImage.fbo->Verify();
 	}
-	
-	renderThread.GetFramebuffer().Activate( oldFbo );
 	
 	renderThread.GetLogger().LogInfoFormat( "%s: view images %d", LogPrefix(), pVRViewImageCount );
 }

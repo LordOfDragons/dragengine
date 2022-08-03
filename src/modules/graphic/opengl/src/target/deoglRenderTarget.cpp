@@ -25,6 +25,7 @@
 
 #include "deoglRenderTarget.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -112,6 +113,8 @@ void deoglRenderTarget::PrepareFramebuffer(){
 	if( pFBO ){
 		return;
 	}
+	
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	
 	PrepareTexture();
 	

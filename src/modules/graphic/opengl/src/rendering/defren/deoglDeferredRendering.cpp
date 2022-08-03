@@ -30,6 +30,7 @@
 #include "../../extensions/deoglExtensions.h"
 #include "../../extensions/deoglExtResult.h"
 #include "../../framebuffer/deoglFramebuffer.h"
+#include "../../framebuffer/deoglRestoreFramebuffer.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -1234,6 +1235,8 @@ void deoglDeferredRendering::pUpdateMemoryUsage(){
 }
 
 void deoglDeferredRendering::pCreateFBOs(){
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	
 	pCreateFBOTex( efbomdD1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
 	pCreateFBOTex( efbomdD2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
 	pCreateFBOTex( efbomdD3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3 );

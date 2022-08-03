@@ -27,6 +27,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"

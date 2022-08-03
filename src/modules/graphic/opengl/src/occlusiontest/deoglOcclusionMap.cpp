@@ -26,7 +26,7 @@
 #include "deoglOcclusionMap.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../framebuffer/deoglFramebufferManager.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
@@ -126,6 +126,7 @@ void deoglOcclusionMap::pCreateTextures(){
 }
 
 void deoglOcclusionMap::pCreateFBOs(){
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	int i;
 	
 	pFBOs = new deoglFramebuffer*[ pLevelCount ];

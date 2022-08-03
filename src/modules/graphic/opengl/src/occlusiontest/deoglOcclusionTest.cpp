@@ -32,6 +32,7 @@
 #include "../extensions/deoglExtensions.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
@@ -357,6 +358,8 @@ void deoglOcclusionTest::pUpdateTexturesFBO(){
 	pTextureResult->CreateTexture();
 	
 	// fbo
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	
 	if( ! pFBOResult ){
 		pFBOResult = new deoglFramebuffer( pRenderThread, false );
 	}
