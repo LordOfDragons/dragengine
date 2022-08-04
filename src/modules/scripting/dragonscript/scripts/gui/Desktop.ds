@@ -154,6 +154,7 @@ class Desktop extends Container
 			if pHoverWidget.getParent() == null /* removed or disposed while active */ \
 			or not pHoverWidget.getVisible()
 				pHoverWidget = null
+				hoverWidgetChanged()
 			end
 		end
 		
@@ -173,6 +174,7 @@ class Desktop extends Container
 		var Widget leaveWidget = hoverWidget
 		
 		pHoverWidget = widget
+		hoverWidgetChanged()
 		
 		if leaveWidget != null
 			// runWhileBlockingLayout added to deal with problem of layoutParent calling updateHoverWidget
@@ -852,6 +854,7 @@ class Desktop extends Container
 			end
 			// store widget where the mouse is above at the moment
 			pHoverWidget = eventWidget
+			hoverWidgetChanged()
 			*/
 		else
 			sendEvent(event)
@@ -1234,6 +1237,7 @@ class Desktop extends Container
 			
 		elif pCaptureWidget != null
 			//pHoverWidget = pCaptureWidget // mouse move should do this already
+			//hoverWidgetChanged()
 			
 			if pCaptureWidget != this
 				pCaptureWidget.sendEvent(MouseEvent.new(pCaptureWidget, \
@@ -1250,6 +1254,7 @@ class Desktop extends Container
 					if widget != null
 						if isWidgetDeepEnabled(widget)
 							//pHoverWidget = widget // mouse move should do this already
+							//hoverWidgetChanged()
 							widget.sendEvent(MouseEvent.new(widget, event.getIdentifier(), \
 								event.getButton(), event.getModifiers(), \
 								pMouseLocation - widget.getScreenPosition(), \
@@ -1572,6 +1577,18 @@ class Desktop extends Container
 		case Window.WindowState.maximized
 			window.setPosition(Point.new())
 			window.setSize(getSize())
+		end
+	end
+	
+	/**
+	 * \brief Hover widget changed.
+	 * \version 1.14
+	 * 
+	 * Calls update() on tool tip manager if not null.
+	 */
+	public func void hoverWidgetChanged()
+		if pToolTipManager != null
+			pToolTipManager.update()
 		end
 	end
 end
