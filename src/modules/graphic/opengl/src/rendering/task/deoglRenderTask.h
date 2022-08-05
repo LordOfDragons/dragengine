@@ -81,6 +81,7 @@ private:
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	bool pForceDoubleSided;
+	bool pRenderVSStereo;
 	
 	decPointerList pShaders;
 	int pShaderCount;
@@ -144,6 +145,12 @@ public:
 	
 	/** Set force double sided rendering. */
 	void SetForceDoubleSided( bool forceDoubleSided );
+	
+	/** Use vertex shader stereo rendering. */
+	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
+	
+	/** Set use vertex shader stereo rendering. */
+	void SetRenderVSStereo( bool renderVSStereo );
 	
 	
 	

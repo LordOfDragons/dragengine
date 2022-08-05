@@ -719,6 +719,25 @@ extern GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect;
 // GL_ARB_draw_indirect : opengl version 4.3
 //////////////////////////////////////////////
 
+struct oglDrawArraysIndirectCommand{
+	GLuint count;
+	GLuint instanceCount;
+	GLuint first;
+	GLuint baseInstance;
+	
+	oglDrawArraysIndirectCommand();
+};
+
+struct oglDrawElementsIndirectCommand{
+	GLuint count;
+	GLuint instanceCount;
+	GLuint firstIndex;
+	GLint baseVertex;
+	GLuint baseInstance;
+	
+	oglDrawElementsIndirectCommand();
+};
+
 extern GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect;
 extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
 

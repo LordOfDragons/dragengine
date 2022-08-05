@@ -470,6 +470,14 @@ GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect = nullptr;
 // GL_ARB_draw_indirect : opengl version 4.3
 //////////////////////////////////////////////
 
+oglDrawArraysIndirectCommand::oglDrawArraysIndirectCommand() :
+count( 0 ), instanceCount( 0 ), first( 0 ), baseInstance( 0 ){
+}
+
+oglDrawElementsIndirectCommand::oglDrawElementsIndirectCommand() :
+count( 0 ), instanceCount( 0 ), firstIndex( 0 ), baseVertex( 0 ), baseInstance( 0 ){
+}
+
 GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect = nullptr;
 GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect = nullptr;
 

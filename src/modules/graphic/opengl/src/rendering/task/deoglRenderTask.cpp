@@ -70,6 +70,7 @@ pTBOInstances( 0 ),
 pSPBInstanceMaxEntries( 0 ),
 pUseSPBInstanceFlags( false ),
 pForceDoubleSided( false ),
+pRenderVSStereo( false ),
 
 pShaderCount( 0 ),
 pHasShader( NULL ),
@@ -112,6 +113,7 @@ void deoglRenderTask::Clear(){
 	SetTBOInstances( 0 );
 	pUseSPBInstanceFlags = false;
 	pForceDoubleSided = false;
+	pRenderVSStereo = false;
 }
 
 void deoglRenderTask::PrepareForRender(){
@@ -158,6 +160,10 @@ void deoglRenderTask::SetUseSPBInstanceFlags( bool useFlags ){
 
 void deoglRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
 	pForceDoubleSided = forceDoubleSided;
+}
+
+void deoglRenderTask::SetRenderVSStereo( bool renderVSStereo ){
+	pRenderVSStereo = renderVSStereo;
 }
 
 

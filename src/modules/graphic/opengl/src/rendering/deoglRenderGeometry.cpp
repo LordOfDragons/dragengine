@@ -264,6 +264,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool forceDoubleSided = renderTask.GetForceDoubleSided();
+	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
@@ -359,46 +360,70 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 					
 					const int subInstanceCount = rtinstance.GetSubInstanceCount() + instance.GetSubInstanceCount();
 					
-					if( subInstanceCount == 0 ){
+					if( renderVSStereo ){
 						if( instance.GetIndexCount() == 0 ){
-							OGL_CHECK( renderThread, glDrawArrays( primitiveType,
-								instance.GetFirstPoint(), instance.GetPointCount() ) );
+							oglDrawArraysIndirectCommand mddraw[ 2 ];
+							mddraw[ 0 ].count = mddraw[ 1 ].count = instance.GetPointCount();
+							mddraw[ 0 ].first = mddraw[ 1 ].first  = instance.GetFirstPoint();
+							mddraw[ 0 ].instanceCount = mddraw[ 1 ].instanceCount = subInstanceCount;
 							
-						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
-							// renderTaskInstance->GetFirstPoint() as base-vertex. required since
-							// the indices are stored relative to the block of points for various
-							// reasons. base-vertex is required to shift the indices to the correct
-							// range of points in the vbo. FirstPoint contains already the index
-							// to the first point in the block and thus is the right value we
-							// need to shift the indices by
-							
-							OGL_CHECK( renderThread, pglDrawElementsBaseVertex( primitiveType,
-								instance.GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
-								instance.GetFirstPoint() ) );
+							OGL_CHECK( renderThread, pglMultiDrawArraysIndirect( primitiveType, mddraw, 2, 0 ) );
 							
 						}else{
-							OGL_CHECK( renderThread, glDrawElements( primitiveType,
-								instance.GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ) ) );
+							oglDrawElementsIndirectCommand mddraw[ 2 ];
+							mddraw[ 0 ].count = mddraw[ 1 ].count = instance.GetIndexCount();
+							mddraw[ 0 ].firstIndex = mddraw[ 1 ].firstIndex  = instance.GetFirstIndex();
+							mddraw[ 0 ].instanceCount = mddraw[ 1 ].instanceCount = subInstanceCount;
+							
+							if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+								mddraw[ 0 ].baseVertex = mddraw[ 1 ].baseVertex = instance.GetFirstPoint();
+							}
+							
+							OGL_CHECK( renderThread, pglMultiDrawElementsIndirect( primitiveType, indexGLType, mddraw, 2, 0 ) );
 						}
 						
 					}else{
-						if( instance.GetIndexCount() == 0 ){
-							OGL_CHECK( renderThread, pglDrawArraysInstanced( primitiveType,
-								instance.GetFirstPoint(), instance.GetPointCount(), subInstanceCount ) );
-							
-						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
-							OGL_CHECK( renderThread, pglDrawElementsInstancedBaseVertex(
-								primitiveType, instance.GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
-								subInstanceCount, instance.GetFirstPoint() ) );
+						if( subInstanceCount == 0 ){
+							if( instance.GetIndexCount() == 0 ){
+								OGL_CHECK( renderThread, glDrawArrays( primitiveType,
+										instance.GetFirstPoint(), instance.GetPointCount() ) );
+								
+							}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+								// renderTaskInstance->GetFirstPoint() as base-vertex. required since
+								// the indices are stored relative to the block of points for various
+								// reasons. base-vertex is required to shift the indices to the correct
+								// range of points in the vbo. FirstPoint contains already the index
+								// to the first point in the block and thus is the right value we
+								// need to shift the indices by
+								
+								OGL_CHECK( renderThread, pglDrawElementsBaseVertex( primitiveType,
+									instance.GetIndexCount(), indexGLType,
+									( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+									instance.GetFirstPoint() ) );
+								
+							}else{
+								OGL_CHECK( renderThread, glDrawElements( primitiveType,
+									instance.GetIndexCount(), indexGLType,
+									( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ) ) );
+							}
 							
 						}else{
-							OGL_CHECK( renderThread, pglDrawElementsInstanced(
-								primitiveType, instance.GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
-								subInstanceCount ) );
+							if( instance.GetIndexCount() == 0 ){
+								OGL_CHECK( renderThread, pglDrawArraysInstanced( primitiveType,
+									instance.GetFirstPoint(), instance.GetPointCount(), subInstanceCount ) );
+								
+							}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+								OGL_CHECK( renderThread, pglDrawElementsInstancedBaseVertex(
+									primitiveType, instance.GetIndexCount(), indexGLType,
+									( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+									subInstanceCount, instance.GetFirstPoint() ) );
+								
+							}else{
+								OGL_CHECK( renderThread, pglDrawElementsInstanced(
+									primitiveType, instance.GetIndexCount(), indexGLType,
+									( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+									subInstanceCount ) );
+							}
 						}
 					}
 				}
