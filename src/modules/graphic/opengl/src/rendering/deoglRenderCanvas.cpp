@@ -711,6 +711,8 @@ const deoglRCanvasRenderWorld &canvas ){
 			return;
 		}
 		
+// #define ENABLE_STEREO_RENDER_TEST 1
+		
 		// render using render plan
 		deoglRenderPlan &plan = camera->GetPlan();
 		
@@ -722,8 +724,10 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 		plan.SetLodLevelOffset( 0 );
 		plan.SetRenderStereo( false );
-// 			/* TESTING */ plan.SetRenderStereo( true );
-// 			              plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
+#ifdef ENABLE_STEREO_RENDER_TEST
+		plan.SetRenderStereo( true );
+		plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
+#endif
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
@@ -731,7 +735,9 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.PrepareRender( context.GetRenderPlanMask() );
 		
 		defren.Resize( rwidth, rheight );
-// 			/* TESTING */ defren.Resize( rwidth, rheight, 2 );
+#ifdef ENABLE_STEREO_RENDER_TEST
+		defren.Resize( rwidth, rheight, 2 );
+#endif
 		plan.Render();
 	}
 	
