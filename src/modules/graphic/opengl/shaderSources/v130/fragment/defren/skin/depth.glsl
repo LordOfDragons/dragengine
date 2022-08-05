@@ -191,8 +191,14 @@ void main( void ){
 		}else{
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].z + pDepthOffset[ vLayer ].w;
 		}*/
-		vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
-			bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+		
+		#ifdef GS_RENDER_CUBE
+			vec2 depthOffset = mix( pDepthOffset[ 0 ].zw, pDepthOffset[ 0 ].xy,
+				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+		#else
+			vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
+				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+		#endif
 		gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
 	#endif
 	
