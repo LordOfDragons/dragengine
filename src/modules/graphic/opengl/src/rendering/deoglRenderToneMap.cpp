@@ -826,8 +826,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	lastHeight = curHeight;
 	
 	// apply a blur filter according to 'tonemapping' in the 'doc' directory
-	const float blurTCOffsets[] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
-	const float blurWeights[] = { 1.232953f, 3.278228e-1f, 8.461847e-2f, 1.874333e-2f, 3.136081e-3f };
+	const float blurTCOffsets[ 5 ] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
+	const float blurWeights[ 6 ] = { 2.050781e-1f, 1.171875e-1f, 4.394531e-2f, 9.765625e-3f, 9.765625e-4f };
 	
 	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderBloomBlurStereo : pShaderBloomBlur;
 	renderThread.GetShader().ActivateShader( program );
@@ -838,8 +838,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )lastWidth, ( float )lastHeight );
 	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )lastWidth - 0.5f ), pixelSizeV * ( ( float )lastHeight - 0.5f ) );
 	
-	shader->SetParameterFloat( spbbWeights1, 1.0f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
-	shader->SetParameterFloat( spbbWeights2, blurWeights[ 3 ], blurWeights[ 4 ], 0.0f, 0.0f );
+	shader->SetParameterFloat( spbbWeights1, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ], blurWeights[ 3 ] );
+	shader->SetParameterFloat( spbbWeights2, blurWeights[ 4 ], blurWeights[ 5 ], 0.0f, 0.0f );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
