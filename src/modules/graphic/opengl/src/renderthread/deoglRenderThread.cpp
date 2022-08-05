@@ -2225,6 +2225,11 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 	// target FPS rate. by default the hysteresis is 20%. this ensures the rendering
 	// can really keep up with a higher frame rate before switching up
 	if( pVRCamera && pVRCamera->GetVR() ){
+		// the way SteamVR handles frame time guessing calculation nowadays conflicts
+		// largely with this code below. we now simply try to churn out the frames at
+		// the time it takes to render them hoping for the runtime to make good guesses
+		return;
+		/*
 		elapsed = pTimerVRFrameUpdate.GetElapsedTime();
 		
 		deoglVR &vr = *pVRCamera->GetVR();
@@ -2235,6 +2240,13 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		}
 		
 		limit = 1.0f / ( float )vr.GetTargetFPS();
+		
+		// VR runtimes use a head-start time of roughly 3ms. if we end up inside the
+		// head-start time the VR runtime can guess wrong the required time causing
+		// slow-down and frame rate jumping. to avoid this problem the head-start time
+		// is subtracted from the frame time limit to be on the save side
+		limit -= 0.003f;
+		*/
 	}
 	
 	#ifdef OS_W32
