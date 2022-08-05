@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 #ifdef HIGH_PRECISION
 precision highp float;
 precision highp int;
@@ -16,6 +23,13 @@ in vec3 inPosition;
 	#endif
 #endif
 
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 void main( void ){
 	#ifdef GS_RENDER_STEREO
 		gl_Position = vec4( inPosition, 1 );
@@ -24,8 +38,13 @@ void main( void ){
 			gl_Position = vec4( inPosition, 1 );
 			vScreenCoord = inPosition.xy;
 		#else
-			gl_Position = pMatrixMVP[ 0 ] * vec4( inPosition, 1 );
-			vLightVolumePos = pMatrixMV[ 0 ] * vec4( inPosition, 1 );
+			gl_Position = pMatrixMVP[ inLayer ] * vec4( inPosition, 1 );
+			vLightVolumePos = pMatrixMV[ inLayer ] * vec4( inPosition, 1 );
 		#endif
+	#endif
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

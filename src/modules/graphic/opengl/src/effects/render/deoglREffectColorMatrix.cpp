@@ -33,6 +33,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -98,11 +99,21 @@ deoglShaderProgram *deoglREffectColorMatrix::GetShader(){
 deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
 	if( ! pShaderStereo ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderSources *sources;
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
-		deoglShaderSources *sources = shaderManager.GetSourcesNamed( "Effect Color Matrix Stereo" );
-		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD", "GS_RENDER_STEREO" );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		
+		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
 		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
 	}
 	
@@ -173,5 +184,10 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	
-	defren.RenderFSQuadVAO();
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defren.RenderFSQuadVAOStereo();
+		
+	}else{
+		defren.RenderFSQuadVAO();
+	}
 }

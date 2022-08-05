@@ -142,13 +142,20 @@ deoglRenderBase( renderThread )
 	
 	
 	defines = commonDefines;
-	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
-	defines.SetDefine( "GS_RENDER_STEREO", true );
 	if( defren.GetUseInverseDepth() ){
 		defines.SetDefine( "INVERSE_DEPTH", true );
 	}
 	defines.SetDefine( "NO_TEXCOORD", true );
 	defines.SetDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
+	
+	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defines.SetDefine( "VS_RENDER_STEREO", true );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
+	}
+	
 	pShaderDepthDownsampleStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	
@@ -732,7 +739,7 @@ DBG_ENTER("DownsampleDepth")
 		
 		OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 	}
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){

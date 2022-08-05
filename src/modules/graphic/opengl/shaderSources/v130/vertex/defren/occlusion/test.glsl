@@ -4,7 +4,7 @@ precision highp int;
 uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 uniform float pInvWidth;
 uniform mat4 pMatrix; // camera-rotation and projection
-#ifdef GS_RENDER_STEREO
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	uniform mat4 pMatrixStereo;
 #endif
 
@@ -13,7 +13,7 @@ in vec3 inMaxExtend;
 
 out vec3 vMinExtend;
 out vec2 vMaxExtend;
-#ifdef GS_RENDER_STEREO
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	out vec3 vMinExtend2;
 	out vec2 vMaxExtend2;
 #endif
@@ -117,7 +117,7 @@ void main( void ){
 	vMinExtend = vMinExtend * vec3( 0.5 ) + vec3( 0.5 );
 	vMaxExtend = vMaxExtend * vec2( 0.5 ) + vec2( 0.5 );
 	
-	#ifdef GS_RENDER_STEREO
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 		calcScreenAABB( pMatrixStereo, vMinExtend2, vMaxExtend2 );
 		vMinExtend2 = vMinExtend2 * vec3( 0.5 ) + vec3( 0.5 );
 		vMaxExtend2 = vMaxExtend2 * vec2( 0.5 ) + vec2( 0.5 );

@@ -59,6 +59,7 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -219,9 +220,15 @@ deoglRenderBase( renderThread )
 		pShaderCopyColorMipMap = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
 		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefine( "VS_RENDER_STEREO", true );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
+			defines.SetDefine( "GS_RENDER_STEREO", true );
+		}
+		
 		pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines.SetDefine( "MIPMAP", true );
@@ -320,8 +327,13 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefine( "VS_RENDER_STEREO", true );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
+			defines.SetDefine( "GS_RENDER_STEREO", true );
+		}
 		pShaderScreenSpaceStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -353,8 +365,13 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefine( "VS_RENDER_STEREO", true );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
+			defines.SetDefine( "GS_RENDER_STEREO", true );
+		}
 		pShaderApplyReflectionsStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -394,8 +411,13 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefine( "VS_RENDER_STEREO", true );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
+			defines.SetDefine( "GS_RENDER_STEREO", true );
+		}
 		pShaderReflectionStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -1106,7 +1128,7 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	tsmgr.EnableTexture( 7, *envMapSky, GetSamplerRepeatLinearMipMap() );
 	DEBUG_PRINT_TIMER( "Reflection: Enable Textures" );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	DEBUG_PRINT_TIMER( "Reflection: Render" );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 60 ){
@@ -1498,7 +1520,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	
 	// downsample the mip-map chain. the hardware solution should not introduce problems since the screen space
 	// reflections do not sample near the border and since it should simply cut off the superflous pixel if
@@ -1813,7 +1835,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	DEBUG_PRINT_TIMER( "Reflection ScreenSpace: Render Screen Space Reflection" );
 	
 	//defren.GetTextureTemporary2()->CreateMipMaps();
@@ -1965,7 +1987,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 		}
 	}
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	DEBUG_PRINT_TIMER( "Reflection ScreenSpace: Apply Reflections" );
 }
 

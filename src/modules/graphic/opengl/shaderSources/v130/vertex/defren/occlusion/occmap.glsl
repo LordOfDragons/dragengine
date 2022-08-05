@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 precision highp float;
 precision highp int;
 
@@ -51,6 +58,13 @@ in vec3 inPosition;
 	#endif
 #endif
 
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 #include "v130/shared/defren/sanitize_position.glsl"
 
 void main( void ){
@@ -62,15 +76,15 @@ void main( void ){
 		gl_Position = sanitizePosition( position );
 		
 	#else
-		gl_Position = sanitizePosition( pMatrixVP[ 0 ] * position );
+		gl_Position = sanitizePosition( pMatrixVP[ inLayer ] * position );
 		#ifdef PERSPECTIVE_TO_LINEAR
-			vDepth = dot( pTransformZ[ 0 ], position );
+			vDepth = dot( pTransformZ[ inLayer ], position );
 		#endif
 		#ifdef DEPTH_DISTANCE
-			vPosition = pMatrixV[ 0 ] * position;
+			vPosition = pMatrixV[ inLayer ] * position;
 		#endif
 		#ifdef USE_CLIP_PLANE
-			vClipCoord = pMatrixV[ 0 ] * position;
+			vClipCoord = pMatrixV[ inLayer ] * position;
 		#endif
 	#endif
 	
@@ -79,5 +93,10 @@ void main( void ){
 		#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
 			vGSSPBFlags = spbFlags;
 		#endif
+	#endif
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

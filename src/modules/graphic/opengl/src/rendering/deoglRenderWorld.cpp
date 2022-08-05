@@ -60,6 +60,7 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -190,8 +191,13 @@ pDebugInfo( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
@@ -507,7 +513,7 @@ DEBUG_RESET_TIMER
 			shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
 			shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO( plan );
 			
 		}else{
 			//QUICK_DEBUG_START( 11, 19 )
@@ -1128,7 +1134,12 @@ DBG_ENTER("RenderFinalizeFBO")
 		}
 	}
 	
-	defren.RenderFSQuadVAO();
+	if( plan.GetRenderVR() == deoglRenderPlan::ervrStereo ){
+		RenderFullScreenQuadVAO();
+		
+	}else{
+		RenderFullScreenQuadVAO( plan );
+	}
 	
 	
 	
@@ -1213,7 +1224,7 @@ DBG_ENTER("RenderFinalizeContext")
 		}
 	}
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	
 	
 	

@@ -26,7 +26,7 @@ in vec3 vPosition;
 in vec3 vClipCoord;
 #endif
 
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;
 #else
 	const int vLayer = 0;

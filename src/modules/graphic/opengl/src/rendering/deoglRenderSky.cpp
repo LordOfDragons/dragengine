@@ -40,6 +40,7 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -219,8 +220,14 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
 		pShaderSkySphereStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -228,18 +235,30 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
 		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
-		pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
+		}
 		
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Body" );
 		pShaderBody = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
-		pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -611,7 +630,7 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 	}
 	
 	// render layer
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	return true;
 }
@@ -696,7 +715,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 		shader->SetParameterColor4( spbodyColor, bodyColor );
 		shader->SetParameterFloat( spbodyMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 	}
 }
 

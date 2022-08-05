@@ -118,8 +118,13 @@ pCount( 0 )
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
 	
-	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
-	defines.SetDefine( "GS_RENDER_STEREO", true );
+	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
+	}
 	pShaderTraCountMaxCountStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	
@@ -128,8 +133,13 @@ pCount( 0 )
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
 	
-	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
-	defines.SetDefine( "GS_RENDER_STEREO", true );
+	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
+		defines.SetDefine( "GS_RENDER_STEREO", true );
+	}
 	pShaderTraCountGetCountStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	
@@ -390,7 +400,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			shader->SetParameterInt( sptcmcOffsets3, 5, 0, 6, 0 );
 			shader->SetParameterInt( sptcmcOffsets4, 7, 0, 8, 1 );
 			
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+			RenderFullScreenQuad( plan );
 			
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
 				decString text;
@@ -431,7 +441,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			shader->SetParameterInt( sptcmcOffsets3, 0, 5, 0, 6 );
 			shader->SetParameterInt( sptcmcOffsets4, 0, 7, 1, 8 );
 			
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+			RenderFullScreenQuad( plan );
 			
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
 				decString text;
@@ -483,7 +493,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor2[ 0 ] ) );
 		
 		pOccQuery->BeginQuery( deoglOcclusionQuery::eqtCount );
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		pOccQuery->EndQuery();
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );

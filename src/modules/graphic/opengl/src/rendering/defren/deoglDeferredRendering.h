@@ -320,6 +320,7 @@ public:
 	/*@{*/
 	/** Renders a full screen quad using VAO. */
 	void RenderFSQuadVAO();
+	void RenderFSQuadVAOStereo();
 	
 	/**
 	 * Fills the viewport parameters into the given shader parameter. The first parameter is

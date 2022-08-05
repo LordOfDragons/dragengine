@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 #include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // Uniform Parameters
@@ -141,10 +148,12 @@
 	#endif
 #endif
 
-
-
-// Constants
-//////////////
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
 
 
 
@@ -194,7 +203,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				vReflectDir = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				vReflectDir = pMatrixV[ inLayer ] * vec4( position, 1.0 );
 			#endif
 		#endif
 		
@@ -213,7 +222,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vPosition = position;
 			#else
-				vPosition = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				vPosition = pMatrixV[ inLayer ] * vec4( position, 1.0 );
 			#endif
 		#endif
 		
@@ -222,7 +231,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vClipCoord = position;
 			#else
-				vClipCoord = pMatrixV[ 0 ] * vec4( position, 1.0 );
+				vClipCoord = pMatrixV[ inLayer ] * vec4( position, 1.0 );
 			#endif
 		#endif
 		
@@ -231,7 +240,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vFadeZ = position.z;
 			#else
-				vFadeZ = ( pMatrixV[ 0 ] * vec4( position, 1.0 ) ).z;
+				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1.0 ) ).z;
 			#endif
 		#endif
 	#endif
@@ -247,5 +256,10 @@ void main( void ){
 		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			vGSSPBFlags = spbFlags;
 		#endif
+	#endif
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

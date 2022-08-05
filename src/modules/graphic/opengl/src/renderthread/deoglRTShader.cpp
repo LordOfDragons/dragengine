@@ -133,6 +133,16 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 	if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
 		defines.SetDefine( "GS_INSTANCING", true );
 	}
+	
+	// OpenGL extensions would define symbols for these extentions which would work in
+	// shaders but our pre-processor does not know about them. so add them manually
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_viewport_layer_array ) ){
+		defines.SetDefine( "EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY", true );
+	}
+	
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
+		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	}
 }
 
 

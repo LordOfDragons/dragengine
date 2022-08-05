@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 #include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // Uniform Parameters
@@ -201,6 +208,13 @@ NODE_VERTEX_INPUTS
 	#endif
 #endif
 
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 
 
 // Main Function
@@ -257,7 +271,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				vReflectDir = pMatrixV[ 0 ] * vec4( position, 1 );
+				vReflectDir = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
 		#endif
 		
@@ -266,7 +280,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vFadeZ = position.z;
 			#else
-				vFadeZ = ( pMatrixV[ 0 ] * vec4( position, 1 ) ).z;
+				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z;
 			#endif
 		#endif
 	#endif
@@ -282,5 +296,10 @@ void main( void ){
 		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			vGSSPBFlags = spbFlags;
 		#endif
+	#endif
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

@@ -260,8 +260,13 @@ deoglRenderLightBase( renderThread )
 		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderLightStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -1055,7 +1060,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 8, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 8 );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	
 	// clean up
 	if( pDebugInfoGI->GetVisible() ){

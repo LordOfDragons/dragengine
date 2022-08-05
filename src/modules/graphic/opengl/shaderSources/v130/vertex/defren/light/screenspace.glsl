@@ -9,7 +9,7 @@ out vec2 vTexCoord;
 out vec2 vScreenCoord;
 
 void main( void ){
-	gl_Position = vec4( inPosition, 1.0 );
+	gl_Position = vec4( inPosition, 1 );
 	vScreenCoord = inPosition.xy;
 	vTexCoord = inPosition.xy * pQuadParams.xy + pQuadParams.zw;
 }

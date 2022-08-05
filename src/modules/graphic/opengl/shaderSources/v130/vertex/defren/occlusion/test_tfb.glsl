@@ -26,7 +26,7 @@ uniform vec3 pFrustumNormal4;
 uniform vec4 pFrustumTestAdd;
 uniform vec4 pFrustumTestMul;
 #endif
-#if defined GS_RENDER_STEREO || defined DUAL_OCCMAP_STEREO || defined FRUSTUM_TEST_STEREO
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO || defined DUAL_OCCMAP_STEREO || defined FRUSTUM_TEST_STEREO
 uniform mat4 pMatrixStereo;
 uniform mat4 pMatrix2Stereo;
 #endif
@@ -202,13 +202,13 @@ void main( void ){
 	
 	vec3 testMinExtend;
 	vec3 testMaxExtend;
-	#ifdef GS_RENDER_STEREO
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 		vec3 testMinExtendStereo;
 		vec3 testMaxExtendStereo;
 	#endif
 	
 	bool result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend );
-	#ifdef GS_RENDER_STEREO
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 		bool resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
 		result = result | resultStereo;
 	#endif
@@ -249,7 +249,7 @@ void main( void ){
 		
 		result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap, 0 );
 		
-		#ifdef GS_RENDER_STEREO
+		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
@@ -272,7 +272,7 @@ void main( void ){
 				testMinExtend.z, pScaleSize, pBaseLevel, texOccMap, 0 );
 		}
 		
-		#ifdef GS_RENDER_STEREO
+		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;

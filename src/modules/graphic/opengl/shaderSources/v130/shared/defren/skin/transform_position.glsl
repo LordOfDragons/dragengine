@@ -45,7 +45,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			#else
 				#define DISCARD_OP >
 			#endif
-			if( length( pMatrixV[ 0 ] * vec4( pMatrixModel * vec4( instance1.xyz, 1 ), 1 ) ) DISCARD_OP 5 ){
+			if( length( pMatrixV[ inLayer ] * vec4( pMatrixModel * vec4( instance1.xyz, 1 ), 1 ) ) DISCARD_OP 5 ){
 				position = vec3( 0, 0, 2 );
 				gl_Position = vec4( position, 1 );
 				return;
@@ -62,7 +62,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 		
 		#ifdef BILLBOARD
 			// precalculate some matrices used often
-			mat4x3 matMV = mat4x3( mat4( pMatrixV[ 0 ] ) * mat4( pMatrixModel ) );
+			mat4x3 matMV = mat4x3( mat4( pMatrixV[ inLayer ] ) * mat4( pMatrixModel ) );
 			mat4x3 matRSMV = mat4x3( mat4( matMV ) * mat4( pfiRotScale ) );
 			
 			// calculate new instance matrix
@@ -117,14 +117,14 @@ void transformPosition( out vec3 position, in int spbIndex )
 			// is used. during geometry shader the position has to be fixed for the right view
 			// otherwise rendering breaks
 			vec2 coord = position.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw;
-			vec3 refPos = pMatrixV[ 0 ] * vec4( pMatrixModel[ 3 ], 1 );
+			vec3 refPos = pMatrixV[ inLayer ] * vec4( pMatrixModel[ 3 ], 1 );
 			
 			if( pBillboardParams.z ){ // sizeFixedToScreen
 				coord *= vec2( refPos.z * pBillboardZScale );
 			}
 			
 			if( pBillboardParams.x ){ // locked
-				vec3 up = normalize( mat3( pMatrixV[ 0 ] ) * pMatrixModel[ 1 ] );
+				vec3 up = normalize( mat3( pMatrixV[ inLayer ] ) * pMatrixModel[ 1 ] );
 				vec3 view = pBillboardParams.y ? normalize( refPos ) : vec3( 0, 0, 1 ); // spherical
 				vec3 right = normalize( cross( up, view ) );
 				
@@ -142,7 +142,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			gl_Position = vec4( position, 1 );
 			
 		#else
-			gl_Position = pMatrixP[ 0 ] * vec4( position, 1 );
+			gl_Position = pMatrixP[ inLayer ] * vec4( position, 1 );
 		#endif
 		
 	#else
@@ -156,7 +156,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 				// using the first camera matrix since the stereo camera matrix produces the
 				// same result. even if slightly different both views have to use the same
 				// thickness or it looks wrong
-				outlineThickness *= ( pMatrixV[ 0 ] * vec4( position, 1 ) ).z * pBillboardZScale;
+				outlineThickness *= ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z * pBillboardZScale;
 			#endif
 			position.xyz += normalize( inRealNormal * pMatrixNormal ) * vec3( outlineThickness );
 		#endif
@@ -168,7 +168,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			gl_Position = vec4( position, 1 );
 			
 		#else
-			gl_Position = pMatrixVP[ 0 ] * vec4( position, 1 );
+			gl_Position = pMatrixVP[ inLayer ] * vec4( position, 1 );
 		#endif
 	#endif
 }

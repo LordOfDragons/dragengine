@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 precision mediump float;
 precision mediump int;
 
@@ -41,6 +48,13 @@ in vec2 inPosition;
 	#endif
 #endif
 
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 void main( void ){
 	#ifdef NO_POSTRANSFORM
 		gl_Position = vec4( inPosition, 0, 1 );
@@ -57,5 +71,10 @@ void main( void ){
 		#else
 			vTexCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
 		#endif
+	#endif
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

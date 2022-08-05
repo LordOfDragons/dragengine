@@ -33,6 +33,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -118,11 +119,21 @@ deoglShaderProgram *deoglREffectDistortImage::GetShader(){
 deoglShaderProgram *deoglREffectDistortImage::GetShaderStereo(){
 	if( ! pShaderStereo ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderSources *sources;
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Distort Image Stereo" );
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "GS_RENDER_STEREO" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		
+		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+			sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Effect Distort Image Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
 		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
 	}
 	
@@ -190,5 +201,10 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// TODO correctly we need an explicite clamp in the shader here since the texture
 	// can be larger than the area we tap into.
 	
-	defren.RenderFSQuadVAO();
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defren.RenderFSQuadVAOStereo();
+		
+	}else{
+		defren.RenderFSQuadVAO();
+	}
 }

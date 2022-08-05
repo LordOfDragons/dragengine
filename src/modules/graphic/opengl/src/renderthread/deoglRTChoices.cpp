@@ -67,6 +67,14 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// use render stereo rendering for VR
 	pVRRenderStereo = true;
 	
+	// use layer in vertex shaders. requires these extensions (% coverage):
+	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
+	// - ARB_multi_draw_indirect (73%): glMultiDrawElementsIndirect
+	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
+	pRenderStereoVSLayer =
+		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
+		&& HASEXT( ext_ARB_multi_draw_indirect ) && HASEXT( ext_ARB_shader_draw_parameters );
+	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
 		// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
@@ -114,6 +122,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	l.LogInfoFormat( "- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No" );
 	l.LogInfoFormat( "- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No" );
+	l.LogInfoFormat( "- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No" );
 }
 
 deoglRTChoices::~deoglRTChoices(){

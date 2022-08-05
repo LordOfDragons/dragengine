@@ -39,6 +39,7 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -301,8 +302,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderColor2LogLumStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -311,8 +318,13 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderAvgLogLumStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -330,8 +342,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderBrightPassStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -347,8 +365,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderBloomBlurStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -357,8 +381,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderToneMapStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -367,8 +397,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -377,8 +413,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderLumPrepareStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -431,7 +473,7 @@ DEBUG_RESET_TIMERS;
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
@@ -547,7 +589,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	shader->SetParameterFloat( spc2llParam1, tcOffsetU, 0.0f, 0.0f, tcOffsetV );
 	shader->SetParameterFloat( spc2llParam2, tcOffsetU, tcOffsetV, clampU, clampV );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
@@ -619,7 +661,7 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 			( float )( tcPingPongOffset + lastWidth ), ( float )lastHeight );
 		shader->SetParameterFloat( spallOffsets, -tcOffsetU, tcOffsetU, -tcOffsetV, tcOffsetV );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
@@ -726,7 +768,7 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 		tsmgr.EnableCubeMap( 2, *renderThread.GetDefaultTextures().GetEnvMap(), GetSamplerClampLinear() );
 	}
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad();
 	
 	oglCamera.SetToneMapParamsTexture( pTextureToneMapParams );
 	pTextureToneMapParams = lastParams;
@@ -796,7 +838,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	
+	RenderFullScreenQuad( plan );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "tonemap_bright" );
@@ -855,7 +898,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets4, blurTCOffsets[ 3 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 3 ] * pixelSizeU, 0.0f );
 		shader->SetParameterFloat( spbbOffsets5, blurTCOffsets[ 4 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 4 ] * pixelSizeU, 0.0f );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
@@ -873,7 +916,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets4, 0.0f, blurTCOffsets[ 3 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 3 ] * pixelSizeV );
 		shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 4 ] * pixelSizeV );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
@@ -1059,7 +1102,7 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 }
 
 void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
@@ -1086,7 +1129,7 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
 	shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 }
 
 

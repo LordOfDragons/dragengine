@@ -603,6 +603,12 @@ GLAPI PFNGLINVALIDATEFRAMEBUFFERPROC pglInvalidateFramebuffer = nullptr;
 
 GLAPI PFNGLGETINTEGER64VPROC pglGetInteger64v = nullptr;
 
+// OpenGL 2.0 : no extension
+//////////////////////////////
+
+GLAPI PFNGLMULTIDRAWARRAYSPROC pglMultiDrawArrays = nullptr;
+GLAPI PFNGLMULTIDRAWELEMENTSPROC pglMultiDrawElements = nullptr;
+
 
 
 // GL_NV_texture_barrier : no opengl version

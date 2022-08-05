@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 #ifdef HIGH_PRECISION
 precision highp float;
 precision highp int;
@@ -19,6 +26,13 @@ in float inParticle4; // beamLocation
 
 out vec3 vGSParticleLightColor;
 out float vGSParticleLightRange;
+
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
 
 const vec2 curveOffset1 = vec2( 0, 1.0 / 4.0 );
 
@@ -55,4 +69,9 @@ void main( void ){
 	
 	// retrieves the position from the input particle
 	gl_Position = vec4( inParticle0.yzw, 1 );
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
+	#endif
 }

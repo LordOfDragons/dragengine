@@ -194,7 +194,7 @@ precision highp int;
 	#define vLightPosition pLightPosition[ vLayer ]
 #endif
 
-#if defined GS_RENDER_STEREO && ! defined GI_RAY
+#if (defined GS_RENDER_STEREO || defined VS_RENDER_STEREO) && ! defined GI_RAY
 	flat in int vLayer;
 #else
 	const int vLayer = 0;

@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 // request high precision if the graphic card supports this
 #ifdef HIGH_PRECISION
 precision highp float;
@@ -32,10 +39,6 @@ precision highp int;
 	in vec2 inTexCoord;
 #endif
 
-#ifdef NODE_VERTEX_INPUTS
-NODE_VERTEX_INPUTS
-#endif
-
 
 
 // Outputs
@@ -56,8 +59,12 @@ NODE_VERTEX_INPUTS
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
 #endif
-#ifdef NODE_VERTEX_INPUTS
-NODE_VERTEX_INPUTS
+
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
 #endif
 
 
@@ -83,7 +90,8 @@ void main( void ){
 	vSPBIndex = spbIndex;
 	#endif
 	
-	#ifdef NODE_VERTEX_MAIN
-	NODE_VERTEX_MAIN
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

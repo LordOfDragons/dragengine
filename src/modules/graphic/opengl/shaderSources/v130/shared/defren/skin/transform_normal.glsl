@@ -72,7 +72,7 @@ void transformNormal( in int spbIndex )
 		#endif
 		
 		#ifndef NO_TRANSFORMATION
-			matrixNormal *= pMatrixVn[ 0 ];
+			matrixNormal *= pMatrixVn[ inLayer ];
 		#endif
 		
 		vNormal = normalize( vNormal * matrixNormal );

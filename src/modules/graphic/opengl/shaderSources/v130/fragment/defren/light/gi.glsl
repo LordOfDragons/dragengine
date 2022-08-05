@@ -53,7 +53,7 @@ uniform HIGHP sampler2DArray texGIDistance;
 in vec2 vScreenCoord;
 
 #ifndef GI_RAY
-	#ifdef GS_RENDER_STEREO
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 		flat in int vLayer;
 	#else
 		const int vLayer = 0;

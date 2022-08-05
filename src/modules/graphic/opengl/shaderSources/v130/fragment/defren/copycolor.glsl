@@ -25,7 +25,7 @@ precision mediump int;
 in vec2 vTexCoord;
 
 #ifdef INPUT_ARRAY_TEXTURE
-	#ifdef GS_RENDER_STEREO
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 		flat in int vLayer;
 	#else
 		const int vLayer = 0;

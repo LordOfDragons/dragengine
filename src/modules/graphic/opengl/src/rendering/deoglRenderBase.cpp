@@ -162,6 +162,34 @@ void deoglRenderBase::SetCullMode( bool renderBackFaces ){
 	}
 }
 
+void deoglRenderBase::RenderFullScreenQuad(){
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+}
+
+void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ){
+	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+		const GLint first[ 2 ] = { 0, 0 };
+		const GLsizei count[ 2 ] = { 4, 4 };
+		OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first, count, 2 ) );
+		
+	}else{
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	}
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO(){
+	pRenderThread.GetDeferredRendering().RenderFSQuadVAO();
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ){
+	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+		pRenderThread.GetDeferredRendering().RenderFSQuadVAOStereo();
+		
+	}else{
+		pRenderThread.GetDeferredRendering().RenderFSQuadVAO();
+	}
+}
+
 
 
 // Debug

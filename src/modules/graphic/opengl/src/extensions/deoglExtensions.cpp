@@ -143,6 +143,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_bindless_texture",
 	"GL_ARB_fragment_layer_viewport",
 	"GL_ARB_shader_draw_parameters",
+	"GL_ARB_shader_viewport_layer_array",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -164,6 +165,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_AMD_debug_output",
 	"GL_AMD_performance_monitor",
 	"GL_AMD_seamless_cubemap_per_texture",
+	"GL_AMD_vertex_shader_layer",
 	
 	"GL_ATI_meminfo",
 	"GL_ATI_separate_stencil",
@@ -204,7 +206,8 @@ pHasSeamlessCubeMap( false ),
 pHasCopyImage( false ),
 pSupportsGeometryShader( false ),
 pSupportsGSInstancing( false ),
-pSupportsComputeShader( false )
+pSupportsComputeShader( false ),
+pSupportsVSLayer( false )
 {
 	int i;
 	for( i=0; i<EXT_COUNT; i++ ){
@@ -274,6 +277,7 @@ void deoglExtensions::PrintSummary(){
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No" );
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No" );
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No" );
 }
 
 bool deoglExtensions::VerifyPresence(){
@@ -616,6 +620,9 @@ void deoglExtensions::pScanExtensions(){
 		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_compute_shader ];
 	
+	pSupportsVSLayer = pHasExtension[ ext_ARB_shader_viewport_layer_array ]
+		|| pHasExtension[ ext_AMD_vertex_shader_layer ];
+	
 	#ifdef OS_ANDROID
 	/*
 	pRenderThread.GetLogger().LogInfo( "Extensions reported by driver:" );
@@ -885,6 +892,10 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
 	#endif
+	
+	// no opengl version: 2.0 stuff
+	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
+	pGetRequiredFunction( (void**)&pglMultiDrawElements, "glMultiDrawElements" );
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){

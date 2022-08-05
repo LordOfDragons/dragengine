@@ -51,6 +51,7 @@
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -142,8 +143,13 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
+			defines.SetDefine( "GS_RENDER_STEREO", true );
+		}
 		pShaderSSSSSStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -154,8 +160,13 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
+			defines.SetDefine( "GS_RENDER_STEREO", true );
+		}
 		pShaderAOLocalStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
@@ -168,8 +179,13 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderAOBlur1Stereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
@@ -182,8 +198,13 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderAOBlur2Stereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -405,7 +426,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
@@ -456,7 +477,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spaobOffsets4,
 		blurOffsets[ 3 ] * pixelSizeU, 0.0f, -blurOffsets[ 3 ] * pixelSizeU, 0.0f );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
@@ -501,7 +522,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	//OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 	//OGL_CHECK( renderThread, pglBlendEquation( GL_MIN ) );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	//OGL_CHECK( renderThread, pglBlendEquation( GL_FUNC_ADD ) );
 	//OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
@@ -583,8 +604,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 	
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuadVAO( plan );
 }
 
 

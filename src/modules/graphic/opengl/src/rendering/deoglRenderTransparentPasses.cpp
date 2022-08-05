@@ -121,8 +121,7 @@ deoglRenderBase( renderThread )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
-	defines.SetDefine( "DEPTH_TEST", true );
-	defines.SetDefine( "COPY_COLOR", true );
+	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
 	if( defren.GetUseInverseDepth() ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
@@ -137,21 +136,31 @@ deoglRenderBase( renderThread )
 	
 	
 	defines = commonDefines;
-	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
-	
-	defines.SetDefine( "GS_RENDER_STEREO", true );
-	defines.SetDefine( "DEPTH_TEST", true );
-	defines.SetDefine( "COPY_COLOR", true );
+	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
 	if( defren.GetUseInverseDepth() ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
+	}
+	
+	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
 	}
 	pShaderCopyDepthColorStereo = shaderManager.GetProgramWith( sources, defines );
 	
 	defines = commonDefines;
-	defines.SetDefine( "GS_RENDER_STEREO", true );
 	defines.SetDefine( "DEPTH_TEST", true );
 	if( ! defren.GetUseInverseDepth() ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
+	}
+	
+	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		defines.SetDefines( "GS_RENDER_STEREO" );
 	}
 	pShaderCopyDepthLimitStereo = shaderManager.GetProgramWith( sources, defines );
 	
@@ -161,8 +170,13 @@ deoglRenderBase( renderThread )
 	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
 	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 	
-	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
-	defines.SetDefine( "GS_RENDER_STEREO", true );
+	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
+	}
 	pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
 }
 
@@ -567,7 +581,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
 		deoglDebugSnapshot snapshot( renderThread );
@@ -832,7 +846,9 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		renderThread.GetShader().ActivateShader( program );
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 		defren.SetShaderParamFSQuad( *program->GetCompiled(), spcdQuadParams );
-		defren.RenderFSQuadVAO();
+		
+		RenderFullScreenQuadVAO( plan );
+		
 		defren.SwapDepthTextures(); // solid depth is now depth1
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -1054,5 +1070,5 @@ void deoglRenderTransparentPasses::CopyColorToTemporary( deoglRenderPlan &plan )
 		*defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 }

@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 // request high precision if the graphic card supports this
 #ifdef HIGH_PRECISION
 precision highp float;
@@ -52,6 +59,13 @@ out vec4 vParticle1; // red, green, blue, transparency
 	flat out int vSPBIndex;
 #endif
 
+#ifdef VS_RENDER_STEREO
+	#define inLayer gl_DrawID
+	out int vLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 
 
 // Constants
@@ -100,5 +114,10 @@ void main( void ){
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
+	#endif
+	
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

@@ -48,6 +48,7 @@ private:
 	eGPUTransformVertices pGPUTransformVertices;
 	bool pGIMoveUsingCache;
 	bool pVRRenderStereo;
+	bool pRenderStereoVSLayer;
 	
 	
 	
@@ -93,6 +94,9 @@ public:
 	
 	/** Use render stereo rendering for VR. */
 	inline bool GetVRRenderStereo() const{ return pVRRenderStereo; }
+	
+	/** Use layer in vertex shaders. */
+	inline bool GetRenderStereoVSLayer() const{ return pRenderStereoVSLayer; }
 	/*@}*/
 };
 

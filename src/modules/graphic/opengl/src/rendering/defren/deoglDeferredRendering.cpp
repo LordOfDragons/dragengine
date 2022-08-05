@@ -883,6 +883,14 @@ void deoglDeferredRendering::RenderFSQuadVAO(){
 	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 }
 
+void deoglDeferredRendering::RenderFSQuadVAOStereo(){
+	OGL_CHECK( pRenderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
+	const GLint first[ 2 ] = { 0, 0 };
+	const GLsizei count[ 2 ] = { 4, 4 };
+	OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first, count, 2 ) );
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+}
+
 
 
 void deoglDeferredRendering::SetShaderViewport( deoglShaderCompiled &shader, int parameter, bool normalized ){

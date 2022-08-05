@@ -151,7 +151,7 @@ in vec3 vNormal;
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef GS_RENDER_STEREO
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;
 #else
 	const int vLayer = 0;
