@@ -711,7 +711,7 @@ const deoglRCanvasRenderWorld &canvas ){
 			return;
 		}
 		
-#define ENABLE_STEREO_RENDER_TEST 1
+// #define ENABLE_STEREO_RENDER_TEST 1
 		
 		// render using render plan
 		deoglRenderPlan &plan = camera->GetPlan();

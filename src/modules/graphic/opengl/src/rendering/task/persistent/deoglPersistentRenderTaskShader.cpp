@@ -44,7 +44,8 @@ pPool( pool ),
 pLLTask( this ),
 pParentTask( NULL ),
 pParamBlock( NULL ),
-pSPBInstanceIndexBase( -1 ){
+pSPBInstanceIndexBase( -1 ),
+pDrawIDOffset( -1 ){
 }
 
 deoglPersistentRenderTaskShader::~deoglPersistentRenderTaskShader(){
@@ -122,6 +123,10 @@ void deoglPersistentRenderTaskShader::SetSPBInstanceIndexBase( int parameter ){
 	pSPBInstanceIndexBase = parameter;
 }
 
+void deoglPersistentRenderTaskShader::SetDrawIDOffset( int parameter ){
+	pDrawIDOffset = parameter;
+}
+
 
 
 int deoglPersistentRenderTaskShader::GetTextureCount() const{
@@ -187,6 +192,7 @@ void deoglPersistentRenderTaskShader::Clear(){
 	RemoveAllTextures();
 	pParamBlock = NULL;
 	pSPBInstanceIndexBase = -1;
+	pDrawIDOffset = -1;
 }
 
 void deoglPersistentRenderTaskShader::RemoveFromParentIfEmpty(){

@@ -60,7 +60,8 @@ out vec4 vParticle1; // red, green, blue, transparency
 #endif
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
+	uniform int pDrawIDOffset;
+	#define inLayer (gl_DrawID + pDrawIDOffset)
 	out int vLayer;
 #else
 	const int inLayer = 0;

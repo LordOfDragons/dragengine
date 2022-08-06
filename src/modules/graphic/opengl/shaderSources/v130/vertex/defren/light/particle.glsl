@@ -28,10 +28,7 @@ out vec3 vGSParticleLightColor;
 out float vGSParticleLightRange;
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
-	out int vLayer;
-#else
-	const int inLayer = 0;
+	out int vGSLayer;
 #endif
 
 const vec2 curveOffset1 = vec2( 0, 1.0 / 4.0 );
@@ -71,7 +68,6 @@ void main( void ){
 	gl_Position = vec4( inParticle0.yzw, 1 );
 	
 	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
-		vLayer = inLayer;
+		vGSLayer = gl_DrawID;
 	#endif
 }

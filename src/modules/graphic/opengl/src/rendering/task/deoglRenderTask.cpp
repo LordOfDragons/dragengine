@@ -611,6 +611,9 @@ void deoglRenderTask::pCreateSPBInstanceParamBlock(){
 }
 
 void deoglRenderTask::pUpdateVBODrawIndirect(){
+	// this is not working. calls to pglMultiDrawArraysIndirect and pglMultiDrawElementsIndirect
+	// are 2x slower than calling the non-indirect counter parts. this is unusable
+#if 0
 	const int drawCallCount = GetTotalInstanceCount() * 2;
 	if( drawCallCount == 0 ){
 		return;
@@ -697,4 +700,5 @@ void deoglRenderTask::pUpdateVBODrawIndirect(){
 		pglBindBuffer( GL_DRAW_INDIRECT_BUFFER, 0 );
 		throw;
 	}
+#endif
 }

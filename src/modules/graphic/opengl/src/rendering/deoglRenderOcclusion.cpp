@@ -197,6 +197,7 @@ pAddToRenderTask( NULL )
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
+	int drawIDOffset;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
@@ -230,30 +231,36 @@ pAddToRenderTask( NULL )
 		defines = commonDefines;
 		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
+			drawIDOffset = 1;
 			
 		}else{
 			defines.SetDefines( "GS_RENDER_STEREO" );
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
+			drawIDOffset = -1;
 		}
 		pShaderOccMapOrthoStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoStereo->EnsureRTSShader();
 		pShaderOccMapOrthoStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		pShaderOccMapOrthoStereo->GetRTSShader()->SetDrawIDOffset( drawIDOffset );
 		
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapOrthoClipPlaneStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoClipPlaneStereo->EnsureRTSShader();
 		pShaderOccMapOrthoClipPlaneStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		pShaderOccMapOrthoClipPlaneStereo->GetRTSShader()->SetDrawIDOffset( drawIDOffset );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
 		defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 		pShaderOccMapStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapStereo->EnsureRTSShader();
 		pShaderOccMapStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		pShaderOccMapStereo->GetRTSShader()->SetDrawIDOffset( drawIDOffset );
 		
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pShaderOccMapClipPlaneStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapClipPlaneStereo->EnsureRTSShader();
 		pShaderOccMapClipPlaneStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		pShaderOccMapClipPlaneStereo->GetRTSShader()->SetDrawIDOffset( drawIDOffset );
 		
 		
 		

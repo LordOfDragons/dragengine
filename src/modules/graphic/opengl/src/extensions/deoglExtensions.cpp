@@ -914,6 +914,8 @@ void deoglExtensions::pFetchOptionalFunctions(){
 			"glDrawRangeElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
 		pGetOptionalFunctionArbExt( (void**)&pglDrawElementsInstancedBaseVertex,
 			"glDrawElementsInstancedBaseVertex", ext_ARB_draw_elements_base_vertex );
+		pGetOptionalFunctionArbExt( (void**)&pglMultiDrawElementsBaseVertex,
+			"glMultiDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
 		pGetOptionalFunctionArbExt( (void**)&pglVertexAttribIPointer,
 			"glVertexAttribIPointer", ext_ARB_draw_elements_base_vertex );
 	}

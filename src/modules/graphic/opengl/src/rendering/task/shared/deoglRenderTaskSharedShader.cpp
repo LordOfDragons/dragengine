@@ -40,7 +40,8 @@ deoglRenderTaskSharedShader::deoglRenderTaskSharedShader( deoglRenderTaskSharedP
 pPool( pool ),
 pIndex( index ),
 pShader( NULL ),
-pSPBInstanceIndexBase( -1 ){
+pSPBInstanceIndexBase( -1 ),
+pDrawIDOffset( -1 ){
 }
 
 deoglRenderTaskSharedShader::~deoglRenderTaskSharedShader(){
@@ -59,11 +60,16 @@ void deoglRenderTaskSharedShader::SetSPBInstanceIndexBase( int parameter ){
 	pSPBInstanceIndexBase = parameter;
 }
 
+void deoglRenderTaskSharedShader::SetDrawIDOffset( int parameter ){
+	pDrawIDOffset = parameter;
+}
+
 
 
 void deoglRenderTaskSharedShader::Clear(){
 	pShader = NULL;
 	pSPBInstanceIndexBase = -1;
+	pDrawIDOffset = -1;
 }
 
 void deoglRenderTaskSharedShader::ReturnToPool(){

@@ -414,6 +414,7 @@ pConfig( config ),
 pUsedTextureTargetCount( 0 ),
 pUsedInstanceUniformTargetCount( 0 ),
 pTargetSPBInstanceIndexBase( -1 ),
+pTargetDrawIDOffset( -1 ),
 pSources( NULL ),
 pShader( NULL )
 {
@@ -1704,6 +1705,7 @@ void deoglSkinShader::GenerateShader(){
 		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
 		pShader->EnsureRTSShader();
 		pShader->GetRTSShader()->SetSPBInstanceIndexBase( pTargetSPBInstanceIndexBase );
+		pShader->GetRTSShader()->SetDrawIDOffset( pTargetDrawIDOffset );
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();
@@ -2580,6 +2582,11 @@ void deoglSkinShader::InitShaderParameters(){
 	if( pConfig.GetSharedSPB() ){
 		pTargetSPBInstanceIndexBase = parameterList.GetCount();
 		parameterList.Add( "pSPBInstanceIndexBase" );
+	}
+	
+	if( pConfig.GetVSRenderStereo() ){
+		pTargetDrawIDOffset = parameterList.GetCount();
+		parameterList.Add( "pDrawIDOffset" );
 	}
 	
 	// inputs

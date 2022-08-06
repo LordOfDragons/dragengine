@@ -73,7 +73,9 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
 	pRenderStereoVSLayer =
 		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
-		&& HASEXT( ext_ARB_multi_draw_indirect ) && HASEXT( ext_ARB_shader_draw_parameters );
+		&& HASEXT( ext_ARB_multi_draw_indirect )
+		&& HASEXT( ext_ARB_draw_elements_base_vertex )
+		&& HASEXT( ext_ARB_shader_draw_parameters );
 	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID

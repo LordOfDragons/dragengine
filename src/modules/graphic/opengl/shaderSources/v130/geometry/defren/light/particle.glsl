@@ -26,6 +26,10 @@ precision highp int;
 in vec3 vGSParticleLightColor[ 1 ];
 in float vGSParticleLightRange[ 1 ];
 
+#ifdef VS_RENDER_STEREO
+	in int vGSLayer[ 1 ];
+#endif
+
 out vec3 vLightVolumePos;
 out vec3 vParticleLightPosition;
 out vec3 vParticleLightColor;
@@ -76,6 +80,8 @@ void main( void ){
 		}
 		#endif
 		
+	#elif defined VS_RENDER_STEREO
+		emitParticle( vGSLayer[ 0 ] );
 	#else
 		emitParticle( 0 );
 	#endif

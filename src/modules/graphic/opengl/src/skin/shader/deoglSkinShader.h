@@ -284,6 +284,7 @@ private:
 	int pUsedInstanceUniformTargetCount;
 	
 	int pTargetSPBInstanceIndexBase;
+	int pTargetDrawIDOffset;
 	
 	deoglShaderSources *pSources;
 	deoglShaderProgram *pShader;
@@ -321,6 +322,9 @@ public:
 	
 	/** Target of shared SPB instance index base parameter or -1 if not used. */
 	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }
+	
+	/** Target of draw id offset parameter or -1 if not used. */
+	inline int GetTargetDrawIDOffset() const{ return pTargetDrawIDOffset; }
 	
 	/** Prepare shader. */
 	void PrepareShader();

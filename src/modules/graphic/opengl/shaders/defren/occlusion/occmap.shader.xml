@@ -11,6 +11,7 @@
 	<shaderStorageBlock name='OcclusionMeshParametersSSBO' target='0'/>
 	
 	<parameter name='pSPBInstanceIndexBase'/>
+	<parameter name='pDrawIDOffset'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

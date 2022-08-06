@@ -266,11 +266,11 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool forceDoubleSided = renderTask.GetForceDoubleSided();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
-	const int strideIndirect = sizeof( oglDrawIndirectCommand );
+// 	const int strideIndirect = sizeof( oglDrawIndirectCommand );
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
-	int i, j, k, l;
+	int i, j, k, l, m;
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
@@ -284,12 +284,17 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 		for( i=0; i<shaderCount; i++ ){
 			const deoglRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
 			const int targetSPBInstanceIndexBase = rtshader.GetShader()->GetSPBInstanceIndexBase();
+			const int targetDrawIDOffset = rtshader.GetShader()->GetDrawIDOffset();
 			deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
 			deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
 			renderThread.GetShader().ActivateShader( &shaderProgram );
 			
 			if( renderParamBlock ){
 				renderParamBlock->Activate();
+			}
+			
+			if( targetDrawIDOffset != -1 ){
+				shader.SetParameterInt( targetDrawIDOffset, 0 );
 			}
 			
 			const int textureCount = rtshader.GetTextureCount();
@@ -366,6 +371,10 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						}
 						
 						if( renderVSStereo ){
+							// this is not working. calls to pglMultiDrawArraysIndirect and
+							// pglMultiDrawElementsIndirect are 2x slower than calling the
+							// non-indirect counter parts. this is unusable
+							#if 0
 							if( instance.GetIndexCount() == 0 ){
 								OGL_CHECK( renderThread, pglMultiDrawArraysIndirect( primitiveType,
 									( void* )( intptr_t )( strideIndirect * rtinstance.GetDrawIndirectIndex() ),
@@ -375,6 +384,61 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 								OGL_CHECK( renderThread, pglMultiDrawElementsIndirect( primitiveType, indexGLType,
 									( void* )( intptr_t )( strideIndirect * rtinstance.GetDrawIndirectIndex() ),
 									rtinstance.GetDrawIndirectCount(), strideIndirect ) );
+							}
+							#endif
+							
+							const int subInstanceCount = rtinstance.GetSubInstanceCount() + instance.GetSubInstanceCount();
+							
+							if( subInstanceCount == 0 ){
+								if( instance.GetIndexCount() == 0 ){
+									const GLint first[ 2 ] = { instance.GetFirstPoint(), instance.GetFirstPoint() };
+									const GLsizei count[ 2 ] = { instance.GetPointCount(), instance.GetPointCount() };
+									OGL_CHECK( renderThread, pglMultiDrawArrays( primitiveType, first, count, 2 ) );
+									
+								}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+									const void * const offsetIndex = ( void* )( intptr_t )( indexSize * instance.GetFirstIndex() );
+									const GLsizei count[ 2 ] = { instance.GetIndexCount(), instance.GetIndexCount() };
+									const void * const indices[ 2 ] = { offsetIndex, offsetIndex };
+									const GLint basevertex[ 2 ] = { instance.GetFirstPoint(), instance.GetFirstPoint() };
+									OGL_CHECK( renderThread, pglMultiDrawElementsBaseVertex(
+										primitiveType, count, indexGLType, indices, 2, basevertex ) );
+									
+								}else{
+									const void * const offsetIndex = ( void* )( intptr_t )( indexSize * instance.GetFirstIndex() );
+									const GLsizei count[ 2 ] = { instance.GetIndexCount(), instance.GetIndexCount() };
+									const void * const indices[ 2 ] = { offsetIndex, offsetIndex };
+									OGL_CHECK( renderThread, pglMultiDrawElements( primitiveType, count, indexGLType, indices, 2 ) );
+								}
+								
+							}else{
+								// there exists no instanced versions of glMultiDraw so we have
+								// to hack it. we start with drawID 1 instead of 0 so we do not
+								// have to reset it after the last draw call
+								if( instance.GetIndexCount() == 0 ){
+									for( m=1; m>=0; m-- ){
+										shader.SetParameterInt( targetDrawIDOffset, m );
+										OGL_CHECK( renderThread, pglDrawArraysInstanced( primitiveType,
+											instance.GetFirstPoint(), instance.GetPointCount(), subInstanceCount ) );
+									}
+									
+								}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+									for( m=1; m>=0; m-- ){
+										shader.SetParameterInt( targetDrawIDOffset, m );
+										OGL_CHECK( renderThread, pglDrawElementsInstancedBaseVertex(
+											primitiveType, instance.GetIndexCount(), indexGLType,
+											( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+											subInstanceCount, instance.GetFirstPoint() ) );
+									}
+									
+								}else{
+									for( m=1; m>=0; m-- ){
+										shader.SetParameterInt( targetDrawIDOffset, m );
+										OGL_CHECK( renderThread, pglDrawElementsInstanced(
+											primitiveType, instance.GetIndexCount(), indexGLType,
+											( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+											subInstanceCount ) );
+									}
+								}
 							}
 							
 						}else{
