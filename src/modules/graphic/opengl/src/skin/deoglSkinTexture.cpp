@@ -896,7 +896,20 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetLuminanceOnly( luminanceOnly );
 	config.SetGIMaterial( giMaterial );
 	config.SetBillboard( shaderConfigInfo.billboard );
-	config.SetGSRenderStereo( shaderConfigInfo.stereo );
+	
+	if( shaderConfigInfo.stereo ){
+		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+			if( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmParticle ){
+				config.SetGSRenderStereo( true );
+				
+			}else{
+				config.SetVSRenderStereo( true );
+			}
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
+	}
 	
 	config.SetMaterialNormalModeEnc( deoglSkinShaderConfig::emnmFloat );
 	config.SetInverseDepth( defren.GetUseInverseDepth() );

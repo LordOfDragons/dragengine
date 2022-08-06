@@ -33,6 +33,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/deoglRSkin.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
@@ -330,7 +331,12 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( eShaderTypes shaderType, deo
 	
 	switch( shaderType ){
 	case estStereoNoShadow:
-		config.SetGSRenderStereo( true );
+		if( pEmitter.GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+			config.SetVSRenderStereo( true );
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
 		break;
 		
 	default:

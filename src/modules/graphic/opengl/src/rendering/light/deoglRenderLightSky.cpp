@@ -73,6 +73,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -471,7 +472,7 @@ const deoglRenderPlanMasked *mask ){
 	//tsmgr.EnableTexture( 5, *defren.GetTemporaryTexture(), deoglTextureStageManager::etfNearest, GL_CLAMP );
 	
 	// render quad
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan.GetPlan() );
 	
 	if( solid ){
 		DebugTimer2SampleCount( plan.GetPlan(), *pDebugInfoSolidLight, 1, true );

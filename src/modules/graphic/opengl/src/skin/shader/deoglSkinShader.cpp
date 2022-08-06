@@ -1916,6 +1916,13 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		}
 		
 		defines.SetDefine( "GS_RENDER_STEREO", true );
+		
+	}else if( pConfig.GetVSRenderStereo() ){
+		if( ! pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+			DETHROW( deeInvalidParam );
+		}
+		
+		defines.SetDefines( "VS_RENDER_STEREO" );
 	}
 	
 	// shared parameter blocks

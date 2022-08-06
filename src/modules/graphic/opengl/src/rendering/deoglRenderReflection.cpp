@@ -222,7 +222,7 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
 		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
-			defines.SetDefine( "VS_RENDER_STEREO", true );
+			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
@@ -328,7 +328,7 @@ deoglRenderBase( renderThread )
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
 		
 		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
-			defines.SetDefine( "VS_RENDER_STEREO", true );
+			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
@@ -366,7 +366,7 @@ deoglRenderBase( renderThread )
 		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
 		
 		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
-			defines.SetDefine( "VS_RENDER_STEREO", true );
+			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
@@ -412,7 +412,7 @@ deoglRenderBase( renderThread )
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		
 		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
-			defines.SetDefine( "VS_RENDER_STEREO", true );
+			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );

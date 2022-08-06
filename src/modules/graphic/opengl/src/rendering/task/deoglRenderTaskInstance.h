@@ -50,6 +50,8 @@ private:
 	int pSubInstanceSize;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
 	int pSIIndexInstanceFirst;
+	int pDrawIndirectIndex;
+	int pDrawIndirectCount;
 	
 	
 	
@@ -98,6 +100,18 @@ public:
 	
 	/** Write sub instance indices for instance shared SPB. */
 	void WriteSIIndexInstanceShort( bool useFlags );
+	
+	/** Draw indirect index. */
+	inline int GetDrawIndirectIndex() const{ return pDrawIndirectIndex; }
+	
+	/** Set draw indirect index. */
+	void SetDrawIndirectIndex( int index );
+	
+	/** Draw indirect count. */
+	inline int GetDrawIndirectCount() const{ return pDrawIndirectCount; }
+	
+	/** Set draw indirect count. */
+	void SetDrawIndirectCount( int count );
 	
 	
 	

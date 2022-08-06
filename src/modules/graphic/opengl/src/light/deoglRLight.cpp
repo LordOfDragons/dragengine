@@ -47,6 +47,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shadow/deoglSCSolid.h"
 #include "../shadow/deoglSCTransparent.h"
@@ -718,7 +719,12 @@ deoglLightShaderConfig &config ){
 	case estStereoSolid2NoAmbient:
 	case estStereoSolid2Transp1NoAmbient:
 	case estStereoSolid2Transp2NoAmbient:
-		config.SetGSRenderStereo( true );
+		if( pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+			config.SetVSRenderStereo( true );
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
 		break;
 		
 	default:

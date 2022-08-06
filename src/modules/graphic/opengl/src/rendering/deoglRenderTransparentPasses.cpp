@@ -648,6 +648,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
@@ -696,6 +697,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	// outline
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
@@ -949,6 +951,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		
 		renderTaskParticles.Clear();
 		renderTaskParticles.SetRenderParamBlock( renworld.GetRenderPB() );
+// 		renderTaskParticles.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetVRRenderStereo() );
 		
 		if( inbetween ){
 			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()

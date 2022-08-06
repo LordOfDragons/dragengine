@@ -583,6 +583,9 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetGSRenderStereo() ){
 		defines.SetDefine( "GS_RENDER_STEREO", true );
 	}
+	if( pConfig.GetVSRenderStereo() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+	}
 	
 	switch( pConfig.GetShadowTapMode() ){
 	case deoglLightShaderConfig::estmPcf4:

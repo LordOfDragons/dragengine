@@ -149,7 +149,7 @@ deoglRenderBase( renderThread )
 	defines.SetDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
 	
 	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
-		defines.SetDefine( "VS_RENDER_STEREO", true );
+		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{
 		sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
@@ -345,6 +345,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		
 		// build render task
 		renderTask->Clear();
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		addToRenderTask.Reset();
 		addToRenderTask.SetSolid( solid );
@@ -541,8 +543,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if( renderTask->GetShaderCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		
 		if( planDebug && plan.GetRenderPassNumber() == 1 ){
 			const int componentCount = collideList.GetComponentCount();
 			deoglEnvironmentMapList envMapList;
@@ -600,6 +600,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
 		renderTask->Clear();
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		addToRenderTask.Reset();
 		addToRenderTask.SetOutline( true );
@@ -640,8 +642,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if( renderTask->GetShaderCount() > 0 ){
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( *renderTask );
 		SetCullMode( plan.GetFlipCulling() );

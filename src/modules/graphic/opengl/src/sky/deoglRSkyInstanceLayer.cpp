@@ -37,6 +37,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
@@ -160,7 +161,12 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( eShaderTypes shaderType, deoglL
 	case estStereoNoShadow:
 	case estStereoAmbient:
 	case estStereoSolid:
-		config.SetGSRenderStereo( true );
+		if( pInstance.GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+			config.SetVSRenderStereo( true );
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
 		break;
 		
 	default:

@@ -74,6 +74,7 @@ void deoglSkinShaderConfig::Reset(){
 	pGSRenderCube = false;
 	pGSRenderCascaded = false;
 	pGSRenderStereo = false;
+	pVSRenderStereo = false;
 	pSharedSPB = false;
 	pOutline = false;
 	pOutlineThicknessScreen = false;
@@ -240,6 +241,10 @@ void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
 
 void deoglSkinShaderConfig::SetGSRenderStereo( bool gsRenderStereo ){
 	pGSRenderStereo = gsRenderStereo;
+}
+
+void deoglSkinShaderConfig::SetVSRenderStereo( bool vsRenderStereo ){
+	pVSRenderStereo = vsRenderStereo;
 }
 
 void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
@@ -603,6 +608,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGSRenderStereo ){
 		string.Append( " gsRenderStereo" );
 	}
+	if( pVSRenderStereo ){
+		string.Append( " vsRenderStereo" );
+	}
 	if( pSharedSPB ){
 		string.Append( " sharedSPB" );
 	}
@@ -822,6 +830,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pGSRenderCube = config.pGSRenderCube;
 	pGSRenderCascaded = config.pGSRenderCascaded;
 	pGSRenderStereo = config.pGSRenderStereo;
+	pVSRenderStereo = config.pVSRenderStereo;
 	pSharedSPB = config.pSharedSPB;
 	pOutline = config.pOutline;
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
@@ -915,6 +924,7 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pGSRenderCube == config.pGSRenderCube
 		&& pGSRenderCascaded == config.pGSRenderCascaded
 		&& pGSRenderStereo == config.pGSRenderStereo
+		&& pVSRenderStereo == config.pVSRenderStereo
 		&& pSharedSPB == config.pSharedSPB
 		&& pOutline == config.pOutline
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen

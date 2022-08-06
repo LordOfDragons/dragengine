@@ -934,6 +934,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		// render solid content
 		pRenderTask->Clear();
 		pRenderTask->SetRenderParamBlock( pRenderPB );
+		pRenderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		pAddToRenderTask->Reset();
 		pAddToRenderTask->SetSolid( true );

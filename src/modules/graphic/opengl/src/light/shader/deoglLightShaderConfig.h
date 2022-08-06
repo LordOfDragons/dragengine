@@ -129,6 +129,7 @@ public:
 	bool pLuminanceOnly;
 	bool pGIRay;
 	bool pGSRenderStereo;
+	bool pVSRenderStereo;
 	
 	bool pTextureNoise;
 	bool pTextureColor;
@@ -279,6 +280,12 @@ public:
 	
 	/** Set render dual view using geometry shader. */
 	void SetGSRenderStereo( bool gsRenderStereo );
+	
+	/** Render dual view using vertex shader. */
+	inline bool GetVSRenderStereo() const{ return pVSRenderStereo; }
+	
+	/** Set render dual view using vertex shader. */
+	void SetVSRenderStereo( bool vsRenderStereo );
 	
 	
 	

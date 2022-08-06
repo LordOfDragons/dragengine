@@ -69,6 +69,7 @@ void deoglLightShaderConfig::Reset(){
 	pLuminanceOnly = false;
 	pGIRay = false;
 	pGSRenderStereo = false;
+	pVSRenderStereo = false;
 	
 	pTextureNoise = false;
 	pTextureColor = false;
@@ -160,6 +161,10 @@ void deoglLightShaderConfig::SetGIRay( bool giRay ){
 
 void deoglLightShaderConfig::SetGSRenderStereo( bool gsRenderStereo ){
 	pGSRenderStereo = gsRenderStereo;
+}
+
+void deoglLightShaderConfig::SetVSRenderStereo( bool vsRenderStereo ){
+	pVSRenderStereo = vsRenderStereo;
 }
 
 
@@ -275,6 +280,9 @@ void deoglLightShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGSRenderStereo ){
 		string.Append( " gsRenderStereo" );
 	}
+	if( pVSRenderStereo ){
+		string.Append( " vsRenderStereo" );
+	}
 	
 	if( pTextureShadow1Solid ){
 		string.Append( " shadow1Solid" );
@@ -324,6 +332,7 @@ deoglLightShaderConfig &deoglLightShaderConfig::operator=( const deoglLightShade
 	pLuminanceOnly = config.pLuminanceOnly;
 	pGIRay = config.pGIRay;
 	pGSRenderStereo = config.pGSRenderStereo;
+	pVSRenderStereo = config.pVSRenderStereo;
 	
 	pTextureNoise = config.pTextureNoise;
 	pTextureColor = config.pTextureColor;
@@ -360,6 +369,7 @@ bool deoglLightShaderConfig::operator==( const deoglLightShaderConfig &config ) 
 		&& pLuminanceOnly == config.pLuminanceOnly
 		&& pGIRay == config.pGIRay
 		&& pGSRenderStereo == config.pGSRenderStereo
+		&& pVSRenderStereo == config.pVSRenderStereo
 		
 		&& pTextureNoise == config.pTextureNoise
 		&& pTextureColor == config.pTextureColor

@@ -738,6 +738,23 @@ struct oglDrawElementsIndirectCommand{
 	oglDrawElementsIndirectCommand();
 };
 
+union oglDrawIndirectCommand{
+	struct Element{
+		GLuint count;
+		GLuint instanceCount;
+		GLuint firstIndex;
+		GLint baseVertex;
+		GLuint baseInstance;
+	} element;
+	
+	struct Array{
+		GLuint count;
+		GLuint instanceCount;
+		GLuint first;
+		GLuint baseInstance;
+	} array;
+};
+
 extern GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect;
 extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
 
@@ -746,7 +763,26 @@ extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
 // GL_ARB_multi_draw_indirect : opengl version 4.3
 ////////////////////////////////////////////////////
 
+/**
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ * 
+ * Sourcing parameters from client memory is NOT allowed although the documentatin claims so!
+ * If you try doing this you get GL_INVALID_OPERATION and weeks of big headaches!
+ * This ONLY works with GL_DRAW_INDIRECT_BUFFER and nothing else!
+ * 
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ */
 extern GLAPI PFNGLMULTIDRAWARRAYSINDIRECTPROC pglMultiDrawArraysIndirect;
+
+/**
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ * 
+ * Sourcing parameters from client memory is NOT allowed although the documentatin claims so!
+ * If you try doing this you get GL_INVALID_OPERATION and weeks of big headaches!
+ * This ONLY works with GL_DRAW_INDIRECT_BUFFER and nothing else!
+ * 
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ */
 extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect;
 
 

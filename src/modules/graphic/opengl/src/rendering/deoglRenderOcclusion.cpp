@@ -228,8 +228,13 @@ pAddToRenderTask( NULL )
 		
 		
 		defines = commonDefines;
-		defines.SetDefines( "GS_RENDER_STEREO" );
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
+		}
 		pShaderOccMapOrthoStereo = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMapOrthoStereo->EnsureRTSShader();
 		pShaderOccMapOrthoStereo->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
@@ -256,8 +261,13 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
 		pShaderOccMapDownSample = shaderManager.GetProgramWith( sources, defines );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
+		}
 		pShaderOccMapDownSampleStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -277,7 +287,12 @@ pAddToRenderTask( NULL )
 		
 		defines = commonDefines;
 		defines.SetDefine( "ENSURE_MIN_SIZE", true );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
+		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
 		pShaderOccTestStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		defines.SetDefine( "DUAL_OCCMAP", true );
@@ -885,11 +900,22 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 		pglBindVertexArray( pVAOFrustumPlanes );
 		
 		OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) ); // left
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 4, 4 ) ); // top
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 8, 4 ) ); // right
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 12, 4 ) ); // bottom
-		//OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, 36 ) );
+		
+		if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			const GLint first[] = { 0, 0, 4, 4, 8, 8, 12, 12 };
+			const GLsizei count[] = { 4, 4, 4, 4, 4, 4, 4, 4 };
+			OGL_CHECK( renderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first, count, 2 ) ); // left
+			OGL_CHECK( renderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first + 2, count + 2, 2 ) ); // top
+			OGL_CHECK( renderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first + 4, count + 4, 2 ) ); // right
+			OGL_CHECK( renderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first + 6, count + 6, 2 ) ); // bottom
+			
+		}else{
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) ); // left
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 4, 4 ) ); // top
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 8, 4 ) ); // right
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 12, 4 ) ); // bottom
+			//OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, 36 ) );
+		}
 		
 		pglBindVertexArray( 0 );
 		DEBUG_PRINT_TIMER( "RenderOcclusionMap Render Frustum Planes" );
@@ -897,6 +923,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	
 	// render occlusion map
 	renderTask.SetRenderParamBlock( pRenderParamBlock );
+	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Render" );
@@ -921,7 +948,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 		
 		shader->SetParameterInt( spomdsLevel, i - 1 );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );

@@ -100,6 +100,8 @@ void deoglRPTBuildRTsDepth::pSolid(){
 	const bool renderStereo = pPlan.GetPlan().GetRenderStereo();
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
@@ -204,6 +206,8 @@ void deoglRPTBuildRTsDepth::pSolidOutline(){
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetOutline( true );
 	addToRenderTask.SetFilterDecal( true );
