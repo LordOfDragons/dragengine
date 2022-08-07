@@ -332,7 +332,8 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( eShaderTypes shaderType, deo
 	switch( shaderType ){
 	case estStereoNoShadow:
 		if( pEmitter.GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
-			config.SetVSRenderStereo( true );
+// 			config.SetVSRenderStereo( true );
+			config.SetGSRenderStereo( true );
 			
 		}else{
 			config.SetGSRenderStereo( true );

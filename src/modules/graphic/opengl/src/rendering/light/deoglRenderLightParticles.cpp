@@ -187,9 +187,7 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	spbInstance->Activate();
 	
 	// set textures
-	int target;
-	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettSamples );
+	int target = lightShader->GetTextureTarget( deoglLightShader::ettSamples );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *etype.GetTextureSamples(),
 			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
@@ -198,14 +196,20 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	// render particles
 	pglBindVertexArray( instance.GetVAO()->GetVAO() );
 	
+	/*
 	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		// for some strange reason this code randomly fails to render properly.
+		// renderdoc can not capture this behavior nor does any code review show
+		// anything potentially wrong or dangerous. since a geometry shader is
+		// anway used for particles this code can be ignored
 		const GLint first[ 2 ] = { itype.GetFirstParticle(), itype.GetFirstParticle() };
 		const GLsizei count[ 2 ] = { itype.GetParticleCount(), itype.GetParticleCount() };
 		OGL_CHECK( renderThread, pglMultiDrawArrays( GL_POINTS, first, count, 2 ) );
 		
 	}else{
+		*/
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, itype.GetFirstParticle(), itype.GetParticleCount() ) );
-	}
+// 	}
 }
 
 
