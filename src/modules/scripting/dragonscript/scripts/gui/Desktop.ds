@@ -580,9 +580,6 @@ class Desktop extends Container
 		end
 		clearHoverWidget()
 		
-		if pHoverWidget != null
-			throw EInvalidParam.new()
-		end
 		super.removeWidget(widget)
 		
 		if getFocusWidget() == null
