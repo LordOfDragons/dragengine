@@ -91,6 +91,14 @@ static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, L
 }
 #endif
 
+struct sOpenGlVersion{
+	int major;
+	int minor;
+};
+static const int vOpenGLVersionCount = 9;
+static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
+	{ 4, 6 }, { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
+
 
 
 // Class deoglRTContext
@@ -854,25 +862,20 @@ void deoglRTContext::pCreateGLContext(){
 			None };
 // 		int contextAttribCount = 10;
 		
-		struct sOpenGlVersion{
-			int major;
-			int minor;
-		};
-		const int versionCount = 9;
-		const sOpenGlVersion versions[ versionCount ] = { { 4, 6 }, { 4, 5 }, { 4, 4 },
-			{ 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
 		int i;
-		for( i=0; i<versionCount; i++ ){
-			contextAttribs[ 1 ] = versions[ i ].major;
-			contextAttribs[ 3 ] = versions[ i ].minor;
+		for( i=0; i<vOpenGLVersionCount; i++ ){
+			contextAttribs[ 1 ] = vOpenGLVersions[ i ].major;
+			contextAttribs[ 3 ] = vOpenGLVersions[ i ].minor;
 			
 			pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
 			if( pContext ){
-				logger.LogInfoFormat( "- Trying %d.%d Core... Success", versions[ i ].major, versions[ i ].minor );
+				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
+					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				break;
 			}
 			
-			logger.LogInfoFormat( "- Trying %d.%d Core... Failed", versions[ i ].major, versions[ i ].minor );
+			logger.LogInfoFormat( "- Trying %d.%d Core... Failed",
+				vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 		}
 		
 		if( ! pContext ){
@@ -1082,24 +1085,52 @@ void deoglRTContext::pCreateGLContext(){
 		wglDeleteContext( pContext );
 		pContext = NULL;
 		
-		int contextAttribs[] = {
-			WGL_CONTEXT_MAJOR_VERSION_ARB, 3, //4,
-			WGL_CONTEXT_MINOR_VERSION_ARB, 3, //4,
-			0, 0, //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
-			0, 0, //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-			0 };
-		int contextAttribCount = 4;
+		int contextFlags = 0;
 		
 		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Creating debug context" );
-			contextAttribs[ contextAttribCount++ ] = WGL_CONTEXT_FLAGS_ARB;
-			contextAttribs[ contextAttribCount++ ] = WGL_CONTEXT_DEBUG_BIT_ARB;
+			logger.LogInfo( "Enable debug context" );
+			contextFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 		}
 		
-		pContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), NULL, contextAttribs );
+		// this one here is really the biggest mess of all times. AMD does it right in that
+		// requesting a 3.3 context (as minimum) gives you up to 4.6 context if supported.
+		// this is how it is correctly done. and then we have nVidia which (again) fails to
+		// to it correctly. it gives you exactly a 3.3 context instead of the highest supported
+		// context. this causes problems since nVidia (again) fails compiling shaders if the
+		// shader version is not set high enough. this is again wrong in many ways since using
+		// the #extension directive in the shader overrules the #version directive but nVidia
+		// doesn't give a damn about OpenGL specs. Intel is in the same boat but nobody expects
+		// any sane 3D drivers from them anyway. so how to solve this mess? we do it ugly by
+		// simply trying all possible OpenGL context versions from the highest down to the
+		// lowest until we find the first one that works. and yes, this is really, really,
+		// REALLY ugly. thanks nVidia for nothing
+		int contextAttribs[] = {
+			WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+			WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+			WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+			WGL_CONTEXT_FLAGS_ARB, contextFlags,
+			0, 0,
+			0 };
+		
+		int i;
+		for( i=0; i<vOpenGLVersionCount; i++ ){
+			contextAttribs[ 1 ] = vOpenGLVersions[ i ].major;
+			contextAttribs[ 3 ] = vOpenGLVersions[ i ].minor;
+			
+			pContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), NULL, contextAttribs );
+			if( pContext ){
+				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
+					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+				break;
+			}
+			
+			logger.LogInfoFormat( "- Trying %d.%d Core... Failed",
+				vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+		}
 		
 		if( ! pContext ){
-			logger.LogInfo( "Creating OpenGL Context with new method failed. Creating OpenGL Context using old method" );
+			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
+				"Creating OpenGL Context using old method" );
 			pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 		}
 		
