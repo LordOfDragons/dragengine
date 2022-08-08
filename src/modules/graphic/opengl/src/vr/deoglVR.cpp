@@ -25,6 +25,7 @@
 #include "deoglVR.h"
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
@@ -180,6 +181,7 @@ void deoglVR::Render(){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pCamera.GetRenderThread(), "VR.Render" );
 	if( ! pUseRenderStereo ){
 		pLeftEye.Render();
 		pRightEye.Render();
@@ -227,6 +229,8 @@ void deoglVR::Submit(){
 	if( ! vrmodule ){
 		return;
 	}
+	
+	const deoglDebugTraceGroup debugTrace( pCamera.GetRenderThread(), "VR.Submit" );
 	
 	// NOTE OpenVR does not disable GL_SCISSOR_TEST. this causes the glBlitFramebuffer used
 	//      inside OpenVR to use whatever scissor parameters are in effect by the last call

@@ -40,6 +40,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../debug/deoglDebugSnapshot.h"
 #include "../debug/debugSnapshot.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../particle/deoglParticleSorter.h"
 #include "../particle/deoglRParticleEmitterInstance.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -286,6 +287,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	DebugTimer1Reset( plan, false );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentPasses" );
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	//deoglTextureStageManager &tsmgr = *renderThread.GetTexture().GetStages();
 	//deoglShaderCompiled *shader;
@@ -381,6 +383,7 @@ DBG_EXIT("RenderTransparentPasses")
 void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentGeometryPass" );
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	//deoglRenderDecal &rendecal = renderThread.GetRenderers().GetDecal();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
@@ -596,6 +599,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	// render geometry pass to depth1 using EQUAL with stencil mask and temporary with last layer
 	// color. no depth and stencil written. color, normal and specularity written for light pass
+	deoglDebugTraceGroup debugTraceGeometry( renderThread, "TransparentPasses.RenderTransparentPasses.Geometry" );
 	defren.ActivateFBOMaterialColor();
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -695,6 +699,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	
 	// outline
+	deoglDebugTraceGroup debugTraceOutline( debugTraceGeometry, "TransparentPasses.RenderTransparentPasses.Outline" );
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
@@ -759,6 +764,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	// currently we use at most 4 bits for the render pass bits. this allows for 15 layers
 	// of transparency before we wrap around requiring to clear. to avoid this the maximum
 	// number of layers is forced to stay below 15
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentLimitDepth.Outline" );
 	const int prevStencilRefValue = plan.GetStencilRefValue();
 	const int maskRefValue = mask ? 0x01 : 0;
 	
@@ -902,6 +908,7 @@ const deoglRenderPlanMasked *mask, bool inbetween ){
 	}
 	
 DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderVolumetricPass" );
 	const deoglParticleEmitterInstanceList &particleEmitterList = plan.GetCollideList().GetParticleEmitterList();
 	const int particleEmitterCount = particleEmitterList.GetCount();
 	
@@ -1048,6 +1055,7 @@ DBG_EXIT("RenderVolumetricPass")
 
 void deoglRenderTransparentPasses::CopyColorToTemporary( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentLimitDepth.CopyColorToTemporary" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	defren.ActivateFBOTemporary1( false );

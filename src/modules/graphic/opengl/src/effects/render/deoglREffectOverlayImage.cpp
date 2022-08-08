@@ -44,6 +44,7 @@
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -159,6 +160,7 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectOverlayImage.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();

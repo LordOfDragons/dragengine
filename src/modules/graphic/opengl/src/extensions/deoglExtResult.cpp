@@ -644,3 +644,12 @@ GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC pglProgramUniformHandleui64vARB = nu
 GLAPI PFNGLVERTEXATTRIBL1UI64ARBPROC pglVertexAttribL1ui64ARB = nullptr;
 GLAPI PFNGLVERTEXATTRIBL1UI64VARBPROC pglVertexAttribL1ui64vARB = nullptr;
 GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB = nullptr;
+
+
+
+// GL_KHR_debug : no opengl version
+/////////////////////////////////////
+
+GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup = nullptr;
+GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup = nullptr;
+GLAPI PFNGLOBJECTLABELPROC pglObjectLabel = nullptr;

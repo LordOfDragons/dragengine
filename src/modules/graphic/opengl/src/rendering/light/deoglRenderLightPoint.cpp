@@ -49,6 +49,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSaveTexture.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -575,6 +576,7 @@ const deoglRenderPlanMasked *mask ){
 	// prepare for rendering
 	deoglRLight &light = *cllight.GetLight();
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightPoint.RenderLight" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
@@ -1435,6 +1437,7 @@ bool HACK1 = false;
 void deoglRenderLightPoint::RenderShadowMaps( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightPoint.RenderShadowMaps" );
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -1810,6 +1813,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 void deoglRenderLightPoint::RenderAmbientMap( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightPoint.RenderAmbientMap" );
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();

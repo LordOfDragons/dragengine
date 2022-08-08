@@ -44,6 +44,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -295,6 +296,7 @@ void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
 		return; // re-entrant rendering causes exceptions. ignore rendering in this case
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.PrepareRender" );
 	pIsRendering = true;
 	
 	try{
@@ -1406,6 +1408,7 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 }
 
 void deoglRenderPlan::Render(){
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.Render" );
 	if( pIsRendering ){
 		// re-entrant rendering causes exceptions. render instead a black screen and do not clean up
 		pRenderThread.GetRenderers().GetWorld().RenderBlackScreen( *this );

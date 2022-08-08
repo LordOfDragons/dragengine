@@ -160,9 +160,9 @@ public:
 	void AttachColorTexture( int index, deoglTexture *texture );
 	/** Attach a color texture level. */
 	void AttachColorTextureLevel( int index, deoglTexture *texture, int level );
-	/** \brief Attach a color 1d texture. */
+	/** Attach a color 1d texture. */
 	void AttachColorTexture1D( int index, deoglTexture1D *texture );
-	/** \brief Attach a color 1d texture level. */
+	/** Attach a color 1d texture level. */
 	void AttachColorTexture1DLevel( int index, deoglTexture1D *texture, int level );
 	/** Attach a color cube map. */
 	void AttachColorCubeMap( int index, deoglCubeMap *texture );
@@ -191,7 +191,7 @@ public:
 	/** Detaches all color images in this and all higher attachment points if they are attached. */
 	void DetachColorImages( int startIndex );
 	
-	/** \brief Invalidate color attachment. */
+	/** Invalidate color attachment. */
 	void InvalidateColor( int index );
 	
 	
@@ -204,9 +204,9 @@ public:
 	void AttachDepthTexture( deoglTexture *texture );
 	/** Attach a depth texture level. */
 	void AttachDepthTextureLevel( deoglTexture *texture, int level );
-	/** \brief Attach a depth 1d texture. */
+	/** Attach a depth 1d texture. */
 	void AttachDepthTexture1D( deoglTexture1D *texture );
-	/** \brief Attach a depth 1d texture level. */
+	/** Attach a depth 1d texture level. */
 	void AttachDepthTexture1DLevel( deoglTexture1D *texture, int level );
 	/** Attach a depth cube map. */
 	void AttachDepthCubeMap( deoglCubeMap *texture );
@@ -229,7 +229,7 @@ public:
 	/** Detach depth image if attached. */
 	void DetachDepthImage();
 	
-	/** \brief Invalidate depth attachment. */
+	/** Invalidate depth attachment. */
 	void InvalidateDepth();
 	
 	
@@ -242,9 +242,9 @@ public:
 	void AttachStencilTexture( deoglTexture *texture );
 	/** Attach a stencil texture level. */
 	void AttachStencilTextureLevel( deoglTexture *texture, int level );
-	/** \brief Attach a stencil 1d texture. */
+	/** Attach a stencil 1d texture. */
 	void AttachStencilTexture1D( deoglTexture1D *texture );
-	/** \brief Attach a stencil 1d texture level. */
+	/** Attach a stencil 1d texture level. */
 	void AttachStencilTexture1DLevel( deoglTexture1D *texture, int level );
 	/** Attach a stencil texture. */
 	void AttachStencilArrayTexture( deoglArrayTexture *texture );
@@ -259,10 +259,10 @@ public:
 	/** Detach stencil image if attached. */
 	void DetachStencilImage();
 	
-	/** \brief Invalidate stencil attachment. */
+	/** Invalidate stencil attachment. */
 	void InvalidateStencil();
 	
-	/** \brief Invalidate depth and stencil attachments. */
+	/** Invalidate depth and stencil attachments. */
 	void InvalidateDepthStencil();
 	
 	
@@ -270,19 +270,22 @@ public:
 	/** Detach all images if they are attached. */
 	void DetachAllImages();
 	
-	/** \brief Invalidate all images that are attached. */
+	/** Invalidate all images that are attached. */
 	void InvalidateAllImages();
 	
 	
 	
-	/** \brief Set up read/write buffers matching framebuffer. */
+	/** Set up read/write buffers matching framebuffer. */
 	void UpdateReadWriteBuffers();
 	
 	/** Adds a configuration trace point with the configuration of this framebuffer object. */
 	void AddConfigToTrace( deErrorTracePoint &tracePoint );
 	
-	/** \brief Debug print framebuffer configuration. */
+	/** Debug print framebuffer configuration. */
 	void DebugPrint( const char *prefix );
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
 	
 private:

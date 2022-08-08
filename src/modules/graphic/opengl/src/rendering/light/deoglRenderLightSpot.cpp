@@ -48,6 +48,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSaveTexture.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
@@ -553,6 +554,7 @@ const deoglRenderPlanMasked *mask ){
 	
 	// prepare for rendering
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderLight" );
 	deoglRLight &light = *cllight.GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
@@ -1407,6 +1409,7 @@ void deoglRenderLightSpot::RenderShadowMap( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderShadowMap" );
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
@@ -1596,6 +1599,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 void deoglRenderLightSpot::RenderAmbientMap( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderAmbientMap" );
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetOccMapPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();

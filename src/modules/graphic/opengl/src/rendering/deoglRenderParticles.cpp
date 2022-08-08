@@ -30,6 +30,7 @@
 #include "task/deoglRenderTaskParticles.h"
 #include "task/deoglRenderTaskParticlesStep.h"
 #include "../collidelist/deoglCollideList.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -109,6 +110,8 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 	if( stepCount == 0 ){
 		return;
 	}
+	
+	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
 	
 	// conventional particles work with culling enabled. beams and ribbons though are tricky
 	// to calculate so they easily end up backfacing. for these culling has to be disabled

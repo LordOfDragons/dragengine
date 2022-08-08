@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "deoglREffectFilterKernel.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
@@ -211,6 +212,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsampleStereo(){
 
 void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectFilterKernel.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();

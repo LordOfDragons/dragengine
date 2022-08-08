@@ -28,6 +28,7 @@
 #include "../plan/deoglRenderPlan.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../debugdrawer/deoglDebugDrawerShape.h"
 #include "../../debugdrawer/deoglRDebugDrawer.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -118,6 +119,7 @@ deoglRenderDebugDrawer::~deoglRenderDebugDrawer(){
 
 void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DebugDrawer.RenderDebugDrawers" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 // 	const deoglConfiguration &config = renderThread.GetConfiguration();

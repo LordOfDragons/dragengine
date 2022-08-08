@@ -37,6 +37,7 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../font/deoglRFont.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../rendering/deoglRenderWorld.h"
@@ -688,6 +689,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Canvas.DrawCanvasRenderWorld" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglConfiguration &config = renderThread.GetConfiguration();

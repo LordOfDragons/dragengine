@@ -38,6 +38,7 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../debug/debugSnapshot.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
@@ -141,6 +142,7 @@ deoglRenderGeometryPass::~deoglRenderGeometryPass(){
 void deoglRenderGeometryPass::RenderDecals( deoglRenderPlan &plan ){
 DBG_ENTER("RenderDecals")
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderDecals" );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
@@ -176,6 +178,7 @@ DBG_EXIT("RenderDecals")
 void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderSolidGeometryPass" );
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -279,6 +282,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	tasks.WaitFinishBuildingTasksGeometry();
 	
 	// height terrain has to come first since it has to be handled differently
+	deoglDebugTraceGroup debugTraceHT( renderThread, "GeometryPass.RenderSolidGeometryPass.HeightTerrain" );
 	if( tasks.GetSolidGeometryHeight1Task().GetShaderCount() > 0 ){
 		tasks.GetSolidGeometryHeight1Task().SetRenderParamBlock( renworld.GetRenderPB() );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
@@ -292,6 +296,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	// other content
+	deoglDebugTraceGroup debugTraceOther( debugTraceHT, "GeometryPass.RenderSolidGeometryPass.Geometry" );
 	if( defren.GetUseFadeOutRange() && false /* alpha blend problem */ ){
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
@@ -305,6 +310,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// outline
 	if( tasks.GetSolidGeometryOutlineTask().GetShaderCount() > 0 ){
+		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
 		tasks.GetSolidGeometryOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( tasks.GetSolidGeometryOutlineTask() );
@@ -312,7 +318,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	}
 	
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
-	
+	debugTraceOther.Close();
 	
 	// decals
 	RenderDecals( plan );

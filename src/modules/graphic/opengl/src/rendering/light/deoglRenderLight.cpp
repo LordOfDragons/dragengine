@@ -38,6 +38,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugSaveTexture.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../gi/deoglGIState.h"
@@ -273,6 +274,9 @@ deoglRenderLight::~deoglRenderLight(){
 
 void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, solid
+		? ( mask ? "Light.RenderLights(Solid,Masked)" : "Light.RenderLights(Solid)" )
+		: ( mask ? "Light.RenderLights(Transparent,Masked)" : "Light.RenderLights(Transparent)" ) );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();
 	
@@ -380,6 +384,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 
 void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, solid ? "Light.RenderAO(Solid)" : "Light.RenderAO(Transparent)" );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
 	if( ! config.GetSSAOEnable() ){
@@ -563,6 +568,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 
 void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, solid ? "Light.RenderSSSSS(Solid)" : "Light.RenderSSSSS(Transparent)" );
 	
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );

@@ -40,6 +40,7 @@
 #include "../deGraphicOpenGl.h"
 #include "../deoglBasics.h"
 #include "../deoglPreloader.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
@@ -1482,6 +1483,7 @@ void deoglRenderThread::pInitCapabilities(){
 
 
 void deoglRenderThread::pRenderSingleFrame(){
+	const deoglDebugTraceGroup debugTrace( *this, "RenderSingleFrame" );
 	if( pConfigChanged ){
 		pConfigChanged = false;
 		
@@ -1594,6 +1596,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 	}
 	
 	if( showDebugInfoModule ){
+		const deoglDebugTraceGroup debugTraceDI( *this, "DebugInfo" );
 		const float time2 = pDebugTimerRenderThread2.GetElapsedTime();
 		const float time1 = pDebugTimerRenderThread1.GetElapsedTime();
 		
@@ -2097,6 +2100,7 @@ void deoglRenderThread::pSwapBuffers(){
 }
 
 void deoglRenderThread::pBeginFrame(){
+	const deoglDebugTraceGroup debugTrace( *this, "BeginFrame" );
 	#ifdef ANDROID
 	pContext->CheckConfigurationChanged();
 	#endif

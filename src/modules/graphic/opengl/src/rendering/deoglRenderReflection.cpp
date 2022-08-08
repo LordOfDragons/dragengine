@@ -41,6 +41,7 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../envmap/deoglEnvMapSlot.h"
 #include "../envmap/deoglEnvMapSlotManager.h"
@@ -513,6 +514,7 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.ConvertCubeMap2EquiMap" );
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -572,6 +574,7 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 void deoglRenderReflection::RenderEnvMapMask( deoglRenderPlan &plan, deoglEnvironmentMap &envmap, int cubeMapFace ){
 	const int maskShapeCount = envmap.GetReflectionMaskBoxMatrixCount();
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderEnvMapMask" );
 	
 	// set state we need at least for clearing
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE ) );
@@ -628,6 +631,7 @@ void deoglRenderReflection::RenderEnvMapMask( deoglRenderPlan &plan, deoglEnviro
 void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.UpdateEnvMap" );
 	
 	if( plan.GetDirectEnvMapFader().GetActiveEnvMap() ){
 		pDirectEnvMapActive = plan.GetDirectEnvMapFader().GetActiveEnvMap();
@@ -1049,6 +1053,7 @@ void deoglRenderReflection::RenderReflections( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderReflections" );
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		return;
 	}
@@ -1207,6 +1212,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderDepthMinMaxMipMap" );
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		return;
 	}
@@ -1488,6 +1494,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 
 void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.CopyColorToTemporary1" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglShaderCompiled *shader;
@@ -1565,6 +1572,7 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.CopyMaterial" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
@@ -1648,6 +1656,7 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	
 	// update envmap
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderGIEnvMaps" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
@@ -1727,6 +1736,7 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 
 void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap &target ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.CopyEnvMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglRestoreFramebuffer restoreFbo( renderThread );
@@ -1773,6 +1783,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderScreenSpace" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	

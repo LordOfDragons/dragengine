@@ -1040,4 +1040,13 @@ extern GLAPI PFNGLVERTEXATTRIBL1UI64ARBPROC pglVertexAttribL1ui64ARB;
 extern GLAPI PFNGLVERTEXATTRIBL1UI64VARBPROC pglVertexAttribL1ui64vARB;
 extern GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB;
 
+
+
+// GL_KHR_debug : no opengl version
+/////////////////////////////////////
+
+extern GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup;
+extern GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup;
+extern GLAPI PFNGLOBJECTLABELPROC pglObjectLabel;
+
 #endif

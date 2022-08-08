@@ -31,6 +31,7 @@
 #include "../plan/deoglRenderPlanDebug.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../light/shader/deoglLightShaderManager.h"
 #include "../../particle/deoglRParticleEmitter.h"
@@ -150,6 +151,7 @@ deoglRParticleEmitterInstance &emitterInstance ){
 void deoglRenderLightParticles::RenderParticleEmitterInstanceType( deoglRenderPlan &plan,
 deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &itype, deoglRParticleEmitterType &etype ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightParticle.RenderParticleEmitterInstanceType" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRParticleEmitter &emitter = *instance.GetEmitter();
 	

@@ -47,6 +47,7 @@
 #include "../component/deoglComponentLOD.h"
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../extensions/deoglExtensions.h"
 #include "../framebuffer/deoglFramebuffer.h"
@@ -263,6 +264,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTask" );
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const bool forceDoubleSided = renderTask.GetForceDoubleSided();
 	const bool renderVSStereo = renderTask.GetRenderVSStereo();
@@ -511,6 +513,7 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
 	const deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.RenderTask(Persistent)" );
 	bool curDoubleSided = false;
 	const deoglVAO *curVAO = NULL;
 	
@@ -664,6 +667,7 @@ GLuint vboTransformed, int firstPoint, int pointCount ){
 	#endif
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.TransformPositions" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	renderThread.GetShader().ActivateShader( pShaderTransformPositions );
@@ -696,6 +700,7 @@ int normalCount, int /*tangentCount*/, int firstPoint, int pointCount ){
 	#endif
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.CalcNormalsTangents" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	// set states
@@ -743,6 +748,7 @@ int firstPoint, int pointCount ){
 	#endif
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.WriteSkinnedVBO" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	// set shader
@@ -783,6 +789,7 @@ GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount 
 	#endif
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.ApproxTransformVNT" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	renderThread.GetShader().ActivateShader( pShaderApproxTransformVNT );

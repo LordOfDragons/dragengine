@@ -80,6 +80,7 @@
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../debug/deoglDebugTraceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 #include "../utils/collision/deoglDCollisionBox.h"
@@ -171,6 +172,7 @@ deoglRenderDevMode::~deoglRenderDevMode(){
 
 void deoglRenderDevMode::RenderDevMode( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderDevMode" );
 	deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	
 	// prepare common states

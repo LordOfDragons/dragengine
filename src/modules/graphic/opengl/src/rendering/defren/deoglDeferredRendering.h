@@ -366,12 +366,13 @@ private:
 	void pCreateTextures();
 	void pUpdateMemoryUsage();
 	void pCreateFBOs();
-	void pCreateFBOTex( int index, deoglArrayTexture *texture1, deoglArrayTexture *texture2,
-		deoglArrayTexture *texture3, deoglArrayTexture *texture4, deoglArrayTexture *texture5,
-		deoglArrayTexture *texture6, deoglArrayTexture *texture7, deoglArrayTexture *depth );
-	void pFBOAttachColors( int index, deoglArrayTexture *texture1, deoglArrayTexture *texture2,
-		deoglArrayTexture *texture3, deoglArrayTexture *texture4, deoglArrayTexture *texture5,
-		deoglArrayTexture *texture6, deoglArrayTexture *texture7 );
+	void pCreateFBOTex( int index, const char *debugName, deoglArrayTexture *texture1,
+		deoglArrayTexture *texture2, deoglArrayTexture *texture3, deoglArrayTexture *texture4,
+		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7,
+		deoglArrayTexture *depth );
+	void pFBOAttachColors( int index, const char *debugName, deoglArrayTexture *texture1,
+		deoglArrayTexture *texture2, deoglArrayTexture *texture3, deoglArrayTexture *texture4,
+		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7 );
 	void pDestroyFBOs();
 };
 

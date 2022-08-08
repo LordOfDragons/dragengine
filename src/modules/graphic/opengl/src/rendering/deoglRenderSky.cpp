@@ -29,6 +29,7 @@
 #include "plan/deoglRenderPlan.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -295,6 +296,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	// NOTE always switch FBO and clear the color attachment. if no sky is present use
 	//      black as clear color
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSky" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	DEBUG_RESET_TIMERS;
@@ -571,6 +573,7 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkySphere" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	const deoglRSkyInstanceLayer &instanceLayer = instance.GetLayerAt( layerIndex );
@@ -642,6 +645,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkyLayerBodies" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	const deoglRSkyInstanceLayer &instanceLayer = instance.GetLayerAt( layerIndex );
@@ -744,6 +748,7 @@ deoglEnvironmentMap &envmap ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkyIntoEnvMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglFramebuffer *oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap *cubemap = envmap.GetEnvironmentMap();
@@ -799,6 +804,7 @@ deoglEnvironmentMap &envmap ){
 		const GLfloat clearColor[ 4 ] = { engSkyColor.r, engSkyColor.g, engSkyColor.b, 1.0f };
 		
 		for( cmf=0; cmf<6; cmf++ ){
+			const deoglDebugTraceGroup debugTrace2( renderThread, "Sky.RenderSkyIntoEnvMap.Face" );
 			fbo->AttachColorCubeMapFace( 0, cubemap, cubeFaces[ cmf ] );
 			fbo->Verify();
 			
@@ -894,6 +900,7 @@ deoglEnvironmentMap &envmap ){
 
 void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap &envmap ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderEmptySkyIntoEnvMap" );
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap * const cubemap = envmap.GetEnvironmentMap();
 	deoglFramebuffer *fbo = NULL;

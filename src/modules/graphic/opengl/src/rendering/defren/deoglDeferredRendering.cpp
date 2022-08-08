@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "deoglDeferredRendering.h"
 #include "deoglDRDepthMinMax.h"
@@ -1129,18 +1130,22 @@ void deoglDeferredRendering::pCreateTextures(){
 	pTextureDepth1 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth1->SetMipMapped( true );
 	pTextureDepth1->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepth1->SetDebugObjectLabel( "DefRen.Depth1" );
 	
 	pTextureDepth2 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth2->SetMipMapped( true );
 	pTextureDepth2->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepth2->SetDebugObjectLabel( "DefRen.Depth2" );
 	
 	pTextureDepth3 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth3->SetMipMapped( true );
 	pTextureDepth3->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepth3->SetDebugObjectLabel( "DefRen.Depth3" );
 	
 	// create diffuse texture
 	pTextureDiffuse = new deoglArrayTexture( pRenderThread );
 	pTextureDiffuse->SetFBOFormat( 4, false ); //4, true );
+	pTextureDiffuse->SetDebugObjectLabel( "DefRen.Diffuse" );
 	
 	// create normal texture
 	// RGB8 gives strong jumping artifacts during the separate reflection pass due to errors
@@ -1151,43 +1156,53 @@ void deoglDeferredRendering::pCreateTextures(){
 	//pTextureNormal->SetFBOFormat( 3, false ); //4, true );
 	pTextureNormal->SetFBOFormat( 3, true ); //4, true );
 	//pTextureNormal->SetFormatFromCaps( deoglCapsFmtSupport::eutfRGB10A2 );
+	pTextureNormal->SetDebugObjectLabel( "DefRen.Normal" );
 	
 	// create reflectivity texture
 	pTextureReflectivity = new deoglArrayTexture( pRenderThread );
 	pTextureReflectivity->SetFBOFormat( 3, false ); //4, true );
+	pTextureReflectivity->SetDebugObjectLabel( "DefRen.Reflectivity" );
 	
 	// create roughness texture
 	pTextureRoughness = new deoglArrayTexture( pRenderThread );
 	pTextureRoughness->SetFBOFormat( 3, false );
+	pTextureRoughness->SetDebugObjectLabel( "DefRen.Roughness" );
 	
 	// create ao-solidity texture
 	pTextureAOSolidity = new deoglArrayTexture( pRenderThread );
 	pTextureAOSolidity->SetFBOFormat( 3, false );
+	pTextureAOSolidity->SetDebugObjectLabel( "DefRen.AOSolidity" );
 	
 	// create sub-surface texture
 	pTextureSubSurface = new deoglArrayTexture( pRenderThread );
 	pTextureSubSurface->SetFBOFormat( 3, true );
+	pTextureSubSurface->SetDebugObjectLabel( "DefRen.SubSurface" );
 	
 	// create temporary textures
 	pTextureTemporary1 = new deoglArrayTexture( pRenderThread );
 	//pTextureTemporary1->SetMipMapped( true );
 	pTextureTemporary1->SetFBOFormat( 3, true );
+	pTextureTemporary1->SetDebugObjectLabel( "DefRen.Temporary1" );
 	
 	pTextureTemporary2 = new deoglArrayTexture( pRenderThread );
 	//pTextureTemporary2->SetMipMapped( true );
 	pTextureTemporary2->SetFBOFormat( 3, true );
+	pTextureTemporary2->SetDebugObjectLabel( "DefRen.Temporary2" );
 	
 	pTextureTemporary3 = new deoglArrayTexture( pRenderThread );
 	pTextureTemporary3->SetFBOFormat( 1, false );
+	pTextureTemporary3->SetDebugObjectLabel( "DefRen.Temporary3" );
 	
 	// create color texture
 	pTextureColor = new deoglArrayTexture( pRenderThread );
 	pTextureColor->SetFBOFormat( 4, true );
 	//pTextureColor->SetFormatMappingByNumber( deoglCapsFmtSupport::eutfRGBA32F ); // only for special debugging
+	pTextureColor->SetDebugObjectLabel( "DefRen.Color" );
 	
 	// create luminance texture
 	pTextureLuminance = new deoglArrayTexture( pRenderThread );
 	pTextureLuminance->SetFBOFormat( 1, true );
+	pTextureLuminance->SetDebugObjectLabel( "DefRen.Luminance" );
 	
 	// luminance textures
 	/*
@@ -1245,56 +1260,58 @@ void deoglDeferredRendering::pUpdateMemoryUsage(){
 void deoglDeferredRendering::pCreateFBOs(){
 	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	
-	pCreateFBOTex( efbomdD1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdD2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdD3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3 );
-	pCreateFBOTex( efbomdDiff, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdDiffD1, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdDiffD2, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdRefl, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdReflD1, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdReflD2, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdRough, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdRoughD1, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdRoughD2, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdAOSolidity, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdAOSolidityD1, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdAOSolidityD2, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdTemp1, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdTemp1D1, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdTemp1D2, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdTemp2, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdTemp2D1, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdTemp2D2, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdTemp3, pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdColor, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdColorD1, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdColorD2, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdColorTemp2, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdColorTemp2D1, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdColorTemp2D2, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdColorLum, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdColorLumD1, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdColorLumD2, pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdColorLumTemp2, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL );
-	pCreateFBOTex( efbomdColorLumTemp2D1, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth1 );
-	pCreateFBOTex( efbomdColorLumTemp2D2, pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth2 );
-	pCreateFBOTex( efbomdLuminance, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdD1, "DefRen.Depth1", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdD2, "DefRen.Depth2", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdD3, "DefRen.Depth3", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3 );
+	pCreateFBOTex( efbomdDiff, "DefRen.Diffuse", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdDiffD1, "DefRen.DiffuseD1", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdDiffD2, "DefRen.DiffuseD2", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdRefl, "DefRen.Reflectivity", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdReflD1, "DefRen.ReflectivityD1", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdReflD2, "DefRen.ReflectivityD2", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdRough, "DefRen.Roughness", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdRoughD1, "DefRen.RoughnessD1", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdRoughD2, "DefRen.RoughnessD2", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdAOSolidity, "DefRen.AOSolidity", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdAOSolidityD1, "DefRen.AOSolidityD1", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdAOSolidityD2, "DefRen.AOSolidityD2", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdTemp1, "DefRen.Temporary1", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdTemp1D1, "DefRen.Temporary1D1", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdTemp1D2, "DefRen.Temporary1D2", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdTemp2, "DefRen.Temporary2", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdTemp2D1, "DefRen.Temporary2D1", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdTemp2D2, "DefRen.Temporary2D2", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdTemp3, "DefRen.Temporary3", pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColor, "DefRen.Color", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorD1, "DefRen.ColorD1", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorD2, "DefRen.ColorD2", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdColorTemp2, "DefRen.ColorTemp2", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorTemp2D1, "DefRen.ColorTemp2D1", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorTemp2D2, "DefRen.ColorTemp2D2", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdColorLum, "DefRen.ColorLum", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorLumD1, "DefRen.ColorLumD1", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorLumD2, "DefRen.ColorLumD2", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdColorLumTemp2, "DefRen.ColorLumTemp2", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorLumTemp2D1, "DefRen.ColorLumTemp2D1", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorLumTemp2D2, "DefRen.ColorLumTemp2D2", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdLuminance, "DefRen.Luminance", pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
 	
 	if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		pCreateFBOTex( efbomdMaterialColorD1, pTextureDiffuse, pTextureNormal,
+		pCreateFBOTex( efbomdMaterialColorD1, "DefRen.MaterialColorD1", pTextureDiffuse, pTextureNormal,
 			pTextureReflectivity, pTextureRoughness, pTextureAOSolidity,
 			pTextureSubSurface, pTextureColor, pTextureDepth1 );
-		pCreateFBOTex( efbomdMaterialColorD2, pTextureDiffuse, pTextureNormal,
+		pCreateFBOTex( efbomdMaterialColorD2, "DefRen.MaterialColorD2", pTextureDiffuse, pTextureNormal,
 			pTextureReflectivity, pTextureRoughness, pTextureAOSolidity,
 			pTextureSubSurface, pTextureColor, pTextureDepth2 );
 		
 	}else{
-		pCreateFBOTex( efbomdMaterialColorD1, pTextureDiffuse, pTextureNormal,
+		pCreateFBOTex( efbomdMaterialColorD1, "DefRen.MaterialColorD1", pTextureDiffuse, pTextureNormal,
 			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdMaterialColorD2, pTextureDiffuse, pTextureNormal,
+		pCreateFBOTex( efbomdMaterialColorD2, "DefRen.MaterialColorD2", pTextureDiffuse, pTextureNormal,
 			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth2 );
 	}
+	
+	char debugName[ 31 ];
 	
 	// fbos for the mip map levels
 	int fboMipMapCount = pTextureDepth1->GetRealMipMapLevelCount();
@@ -1319,6 +1336,8 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth1[ i ]->Verify();
+				sprintf( debugName, "DefRen.Depth1.MipMap%d", i );
+				pFBOMipMapDepth1[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException &e ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1335,6 +1354,8 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth2[ i ]->Verify();
+				sprintf( debugName, "DefRen.Depth2.MipMap%d", i );
+				pFBOMipMapDepth2[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException &e ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1368,6 +1389,8 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary1[ i ]->Verify();
+				sprintf( debugName, "DefRen.Temporary1.MipMap%d", i );
+				pFBOMipMapTemporary1[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException &e ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1384,6 +1407,8 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary2[ i ]->Verify();
+				sprintf( debugName, "DefRen.Temporary2.MipMap%d", i );
+				pFBOMipMapTemporary2[ i ]->SetDebugObjectLabel( debugName );
 				
 			}catch( const deException &e ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1406,6 +1431,8 @@ void deoglDeferredRendering::pCreateFBOs(){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffersNone ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 		pFBOCopyDepth[ i ]->Verify();
+		sprintf( debugName, "DefRen.CopyDepth.Layer%d", i );
+		pFBOCopyDepth[ i ]->SetDebugObjectLabel( debugName );
 	}
 	
 	// luminance fbo
@@ -1431,8 +1458,9 @@ void deoglDeferredRendering::pCreateFBOs(){
 	*/
 }
 
-void deoglDeferredRendering::pCreateFBOTex( int index, deoglArrayTexture *texture1, deoglArrayTexture *texture2,
-deoglArrayTexture *texture3, deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
+void deoglDeferredRendering::pCreateFBOTex( int index, const char *debugName,
+deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *texture3,
+deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
 deoglArrayTexture *texture7, deoglArrayTexture *depth ){
 	try{
 		pFBOs[ index ] = new deoglFramebuffer( pRenderThread, false );
@@ -1443,7 +1471,7 @@ deoglArrayTexture *texture7, deoglArrayTexture *depth ){
 			pFBOs[ index ]->AttachDepthArrayTexture( depth );
 			pFBOs[ index ]->AttachStencilArrayTexture( depth );
 		}
-		pFBOAttachColors( index, texture1, texture2, texture3, texture4, texture5, texture6, texture7 );
+		pFBOAttachColors( index, debugName, texture1, texture2, texture3, texture4, texture5, texture6, texture7 );
 		
 		pFBOs[ index ]->Verify();
 		
@@ -1454,8 +1482,9 @@ deoglArrayTexture *texture7, deoglArrayTexture *depth ){
 	}
 }
 
-void deoglDeferredRendering::pFBOAttachColors( int index, deoglArrayTexture *texture1, deoglArrayTexture *texture2,
-deoglArrayTexture *texture3, deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
+void deoglDeferredRendering::pFBOAttachColors( int index, const char *debugName,
+deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *texture3,
+deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
 deoglArrayTexture *texture7 ){
 	const GLenum buffers[ 7 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2,
 		GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6 };
@@ -1513,6 +1542,8 @@ deoglArrayTexture *texture7 ){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffersNone ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 	}
+	
+	pFBOs[ index ]->SetDebugObjectLabel( debugName );
 }
 
 void deoglDeferredRendering::pDestroyFBOs(){

@@ -41,6 +41,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSaveTexture.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
@@ -333,6 +334,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.TraceRays" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglGICascade &cascade = giState->GetActiveCascade();
 	deoglGI &gi = renderThread.GetGI();
@@ -364,6 +366,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 			giState->PrepareUBOStateRayCache();
 		}
 		
+		deoglDebugTraceGroup debugTraceCacheTrace( renderThread, "GI.TraceRays.CacheTraceRays" );
 		pSharedTraceRays( plan );
 		pClearTraceRays();
 		
@@ -374,6 +377,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
 		// copy traced rays to cache
+		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
 		
@@ -399,6 +403,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	#endif
 	
 	// trace rays
+	deoglDebugTraceGroup debugTraceTraceRays( renderThread, "GI.TraceRays.TraceRays" );
 	deoglGIBVH &bvh = giState->GetBVHDynamic();
 	bvh.GetRenderTaskMaterial().Clear();
 	
@@ -421,6 +426,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	pClearTraceRays();
 	
 	#ifdef GI_USE_RAY_CACHE
+		deoglDebugTraceGroup debugTrace3( renderThread, "GI.TraceRays.RestoreCache" );
 		renderThread.GetShader().ActivateShader( pShaderInitFromRayCache );
 		pActivateGIUBOs();
 		
@@ -433,6 +439,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.DisableStagesAbove( 4 );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		debugTrace3.Close();
 	#endif
 	
 	renderThread.GetShader().ActivateShader( pShaderTraceRays );
@@ -552,6 +559,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderMaterials" );
 	deoglGI &gi = renderThread.GetGI();
 	
 	const int shaderCount = renderTask.GetShaderCount();
@@ -633,6 +641,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 void deoglRenderGI::ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
 deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ResizeMaterials" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGIMaterials &materials = renderThread.GetGI().GetMaterials();
 	
@@ -682,6 +691,7 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ClearProbes" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
@@ -747,6 +757,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.UpdateProbes" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
@@ -836,6 +847,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.MoveProbes" );
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -890,6 +902,7 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ProbeOffset" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -987,6 +1000,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ProbeExtends" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1026,6 +1040,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderLight" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1076,6 +1091,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderLightGIRay" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1112,6 +1128,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderDebugOverlay" );
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	if( ! devmode.GetEnabled() || ( ! devmode.GetGIShowProbes() && ! devmode.GetGIShowProbeUpdate() ) ){
 		return;

@@ -171,6 +171,7 @@ private:
 	float pAsyncRenderSkipSyncTimeRatio;
 	
 	bool pDebugContext;
+	bool pDebugNoMessages;
 	bool pAsyncRendering;
 	bool pEnableRetainImageOptimization;
 	
@@ -487,6 +488,12 @@ public:
 	
 	/** Set debug context. */
 	void SetDebugContext( bool debugContext );
+	
+	/** Create debug no messages. */
+	inline bool GetDebugNoMessages() const{ return pDebugNoMessages; }
+	
+	/** Set debug no messages. */
+	void SetDebugNoMessages( bool debugNoMessages );
 	
 	/** Asynchronous rendering. */
 	inline bool GetAsyncRendering() const{ return pAsyncRendering; }

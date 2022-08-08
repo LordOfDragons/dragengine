@@ -124,6 +124,7 @@ pFrameRateLimit( 0 ), // 0 means use display refresh rate
 pAsyncRenderSkipSyncTimeRatio( 0.5 ),
 
 pDebugContext( false ),
+pDebugNoMessages( false ),
 pAsyncRendering( true ),
 pEnableRetainImageOptimization( true ),
 
@@ -195,6 +196,7 @@ pVRForceFrameRate( 0 )
 	
 	// debug
 	pDebugContext = true;
+	pDebugNoMessages = false;
 	pLogLevel = ellDebug;
 	
 	// disable asynchronous rendering for debug purpose
@@ -804,6 +806,14 @@ void deoglConfiguration::SetDebugContext( bool debugContext ){
 		return;
 	}
 	pDebugContext = debugContext;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetDebugNoMessages( bool debugNoMessages ){
+	if( debugNoMessages == pDebugNoMessages ){
+		return;
+	}
+	pDebugNoMessages = debugNoMessages;
 	pDirty = true;
 }
 

@@ -61,6 +61,7 @@
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
+#include "parameters/debug/deoglPDebugNoMessages.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
 #include "parameters/debug/deoglPQuickDebug.h"
@@ -686,6 +687,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 #ifdef WITH_DEBUG
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
+	pParameters.AddParameter( new deoglPDebugNoMessages( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );

@@ -25,6 +25,7 @@
 
 #include "deoglRCaptureCanvas.h"
 #include "../render/deoglRCanvasView.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -143,6 +144,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow( deoglRRenderWindow &renderWindow 
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "CaptureCanvas.CaptureRenderWindow" );
 	const int width = pPixelBuffer->GetWidth();
 	const int height = pPixelBuffer->GetHeight();
 	
@@ -176,6 +178,7 @@ void deoglRCaptureCanvas::CapturePending(){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "CaptureCanvas.CapturePending" );
 	deoglTexture *texture = NULL;
 	
 	if( pCanvasView ){

@@ -29,6 +29,7 @@
 #include "plan/deoglRenderPlan.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -449,6 +450,7 @@ deoglRenderToneMap::~deoglRenderToneMap(){
 void deoglRenderToneMap::LuminancePrepare( deoglRenderPlan &plan ){
 DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.LuminancePrepare" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const int height = defren.GetHeight();
@@ -482,6 +484,7 @@ DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
 void deoglRenderToneMap::ToneMap( deoglRenderPlan &plan ){
 DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.ToneMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
@@ -516,6 +519,7 @@ DEBUG_PRINT_TIMER_TOTAL( "Tone-Mapping" );
 
 void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.CalculateSceneKey" );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -784,6 +788,7 @@ DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
 
 void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth, int &bloomHeight ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderBloomPass" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
@@ -1073,6 +1078,7 @@ DEBUG_PRINT_TIMER( "ToneMap: Blooming" );
 
 void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloomWidth, int bloomHeight ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderToneMappingPass" );
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -1107,6 +1113,7 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 
 void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderLDR" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderCompiled *shader;

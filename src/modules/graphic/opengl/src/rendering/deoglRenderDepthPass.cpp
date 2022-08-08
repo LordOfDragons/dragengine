@@ -43,6 +43,7 @@
 #include "../debug/deoglDebugSaveTexture.h"
 #include "../debug/deoglDebugSnapshot.h"
 #include "../debug/debugSnapshot.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../light/deoglRLight.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
@@ -221,6 +222,7 @@ deoglRenderDepthPass::~deoglRenderDepthPass(){
 
 void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.RenderSolidDepthPass" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	
@@ -286,6 +288,7 @@ void deoglRenderDepthPass::RenderDepth( deoglRenderPlan &plan, const deoglRender
 bool solid, bool maskedOnly, bool reverseDepthTest ){
 DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.RenderDepth" );
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -589,6 +592,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	
 	
 	// outline
+	const deoglDebugTraceGroup debugTraceOutline( renderThread, "DepthPass.RenderDepth.Outline" );
 	if( solid ){
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
 		tasks.GetSolidDepthOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
@@ -696,6 +700,7 @@ DBG_EXIT("RenderDepthPass")
 void deoglRenderDepthPass::DownsampleDepth( deoglRenderPlan &plan ){
 DBG_ENTER("DownsampleDepth")
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.DownsampleDepth" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglArrayTexture &texture = *defren.GetDepthTexture1();

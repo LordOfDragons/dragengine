@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "deoglREffectDistortImage.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
@@ -157,6 +158,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectDistortImage.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();

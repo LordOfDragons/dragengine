@@ -22,6 +22,7 @@
 #ifndef _DEOGLRRTDEBUG_H_
 #define _DEOGLRRTDEBUG_H_
 
+#include "../deoglBasics.h"
 #include "../debug/deoglDebugInformationList.h"
 #include "../debug/deoglDebugMemoryConsumption.h"
 
@@ -35,7 +36,7 @@ class deoglDeveloperMode;
 
 
 /**
- * \brief Render thread debug.
+ * Render thread debug.
  */
 class deoglRTDebug{
 private:
@@ -45,16 +46,17 @@ private:
 	deoglDebugInformationList pDebugInformation;
 	bool pEnableHwDebugOutput;
 	deoglDebugMemoryConsumption pDebugMemoryConsumption;
+	bool pEnableDebugTrace;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread texture related object. */
+	/** Create render thread texture related object. */
 	deoglRTDebug( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread texture related object. */
+	/** Clean up render thread texture related object. */
 	virtual ~deoglRTDebug();
 	/*@}*/
 	
@@ -62,32 +64,44 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Debug save texture. */
+	/** Debug save texture. */
 	inline deoglDebugSaveTexture &GetDebugSaveTexture() const{ return *pDebugSaveTexture; }
 	
-	/** \brief Developer mode. */
+	/** Developer mode. */
 	inline deoglDeveloperMode &GetDeveloperMode() const{ return *pDeveloperMode; }
 	
 	/**
-	 * \brief Open file for writing safely from inside render thread.
+	 * Open file for writing safely from inside render thread.
 	 * \details Creates a temporary file writer with the content written to the actual file
 	 *          once the render thread synchronizes with the main thread.
 	 */
 	decBaseFileWriter *OpenFileForWriting( const decPath &path );
 	
-	/** \brief Debug information list. */
+	/** Debug information list. */
 	inline deoglDebugInformationList &GetDebugInformationList(){ return pDebugInformation; }
 	inline const deoglDebugInformationList &GetDebugInformationList() const{ return pDebugInformation; }
 	
-	/** \brief Enable hardware debug output. */
+	/** Enable hardware debug output. */
 	inline bool GetEnableHwDebugOutput() const{ return pEnableHwDebugOutput; }
 	
-	/** \brief Set enable hardware debug output. */
+	/** Set enable hardware debug output. */
 	void SetEnableHwDebugOutput( bool enable );
 	
-	/** \brief Debug memory consumption. */
+	/** Debug memory consumption. */
 	inline deoglDebugMemoryConsumption &GetDebugMemoryConsumption(){ return pDebugMemoryConsumption; }
 	inline const deoglDebugMemoryConsumption &GetDebugMemoryConsumption() const{ return pDebugMemoryConsumption; }
+	
+	/** Debug trace grouping is enabled. */
+	inline bool GetEnableDebugTrace() const{ return pEnableDebugTrace; }
+	
+	/** Begin debug group for structuring GPU traces. */
+	void BeginDebugGroup( const char *name, int id );
+	
+	/** End debug group for structuring GPU traces. */
+	void EndDebugGroup();
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( GLenum type, GLuint object, const char *name );
 	/*@}*/
 	
 	

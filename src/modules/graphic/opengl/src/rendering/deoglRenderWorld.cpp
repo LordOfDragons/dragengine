@@ -46,6 +46,7 @@
 #include "../component/deoglRComponent.h"
 #include "../debug/deoglDebugSnapshot.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -258,6 +259,7 @@ deoglRenderWorld::~deoglRenderWorld(){
 void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderBlackScreen" );
 	
 	defren.InitPostProcessTarget();
 	defren.ActivatePostProcessFBO( true );
@@ -287,6 +289,7 @@ DEBUG_RESET_TIMER
 	const bool debugMainPass = ! mask;
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, mask ? "World.RenderWorld(Masked)" : "World.RenderWorld" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 //	deoglCollideList &colList = plan.GetCollideList();
@@ -486,6 +489,7 @@ DEBUG_RESET_TIMER
 	if( ! mask ){
 		// tone mapping
 		if( disableLights || ! plan.GetUseToneMap() ){
+			const deoglDebugTraceGroup debugTraceToneMap( renderThread, "World.ToneMap" );
 			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 			OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 			
@@ -539,6 +543,8 @@ DEBUG_RESET_TIMER
 		*/
 		
 		// post processing
+		const deoglDebugTraceGroup debugTracePostProcess( renderThread, "World.PostProcess" );
+		
 		//if( ! disableLights && maskedRenderTexture ){
 		//	plan->InitRenderTextures( defren.GetColorTexture(), defren.GetDiffuseTexture() );
 		//	
@@ -888,6 +894,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 	
 	// render each masked object
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderMaskedPass" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderGeometry &rengeom = GetRenderThread().GetRenderers().GetGeometry();
 	bool clearColor = plan.GetClearColor();
@@ -897,6 +904,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		deoglRenderPlanMasked * const maskedPlan = plan.GetMaskedPlanAt( m );
 		
 		// clear depth texture
+		deoglDebugTraceGroup debugTrace2( renderThread, "World.RenderMaskedPass.Mask" );
 		defren.ActivateFBODepth();
 		
 		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
@@ -951,6 +959,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		// render vr hidden mesh clearing the mask
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x01 ) );
+		debugTrace2.Close();
 		
 		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
 		
@@ -981,6 +990,7 @@ DBG_EXIT("RenderMaskedPass")
 void deoglRenderWorld::RenderDebugDrawers( deoglRenderPlan &plan ){
 DBG_ENTER("RenderDebugDrawers")
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderDebugDrawers" );
 	deoglRenderDebugDrawer &rendd = GetRenderThread().GetRenderers().GetDebugDrawer();
 	
 	// attach diffuse texture as this is the output from the tone map pass
@@ -1059,6 +1069,7 @@ void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan,
 bool withColorCorrection, bool withGammaCorrection ){
 DBG_ENTER("RenderFinalizeFBO")
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderFinalizeFBO" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
@@ -1160,6 +1171,7 @@ DBG_ENTER("RenderFinalizeContext")
 //	deoglRenderableColorTexture *maskRenderTexture = info->GetMaskRenderTexture();
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderFinalizeContext" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglConfiguration &config = renderThread.GetConfiguration();

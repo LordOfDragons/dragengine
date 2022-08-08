@@ -29,6 +29,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -577,6 +578,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	int renderTime[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	decTimer timer;
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "EnvironmentMap.RenderEnvCubeMap" );
 	deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	// dont do this. active framebuffer could be an env-map one and vanish while rendering
 	// takes place resulting in segfaults

@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "deoglREffectColorMatrix.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
@@ -122,6 +123,7 @@ deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
 
 void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectColorMatrix.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();

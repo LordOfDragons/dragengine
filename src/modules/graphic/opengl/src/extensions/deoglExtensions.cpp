@@ -1061,6 +1061,9 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageCallback, "glDebugMessageCallback", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglGetDebugMessageLog, "glGetDebugMessageLog", ext_KHR_debug );
+		pGetOptionalFunctionArbExt( (void**)&pglPushDebugGroup, "glPushDebugGroup", ext_KHR_debug );
+		pGetOptionalFunctionArbExt( (void**)&pglPopDebugGroup, "glPopDebugGroup", ext_KHR_debug );
+		pGetOptionalFunctionArbExt( (void**)&pglObjectLabel, "glObjectLabel", ext_KHR_debug );
 		
 	}else if( pHasExtension[ ext_ARB_debug_output ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_ARB_debug_output );

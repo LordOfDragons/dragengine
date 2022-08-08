@@ -54,6 +54,7 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSnapshot.h"
 #include "../../debug/debugSnapshot.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../gi/deoglGI.h"
@@ -375,6 +376,7 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderLight" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	//deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -585,6 +587,7 @@ const deoglRenderPlanMasked *mask ){
 
 void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderShadowMap" );
 	const deoglRWorld &world = *plan.GetPlan().GetWorld();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
@@ -1187,6 +1190,7 @@ deoglShadowMapper &shadowMapper ){
 void deoglRenderLightSky::RenderGIShadowMap( deoglShadowMapper &shadowMapper,
 deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderGIShadowMap" );
 	
 			#ifdef SKY_SHADOW_DEBUG_TIME
 			decTimer timer;

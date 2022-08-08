@@ -27,6 +27,7 @@
 #include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoglRenderThread;
 class deoglCapsTextureFormat;
@@ -58,6 +59,8 @@ public:
 	int pRealMipMapLevelCount;
 	
 	deoglMemoryConsumptionTextureUse pMemUse;
+	decString pDebugObjectLabel;
+	
 	
 	
 public:
@@ -164,7 +167,13 @@ public:
 	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
+	
+private:
+	void pUpdateDebugObjectLabel();
 };
 
 #endif
