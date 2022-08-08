@@ -39,7 +39,7 @@ jobs:
           cp ${{ github.workspace }}/.github/workflows/custom_windows.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
-          sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild }}/g' custom.py
+          sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild == 'true' && 'yes' || 'no' }}/g' custom.py
       
       - name: Build
         # certain CMake based projects are problem children that like to get stuck
