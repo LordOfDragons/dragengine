@@ -820,7 +820,12 @@ void deoglRTContext::pCreateGLContext(){
 		logger.LogInfo( "Creating OpenGL Context using new method" );
 		
 		int contextFlags = 0;
-		// contextFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
+		
+		// according to OpenGL wiki this has no effect on 3.2+ context but MacOS requies
+		// this to be set otherwise context creation fails
+		#ifdef OS_MACOS
+		contextFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
+		#endif
 		
 		if( pRenderThread.GetConfiguration().GetDebugContext() ){
 			logger.LogInfo( "Enable debug context" );
@@ -853,9 +858,9 @@ void deoglRTContext::pCreateGLContext(){
 			int major;
 			int minor;
 		};
-		const int versionCount = 8;
+		const int versionCount = 9;
 		const sOpenGlVersion versions[ versionCount ] = { { 4, 6 }, { 4, 5 }, { 4, 4 },
-			{ 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 } };
+			{ 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
 		int i;
 		for( i=0; i<versionCount; i++ ){
 			contextAttribs[ 1 ] = versions[ i ].major;
