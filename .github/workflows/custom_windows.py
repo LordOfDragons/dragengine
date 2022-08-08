@@ -2,7 +2,7 @@
 #########################
 with_tests = 'yes'
 with_warnerrors = 'yes'
-with_debug = '{ReleaseBuild}'
+with_debug = '{DebugBuild}'
 with_verbose = 'no'
 with_threads = '14'
 version = '{BuildVersion}'

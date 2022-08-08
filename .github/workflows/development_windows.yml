@@ -10,7 +10,7 @@ jobs:
       releaseVersion: development
       buildVersion: 9999
       artifactArchive: archives-windows
-      releaseBuild: false
+      debugBuild: true
   
   build_windows_installer:
     needs: [build_windows]
