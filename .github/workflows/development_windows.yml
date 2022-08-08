@@ -18,3 +18,4 @@ jobs:
       releaseVersion: development
       artifactArchive: archives-windows
       artifactInstaller: installers-windows
+      releaseBuild: false
