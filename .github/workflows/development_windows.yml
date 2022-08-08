@@ -1,0 +1,20 @@
+name: Development Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_windows:
+    uses: ./.github/workflows/build_windows.yml
+    with:
+      releaseVersion: developmenr
+      buildVersion: 9999
+      artifactArchive: archives-windows
+  
+  build_windows_installer:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_windows_installer.yml
+    with:
+      releaseVersion: developmenr
+      artifactArchive: archives-windows
+      artifactInstaller: installers-windows
