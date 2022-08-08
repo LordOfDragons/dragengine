@@ -827,6 +827,18 @@ void deoglRTContext::pCreateGLContext(){
 			contextFlags |= GLX_CONTEXT_DEBUG_BIT_ARB;
 		}
 		
+		// this one here is really the biggest mess of all times. AMD does it right in that
+		// requesting a 3.3 context (as minimum) gives you up to 4.6 context if supported.
+		// this is how it is correctly done. and then we have nVidia which (again) fails to
+		// to it correctly. it gives you exactly a 3.3 context instead of the highest supported
+		// context. this causes problems since nVidia (again) fails compiling shaders if the
+		// shader version is not set high enough. this is again wrong in many ways since using
+		// the #extension directive in the shader overrules the #version directive but nVidia
+		// doesn't give a damn about OpenGL specs. Intel is in the same boat but nobody expects
+		// any sane 3D drivers from them anyway. so how to solve this mess? we do it ugly by
+		// simply trying all possible OpenGL context versions from the highest down to the
+		// lowest until we find the first one that works. and yes, this is really, really,
+		// REALLY ugly. thanks nVidia for nothing
 		int contextAttribs[] = {
 			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
 			GLX_CONTEXT_MINOR_VERSION_ARB, 3,
@@ -837,10 +849,29 @@ void deoglRTContext::pCreateGLContext(){
 			None };
 // 		int contextAttribCount = 10;
 		
-		pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
+		struct sOpenGlVersion{
+			int major;
+			int minor;
+		};
+		const int versionCount = 8;
+		const sOpenGlVersion versions[ versionCount ] = { { 4, 6 }, { 4, 5 }, { 4, 4 },
+			{ 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 } };
+		int i;
+		for( i=0; i<versionCount; i++ ){
+			contextAttribs[ 1 ] = versions[ i ].major;
+			contextAttribs[ 3 ] = versions[ i ].minor;
+			
+			pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
+			if( pContext ){
+				logger.LogInfoFormat( "- Trying %d.%d Core... Success", versions[ i ].major, versions[ i ].minor );
+				break;
+			}
+			
+			logger.LogInfoFormat( "- Trying %d.%d Core... Failed", versions[ i ].major, versions[ i ].minor );
+		}
 		
 		if( ! pContext ){
-			logger.LogInfo( "Creating OpenGL Context with new method failed. "
+			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method" );
 			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 		}
