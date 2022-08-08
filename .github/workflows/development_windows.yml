@@ -7,7 +7,7 @@ jobs:
   build_windows:
     uses: ./.github/workflows/build_windows.yml
     with:
-      releaseVersion: developmenr
+      releaseVersion: development
       buildVersion: 9999
       artifactArchive: archives-windows
   
@@ -15,6 +15,6 @@ jobs:
     needs: [build_windows]
     uses: ./.github/workflows/build_windows_installer.yml
     with:
-      releaseVersion: developmenr
+      releaseVersion: development
       artifactArchive: archives-windows
       artifactInstaller: installers-windows
