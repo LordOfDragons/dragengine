@@ -67,6 +67,9 @@ void main( void ){
 			vTexCoord = inPosition;
 		#elif defined FULLSCREENQUAD
 			vTexCoord = fsquadScreenCoordToTexCoord( inPosition );
+			#ifdef TEXCOORD_FLIP_Y
+				vTexCoord.y = 1 - vTexCoord.y;
+			#endif
 			vScreenCoord = inPosition;
 		#else
 			vTexCoord = inPosition * pTCTransform.xy + pTCTransform.zw;
