@@ -597,6 +597,17 @@ void deoglExtensions::pScanExtensions(){
 		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
 	}
 	
+	// this one is strange. ARB_shader_draw_parameters yields gl_DrawID in vertex shaders.
+	// this extension can be found on <4.6 core GPUs. but without 4.6 core gl_DrawID causes
+	// shader compilation to fail. sometimes OpenGL is a huge mess. why expose the presence
+	// of gl_DrawID using an extension on a lower core version if a higher core version is
+	// mandatory to use it?
+	if( pHasExtension[ ext_ARB_shader_draw_parameters ] && pGLVersion < evgl4p6 ){
+		pRenderThread.GetLogger().LogWarn( "Extension ARB_shader_draw_parameters forcefully"
+			" disabled since OpenGL is less then 4.6 Core" );
+		pHasExtension[ ext_ARB_shader_draw_parameters ] = false;
+	}
+	
 	pHasSeamlessCubeMap = pHasExtension[ ext_ARB_seamless_cube_map ]
 		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
 	
