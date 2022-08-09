@@ -826,7 +826,7 @@ void deoglCubeMap::CreateMatrixForFace( decDMatrix &matrix, const decDVector &po
 }
 
 void deoglCubeMap::SetDebugObjectLabel( const char *name ){
-	pDebugObjectLabel = name;
+	pDebugObjectLabel.Format( "Cube: %s", name );
 	if( pTexture ){
 		pUpdateDebugObjectLabel();
 	}

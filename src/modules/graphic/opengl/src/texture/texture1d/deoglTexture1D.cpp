@@ -757,7 +757,7 @@ void deoglTexture1D::SetDepthFormat( bool packedStencil ){
 }
 
 void deoglTexture1D::SetDebugObjectLabel( const char *name ){
-	pDebugObjectLabel = name;
+	pDebugObjectLabel.Format( "1D: %s", name );
 	if( pTexture ){
 		pUpdateDebugObjectLabel();
 	}

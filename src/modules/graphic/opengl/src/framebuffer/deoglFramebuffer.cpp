@@ -1025,7 +1025,7 @@ void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){
 
 void deoglFramebuffer::SetDebugObjectLabel( const char *name ){
 	if( pFBO ){
-		pRenderThread.GetDebug().SetDebugObjectLabel( GL_FRAMEBUFFER, pFBO, name );
+		pRenderThread.GetDebug().SetDebugObjectLabel( GL_FRAMEBUFFER, pFBO, decString( "FB: " ) + name );
 	}
 }
 
