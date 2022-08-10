@@ -262,7 +262,13 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pTargetPlaying.setName(pECBehavior.getTargetPlaying().getValue(stub))
 			end
 			
-			setRequiresThink(pPlayback.getPlaying())
+			if pPlayback.getPlaying()
+				setRequiresThink(true)
+				
+			else
+				// apply animator at least once
+				pPlayback.apply()
+			end
 			
 			pECBehavior.createListeners(this)
 		end
