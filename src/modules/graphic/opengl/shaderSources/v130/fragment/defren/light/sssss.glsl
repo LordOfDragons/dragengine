@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/defren/ubo_render_parameters.glsl"
 
 uniform HIGHP sampler2DArray texDepth;
@@ -50,7 +51,7 @@ void scatter( in vec3 tc, in vec3 position, in vec3 scatterScale, inout vec3 sum
 }
 
 vec3 subSurfaceScattering( in vec3 position, in float tapRadius, in vec3 scatterScale, in int tapCount ){
-	const float angleConstant = 6.2831853 * float( pTurnCount ); // pi * 2.0
+	UFCONST float angleConstant = 6.2831853 * float( pTurnCount ); // pi * 2.0
 	ivec2 tcint = ivec2( gl_FragCoord.xy );
 	
 	vec3 sumLight = textureLod( texLight, vec3( vTexCoord, vLayer ), 0 ).rgb;
