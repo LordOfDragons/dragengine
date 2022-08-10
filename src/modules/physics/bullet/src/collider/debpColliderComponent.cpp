@@ -2765,15 +2765,18 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				}break;
 				
 			case deColliderAttachment::eatRelativeMovement:{
-				if( pDirtyRelMoveMatrix ){
-					pRelMoveMatrix =
-						decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition )
-						.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) );
-					pRelMoveMatrixRot = pRelMoveMatrix.ToQuaternion();
-					pDirtyRelMoveMatrix = false;
+				if( bpAttachment.GetApplyRelativeDisplacement() ){
+					if( pDirtyRelMoveMatrix ){
+						pRelMoveMatrix =
+							decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition )
+							.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) );
+						pRelMoveMatrixRot = pRelMoveMatrix.ToQuaternion();
+						pDirtyRelMoveMatrix = false;
+					}
+					
+					bpAttachment.Transform( pRelMoveMatrix, ! pPreventAttNotify );
 				}
-				
-				bpAttachment.Transform( pRelMoveMatrix, ! pPreventAttNotify );
+				bpAttachment.SetApplyRelativeDisplacement( true );
 				}break;
 			}
 			

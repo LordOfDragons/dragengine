@@ -37,6 +37,7 @@ private:
 	int *pBoneMappings;
 	int pBoneMappingCount;
 	bool pDirtyMappings;
+	bool pApplyRelativeDisplacement;
 	
 	decDMatrix pLocalMatrix;
 	bool pDirtyLocalMatrix;
@@ -77,6 +78,12 @@ public:
 	
 	/** \brief Set if mapping is dirty. */
 	void SetDirtyMappings( bool dirtyMappings );
+	
+	/** Apply relative displacement. */
+	inline bool GetApplyRelativeDisplacement() const{ return pApplyRelativeDisplacement; }
+	
+	/** Set apply relative displacement. */
+	void SetApplyRelativeDisplacement( bool applyRelativeDisplacement );
 	
 	
 	

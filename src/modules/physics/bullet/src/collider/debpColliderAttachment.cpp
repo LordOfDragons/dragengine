@@ -62,6 +62,7 @@ pTrackBone( -1 ),
 pBoneMappings( NULL ),
 pBoneMappingCount( 0 ),
 pDirtyMappings( true ),
+pApplyRelativeDisplacement( false ),
 pDirtyLocalMatrix( true ),
 pHasLocalMatrix( false ){
 }
@@ -125,6 +126,10 @@ void debpColliderAttachment::SetBoneMappingAt( int index, int boneIndex ){
 
 void debpColliderAttachment::SetDirtyMappings( bool dirtyMappings ){
 	pDirtyMappings = dirtyMappings;
+}
+
+void debpColliderAttachment::SetApplyRelativeDisplacement( bool applyRelativeDisplacement ){
+	pApplyRelativeDisplacement = applyRelativeDisplacement;
 }
 
 
