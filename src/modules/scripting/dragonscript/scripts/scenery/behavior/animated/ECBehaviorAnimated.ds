@@ -489,7 +489,14 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			select reader.readByte() // version
 			case 0
 				pPlayback.readFromFile(env, reader)
-				setRequiresThink(pPlayback.getPlaying())
+				
+				if pPlayback.getPlaying()
+					setRequiresThink(true)
+					
+				else
+					// apply animator at least once
+					pPlayback.apply()
+				end
 				
 			else
 				throw EInvalidParam.new("unsupported version")
