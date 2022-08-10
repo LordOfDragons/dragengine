@@ -1616,6 +1616,13 @@ void debpColliderComponent::ComponentChanged(){
 void debpColliderComponent::AttachmentAdded( int index, deColliderAttachment *attachment ){
 	debpCollider::AttachmentAdded( index, attachment );
 	DirtyAttachments();
+	pApplyAccumRelMoveMatrices();
+	
+	// the pApplyAccumRelMoveMatrices affects also the added attachment which is wrong.
+	// we can though not call pApplyAccumRelMoveMatrices before super calling since then
+	// the wrong attachment count is used. we can do this even if the type does not match
+	// since resetting the matrix is not wrong in these situations
+	GetAttachmentAt( index )->SetAccumRelMoveMatrix( decDMatrix() );
 }
 
 void debpColliderComponent::AttachmentChanged( int index, deColliderAttachment *attachment ){
@@ -2765,18 +2772,16 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				}break;
 				
 			case deColliderAttachment::eatRelativeMovement:{
-				if( bpAttachment.GetApplyRelativeDisplacement() ){
-					if( pDirtyRelMoveMatrix ){
-						pRelMoveMatrix =
-							decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition )
-							.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) );
-						pRelMoveMatrixRot = pRelMoveMatrix.ToQuaternion();
-						pDirtyRelMoveMatrix = false;
-					}
-					
-					bpAttachment.Transform( pRelMoveMatrix, ! pPreventAttNotify );
+				if( pDirtyRelMoveMatrix ){
+					pRelMoveMatrix = decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition )
+						.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) );
+					pRelMoveMatrixRot = pRelMoveMatrix.ToQuaternion();
+					pDirtyRelMoveMatrix = false;
 				}
-				bpAttachment.SetApplyRelativeDisplacement( true );
+				
+				bpAttachment.Transform( bpAttachment.GetAccumRelMoveMatrix()
+					.QuickMultiply( pRelMoveMatrix ), ! pPreventAttNotify );
+				bpAttachment.SetAccumRelMoveMatrix( decDMatrix() );
 				}break;
 			}
 			
@@ -2798,6 +2803,30 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 // 	const int consumed = ( int )( timer.GetElapsedTime() * 1e6f );
 // 	debugDepth = debugDepth.GetMiddle( 0, -2 );
 // 	if( consumed > 10000 ) printf( "%sUpdateAttachments(%p: %d) %dys\n", debugDepth.GetString(), this, GetAttachmentCount(), consumed );
+}
+
+void debpColliderComponent::pApplyAccumRelMoveMatrices(){
+	if( ! pDirtyAttachments || ! pDirtyRelMoveMatrix ){
+		return;
+	}
+	
+	const int count = pColliderComponent.GetAttachmentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		debpColliderAttachment &bpAttachment = *GetAttachmentAt( i );
+		const deColliderAttachment &attachment = *bpAttachment.GetAttachment();
+		
+		if( attachment.GetAttachType() == deColliderAttachment::eatRelativeMovement ){
+			bpAttachment.Transform( bpAttachment.GetAccumRelMoveMatrix()
+				.QuickMultiply( decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition ) )
+				.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) ), ! pPreventAttNotify );
+			bpAttachment.SetAccumRelMoveMatrix( decDMatrix() );
+		}
+	}
+	
+	pRelMoveDisplacement.SetZero();
+	pRelMoveRotation.SetZero();
+	pDirtyRelMoveMatrix = true;
 }
 
 void debpColliderComponent::pUpdateIsMoving(){
