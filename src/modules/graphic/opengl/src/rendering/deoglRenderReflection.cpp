@@ -222,7 +222,7 @@ deoglRenderBase( renderThread )
 		
 		defines = commonDefines;
 		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -328,7 +328,7 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -366,7 +366,7 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -412,7 +412,7 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{

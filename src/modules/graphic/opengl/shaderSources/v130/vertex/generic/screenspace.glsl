@@ -30,6 +30,12 @@ precision mediump int;
 
 in vec2 inPosition;
 
+#ifdef VS_RENDER_STEREO
+	in int inLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 #ifndef NO_TEXCOORD
 	#ifdef GEOMETRY_SHADER
 		out vec2 vGSTexCoord;
@@ -49,10 +55,7 @@ in vec2 inPosition;
 #endif
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
 	flat out int vLayer;
-#else
-	const int inLayer = 0;
 #endif
 
 void main( void ){

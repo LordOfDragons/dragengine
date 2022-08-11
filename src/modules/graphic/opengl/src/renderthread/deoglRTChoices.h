@@ -49,6 +49,7 @@ private:
 	bool pGIMoveUsingCache;
 	bool pVRRenderStereo;
 	bool pRenderStereoVSLayer;
+	bool pRenderFSQuadStereoVSLayer;
 	
 	
 	
@@ -95,8 +96,11 @@ public:
 	/** Use render stereo rendering for VR. */
 	inline bool GetVRRenderStereo() const{ return pVRRenderStereo; }
 	
-	/** Use layer in vertex shaders. */
+	/** Use layer in vertex shaders for stereo rendering. */
 	inline bool GetRenderStereoVSLayer() const{ return pRenderStereoVSLayer; }
+	
+	/** Use layer in vertex shaders for fullscreen quad stereo rendering. */
+	inline bool GetRenderFSQuadStereoVSLayer() const{ return pRenderFSQuadStereoVSLayer; }
 	/*@}*/
 };
 

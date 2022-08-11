@@ -13,6 +13,12 @@ precision highp int;
 
 in vec2 inPosition;
 
+#ifdef VS_RENDER_STEREO
+	in int inLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 #ifdef GS_RENDER_STEREO
 	out vec2 vGSTexCoord;
 	#define vTexCoord vGSTexCoord
@@ -21,14 +27,11 @@ in vec2 inPosition;
 #endif
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
 	flat out int vLayer;
-#else
-	const int inLayer = 0;
 #endif
 
 void main( void ){
-	gl_Position = vec4( vec3( inPosition, pClearDepthValue ), 1 );
+	gl_Position = vec4( inPosition, pClearDepthValue, 1 );
 	vTexCoord = inPosition;
 	
 	#ifdef VS_RENDER_STEREO

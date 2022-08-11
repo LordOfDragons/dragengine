@@ -11,6 +11,7 @@
 	<texture name='texNormal' target='2'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outAO' target='0'/>
 	

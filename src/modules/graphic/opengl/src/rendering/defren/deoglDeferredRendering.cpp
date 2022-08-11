@@ -277,23 +277,36 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 // pFBOLuminance( NULL ),
 // pFBOLuminanceNormal( NULL )
 {
-	const GLfloat fsquad[ 12 ] = {
-		-1.0f,  1.0f,
-		 1.0f,  1.0f,
-		 1.0f, -1.0f,
-		-1.0f, -1.0f,
-		-1.0f,  1.0f, // for 2-triangle only
-		 1.0f, -1.0f  // for 2-triangle only
+	struct sQuadPoint{
+		GLfloat x, y;
+		GLint layer;
 	};
-	const GLfloat billboard[ 66 ] = {
-		-1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-		-1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // for 2-triangle only
-		 1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f  // for 2-triangle only
+	struct sBillboardPoint{
+		oglVector3 position, normal, tangent;
+		oglVector2 texcoord;
 	};
+	
+	sQuadPoint fsquad[ 36 ], *ptrFSQuad = fsquad;
 	int i;
+	
+	for( i=0; i<6; i++ ){
+		*( ptrFSQuad++ ) = sQuadPoint{ -1.0f,  1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{  1.0f,  1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{  1.0f, -1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{ -1.0f, -1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{ -1.0f,  1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{  1.0f, -1.0f, i };
+	};
+	
+	const oglVector3 billboardNormal = { 0.0f, 0.0f, 1.0f };
+	const oglVector3 billboardTangent = { 1.0f, 0.0f, 0.0f };
+	const sBillboardPoint billboard[ 6 ] = {
+		{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f } },
+		{ {  1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 0.0f } },
+		{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f } },
+		{ { -1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 1.0f } },
+		{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f } },
+		{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f } } };
 	
 	pWidth = 0;
 	pHeight = 0;
@@ -387,7 +400,9 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 		OGL_CHECK( renderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
 		
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 12, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
+		OGL_CHECK( renderThread, pglVertexAttribIPointer( 1, 1, GL_INT, 12, ( const GLvoid * )8 ) );
 		
 		// billboard vao
 		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOBillboard ) );
@@ -401,7 +416,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 		OGL_CHECK( renderThread, pglBindVertexArray( pVAOBillboard->GetVAO() ) );
 		
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )0 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
 		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) );
@@ -886,9 +901,7 @@ void deoglDeferredRendering::RenderFSQuadVAO(){
 
 void deoglDeferredRendering::RenderFSQuadVAOStereo(){
 	OGL_CHECK( pRenderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
-	const GLint first[ 2 ] = { 0, 0 };
-	const GLsizei count[ 2 ] = { 4, 4 };
-	OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first, count, 2 ) );
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 }
 

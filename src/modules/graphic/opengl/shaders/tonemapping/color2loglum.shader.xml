@@ -13,6 +13,7 @@
 	<parameter name='pParam2'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outLogLum' target='0'/>
 	

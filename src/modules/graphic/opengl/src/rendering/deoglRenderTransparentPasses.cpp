@@ -142,7 +142,7 @@ deoglRenderBase( renderThread )
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	
-	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{
@@ -157,7 +157,7 @@ deoglRenderBase( renderThread )
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	
-	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{
@@ -171,7 +171,7 @@ deoglRenderBase( renderThread )
 	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
 	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 	
-	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{

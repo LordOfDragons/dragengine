@@ -167,10 +167,8 @@ void deoglRenderBase::RenderFullScreenQuad(){
 }
 
 void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ){
-	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
-		const GLint first[ 2 ] = { 0, 0 };
-		const GLsizei count[ 2 ] = { 4, 4 };
-		OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_TRIANGLE_FAN, first, count, 2 ) );
+	if( plan.GetRenderStereo() ){
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 		
 	}else{
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
@@ -182,7 +180,7 @@ void deoglRenderBase::RenderFullScreenQuadVAO(){
 }
 
 void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ){
-	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( plan.GetRenderStereo() ){
 		pRenderThread.GetDeferredRendering().RenderFSQuadVAOStereo();
 		
 	}else{

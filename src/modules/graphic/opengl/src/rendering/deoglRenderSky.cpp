@@ -221,7 +221,7 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -236,7 +236,7 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
 		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
 			
@@ -251,7 +251,7 @@ pRenderSkyIntoEnvMapPB( nullptr )
 		sources = shaderManager.GetSourcesNamed( "Sky Body" );
 		pShaderBody = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
 			

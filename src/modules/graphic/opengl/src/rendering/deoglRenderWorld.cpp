@@ -192,7 +192,7 @@ pDebugInfo( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{

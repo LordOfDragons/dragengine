@@ -269,7 +269,7 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
 		pShaderOccMapDownSample = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -295,7 +295,7 @@ pAddToRenderTask( NULL )
 		
 		defines = commonDefines;
 		defines.SetDefine( "ENSURE_MIN_SIZE", true );
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{

@@ -27,6 +27,12 @@ precision highp int;
 
 in vec2 inPosition;
 
+#ifdef VS_RENDER_STEREO
+	in int inLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 #ifndef NO_TEXCOORD
 	#ifdef GEOMETRY_SHADER
 		out vec2 vGSTexCoord;
@@ -37,16 +43,13 @@ in vec2 inPosition;
 #endif
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
 	flat out int vLayer;
-#else
-	const int inLayer = 0;
 #endif
 
 void main( void ){
 	gl_Position = vec4( inPosition, 0, 1 );
 	#ifndef NO_TEXCOORD
-		vTexCoord = inPosition.xy * pQuadParams.xy + pQuadParams.zw;
+		vTexCoord = inPosition * pQuadParams.xy + pQuadParams.zw;
 	#endif
 	
 	#ifdef VS_RENDER_STEREO

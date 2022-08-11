@@ -304,7 +304,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
 		
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -319,7 +319,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -344,7 +344,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
 		
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -367,7 +367,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
 		
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -383,7 +383,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
 		
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -399,7 +399,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -415,7 +415,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
 		
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{

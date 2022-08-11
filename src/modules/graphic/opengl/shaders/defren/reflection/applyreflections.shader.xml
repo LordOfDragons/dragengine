@@ -25,6 +25,7 @@
 	<texture name='texEnvMap8' target='15'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	

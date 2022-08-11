@@ -23,6 +23,7 @@
 	<uniformBlock name='GIRayDirections' target='4'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	<output name='outLuminance' target='1'/>

@@ -15,6 +15,7 @@
 	<parameter name='pSkyBgColor'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	

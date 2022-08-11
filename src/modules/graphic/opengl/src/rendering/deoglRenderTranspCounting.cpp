@@ -119,7 +119,7 @@ pCount( 0 )
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
 	
-	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{
@@ -134,7 +134,7 @@ pCount( 0 )
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
 	
-	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{

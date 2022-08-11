@@ -106,7 +106,7 @@ deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
 		GetRenderThread().GetShader().SetCommonDefines( defines );
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		
-		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
@@ -186,7 +186,7 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defren.RenderFSQuadVAOStereo();
 		
 	}else{

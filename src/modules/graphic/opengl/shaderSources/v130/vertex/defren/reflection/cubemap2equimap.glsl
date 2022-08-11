@@ -1,7 +1,7 @@
 precision highp float;
 precision highp int;
 
-in vec3 inPosition;
+in vec2 inPosition;
 
 out vec2 vScreenCoord;
 
@@ -9,7 +9,7 @@ const vec2 cv1 = vec2( -3.1415927, -1.57079633 ); // -pi, -pi/2
 const vec2 cv2 = vec2( 0.0, 1.57079633 ); // 0, pi/2
 
 void main( void ){
-	gl_Position = vec4( inPosition, 1.0 );
+	gl_Position = vec4( inPosition, 0, 1 );
 	
 	// this is the basic relationship between the texture coordinates and the polar coordinates.
 	// 
@@ -25,5 +25,5 @@ void main( void ){
 	// it is required for long to be positive when it comes into the fragment shader. this can be
 	// done since cos(long) = cos(-long) and thus the negation does not change the other
 	// calculation. the invertion is done using the s component of the cv1 constant
-	vScreenCoord = inPosition.xy * cv1 + cv2;
+	vScreenCoord = inPosition * cv1 + cv2;
 }

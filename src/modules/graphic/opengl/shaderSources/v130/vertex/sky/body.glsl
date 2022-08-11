@@ -15,6 +15,12 @@ uniform mat4x3 pMatrixBody;
 
 in vec2 inPosition;
 
+#ifdef VS_RENDER_STEREO
+	in int inLayer;
+#else
+	const int inLayer = 0;
+#endif
+
 #ifdef GS_RENDER_STEREO
 	out vec2 vGSTexCoord;
 	#define vTexCoord vGSTexCoord
@@ -23,10 +29,7 @@ in vec2 inPosition;
 #endif
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
 	flat out int vLayer;
-#else
-	const int inLayer = 0;
 #endif
 
 const vec2 tcScale = vec2( 0.5, -0.5 );

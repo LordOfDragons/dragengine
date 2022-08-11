@@ -13,7 +13,21 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/light/ubo_instance_parameters.glsl"
 
-in vec3 inPosition;
+#if defined GS_RENDER_STEREO || defined FULLSCREENQUAD
+	in vec2 inPosition;
+#else
+	in vec3 inPosition;
+#endif
+
+#ifdef VS_RENDER_STEREO
+	#ifdef FULLSCREENQUAD
+		in int inLayer;
+	#else
+		#define inLayer gl_DrawID
+	#endif
+#else
+	const int inLayer = 0;
+#endif
 
 #ifndef GS_RENDER_STEREO
 	#ifdef FULLSCREENQUAD
@@ -24,19 +38,16 @@ in vec3 inPosition;
 #endif
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
 	flat out int vLayer;
-#else
-	const int inLayer = 0;
 #endif
 
 void main( void ){
 	#ifdef GS_RENDER_STEREO
-		gl_Position = vec4( inPosition, 1 );
+		gl_Position = vec4( inPosition, 0, 1 );
 	#else
 		#ifdef FULLSCREENQUAD
-			gl_Position = vec4( inPosition, 1 );
-			vScreenCoord = inPosition.xy;
+			gl_Position = vec4( inPosition, 0, 1 );
+			vScreenCoord = inPosition;
 		#else
 			gl_Position = pMatrixMVP[ inLayer ] * vec4( inPosition, 1 );
 			vLightVolumePos = pMatrixMV[ inLayer ] * vec4( inPosition, 1 );

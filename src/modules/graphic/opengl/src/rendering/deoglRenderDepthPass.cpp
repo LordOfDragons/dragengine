@@ -149,7 +149,7 @@ deoglRenderBase( renderThread )
 	defines.SetDefine( "NO_TEXCOORD", true );
 	defines.SetDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
 	
-	if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defines.SetDefines( "VS_RENDER_STEREO" );
 		
 	}else{

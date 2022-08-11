@@ -157,7 +157,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShaderStereo(){
 		GetRenderThread().GetShader().SetCommonDefines( defines );
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		
-		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
@@ -195,7 +195,7 @@ deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsampleStereo(){
 		GetRenderThread().GetShader().SetCommonDefines( defines );
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		
-		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
@@ -292,7 +292,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 			
 			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 			
-			if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 				defren.RenderFSQuadVAOStereo();
 				
 			}else{
@@ -322,7 +322,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	shader.SetParameterFloat( speKernel2, GetKernelValueAt( 1, 0 ), GetKernelValueAt( 1, 1 ), GetKernelValueAt( 1, 2 ) );
 	shader.SetParameterFloat( speKernel3, GetKernelValueAt( 2, 0 ), GetKernelValueAt( 2, 1 ), GetKernelValueAt( 2, 2 ) );
 	
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defren.RenderFSQuadVAOStereo();
 		
 	}else{

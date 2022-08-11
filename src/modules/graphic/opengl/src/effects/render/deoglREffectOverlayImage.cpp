@@ -128,7 +128,7 @@ deoglShaderProgram *deoglREffectOverlayImage::GetShaderStereo(){
 		GetRenderThread().GetShader().SetCommonDefines( defines );
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
 		
-		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "Effect Overlay" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
@@ -192,7 +192,7 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	shader.SetParameterFloat( speGamma, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, 1.0 );
 	shader.SetParameterFloat( speColor, 1.0f, 1.0f, 1.0f, pTransparency );
 	
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defren.RenderFSQuadVAOStereo();
 		
 	}else{

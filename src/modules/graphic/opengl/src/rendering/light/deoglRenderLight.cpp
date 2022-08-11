@@ -144,7 +144,7 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -161,7 +161,7 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -180,7 +180,7 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
@@ -199,7 +199,7 @@ pAddToRenderTask( NULL )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
 		
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{

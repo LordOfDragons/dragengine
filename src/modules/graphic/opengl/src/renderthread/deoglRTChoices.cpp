@@ -67,15 +67,20 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// use render stereo rendering for VR
 	pVRRenderStereo = true;
 	
-	// use layer in vertex shaders. requires these extensions (% coverage):
+	// use layer in vertex shaders for stereo rendering. requires these extensions (% coverage):
 	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
 	// - ARB_multi_draw_indirect (73%): glMultiDrawElementsIndirect
 	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
+	//   ^== this requires 4.6 core or it will not work
 	pRenderStereoVSLayer =
 		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
 		&& HASEXT( ext_ARB_multi_draw_indirect )
 		&& HASEXT( ext_ARB_draw_elements_base_vertex )
 		&& HASEXT( ext_ARB_shader_draw_parameters );
+	
+	// use layer in vertex shaders for fullscreen quad rendering. requires these extensions (% coverage):
+	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
+	pRenderFSQuadStereoVSLayer = HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer );
 	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
@@ -125,6 +130,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	l.LogInfoFormat( "- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No" );
 	l.LogInfoFormat( "- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No" );
 	l.LogInfoFormat( "- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No" );
+	l.LogInfoFormat( "- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No" );
 }
 
 deoglRTChoices::~deoglRTChoices(){

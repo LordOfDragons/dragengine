@@ -110,7 +110,7 @@ deoglShaderProgram *deoglREffectDistortImage::GetShader(){
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
@@ -124,9 +124,9 @@ deoglShaderProgram *deoglREffectDistortImage::GetShaderStereo(){
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		
-		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
@@ -203,7 +203,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// TODO correctly we need an explicite clamp in the shader here since the texture
 	// can be larger than the area we tap into.
 	
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 		defren.RenderFSQuadVAOStereo();
 		
 	}else{

@@ -11,14 +11,15 @@ precision highp int;
 in vec2 inPosition;
 
 #ifdef VS_RENDER_STEREO
-	#define inLayer gl_DrawID
+	in int inLayer;
+#endif
+
+#ifdef VS_RENDER_STEREO
 	flat out int vLayer;
-#else
-	const int inLayer = 0;
 #endif
 
 void main( void ){
-	gl_Position = vec4( vec3( inPosition, 0 ), 1 );
+	gl_Position = vec4( inPosition, 0, 1 );
 	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;

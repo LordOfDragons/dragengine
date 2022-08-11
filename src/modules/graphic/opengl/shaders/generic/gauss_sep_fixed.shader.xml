@@ -22,6 +22,7 @@
 	<parameter name='pDepthDifferenceThreshold'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outData' target='0'/>
 	

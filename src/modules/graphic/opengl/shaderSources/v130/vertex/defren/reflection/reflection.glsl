@@ -14,12 +14,11 @@ UBOLAYOUT uniform RenderParameters{
 	vec4 pEnvMapPosLayer[ 100 ]; // xyz=position, w=layer
 };
 
-in vec3 inPosition;
+in vec2 inPosition;
 
 out vec4 vScreenCoord;
 
 void main( void ){
-	gl_Position = vec4( inPosition, 1.0 );
-	vScreenCoord = inPosition.xyxy;
-	vScreenCoord.xy = vScreenCoord.xy * pQuadTCTransform.xy + pQuadTCTransform.zw;
+	gl_Position = vec4( inPosition, 0, 1 );
+	vScreenCoord = vec4( inPosition * pQuadTCTransform.xy + pQuadTCTransform.zw, inPosition );
 }

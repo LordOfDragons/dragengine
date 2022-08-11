@@ -263,7 +263,7 @@ deoglRenderLightBase( renderThread )
 		
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{

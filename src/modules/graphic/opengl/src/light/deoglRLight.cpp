@@ -719,6 +719,7 @@ deoglLightShaderConfig &config ){
 	case estStereoSolid2NoAmbient:
 	case estStereoSolid2Transp1NoAmbient:
 	case estStereoSolid2Transp2NoAmbient:
+		// NOTE light volumes
 		if( pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
 			config.SetVSRenderStereo( true );
 			
