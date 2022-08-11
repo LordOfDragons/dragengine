@@ -22,8 +22,10 @@
 #ifndef _DEANIMMODULE_H_
 #define _DEANIMMODULE_H_
 
+#include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/animation/deBaseAnimationModule.h>
 
+class deAnimationKeyframe;
 
 
 /**
@@ -50,6 +52,29 @@ public:
 	/** \brief Save animation. */
 	virtual void SaveAnimation( decBaseFileWriter &writer, const deAnimation &animation );
 	/*@}*/
+	
+	
+	
+private:
+	struct sConfig{
+		bool hasVarPos;
+		bool hasVarRot;
+		bool hasVarScale;
+		bool fewKeyframes;
+		bool ignoreBone;
+		bool formatFloat;
+	};
+	
+	void pWriteKeyframeData( decBaseFileWriter &writer, const sConfig &config,
+		const deAnimationKeyframe &keyframe );
+	
+	void pWriteKeyframeDataInterpolate( decBaseFileWriter &writer, const sConfig &config,
+		const deAnimationKeyframe &keyframePrev, const deAnimationKeyframe &keyframeNext,
+		int frameSteps );
+	
+	void pWriteKeyframePosition( decBaseFileWriter &writer, const sConfig &config, const decVector &position );
+	void pWriteKeyframeRotation( decBaseFileWriter &writer, const sConfig &config, const decVector &rotation );
+	void pWriteKeyframeScale( decBaseFileWriter &writer, const sConfig &config, const decVector &scale );
 };
 
 #endif
