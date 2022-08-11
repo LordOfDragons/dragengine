@@ -29,7 +29,7 @@ uniform SAMPLER_ENVMAP texEmissive;
 	#include "v130/shared/defren/gi/probe_offset.glsl"
 #endif
 
-flat in int vLayer;
+in flat int vLayer;
 
 out vec4 outColor;
 

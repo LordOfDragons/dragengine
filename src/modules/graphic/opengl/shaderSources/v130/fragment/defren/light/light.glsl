@@ -195,7 +195,7 @@ precision highp int;
 #endif
 
 #if (defined GS_RENDER_STEREO || defined VS_RENDER_STEREO) && ! defined GI_RAY
-	flat in int vLayer;
+	in flat int vLayer;
 #else
 	const int vLayer = 0;
 #endif

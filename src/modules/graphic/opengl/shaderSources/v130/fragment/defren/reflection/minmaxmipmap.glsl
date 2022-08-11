@@ -24,7 +24,7 @@ uniform HIGHP sampler2DArray texDepth;
 // NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	in flat int vLayer;
 #else
 	const int vLayer = 0;
 #endif

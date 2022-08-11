@@ -6,7 +6,7 @@ uniform int pLevel;
 uniform mediump sampler2DArray texSource;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	in flat int vLayer;
 #else
 	const int vLayer = 0;
 #endif

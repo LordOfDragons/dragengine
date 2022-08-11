@@ -211,7 +211,7 @@ NODE_VERTEX_INPUTS
 #ifdef VS_RENDER_STEREO
 	uniform int pDrawIDOffset;
 	#define inLayer (gl_DrawID + pDrawIDOffset)
-	out int vLayer;
+	flat out int vLayer;
 #else
 	const int inLayer = 0;
 #endif

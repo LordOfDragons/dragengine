@@ -19,7 +19,7 @@ in vec2 vGSTexCoord[ 3 ];
 
 out vec2 vTexCoord;
 
-flat out int vLayer;
+out flat int vLayer;
 
 void main( void ){
 	int eye;

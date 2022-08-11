@@ -9,7 +9,7 @@ in vec3 inPosition;
 
 #ifdef VS_RENDER_STEREO
 	#define inLayer gl_DrawID
-	out int vLayer;
+	flat out int vLayer;
 #else
 	const int inLayer = 0;
 #endif

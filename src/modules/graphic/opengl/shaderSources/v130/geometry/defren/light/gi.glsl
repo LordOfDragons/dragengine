@@ -15,7 +15,7 @@
 in vec2 vGSScreenCoord[ 3 ];
 
 out vec2 vScreenCoord;
-flat out int vLayer;
+out flat int vLayer;
 
 void main( void ){
 	int eye;

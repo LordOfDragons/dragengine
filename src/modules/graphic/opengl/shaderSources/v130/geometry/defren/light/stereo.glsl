@@ -26,7 +26,7 @@ precision highp int;
 	out vec3 vLightVolumePos;
 #endif
 
-flat out int vLayer;
+out flat int vLayer;
 
 void main( void ){
 	int eye;

@@ -111,7 +111,7 @@
 	out float vFadeZ;
 #endif
 
-flat out int vLayer;
+out flat int vLayer;
 
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
