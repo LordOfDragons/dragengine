@@ -254,6 +254,7 @@ deoglRenderLightBase( renderThread )
 		
 		// render light
 		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
 		
@@ -261,6 +262,7 @@ deoglRenderLightBase( renderThread )
 		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
 		
 		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		if( renderThread.GetChoices().GetRenderStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			

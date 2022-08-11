@@ -59,7 +59,7 @@ void main( void ){
 	#ifdef NO_POSTRANSFORM
 		gl_Position = vec4( inPosition, 0, 1 );
 	#else
-		gl_Position = vec4( vec3( inPosition * pPosTransform.xy + pPosTransform.zw, 0 ), 1 );
+		gl_Position = vec4( inPosition * pPosTransform.xy + pPosTransform.zw, 0, 1 );
 	#endif
 	
 	#ifndef NO_TEXCOORD

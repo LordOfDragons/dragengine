@@ -50,6 +50,7 @@ uniform HIGHP sampler2DArray texGIDistance;
 // inputs
 ///////////
 
+in vec2 vTexCoord; // not used but present in generic vertex shader source
 in vec2 vScreenCoord;
 
 #ifndef GI_RAY

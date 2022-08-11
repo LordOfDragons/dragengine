@@ -28,7 +28,7 @@
 	<output name='outLuminance' target='1'/>
 	<output name='outSubSurface' target='2'/>
 	
-	<sourceCode unit='vertex'>v130/vertex/defren/light/gi.glsl</sourceCode>
-	<sourceCode unit='geometry'>v130/geometry/defren/light/gi.glsl</sourceCode>
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/light/gi.glsl</sourceCode>
 </shader>
