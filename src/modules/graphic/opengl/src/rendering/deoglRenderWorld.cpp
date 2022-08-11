@@ -1118,7 +1118,7 @@ DBG_ENTER("RenderFinalizeFBO")
 	
 	if( withColorCorrection ){
 		shader->SetParameterFloat( spfinBrightness, config.GetBrightness(),
-			config.GetBrightness(), config.GetBrightness(), 1.0f );
+			config.GetBrightness(), config.GetBrightness(), 0.0f );
 		shader->SetParameterFloat( spfinContrast, config.GetContrast(),
 			config.GetContrast(), config.GetContrast(), 1.0f );
 		

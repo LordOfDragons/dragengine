@@ -248,6 +248,7 @@ void deoglVR::EndFrame(){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pCamera.GetRenderThread(), "VR.EndFrame" );
 	pState = esBeginFrame;
 	
 	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
