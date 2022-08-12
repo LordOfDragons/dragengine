@@ -35,7 +35,10 @@ jobs:
       - name: Install required packages
         run: sudo apt -y install scons
       
-      - name: Copy MSXI
+      - name: Create artifacts directory
+        run: mkdir -p installer/artifacts
+        
+      - name: Download Archive
         run: |
           sudo apt -y install wget unzip
           cd installer/artifacts
