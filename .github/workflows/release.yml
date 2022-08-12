@@ -38,6 +38,14 @@ jobs:
       releaseVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
       artifactInstaller: installers-windows
+
+  build_msix:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_msix.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+      artifactMsix: msix
   
   build_linux_ci:
     uses: ./.github/workflows/build_linux_ci.yml

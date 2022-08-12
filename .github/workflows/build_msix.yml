@@ -3,7 +3,7 @@ name: Build Msix
 on:
   workflow_call:
     inputs:
-      version:
+      releaseVersion:
         required: true
         type: string
       artifactWindows:
@@ -12,6 +12,18 @@ on:
       artifactMsix:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: 'releaseVersion'
+        required: true
+        type: string
+        default: '1.14'
+      artifactMsix:
+        description: 'artifactMsix'
+        required: true
+        type: string
+        default: 'msix'
 
 jobs:
   build:
@@ -23,26 +35,33 @@ jobs:
       - name: Install required packages
         run: sudo apt -y install scons
       
-      - name: Get Archives
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ inputs.artifactWindows }}
-          path: installer/artifacts
+      - name: Copy MSXI
+        run: |
+          sudo apt -y install wget unzip
+          cd installer/artifacts
+          wget https://github.com/LordOfDragons/dragengine/suites/7780854701/artifacts/327541924 -O artifacts.zip
+          unzip -x artifacts.zip
+
+      #- name: Get Archives
+        #uses: actions/download-artifact@v3
+        #with:
+          #name: ${{ inputs.artifactWindows }}
+          #path: installer/artifacts
       
       - name: Build MSIX
         working-directory: installer
-        run: ./build_msix.py ${{ inputs.version }}
+        run: ./build_msix.py ${{ inputs.releaseVersion }}
         
       - name: Copy MSXI
         run: |
-          cp -a installer/build_msix/dragengine-${{ inputs.version }}.msix dragengine-${{ inputs.version }}.msix
-          cp -a installer/build_msix/deigde-${{ inputs.version }}.msix deigde-${{ inputs.version }}.msix
+          cp -a installer/build_msix/dragengine-${{ inputs.releaseVersion }}.msix dragengine-${{ inputs.releaseVersion }}.msix
+          cp -a installer/build_msix/deigde-${{ inputs.releaseVersion }}.msix deigde-${{ inputs.releaseVersion }}.msix
         
       - name: Store MSIX
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifactMsix }}
           path: |
-            dragengine-${{ inputs.version }}.msix
-            deigde-${{ inputs.version }}.msix
+            dragengine-${{ inputs.releaseVersion }}.msix
+            deigde-${{ inputs.releaseVersion }}.msix
           if-no-files-found: error
