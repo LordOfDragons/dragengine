@@ -12,18 +12,6 @@ on:
       artifactMsix:
         required: true
         type: string
-  workflow_dispatch:
-    inputs:
-      releaseVersion:
-        description: 'releaseVersion'
-        required: true
-        type: string
-        default: '1.14'
-      artifactMsix:
-        description: 'artifactMsix'
-        required: true
-        type: string
-        default: 'msix'
 
 jobs:
   build:
@@ -34,22 +22,12 @@ jobs:
         
       - name: Install required packages
         run: sudo apt -y install scons
-      
-      - name: Create artifacts directory
-        run: mkdir -p installer/artifacts
         
-      - name: Download Archive
-        run: |
-          sudo apt -y install wget unzip
-          cd installer/artifacts
-          wget https://developer.dragondreams.ch/transfer/archives-windows.zip
-          unzip archives-windows.zip
-
-      #- name: Get Archives
-        #uses: actions/download-artifact@v3
-        #with:
-          #name: ${{ inputs.artifactWindows }}
-          #path: installer/artifacts
+      - name: Get Archives
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifactWindows }}
+          path: installer/artifacts
       
       - name: Build MSIX
         working-directory: installer

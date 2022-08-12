@@ -45,7 +45,7 @@ jobs:
     with:
       releaseVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
-      artifactMsix: msix
+      artifactMsix: msix-windows
   
   build_linux_ci:
     uses: ./.github/workflows/build_linux_ci.yml
