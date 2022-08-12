@@ -1,4 +1,4 @@
-name: BuildMsix
+name: Build Msix
 
 on:
   workflow_call:
