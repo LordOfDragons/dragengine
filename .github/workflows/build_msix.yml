@@ -42,8 +42,8 @@ jobs:
         run: |
           sudo apt -y install wget unzip
           cd installer/artifacts
-          wget https://github.com/LordOfDragons/dragengine/suites/7780854701/artifacts/327541924 -O artifacts.zip
-          unzip -x artifacts.zip
+          wget https://developer.dragondreams.ch/transfer/archives-windows.zip
+          unzip archives-windows.zip
 
       #- name: Get Archives
         #uses: actions/download-artifact@v3
