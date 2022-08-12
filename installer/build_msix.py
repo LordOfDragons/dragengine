@@ -98,7 +98,7 @@ with open(os.path.join(srcDir, 'msix-data/deigde/AppxManifest.xml.in'), 'r') as 
 	with open(os.path.join(buildDir, 'msix/deigde/AppxManifest.xml'), 'w') as g:
 		g.write(content)
 
-cmdline = 'docker run -it --rm --volume="{}":/sources compile-windows-crosscompile makemsix pack -d "{}" -p "{}"'.format(
+cmdline = 'docker run --rm --volume="{}":/sources lordofdragons/makemsix:latest pack -d "{}" -p "{}"'.format(
 	srcDir,
 	'/sources/{}/msix/deigde'.format(buildDirName),
 	'/sources/{}/deigde-{}.msix'.format(buildDirName, versionRelease))
