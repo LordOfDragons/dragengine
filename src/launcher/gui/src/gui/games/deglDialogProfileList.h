@@ -25,6 +25,7 @@
 #include "../foxtoolkit.h"
 
 #include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameList.h>
 #include <delauncher/game/profile/delGameProfile.h>
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
@@ -194,6 +195,8 @@ private:
 	FXList *pListDisableModuleVersions;
 	
 	deglDialogProfileListParameter *pPUMPParameter;
+	delGameList pDropCustomGameProfiles;
+	
 	
 public:
 	/** \name Constructors and Destructors */

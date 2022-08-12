@@ -389,7 +389,7 @@ FXDialogBox( powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DEC
 	}
 	
 	UpdateProfileList();
-	   pSetSelectedProfile( selectProfile );
+	pSetSelectedProfile( selectProfile );
 }
 
 deglDialogProfileList::~deglDialogProfileList(){
@@ -869,6 +869,12 @@ FXuint deglDialogProfileList::execute( FXuint placement ){
 		}
 	}
 	
+	const int gameCount = pDropCustomGameProfiles.GetCount();
+	for( i=0; i<gameCount; i++ ){
+		pDropCustomGameProfiles.GetAt( i )->SetCustomProfile( nullptr );
+		pDropCustomGameProfiles.GetAt( i )->SaveConfig();
+	}
+	
 	return 1;
 }
 
@@ -946,12 +952,15 @@ long deglDialogProfileList::onBtnProfDup( FXObject*, FXSelector, void* ){
 }
 
 long deglDialogProfileList::onBtnProfDel( FXObject*, FXSelector, void* ){
-	if( ! pGetSelectedProfile() || pGetSelectedProfile()->GetGameCustom() ){
+	if( ! pGetSelectedProfile() ){
 		return 1;
 	}
 	
 	if( FXMessageBox::question( this, MBOX_YES_NO, "Delete Profile", "Do you really want to delete the profile '%s'?",
-	pGetSelectedProfile()->GetEdit()->GetName().GetString() ) == MBOX_CLICKED_YES ){
+	pGetSelectedProfile()->GetText().text() ) == MBOX_CLICKED_YES ){
+		if( pGetSelectedProfile()->GetGameCustom() ){
+			pDropCustomGameProfiles.Add( pGetSelectedProfile()->GetGameCustom() );
+		}
 		pProfiles.Remove( pGetSelectedProfile() );
 		UpdateProfileList();
 	}
@@ -959,8 +968,7 @@ long deglDialogProfileList::onBtnProfDel( FXObject*, FXSelector, void* ){
 }
 
 long deglDialogProfileList::updateBtnProfDel( FXObject *sender, FXSelector, void* ){
-	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, pGetSelectedProfile()
-		&& ! pGetSelectedProfile()->GetGameCustom() ? ID_ENABLE : ID_DISABLE ), nullptr );
+	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, pGetSelectedProfile() ? ID_ENABLE : ID_DISABLE ), nullptr );
 }
 
 long deglDialogProfileList::onBtnProfRename( FXObject*, FXSelector, void* ){
