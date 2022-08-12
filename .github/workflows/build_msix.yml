@@ -1,0 +1,48 @@
+name: BuildMsix
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      artifactWindows:
+        required: true
+        type: string
+      artifactMsix:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        
+      - name: Install required packages
+        run: sudo apt -y install scons
+      
+      - name: Get Archives
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifactWindows }}
+          path: installer/artifacts
+      
+      - name: Build MSIX
+        working-directory: installer
+        run: ./build_msix.py ${{ inputs.version }}
+        
+      - name: Copy MSXI
+        run: |
+          cp -a installer/build_msix/dragengine-${{ inputs.version }}.msix dragengine-${{ inputs.version }}.msix
+          cp -a installer/build_msix/deigde-${{ inputs.version }}.msix deigde-${{ inputs.version }}.msix
+        
+      - name: Store MSIX
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactMsix }}
+          path: |
+            dragengine-${{ inputs.version }}.msix
+            deigde-${{ inputs.version }}.msix
+          if-no-files-found: error

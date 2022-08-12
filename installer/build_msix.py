@@ -76,7 +76,7 @@ with open(os.path.join(srcDir, 'msix-data/dragengine/AppxManifest.xml.in'), 'r')
 	with open(os.path.join(buildDir, 'msix/dragengine/AppxManifest.xml'), 'w') as g:
 		g.write(content)
 
-cmdline = 'docker run -it --rm --volume="{}":/sources compile-windows-crosscompile makemsix pack -d "{}" -p "{}"'.format(
+cmdline = 'docker run --rm --volume="{}":/sources lordofdragons/makemsix:latest pack -d "{}" -p "{}"'.format(
 	srcDir,
 	'/sources/{}/msix/dragengine'.format(buildDirName),
 	'/sources/{}/dragengine-{}.msix'.format(buildDirName, versionRelease))
