@@ -74,6 +74,7 @@ public:
 private:
 	deEngine *pEngine;
 	bool pEngineRunning;
+	bool pGameRunning;
 	deLogger::Ref pLogger;
 	deLogger::Ref pEngineLogger;
 	

@@ -1169,7 +1169,7 @@ void delEngineProcess::CommandStartGame(){
 	deModuleParameter moduleParameter;
 	int i, j;
 	
-	for( i=0; i<10; i++ ){
+	for( i=0; i<11; i++ ){
 		if( moduleState[ i ].module ){
 			const int count = moduleState[ i ].module->GetParameterCount();
 			for( j=0; j<count; j++ ){
@@ -1212,7 +1212,7 @@ void delEngineProcess::CommandStartGame(){
 	pLogger->LogInfo( pLogSource, "EngineProcess.CommandStartGame sending module parameter changes" );
 	WriteUCharToPipe( ercGameExited );
 	
-	for( i=0; i<10; i++ ){
+	for( i=0; i<11; i++ ){
 		if( moduleState[ i ].module ){
 			const decStringList keys( moduleState[ i ].parameters.GetKeys() );
 			const int count = keys.GetCount();
