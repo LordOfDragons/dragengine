@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
 <shader>
 	<name>DefRen Copy Depth</name>
 	
@@ -11,6 +10,7 @@
 	<parameter name="pQuadParams"/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	<output name='outDepth' target='1'/>

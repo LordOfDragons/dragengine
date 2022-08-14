@@ -26,6 +26,7 @@
 #include "deoglGI.h"
 #include "deoglGIRayCache.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 
@@ -134,7 +135,7 @@ void deoglGIRayCache::pCreateFBO(){
 	// diffuse and reflectivity: (15M, 4M) [14680064, 3670016]
 	// total: (37M, 9M) [37748736, 9437184]
 	// 
-	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	#ifdef GI_USE_RAY_CACHE
 	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
 		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
@@ -208,7 +209,4 @@ void deoglGIRayCache::pCreateFBO(){
 		const GLfloat clearLight[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 4, &clearLight[ 0 ] ) );
 	#endif
-	
-	// clean up
-	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }

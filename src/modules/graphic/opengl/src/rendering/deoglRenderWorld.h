@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;
@@ -42,8 +41,6 @@ class deoglSPBlockUBO;
 class deoglRenderWorld : public deoglRenderBase{
 private:
 	deoglSPBlockUBO *pRenderPB;
-	deoglSPBlockUBO *pRenderLuminancePB;
-	deoglSPBlockUBO *pRenderCubePB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
@@ -51,6 +48,8 @@ private:
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
 	deoglShaderProgramUsage pShaderFinalize;
+	deoglShaderProgramUsage pShaderFinalizeSplit;
+	deoglShaderProgramUsage pShaderFinalizeStereo;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	
@@ -75,12 +74,6 @@ public:
 	
 	/** Render parameter block. */
 	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
-	
-	/** Render luminance parameter block. */
-	inline deoglSPBlockUBO *GetRenderLuminancePB() const{ return pRenderLuminancePB; }
-	
-	/** Render parameter block cube map. */
-	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }
 	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }

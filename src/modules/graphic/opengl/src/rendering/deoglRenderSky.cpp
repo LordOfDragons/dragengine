@@ -24,11 +24,12 @@
 #include <string.h>
 
 #include "deoglRenderSky.h"
+#include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlan.h"
-
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -39,11 +40,14 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -170,30 +174,23 @@ n = ( matRotCam^-1 * matLayer^-1 ) * a
 ////////////////
 
 enum eSPSphere{
-	spsphMatrixCamera,
 	spsphMatrixLayer,
 	spsphLayerPosition,
 	spsphLayerColor,
-	spsphParams,
 	spsphMaterialGamma,
-	spsphSkyBgColor,
-	spsphPositionZ
+	spsphSkyBgColor
 };
 
 enum eSPBox{
-	spboxMatrixCamera,
 	spboxMatrixLayer,
 	spboxLayerPosition,
 	spboxLayerColor,
-	spboxParams,
 	spboxMaterialGamma,
-	spboxSkyBgColor,
-	spboxPositionZ
+	spboxSkyBgColor
 };
 
 enum eSPBody{
-	spbodyMatrixMVP,
-	spbodyScalePosition,
+	spbodyMatrixBody,
 	spbodyColor,
 	spbodyMaterialGamma
 };
@@ -206,24 +203,63 @@ enum eSPBody{
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) :
+deoglRenderBase( renderThread ),
+pRenderSkyIntoEnvMapPB( nullptr )
+{
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
-	
-	pShaderSkySphere = NULL;
-	pShaderSkyBox = NULL;
-	pShaderBody = NULL;
 	
 	try{
+		pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
+		
+		
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
 		
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
+		pShaderSkySphereStereo = shaderManager.GetProgramWith( sources, defines );
+		
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
 		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
 		
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
+		}
+		
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Sky Body" );
 		pShaderBody = shaderManager.GetProgramWith( sources, defines );
+		
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -260,6 +296,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	// NOTE always switch FBO and clear the color attachment. if no sky is present use
 	//      black as clear color
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSky" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	DEBUG_RESET_TIMERS;
@@ -324,13 +361,13 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 			
 			switch( layer.GetLayerType() ){
 			case deoglRSkyLayer::eltSkyBox:
-				if( RenderSkyBox( plan, instance, j, first ) ){
+				if( RenderSkyBox( plan, instance, j, first, false ) ){
 					first = false;
 				}
 				break;
 				
 			case deoglRSkyLayer::eltSkySphere:
-				if( RenderSkySphere( plan, instance, j, first ) ){
+				if( RenderSkySphere( plan, instance, j, first, false ) ){
 					first = false;
 				}
 				break;
@@ -340,7 +377,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 			}
 			
 			if( layer.GetBodyCount() > 0 ){
-				RenderSkyLayerBodies( plan, instance, j );
+				RenderSkyLayerBodies( plan, instance, j, false );
 			}
 		}
 		DEBUG_PRINT_TIMER( "RenderSky: render sky layer" );
@@ -525,17 +562,18 @@ DEBUG_PRINT_TIMER( "RenderSky: unbind vao" );
 #endif
 
 bool deoglRenderSky::RenderSkyBox( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-int layerIndex, bool first ){
+int layerIndex, bool first, bool renderIntoEnvMap ){
 	return false;
 }
 
 bool deoglRenderSky::RenderSkySphere( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-int layerIndex, bool first ){
+int layerIndex, bool first, bool renderIntoEnvMap ){
 	if( ! instance.GetRSky() ){
 		return false;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkySphere" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	const deoglRSkyInstanceLayer &instanceLayer = instance.GetLayerAt( layerIndex );
@@ -544,17 +582,12 @@ int layerIndex, bool first ){
 	const int * const textures = layer.GetTextures();
 	decColor layerColor( instanceLayer.GetColor() );
 	float layerIntensity = instanceLayer.GetIntensity();
-	deoglSkinTexture *oglSkinTexture;
-	deoglRSkin *skin = layer.GetSkin();
-	deoglShaderCompiled *shader;
+	const deoglRSkin * const skin = layer.GetSkin();
 	
-	if( ! skin ){
+	if( ! skin || skin->GetTextureCount() == 0 ){
 		return false;
 	}
-	if( skin->GetTextureCount() == 0 ){
-		return false;
-	}
-	oglSkinTexture = &skin->GetTextureAt( 0 );
+	deoglSkinTexture * const oglSkinTexture = &skin->GetTextureAt( 0 );
 	
 	// adjust gamma
 	layerColor.r = powf( layerColor.r, OGL_RENDER_GAMMA );
@@ -569,35 +602,25 @@ int layerIndex, bool first ){
 		layerColor.b *= layerIntensity;
 	}
 	
-	// calculate the parameters
-// 	const float znear = plan.GetCameraImageDistance();
-// 	const float constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
-// 	const float constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
-	
 	// set the shaders
 	const float matGamma = oglSkinTexture->GetColorGamma();
 	
-	renderThread.GetShader().ActivateShader( pShaderSkySphere );
-	shader = pShaderSkySphere->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderSkySphereStereo : pShaderSkySphere;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-//	shader->SetParameterDMatrix3x3( spsphMatrixLayer,
-//		decDMatrix::CreateFromQuaternion( layer.GetOrientation() )
-//		* plan.GetInverseCameraMatrix().GetRotationMatrix() );
-//	shader->SetParameterDMatrix3x3( spsphMatrixLayer,
-//		plan.GetInverseCameraMatrix().GetRotationMatrix()
-//		* decDMatrix::CreateFromQuaternion( layer.GetOrientation() ) );
-	// normalMatrix = transpose( invert( invCamRot * invLayerMat ) )
-	// normalMatrix = transpose( layerMat * camRot )
-	shader->SetParameterDMatrix3x3( spsphMatrixCamera, plan.GetInverseCameraMatrix() );
+	if( renderIntoEnvMap ){
+		pRenderSkyIntoEnvMapPB->Activate();
+		
+	}else{
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	}
+	
 	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader->SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
 	shader->SetParameterColor4( spsphLayerColor, layerColor );
-// 	shader->SetParameterFloat( spsphParams, constX, constY, znear );
-	shader->SetParameterFloat( spsphParams, plan.GetDepthToPosition().z, plan.GetDepthToPosition().w,
-		plan.GetDepthToPosition2().x, plan.GetDepthToPosition2().y );
 	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
-	shader->SetParameterFloat( spsphPositionZ, renderThread.GetDeferredRendering().GetClearDepthValueRegular() );
 	
 	// set texture
 	if( textures[ deoglRSkyLayer::eiSphere ] == -1 ){
@@ -610,18 +633,19 @@ int layerIndex, bool first ){
 	}
 	
 	// render layer
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	return true;
 }
 
 void deoglRenderSky::RenderSkyLayerBodies( deoglRenderPlan &plan,
-deoglRSkyInstance &instance, int layerIndex ){
+deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	if( ! instance.GetRSky() ){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkyLayerBodies" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	const deoglRSkyInstanceLayer &instanceLayer = instance.GetLayerAt( layerIndex );
@@ -630,11 +654,8 @@ deoglRSkyInstance &instance, int layerIndex ){
 	const deoglRSkyLayer::sBody * const bodies = layer.GetBodies();
 	int b, bodyCount = layer.GetBodyCount();
 	decColor layerColor = instanceLayer.GetColor();
-	float layerIntensity = instanceLayer.GetIntensity();
-	deoglSkinTexture *oglSkinTexture;
-	decDMatrix matrixLCP, matrixBody;
-	deoglShaderCompiled *shader;
-	decColor bodyColor;
+	const float layerIntensity = instanceLayer.GetIntensity();
+	const decMatrix &matrixLayer = instanceLayer.GetMatrix();
 	
 	// adjust gamma
 	layerColor.r = powf( layerColor.r, OGL_RENDER_GAMMA );
@@ -650,14 +671,16 @@ deoglRSkyInstance &instance, int layerIndex ){
 	}
 	
 	// set the shaders
-	renderThread.GetShader().ActivateShader( pShaderBody );
-	shader = pShaderBody->GetCompiled();
+	const deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderBodyStereo : pShaderBody;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	// set matrix
-	//matrixLCP = decDMatrix::CreateFromQuaternion( engLayer.GetOrientation() )
-	matrixLCP = instanceLayer.GetMatrix()
-		* plan.GetCameraMatrix().GetRotationMatrix()
-		* decDMatrix( plan.GetProjectionMatrix() );
+	if( renderIntoEnvMap ){
+		pRenderSkyIntoEnvMapPB->Activate();
+		
+	}else{
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	}
 	
 	// render bodies
 	deoglTexture * const defTexColor = renderThread.GetDefaultTextures().GetColor();
@@ -672,27 +695,31 @@ deoglRSkyInstance &instance, int layerIndex ){
 		
 		deoglRSkin &skin = *bodies[ b ].skin;
 		
-		if( skin.GetTextureCount() == 0 ) continue;
-		oglSkinTexture = &skin.GetTextureAt( 0 );
+		if( skin.GetTextureCount() == 0 ){
+			continue;
+		}
+		
+		const deoglSkinTexture &oglSkinTexture = skin.GetTextureAt( 0 );
 		const decVector2 &size = bodies[ b ].size;
-		float matGamma = oglSkinTexture->GetColorGamma();
+		const float matGamma = oglSkinTexture.GetColorGamma();
 		
-		bodyColor.r = powf( bodies[ b ].color.r, OGL_RENDER_GAMMA ) * layerColor.r;
-		bodyColor.g = powf( bodies[ b ].color.g, OGL_RENDER_GAMMA ) * layerColor.g;
-		bodyColor.b = powf( bodies[ b ].color.b, OGL_RENDER_GAMMA ) * layerColor.b;
-		bodyColor.a = bodies[ b ].color.a * layerColor.a;
+		const decColor bodyColor(
+			powf( bodies[ b ].color.r, OGL_RENDER_GAMMA ) * layerColor.r,
+			powf( bodies[ b ].color.g, OGL_RENDER_GAMMA ) * layerColor.g,
+			powf( bodies[ b ].color.b, OGL_RENDER_GAMMA ) * layerColor.b,
+			bodies[ b ].color.a * layerColor.a );
 		
-		matrixBody.SetFromQuaternion( bodies[ b ].orientation );
+		const decMatrix matrixBody( decMatrix::CreateScale( size.x, size.y, 1.0f )
+			* decMatrix::CreateFromQuaternion( bodies[ b ].orientation ) * matrixLayer );
 		
 		tsmgr.EnableSkin( 0, skin, 0, deoglSkinChannel::ectColor, defTexColor, tscClampLinear );
 		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency, defTexTransparency, tscClampLinear );
 		
-		shader->SetParameterDMatrix4x4( spbodyMatrixMVP, matrixBody * matrixLCP );
-		shader->SetParameterFloat( spbodyScalePosition, size.x, size.y );
+		shader->SetParameterMatrix4x3( spbodyMatrixBody, matrixBody );
 		shader->SetParameterColor4( spbodyColor, bodyColor );
 		shader->SetParameterFloat( spbodyMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 	}
 }
 
@@ -721,6 +748,7 @@ deoglEnvironmentMap &envmap ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkyIntoEnvMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglFramebuffer *oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap *cubemap = envmap.GetEnvironmentMap();
@@ -776,6 +804,7 @@ deoglEnvironmentMap &envmap ){
 		const GLfloat clearColor[ 4 ] = { engSkyColor.r, engSkyColor.g, engSkyColor.b, 1.0f };
 		
 		for( cmf=0; cmf<6; cmf++ ){
+			const deoglDebugTraceGroup debugTrace2( renderThread, "Sky.RenderSkyIntoEnvMap.Face" );
 			fbo->AttachColorCubeMapFace( 0, cubemap, cubeFaces[ cmf ] );
 			fbo->Verify();
 			
@@ -818,6 +847,8 @@ deoglEnvironmentMap &envmap ){
 			
 			plan.SetCameraMatrix( matrixCamera );
 			
+			PreparepRenderSkyIntoEnvMapParamBlock( plan );
+			
 			for( s=0; s<skyCount; s++ ){
 				deoglRSkyInstance &instance = *( ( deoglRSkyInstance* )pSkyInstances.GetAt( s ) );
 				deoglRSky &sky = *instance.GetRSky();
@@ -831,11 +862,11 @@ deoglEnvironmentMap &envmap ){
 					
 					switch( layer.GetLayerType() ){
 					case deoglRSkyLayer::eltSkyBox:
-						RenderSkyBox( plan, instance, l, false );
+						RenderSkyBox( plan, instance, l, false, true );
 						break;
 						
 					case deoglRSkyLayer::eltSkySphere:
-						RenderSkySphere( plan, instance, l, false );
+						RenderSkySphere( plan, instance, l, false, true );
 						break;
 						
 					default:
@@ -843,7 +874,7 @@ deoglEnvironmentMap &envmap ){
 					}
 					
 					if( layer.GetBodyCount() > 0 ){
-						RenderSkyLayerBodies( plan, instance, l );
+						RenderSkyLayerBodies( plan, instance, l, true );
 					}
 				}
 			}
@@ -869,6 +900,7 @@ deoglEnvironmentMap &envmap ){
 
 void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap &envmap ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderEmptySkyIntoEnvMap" );
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap * const cubemap = envmap.GetEnvironmentMap();
 	deoglFramebuffer *fbo = NULL;
@@ -939,19 +971,34 @@ decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool 
 		skyColor.a );
 }
 
+void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan ){
+	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
+	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
+	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
+	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	
+	pRenderSkyIntoEnvMapPB->MapBuffer();
+	try{
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
+		
+	}catch( const deException & ){
+		pRenderSkyIntoEnvMapPB->UnmapBuffer();
+		throw;
+	}
+	pRenderSkyIntoEnvMapPB->UnmapBuffer();
+}
+
 
 
 // Private Functions
 //////////////////////
 
 void deoglRenderSky::pCleanUp(){
-	if( pShaderSkySphere ){
-		pShaderSkySphere->RemoveUsage();
-	}
-	if( pShaderSkyBox ){
-		pShaderSkyBox->RemoveUsage();
-	}
-	if( pShaderBody ){
-		pShaderBody->RemoveUsage();
+	if( pRenderSkyIntoEnvMapPB ){
+		pRenderSkyIntoEnvMapPB->FreeReference();
 	}
 }

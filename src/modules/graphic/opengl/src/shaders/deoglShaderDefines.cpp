@@ -102,34 +102,75 @@ const char *deoglShaderDefines::GetDefineValueFor( const char *name, const char 
 	return defaultValue;
 }
 
-void deoglShaderDefines::AddDefine( const char *name, const char *value ){
-	if( ! name || name[ 0 ] == '\0' || ! value || HasDefineNamed( name ) ){
+void deoglShaderDefines::SetDefine( const char *name, const char *value ){
+	if( ! name || name[ 0 ] == '\0' || ! value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	sDefine * const newArray = new sDefine[ pDefineCount + 1 ];
+	sDefine *define = nullptr;
 	
-	if( pDefines ){
-		memcpy( newArray, pDefines, sizeof( sDefine ) * pDefineCount );
-		delete [] pDefines;
+	int i;
+	for( i=0; i<pDefineCount; i++ ){
+		if( strcmp( name, pDefines[ i ].name ) == 0 ){
+			define = pDefines + i;
+			if( define->value ){
+				delete [] define->value;
+				define->value = nullptr;
+			}
+			break;
+		}
 	}
-	pDefines = newArray;
 	
-	pDefines[ pDefineCount ].name = new char[ strlen( name ) + 1 ];
-	strcpy( pDefines[ pDefineCount ].name, name );
-	pDefines[ pDefineCount ].value = new char[ strlen( value ) + 1 ];
-	strcpy( pDefines[ pDefineCount ].value, value );
-	pDefineCount++;
+	if( ! define ){
+		sDefine * const newArray = new sDefine[ pDefineCount + 1 ];
+		if( pDefines ){
+			memcpy( newArray, pDefines, sizeof( sDefine ) * pDefineCount );
+			delete [] pDefines;
+		}
+		pDefines = newArray;
+		
+		define = pDefines + pDefineCount;
+		define->name = new char[ strlen( name ) + 1 ];
+		strcpy( define->name, name );
+		define->value = nullptr;
+		
+		pDefineCount++;
+	}
+	
+	define->value = new char[ strlen( value ) + 1 ];
+	strcpy( define->value, value );
 }
 
-void deoglShaderDefines::AddDefine( const char *name, int value ){
+void deoglShaderDefines::SetDefine( const char *name, int value ){
 	char buffer[ 16 ];
 	sprintf( &buffer[ 0 ], "%d", value );
-	AddDefine( name, buffer );
+	SetDefine( name, buffer );
 }
 
-void deoglShaderDefines::AddDefine( const char *name, bool value ){
-	AddDefine( name, value ? "1" : "0" );
+void deoglShaderDefines::SetDefine( const char *name, bool value ){
+	SetDefine( name, value ? "1" : "0" );
+}
+
+void deoglShaderDefines::SetDefines( const char *name1 ){
+	SetDefine( name1, true );
+}
+
+void deoglShaderDefines::SetDefines( const char *name1, const char *name2 ){
+	SetDefine( name1, true );
+	SetDefine( name2, true );
+}
+
+void deoglShaderDefines::SetDefines( const char *name1, const char *name2, const char *name3 ){
+	SetDefine( name1, true );
+	SetDefine( name2, true );
+	SetDefine( name3, true );
+}
+
+void deoglShaderDefines::SetDefines( const char *name1, const char *name2, const char *name3, const char *name4 ){
+	SetDefine( name1, true );
+	SetDefine( name2, true );
+	SetDefine( name3, true );
+	SetDefine( name4, true );
 }
 
 void deoglShaderDefines::RemoveDefine( const char *name ){
@@ -227,6 +268,15 @@ deoglShaderDefines &deoglShaderDefines::operator=( const deoglShaderDefines &def
 	}
 	
 	return *this;
+}
+
+deoglShaderDefines deoglShaderDefines::operator+( const deoglShaderDefines &defines ) const{
+	deoglShaderDefines combined( *this );
+	int i;
+	for( i=0; i<defines.pDefineCount; i++ ){
+		combined.SetDefine( defines.pDefines[ i ].name, defines.pDefines[ i ].value );
+	}
+	return combined;
 }
 
 

@@ -223,6 +223,7 @@ GLAPI PFNGLWAITSYNCPROC pglWaitSync = nullptr;
 
 GLAPI PFNGLDRAWELEMENTSBASEVERTEXPROC pglDrawElementsBaseVertex = nullptr;
 GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex = nullptr;
+GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex = nullptr;
 GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC pglDrawElementsInstancedBaseVertex = nullptr;
 
 
@@ -363,6 +364,11 @@ GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v = nullptr;
 // GL_ARB_draw_buffers_blend : opengl version 4.0
 ///////////////////////////////////////////////////
 
+// OpenGL version 1.4
+///////////////////////
+
+GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
+
 
 
 // GL_ARB_tessellation_shader : opengl version 4.0
@@ -464,6 +470,14 @@ GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect = nullptr;
 
 // GL_ARB_draw_indirect : opengl version 4.3
 //////////////////////////////////////////////
+
+oglDrawArraysIndirectCommand::oglDrawArraysIndirectCommand() :
+count( 0 ), instanceCount( 0 ), first( 0 ), baseInstance( 0 ){
+}
+
+oglDrawElementsIndirectCommand::oglDrawElementsIndirectCommand() :
+count( 0 ), instanceCount( 0 ), firstIndex( 0 ), baseVertex( 0 ), baseInstance( 0 ){
+}
 
 GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect = nullptr;
 GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect = nullptr;
@@ -581,6 +595,12 @@ GLAPI PFNGLGETVARYINGLOCATIONNVPROC pglGetVaryingLocationNV = nullptr;
 GLAPI PFNGLBINDIMAGETEXTUREPROC pglBindImageTexture = nullptr;
 
 
+// OpenGL 4.2 : no extension
+//////////////////////////////
+
+GLAPI PFNGLMEMORYBARRIERPROC pglMemoryBarrier = nullptr;
+
+
 
 // OpenGL 4.3 : no extension
 //////////////////////////////
@@ -591,6 +611,12 @@ GLAPI PFNGLINVALIDATEFRAMEBUFFERPROC pglInvalidateFramebuffer = nullptr;
 //////////////////////////////
 
 GLAPI PFNGLGETINTEGER64VPROC pglGetInteger64v = nullptr;
+
+// OpenGL 2.0 : no extension
+//////////////////////////////
+
+GLAPI PFNGLMULTIDRAWARRAYSPROC pglMultiDrawArrays = nullptr;
+GLAPI PFNGLMULTIDRAWELEMENTSPROC pglMultiDrawElements = nullptr;
 
 
 
@@ -618,3 +644,12 @@ GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC pglProgramUniformHandleui64vARB = nu
 GLAPI PFNGLVERTEXATTRIBL1UI64ARBPROC pglVertexAttribL1ui64ARB = nullptr;
 GLAPI PFNGLVERTEXATTRIBL1UI64VARBPROC pglVertexAttribL1ui64vARB = nullptr;
 GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB = nullptr;
+
+
+
+// GL_KHR_debug : no opengl version
+/////////////////////////////////////
+
+GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup = nullptr;
+GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup = nullptr;
+GLAPI PFNGLOBJECTLABELPROC pglObjectLabel = nullptr;

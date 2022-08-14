@@ -10,7 +10,7 @@
 	layout( triangle_strip, max_vertices=18 ) out;
 #endif
 
-flat out int vLayer;
+out flat int vLayer;
 
 void main( void ){
 	int face;
@@ -24,9 +24,11 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			gl_Position = gl_in[ i ].gl_Position;
+			
+			vLayer = face;
+			
 			gl_Layer = face;
 			gl_PrimitiveID = gl_PrimitiveIDIn;
-			vLayer = face;
 			EmitVertex();
 		}
 		EndPrimitive();

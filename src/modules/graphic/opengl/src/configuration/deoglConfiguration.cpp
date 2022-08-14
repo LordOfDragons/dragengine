@@ -74,8 +74,6 @@ pUseEncodeDepth( false ),
 pDisableStencil( false ),
 pStencilOnlyOnRB( false ),
 
-pDefRenEncDepth( false ),
-pDefRenUsePOTs( false ),
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
 pHDRRMaxIntensity( 1.5f ),
@@ -126,6 +124,7 @@ pFrameRateLimit( 0 ), // 0 means use display refresh rate
 pAsyncRenderSkipSyncTimeRatio( 0.5 ),
 
 pDebugContext( false ),
+pDebugNoMessages( false ),
 pAsyncRendering( true ),
 pEnableRetainImageOptimization( true ),
 
@@ -197,6 +196,7 @@ pVRForceFrameRate( 0 )
 	
 	// debug
 	pDebugContext = true;
+	pDebugNoMessages = false;
 	pLogLevel = ellDebug;
 	
 	// disable asynchronous rendering for debug purpose
@@ -441,19 +441,6 @@ void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
 }
 
 
-
-void deoglConfiguration::SetDefRenEncDepth( bool useEncDepth ){
-	//pDefRenEncDepth = useEncDepth;
-	//pDirty = true;
-}
-
-void deoglConfiguration::SetDefRenUsePOTs( bool usePOTs ){
-	if( usePOTs == pDefRenUsePOTs ){
-		return;
-	}
-	pDefRenUsePOTs = usePOTs;
-	pDirty = true;
-}
 
 void deoglConfiguration::SetDefRenSizeLimit( int size ){
 	size = decMath::max( size, 0 );
@@ -819,6 +806,14 @@ void deoglConfiguration::SetDebugContext( bool debugContext ){
 		return;
 	}
 	pDebugContext = debugContext;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetDebugNoMessages( bool debugNoMessages ){
+	if( debugNoMessages == pDebugNoMessages ){
+		return;
+	}
+	pDebugNoMessages = debugNoMessages;
 	pDirty = true;
 }
 

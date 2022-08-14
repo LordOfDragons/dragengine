@@ -44,6 +44,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -114,6 +115,7 @@ pIsRendering( false ),
 pLevel( 0 ),
 
 pUseGIState( false ),
+pRenderStereo( false ),
 pUseConstGIState( NULL ),
 pRenderVR( ervrNone ),
 pSkyLightCount( 0 ),
@@ -294,6 +296,7 @@ void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
 		return; // re-entrant rendering causes exceptions. ignore rendering in this case
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.PrepareRender" );
 	pIsRendering = true;
 	
 	try{
@@ -546,23 +549,37 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pDepthToPosition.y = q;
 		*/
 		
+		pProjectionMatrixStereo = pProjectionMatrix;
+		pFrustumMatrixStereo = pFrustumMatrix;
+		pDepthToPositionStereo = pDepthToPosition;
+		pDepthToPositionStereo2 = pDepthToPosition2;
+		
 		pDirtyProjMat = false;
 	}
 	
 	// VR modifies the matrices
 	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
 		const deoglVR &vr = *pCamera->GetVR();
-		const deoglVREye &vreye = pRenderVR == ervrLeftEye ? vr.GetLeftEye() : vr.GetRightEye();
+		const deoglVREye &vreye = pRenderVR == ervrRightEye ? vr.GetRightEye() : vr.GetLeftEye();
 		
 		pCameraFov = vr.GetCameraFov();
 		pCameraFovRatio = vr.GetCameraFovRatio();
 		
+		// left eye
 		pProjectionMatrix = vreye.CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrix = vreye.CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
 		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
 		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
 		pDepthToPosition2.Set( -pProjectionMatrix.a13, -pProjectionMatrix.a23 );
+		
+		// right eye
+		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
+		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
+		
+		pDepthToPositionStereo.z = 1.0f / pProjectionMatrixStereo.a11;
+		pDepthToPositionStereo.w = 1.0f / pProjectionMatrixStereo.a22;
+		pDepthToPositionStereo2.Set( -pProjectionMatrixStereo.a13, -pProjectionMatrixStereo.a23 );
 	}
 	
 	// determine frustum to use
@@ -762,7 +779,7 @@ void deoglRenderPlan::pStartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) ); // 512
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
@@ -1391,6 +1408,7 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 }
 
 void deoglRenderPlan::Render(){
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.Render" );
 	if( pIsRendering ){
 		// re-entrant rendering causes exceptions. render instead a black screen and do not clean up
 		pRenderThread.GetRenderers().GetWorld().RenderBlackScreen( *this );
@@ -1464,15 +1482,17 @@ void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 		pCameraPosition = pCameraInverseMatrix.GetPosition();
 //	}
 	
-	pCameraCorrectionMatrix.SetIdentity();
+	pCameraStereoMatrix.SetIdentity();
+	pCameraStereoInverseMatrix.SetIdentity();
 }
 
 void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
 	pCameraMatrixNonMirrored = matrix;
 }
 
-void deoglRenderPlan::SetCameraCorrectionMatrix( const decDMatrix &matrix ){
-	pCameraCorrectionMatrix = matrix;
+void deoglRenderPlan::SetCameraStereoMatrix( const decMatrix &matrix ){
+	pCameraStereoMatrix = matrix;
+	pCameraStereoInverseMatrix = matrix.QuickInvert();
 }
 
 void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){
@@ -1512,9 +1532,13 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 	pCameraAdaptedIntensity = plan.pCameraAdaptedIntensity;
 	
 	pProjectionMatrix = plan.pProjectionMatrix;
+	pProjectionMatrixStereo = plan.pProjectionMatrixStereo;
 	pFrustumMatrix = plan.pFrustumMatrix;
+	pFrustumMatrixStereo = plan.pFrustumMatrixStereo;
 	pDepthToPosition = plan.pDepthToPosition;
 	pDepthToPosition2 = plan.pDepthToPosition2;
+	pDepthToPositionStereo = plan.pDepthToPositionStereo;
+	pDepthToPositionStereo2 = plan.pDepthToPositionStereo2;
 	pDepthSampleOffset = plan.pDepthSampleOffset;
 	
 	pDirtyProjMat = false;
@@ -1623,6 +1647,10 @@ void deoglRenderPlan::SetUseGIState( bool useGIState ){
 
 void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
 	pUseConstGIState = giState;
+}
+
+void deoglRenderPlan::SetRenderStereo ( bool stereoRender ){
+	pRenderStereo = stereoRender;
 }
 
 void deoglRenderPlan::SetRenderVR( eRenderVR renderVR ){
@@ -1770,6 +1798,10 @@ void deoglRenderPlan::SetOcclusionMapBaseLevel( int level ){
 
 void deoglRenderPlan::SetOcclusionTestMatrix( const decMatrix &matrix ){
 	pOcclusionTestMatrix = matrix;
+}
+
+void deoglRenderPlan::SetOcclusionTestMatrixStereo( const decMatrix &matrix ){
+	pOcclusionTestMatrixStereo = matrix;
 }
 
 

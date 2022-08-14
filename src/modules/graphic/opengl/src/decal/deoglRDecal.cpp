@@ -377,6 +377,7 @@ void deoglRDecal::SetComponentMarkedRemove( bool marked ){
 deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
 	switch( shaderType ){
 	case deoglSkinTexture::estDecalGeometry:
+	case deoglSkinTexture::estStereoDecalGeometry:
 		return GetTUCGeometry();
 		
 	case deoglSkinTexture::estDecalEnvMap:

@@ -31,7 +31,6 @@ class deoglRenderPlan;
 class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
@@ -89,19 +88,11 @@ public:
 	
 	
 private:
-	deoglShaderProgram *pShaderLight;
-	deoglShaderProgram *pShaderLightShadow;
-	deoglShaderProgram *pShaderLightShadowTransp;
-	
-	deoglShaderProgram *pShaderShadowSolid;
-	deoglShaderProgram *pShaderShadowHoles;
-	deoglShaderProgram *pShaderShadowTransp;
-	
-	deoglShaderProgram *pShaderBoxBoundary1;
-	deoglShaderProgram *pShaderBoxBoundary1Ambient;
-	deoglShaderProgram *pShaderBoxBoundary2;
-	deoglShaderProgram *pShaderOccMap;
-	deoglShaderProgram *pShaderOccMapCube;
+	deoglShaderProgramUsage pShaderBoxBoundary1;
+	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
+	deoglShaderProgramUsage pShaderBoxBoundary2;
+	deoglShaderProgramUsage pShaderOccMap;
+	deoglShaderProgramUsage pShaderOccMapCube;
 	
 	int pCubeFaces[ 6 ];
 	
@@ -109,34 +100,34 @@ private:
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowClear;
-	deoglDebugInformation *pDebugInfoSolidShadowClearTransp;
-	deoglDebugInformation *pDebugInfoSolidShadowFace;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceClear;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTask;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceRender;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTranspClear;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTranspTask;
-	deoglDebugInformation *pDebugInfoSolidShadowFaceTranspRender;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFace;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTranspClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTranspTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowFaceTranspRender;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentShadow;
-	deoglDebugInformation *pDebugInfoTransparentShadowClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowClearTransp;
-	deoglDebugInformation *pDebugInfoTransparentShadowFace;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceRender;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTranspClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTranspTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowFaceTranspRender;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadow;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFace;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTranspClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTranspTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowFaceTranspRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	

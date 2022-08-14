@@ -32,6 +32,7 @@
 #include "../../memory/deoglMemoryManager.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTDebug.h"
 
 #ifdef ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -215,6 +216,7 @@ void deoglCubeMap::CreateCubeMap(){
 	tsmgr.DisableStage( 0 );
 	
 	UpdateMemoryUsage();
+	pUpdateDebugObjectLabel();
 }
 
 void deoglCubeMap::DestroyCubeMap(){
@@ -821,4 +823,15 @@ void deoglCubeMap::CreateMatrixForFace( decDMatrix &matrix, const decDVector &po
 	}
 	
 	matrix.a41 = 0.0; matrix.a42 = 0.0; matrix.a43 = 0.0; matrix.a44 = 1.0;
+}
+
+void deoglCubeMap::SetDebugObjectLabel( const char *name ){
+	pDebugObjectLabel.Format( "Cube: %s", name );
+	if( pTexture ){
+		pUpdateDebugObjectLabel();
+	}
+}
+
+void deoglCubeMap::pUpdateDebugObjectLabel(){
+	pRenderThread.GetDebug().SetDebugObjectLabel( GL_TEXTURE, pTexture, pDebugObjectLabel );
 }

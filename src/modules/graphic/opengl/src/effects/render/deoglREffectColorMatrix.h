@@ -23,10 +23,9 @@
 #define _DEOGLREFFECTCOLORMATRIX_H_
 
 #include "deoglREffect.h"
+#include "../../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/math/decMath.h>
-
-class deoglShaderProgram;
 
 
 /**
@@ -36,7 +35,8 @@ class deoglREffectColorMatrix : public deoglREffect{
 private:
 	decColorMatrix pColorMatrix;
 	
-	deoglShaderProgram *pShader;
+	deoglShaderProgramUsage pShader;
+	deoglShaderProgramUsage pShaderStereo;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -62,6 +62,7 @@ public:
 	
 	/** \brief Get shader creating it if required. */
 	deoglShaderProgram *GetShader();
+	deoglShaderProgram *GetShaderStereo();
 	
 	/** \brief Render effect. */
 	virtual void Render( deoglRenderPlan &plan );

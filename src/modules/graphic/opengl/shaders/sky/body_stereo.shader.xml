@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Sky Body Stereo</name>
+	
+	<version>130</version>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texColor' target='0'/>
+	<texture name='texTransparency' target='1'/>
+	
+	<parameter name='pMatrixBody'/>
+	<parameter name='pColor'/>
+	<parameter name='pMaterialGamma'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/sky/body.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/sky/body.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/sky/body.glsl</sourceCode>
+</shader>

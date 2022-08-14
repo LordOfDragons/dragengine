@@ -80,6 +80,7 @@
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../debug/deoglDebugTraceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 #include "../utils/collision/deoglDCollisionBox.h"
@@ -137,10 +138,6 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 	pVBOShapes = 0;
 	pVAOShapes = 0;
 	
-	pShaderSolidColor2D = NULL;
-	pShaderSolidColor3D = NULL;
-	pShaderShape = NULL;
-	
 	try{
 		pCreateShapesVAO();
 		
@@ -151,14 +148,11 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pShaderSolidColor3D = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
-		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
+		defines.SetDefine( "WITH_SELECTOR", "1" );
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+			defines.SetDefine( "INVERSE_DEPTH", "1" );
 		}
-		//defines.AddDefine( "WITH_DEPTH", "1" );
+		//defines.SetDefine( "WITH_DEPTH", "1" );
 		pShaderShape = shaderManager.GetProgramWith( sources, defines );
 		
 	}catch( const deException & ){
@@ -178,6 +172,7 @@ deoglRenderDevMode::~deoglRenderDevMode(){
 
 void deoglRenderDevMode::RenderDevMode( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderDevMode" );
 	deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
 	
 	// prepare common states
@@ -988,7 +983,7 @@ void deoglRenderDevMode::RenderOccMapLevel( deoglRenderPlan &plan ){
 		occMapLevel = occMapMaxLevel;
 	}
 	
-	GetRenderThread().GetRenderers().GetDebug().DisplayTextureLevel( plan, occmap.GetTexture(), occMapLevel, false );
+	GetRenderThread().GetRenderers().GetDebug().DisplayArrayTextureLayerLevel( plan, occmap.GetTexture(), 0, occMapLevel, false );
 }
 
 void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
@@ -1824,16 +1819,6 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 //////////////////////
 
 void deoglRenderDevMode::pCleanUp(){
-	if( pShaderSolidColor2D ){
-		pShaderSolidColor2D->RemoveUsage();
-	}
-	if( pShaderSolidColor3D ){
-		pShaderSolidColor3D->RemoveUsage();
-	}
-	if( pShaderShape ){
-		pShaderShape->RemoveUsage();
-	}
-	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLVertexArray( pVAOShapes );
 	dops.DeleteOpenGLBuffer( pVBOShapes );

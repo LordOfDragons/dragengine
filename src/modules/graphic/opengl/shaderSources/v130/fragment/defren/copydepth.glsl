@@ -1,12 +1,18 @@
 precision highp float;
 precision highp int;
 
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
 #ifdef COPY_COLOR
-	uniform mediump sampler2D texColor;
+	uniform mediump sampler2DArray texColor;
 #endif
 
 in vec2 vTexCoord;
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	in flat int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 #ifdef COPY_COLOR
 	out vec4 outColor;
@@ -16,7 +22,7 @@ in vec2 vTexCoord;
 #endif
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	#ifdef ENCODED_DEPTH
 		outDepth = texelFetch( texDepth, tc, 0 );

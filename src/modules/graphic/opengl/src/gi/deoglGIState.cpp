@@ -32,6 +32,7 @@
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -718,7 +719,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		return;
 	}
 	
-	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
 	if( ! pTexProbeIrradiance.GetTexture() ){
@@ -825,7 +826,6 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		OGL_CHECK( pRenderThread, pglClearBufferuiv( GL_COLOR, 0, &clearState[ 0 ] ) );
 	}
 	
-	pRenderThread.GetFramebuffer().Activate( oldfbo );
 	pClearMaps = false;
 }
 

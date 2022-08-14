@@ -4,7 +4,13 @@ precision highp int;
 uniform ivec2 pTCClamp;
 uniform int pMipMapLevel;
 
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	in flat int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 #ifdef DECODE_IN_DEPTH
 	out vec4 outDepth;
@@ -26,10 +32,10 @@ void main( void ){
 	vec4 depth;
 	
 	#ifdef DECODE_IN_DEPTH
-		depth.x = dot( texelFetch( texDepth, tc.xy, pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2)
-		depth.y = dot( texelFetch( texDepth, tc.zy, pMipMapLevel ).rgb, unpackDepth ); // (s*2+1, t*2)
-		depth.z = dot( texelFetch( texDepth, tc.xw, pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2+1)
-		depth.w = dot( texelFetch( texDepth, tc.zw, pMipMapLevel ).rgb, unpackDepth ); // (s*2+1, t*2+1)
+		depth.x = dot( texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2)
+		depth.y = dot( texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2+1, t*2)
+		depth.z = dot( texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2+1)
+		depth.w = dot( texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2+1, t*2+1)
 		
 		#ifdef USE_MIN_FUNCTION
 			#ifdef INVERSE_DEPTH
@@ -45,10 +51,10 @@ void main( void ){
 		outDepth = vec4( encoded - ( encoded.yzz * packMask ), 1.0 );
 		
 	#else
-		depth.x = texelFetch( texDepth, tc.xy, pMipMapLevel ).r; // (s*2, t*2)
-		depth.y = texelFetch( texDepth, tc.zy, pMipMapLevel ).r; // (s*2+1, t*2)
-		depth.z = texelFetch( texDepth, tc.xw, pMipMapLevel ).r; // (s*2, t*2+1)
-		depth.w = texelFetch( texDepth, tc.zw, pMipMapLevel ).r; // (s*2+1, t*2+1)
+		depth.x = texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).r; // (s*2, t*2)
+		depth.y = texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2)
+		depth.z = texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).r; // (s*2, t*2+1)
+		depth.w = texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2+1)
 		
 		#ifdef USE_MIN_FUNCTION
 			#ifdef INVERSE_DEPTH

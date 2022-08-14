@@ -300,13 +300,14 @@ deoglSkinTexture::eShaderTypes shaderType, const deoglSkinTexture &skinTexture,
 const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
 	// retrieve the shader and texture units configuration to use
 	const deoglShaderProgram *shader = pEnforceShader;
-	int spbInstanceIndexBase = -1;
+	int spbInstanceIndexBase = -1, drawIDOffset = -1;
 	
 	if( ! shader ){
 		const deoglSkinShader * const skinShader = skinTexture.GetShaderFor( shaderType );
 		if( skinShader ){
 			shader = skinShader->GetShader();
 			spbInstanceIndexBase = skinShader->GetTargetSPBInstanceIndexBase();
+			drawIDOffset = skinShader->GetTargetDrawIDOffset();
 		}
 	}
 	
@@ -323,6 +324,7 @@ const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
 		rtshader = pRenderTask.AddShader( shader );
 		rtshader->SetParameterBlock( NULL );
 		rtshader->SetSPBInstanceIndexBase( spbInstanceIndexBase );
+		rtshader->SetDrawIDOffset( drawIDOffset );
 	}
 	
 	deoglPersistentRenderTaskTexture *rttexture = rtshader->GetTextureWith( tuc );

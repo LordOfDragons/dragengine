@@ -77,6 +77,12 @@ optimizations.
 The first step is to split the filter down into a two-filter process doing first a 41x1 blur along the x axis
 and then a 1x41 blur along the y axis. This requires two render passes and less taps for each pass.
 
+the code uses 11 taps which requires these weights:
+[a6, a5, a4, a3, a2, a1, a2, a3, a4, a5, a6]
+the following python script calculates the required weights:
+
+print(['{:.6e}'.format(x) for x in reversed(norm(coeffs(11))[0:5])])
+
 
 
 Linear Tapping

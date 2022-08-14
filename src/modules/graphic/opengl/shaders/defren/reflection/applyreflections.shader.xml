@@ -1,19 +1,11 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>DefRen Reflection ApplyReflections</name>
 	
 	<version>150</version>
 	
-	<uniformBlock name='EnvironmentMaps' target='0'/>
-	
-	<parameter name='pQuadTCTransform'/>
-	<parameter name='pPosTransform'/>
-	<parameter name='pPosTransform2'/>
-	<parameter name='pMatrixEnvMap'/>
-	<parameter name='pEnvMapLodLevel'/>
-	<parameter name='pMipMapLevelParams'/>
-	<parameter name='pMipMapTCClamp'/>
+	<uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='EnvironmentMaps' target='1'/>
 	
 	<texture name='texDiffuse' target='0'/>
 	<texture name='texDepth' target='1'/>
@@ -33,9 +25,10 @@
 	<texture name='texEnvMap8' target='15'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	
-	<sourceCode unit='vertex'>v130/vertex/defren/reflection/screenspace.glsl</sourceCode>
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/reflection/applyreflections.glsl</sourceCode>
 </shader>

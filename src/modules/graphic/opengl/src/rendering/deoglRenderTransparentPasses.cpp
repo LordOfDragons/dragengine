@@ -40,6 +40,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../debug/deoglDebugSnapshot.h"
 #include "../debug/debugSnapshot.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../particle/deoglParticleSorter.h"
 #include "../particle/deoglRParticleEmitterInstance.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -112,30 +113,72 @@ deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
+	
+	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
 	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
-	defines.AddDefine( "DEPTH_TEST", "1" );
-	defines.AddDefine( "COPY_COLOR", "1" );
+	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
 	if( defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
-	pShaderCopyDepthColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
-	defines.RemoveAllDefines();
+	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	
-	defines.AddDefine( "DEPTH_TEST", "1" );
+	defines = commonDefines;
+	defines.SetDefine( "DEPTH_TEST", true );
 	if( ! defren.GetUseInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
-	pShaderCopyDepthLimit.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
-	defines.RemoveAllDefines();
+	pShaderCopyDepthLimit = shaderManager.GetProgramWith( sources, defines );
 	
 	
+	defines = commonDefines;
+	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
+	if( defren.GetUseInverseDepth() ){
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
+	}
+	
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
+	}
+	pShaderCopyDepthColorStereo = shaderManager.GetProgramWith( sources, defines );
+	
+	defines = commonDefines;
+	defines.SetDefine( "DEPTH_TEST", true );
+	if( ! defren.GetUseInverseDepth() ){
+		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
+	}
+	
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		defines.SetDefines( "GS_RENDER_STEREO" );
+	}
+	pShaderCopyDepthLimitStereo = shaderManager.GetProgramWith( sources, defines );
+	
+	
+	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-	pShaderCopyColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
+	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
+	
+	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
+		
+	}else{
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
+		defines.SetDefines( "GS_RENDER_STEREO" );
+	}
+	pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
 }
 
 deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
@@ -244,6 +287,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	DebugTimer1Reset( plan, false );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentPasses" );
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	//deoglTextureStageManager &tsmgr = *renderThread.GetTexture().GetStages();
 	//deoglShaderCompiled *shader;
@@ -339,6 +383,7 @@ DBG_EXIT("RenderTransparentPasses")
 void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentGeometryPass" );
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	//deoglRenderDecal &rendecal = renderThread.GetRenderers().GetDecal();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
@@ -463,7 +508,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	const bool requiresColorCopy = true;
 	
 	if( requiresColorCopy ){
-		CopyColorToTemporary();
+		CopyColorToTemporary( plan );
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
 			deoglDebugSnapshot snapshot( renderThread );
@@ -531,14 +576,15 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
 	}
 	
-	renderThread.GetShader().ActivateShader( pShaderCopyDepthColor );
-	shader = pShaderCopyDepthColor->GetCompiled();
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyDepthColorStereo : pShaderCopyDepthColor;
+	renderThread.GetShader().ActivateShader( program );
+	shader = program->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
 		deoglDebugSnapshot snapshot( renderThread );
@@ -553,6 +599,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	// render geometry pass to depth1 using EQUAL with stencil mask and temporary with last layer
 	// color. no depth and stencil written. color, normal and specularity written for light pass
+	deoglDebugTraceGroup debugTraceGeometry( renderThread, "TransparentPasses.RenderTransparentPasses.Geometry" );
 	defren.ActivateFBOMaterialColor();
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -605,27 +652,42 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoRendered( mask );
 	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoComponentGeometry
+		: deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoBillboardGeometry
+		: deoglSkinTexture::estBillboardGeometry );
 	addToRenderTask.AddBillboards( collideList );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoPropFieldGeometry
+		: deoglSkinTexture::estPropFieldGeometry );
 	addToRenderTask.AddPropFields( collideList, false );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoPropFieldImposterGeometry
+		: deoglSkinTexture::estPropFieldImposterGeometry );
 	addToRenderTask.AddPropFields( collideList, true );
 	
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleGeometry );
-		addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry );
-		addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry );
+		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoParticleGeometry
+			: deoglSkinTexture::estParticleGeometry );
+		addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoParticleRibbonGeometry
+			: deoglSkinTexture::estParticleRibbonGeometry );
+		addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+			? deoglSkinTexture::estStereoParticleBeamGeometry
+			: deoglSkinTexture::estParticleBeamGeometry );
 		addToRenderTask.AddParticles( collideList );
 	}
 	
@@ -637,8 +699,10 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	
 	// outline
+	deoglDebugTraceGroup debugTraceOutline( debugTraceGeometry, "TransparentPasses.RenderTransparentPasses.Outline" );
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
@@ -647,7 +711,9 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoRendered( true );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
+	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
+		? deoglSkinTexture::estStereoOutlineGeometry
+		: deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
 	renderTask.PrepareForRender();
@@ -698,6 +764,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	// currently we use at most 4 bits for the render pass bits. this allows for 15 layers
 	// of transparency before we wrap around requiring to clear. to avoid this the maximum
 	// number of layers is forced to stay below 15
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentLimitDepth.Outline" );
 	const int prevStencilRefValue = plan.GetStencilRefValue();
 	const int maskRefValue = mask ? 0x01 : 0;
 	
@@ -783,10 +850,13 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 		
-		renderThread.GetShader().ActivateShader( pShaderCopyDepthLimit );
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
-		defren.SetShaderParamFSQuad( *pShaderCopyDepthLimit->GetCompiled(), spcdQuadParams );
-		defren.RenderFSQuadVAO();
+		deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyDepthLimitStereo : pShaderCopyDepthLimit;
+		renderThread.GetShader().ActivateShader( program );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
+		defren.SetShaderParamFSQuad( *program->GetCompiled(), spcdQuadParams );
+		
+		RenderFullScreenQuadVAO( plan );
+		
 		defren.SwapDepthTextures(); // solid depth is now depth1
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -838,6 +908,7 @@ const deoglRenderPlanMasked *mask, bool inbetween ){
 	}
 	
 DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderVolumetricPass" );
 	const deoglParticleEmitterInstanceList &particleEmitterList = plan.GetCollideList().GetParticleEmitterList();
 	const int particleEmitterCount = particleEmitterList.GetCount();
 	
@@ -887,16 +958,29 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		
 		renderTaskParticles.Clear();
 		renderTaskParticles.SetRenderParamBlock( renworld.GetRenderPB() );
+// 		renderTaskParticles.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetVRRenderStereo() );
 		
 		if( inbetween ){
-			addToRenderTaskParticles.SetSkinShaderType( deoglSkinTexture::estParticleGeometryDepthTest );
-			addToRenderTaskParticles.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometryDepthTest );
-			addToRenderTaskParticles.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometryDepthTest );
+			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleGeometryDepthTest
+				: deoglSkinTexture::estParticleGeometryDepthTest );
+			addToRenderTaskParticles.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleRibbonGeometryDepthTest
+				: deoglSkinTexture::estParticleRibbonGeometryDepthTest );
+			addToRenderTaskParticles.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleBeamGeometryDepthTest
+				: deoglSkinTexture::estParticleBeamGeometryDepthTest );
 			
 		}else{
-			addToRenderTaskParticles.SetSkinShaderType( deoglSkinTexture::estParticleGeometry );
-			addToRenderTaskParticles.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry );
-			addToRenderTaskParticles.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry );
+			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleGeometry
+				: deoglSkinTexture::estParticleGeometry );
+			addToRenderTaskParticles.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleRibbonGeometry
+				: deoglSkinTexture::estParticleRibbonGeometry );
+			addToRenderTaskParticles.SetSkinShaderTypeBeam( plan.GetRenderStereo()
+				? deoglSkinTexture::estStereoParticleBeamGeometry
+				: deoglSkinTexture::estParticleBeamGeometry );
 		}
 		
 		particleSorter.AddToRenderTask( addToRenderTaskParticles );
@@ -969,8 +1053,9 @@ DBG_EXIT("RenderVolumetricPass")
 
 
 
-void deoglRenderTransparentPasses::CopyColorToTemporary(){
+void deoglRenderTransparentPasses::CopyColorToTemporary( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentLimitDepth.CopyColorToTemporary" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	defren.ActivateFBOTemporary1( false );
@@ -988,12 +1073,13 @@ void deoglRenderTransparentPasses::CopyColorToTemporary(){
 	
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderCopyColor );
-	deoglShaderCompiled * const shader = pShaderCopyColor->GetCompiled();
+	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderCopyColorStereo : pShaderCopyColor;
+	renderThread.GetShader().ActivateShader( program );
+	deoglShaderCompiled * const shader = program->GetCompiled();
 	
-	renderThread.GetTexture().GetStages().EnableTexture( 0,
+	renderThread.GetTexture().GetStages().EnableArrayTexture( 0,
 		*defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 }

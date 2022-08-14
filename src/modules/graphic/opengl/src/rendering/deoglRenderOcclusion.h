@@ -36,7 +36,6 @@ class deoglRenderPlanMasked;
 class deoglRenderTask;
 class deoglRSkyInstanceLayer;
 class deoglRSkyLayer;
-class deoglShaderProgram;
 class deoglSPBlockUBO;
 class deoglRenderTaskSharedShader;
 
@@ -46,18 +45,26 @@ class deoglRenderTaskSharedShader;
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderOccMap;
-	deoglShaderProgram *pShaderOccMapClipPlane;
-	deoglShaderProgram *pShaderOccMapOrtho;
-	deoglShaderProgram *pShaderOccMapOrthoClipPlane;
-	deoglShaderProgram *pShaderOccMapDownSample;
-	deoglShaderProgram *pShaderOccTest;
-	deoglShaderProgram *pShaderOccTestDual;
-	deoglShaderProgram *pShaderOccTestSun;
-	deoglShaderProgram *pShaderOccTestTFB;
-	deoglShaderProgram *pShaderOccTestTFBDual;
-	deoglShaderProgram *pShaderOccTestTFBSun;
-	deoglShaderProgram *pShaderOccMapCube;
+	deoglShaderProgramUsage pShaderOccMap;
+	deoglShaderProgramUsage pShaderOccMapStereo;
+	deoglShaderProgramUsage pShaderOccMapClipPlane;
+	deoglShaderProgramUsage pShaderOccMapClipPlaneStereo;
+	deoglShaderProgramUsage pShaderOccMapOrtho;
+	deoglShaderProgramUsage pShaderOccMapOrthoStereo;
+	deoglShaderProgramUsage pShaderOccMapOrthoClipPlane;
+	deoglShaderProgramUsage pShaderOccMapOrthoClipPlaneStereo;
+	deoglShaderProgramUsage pShaderOccMapDownSample;
+	deoglShaderProgramUsage pShaderOccMapDownSampleStereo;
+	deoglShaderProgramUsage pShaderOccTest;
+	deoglShaderProgramUsage pShaderOccTestDual;
+	deoglShaderProgramUsage pShaderOccTestSun;
+	deoglShaderProgramUsage pShaderOccTestStereo;
+	deoglShaderProgramUsage pShaderOccTestDualStereo;
+	deoglShaderProgramUsage pShaderOccTestSunStereo;
+	deoglShaderProgramUsage pShaderOccTestTFB;
+	deoglShaderProgramUsage pShaderOccTestTFBDual;
+	deoglShaderProgramUsage pShaderOccTestTFBSun;
+	deoglShaderProgramUsage pShaderOccMapCube;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglSPBlockUBO *pOccMapFrustumParamBlock;
@@ -88,7 +95,7 @@ public:
 	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
 	
 	/** Shader to use for occlusion map rendering. */
-	deoglRenderTaskSharedShader *GetRenderOcclusionMapRTS(
+	deoglRenderTaskSharedShader *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
 		const deoglRenderPlanMasked *mask, bool perspective ) const;
 	
 	/** Render occlusion meshes into the occlusion map. */
@@ -96,25 +103,27 @@ public:
 	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
 	
 	/** Render occlusion tests. */
-	void RenderOcclusionTests( deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap,
-		int baselevel, float clipNear, const decMatrix &matrixCamera );
+	void RenderOcclusionTests( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
+		const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo );
 	
 	/** Render occlusion tests with frustum check. */
-	void RenderOcclusionTestsSun( deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap,
-		int baselevel, float clipNear, const decMatrix &matrixCamera, float clipNear2,
-		const decMatrix &matrixCamera2, deoglRenderPlan &plan );
+	void RenderOcclusionTestsSun( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
+		const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
+		const decMatrix &matrixCamera2Stereo );
 	
 	/** Render occlusion tests using dual occlusion maps. */
-	void RenderOcclusionTestsDual( deoglOcclusionTest &occlusioNTest, deoglOcclusionMap &occlusionMap,
-		int baselevel, float clipNear, const decMatrix &matrixCamera, deoglOcclusionMap &occlusionMap2,
-		int baselevel2, float clipNear2, const decMatrix &matrixCamera2 );
+	void RenderOcclusionTestsDual( deoglRenderPlan &plan, deoglOcclusionTest &occlusioNTest,
+		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
+		deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatrix &matrixCamera2 );
 	
 	/** Debug render plan occlusion map. */
 	void DebugOcclusionMap( deoglRenderPlan &plan );
 	
 	/** Render occlusion meshes into a cube map. The position is relative to the reference position. */
-	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,
-		const decDVector &position, float imageDistance, float viewDistance );
+// 	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,
+// 		const decDVector &position, float imageDistance, float viewDistance );
 	/*@}*/
 	
 private:

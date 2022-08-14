@@ -25,8 +25,7 @@
 
 
 /**
- * @brief Shader Program Defines.
- * Stores defines to be used for compiling a given program.
+ * Defines compiling shader programs.
  */
 class deoglShaderDefines{
 private:
@@ -40,53 +39,70 @@ private:
 	int pDefineCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new defines object. */
+	/** Create defines. */
 	deoglShaderDefines();
-	/** Creates a new defines object as a copy of another defines object. */
+	
+	/** Create copy of defines. */
 	deoglShaderDefines( const deoglShaderDefines &defines );
-	/** Cleans up the defines object. */
+	
+	/** Clean up defines. */
 	~deoglShaderDefines();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of defines. */
+	/** Count of defines. */
 	inline int GetDefineCount() const{ return pDefineCount; }
-	/** Retrieves the define name at the given index. */
+	
+	/** Name of define at index. */
 	const char *GetDefineNameAt( int index ) const;
-	/** Retrieves the define value at the given index. */
+	
+	/** Value of define at index. */
 	const char *GetDefineValueAt( int index ) const;
-	/** Determines if a define with the given name exists. */
+	
+	/** Named define is present. */
 	bool HasDefineNamed( const char *name ) const;
-	/**
-	 * Retrieves the value for the define with the given name. If such a define
-	 * can not be found the default value is returned.
-	 */
+	
+	/** Value of named define or default value if absent. */
 	const char *GetDefineValueFor( const char *name, const char *defaultValue ) const;
 	
-	/** Adds a new define. */
-	void AddDefine( const char *name, const char *value );
-	void AddDefine( const char *name, int value );
-	void AddDefine( const char *name, bool value );
+	/** Set define. */
+	void SetDefine( const char *name, const char *value );
+	void SetDefine( const char *name, int value );
+	void SetDefine( const char *name, bool value );
 	
-	/** \brief Remove define. */
+	/** Set multiple defines set to '1'. */
+	void SetDefines( const char *name1 );
+	void SetDefines( const char *name1, const char *name2 );
+	void SetDefines( const char *name1, const char *name2, const char *name3 );
+	void SetDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	
+	/** Remove define. */
 	void RemoveDefine( const char *name );
 	
-	/** Removes all defines. */
+	/** Remove all defines. */
 	void RemoveAllDefines();
 	
-	/** Determines if this defines object equals another defines object. */
+	/** Defines are equal. */
 	bool Equals( const deoglShaderDefines &defines ) const;
 	/*@}*/
 	
-	/** @name Operators */
+	
+	
+	/** \name Operators */
 	/*@{*/
-	/** Determines a defines object is equal to this defines object. */
+	/** Defines are equal. */
 	bool operator==( const deoglShaderDefines &defines ) const;
-	/** Sets this defines object to the content of another defines object. */
+	
+	/** Replace defines. */
 	deoglShaderDefines &operator=( const deoglShaderDefines &defines );
+	
+	/** Combine defines. */
+	deoglShaderDefines operator+( const deoglShaderDefines &defines ) const;
 	/*@}*/
 	
 private:

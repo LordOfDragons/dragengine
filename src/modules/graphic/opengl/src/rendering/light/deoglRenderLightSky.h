@@ -31,7 +31,6 @@ class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
@@ -44,31 +43,31 @@ class deoglSkyLayerGICascade;
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
-	deoglShaderProgram *pShaderAO;
-	deoglShaderProgram *pShaderClearDepth;
-	deoglShaderProgram *pShaderOccMesh;
+	deoglShaderProgramUsage pShaderAO;
+	deoglShaderProgramUsage pShaderClearDepth;
+	deoglShaderProgramUsage pShaderOccMesh;
 	
 	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusion;
-	deoglDebugInformation *pDebugInfoSolidShadowSplit;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitContent;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitLODLevels;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitClear;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitTask;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitRender;
-	deoglDebugInformation *pDebugInfoSolidShadowGI;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowOcclusion;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplit;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitContent;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitLODLevels;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowGI;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	
@@ -87,7 +86,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Occlusion mesh shader. */
-	inline deoglShaderProgram *GetShaderOccMesh() const{ return pShaderOccMesh; }
+	inline const deoglShaderProgramUsage &GetShaderOccMesh() const{ return pShaderOccMesh; }
 	
 	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );

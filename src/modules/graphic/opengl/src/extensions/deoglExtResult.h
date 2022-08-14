@@ -432,7 +432,7 @@ extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
 extern GLAPI PFNGLDRAWELEMENTSBASEVERTEXPROC pglDrawElementsBaseVertex;
 extern GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex;
 extern GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC pglDrawElementsInstancedBaseVertex;
-//extern GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex;
+extern GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex;
 extern GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer;
 
 
@@ -612,6 +612,11 @@ extern GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v;
 // extern GLAPI PFNGLBLENDFUNCIARBPROC pglBlendFunci;
 // extern GLAPI PFNGLBLENDFUNCSEPARATEIARBPROC pglBlendFuncSeparatei;
 
+// OpenGL version 1.4
+///////////////////////
+
+extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
+
 
 
 // GL_ARB_tessellation_shader : opengl version 4.0
@@ -714,6 +719,42 @@ extern GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect;
 // GL_ARB_draw_indirect : opengl version 4.3
 //////////////////////////////////////////////
 
+struct oglDrawArraysIndirectCommand{
+	GLuint count;
+	GLuint instanceCount;
+	GLuint first;
+	GLuint baseInstance;
+	
+	oglDrawArraysIndirectCommand();
+};
+
+struct oglDrawElementsIndirectCommand{
+	GLuint count;
+	GLuint instanceCount;
+	GLuint firstIndex;
+	GLint baseVertex;
+	GLuint baseInstance;
+	
+	oglDrawElementsIndirectCommand();
+};
+
+union oglDrawIndirectCommand{
+	struct Element{
+		GLuint count;
+		GLuint instanceCount;
+		GLuint firstIndex;
+		GLint baseVertex;
+		GLuint baseInstance;
+	} element;
+	
+	struct Array{
+		GLuint count;
+		GLuint instanceCount;
+		GLuint first;
+		GLuint baseInstance;
+	} array;
+};
+
 extern GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect;
 extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
 
@@ -722,7 +763,26 @@ extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
 // GL_ARB_multi_draw_indirect : opengl version 4.3
 ////////////////////////////////////////////////////
 
+/**
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ * 
+ * Sourcing parameters from client memory is NOT allowed although the documentatin claims so!
+ * If you try doing this you get GL_INVALID_OPERATION and weeks of big headaches!
+ * This ONLY works with GL_DRAW_INDIRECT_BUFFER and nothing else!
+ * 
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ */
 extern GLAPI PFNGLMULTIDRAWARRAYSINDIRECTPROC pglMultiDrawArraysIndirect;
+
+/**
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ * 
+ * Sourcing parameters from client memory is NOT allowed although the documentatin claims so!
+ * If you try doing this you get GL_INVALID_OPERATION and weeks of big headaches!
+ * This ONLY works with GL_DRAW_INDIRECT_BUFFER and nothing else!
+ * 
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ */
 extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect;
 
 
@@ -931,6 +991,11 @@ extern GLAPI PFNGLGETVARYINGLOCATIONNVPROC pglGetVaryingLocationNV;
 extern GLAPI PFNGLBINDIMAGETEXTUREPROC pglBindImageTexture;
 
 
+// OpenGL 4.2 : no extension
+//////////////////////////////
+
+extern GLAPI PFNGLMEMORYBARRIERPROC pglMemoryBarrier;
+
 
 // OpenGL 4.3 : no extension
 //////////////////////////////
@@ -941,6 +1006,12 @@ extern GLAPI PFNGLINVALIDATEFRAMEBUFFERPROC pglInvalidateFramebuffer;
 //////////////////////////////
 
 extern GLAPI PFNGLGETINTEGER64VPROC pglGetInteger64v;
+
+// OpenGL 2.0 : no extension
+//////////////////////////////
+
+extern GLAPI PFNGLMULTIDRAWARRAYSPROC pglMultiDrawArrays;
+extern GLAPI PFNGLMULTIDRAWELEMENTSPROC pglMultiDrawElements;
 
 
 
@@ -968,5 +1039,14 @@ extern GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC pglProgramUniformHandleui64vA
 extern GLAPI PFNGLVERTEXATTRIBL1UI64ARBPROC pglVertexAttribL1ui64ARB;
 extern GLAPI PFNGLVERTEXATTRIBL1UI64VARBPROC pglVertexAttribL1ui64vARB;
 extern GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB;
+
+
+
+// GL_KHR_debug : no opengl version
+/////////////////////////////////////
+
+extern GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup;
+extern GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup;
+extern GLAPI PFNGLOBJECTLABELPROC pglObjectLabel;
 
 #endif

@@ -23,11 +23,12 @@
 #define _DEOGLRENDERBASE_H_
 
 #include "../deoglBasics.h"
+#include "../debug/deoglDebugInformation.h"
+#include "../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
-class deoglDebugInformation;
 class deoglCollideList;
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -126,6 +127,25 @@ public:
 	
 	/** Set cull mode. */
 	void SetCullMode( bool renderBackFaces );
+	
+	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
+	void RenderFullScreenQuad();
+	
+	/**
+	 * Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to
+	 * be active. If stereo rendering is active and specific hardware support is present
+	 * renders two quads using multi-draw instead of one.
+	 */
+	void RenderFullScreenQuad( const deoglRenderPlan &plan );
+	
+	/** Render full screen quad with changing VAO. */
+	void RenderFullScreenQuadVAO();
+	
+	/**
+	 * Render full screen quad with changing VAO. If stereo rendering is active and specific
+	 * hardware support is present renders two quads using multi-draw instead of one.
+	 */
+	void RenderFullScreenQuadVAO( const deoglRenderPlan &plan );
 	/*@}*/
 	
 	

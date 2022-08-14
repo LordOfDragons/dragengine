@@ -41,6 +41,7 @@ public:
 		euscpVertexLight,
 		euscpVertexParticle,
 		euscpGeometryParticle,
+		euscpGeometryStereo,
 		euscpFragmentLight,
 		EUSCP_COUNT
 	};

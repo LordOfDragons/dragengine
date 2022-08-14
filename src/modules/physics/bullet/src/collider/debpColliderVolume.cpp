@@ -792,9 +792,9 @@ void debpColliderVolume::ScaleChanged(){
 	pScale = scale;
 	
 	pDirtyShapes = true;
-	pDirtyBPShape = true;
 	pDirtySweepTest = true;
 	pDirtyStaticTest = true;
+	DirtyBPShape();
 	
 	MarkMatrixDirty();
 	MarkDirtyOctree();
@@ -828,9 +828,9 @@ void debpColliderVolume::GeometryChanged(){
 	MarkDirtyOctree();
 	
 	if( ! sameScale ){
-		pDirtyBPShape = true;
 		pDirtySweepTest = true;
 		pDirtyStaticTest = true;
+		DirtyBPShape();
 	}
 	
 	if( ! pPreventUpdate ){
@@ -1474,7 +1474,7 @@ debpBulletShape *debpColliderVolume::pCreateBPShape(){
 	
 	createBulletShape.SetScale( pColliderVolume.GetScale() );
 	
-//	GetBullet()->LogInfo( "volule create shape" );
+//	GetBullet()->LogInfo( "volume create shape" );
 	
 	for( i=0; i<count; i++ ){
 		createBulletShape.SetShapeIndex( i );

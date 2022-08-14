@@ -46,6 +46,8 @@ class deoglShaderParameterBlock;
  */
 class deoglSkinShader : public deObject{
 public:
+	typedef deTObjectReference<deoglSkinShader> Ref;
+	
 	static int REFLECTION_TEST_MODE;
 	
 	/** Texture targets. */
@@ -88,19 +90,46 @@ public:
 		erutMatrixVP,
 		erutMatrixVn,
 		erutMatrixEnvMap,
+		erutMatrixSkyBody,
+		erutDepthToPosition,
+		erutDepthToPosition2,
 		erutDepthTransform,
 		erutEnvMapLodLevel,
 		erutNorRoughCorrStrength,
 		erutSkinDoesReflections,
 		erutFlipCulling,
+		erutClearDepthValue,
 		erutViewport,
 		erutClipPlane,
 		erutScreenSpace,
+		erutRenderSize,
+		erutMipMapParams,
 		erutDepthOffset,
 		erutParticleLightHack,
-		erutFadeRange,
 		erutBillboardZScale,
+		erutFadeRange,
+		erutCameraStereoMatrix,
+		erutCameraRange,
 		erutCameraAdaptedIntensity,
+		erutDepthSampleOffset,
+		erutFSScreenCoordToTexCoord,
+		erutFSTexCoordToScreenCoord,
+		erutSSAOParams1,
+		erutSSAOParams2,
+		erutSSAOParams3,
+		erutSSSSSParams1,
+		erutSSSSSParams2,
+		erutSSRParams1,
+		erutSSRParams2,
+		erutSSRParams3,
+		erutAOSelfShadow,
+		erutLumFragCoordScale,
+		erutGIRayMatrix,
+		erutGIRayMatrixNormal,
+		erutGIHighestCascade,
+		erutToneMapSceneKey,
+		erutToneMapAdaption,
+		erutToneMapBloom,
 		ERUT_COUNT
 	};
 	
@@ -255,6 +284,7 @@ private:
 	int pUsedInstanceUniformTargetCount;
 	
 	int pTargetSPBInstanceIndexBase;
+	int pTargetDrawIDOffset;
 	
 	deoglShaderSources *pSources;
 	deoglShaderProgram *pShader;
@@ -293,20 +323,17 @@ public:
 	/** Target of shared SPB instance index base parameter or -1 if not used. */
 	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }
 	
+	/** Target of draw id offset parameter or -1 if not used. */
+	inline int GetTargetDrawIDOffset() const{ return pTargetDrawIDOffset; }
+	
 	/** Prepare shader. */
 	void PrepareShader();
 	
 	/** Shader. */
 	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
-	/**
-	 * Create render skin shader shader parameter block.
-	 * 
-	 * If \em cubeMap is \em true the created shader parameter block has transformation
-	 * matrices changed to a 6-element array.
-	 */
-	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread,
-		bool cubeMap, bool cascaded );
+	/** Create render skin shader shader parameter block. */
+	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
 	
 	/** Create occlusion map shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );

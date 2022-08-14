@@ -33,6 +33,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/deoglRSkin.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
@@ -304,11 +305,7 @@ void deoglRParticleEmitterType::CheckEmitLight( const deParticleEmitterType &typ
 
 
 
-deoglLightShader *deoglRParticleEmitterType::GetShaderFor( int shaderType ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+deoglLightShader *deoglRParticleEmitterType::GetShaderFor( eShaderTypes shaderType ){
 	if( ! pShaders[ shaderType ] ){
 		deoglLightShaderConfig config;
 		
@@ -321,11 +318,7 @@ deoglLightShader *deoglRParticleEmitterType::GetShaderFor( int shaderType ){
 	return pShaders[ shaderType ];
 }
 
-bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
+bool deoglRParticleEmitterType::GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config ){
 	const deoglConfiguration &oglconfig = pEmitter.GetRenderThread().GetConfiguration();
 	
 	config.Reset();
@@ -335,6 +328,21 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	
 	config.SetLightMode( deoglLightShaderConfig::elmParticle );
+	
+	switch( shaderType ){
+	case estStereoNoShadow:
+		if( pEmitter.GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+// 			config.SetVSRenderStereo( true );
+			config.SetGSRenderStereo( true );
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
+		break;
+		
+	default:
+		break;
+	}
 	
 	switch( pSimulationType ){
 	case deParticleEmitterType::estRibbon:
@@ -358,8 +366,6 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
 	config.SetTextureNoise( false );
 	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	
 	config.SetTextureShadow1Solid( false );
 	config.SetTextureShadow1Transparent( false );
 	config.SetTextureShadow2Solid( false );
@@ -373,7 +379,7 @@ deoglSPBlockUBO *deoglRParticleEmitterType::GetLightParameterBlock(){
 		deoglLightShader *shader = nullptr;
 		int i;
 		
-		for( i=0; i<EST_COUNT; i++ ){
+		for( i=0; i<ShaderTypeCount; i++ ){
 			if( pShaders[ i ] ){
 				shader = pShaders[ i ];
 				break;
@@ -397,7 +403,7 @@ void deoglRParticleEmitterType::DropLightShaders(){
 	}
 	
 	int i;
-	for( i=0; i<EST_COUNT; i++ ){
+	for( i=0; i<ShaderTypeCount; i++ ){
 		pShaders[ i ] = nullptr;
 	}
 }

@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "deoglSkinShader.h"
 #include "deoglSkinShaderConfig.h"
 #include "deoglSkinShaderManager.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -111,13 +110,13 @@ int deoglSkinShaderManager::GetShaderCount() const{
 	return pShaderList.GetCount();
 }
 
-deoglSkinShader *deoglSkinShaderManager::GetShaderAt( int index ) const{
-	return ( deoglSkinShader* )pShaderList.GetAt( index );
+const deoglSkinShader &deoglSkinShaderManager::GetShaderAt( int index ) const{
+	return *( const deoglSkinShader * )pShaderList.GetAt( index );
 }
 
 void deoglSkinShaderManager::AddShader( deoglSkinShader *shader ){
 	if( ! shader ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeNullPointer, "shader" );
 	}
 	pShaderList.Add( shader );
 }
@@ -147,32 +146,20 @@ bool deoglSkinShaderManager::HasShaderWith( deoglSkinShaderConfig &configuration
 	return false;
 }
 
-deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
+deoglSkinShader::Ref deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
 	const int count = pShaderList.GetCount();
-	deoglSkinShader *shader = NULL;
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		shader = ( deoglSkinShader* )pShaderList.GetAt( i );
-		
+		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );
 		if( shader->GetConfig() == configuration ){
-			shader->AddReference();
-			return shader;
+			return deoglSkinShader::Ref( shader );
 		}
 	}
 	
-	shader = NULL;
-	try{
-		shader = new deoglSkinShader( pRenderThread, configuration );
-		pShaderList.Add( shader );
-		
-	}catch( const deException & ){
-		if( shader ){
-			shader->FreeReference();
-		}
-		throw;
-	}
-	
+	const deoglSkinShader::Ref shader( deoglSkinShader::Ref::New(
+		new deoglSkinShader( pRenderThread, configuration ) ) );
+	pShaderList.Add( shader );
 	return shader;
 }
 

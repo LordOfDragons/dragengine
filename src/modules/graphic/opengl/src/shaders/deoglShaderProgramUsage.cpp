@@ -62,27 +62,16 @@ deoglShaderProgramUsage::~deoglShaderProgramUsage(){
 	}
 }
 
+deoglShaderProgramUsage deoglShaderProgramUsage::New( deoglShaderProgram *program ){
+	deoglShaderProgramUsage usage;
+	usage.pProgram = program;
+	return usage;
+}
+
 
 
 // Management
 ///////////////
-
-void deoglShaderProgramUsage::TakeOver( deoglShaderProgram *program ){
-	if( program == pProgram ){
-		if( program ){
-			// this is required since we are asked to take over the usage. since we
-			// have the same usage already we refuse to take over the usage and
-			// thus without decreasing it this usage would be dangling
-			program->RemoveUsage();
-		}
-		return;
-	}
-	
-	if( pProgram ){
-		pProgram->RemoveUsage();
-	}
-	pProgram = program;
-}
 
 bool deoglShaderProgramUsage::operator!() const{
 	return pProgram == NULL;
@@ -106,8 +95,8 @@ deoglShaderProgram *deoglShaderProgramUsage::operator->() const{
 	return pProgram;
 }
 
-deoglShaderProgramUsage &deoglShaderProgramUsage::operator=( deoglShaderProgram *program ){
-	if( program == pProgram ){
+deoglShaderProgramUsage & deoglShaderProgramUsage::operator=( const deoglShaderProgramUsage &usage ){
+	if( usage.pProgram == pProgram ){
 		return *this;
 	}
 	
@@ -115,15 +104,11 @@ deoglShaderProgramUsage &deoglShaderProgramUsage::operator=( deoglShaderProgram 
 		pProgram->RemoveUsage();
 	}
 	
-	pProgram = program;
+	pProgram = usage.pProgram;
 	
-	if( program ){
-		program->AddUsage();
+	if( usage.pProgram ){
+		usage.pProgram->AddUsage();
 	}
 	
 	return *this;
-}
-
-deoglShaderProgramUsage & deoglShaderProgramUsage::operator=( const deoglShaderProgramUsage &usage ){
-	return operator=( usage.pProgram );
 }

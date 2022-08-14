@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Transparency Get Count Stereo</name>
+	
+	<version>130</version>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texValues' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outDummy' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/transparency/get_count.glsl</sourceCode>
+</shader>

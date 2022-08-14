@@ -24,13 +24,13 @@
 
 #include "deoglSkinTextureProperty.h"
 #include "channel/deoglSkinChannel.h"
+#include "shader/deoglSkinShader.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglRSkin;
 class deoglSPBlockUBO;
-class deoglSkinShader;
 class deoglSkinShaderConfig;
 class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
@@ -204,10 +204,83 @@ public:
 		estOutlineDepthReversed,
 		estOutlineDepthClipPlaneReversed,
 		estOutlineCounter,
-		estOutlineCounterClipPlane
+		estOutlineCounterClipPlane,
+		
+		// stereo rendering
+		estStereoComponentGeometry,
+		estStereoComponentDepth,
+		estStereoComponentDepthClipPlane,
+		estStereoComponentDepthReversed,
+		estStereoComponentDepthClipPlaneReversed,
+		estStereoComponentCounter,
+		estStereoComponentCounterClipPlane,
+		
+		estStereoBillboardGeometry,
+		estStereoBillboardDepth,
+		estStereoBillboardDepthClipPlane,
+		estStereoBillboardDepthReversed,
+		estStereoBillboardDepthClipPlaneReversed,
+		estStereoBillboardCounter,
+		estStereoBillboardCounterClipPlane,
+		
+		estStereoDecalGeometry,
+		
+		estStereoPropFieldGeometry,
+		estStereoPropFieldImposterGeometry,
+		estStereoPropFieldDepth,
+		estStereoPropFieldImposterDepth,
+		estStereoPropFieldDepthClipPlane,
+		estStereoPropFieldImposterDepthClipPlane,
+		estStereoPropFieldDepthReversed,
+		estStereoPropFieldImposterDepthReversed,
+		estStereoPropFieldDepthClipPlaneReversed,
+		estStereoPropFieldImposterDepthClipPlaneReversed,
+		estStereoPropFieldCounter,
+		estStereoPropFieldCounterClipPlane,
+		
+		estStereoHeightMapGeometry,
+		estStereoHeightMapDepth,
+		estStereoHeightMapDepthClipPlane,
+		estStereoHeightMapDepthReversed,
+		estStereoHeightMapDepthClipPlaneReversed,
+		estStereoHeightMapTranspCount,
+		estStereoHeightMapTranspCountClipPlane,
+		
+		estStereoParticleGeometry,
+		estStereoParticleGeometryDepthTest,
+		estStereoParticleDepth,
+		estStereoParticleDepthClipPlane,
+		estStereoParticleDepthReversed,
+		estStereoParticleDepthClipPlaneReversed,
+		estStereoParticleCounter,
+		estStereoParticleCounterClipPlane,
+		estStereoParticleRibbonGeometry,
+		estStereoParticleRibbonGeometryDepthTest,
+		estStereoParticleRibbonDepth,
+		estStereoParticleRibbonDepthClipPlane,
+		estStereoParticleRibbonDepthReversed,
+		estStereoParticleRibbonDepthClipPlaneReversed,
+		estStereoParticleRibbonCounter,
+		estStereoParticleRibbonCounterClipPlane,
+		estStereoParticleBeamGeometry,
+		estStereoParticleBeamGeometryDepthTest,
+		estStereoParticleBeamDepth,
+		estStereoParticleBeamDepthClipPlane,
+		estStereoParticleBeamDepthReversed,
+		estStereoParticleBeamDepthClipPlaneReversed,
+		estStereoParticleBeamCounter,
+		estStereoParticleBeamCounterClipPlane,
+		
+		estStereoOutlineGeometry,
+		estStereoOutlineDepth,
+		estStereoOutlineDepthClipPlane,
+		estStereoOutlineDepthReversed,
+		estStereoOutlineDepthClipPlaneReversed,
+		estStereoOutlineCounter,
+		estStereoOutlineCounterClipPlane
 	};
 	
-	static const int ShaderTypeCount = estOutlineCounterClipPlane + 1;
+	static const int ShaderTypeCount = estStereoOutlineCounterClipPlane + 1;
 	
 private:
 	deoglRenderThread &pRenderThread;
@@ -229,7 +302,7 @@ private:
 	bool pRenderableChannels;
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
-	deoglSkinShader *pShaders[ ShaderTypeCount ];
+	deoglSkinShader::Ref pShaders[ ShaderTypeCount ];
 	deoglSharedSPBElement *pSharedSPBElement;
 	
 	decColor pAbsorption;

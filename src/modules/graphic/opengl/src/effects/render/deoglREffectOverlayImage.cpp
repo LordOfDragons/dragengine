@@ -25,21 +25,26 @@
 #include <string.h>
 
 #include "deoglREffectOverlayImage.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglRImage.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -49,8 +54,6 @@
 ////////////////
 
 enum eSPEffect{
-	spePosTransform,
-	speTCTransform,
 	speGamma,
 	speColor
 };
@@ -63,8 +66,8 @@ enum eSPEffect{
 
 deoglREffectOverlayImage::deoglREffectOverlayImage( deoglRenderThread &renderThread ) :
 deoglREffect( renderThread ),
-pImage( NULL ),
-pShader( NULL ){
+pImage( NULL )
+{
 	LEAK_CHECK_CREATE( renderThread, EffectOverlayImage );
 }
 
@@ -72,9 +75,6 @@ deoglREffectOverlayImage::~deoglREffectOverlayImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectOverlayImage );
 	if( pImage ){
 		pImage->FreeReference();
-	}
-	if( pShader ){
-		pShader->RemoveUsage();
 	}
 }
 
@@ -108,16 +108,39 @@ void deoglREffectOverlayImage::SetImage( deoglRImage *image ){
 deoglShaderProgram *deoglREffectOverlayImage::GetShader(){
 	if( ! pShader ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Overlay" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
+		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
 	return pShader;
+}
+
+deoglShaderProgram *deoglREffectOverlayImage::GetShaderStereo(){
+	if( ! pShaderStereo ){
+		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderSources *sources;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			sources = shaderManager.GetSourcesNamed( "Effect Overlay" );
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Effect Overlay Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
+		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+	}
+	
+	return pShaderStereo;
 }
 
 void deoglREffectOverlayImage::PrepareForRender(){
@@ -137,18 +160,10 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectOverlayImage.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
-	
-	float scaleU = pImage->GetScaleFactorU();
-	float scaleV = pImage->GetScaleFactorV();
-	/*
-	const decVector2 &tc1 = pEffectOI->GetTextureCoordinatesFor( 0 );
-	const decVector2 &tc2 = pEffectOI->GetTextureCoordinatesFor( 1 );
-	const decVector2 &tc3 = pEffectOI->GetTextureCoordinatesFor( 2 );
-	const decVector2 &tc4 = pEffectOI->GetTextureCoordinatesFor( 3 );
-	*/
 	
 	// swap render texture
 	defren.ActivatePostProcessFBO( false );
@@ -168,14 +183,19 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	// set shader program
 	// [-1,1] * su/2 + su/2 = [0,su]
 	// [-1,1] * sv/2 + sv/2 = [0,sv]
-	deoglShaderProgram * const shaderProgram = GetShader();
+	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	shader.SetParameterFloat( spePosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader.SetParameterFloat( speTCTransform, scaleU * 0.5f, scaleV * 0.5f, scaleU * 0.5f, scaleV * 0.5f );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	shader.SetParameterFloat( speGamma, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, 1.0 );
 	shader.SetParameterFloat( speColor, 1.0f, 1.0f, 1.0f, pTransparency );
 	
-	defren.RenderFSQuadVAO();
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+		defren.RenderFSQuadVAOStereo();
+		
+	}else{
+		defren.RenderFSQuadVAO();
+	}
 }

@@ -30,6 +30,7 @@
 #include "task/deoglRenderTaskParticles.h"
 #include "task/deoglRenderTaskParticlesStep.h"
 #include "../collidelist/deoglCollideList.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -101,6 +102,7 @@ deoglRenderParticles::~deoglRenderParticles(){
 void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 	const int stepCount = renderTask.GetStepCount();
 	const deoglVAO *curVAO = NULL;
 	int i;
@@ -108,6 +110,8 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 	if( stepCount == 0 ){
 		return;
 	}
+	
+	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
 	
 	// conventional particles work with culling enabled. beams and ribbons though are tricky
 	// to calculate so they easily end up backfacing. for these culling has to be disabled
@@ -163,9 +167,18 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		//GetOgl().LogInfoFormat( "RenderTaskParticles: s=%i sha=%p tuc=%p vao=%i ic=%i",
 		//	s, renderTaskStep.GetShader(), renderTaskStep.GetTUC(), vao->GetVAO(),
 		//	renderTaskStep.GetIndexCount() );
-		OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
-			renderTaskStep.GetIndexCount(), indexGLType,
-			( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+		if( renderVSStereo ){
+			const GLsizei count[ 2 ] = { renderTaskStep.GetIndexCount(), renderTaskStep.GetIndexCount() };
+			const void * const indices[ 2 ] = {
+				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ),
+				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) };
+			OGL_CHECK( renderThread, pglMultiDrawElements( renderTaskStep.GetPrimitiveType(), count, indexGLType, indices, 2 ) );
+			
+		}else{
+			OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
+				renderTaskStep.GetIndexCount(), indexGLType,
+				( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+		}
 	}
 	
 	pglBindVertexArray( 0 );

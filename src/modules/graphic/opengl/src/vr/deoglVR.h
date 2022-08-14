@@ -25,6 +25,7 @@
 #include "deoglVREye.h"
 #include "../deoglBasics.h"
 #include "../model/deoglRModel.h"
+#include "../framebuffer/deoglFramebuffer.h"
 #include "../target/deoglRenderTarget.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -60,6 +61,10 @@ private:
 	decTimeHistory pTimeHistoryFrame;
 	int pTargetFPS;
 	float pTargetFPSHysteresis;
+	
+	bool pUseRenderStereo;
+	decPoint pRenderStereoSize;
+	deoglFramebuffer *pFBOStereo;
 	
 	
 	
@@ -108,6 +113,12 @@ public:
 	/** Target frame rate. */
 	inline int GetTargetFPS() const{ return pTargetFPS; }
 	
+	/** Use render stereo rendering. */
+	inline bool GetUseRenderStereo() const{ return pUseRenderStereo; }
+	
+	/** Drop stereo framebuffer. */
+	void DropFBOStereo();
+	
 	
 	
 	/** Begin frame. */
@@ -128,6 +139,7 @@ public:
 private:
 	void pGetParameters();
 	int pCalcTargetFPS( float frameTime ) const;
+	void pRenderStereo();
 };
 
 #endif

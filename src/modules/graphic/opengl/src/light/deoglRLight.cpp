@@ -47,6 +47,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shadow/deoglSCSolid.h"
 #include "../shadow/deoglSCTransparent.h"
@@ -668,10 +669,6 @@ void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask 
 
 
 deoglLightShader *deoglRLight::GetShaderFor( deoglRLight::eShaderTypes shaderType ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	if( ! pShaders[ shaderType ] ){
 		deoglLightShaderConfig config;
 		
@@ -708,6 +705,31 @@ deoglLightShaderConfig &config ){
 		
 	default:
 		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	}
+	
+	switch( shaderType ){
+	case estStereoNoShadow:
+	case estStereoSolid1:
+	case estStereoSolid1Transp1:
+	case estStereoSolid1NoAmbient:
+	case estStereoSolid1Transp1NoAmbient:
+	case estStereoSolid2:
+	case estStereoSolid2Transp1:
+	case estStereoSolid2Transp2:
+	case estStereoSolid2NoAmbient:
+	case estStereoSolid2Transp1NoAmbient:
+	case estStereoSolid2Transp2NoAmbient:
+		// NOTE light volumes
+		if( pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+			config.SetVSRenderStereo( true );
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
+		break;
+		
+	default:
+		break;
 	}
 	
 	switch( pLightType ){
@@ -819,37 +841,41 @@ deoglLightShaderConfig &config ){
 		break;
 	}
 	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	
 	switch( shaderType ){
 	case estNoShadow:
 	case estGIRayNoShadow:
+	case estStereoNoShadow:
 		break;
 		
 	case estSolid1:
 	case estLumSolid1:
+	case estStereoSolid1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Ambient( true );
 		break;
 		
 	case estSolid1NoAmbient:
 	case estLumSolid1NoAmbient:
+	case estStereoSolid1NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		break;
 		
 	case estSolid1Transp1:
+	case estStereoSolid1Transp1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow1Ambient( true );
 		break;
 		
 	case estSolid1Transp1NoAmbient:
+	case estStereoSolid1Transp1NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		break;
 		
 	case estSolid2:
 	case estLumSolid2:
+	case estStereoSolid2:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow2Solid( true );
 		config.SetTextureShadow1Ambient( true );
@@ -858,11 +884,13 @@ deoglLightShaderConfig &config ){
 		
 	case estSolid2NoAmbient:
 	case estLumSolid2NoAmbient:
+	case estStereoSolid2NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow2Solid( true );
 		break;
 		
 	case estSolid2Transp1:
+	case estStereoSolid2Transp1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
@@ -871,12 +899,14 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	case estSolid2Transp1NoAmbient:
+	case estStereoSolid2Transp1NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
 		break;
 		
 	case estSolid2Transp2:
+	case estStereoSolid2Transp2:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
@@ -886,6 +916,7 @@ deoglLightShaderConfig &config ){
 		break;
 		
 	case estSolid2Transp2NoAmbient:
+	case estStereoSolid2Transp2NoAmbient:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
@@ -929,7 +960,7 @@ deoglSPBlockUBO *deoglRLight::GetLightParameterBlock(){
 	deoglLightShader *shader = nullptr;
 	int i;
 	
-	for( i=0; i<EST_COUNT; i++ ){
+	for( i=0; i<ShaderTypeCount; i++ ){
 		if( pShaders[ i ] ){
 			shader = pShaders[ i ];
 			break;
@@ -955,7 +986,7 @@ deoglSPBlockUBO *deoglRLight::GetInstanceParameterBlock(){
 	deoglLightShader *shader = nullptr;
 	int i;
 	
-	for( i=0; i<EST_COUNT; i++ ){
+	for( i=0; i<ShaderTypeCount; i++ ){
 		if( pShaders[ i ] ){
 			shader = pShaders[ i ];
 			break;
@@ -986,7 +1017,7 @@ void deoglRLight::DropShaders(){
 		pParamBlockLight = NULL;
 	}
 	
-	for( i=0; i<EST_COUNT; i++ ){
+	for( i=0; i<ShaderTypeCount; i++ ){
 		pShaders[ i ] = nullptr;
 	}
 }

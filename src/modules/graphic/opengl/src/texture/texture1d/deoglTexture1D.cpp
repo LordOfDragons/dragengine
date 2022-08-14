@@ -33,6 +33,7 @@
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTDebug.h"
 
 #ifdef ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -219,6 +220,7 @@ void deoglTexture1D::CreateTexture(){
 	*/
 	
 	UpdateMemoryUsage();
+	pUpdateDebugObjectLabel();
 }
 
 void deoglTexture1D::DestroyTexture(){
@@ -752,4 +754,15 @@ void deoglTexture1D::SetDepthFormat( bool packedStencil ){
 	}else{
 		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
 	}
+}
+
+void deoglTexture1D::SetDebugObjectLabel( const char *name ){
+	pDebugObjectLabel.Format( "1D: %s", name );
+	if( pTexture ){
+		pUpdateDebugObjectLabel();
+	}
+}
+
+void deoglTexture1D::pUpdateDebugObjectLabel(){
+	pRenderThread.GetDebug().SetDebugObjectLabel( GL_TEXTURE, pTexture, pDebugObjectLabel );
 }

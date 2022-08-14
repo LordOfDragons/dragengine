@@ -64,11 +64,12 @@ public:
 	
 	/** Shader Types. */
 	enum eShaderTypes{
-		/** No shadow casting. */
-		estNoShadow,
-		/** Number of shaders. */
-		EST_COUNT
+		estNoShadow, //<! No shadow casting.
+		
+		estStereoNoShadow, //<! No shadow casting.
 	};
+	
+	static const int ShaderTypeCount = estStereoNoShadow + 1;
 	
 private:
 	deoglRParticleEmitter &pEmitter;
@@ -85,7 +86,7 @@ private:
 	
 	bool pEmitLight;
 	bool pHasTransparency;
-	deoglLightShader::Ref pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
 	deoglSPBlockUBO *pParamBlockLight;
 	
 	deParticleEmitterType::eSimulationTypes pSimulationType;
@@ -176,11 +177,14 @@ public:
 	
 	
 	/** Retrieves the shader for a shader type. */
-	deoglLightShader *GetShaderFor( int shaderType );
+	deoglLightShader *GetShaderFor( eShaderTypes shaderType );
+	
 	/** Retrieves the shader configuration for a shader type. */
-	bool GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config );
+	bool GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config );
+	
 	/** Retrieves the light parameter block. */
 	deoglSPBlockUBO *GetLightParameterBlock();
+	
 	/** Drop all light shaders and parameter blocks. */
 	void DropLightShaders();
 	/*@}*/

@@ -33,7 +33,6 @@ class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
 
@@ -43,14 +42,16 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgram *pShaderCopyDepth;
+	deoglShaderProgramUsage pShaderAOLocal;
+	deoglShaderProgramUsage pShaderAOLocalStereo;
+	deoglShaderProgramUsage pShaderAOBlur1;
+	deoglShaderProgramUsage pShaderAOBlur1Stereo;
+	deoglShaderProgramUsage pShaderAOBlur2;
+	deoglShaderProgramUsage pShaderAOBlur2Stereo;
+	deoglShaderProgramUsage pShaderDebugAO;
 	
-	deoglShaderProgram *pShaderAOLocal;
-	deoglShaderProgram *pShaderAOBlur1;
-	deoglShaderProgram *pShaderAOBlur2;
-	deoglShaderProgram *pShaderDebugAO;
-	
-	deoglShaderProgram *pShaderSSSSS;
+	deoglShaderProgramUsage pShaderSSSSS;
+	deoglShaderProgramUsage pShaderSSSSSStereo;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;
@@ -58,22 +59,19 @@ private:
 	deoglRenderLightParticles *pRenderLightParticles;
 	deoglRenderGI *pRenderGI;
 	
-	deoglSPBlockUBO *pLightPB;
 	deoglSPBlockUBO *pShadowPB;
-	deoglSPBlockUBO *pShadowCascadedPB;
-	deoglSPBlockUBO *pShadowCubePB;
 	deoglSPBlockUBO *pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoSolidCopyDepth;
-	deoglDebugInformation *pDebugInfoSolidParticle;
-	deoglDebugInformation *pDebugInfoSolidSSSSS;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoSolidCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoSolidParticle;
+	deoglDebugInformation::Ref pDebugInfoSolidSSSSS;
 	
-	deoglDebugInformation *pDebugInfoTransparent;
-	deoglDebugInformation *pDebugInfoTransparentCopyDepth;
-	deoglDebugInformation *pDebugInfoTransparentSSSSS;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoTransparentCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoTransparentSSSSS;
 	
 	
 	
@@ -108,17 +106,8 @@ public:
 	
 	
 	
-	/** Light render parameter block. */
-	inline deoglSPBlockUBO *GetLightPB() const{ return pLightPB; }
-	
 	/** Shadow render parameter block. */
 	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
-	
-	/** Shadow render parameter block. */
-	inline deoglSPBlockUBO *GetShadowCascadedPB() const{ return pShadowCascadedPB; }
-	
-	/** Shadow render parameter block cubemap. */
-	inline deoglSPBlockUBO *GetShadowCubePB() const{ return pShadowCubePB; }
 	
 	/** Occmap render parameter block. */
 	inline deoglSPBlockUBO *GetOccMapPB() const{ return pOccMapPB; }
@@ -163,9 +152,6 @@ public:
 	
 	/** Render screen space sub surface scattering. */
 	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
-	
-	/** Prepare light render parameter shader parameter block. */
-	void PrepareRenderParamBlockLight( deoglRenderPlan &plan );
 	
 	
 	

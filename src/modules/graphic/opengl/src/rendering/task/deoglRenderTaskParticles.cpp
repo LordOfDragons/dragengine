@@ -44,7 +44,8 @@
 ////////////////////////////
 
 deoglRenderTaskParticles::deoglRenderTaskParticles(){
-	pRenderParamBlock = NULL;
+	pRenderParamBlock = nullptr;
+	pRenderVSStereo = false;
 	
 	pSteps = NULL;
 	pStepCount = 0;
@@ -69,11 +70,16 @@ deoglRenderTaskParticles::~deoglRenderTaskParticles(){
 
 void deoglRenderTaskParticles::Clear(){
 	RemoveAllSteps();
-	SetRenderParamBlock( NULL );
+	pRenderParamBlock = nullptr;
+	pRenderVSStereo = false;
 }
 
 void deoglRenderTaskParticles::SetRenderParamBlock( deoglSPBlockUBO *paramBlock ){
 	pRenderParamBlock = paramBlock;
+}
+
+void deoglRenderTaskParticles::SetRenderVSStereo( bool renderVSStereo ){
+	pRenderVSStereo = renderVSStereo;
 }
 
 

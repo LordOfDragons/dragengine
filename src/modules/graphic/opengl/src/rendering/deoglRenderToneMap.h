@@ -26,7 +26,6 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglShaderProgram;
 class deoglRenderPlan;
 class deoglFramebuffer;
 class deoglTexture;
@@ -42,17 +41,25 @@ private:
 	deoglFramebuffer *pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
-	deoglShaderProgram *pShaderColor2LogLum;
-	deoglShaderProgram *pShaderAvgLogLum;
-	deoglShaderProgram *pShaderParameters;
-	deoglShaderProgram *pShaderBrightPass;
-	deoglShaderProgram *pShaderBloomReduce;
-	deoglShaderProgram *pShaderBloomBlur;
-	deoglShaderProgram *pShaderBloomAdd;
-	deoglShaderProgram *pShaderToneMap;
-	deoglShaderProgram *pShaderFinalize;
+	deoglShaderProgramUsage pShaderColor2LogLum;
+	deoglShaderProgramUsage pShaderColor2LogLumStereo;
+	deoglShaderProgramUsage pShaderAvgLogLum;
+	deoglShaderProgramUsage pShaderAvgLogLumStereo;
+	deoglShaderProgramUsage pShaderParameters;
+	deoglShaderProgramUsage pShaderParametersStereo;
+	deoglShaderProgramUsage pShaderBrightPass;
+	deoglShaderProgramUsage pShaderBrightPassStereo;
+	deoglShaderProgramUsage pShaderBloomReduce;
+	deoglShaderProgramUsage pShaderBloomBlur;
+	deoglShaderProgramUsage pShaderBloomBlurStereo;
+	deoglShaderProgramUsage pShaderBloomAdd;
+	deoglShaderProgramUsage pShaderToneMap;
+	deoglShaderProgramUsage pShaderToneMapStereo;
+	deoglShaderProgramUsage pShaderFinalize;
+	deoglShaderProgramUsage pShaderFinalizeStereo;
 	
-	deoglShaderProgram *pShaderLumPrepare;
+	deoglShaderProgramUsage pShaderLumPrepare;
+	deoglShaderProgramUsage pShaderLumPrepareStereo;
 	
 	
 public:

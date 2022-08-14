@@ -26,7 +26,6 @@
 
 class deoglRenderPlan;
 class deoglRDebugDrawer;
-class deoglShaderProgram;
 
 
 
@@ -37,10 +36,10 @@ class deoglShaderProgram;
  */
 class deoglRenderDebugDrawer : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderShapeXRay;
-	deoglShaderProgram *pShaderShapeSolid;
-	deoglShaderProgram *pShaderMeshXRay;
-	deoglShaderProgram *pShaderMeshSolid;
+	deoglShaderProgramUsage pShaderShapeXRay;
+	deoglShaderProgramUsage pShaderShapeSolid;
+	deoglShaderProgramUsage pShaderMeshXRay;
+	deoglShaderProgramUsage pShaderMeshSolid;
 	
 public:
 	/** @name Constructors and Destructors */

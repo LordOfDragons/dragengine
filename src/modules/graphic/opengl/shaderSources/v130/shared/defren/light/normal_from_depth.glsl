@@ -4,7 +4,12 @@
 	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif
 
-vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPosition ){
+#ifdef GI_RAY
+vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPosition )
+#else
+vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPosition )
+#endif
+{
 	/*
 	the simple solution uses derivatives. this produces wrong results
 	along corners and is also not usable in compute shaders
@@ -66,10 +71,10 @@ vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPos
 		positionY = vec3( samples.w );
 	}
 	
-	positionX.z = pPosTransform.x / ( pPosTransform.y - positionX.z );
-	positionY.z = pPosTransform.x / ( pPosTransform.y - positionY.z );
-	positionX.xy = ( vScreenCoord + offsetX + pPosTransform2 ) * pPosTransform.zw * positionX.zz;
-	positionY.xy = ( vScreenCoord + offsetY + pPosTransform2 ) * pPosTransform.zw * positionY.zz;
+	positionX.z = pDepthToPosition[ vLayer ].x / ( pDepthToPosition[ vLayer ].y - positionX.z );
+	positionY.z = pDepthToPosition[ vLayer ].x / ( pDepthToPosition[ vLayer ].y - positionY.z );
+	positionX.xy = ( vScreenCoord + offsetX + pDepthToPosition2[ vLayer ] ) * pDepthToPosition[ vLayer ].zw * positionX.zz;
+	positionY.xy = ( vScreenCoord + offsetY + pDepthToPosition2[ vLayer ] ) * pDepthToPosition[ vLayer ].zw * positionY.zz;
 	
 	vec3 normal = normalize( cross( positionY - centerPosition, positionX - centerPosition ) );
 	

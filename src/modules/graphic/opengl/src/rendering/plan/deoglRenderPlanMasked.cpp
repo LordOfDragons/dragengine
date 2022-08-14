@@ -43,6 +43,8 @@ pComponentTexture( 0 ),
 pUseClipPlane( false ),
 pClipNormal( 0.0f, 1.0f, 0.0f ),
 pClipDistance( 0.0f ),
+pClipNormalStereo( 0.0f, 1.0f, 0.0f ),
+pClipDistanceStereo( 0.0f ),
 pStencilMask( 0 ),
 pParentStencilMask( 0 ){
 }
@@ -77,19 +79,17 @@ void deoglRenderPlanMasked::SetPlan( deoglRenderPlan *plan ){
 	pUseClipPlane = false;
 	pClipNormal.Set( 0.0f, 1.0f, 0.0f );
 	pClipDistance = 0.0f;
+	pClipNormalStereo.Set( 0.0f, 1.0f, 0.0f );
+	pClipDistanceStereo = 0.0f;
 	
 	pStencilMask = 0;
 	pParentStencilMask = 0;
 }
 
-
-
 void deoglRenderPlanMasked::SetComponent( deoglRComponent *component, int texture ){
 	pComponent = component;
 	pComponentTexture = texture;
 }
-
-
 
 void deoglRenderPlanMasked::SetUseClipPlane( bool useClipPlane ){
 	pUseClipPlane = useClipPlane;
@@ -103,7 +103,13 @@ void deoglRenderPlanMasked::SetClipDistance( float distance ){
 	pClipDistance = distance;
 }
 
+void deoglRenderPlanMasked::SetClipNormalStereo( const decVector &normal ){
+	pClipNormalStereo = normal;
+}
 
+void deoglRenderPlanMasked::SetClipDistanceStereo( float distance ){
+	pClipDistanceStereo = distance;
+}
 
 void deoglRenderPlanMasked::SetStencilMask( int mask ){
 	pStencilMask = mask;

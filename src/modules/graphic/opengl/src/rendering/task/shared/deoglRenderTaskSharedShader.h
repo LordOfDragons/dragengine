@@ -36,6 +36,7 @@ private:
 	
 	deoglShaderProgram *pShader;
 	int pSPBInstanceIndexBase;
+	int pDrawIDOffset;
 	
 	
 	
@@ -72,6 +73,12 @@ public:
 	
 	/** Set shader parameter index of pSPBInstanceIndexBase or -1. */
 	void SetSPBInstanceIndexBase( int parameter );
+	
+	/** Shader parameter index of pDrawIDOffset or -1. */
+	inline int GetDrawIDOffset() const{ return pDrawIDOffset; }
+	
+	/** Set shader parameter index of pDrawIDOffset or -1. */
+	void SetDrawIDOffset( int parameter );
 	
 	
 	

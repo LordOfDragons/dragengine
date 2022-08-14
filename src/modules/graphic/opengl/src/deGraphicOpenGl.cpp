@@ -61,6 +61,7 @@
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
+#include "parameters/debug/deoglPDebugNoMessages.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
 #include "parameters/debug/deoglPQuickDebug.h"
@@ -68,9 +69,7 @@
 #include "parameters/debug/deoglPOcclusionReduction.h"
 #include "parameters/debug/deoglPOccTestMode.h"
 #include "parameters/debug/deoglPWireframeMode.h"
-#include "parameters/defren/deoglPDefRenEncDepth.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
-#include "parameters/defren/deoglPDefRenUsePOTs.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
 #include "parameters/defren/deoglPRenderDownScale.h"
 #include "parameters/defren/deoglPTranspLayerLimit.h"
@@ -680,8 +679,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
 	
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
-	pParameters.AddParameter( new deoglPDefRenEncDepth( *this ) );
-	pParameters.AddParameter( new deoglPDefRenUsePOTs( *this ) );
 	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
 	
@@ -690,6 +687,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 #ifdef WITH_DEBUG
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
+	pParameters.AddParameter( new deoglPDebugNoMessages( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );

@@ -7,13 +7,19 @@ precision highp int;
 uniform vec4 pClipPlane; // normal.xyz, distance
 
 uniform lowp sampler2D texDiffuse;
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
 
-#if defined( IGNORE_HOLES ) || defined( CLIP_DEPTH )
+#if defined IGNORE_HOLES || defined CLIP_DEPTH
 in vec2 vTexCoord;
 #endif
 #ifdef USE_CLIP_PLANE
 in vec3 vClipCoord;
+#endif
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	in flat int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 #ifdef ENCODE_DEPTH
@@ -48,16 +54,16 @@ void main( void ){
 	
 	#ifdef INVERSE_DEPTH
 		#ifdef ENCODE_DEPTH
-			if( gl_FragCoord.z <= dot( texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).rgb, unpackDepth ) ) discard;
+			if( gl_FragCoord.z <= dot( texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).rgb, unpackDepth ) ) discard;
 		#else
-			if( gl_FragCoord.z <= texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).r ) discard;
+			if( gl_FragCoord.z <= texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).r ) discard;
 		#endif
 		
 	#else
 		#ifdef ENCODE_DEPTH
-			if( gl_FragCoord.z >= dot( texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).rgb, unpackDepth ) ) discard;
+			if( gl_FragCoord.z >= dot( texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).rgb, unpackDepth ) ) discard;
 		#else
-			if( gl_FragCoord.z >= texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).r ) discard;
+			if( gl_FragCoord.z >= texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).r ) discard;
 		#endif
 	#endif
 #endif

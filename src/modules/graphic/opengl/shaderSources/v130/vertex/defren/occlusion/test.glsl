@@ -4,20 +4,27 @@ precision highp int;
 uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 uniform float pInvWidth;
 uniform mat4 pMatrix; // camera-rotation and projection
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	uniform mat4 pMatrixStereo;
+#endif
 
 in vec3 inMinExtend;
 in vec3 inMaxExtend;
 
 out vec3 vMinExtend;
 out vec2 vMaxExtend;
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	out vec3 vMinExtend2;
+	out vec2 vMaxExtend2;
+#endif
 
 const float znear = -1.0;
 
 
 
 // calculates the screen space position of a point
-void calcScreenPosition( in vec4 pointWorld, out vec4 pointScreen ){
-	pointScreen = pMatrix * pointWorld;
+void calcScreenPosition( in mat4 matrix, in vec4 pointWorld, out vec4 pointScreen ){
+	pointScreen = matrix * pointWorld;
 	
 	if( pointScreen.z < znear ){ // behind near z plane, clamp coordinates to the closest border
 		pointScreen.xyz = vec3( mix( vec2( -1.0 ), vec2( 1.0 ), bvec2( step( 0.5, pointScreen.xy ) ) ), -1.0 );
@@ -33,7 +40,7 @@ void calcScreenPosition( in vec4 pointWorld, out vec4 pointScreen ){
 	const vec3 zeroSize = vec3( 0.0 );
 #endif
 
-void calcScreenAABB( out vec3 minExtend, out vec2 maxExtend ){
+void calcScreenAABB( in mat4 matrix, out vec3 minExtend, out vec2 maxExtend ){
 	vec4 pointWorld, pointScreen;
 	
 	// ensure the box is not too small
@@ -51,49 +58,49 @@ void calcScreenAABB( out vec3 minExtend, out vec2 maxExtend ){
 	
 	// point -x, -y, -z
 	pointWorld = vec4( IN_MIN_EXTEND, 1.0 );
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = pointScreen.xyz;
 	maxExtend = pointScreen.xy;
 	
 	// point  x, -y, -z
 	pointWorld.x = IN_MAX_EXTEND.x;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 	
 	// point  x,  y, -z
 	pointWorld.y = IN_MAX_EXTEND.y;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 	
 	// point -x,  y, -z
 	pointWorld.x = IN_MIN_EXTEND.x;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 	
 	// point -x,  y,  z
 	pointWorld.z = IN_MAX_EXTEND.z;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 	
 	// point  x,  y,  z
 	pointWorld.x = IN_MAX_EXTEND.x;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 	
 	// point  x, -y,  z
 	pointWorld.y = IN_MIN_EXTEND.y;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 	
 	// point -x, -y,  z
 	pointWorld.x = IN_MIN_EXTEND.x;
-	calcScreenPosition( pointWorld, pointScreen );
+	calcScreenPosition( matrix, pointWorld, pointScreen );
 	minExtend = min( minExtend, vec3( pointScreen ) );
 	maxExtend = max( maxExtend, vec2( pointScreen ) );
 }
@@ -106,7 +113,13 @@ void main( void ){
 	pos.x = modf( float( gl_VertexID ) * pInvWidth, pos.y );
 	gl_Position = vec4( vec3( pos * pPosTransform.xy + pPosTransform.zw, 0.0 ), 1.0 );
 	
-	calcScreenAABB( vMinExtend, vMaxExtend );
+	calcScreenAABB( pMatrix, vMinExtend, vMaxExtend );
 	vMinExtend = vMinExtend * vec3( 0.5 ) + vec3( 0.5 );
 	vMaxExtend = vMaxExtend * vec2( 0.5 ) + vec2( 0.5 );
+	
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		calcScreenAABB( pMatrixStereo, vMinExtend2, vMaxExtend2 );
+		vMinExtend2 = vMinExtend2 * vec3( 0.5 ) + vec3( 0.5 );
+		vMaxExtend2 = vMaxExtend2 * vec2( 0.5 ) + vec2( 0.5 );
+	#endif
 }

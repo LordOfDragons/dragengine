@@ -77,11 +77,7 @@ debnServer::~debnServer(){
 // Management
 ///////////////
 
-void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileReader &reader ){
-	if( ! address ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileReader &reader ){
 	// reject connection if not listening or there is no script module peer
 	deBaseScriptingServer * const scrSvr = pServer->GetPeerScripting();
 	if( ! pListening || ! scrSvr ){
@@ -90,7 +86,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 		pNetBasic->GetSharedSendDatagram()->Clear();
 		sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
 		sendWriter.WriteByte( ( uint8_t )ecaRejected );
-		pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), address );
+		pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
 		return;
 	}
 	
@@ -108,7 +104,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 		pNetBasic->GetSharedSendDatagram()->Clear();
 		sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
 		sendWriter.WriteByte( ( uint8_t )ecaNoCommonProtocol );
-		pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), address );
+		pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
 		return;
 	}
 	
@@ -126,7 +122,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 	sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
 	sendWriter.WriteByte( ( uint8_t )ecaAccepted );
 	sendWriter.WriteUShort( protocol );
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), address );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
 	
 	// notify script about client connected
 	scrSvr->ClientConnected( connection );
@@ -149,16 +145,16 @@ bool debnServer::ListenOn( const char *address ){
 			
 		}else{
 			pNetBasic->LogWarn( "debnServer.ListenOn: No public address found. Using localhost" );
-			useAddress = "127.0.0.1";
+			useAddress = "localhost";
 		}
 	}
 	
-	pNetBasic->LogInfoFormat( "debnServer.ListenOn: Listening on %s", useAddress.GetString() );
+	pNetBasic->LogInfoFormat( "debnServer.ListenOn: Listening on '%s'", useAddress.GetString() );
 	
 	try{
-		pSocket = new debnSocket( pNetBasic );
+		pSocket = new debnSocket( *pNetBasic );
 		
-		pSocket->GetAddress()->SetIPv4FromString( useAddress );
+		pSocket->GetAddress().SetFromString( useAddress );
 		pSocket->Bind();
 		
 		pListening = true;

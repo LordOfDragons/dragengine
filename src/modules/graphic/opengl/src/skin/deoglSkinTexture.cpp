@@ -28,7 +28,6 @@
 #include "deoglSkinTexture.h"
 #include "deoglSkinPropertyMap.h"
 #include "deoglSkinRenderable.h"
-#include "shader/deoglSkinShader.h"
 #include "shader/deoglSkinShaderManager.h"
 #include "state/deoglSkinState.h"
 #include "state/deoglSkinStateRenderable.h"
@@ -101,8 +100,8 @@ enum eShaderConfigurationTypes{
 };
 
 //#define SSC( enumentry ) deoglSkinShaderConfig::enumentry
-#define SCIE(type, clipPlane, billboard, shaderMode, geometryMode, depthMode, particleMode, depthTestMode) \
-	{ esct##type, clipPlane, billboard, \
+#define SCIE(type, clipPlane, billboard, stereo, shaderMode, geometryMode, depthMode, particleMode, depthTestMode) \
+	{ esct##type, clipPlane, billboard, stereo, \
 		deoglSkinShaderConfig::esm##shaderMode, \
 		deoglSkinShaderConfig::egm##geometryMode, \
 		deoglSkinShaderConfig::edm##depthMode, \
@@ -113,6 +112,7 @@ struct sShaderConfigInfo{
 	eShaderConfigurationTypes type;
 	bool clipPlane;
 	bool billboard;
+	bool stereo;
 	deoglSkinShaderConfig::eShaderModes shaderMode;
 	deoglSkinShaderConfig::eGeometryModes geometryMode;
 	deoglSkinShaderConfig::eDepthModes depthMode;
@@ -126,62 +126,62 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 	//     depth test mode is used only for !pSolid. For pSolid edtmNone is used
 	
 	// estComponentGeometry
-	SCIE(Geometry, false, false, Geometry, Component, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, Component, Projection, Particle, None),
 	// estComponentDepth
-	SCIE(Depth, false, false, Depth, Component, Projection, Particle, Larger),
+	SCIE(Depth, false, false, false, Depth, Component, Projection, Particle, Larger),
 	// estComponentDepthClipPlane
-	SCIE(Depth, true, false, Depth, Component, Projection, Particle, Larger),
+	SCIE(Depth, true, false, false, Depth, Component, Projection, Particle, Larger),
 	// estComponentDepthReversed
-	SCIE(Depth, false, false, Depth, Component, Projection, Particle, Smaller),
+	SCIE(Depth, false, false, false, Depth, Component, Projection, Particle, Smaller),
 	// estComponentDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Component, Projection, Particle, Smaller),
+	SCIE(Depth, true, false, false, Depth, Component, Projection, Particle, Smaller),
 	// estComponentCounter
-	SCIE(Counter, false, false, Depth, Component, Projection, Particle, None),
+	SCIE(Counter, false, false, false, Depth, Component, Projection, Particle, None),
 	// estComponentCounterClipPlane
-	SCIE(Counter, true, false, Depth, Component, Projection, Particle, None),
+	SCIE(Counter, true, false, false, Depth, Component, Projection, Particle, None),
 	// estComponentShadowProjection
-	SCIE(Shadow, false, false, Depth, Component, Projection, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Component, Projection, Particle, None),
 	// estComponentShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, Component, Orthogonal, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Component, Orthogonal, Particle, None),
 	// estComponentShadowOrthogonalCascaded
-	SCIE(Shadow, false, false, Depth, Component, Orthogonal, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Component, Orthogonal, Particle, None),
 	// estComponentShadowDistance
-	SCIE(Shadow, false, false, Depth, Component, Distance, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Component, Distance, Particle, None),
 	// estComponentShadowDistanceCube
-	SCIE(Shadow, false, false, Depth, Component, Distance, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Component, Distance, Particle, None),
 	// estComponentEnvMap
-	SCIE(EnvMap, false, false, EnvMap, Component, Projection, Particle, None),
+	SCIE(EnvMap, false, false, false, EnvMap, Component, Projection, Particle, None),
 	// estComponentLuminance
-	SCIE(Geometry, false, false, Geometry, Component, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, Component, Projection, Particle, None),
 	// estComponentGIMaterial
-	SCIE(Geometry, false, false, Geometry, Component, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, Component, Projection, Particle, None),
 	
 	
 	// Billboard
 	// estBillboardGeometry
-	SCIE(Geometry, false, true, Geometry, Billboard, Projection, Particle, None),
+	SCIE(Geometry, false, true, false, Geometry, Billboard, Projection, Particle, None),
 	// estBillboardDepth
-	SCIE(Depth, false, true, Depth, Billboard, Projection, Particle, Larger),
+	SCIE(Depth, false, true, false, Depth, Billboard, Projection, Particle, Larger),
 	// estBillboardDepthClipPlane
-	SCIE(Depth, true, true, Depth, Billboard, Projection, Particle, Larger),
+	SCIE(Depth, true, true, false, Depth, Billboard, Projection, Particle, Larger),
 	// estBillboardDepthReversed
-	SCIE(Depth, false, true, Depth, Billboard, Projection, Particle, Smaller),
+	SCIE(Depth, false, true, false, Depth, Billboard, Projection, Particle, Smaller),
 	// estBillboardDepthClipPlaneReversed
-	SCIE(Depth, true, true, Depth, Billboard, Projection, Particle, Smaller),
+	SCIE(Depth, true, true, false, Depth, Billboard, Projection, Particle, Smaller),
 	// estBillboardCounter
-	SCIE(Counter, false, true, Depth, Billboard, Projection, Particle, None),
+	SCIE(Counter, false, true, false, Depth, Billboard, Projection, Particle, None),
 	// estBillboardCounterClipPlane
-	SCIE(Counter, true, true, Depth, Billboard, Projection, Particle, None),
+	SCIE(Counter, true, true, false, Depth, Billboard, Projection, Particle, None),
 	// estBillboardEnvMap
-	SCIE(EnvMap, false, true, EnvMap, Billboard, Projection, Particle, None),
+	SCIE(EnvMap, false, true, false, EnvMap, Billboard, Projection, Particle, None),
 	
 	
 	// Decal
 	
 	// estDecalGeometry
-	SCIE(Geometry, false, false, Geometry, Decal, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, Decal, Projection, Particle, None),
 	// estDecalEnvMap
-	SCIE(EnvMap, false, false, EnvMap, Decal, Projection, Particle, None),
+	SCIE(EnvMap, false, false, false, EnvMap, Decal, Projection, Particle, None),
 	
 	
 	
@@ -190,37 +190,37 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 	//     depth test mode is used only for !pSolid. For pSolid edtmNone is used
 	
 	// estPropFieldGeometry
-	SCIE(Geometry, false, false, Geometry, PropField, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, PropField, Projection, Particle, None),
 	// estPropFieldImposterGeometry
-	SCIE(Geometry, false, true, Geometry, PropField, Projection, Particle, None),
+	SCIE(Geometry, false, true, false, Geometry, PropField, Projection, Particle, None),
 	// estPropFieldDepth
-	SCIE(Depth, false, false, Depth, PropField, Projection, Particle, Larger),
+	SCIE(Depth, false, false, false, Depth, PropField, Projection, Particle, Larger),
 	// estPropFieldImposterDepth
-	SCIE(Depth, false, true, Depth, PropField, Projection, Particle, Larger),
+	SCIE(Depth, false, true, false, Depth, PropField, Projection, Particle, Larger),
 	// estPropFieldDepthClipPlane
-	SCIE(Depth, true, false, Depth, PropField, Projection, Particle, Larger),
+	SCIE(Depth, true, false, false, Depth, PropField, Projection, Particle, Larger),
 	// estPropFieldImposterDepthClipPlane
-	SCIE(Depth, true, true, Depth, PropField, Projection, Particle, Larger),
+	SCIE(Depth, true, true, false, Depth, PropField, Projection, Particle, Larger),
 	// estPropFieldDepthReversed
-	SCIE(Depth, false, false, Depth, PropField, Projection, Particle, Smaller),
+	SCIE(Depth, false, false, false, Depth, PropField, Projection, Particle, Smaller),
 	// estPropFieldImposterDepthReversed
-	SCIE(Depth, false, true, Depth, PropField, Projection, Particle, Smaller),
+	SCIE(Depth, false, true, false, Depth, PropField, Projection, Particle, Smaller),
 	// estPropFieldDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, PropField, Projection, Particle, Smaller),
+	SCIE(Depth, true, false, false, Depth, PropField, Projection, Particle, Smaller),
 	// estPropFieldImposterDepthClipPlaneReversed
-	SCIE(Depth, true, true, Depth, PropField, Projection, Particle, Smaller),
+	SCIE(Depth, true, true, false, Depth, PropField, Projection, Particle, Smaller),
 	// estPropFieldCounter
-	SCIE(Counter, false, false, Depth, PropField, Projection, Particle, None),
+	SCIE(Counter, false, false, false, Depth, PropField, Projection, Particle, None),
 	// estPropFieldCounterClipPlane
-	SCIE(Counter, true, false, Depth, PropField, Projection, Particle, None),
+	SCIE(Counter, true, false, false, Depth, PropField, Projection, Particle, None),
 	// estPropFieldShadowProjection
-	SCIE(Shadow, false, false, Depth, PropField, Projection, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, PropField, Projection, Particle, None),
 	// estPropFieldShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, PropField, Orthogonal, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, PropField, Orthogonal, Particle, None),
 	// estPropFieldShadowDistance
-	SCIE(Shadow, false, false, Depth, PropField, Distance, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, PropField, Distance, Particle, None),
 	// estPropFieldEnvMap
-	SCIE(EnvMap, false, false, EnvMap, PropField, Projection, Particle, None),
+	SCIE(EnvMap, false, false, false, EnvMap, PropField, Projection, Particle, None),
 	
 	
 	// Height Terrain
@@ -228,105 +228,269 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 	//     depth test mode is used only for !pSolid. For pSolid edtmNone is used
 	
 	// estHeightMapGeometry
-	SCIE(Geometry, false, false, Geometry, HeightMap, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, HeightMap, Projection, Particle, None),
 	// estHeightMapDepth
-	SCIE(Depth, false, false, Depth, HeightMap, Projection, Particle, Larger),
+	SCIE(Depth, false, false, false, Depth, HeightMap, Projection, Particle, Larger),
 	// estHeightMapDepthClipPlane
-	SCIE(Depth, true, false, Depth, HeightMap, Projection, Particle, Larger),
+	SCIE(Depth, true, false, false, Depth, HeightMap, Projection, Particle, Larger),
 	// estHeightMapDepthReversed
-	SCIE(Depth, false, false, Depth, HeightMap, Projection, Particle, Smaller),
+	SCIE(Depth, false, false, false, Depth, HeightMap, Projection, Particle, Smaller),
 	// estHeightMapDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, HeightMap, Projection, Particle, Smaller),
+	SCIE(Depth, true, false, false, Depth, HeightMap, Projection, Particle, Smaller),
 	// estHeightMapCounter
-	SCIE(Counter, false, false, Depth, HeightMap, Projection, Particle, None),
+	SCIE(Counter, false, false, false, Depth, HeightMap, Projection, Particle, None),
 	// estHeightMapCounterClipPlane
-	SCIE(Counter, true, false, Depth, HeightMap, Projection, Particle, None),
+	SCIE(Counter, true, false, false, Depth, HeightMap, Projection, Particle, None),
 	// estHeightMapShadowProjection
-	SCIE(Shadow, false, false, Depth, HeightMap, Projection, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, HeightMap, Projection, Particle, None),
 	// estHeightMapShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, HeightMap, Orthogonal, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, HeightMap, Orthogonal, Particle, None),
 	// estHeightMapShadowDistance
-	SCIE(Shadow, false, false, Depth, HeightMap, Distance, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, HeightMap, Distance, Particle, None),
 	// estHeightMapEnvMap
-	SCIE(EnvMap, false, false, EnvMap, HeightMap, Projection, Particle, None),
+	SCIE(EnvMap, false, false, false, EnvMap, HeightMap, Projection, Particle, None),
 	// estHeightMapLuminance
-	SCIE(Geometry, false, false, Geometry, HeightMap, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, HeightMap, Projection, Particle, None),
 	
 	
 	// Particle Emitter
 	
 	// estParticleGeometry
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Particle, None),
+	SCIE(Geometry, false, false, false, Geometry, Particle, Projection, Particle, None),
 	// estParticleGeometryDepthtest
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Particle, Larger),
+	SCIE(Geometry, false, false, false, Geometry, Particle, Projection, Particle, Larger),
 	// estParticleDepth
-	SCIE(Depth, false, false, Depth, Particle, Projection, Particle, Larger),
+	SCIE(Depth, false, false, false, Depth, Particle, Projection, Particle, Larger),
 	// estParticleDepthClipPlane
-	SCIE(Depth, true, false, Depth, Particle, Projection, Particle, Larger),
+	SCIE(Depth, true, false, false, Depth, Particle, Projection, Particle, Larger),
 	// estParticleDepthReversed
-	SCIE(Depth, false, false, Depth, Particle, Projection, Particle, Smaller),
+	SCIE(Depth, false, false, false, Depth, Particle, Projection, Particle, Smaller),
 	// estParticleDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Particle, Projection, Particle, Smaller),
+	SCIE(Depth, true, false, false, Depth, Particle, Projection, Particle, Smaller),
 	// estParticleShadowProjection
-	SCIE(Shadow, false, false, Depth, Particle, Projection, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Particle, Projection, Particle, None),
 	// estParticleShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, Particle, Orthogonal, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Particle, Orthogonal, Particle, None),
 	// estParticleShadowDistance
-	SCIE(Shadow, false, false, Depth, Particle, Distance, Particle, None),
+	SCIE(Shadow, false, false, false, Depth, Particle, Distance, Particle, None),
 	// estParticleCounter
-	SCIE(Counter, false, false, Depth, Particle, Projection, Particle, None),
+	SCIE(Counter, false, false, false, Depth, Particle, Projection, Particle, None),
 	// estParticleCounterClipPlane
-	SCIE(Counter, true, false, Depth, Particle, Projection, Particle, None),
+	SCIE(Counter, true, false, false, Depth, Particle, Projection, Particle, None),
 	// estParticleRibbonGeometry
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Ribbon, None),
+	SCIE(Geometry, false, false, false, Geometry, Particle, Projection, Ribbon, None),
 	// estParticleRibbonGeometryDepthtest
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Ribbon, Larger),
+	SCIE(Geometry, false, false, false, Geometry, Particle, Projection, Ribbon, Larger),
 	// estParticleRibbonDepth
-	SCIE(Depth, false, false, Depth, Particle, Projection, Ribbon, Larger),
+	SCIE(Depth, false, false, false, Depth, Particle, Projection, Ribbon, Larger),
 	// estParticleRibbonDepthClipPlane
-	SCIE(Depth, true, false, Depth, Particle, Projection, Ribbon, Larger),
+	SCIE(Depth, true, false, false, Depth, Particle, Projection, Ribbon, Larger),
 	// estParticleRibbonDepthReversed
-	SCIE(Depth, false, false, Depth, Particle, Projection, Ribbon, Smaller),
+	SCIE(Depth, false, false, false, Depth, Particle, Projection, Ribbon, Smaller),
 	// estParticleRibbonDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Particle, Projection, Ribbon, Smaller),
+	SCIE(Depth, true, false, false, Depth, Particle, Projection, Ribbon, Smaller),
 	// estParticleRibbonCounter
-	SCIE(Counter, false, false, Depth, Particle, Projection, Ribbon, None),
+	SCIE(Counter, false, false, false, Depth, Particle, Projection, Ribbon, None),
 	// estParticleRibbonCounterClipPlane
-	SCIE(Counter, true, false, Depth, Particle, Projection, Ribbon, None),
+	SCIE(Counter, true, false, false, Depth, Particle, Projection, Ribbon, None),
 	// estParticleBeamGeometry
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Beam, None),
+	SCIE(Geometry, false, false, false, Geometry, Particle, Projection, Beam, None),
 	// estParticleBeamGeometryDepthtest
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Beam, Larger),
+	SCIE(Geometry, false, false, false, Geometry, Particle, Projection, Beam, Larger),
 	// estParticleBeamDepth
-	SCIE(Depth, false, false, Depth, Particle, Projection, Beam, Larger),
+	SCIE(Depth, false, false, false, Depth, Particle, Projection, Beam, Larger),
 	// estParticleBeamDepthClipPlane
-	SCIE(Depth, true, false, Depth, Particle, Projection, Beam, Larger),
+	SCIE(Depth, true, false, false, Depth, Particle, Projection, Beam, Larger),
 	// estParticleBeamDepthReversed
-	SCIE(Depth, false, false, Depth, Particle, Projection, Beam, Smaller),
+	SCIE(Depth, false, false, false, Depth, Particle, Projection, Beam, Smaller),
 	// estParticleBeamDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Particle, Projection, Beam, Smaller),
+	SCIE(Depth, true, false, false, Depth, Particle, Projection, Beam, Smaller),
 	// estParticleBeamCounter
-	SCIE(Counter, false, false, Depth, Particle, Projection, Beam, None),
+	SCIE(Counter, false, false, false, Depth, Particle, Projection, Beam, None),
 	// estParticleBeamCounterClipPlane
-	SCIE(Counter, true, false, Depth, Particle, Projection, Beam, None),
+	SCIE(Counter, true, false, false, Depth, Particle, Projection, Beam, None),
 	
 	
 	
 	// Outline
 	// estOutlineGeometry
-	SCIE(OutlineGeometry, false, false, Geometry, Component, Projection, Particle, None),
+	SCIE(OutlineGeometry, false, false, false, Geometry, Component, Projection, Particle, None),
 	// estOutlineDepth
-	SCIE(OutlineDepth, false, false, Depth, Component, Projection, Particle, Larger),
+	SCIE(OutlineDepth, false, false, false, Depth, Component, Projection, Particle, Larger),
 	// estOutlineDepthClipPlane
-	SCIE(OutlineDepth, true, false, Depth, Component, Projection, Particle, Larger),
+	SCIE(OutlineDepth, true, false, false, Depth, Component, Projection, Particle, Larger),
 	// estOutlineDepthReversed
-	SCIE(OutlineDepth, false, false, Depth, Component, Projection, Particle, Smaller),
+	SCIE(OutlineDepth, false, false, false, Depth, Component, Projection, Particle, Smaller),
 	// estOutlineDepthClipPlaneReversed
-	SCIE(OutlineDepth, true, false, Depth, Component, Projection, Particle, Smaller),
+	SCIE(OutlineDepth, true, false, false, Depth, Component, Projection, Particle, Smaller),
 	// estOutlineCounter
-	SCIE(OutlineCounter, false, false, Depth, Component, Projection, Particle, None),
+	SCIE(OutlineCounter, false, false, false, Depth, Component, Projection, Particle, None),
 	// estOutlineCounterClipPlane
-	SCIE(OutlineCounter, true, false, Depth, Component, Projection, Particle, None),
+	SCIE(OutlineCounter, true, false, false, Depth, Component, Projection, Particle, None),
+	
+	
+	
+	// stereo
+	
+	// estStereoComponentGeometry
+	SCIE(Geometry, false, false, true, Geometry, Component, Projection, Particle, None),
+	// estStereoComponentDepth
+	SCIE(Depth, false, false, true, Depth, Component, Projection, Particle, Larger),
+	// estStereoComponentDepthClipPlane
+	SCIE(Depth, true, false, true, Depth, Component, Projection, Particle, Larger),
+	// estStereoComponentDepthReversed
+	SCIE(Depth, false, false, true, Depth, Component, Projection, Particle, Smaller),
+	// estStereoComponentDepthClipPlaneReversed
+	SCIE(Depth, true, false, true, Depth, Component, Projection, Particle, Smaller),
+	// estStereoComponentCounter
+	SCIE(Counter, false, false, true, Depth, Component, Projection, Particle, None),
+	// estStereoComponentCounterClipPlane
+	SCIE(Counter, true, false, true, Depth, Component, Projection, Particle, None),
+	
+	
+	
+	// Billboard
+	// estStereoBillboardGeometry
+	SCIE(Geometry, false, true, true, Geometry, Billboard, Projection, Particle, None),
+	// estStereoBillboardDepth
+	SCIE(Depth, false, true, true, Depth, Billboard, Projection, Particle, Larger),
+	// estStereoBillboardDepthClipPlane
+	SCIE(Depth, true, true, true, Depth, Billboard, Projection, Particle, Larger),
+	// estStereoBillboardDepthReversed
+	SCIE(Depth, false, true, true, Depth, Billboard, Projection, Particle, Smaller),
+	// estStereoBillboardDepthClipPlaneReversed
+	SCIE(Depth, true, true, true, Depth, Billboard, Projection, Particle, Smaller),
+	// estStereoBillboardCounter
+	SCIE(Counter, false, true, true, Depth, Billboard, Projection, Particle, None),
+	// estStereoBillboardCounterClipPlane
+	SCIE(Counter, true, true, true, Depth, Billboard, Projection, Particle, None),
+	
+	
+	// Decal
+	
+	// estStereoDecalGeometry
+	SCIE(Geometry, false, false, true, Geometry, Decal, Projection, Particle, None),
+	
+	
+	
+	// Prop Field
+	//   Depth Node edmDepth
+	//     depth testStereo mode is used only for !pSolid. For pSolid edtmNone is used
+	
+	// estStereoPropFieldGeometry
+	SCIE(Geometry, false, false, true, Geometry, PropField, Projection, Particle, None),
+	// estStereoPropFieldImposterGeometry
+	SCIE(Geometry, false, true, true, Geometry, PropField, Projection, Particle, None),
+	// estStereoPropFieldDepth
+	SCIE(Depth, false, false, true, Depth, PropField, Projection, Particle, Larger),
+	// estStereoPropFieldImposterDepth
+	SCIE(Depth, false, true, true, Depth, PropField, Projection, Particle, Larger),
+	// estStereoPropFieldDepthClipPlane
+	SCIE(Depth, true, false, true, Depth, PropField, Projection, Particle, Larger),
+	// estStereoPropFieldImposterDepthClipPlane
+	SCIE(Depth, true, true, true, Depth, PropField, Projection, Particle, Larger),
+	// estStereoPropFieldDepthReversed
+	SCIE(Depth, false, false, true, Depth, PropField, Projection, Particle, Smaller),
+	// estStereoPropFieldImposterDepthReversed
+	SCIE(Depth, false, true, true, Depth, PropField, Projection, Particle, Smaller),
+	// estStereoPropFieldDepthClipPlaneReversed
+	SCIE(Depth, true, false, true, Depth, PropField, Projection, Particle, Smaller),
+	// estStereoPropFieldImposterDepthClipPlaneReversed
+	SCIE(Depth, true, true, true, Depth, PropField, Projection, Particle, Smaller),
+	// estStereoPropFieldCounter
+	SCIE(Counter, false, false, true, Depth, PropField, Projection, Particle, None),
+	// estStereoPropFieldCounterClipPlane
+	SCIE(Counter, true, false, true, Depth, PropField, Projection, Particle, None),
+	
+	
+	// Height Terrain
+	//   Depth Node edmDepth
+	//     depth testStereo mode is used only for !pSolid. For pSolid edtmNone is used
+	
+	// estStereoHeightMapGeometry
+	SCIE(Geometry, false, false, true, Geometry, HeightMap, Projection, Particle, None),
+	// estStereoHeightMapDepth
+	SCIE(Depth, false, false, true, Depth, HeightMap, Projection, Particle, Larger),
+	// estStereoHeightMapDepthClipPlane
+	SCIE(Depth, true, false, true, Depth, HeightMap, Projection, Particle, Larger),
+	// estStereoHeightMapDepthReversed
+	SCIE(Depth, false, false, true, Depth, HeightMap, Projection, Particle, Smaller),
+	// estStereoHeightMapDepthClipPlaneReversed
+	SCIE(Depth, true, false, true, Depth, HeightMap, Projection, Particle, Smaller),
+	// estStereoHeightMapCounter
+	SCIE(Counter, false, false, true, Depth, HeightMap, Projection, Particle, None),
+	// estStereoHeightMapCounterClipPlane
+	SCIE(Counter, true, false, true, Depth, HeightMap, Projection, Particle, None),
+	
+	
+	// Particle Emitter
+	
+	// estStereoParticleGeometry
+	SCIE(Geometry, false, false, true, Geometry, Particle, Projection, Particle, None),
+	// estStereoParticleGeometryDepthtestStereo
+	SCIE(Geometry, false, false, true, Geometry, Particle, Projection, Particle, Larger),
+	// estStereoParticleDepth
+	SCIE(Depth, false, false, true, Depth, Particle, Projection, Particle, Larger),
+	// estStereoParticleDepthClipPlane
+	SCIE(Depth, true, false, true, Depth, Particle, Projection, Particle, Larger),
+	// estStereoParticleDepthReversed
+	SCIE(Depth, false, false, true, Depth, Particle, Projection, Particle, Smaller),
+	// estStereoParticleDepthClipPlaneReversed
+	SCIE(Depth, true, false, true, Depth, Particle, Projection, Particle, Smaller),
+	// estStereoParticleCounter
+	SCIE(Counter, false, false, true, Depth, Particle, Projection, Particle, None),
+	// estStereoParticleCounterClipPlane
+	SCIE(Counter, true, false, true, Depth, Particle, Projection, Particle, None),
+	// estStereoParticleRibbonGeometry
+	SCIE(Geometry, false, false, true, Geometry, Particle, Projection, Ribbon, None),
+	// estStereoParticleRibbonGeometryDepthtestStereo
+	SCIE(Geometry, false, false, true, Geometry, Particle, Projection, Ribbon, Larger),
+	// estStereoParticleRibbonDepth
+	SCIE(Depth, false, false, true, Depth, Particle, Projection, Ribbon, Larger),
+	// estStereoParticleRibbonDepthClipPlane
+	SCIE(Depth, true, false, true, Depth, Particle, Projection, Ribbon, Larger),
+	// estStereoParticleRibbonDepthReversed
+	SCIE(Depth, false, false, true, Depth, Particle, Projection, Ribbon, Smaller),
+	// estStereoParticleRibbonDepthClipPlaneReversed
+	SCIE(Depth, true, false, true, Depth, Particle, Projection, Ribbon, Smaller),
+	// estStereoParticleRibbonCounter
+	SCIE(Counter, false, false, true, Depth, Particle, Projection, Ribbon, None),
+	// estStereoParticleRibbonCounterClipPlane
+	SCIE(Counter, true, false, true, Depth, Particle, Projection, Ribbon, None),
+	// estStereoParticleBeamGeometry
+	SCIE(Geometry, false, false, true, Geometry, Particle, Projection, Beam, None),
+	// estStereoParticleBeamGeometryDepthtestStereo
+	SCIE(Geometry, false, false, true, Geometry, Particle, Projection, Beam, Larger),
+	// estStereoParticleBeamDepth
+	SCIE(Depth, false, false, true, Depth, Particle, Projection, Beam, Larger),
+	// estStereoParticleBeamDepthClipPlane
+	SCIE(Depth, true, false, true, Depth, Particle, Projection, Beam, Larger),
+	// estStereoParticleBeamDepthReversed
+	SCIE(Depth, false, false, true, Depth, Particle, Projection, Beam, Smaller),
+	// estStereoParticleBeamDepthClipPlaneReversed
+	SCIE(Depth, true, false, true, Depth, Particle, Projection, Beam, Smaller),
+	// estStereoParticleBeamCounter
+	SCIE(Counter, false, false, true, Depth, Particle, Projection, Beam, None),
+	// estStereoParticleBeamCounterClipPlane
+	SCIE(Counter, true, false, true, Depth, Particle, Projection, Beam, None),
+	
+	
+	
+	// Outline
+	// estStereoOutlineGeometry
+	SCIE(OutlineGeometry, false, false, true, Geometry, Component, Projection, Particle, None),
+	// estStereoOutlineDepth
+	SCIE(OutlineDepth, false, false, true, Depth, Component, Projection, Particle, Larger),
+	// estStereoOutlineDepthClipPlane
+	SCIE(OutlineDepth, true, false, true, Depth, Component, Projection, Particle, Larger),
+	// estStereoOutlineDepthReversed
+	SCIE(OutlineDepth, false, false, true, Depth, Component, Projection, Particle, Smaller),
+	// estStereoOutlineDepthClipPlaneReversed
+	SCIE(OutlineDepth, true, false, true, Depth, Component, Projection, Particle, Smaller),
+	// estStereoOutlineCounter
+	SCIE(OutlineCounter, false, false, true, Depth, Component, Projection, Particle, None),
+	// estStereoOutlineCounterClipPlane
+	SCIE(OutlineCounter, true, false, true, Depth, Component, Projection, Particle, None)
 };
 
 
@@ -368,10 +532,6 @@ pSharedSPBElement( NULL )
 	
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
 		pChannels[ i ] = NULL;
-	}
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		pShaders[ i ] = NULL;
 	}
 	
 	pAbsorption.Set( 0.0f, 0.0f, 0.0f );
@@ -737,8 +897,21 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetGIMaterial( giMaterial );
 	config.SetBillboard( shaderConfigInfo.billboard );
 	
+	if( shaderConfigInfo.stereo ){
+		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
+			if( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmParticle ){
+				config.SetGSRenderStereo( true );
+				
+			}else{
+				config.SetVSRenderStereo( true );
+			}
+			
+		}else{
+			config.SetGSRenderStereo( true );
+		}
+	}
+	
 	config.SetMaterialNormalModeEnc( deoglSkinShaderConfig::emnmFloat );
-	config.SetDecodeInDepth( defren.GetUseEncodedDepth() );
 	config.SetInverseDepth( defren.GetUseInverseDepth() );
 	if( ! luminanceOnly && ! giMaterial ){
 		config.SetMaskedSolidity( pSolidityMasked || pHasZeroSolidity );
@@ -941,7 +1114,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		
 	case esctDepth:
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
 		
 		if( pSolid ){
@@ -1095,7 +1267,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetOutline( true );
 		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
 		
 		if( pIsOutlineSolid ){
@@ -1498,18 +1669,11 @@ const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int pro
 //////////////////////
 
 void deoglSkinTexture::pCleanUp(){
-	int i;
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-			pShaders[ i ] = NULL;
-		}
-	}
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
 	
+	int i;
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
 		if( pChannels[ i ] ){
 			delete pChannels[ i ];

@@ -127,6 +127,10 @@ void debpColliderAttachment::SetDirtyMappings( bool dirtyMappings ){
 	pDirtyMappings = dirtyMappings;
 }
 
+void debpColliderAttachment::SetAccumRelMoveMatrix( const decDMatrix &matrix ){
+	pAccumRelMoveMatrix = matrix;
+}
+
 
 
 void debpColliderAttachment::AttachmentChanged(){

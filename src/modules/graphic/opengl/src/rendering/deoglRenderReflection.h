@@ -33,7 +33,6 @@ class deoglFramebuffer;
 class deoglRenderPlan;
 class deoglRenderTask;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglTexture;
 class deoglArrayTexture;
 
@@ -43,22 +42,27 @@ class deoglArrayTexture;
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderCopyColor;
-	deoglShaderProgram *pShaderCopyColorMipMap;
-	deoglShaderProgram *pShaderMinMaxMipMapMin;
-	deoglShaderProgram *pShaderMinMaxMipMapMax;
-	deoglShaderProgram *pShaderMinMaxMipMapInitial;
-	deoglShaderProgram *pShaderMinMaxMipMapDownsample;
-	deoglShaderProgram *pShaderScreenSpace;
-	deoglShaderProgram *pShaderApplyReflections;
+	deoglShaderProgramUsage pShaderCopyColor;
+	deoglShaderProgramUsage pShaderCopyColorMipMap;
+	deoglShaderProgramUsage pShaderCopyColorStereo;
+	deoglShaderProgramUsage pShaderCopyColorMipMapStereo;
+	deoglShaderProgramUsage pShaderMinMaxMipMapMin;
+	deoglShaderProgramUsage pShaderMinMaxMipMapMax;
+	deoglShaderProgramUsage pShaderMinMaxMipMapInitial;
+	deoglShaderProgramUsage pShaderMinMaxMipMapDownsample;
+	deoglShaderProgramUsage pShaderScreenSpace;
+	deoglShaderProgramUsage pShaderScreenSpaceStereo;
+	deoglShaderProgramUsage pShaderApplyReflections;
+	deoglShaderProgramUsage pShaderApplyReflectionsStereo;
 	
-	deoglShaderProgram *pShaderCopyMaterial;
-	deoglShaderProgram *pShaderEnvMapLightGI;
-	deoglShaderProgram *pShaderEnvMapCopy;
-	deoglShaderProgram *pShaderReflection;
-	deoglShaderProgram *pShaderCubeMap2EquiMap;
-	deoglShaderProgram *pShaderBuildEnvMap;
-	deoglShaderProgram *pShaderEnvMapMask;
+	deoglShaderProgramUsage pShaderCopyMaterial;
+	deoglShaderProgramUsage pShaderEnvMapLightGI;
+	deoglShaderProgramUsage pShaderEnvMapCopy;
+	deoglShaderProgramUsage pShaderReflection;
+	deoglShaderProgramUsage pShaderReflectionStereo;
+	deoglShaderProgramUsage pShaderCubeMap2EquiMap;
+	deoglShaderProgramUsage pShaderBuildEnvMap;
+	deoglShaderProgramUsage pShaderEnvMapMask;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglRenderTask *pRenderTask;
@@ -68,14 +72,6 @@ private:
 	deoglCubeMap *pEnvMap;
 	deoglTexture *pEnvMapEqui;
 	deoglSPBlockUBO *pEnvMapsParamBlock;
-	
-	int pIndexTextureWidth;
-	int pIndexTextureHeight;
-	deoglTexture *pTextureIndices;
-	deoglTexture *pTextureDistance1;
-	deoglTexture *pTextureDistance2;
-	deoglFramebuffer *pFBOIndexPass1;
-	deoglFramebuffer *pFBOIndexPass2;
 	
 	deoglEnvironmentMap *pDirectEnvMapActive; ///< weak reference
 	deoglEnvironmentMap *pDirectEnvMapFading; ///< weak reference

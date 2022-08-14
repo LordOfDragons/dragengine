@@ -4,7 +4,7 @@ precision highp int;
 #endif
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/light/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/light/ubo_gi.glsl"
 #include "v130/shared/defren/gi/probe_flags.glsl"
 #include "v130/shared/octahedral.glsl"
@@ -30,12 +30,12 @@ precision highp int;
 	// - vec2 ray.texCoord = giRayCastFaceTexCoord() => requires RG16F
 	
 #else
-	uniform HIGHP sampler2D texDepth;
-	uniform lowp sampler2D texDiffuse;
-	uniform lowp sampler2D texNormal;
-	uniform lowp sampler2D texReflectivity;
-	uniform lowp sampler2D texRoughness;
-	uniform lowp sampler2D texAOSolidity;
+	uniform HIGHP sampler2DArray texDepth;
+	uniform lowp sampler2DArray texDiffuse;
+	uniform lowp sampler2DArray texNormal;
+	uniform lowp sampler2DArray texReflectivity;
+	uniform lowp sampler2DArray texRoughness;
+	uniform lowp sampler2DArray texAOSolidity;
 #endif
 
 uniform lowp sampler2DArray texGIIrradiance;
@@ -50,7 +50,16 @@ uniform HIGHP sampler2DArray texGIDistance;
 // inputs
 ///////////
 
+in vec2 vTexCoord; // not used but present in generic vertex shader source
 in vec2 vScreenCoord;
+
+#ifndef GI_RAY
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		in flat int vLayer;
+	#else
+		const int vLayer = 0;
+	#endif
+#endif
 
 
 // outputs
@@ -64,15 +73,12 @@ out vec4 outSubSurface;
 // constants
 //////////////
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
-
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 
 #include "v130/shared/normal.glsl"
 #ifndef GI_RAY
+	#include "v130/shared/defren/depth_to_position.glsl"
 	#include "v130/shared/defren/light/normal_from_depth.glsl"
 #endif
 
@@ -83,7 +89,11 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	#ifdef GI_RAY
+		ivec2 tc = ivec2( gl_FragCoord.xy );
+	#else
+		ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
+	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
@@ -101,14 +111,8 @@ void main( void ){
 		}
 		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
-		#ifdef DECODE_IN_DEPTH
-			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
-		#else
-			float depth = texelFetch( texDepth, tc, 0 ).r;
-		#endif
-		vec3 position = vec3( depth );
-		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-		position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
+		float depth = sampleDepth( texDepth, tc );
+		vec3 position = depthToPosition( depth, vScreenCoord, vLayer );
 	#endif
 	
 	// fetch normal

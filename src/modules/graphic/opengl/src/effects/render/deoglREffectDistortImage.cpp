@@ -25,16 +25,22 @@
 #include <string.h>
 
 #include "deoglREffectDistortImage.h"
+#include "../../debug/deoglDebugTraceGroup.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglRImage.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -48,8 +54,6 @@
 ////////////////
 
 enum eSPEffect{
-	spePosTransform,
-	speTCTransform,
 	speDistortTransform
 };
 
@@ -61,8 +65,7 @@ enum eSPEffect{
 
 deoglREffectDistortImage::deoglREffectDistortImage( deoglRenderThread &renderThread ) :
 deoglREffect( renderThread ),
-pImage( NULL ),
-pShader( NULL ){
+pImage( NULL ){
 	LEAK_CHECK_CREATE( renderThread, EffectDistortImage );
 }
 
@@ -70,9 +73,6 @@ deoglREffectDistortImage::~deoglREffectDistortImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectDistortImage );
 	if( pImage ){
 		pImage->FreeReference();
-	}
-	if( pShader ){
-		pShader->RemoveUsage();
 	}
 }
 
@@ -106,16 +106,39 @@ void deoglREffectDistortImage::SetImage( deoglRImage *image ){
 deoglShaderProgram *deoglREffectDistortImage::GetShader(){
 	if( ! pShader ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
 	return pShader;
+}
+
+deoglShaderProgram *deoglREffectDistortImage::GetShaderStereo(){
+	if( ! pShaderStereo ){
+		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderSources *sources;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Effect Distort Image Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
+		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+	}
+	
+	return pShaderStereo;
 }
 
 void deoglREffectDistortImage::PrepareForRender(){
@@ -135,6 +158,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectDistortImage.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
@@ -142,15 +166,13 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	//int width = defren.GetWidth();
 	//int height = defren.GetHeight();
 	//int realHeight = defren.GetRealHeight();
-	float scaleU = pImage->GetScaleFactorU();
-	float scaleV = pImage->GetScaleFactorV();
 	float su = pStrength.x * defren.GetScalingU(); //( float )width;
 	float sv = pStrength.y * defren.GetScalingV(); //( float )height;
 	
 	// swap render texture
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	tsmgr.EnableTexture( 1, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
 	// set states
@@ -170,16 +192,21 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// transform distort
 	// [0,1] * stru*su*2 - stru*su = [-strz*su,stru*su]
 	// [0,1] * -strv*sv*2 + strv*sv = [strv*sv,-strv*sv]
-	deoglShaderProgram * const shaderProgram = GetShader();
+	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	shader.SetParameterFloat( spePosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader.SetParameterFloat( speTCTransform, scaleU * 0.5f, scaleV * 0.5f, scaleU * 0.5f, scaleV * 0.5f );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	shader.SetParameterFloat( speDistortTransform, 2.0f * su, -2.0f * sv, -su, sv );
 	
 	// TODO correctly we need an explicite clamp in the shader here since the texture
 	// can be larger than the area we tap into.
 	
-	defren.RenderFSQuadVAO();
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+		defren.RenderFSQuadVAOStereo();
+		
+	}else{
+		defren.RenderFSQuadVAO();
+	}
 }

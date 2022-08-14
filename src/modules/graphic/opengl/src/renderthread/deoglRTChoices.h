@@ -47,6 +47,9 @@ private:
 	bool pRealTransparentParticles;
 	eGPUTransformVertices pGPUTransformVertices;
 	bool pGIMoveUsingCache;
+	bool pVRRenderStereo;
+	bool pRenderStereoVSLayer;
+	bool pRenderFSQuadStereoVSLayer;
 	
 	
 	
@@ -89,6 +92,15 @@ public:
 	
 	/** GI move probes using ray cache instead of all rays. */
 	inline bool GetGIMoveUsingCache() const{ return pGIMoveUsingCache; }
+	
+	/** Use render stereo rendering for VR. */
+	inline bool GetVRRenderStereo() const{ return pVRRenderStereo; }
+	
+	/** Use layer in vertex shaders for stereo rendering. */
+	inline bool GetRenderStereoVSLayer() const{ return pRenderStereoVSLayer; }
+	
+	/** Use layer in vertex shaders for fullscreen quad stereo rendering. */
+	inline bool GetRenderFSQuadStereoVSLayer() const{ return pRenderFSQuadStereoVSLayer; }
 	/*@}*/
 };
 

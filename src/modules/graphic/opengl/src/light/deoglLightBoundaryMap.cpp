@@ -27,6 +27,7 @@
 #include "deoglLightBoundaryMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
@@ -176,6 +177,7 @@ void deoglLightBoundaryMap::pCreateTextures(){
 }
 
 void deoglLightBoundaryMap::pCreateFBOs(){
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	int i;
 	

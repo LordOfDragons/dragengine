@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
 UBOLAYOUT uniform EnvironmentMaps{
 	mat4x3 pEnvMapMatrixInfluence[ 8 ];
@@ -14,21 +15,14 @@ UBOLAYOUT uniform EnvironmentMaps{
 	int pEnvMapCount;
 };
 
-uniform vec4 pPosTransform;
-uniform vec2 pPosTransform2;
-uniform mat3 pMatrixEnvMap;
-uniform float pEnvMapLodLevel;
-uniform vec3 pMipMapLevelParams; // matProj.a11*0.5*pixelCountX, matProj.a11*0.5*pixelCountY, 2^maxLevel
-uniform vec4 pMipMapTCClamp; // mipMapTCClampX, mipMapTCClampY, scaleU, scaleV
-
-uniform lowp sampler2D texDiffuse;
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texReflection;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
-uniform mediump sampler2D texColor;
+uniform lowp sampler2DArray texDiffuse;
+uniform HIGHP sampler2DArray texDepth;
+uniform lowp sampler2DArray texReflection;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texReflectivity;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
+uniform mediump sampler2DArray texColor;
 #ifdef ENVMAP_EQUI
 	#define SAMPLER_ENVMAP mediump sampler2D
 #else
@@ -45,15 +39,19 @@ uniform SAMPLER_ENVMAP texEnvMap7;
 uniform SAMPLER_ENVMAP texEnvMap8;
 #endif
 
-in vec4 vScreenCoord;
+in vec2 vTexCoord;
+in vec2 vScreenCoord;
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	in flat int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec3 outColor;
 
 
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
 #ifdef ENVMAP_EQUI
 	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 #endif
@@ -61,9 +59,10 @@ const float roughnessToBlur = 3.14159265; // pi | 1.570796; // pi/2
 
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
 
 
-void calculateReflectionParameters( in ivec2 tc, in vec3 position,
+void calculateReflectionParameters( in ivec3 tc, in vec3 position,
 out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	// fetch ao and solidity. allows for an early exit if the solidity is 0
 	vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
@@ -120,7 +119,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 // 	}
 }
 
-void calculateBouncedReflectivity( in vec2 tc, in vec3 reflectDir,
+void calculateBouncedReflectivity( in vec3 tc, in vec3 reflectDir,
 out vec3 reflectivity, out float roughness, out vec3 reflectDirBounced ){
 	// fetch reflectivity
 	reflectivity = texture( texReflectivity, tc ).rgb;
@@ -523,21 +522,14 @@ void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float rough
 #endif // ENVMAP_BOX_PROJECTION
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	// discard not inizalized fragments
 	if( texelFetch( texDiffuse, tc, 0 ).a == 0.0 ){
 		discard;
 	}
 	
-	// determine position of fragment
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	
 	// calculate the reflection for the given point using the results found in the screen space reflection pass
 	vec3 reflection = texelFetch( texReflection, tc, 0 ).rgb;
@@ -553,14 +545,14 @@ void main( void ){
 // TEST TEST TEST ================
 	/*
 	reflection *= vec3( 0.7735849 );
-	vec4 TtcLocal = min( pMipMapTCClamp.zwzw * gl_FragCoord.xyxy + pMipMapTCClamp.zwzw
-		* vec4( 0.37736, 1.20755, 1.20755, -0.37736 ), pMipMapTCClamp.xyxy );
-	reflection += textureLod( texReflection, TtcLocal.xy, 0.0 ).rgb;
-	reflection += textureLod( texReflection, TtcLocal.zw, 0.0 ).rgb;
-	TtcLocal = min( pMipMapTCClamp.zwzw * gl_FragCoord.xyxy + pMipMapTCClamp.zwzw
-		* vec4( -0.37736, -1.20755, -1.20755, 0.37736 ), pMipMapTCClamp.xyxy );
-	reflection += textureLod( texReflection, TtcLocal.xy, 0.0 ).rgb;
-	reflection += textureLod( texReflection, TtcLocal.zw, 0.0 ).rgb;
+	vec4 TtcLocal = min( pScreenSpacePixelSize.xyxy * gl_FragCoord.xyxy + pScreenSpacePixelSize.xyxy
+		* vec4( 0.37736, 1.20755, 1.20755, -0.37736 ), pViewportMax.xyxy );
+	reflection += textureLod( texReflection, vec3( TtcLocal.xy, vLayer ), 0.0 ).rgb;
+	reflection += textureLod( texReflection, vec3( TtcLocal.zw, vLayer ), 0.0 ).rgb;
+	TtcLocal = min( pScreenSpacePixelSize.xyxy * gl_FragCoord.xyxy + pScreenSpacePixelSize.xyxy
+		* vec4( -0.37736, -1.20755, -1.20755, 0.37736 ), pViewportMax.xyxy );
+	reflection += textureLod( texReflection, vec3( TtcLocal.xy, vLayer ), 0.0 ).rgb;
+	reflection += textureLod( texReflection, vec3( TtcLocal.zw, vLayer ), 0.0 ).rgb;
 	reflection *= vec3( 0.209486 );
 	*/
 // TEST TEST TEST ================
@@ -573,41 +565,35 @@ void main( void ){
 	// more and more blurred with increasing distance. using the linear definition the roughness simply
 	// scales linearly with the distance clamped to a maximum of 1 obviously.
 	/*
-	#ifdef DECODE_IN_DEPTH
-		vec3 hitPosition = vec3( dot( textureLod( texDepth, reflection.xy, 0.0 ).rgb, unpackDepth ) );
-	#else
-		vec3 hitPosition = vec3( textureLod( texDepth, reflection.xy, 0.0 ).r );
-	#endif
-	hitPosition.z = pPosTransform.x / ( pPosTransform.y - hitPosition.z );
-	hitPosition.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * hitPosition.zz;
+	vec3 hitPosition = depthToPosition( texDepth, vScreenCoord, vLayer );
 	
 	vec2 mipMapLevel = vec2( distance( position, hitPosition )
 		* tan( min( roughness, 0.5 ) * roughnessToAngle ) / position.z );
-	mipMapLevel = log2( clamp( mipMapLevel * pMipMapLevelParams.xy,
-		vec2( 1.0 ), vec2( pMipMapLevelParams.z ) ) ) - 2.0;
+	mipMapLevel = log2( clamp( mipMapLevel * pMipMapPixelSize,
+		vec2( 1.0 ), vec2( pMipMapMaxLevel ) ) ) - 2.0;
 	
 //mipMapLevel = reflection.z - 2.0; // roughnessTest* only
 	mipMapLevel = vec2( -2.0 );
-	//vec3 reflectionLocal = textureLod( texColor, reflection.xy, max( mipMapLevel.x, mipMapLevel.y ) ).rgb;
+	//vec3 reflectionLocal = textureLod( texColor, vec3( reflection.xy, vLayer ), max( mipMapLevel.x, mipMapLevel.y ) ).rgb;
 	
 	*/
 	/*
-	float localMipMapLevel = log2( 1.0 + pMipMapLevelParams.z * roughness ) - 2;
-	vec2 offset = pow( vec2( 2.0 ), vec2( localMipMapLevel ) ) * pMipMapTCClamp.zw;
+	float localMipMapLevel = log2( 1.0 + pMipMapMaxLevel * roughness ) - 2;
+	vec2 offset = pow( vec2( 2.0 ), vec2( localMipMapLevel ) ) * pScreenSpacePixelSize;
 	
 	vec3 reflectionLocal = textureLod( texColor,
-		min( reflection.xy, pMipMapTCClamp.xy ), localMipMapLevel ).rgb * vec3( 0.7735849 );
+		vec3( min( reflection.xy, pViewportMax.xyxy ), vLayer ), localMipMapLevel ).rgb * vec3( 0.7735849 );
 	vec4 tcLocal = min( reflection.xyxy + offset.xyxy
-		* vec4( 0.37736, 1.20755, 1.20755, -0.37736 ), pMipMapTCClamp.xyxy );
-	reflectionLocal += textureLod( texColor, tcLocal.xy, localMipMapLevel ).rgb;
-	reflectionLocal += textureLod( texColor, tcLocal.zw, localMipMapLevel ).rgb;
+		* vec4( 0.37736, 1.20755, 1.20755, -0.37736 ), pViewportMax.xyxy );
+	reflectionLocal += textureLod( texColor, vec3( tcLocal.xy, vLayer ), localMipMapLevel ).rgb;
+	reflectionLocal += textureLod( texColor, vec3( tcLocal.zw, vLayer ), localMipMapLevel ).rgb;
 	tcLocal = min( reflection.xyxy + offset.xyxy
-		* vec4( -0.37736, -1.20755, -1.20755, 0.37736 ), pMipMapTCClamp.xyxy );
-	reflectionLocal += textureLod( texColor, tcLocal.xy, localMipMapLevel ).rgb;
-	reflectionLocal += textureLod( texColor, tcLocal.zw, localMipMapLevel ).rgb;
+		* vec4( -0.37736, -1.20755, -1.20755, 0.37736 ), pViewportMax.xyxy );
+	reflectionLocal += textureLod( texColor, vec3( tcLocal.xy, vLayer ), localMipMapLevel ).rgb;
+	reflectionLocal += textureLod( texColor, vec3( tcLocal.zw, vLayer ), localMipMapLevel ).rgb;
 	reflectionLocal *= vec3( 0.209486 );
 	*/
-	vec3 reflectionLocal = textureLod( texColor, reflection.xy, 0.0 ).rgb;
+	vec3 reflectionLocal = textureLod( texColor, vec3( reflection.xy, vLayer ), 0.0 ).rgb;
 	
 	// check the reflectivity of the hit point. if the reflectivity is high we end up with near black
 	// reflections which looks very odd. the proper solution would be to calculate additional bounces.
@@ -625,23 +611,19 @@ void main( void ){
 		// this check here is currently required to avoid trying to tap from the sky or another
 		// special pixel not having written the reflectivity properly. later on this should be
 		// handled by doing a proper clear pass that also clears the reflectivity
-		if( texture( texDiffuse, reflection.xy ).a > 0.0 ){
+		vec3 tcRefl = vec3( reflection.xy, vLayer );
+		
+		if( texture( texDiffuse, tcRefl ).a > 0.0 ){
 			vec3 bouncedReflectionColor;
 			vec3 bouncedReflectivity;
 			vec3 bouncedReflectDir;
 			float bouncedRoughness;
 			
-			calculateBouncedReflectivity( reflection.xy, reflectDir,
+			calculateBouncedReflectivity( tcRefl, reflectDir,
 				bouncedReflectivity, bouncedRoughness, bouncedReflectDir );
 			
-			#ifdef DECODE_IN_DEPTH
-				vec3 hitPosition = vec3( dot( textureLod( texDepth, reflection.xy, 0.0 ).rgb, unpackDepth ) );
-			#else
-				vec3 hitPosition = vec3( textureLod( texDepth, reflection.xy, 0.0 ).r );
-			#endif
-			hitPosition.z = pPosTransform.x / ( pPosTransform.y - hitPosition.z );
-			hitPosition.xy = ( reflection.xy / pMipMapTCClamp.xy * vec2( 2.0 ) - vec2( 1.0 )
-				+ pPosTransform2 ) * pPosTransform.zw * vec2( hitPosition.z );
+			vec2 reflScreenCoord = ( reflection.xy / pViewportMax ) * vec2( 2 ) - vec2( 1 );
+			vec3 hitPosition = depthToPosition( texDepth, tcRefl, reflScreenCoord, vLayer );
 			
 			colorEnvMapReflection( hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor );
 			

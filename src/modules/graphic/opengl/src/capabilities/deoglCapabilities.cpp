@@ -49,6 +49,8 @@ deoglCapabilities::deoglCapabilities( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pFormats( *this ),
 
+pMaxTextureSize( 1024 ),
+pMax3DTextureSize( 1024 ),
 pMaxDrawBuffers( 4 ),
 pUBOMaxSize( 0 ),
 pTBOMaxSize( 0 ),
@@ -143,6 +145,12 @@ void deoglCapabilities::DetectCapabilities(){
 		pFormats.DetectFormats( fbo );
 		
 		// test important hardware limits
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMaxTextureSize = ( int )resultsInt[ 0 ];
+		
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMax3DTextureSize = ( int )resultsInt[ 0 ];
+		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_DRAW_BUFFERS, &resultsInt[ 0 ] ) );
 		pMaxDrawBuffers = ( int )resultsInt[ 0 ];
 		
@@ -190,6 +198,8 @@ void deoglCapabilities::DetectCapabilities(){
 		// report capabilities
 		if( true ){
 			logger.LogInfo( "Capabilities:" );
+			logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
+			logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
 			logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
 			logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
 			logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
@@ -305,6 +315,7 @@ void deoglCapabilities::DetectCapabilities(){
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
+#include "../shaders/deoglShaderProgramUsage.h"
 #include "../shaders/deoglShaderSources.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -377,7 +388,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer.GetPointerFloat4();
-	deoglShaderProgram *shader = NULL;
 	deoglTexture *texture = NULL;
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
@@ -388,7 +398,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		deoglShaderProgramUsage shader( shaderManager.GetProgramWith( sources, defines ) );
 		
 		// create test texture
 		texture = new deoglTexture( pRenderThread );
@@ -427,9 +437,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 		
-		shader->RemoveUsage();
-		shader = NULL;
-		
 		// retrieve the results and clean up
 		framebuffer->DetachAllImages();
 		texture->GetPixels( pixelBuffer );
@@ -438,9 +445,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		texture = NULL;
 		
 	}catch( const deException &e ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			delete texture;
 		}

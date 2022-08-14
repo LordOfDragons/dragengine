@@ -143,6 +143,7 @@ void deoglHTSTexture::MarkTUCsDirty(){
 deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
 	switch( shaderType ){
 	case deoglSkinTexture::estHeightMapGeometry:
+	case deoglSkinTexture::estStereoHeightMapGeometry:
 		return GetTUCGeometry();
 		
 	case deoglSkinTexture::estHeightMapDepth:
@@ -151,6 +152,12 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eSh
 	case deoglSkinTexture::estHeightMapDepthClipPlaneReversed:
 	case deoglSkinTexture::estHeightMapTranspCount:
 	case deoglSkinTexture::estHeightMapTranspCountClipPlane:
+	case deoglSkinTexture::estStereoHeightMapDepth:
+	case deoglSkinTexture::estStereoHeightMapDepthClipPlane:
+	case deoglSkinTexture::estStereoHeightMapDepthReversed:
+	case deoglSkinTexture::estStereoHeightMapDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoHeightMapTranspCount:
+	case deoglSkinTexture::estStereoHeightMapTranspCountClipPlane:
 		return GetTUCDepth();
 		
 	case deoglSkinTexture::estHeightMapShadowProjection:

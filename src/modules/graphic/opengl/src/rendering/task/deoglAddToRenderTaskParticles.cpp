@@ -90,30 +90,56 @@ deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
 ///////////////
 
 void deoglAddToRenderTaskParticles::SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleGeometry
-	|| shaderType > deoglSkinTexture::estParticleShadowDistance ){
+	switch( shaderType ){
+	case deoglSkinTexture::estParticleGeometry:
+	case deoglSkinTexture::estParticleGeometryDepthTest:
+	case deoglSkinTexture::estParticleDepth:
+	case deoglSkinTexture::estParticleDepthClipPlane:
+	case deoglSkinTexture::estParticleDepthReversed:
+	case deoglSkinTexture::estParticleDepthClipPlaneReversed:
+	case deoglSkinTexture::estParticleShadowProjection:
+	case deoglSkinTexture::estParticleShadowOrthogonal:
+	case deoglSkinTexture::estParticleShadowDistance:
+	case deoglSkinTexture::estStereoParticleGeometry:
+	case deoglSkinTexture::estStereoParticleGeometryDepthTest:
+	case deoglSkinTexture::estStereoParticleDepth:
+	case deoglSkinTexture::estStereoParticleDepthClipPlane:
+	case deoglSkinTexture::estStereoParticleDepthReversed:
+	case deoglSkinTexture::estStereoParticleDepthClipPlaneReversed:
+		pSkinShaderType = shaderType;
+		break;
+		
+	default:
 		DETHROW( deeInvalidParam );
 	}
-	
-	pSkinShaderType = shaderType;
 }
 
 void deoglAddToRenderTaskParticles::SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleRibbonGeometry
-	|| shaderType > deoglSkinTexture::estParticleRibbonGeometryDepthTest ){
+	switch( shaderType ){
+	case deoglSkinTexture::estParticleRibbonGeometry:
+	case deoglSkinTexture::estParticleRibbonGeometryDepthTest:
+	case deoglSkinTexture::estStereoParticleRibbonGeometry:
+	case deoglSkinTexture::estStereoParticleRibbonGeometryDepthTest:
+		pSkinShaderTypeRibbon = shaderType;
+		break;
+		
+	default:
 		DETHROW( deeInvalidParam );
 	}
-	
-	pSkinShaderTypeRibbon = shaderType;
 }
 
 void deoglAddToRenderTaskParticles::SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleBeamGeometry
-	|| shaderType > deoglSkinTexture::estParticleBeamGeometryDepthTest ){
+	switch( shaderType ){
+	case deoglSkinTexture::estParticleBeamGeometry:
+	case deoglSkinTexture::estParticleBeamGeometryDepthTest:
+	case deoglSkinTexture::estStereoParticleBeamGeometry:
+	case deoglSkinTexture::estStereoParticleBeamGeometryDepthTest:
+		pSkinShaderTypeBeam = shaderType;
+		break;
+		
+	default:
 		DETHROW( deeInvalidParam );
 	}
-	
-	pSkinShaderTypeBeam = shaderType;
 }
 
 

@@ -85,7 +85,7 @@ void deoglRPTSkyLightBuildRT::Run(){
 	}
 	
 	try{
-		const deoglShaderProgram * const shaderOccMesh = pPlan.GetPlan().GetRenderThread().
+		const deoglShaderProgramUsage &shaderOccMesh = pPlan.GetPlan().GetRenderThread().
 			GetRenderers().GetLight().GetRenderLightSky().GetShaderOccMesh();
 		deoglRenderTaskSharedTexture * const sharedTexOccMesh = pPlan.GetPlan().GetRenderThread().
 			GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture();

@@ -25,11 +25,13 @@
 
 #include "deoglRenderLight.h"
 #include "deoglRenderLightParticles.h"
+#include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../plan/deoglRenderPlanDebug.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../light/shader/deoglLightShaderManager.h"
 #include "../../particle/deoglRParticleEmitter.h"
@@ -40,6 +42,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -148,6 +151,7 @@ deoglRParticleEmitterInstance &emitterInstance ){
 void deoglRenderLightParticles::RenderParticleEmitterInstanceType( deoglRenderPlan &plan,
 deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &itype, deoglRParticleEmitterType &etype ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightParticle.RenderParticleEmitterInstanceType" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRParticleEmitter &emitter = *instance.GetEmitter();
 	
@@ -161,7 +165,9 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	*/
 	
 	// set shader
-	deoglLightShader * const lightShader = etype.GetShaderFor( deoglRParticleEmitterType::estNoShadow );
+	deoglLightShader * const lightShader = etype.GetShaderFor( plan.GetRenderStereo()
+		? deoglRParticleEmitterType::estStereoNoShadow
+		: deoglRParticleEmitterType::estNoShadow );
 	if( ! lightShader ){
 		DETHROW( deeInvalidParam );
 	}
@@ -178,14 +184,12 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	UpdateLightParamBlock( *lightShader, *spbLight, plan, emitter, etype );
 	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, instance, itype );
 	
-	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	spbLight->Activate();
 	spbInstance->Activate();
 	
 	// set textures
-	int target;
-	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettSamples );
+	int target = lightShader->GetTextureTarget( deoglLightShader::ettSamples );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *etype.GetTextureSamples(),
 			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
@@ -194,7 +198,20 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	// render particles
 	pglBindVertexArray( instance.GetVAO()->GetVAO() );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, itype.GetFirstParticle(), itype.GetParticleCount() ) );
+	/*
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+		// for some strange reason this code randomly fails to render properly.
+		// renderdoc can not capture this behavior nor does any code review show
+		// anything potentially wrong or dangerous. since a geometry shader is
+		// anway used for particles this code can be ignored
+		const GLint first[ 2 ] = { itype.GetFirstParticle(), itype.GetFirstParticle() };
+		const GLsizei count[ 2 ] = { itype.GetParticleCount(), itype.GetParticleCount() };
+		OGL_CHECK( renderThread, pglMultiDrawArrays( GL_POINTS, first, count, 2 ) );
+		
+	}else{
+		*/
+		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, itype.GetFirstParticle(), itype.GetParticleCount() ) );
+// 	}
 }
 
 
@@ -233,24 +250,33 @@ deoglRenderPlan &plan, deoglRParticleEmitter &emitter, deoglRParticleEmitterType
 	paramBlock.UnmapBuffer();
 }
 
-void deoglRenderLightParticles::UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &type ){
+void deoglRenderLightParticles::UpdateInstanceParamBlock( deoglLightShader &lightShader,
+deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance,
+deoglRParticleEmitterInstanceType &type ){
 	int target;
 	
 	// calculate matrices
-	const decDMatrix matrixMV( decDMatrix::CreateTranslation( instance.GetReferencePosition() ) * plan.GetCameraMatrix() );
+	const decDMatrix matrixRefPos( decDMatrix::CreateTranslation( instance.GetReferencePosition() ) );
+	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
+	
+	const decDMatrix matrixMV( matrixRefPos * matrixCamera );
+	
+	const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
+	const decDMatrix matrixMVStereo( matrixRefPos * matrixCameraStereo );
 	
 	// set values
 	paramBlock.MapBuffer();
 	try{
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMVP );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, plan.GetProjectionMatrix() );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, plan.GetProjectionMatrix() );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, plan.GetProjectionMatrixStereo() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMV );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixMV);
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixMV );
+			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixMVStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutSamplesParams );

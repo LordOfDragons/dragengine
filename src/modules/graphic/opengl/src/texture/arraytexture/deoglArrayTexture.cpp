@@ -33,6 +33,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTDebug.h"
 
 #ifdef ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -220,6 +221,7 @@ void deoglArrayTexture::CreateTexture(){
 	tsmgr.DisableStage( 0 );
 	
 	UpdateMemoryUsage();
+	pUpdateDebugObjectLabel();
 }
 
 void deoglArrayTexture::DestroyTexture(){
@@ -962,4 +964,15 @@ void deoglArrayTexture::SetDepthFormat( bool packedStencil, bool useFloat ){
 			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
 		}
 	}
+}
+
+void deoglArrayTexture::SetDebugObjectLabel( const char *name ){
+	pDebugObjectLabel.Format( "ArrT: %s", name );
+	if( pTexture ){
+		pUpdateDebugObjectLabel();
+	}
+}
+
+void deoglArrayTexture::pUpdateDebugObjectLabel(){
+	pRenderThread.GetDebug().SetDebugObjectLabel( GL_TEXTURE, pTexture, pDebugObjectLabel );
 }

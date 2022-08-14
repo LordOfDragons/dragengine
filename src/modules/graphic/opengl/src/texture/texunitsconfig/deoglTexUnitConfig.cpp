@@ -89,11 +89,11 @@ void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) con
 			deoglRTShader::etscClampNearest ) );
 		
 	}else if( pSpecial == deoglTexUnitConfig::estPrevDepth ){
-		tsmgr.EnableTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(),
+		tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(),
 			*pSampler );
 		
 	}else if( pSpecial == deoglTexUnitConfig::estPrevColor ){
-		tsmgr.EnableTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(),
+		tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(),
 			*pSampler );
 		
 	}else if( pSpecial == deoglTexUnitConfig::estDirectEnvMapActive ){

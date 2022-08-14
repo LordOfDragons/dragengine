@@ -28,6 +28,7 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
 #include "../rendering/deoglRenderWorld.h"
@@ -195,6 +196,8 @@ void deoglVREye::BeginFrame( deBaseVRModule &vrmodule ){
 		pLogParameters( renderThread );
 		
 		// examples on the internet use RGBA8
+		pVR.DropFBOStereo();
+		
 		if( pRenderTarget ){
 			pRenderTarget->SetSize( pTargetSize );
 			
@@ -220,6 +223,7 @@ void deoglVREye::Render(){
 	plan.SetUpsideDown( true );
 	plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 	plan.SetLodLevelOffset( 0 );
+	plan.SetRenderStereo( false );
 	
 	try{
 		pRender( renderThread );
@@ -388,7 +392,7 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 		return;
 	}
 	
-	deoglFramebuffer * const oldFbo = renderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
 	pVRViewImages = new sViewImage[ count ];
 	
@@ -407,8 +411,6 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 		
 		viewImage.fbo->Verify();
 	}
-	
-	renderThread.GetFramebuffer().Activate( oldFbo );
 	
 	renderThread.GetLogger().LogInfoFormat( "%s: view images %d", LogPrefix(), pVRViewImageCount );
 }
@@ -445,8 +447,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 		
 	case deBaseVRModule::evreRight:
 		plan.SetRenderVR( deoglRenderPlan::ervrRightEye );
-		plan.SetCameraCorrectionMatrix( pMatrixViewToEye.QuickInvert().QuickMultiply(
-			pVR.GetLeftEye().GetMatrixViewToEye() ) );
+		plan.SetCameraStereoMatrix( pVR.GetLeftEye().pMatrixViewToEye.QuickInvert().QuickMultiply( pMatrixViewToEye ) );
 		break;
 	}
 	

@@ -233,6 +233,8 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForShaderType( deoglSkinTextur
 	switch( shaderType ){
 	case deoglSkinTexture::estPropFieldGeometry:
 	case deoglSkinTexture::estPropFieldImposterGeometry:
+	case deoglSkinTexture::estStereoPropFieldGeometry:
+	case deoglSkinTexture::estStereoPropFieldImposterGeometry:
 		return GetTUCGeometry();
 		
 	case deoglSkinTexture::estPropFieldDepth:
@@ -248,6 +250,16 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForShaderType( deoglSkinTextur
 	case deoglSkinTexture::estPropFieldShadowProjection:
 	case deoglSkinTexture::estPropFieldShadowOrthogonal:
 	case deoglSkinTexture::estPropFieldShadowDistance:
+	case deoglSkinTexture::estStereoPropFieldDepth:
+	case deoglSkinTexture::estStereoPropFieldImposterDepth:
+	case deoglSkinTexture::estStereoPropFieldDepthClipPlane:
+	case deoglSkinTexture::estStereoPropFieldImposterDepthClipPlane:
+	case deoglSkinTexture::estStereoPropFieldDepthReversed:
+	case deoglSkinTexture::estStereoPropFieldImposterDepthReversed:
+	case deoglSkinTexture::estStereoPropFieldDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoPropFieldImposterDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoPropFieldCounter:
+	case deoglSkinTexture::estStereoPropFieldCounterClipPlane:
 		return GetTUCShadow();
 		
 	case deoglSkinTexture::estPropFieldEnvMap:

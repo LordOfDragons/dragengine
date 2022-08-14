@@ -44,7 +44,7 @@ precision highp int;
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/light/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/light/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/light/ubo_light_parameters.glsl"
 
@@ -79,16 +79,16 @@ precision highp int;
 	uniform lowp sampler2D texNormal;
 	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
 #else
-	uniform HIGHP sampler2D texDepth;
-	uniform lowp sampler2D texDiffuse;
-	uniform lowp sampler2D texNormal;
-	uniform lowp sampler2D texReflectivity;
-	uniform lowp sampler2D texRoughness;
-	uniform lowp sampler2D texAOSolidity;
+	uniform HIGHP sampler2DArray texDepth;
+	uniform lowp sampler2DArray texDiffuse;
+	uniform lowp sampler2DArray texNormal;
+	uniform lowp sampler2DArray texReflectivity;
+	uniform lowp sampler2DArray texRoughness;
+	uniform lowp sampler2DArray texAOSolidity;
 #endif
 
 #ifdef WITH_SUBSURFACE
-	uniform mediump sampler2D texSubSurface;
+	uniform mediump sampler2DArray texSubSurface;
 #endif
 #ifdef TEXTURE_SHADOW1_SOLID
 	#ifdef SMA1_CUBE
@@ -186,9 +186,18 @@ precision highp int;
 	in vec3 vParticleLightColor;
 	in float vParticleLightRange;
 	
-	#define pLightPosition vParticleLightPosition
+	#define vLightPosition vParticleLightPosition
 	#define pLightColor vParticleLightColor
 	#define pLightRange vParticleLightRange
+	
+#else
+	#define vLightPosition pLightPosition[ vLayer ]
+#endif
+
+#if (defined GS_RENDER_STEREO || defined VS_RENDER_STEREO) && ! defined GI_RAY
+	in flat int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 
@@ -261,6 +270,7 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 #endif
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
 
 
 // Macros to increase readability and extendibility
@@ -646,10 +656,15 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 //////////////////
 
 void main( void ){
+	ivec3 tcArray = ivec3( gl_FragCoord.xy, vLayer );
 	#ifdef LUMINANCE_ONLY
-	ivec2 tc = ivec2( gl_FragCoord.xy * pLumFragCoordScale );
+		tcArray.xy *= pLumFragCoordScale;
 	#else
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	
+	#ifdef GI_RAY
+		ivec2 tc = ivec2( tcArray );
+	#else
+		ivec3 tc = tcArray;
 	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
@@ -677,11 +692,7 @@ void main( void ){
 		}
 		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
-		#ifdef DECODE_IN_DEPTH
-			float depth = dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth );
-		#else
-			float depth = texelFetch( texDepth, tc, 0 ).r;
-		#endif
+		float depth = sampleDepth( texDepth, tc );
 		
 		#ifndef PARTICLE_LIGHT
 			if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
@@ -689,20 +700,18 @@ void main( void ){
 			}
 		#endif
 		
-		vec3 position = vec3( depth );
-		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 		#ifdef FULLSCREENQUAD
-			position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
+			vec3 position = depthToPosition( depth, vScreenCoord, vLayer );
 		#else
-			position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
+			vec3 position = depthToPositionVolume( depth, vLightVolumePos, vLayer );
 		#endif
 	#endif
 	
 	// calculate light direction and distance
 	#ifdef SKY_LIGHT
-		#define lightDir pLightView
+		#define lightDir pLightView[ vLayer ]
 	#else
-		vec3 lightDir = pLightPosition - position;
+		vec3 lightDir = vLightPosition - position;
 		float dist = length( lightDir );
 		
 		// discard if pre-lit (length = 0) or outside the light range
@@ -715,7 +724,7 @@ void main( void ){
 		// NOTE this does not work anymore since spot cone can be squashed now
 		/*
 		#if defined SPOT_LIGHT
-			float spotFactor = dot( pLightView, -lightDir ) - pLightSpotBase;
+			float spotFactor = dot( lightView, -lightDir ) - pLightSpotBase;
 			if( spotFactor <= 0.0 ){
 				discard;
 			}
@@ -732,29 +741,29 @@ void main( void ){
 			vec4 shapos1;
 			
 			if( position.z < pLayerBorder.x ){
-				shapos1 = ( pShadowMatrix1 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 0.0; // layer 0
+				shapos1 = ( pShadowMatrix1[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 0; // layer 0
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.x;
 				#endif
 				
 			}else if( position.z < pLayerBorder.y ){
-				shapos1 = ( pShadowMatrix2 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 1.0; // layer 1
+				shapos1 = ( pShadowMatrix2[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 1; // layer 1
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.y;
 				#endif
 				
 			}else if( position.z < pLayerBorder.z ){
-				shapos1 = ( pShadowMatrix3 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 2.0; // layer 2
+				shapos1 = ( pShadowMatrix3[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 2; // layer 2
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.x;
 				#endif
 				
 			}else{
-				shapos1 = ( pShadowMatrix4 * vec4( position, 1.0 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 3.0; // layer 3
+				shapos1 = ( pShadowMatrix4[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
+				shapos1.p = 3; // layer 3
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.y;
 				#endif
@@ -767,7 +776,7 @@ void main( void ){
 		vec4 shapos1 = vec4( position - vParticleLightPosition, 1.0 );
 		
 	#else
-		vec4 shapos1 = pShadowMatrix1 * vec4( position, 1.0 );
+		vec4 shapos1 = pShadowMatrix1[ vLayer ] * vec4( position, 1.0 );
 		
 		#ifndef POINT_LIGHT
 			#ifdef SHADOW_INVERSE_DEPTH
@@ -813,7 +822,7 @@ void main( void ){
 			#ifdef SHAMAT2_EQUALS_SHAMAT1
 				#define shapos2 shapos1
 			#else
-				vec4 shapos2 = pShadowMatrix2 * vec4( position, 1.0 );
+				vec4 shapos2 = pShadowMatrix2[ vLayer ] * vec4( position, 1.0 );
 				
 				#ifdef SMA2_CUBE
 					shapos2.w = length( shapos2.xyz );
@@ -841,7 +850,7 @@ void main( void ){
 	
 	// calculate the sss thickness from the shadow map if existing
 	#ifdef WITH_SUBSURFACE
-		vec3 absorptionRadius = texelFetch( texSubSurface, tc, 0 ).rgb;
+		vec3 absorptionRadius = texelFetch( texSubSurface, tcArray, 0 ).rgb;
 		float largestAbsorptionRadius = max( max( absorptionRadius.x, absorptionRadius.y ), absorptionRadius.z );
 		#ifdef SHADOW_CASTING
 			#ifdef TEXTURE_SHADOW1_SOLID
@@ -931,7 +940,7 @@ void main( void ){
 					//      the problematic hits are located behind the camera. for this reason
 					//      the GI-ShadowMap is always used although the quality is inferior than
 					//      using the view shadow map
-// 					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
+// 					vec4 projPos = pMatrixP[ 0 ] * vec4( position, 1.0 );
 // 					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
 						//shadow = min( shadow, SHATEX( texShadow1SolidDepth, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
 						vec4 gishapos = pGIShadowMatrix * vec4( position, 1.0 );
@@ -1131,13 +1140,13 @@ void main( void ){
 	#elif defined TEXTURE_COLOR_CUBEMAP
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec3 lightImageTC = normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) );
+		vec3 lightImageTC = normalize( pLightImageOmniMatrix[ vLayer ] * vec4( position, 1.0 ) );
 		lightColor *= pow( texture( texColorCubemap, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 		
 	#elif defined TEXTURE_COLOR_EQUIRECT
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageOmniMatrix * vec4( position, 1.0 ) ) );
+		vec2 lightImageTC = equirectFromNormal( normalize( pLightImageOmniMatrix[ vLayer ] * vec4( position, 1.0 ) ) );
 		lightColor *= pow( texture( texColorEquirect, lightImageTC ).rgb, vec3( pLightImageGamma ) );
 	#endif
 	

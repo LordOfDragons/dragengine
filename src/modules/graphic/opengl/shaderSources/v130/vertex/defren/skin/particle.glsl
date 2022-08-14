@@ -1,3 +1,10 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 // request high precision if the graphic card supports this
 #ifdef HIGH_PRECISION
 precision highp float;
@@ -10,7 +17,7 @@ precision highp int;
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 
 #ifdef SHARED_SPB
@@ -41,10 +48,6 @@ in float inParticle4; // beamLocation
 #endif
 */
 
-#ifdef NODE_VERTEX_INPUTS
-NODE_VERTEX_INPUTS
-#endif
-
 
 
 // Outputs
@@ -55,8 +58,13 @@ out vec4 vParticle1; // red, green, blue, transparency
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
 #endif
-#ifdef NODE_VERTEX_OUTPUTS
-NODE_VERTEX_OUTPUTS
+
+#ifdef VS_RENDER_STEREO
+	uniform int pDrawIDOffset;
+	#define inLayer (gl_DrawID + pDrawIDOffset)
+	flat out int vLayer;
+#else
+	const int inLayer = 0;
 #endif
 
 
@@ -103,16 +111,14 @@ void main( void ){
 	vParticle1.w *= pattrs3.x; // transparency
 	#endif
 	
-	vec4 position = vec4( inParticle0.yzw, 1.0 );
-	
-	position.xyz = pMatrixModel * position;
-	gl_Position = vec4( pMatrixV * position, 1.0 );
+	gl_Position = vec4( pMatrixModel * vec4( inParticle0.yzw, 1 ), 1 );
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
 	#endif
 	
-	#ifdef NODE_VERTEX_MAIN
-	NODE_VERTEX_MAIN
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

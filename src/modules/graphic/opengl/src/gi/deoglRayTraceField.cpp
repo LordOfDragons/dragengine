@@ -29,6 +29,7 @@
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../rendering/light/deoglRenderLight.h"
 #include "../rendering/light/deoglRenderGI.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -205,7 +206,7 @@ void deoglRayTraceField::pPrepareUBOState(){
 }
 
 void deoglRayTraceField::pPrepareRayTexFBO(){
-	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	bool setupFbo = false;
 	
@@ -240,6 +241,4 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 	
 	const GLfloat clear[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 1.0f };
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clear[ 0 ] ) );
-	
-	pRenderThread.GetFramebuffer().Activate( oldfbo );
 }

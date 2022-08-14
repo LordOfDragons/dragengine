@@ -81,6 +81,9 @@ private:
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	bool pForceDoubleSided;
+	bool pRenderVSStereo;
+	GLuint pVBODrawIndirect;
+	int pVBODrawIndirectSize;
 	
 	decPointerList pShaders;
 	int pShaderCount;
@@ -145,6 +148,19 @@ public:
 	/** Set force double sided rendering. */
 	void SetForceDoubleSided( bool forceDoubleSided );
 	
+	/** Use vertex shader stereo rendering. */
+	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
+	
+	/** Set use vertex shader stereo rendering. */
+	void SetRenderVSStereo( bool renderVSStereo );
+	
+	/**
+	 * VBO draw indirect. Content is an array of oglDrawIndirectCommand. This is a union
+	 * struct of oglDrawElementsIndirectCommand and oglDrawArraysIndirectCommand allowing
+	 * to  use one VBO for both. Use sizeof(oglDrawIndirectCommand) as stride.
+	 */
+	inline GLuint GetVBODrawIndirect() const{ return pVBODrawIndirect; }
+	
 	
 	
 	/** Number of shaders. */
@@ -201,6 +217,7 @@ private:
 	void pAssignSPBInstances();
 	void pUpdateSPBInstances();
 	void pCreateSPBInstanceParamBlock();
+	void pUpdateVBODrawIndirect();
 };
 
 #endif

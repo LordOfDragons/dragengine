@@ -27,6 +27,7 @@
 #include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoglPixelBuffer;
 class deoglRenderThread;
@@ -61,6 +62,7 @@ public:
 	int pRealMipMapLevelCount;
 	
 	deoglMemoryConsumptionTextureUse pMemUse;
+	decString pDebugObjectLabel;
 	
 	
 	
@@ -155,7 +157,13 @@ public:
 	/** Creates a camera matrix for a cube map face. */
 	static void CreateMatrixForFace( decMatrix &matrix, const decVector &position, int face );
 	static void CreateMatrixForFace( decDMatrix &matrix, const decDVector &position, int face );
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
+	
+private:
+	void pUpdateDebugObjectLabel();
 };
 
 #endif

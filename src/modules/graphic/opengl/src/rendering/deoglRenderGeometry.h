@@ -35,7 +35,6 @@ class deoglRComponent;
 class deoglRenderPlan;
 class deoglRenderTask;
 class deoglRLight;
-class deoglShaderProgram;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexture;
@@ -52,13 +51,13 @@ class deoglRenderGeometry : public deoglRenderBase{
 private:
 	decColor pAmbient;
 	
-	deoglShaderProgram *pShaderParticle;
+	deoglShaderProgramUsage pShaderParticle;
 	
-	deoglShaderProgram *pShaderTransformPositions;
-	deoglShaderProgram *pShaderCalcNormalsTangents;
-	deoglShaderProgram *pShaderWriteSkinnedVBO;
+	deoglShaderProgramUsage pShaderTransformPositions;
+	deoglShaderProgramUsage pShaderCalcNormalsTangents;
+	deoglShaderProgramUsage pShaderWriteSkinnedVBO;
 	
-	deoglShaderProgram *pShaderApproxTransformVNT;
+	deoglShaderProgramUsage pShaderApproxTransformVNT;
 	
 public:
 	/** \name Constructors and Destructors */

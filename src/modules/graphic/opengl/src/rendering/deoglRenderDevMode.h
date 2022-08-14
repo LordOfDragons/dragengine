@@ -25,7 +25,6 @@
 #include "deoglRenderBase.h"
 
 class deoglDebugInformationList;
-class deoglShaderProgram;
 class deoglDebugInformation;
 class decString;
 
@@ -37,9 +36,9 @@ class decString;
  */
 class deoglRenderDevMode : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderSolidColor2D;
-	deoglShaderProgram *pShaderSolidColor3D;
-	deoglShaderProgram *pShaderShape;
+	deoglShaderProgramUsage pShaderSolidColor2D;
+	deoglShaderProgramUsage pShaderSolidColor3D;
+	deoglShaderProgramUsage pShaderShape;
 	
 	decVector2 pScalePosition;
 	decVector2 pOffsetPosition;

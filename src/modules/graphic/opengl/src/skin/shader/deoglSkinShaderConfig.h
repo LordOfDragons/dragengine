@@ -149,6 +149,8 @@ public:
 	bool pUseNormalRoughnessCorrection;
 	bool pGSRenderCube;
 	bool pGSRenderCascaded;
+	bool pGSRenderStereo;
+	bool pVSRenderStereo;
 	bool pSharedSPB;
 	bool pOutline;
 	bool pOutlineThicknessScreen;
@@ -382,6 +384,18 @@ public:
 	
 	/** Set render to cascaded using geometry shader. */
 	void SetGSRenderCascaded( bool gsRenderCascaded );
+	
+	/** Render dual view using geometry shader. */
+	inline bool GetGSRenderStereo() const{ return pGSRenderStereo; }
+	
+	/** Set render dual view using geometry shader. */
+	void SetGSRenderStereo( bool gsRenderStereo );
+	
+	/** Render dual view using vertex shader. */
+	inline bool GetVSRenderStereo() const{ return pVSRenderStereo; }
+	
+	/** Set render dual view using vertex shader. */
+	void SetVSRenderStereo( bool vsRenderStereo );
 	
 	/** Use shared SPB. */
 	inline bool GetSharedSPB() const{ return pSharedSPB; }

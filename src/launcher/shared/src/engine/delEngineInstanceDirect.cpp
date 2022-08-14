@@ -134,6 +134,7 @@ delEngineInstanceDirect::delEngineInstanceDirect( delLauncher &launcher, const c
 delEngineInstance( launcher, logfile ),
 pEngine( nullptr ),
 pEngineRunning( false ),
+pGameRunning( false ),
 pLogger( launcher.GetLogger() ){
 }
 
@@ -609,6 +610,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 		scriptDirectory, scriptVersion, gameObject );
 	DEASSERT_NOTNULL( pEngine )
 	
+	pGameRunning = true;
 	if( collectChangedParams ){
 		collectChangedParams->RemoveAll();
 	}
@@ -633,7 +635,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	deModuleParameter moduleParameter;
 	int i, j;
 	
-	for( i=0; i<10; i++ ){
+	for( i=0; i<11; i++ ){
 		if( moduleState[ i ].module ){
 			const int count = moduleState[ i ].module->GetParameterCount();
 			for( j=0; j<count; j++ ){
@@ -659,7 +661,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	
 	// compare module parameters against stored ones
 	if( collectChangedParams ){
-		for( i=0; i<10; i++ ){
+		for( i=0; i<11; i++ ){
 			if( ! moduleState[ i ].module ){
 				continue;
 			}
@@ -687,6 +689,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	}
 	
 	// finished
+	pGameRunning = false;
 	DEASSERT_TRUE( success )
 }
 
@@ -699,7 +702,7 @@ void delEngineInstanceDirect::StopGame(){
 }
 
 int delEngineInstanceDirect::IsGameRunning(){
-	return IsEngineRunning() ? 1 : 0;
+	return pGameRunning && IsEngineRunning() ? 1 : 0;
 }
 
 decPoint delEngineInstanceDirect::GetDisplayCurrentResolution( int display ){

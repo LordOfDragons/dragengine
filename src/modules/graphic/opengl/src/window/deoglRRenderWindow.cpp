@@ -26,6 +26,7 @@
 #include "deoglRRenderWindow.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
@@ -559,6 +560,8 @@ void deoglRRenderWindow::SwapBuffers(){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
+	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
 	// 155=GLX, 11=glXSwapBuffers
@@ -615,6 +618,8 @@ void deoglRRenderWindow::Render(){
 	}
 	#endif
 	
+	deoglDebugTraceGroup debugTrace( GetRenderThread(), "Window.Render" );
+	
 	// make window current in the render context
 	pRenderThread.GetContext().ActivateRRenderWindow( this );
 	
@@ -656,6 +661,8 @@ void deoglRRenderWindow::Render(){
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
+	
+	debugTrace.Close();
 	
 	// capture if any capture canvas are pending
 	Capture();

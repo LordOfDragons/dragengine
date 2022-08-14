@@ -61,7 +61,8 @@ def openxrBuild(target, source, env):
 		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
 	
 	if env['with_debug']:
-		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+		#cmdline.append('-DCMAKE_BUILD_TYPE=Debug') # for some strange reason this fails to compile
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	else:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	

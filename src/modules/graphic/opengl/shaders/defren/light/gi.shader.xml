@@ -23,11 +23,12 @@
 	<uniformBlock name='GIRayDirections' target='4'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	<output name='outLuminance' target='1'/>
 	<output name='outSubSurface' target='2'/>
 	
-	<sourceCode unit='vertex'>v130/vertex/defren/light/gi.glsl</sourceCode>
+	<sourceCode unit='vertex'>v130/vertex/generic/screenspace.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/light/gi.glsl</sourceCode>
 </shader>

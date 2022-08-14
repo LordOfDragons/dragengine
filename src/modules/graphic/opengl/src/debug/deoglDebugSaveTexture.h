@@ -119,6 +119,8 @@ public:
 	void SaveDepthTextureLevel( deoglTexture &texture, int level, const char *name, eDepthTypes type );
 	/** Saves a stencil texture to file. */
 	void SaveStencilTexture( deoglTexture &texture, const char *name );
+	/** Saves a stencil texture to file. */
+	void SaveStencilArrayTexture( deoglArrayTexture &texture, const char *name );
 	
 	/** Saves a cube map to file. */
 	void SaveCubeMap( deoglCubeMap &cubemap, const char *name, bool upsideDown );
@@ -143,6 +145,8 @@ public:
 	void SaveArrayTextureLevelConversion( deoglArrayTexture &texture, int level, const char *name, eConvertions conversion );
 	/** Saves an array texture to file. */
 	void SaveDepthArrayTexture( deoglArrayTexture &texture, const char *name, bool linearDepth );
+	/** Saves an array texture to file. */
+	void SaveDepthArrayTextureLevel( deoglArrayTexture &texture, int level, const char *name, bool linearDepth );
 	
 	/** Retrieves the pixel buffer type opengl pixel format and type. */
 	deoglPixelBuffer::ePixelFormats GetPixelBufferType( GLenum &pixelFormat, GLenum &pixelType ) const;

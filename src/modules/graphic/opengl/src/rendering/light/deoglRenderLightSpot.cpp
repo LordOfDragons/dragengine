@@ -28,6 +28,7 @@
 #include "deoglRenderGI.h"
 #include "../deoglRenderGeometry.h"
 #include "../deoglRenderOcclusion.h"
+#include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../lod/deoglLODCalculator.h"
 #include "../plan/deoglRenderPlan.h"
@@ -47,6 +48,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSaveTexture.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
@@ -65,6 +67,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -238,35 +241,7 @@ lodFovY( 0.0f ){
 
 deoglRenderLightSpot::deoglRenderLightSpot( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
-deoglRenderLightBase( renderThread ),
-
-pShaderShadowCopy( NULL ),
-pShaderBoxBoundary1( NULL ),
-pShaderBoxBoundary2( NULL ),
-pShaderOccMap( NULL ),
-
-pDebugInfoSolid( NULL ),
-pDebugInfoTransparent( NULL ),
-
-pDebugInfoSolidDetail( NULL ),
-pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowClear( NULL ),
-pDebugInfoSolidShadowClearTransp( NULL ),
-pDebugInfoSolidShadowTask( NULL ),
-pDebugInfoSolidShadowRender( NULL ),
-pDebugInfoSolidShadowTranspTask( NULL ),
-pDebugInfoSolidShadowTranspRender( NULL ),
-pDebugInfoSolidLight( NULL ),
-
-pDebugInfoTransparentDetail( NULL ),
-pDebugInfoTransparentShadow( NULL ),
-pDebugInfoTransparentShadowClear( NULL ),
-pDebugInfoTransparentShadowClearTransp( NULL ),
-pDebugInfoTransparentShadowTask( NULL ),
-pDebugInfoTransparentShadowRender( NULL ),
-pDebugInfoTransparentShadowTranspTask( NULL ),
-pDebugInfoTransparentShadowTranspRender( NULL ),
-pDebugInfoTransparentLight( NULL )
+deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -282,12 +257,12 @@ pDebugInfoTransparentLight( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
 		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
+			defines.SetDefine( "SHADOW_INVERSE_DEPTH", "1" );
 		}
-		defines.AddDefine( "DEPTH_INPUT", "1" );
+		defines.SetDefine( "DEPTH_INPUT", "1" );
 		pShaderBoxBoundary1 = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "AMBIENT_MAP", "1" );
+		defines.SetDefine( "AMBIENT_MAP", "1" );
 		pShaderBoxBoundary1Ambient = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -313,63 +288,63 @@ pDebugInfoTransparentLight( NULL )
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 		const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
 		
-		pDebugInfoSolid = new deoglDebugInformation( "Spot", colorText, colorBgUp );
-		pDebugInfoTransparent = new deoglDebugInformation( "Spot", colorText, colorBgUp );
+		pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Spot", colorText, colorBgUp ) );
+		pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Spot", colorText, colorBgUp ) );
 		
 		
 		
-		pDebugInfoSolidDetail = new deoglDebugInformation( "Light Spot Solid", colorText, colorBg );
+		pDebugInfoSolidDetail.TakeOver( new deoglDebugInformation( "Light Spot Solid", colorText, colorBg ) );
 		
-		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
+		pDebugInfoSolidShadow.TakeOver( new deoglDebugInformation( "Shadow", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
 		
-		pDebugInfoSolidShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClear );
 		
-		pDebugInfoSolidShadowClearTransp = new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowClearTransp.TakeOver( new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClearTransp );
 		
-		pDebugInfoSolidShadowTask = new deoglDebugInformation( "Task", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowTask );
 		
-		pDebugInfoSolidShadowRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowRender );
 		
-		pDebugInfoSolidShadowTranspTask = new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowTranspTask.TakeOver( new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowTranspTask );
 		
-		pDebugInfoSolidShadowTranspRender = new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowTranspRender.TakeOver( new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowTranspRender );
 		
-		pDebugInfoSolidLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoSolidLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidLight );
 		
 		
 		
-		pDebugInfoTransparentDetail = new deoglDebugInformation( "Light Spot Transp", colorText, colorBg );
+		pDebugInfoTransparentDetail.TakeOver( new deoglDebugInformation( "Light Spot Transp", colorText, colorBg ) );
 		
-		pDebugInfoTransparentShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
+		pDebugInfoTransparentShadow.TakeOver( new deoglDebugInformation( "Shadow", colorText, colorBgSub ) );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentShadow );
 		
-		pDebugInfoTransparentShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
+		pDebugInfoTransparentShadowClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub2 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowClear );
 		
-		pDebugInfoTransparentShadowClearTransp = new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 );
+		pDebugInfoTransparentShadowClearTransp.TakeOver( new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowClearTransp );
 		
-		pDebugInfoTransparentShadowTask = new deoglDebugInformation( "Task", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowTask );
 		
-		pDebugInfoTransparentShadowRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowRender );
 		
-		pDebugInfoTransparentShadowTranspTask = new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowTranspTask.TakeOver( new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowTranspTask );
 		
-		pDebugInfoTransparentShadowTranspRender = new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowTranspRender.TakeOver( new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowTranspRender );
 		
-		pDebugInfoTransparentLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoTransparentLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentLight );
 		
 	}catch( const deException & ){
@@ -579,6 +554,7 @@ const deoglRenderPlanMasked *mask ){
 	
 	// prepare for rendering
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderLight" );
 	deoglRLight &light = *cllight.GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
@@ -817,36 +793,52 @@ const deoglRenderPlanMasked *mask ){
 		if( texSolidDepth2 ){
 			if( texTranspDepth2 ){
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp2
+						: deoglRLight::estSolid2Transp2 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp2NoAmbient
+						: deoglRLight::estSolid2Transp2NoAmbient );
 				}
 				
 			}else if( texTranspDepth1 ){
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp1
+						: deoglRLight::estSolid2Transp1 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2Transp1NoAmbient
+						: deoglRLight::estSolid2Transp1NoAmbient );
 				}
 				
 			}else{
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2
+						: deoglRLight::estSolid2 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid2NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid2NoAmbient
+						: deoglRLight::estSolid2NoAmbient );
 				}
 			}
 			
 		}else{
 			if( texTranspDepth1 ){
 				if( texAmbient1 ){
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1Transp1 );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1Transp1
+						: deoglRLight::estSolid1Transp1 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1Transp1NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1Transp1NoAmbient
+						: deoglRLight::estSolid1Transp1NoAmbient );
 				}
 				
 			}else{
@@ -854,13 +846,17 @@ const deoglRenderPlanMasked *mask ){
 					lightShader = light.GetShaderFor( deoglRLight::estSolid1 );
 					
 				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estSolid1NoAmbient );
+					lightShader = light.GetShaderFor( plan.GetRenderStereo()
+						? deoglRLight::estStereoSolid1NoAmbient
+						: deoglRLight::estSolid1NoAmbient );
 				}
 			}
 		}
 		
 	}else{
-		lightShader = light.GetShaderFor( deoglRLight::estNoShadow );
+		lightShader = light.GetShaderFor( plan.GetRenderStereo()
+			? deoglRLight::estStereoNoShadow
+			: deoglRLight::estNoShadow );
 	}
 	
 	if( ! lightShader ){
@@ -892,7 +888,7 @@ const deoglRenderPlanMasked *mask ){
 	if( lightGeometry ){
 		renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 		
-		GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		spbLight->Activate();
 		spbInstance->Activate();
 		
@@ -900,7 +896,14 @@ const deoglRenderPlanMasked *mask ){
 		
 		// render the light
 		pglBindVertexArray( light.GetLightVolume()->GetVAO() );
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount() ) );
+		if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+			const GLint first[ 2 ] = { 0, 0 };
+			const GLsizei count[ 2 ] = { light.GetLightVolume()->GetPointCount(), light.GetLightVolume()->GetPointCount() };
+			OGL_CHECK( renderThread, pglMultiDrawArrays( GL_TRIANGLES, first, count, 2 ) );
+			
+		}else{
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount() ) );
+		}
 		pglBindVertexArray( 0 );
 		
 		if( solid ){
@@ -931,7 +934,9 @@ const deoglRenderPlanMasked *mask ){
 		if( lightShader ){
 			renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 			
-			GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+			// WARNING always non-stereo!
+			renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+			
 			spbLight->Activate();
 			spbInstance->Activate();
 			
@@ -1404,6 +1409,7 @@ void deoglRenderLightSpot::RenderShadowMap( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderShadowMap" );
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
@@ -1593,6 +1599,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 void deoglRenderLightSpot::RenderAmbientMap( deoglRenderPlanLight &planLight,
 deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSpot.RenderAmbientMap" );
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetOccMapPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
@@ -1813,73 +1820,86 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight ){
 void deoglRenderLightSpot::UpdateInstanceParamBlock( deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, const deoglCollideListLight &cllight,
 sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
-	deoglRLight &light = *cllight.GetLight();
+	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
+	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
+	const deoglRLight &light = *cllight.GetLight();
+	
+	const bool isDepthCompareLEqual = defren.GetDepthCompareFuncRegular() == GL_LEQUAL;
+	const bool isCameraInside = cllight.GetCameraInside();
+	const decDMatrix &matrixLight = light.GetMatrix();
+	
 	float pixelSize, noiseScale;
 	int target;
 	
-	// calculate light volume matrices
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
-	
-	const decDMatrix matrixMV( light.GetMatrix() * plan.GetCameraMatrix() );
-	const decDMatrix matrixMVP( matrixMV * plan.GetProjectionMatrix() );
-	
-	const decDVector lpos( matrixMV.GetPosition() );
-	const decDVector lview( matrixMV.TransformView() );
-	//const decVector lup = matrixMV.TransformUp();
-	//const decVector lright = matrixMV.TransformRight();
-	
-	decDMatrix matrixShadow( matrixMV.Invert() * matrixLP );
-	
+	// calculate matrices
+	decDMatrix matrixBias( decDMatrix::CreateBiasMatrix() );
 	if( defren.GetUseInverseDepth() ){
 		// for the inverse depth case we need the bias matrix without the z transformation
 		// since the z transformation has been already done in the inverse projection matrix
-		decDMatrix biasMatrix( decDMatrix::CreateBiasMatrix() );
-		biasMatrix.a33 = 1.0;
-		biasMatrix.a34 = 0.0;
-		matrixShadow *= biasMatrix;
-		
-	}else{
-		matrixShadow *= decDMatrix::CreateBiasMatrix(); // since we are already 0->1
+		matrixBias.a33 = 1.0;
+		matrixBias.a34 = 0.0;
 	}
+	
+	const decDMatrix matrixLPBias( matrixLP * matrixBias );
+	
+	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
+	
+	const decDMatrix matrixMV( matrixLight * matrixCamera );
+	const decDMatrix matrixMVP( matrixMV * plan.GetProjectionMatrix() );
+	
+	const decDMatrix matrixCameraStereo( matrixCamera * plan.GetCameraStereoMatrix() );
+	const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
+	const decDMatrix matrixMVStereo( matrixLight * matrixCameraStereo );
+	const decDMatrix matrixMVPStereo( matrixMVStereo * matrixProjectionStereo );
+	
+	//const decVector lightUp( matrixMV.TransformUp() );
+	//const decVector lightRight( matrixMV.TransformRight() );
+	
+	const decDMatrix matrixShadow( matrixMV.Invert() * matrixLPBias );
+	const decDMatrix matrixShadowStereo( matrixMVStereo.Invert() * matrixLPBias );
 	
 	// set values
 	paramBlock.MapBuffer();
 	try{
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMVP );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrixMVP );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixMVP );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixMVPStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutMatrixMV );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixMV );
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixMV );
+			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixMVStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightPosition );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec3( target, lpos );
+			paramBlock.SetParameterDataArrayVec3( target, 0, matrixMV.GetPosition() );
+			paramBlock.SetParameterDataArrayVec3( target, 1, matrixMVStereo.GetPosition() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec3( target, lview );
+			paramBlock.SetParameterDataArrayVec3( target, 0, matrixMV.TransformView() );
+			paramBlock.SetParameterDataArrayVec3( target, 1, matrixMVStereo.TransformView() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, cllight.GetCameraInside() ? 0.0f
-				: ( GetRenderThread().GetDeferredRendering().GetDepthCompareFuncRegular() == GL_LEQUAL ? 1.0f : -1.0f ) );
+			paramBlock.SetParameterDataFloat( target, isCameraInside ? 0.0f : ( isDepthCompareLEqual ? 1.0f : -1.0f ) );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow );
+			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightImageOmniMatrix );
@@ -1904,7 +1924,8 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			// y-flipping (1-y) required. for point light use shadow coordinates and apply rotation
 			// matrix to go from world to local space and also flip (1-y)
 			
-			paramBlock.SetParameterDataMat4x3( target, matrix );
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrix );
+			...
 			*/
 			
 			decMatrix matrixRotate;
@@ -1912,7 +1933,8 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 				matrixRotate = decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotate() * TWO_PI )
 					.QuickMultiply( decMatrix::CreateRotation( light.GetUseSkinTexture()->GetOmniDirRotateSpot() * TWO_PI ) );
 			}
-			paramBlock.SetParameterDataMat4x3( target, matrixRotate.QuickMultiply( matrixMV ).QuickInvert() );
+			paramBlock.SetParameterDataArrayMat4x3( target, 0, matrixRotate.QuickMultiply( matrixMV ).QuickInvert() );
+			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixRotate.QuickMultiply( matrixMVStereo ).QuickInvert() );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );
@@ -2046,82 +2068,4 @@ void deoglRenderLightSpot::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLightSpot::pCleanUp(){
-	if( pShaderOccMap ){
-		pShaderOccMap->RemoveUsage();
-	}
-	if( pShaderBoxBoundary2 ){
-		pShaderBoxBoundary2->RemoveUsage();
-	}
-	if( pShaderBoxBoundary1Ambient ){
-		pShaderBoxBoundary1Ambient->RemoveUsage();
-	}
-	if( pShaderBoxBoundary1 ){
-		pShaderBoxBoundary1->RemoveUsage();
-	}
-	if( pShaderShadowCopy ){
-		pShaderShadowCopy->RemoveUsage();
-	}
-	
-	if( pDebugInfoSolid ){
-		pDebugInfoSolid->FreeReference();
-	}
-	if( pDebugInfoTransparent ){
-		pDebugInfoTransparent->FreeReference();
-	}
-	
-	if( pDebugInfoSolidDetail ){
-		pDebugInfoSolidDetail->FreeReference();
-	}
-	if( pDebugInfoSolidShadow ){
-		pDebugInfoSolidShadow->FreeReference();
-	}
-	if( pDebugInfoSolidShadowClear ){
-		pDebugInfoSolidShadowClear->FreeReference();
-	}
-	if( pDebugInfoSolidShadowClearTransp ){
-		pDebugInfoSolidShadowClearTransp->FreeReference();
-	}
-	if( pDebugInfoSolidShadowTask ){
-		pDebugInfoSolidShadowTask->FreeReference();
-	}
-	if( pDebugInfoSolidShadowRender ){
-		pDebugInfoSolidShadowRender->FreeReference();
-	}
-	if( pDebugInfoSolidShadowTranspTask ){
-		pDebugInfoSolidShadowTranspTask->FreeReference();
-	}
-	if( pDebugInfoSolidShadowTranspRender ){
-		pDebugInfoSolidShadowTranspRender->FreeReference();
-	}
-	if( pDebugInfoSolidLight ){
-		pDebugInfoSolidLight->FreeReference();
-	}
-	
-	if( pDebugInfoTransparentDetail ){
-		pDebugInfoTransparentDetail->FreeReference();
-	}
-	if( pDebugInfoTransparentShadow ){
-		pDebugInfoTransparentShadow->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowClear ){
-		pDebugInfoTransparentShadowClear->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowClearTransp ){
-		pDebugInfoTransparentShadowClearTransp->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowTask ){
-		pDebugInfoTransparentShadowTask->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowRender ){
-		pDebugInfoTransparentShadowRender->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowTranspTask ){
-		pDebugInfoTransparentShadowTranspTask->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowTranspRender ){
-		pDebugInfoTransparentShadowTranspRender->FreeReference();
-	}
-	if( pDebugInfoTransparentLight ){
-		pDebugInfoTransparentLight->FreeReference();
-	}
 }

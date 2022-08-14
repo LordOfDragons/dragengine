@@ -48,27 +48,19 @@ class deoglRSkyInstanceLayer{
 public:
 	/** Shader Types. */
 	enum eShaderTypes{
-		/** No shadow casting. */
-		estNoShadow,
+		estNoShadow, //<! No shadow casting.
+		estAmbient, //<! Ambient light only.
+		estSolid, //<! Solid shadow.
+		estGIRayNoShadow, //<! No shadow casting.
+		estGIRaySolid1, //<! Solid shadow using one texture.
+		estGIRaySolid2, //<! Solid shadow using two textures.
 		
-		/** Ambient light only. */
-		estAmbient,
-		
-		/** Solid shadow. */
-		estSolid,
-		
-		/** No shadow casting. */
-		estGIRayNoShadow,
-		
-		/** Solid shadow using one texture. */
-		estGIRaySolid1,
-		
-		/** Solid shadow using two textures. */
-		estGIRaySolid2,
-		
-		/** Number of shaders. */
-		EST_COUNT
+		estStereoNoShadow, //<! No shadow casting.
+		estStereoAmbient, //<! Ambient light only.
+		estStereoSolid, //<! Solid shadow.
 	};
+	
+	static const int ShaderTypeCount = estStereoSolid + 1;
 	
 	
 	
@@ -93,7 +85,7 @@ private:
 	deoglSkyLayerTracker *pTrackerEnvMap;
 	bool pSkyNeedsUpdate;
 	
-	deoglLightShader::Ref pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	
@@ -174,10 +166,10 @@ public:
 	
 	
 	/** Shader for shader type. */
-	deoglLightShader *GetShaderFor( int shaderType );
+	deoglLightShader *GetShaderFor( eShaderTypes shaderType );
 	
 	/** Shader configuration for shader type. */
-	bool GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config );
+	bool GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config );
 	
 	/** Light parameter block. */
 	deoglSPBlockUBO *GetLightParameterBlock();

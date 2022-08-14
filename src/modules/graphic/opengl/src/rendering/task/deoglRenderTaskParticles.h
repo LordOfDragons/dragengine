@@ -37,6 +37,7 @@ private:
 	deoglRenderTaskParticlesStep **pSteps;
 	int pStepCount;
 	int pStepSize;
+	bool pRenderVSStereo;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -56,6 +57,12 @@ public:
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	/** Sets the render parameter shader parameter block or NULL to use none. */
 	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
+	
+	/** Use vertex shader stereo rendering. */
+	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
+	
+	/** Set use vertex shader stereo rendering. */
+	void SetRenderVSStereo( bool renderVSStereo );
 	
 	/** Retrieves the number of steps. */
 	inline int GetStepCount() const{ return pStepCount; }

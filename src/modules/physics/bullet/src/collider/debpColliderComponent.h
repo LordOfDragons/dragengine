@@ -473,6 +473,7 @@ private:
 	void pCleanUp();
 	void pUpdateBones();
 	void pUpdateAttachments( bool force );
+	void pApplyAccumRelMoveMatrices();
 	void pUpdateIsMoving();
 	
 	/** \brief Updates the sweep collision test object. */

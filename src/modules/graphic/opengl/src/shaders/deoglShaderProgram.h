@@ -23,6 +23,7 @@
 #define _DEOGLSHADERPROGRAM_H_
 
 #include "deoglShaderDefines.h"
+#include "deoglShaderProgramUsage.h"
 
 class deoglRenderThread;
 class deoglShaderUnitSourceCode;
@@ -38,6 +39,9 @@ class deoglRenderTaskSharedShader;
  * from disk using defines to produce a specialized program.
  */
 class deoglShaderProgram{
+public:
+	typedef deoglShaderProgramUsage Ref;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	deoglShaderSources *pSources;

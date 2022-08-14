@@ -41,6 +41,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSaveTexture.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
@@ -146,59 +147,32 @@ enum eSPDebugProbeUpdate{
 ////////////////////////////
 
 deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
-deoglRenderLightBase( renderThread ),
-
-pShaderResizeMaterials( NULL ),
-pShaderTraceRays( NULL ),
-pShaderTraceRaysCache( NULL ),
-pShaderCopyRayCache( NULL ),
-pShaderInitFromRayCache( NULL ),
-pShaderCopyProbeIrradiance( NULL ),
-pShaderUpdateProbeIrradiance( NULL ),
-pShaderUpdateProbeDistance( NULL ),
-pShaderClearProbeIrradiance( NULL ),
-pShaderClearProbeDistance( NULL ),
-pShaderMoveProbes( NULL ),
-pShaderDynamicState( NULL ),
-pShaderProbeOffset( NULL ),
-pShaderProbeExtends( NULL ),
-pShaderLight( NULL ),
-pShaderLightGIRay( NULL ),
-pShaderDebugProbe( NULL ),
-pShaderDebugProbeOffset( NULL ),
-pShaderDebugProbeUpdatePass1( NULL ),
-pShaderDebugProbeUpdatePass2( NULL ),
-
-pDebugInfoGI( NULL ),
-pDebugInfoGITraceRays( NULL ),
-pDebugInfoGIRenderMaterials( NULL ),
-pDebugInfoGIClearProbes( NULL ),
-pDebugInfoGIUpdateProbes( NULL ),
-pDebugInfoGIMoveProbes( NULL ),
-pDebugInfoGIRenderLight( NULL ),
-pDebugInfoGIRenderLightGIRay( NULL )
+deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
 		pCreateUBORenderLight();
 		
 		// resize materials
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Resize Materials" );
 		pShaderResizeMaterials = shaderManager.GetProgramWith( sources, defines );
 		
 		// trace rays
-		defines.AddDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
+		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		#ifdef GI_RENDERDOC_DEBUG
-		defines.AddDefine( "GI_RENDERDOC_DEBUG", true );
+		defines.SetDefine( "GI_RENDERDOC_DEBUG", true );
 		#endif
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		#ifdef GI_USE_RAY_CACHE
-			defines.AddDefine( "GI_USE_RAY_CACHE", true );
+			defines.SetDefine( "GI_USE_RAY_CACHE", true );
 		#endif
 		pShaderTraceRays = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "GI_USE_RAY_CACHE" );
@@ -213,34 +187,34 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		
 		// clear probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", true );
+		defines.SetDefine( "MAP_IRRADIANCE", true );
 		pShaderClearProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
-		defines.AddDefine( "MAP_DISTANCE", true );
+		defines.SetDefine( "MAP_DISTANCE", true );
 		pShaderClearProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		// copy probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", true );
+		defines.SetDefine( "MAP_IRRADIANCE", true );
 		pShaderCopyProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
-		defines.AddDefine( "MAP_IRRADIANCE", true );
+		defines.SetDefine( "MAP_IRRADIANCE", true );
 		pShaderUpdateProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
-		defines.AddDefine( "MAP_DISTANCE", true );
+		defines.SetDefine( "MAP_DISTANCE", true );
 		pShaderUpdateProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		// move probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Move Probes" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.AddDefine( "WITH_RAY_CACHE", true );
+			defines.SetDefine( "WITH_RAY_CACHE", true );
 		}
 		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
@@ -252,7 +226,7 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		// probe offset
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Offset" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.AddDefine( "WITH_RAY_CACHE", true );
+			defines.SetDefine( "WITH_RAY_CACHE", true );
 		}
 		pShaderProbeOffset = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
@@ -260,7 +234,7 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		// probe extends
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.AddDefine( "WITH_RAY_CACHE", true );
+			defines.SetDefine( "WITH_RAY_CACHE", true );
 		}
 		pShaderProbeExtends = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
@@ -275,18 +249,29 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
 		pShaderDebugProbeUpdatePass1 = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "PASS2", true );
+		defines.SetDefine( "PASS2", true );
 		pShaderDebugProbeUpdatePass2 = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "PASS2" );
 		
 		// render light
-		defines.RemoveAllDefines();
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pShaderLight = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.AddDefine( "GI_RAY", true );
+		defines.SetDefine( "GI_RAY", true );
 		pShaderLightGIRay = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "GI_RAY" );
+		
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		pShaderLightStereo = shaderManager.GetProgramWith( sources, defines );
+		
 		
 		
 		// debug information
@@ -294,27 +279,27 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		
-		pDebugInfoGI = new deoglDebugInformation( "GI", colorText, colorBg );
+		pDebugInfoGI.TakeOver( new deoglDebugInformation( "GI", colorText, colorBg ) );
 		
-		pDebugInfoGITraceRays = new deoglDebugInformation( "Trace Rays", colorText, colorBgSub );
+		pDebugInfoGITraceRays.TakeOver( new deoglDebugInformation( "Trace Rays", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGITraceRays );
 		
-		pDebugInfoGIRenderMaterials = new deoglDebugInformation( "Render Materials", colorText, colorBgSub );
+		pDebugInfoGIRenderMaterials.TakeOver( new deoglDebugInformation( "Render Materials", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderMaterials );
 		
-		pDebugInfoGIClearProbes = new deoglDebugInformation( "Clear Probes", colorText, colorBgSub );
+		pDebugInfoGIClearProbes.TakeOver( new deoglDebugInformation( "Clear Probes", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIClearProbes );
 		
-		pDebugInfoGIUpdateProbes = new deoglDebugInformation( "Update Probes", colorText, colorBgSub );
+		pDebugInfoGIUpdateProbes.TakeOver( new deoglDebugInformation( "Update Probes", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIUpdateProbes );
 		
-		pDebugInfoGIMoveProbes = new deoglDebugInformation( "Move Probes", colorText, colorBgSub );
+		pDebugInfoGIMoveProbes.TakeOver( new deoglDebugInformation( "Move Probes", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIMoveProbes );
 		
-		pDebugInfoGIRenderLightGIRay = new deoglDebugInformation( "Light Rays", colorText, colorBgSub );
+		pDebugInfoGIRenderLightGIRay.TakeOver( new deoglDebugInformation( "Light Rays", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderLightGIRay );
 		
-		pDebugInfoGIRenderLight = new deoglDebugInformation( "Light Geometry", colorText, colorBgSub );
+		pDebugInfoGIRenderLight.TakeOver( new deoglDebugInformation( "Light Geometry", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderLight );
 		
 		
@@ -351,6 +336,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.TraceRays" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglGICascade &cascade = giState->GetActiveCascade();
 	deoglGI &gi = renderThread.GetGI();
@@ -382,6 +368,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 			giState->PrepareUBOStateRayCache();
 		}
 		
+		deoglDebugTraceGroup debugTraceCacheTrace( renderThread, "GI.TraceRays.CacheTraceRays" );
 		pSharedTraceRays( plan );
 		pClearTraceRays();
 		
@@ -392,6 +379,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
 		// copy traced rays to cache
+		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
 		
@@ -417,6 +405,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	#endif
 	
 	// trace rays
+	deoglDebugTraceGroup debugTraceTraceRays( renderThread, "GI.TraceRays.TraceRays" );
 	deoglGIBVH &bvh = giState->GetBVHDynamic();
 	bvh.GetRenderTaskMaterial().Clear();
 	
@@ -439,6 +428,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	pClearTraceRays();
 	
 	#ifdef GI_USE_RAY_CACHE
+		deoglDebugTraceGroup debugTrace3( renderThread, "GI.TraceRays.RestoreCache" );
 		renderThread.GetShader().ActivateShader( pShaderInitFromRayCache );
 		pActivateGIUBOs();
 		
@@ -451,6 +441,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.DisableStagesAbove( 4 );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		debugTrace3.Close();
 	#endif
 	
 	renderThread.GetShader().ActivateShader( pShaderTraceRays );
@@ -570,6 +561,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderMaterials" );
 	deoglGI &gi = renderThread.GetGI();
 	
 	const int shaderCount = renderTask.GetShaderCount();
@@ -651,6 +643,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 void deoglRenderGI::ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
 deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ResizeMaterials" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGIMaterials &materials = renderThread.GetGI().GetMaterials();
 	
@@ -700,6 +693,7 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ClearProbes" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
@@ -765,6 +759,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.UpdateProbes" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
@@ -854,6 +849,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.MoveProbes" );
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -908,6 +904,7 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ProbeOffset" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1005,6 +1002,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ProbeExtends" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1044,6 +1042,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderLight" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1069,8 +1068,8 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE ) );
 	}
 	
-	renderThread.GetShader().ActivateShader( pShaderLight );
-	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLightStereo : pShaderLight );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	GetUBORenderLight().Activate();
 	
 	tsmgr.EnableArrayTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
@@ -1078,7 +1077,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 8, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 8 );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan );
 	
 	// clean up
 	if( pDebugInfoGI->GetVisible() ){
@@ -1094,6 +1093,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderLightGIRay" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -1104,7 +1104,10 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	RestoreFBOGITraceRays( *giStateUpdate );
 	
 	renderThread.GetShader().ActivateShader( pShaderLightGIRay );
-	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
+	
+	// WARNING always non-stereo!
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	GetUBORenderLight().Activate();
 	
 	tsmgr.EnableArrayTexture( 6, giStateRender->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
@@ -1127,6 +1130,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderDebugOverlay" );
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	if( ! devmode.GetEnabled() || ( ! devmode.GetGIShowProbes() && ! devmode.GetGIShowProbeUpdate() ) ){
 		return;
@@ -1330,91 +1334,6 @@ void deoglRenderGI::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderGI::pCleanUp(){
-	if( pShaderDebugProbeUpdatePass1 ){
-		pShaderDebugProbeUpdatePass1->RemoveUsage();
-	}
-	if( pShaderDebugProbeUpdatePass2 ){
-		pShaderDebugProbeUpdatePass2->RemoveUsage();
-	}
-	if( pShaderDebugProbeOffset ){
-		pShaderDebugProbeOffset->RemoveUsage();
-	}
-	if( pShaderDebugProbe ){
-		pShaderDebugProbe->RemoveUsage();
-	}
-	if( pShaderLight ){
-		pShaderLight->RemoveUsage();
-	}
-	if( pShaderLightGIRay ){
-		pShaderLightGIRay->RemoveUsage();
-	}
-	if( pShaderResizeMaterials ){
-		pShaderResizeMaterials->RemoveUsage();
-	}
-	if( pShaderTraceRays ){
-		pShaderTraceRays->RemoveUsage();
-	}
-	if( pShaderTraceRaysCache ){
-		pShaderTraceRaysCache->RemoveUsage();
-	}
-	if( pShaderCopyRayCache ){
-		pShaderCopyRayCache->RemoveUsage();
-	}
-	if( pShaderInitFromRayCache ){
-		pShaderInitFromRayCache->RemoveUsage();
-	}
-	if( pShaderCopyProbeIrradiance ){
-		pShaderCopyProbeIrradiance->RemoveUsage();
-	}
-	if( pShaderUpdateProbeIrradiance ){
-		pShaderUpdateProbeIrradiance->RemoveUsage();
-	}
-	if( pShaderUpdateProbeDistance ){
-		pShaderUpdateProbeDistance->RemoveUsage();
-	}
-	if( pShaderMoveProbes ){
-		pShaderMoveProbes->RemoveUsage();
-	}
-	if( pShaderDynamicState ){
-		pShaderDynamicState->RemoveUsage();
-	}
-	if( pShaderProbeOffset ){
-		pShaderProbeOffset->RemoveUsage();
-	}
-	if( pShaderProbeExtends ){
-		pShaderProbeExtends->RemoveUsage();
-	}
-	if( pShaderClearProbeIrradiance ){
-		pShaderClearProbeIrradiance->RemoveUsage();
-	}
-	if( pShaderClearProbeDistance ){
-		pShaderClearProbeDistance->RemoveUsage();
-	}
-	
-	if( pDebugInfoGI ){
-		pDebugInfoGI->FreeReference();
-	}
-	if( pDebugInfoGITraceRays ){
-		pDebugInfoGITraceRays->FreeReference();
-	}
-	if( pDebugInfoGIRenderMaterials ){
-		pDebugInfoGIRenderMaterials->FreeReference();
-	}
-	if( pDebugInfoGIClearProbes ){
-		pDebugInfoGIClearProbes->FreeReference();
-	}
-	if( pDebugInfoGIUpdateProbes ){
-		pDebugInfoGIUpdateProbes->FreeReference();
-	}
-	if( pDebugInfoGIMoveProbes ){
-		pDebugInfoGIMoveProbes->FreeReference();
-	}
-	if( pDebugInfoGIRenderLight ){
-		pDebugInfoGIRenderLight->FreeReference();
-	}
-	if( pDebugInfoGIRenderLightGIRay ){
-		pDebugInfoGIRenderLightGIRay->FreeReference();
-	}
 }
 
 void deoglRenderGI::pCreateUBORenderLight(){

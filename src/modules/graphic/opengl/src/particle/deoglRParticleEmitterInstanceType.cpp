@@ -286,11 +286,17 @@ deoglSkinTexture::eShaderTypes shaderType ){
 	case deoglSkinTexture::estParticleGeometry:
 	case deoglSkinTexture::estParticleRibbonGeometry:
 	case deoglSkinTexture::estParticleBeamGeometry:
+	case deoglSkinTexture::estStereoParticleGeometry:
+	case deoglSkinTexture::estStereoParticleRibbonGeometry:
+	case deoglSkinTexture::estStereoParticleBeamGeometry:
 		return GetTUCGeometry();
 		
 	case deoglSkinTexture::estParticleGeometryDepthTest:
 	case deoglSkinTexture::estParticleRibbonGeometryDepthTest:
 	case deoglSkinTexture::estParticleBeamGeometryDepthTest:
+	case deoglSkinTexture::estStereoParticleGeometryDepthTest:
+	case deoglSkinTexture::estStereoParticleRibbonGeometryDepthTest:
+	case deoglSkinTexture::estStereoParticleBeamGeometryDepthTest:
 		return GetTUCGeometryDepthTest();
 		
 	case deoglSkinTexture::estParticleDepth:
@@ -308,6 +314,18 @@ deoglSkinTexture::eShaderTypes shaderType ){
 	case deoglSkinTexture::estParticleBeamDepthClipPlane:
 	case deoglSkinTexture::estParticleBeamDepthReversed:
 	case deoglSkinTexture::estParticleBeamDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoParticleDepth:
+	case deoglSkinTexture::estStereoParticleDepthClipPlane:
+	case deoglSkinTexture::estStereoParticleDepthReversed:
+	case deoglSkinTexture::estStereoParticleDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoParticleRibbonDepth:
+	case deoglSkinTexture::estStereoParticleRibbonDepthClipPlane:
+	case deoglSkinTexture::estStereoParticleRibbonDepthReversed:
+	case deoglSkinTexture::estStereoParticleRibbonDepthClipPlaneReversed:
+	case deoglSkinTexture::estStereoParticleBeamDepth:
+	case deoglSkinTexture::estStereoParticleBeamDepthClipPlane:
+	case deoglSkinTexture::estStereoParticleBeamDepthReversed:
+	case deoglSkinTexture::estStereoParticleBeamDepthClipPlaneReversed:
 		return GetTUCDepth();
 		
 	case deoglSkinTexture::estParticleCounter:
@@ -316,6 +334,12 @@ deoglSkinTexture::eShaderTypes shaderType ){
 	case deoglSkinTexture::estParticleRibbonCounterClipPlane:
 	case deoglSkinTexture::estParticleBeamCounter:
 	case deoglSkinTexture::estParticleBeamCounterClipPlane:
+	case deoglSkinTexture::estStereoParticleCounter:
+	case deoglSkinTexture::estStereoParticleCounterClipPlane:
+	case deoglSkinTexture::estStereoParticleRibbonCounter:
+	case deoglSkinTexture::estStereoParticleRibbonCounterClipPlane:
+	case deoglSkinTexture::estStereoParticleBeamCounter:
+	case deoglSkinTexture::estStereoParticleBeamCounterClipPlane:
 		return GetTUCCounter();
 		
 	default:

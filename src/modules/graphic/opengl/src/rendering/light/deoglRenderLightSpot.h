@@ -30,7 +30,6 @@ class deoglRenderPlan;
 class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglTexture;
 class deoglRTRenderers;
@@ -92,37 +91,37 @@ public:
 	
 	
 private:
-	deoglShaderProgram *pShaderShadowCopy;
-	deoglShaderProgram *pShaderBoxBoundary1;
-	deoglShaderProgram *pShaderBoxBoundary1Ambient;
-	deoglShaderProgram *pShaderBoxBoundary2;
-	deoglShaderProgram *pShaderOccMap;
+	deoglShaderProgramUsage pShaderShadowCopy;
+	deoglShaderProgramUsage pShaderBoxBoundary1;
+	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
+	deoglShaderProgramUsage pShaderBoxBoundary2;
+	deoglShaderProgramUsage pShaderOccMap;
 	deoglCollideList pCollideList;
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowClear;
-	deoglDebugInformation *pDebugInfoSolidShadowClearTransp;
-	deoglDebugInformation *pDebugInfoSolidShadowTask;
-	deoglDebugInformation *pDebugInfoSolidShadowRender;
-	deoglDebugInformation *pDebugInfoSolidShadowTranspTask;
-	deoglDebugInformation *pDebugInfoSolidShadowTranspRender;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowTranspTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowTranspRender;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentShadow;
-	deoglDebugInformation *pDebugInfoTransparentShadowClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowClearTransp;
-	deoglDebugInformation *pDebugInfoTransparentShadowTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowRender;
-	deoglDebugInformation *pDebugInfoTransparentShadowTranspTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowTranspRender;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadow;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowTranspTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowTranspRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	

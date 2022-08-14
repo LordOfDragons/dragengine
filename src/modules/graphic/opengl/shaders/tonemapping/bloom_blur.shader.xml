@@ -1,24 +1,25 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>ToneMap Bloom Blur</name>
 	
 	<version>130</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<texture name='texColor' target='0'/>
 	
-	<parameter name='pPosTransform'/> <!-- 0 -->
-	<parameter name='pTCTransform'/> <!-- 1 -->
-	<parameter name='pOffsets1'/> <!-- 2 -->
-	<parameter name='pOffsets2'/> <!-- 3 -->
-	<parameter name='pOffsets3'/> <!-- 4 -->
-	<parameter name='pOffsets4'/> <!-- 5 -->
-	<parameter name='pOffsets5'/> <!-- 6 -->
-	<parameter name='pWeights1'/> <!-- 7 -->
-	<parameter name='pWeights2'/> <!-- 8 -->
-	<parameter name='pClamp'/> <!-- 9 -->
+	<parameter name='pTCTransform'/>
+	<parameter name='pOffsets1'/>
+	<parameter name='pOffsets2'/>
+	<parameter name='pOffsets3'/>
+	<parameter name='pOffsets4'/>
+	<parameter name='pOffsets5'/>
+	<parameter name='pWeights1'/>
+	<parameter name='pWeights2'/>
+	<parameter name='pClamp'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	

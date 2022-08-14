@@ -23,6 +23,7 @@
 #define _DEBNCONNECTION_H_
 
 #include "deNetworkBasic.h"
+#include "debnAddress.h"
 
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
 
@@ -30,7 +31,6 @@ class deConnection;
 class deNetworkBasic;
 class debnMessageManager;
 class debnSocket;
-class debnAddress;
 class debnState;
 class debnStateLinkManager;
 class debnStateLinkList;
@@ -64,7 +64,7 @@ private:
 	deConnection *pConnection;
 	
 	debnSocket *pSocket;
-	debnAddress *pRemoteAddress;
+	debnAddress pRemoteAddress;
 	int pConnectionState;
 	int pIdentifier;
 	float pElapsedConnectResend;
@@ -108,7 +108,7 @@ public:
 	inline debnSocket *GetSocket() const{ return pSocket; }
 	
 	/** \brief Remote address. */
-	inline const debnAddress *GetRemoteAddress() const{ return pRemoteAddress; }
+	inline const debnAddress &GetRemoteAddress() const{ return pRemoteAddress; }
 	
 	/** \brief Connection identifier. */
 	inline int GetIdentifier() const{ return pIdentifier; }
@@ -131,10 +131,10 @@ public:
 	void InvalidateState( debnState *state );
 	
 	/** \brief Message matches connection. */
-	bool Matches( const debnSocket *bnSocket, const debnAddress *address ) const;
+	bool Matches( const debnSocket *bnSocket, const debnAddress &address ) const;
 	
 	/** \brief Accept connection. */
-	void AcceptConnection( debnSocket *bnSocket, debnAddress *address, eProtocols protocol );
+	void AcceptConnection( debnSocket *bnSocket, const debnAddress &address, eProtocols protocol );
 	
 	/** \brief Process connection ack message. */
 	void ProcessConnectionAck( decBaseFileReader &reader );

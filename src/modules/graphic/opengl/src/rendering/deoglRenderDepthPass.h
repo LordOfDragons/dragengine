@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderTranspCounting.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 
 class deoglRenderPlan;
@@ -37,21 +36,11 @@ class deoglOcclusionQuery;
  */
 class deoglRenderDepthPass : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderCopyDepth;
-	deoglShaderProgramUsage pShaderCopyDepthColor;
 	deoglShaderProgramUsage pShaderDepthDownsample;
+	deoglShaderProgramUsage pShaderDepthDownsampleStereo;
 	
 	deoglShaderProgramUsage pShaderDepthSolid;
 	deoglShaderProgramUsage pShaderDepthClipSolid;
-	
-	deoglShaderProgramUsage pShaderParticleDepthSolid;
-	deoglShaderProgramUsage pShaderParticleDepthSolidCD;
-	deoglShaderProgramUsage pShaderParticleDepthHoles;
-	deoglShaderProgramUsage pShaderParticleDepthHolesCD;
-	deoglShaderProgramUsage pShaderParticleDepthClipSolid;
-	deoglShaderProgramUsage pShaderParticleDepthClipSolidCD;
-	deoglShaderProgramUsage pShaderParticleDepthClipHoles;
-	deoglShaderProgramUsage pShaderParticleDepthClipHolesCD;
 	
 	
 	
@@ -100,7 +89,7 @@ public:
 	 * Using FBO Def-Ren Depth-MipMap. Renders from one mip map level to the next one.
 	 * Clears each level. Invalidates no buffers.
 	 */
-	void DownsampleDepth();
+	void DownsampleDepth( deoglRenderPlan &plan );
 	
 	/**
 	 * \brief Render occlusion query pass.

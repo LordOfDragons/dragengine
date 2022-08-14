@@ -27,7 +27,9 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTDebug.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/deoglRenderbuffer.h"
@@ -1019,6 +1021,12 @@ void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){
 	valueStencil.AddSubValueInt( "image", pAttStencil.image );
 	valueStencil.AddSubValueInt( "layer", pAttStencil.layer );
 	valueStencil.AddSubValueInt( "level", pAttStencil.level );
+}
+
+void deoglFramebuffer::SetDebugObjectLabel( const char *name ){
+	if( pFBO ){
+		pRenderThread.GetDebug().SetDebugObjectLabel( GL_FRAMEBUFFER, pFBO, decString( "FB: " ) + name );
+	}
 }
 
 

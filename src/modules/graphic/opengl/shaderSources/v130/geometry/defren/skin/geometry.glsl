@@ -1,8 +1,25 @@
+#ifdef GS_INSTANCING
+	#extension GL_ARB_gpu_shader5 : require
+#endif
+
 #include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // layout definitions
-layout( triangles ) in;
-layout( triangle_strip, max_vertices=3 ) out;
+#ifdef GS_RENDER_STEREO
+	#ifdef GS_INSTANCING
+		layout( triangles, invocations=2 ) in;
+		layout( triangle_strip, max_vertices=3 ) out;
+	#else
+		layout( triangles ) in;
+		layout( triangle_strip, max_vertices=6 ) out;
+	#endif
+#else
+	layout( triangles ) in;
+	layout( triangle_strip, max_vertices=3 ) out;
+#endif
+
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
 
 
@@ -36,17 +53,11 @@ in vec3 vGSNormal[ 3 ];
 #ifdef WITH_BITANGENT
 	in vec3 vGSBitangent[ 3 ];
 #endif
-#ifdef WITH_REFLECT_DIR
-	in vec3 vGSReflectDir[ 3 ];
-#endif
 #ifdef HEIGHT_MAP
 	in float vGSHTMask[ 3 ];
 #endif
-#ifdef FADEOUT_RANGE
-	in float vGSFadeZ[ 3 ];
-#endif
 
-in float vGSRenderCondition[ 3 ];
+// in float vGSRenderCondition[ 3 ];
 
 #ifdef SHARED_SPB
 	flat in int vGSSPBIndex[ 3 ];
@@ -65,24 +76,24 @@ in float vGSRenderCondition[ 3 ];
 // Outputs
 ////////////
 
-in vec2 vTCColor;
+out vec2 vTCColor;
 #ifdef TEXTURE_COLOR_TINT_MASK
-	in vec2 vTCColorTintMask;
+	out vec2 vTCColorTintMask;
 #endif
 #ifdef TEXTURE_NORMAL
-	in vec2 vTCNormal;
+	out vec2 vTCNormal;
 #endif
 #ifdef WITH_REFLECTIVITY
-	in vec2 vTCReflectivity;
+	out vec2 vTCReflectivity;
 #endif
 #ifdef WITH_EMISSIVITY
-	in vec2 vTCEmissivity;
+	out vec2 vTCEmissivity;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
-	in vec2 vTCRefractionDistort;
+	out vec2 vTCRefractionDistort;
 #endif
 #ifdef TEXTURE_AO
-	in vec2 vTCAO;
+	out vec2 vTCAO;
 #endif
 
 out vec3 vNormal;
@@ -106,15 +117,136 @@ out vec3 vNormal;
 	flat out int vSPBIndex;
 #endif
 
+#ifdef GS_RENDER_STEREO
+	out flat int vLayer;
+#else
+	const int vLayer = 0;
+#endif
+
+
+
+// dual view rendering
+#ifdef GS_RENDER_STEREO
+
+void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
+	gl_Position = preTransformedPosition;
+	
+	#ifdef SHARED_SPB
+	vSPBIndex = spbIndex;
+	#endif
+	
+	vTCColor = vGSTCColor[ corner ];
+	#ifdef TEXTURE_COLOR_TINT_MASK
+		vTCColorTintMask = vGSTCColorTintMask[ corner ];
+	#endif
+	#ifdef TEXTURE_NORMAL
+		vTCNormal = vGSTCNormal[ corner ];
+	#endif
+	#ifdef WITH_REFLECTIVITY
+		vTCReflectivity = vGSTCReflectivity[ corner ];
+	#endif
+	#ifdef WITH_EMISSIVITY
+		vTCEmissivity = vGSTCEmissivity[ corner ];
+	#endif
+	#ifdef TEXTURE_REFRACTION_DISTORT
+		vTCRefractionDistort = vGSTCRefractionDistort[ corner ];
+	#endif
+	#ifdef TEXTURE_AO
+		vTCAO = vGSTCAO[ corner ];
+	#endif
+	
+	vNormal = normalize( vGSNormal[ corner ] * pMatrixVn[ layer ] );
+	#ifdef WITH_TANGENT
+		vTangent = normalize( vGSTangent[ corner ] * pMatrixVn[ layer ] );
+	#endif
+	#ifdef WITH_BITANGENT
+		vBitangent = normalize( vGSBitangent[ corner ] * pMatrixVn[ layer ] );
+	#endif
+	
+	#ifdef WITH_REFLECT_DIR
+		vReflectDir = pMatrixV[ layer ] * position;
+	#endif
+	#ifdef HEIGHT_MAP
+		vHTMask = vGSHTMask[ corner ];
+	#endif
+	#ifdef FADEOUT_RANGE
+		#ifdef BILLBOARD
+			vFadeZ = position.z;
+		#else
+			vFadeZ = ( pMatrixV[ layer ] * position ).z;
+		#endif
+	#endif
+	
+	vLayer = layer;
+	
+	gl_Layer = layer;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
+	
+	EmitVertex();
+}
+
+void emitCorner( in int layer, in int corner, in vec4 position ){
+	vec4 preTransformedPosition;
+	
+	#ifdef BILLBOARD
+		#ifdef GS_RENDER_STEREO
+			// during vertex shader the left view position has been used.
+			// if this is the right view correct the transform
+			if( layer == 1 ){
+				preTransformedPosition = pMatrixP[ layer ] * vec4( pCameraStereoTransform * position, 1 );
+				
+			}else{
+				preTransformedPosition = pMatrixP[ layer ] * position;
+			}
+		#else
+			preTransformedPosition = pMatrixP[ layer ] * position;
+		#endif
+	#else
+		preTransformedPosition = pMatrixVP[ layer ] * position;
+	#endif
+	
+	emitCorner( layer, corner, position, preTransformedPosition );
+}
+
+#endif
+
 
 
 // Main Function
 //////////////////
 
+#ifdef GS_RENDER_STEREO
+
 void main( void ){
-	if( vGSRenderCondition[ 0 ] >= 5.0 ){
-		return;
+// 	if( vGSRenderCondition[ 0 ] >= 5.0 ){
+// 		return;
+// 	}
+	
+	int eye;
+	
+	#ifdef GS_INSTANCING
+	eye = gl_InvocationID;
+	#else
+	for( eye=0; eye<2; eye++ ){
+	#endif
+		
+		int i;
+		for( i=0; i<3; i++ ){
+			emitCorner( eye, i, gl_in[ i ].gl_Position );
+		}
+		EndPrimitive();
+		
+	#ifndef GS_INSTANCING
 	}
+	#endif
+}
+
+#else
+
+void main( void ){
+// 	if( vGSRenderCondition[ 0 ] >= 5.0 ){
+// 		return;
+// 	}
 	
 	int i;
 	for( i=0; i<3; i++ ){
@@ -168,3 +300,5 @@ void main( void ){
 	
 	EndPrimitive();
 }
+
+#endif // GS_RENDER_STEREO

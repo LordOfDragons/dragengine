@@ -25,16 +25,22 @@
 #include <string.h>
 
 #include "deoglREffectColorMatrix.h"
+#include "../../debug/deoglDebugTraceGroup.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
@@ -46,7 +52,6 @@
 ////////////////
 
 enum eSPEffect{
-	speQuadParams,
 	speColorMatrix,
 	speColorOffset
 };
@@ -58,16 +63,13 @@ enum eSPEffect{
 ////////////////////////////
 
 deoglREffectColorMatrix::deoglREffectColorMatrix( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread ),
-pShader( NULL ){
+deoglREffect( renderThread )
+{
 	LEAK_CHECK_CREATE( renderThread, EffectColorMatrix );
 }
 
 deoglREffectColorMatrix::~deoglREffectColorMatrix(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectColorMatrix );
-	if( pShader ){
-		pShader->RemoveUsage();
-	}
 }
 
 
@@ -84,20 +86,44 @@ void deoglREffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix 
 deoglShaderProgram *deoglREffectColorMatrix::GetShader(){
 	if( ! pShader ){
 		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderDefines defines;
 		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		pShader = shaderManager.GetProgramWith( sources, defines );
 	}
 	
 	return pShader;
 }
 
+deoglShaderProgram *deoglREffectColorMatrix::GetShaderStereo(){
+	if( ! pShaderStereo ){
+		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+		deoglShaderSources *sources;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix" );
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "Effect Color Matrix Stereo" );
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		
+		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+	}
+	
+	return pShaderStereo;
+}
+
 void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectColorMatrix.Render" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
@@ -138,7 +164,7 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	// set attachments
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(),
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(),
 		*rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	
 	// set states
@@ -152,12 +178,18 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program
-	deoglShaderProgram * const shaderProgram = GetShader();
+	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
 	rtshader.ActivateShader( shaderProgram );
 	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
 	
-	defren.SetShaderParamFSQuad( shader, speQuadParams );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	
-	defren.RenderFSQuadVAO();
+	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+		defren.RenderFSQuadVAOStereo();
+		
+	}else{
+		defren.RenderFSQuadVAO();
+	}
 }

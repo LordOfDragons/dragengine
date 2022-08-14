@@ -67,7 +67,6 @@ debnConnection::debnConnection( deNetworkBasic *netBasic, deConnection *connecti
 	pConnection = connection;
 	
 	pSocket = NULL;
-	pRemoteAddress = NULL;
 	pConnectionState = ecsDisconnected;
 	pIdentifier = -1;
 	pElapsedConnectResend = 0.0f;
@@ -87,7 +86,6 @@ debnConnection::debnConnection( deNetworkBasic *netBasic, deConnection *connecti
 	pIsRegistered = false;
 	
 	try{
-		pRemoteAddress = new debnAddress;
 		pStateLinks = new debnStateLinkManager;
 		pModifiedStateLinks = new debnStateLinkList;
 		pReliableMessagesSend = new debnMessageManager;
@@ -143,20 +141,20 @@ void debnConnection::InvalidateState( debnState *state ){
 	}
 }
 
-bool debnConnection::Matches( const debnSocket *bnSocket, const debnAddress *address ) const{
-	return bnSocket == pSocket && *address == *pRemoteAddress;
+bool debnConnection::Matches( const debnSocket *bnSocket, const debnAddress &address ) const{
+	return bnSocket == pSocket && address == pRemoteAddress;
 }
 
 
 
-void debnConnection::AcceptConnection( debnSocket *bnSocket, debnAddress *address, eProtocols protocol ){
-	if( ! bnSocket || ! address ) DETHROW( deeInvalidParam );
+void debnConnection::AcceptConnection( debnSocket *bnSocket, const debnAddress &address, eProtocols protocol ){
+	if( ! bnSocket ) DETHROW( deeInvalidParam );
 	
 	pSocket = bnSocket;
 	bnSocket->AddReference();
 	
-	*pRemoteAddress = *address;
-	pConnection->SetRemoteAddress( address->ToString() );
+	pRemoteAddress = address;
+	pConnection->SetRemoteAddress( address.ToString() );
 	
 	pConnectionState = ecsConnected;
 	pProtocol = protocol;
@@ -263,7 +261,7 @@ void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 	sendWriter.WriteUShort( ( uint16_t )number );
 	sendWriter.WriteByte( ( uint8_t )eraSuccess );
 	
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 	
 	// prepare
 	//length = reader.GetDataLength() - reader.GetPosition();
@@ -318,7 +316,7 @@ void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 	sendWriter.WriteUShort( ( uint16_t )number );
 	sendWriter.WriteByte( ( uint8_t )eraSuccess );
 	
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 	
 	// prepare
 	//length = reader.GetDataLength() - reader.GetPosition();
@@ -374,7 +372,7 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 		}
 		
 		bnMessage->SetResendElapsed( 0.0f );
-		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
+		pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
 	}
 }
 
@@ -461,15 +459,24 @@ bool debnConnection::ConnectTo( const char *address ){
 	// if we are already connected stop right here
 	if( pSocket ) return false;
 	
-	pNetBasic->LogInfoFormat( "debnConnection.ConnectTo %s", address );
+	pNetBasic->LogInfoFormat( "debnConnection.ConnectTo '%s'", address );
+	
+	debnAddress remoteAddress;
+	remoteAddress.SetFromString( address );
 	
 	// create connect socket
-	pSocket = new debnSocket( pNetBasic );
+	pSocket = new debnSocket( *pNetBasic );
 	
-	pSocket->GetAddress()->SetIPv4Any();
+	if( remoteAddress.GetType() == debnAddress::eatIPv6 ){
+		pSocket->GetAddress().SetIPv6Any();
+		
+	}else{
+		pSocket->GetAddress().SetIPv4Any();
+	}
+	
 	pSocket->Bind();
 	
-	pConnection->SetLocalAddress( pSocket->GetAddress()->ToString() );
+	pConnection->SetLocalAddress( pSocket->GetAddress().ToString() );
 	
 	// send connect request
 	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
@@ -480,10 +487,10 @@ bool debnConnection::ConnectTo( const char *address ){
 	sendWriter.WriteUShort( 1 );
 	sendWriter.WriteUShort( epDENetworkProtocol );
 	
-	pRemoteAddress->SetIPv4FromString( address );
+	pRemoteAddress = remoteAddress;
 	pConnection->SetRemoteAddress( address );
 	
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 	
 	// switch to connecting state
 	pConnectionState = ecsConnecting;
@@ -505,7 +512,7 @@ void debnConnection::Disconnect(){
 			pNetBasic->GetSharedSendDatagram()->Clear();
 			sendWriter.WriteByte( eccConnectionClose );
 			
-			pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+			pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 		}
 		
 		// clean up
@@ -526,7 +533,7 @@ void debnConnection::SendMessage( deNetworkMessage *message, int maxDelay ){
 	sendWriter.WriteByte( eccMessage ); // command
 	sendWriter.Write( message->GetBuffer(), message->GetDataLength() );
 	
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 }
 
 void debnConnection::SendReliableMessage( deNetworkMessage *message ){
@@ -561,7 +568,7 @@ void debnConnection::SendReliableMessage( deNetworkMessage *message ){
 	
 	// if the message fits into the window send it right now
 	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
+		pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
 		
 		bnMessage->SetState( debnMessage::emsSend );
 		bnMessage->ResetElapsed();
@@ -637,7 +644,7 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	
 	// if the message fits into the window send it right now
 	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
+		pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
 		
 		bnMessage->SetState( debnMessage::emsSend );
 		bnMessage->ResetElapsed();
@@ -680,9 +687,6 @@ void debnConnection::pCleanUp(){
 	}
 	if( pSocket ){
 		pSocket->FreeReference();
-	}
-	if( pRemoteAddress ){
-		delete pRemoteAddress;
 	}
 	
 	if( pReliableMessagesRecv ){
@@ -774,7 +778,7 @@ void debnConnection::pUpdateStates(){
 		}
 	}
 	
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 }
 
 void debnConnection::pUpdateTimeouts( float elapsedTime ){
@@ -814,7 +818,7 @@ void debnConnection::pUpdateTimeouts( float elapsedTime ){
 				}
 				
 				bnMessage->SetResendElapsed( 0.0f );
-				pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
+				pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
 			}
 		}
 		}break;
@@ -848,7 +852,7 @@ void debnConnection::pUpdateTimeouts( float elapsedTime ){
 			sendWriter.WriteUShort( 1 );
 			sendWriter.WriteUShort( epDENetworkProtocol );
 			
-			pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+			pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 		}
 		break;
 		
@@ -984,7 +988,7 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 	sendWriter.WriteByte( ( uint8_t )code );
 	sendWriter.WriteUShort( ( uint16_t )identifier );
 	
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 }
 
 void debnConnection::pAddReliableReceive( int type, int number, decBaseFileReader &reader ){
@@ -1050,7 +1054,7 @@ void debnConnection::pSendPendingReliables(){
 		// if the message is pending send it
 		bnMessage = pReliableMessagesSend->GetMessageAt( i );
 		if( bnMessage->GetState() == debnMessage::emsPending ){
-			pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
+			pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
 			
 			bnMessage->SetState( debnMessage::emsSend );
 			bnMessage->ResetElapsed();

@@ -35,9 +35,11 @@
 #include "shared/deoglRenderTaskSharedInstance.h"
 #include "shared/deoglRenderTaskSharedPool.h"
 #include "../../capabilities/deoglCapabilities.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTBufferObject.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../skin/shader/deoglSkinShader.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderUnitSourceCode.h"
@@ -70,6 +72,9 @@ pTBOInstances( 0 ),
 pSPBInstanceMaxEntries( 0 ),
 pUseSPBInstanceFlags( false ),
 pForceDoubleSided( false ),
+pRenderVSStereo( false ),
+pVBODrawIndirect( 0 ),
+pVBODrawIndirectSize( 0 ),
 
 pShaderCount( 0 ),
 pHasShader( NULL ),
@@ -96,6 +101,8 @@ deoglRenderTask::~deoglRenderTask(){
 	if( pConfigTextures ){
 		delete [] pConfigTextures;
 	}
+	
+	pRenderThread.GetDelayedOperations().DeleteOpenGLBuffer( pVBODrawIndirect );
 }
 
 
@@ -112,6 +119,7 @@ void deoglRenderTask::Clear(){
 	SetTBOInstances( 0 );
 	pUseSPBInstanceFlags = false;
 	pForceDoubleSided = false;
+	pRenderVSStereo = false;
 }
 
 void deoglRenderTask::PrepareForRender(){
@@ -122,6 +130,10 @@ void deoglRenderTask::PrepareForRender(){
 	pCalcSPBInstancesMaxEntries();
 	pAssignSPBInstances();
 	pUpdateSPBInstances();
+	
+	if( pRenderVSStereo ){
+		pUpdateVBODrawIndirect();
+	}
 }
 
 void deoglRenderTask::SortInstancesByDistance( deoglQuickSorter &sorter,
@@ -158,6 +170,10 @@ void deoglRenderTask::SetUseSPBInstanceFlags( bool useFlags ){
 
 void deoglRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
 	pForceDoubleSided = forceDoubleSided;
+}
+
+void deoglRenderTask::SetRenderVSStereo( bool renderVSStereo ){
+	pRenderVSStereo = renderVSStereo;
 }
 
 
@@ -592,4 +608,97 @@ void deoglRenderTask::pCreateSPBInstanceParamBlock(){
 	}
 	
 	ubo->FreeReference();
+}
+
+void deoglRenderTask::pUpdateVBODrawIndirect(){
+	// this is not working. calls to pglMultiDrawArraysIndirect and pglMultiDrawElementsIndirect
+	// are 2x slower than calling the non-indirect counter parts. this is unusable
+#if 0
+	const int drawCallCount = GetTotalInstanceCount() * 2;
+	if( drawCallCount == 0 ){
+		return;
+	}
+
+	if( ! pVBODrawIndirect ){
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBODrawIndirect ) );
+		DEASSERT_NOTNULL( pVBODrawIndirect );
+	}
+	
+	int i, j, k, l;
+	try{
+		const int bufferSize = sizeof( oglDrawIndirectCommand ) * drawCallCount;
+		
+		OGL_CHECK( pRenderThread, pglBindBuffer( GL_DRAW_INDIRECT_BUFFER, pVBODrawIndirect ) );
+		
+		if( drawCallCount > pVBODrawIndirectSize ){
+			OGL_CHECK( pRenderThread, pglBufferData( GL_DRAW_INDIRECT_BUFFER, bufferSize, NULL, GL_DYNAMIC_DRAW ) );
+			pVBODrawIndirectSize = drawCallCount;
+		}
+		
+		oglDrawIndirectCommand *drawCalls;
+		OGL_CHECK( pRenderThread, drawCalls = ( oglDrawIndirectCommand* )pglMapBufferRange(
+			GL_DRAW_INDIRECT_BUFFER, 0, bufferSize, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT ) );
+		DEASSERT_NOTNULL( drawCalls );
+		
+		int drawCallIndex = 0;
+		for( i=0; i<pShaderCount; i++ ){
+			const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pShaders.GetAt( i ) );
+			const int textureCount = shader.GetTextureCount();
+			
+			for( j=0; j<textureCount; j++ ){
+				const deoglRenderTaskTexture &texture = *shader.GetTextureAt( j );
+				const int vaoCount = texture.GetVAOCount();
+				
+				for( k=0; k<vaoCount; k++ ){
+					const deoglRenderTaskVAO &vao = *texture.GetVAOAt( k );
+					const int instanceCount = vao.GetInstanceCount();
+					
+					for( l=0; l<instanceCount; l++ ){
+						deoglRenderTaskInstance &instance = *vao.GetInstanceAt( l );
+						const deoglRenderTaskSharedInstance &sharedInstance = *instance.GetInstance();
+						const int subInstanceCount = instance.GetSubInstanceCount() + sharedInstance.GetSubInstanceCount();
+						
+						instance.SetDrawIndirectIndex( drawCallIndex );
+						instance.SetDrawIndirectCount( 2 );
+						
+						if( sharedInstance.GetIndexCount() == 0 ){
+							oglDrawIndirectCommand::Array &draw = drawCalls[ drawCallIndex++ ].array;
+							draw.count = sharedInstance.GetPointCount();
+							draw.instanceCount = subInstanceCount;
+							draw.first = sharedInstance.GetFirstPoint();
+							draw.baseInstance = 0;
+							
+							drawCalls[ drawCallIndex++ ].array = draw;
+							
+						}else{
+							oglDrawIndirectCommand::Element &draw = drawCalls[ drawCallIndex++ ].element;
+							draw.count = sharedInstance.GetIndexCount();
+							draw.instanceCount = subInstanceCount;
+							draw.firstIndex = sharedInstance.GetFirstIndex();
+							
+							if( pRenderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+								draw.baseVertex = sharedInstance.GetFirstPoint();
+								
+							}else{
+								draw.baseVertex = 0;
+							}
+							
+							draw.baseInstance = 0;
+							
+							drawCalls[ drawCallIndex++ ].element = draw;
+						}
+					}
+				}
+			}
+		}
+		
+		pglUnmapBuffer( GL_DRAW_INDIRECT_BUFFER );
+		pglBindBuffer( GL_DRAW_INDIRECT_BUFFER, 0 );
+		
+	}catch( const deException & ){
+		pglUnmapBuffer( GL_DRAW_INDIRECT_BUFFER );
+		pglBindBuffer( GL_DRAW_INDIRECT_BUFFER, 0 );
+		throw;
+	}
+#endif
 }

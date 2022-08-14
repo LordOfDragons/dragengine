@@ -23,8 +23,6 @@
 #define _DEOGLRENDERTRANSPCOUNTING_H_
 
 #include "deoglRenderBase.h"
-#include "../shaders/deoglShaderProgramUsage.h"
-
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
@@ -38,10 +36,11 @@ class deoglRenderTranspCounting : public deoglRenderBase{
 private:
 	deoglOcclusionQuery *pOccQuery;
 	
-	deoglShaderProgramUsage pShaderTraCountDepthParticle;
-	deoglShaderProgramUsage pShaderTraCountDepthParticleClip;
 	deoglShaderProgramUsage pShaderTraCountMaxCount;
+	deoglShaderProgramUsage pShaderTraCountMaxCountStereo;
+	
 	deoglShaderProgramUsage pShaderTraCountGetCount;
+	deoglShaderProgramUsage pShaderTraCountGetCountStereo;
 	
 	bool pHasCount;
 	int pCount;

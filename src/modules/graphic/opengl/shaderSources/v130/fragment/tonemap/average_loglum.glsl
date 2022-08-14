@@ -3,9 +3,15 @@ precision highp int;
 
 uniform vec4 pOffsets; // -offsetU, offsetU, -offsetV, offsetV
 
-uniform mediump sampler2D texValues;
+uniform mediump sampler2DArray texValues;
 
 in vec2 vTexCoord;
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	in flat int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out float outValue;
 
@@ -15,10 +21,10 @@ void main( void ){
 	vec4 tc = vTexCoord.sstt + pOffsets;
 	vec4 values;
 	
-	values.x = textureLod( texValues, tc.xz, 0.0 ).r; // -u, -v
-	values.y = textureLod( texValues, tc.yz, 0.0 ).r; //  u, -v
-	values.z = textureLod( texValues, tc.xw, 0.0 ).r; // -u,  v
-	values.w = textureLod( texValues, tc.yw, 0.0 ).r; //  u,  v
+	values.x = textureLod( texValues, vec3( tc.xz, vLayer ), 0 ).r; // -u, -v
+	values.y = textureLod( texValues, vec3( tc.yz, vLayer ), 0 ).r; //  u, -v
+	values.z = textureLod( texValues, vec3( tc.xw, vLayer ), 0 ).r; // -u,  v
+	values.w = textureLod( texValues, vec3( tc.yw, vLayer ), 0 ).r; //  u,  v
 	
 	outValue = dot( values, weights );
 }

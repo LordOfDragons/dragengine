@@ -29,6 +29,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../target/deoglRenderTarget.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
@@ -139,6 +140,7 @@ int componentCount, int bitCount ){
 		
 		// prepare and activate framebuffer
 		pRenderTarget->PrepareFramebuffer();
+		GetRenderThread().GetFramebuffer().Activate( pRenderTarget->GetFBO() );
 		
 		// render content
 		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),

@@ -43,52 +43,20 @@ jobs:
           unzip dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
           unzip deigde-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
           unzip deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
-      
-      - name: Fix GitHub problems with wine32
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo apt update -qq
-          sudo apt install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo dpkg --add-architecture i386
-          sudo apt update -qq
+          chmod -R g=u,o=u installer/windows/unpacked
+          mkdir installer/windows/build
+          chmod 777 installer/windows/build
           
-      - name: Install required packages X11Client
-        # see https://github.com/amake/x11client/blob/master/Dockerfile
-        run: |
-          export DISPLAY=xserver:0
-          sudo xauth merge /Xauthority/xserver.xauth
-          
-      - name: Install required packages Wine32
-        # see https://github.com/amake/wine/blob/master/Dockerfile
-        run: |
-          export WINE_MONO_VERSION=4.9.4
-          sudo apt install -yqq wine-stable
-          sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
-          sudo chmod +x /usr/local/bin/winetricks
-          sudo mkdir -p /usr/share/wine/mono
-          sudo curl -SL 'https://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download' -o /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
-          sudo chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
-          sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
-          
-      - name: Install InnoSetup
-        # see https://github.com/amake/wine/blob/master/Dockerfile
-        run: |
-          export WINEPREFIX=/home/runner/.wine
-          export WINEARCH=win32
-          export WINEDEBUG="-all,err+all"
-          export DISPLAY=:99
-          curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
-          wine-x11-run wine is.exe /SP- /VERYSILENT
-          cd "/home/runner/.wine/drive_c/Program Files/Inno Setup 5/Languages"
-          curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
-      
       - name: Build Installers
-        run: |
-          cd ${{ github.workspace }}/installer/windows
-          wine-x11-run iscc dragengine64.iss
-          wine-x11-run iscc dragengine64-sdk.iss
-          wine-x11-run iscc deigde64.iss
-          wine-x11-run iscc deigde64-sdk.iss
+        uses: addnab/docker-run-action@v3
+        with:
+          image: amake/innosetup:latest
+          options: -v ${{ github.workspace }}/installer/windows:/work
+          run: |
+            iscc dragengine64.iss
+            iscc dragengine64-sdk.iss
+            iscc deigde64.iss
+            iscc deigde64-sdk.iss
         
       - name: Rename installers
         run: |
