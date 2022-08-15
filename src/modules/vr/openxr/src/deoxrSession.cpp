@@ -405,7 +405,7 @@ void deoxrSession::EndFrame(){
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
 	
-	// end frame. views have to be submitted even if not rendered too otherwise runtimes
+	// end frame. views have to be submitted even if not rendered to otherwise runtimes
 	// like SteamVR can crash entire OpenGL
 	XrFrameEndInfo endInfo;
 	memset( &endInfo, 0, sizeof( endInfo ) );
