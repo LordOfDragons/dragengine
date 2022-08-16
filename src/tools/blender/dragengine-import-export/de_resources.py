@@ -119,6 +119,14 @@ class Armature:
 			self.scaling = vector_by_matrix(scalePosition, scale)
 			self.scaling = Vector([math.fabs(self.scaling.x), math.fabs(self.scaling.y), math.fabs(self.scaling.z)])
 	
+	class ConstraintAxis:
+		def __init__(self):
+			self.limitLower = 0
+			self.limitUpper = 0
+			self.staticFriction = 0
+			self.dynamicFriction = 0
+			self.springStiffness = 0
+	
 	# constructor
 	def __init__(self, object):
 		self.object = object

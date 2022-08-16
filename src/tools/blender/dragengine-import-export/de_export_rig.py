@@ -406,18 +406,19 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 					rb = volume.object.rigid_body
 					rbc = volume.object.rigid_body_constraint
 					parentObject = rbc.object1
-					if not parentObject:
-						continue
 					
-					parentVolume = [v for v in self.volumes if v.object == parentObject]
-					if len(parentVolume) != 1 or not parentVolume[0].bone:
-						continue
+					parentVolume = None
+					if parentObject:
+						parentVolume = [v for v in self.volumes if v.object == parentObject]
+						if len(parentVolume) != 1 or not parentVolume[0].bone:
+							continue
 					
 					f.write("\t\t<constraint>\n")
 					#f.write("\t\t\t<position x='0' y='0' z='0'/>\n")
 					#f.write("\t\t\t<rotation x='0' y='0' z='0'/>\n")
 					#f.write("\t\t\t<offset x='0' y='0' z='0'/>\n")
-					f.write("\t\t\t<bone>{}</bone>\n".format(parentVolume[0].bone))
+					if parentVolume:
+						f.write("\t\t\t<bone>{}</bone>\n".format(parentVolume[0].bone))
 					
 					f.write("\t\t\t<damping>\n")
 					if rb.linear_damping > 0:
@@ -450,66 +451,126 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 					
 					f.write("\t\t\t</damping>\n")
 					
-					if rbc.use_limit_ang_x and (rbc.limit_ang_x_lower != 0 or rbc.limit_ang_x_upper != 0):
-						f.write("\t\t\t<angularX>\n")
-						f.write("\t\t\t\t<limitLower>{:.3g}</limitLower>\n".format(rbc.limit_ang_x_lower / ONE_PI))
-						f.write("\t\t\t\t<limitUpper>{:.3g}</limitUpper>\n".format(rbc.limit_ang_x_upper / ONE_PI))
-						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
-						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+					# angular x
+					constraint = None
+					
+					if rbc.use_limit_ang_x:
+						if rbc.limit_ang_x_lower != 0 or rbc.limit_ang_x_upper != 0:
+							constraint = Armature.ConstraintAxis()
+							constraint.limitLower = rbc.limit_ang_x_lower / ONE_PI
+							constraint.limitUpper = rbc.limit_ang_x_upper / ONE_PI
+							if rbc.use_spring_ang_x:
+								constraint.springStiffness = rbc.spring_stiffness_ang_x
+					else:
+						constraint = Armature.ConstraintAxis()
+						constraint.limitLower = 1
+						constraint.limitUpper = 0
 						if rbc.use_spring_ang_x:
-							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_ang_x))
-						f.write("\t\t\t</angularX>\n")
+							constraint.springStiffness = rbc.spring_stiffness_ang_x
 					
-					if rbc.use_limit_ang_y and (rbc.limit_ang_y_lower != 0 or rbc.limit_ang_y_upper != 0):
-						f.write("\t\t\t<angularY>\n")
-						f.write("\t\t\t\t<limitLower>{:.3g}</limitLower>\n".format(rbc.limit_ang_y_lower / ONE_PI))
-						f.write("\t\t\t\t<limitUpper>{:.3g}</limitUpper>\n".format(rbc.limit_ang_y_upper / ONE_PI))
-						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
-						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+					if constraint:
+						self.writeConstraintAxis(f, constraint, "angularX")
+					
+					# angular y
+					constraint = None
+					
+					if rbc.use_limit_ang_y:
+						if rbc.limit_ang_y_lower != 0 or rbc.limit_ang_y_upper != 0:
+							constraint = Armature.ConstraintAxis()
+							constraint.limitLower = rbc.limit_ang_y_lower / ONE_PI
+							constraint.limitUpper = rbc.limit_ang_y_upper / ONE_PI
+							if rbc.use_spring_ang_y:
+								constraint.springStiffness = rbc.spring_stiffness_ang_y
+					else:
+						constraint = Armature.ConstraintAxis()
+						constraint.limitLower = 1
+						constraint.limitUpper = 0
 						if rbc.use_spring_ang_y:
-							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_ang_y))
-						f.write("\t\t\t</angularY>\n")
+							constraint.springStiffness = rbc.spring_stiffness_ang_y
 					
-					if rbc.use_limit_ang_z and (rbc.limit_ang_z_lower != 0 or rbc.limit_ang_z_upper != 0):
-						f.write("\t\t\t<angularZ>\n")
-						f.write("\t\t\t\t<limitLower>{:.3g}</limitLower>\n".format(rbc.limit_ang_z_lower / ONE_PI))
-						f.write("\t\t\t\t<limitUpper>{:.3g}</limitUpper>\n".format(rbc.limit_ang_z_upper / ONE_PI))
-						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
-						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+					if constraint:
+						self.writeConstraintAxis(f, constraint, "angularY")
+					
+					# angular z
+					constraint = None
+					
+					if rbc.use_limit_ang_z:
+						if rbc.limit_ang_z_lower != 0 or rbc.limit_ang_z_upper != 0:
+							constraint = Armature.ConstraintAxis()
+							constraint.limitLower = rbc.limit_ang_z_lower / ONE_PI
+							constraint.limitUpper = rbc.limit_ang_z_upper / ONE_PI
+							if rbc.use_spring_ang_z:
+								constraint.springStiffness = rbc.spring_stiffness_ang_z
+					else:
+						constraint = Armature.ConstraintAxis()
+						constraint.limitLower = 1
+						constraint.limitUpper = 0
 						if rbc.use_spring_ang_z:
-							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_ang_z))
-						f.write("\t\t\t</angularZ>\n")
+							constraint.springStiffness = rbc.spring_stiffness_ang_z
 					
-					if rbc.use_limit_lin_x and (rbc.limit_lin_x_lower != 0 or rbc.limit_lin_x_upper != 0):
-						f.write("\t\t\t<linearX>\n")
-						f.write("\t\t\t\t<limitLower>{:.4g}</limitLower>\n".format(rbc.limit_lin_x_lower))
-						f.write("\t\t\t\t<limitUpper>{:.4g}</limitUpper>\n".format(rbc.limit_lin_x_upper))
-						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
-						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+					if constraint:
+						self.writeConstraintAxis(f, constraint, "angularZ")
+					
+					# linear x
+					constraint = None
+					
+					if rbc.use_limit_lin_x:
+						if rbc.limit_lin_x_lower != 0 or rbc.limit_lin_x_upper != 0:
+							constraint = Armature.ConstraintAxis()
+							constraint.limitLower = rbc.limit_lin_x_lower
+							constraint.limitUpper = rbc.limit_lin_x_upper
+							if rbc.use_spring_ang_x:
+								constraint.springStiffness = rbc.spring_stiffness_ang_x
+					else:
+						constraint = Armature.ConstraintAxis()
+						constraint.limitLower = 1
+						constraint.limitUpper = 0
 						if rbc.use_spring_x:
-							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_x))
-						f.write("\t\t\t</linearX>\n")
+							constraint.springStiffness = rbc.spring_stiffness_x
 					
-					if rbc.use_limit_lin_y and (rbc.limit_lin_y_lower != 0 or rbc.limit_lin_y_upper != 0):
-						f.write("\t\t\t<linearY>\n")
-						f.write("\t\t\t\t<limitLower>{:.4g}</limitLower>\n".format(rbc.limit_lin_y_lower))
-						f.write("\t\t\t\t<limitUpper>{:.4g}</limitUpper>\n".format(rbc.limit_lin_y_upper))
-						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
-						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+					if constraint:
+						self.writeConstraintAxis(f, constraint, "linearX")
+					
+					# linear y
+					constraint = None
+					
+					if rbc.use_limit_lin_y:
+						if rbc.limit_lin_y_lower != 0 or rbc.limit_lin_y_upper != 0:
+							constraint = Armature.ConstraintAxis()
+							constraint.limitLower = rbc.limit_lin_y_lower
+							constraint.limitUpper = rbc.limit_lin_y_upper
+							if rbc.use_spring_ang_y:
+								constraint.springStiffness = rbc.spring_stiffness_ang_y
+					else:
+						constraint = Armature.ConstraintAxis()
+						constraint.limitLower = 1
+						constraint.limitUpper = 0
 						if rbc.use_spring_y:
-							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_y))
-						f.write("\t\t\t</linearY>\n")
+							constraint.springStiffness = rbc.spring_stiffness_y
 					
-					if rbc.use_limit_lin_z and (rbc.limit_lin_z_lower != 0 or rbc.limit_lin_z_upper != 0):
-						f.write("\t\t\t<linearZ>\n")
-						f.write("\t\t\t\t<limitLower>{:.4g}</limitLower>\n".format(rbc.limit_lin_z_lower))
-						f.write("\t\t\t\t<limitUpper>{:.4g}</limitUpper>\n".format(rbc.limit_lin_z_upper))
-						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
-						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+					if constraint:
+						self.writeConstraintAxis(f, constraint, "linearY")
+					
+					# linear z
+					constraint = None
+					
+					if rbc.use_limit_lin_z:
+						if rbc.limit_lin_z_lower != 0 or rbc.limit_lin_z_upper != 0:
+							constraint = Armature.ConstraintAxis()
+							constraint.limitLower = rbc.limit_lin_z_lower
+							constraint.limitUpper = rbc.limit_lin_z_upper
+							if rbc.use_spring_ang_z:
+								constraint.springStiffness = rbc.spring_stiffness_ang_z
+					else:
+						constraint = Armature.ConstraintAxis()
+						constraint.limitLower = 1
+						constraint.limitUpper = 0
 						if rbc.use_spring_z:
-							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_z))
-						f.write("\t\t\t</linearZ>\n")
-						
+							constraint.springStiffness = rbc.spring_stiffness_z
+					
+					if constraint:
+						self.writeConstraintAxis(f, constraint, "linearZ")
+					
 					f.write("\t\t</constraint>\n")
 				
 				f.write("\t</bone>\n")
@@ -519,6 +580,16 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 				if self.debugLevel > 1:
 					print("- bone", bone.name, "parent", bone.parent, "pos", bone.pos, "rot", bone.rot)
 		return True
+	
+	def writeConstraintAxis(self, f, constraint, tagName):
+		f.write("\t\t\t<{}>\n".format(tagName))
+		f.write("\t\t\t\t<limitLower>{:.3g}</limitLower>\n".format(constraint.limitLower))
+		f.write("\t\t\t\t<limitUpper>{:.3g}</limitUpper>\n".format(constraint.limitUpper))
+		#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
+		#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
+		if constraint.springStiffness > 0:
+			f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(constraint.springStiffness))
+		f.write("\t\t\t</{}>\n".format(tagName))
 	
 	# write trailer
 	def writeTrailer(self, f):
