@@ -17,6 +17,13 @@ namespace Dragengine.Scenery
  * their bone states (for example cloth on an actor). For physics simulation bone constraints can
  * be enabled and disabled.
  * 
+ * \par Bones
+ * 
+ * The position and orientation of collider bones is located at the center mass point not the
+ * rig bone origin in world space. If you use collider bone position or matrix you have to
+ * subtract the Rig.boneGetCentralMassPoint(int) for the respective bone to obtain the world
+ * position of the rig bone as used by animations.
+ * 
  * This is a native class.
  */
 class ColliderRig extends Collider
@@ -37,35 +44,39 @@ class ColliderRig extends Collider
 	end
 	
 	/** \brief Set rig or \em null if not set. */
-	public func void setRig( Rig rig )
+	public func void setRig(Rig rig)
 	end
 	
 	
 	
 	/**
 	 * \brief Collider is equal to another object.
-	 * \details Implements Object.equals(Object).
+	 * 
+	 * Implements Object.equals(Object).
+	 * 
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	
 	/**
 	 * \brief Two colliders are equal.
-	 * \details This is an extended version of equals() accepting also \em null for \em collider1
-	 *          and \em collider2. equals() would thrown an exception if \em null is compared to
-	 *          anything. This call though allows to compare \em null against colliders or even
-	 *          \em null itself. If \em collider1 or \em collider2 is \em null \em false is returned.
-	 *          If both are \em null \em true is returned.
+	 * 
+	 * This is an extended version of equals() accepting also \em null for \em collider1
+	 * and \em collider2. equals() would thrown an exception if \em null is compared to
+	 * anything. This call though allows to compare \em null against colliders or even
+	 * \em null itself. If \em collider1 or \em collider2 is \em null \em false is returned.
+	 * If both are \em null \em true is returned.
 	 */
-	public static func bool equals( Collider collider1, Collider collider2 )
+	public static func bool equals(Collider collider1, Collider collider2)
 		return false
 	end
 	
 	/**
 	 * \brief Hash code for use as dictionary keys.
-	 * \details Implements Object.hashCode().
+	 * 
+	 * Implements Object.hashCode().
 	 */
 	public func int hashCode()
 		return 0
@@ -77,78 +88,78 @@ class ColliderRig extends Collider
 	/** \name Bones */
 	/*@{*/
 	/**
-	 * \brief Bone position in world coordinates.
+	 * \brief Center mass position of bone in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func DVector boneGetPosition( int bone )
+	public func DVector boneGetPosition(int bone)
 		return null
 	end
 	
 	/**
-	 * \brief Set bone position in world coordinates.
+	 * \brief Set center mass position of bone in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneSetPosition( int bone, DVector position )
+	public func void boneSetPosition(int bone, DVector position)
 	end
 	
 	/**
-	 * \brief Bone orientation in world coordinates.
+	 * \brief Center mass orientation of bone in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func Quaternion boneGetOrientation( int bone )
+	public func Quaternion boneGetOrientation(int bone)
 		return null
 	end
 	
 	/**
-	 * \brief Set bone orientation in world coordinates.
+	 * \brief Set center mass orientation of bone in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneSetOrientation( int bone, Quaternion orientation )
+	public func void boneSetOrientation(int bone, Quaternion orientation)
 	end
 	
 	/**
-	 * \brief Bone linear velocity in m/s in world coordinates.
+	 * \brief Center mass linear velocity of bone in m/s in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func Vector boneGetLinearVelocity( int bone )
+	public func Vector boneGetLinearVelocity(int bone)
 		return null
 	end
 	
 	/**
-	 * \brief Set bone linear velocity in m/s in world coordinates.
+	 * \brief Set center mass linear velocity of bone in m/s in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneSetLinearVelocity( int bone, Vector velocity )
+	public func void boneSetLinearVelocity(int bone, Vector velocity)
 	end
 	
 	/**
-	 * \brief Bone angular velocity in degrees/s in world coordinates.
+	 * \brief Center mass angular velocity of bone in degrees/s in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func Vector boneGetAngularVelocity( int bone )
+	public func Vector boneGetAngularVelocity(int bone)
 		return null
 	end
 	
 	/**
-	 * \brief Set bone angular velocity in degrees/s in world coordinates.
+	 * \brief Set center mass angular velocity of bone in degrees/s in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneSetAngularVelocity( Vector velocity )
+	public func void boneSetAngularVelocity(Vector velocity)
 	end
 	
 	/**
-	 * \brief Bone matrix world coordinates.
+	 * \brief Center mass matrix of bone in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func DMatrix boneGetMatrix( int bone )
+	public func DMatrix boneGetMatrix(int bone)
 		return null
 	end
 	
 	/**
-	 * \brief Inverse bone matrix in world coordinates.
+	 * \brief Inverse center mass matrix of bone in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func DMatrix boneGetInverseMatrix( int bone )
+	public func DMatrix boneGetInverseMatrix(int bone)
 		return null
 	end
 	
@@ -158,36 +169,41 @@ class ColliderRig extends Collider
 	 * \brief Enable or disable bone constraints defined in rig.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void enableRigBoneConstraints( int bone, bool enable )
+	public func void enableRigBoneConstraints(int bone, bool enable)
 	end
 	
 	
 	
 	/**
 	 * \brief Copy bone states from collider.
-	 * \details Rigs do not have to match. Bones are matched by bone names. Unmatched bones
-	 *          keep their current state.
+	 * 
+	 * Rigs do not have to match. Bones are matched by bone names. Unmatched bones
+	 * keep their current state.
 	 */
-	public func void copyStatesFromCollider( ColliderRig collider )
+	public func void copyStatesFromCollider(ColliderRig collider)
 	end
 	
 	/**
 	 * \brief Copy bone state from collider.
-	 * \details Rigs do not have to match. The bone is matched by bone name. If not matching
-	 *          the bone keeps its current state.
+	 * 
+	 * Rigs do not have to match. The bone is matched by bone name. If not matching
+	 * the bone keeps its current state.
+	 * 
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void copyStateFromCollider( int bone, ColliderRig collider )
+	public func void copyStateFromCollider(int bone, ColliderRig collider)
 	end
 	
 	/**
 	 * \brief Copy bone state from collider bone.
-	 * \details Rigs do not have to match. This call allows to copy states of bones not
-	 *          matching by their names.
+	 * 
+	 * Rigs do not have to match. This call allows to copy states of bones not
+	 * matching by their names.
+	 * 
 	 * \throws EOutOfBoundary \em boneFrom is less than 0 or larger than or equal to this collider rig bone count.
 	 * \throws EOutOfBoundary \em boneTo is less than 0 or larger than or equal to other collider rig bone count.
 	 */
-	public func void copyStateFromCollider( int boneFrom, int boneTo, ColliderRig collider )
+	public func void copyStateFromCollider(int boneFrom, int boneTo, ColliderRig collider)
 	end
 	/*@}*/
 	
@@ -196,19 +212,19 @@ class ColliderRig extends Collider
 	/** \name Attachments */
 	/*@{*/
 	/** \brief Attach collider rig or component synchronizing bone states. */
-	public func void attachRig( Object resource )
+	public func void attachRig(Object resource)
 	end
 	
 	/** \brief Attach collider at bone relative to current position. */
-	public func void attachBone( Object resource, String targetBone )
+	public func void attachBone(Object resource, String targetBone)
 	end
 	
 	/** \brief Attach collider at bone with specific position. */
-	public func void attachBone( Object resource, String targetBone, Vector position, Quaternion orientation )
+	public func void attachBone(Object resource, String targetBone, Vector position, Quaternion orientation)
 	end
 	
 	/** \brief Attach collider at position defined by weighting bones. */
-	public func void attachWeight( Object resource, CollisionInfo colInfo )
+	public func void attachWeight(Object resource, CollisionInfo colInfo)
 	end
 	/*@}*/
 	
@@ -220,42 +236,42 @@ class ColliderRig extends Collider
 	 * \brief Apply impulse at center mass point of bone.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneApplyImpuls( int bone, Vector impuls )
+	public func void boneApplyImpuls(int bone, Vector impuls)
 	end
 	
 	/**
 	 * \brief Apply impulse at position relative to bone.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneApplyImpulsAt( int bone, Vector impuls, Vector position )
+	public func void boneApplyImpulsAt(int bone, Vector impuls, Vector position)
 	end
 	
 	/**
 	 * \brief Apply torque at center mass point of bone.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneApplyTorque( int bone, Vector torque )
+	public func void boneApplyTorque(int bone, Vector torque)
 	end
 	
 	/**
 	 * \brief Apply torque and impulse at center mass point of bone.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneApplyTorqueImpuls( int bone, Vector torqueImpuls )
+	public func void boneApplyTorqueImpuls(int bone, Vector torqueImpuls)
 	end
 	
 	/**
 	 * \brief Apply force at center mass point of bone.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneApplyForce( int bone, Vector force )
+	public func void boneApplyForce(int bone, Vector force)
 	end
 	
 	/**
 	 * \brief Apply force at position relative to bone.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneApplyForceAt( int bone, Vector force, Vector position )
+	public func void boneApplyForceAt(int bone, Vector force, Vector position)
 	end
 	/*@}*/
 end

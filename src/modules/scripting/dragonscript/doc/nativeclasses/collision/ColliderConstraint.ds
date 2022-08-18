@@ -11,6 +11,19 @@ namespace Dragengine.Scenery
 /**
  * \brief Collider constraint.
  * 
+ * Collider constraints define a physical constraint between two colliders or a collider and
+ * the world. Optionally bones inside the colliders can be referenced.
+ * 
+ * Constraints are defined by a reference coordinate system, a target coordinate system and
+ * up to 6 constraint limits one for each degree of freedom.
+ * 
+ * The reference and target coordinate system are relative to the collider position and
+ * orientation. If bones are used the reference respectively target coordinate system is
+ * relative to the rig bone position and orientation. The bone center mass position is not
+ * used. This is contrary to ColliderRig where the position and orientation is the position
+ * and orientation of the bone center mass point in world coordinates. Keep this in mind if
+ * you create collider constraints during runtime for collider bones.
+ * 
  * This is a native class.
  */
 class ColliderConstraint
@@ -59,20 +72,20 @@ class ColliderConstraint
 		return null
 	end
 	
-	/** \brief Set orientation of the reference coordinate system. */
+	/** \brief Set orientation of the target coordinate system. */
 	public func void setOrientation1(Quaternion orientation)
 	end
 	
-	/** \brief Position of the reference coordinate system. */
+	/** \brief Position of the target coordinate system. */
 	public func Vector getPosition2()
 		return null
 	end
 	
-	/** \brief Set position of the reference coordinate system. */
+	/** \brief Set position of the target coordinate system. */
 	public func void setPosition2(Vector position)
 	end
 	
-	/** \brief Orientation of the reference coordinate system. */
+	/** \brief Orientation of the target coordinate system. */
 	public func Quaternion getOrientation2()
 		return null
 	end
