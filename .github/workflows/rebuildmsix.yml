@@ -8,11 +8,6 @@ on:
         required: true
         type: string
         default: 'X.Y{.Z}'
-      changelogPageNumber:
-        description: 'Changelog Page Number'
-        required: true
-        type: string
-        default: 'XXXX'
 
 jobs:
   build_windows:
