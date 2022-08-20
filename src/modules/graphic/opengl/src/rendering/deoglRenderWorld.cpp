@@ -752,6 +752,19 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		toneMapHighInt = oglCamera->GetHighestIntensity();
 	}
 	
+	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
+	// geometry. doing this by default is okay since debug drawers are supposed to be rendered
+	// after world geometry and thus winning over world geometry feels logic.
+	// pglPolygonOffset can not be used since depth has to be compared in the fragment shader. this
+	// is the case since the depth comes from a texture due to the depth buffer being undefined.
+	// to solve this problem the shift is placed into the camera-projection matrix after the
+	// projection. the z value has to be shifted slightly into the negative direction. the shift
+	// has to be some depth units which is 1/(1<<precision) where precision is depth-buffer-buts
+	// minus some bits to counter rounding errors. shifting by 1 or 2 depth bits should help.
+	// too much and geometry pops up behind geometry
+	const double debugDepthScale = 1.0 - 1.0 / ( double )( 1 << 22 ); // 24bits minus 2 bits
+	const double debugDepthShift = -1.0 / ( double )( 1 << 21 ); // 24bits minus 3 bits
+	
 	// stereo rendering
 	const decMatrix &cameraStereoMatrix = plan.GetCameraStereoMatrix();
 	
@@ -850,6 +863,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapLWhite );
 		pRenderPB->SetParameterDataVec3( deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime );
 		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, 0.0f );
+		
+		// debug depth transform
+		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift );
 		
 		// stereo rendering
 		if( plan.GetRenderStereo() ){

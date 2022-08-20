@@ -565,6 +565,8 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThre
 		spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
+		spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
@@ -2564,6 +2566,7 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pToneMapSceneKey" ); // erutToneMapSceneKey
 		parameterList.Add( "pToneMapAdaption" ); // erutToneMapAdaption
 		parameterList.Add( "pToneMapBloom" ); // erutToneMapBloom
+		parameterList.Add( "pDebugDepthTransform" ); // erutDebugDepthTransform
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){

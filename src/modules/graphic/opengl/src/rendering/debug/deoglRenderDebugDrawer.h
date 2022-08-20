@@ -37,9 +37,13 @@ class deoglRDebugDrawer;
 class deoglRenderDebugDrawer : public deoglRenderBase{
 private:
 	deoglShaderProgramUsage pShaderShapeXRay;
+	deoglShaderProgramUsage pShaderShapeXRayStereo;
 	deoglShaderProgramUsage pShaderShapeSolid;
+	deoglShaderProgramUsage pShaderShapeSolidStereo;
 	deoglShaderProgramUsage pShaderMeshXRay;
+	deoglShaderProgramUsage pShaderMeshXRayStereo;
 	deoglShaderProgramUsage pShaderMeshSolid;
+	deoglShaderProgramUsage pShaderMeshSolidStereo;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -58,8 +62,12 @@ public:
 	
 private:
 	void pCleanUp();
-	void pRenderDDSShapes( const decDMatrix &matrixCP, deoglRDebugDrawer &debugDrawer );
-	void pRenderDDSFaces( const decDMatrix &matrixCP, deoglRDebugDrawer &debugDrawer );
+	
+	void pRenderDDSShapes( const deoglRenderPlan &plan, const decDMatrix &matrixModel,
+		deoglRDebugDrawer &debugDrawer );
+	
+	void pRenderDDSFaces( const deoglRenderPlan &plan, const decDMatrix &matrixModel,
+		deoglRDebugDrawer &debugDrawer );
 };
 
 #endif

@@ -130,6 +130,7 @@ public:
 		erutToneMapSceneKey,
 		erutToneMapAdaption,
 		erutToneMapBloom,
+		erutDebugDepthTransform,
 		ERUT_COUNT
 	};
 	

@@ -109,19 +109,12 @@ pTBORenderRectangle1( NULL ),
 pTBORenderRectangle2( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Debug Color-Only" );
-		if( defren.GetUseInverseDepth() ){
-			defines.SetDefine( "INVERSE_DEPTH", "1" );
-		}
 		pShaderXRay = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.SetDefine( "WITH_DEPTH", "1" );
-		pShaderSolid = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		

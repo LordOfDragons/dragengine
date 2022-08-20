@@ -27,6 +27,7 @@
 class deoglRenderThread;
 class deoglSharedVBOBlock;
 class deoglVAO;
+class deoglRenderPlan;
 
 
 /**
@@ -100,10 +101,18 @@ public:
 	deoglVAO *GetVAO();
 	/** Activates the VAO from the vbo block. */
 	void ActivateVAO();
+	
 	/** Render lines. */
 	void RenderLines();
+	
+	/** Render lines. */
+	void RenderLines( const deoglRenderPlan &plan );
+	
 	/** Render faces. */
 	void RenderFaces();
+	
+	/** Render faces. */
+	void RenderFaces( const deoglRenderPlan &plan );
 	/*@}*/
 };
 

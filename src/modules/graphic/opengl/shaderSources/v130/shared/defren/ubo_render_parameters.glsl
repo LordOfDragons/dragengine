@@ -183,6 +183,17 @@ UBOLAYOUT uniform RenderParameters{
 	// x: strength
 	vec2 pToneMapBloom;
 	#define pToneMapBloomStrength (pToneMapBloom.x)
+	
+	
+	
+	// debug
+	
+	// debug depth scale and shift
+	// x: depth scale
+	// y: depth shift
+	vec2 pDebugDepthTransform;
+	#define pDebugDepthScale (pDebugDepthTransform.x)
+	#define pDebugDepthOffset (pDebugDepthTransform.y)
 };
 
 // helper functions

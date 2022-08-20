@@ -47,7 +47,6 @@ private:
 	};
 	
 	deoglShaderProgramUsage pShaderXRay;
-	deoglShaderProgramUsage pShaderSolid;
 	
 	deoglShaderProgramUsage pShaderSphere;
 	
