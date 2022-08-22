@@ -144,7 +144,7 @@ class ColliderRig extends Collider
 	 * \brief Set center mass angular velocity of bone in degrees/s in world coordinates.
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void boneSetAngularVelocity(Vector velocity)
+	public func void boneSetAngularVelocity(int bone, Vector velocity)
 	end
 	
 	/**
