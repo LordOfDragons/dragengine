@@ -397,6 +397,7 @@ void debpColliderBones::ActivateDirtyPhysicsBodies(){
 	for( i=0; i<pBonePhysicsCount; i++ ){
 		if( pBonesPhysics[ i ]->GetDirty() ){
 			pBonesPhysics[ i ]->GetPhysicsBody()->Activate();
+			pBonesPhysics[ i ]->SetDirty( false );
 		}
 	}
 }

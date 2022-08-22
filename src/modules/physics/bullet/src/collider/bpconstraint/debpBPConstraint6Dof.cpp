@@ -42,7 +42,8 @@ btGeneric6DofConstraint( rbA, rbB, frameInA, frameInB, true ),
 pConstraint( constraint ),
 pIndexMotorX( 0 ),
 pIndexMotorY( 1 ),
-pIndexMotorZ( 2 )
+pIndexMotorZ( 2 ),
+pDamping( BT_ONE )
 {
 	int i;
 	for( i=0; i<3; i++ ){
@@ -59,7 +60,8 @@ btGeneric6DofConstraint( rbA, getFixedBody(), frameInA, frameInB, true ),
 pConstraint( constraint ),
 pIndexMotorX( 0 ),
 pIndexMotorY( 1 ),
-pIndexMotorZ( 2 )
+pIndexMotorZ( 2 ),
+pDamping( BT_ONE )
 {
 	int i;
 	for( i=0; i<3; i++ ){
@@ -117,6 +119,10 @@ void debpBPConstraint6Dof::SetHasJointFrictionAngular( int index, bool enabled )
 		DETHROW( deeInvalidParam );
 	}
 	pHasJointFrictionAngular[ index ] = enabled;
+}
+
+void debpBPConstraint6Dof::SetDamping( btScalar damping ){
+	pDamping = damping;
 }
 
 void debpBPConstraint6Dof::PrepareForStep(){
@@ -445,9 +451,11 @@ void debpBPConstraint6Dof::getInfo2( btTypedConstraint::btConstraintInfo2 *info 
 	// 
 	// for angular rotation coefficients have to be higher.
 	// 
-
+	
 	const deColliderConstraint &engConstraint = pConstraint.GetConstraint();
 	const btScalar timeStep = BT_ONE / info->fps;
+	
+// 	info->m_damping = pDamping; // not working too U_U
 	
 	if( pHasJointFrictionLinear[ 0 ] || pHasJointFrictionLinear[ 1 ] || pHasJointFrictionLinear[ 2 ] ){
 		const btVector3 velocity( m_rbA.getLinearVelocity() - m_rbB.getLinearVelocity() );

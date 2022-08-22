@@ -1049,7 +1049,9 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 	//   proportional to CFM times the restoring force that is needed to enforce the constraint. Note that setting CFM to a
 	//   negative value can have undesirable bad effects, such as instability. Don't do it.
 	
-	// the daming and softness is useless. bullet doesn't use them unless motors are set to produce force
+	// the damping and softness is useless. bullet doesn't use them unless motors are set to produce force.
+	// even if the motors are enabled the damping force is clamped against the max motor force
+	// which reduces it to 0 all time (because higher max force would cause unwanted effects)
 	const bool body1Dynamic = pPhyBody1 && pPhyBody1->GetResponseType() == debpPhysicsBody::ertDynamic;
 	const bool body2Dynamic = pPhyBody2 && pPhyBody2->GetResponseType() == debpPhysicsBody::ertDynamic;
 	bool requiresJointFeedback = false;
@@ -1093,6 +1095,9 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 		motorAngular.m_limitSoftness = angularSoftness; // Relaxation factor: default 0.5
 		motorAngular.m_bounce = angularRestitution; // restitution factor: default 0.0
 	}
+	
+	// damping
+	generic6Dof->SetDamping( linearDamping );
 	
 	// constraint breaking
 	if( pConstraint.GetBreakingThreshold() > 0.001f ){
@@ -1355,17 +1360,13 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 }
 
 btScalar debpColliderConstraint::pLinearDamping() const {
-	// linear damping coefficient. bullet calculates (1/timestep)*damping as damping value to
-	// use where timestep is 1/60 (60Hz) by default. Hence bullet uses 60*damping. this requires
-	// dividing damping by fps
-	return pConstraint.GetLinearDamping() * pDynWorld->GetWorld().GetSimulationTimeStep();
+	// linear damping coefficient
+	return pConstraint.GetLinearDamping();
 }
 
 btScalar debpColliderConstraint::pAngularDamping() const {
-	// angular damping coefficient. bullet calculates (1/timestep)*damping as damping value to
-	// use where timestep is 1/60 (60Hz) by default. Hence bullet uses 60*damping. this requires
-	// dividing damping by fps
-	return pConstraint.GetAngularDamping() * pDynWorld->GetWorld().GetSimulationTimeStep();
+	// angular damping coefficient
+	return pConstraint.GetAngularDamping();
 }
 
 btScalar debpColliderConstraint::pSpringDamping() const {
