@@ -40,32 +40,32 @@ class ECPVector extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pVector = Vector.new()
+	public func new(String name) super(name)
+		pVector = Vector.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, Vector vector ) super( name )
-		this.pVector = vector
+	public func new(String name, Vector vector) super(name)
+		pVector = vector
 	end
 	
 	
 	
 	/** \brief Vector. */
 	public func Vector getVector()
-		return this.pVector
+		return pVector
 	end
 	
 	/** \brief Set vector. */
-	public func void setVector( Vector vector )
-		this.pVector = vector
+	public func void setVector(Vector vector)
+		pVector = vector
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setVector( value cast Vector )
+	public func void setValue(Object value)
+		setVector(value cast Vector)
 	end
 	
 	
@@ -80,13 +80,13 @@ class ECPVector extends ElementClassProperty
 	 * floating point values:
 	 * - "x y z": Vector.new(x, x, z)
 	 */
-	public func Vector getVector( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Vector getVector(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pVector
+			return pVector
 			
 		else
-			return codec.decodeVector( value )
+			return codec.decodeVector(value)
 		end
 	end
 end
