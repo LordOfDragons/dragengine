@@ -173,6 +173,9 @@ public:
 	 */
 	bool CheckHasBroken();
 	
+	/** Requires bone auto-dirty. */
+	bool RequiresAutoDirty() const;
+	
 	
 	
 	/** Notify constraint changed. */

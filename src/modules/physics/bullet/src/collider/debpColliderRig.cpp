@@ -319,6 +319,11 @@ void debpColliderRig::PrepareForStep(){
 	pPreventAttNotify = true;
 	RegisterColDetFinish(); // to disable pPreventAttNotify
 	
+	// this is dirty but i've got no better idea right now
+	if( GetConstraintCount() > 0 ){
+		pBones->SetAllBonesDirty();
+	}
+	
 	if( pBones ){
 		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;

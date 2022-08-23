@@ -392,10 +392,17 @@ bool debpColliderBones::UpdateFromBody(){
 	return anyBoneChanged;
 }
 
+void debpColliderBones::SetAllBonesDirty(){
+	int i;
+	for( i=0; i<pBonePhysicsCount; i++ ){
+		pBonesPhysics[ i ]->SetDirty( true );
+	}
+}
+
 void debpColliderBones::ActivateDirtyPhysicsBodies(){
 	int i;
 	for( i=0; i<pBonePhysicsCount; i++ ){
-		if( pBonesPhysics[ i ]->GetDirty() ){
+		if( pBonesPhysics[ i ]->GetDirty() || pBonesPhysics[ i ]->RequiresAutoDirty() ){
 			pBonesPhysics[ i ]->GetPhysicsBody()->Activate();
 			pBonesPhysics[ i ]->SetDirty( false );
 		}

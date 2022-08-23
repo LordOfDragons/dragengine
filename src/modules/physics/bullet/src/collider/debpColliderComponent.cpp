@@ -447,6 +447,11 @@ DEBUG_RESET_TIMERS;
 // 			pColliderComponent.GetComponent()->PrepareBones();  // TODO IS THIS REQUIRED?!
 // 		}
 		
+		// this is dirty but i've got no better idea right now
+		if( GetConstraintCount() > 0 ){
+			pBones->SetAllBonesDirty();
+		}
+		
 		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
 DEBUG_PRINT_TIMER( "Update bone phy bodies" );

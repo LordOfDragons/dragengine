@@ -175,6 +175,10 @@ bool debpColliderConstraint::CheckHasBroken(){
 	return false;
 }
 
+bool debpColliderConstraint::RequiresAutoDirty() const{
+	return pEnabled && ! pHasBroken && pBpConstraint && pPhyBody2 && pPhyBody2->GetIsActive();
+}
+
 
 
 void debpColliderConstraint::ConstraintChanged(){
