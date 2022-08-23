@@ -608,6 +608,20 @@ void deoglExtensions::pScanExtensions(){
 		pHasExtension[ ext_ARB_shader_draw_parameters ] = false;
 	}
 	
+	// the same problem for gl_Layer in vertex shaders. looks like core 4.5 is required
+	// otherwise it fails. maybe later on create a bug-test to figure out if these two
+	// parameters are supported so we do not have to hard-code things here
+	if( pHasExtension[ ext_ARB_shader_viewport_layer_array ] && pGLVersion < evgl4p5 ){
+		pRenderThread.GetLogger().LogWarn( "Extension ARB_shader_viewport_layer_array forcefully"
+			" disabled since OpenGL is less then 4.5 Core" );
+		pHasExtension[ ext_ARB_shader_viewport_layer_array ] = false;
+	}
+	if( pHasExtension[ ext_AMD_vertex_shader_layer ] && pGLVersion < evgl4p5 ){
+		pRenderThread.GetLogger().LogWarn( "Extension AMD_vertex_shader_layer forcefully"
+			" disabled since OpenGL is less then 4.5 Core" );
+		pHasExtension[ ext_AMD_vertex_shader_layer ] = false;
+	}
+	
 	pHasSeamlessCubeMap = pHasExtension[ ext_ARB_seamless_cube_map ]
 		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
 	

@@ -15,7 +15,7 @@
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/ubo_render_parameters.glsl"
 
-out flat int vLayer;
+flat out int vLayer;
 
 void main( void ){
 	int eye;

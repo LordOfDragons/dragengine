@@ -7,7 +7,7 @@ uniform vec4 pColorOffset;
 uniform mediump sampler2DArray texColor;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	in flat int vLayer;
+	flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

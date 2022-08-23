@@ -28,7 +28,7 @@
 	#endif
 #endif
 
-out flat int vLayer;
+flat out int vLayer;
 
 void main( void ){
 	int eye;

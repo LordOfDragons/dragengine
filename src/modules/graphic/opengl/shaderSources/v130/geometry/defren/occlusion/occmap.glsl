@@ -77,7 +77,7 @@
 	out vec3 vClipCoord;
 #endif
 
-out flat int vLayer;
+flat out int vLayer;
 
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
