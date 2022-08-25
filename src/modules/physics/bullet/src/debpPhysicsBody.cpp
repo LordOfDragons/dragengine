@@ -631,12 +631,12 @@ void debpPhysicsBody::pCreateRigidBody(){
 	// are less than threshold for the entire sleep time (2s).
 	
 	// default is 0.8 m/s . this is quite high and causes objects to stop moving quickly.
-	// the value used here is 0.1m/s . most probably this value should be adjusted by the
+	// the value used here is 5cm/s . most probably this value should be adjusted by the
 	// size or the mass of the object. larger objects should most probably have larger
 	// threshold while smaller objects should have lower. needs more testing. in general
 	// damping and friction should make the velocity drop below the threshold to get
 	// stable results not using high thresholds.
-	cinfo.m_linearSleepingThreshold = 0.1f;
+	cinfo.m_linearSleepingThreshold = 0.05f;
 	
 	// default is 1 rad/s which is roughly 57 deg/s . this is even more huge than the linear
 	// velocity threshold above. using 2 deg/s instead. again size or mass could be used
