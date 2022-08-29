@@ -55,27 +55,27 @@ class BehaviorElement extends Element
 	
 	
 	/** \brief Create element. */
-	public func new( BehaviorElementClass eclass ) super( eclass )
-		this.pInstances = Array.new()
-		this.pRequiresEnterFrame = false
-		this.pRequiresThink = false
-		this.pRequiresAttachToParent = true
+	public func new(BehaviorElementClass eclass) super(eclass)
+		pInstances = Array.new()
+		pRequiresEnterFrame = false
+		pRequiresThink = false
+		pRequiresAttachToParent = true
 		
-		eclass.forEachBehaviorDirect( block ECBehavior each
-			this.pInstances.add( each.createInstance( this ) )
-		end )
+		eclass.forEachBehaviorDirect(block ECBehavior each
+			pInstances.add(each.createInstance(this))
+		end)
 	end
 	
 	/** \brief Dispose of element. */
 	public func void dispose()
-		if this.pInstances != null
-			this.pInstances.forEachReverse( block ECBehaviorInstance each
+		if pInstances != null
+			pInstances.forEachReverse(block ECBehaviorInstance each
 				each.dispose()
-			end )
-			this.pInstances = null
+			end)
+			pInstances = null
 		end
 		
-		this.pThinkingInstances = null
+		pThinkingInstances = null
 		
 		super.dispose()
 	end
@@ -83,24 +83,24 @@ class BehaviorElement extends Element
 	
 	
 	/** \brief Initialize element from stub. */
-	public func void init( StubElement stub )
-		super.init( stub )
+	public func void init(StubElement stub)
+		super.init(stub)
 		
-		this.pInstances.forEach( block ECBehaviorInstance each
-			each.init( stub )
-		end )
+		pInstances.forEach(block ECBehaviorInstance each
+			each.init(stub)
+		end)
 	end
 	
 	
 	
 	/** \brief Number of behavior instances. */
 	public func int getInstanceCount()
-		return this.pInstances.getCount()
+		return pInstances.getCount()
 	end
 	
 	/** \brief Behavior instance at index. */
-	public func ECBehaviorInstance getInstanceAt( int index )
-		return this.pInstances.getAt( index ) cast ECBehaviorInstance
+	public func ECBehaviorInstance getInstanceAt(int index)
+		return pInstances.getAt(index) cast ECBehaviorInstance
 	end
 	
 	/**
@@ -109,8 +109,8 @@ class BehaviorElement extends Element
 	 * Block is required to have one parameter of type ECBehaviorInstance or subclass
 	 * thereof. Block is called only for instances castable to block parameter type.
 	 */
-	public func void forEachInstance( Block ablock )
-		this.pInstances.forEachCastable( ablock )
+	public func void forEachInstance(Block ablock)
+		pInstances.forEachCastable(ablock)
 	end
 	
 	/**
@@ -119,8 +119,8 @@ class BehaviorElement extends Element
 	 * Block is required to have one parameter ECBehaviorInstance or subclass thereof.
 	 * Block is called only for instances castable to block parameter type.
 	 */
-	public func void forEachInstanceReverse( Block ablock )
-		this.pInstances.forEachReverseCastable( ablock )
+	public func void forEachInstanceReverse(Block ablock)
+		pInstances.forEachReverseCastable(ablock)
 	end
 	
 	/**
@@ -130,8 +130,8 @@ class BehaviorElement extends Element
 	 * returning true if the right instance is found otherwise false. Block is called
 	 * only for instances castable to block parameter type.
 	 */
-	public func ECBehaviorInstance findInstance( Block ablock )
-		return this.pInstances.findCastable( ablock ) cast ECBehaviorInstance
+	public func ECBehaviorInstance findInstance(Block ablock)
+		return pInstances.findCastable(ablock) cast ECBehaviorInstance
 	end
 	
 	/**
@@ -142,35 +142,46 @@ class BehaviorElement extends Element
 	 * returning true for instances to collect. Block is called only for instances castable
 	 * to block parameter type.
 	 */
-	public func Array collectInstances( Block ablock )
-		return this.pInstances.collectCastable( ablock )
+	public func Array collectInstances(Block ablock)
+		return pInstances.collectCastable(ablock)
 	end
 	
 	
 	
 	/** \brief Sub-class requires enterFrame() to be called. */
 	public func bool getRequiresEnterFrame()
-		return this.pRequiresEnterFrame
+		return pRequiresEnterFrame
 	end
 	
 	/** \brief Set if sub-class requires enterFrame() to be called. */
-	protected func void setRequiresEnterFrame( bool requiresEnterFrame )
-		this.pRequiresEnterFrame = requiresEnterFrame
+	protected func void setRequiresEnterFrame(bool requiresEnterFrame)
+		pRequiresEnterFrame = requiresEnterFrame
 	end
 	
 	/** \brief Sub-class requires think() to be called. */
 	public func bool getRequiresThink()
-		return this.pRequiresThink
+		return pRequiresThink
 	end
 	
 	/** \brief Set if sub-class requires think() to be called. */
-	protected func void setRequiresThink( bool requiresThink )
-		this.pRequiresThink = requiresThink
+	protected func void setRequiresThink(bool requiresThink)
+		pRequiresThink = requiresThink
 	end
 	
 	/** \brief Attach to parent has not been processed yet. */
 	public func bool getRequiresAttachToParent()
-		return this.pRequiresAttachToParent
+		return pRequiresAttachToParent
+	end
+	
+	/**
+	 * \brief Set if attach to parent has not been processed yet.
+	 * \version 1.15
+	 * 
+	 * Use this method if you need to reattach the element to the parent defined in the
+	 * StubElement the next time it enters a game world.
+	 */
+	public func void setRequiresAttachToParent(bool requiresAttachToParent)
+		pRequiresAttachToParent = requiresAttachToParent
 	end
 	
 	
@@ -189,7 +200,7 @@ class BehaviorElement extends Element
 	 * element think() method called if no behavior requires it.
 	 */
 	public func void requiresThinkChanged()
-		this.updateThinking()
+		updateThinking()
 	end
 	
 	
@@ -201,7 +212,7 @@ class BehaviorElement extends Element
 	 * Returns true while inside addToGameWorld() or removeFromGameWorld(). This knowledge
 	 * is required by certain behaviors to produce correct result.
 	 * 
-	 * For example ECBehaviorTwoStateAnimated requires this. In this situation the behavior
+	 * For example ECBehaviorTwoStateAnimated requires  In this situation the behavior
 	 * element layout can look like this:
 	 * - ECBehaviorTriggered
 	 * - ECBehaviorTwoStateAnimated
@@ -232,7 +243,7 @@ class BehaviorElement extends Element
 	 * it should not call activate() but setActivated().
 	 */
 	public func bool isChangingGameWorld()
-		return this.pIsChangingGameWorld
+		return pIsChangingGameWorld
 	end
 	
 	/**
@@ -243,51 +254,51 @@ class BehaviorElement extends Element
 	 * isChangingGameWorld() returns false.
 	 */
 	public func bool isReallyInGameWorld()
-		return not this.pIsChangingGameWorld and this.getGameWorld() != null
+		return not pIsChangingGameWorld and getGameWorld() != null
 	end
 	
 	
 	
 	/** \brief Position changed. */
 	public func void onSetPosition()
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
-		end )
+		end)
 	end
 	
 	/** \brief Orientation changed. */
 	public func void onSetOrientation()
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
-		end )
+		end)
 	end
 	
 	/** \brief Scaling changed. */
 	public func void onSetScaling()
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
-		end )
+		end)
 	end
 	
 	/** \brief Position and orientation changed. */
 	public func void onSetGeometry()
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
-		end )
+		end)
 	end
 	
 	/** \brief Visible state changed. */
 	public func void onSetVisible()
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.stateChanged()
-		end )
+		end)
 	end
 	
 	/** \brief Touchable state changed. */
 	public func void onSetTouchable()
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.stateChanged()
-		end )
+		end)
 	end
 	
 	
@@ -297,26 +308,26 @@ class BehaviorElement extends Element
 		super.addToGameWorld()
 		
 		try
-			this.pIsChangingGameWorld = true
+			pIsChangingGameWorld = true
 			
-			this.pInstances.forEach( block ECBehaviorInstance each
+			pInstances.forEach(block ECBehaviorInstance each
 				each.addToGameWorld()
-			end )
+			end)
 			
-			if this.pRequiresEnterFrame \
-			or this.getStub().getAttachTo() != null \
-			or this.pInstances.find( block ECBehaviorInstance each
+			if pRequiresEnterFrame \
+			or getStub().getAttachTo() != null \
+			or pInstances.find(block ECBehaviorInstance each
 				return each.requiresEnterFrame()
-			end ) != null
-				this.getGameWorld().addEnterFrameOnce( this )
+			end) != null
+				getGameWorld().addEnterFrameOnce(this)
 			end
 			
-			this.updateThinking()
+			updateThinking()
 			
-			this.pIsChangingGameWorld = false
+			pIsChangingGameWorld = false
 			
 		catch Exception e
-			this.pIsChangingGameWorld = false
+			pIsChangingGameWorld = false
 			throw
 		end
 	end
@@ -324,20 +335,20 @@ class BehaviorElement extends Element
 	/** \brief Remove element from game world if set. */
 	public func void removeFromGameWorld()
 		try
-			this.pIsChangingGameWorld = true
+			pIsChangingGameWorld = true
 			
-			this.pInstances.forEachReverse( block ECBehaviorInstance each
+			pInstances.forEachReverse(block ECBehaviorInstance each
 				each.removeFromGameWorld()
-			end )
+			end)
 			
-			var GameWorld gameWorld = this.getGameWorld()
-			gameWorld.removeThinker( this )
-			gameWorld.removeEnterFrameOnce( this )
+			var GameWorld gameWorld = getGameWorld()
+			gameWorld.removeThinker(this)
+			gameWorld.removeEnterFrameOnce(this)
 			
-			this.pIsChangingGameWorld = false
+			pIsChangingGameWorld = false
 			
 		catch Exception e
-			this.pIsChangingGameWorld = false
+			pIsChangingGameWorld = false
 			throw
 		end
 		
@@ -348,28 +359,28 @@ class BehaviorElement extends Element
 	public func void enterFrame()
 		super.enterFrame()
 		
-		this.pInstances.forEach( block ECBehaviorInstance each
+		pInstances.forEach(block ECBehaviorInstance each
 			each.enterFrame()
-		end )
+		end)
 		
-		var StubElement stub = this.getStub()
+		var StubElement stub = getStub()
 		var UniqueID attachTo = stub.getAttachTo()
-		if attachTo != null and this.pRequiresAttachToParent
+		if attachTo != null and pRequiresAttachToParent
 			// we do not call stub.setAttachTo(null) because behaviors are responsible to
 			// clear the stub attach-to if they handle it themselves
 			
 			// it is possible an element is moved between game worlds. in this case enterFrame()
 			// is called each time the element enters a game world. if we have attached the
 			// element already trying to attach against throws an exception
-			this.pRequiresAttachToParent = false
+			pRequiresAttachToParent = false
 			
-			var Element element = this.getGameWorld().getElementWithID( attachTo )
+			var Element element = getGameWorld().getElementWithID(attachTo)
 			if element == null
-				throw EElementNotFound.new( attachTo, "Attach " \
-					+ stub.getID() + " at " + this.getPosition() + " to" )
+				throw EElementNotFound.new(attachTo, "Attach " \
+					+ stub.getID() + " at " + getPosition() + " to")
 			end
 			
-			this.attachToParent( element )
+			attachToParent(element)
 		end
 	end
 	
@@ -380,84 +391,84 @@ class BehaviorElement extends Element
 	 * this method is called. Calls ECBehaviorInstance.attachToParent() on each behavior
 	 * to do the actual attaching.
 	 */
-	public func void attachToParent( Element parent )
-		this.pInstances.forEach( block ECBehaviorInstance each
-			each.attachToParent( parent )
-		end )
+	public func void attachToParent(Element parent)
+		pInstances.forEach(block ECBehaviorInstance each
+			each.attachToParent(parent)
+		end)
 	end
 	
 	/** \brief Think about what the element is going to do in this frame. */
-	public func void think( float elapsed )
-		if this.pThinkingInstances == null
+	public func void think(float elapsed)
+		if pThinkingInstances == null
 			return
 		end
 		
-		this.pThinkingInstances.forEach( block ECBehaviorInstance each
-			each.think( elapsed )
-		end )
+		pThinkingInstances.forEach(block ECBehaviorInstance each
+			each.think(elapsed)
+		end)
 	end
 	
 	/** \brief Post thinking after physics processing is finished. */
-	public func void postThink( float elapsed )
-		if this.pThinkingInstances == null
+	public func void postThink(float elapsed)
+		if pThinkingInstances == null
 			return
 		end
 		
-		this.pThinkingInstances.forEach( block ECBehaviorInstance each
-			each.postThink( elapsed )
-		end )
+		pThinkingInstances.forEach(block ECBehaviorInstance each
+			each.postThink(elapsed)
+		end)
 	end
 	
 	
 	
 	/** \brief Update thinking. */
 	protected func void updateThinking()
-		var GameWorld gameWorld = this.getGameWorld()
+		var GameWorld gameWorld = getGameWorld()
 		if gameWorld == null
-			this.pThinkingInstances = null
+			pThinkingInstances = null
 			return
 		end
 		
-		this.pThinkingInstances = this.pInstances.collect( block ECBehaviorInstance each
+		pThinkingInstances = pInstances.collect(block ECBehaviorInstance each
 			return each.requiresThink()
-		end )
+		end)
 		
-		if this.pRequiresThink or this.pThinkingInstances.getCount() > 0
-			gameWorld.addThinker( this )
+		if pRequiresThink or pThinkingInstances.getCount() > 0
+			gameWorld.addThinker(this)
 			
 		else
-			this.pThinkingInstances = null
-			gameWorld.removeThinker( this )
+			pThinkingInstances = null
+			gameWorld.removeThinker(this)
 		end
 	end
 	
 	/** \brief Stop thinking even though it would be required by behaviors. */
 	protected func void stopThinking()
-		this.pThinkingInstances = null
+		pThinkingInstances = null
 		
-		var GameWorld gameWorld = this.getGameWorld()
+		var GameWorld gameWorld = getGameWorld()
 		if gameWorld != null
-			gameWorld.removeThinker( this )
+			gameWorld.removeThinker(this)
 		end
 	end
 	
 	
 	
 	/** \brief Read element from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			this.pInstances.forEach( block ECBehaviorInstance each
-				each.readFromFile( env, reader )
-			end )
+			pInstances.forEach(block ECBehaviorInstance each
+				each.readFromFile(env, reader)
+			end)
 			
 		case 1
-			var BehaviorElementClass eclass = this.getClass() cast BehaviorElementClass
+			var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
 			
 			var Dictionary map = Dictionary.new()
-			this.pInstances.forEach( block int index, ECBehaviorInstance each
-				map.setAt( ( eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency ).getBehaviorID(), each )
-			end )
+			pInstances.forEach(block int index, ECBehaviorInstance each
+				map.setAt((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID(), each)
+			end)
 			
 			var int i, dataLength, count = reader.readShort()
 			var ECBehaviorInstance instance
@@ -466,26 +477,26 @@ class BehaviorElement extends Element
 			
 			for i = 0 to count
 				identifier = reader.readString8()
-				instance = map.getAt( identifier, null ) cast ECBehaviorInstance
+				instance = map.getAt(identifier, null) cast ECBehaviorInstance
 				dataLength = reader.readInt()
 				
 				if instance != null
 					//nextPosition = reader.getPosition() + dataLength
-					instance.readFromFile( env, reader )
+					instance.readFromFile(env, reader)
 					/*
 					if reader.getPosition() != nextPosition
-						throw EInvalidAction.new( "next file position mismatch after reading behavior " + identifier )
+						throw EInvalidAction.new("next file position mismatch after reading behavior " + identifier)
 					end
 					*/
 					
-				elif this.pInstances.find( block int index, ECBehaviorInstance each
-					var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency
-					if bcp.supportsBehaviorID( identifier )
+				elif pInstances.find(block int index, ECBehaviorInstance each
+					var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency
+					if bcp.supportsBehaviorID(identifier)
 						//nextPosition = reader.getPosition() + dataLength
-						bcp.loadSupportedData( identifier, env, reader, each )
+						bcp.loadSupportedData(identifier, env, reader, each)
 						/*
 						if reader.getPosition() != nextPosition
-							throw EInvalidAction.new( "next file position mismatch after compatibility reading behavior " + identifier )
+							throw EInvalidAction.new("next file position mismatch after compatibility reading behavior " + identifier)
 						end
 						*/
 						return true
@@ -494,36 +505,36 @@ class BehaviorElement extends Element
 						return false
 					end
 					
-				end ) == null
-					reader.movePosition( dataLength )
+				end) == null
+					reader.movePosition(dataLength)
 				end
 			end
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write element to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		var BehaviorElementClass eclass = this.getClass() cast BehaviorElementClass
-		var MemoryFile behaviorData = MemoryFile.new( "behaviorData" )
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
+		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
 		
-		writer.writeByte( 1 ) // version
-		writer.writeShort( this.pInstances.getCount() )
+		writer.writeByte(1) // version
+		writer.writeShort(pInstances.getCount())
 		
-		this.pInstances.forEach( block int index, ECBehaviorInstance each
-			each.writeToFile( env, behaviorData.getWriter( false ) )
-			writer.writeString8( ( eclass.getBehaviorAt( index ) cast BehaviorCompatiblePersistency ).getBehaviorID() )
-			writer.writeInt( behaviorData.getSize() )
-			writer.writeData( behaviorData.getReader() )
-		end )
+		pInstances.forEach(block int index, ECBehaviorInstance each
+			each.writeToFile(env, behaviorData.getWriter(false))
+			writer.writeString8((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID())
+			writer.writeInt(behaviorData.getSize())
+			writer.writeData(behaviorData.getReader())
+		end)
 	end
 	
 	
 	
 	/** \brief Visit element. */
-	public func void visit( ElementVisitor visitor )
-		visitor.visitBehaviorElement( this )
+	public func void visit(ElementVisitor visitor)
+		visitor.visitBehaviorElement(this)
 	end
 end
