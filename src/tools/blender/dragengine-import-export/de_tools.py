@@ -542,8 +542,13 @@ bpy.types.Object.dragengine_splitseam = bpy.props.BoolProperty(name="Split Seam"
 	description="Split Normals/Tangents using seams", default=False)
 """
 
-bpy.types.Object.dragengine_lodmesh = bpy.props.StringProperty(name="LOD-Mesh",
-	description="Mesh to use as next LOD", default="")
+def filterOnlyMeshes(self, object):
+	return object.type == 'MESH'
+
+bpy.types.Object.dragengine_lodmesh = bpy.props.PointerProperty(type=bpy.types.Object,
+	name="LOD-Mesh",
+	description="Mesh to use as next LOD",
+	poll=filterOnlyMeshes)
 
 bpy.types.Object.dragengine_hasloderror = bpy.props.BoolProperty(name="LOD-Error",
 	description="Use Custom LOD error instead of automatically calculated LOD Error ",

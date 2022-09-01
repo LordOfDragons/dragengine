@@ -119,13 +119,16 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			testmesh = self.mesh
 			prevLodLevelHasLodError = False
 			predLodError = 0
-			while testmesh and testmesh.object and testmesh.object.dragengine_lodmesh in bpy.data.objects:
+			while testmesh\
+					and testmesh.object\
+					and testmesh.object.dragengine_lodmesh\
+					and testmesh.object.dragengine_lodmesh.name in bpy.data.objects:
 				if testmesh.object.dragengine_lodmesh in loopProtection:
 					self.report({ 'INFO', 'ERROR' }, "Loop in LOD meshes!")
 					return False
-				loopProtection.append(testmesh.object.dragengine_lodmesh)
+				loopProtection.append(testmesh.object.dragengine_lodmesh.name)
 				
-				testmesh.lodMesh = Mesh(bpy.data.objects[testmesh.object.dragengine_lodmesh])
+				testmesh.lodMesh = Mesh(testmesh.object.dragengine_lodmesh)
 				
 				if testmesh.lodMesh.object.dragengine_hasloderror:
 					testmesh.lodMesh.lodError = testmesh.lodMesh.object.dragengine_loderror
