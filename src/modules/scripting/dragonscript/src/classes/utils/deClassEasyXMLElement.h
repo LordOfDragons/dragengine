@@ -134,6 +134,7 @@ private:
 	DEF_NATFUNC( nfAddDataTagInteger );
 	DEF_NATFUNC( nfAddDataTagFloat );
 	DEF_NATFUNC( nfAddDataTagBool );
+	DEF_NATFUNC( nfAddCData );
 	DEF_NATFUNC( nfAddComment );
 	
 	DEF_NATFUNC( nfForEachTag );

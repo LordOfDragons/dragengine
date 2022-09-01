@@ -18,7 +18,7 @@ class EasyXMLElement
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create element. */
-	public func new( EasyXMLElementType type )
+	public func new(EasyXMLElementType type)
 	end
 	/*@}*/
 	
@@ -49,7 +49,7 @@ class EasyXMLElement
 	end
 	
 	/** \brief Set name of tag. */
-	public func void setTagName( String name )
+	public func void setTagName(String name)
 	end
 	
 	
@@ -60,7 +60,7 @@ class EasyXMLElement
 	end
 	
 	/** \brief Set character data content. */
-	public func void setCDataContent( String content )
+	public func void setCDataContent(String content)
 	end
 	
 	
@@ -71,7 +71,7 @@ class EasyXMLElement
 	end
 	
 	/** \brief Set comment. */
-	public func void setComment( String comment )
+	public func void setComment(String comment)
 	end
 	/*@}*/
 	
@@ -89,7 +89,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func String getAttributeNamed( String name )
+	public func String getAttributeNamed(String name)
 		return null
 	end
 	
@@ -98,7 +98,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func int getAttributeIntNamed( String name )
+	public func int getAttributeIntNamed(String name)
 		return 0
 	end
 	
@@ -107,7 +107,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func float getAttributeFloatNamed( String name )
+	public func float getAttributeFloatNamed(String name)
 		return 0.0
 	end
 	
@@ -120,12 +120,12 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	public func bool getAttributeBoolNamed( String name )
+	public func bool getAttributeBoolNamed(String name)
 		return false
 	end
 	
 	/** \brief Named attribute is present. */
-	public func bool hasAttributeNamed( String name )
+	public func bool hasAttributeNamed(String name)
 		return false
 	end
 	
@@ -134,7 +134,7 @@ class EasyXMLElement
 	 * 
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 */
-	public func void setAttribute( String name, String value )
+	public func void setAttribute(String name, String value)
 	end
 	
 	/**
@@ -142,7 +142,7 @@ class EasyXMLElement
 	 * 
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 */
-	public func void setAttribute( String name, int value )
+	public func void setAttribute(String name, int value)
 	end
 	
 	/**
@@ -150,7 +150,7 @@ class EasyXMLElement
 	 * 
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 */
-	public func void setAttribute( String name, float value )
+	public func void setAttribute(String name, float value)
 	end
 	
 	/**
@@ -159,11 +159,11 @@ class EasyXMLElement
 	 * If attribute is present its value is changed. Otherwise a new attribute is added.
 	 * Value contains "true" or "false".
 	 */
-	public func void setAttribute( String name, bool value )
+	public func void setAttribute(String name, bool value)
 	end
 	
 	/** \brief Remove named attribute if present. */
-	public func void removeAttributeNamed( String name )
+	public func void removeAttributeNamed(String name)
 	end
 	
 	/** \brief Remove all attributes. */
@@ -181,7 +181,7 @@ class EasyXMLElement
 	end
 	
 	/** \brief Child element is present. */
-	public func void hasElement( EasyXMLElement child )
+	public func void hasElement(EasyXMLElement child)
 	end
 	
 	/**
@@ -189,7 +189,7 @@ class EasyXMLElement
 	 * 
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getElementCount().
 	 */
-	public func EasyXMLElement getElementAt( int index )
+	public func EasyXMLElement getElementAt(int index)
 		return null
 	end
 	
@@ -200,11 +200,11 @@ class EasyXMLElement
 	 * 
 	 * \throws EInvalidParam Element is already a child of another parent.
 	 */
-	public func void addElement( EasyXMLElement child )
+	public func void addElement(EasyXMLElement child)
 	end
 	
 	/** \brief Remove child element. */
-	public func void removeElement( EasyXMLElement child )
+	public func void removeElement(EasyXMLElement child)
 	end
 	
 	/** \brief Remove all child elements. */
@@ -214,22 +214,22 @@ class EasyXMLElement
 	
 	
 	/** \brief Add element of type TAG with name. */
-	public func EasyXMLElement addTag( String name )
+	public func EasyXMLElement addTag(String name)
 		return null
 	end
 	
 	/** \brief Add tag with name and string CData child element. */
-	public func EasyXMLElement addDataTag( String name, String cdata )
+	public func EasyXMLElement addDataTag(String name, String value)
 		return null
 	end
 	
 	/** \brief Add tag with name and integer CData child element. */
-	public func EasyXMLElement addDataTag( String name, int cdata )
+	public func EasyXMLElement addDataTag(String name, int value)
 		return null
 	end
 	
 	/** \brief Add tag with name and float CData child element. */
-	public func EasyXMLElement addDataTag( String name, float cdata )
+	public func EasyXMLElement addDataTag(String name, float value)
 		return null
 	end
 	
@@ -238,12 +238,20 @@ class EasyXMLElement
 	 * 
 	 * CData contains "true" or "false" as text.
 	 */
-	public func EasyXMLElement addDataTag( String name, bool cdata )
+	public func EasyXMLElement addDataTag(String name, bool value)
+		return null
+	end
+	
+	/**
+	 * \brief Add CData child element.
+	 * \version 1.15
+	 */
+	public func EasyXMLElement addCData(String value)
 		return null
 	end
 	
 	/** \brief Add comment element. */
-	public func void addComment( String comment )
+	public func void addComment(String comment)
 	end
 	
 	
@@ -283,14 +291,14 @@ class EasyXMLElement
 	 * usage scenario is quickly reading a tag content like this:
 	 * 
 	 * \code{.ds}
-	 * rootElement.forEachTag( block EasyXMLElement element, String tagName
-	 *    if tagName.equals( "childTag" )
+	 * rootElement.forEachTag(block EasyXMLElement element, String tagName
+	 *    if tagName.equals("childTag")
 	 *       // process child tag 'element'
 	 *    }
-	 * end )
+	 * end)
 	 * \endcode
 	 */
-	public func void forEachTag( Block ablock )
+	public func void forEachTag(Block ablock)
 	end
 	/*@}*/
 end
