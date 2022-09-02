@@ -134,6 +134,7 @@ class Armature:
 		self.bones = []
 		self.mapBones = {}
 		self.ignoreBones = [re.compile(f.name) for f in object.data.dragengine_bonefilters]
+		self.restPose = object.data.pose_position == 'REST'
 		
 		self.thresholdPosition = object.data.dragengine_thresholdpos
 		self.thresholdRotation = object.data.dragengine_thresholdrot
