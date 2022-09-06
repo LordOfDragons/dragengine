@@ -47,6 +47,13 @@ pPosition( 0 )
 	memoryFile->AddReference();
 }
 
+decMemoryFileReader::decMemoryFileReader( const decMemoryFileReader &reader ) :
+pFile( reader.pFile ),
+pPosition( reader.pPosition )
+{
+	pFile->AddReference();
+}
+
 decMemoryFileReader::~decMemoryFileReader(){
 	if( pFile ){
 		pFile->FreeReference();
@@ -119,5 +126,5 @@ void decMemoryFileReader::Read( void *buffer, int size ){
 }
 
 decBaseFileReader::Ref decMemoryFileReader::Duplicate(){
-	return decBaseFileReader::Ref::New( new decMemoryFileReader( pFile ) );
+	return decBaseFileReader::Ref::New( new decMemoryFileReader( *this ) );
 }

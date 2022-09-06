@@ -37,7 +37,6 @@
 
 deNetworkMessageWriter::deNetworkMessageWriter( deNetworkMessage *message, bool append ) :
 pMessage( message ),
-pAppend( append ),
 pPosition( 0 )
 {
 	if( ! message ){
@@ -46,6 +45,11 @@ pPosition( 0 )
 	if( ! append ){
 		message->Clear();
 	}
+}
+
+deNetworkMessageWriter::deNetworkMessageWriter( const deNetworkMessageWriter &writer ) :
+pMessage( writer.pMessage ),
+pPosition( writer.pPosition ){
 }
 
 deNetworkMessageWriter::~deNetworkMessageWriter(){
@@ -108,5 +112,5 @@ void deNetworkMessageWriter::Write( const void *buffer, int size ){
 }
 
 decBaseFileWriter::Ref deNetworkMessageWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new deNetworkMessageWriter( pMessage, pAppend ) );
+	return decBaseFileWriter::Ref::New( new deNetworkMessageWriter( *this ) );
 }

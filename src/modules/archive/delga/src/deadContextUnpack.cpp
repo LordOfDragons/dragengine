@@ -106,12 +106,10 @@ static int ZCALLBACK fZipErrorFileFunc( voidpf /*opaque*/, voidpf /*stream*/ ){
 deadContextUnpack::deadContextUnpack( deArchiveDelga &module, deadContainer *container ) :
 pModule( module ),
 pContainer( container ),
+pReader( container->GetReader()->Duplicate() ),
 pZipFile( nullptr ),
 pZipFileOpen( false )
 {
-	pReader = container->GetReader()->Duplicate();
-	pReader->SetPosition( container->GetReader()->GetPosition() );
-	
 	zlib_filefunc_def ffunc;
 	ffunc.zopen_file = fZipOpenFileFunc;
 	ffunc.zread_file = fZipReadFileFunc;

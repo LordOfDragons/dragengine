@@ -40,7 +40,6 @@ public:
 	
 private:
 	deNetworkMessageReference pMessage;
-	const bool pAppend;
 	int pPosition;
 	
 	
@@ -50,6 +49,9 @@ public:
 	/*@{*/
 	/** \brief Create network message writer. */
 	deNetworkMessageWriter( deNetworkMessage *message, bool append );
+	
+private:
+	deNetworkMessageWriter( const deNetworkMessageWriter &writer );
 	
 protected:
 	/**

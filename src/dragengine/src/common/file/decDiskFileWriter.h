@@ -40,7 +40,6 @@ public:
 	
 private:
 	decString pFilename;
-	const bool pAppend;
 	FILE *pFile;
 	
 	

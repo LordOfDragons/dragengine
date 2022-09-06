@@ -44,6 +44,11 @@ pPosition( 0 )
 	}
 }
 
+deNetworkMessageReader::deNetworkMessageReader( const deNetworkMessageReader &reader ) :
+pMessage( reader.pMessage ),
+pPosition( reader.pPosition ){
+}
+
 deNetworkMessageReader::~deNetworkMessageReader(){
 }
 
@@ -114,5 +119,5 @@ void deNetworkMessageReader::Read( void *buffer, int size ){
 }
 
 decBaseFileReader::Ref deNetworkMessageReader::Duplicate(){
-	return decBaseFileReader::Ref::New( new deNetworkMessageReader( pMessage ) );
+	return decBaseFileReader::Ref::New( new deNetworkMessageReader( *this ) );
 }

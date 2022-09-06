@@ -39,7 +39,6 @@ public:
 	
 private:
 	decMemoryFile *pFile;
-	const bool pAppend;
 	int pPosition;
 	
 	
@@ -52,6 +51,9 @@ public:
 	 * \throws deeInvalidParam \em memoryFile is NULL.
 	 */
 	decMemoryFileWriter( decMemoryFile *memoryFile, bool append );
+	
+private:
+	decMemoryFileWriter( const decMemoryFileWriter &writer );
 	
 protected:
 	/**

@@ -41,7 +41,6 @@
 
 decDiskFileWriter::decDiskFileWriter( const char *filename, bool append ) :
 pFilename( filename ),
-pAppend( append ),
 pFile( NULL )
 {
 #ifdef OS_W32
@@ -119,5 +118,10 @@ void decDiskFileWriter::Write( const void *buffer, int size ){
 }
 
 decBaseFileWriter::Ref decDiskFileWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new decDiskFileWriter( pFilename, pAppend ) );
+	const decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New(
+		new decDiskFileWriter( pFilename, true ) ) );
+	if( fseek( ( ( decDiskFileWriter& )( decBaseFileWriter& )writer ).pFile, ftell( pFile ), SEEK_SET ) ){
+		DETHROW_INFO( deeReadFile, pFilename );
+	}
+	return writer;
 }

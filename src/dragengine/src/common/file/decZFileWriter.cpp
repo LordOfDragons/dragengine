@@ -162,7 +162,7 @@ void decZFileWriter::Write( const void *buffer, int size ){
 }
 
 decBaseFileWriter::Ref decZFileWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new decZFileWriter( pWriter, pPureMode ) );
+	DETHROW_INFO( deeInvalidAction, "Duplicate not supported" );
 }
 
 

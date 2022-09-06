@@ -52,6 +52,9 @@ public:
 	 */
 	decMemoryFileReader( decMemoryFile *memoryFile );
 	
+private:
+	decMemoryFileReader( const decMemoryFileReader &reader );
+	
 protected:
 	/**
 	 * \brief Clean up memory file reader.

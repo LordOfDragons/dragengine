@@ -48,6 +48,9 @@ public:
 	/** \brief Create network message reader. */
 	deNetworkMessageReader( deNetworkMessage *message );
 	
+private:
+	deNetworkMessageReader( const deNetworkMessageReader &reader );
+	
 protected:
 	/**
 	 * \brief Clean up network message reader.
