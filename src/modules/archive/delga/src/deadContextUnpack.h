@@ -22,25 +22,24 @@
 #ifndef _DEADCONTEXTUNPACK_H_
 #define _DEADCONTEXTUNPACK_H_
 
+#include "deadArchiveDirectory.h"
+#include "deadArchiveFileReader.h"
 #include "unzip.h"
 
 #include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decDateTime.h>
 
 
 class deArchiveDelga;
 class deadContainer;
-class deadArchiveDirectory;
 class deadArchiveFile;
-class decWeakFileReader;
 class decWeakFileWriter;
 
 
 
 /**
- * \brief Unpacking context.
- * 
  * Contexts are claimed by file readers to unpack file content. If not claimed contexts
  * reside in a list of claimable contexts to reduce overhead.
  */
@@ -48,21 +47,21 @@ class deadContextUnpack{
 private:
 	deArchiveDelga &pModule;
 	deadContainer *pContainer;
+	decBaseFileReader::Ref pReader;
 	
 	unzFile pZipFile;
-	
-	long pBlockPosition;
-	long pBlockSize;
+	bool pZipFileOpen;
+	unz_file_pos pArchiveFilePosition;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create unpacking context. */
+	/** Create unpacking context. */
 	deadContextUnpack( deArchiveDelga &module, deadContainer *container );
 	
-	/** \brief Clean up unpacking context. */
+	/** Clean up unpacking context. */
 	~deadContextUnpack();
 	/*@}*/
 	
@@ -70,30 +69,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deArchiveDelga &GetModule() const{ return pModule; }
 	
-	/** \brief Container or \em NULL if dropped. */
+	/** Container or \em NULL if dropped. */
 	inline deadContainer *GetContainer() const{ return pContainer; }
 	
-	/** \brief Drop container. */
+	/** Drop container. */
 	void DropContainer();
 	
 	
 	
-	/** \brief Block position. */
-	inline long GetBlockPosition() const{ return pBlockPosition; }
-	
-	/** \brief Block size. */
-	inline long GetBlockSize() const{ return pBlockSize; }
-	
-	/** \brief File position is inside block. */
-	bool IsPositionInsideBlock( long position ) const;
-	
-	
-	
 	/**
-	 * \brief Open file for reading.
+	 * Open file for reading.
 	 * 
 	 * The path is relative to the root path. If the file can not be
 	 * found an exception is raised. Use the CanReadFile function to
@@ -101,10 +89,10 @@ public:
 	 * 
 	 * \note This method is called while the container holds the lock.
 	 */
-	decWeakFileReader *OpenFileForReading( const deadArchiveFile &file );
+	deadArchiveFileReader::Ref OpenFileForReading( const deadArchiveFile &file );
 	
 	/**
-	 * \brief Open file for writing.
+	 * Open file for writing.
 	 * 
 	 * The path is relative to the root path. If the file can not be
 	 * found an exception is raised. Use the CanWriteFile function to
@@ -116,31 +104,31 @@ public:
 	 */
 	decWeakFileWriter *OpenFileForWriting( const deadArchiveFile &file );
 	
+	/** Close file. */
+	void CloseFile();
 	
 	
-	/**
-	 * \brief Read data.
-	 * 
-	 * If read leaves the current block the next block is read until the read is completed.
-	 */
+	
+	/** Read zip file data. */
+	void ReadZipFileData( void *buffer, long size );
+	
+	/** Seek in open zip file. */
+	void SeekMoveZipFile( int position );
+	void SeekSetZipFile( int position );
+	
+	
+	
+	/** Read data. */
 	void ReadData( void *buffer, long size );
 	
-	/**
-	 * \brief Get current file position.
-	 */
+	/** Get current file position. */
 	long GetFilePosition() const;
 	
-	/**
-	 * \brief Set file position.
-	 * 
-	 * If new position is outside the current block the required block is read.
-	 */
+	/** Set file position. */
 	void SeekFile( int origin, long offset );
 	
-	/**
-	 * \brief Read file table.
-	 */
-	deadArchiveDirectory *ReadFileTable();
+	/** Read file table. */
+	deadArchiveDirectory::Ref ReadFileTable();
 	/*@}*/
 };
 

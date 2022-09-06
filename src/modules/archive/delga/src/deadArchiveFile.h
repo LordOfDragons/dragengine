@@ -37,6 +37,11 @@ class deArchiveDelga;
  * \brief Archive file entry.
  */
 class deadArchiveFile : public deObject{
+public:
+	typedef deTObjectReference<deadArchiveFile> Ref;
+	
+	
+	
 private:
 	deArchiveDelga &pModule;
 	

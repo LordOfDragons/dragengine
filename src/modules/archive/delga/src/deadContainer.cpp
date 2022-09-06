@@ -50,8 +50,7 @@
 deadContainer::deadContainer( deArchiveDelga &module, decBaseFileReader *reader ) :
 deBaseArchiveContainer( reader ),
 pModule( module ),
-pFilename( reader->GetFilename() ),
-pArchiveDirectory( NULL )
+pFilename( reader->GetFilename() )
 {
 	deadContextUnpack *context = NULL;
 	
@@ -77,16 +76,6 @@ deadContainer::~deadContainer(){
 
 // Management
 ///////////////
-
-void deadContainer::Lock(){
-	pMutex.Lock();
-}
-
-void deadContainer::Unlock(){
-	pMutex.Unlock();
-}
-
-
 
 deadContextUnpack *deadContainer::AcquireContextUnpack(){
 	// NOTE it would be optimal if the file position inside the compressed archive data stream
@@ -121,36 +110,13 @@ void deadContainer::ReleaseContextUnpack( deadContextUnpack *context ){
 
 
 bool deadContainer::ExistsFile( const decPath &path ){
-	bool result;
-	
-	pMutex.Lock();
-	try{
-		result = pArchiveDirectory->GetFileByPath( path )
-			|| pArchiveDirectory->GetDirectoryByPath( path );
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
-	
-	return result;
+	const deMutexGuard guard( pMutex );
+	return pArchiveDirectory->GetFileByPath( path ) || pArchiveDirectory->GetDirectoryByPath( path );
 }
 
 bool deadContainer::CanReadFile( const decPath &path ){
-	bool result;
-	
-	pMutex.Lock();
-	try{
-		result = pArchiveDirectory->GetFileByPath( path ) != NULL;
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
-	
-	return result;
+	const deMutexGuard guard( pMutex );
+	return pArchiveDirectory->GetFileByPath( path ) != nullptr;
 }
 
 bool deadContainer::CanWriteFile( const decPath & ){
@@ -162,10 +128,9 @@ bool deadContainer::CanDeleteFile( const decPath & ){
 }
 
 decBaseFileReader *deadContainer::OpenFileForReading( const decPath &path ){
-	deadContextUnpack *context = NULL;
-	decBaseFileReader *result;
+	const deMutexGuard guard( pMutex );
+	deadContextUnpack *context = nullptr;
 	
-	pMutex.Lock();
 	try{
 		const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
 		if( ! file ){
@@ -173,19 +138,17 @@ decBaseFileReader *deadContainer::OpenFileForReading( const decPath &path ){
 		}
 		
 		context = AcquireContextUnpack();
-		result = context->OpenFileForReading( *file );
 		
-		pMutex.Unlock();
+		const deadArchiveFileReader::Ref reader( context->OpenFileForReading( *file ) );
+		reader->AddReference(); // caller retains reference
+		return reader;
 		
 	}catch( const deException & ){
 		if( context ){
 			ReleaseContextUnpack( context );
 		}
-		pMutex.Unlock();
 		throw;
 	}
-	
-	return result;
 }
 
 decBaseFileWriter *deadContainer::OpenFileForWriting( const decPath & ){
@@ -202,7 +165,7 @@ void deadContainer::TouchFile( const decPath & ){
 }
 
 void deadContainer::SearchFiles( const decPath &directory, deContainerFileSearch &searcher ){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	
 	deadArchiveDirectory *adir = pArchiveDirectory;
 	if( directory.GetComponentCount() > 0 ){
@@ -222,73 +185,40 @@ void deadContainer::SearchFiles( const decPath &directory, deContainerFileSearch
 	for( i=0; i<fileCount; i++ ){
 		searcher.Add( adir->GetFileAt( i )->GetFilename(), deVFSContainer::eftRegularFile );
 	}
-	
-	guard.Unlock();
 }
 
 deVFSContainer::eFileTypes deadContainer::GetFileType( const decPath &path ){
-	deVFSContainer::eFileTypes result;
+	const deMutexGuard guard( pMutex );
 	
-	pMutex.Lock();
-	try{
-		if( pArchiveDirectory->GetFileByPath( path ) ){
-			result = deVFSContainer::eftRegularFile;
-			
-		}else if( pArchiveDirectory->GetDirectoryByPath( path ) ){
-			result = deVFSContainer::eftDirectory;
-			
-		}else{
-			DETHROW( deeFileNotFound );
-		}
+	if( pArchiveDirectory->GetFileByPath( path ) ){
+		return deVFSContainer::eftRegularFile;
 		
-		pMutex.Unlock();
+	}else if( pArchiveDirectory->GetDirectoryByPath( path ) ){
+		return deVFSContainer::eftDirectory;
 		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
+	}else{
+		DETHROW( deeFileNotFound );
 	}
-	
-	return result;
 }
 
 uint64_t deadContainer::GetFileSize( const decPath &path ){
-	uint64_t result;
+	const deMutexGuard guard( pMutex );
 	
-	pMutex.Lock();
-	try{
-		const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
-		if( ! file ){
-			DETHROW( deeFileNotFound );
-		}
-		result = file->GetFileSize();
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
+	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
+	if( ! file ){
+		DETHROW( deeFileNotFound );
 	}
-	
-	return result;
+	return file->GetFileSize();
 }
 
 TIME_SYSTEM deadContainer::GetFileModificationTime( const decPath &path ){
-	TIME_SYSTEM result;
+	const deMutexGuard guard( pMutex );
 	
-	pMutex.Lock();
-	try{
-		const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
-		if( ! file ){
-			DETHROW( deeFileNotFound );
-		}
-		result = file->GetModificationTime();
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
+	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
+	if( ! file ){
+		DETHROW( deeFileNotFound );
 	}
-	
-	return result;
+	return file->GetModificationTime();
 }
 
 
@@ -301,9 +231,5 @@ void deadContainer::pCleanUp(){
 	int i;
 	for( i=0; i<count; i++ ){
 		delete ( deadContextUnpack* )pContextsUnpack.GetAt( i );
-	}
-	
-	if( pArchiveDirectory ){
-		pArchiveDirectory->FreeReference();
 	}
 }

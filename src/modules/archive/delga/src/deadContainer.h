@@ -22,6 +22,8 @@
 #ifndef _DEADCONTAINER_H_
 #define _DEADCONTAINER_H_
 
+#include "deadArchiveDirectory.h"
+
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/archive/deBaseArchiveContainer.h>
@@ -29,7 +31,6 @@
 
 
 class deArchiveDelga;
-class deadArchiveDirectory;
 class deadContextUnpack;
 
 
@@ -42,7 +43,7 @@ private:
 	deArchiveDelga &pModule;
 	
 	decString pFilename;
-	deadArchiveDirectory *pArchiveDirectory;
+	deadArchiveDirectory::Ref pArchiveDirectory;
 	
 	decPointerList pContextsUnpack;
 	decPointerList pContextsUnpackFree;
@@ -69,16 +70,8 @@ public:
 	
 	
 	
-	/** \brief Lock mutex. */
-	void Lock();
-	
-	/** \brief Unlock mutex. */
-	void Unlock();
-	
-	
-	
 	/** \brief Archive root directory. */
-	inline deadArchiveDirectory *GetArchiveDirectory() const{ return pArchiveDirectory; }
+	inline const deadArchiveDirectory::Ref &GetArchiveDirectory() const{ return pArchiveDirectory; }
 	
 	/** \brief Acquire next free unpacking context. */
 	deadContextUnpack *AcquireContextUnpack();
