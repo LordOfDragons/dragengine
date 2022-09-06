@@ -37,12 +37,12 @@
 
 deNetworkMessageWriter::deNetworkMessageWriter( deNetworkMessage *message, bool append ) :
 pMessage( message ),
+pAppend( append ),
 pPosition( 0 )
 {
 	if( ! message ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	if( ! append ){
 		message->Clear();
 	}
@@ -105,4 +105,8 @@ void deNetworkMessageWriter::Write( const void *buffer, int size ){
 	}
 	memcpy( pMessage->GetBuffer() + pPosition, buffer, size );
 	pPosition += size;
+}
+
+decBaseFileWriter::Ref deNetworkMessageWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new deNetworkMessageWriter( pMessage, pAppend ) );
 }

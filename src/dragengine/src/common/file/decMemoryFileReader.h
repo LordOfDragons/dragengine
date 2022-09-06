@@ -107,6 +107,9 @@ public:
 	 * \throws deeInvalidParam GetPosition() + \em size is larger than GetLength().
 	 */
 	virtual void Read( void *buffer, int size );
+	
+	/** \brief Duplicate file reader. */
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 };
 

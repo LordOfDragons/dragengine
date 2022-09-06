@@ -48,9 +48,11 @@ public:
 	
 	
 private:
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	int pFilePosition;
 	int pFileLength;
+	const bool pPureMode;
+	const int pPureLength;
 	
 	void *pZStream;
 	
@@ -142,6 +144,9 @@ public:
 	 * \throws deeInvalidParam Error decompressing content.
 	 */
 	virtual void Read( void *buffer, int size );
+	
+	/** \brief Duplicate file reader. */
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 	
 	

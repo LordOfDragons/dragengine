@@ -39,6 +39,7 @@ public:
 	
 private:
 	decMemoryFile *pFile;
+	const bool pAppend;
 	int pPosition;
 	
 	
@@ -88,6 +89,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

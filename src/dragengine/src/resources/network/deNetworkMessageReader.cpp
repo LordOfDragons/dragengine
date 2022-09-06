@@ -112,3 +112,7 @@ void deNetworkMessageReader::Read( void *buffer, int size ){
 	memcpy( buffer, pMessage->GetBuffer() + pPosition, size );
 	pPosition += size;
 }
+
+decBaseFileReader::Ref deNetworkMessageReader::Duplicate(){
+	return decBaseFileReader::Ref::New( new deNetworkMessageReader( pMessage ) );
+}

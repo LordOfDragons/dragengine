@@ -184,3 +184,7 @@ void decDiskFileReader::Read( void *buffer, int size ){
 		DETHROW_INFO( deeReadFile, pFilename );
 	}
 }
+
+decBaseFileReader::Ref decDiskFileReader::Duplicate(){
+	return decBaseFileReader::Ref::New( new decDiskFileReader( pFilename ) );
+}

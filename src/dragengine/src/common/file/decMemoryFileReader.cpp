@@ -117,3 +117,7 @@ void decMemoryFileReader::Read( void *buffer, int size ){
 	memcpy( buffer, pFile->GetPointer() + pPosition, size );
 	pPosition += size;
 }
+
+decBaseFileReader::Ref decMemoryFileReader::Duplicate(){
+	return decBaseFileReader::Ref::New( new decMemoryFileReader( pFile ) );
+}

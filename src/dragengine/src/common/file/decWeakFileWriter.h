@@ -23,7 +23,6 @@
 #define _DECWEAKFILEWRITER_H_
 
 #include "decBaseFileWriter.h"
-#include "decBaseFileWriterReference.h"
 
 
 /**
@@ -41,7 +40,7 @@ public:
 	
 	
 private:
-	decBaseFileWriterReference pWriter;
+	decBaseFileWriter::Ref pWriter;
 	
 	
 	
@@ -88,6 +87,18 @@ public:
 	/** \brief Name of the file. */
 	virtual const char *GetFilename();
 	
+	/** \brief Current writing position in the file. */
+	virtual int GetPosition();
+	
+	/** \brief Set file position for the next write action. */
+	virtual void SetPosition( int position );
+	
+	/** \brief Move file position by the given offset. */
+	virtual void MovePosition( int offset );
+	
+	/** \brief Set file position to the given position measured from the end of the file. */
+	virtual void SetPositionEnd( int position );
+	
 	/**
 	 * \brief Write \em size bytes from \em buffer and advances the file pointer.
 	 * \throws deeInvalidParam \em buffer is NULL.
@@ -95,6 +106,9 @@ public:
 	 * \throws deeInvalidParam Error compressing data.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

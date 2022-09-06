@@ -44,7 +44,7 @@
 ////////////////////////////
 
 decZFileWriter::decZFileWriter( decBaseFileWriter *writer ) :
-pWriter( NULL ),
+pPureMode( false ),
 
 pZStream( NULL ),
 
@@ -62,7 +62,7 @@ pBufferOutSize( 0 )
 }
 
 decZFileWriter::decZFileWriter( decBaseFileWriter *writer, bool pureMode ) :
-pWriter( NULL ),
+pPureMode( pureMode ),
 
 pZStream( NULL ),
 
@@ -86,9 +86,7 @@ decZFileWriter::~decZFileWriter(){
 		delete ( z_stream* )pZStream;
 	}
 	
-	if( pWriter ){
-		pWriter->FreeReference();
-	}
+	pWriter = nullptr;
 	if( pBufferOut ){
 		delete [] ( Bytef* )pBufferOut;
 	}
@@ -161,6 +159,10 @@ void decZFileWriter::Write( const void *buffer, int size ){
 			size = 0;
 		}
 	}
+}
+
+decBaseFileWriter::Ref decZFileWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new decZFileWriter( pWriter, pPureMode ) );
 }
 
 
@@ -240,5 +242,4 @@ void decZFileWriter::pInit( decBaseFileWriter *writer, bool pureMode ){
 	pZStream = zstream;
 	
 	pWriter = writer;
-	pWriter->AddReference();
 }

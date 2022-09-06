@@ -40,6 +40,7 @@ public:
 	
 private:
 	decString pFilename;
+	const bool pAppend;
 	FILE *pFile;
 	
 	
@@ -95,6 +96,9 @@ public:
 	 * \throws deeWriteFile Can not write to file.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

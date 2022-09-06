@@ -70,3 +70,7 @@ const char *decNullFileWriter::GetFilename(){
 
 void decNullFileWriter::Write( const void *buffer, int size ){
 }
+
+decBaseFileWriter::Ref decNullFileWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new decNullFileWriter( pFilename ) );
+}

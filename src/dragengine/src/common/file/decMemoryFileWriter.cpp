@@ -37,6 +37,7 @@
 
 decMemoryFileWriter::decMemoryFileWriter( decMemoryFile *memoryFile, bool append ) :
 pFile( NULL ),
+pAppend( append ),
 pPosition( 0 )
 {
 	if( ! memoryFile ){
@@ -117,4 +118,8 @@ void decMemoryFileWriter::Write( const void *buffer, int size ){
 	}
 	memcpy( pFile->GetPointer() + pPosition, buffer, size );
 	pPosition += size;
+}
+
+decBaseFileWriter::Ref decMemoryFileWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new decMemoryFileWriter( pFile, pAppend ) );
 }
