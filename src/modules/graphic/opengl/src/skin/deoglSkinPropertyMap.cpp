@@ -46,7 +46,7 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		{ "ambient.occlusion.solidity.multiplier", eptAmbientOcclusionSolidityMultiplier },
 		
 		{ "normal", eptNormal },
-		{ "normal.strength",  eptNormalStrength },
+		{ "normal.strength", eptNormalStrength },
 		{ "normal.solidity.multiplier", eptNormalSolidityMultiplier },
 		
 		{ "height", eptHeight },

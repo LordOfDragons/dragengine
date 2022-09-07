@@ -114,8 +114,10 @@ void deoglRPTBuildRTsGeometry::pSolid( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	
 	// components without decals
 	addToRenderTask.SetFilterDecal( true );
@@ -175,8 +177,10 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	addToRenderTask.SetSkinShaderType( pPlan.GetPlan().GetRenderStereo()
 		? deoglSkinTexture::estStereoHeightMapGeometry
 		: deoglSkinTexture::estHeightMapGeometry );
@@ -194,8 +198,10 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	addToRenderTask.SetSkinShaderType( pPlan.GetPlan().GetRenderStereo()
 		? deoglSkinTexture::estStereoHeightMapGeometry
 		: deoglSkinTexture::estHeightMapGeometry );
@@ -218,8 +224,10 @@ void deoglRPTBuildRTsGeometry::pSolidOutline( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	
 	addToRenderTask.SetSkinShaderType( pPlan.GetPlan().GetRenderStereo()
 		? deoglSkinTexture::estStereoOutlineGeometry
@@ -238,8 +246,10 @@ void deoglRPTBuildRTsGeometry::pSolidDecals( bool xray ){
 	
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	addToRenderTask.SetSkinShaderType( pPlan.GetPlan().GetRenderStereo()
 		? deoglSkinTexture::estStereoDecalGeometry
 		: deoglSkinTexture::estDecalGeometry );

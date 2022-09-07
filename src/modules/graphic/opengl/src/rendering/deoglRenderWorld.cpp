@@ -482,6 +482,90 @@ DEBUG_RESET_TIMER
 // 	}
 	QUICK_DEBUG_END
 	
+	// xray pass
+	if( plan.GetTasks().GetSolidDepthXRayTask().GetShaderCount() > 0
+	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetShaderCount() > 0 ){
+		// TODO render xray pass. requires doing these steps:
+		// - switch texture but not with secondary depth texture but with third depth texture.
+		//   required for xray shaders to reject fragments located in front of geometry.
+		//   this is required since the geometry in front of all other objects has been already
+		//   rendered. the xray pass has to render only what is hidden.
+		//   
+		//   possible new texture properties:
+		//   - xray.color  // default black
+		//   - xray.color.tint   // default white
+		//   - xray.color.tint.mask   // default white
+		//   - xray.color.blend  // blend factor between non-xray color (0) and xray color (1).
+		//                       // hence to just darken xray geometry just use blend since
+		//                       // color is black by default.
+		//                       // default value 0
+		//   
+		//   - xray.emissivity  // default 0
+		//   - xray.emissivity.tint  // default white
+		//   - xray.emissivity.intensity  // default 0
+		//   - xray.emissivity.blend  // blend factor between non-xray emissivity (0) and xray emissivity (1)
+		//   
+		//   - xray.outline  // apply xray to outline. 'xray' only applies to non-outline
+		//   
+		//   - xray.outline.color  // default black
+		//   - xray.outline.color.tint  // default black
+		//   
+		//   - xray.outline.emissivity  // emissivity to add to outline emissivity
+		//   
+		//   in general though xray should render as if there is no geometry in front.
+		//   special effects can be added later on and most probably are darkening or
+		//   recoloring the texture or replacing the texture with a screen effect
+		//   
+		// - clear the depth texture
+		// - render below
+		// - switch texture with third depth texture. this restores the depth texture for
+		//   upcoming post processing (and future VR motion texture support). ignoring the
+		//   XRay depth is fine since this only renders what is hidden and does not change
+		//   the front most depth
+		
+		/*
+		renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, true );
+		if( debugMainPass ){
+			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometry, true );
+		}
+		
+		renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
+		
+		if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+			renderers.GetReflection().RenderReflections( plan );
+			if( debugMainPass ){
+				DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
+			}
+		}
+		
+		plan.SetTransparencyLayerCount( 0 );
+		
+		if( ! plan.GetDisableLights() ){
+			if( ! mask ){
+				renderers.GetToneMap().LuminancePrepare( plan );
+				DebugTimer2Sample( plan, *pDebugInfo.infoLuminancePrepare, true );
+				
+				renderers.GetReflection().CopyMaterial( plan, true );
+			}
+			
+			renderers.GetLight().RenderLights( plan, true, mask );
+			if( debugMainPass ){
+				DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+			}
+		}
+		
+		renderers.GetReflection().RenderScreenSpace( plan );
+		if( debugMainPass ){
+			DebugTimer2Sample( plan, *pDebugInfo.infoSSR, true );
+		}
+		
+		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, true );
+		if( debugMainPass ){
+			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
+		}
+		*/
+	}
+	
 	// stop using stencil testing
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	

@@ -109,8 +109,10 @@ void deoglRPTBuildRTsDepth::pSolid( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	
 	// components
 	if( pMask && pMask->GetUseClipPlane() ){
@@ -220,8 +222,10 @@ void deoglRPTBuildRTsDepth::pSolidOutline( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
-	addToRenderTask.SetFilterXRay( true );
-	addToRenderTask.SetXRay( xray );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	
 	if( pMask && pMask->GetUseClipPlane() ){
 		addToRenderTask.SetSkinShaderType( pPlan.GetPlan().GetRenderStereo()

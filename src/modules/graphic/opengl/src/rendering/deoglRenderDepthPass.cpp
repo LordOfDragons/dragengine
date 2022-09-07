@@ -358,8 +358,10 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		addToRenderTask.SetSolid( solid );
 		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 		addToRenderTask.SetNoRendered( mask );
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( xray );
+		if( xray ){
+			addToRenderTask.SetFilterXRay( true );
+			addToRenderTask.SetXRay( true );
+		}
 		
 		// components
 		if( mask && mask->GetUseClipPlane() ){
@@ -619,8 +621,10 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		addToRenderTask.SetSolid( solid );
 		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 		addToRenderTask.SetNoRendered( mask );
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( xray );
+		if( xray ){
+			addToRenderTask.SetFilterXRay( true );
+			addToRenderTask.SetXRay( xray );
+		}
 		
 		if( mask && mask->GetUseClipPlane() ){
 			if( reverseDepthTest ){
