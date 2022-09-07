@@ -67,8 +67,11 @@ void deoglRPTBuildRTsDepth::Run(){
 	
 	decTimer timer;
 	try{
-		pSolid();
-		pSolidOutline();
+		pSolid( false );
+		pSolidOutline( false );
+		
+		pSolid( true );
+		pSolidOutline( true );
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
@@ -92,10 +95,10 @@ decString deoglRPTBuildRTsDepth::GetDebugName() const{
 
 // Private Functions
 //////////////////////
-
-void deoglRPTBuildRTsDepth::pSolid(){
+ 
+void deoglRPTBuildRTsDepth::pSolid( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidDepthXRayTask() : pPlan.GetSolidDepthTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidDepthTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	const bool renderStereo = pPlan.GetPlan().GetRenderStereo();
 	
@@ -106,6 +109,8 @@ void deoglRPTBuildRTsDepth::pSolid(){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	
 	// components
 	if( pMask && pMask->GetUseClipPlane() ){
@@ -200,9 +205,9 @@ void deoglRPTBuildRTsDepth::pSolid(){
 	}
 }
 
-void deoglRPTBuildRTsDepth::pSolidOutline(){
+void deoglRPTBuildRTsDepth::pSolidOutline( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidDepthOutlineXRayTask() : pPlan.GetSolidDepthOutlineTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidDepthOutlineTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
@@ -215,6 +220,8 @@ void deoglRPTBuildRTsDepth::pSolidOutline(){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	
 	if( pMask && pMask->GetUseClipPlane() ){
 		addToRenderTask.SetSkinShaderType( pPlan.GetPlan().GetRenderStereo()

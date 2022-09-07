@@ -224,7 +224,8 @@ deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan,
+const deoglRenderPlanMasked *mask, bool xray ){
 DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	// to handle pixel correct transparency a depth peeling approach is used but different
 	// than the conventional depth peeling approach. in the conventional approach peeling
@@ -303,7 +304,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	
 	if( plan.GetHasTransparency() ){
 		// limit depth if required. can modify plan transparency layer count
-		RenderTransparentLimitDepth( plan, mask );
+		RenderTransparentLimitDepth( plan, mask, xray );
 		
 		// render
 		const int passCount = plan.GetTransparencyLayerCount();
@@ -334,7 +335,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			}
 			
 			// render the transparent layer
-			RenderTransparentGeometryPass( plan, mask );
+			RenderTransparentGeometryPass( plan, mask, xray );
 			
 			if( ! mask ){
 				renderThread.GetRenderers().GetReflection().CopyMaterial( plan, false );
@@ -380,7 +381,8 @@ DBG_EXIT("RenderTransparentPasses")
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan,
+const deoglRenderPlanMasked *mask, bool xray ){
 DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentGeometryPass" );
@@ -491,7 +493,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
 	
 	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncReversed() ) );
-	rendepth.RenderDepth( plan, mask, false, false, false ); // -solid, -maskedOnly, -reverseDepthTest
+	rendepth.RenderDepth( plan, mask, false, false, false, xray ); // -solid, -maskedOnly, -reverseDepthTest
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
 		deoglDebugSnapshot snapshot( renderThread );
@@ -749,7 +751,7 @@ DBG_EXIT("RenderTransparentGeometryPass")
 }
 
 void deoglRenderTransparentPasses::RenderTransparentLimitDepth(
-deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray ){
 DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
@@ -830,7 +832,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
 		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-		rendepth.RenderDepth( plan, mask, false, false, true ); // -solid, -maskedOnly, +reverseDepthTest
+		rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 		
 		// copy depth3 to depth2 using stencil mask and shader test to discard not
 		// written pixels. stencil is written with current layer stencil reference value
@@ -887,7 +889,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	}
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	rendepth.RenderDepth( plan, mask, false, false, true ); // -solid, -maskedOnly, +reverseDepthTest
+	rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
 		deoglDebugSnapshot snapshot( renderThread );

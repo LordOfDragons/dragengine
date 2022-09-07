@@ -55,16 +55,34 @@ pSolidGeometryHeight2Task( nullptr ),
 pSolidGeometryOutlineTask( nullptr ),
 pSolidDecalsTask( nullptr ),
 
+pSolidDepthXRayTask( nullptr ),
+pSolidDepthOutlineXRayTask( nullptr ),
+pSolidGeometryXRayTask( nullptr ),
+pSolidGeometryHeight1XRayTask( nullptr ),
+pSolidGeometryHeight2XRayTask( nullptr ),
+pSolidGeometryOutlineXRayTask( nullptr ),
+pSolidDecalsXRayTask( nullptr ),
+
 pTaskDepth( NULL ),
 pTaskGeometry( NULL )
 {
-	pSolidDepthTask = new deoglRenderTask( plan.GetRenderThread() );
-	pSolidDepthOutlineTask = new deoglRenderTask( plan.GetRenderThread() );
-	pSolidGeometryTask = new deoglRenderTask( plan.GetRenderThread() );
-	pSolidGeometryHeight1Task = new deoglRenderTask( plan.GetRenderThread() );
-	pSolidGeometryHeight2Task = new deoglRenderTask( plan.GetRenderThread() );
-	pSolidGeometryOutlineTask = new deoglRenderTask( plan.GetRenderThread() );
-	pSolidDecalsTask = new deoglRenderTask( plan.GetRenderThread() );
+	deoglRenderThread &renderthread = plan.GetRenderThread();
+	
+	pSolidDepthTask = new deoglRenderTask( renderthread );
+	pSolidDepthOutlineTask = new deoglRenderTask( renderthread );
+	pSolidGeometryTask = new deoglRenderTask( renderthread );
+	pSolidGeometryHeight1Task = new deoglRenderTask( renderthread );
+	pSolidGeometryHeight2Task = new deoglRenderTask( renderthread );
+	pSolidGeometryOutlineTask = new deoglRenderTask( renderthread );
+	pSolidDecalsTask = new deoglRenderTask( renderthread );
+	
+	pSolidDepthXRayTask = new deoglRenderTask( renderthread );
+	pSolidDepthOutlineXRayTask = new deoglRenderTask( renderthread );
+	pSolidGeometryXRayTask = new deoglRenderTask( renderthread );
+	pSolidGeometryHeight1XRayTask = new deoglRenderTask( renderthread );
+	pSolidGeometryHeight2XRayTask = new deoglRenderTask( renderthread );
+	pSolidGeometryOutlineXRayTask = new deoglRenderTask( renderthread );
+	pSolidDecalsXRayTask = new deoglRenderTask( renderthread );
 }
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
@@ -90,6 +108,28 @@ deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 	}
 	if( pSolidDecalsTask ){
 		delete pSolidDecalsTask;
+	}
+	
+	if( pSolidDepthXRayTask ){
+		delete pSolidDepthXRayTask;
+	}
+	if( pSolidDepthOutlineXRayTask ){
+		delete pSolidDepthOutlineXRayTask;
+	}
+	if( pSolidGeometryXRayTask ){
+		delete pSolidGeometryXRayTask;
+	}
+	if( pSolidGeometryHeight1XRayTask ){
+		delete pSolidGeometryHeight1XRayTask;
+	}
+	if( pSolidGeometryHeight2XRayTask ){
+		delete pSolidGeometryHeight2XRayTask;
+	}
+	if( pSolidGeometryOutlineXRayTask ){
+		delete pSolidGeometryOutlineXRayTask;
+	}
+	if( pSolidDecalsXRayTask ){
+		delete pSolidDecalsXRayTask;
 	}
 }
 
@@ -128,6 +168,9 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 	// this call does modify a shader parameter block and can thus not be parallel
 	pSolidDepthTask->PrepareForRender();
 	pSolidDepthOutlineTask->PrepareForRender();
+	
+	pSolidDepthXRayTask->PrepareForRender();
+	pSolidDepthOutlineXRayTask->PrepareForRender();
 }
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
@@ -149,6 +192,12 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	pSolidGeometryHeight2Task->PrepareForRender();
 	pSolidGeometryOutlineTask->PrepareForRender();
 	pSolidDecalsTask->PrepareForRender();
+	
+	pSolidGeometryXRayTask->PrepareForRender();
+	pSolidGeometryHeight1XRayTask->PrepareForRender();
+	pSolidGeometryHeight2XRayTask->PrepareForRender();
+	pSolidGeometryOutlineXRayTask->PrepareForRender();
+	pSolidDecalsXRayTask->PrepareForRender();
 }
 
 void deoglRenderPlanTasks::CleanUp(){
@@ -163,4 +212,13 @@ void deoglRenderPlanTasks::CleanUp(){
 	pSolidGeometryHeight2Task->Clear();
 	pSolidGeometryOutlineTask->Clear();
 	pSolidDecalsTask->Clear();
+	
+	pSolidDepthXRayTask->Clear();
+	pSolidDepthOutlineXRayTask->Clear();
+	
+	pSolidGeometryXRayTask->Clear();
+	pSolidGeometryHeight1XRayTask->Clear();
+	pSolidGeometryHeight2XRayTask->Clear();
+	pSolidGeometryOutlineXRayTask->Clear();
+	pSolidDecalsXRayTask->Clear();
 }

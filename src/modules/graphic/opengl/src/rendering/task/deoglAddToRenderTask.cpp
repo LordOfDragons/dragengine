@@ -157,6 +157,16 @@ void deoglAddToRenderTask::SetOutline( bool outline ){
 	pUpdateFilters();
 }
 
+void deoglAddToRenderTask::SetFilterXRay( bool filterXRay ){
+	pFilterXRay = filterXRay;
+	pUpdateFilters();
+}
+
+void deoglAddToRenderTask::SetXRay( bool xray ){
+	pXRay = xray;
+	pUpdateFilters();
+}
+
 void deoglAddToRenderTask::SetNoShadowNone( bool noShadowNone ){
 	pNoShadowNone = noShadowNone;
 	pUpdateFilters();
@@ -204,6 +214,9 @@ void deoglAddToRenderTask::Reset(){
 	pNoNotReflected = false;
 	pNoRendered = false;
 	pOutline = false;
+	
+	pFilterXRay = false;
+	pXRay = false;
 	
 	pFilterHoles = false;
 	pWithHoles = false;
@@ -862,6 +875,9 @@ deoglRParticleEmitterInstanceType &type ){
 	if( pSolid != solid ){
 		return;
 	}
+	if( pFilterXRay && pXRay != skinTexture->GetXRay() ){
+		return;
+	}
 	if( pFilterHoles && pWithHoles != hasHoles ){
 		return;
 	}
@@ -997,6 +1013,12 @@ void deoglAddToRenderTask::pUpdateFilters(){
 		pFilterMask |= ertfSolid;
 	}
 	
+	if( pFilterXRay ){
+		pFilterMask |= ertfXRay;
+		if( pXRay ){
+			pFilters |= ertfXRay;
+		}
+	}
 	if( pNoNotReflected ){
 		pFilters |= ertfReflected;
 		pFilterMask |= ertfReflected;
@@ -1045,6 +1067,9 @@ bool deoglAddToRenderTask::pFilterReject( const deoglSkinTexture &skinTexture ) 
 }
 
 bool deoglAddToRenderTask::pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const{
+	if( pFilterXRay && pXRay != skinTexture.GetXRay() ){
+		return true;
+	}
 	if( pFilterHoles && pWithHoles != skinTexture.GetHasHoles() ){
 		return true;
 	}

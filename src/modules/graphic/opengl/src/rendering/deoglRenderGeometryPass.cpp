@@ -139,7 +139,7 @@ deoglRenderGeometryPass::~deoglRenderGeometryPass(){
 
 
 
-void deoglRenderGeometryPass::RenderDecals( deoglRenderPlan &plan ){
+void deoglRenderGeometryPass::RenderDecals( deoglRenderPlan &plan, bool xray ){
 DBG_ENTER("RenderDecals")
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderDecals" );
@@ -167,15 +167,17 @@ DBG_ENTER("RenderDecals")
 	deoglRenderPlanTasks &tasks = plan.GetTasks();
 	tasks.WaitFinishBuildingTasksGeometry();
 	
-	tasks.GetSolidDecalsTask().SetRenderParamBlock( renworld.GetRenderPB() );
-	rengeom.RenderTask( tasks.GetSolidDecalsTask() );
+	deoglRenderTask &renderTask = xray ? tasks.GetSolidDecalsXRayTask() : tasks.GetSolidDecalsTask();
+	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
+	rengeom.RenderTask( renderTask );
 	
 	// cleanup
 	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
 DBG_EXIT("RenderDecals")
 }
 
-void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan,
+const deoglRenderPlanMasked *mask, bool xray ){
 DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GeometryPass.RenderSolidGeometryPass" );
@@ -192,7 +194,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	
 	// render pre-pass depth. this includes rendering depth, occlusion testing and transparency counting
-	rendepth.RenderSolidDepthPass( plan, mask );
+	rendepth.RenderSolidDepthPass( plan, mask, xray );
 	
 	QUICK_DEBUG_START( 14, 19 )
 	
@@ -281,18 +283,23 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderPlanTasks &tasks = plan.GetTasks();
 	tasks.WaitFinishBuildingTasksGeometry();
 	
+	deoglRenderTask *renderTask;
+	
 	// height terrain has to come first since it has to be handled differently
 	deoglDebugTraceGroup debugTraceHT( renderThread, "GeometryPass.RenderSolidGeometryPass.HeightTerrain" );
-	if( tasks.GetSolidGeometryHeight1Task().GetShaderCount() > 0 ){
-		tasks.GetSolidGeometryHeight1Task().SetRenderParamBlock( renworld.GetRenderPB() );
+	renderTask = xray ? &tasks.GetSolidGeometryHeight1XRayTask() : &tasks.GetSolidGeometryHeight1Task();
+	if( renderTask->GetShaderCount() > 0 ){
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		rengeom.RenderTask( tasks.GetSolidGeometryHeight1Task() );
+		rengeom.RenderTask( *renderTask );
 	}
-	if( tasks.GetSolidGeometryHeight2Task().GetShaderCount() > 0 ){
-		tasks.GetSolidGeometryHeight2Task().SetRenderParamBlock( renworld.GetRenderPB() );
+	
+	renderTask = xray ? &tasks.GetSolidGeometryHeight2XRayTask() : &tasks.GetSolidGeometryHeight2Task();
+	if( renderTask->GetShaderCount() > 0 ){
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-		rengeom.RenderTask( tasks.GetSolidGeometryHeight2Task() );
+		rengeom.RenderTask( *renderTask );
 	}
 	
 	// other content
@@ -305,15 +312,17 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	}
 	
-	tasks.GetSolidGeometryTask().SetRenderParamBlock( renworld.GetRenderPB() );
-	rengeom.RenderTask( tasks.GetSolidGeometryTask() );
+	renderTask = xray ? &tasks.GetSolidGeometryXRayTask() : &tasks.GetSolidGeometryTask();
+	renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+	rengeom.RenderTask( *renderTask );
 	
 	// outline
-	if( tasks.GetSolidGeometryOutlineTask().GetShaderCount() > 0 ){
+	renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
+	if( renderTask->GetShaderCount() > 0 ){
 		deoglDebugTraceGroup debugTraceOutline( debugTraceOther, "GeometryPass.RenderSolidGeometryPass.Outline" );
-		tasks.GetSolidGeometryOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
 		SetCullMode( ! plan.GetFlipCulling() );
-		rengeom.RenderTask( tasks.GetSolidGeometryOutlineTask() );
+		rengeom.RenderTask( *renderTask );
 		SetCullMode( plan.GetFlipCulling() );
 	}
 	
@@ -321,7 +330,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	debugTraceOther.Close();
 	
 	// decals
-	RenderDecals( plan );
+	RenderDecals( plan, xray );
 // 	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );  // WARNING! this can disable z-optimizations if switched, really necessary???????????
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
 	QUICK_DEBUG_END

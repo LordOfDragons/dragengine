@@ -388,6 +388,8 @@ private:
 	decColor pNonPbrAlbedo;
 	float pNonPbrMetalness;
 	
+	bool pXRay;
+	
 	bool pQuickTransp;
 	
 	deoglSkinTextureProperty pMaterialProperties[ EMP_COUNT ];
@@ -904,6 +906,9 @@ public:
 	
 	inline float GetNonPbrMetalness() const{ return pNonPbrMetalness; }
 	void SetNonPbrMetalness( float metalness );
+	
+	inline bool GetXRay() const{ return pXRay; }
+	void SetXRay( bool xray );
 	
 	
 	

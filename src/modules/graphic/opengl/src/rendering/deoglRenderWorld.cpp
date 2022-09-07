@@ -388,7 +388,7 @@ DEBUG_RESET_TIMER
 	// solid pass
 	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
-	renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask );
+	renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, false );
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometry, true );
 	}
@@ -475,7 +475,7 @@ DEBUG_RESET_TIMER
 	// transparenc passes
 	QUICK_DEBUG_START( 12, 19 )
 // 	if( ! plan.GetFBOTarget() ){
-		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask );
+		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, false );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
 		}

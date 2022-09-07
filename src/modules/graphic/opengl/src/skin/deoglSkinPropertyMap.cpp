@@ -29,7 +29,7 @@
 
 
 deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const char *type ){
-	static const int entryCount = 79;
+	static const int entryCount = 80;
 	static struct sEntry{
 		const char *name;
 		deoglSkinPropertyMap::ePropertyTypes type;
@@ -92,19 +92,24 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		{ "environmentroom.emissivity.intensity", eptEnvironmentRoomEmissivityIntensity },
 		
 		{ "thickness", eptThickness },
+		
 		{ "absorption", eptAbsorption },
 		{ "absorption.range", eptAbsorptionRange },
 		{ "absorption.halfIntensityDistance", eptAbsorptionHalfIntensityDistance },
 		
 		{ "shadeless", eptShadeless },
+		
 		{ "shadow.none", eptShadowNone },
 		{ "shadow.importance", eptShadowImportance },
+		
 		{ "hint.nocompression", eptHintNoCompression },
 		{ "hint.lightblocker", eptHintLightBlocker },
+		
 		{ "texcoord.clamp", eptTexCoordClamp },
 		{ "texcoord.offset", eptTexCoordOffset },
 		{ "texcoord.scale", eptTexCoordScale },
 		{ "texcoord.rotate", eptTexCoordRotate },
+		
 		{ "omnidir.rotate", eptOmniDirRotate },
 		{ "omnidir.rotate.spot", eptOmniDirRotateSpot },
 		
@@ -130,7 +135,9 @@ deoglSkinPropertyMap::ePropertyTypes deoglSkinPropertyMap::GetTypeFor( const cha
 		{ "rim.exponent", eptRimExponent },
 		
 		{ "nonpbr.albedo", eptNonPbrAlbedo },
-		{ "nonpbr.metalness", eptNonPbrMetalness }
+		{ "nonpbr.metalness", eptNonPbrMetalness },
+		
+		{ "xray", eptXRay }
 	};
 	
 	int i;

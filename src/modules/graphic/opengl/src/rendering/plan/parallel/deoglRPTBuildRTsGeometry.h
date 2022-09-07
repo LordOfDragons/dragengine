@@ -74,10 +74,10 @@ public:
 	
 	
 private:
-	void pSolid();
-	void pSolidTerrain();
-	void pSolidOutline();
-	void pSolidDecals();
+	void pSolid( bool xray );
+	void pSolidTerrain( bool xray );
+	void pSolidOutline( bool xray );
+	void pSolidDecals( bool xray );
 };
 
 #endif
