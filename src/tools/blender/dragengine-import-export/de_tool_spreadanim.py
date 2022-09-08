@@ -46,6 +46,7 @@ class OBJECT_OT_DEToolSpreadAnimation(bpy.types.Operator):
 	@classmethod
 	def poll(cls, context):
 		return (context.active_object.pose
+			and context.active_object.animation_data
 			and context.active_object.animation_data.action
 			and context.selected_pose_bones)
 	
