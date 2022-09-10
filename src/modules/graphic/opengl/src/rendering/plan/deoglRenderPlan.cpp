@@ -804,7 +804,7 @@ void deoglRenderPlan::pWaitFinishedFindContent(){
 }
 
 void deoglRenderPlan::pPlanGI(){
-	if( pUseConstGIState || ! pUseGIState
+	if( pUseConstGIState || ! pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
 		return;
 	}
@@ -1807,7 +1807,7 @@ void deoglRenderPlan::SetOcclusionTestMatrixStereo( const decMatrix &matrix ){
 
 
 deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
-	if( pUseGIState && ! pUseConstGIState
+	if( pUseGIState && ! pUseConstGIState && ! pDisableLights
 	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff
 	&& pRenderVR != ervrRightEye ){
 		return pGIState;
@@ -1816,7 +1816,7 @@ deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 }
 
 deoglGIState *deoglRenderPlan::GetRenderGIState() const{
-	if( ! pUseGIState
+	if( ! pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
 		return NULL;
 		

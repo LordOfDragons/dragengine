@@ -890,7 +890,10 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		
 		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutCameraRange, plan.GetCameraImageDistance(), plan.GetCameraViewDistance() );
 		
-		if( plan.GetCamera() ){
+		if( plan.GetDisableLights() ){
+			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity, 1.0f );
+			
+		}else if( plan.GetCamera() ){
 			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
 				plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey() );
 			

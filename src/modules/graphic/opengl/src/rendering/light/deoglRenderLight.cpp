@@ -387,7 +387,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const deoglDebugTraceGroup debugTrace( renderThread, solid ? "Light.RenderAO(Solid)" : "Light.RenderAO(Transparent)" );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
-	if( ! config.GetSSAOEnable() ){
+	if( ! config.GetSSAOEnable() || plan.GetDisableLights() ){
 		return;
 	}
 	
