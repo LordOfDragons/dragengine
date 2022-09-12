@@ -95,8 +95,10 @@ pEnableSize( rule.GetEnableSize() ),
 // all except the blend factor can be precalculated since they stay the same
 pDirectUseStates(
 	  ( rule.GetBlendMode() == deAnimatorRule::ebmBlend )
-	& ( rule.GetListBones().GetCount() == 0 )
-	& rule.GetEnablePosition() & rule.GetEnableOrientation() & rule.GetEnableSize() ),
+	&& ( rule.GetListBones().GetCount() == 0 )
+	&& rule.GetEnablePosition()
+	&& rule.GetEnableOrientation()
+	&& rule.GetEnableSize() ),
 
 pHasSubAnimator( rule.GetSubAnimator() )
 {

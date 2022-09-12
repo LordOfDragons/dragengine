@@ -125,7 +125,7 @@ DEBUG_RESET_TIMERS;
 		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
 		
 		// determine animation state
-		const int animationBone = boneState.GetAnimationBone();
+		const int animationBone = pMapAnimationBones.GetAt( animatorBone );
 		
 		if( animationBone == -1 ){
 			boneState.BlendWithDefault( blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
@@ -169,6 +169,7 @@ void dearRuleAnimation::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMove();
+	pMapAnimationBones.Init( *this );
 }
 
 

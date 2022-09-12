@@ -23,6 +23,7 @@
 #define _DEARRULEANIMATION_H_
 
 #include "dearRule.h"
+#include "../dearMapAnimationBones.h"
 
 class dearAnimationMove;
 class deAnimatorRuleAnimation;
@@ -36,6 +37,7 @@ class dearRuleAnimation : public dearRule{
 private:
 	const deAnimatorRuleAnimation &pAnimation;
 	dearAnimationMove *pMove;
+	dearMapAnimationBones pMapAnimationBones;
 	
 	dearControllerTarget pTargetMoveTime;
 	

@@ -141,7 +141,7 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
-		const int animationBone = boneState.GetAnimationBone();
+		const int animationBone = pMapAnimationBones.GetAt( animatorBone );
 		
 		// if there is no valid bone index there is no difference
 		if( animationBone == -1 ){
@@ -227,6 +227,7 @@ void dearRuleAnimationDifference::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMove();
+	pMapAnimationBones.Init( *this );
 }
 
 

@@ -23,11 +23,11 @@
 #include <string.h>
 
 #include "dearRuleStateSnapshot.h"
+#include "../deDEAnimator.h"
 #include "../dearAnimatorInstance.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
 #include "../dearAnimationState.h"
-#include "../deDEAnimator.h"
 #include "../animation/dearAnimation.h"
 #include "../animation/dearAnimationMove.h"
 #include "../animation/dearAnimationKeyframeList.h"
@@ -229,13 +229,16 @@ void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName
 	}
 	
 	if( move ){
+		const deAnimation &engAnimation = *animation->GetAnimation();
+		
 		for( i=0; i<boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone == -1 ){
 				continue;
 			}
 			
-			const int animationBone = stateList.GetStateAt( animatorBone )->GetAnimationBone();
+			const int animationBone = engAnimation.FindBone(
+				stateList.GetStateAt( animatorBone )->GetRigBoneName() );
 			if( animationBone == -1 ){
 				pAnimStates[ i ].Reset();
 				continue;
