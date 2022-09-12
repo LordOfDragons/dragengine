@@ -118,18 +118,6 @@ enum eSPMinMapMipMap{
 	spmmmmSplitPos
 };
 
-enum pSPScreenSpace{
-	spssClipReflDirNearDist,
-	spssStepCount,
-	spssSubStepCount,
-	spssMaxRayLength,
-	spssMinMaxTCFactor,
-	spssCoverageFactor1,
-	spssCoverageFactor2,
-	spssRoughnessMaxTaps,
-	spssRoughnessTapCountScale
-};
-
 enum eSPBApplyReflections{
 	spbarEnvMapMatrixInfluence,
 	spbarEnvMapMatrixReflBox,
@@ -308,10 +296,10 @@ deoglRenderBase( renderThread )
 		}
 		
 		if( config.GetSSRMethod() == 0 ){ // 0 = groundTruth
-			defines.SetDefine( "SSR_VERSION", "0" );
+			defines.SetDefine( "SSR_VERSION", 0 );
 			
 		}else if( config.GetSSRMethod() == 1 ){ // 1 = stepedSS
-			defines.SetDefine( "SSR_VERSION", true );
+			defines.SetDefine( "SSR_VERSION", 1 );
 			//defines.SetDefine( "RESULT_AFTER_FIRST_LOOP", true ); // this yields wrong results (moving reflections)
 				defines.SetDefine( "NESTED_LOOP", true ); // enabled slows down on Radeon 4870 but can't do better quality
 				defines.SetDefine( "MULTI_STEPPING", true );
