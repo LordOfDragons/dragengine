@@ -31,7 +31,7 @@ class dearBoneStateList;
 
 
 /**
- * Map from bone state indices to animation bone indices.
+ * Map from rule bone index to animation bone indices.
  */
 class dearMapAnimationBones{
 private:
@@ -61,13 +61,10 @@ public:
 	void Clear();
 	
 	/** Init map. */
-	void Init( const deAnimation &animation, const dearBoneStateList &boneStates );
-	
-	/** Init map. */
 	void Init( const dearRule &rule );
 	
-	/** Animation bone index for state bone index or -1. */
-	int GetAt( int boneStateIndex ) const;
+	/** Animation bone index for rule bone index or -1. */
+	int GetAt( int ruleBoneIndex ) const;
 	/*@}*/
 };
 

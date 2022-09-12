@@ -139,7 +139,7 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// determine animation state
-		const int animationBone = pMapAnimationBones.GetAt( animatorBone );
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		if( animationBone == -1  ){
 			boneState.BlendWithDefault( blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 			continue;

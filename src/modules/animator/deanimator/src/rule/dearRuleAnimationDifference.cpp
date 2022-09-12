@@ -140,10 +140,8 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
-		const int animationBone = pMapAnimationBones.GetAt( animatorBone );
-		
 		// if there is no valid bone index there is no difference
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		if( animationBone == -1 ){
 			continue;
 		}
@@ -191,6 +189,8 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// blend difference with current state
+		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
+		
 		if( newBlendMode ){
 			rposition = boneState.GetPosition() + ( lposition - rposition );
 			rorientation = ( lorientation * rorientation.Conjugate() ) * boneState.GetOrientation();

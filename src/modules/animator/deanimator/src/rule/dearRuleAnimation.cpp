@@ -122,10 +122,9 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
-		
 		// determine animation state
-		const int animationBone = pMapAnimationBones.GetAt( animatorBone );
+		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		
 		if( animationBone == -1 ){
 			boneState.BlendWithDefault( blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );

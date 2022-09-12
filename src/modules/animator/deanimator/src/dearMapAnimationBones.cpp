@@ -63,20 +63,6 @@ void dearMapAnimationBones::Clear(){
 	pCount = 0;
 }
 
-void dearMapAnimationBones::Init( const deAnimation &animation, const dearBoneStateList &boneStates ){
-	Clear();
-	
-	const int count = boneStates.GetStateCount();
-	if( count == 0 ){
-		return;
-	}
-	
-	pIndices = new int[ count ];
-	for( pCount=0; pCount<count; pCount++ ){
-		pIndices[ pCount ] = animation.FindBone( boneStates.GetStateAt( pCount )->GetRigBoneName() );
-	}
-}
-#include <stdio.h>
 void dearMapAnimationBones::Init( const dearRule &rule ){
 	Clear();
 	
@@ -85,30 +71,35 @@ void dearMapAnimationBones::Init( const dearRule &rule ){
 		return;
 	}
 	
-	const dearAnimation * const animation = rule.GetUseAnimation();
-	if( ! animation ){
-		return;
-	}
-	
-	const dearBoneStateList &boneStates = rule.GetInstance().GetBoneStateList();
-	const deAnimation &engAnimation = *animation->GetAnimation();
-	
 	pIndices = new int[ count ];
-	for( pCount=0; pCount<count; pCount++ ){
-		const int boneStateIndex = rule.GetBoneMappingFor( pCount );
-		if( boneStateIndex != -1 ){
-			pIndices[ pCount ] = engAnimation.FindBone(
-				boneStates.GetStateAt( boneStateIndex )->GetRigBoneName() );
-			
-		}else{
+	
+	const dearAnimation * const animation = rule.GetUseAnimation();
+	
+	if( animation ){
+		const dearBoneStateList &boneStates = rule.GetInstance().GetBoneStateList();
+		const deAnimation &engAnimation = *animation->GetAnimation();
+		
+		for( pCount=0; pCount<count; pCount++ ){
+			const int ruleBoneIndex = rule.GetBoneMappingFor( pCount );
+			if( ruleBoneIndex != -1 ){
+				pIndices[ pCount ] = engAnimation.FindBone(
+					boneStates.GetStateAt( ruleBoneIndex )->GetRigBoneName() );
+				
+			}else{
+				pIndices[ pCount ] = -1;
+			}
+		}
+		
+	}else{
+		for( pCount=0; pCount<count; pCount++ ){
 			pIndices[ pCount ] = -1;
 		}
 	}
 }
 
-int dearMapAnimationBones::GetAt( int boneStateIndex ) const{
-	DEASSERT_TRUE( boneStateIndex >= 0 )
-	DEASSERT_TRUE( boneStateIndex < pCount )
+int dearMapAnimationBones::GetAt( int ruleBoneIndex ) const{
+	DEASSERT_TRUE( ruleBoneIndex >= 0 )
+	DEASSERT_TRUE( ruleBoneIndex < pCount )
 	
-	return pIndices[ boneStateIndex ];
+	return pIndices[ ruleBoneIndex ];
 }
