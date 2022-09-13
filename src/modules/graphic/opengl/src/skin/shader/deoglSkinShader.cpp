@@ -1898,6 +1898,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetInverseDepth() ){
 		defines.SetDefine( "INVERSE_DEPTH", true );
 	}
+	if( pConfig.GetXRay() ){
+		defines.SetDefine( "XRAY", true );
+	}
 	
 	if( pConfig.GetGSRenderCube() ){
 		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){

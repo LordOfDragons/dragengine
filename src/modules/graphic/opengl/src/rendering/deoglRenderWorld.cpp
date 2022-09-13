@@ -523,12 +523,16 @@ DEBUG_RESET_TIMER
 		//   XRay depth is fine since this only renders what is hidden and does not change
 		//   the front most depth
 		
-		/*
+		// copy depth to XRay depth. this depth is used by XRay shaders to render only hidden fragments
+		renderThread.GetDeferredRendering().CopyFirstDepthToXRayDepth( true, false );
+		
+		// render solid geometry pass. this clears the depth texture
 		renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, true );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometry, true );
 		}
 		
+		// reflections
 		renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 		
 		if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
@@ -538,6 +542,7 @@ DEBUG_RESET_TIMER
 			}
 		}
 		
+		// lighting
 		plan.SetTransparencyLayerCount( 0 );
 		
 		if( ! plan.GetDisableLights() ){
@@ -554,16 +559,17 @@ DEBUG_RESET_TIMER
 			}
 		}
 		
+		// reflections
 		renderers.GetReflection().RenderScreenSpace( plan );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoSSR, true );
 		}
 		
+		// transparency
 		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, true );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
 		}
-		*/
 	}
 	
 	// stop using stencil testing

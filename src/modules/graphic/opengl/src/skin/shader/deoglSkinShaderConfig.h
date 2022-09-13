@@ -156,6 +156,7 @@ public:
 	bool pOutlineThicknessScreen;
 	bool pLuminanceOnly;
 	bool pGIMaterial;
+	bool pXRay;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -426,6 +427,12 @@ public:
 	
 	/** Set GI material. */
 	void SetGIMaterial( bool gimaterial );
+	
+	/** XRay. */
+	inline bool GetXRay() const{ return pXRay; }
+	
+	/** Set XRay. */
+	void SetXRay( bool xray );
 	
 	
 	

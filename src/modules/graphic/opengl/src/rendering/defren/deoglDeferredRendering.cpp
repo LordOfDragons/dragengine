@@ -177,6 +177,8 @@ enum eFBOMappingsDepth{
 	efbomdD2,
 	/** \brief No-Color with Depth3. */
 	efbomdD3,
+	/** \brief No-Color with DepthXRay. */
+	efbomdDXRay,
 	/** Diffuse. */
 	efbomdDiff,
 	/** Diffuse with Depth1. */
@@ -257,7 +259,9 @@ enum eFBOCopyDepth{
 	efbocdDepth2Layer0,
 	efbocdDepth2Layer1,
 	efbocdDepth3Layer0,
-	efbocdDepth3Layer1
+	efbocdDepth3Layer1,
+	efbocdDepthXRayLayer0,
+	efbocdDepthXRayLayer1
 };
 
 
@@ -350,6 +354,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 	pTextureDepth1 = NULL;
 	pTextureDepth2 = NULL;
 	pTextureDepth3 = NULL;
+	pTextureDepthXRay = nullptr;
 	
 	pTextureDiffuse = NULL;
 	pTextureNormal = NULL;
@@ -487,6 +492,8 @@ void deoglDeferredRendering::Resize( int width, int height, int layerCount ){
 		pTextureDepth2->CreateTexture();
 		pTextureDepth3->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureDepth3->CreateTexture();
+		pTextureDepthXRay->SetSize( textureWidth, textureHeight, textureLayerCount );
+		pTextureDepthXRay->CreateTexture();
 		
 		pTextureDiffuse->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureDiffuse->CreateTexture();
@@ -610,6 +617,33 @@ void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool co
 	
 	for( i=0; i<pLayerCount; i++ ){
 		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepth3Layer0 + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		
+		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
+			0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );
+}
+
+void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool copyStencil ){
+	if( ! copyDepth && ! copyStencil ){
+		return;
+	}
+	
+	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const int copyFrom = pModeDepth ? efbocdDepth1Layer0 : efbocdDepth2Layer0;
+	int i, mask = 0;
+	
+	if( copyDepth ){
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+	if( copyStencil ){
+		mask |= GL_STENCIL_BUFFER_BIT;
+	}
+	
+	for( i=0; i<pLayerCount; i++ ){
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepthXRayLayer0 + i ]->GetFBO() ) );
 		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
 		
 		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
@@ -760,6 +794,10 @@ void deoglDeferredRendering::ActivateFBODepthLevel( int level ){
 
 void deoglDeferredRendering::ActivateFBODepth3(){
 	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD3 ] );
+}
+
+void deoglDeferredRendering::ActivateFBODepthXRay(){
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdDXRay ] );
 }
 
 void deoglDeferredRendering::ActivatePostProcessFBO( bool withDepth ){
@@ -1127,6 +1165,9 @@ void deoglDeferredRendering::pCleanUp(){
 		delete pTextureDiffuse;
 	}
 	
+	if( pTextureDepthXRay ){
+		delete pTextureDepthXRay;
+	}
 	if( pTextureDepth3 ){
 		delete pTextureDepth3;
 	}
@@ -1154,6 +1195,11 @@ void deoglDeferredRendering::pCreateTextures(){
 	pTextureDepth3->SetMipMapped( true );
 	pTextureDepth3->SetDepthFormat( true, pUseInverseDepth );
 	pTextureDepth3->SetDebugObjectLabel( "DefRen.Depth3" );
+	
+	pTextureDepthXRay = new deoglArrayTexture( pRenderThread );
+	pTextureDepthXRay->SetMipMapped( true );
+	pTextureDepthXRay->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepthXRay->SetDebugObjectLabel( "DefRen.DepthXRay" );
 	
 	// create diffuse texture
 	pTextureDiffuse = new deoglArrayTexture( pRenderThread );
@@ -1242,6 +1288,7 @@ void deoglDeferredRendering::pUpdateMemoryUsage(){
 	pMemUse.texture += pTextureDepth1->GetMemoryConsumption().Total();
 	pMemUse.texture += pTextureDepth2->GetMemoryConsumption().Total();
 	pMemUse.texture += pTextureDepth3->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDepthXRay->GetMemoryConsumption().Total();
 	pMemUse.texture += pTextureDiffuse->GetMemoryConsumption().Total();
 	pMemUse.texture += pTextureNormal->GetMemoryConsumption().Total();
 	pMemUse.texture += pTextureReflectivity->GetMemoryConsumption().Total();
@@ -1276,6 +1323,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	pCreateFBOTex( efbomdD1, "DefRen.Depth1", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
 	pCreateFBOTex( efbomdD2, "DefRen.Depth2", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
 	pCreateFBOTex( efbomdD3, "DefRen.Depth3", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3 );
+	pCreateFBOTex( efbomdDXRay, "DefRen.DepthXRay", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepthXRay );
 	pCreateFBOTex( efbomdDiff, "DefRen.Diffuse", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
 	pCreateFBOTex( efbomdDiffD1, "DefRen.DiffuseD1", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
 	pCreateFBOTex( efbomdDiffD2, "DefRen.DiffuseD2", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
@@ -1433,10 +1481,10 @@ void deoglDeferredRendering::pCreateFBOs(){
 	}
 	
 	// FBOs for copy depth
-	deoglArrayTexture * const copyDepthTex[ 3 ] = { pTextureDepth1, pTextureDepth2, pTextureDepth3 };
+	deoglArrayTexture * const copyDepthTex[ 4 ] = { pTextureDepth1, pTextureDepth2, pTextureDepth3, pTextureDepthXRay };
 	int i;
 	
-	for( i=0; i<6; i++ ){
+	for( i=0; i<8; i++ ){
 		pFBOCopyDepth[ i ] = new deoglFramebuffer( pRenderThread, false );
 		pRenderThread.GetFramebuffer().Activate( pFBOCopyDepth[ i ] );
 		pFBOCopyDepth[ i ]->AttachDepthArrayTextureLayer( copyDepthTex[ i / 2 ], decMath::min( i % 2, pLayerCount - 1 ) );
