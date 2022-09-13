@@ -251,8 +251,6 @@ enum eFBOMappingsDepth{
 	EFBOMD_COUNT
 };
 
-#define FBO_COUNT 37
-
 enum eFBOCopyDepth{
 	efbocdDepth1Layer0,
 	efbocdDepth1Layer1,
@@ -367,7 +365,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 	pTextureTemporary3 = NULL;
 	pTextureColor = NULL;
 	
-	for( i=0; i<FBO_COUNT; i++ ){
+	for( i=0; i<EFBOMD_COUNT; i++ ){
 		pFBOs[ i ] = NULL;
 	}
 	pFBOMipMapDepth1 = NULL;
@@ -379,7 +377,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 	pModeDepth = true;
 	pModePostProcess = true;
 	
-	for( i=0; i<6; i++ ){
+	for( i=0; i<8; i++ ){
 		pFBOCopyDepth[ i ] = nullptr;
 	}
 	
@@ -1610,10 +1608,10 @@ deoglArrayTexture *texture7 ){
 void deoglDeferredRendering::pDestroyFBOs(){
 	int i;
 	
-	for( i=0; i<6; i++ ){
-		if( pFBOs[ i ] ){
-			delete pFBOs[ i ];
-			pFBOs[ i ] = nullptr;
+	for( i=0; i<8; i++ ){
+		if( pFBOCopyDepth[ i ] ){
+			delete pFBOCopyDepth[ i ];
+			pFBOCopyDepth[ i ] = nullptr;
 		}
 	}
 	
