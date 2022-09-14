@@ -79,6 +79,7 @@ public:
 		ettSubInstance1,
 		ettSubInstance2,
 		ettHeightMapMask,
+		ettXRayDepth,
 		ETT_COUNT
 	};
 	

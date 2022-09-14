@@ -96,6 +96,9 @@
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2DArray texDepthTest;
 #endif
+#ifdef XRAY
+// 	uniform HIGHP sampler2DArray texXRayDepth;
+#endif
 
 
 

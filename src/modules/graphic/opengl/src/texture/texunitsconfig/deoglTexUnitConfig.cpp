@@ -88,84 +88,96 @@ void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) con
 		tsmgr.EnableTBO( stage, pTBO, *renderThread.GetShader().GetTexSamplerConfig(
 			deoglRTShader::etscClampNearest ) );
 		
-	}else if( pSpecial == deoglTexUnitConfig::estPrevDepth ){
-		tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(),
-			*pSampler );
-		
-	}else if( pSpecial == deoglTexUnitConfig::estPrevColor ){
-		tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(),
-			*pSampler );
-		
-	}else if( pSpecial == deoglTexUnitConfig::estDirectEnvMapActive ){
-		const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
-		const bool useEqui = renderReflection.GetUseEquiEnvMap();
-		deoglEnvironmentMap * const envmap = renderReflection.GetDirectEnvMapActive();
-		
-		if( envmap ){
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
-				
-			}else{
-				// DEBUGGING
-				if( ! envmap->GetEnvironmentMap() ){
-					printf( "BUG! envmap->GetEnvironmentMap() is NULL\n" );
-					printf( "  world: %p\n", envmap->GetWorld() );
-					printf( "  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
-					printf( "  skyonly: %d\n", envmap->GetSkyOnly() );
-					printf( "  dirty: %d\n", envmap->GetDirty() );
-					printf( "  ready: %d\n", envmap->GetReady() );
-					printf( "  plan usage count: %d\n", envmap->GetPlanUsageCount() );
-					printf( "  destroy if unused: %d\n", envmap->GetDestroyIfUnused() );
-					printf( "  component list count: %d\n", envmap->GetComponentList().GetCount() );
-					printf( "  particle emitter instance list count: %d\n", envmap->GetParticleEmitterInstanceList().GetCount() );
-					printf( "  render plan list count: %d\n", envmap->GetRenderPlanList().GetCount() );
-					printf( "  marked: %d\n", envmap->GetMarked() );
-					printf( "  slot index: %d\n", envmap->GetSlotIndex() );
-					printf( "  refcount: %d\n", envmap->GetRefCount() );
-					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(), *pSampler );
-					return;
+	}else{
+		switch( pSpecial ){
+		case deoglTexUnitConfig::estPrevDepth:
+			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(), *pSampler );
+			break;
+			
+		case deoglTexUnitConfig::estPrevColor:
+			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(), *pSampler );
+			break;
+			
+		case estXRayDepth:
+			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTextureXRay(), *pSampler );
+			break;
+			
+		case deoglTexUnitConfig::estDirectEnvMapActive:{
+			const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
+			const bool useEqui = renderReflection.GetUseEquiEnvMap();
+			deoglEnvironmentMap * const envmap = renderReflection.GetDirectEnvMapActive();
+			
+			if( envmap ){
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
+					
+				}else{
+					// DEBUGGING
+					if( ! envmap->GetEnvironmentMap() ){
+						printf( "BUG! envmap->GetEnvironmentMap() is NULL\n" );
+						printf( "  world: %p\n", envmap->GetWorld() );
+						printf( "  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
+						printf( "  skyonly: %d\n", envmap->GetSkyOnly() );
+						printf( "  dirty: %d\n", envmap->GetDirty() );
+						printf( "  ready: %d\n", envmap->GetReady() );
+						printf( "  plan usage count: %d\n", envmap->GetPlanUsageCount() );
+						printf( "  destroy if unused: %d\n", envmap->GetDestroyIfUnused() );
+						printf( "  component list count: %d\n", envmap->GetComponentList().GetCount() );
+						printf( "  particle emitter instance list count: %d\n", envmap->GetParticleEmitterInstanceList().GetCount() );
+						printf( "  render plan list count: %d\n", envmap->GetRenderPlanList().GetCount() );
+						printf( "  marked: %d\n", envmap->GetMarked() );
+						printf( "  slot index: %d\n", envmap->GetSlotIndex() );
+						printf( "  refcount: %d\n", envmap->GetRefCount() );
+						tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(), *pSampler );
+						return;
+					}
+					// DEBUGGING
+					tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
 				}
-				// DEBUGGING
-				tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
+				
+			}else{
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
+						*pSampler );
+					
+				}else{
+					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
+						*pSampler );
+				}
+			}
+			}break;
+			
+		case deoglTexUnitConfig::estDirectEnvMapFading:{
+			const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
+			const bool useEqui = renderReflection.GetUseEquiEnvMap();
+			deoglEnvironmentMap *envmap = renderReflection.GetDirectEnvMapFading();
+			
+			if( ! envmap ){
+				envmap = renderReflection.GetDirectEnvMapActive();
 			}
 			
-		}else{
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
-					*pSampler );
+			if( envmap ){
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
+					
+				}else{
+					tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
+				}
 				
 			}else{
-				tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
-					*pSampler );
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
+						*pSampler );
+					
+				}else{
+					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
+						*pSampler );
+				}
 			}
-		}
-		
-	}else if( pSpecial == deoglTexUnitConfig::estDirectEnvMapFading ){
-		const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
-		const bool useEqui = renderReflection.GetUseEquiEnvMap();
-		deoglEnvironmentMap *envmap = renderReflection.GetDirectEnvMapFading();
-		
-		if( ! envmap ){
-			envmap = renderReflection.GetDirectEnvMapActive();
-		}
-		
-		if( envmap ){
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
-				
-			}else{
-				tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
-			}
+			}break;
 			
-		}else{
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
-					*pSampler );
-				
-			}else{
-				tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
-					*pSampler );
-			}
+		default:
+			break;
 		}
 	}
 }

@@ -38,7 +38,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Configuration of a texture unit.
+ * Configuration of a texture unit.
  * 
  * The texture unit is disabled if no texture or cube map is defined. Only
  * enabled texture units are set during rendering. Disabled texture units are
@@ -46,24 +46,27 @@ class deoglRenderThread;
  */
 class deoglTexUnitConfig{
 public:
-	/** \brief Special Textures. */
+	/** Special Textures. */
 	enum eSpecialTextures{
-		/** \brief No special texture. */
+		/** No special texture. */
 		estNone,
 		
-		/** \brief Depth map of the previous render pass. */
+		/** Depth map of the previous render pass. */
 		estPrevDepth,
 		
-		/** \brief Color of the previous render pass. */
+		/** Color of the previous render pass. */
 		estPrevColor,
 		
-		/** \brief Direct environment map active map. */
+		/** Direct environment map active map. */
 		estDirectEnvMapActive,
 		
-		/** \brief Direct environment map fading map. */
+		/** Direct environment map fading map. */
 		estDirectEnvMapFading,
 		
-		/** \brief Constant to add to opengl texture names for hashing. */
+		/** XRay depth. */
+		estXRayDepth,
+		
+		/** Constant to add to opengl texture names for hashing. */
 		EST_BASE_GLNAME
 	};
 	
@@ -82,10 +85,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create texture unit configuration. */
+	/** Create texture unit configuration. */
 	deoglTexUnitConfig();
 	
-	/** \brief Clean up texture unit configuration. */
+	/** Clean up texture unit configuration. */
 	~deoglTexUnitConfig();
 	/*@}*/
 	
@@ -93,73 +96,73 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture or \em NULL if not used. */
+	/** Texture or \em NULL if not used. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Cube map or \em NULL if not used. */
+	/** Cube map or \em NULL if not used. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
-	/** \brief Array texture or \em NULL if not used. */
+	/** Array texture or \em NULL if not used. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
-	/** \brief Texture buffer object or 0 if not used. */
+	/** Texture buffer object or 0 if not used. */
 	inline GLuint GetTBO() const{ return pTBO; }
 	
-	/** \brief Special texture or eSpecialTextures::estNone if not used. */
+	/** Special texture or eSpecialTextures::estNone if not used. */
 	inline int GetSpecial() const{ return pSpecial; }
 	
-	/** \brief Texture sampler configuration or \em NULL if not used. */
+	/** Texture sampler configuration or \em NULL if not used. */
 	inline deoglTexSamplerConfig *GetSampler() const{ return pSampler; }
 	
-	/** \brief Apply texture unit configuration. */
+	/** Apply texture unit configuration. */
 	void Apply( deoglRenderThread &renderThread, int stage ) const;
 	
-	/** \brief Set texture sampler configuration or \em NULL if not used. */
+	/** Set texture sampler configuration or \em NULL if not used. */
 	void SetSampler( deoglTexSamplerConfig *sampler );
 	
-	/** \brief Unit is enabled. */
+	/** Unit is enabled. */
 	bool IsEnabled() const;
 	
-	/** \brief Unit is disabled. */
+	/** Unit is disabled. */
 	bool IsDisabled() const;
 	
-	/** \brief Disable unit. */
+	/** Disable unit. */
 	void Disable();
 	
-	/** \brief Enable texture. */
+	/** Enable texture. */
 	void EnableTexture( deoglTexture *texture, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Enabled texture from skin texture channel. */
+	/** Enabled texture from skin texture channel. */
 	void EnableTextureFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture );
 	
-	/** \brief Enable cube map. */
+	/** Enable cube map. */
 	void EnableCubeMap( deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Enables cube map from a skin texture channel. */
+	/** Enables cube map from a skin texture channel. */
 	void EnableCubeMapFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap );
 	
-	/** \brief Enable array texture. */
+	/** Enable array texture. */
 	void EnableArrayTexture( deoglArrayTexture *texture, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Enabled array texture from skin texture channel. */
+	/** Enabled array texture from skin texture channel. */
 	void EnableArrayTextureFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture );
 	
-	/** \brief Enable texture buffer object. */
+	/** Enable texture buffer object. */
 	void EnableTBO( GLuint tbo );
 	
-	/** \brief Enable special texture. */
+	/** Enable special texture. */
 	void EnableSpecial( int special, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Object equals another one. */
+	/** Object equals another one. */
 	bool Equals( const deoglTexUnitConfig &tuc ) const;
 	
-	/** \brief Set parameters from another texture unit configuration. */
+	/** Set parameters from another texture unit configuration. */
 	void SetFrom( const deoglTexUnitConfig &tuc );
 	/*@}*/
 };

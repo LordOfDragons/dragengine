@@ -88,7 +88,8 @@ static const char *vTextureTargetNames[ deoglSkinShader::ETT_COUNT ] = {
 	"texSamples", // ettSamples
 	"texSubInstance1", // ettSubInstance1
 	"texSubInstance2", // ettSubInstance2
-	"texHeightMapMask" // ettHeightMapMask
+	"texHeightMapMask", // ettHeightMapMask
+	"texXRayDepth" // ettXRayDepth
 };
 
 static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
@@ -1468,6 +1469,11 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 		units[ pTextureTargets[ ettDepthTest ] ].EnableSpecial( deoglTexUnitConfig::estPrevDepth,
 			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	}
+	
+	if( pTextureTargets[ ettXRayDepth ] != -1 ){
+		units[ pTextureTargets[ ettXRayDepth ] ].EnableSpecial( deoglTexUnitConfig::estXRayDepth,
+			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+	}
 }
 
 int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
@@ -1874,13 +1880,17 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.SetDefine( "MASKED_SOLIDITY", true );
 	}
 	
-	if( pConfig.GetDepthTestMode() == deoglSkinShaderConfig::edtmLarger ){
-		defines.SetDefine( "DEPTH_TEST", true );
-		defines.SetDefine( "DEPTH_TEST_LARGER", true );
+	switch( pConfig.GetDepthTestMode() ){
+	case deoglSkinShaderConfig::edtmLarger:
+		defines.SetDefines( "DEPTH_TEST", "DEPTH_TEST_LARGER" );
+		break;
 		
-	}else if( pConfig.GetDepthTestMode() == deoglSkinShaderConfig::edtmSmaller ){
-		defines.SetDefine( "DEPTH_TEST", true );
-		defines.SetDefine( "DEPTH_TEST_SMALLER", true );
+	case deoglSkinShaderConfig::edtmSmaller:
+		defines.SetDefines( "DEPTH_TEST", "DEPTH_TEST_SMALLER" );
+		break;
+		
+	default:
+		break;
 	}
 	
 	if( pConfig.GetClipPlane() ){
@@ -1907,8 +1917,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		defines.SetDefine( "GS_RENDER_CUBE", true );
-		defines.SetDefine( "GS_RENDER_CUBE_CULLING", true );
+		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
 		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
@@ -1989,8 +1998,8 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	// texture property usage definitions
-	defines.SetDefine( "TP_NORMAL_STRENGTH", true ); // needs an option to select if this is required or not
-	defines.SetDefine( "TP_ROUGHNESS_REMAP", true ); // needs an option to select if this is required or not
+	defines.SetDefines( "TP_NORMAL_STRENGTH", "TP_ROUGHNESS_REMAP" );
+		// ^== needs an option to select if this is required or not
 	
 	if( pConfig.GetUseNormalRoughnessCorrection() ){
 		defines.SetDefine( "USE_NORMAL_ROUGHNESS_CORRECTION", true );
@@ -2114,32 +2123,6 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetDynamicOutlineEmissivityTint() ){
 		defines.SetDefine( "DYNAMIC_OUTLINE_EMISSIVITY_TINT", true );
 	}
-	
-	
-	
-	/*
-	* for nodes only
-	* NODE_VERTEX_UNIFORMS
-	*     optional code block with all additional uniforms required by nodes in the vertex unit
-	* NODE_VERTEX_INPUTS
-	*     optional code block with all additional inputs required by nodes in the vertex unit
-	* NODE_VERTEX_OUTPUTS
-	*     optional code block with all additional outputs required by nodes in the vertex unit
-	* NODE_VERTEX_MAIN
-	*     optional code block required by nodes in the vertex unit at the end of the main function
-	* 
-	* NODE_FRAGMENT_UNIFORMS
-	*     optional code block with all additional uniforms required by nodes in the fragment unit
-	* NODE_FRAGMENT_SAMPLERS
-	*     optional code block with all additional samplers required by nodes in the fragment unit
-	* NODE_FRAGMENT_INPUTS
-	*     optional code block with all additional inputs required by nodes in the fragment unit
-	* NODE_FRAGMENT_OUTPUTS
-	*     optional code block with all additional outputs required by nodes in the fragment unit
-	* NODE_FRAGMENT_MAIN
-	*     optional code block calculating the node defined texture properties in the fragment unit
-	* 
-	*/
 }
 
 void deoglSkinShader::GenerateVertexSC(){
@@ -2381,6 +2364,10 @@ void deoglSkinShader::UpdateTextureTargets(){
 		
 	}else if( geometryMode == deoglSkinShaderConfig::egmHeightMap ){
 		pTextureTargets[ ettHeightMapMask ] = textureUnitNumber++;
+	}
+	
+	if( pConfig.GetXRay() != deoglSkinShaderConfig::edtmNone ){
+		pTextureTargets[ ettXRayDepth ] = textureUnitNumber++;
 	}
 	
 	pUsedTextureTargetCount = textureUnitNumber;
