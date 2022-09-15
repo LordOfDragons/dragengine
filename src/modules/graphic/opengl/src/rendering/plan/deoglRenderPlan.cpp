@@ -2036,6 +2036,7 @@ int deoglRenderPlan::pIndexOfLightWith( deoglCollideListLight *light ) const{
 
 void deoglRenderPlan::pCheckTransparency(){
 	pHasTransparency = false;
+	pHasXRayTransparency = false;
 	
 	// components
 	const int componentCount = pCollideList.GetComponentCount();
@@ -2044,18 +2045,30 @@ void deoglRenderPlan::pCheckTransparency(){
 		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
 		if( ! component.GetSolid() || ! component.GetOutlineSolid() ){
 			pHasTransparency = true;
-			return;
 		}
+		if( ! component.GetXRaySolid() ){
+			pHasXRayTransparency = true;
+		}
+	}
+	if( pHasTransparency && pHasXRayTransparency ){
+		return;
 	}
 	
 	// billboards
 	const int billboardCount = pCollideList.GetBillboardCount();
 	for( i=0; i<billboardCount; i++ ){
 		const deoglRBillboard &billboard = *pCollideList.GetBillboardAt( i );
-		if( billboard.GetUseSkinTexture() && ! billboard.GetUseSkinTexture()->GetSolid() ){
-			pHasTransparency = true;
-			return;
+		if( billboard.GetUseSkinTexture() ){
+			if( ! billboard.GetUseSkinTexture()->GetSolid() ){
+				pHasTransparency = true;
+				if( billboard.GetUseSkinTexture()->GetXRay() ){
+					pHasXRayTransparency = true;
+				}
+			}
 		}
+	}
+	if( pHasTransparency && pHasXRayTransparency ){
+		return;
 	}
 	
 	// particles
@@ -2073,9 +2086,13 @@ void deoglRenderPlan::pCheckTransparency(){
 			const int typeCount = instance.GetTypeCount();
 			for( j=0; j<typeCount; j++ ){
 				const deoglRSkin * const skin = instance.GetTypeAt( j ).GetUseSkin();
-				if( skin && ! skin->GetIsSolid() ){
-					pHasTransparency = true;
-					return;
+				if( skin ){
+					if( ! skin->GetIsSolid() ){
+						pHasTransparency = true;
+						if( skin->GetHasXRay() ){
+							pHasXRayTransparency = true;
+						}
+					}
 				}
 				/*
 				if( instance.GetEmitter()->GetTypeAt( j ).GetHasTransparency() ){
@@ -2103,9 +2120,13 @@ void deoglRenderPlan::pCheckTransparency(){
 			const int typeCount = instance.GetTypeCount();
 			for( j=0; j<typeCount; j++ ){
 				const deoglRSkin * const skin = instance.GetTypeAt( j ).GetUseSkin();
-				if( skin && ! skin->GetIsSolid() ){
-					pHasTransparency = true;
-					return;
+				if( skin ){
+					if( ! skin->GetIsSolid() ){
+						pHasTransparency = true;
+						if( skin->GetHasXRay() ){
+							pHasXRayTransparency = true;
+						}
+					}
 				}
 			}
 		}

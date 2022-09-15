@@ -470,7 +470,7 @@ DEBUG_RESET_TIMER
 		}
 		
 		DBG_ENTER("RenderLights")
-		renderers.GetLight().RenderLights( plan, true, mask );
+		renderers.GetLight().RenderLights( plan, true, mask, false );
 		DBG_EXIT("RenderLights")
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
@@ -503,7 +503,8 @@ DEBUG_RESET_TIMER
 	
 	// xray pass
 	if( plan.GetTasks().GetSolidDepthXRayTask().GetShaderCount() > 0
-	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetShaderCount() > 0 ){
+	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetShaderCount() > 0
+	|| plan.GetHasXRayTransparency() ){
 		// TODO render xray pass. requires doing these steps:
 		// - switch texture but not with secondary depth texture but with third depth texture.
 		//   required for xray shaders to reject fragments located in front of geometry.
@@ -563,7 +564,15 @@ DEBUG_RESET_TIMER
 		}
 		
 		// lighting
-		plan.SetTransparencyLayerCount( 0 );
+		if( plan.GetHasXRayTransparency() ){
+			#ifdef OS_ANDROID
+			plan.PlanTransparency( plan.GetTransparencyLayerCount() );
+			#else
+			plan.PlanTransparency( renderers.GetTransparencyCounter().GetCount() );
+			#endif
+		}else{
+			plan.PlanTransparency( 0 );
+		}
 		
 		if( ! plan.GetDisableLights() ){
 			if( ! mask ){
@@ -573,7 +582,7 @@ DEBUG_RESET_TIMER
 				renderers.GetReflection().CopyMaterial( plan, true );
 			}
 			
-			renderers.GetLight().RenderLights( plan, true, mask );
+			renderers.GetLight().RenderLights( plan, true, mask, true );
 			if( debugMainPass ){
 				DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
 			}
@@ -586,9 +595,11 @@ DEBUG_RESET_TIMER
 		}
 		
 		// transparency
-		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, true );
-		if( debugMainPass ){
-			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
+		if( plan.GetHasXRayTransparency() ){
+			renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask, true );
+			if( debugMainPass ){
+				DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
+			}
 		}
 	}
 	

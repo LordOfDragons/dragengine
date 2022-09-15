@@ -260,12 +260,12 @@ deoglRenderLightSky::~deoglRenderLightSky(){
 // Rendering
 //////////////
 
-void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
+void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray ){
 // 	if( ! solid ){
 // 		return;
 // 	}
 	
-	if( solid ){
+	if( solid && ! xray ){
 		// this situation is annoying. to build sky shadow render tasks these actions are required:
 		// - find sky light content (parallel task)
 		// - render occlusion tests => requires view occlusion map to be rendered
@@ -300,7 +300,7 @@ void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const
 	
 	int i;
 	for( i=0; i<count; i++ ){
-		RenderLight( *plan.GetSkyLightAt( i ), solid, mask );
+		RenderLight( *plan.GetSkyLightAt( i ), solid, mask, xray );
 	}
 	
 	if( solid ){
@@ -370,7 +370,7 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 }
 
 void deoglRenderLightSky::RenderLight( deoglRenderPlanSkyLight &plan, bool solid,
-const deoglRenderPlanMasked *mask ){
+const deoglRenderPlanMasked *mask, bool xray ){
 	if( ! plan.GetUseLight() ){
 		return;
 	}
@@ -485,7 +485,7 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	// GI rays
-	if( ! mask && solid ){
+	if( ! mask && solid && ! xray ){
 		deoglGIState * const giState = plan.GetPlan().GetUpdateGIState();
 		if( giState ){
 			const deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade( giState->GetSkyShadowCascade() );

@@ -127,6 +127,7 @@ public:
 	bool pMarked;
 	
 	bool pSolid;
+	bool pXRaySolid;
 	bool pOutlineSolid;
 	bool pDirtySolid;
 	
@@ -423,6 +424,9 @@ public:
 	
 	/** Component has no transparent faces. */
 	inline bool GetSolid() const{ return pSolid; }
+	
+	/** Component has no transparent XRay faces. */
+	inline bool GetXRaySolid() const{ return pXRaySolid; }
 	
 	/** Component has no transparent outline. */
 	inline bool GetOutlineSolid() const{ return pOutlineSolid; }

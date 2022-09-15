@@ -163,6 +163,7 @@ pLLPrepareForRenderWorld( this )
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pXRaySolid = true;
 	pDirtySolid = true;
 	
 	pMarked = false;
@@ -1901,6 +1902,7 @@ void deoglRComponent::pPrepareSolidity(){
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pXRaySolid = true;
 	
 	if( ! pModel ){
 		return;
@@ -1935,6 +1937,7 @@ void deoglRComponent::pPrepareSolidity(){
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt( textureNumber );
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
+			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
 		}
 		
 	}else{
@@ -1950,6 +1953,7 @@ void deoglRComponent::pPrepareSolidity(){
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt( 0 );
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
+			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
 		}
 	}
 }

@@ -302,10 +302,10 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 		snapshot.TakeSnapshot();
 	}
 	
-	if( plan.GetHasTransparency() ){
+	if( xray ? plan.GetHasXRayTransparency() : plan.GetHasTransparency() ){
 		// limit depth if required. can modify plan transparency layer count
 		RenderTransparentLimitDepth( plan, mask, xray );
-		
+
 		// render
 		const int passCount = plan.GetTransparencyLayerCount();
 		int p;
@@ -342,7 +342,7 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			}
 			
 			if( ! plan.GetDisableLights() ){
-				renderThread.GetRenderers().GetLight().RenderLights( plan, false, mask );
+				renderThread.GetRenderers().GetLight().RenderLights( plan, false, mask, xray );
 				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentLights, true );
 			}
 			

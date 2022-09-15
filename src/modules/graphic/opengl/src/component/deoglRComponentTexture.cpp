@@ -282,6 +282,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	const deoglRModel * const model = pComponent.GetModel();
 	if( ! model ){
 		pIsRendered = false;
+		InvalidateParamBlocks();
 		pUpdateRenderTaskFilters();
 		return;
 	}
@@ -329,6 +330,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 		pUseSkinTexture = &pUseSkin->GetTextureAt( pUseTextureNumber );
 	}
 	
+	InvalidateParamBlocks();
 	pUpdateIsRendered();
 	pUpdateRenderTaskFilters();
 }

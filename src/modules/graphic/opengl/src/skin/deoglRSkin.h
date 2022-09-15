@@ -41,7 +41,7 @@ class deSkin;
 
 
 /**
- * \brief Render skin.
+ * Render skin.
  */
 class deoglRSkin : public deObject{
 public:
@@ -60,6 +60,7 @@ private:
 	
 	bool pIsSolid;
 	bool pHasHoles;
+	bool pHasXRay;
 	bool pShadeless;
 	bool pHasMirrors;
 	bool pHasDynamicChannels;
@@ -84,10 +85,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render skin. */
+	/** Create render skin. */
 	deoglRSkin( deoglRenderThread &renderThread, const deSkin &Skin );
 	
-	/** \brief Clean up render skin. */
+	/** Clean up render skin. */
 	virtual ~deoglRSkin();
 	/*@}*/
 	
@@ -95,98 +96,101 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Filename of skin file. */
+	/** Filename of skin file. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	
 	
 	/**
-	 * \brief Finalize after asynchronous resource loading.
+	 * Finalize after asynchronous resource loading.
 	 * \details Also released retained image data.
 	 */
 	void FinalizeAsyncResLoading();
 	
 	
 	
-	/** \brief Skin is solid. */
+	/** Skin is solid. */
 	inline bool GetIsSolid() const{ return pIsSolid; }
 	
-	/** \brief Skin has holes. */
+	/** Skin has holes. */
 	inline bool GetHasHoles() const{ return pHasHoles; }
 	
-	/** \brief Skin has mirrors. */
+	/** Skin has XRay. */
+	inline bool GetHasXRay() const{ return pHasXRay; }
+	
+	/** Skin has mirrors. */
 	inline bool GetHasMirrors() const{ return pHasMirrors; }
 	
-	/** \brief Skin has textures with dynamic channels. */
+	/** Skin has textures with dynamic channels. */
 	inline bool GetHasDynamicChannels() const{ return pHasDynamicChannels; }
 	
-	/** \brief Skin has renderables. */
+	/** Skin has renderables. */
 	inline bool GetHasRenderables() const{ return pHasRenderables; }
 	
-	/** \brief Skin is shadeless. */
+	/** Skin is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }
 	
-	/** \brief Reflected type. */
+	/** Reflected type. */
 	inline ePropertyStates GetReflected() const{ return pReflected; }
 	
-	/** \brief Shadow casting type. */
+	/** Shadow casting type. */
 	inline ePropertyStates GetShadowNone() const{ return pShadowNone; }
 	
-	/** \brief Shadow importance level. */
+	/** Shadow importance level. */
 	inline int GetShadowImportance() const{ return pShadowImportance; }
 	
-	/** \brief Skin casts solid shadows. */
+	/** Skin casts solid shadows. */
 	inline bool GetCastSolidShadow() const{ return pCastSolidShadow; }
 	
-	/** \brief Skin casts transparent shadows. */
+	/** Skin casts transparent shadows. */
 	inline bool GetCastTransparentShadow() const{ return pCastTranspShadow; }
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	deoglSkinTexture &GetTextureAt( int index ) const;
 	
 	
 	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	int GetRenderableCount() const;
 	
-	/** \brief Renderable at index. */
+	/** Renderable at index. */
 	deoglSkinRenderable &GetRenderableAt( int index );
 	
-	/** \brief Add renderable if absent. */
+	/** Add renderable if absent. */
 	int AddRenderable( const char *name );
 	
-	/** \brief Index of named renderable or -1 if not found. */
+	/** Index of named renderable or -1 if not found. */
 	int IndexOfRenderableNamed( const char *name ) const;
 	
 	
 	
-	/** \brief Number of video players. */
+	/** Number of video players. */
 	inline int GetVideoPlayerCount() const{ return pVideoPlayerCount; }
 	
 	/**
-	 * \brief Add video player.
+	 * Add video player.
 	 * \returns Index of video player.
 	 */
 	int AddVideoPlayer();
 	
 	
 	
-	/** \brief Number of calculated properties. */
+	/** Number of calculated properties. */
 	int GetCalculatedPropertyCount() const;
 	
-	/** \brief Calculated property. */
+	/** Calculated property. */
 	deoglSkinCalculatedProperty *GetCalculatedPropertyAt( int index ) const;
 	
 	/**
-	 * \brief Add calculated property.
+	 * Add calculated property.
 	 * \returns Index of calculated property.
 	 */
 	int AddCalculatedProperty( deoglSkinCalculatedProperty *calculated );

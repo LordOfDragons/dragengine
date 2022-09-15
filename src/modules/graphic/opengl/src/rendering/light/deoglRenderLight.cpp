@@ -272,7 +272,7 @@ deoglRenderLight::~deoglRenderLight(){
 // Rendering
 //////////////
 
-void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
+void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, solid
 		? ( mask ? "Light.RenderLights(Solid,Masked)" : "Light.RenderLights(Solid)" )
@@ -302,7 +302,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
 	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
 	
-	if( solid && ! mask && hasGIStateUpdate ){
+	if( solid && ! mask && ! xray && hasGIStateUpdate ){
 		pRenderGI->ClearProbes( plan );
 	}
 	
@@ -333,7 +333,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	// fast as possible the render task building is done using parallel tasks. by rendering
 	// sky light as last light type before GI reduces the time waiting for the parallel
 	// tasks to finish
-	pRenderLightSky->RenderLights( plan, solid, mask );
+	pRenderLightSky->RenderLights( plan, solid, mask, xray );
 	
 	if( solid && ! mask && hasGIStateUpdate ){
 		if( hasGIStateRender ){
