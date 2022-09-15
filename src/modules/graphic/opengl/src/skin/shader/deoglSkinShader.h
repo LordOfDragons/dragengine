@@ -132,6 +132,7 @@ public:
 		erutToneMapAdaption,
 		erutToneMapBloom,
 		erutDebugDepthTransform,
+		erutConditions1,
 		ERUT_COUNT
 	};
 	

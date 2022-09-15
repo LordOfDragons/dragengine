@@ -200,8 +200,8 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	DebugTimer1Reset( plan, true );
 	
-	// geometry pass. render first sky which uses FBO Depth+Color. sky always clears color
-	// bufffer.
+	// geometry pass. render first sky which uses FBO Depth+Color.
+	// sky always clears color buffer.
 	// 
 	// TODO change the sky rendering so it can use FBO Material (render to color only). this
 	//      would avoid the need to switch FBO attachment. maybe glDrawBuffers switching
@@ -222,10 +222,12 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	}
 	
-	QUICK_DEBUG_START( 16, 19 )
-	renderThread.GetRenderers().GetSky().RenderSky( plan );
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
-	QUICK_DEBUG_END
+	if( ! xray ){
+		QUICK_DEBUG_START( 16, 19 )
+		renderThread.GetRenderers().GetSky().RenderSky( plan );
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
+		QUICK_DEBUG_END
+	}
 	
 	
 	// activate material fbo and clear all color attachments except color and depth buffer

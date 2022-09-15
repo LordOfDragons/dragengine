@@ -897,7 +897,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetLuminanceOnly( luminanceOnly );
 	config.SetGIMaterial( giMaterial );
 	config.SetBillboard( shaderConfigInfo.billboard );
-	config.SetXRay( pXRay );
 	
 	if( shaderConfigInfo.stereo ){
 		if( GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){

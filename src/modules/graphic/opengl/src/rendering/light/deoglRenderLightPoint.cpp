@@ -1520,6 +1520,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					deoglSkinShader::erutMatrixVn, cmf, matrixCamera.GetRotationMatrix().Invert() );
 			}
 			
+			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+			
 		}catch( const deException & ){
 			renderParamBlock->UnmapBuffer();
 			throw;
@@ -1630,6 +1632,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					deoglSkinShader::erutMatrixVP, matrixCamera * shadowParams.matrixProjection );
 				renderParamBlock->SetParameterDataMat3x3(
 					deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
+				
+				renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 				
 			}catch( const deException & ){
 				renderParamBlock->UnmapBuffer();
@@ -1757,6 +1761,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 						deoglSkinShader::erutMatrixV, matrixCamera );
 					renderParamBlock->SetParameterDataMat4x4(
 						deoglSkinShader::erutMatrixVP, matrixCamera * shadowParams.matrixProjection );
+					
+					renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 					
 				}catch( const deException & ){
 					renderParamBlock->UnmapBuffer();

@@ -615,7 +615,7 @@ void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool co
 	
 	for( i=0; i<pLayerCount; i++ ){
 		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepth3Layer0 + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
 		
 		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
 			0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
@@ -625,6 +625,9 @@ void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool co
 }
 
 void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool copyStencil ){
+	// WARNING! this is not working because glBlitFramebuffer is NOT synchronized
+	//          with rendering which means shaders using the XRay depth texture
+	//          will NOT see the blitted content. who designed such a mess?!
 	if( ! copyDepth && ! copyStencil ){
 		return;
 	}
@@ -640,9 +643,11 @@ void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool cop
 		mask |= GL_STENCIL_BUFFER_BIT;
 	}
 	
+	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+	
 	for( i=0; i<pLayerCount; i++ ){
 		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepthXRayLayer0 + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
 		
 		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
 			0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );

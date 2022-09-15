@@ -194,6 +194,18 @@ UBOLAYOUT uniform RenderParameters{
 	vec2 pDebugDepthTransform;
 	#define pDebugDepthScale (pDebugDepthTransform.x)
 	#define pDebugDepthOffset (pDebugDepthTransform.y)
+	
+	
+	
+	// render conditions, aka specializations
+	
+	// x: use clip plane
+	// y: use XRay
+	// z: -
+	// w: -
+	bvec4 pConditions1;
+	#define pCondClipPlane (pConditions1.x)
+	#define pCondXRay (pConditions1.y)
 };
 
 // helper functions

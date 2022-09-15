@@ -906,7 +906,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// GL_EXT_texture_object : no opengl version
 	
-	// GL_ARB_compute_shader : opengl version 4.3 but to find on most GPUs with 3.3 onwards
+	// GL_ARB_compute_shader : opengl version 4.3
 	#ifdef ANDROID
 	if( ! pSupportsComputeShader ){
 		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
@@ -917,6 +917,9 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
 	#endif
+	
+	// memory barrier required by compute shaders
+	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
 	
 	// no opengl version: 2.0 stuff
 	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
@@ -1162,10 +1165,10 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	#endif
 	
-	// OpenGL 4.2 : no extension
-	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
-		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
-	}
+	// OpenGL 4.2 : no extension (moved to required)
+// 	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
+// 		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
+// 	}
 	
 	// OpenGL 4.3 : no extension
 	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0 ){

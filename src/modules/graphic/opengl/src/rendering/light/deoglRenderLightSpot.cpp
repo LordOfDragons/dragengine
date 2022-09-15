@@ -1507,6 +1507,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				shadowParams.matrixCamera * shadowParams.matrixProjection );
 		}
 		
+		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+		
 	}catch( const deException & ){
 		renderParamBlock->UnmapBuffer();
 		throw;

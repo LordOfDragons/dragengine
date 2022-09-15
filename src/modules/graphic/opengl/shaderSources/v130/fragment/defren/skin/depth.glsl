@@ -41,9 +41,7 @@
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2DArray texDepthTest;
 #endif
-#ifdef XRAY
-	uniform HIGHP sampler2DArray texXRayDepth;
-#endif
+uniform HIGHP sampler2DArray texXRayDepth;
 
 
 
@@ -342,40 +340,35 @@ void main( void ){
 		#define fragmentDepth gl_FragCoord.z
 	#endif
 	
-	// discard fragment by depth comparison
-	#if defined DEPTH_TEST || defined XRAY
-		ivec3 tcdt = ivec3( gl_FragCoord.xy, vLayer );
+	// discard against previous depth
+	#ifdef DEPTH_TEST
+		float depthTestValue = sampleDepth( texDepthTest, ivec3( gl_FragCoord.xy, vLayer ) );
 		
-		// compare against previous depth
-		#ifdef DEPTH_TEST
-			float depthTestValue = sampleDepth( texDepthTest, tcdt );
-			
-			#ifdef INVERSE_DEPTH
-				#ifdef DEPTH_TEST_LARGER
-				if( fragmentDepth <= depthTestValue ) discard;
-				#else
-				if( fragmentDepth >= depthTestValue ) discard;
-				#endif
+		#ifdef INVERSE_DEPTH
+			#ifdef DEPTH_TEST_LARGER
+			if( fragmentDepth <= depthTestValue ) discard;
 			#else
-				#ifdef DEPTH_TEST_LARGER
-				if( fragmentDepth >= depthTestValue ) discard;
-				#else
-				if( fragmentDepth <= depthTestValue ) discard;
-				#endif
+			if( fragmentDepth >= depthTestValue ) discard;
 			#endif
-		#endif
-		
-		// compare against xray depth
-		#ifdef XRAY
-			float xrayTestValue = sampleDepth( texXRayDepth, tcdt );
-			
-			#ifdef INVERSE_DEPTH
-				if( fragmentDepth >= xrayTestValue ) discard;
+		#else
+			#ifdef DEPTH_TEST_LARGER
+			if( fragmentDepth >= depthTestValue ) discard;
 			#else
-				if( fragmentDepth <= xrayTestValue ) discard;
+			if( fragmentDepth <= depthTestValue ) discard;
 			#endif
 		#endif
 	#endif
+	
+	// discard against xray depth
+	if( pCondXRay ){
+		float xrayDepth = sampleDepth( texXRayDepth, ivec3( gl_FragCoord.xy, vLayer ) );
+		
+		#ifdef INVERSE_DEPTH
+			if( fragmentDepth >= xrayDepth ) discard;
+		#else
+			if( fragmentDepth <= xrayDepth ) discard;
+		#endif
+	}
 	
 	// encode the output depth
 	#ifdef ENCODE_OUT_DEPTH

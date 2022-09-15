@@ -922,6 +922,8 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 				depthScale, depthOffset, -depthScale, -depthOffset );
 			
+			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+			
 		}catch( const deException & ){
 			renderParamBlock->UnmapBuffer();
 			throw;
@@ -1132,6 +1134,8 @@ deoglShadowMapper &shadowMapper ){
 				depthScale, depthOffset, -depthScale, -depthOffset ); // due to disabled
 //				depthScale, depthOffset, depthScale, depthOffset );
 			
+			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+			
 		}catch( const deException & ){
 			renderParamBlock->UnmapBuffer();
 			throw;
@@ -1163,6 +1167,8 @@ deoglShadowMapper &shadowMapper ){
 		// parameter blockt to be updated twice (and stalling) is little
 		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 			depthScale, depthOffset, -depthScale, -depthOffset );
+		
+		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		
 	}catch( const deException & ){
 		renderParamBlock->UnmapBuffer();

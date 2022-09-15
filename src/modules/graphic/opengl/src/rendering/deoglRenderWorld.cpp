@@ -162,6 +162,7 @@ deoglRenderWorld::deoglRenderWorld( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 pRenderPB( NULL ),
+pRenderXRayPB( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
 pParticleSorter( NULL ),
@@ -171,6 +172,7 @@ pAddToRenderTaskParticles( NULL ),
 pDebugInfo( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	
@@ -178,6 +180,7 @@ pDebugInfo( renderThread )
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread );
+		pRenderXRayPB = deoglSkinShader::CreateSPBRender( renderThread );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -205,6 +208,22 @@ pDebugInfo( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Split" );
 		defines.SetDefines( "NO_POSTRANSFORM", "SPLIT_LAYERS" );
 		pShaderFinalizeSplit = shaderManager.GetProgramWith( sources, defines );
+		
+		
+		defines = commonDefines;
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
+		if( ! defren.GetUseInverseDepth() ){
+			defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
+		}
+		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
+		
+		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+		}
+		pShaderCopyDepthStereo = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		DevModeDebugInfoChanged();
@@ -524,7 +543,8 @@ DEBUG_RESET_TIMER
 		//   the front most depth
 		
 		// copy depth to XRay depth. this depth is used by XRay shaders to render only hidden fragments
-		renderThread.GetDeferredRendering().CopyFirstDepthToXRayDepth( true, false );
+		//renderThread.GetDeferredRendering().CopyFirstDepthToXRayDepth( true, false );
+		CopyDepthToXRayDepth( plan );
 		
 		// render solid geometry pass. this clears the depth texture
 		renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, true );
@@ -858,132 +878,145 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	// stereo rendering
 	const decMatrix &cameraStereoMatrix = plan.GetCameraStereoMatrix();
 	
+	// conditions, aka specializations
+	const bool condClipPlane = mask && mask->GetUseClipPlane();
+	const bool condXRay[ 2 ] = { false, true };
+	
 	// fill parameter blocks
-	pRenderPB->MapBuffer();
-	try{
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
-		pRenderPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+	deoglSPBlockUBO * const spbBlocks[ 2 ] = { pRenderPB, pRenderXRayPB };
+	
+	for( i=0; i<2; i++ ){
+		deoglSPBlockUBO &spb = *spbBlocks[ i ];
 		
-		pRenderPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 0, matrixCamera );
-		pRenderPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 0, matrixProjection );
-		pRenderPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
-		pRenderPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
-		pRenderPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
-		pRenderPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
-		pRenderPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
-		
-		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
-		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
-		
-		pRenderPB->SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
-		pRenderPB->SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
-		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
-		
-		defren.SetShaderViewport( *pRenderPB, deoglSkinShader::erutViewport, true );
-		pRenderPB->SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance );
-		pRenderPB->SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 1, clipPlaneNormalStereo, clipPlaneDistanceStereo );
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
-			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
-		
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutRenderSize, defren.GetWidth(), defren.GetHeight() );
-		
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, mipmapMaxLevel, mipMapMaxScale );
-		
-		pRenderPB->SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, particleLight );
-		
-		pRenderPB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
-		
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutCameraRange, plan.GetCameraImageDistance(), plan.GetCameraViewDistance() );
-		
-		if( plan.GetDisableLights() ){
-			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity, 1.0f );
+		spb.MapBuffer();
+		try{
+			spb.SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
+			spb.SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
 			
-		}else if( plan.GetCamera() ){
-			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
-				plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey() );
+			spb.SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 0, matrixCamera );
+			spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 0, matrixProjection );
+			spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
+			spb.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
+			spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
+			spb.SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+			spb.SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
 			
-		}else{
-			pRenderPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
-				plan.GetCameraAdaptedIntensity() );
+			spb.SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
+			spb.SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
+			
+			spb.SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
+			spb.SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
+			spb.SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
+			
+			defren.SetShaderViewport( spb, deoglSkinShader::erutViewport, true );
+			spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance );
+			spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 1, clipPlaneNormalStereo, clipPlaneDistanceStereo );
+			spb.SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
+				defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+			spb.SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
+			
+			spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, defren.GetWidth(), defren.GetHeight() );
+			
+			spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, mipmapMaxLevel, mipMapMaxScale );
+			
+			spb.SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, particleLight );
+			
+			spb.SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
+			
+			spb.SetParameterDataVec2( deoglSkinShader::erutCameraRange, plan.GetCameraImageDistance(), plan.GetCameraViewDistance() );
+			
+			if( plan.GetDisableLights() ){
+				spb.SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity, 1.0f );
+				
+			}else if( plan.GetCamera() ){
+				spb.SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+					plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey() );
+				
+			}else{
+				spb.SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+					plan.GetCameraAdaptedIntensity() );
+			}
+			
+			spb.SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
+			spb.SetParameterDataVec4( deoglSkinShader::erutFSTexCoordToScreenCoord,
+				2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
+			defren.SetShaderParamFSQuad( spb, deoglSkinShader::erutFSScreenCoordToTexCoord );
+			
+			const float znear = plan.GetCameraImageDistance();
+			const float zfar = plan.GetCameraViewDistance();
+			const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
+			spb.SetParameterDataVec3( deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange );
+			
+			// ssao
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSAOParams1,
+				ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant );
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSAOParams2,
+				ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit );
+			spb.SetParameterDataVec3( deoglSkinShader::erutSSAOParams3,
+				ssaoRadiusFactor, ssaoMipMapBase, ssaoMipMapMaxLevel );
+			
+			// sssss
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSSSSParams1, sssssDropSubSurfaceThreshold,
+				sssssTapRadiusFactor, sssssTapRadiusLimit, sssssTapDropRadiusThreshold );
+			spb.SetParameterDataIVec2( deoglSkinShader::erutSSSSSParams2, sssssTapCount, sssssTurnCount );
+			
+			// ssr
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSRParams1,
+				ssrCoverageFactor.x, ssrCoverageFactor.y, ssrPowerEdge, ssrPowerRayLength );
+			spb.SetParameterDataVec4( deoglSkinShader::erutSSRParams2, ssrClipReflDirNearDist,
+				ssrRoughnessTapCountScale, ssrMinMaxTCFactor.x, ssrMinMaxTCFactor.y );
+			spb.SetParameterDataIVec4( deoglSkinShader::erutSSRParams3,
+				ssrStepCount, ssrSubStepCount, ssrMaxRayLength, ssrRoughnessTapMax );
+			
+			// lighting
+			spb.SetParameterDataVec2( deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
+				1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
+			
+			spb.SetParameterDataVec2( deoglSkinShader::erutLumFragCoordScale,
+				( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
+				( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+			
+			// global illumination
+			spb.SetParameterDataMat4x3( deoglSkinShader::erutGIRayMatrix, giMatrix );
+			spb.SetParameterDataMat3x3( deoglSkinShader::erutGIRayMatrixNormal, giMatrixNormal );
+			spb.SetParameterDataInt( deoglSkinShader::erutGIHighestCascade, giHighestCascade );
+			
+			// tone mapping
+			spb.SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapLWhite );
+			spb.SetParameterDataVec3( deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime );
+			spb.SetParameterDataVec2( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, 0.0f );
+			
+			// debug depth transform
+			spb.SetParameterDataVec2( deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift );
+			
+			// specializations
+			spb.SetParameterDataBVec4( deoglSkinShader::erutConditions1, condClipPlane, condXRay[ i ], false, false );
+			
+			// stereo rendering
+			if( plan.GetRenderStereo() ){
+				const decDMatrix matrixCameraStereo( matrixCamera * cameraStereoMatrix );
+				const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
+				const decMatrix matrixSkyBodyStereo( matrixCameraStereo.GetRotationMatrix() * matrixProjectionStereo );
+				
+				spb.SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCameraStereo );
+				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 1, matrixProjectionStereo );
+				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCameraStereo * matrixProjectionStereo );
+				spb.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCameraStereo.GetRotationMatrix().Invert() );
+				spb.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 1, matrixSkyBodyStereo );
+				spb.SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
+				spb.SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2() );
+				spb.SetParameterDataMat4x3( deoglSkinShader::erutCameraStereoMatrix, cameraStereoMatrix );
+				
+			}else{
+				spb.SetParameterDataMat4x3( deoglSkinShader::erutCameraStereoMatrix, decMatrix() );
+			}
+			
+		}catch( const deException & ){
+			spb.UnmapBuffer();
+			throw;
 		}
-		
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutFSTexCoordToScreenCoord,
-			2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
-		defren.SetShaderParamFSQuad( *pRenderPB, deoglSkinShader::erutFSScreenCoordToTexCoord );
-		
-		const float znear = plan.GetCameraImageDistance();
-		const float zfar = plan.GetCameraViewDistance();
-		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
-		pRenderPB->SetParameterDataVec3( deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange );
-		
-		// ssao
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutSSAOParams1,
-			ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant );
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutSSAOParams2,
-			ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit );
-		pRenderPB->SetParameterDataVec3( deoglSkinShader::erutSSAOParams3,
-			ssaoRadiusFactor, ssaoMipMapBase, ssaoMipMapMaxLevel );
-		
-		// sssss
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutSSSSSParams1, sssssDropSubSurfaceThreshold,
-			sssssTapRadiusFactor, sssssTapRadiusLimit, sssssTapDropRadiusThreshold );
-		pRenderPB->SetParameterDataIVec2( deoglSkinShader::erutSSSSSParams2, sssssTapCount, sssssTurnCount );
-		
-		// ssr
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutSSRParams1,
-			ssrCoverageFactor.x, ssrCoverageFactor.y, ssrPowerEdge, ssrPowerRayLength );
-		pRenderPB->SetParameterDataVec4( deoglSkinShader::erutSSRParams2, ssrClipReflDirNearDist,
-			ssrRoughnessTapCountScale, ssrMinMaxTCFactor.x, ssrMinMaxTCFactor.y );
-		pRenderPB->SetParameterDataIVec4( deoglSkinShader::erutSSRParams3,
-			ssrStepCount, ssrSubStepCount, ssrMaxRayLength, ssrRoughnessTapMax );
-		
-		// lighting
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
-			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
-		
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutLumFragCoordScale,
-			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
-			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
-		
-		// global illumination
-		pRenderPB->SetParameterDataMat4x3( deoglSkinShader::erutGIRayMatrix, giMatrix );
-		pRenderPB->SetParameterDataMat3x3( deoglSkinShader::erutGIRayMatrixNormal, giMatrixNormal );
-		pRenderPB->SetParameterDataInt( deoglSkinShader::erutGIHighestCascade, giHighestCascade );
-		
-		// tone mapping
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutToneMapSceneKey, toneMapExposure, toneMapLWhite );
-		pRenderPB->SetParameterDataVec3( deoglSkinShader::erutToneMapAdaption, toneMapLowInt, toneMapHighInt, toneMapAdaptationTime );
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutToneMapBloom, toneMapBloomStrength, 0.0f );
-		
-		// debug depth transform
-		pRenderPB->SetParameterDataVec2( deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift );
-		
-		// stereo rendering
-		if( plan.GetRenderStereo() ){
-			const decDMatrix matrixCameraStereo( matrixCamera * cameraStereoMatrix );
-			const decDMatrix &matrixProjectionStereo = plan.GetProjectionMatrixStereo();
-			const decMatrix matrixSkyBodyStereo( matrixCameraStereo.GetRotationMatrix() * matrixProjectionStereo );
-			
-			pRenderPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCameraStereo );
-			pRenderPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixP, 1, matrixProjectionStereo );
-			pRenderPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCameraStereo * matrixProjectionStereo );
-			pRenderPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCameraStereo.GetRotationMatrix().Invert() );
-			pRenderPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 1, matrixSkyBodyStereo );
-			pRenderPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 1, plan.GetDepthToPositionStereo() );
-			pRenderPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 1, plan.GetDepthToPositionStereo2() );
-			pRenderPB->SetParameterDataMat4x3( deoglSkinShader::erutCameraStereoMatrix, cameraStereoMatrix );
-			
-		}else{
-			pRenderPB->SetParameterDataMat4x3( deoglSkinShader::erutCameraStereoMatrix, decMatrix() );
-		}
-		
-	}catch( const deException & ){
-		pRenderPB->UnmapBuffer();
-		throw;
+		spb.UnmapBuffer();
 	}
-	pRenderPB->UnmapBuffer();
 DBG_EXIT("PrepareRenderParamBlock")
 }
 
@@ -1051,7 +1084,8 @@ DBG_EXIT("RenderMaskedPass(early)")
 		// render solid content
 		pRenderTask->Clear();
 		pRenderTask->SetRenderParamBlock( pRenderPB );
-		pRenderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+		pRenderTask->SetRenderVSStereo( plan.GetRenderStereo()
+			&& renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		pAddToRenderTask->Reset();
 		pAddToRenderTask->SetSolid( true );
@@ -1361,6 +1395,34 @@ DBG_ENTER("RenderFinalizeContext")
 DBG_EXIT("RenderFinalizeContext")
 }
 
+void deoglRenderWorld::CopyDepthToXRayDepth( deoglRenderPlan &plan ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const int viewportHeight = plan.GetViewportHeight();
+	const int viewportWidth = plan.GetViewportWidth();
+	
+	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
+	
+	defren.ActivateFBODepthXRay();
+	
+	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyDepthStereo : pShaderCopyDepth;
+	renderThread.GetShader().ActivateShader( program );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	defren.SetShaderParamFSQuad( *program->GetCompiled(), spcdQuadParams );
+	
+	RenderFullScreenQuadVAO( plan );
+}
+
 
 
 void deoglRenderWorld::AddTopLevelDebugInfo(){
@@ -1394,5 +1456,8 @@ void deoglRenderWorld::pCleanUp(){
 	}
 	if( pRenderPB ){
 		pRenderPB->FreeReference();
+	}
+	if( pRenderXRayPB ){
+		pRenderXRayPB->FreeReference();
 	}
 }

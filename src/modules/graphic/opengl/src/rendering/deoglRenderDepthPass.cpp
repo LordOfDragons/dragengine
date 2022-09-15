@@ -342,7 +342,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		tasks.WaitFinishBuildingTasksDepth();
 		
 		renderTask = xray ? &tasks.GetSolidDepthXRayTask() : &tasks.GetSolidDepthTask();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		
 	}else{
 		DebugTimer1Reset( plan, true );
@@ -351,7 +351,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		
 		// build render task
 		renderTask->Clear();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		addToRenderTask.Reset();
@@ -603,7 +603,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	if( solid ){
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
 		renderTask = xray ? &tasks.GetSolidDepthOutlineXRayTask() : &tasks.GetSolidDepthOutlineTask();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		
 	}else{
 		DebugTimer1Reset( plan, true );
@@ -611,7 +611,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
 		renderTask->Clear();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		addToRenderTask.Reset();

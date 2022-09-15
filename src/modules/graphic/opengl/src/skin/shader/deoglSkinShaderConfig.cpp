@@ -80,7 +80,6 @@ void deoglSkinShaderConfig::Reset(){
 	pOutlineThicknessScreen = false;
 	pLuminanceOnly = false;
 	pGIMaterial = false;
-	pXRay = false;
 	
 	pDynamicColorTint = false;
 	pDynamicColorGamma = false;
@@ -266,10 +265,6 @@ void deoglSkinShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
 
 void deoglSkinShaderConfig::SetGIMaterial( bool gimaterial ){
 	pGIMaterial = gimaterial;
-}
-
-void deoglSkinShaderConfig::SetXRay( bool xray ){
-	pXRay = xray;
 }
 
 
@@ -631,9 +626,6 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGIMaterial ){
 		string.Append( " giMaterial" );
 	}
-	if( pXRay ){
-		string.Append( " xray" );
-	}
 	
 	if( pDynamicColorTint ){
 		string.Append( " dynClrTint" );
@@ -844,7 +836,6 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
 	pLuminanceOnly = config.pLuminanceOnly;
 	pGIMaterial = config.pGIMaterial;
-	pXRay = config.pXRay;
 	
 	pDynamicColorTint = config.pDynamicColorTint;
 	pDynamicColorGamma = config.pDynamicColorGamma;
@@ -939,7 +930,6 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen
 		&& pLuminanceOnly == config.pLuminanceOnly
 		&& pGIMaterial == config.pGIMaterial
-		&& pXRay == config.pXRay
 		
 		&& pDynamicColorTint == config.pDynamicColorTint
 		&& pDynamicColorGamma == config.pDynamicColorGamma

@@ -568,6 +568,8 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThre
 		
 		spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
+		spb->GetParameterAt( erutConditions1 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
+		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
@@ -1908,9 +1910,6 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetInverseDepth() ){
 		defines.SetDefine( "INVERSE_DEPTH", true );
 	}
-	if( pConfig.GetXRay() ){
-		defines.SetDefine( "XRAY", true );
-	}
 	
 	if( pConfig.GetGSRenderCube() ){
 		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
@@ -2366,9 +2365,7 @@ void deoglSkinShader::UpdateTextureTargets(){
 		pTextureTargets[ ettHeightMapMask ] = textureUnitNumber++;
 	}
 	
-	if( pConfig.GetXRay() != deoglSkinShaderConfig::edtmNone ){
-		pTextureTargets[ ettXRayDepth ] = textureUnitNumber++;
-	}
+	pTextureTargets[ ettXRayDepth ] = textureUnitNumber++;
 	
 	pUsedTextureTargetCount = textureUnitNumber;
 }
@@ -2557,6 +2554,7 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pToneMapAdaption" ); // erutToneMapAdaption
 		parameterList.Add( "pToneMapBloom" ); // erutToneMapBloom
 		parameterList.Add( "pDebugDepthTransform" ); // erutDebugDepthTransform
+		parameterList.Add( "pConditions1" ); // erutConditions1
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){
