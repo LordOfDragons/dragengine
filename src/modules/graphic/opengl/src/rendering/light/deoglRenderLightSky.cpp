@@ -387,8 +387,9 @@ const deoglRenderPlanMasked *mask ){
 	int passCount = 1;
 	
 	// render shadow map
-	if( useShadow && solid ){
-		passCount = plan.GetShadowLayerCount();
+	passCount = plan.GetShadowLayerCount();
+	
+	if( useShadow && solid && ! xray ){
 		RenderShadows( plan, solid, mask );
 		RestoreFBO( plan.GetPlan() );
 		DebugTimer2SampleCount( plan.GetPlan(), *pDebugInfoSolidShadow, 1, true );
