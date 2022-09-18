@@ -449,16 +449,13 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create default keyboard layout panel row 5. */
 	protected func Panel createKeyboardLayoutDefaultPanelRow5()
 		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			var String dir = "/shareddata/guithemes/modern/keyboard/"
 			p.addWidget(createVirtualKey(InputEventKey.home, 0, "Home", ".Wide"))
-			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_up.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_down.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0, Image.new(dir + "arrow_up.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0, Image.new(dir + "arrow_down.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.space, ' ', " ", ".Space"))
-			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_left.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_right.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0, Image.new(dir + "arrow_left.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0, Image.new(dir + "arrow_right.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
 		end)
 	end
@@ -503,15 +500,12 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create numeric keyboard layout panel row 3. */
 	protected func Panel createKeyboardLayoutNumericPanelRow3()
 		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			var String dir = "/shareddata/guithemes/modern/keyboard/"
 			p.addWidget(createVirtualKey(InputEventKey.home, 0, "Home", ".Wide"))
-			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_up.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_down.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_left.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_right.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0, Image.new(dir + "arrow_up.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0, Image.new(dir + "arrow_down.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0, Image.new(dir + "arrow_left.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0, Image.new(dir + "arrow_right.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
 		end)
 	end
