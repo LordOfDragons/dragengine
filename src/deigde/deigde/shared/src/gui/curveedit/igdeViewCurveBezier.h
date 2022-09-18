@@ -135,6 +135,13 @@ public:
 		virtual void OnAction();
 	};
 	
+	class cActionAutoHandles : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionAutoHandles( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
 	
 	
 private:
@@ -220,6 +227,12 @@ public:
 	 * \details Fits curve into clamp minimum/maximum range.
 	 */
 	void SetDefaultBezier();
+	
+	/**
+	 * \brief Set handles to default position for interpolation mode.
+	 * \version 1.15
+	 */
+	void SetAutoHandles();
 	
 	
 	
