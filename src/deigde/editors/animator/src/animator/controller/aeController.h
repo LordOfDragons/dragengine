@@ -66,6 +66,9 @@ public:
 	/** \brief Create controller. */
 	aeController( const char *name = "Controller" );
 	
+	/** \brief Create copy of controller. */
+	aeController( const aeController &copy );
+	
 	/** Cleans up the animator controller. */
 	virtual ~aeController();
 	/*@}*/

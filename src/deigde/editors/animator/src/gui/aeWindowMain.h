@@ -98,6 +98,7 @@ private:
 	igdeActionReference pActionEditDDBoneSize;
 	
 	igdeActionReference pActionControllerAdd;
+	igdeActionReference pActionControllerDuplicate;
 	igdeActionReference pActionControllerRemove;
 	igdeActionReference pActionControllerUp;
 	igdeActionReference pActionControllerDown;
@@ -248,6 +249,7 @@ public:
 	
 	/** \brief Actions. */
 	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline igdeAction *GetActionControllerDuplicate() const{ return pActionControllerDuplicate; }
 	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
 	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
 	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
