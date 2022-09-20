@@ -897,6 +897,24 @@ class Desktop extends Container
 	
 	
 	
+	/**
+	 * \brief Raise windows with getAlwaysOnTop() set.
+	 * \versoin 1.15.
+	 */
+	public func void raiseWindowsAlwaysOnTop()
+		var Array list = Array.new()
+		forEachWidget(block Window each
+			if each.getAlwaysOnTop()
+				list.add(each)
+			end
+		end)
+		list.forEach(block Window each
+			each.moveToTop()
+		end)
+	end
+	
+	
+	
 	/** Notification that a mouse button has been pressed. */
 	public func void onButtonPress(MouseEvent event)
 		if event.getSource() != this

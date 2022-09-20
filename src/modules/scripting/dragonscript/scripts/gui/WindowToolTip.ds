@@ -48,6 +48,7 @@ class WindowToolTip extends Window
 			setCanClose(false)
 			setCanMaximize(false)
 			setCanMinimize(false)
+			setAlwaysOnTop(true)
 			setLayout(FlowLayout.new(LayoutAxis.y))
 			setDesignerSelector("WindowToolTip")
 		end)

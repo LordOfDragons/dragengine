@@ -105,6 +105,36 @@ class WindowVirtualKeyboard extends Window
 		end
 	end
 	
+	/**
+	 * \brief Hide keyboard listener.
+	 * \versoin 1.15
+	 */
+	class HideVirtualKeyboard extends DefaultMouseListener
+		private var WindowVirtualKeyboard pWindow
+		private var Widget pWidget
+		private var bool pButtonPressed
+		
+		public func new(WindowVirtualKeyboard window, Widget widget)
+			pWindow = window
+			pWidget = widget
+		end
+		
+		public func void onButtonPress(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left
+				pWidget.captureMouse()
+				pButtonPressed = true
+			end
+		end
+		
+		public func void onButtonRelease(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left and pButtonPressed
+				pButtonPressed = false
+				pWidget.releaseMouse()
+				pWindow.popdown()
+			end
+		end
+	end
+	
 	
 	
 	private var Widget pInputWidget
@@ -132,6 +162,7 @@ class WindowVirtualKeyboard extends Window
 			setCanClose(false)
 			setCanMaximize(false)
 			setCanMinimize(false)
+			setAlwaysOnTop(true)
 			setDesignerSelector("WindowVirtualKeyboard")
 			
 			setLayout(StackLayout.new())
@@ -457,6 +488,7 @@ class WindowVirtualKeyboard extends Window
 			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0, Image.new(dir + "arrow_left.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0, Image.new(dir + "arrow_right.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
+			p.addWidget(createVirtualKeyHide(Image.new(dir + "hide.png"), ""))
 		end)
 	end
 	
@@ -507,6 +539,7 @@ class WindowVirtualKeyboard extends Window
 			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0, Image.new(dir + "arrow_left.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0, Image.new(dir + "arrow_right.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
+			p.addWidget(createVirtualKeyHide(Image.new(dir + "hide.png"), ""))
 		end)
 	end
 	
@@ -530,6 +563,16 @@ class WindowVirtualKeyboard extends Window
 	protected func Widget createVirtualKey(int keyCode, int keyChar, Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
 		display.addMouseListener(VirtualKeyType.new(this, display, keyCode, keyChar, keyChar))
+		return display
+	end
+	
+	/**
+	 * \brief Create virtual key widget.
+	 * \versoin 1.15
+	 */
+	protected func Widget createVirtualKeyHide(Image image, String designerSuffix)
+		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.addMouseListener(HideVirtualKeyboard.new(this, display))
 		return display
 	end
 end

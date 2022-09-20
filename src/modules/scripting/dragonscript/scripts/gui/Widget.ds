@@ -2139,7 +2139,7 @@ class Widget
 		var Desktop desktop = getDesktop()
 		if desktop != null
 			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
-			if vk != null
+			if vk != null and vk.getInputWidget() != this
 				vk.popup(this)
 			end
 		end
@@ -2153,7 +2153,7 @@ class Widget
 		var Desktop desktop = getDesktop()
 		if desktop != null
 			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
-			if vk != null
+			if vk != null and vk.getInputWidget() == this
 				vk.popdown()
 			end
 		end
