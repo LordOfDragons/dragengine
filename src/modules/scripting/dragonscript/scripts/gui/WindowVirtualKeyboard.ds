@@ -168,6 +168,8 @@ class WindowVirtualKeyboard extends Window
 			setLayout(StackLayout.new())
 			createKeyboardLayoutPanels(this)
 		end)
+		
+		startFrameUpdater()
 	end
 	
 	/** \brief Dispose of widget. */
@@ -334,6 +336,13 @@ class WindowVirtualKeyboard extends Window
 		// clamped position clips at bottom. move popup to top of mouse pointer
 		desired = position - Point.new(0, popupSize.getY())
 		return visibleAreay.clamp(desired)
+	end
+	
+	/** \brief Do frame update. */
+	public func void onFrameUpdate(float elapsed)
+		if pInputWidget != null
+			setPosition(calculatePopupPosition(pInputWidget))
+		end
 	end
 	
 	
