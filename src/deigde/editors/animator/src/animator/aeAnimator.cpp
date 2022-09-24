@@ -1428,18 +1428,15 @@ void aeAnimator::pUpdateComponent(){
 	// try to load the model, skin and rig if possible
 	try{
 		if( ! pDisplayModelPath.IsEmpty() ){
-			displayModel = engine->GetModelManager()->LoadModel(
-				pDisplayModelPath.GetString(), GetDirectoryPath() );
+			displayModel = engine->GetModelManager()->LoadModel( pDisplayModelPath, GetDirectoryPath() );
 		}
 		
 		if( ! pDisplaySkinPath.IsEmpty() ){
-			displaySkin = engine->GetSkinManager()->LoadSkin(
-				pDisplaySkinPath.GetString(), GetDirectoryPath() );
+			displaySkin = engine->GetSkinManager()->LoadSkin( pDisplaySkinPath, GetDirectoryPath() );
 		}
 		
 		if( ! pDisplayRigPath.IsEmpty() ){
-			displayRig = engine->GetRigManager()->LoadRig(
-				pDisplayRigPath.GetString(), GetDirectoryPath() );
+			displayRig = engine->GetRigManager()->LoadRig( pDisplayRigPath, GetDirectoryPath() );
 		}
 		
 		if( pRigPath.IsEmpty() ){

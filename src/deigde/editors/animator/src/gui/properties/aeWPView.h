@@ -145,6 +145,9 @@ public:
 	
 	/** \brief Update attachment. */
 	void UpdateAttachment();
+	
+	/** \brief Animator path changed. */
+	void OnAnimatorPathChanged();
 	/*@}*/
 };
 
