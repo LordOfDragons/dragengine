@@ -824,11 +824,16 @@ bpy.types.Action.dragengine_autorange = bpy.props.BoolProperty(
 
 bpy.types.Action.dragengine_rangebegin = bpy.props.IntProperty(
 	name="Range Begin", description="First frame to export if not using automatic range",
-	default=0, soft_min=0, soft_max=100)
+	default=1, soft_min=1, soft_max=100)
 
 bpy.types.Action.dragengine_rangeend = bpy.props.IntProperty(
 	name="Range End", description="Last frame to export if not using automatic range",
-	default=100, soft_min=0, soft_max=100)
+	default=100, soft_min=1, soft_max=100)
+
+bpy.types.Action.dragengine_looping = bpy.props.BoolProperty(
+	name="Looping",
+	description="Animation is looping (skip last frame which is duplicate of first)",
+	default=False)
 
 class OBJECT_PT_DragengineArmatureAction(bpy.types.Panel):
 	bl_space_type = 'PROPERTIES'
