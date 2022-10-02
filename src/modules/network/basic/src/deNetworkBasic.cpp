@@ -50,7 +50,7 @@
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 #ifdef OS_W32
-#include <WS2tcpip.h>
+#include <winsock2.h>
 #endif
 
 
