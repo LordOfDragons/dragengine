@@ -24,6 +24,11 @@
 #include <string.h>
 #include <sys/time.h>
 
+#ifdef OS_W32
+#include <winsock2.h>
+#include <dragengine/app/include_windows.h>
+#endif
+
 #include "debnServer.h"
 #include "debnSocket.h"
 #include "debnAddress.h"
@@ -48,10 +53,6 @@
 #include <dragengine/resources/network/deNetworkMessageReader.h>
 #include <dragengine/resources/network/deNetworkMessageWriter.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
-
-#ifdef OS_W32
-#include <winsock2.h>
-#endif
 
 
 
