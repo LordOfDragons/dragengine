@@ -81,7 +81,8 @@ class Viewport extends Panel implements RangeModelListener
 	 * \brief Create viewport with content widget and layout.
 	 * \version 1.7
 	 * 
-	 * Uses ViewportLayout with provided width and height restriction.
+	 * Uses ViewportLayout with provided width and height restriction. To restrict width
+	 * or height set a value larger 0. A value of 0 indicates no restriction.
 	 */
 	public func new(Widget content, int restrictWidth, int restrictHeight, bool stretch)
 		pVertRangeModel = DefaultRangeModel.new(0, 0, 100, 0, 20)
