@@ -49,6 +49,10 @@
 #include <dragengine/resources/network/deNetworkMessageWriter.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
+#ifdef OS_W32
+#include <WS2tcpip.h>
+#endif
+
 
 
 // Export Definition
@@ -113,6 +117,9 @@ pTailServer( nullptr ),
 pHeadSocket( nullptr ),
 pTailSocket( nullptr ),
 pDatagram( nullptr )
+#ifdef OS_W32
+,pWSAStartupCalled( false )
+#endif
 {
 	try{
 		pParameters.AddParameter( new debnPLogLevel( *this ) );
@@ -142,9 +149,21 @@ deNetworkBasic::~deNetworkBasic(){
 
 bool deNetworkBasic::Init(){
 	try{
+		// operating system specific startup calls
+		#ifdef OS_W32
+		WSADATA wsaData;
+		if( WSAStartup(MAKEWORD( 2, 2 ), &wsaData ) ){
+			DETHROW_INFO( deeInvalidAction, "WSAStartup failed" );
+		}
+		pWSAStartupCalled = true;
+		
+		if( LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ){
+			DETHROW_INFO( deeInvalidAction, "WSAStartup succeeded but returned unsupported version" );
+		}
+		#endif
+		
 		// create shared datagram
 		pDatagram = new deNetworkMessage;
-		if( ! pDatagram ) DETHROW( deeOutOfMemory );
 		pDatagram->SetDataLength( 1024 );
 		
 		// create receive address
@@ -162,7 +181,8 @@ bool deNetworkBasic::Init(){
 		//pMessage = new deNetworkMessage;
 		//if( ! pMessage ) DETHROW( deeOutOfMemory );
 		
-	}catch( const deException & ){
+	}catch( const deException &e ){
+		LogException( e );
 		CleanUp();
 		return false;
 	}
@@ -198,6 +218,14 @@ void deNetworkBasic::CleanUp(){
 	pHeadSocket = NULL;
 	pTailSocket = NULL;
 	*/
+	
+	// operating system specific startup calls
+	#ifdef OS_W32
+	if( pWSAStartupCalled ){
+		pWSAStartupCalled = false;
+		WSACleanup();
+	}
+	#endif
 }
 
 void deNetworkBasic::ProcessNetwork(){
