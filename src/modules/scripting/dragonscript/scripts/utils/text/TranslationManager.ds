@@ -34,111 +34,170 @@ namespace Dragengine.Utils
 class TranslationManager
 	private var Dictionary pLanguagePacks
 	private var LanguagePack pActiveLanguagePack
+	private var LanguagePack pFallbackLanguagePack
 	private var UnicodeString pTextNoLanguagePack
 	
 	
 	
 	/** \brief Create translation manager. */
 	public func new()
-		this.pLanguagePacks = Dictionary.new()
-		this.pTextNoLanguagePack = UnicodeString.newFromUTF8( "Missing Language Pack" )
+		pLanguagePacks = Dictionary.new()
+		pTextNoLanguagePack = UnicodeString.newFromUTF8("Missing Language Pack")
 	end
 	
 	
 	
 	/** \brief Translation for entry name or missing text if absent. */
-	public func UnicodeString translate( String name )
-		if this.pActiveLanguagePack != null
-			return this.pActiveLanguagePack.translate( name )
+	public func UnicodeString translate(String name)
+		var UnicodeString text = translate(name, null)
+		
+		if text != null
+			return text
+			
+		elif pActiveLanguagePack != null
+			return pActiveLanguagePack.getMissingText()
+			
+		elif pFallbackLanguagePack != null
+			return pFallbackLanguagePack.getMissingText()
 			
 		else
-			return this.pTextNoLanguagePack
+			return pTextNoLanguagePack
 		end
 	end
 	
 	/** \brief Translation for entry name or default value if absent. */
-	public func UnicodeString translate( String name, UnicodeString defaultValue )
-		if this.pActiveLanguagePack != null
-			return this.pActiveLanguagePack.translate( name, defaultValue )
-			
-		else
-			return defaultValue
+	public func UnicodeString translate(String name, UnicodeString defaultValue)
+		if pActiveLanguagePack != null
+			var UnicodeString text = pActiveLanguagePack.translate(name, null)
+			if text != null
+				return text
+			end
 		end
+		
+		if pFallbackLanguagePack != null
+			var UnicodeString text = pFallbackLanguagePack.translate(name, null)
+			if text != null
+				return text
+			end
+		end
+		
+		return defaultValue
 	end
 	
 	
 	
 	/** \brief Missing language pack translation. */
 	public func UnicodeString getTextNoLanguagePack()
-		return this.pTextNoLanguagePack
+		return pTextNoLanguagePack
 	end
 	
 	/** \brief Set missing language pack translation. */
-	public func void setTextNoLanguagePack( UnicodeString text )
-		this.pTextNoLanguagePack = text
+	public func void setTextNoLanguagePack(UnicodeString text)
+		pTextNoLanguagePack = text
 	end
 	
 	
 	
 	/** \brief Number of language packs. */
 	public func int getCount()
-		return this.pLanguagePacks.getCount()
+		return pLanguagePacks.getCount()
 	end
 	
 	/** \brief Named language pack or \em null if absent. */
-	public func LanguagePack getNamed( UnicodeString name )
-		return this.pLanguagePacks.getAt( name, null ) cast LanguagePack
+	public func LanguagePack getNamed(UnicodeString name)
+		return pLanguagePacks.getAt(name, null) cast LanguagePack
 	end
 	
 	/** \brief Add language pack. */
-	public func void add( LanguagePack languagePack )
-		if this.getNamed( languagePack.getName() ) != null
+	public func void add(LanguagePack languagePack)
+		if getNamed(languagePack.getName()) != null
 			throw EInvalidParam.new()
 		end
-		this.pLanguagePacks.setAt( languagePack.getName(), languagePack )
+		pLanguagePacks.setAt(languagePack.getName(), languagePack)
 	end
 	
 	/** \brief Remove all language packs. */
 	public func void removeAll()
-		this.pLanguagePacks.removeAll()
+		pLanguagePacks.removeAll()
 	end
 	
 	/** \brief Get array of language pack names as array of UnicodeString. */
 	public func Array getNames()
-		return this.pLanguagePacks.getKeys()
+		return pLanguagePacks.getKeys()
 	end
 	
 	/** \brief Visit language packs with block with parameter LanguagePack. */
-	public func void forEach( Block ablock )
-		this.pLanguagePacks.forEachValue( ablock )
+	public func void forEach(Block ablock)
+		pLanguagePacks.forEachValue(ablock)
 	end
 	
 	
 	
 	/** \brief Active language pack. */
 	public func LanguagePack getActive()
-		return this.pActiveLanguagePack
+		return pActiveLanguagePack
 	end
 	
 	/** \brief Set active language pack. */
-	public func void setActive( LanguagePack languagePack )
-		this.pActiveLanguagePack = languagePack
+	public func void setActive(LanguagePack languagePack)
+		pActiveLanguagePack = languagePack
 	end
 	
 	/** \brief Set active language pack by name. */
-	public func void setActiveNamed( UnicodeString name )
-		var LanguagePack languagePack = this.getNamed( name )
+	public func void setActiveNamed(UnicodeString name)
+		var LanguagePack languagePack = getNamed(name)
 		if languagePack == null
 			throw EInvalidParam.new()
 		end
-		this.setActive( languagePack )
+		setActive(languagePack)
 	end
 	
 	/** \brief Set active language pack by name if present. */
-	public func void setActiveNamedIfPresent( UnicodeString name )
-		var LanguagePack languagePack = this.getNamed( name )
+	public func void setActiveNamedIfPresent(UnicodeString name)
+		var LanguagePack languagePack = getNamed(name)
 		if languagePack != null
-			this.setActive( languagePack )
+			setActive(languagePack)
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Fallback language pack.
+	 * \version 1.16
+	 */
+	public func LanguagePack getFallback()
+		return pFallbackLanguagePack
+	end
+	
+	/**
+	 * \brief Set fallback language pack.
+	 * \version 1.16
+	 */
+	public func void setFallback(LanguagePack languagePack)
+		pFallbackLanguagePack = languagePack
+	end
+	
+	/**
+	 * \brief Set fallback language pack by name.
+	 * \version 1.16
+	 */
+	public func void setFallbackNamed(UnicodeString name)
+		var LanguagePack languagePack = getNamed(name)
+		if languagePack == null
+			throw EInvalidParam.new()
+		end
+		setFallback(languagePack)
+	end
+	
+	/**
+	 * \brief Set fallback language pack by name if present.
+	 * \version 1.16
+	 */
+	public func void setFallbackNamedIfPresent(UnicodeString name)
+		var LanguagePack languagePack = getNamed(name)
+		if languagePack != null
+			setFallback(languagePack)
 		end
 	end
 	
@@ -153,8 +212,8 @@ class TranslationManager
 	 * \param directory Absolute path to directory to scan for files.
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addFromDirectory( String directory, bool recursive )
-		this.addFromDirectory( directory, "*.delangpack", recursive )
+	public func void addFromDirectory(String directory, bool recursive)
+		addFromDirectory(directory, "*.delangpack", recursive)
 	end
 	
 	/**
@@ -167,12 +226,12 @@ class TranslationManager
 	 * \param pattern File pattern to match. Has to be of the form "*.extension"
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addFromDirectory( String directory, String pattern, bool recursive )
-		FileSystem.searchFiles( directory, recursive, block String each, FileType type
-			if type == FileType.file and FileSystem.pathMatchesPattern( File.new( each ).getName(), pattern )
-				this.add( LanguagePack.new( each ) )
+	public func void addFromDirectory(String directory, String pattern, bool recursive)
+		FileSystem.searchFiles(directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
+				add(LanguagePack.new(each))
 			end
 			return true
-		end )
+		end)
 	end
 end

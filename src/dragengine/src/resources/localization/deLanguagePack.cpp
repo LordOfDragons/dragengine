@@ -133,6 +133,19 @@ const decUnicodeString &defaultValue ) const{
 	}
 }
 
+bool deLanguagePack::Translate( const char *name, const decUnicodeString **text ) const {
+	DEASSERT_NOTNULL( text );
+	
+	void *pointer;
+	if( pLookupTable.GetAt( name, &pointer ) ){
+		*text = &( ( const deLanguagePackEntry* )pointer )->GetText();
+		return true;
+		
+	}else{
+		return false;
+	}
+}
+
 
 
 bool deLanguagePack::Verify() const{

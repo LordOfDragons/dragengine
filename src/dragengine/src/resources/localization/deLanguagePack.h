@@ -119,6 +119,14 @@ public:
 	/** \brief Translation for entry name or default value if absent. */
 	const decUnicodeString &Translate( const char *name, const decUnicodeString &defaultValue ) const;
 	
+	/**
+	 * \brief Translation for entry name.
+	 * 
+	 * If translation entry is present text is set pointing to the translated text and
+	 * true is returned. Otherwise false is returned and text is unchanged.
+	 */
+	bool Translate( const char *name, const decUnicodeString **text ) const;
+	
 	
 	
 	/** \brief Verify language pack contains valid data. */
