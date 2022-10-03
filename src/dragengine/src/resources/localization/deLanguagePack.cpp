@@ -58,6 +58,10 @@ deLanguagePack::~deLanguagePack(){
 // Management
 ///////////////
 
+void deLanguagePack::SetIdentifier( const decString &identifier ){
+	pIdentifier = identifier;
+}
+
 void deLanguagePack::SetName( const decUnicodeString &name ){
 	pName = name;
 }

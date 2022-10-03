@@ -88,6 +88,7 @@ private:
 	DEF_NATFUNC( nfNew );
 	DEF_NATFUNC( nfDestructor );
 	
+	DEF_NATFUNC( nfGetIdentifier );
 	DEF_NATFUNC( nfGetName );
 	DEF_NATFUNC( nfGetDescription );
 	DEF_NATFUNC( nfGetFilename );

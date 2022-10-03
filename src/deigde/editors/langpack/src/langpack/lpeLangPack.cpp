@@ -50,6 +50,7 @@
 ////////////////////////////
 
 lpeLangPack::lpeLangPack( igdeEnvironment *environment ) : igdeEditableEntity( environment ){
+	pIdentifier = "id";
 	pName.SetFromUTF8( "Language Pack" );
 	pMissingText.SetFromUTF8( "??" );
 }
@@ -62,6 +63,15 @@ lpeLangPack::~lpeLangPack(){
 
 // Management
 ///////////////
+
+void lpeLangPack::SetIdentifier( const char *identifier ){
+	if( pIdentifier == identifier ){
+		return;
+	}
+	
+	pIdentifier = identifier;
+	NotifyLangPackChanged();
+}
 
 void lpeLangPack::SetName( const decUnicodeString &name ){
 	if( name != pName ){

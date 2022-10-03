@@ -103,17 +103,30 @@ class TranslationManager
 		return pLanguagePacks.getCount()
 	end
 	
-	/** \brief Named language pack or \em null if absent. */
+	/**
+	 * \brief Named language pack or \em null if absent.
+	 * \deprecated Use getWithId.
+	 */
 	public func LanguagePack getNamed(UnicodeString name)
-		return pLanguagePacks.getAt(name, null) cast LanguagePack
+		return pLanguagePacks.find(block String key, LanguagePack value
+			return value.getName().equals(name)
+		end) cast LanguagePack
+	end
+	
+	/**
+	 * \brief Language pack with identifier or \em null if absent.
+	 * \version 1.16
+	 */
+	public func LanguagePack getWithId(String identifier)
+		return pLanguagePacks.getAt(identifier, null) cast LanguagePack
 	end
 	
 	/** \brief Add language pack. */
 	public func void add(LanguagePack languagePack)
-		if getNamed(languagePack.getName()) != null
+		if getWithId(languagePack.getIdentifier()) != null
 			throw EInvalidParam.new()
 		end
-		pLanguagePacks.setAt(languagePack.getName(), languagePack)
+		pLanguagePacks.setAt(languagePack.getIdentifier(), languagePack)
 	end
 	
 	/** \brief Remove all language packs. */
@@ -121,8 +134,21 @@ class TranslationManager
 		pLanguagePacks.removeAll()
 	end
 	
-	/** \brief Get array of language pack names as array of UnicodeString. */
+	/**
+	 * \brief Get array of language pack names as array of UnicodeString.
+	 * \deprecated Use getIdentifiers()
+	 */
 	public func Array getNames()
+		return pLanguagePacks.getValues().map(block LanguagePack each
+			return each.getName()
+		end)
+	end
+	
+	/**
+	 * \brief Get array of language pack identifier as array of String.
+	 * \version 1.16
+	 */
+	public func Array getIdentifiers()
 		return pLanguagePacks.getKeys()
 	end
 	
@@ -143,7 +169,10 @@ class TranslationManager
 		pActiveLanguagePack = languagePack
 	end
 	
-	/** \brief Set active language pack by name. */
+	/**
+	 * \brief Set active language pack by name.
+	 * \deprecated Use setActiveWithId.
+	 */
 	public func void setActiveNamed(UnicodeString name)
 		var LanguagePack languagePack = getNamed(name)
 		if languagePack == null
@@ -152,9 +181,35 @@ class TranslationManager
 		setActive(languagePack)
 	end
 	
-	/** \brief Set active language pack by name if present. */
+	/**
+	 * \brief Set active language pack by identifier.
+	 * \version 1.16
+	 */
+	public func void setActiveWithId(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
+		if languagePack == null
+			throw EInvalidParam.new()
+		end
+		setActive(languagePack)
+	end
+	
+	/**
+	 * \brief Set active language pack by name if present.
+	 * \deprecated Use setActiveWithIdIfPresent.
+	 */
 	public func void setActiveNamedIfPresent(UnicodeString name)
 		var LanguagePack languagePack = getNamed(name)
+		if languagePack != null
+			setActive(languagePack)
+		end
+	end
+	
+	/**
+	 * \brief Set active language pack by identifier if present.
+	 * \version 1.16
+	 */
+	public func void setActiveWithIdIfPresent(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack != null
 			setActive(languagePack)
 		end
@@ -179,11 +234,11 @@ class TranslationManager
 	end
 	
 	/**
-	 * \brief Set fallback language pack by name.
+	 * \brief Set fallback language pack by identifier.
 	 * \version 1.16
 	 */
-	public func void setFallbackNamed(UnicodeString name)
-		var LanguagePack languagePack = getNamed(name)
+	public func void setFallbackWithId(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack == null
 			throw EInvalidParam.new()
 		end
@@ -191,11 +246,11 @@ class TranslationManager
 	end
 	
 	/**
-	 * \brief Set fallback language pack by name if present.
+	 * \brief Set fallback language pack by identifier if present.
 	 * \version 1.16
 	 */
-	public func void setFallbackNamedIfPresent(UnicodeString name)
-		var LanguagePack languagePack = getNamed(name)
+	public func void setFallbackWithIdIfPresent(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
 		if languagePack != null
 			setFallback(languagePack)
 		end

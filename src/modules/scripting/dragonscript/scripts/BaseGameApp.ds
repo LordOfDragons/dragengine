@@ -281,11 +281,20 @@ class BaseGameApp extends Game
 	
 	/**
 	 * \brief Name of default language pack to activate.
+	 * \deprecated Use defaultLanguagePackIdentifier.
 	 * 
 	 * Default value is "English". If no such language pack is found internationalization
 	 * is disabled. The language pack name is matched case sensitive.
 	 */
 	protected var UnicodeString defaultLanguagePackName
+	
+	/**
+	 * \brief Name of default language pack to activate.
+	 * \version 1.16
+	 * 
+	 * Default value is "en". If no such language pack is found internationalization is disabled.
+	 */
+	protected var String defaultLanguagePackIdentifier
 	
 	/**
 	 * \brief Binding save file path property.
@@ -353,6 +362,7 @@ class BaseGameApp extends Game
 		pathDesktopGuiTheme = defaultPathGuiTheme
 		pathLanguagePacks = null
 		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
+		defaultLanguagePackIdentifier = "en"
 		pathConfiguration = "/configuration.ptree.xml"
 		pathSavedBindings = "/config/bindings.xml"
 		pathSavedSettings = "/config/settings.ptree.xml"
@@ -422,6 +432,9 @@ class BaseGameApp extends Game
 		initLanguages()
 		registerPersistencyFactories()
 		
+		pSettings = ParameterTree.new()
+		loadSettings()
+		
 		createAndSetDesktop()
 		setInputProcessorDesktop()
 		
@@ -468,9 +481,6 @@ class BaseGameApp extends Game
 			pWindowConsole.setCommandManager(pCommandManager)
 			pWindowConsole.setConsoleCommands(pConsoleCommands)
 		end
-		
-		pSettings = ParameterTree.new()
-		loadSettings()
 		
 		pBindingManager = BindingManager.new()
 		loadBindings()
@@ -893,16 +903,16 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Load language packs and select active language pack.
 	 * 
-	 * Default implementation loads language packsg from path specified by property
+	 * Default implementation loads language packs from path specified by property
 	 * pathLanguagePacks if property is not \em null and path is valid. Then activates the
-	 * language pack with name matching property defaultLanguagePackName if any such language
-	 * pack is present. The language pack name is matched case sensitive.
+	 * language pack with name matching property defaultLanguagePackIdentifier if any such
+	 * language pack is present. The language pack name is matched case sensitive.
 	 * 
 	 * \par Since Version 1.16
 	 * 
 	 * Sets fallback language pack to active language pack. When changing language pack the
-	 * fallback language pack stays at the "defaultLanguagePackName". This ensures default
-	 * language translations are shown if the active translation is missing translations.
+	 * fallback language pack stays at the "defaultLanguagePackIdentifier". This ensures
+	 * default language translations are shown if the active translation is missing translations.
 	 */
 	protected func void initLanguages()
 		var String path = pConfiguration.getStringAt("pathLanguagePacks", pathLanguagePacks)
@@ -912,12 +922,19 @@ class BaseGameApp extends Game
 		
 		pTranslationManager.addFromDirectory(path, true)
 		
-		var UnicodeString lpName = defaultLanguagePackName
-		var String paramValue = pConfiguration.getStringAt("defaultLanguagePackName", null)
-		if paramValue != null
-			lpName = UnicodeString.newFromUTF8(paramValue)
+		pTranslationManager.setActiveWithIdIfPresent(pConfiguration.getStringAt(\
+			"defaultLanguagePackIdentifier", defaultLanguagePackIdentifier))
+		
+		if pTranslationManager.getActive() == null
+			// backwards compatibility
+			var UnicodeString lpName = defaultLanguagePackName
+			var String paramValue = pConfiguration.getStringAt("defaultLanguagePackName", null)
+			if paramValue != null
+				lpName = UnicodeString.newFromUTF8(paramValue)
+			end
+			pTranslationManager.setActiveNamedIfPresent(lpName)
 		end
-		pTranslationManager.setActiveNamedIfPresent(lpName)
+		
 		pTranslationManager.setFallback(pTranslationManager.getActive())
 	end
 	

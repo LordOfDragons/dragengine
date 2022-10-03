@@ -51,12 +51,31 @@ fixed class LanguagePack
 		return null
 	end
 	
-	/** \brief Name. */
+	/**
+	 * \brief Unique identifier.
+	 * \version 1.16
+	 * 
+	 * This is used to uniquely identify the language pack.
+	 */
+	public func String getIdentifier()
+		return null
+	end
+	
+	/**
+	 * \brief Name in native language.
+	 * 
+	 * This string is typically shown in language settings screens to the user.
+	 */
 	public func UnicodeString getName()
 		return null
 	end
 	
-	/** \brief Description. */
+	/**
+	 * \brief Description in native language.
+	 * 
+	 * This string can be optionally shown to the user to describe the language pack
+	 * in more detail, for example if the language uses some kind of dialect.
+	 */
 	public func UnicodeString getDescription()
 		return null
 	end

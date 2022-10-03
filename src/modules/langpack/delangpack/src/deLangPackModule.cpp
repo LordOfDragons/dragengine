@@ -166,7 +166,10 @@ void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguageP
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		
 		if( tag ){
-			if( strcmp( tag->GetName(), "name" ) == 0 ){
+			if( tag->GetName() == "identifier" ){
+				languagePack.SetIdentifier( tag->GetFirstData()->GetData() );
+				
+			}else if( strcmp( tag->GetName(), "name" ) == 0 ){
 				languagePack.SetName( decUnicodeString::NewFromUTF8(
 					tag->GetFirstData()->GetData() ) );
 				
@@ -190,6 +193,11 @@ void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguageP
 			}
 		}
 	}
+	
+	// backwards compatibility
+	if( languagePack.GetIdentifier().IsEmpty() ){
+		languagePack.SetIdentifier( languagePack.GetName().ToUTF8() );
+	}
 }
 
 
@@ -197,17 +205,11 @@ void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguageP
 void deLangPackModule::pWriteLangPack( decXmlWriter &writer, const deLanguagePack &languagePack ){
 	writer.WriteOpeningTag( "languagePack", false, true );
 	
-	// language pack
-	const decString name = languagePack.GetName().ToUTF8();
-	writer.WriteDataTagString( "name", name.GetString() );
+	writer.WriteDataTagString( "identifier", languagePack.GetIdentifier() );
+	writer.WriteDataTagString( "name", languagePack.GetName().ToUTF8() );
+	writer.WriteDataTagString( "description", languagePack.GetDescription().ToUTF8() );
+	writer.WriteDataTagString( "missingText", languagePack.GetMissingText().ToUTF8() );
 	
-	const decString description = languagePack.GetDescription().ToUTF8();
-	writer.WriteDataTagString( "description", description.GetString() );
-	
-	const decString missingText = languagePack.GetMissingText().ToUTF8();
-	writer.WriteDataTagString( "missingText", missingText.GetString() );
-	
-	// entries
 	const int entryCount = languagePack.GetEntryCount();
 	int i;
 	

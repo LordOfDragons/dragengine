@@ -96,6 +96,15 @@ void deClassLanguagePack::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mys
 // management
 ///////////////
 
+// public func String getIdentifier()
+deClassLanguagePack::nfGetIdentifier::nfGetIdentifier( const sInitData &init ) :
+dsFunction( init.clsLP, "getIdentifier", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassLanguagePack::nfGetIdentifier::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deLanguagePack &langPack = *( ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack );
+	rt->PushString( langPack.GetIdentifier() );
+}
+
 // public func UnicodeString getName()
 deClassLanguagePack::nfGetName::nfGetName( const sInitData &init ) :
 dsFunction( init.clsLP, "getName", DSFT_FUNCTION,
@@ -264,6 +273,7 @@ void deClassLanguagePack::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
+	AddFunction( new nfGetIdentifier( init ) );
 	AddFunction( new nfGetName( init ) );
 	AddFunction( new nfGetDescription( init ) );
 	AddFunction( new nfGetFilename( init ) );

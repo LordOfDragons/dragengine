@@ -42,6 +42,7 @@ private:
 	
 	lpeLangPack *pLangPack;
 	
+	igdeTextFieldReference pEditIdentifier;
 	igdeTextFieldReference pEditName;
 	igdeTextAreaReference pEditDescription;
 	igdeTextFieldReference pEditMissingText;

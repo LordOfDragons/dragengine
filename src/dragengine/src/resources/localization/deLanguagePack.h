@@ -43,6 +43,7 @@ public:
 	
 	
 private:
+	decString pIdentifier;
 	decUnicodeString pName;
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
@@ -76,6 +77,12 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Unique identifier. */
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
+	
+	/** \brief Set unique identifier. */
+	void SetIdentifier( const decString &identifier );
+	
 	/** \brief Name in native language. */
 	inline const decUnicodeString &GetName() const{ return pName; }
 	
