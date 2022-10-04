@@ -3,6 +3,10 @@ name: Build Testing
 on:
   workflow_call:
     inputs:
+      branch:
+        required: false
+        type: string
+        default: master
       releaseVersion:
         required: true
         type: string
@@ -22,6 +26,7 @@ jobs:
         with:
           lfs: true
           submodules: recursive
+          ref: ${{ inputs.branch }}
       
       - name: Get Linux CI Installers
         uses: actions/download-artifact@v3
