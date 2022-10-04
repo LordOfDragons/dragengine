@@ -3,6 +3,10 @@ name: Testing
 on:
   workflow_call:
     inputs:
+      branch:
+        required: false
+        type: string
+        default: master
       releaseVersion:
         required: true
         type: string
@@ -21,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
       
       - name: Get Archive Linux
         uses: actions/download-artifact@v3
