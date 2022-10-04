@@ -130,7 +130,7 @@ jobs:
           artifactErrorsFailBuild: true
           draft: false
           prerelease: false
-          commit: 'master'
+          commit: ${{ github.event.inputs.branch }}
           tag: 'v${{ github.event.inputs.version }}'
           name: 'Drag[en]gine Game Engine Release ${{ github.event.inputs.version }}'
           body: |
