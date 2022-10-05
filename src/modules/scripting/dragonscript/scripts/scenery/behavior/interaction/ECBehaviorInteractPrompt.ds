@@ -96,131 +96,152 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorInteractPrompt ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorInteractPrompt ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var ElementClass eclass = this.getElement().getClass()
+		public func void init(StubElement stub)
+			var ElementClass eclass = getElement().getClass()
 			var CodecPropertyString codec = eclass.getCodecPropertyString()
 			
-			this.pImage = this.pECBehavior.getImage().getImage( stub, eclass )
-			this.pVideo = this.pECBehavior.getVideo().getVideo( stub, eclass )
-			this.pStyle = this.pECBehavior.getStyle().getValue( stub )
-			this.pVerb = this.pECBehavior.getVerb().getValue( stub )
-			this.pDescription = this.pECBehavior.getDescription().getValue( stub )
-			this.pCommand = this.pECBehavior.getCommand().getValue( stub )
-			this.pEnabled = this.pECBehavior.getEnabled().getValue( stub )
-			this.pBones = this.pECBehavior.getBones().getList( stub, codec )
+			pImage = pECBehavior.getImage().getImage(stub, eclass)
+			pVideo = pECBehavior.getVideo().getVideo(stub, eclass)
+			pStyle = pECBehavior.getStyle().getValue(stub)
+			pCommand = pECBehavior.getCommand().getValue(stub)
+			pEnabled = pECBehavior.getEnabled().getValue(stub)
+			pBones = pECBehavior.getBones().getList(stub, codec)
+
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null
+				var String translate = pECBehavior.getVerbTranslate().getValue(stub)
+				if translate.empty()
+					pVerb = pECBehavior.getVerb().getValue(stub)
+
+				else
+					pVerb = tm.translate(translate)
+				end
+
+				translate = pECBehavior.getDescriptionTranslate().getValue(stub)
+				if translate.empty()
+					pDescription = pECBehavior.getDescription().getValue(stub)
+					
+				else
+					pDescription = tm.translate(translate)
+				end
+
+			else
+				pVerb = pECBehavior.getVerb().getValue(stub)
+				pDescription = pECBehavior.getDescription().getValue(stub)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorInteractPrompt getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Image. */
 		public func Image getImage()
-			return this.pImage
+			return pImage
 		end
 		
 		/** \brief Set image. */
-		public func void setImage( Image image )
-			this.pImage = image
+		public func void setImage(Image image)
+			pImage = image
 		end
 		
 		/** \brief Video. */
 		public func Video getVideo()
-			return this.pVideo
+			return pVideo
 		end
 		
 		/** \brief Set video. */
-		public func void setVideo( Video video )
-			this.pVideo = video
+		public func void setVideo(Video video)
+			pVideo = video
 		end
 		
 		/** \brief Style. */
 		public func String getStyle()
-			return this.pStyle
+			return pStyle
 		end
 		
 		/** \brief Set style. */
-		public func void setStyle( String style )
+		public func void setStyle(String style)
 			if style == null
-				throw ENullPointer.new( "style" )
+				throw ENullPointer.new("style")
 			end
-			this.pStyle = style
+			pStyle = style
 		end
 		
 		/** \brief Verb. */
 		public func UnicodeString getVerb()
-			return this.pVerb
+			return pVerb
 		end
 		
 		/** \brief Set verb. */
-		public func void setVerb( UnicodeString verb )
+		public func void setVerb(UnicodeString verb)
 			if verb == null
-				throw ENullPointer.new( "verb" )
+				throw ENullPointer.new("verb")
 			end
-			this.pVerb = verb
+			pVerb = verb
 		end
 		
 		/** \brief Description. */
 		public func UnicodeString getDescription()
-			return this.pDescription
+			return pDescription
 		end
 		
 		/** \brief Set description. */
-		public func void setDescription( UnicodeString description )
+		public func void setDescription(UnicodeString description)
 			if description == null
-				throw ENullPointer.new( "description" )
+				throw ENullPointer.new("description")
 			end
-			this.pDescription = description
+			pDescription = description
 		end
 		
 		/** \brief Command. */
 		public func String getCommand()
-			return this.pCommand
+			return pCommand
 		end
 		
 		/** \brief Set command. */
-		public func void setCommand( String command )
+		public func void setCommand(String command)
 			if command == null
-				throw ENullPointer.new( "command" )
+				throw ENullPointer.new("command")
 			end
-			this.pCommand = command
+			pCommand = command
 		end
 		
 		/** \brief Prompt is enabled. */
 		public func bool getEnabled()
-			return this.pEnabled
+			return pEnabled
 		end
 		
 		/** \brief Set if prompt is enabled. */
-		public func void setEnabled( bool enabled )
-			this.pEnabled = enabled
+		public func void setEnabled(bool enabled)
+			pEnabled = enabled
 		end
 		
 		
 		
 		/** \brief Count of bones this prompt is limited to. */
 		public func int getBoneCount()
-			return this.pBones.getCount()
+			return pBones.getCount()
 		end
 		
 		/** \brief Bone at index this prompt is limited to. */
-		public func String getBoneAt( int index )
-			return this.pBones.getAt( index ) cast String
+		public func String getBoneAt(int index)
+			return pBones.getAt(index) cast String
 		end
 		
 		/** \brief Bone is included in list of bones this prompt is limited to. */
-		public func bool hasBone( String bone )
-			return this.pBones.has( bone )
+		public func bool hasBone(String bone)
+			return pBones.has(bone)
 		end
 		
 		/**
@@ -228,13 +249,13 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		 * 
 		 * Block receives as argument "String bone".
 		 */
-		public func void forEachBone( Block ablock )
-			this.pBones.forEach( ablock )
+		public func void forEachBone(Block ablock)
+			pBones.forEach(ablock)
 		end
 		
 		/** \brief Set list of bones this prompt is limited to as Array of String. */
-		protected func void setBones( Array bones )
-			this.pBones = bones
+		protected func void setBones(Array bones)
+			pBones = bones
 		end
 	end
 	
@@ -244,102 +265,148 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	private var ECPVideo pVideo
 	private var ECPString pStyle
 	private var ECPUnicodeString pVerb
+	private var ECPString pVerbTranslate
 	private var ECPUnicodeString pDescription
+	private var ECPTranslatedString pDescriptionTranslate
 	private var ECPString pCommand
 	private var ECPBoolean pEnabled
 	private var ECPStringList pBones
+	private var TranslationManager pTranslationManager
 	
 	
 	
 	/**
 	 * \brief Create behavior element class.
 	 */
-	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	public func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) this( eclass, id, \
-	id.empty() if "interactPrompt" else "interactPrompt(" + id + ")" )
+	public func new(BehaviorElementClass eclass, String id) this(eclass, id, \
+	id.empty() if "interactPrompt" else "interactPrompt(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String subID ) \
-	this( eclass, id, subID, subID + "." )
+	public func new(BehaviorElementClass eclass, String id, String subID) \
+	this(eclass, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String subID, String prefix ) super( eclass, id )
-		this.pImage = ECPImage.new( prefix + "image" )
-		eclass.addProperty( this.pImage )
+	public func new(BehaviorElementClass eclass, String id, String subID, String prefix) super(eclass, id)
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pTranslationManager = app.getTranslationManager()
+		end
+
+		pImage = ECPImage.new(prefix + "image")
+		eclass.addProperty(pImage)
 		
-		this.pVideo = ECPVideo.new( prefix + "video" )
-		eclass.addProperty( this.pVideo )
+		pVideo = ECPVideo.new(prefix + "video")
+		eclass.addProperty(pVideo)
 		
-		this.pStyle = ECPString.new( prefix + "style", "" )
-		eclass.addProperty( this.pStyle )
+		pStyle = ECPString.new(prefix + "style", "")
+		eclass.addProperty(pStyle)
 		
-		this.pVerb = ECPUnicodeString.new( prefix + "verb", "" )
-		eclass.addProperty( this.pVerb )
+		pVerb = ECPUnicodeString.new(prefix + "verb", "")
+		eclass.addProperty(pVerb)
 		
-		this.pDescription = ECPUnicodeString.new( prefix + "description", "" )
-		eclass.addProperty( this.pDescription )
+		pVerbTranslate = ECPString.new(prefix + "verbTranslate", "")
+		eclass.addProperty(pVerbTranslate)
 		
-		this.pCommand = ECPString.new( prefix + "command", "" )
-		eclass.addProperty( this.pCommand )
+		pDescription = ECPUnicodeString.new(prefix + "description", "")
+		eclass.addProperty(pDescription)
 		
-		this.pEnabled = ECPBoolean.new( prefix + "enabled", true )
-		eclass.addProperty( this.pEnabled )
+		pDescriptionTranslate = ECPString.new(prefix + "descriptionTranslate", "")
+		eclass.addProperty(pDescriptionTranslate)
 		
-		this.pBones = ECPStringList.new( prefix + "bones" )
-		eclass.addProperty( this.pBones )
+		pCommand = ECPString.new(prefix + "command", "")
+		eclass.addProperty(pCommand)
 		
-		eclass.addBehavior( this )
+		pEnabled = ECPBoolean.new(prefix + "enabled", true)
+		eclass.addProperty(pEnabled)
+		
+		pBones = ECPStringList.new(prefix + "bones")
+		eclass.addProperty(pBones)
+		
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Image. */
 	public func ECPImage getImage()
-		return this.pImage
+		return pImage
 	end
 	
 	/** \brief Video. */
 	public func ECPVideo getVideo()
-		return this.pVideo
+		return pVideo
 	end
 	
 	/** \brief Style. */
 	public func ECPString getStyle()
-		return this.pStyle
+		return pStyle
 	end
 	
 	/** \brief Verb. */
 	public func ECPUnicodeString getVerb()
-		return this.pVerb
+		return pVerb
+	end
+	
+	/**
+	 * \brief Verb translated by active language.
+	 * \version 1.16
+	 */
+	public func ECPString getVerbTranslate()
+		return pVerbTranslate
 	end
 	
 	/** \brief Description. */
 	public func ECPUnicodeString getDescription()
-		return this.pDescription
+		return pDescription
+	end
+	
+	/**
+	 * \brief Description translated by active language.
+	 * \version 1.16
+	 */
+	public func ECPUnicodeString getDescriptionTranslate()
+		return pDescriptionTranslate
 	end
 	
 	/** \brief Command. */
 	public func ECPString getCommand()
-		return this.pCommand
+		return pCommand
 	end
 	
 	/** \brief Prompt is enabled. */
 	public func ECPBoolean getEnabled()
-		return this.pEnabled
+		return pEnabled
 	end
 	
 	/** \brief List of bones to restrict the prompt to. */
 	public func ECPStringList getBones()
-		return this.pBones
+		return pBones
 	end
 	
+	/**
+	 * \brief Translation manager or null.
+	 * \version 1.16
+	 */
+	public func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+
+	/**
+	 * \brief Set translation manager or null.
+	 * \version 1.16
+	 */
+	public func void setTranslationManager(TranslationManager manager)
+		pTranslationManager = manager
+	end
+
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -350,10 +417,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorInteractPrompt.
 	 */
-	static public func ECBehaviorInteractPrompt getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorInteractPrompt each
+	static public func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorInteractPrompt each
 			return true
-		end ) cast ECBehaviorInteractPrompt
+		end) cast ECBehaviorInteractPrompt
 	end
 	
 	/**
@@ -362,10 +429,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorInteractPrompt with specific identifier.
 	 */
-	static public func ECBehaviorInteractPrompt getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorInteractPrompt each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorInteractPrompt
+	static public func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorInteractPrompt each
+			return each.getID().equals(id)
+		end) cast ECBehaviorInteractPrompt
 	end
 	
 	/**
@@ -374,10 +441,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractPrompt behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorInteractPrompt each
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorInteractPrompt each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -389,10 +456,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * of type ECBehaviorInteractPrompt.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -401,10 +468,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorInteractPrompt.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -413,10 +480,10 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractPrompt.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -427,16 +494,16 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInteractPrompt.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllEnabledInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllEnabledInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return each.getEnabled()
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
