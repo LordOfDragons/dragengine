@@ -267,7 +267,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	private var ECPUnicodeString pVerb
 	private var ECPString pVerbTranslate
 	private var ECPUnicodeString pDescription
-	private var ECPTranslatedString pDescriptionTranslate
+	private var ECPString pDescriptionTranslate
 	private var ECPString pCommand
 	private var ECPBoolean pEnabled
 	private var ECPStringList pBones
@@ -367,7 +367,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * \brief Description translated by active language.
 	 * \version 1.16
 	 */
-	public func ECPUnicodeString getDescriptionTranslate()
+	public func ECPString getDescriptionTranslate()
 		return pDescriptionTranslate
 	end
 	
