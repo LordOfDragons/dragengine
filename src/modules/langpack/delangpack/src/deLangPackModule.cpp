@@ -93,7 +93,7 @@ void deLangPackModule::LoadLanguagePack( decBaseFileReader &file, deLanguagePack
 	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );
 	
 	xmlDoc->StripComments();
-	xmlDoc->CleanCharData();
+// 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
 	if( ! root || strcmp( root->GetName(), "languagePack" ) != 0 ){
