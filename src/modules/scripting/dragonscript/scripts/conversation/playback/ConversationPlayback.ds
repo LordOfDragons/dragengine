@@ -47,6 +47,7 @@ abstract class ConversationPlayback implements Persistable
 	private var bool pEnableFastForwardSpeaking
 	private var ConversationPlaybackSubTitle pSubTitle
 	private var ConversationPlaybackPlayerChoice pPlayerChoice
+	private var TranslationManager pTranslationManager
 	private var Array pListeners
 	
 	
@@ -68,6 +69,11 @@ abstract class ConversationPlayback implements Persistable
 		this.pPaused = false
 		this.pEnableFastForwardSpeaking = false
 		this.pListeners = Array.new()
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pTranslationManager = app.getTranslationManager()
+		end
 	end
 	
 	/** \brief Dispose of conversation playback. */
@@ -119,6 +125,11 @@ abstract class ConversationPlayback implements Persistable
 		this.pActors = Array.new()
 		this.pCoordSystems = Array.new()
 		this.pListeners = Array.new()
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pTranslationManager = app.getTranslationManager()
+		end
 		
 		select reader.readByte() // version
 		case 0
@@ -498,6 +509,22 @@ abstract class ConversationPlayback implements Persistable
 	/** \brief Set player choice interface or \em null. */
 	public func void setPlayerChoice( ConversationPlaybackPlayerChoice playerChoice )
 		this.pPlayerChoice = playerChoice
+	end
+	
+	/**
+	 * \brief Translation manager or null.
+	 * \version 1.16
+	 */
+	public func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+	
+	/**
+	 * \brief Set translation manager or null.
+	 * \version 1.16
+	 */
+	public func void setTranslationManager(TranslationManager translationManager)
+		pTranslationManager = translationManager
 	end
 	
 	

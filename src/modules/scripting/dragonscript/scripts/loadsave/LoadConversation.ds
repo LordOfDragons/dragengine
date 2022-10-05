@@ -466,6 +466,9 @@ class LoadConversation extends BaseXmlLoader
 			elif tagName.equals("textBoxText")
 				action.setTextBoxText(UnicodeString.newFromUTF8(readMultilineString(element)))
 				
+			elif tagName.equals("textBoxTextTranslate")
+				action.setTextBoxTextTranslate(element.getFirstCData())
+				
 			elif tagName.equals("textBoxTextStyle")
 				action.setTextBoxTextStyle(StringID.new(element.getFirstCData()))
 				

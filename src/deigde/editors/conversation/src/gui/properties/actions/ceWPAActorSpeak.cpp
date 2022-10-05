@@ -38,6 +38,7 @@
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxText.h"
+#include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxTextTranslate.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetMovement.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetPathSound.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxTextStyle.h"
@@ -105,6 +106,25 @@ public:
 		igdeUndoReference undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action,
 			decUnicodeString::NewFromUTF8( textField->GetText() ) ) );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cTextTextBoxTextTranslate : public igdeTextFieldListener {
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cTextTextBoxTextTranslate( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCAActorSpeak * const action = pPanel.GetAction();
+		if( ! topic || ! action || textField->GetText() == action->GetTextBoxTextTranslate() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new ceUCAASpeakSetTextBoxTextTranslate( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -260,6 +280,10 @@ ceWPAActorSpeak::ceWPAActorSpeak( ceWPTopic &parentPanel ) : ceWPAction( parentP
 		pEditTextBoxText, new cTextTextBoxText( *this ) );
 	helper.Button( formLine, pBtnTextBoxText, new cActionEditTextBoxText( *this ), true );
 	
+	helper.FormLineStretchFirst( *this, "Translated:", "Translated text to display in the text box", formLine );
+	helper.EditString( formLine, "Translation 'name' from active language pack to use as text box text."
+		" Replaces static text if not empty.", pEditTextBoxTextTranslate, new cTextTextBoxTextTranslate( *this ) );
+	
 	helper.EditString( *this, "Text Style:", "Name of style to use for the text box text",
 		pEditTextBoxTextStyle, new cTextTextBoxStyle( *this ) );
 	helper.EditString( *this, "Movement:", "Name of the actor movement to use or empty to not change",
@@ -309,6 +333,7 @@ void ceWPAActorSpeak::UpdateAction(){
 	if( action ){
 		pCBActorID->SetText( action->GetActor() );
 		pEditTextBoxText->SetText( action->GetTextBoxText().ToUTF8() );
+		pEditTextBoxTextTranslate->SetText( action->GetTextBoxTextTranslate() );
 		pEditTextBoxTextStyle->SetText( action->GetTextBoxTextStyle() );
 		pEditMovement->SetText( action->GetMovement() );
 		pEditPathSound->SetPath( action->GetPathSound() );
@@ -318,6 +343,7 @@ void ceWPAActorSpeak::UpdateAction(){
 	}else{
 		pCBActorID->ClearText();
 		pEditTextBoxText->ClearText();
+		pEditTextBoxTextTranslate->ClearText();
 		pEditTextBoxTextStyle->ClearText();
 		pEditMovement->ClearText();
 		pEditPathSound->ClearPath();

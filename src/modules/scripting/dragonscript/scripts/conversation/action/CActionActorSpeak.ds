@@ -530,9 +530,12 @@ class CActionActorSpeak extends ConversationAction
 	public func void executeSubTitle(ConversationPlayback playback, ConversationActor actor, float speechTime)
 		var UnicodeString textBoxText = pTextBoxText
 		if pTextBoxTextTranslate != null
-			textBoxText = pTextBoxText  // TODO translate
+			var TranslationManager tm = playback.getTranslationManager()
+			if tm != null
+				textBoxText = tm.translate(pTextBoxTextTranslate)
+			end
 		end
-
+		
 		if textBoxText == null or textBoxText.getLength() == 0
 			return
 		end
@@ -753,6 +756,6 @@ class CActionActorSpeak extends ConversationAction
 		end)
 		
 		writer.writeFloat(pMinSpeechTime)
-		env.writeString16OrEmptyIfNull(pTextBoxTextTranslate)
+		env.writeString16OrEmptyIfNull(writer, pTextBoxTextTranslate)
 	end
 end
