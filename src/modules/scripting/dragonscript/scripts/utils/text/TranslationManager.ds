@@ -47,6 +47,18 @@ class TranslationManager
 	
 	
 	
+	/**
+	 * \brief Get TranslationManager from BaseGameApp.
+	 * \version 1.16
+	 * 
+	 * Convenience method for BaseGameApp.getApp().getTranslationManager() .
+	 */
+	public static func TranslationManager get()
+		return BaseGameApp.getApp().getTranslationManager()
+	end
+	
+	
+	
 	/** \brief Translation for entry name or missing text if absent. */
 	public func UnicodeString translate(String name)
 		var UnicodeString text = translate(name, null)
