@@ -62,6 +62,7 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -368,6 +369,63 @@ public:
 	}
 };
 
+class cActionExportBones : public cBaseAction{
+public:
+	cActionExportBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Export To Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const decStringSet bones = rule->GetListBones();
+		const int count = bones.GetCount();
+		decString text;
+		int i;
+		for( i=0; i<count; i++ ){
+			if( i > 0 ){
+				text.AppendCharacter( '\n' );
+			}
+			text.Append( bones.GetAt( i ) );
+		}
+		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Bones", text );
+		return nullptr;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( rule.GetListBones().GetCount() > 0 );
+	}
+};
+
+class cActionImportBones : public cBaseAction{
+public:
+	cActionImportBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Import From Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		decString text;
+		while( true ){
+			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Import From Text", "Bones. One bone per line.", text ) ){
+				return nullptr;
+			}
+			break;
+		}
+		
+		const decStringList lines( text.Split( '\n' ) );
+		const int count = lines.GetCount();
+		decStringSet bones;
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			if( ! lines.GetAt( i ).IsEmpty() ){
+				bones.Add( lines.GetAt( i ) );
+			}
+		}
+		
+		aeUSetRuleBones * const undo = new aeUSetRuleBones( rule, rule->GetListBones() + bones );
+		undo->SetShortInfo( "Rule import bones" );
+		return undo;
+	}
+};
+
 
 class cListBones : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
@@ -395,6 +453,9 @@ public:
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, new cActionCopyBones( pPanel ), true );
 		helper.MenuCommand( menu, new cActionPasteBones( pPanel ), true );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionExportBones( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportBones( pPanel ), true );
 	}
 };
 
