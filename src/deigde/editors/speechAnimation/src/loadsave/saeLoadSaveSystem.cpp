@@ -80,28 +80,20 @@ saeLoadSaveSystem::~saeLoadSaveSystem(){
 ///////////////
 
 saeSAnimation *saeLoadSaveSystem::LoadSAnimation( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
-	}
+	const decBaseFileReader::Ref fileReader( decBaseFileReader::Ref::New(
+		pWindowMain.GetEnvironment().GetFileSystemGame()->
+			OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) );
 	
-	decBaseFileReaderReference fileReader;
-	saeSAnimation *sanim = NULL;
+	const saeSAnimation::Ref sanim( saeSAnimation::Ref::New(
+		new saeSAnimation( &pWindowMain.GetEnvironment() ) ) );
 	
-	try{
-		fileReader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()->
-			OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
-		
-		sanim = new saeSAnimation( &pWindowMain.GetEnvironment() );
-		
-		pLSSAnim->LoadSAnimation( *sanim, fileReader );
-		
-	}catch( const deException & ){
-		if( sanim ){
-			sanim->FreeReference();
-		}
-		throw;
-	}
+	sanim->SetFilePath( filename );  // required for relative loading
 	
+	pLSSAnim->LoadSAnimation( sanim, fileReader );
+	sanim->SetChanged( false );
+	sanim->SetSaved( true );
+	
+	sanim->AddReference(); // required to hand over reference to caller
 	return sanim;
 }
 

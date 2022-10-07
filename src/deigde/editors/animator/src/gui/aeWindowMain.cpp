@@ -352,9 +352,7 @@ void aeWindowMain::LoadDocument( const char *filename ){
 		}
 	}
 	
-	deObjectReference animator;
-	animator.TakeOver( pLoadSaveSystem->LoadAnimator( filename ) );
-	SetAnimator( ( aeAnimator* )( deObject* )animator );
+	SetAnimator( aeAnimator::Ref::New( pLoadSaveSystem->LoadAnimator( filename ) ) );
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -539,9 +537,7 @@ public:
 			return;
 		}
 		
-		deObjectReference animator;
-		animator.TakeOver( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) );
-		pWindow.SetAnimator( ( aeAnimator* )( deObject* )animator );
+		pWindow.SetAnimator( aeAnimator::Ref::New( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) ) );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
