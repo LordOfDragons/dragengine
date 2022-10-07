@@ -34,7 +34,7 @@ class deAnimator;
 
 
 /**
- * \brief Conversation Actor Gesture.
+ * Conversation Actor Gesture.
  */
 class ceActorPose : public deObject{
 private:
@@ -47,19 +47,21 @@ private:
 	ceActorControllerList pControllers;
 	ceActorGestureList pGestures;
 	
+	decStringList pControllerNames;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create actor pose. */
+	/** Create actor pose. */
 	ceActorPose( igdeEnvironment &environment, const char *name );
 	
-	/** \brief Create copy of actor pose. */
+	/** Create copy of actor pose. */
 	ceActorPose( const ceActorPose &pose );
 	
 protected:
-	/** \brief Clean up actor pose. */
+	/** Clean up actor pose. */
 	virtual ~ceActorPose();
 	/*@}*/
 	
@@ -68,33 +70,36 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Environment. */
+	/** Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Engine animator or \em NULL. */
+	/** Engine animator or \em NULL. */
 	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	
 	
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Animator path. */
+	/** Animator path. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	
-	/** \brief Set animator path. */
+	/** Set animator path. */
 	void SetPathAnimator( const char *path );
 	
-	/** \brief Controllers. */
+	/** Controllers. */
 	inline ceActorControllerList &GetControllers(){ return pControllers; }
 	inline const ceActorControllerList &GetControllers() const{ return pControllers; }
 	
-	/** \brief Gestures. */
+	/** Gestures. */
 	inline ceActorGestureList &GetGestures(){ return pGestures; }
 	inline const ceActorGestureList &GetGestures() const{ return pGestures; }
+	
+	/** Controller names. */
+	inline const decStringList &GetControllerNames() const{ return pControllerNames; }
 	/*@}*/
 	
 	

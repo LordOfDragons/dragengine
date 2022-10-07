@@ -609,22 +609,28 @@ class CActionActorSpeak extends ConversationAction
 		
 		facePosePlayback.removeAllPoses()
 		
-		pFacePoses.forEach(block ConversationStrip each
+		pFacePoses.forEach(block ConversationStrip strip
 			var Array playbackPose
 			
-			if each.getID() != null
-				var ConversationFacePose facePose = conversation.getFacePoseNamed(each.getID())
+			if strip.getID() != null
+				var ConversationFacePose facePose = conversation.getFacePoseNamed(strip.getID())
 				
 				if facePose != null
 					playbackPose = Array.new()
-					facePose.forEachController(block ConversationControllerValue each2
-						playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
-							each2.getController(), each2.getValue()))
+					facePose.forEachController(block ConversationControllerValue each
+						if each.getControllerName() != null
+							playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
+								each.getControllerName(), each.getValue()))
+								
+						else // deprecated
+							playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
+								each.getController(), each.getValue()))
+						end
 					end)
 				end
 			end
 			
-			facePosePlayback.addPose(playbackPose, each)
+			facePosePlayback.addPose(playbackPose, strip)
 		end)
 	end
 	

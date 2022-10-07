@@ -30,40 +30,38 @@ pin Dragengine.Scenery
  * A face pose in a conversation script.
  */
 class ConversationFacePose
-	/** Unique name. */
 	private var StringID pName
-	/** List of controller values. */
 	private var Array pControllers
 	
 	
 	
 	/** Create a new conversation face pose. */
-	public func new( StringID name )
+	public func new(StringID name)
 		if name == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pName = name
-		this.pControllers = Array.new()
+		pName = name
+		pControllers = Array.new()
 	end
 	
 	
 	
 	/** Retrieves the name. */
 	public func StringID getName()
-		return this.pName
+		return pName
 	end
 	
 	/** Visit all controller values. */
-	public func void forEachController( Block aBlock )
-		this.pControllers.forEach( aBlock )
+	public func void forEachController(Block aBlock)
+		pControllers.forEach(aBlock)
 	end
 	
 	/** Adds a controller value. */
-	public func void addControllerValue( ConversationControllerValue controllerValue )
+	public func void addControllerValue(ConversationControllerValue controllerValue)
 		if controllerValue == null
 			throw EInvalidParam.new()
 		end
-		this.pControllers.add( controllerValue )
+		pControllers.add(controllerValue)
 	end
 end

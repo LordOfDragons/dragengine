@@ -27,31 +27,54 @@ pin Dragengine.Scenery
 
 
 /**
- * A controller value in a conversation script.
+ * \brief A controller value in a conversation script.
  */
 class ConversationControllerValue
-	/** Index of the controller. */
 	private var int pController
-	/** Value of the controller. */
+	private var String pControllerName
 	private var float pValue
 	
 	
 	
-	/** Create a new conversation controller value. */
-	public func new( int controller, float value )
-		this.pController = controller
-		this.pValue = value
+	/**
+	 * \brief Create a new conversation controller value.
+	 * \deprecated Use new(String,float).
+	 */
+	public func new(int controller, float value)
+		pController = controller
+		pValue = value
+	end
+	
+	/**
+	 * \brief Create a new conversation controller value.
+	 * \version 1.16
+	 */
+	public func new(String controller, float value)
+		pController = -1
+		pControllerName = controller
+		pValue = value
 	end
 	
 	
 	
-	/** Retrieves the index of the controller. */
+	/**
+	 * \brief Index of controller.
+	 * \deprecated Use getControllerName().
+	 */
 	public func int getController()
-		return this.pController
+		return pController
 	end
 	
-	/** Retrieves the value of the controller. */
+	/**
+	 * \brief Name of controller.
+	 * \version 1.16
+	 */
+	public func String getControllerName()
+		return pControllerName
+	end
+	
+	/** \brief Value of controller. */
 	public func float getValue()
-		return this.pValue
+		return pValue
 	end
 end

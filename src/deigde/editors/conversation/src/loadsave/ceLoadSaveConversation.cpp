@@ -388,7 +388,14 @@ void ceLoadSaveConversation::pWriteFacePose( decXmlWriter &writer, const ceFaceP
 		const ceControllerValue &entry = *controllerList.GetAt( i );
 		
 		writer.WriteOpeningTagStart( "controller" );
-		writer.WriteAttributeInt( "index", entry.GetController() );
+		
+		if( entry.GetControllerIndex() == -1 ){
+			writer.WriteAttributeString( "name", entry.GetController() );
+			
+		}else{ // deprecated
+			writer.WriteAttributeInt( "index", entry.GetControllerIndex() );
+		}
+		
 		writer.WriteAttributeFloat( "value", entry.GetValue() );
 		writer.WriteOpeningTagEnd( true );
 	}
@@ -1464,7 +1471,12 @@ void ceLoadSaveConversation::pReadFacePose( const decXmlElementTag &root, ceConv
 			
 			if( tag ){
 				if( strcmp( tag->GetName(), "controller" ) == 0 ){
-					entry = new ceControllerValue( GetAttributeInt( *tag, "index" ), GetAttributeFloat( *tag, "value" ) );
+					if( HasAttribute( *tag, "index" ) ){ // deprecated
+						entry = new ceControllerValue( GetAttributeInt( *tag, "index" ), GetAttributeFloat( *tag, "value" ) );
+						
+					}else{
+						entry = new ceControllerValue( GetAttributeString( *tag, "name" ), GetAttributeFloat( *tag, "value" ) );
+					}
 					facePose->GetControllerList().Add( entry );
 					entry->FreeReference();
 					

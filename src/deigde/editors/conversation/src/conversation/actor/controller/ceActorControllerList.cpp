@@ -59,12 +59,28 @@ ceActorController *ceActorControllerList::GetAt( int index ) const{
 	return ( ceActorController* )pControllers.GetAt( index );
 }
 
+ceActorController *ceActorControllerList::GetNamed( const char *name ) const{
+	const int count = pControllers.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		ceActorController * const controller = ( ceActorController* )pControllers.GetAt( i );
+		if( controller->GetName() == name ){
+			return controller;
+		}
+	}
+	return nullptr;
+}
+
 int ceActorControllerList::IndexOf( ceActorController *controller ) const{
 	return pControllers.IndexOf( controller );
 }
 
 bool ceActorControllerList::Has( ceActorController *controller ) const{
 	return pControllers.Has( controller );
+}
+
+bool ceActorControllerList::HasNamed( const char *name ) const{
+	return GetNamed( name ) != nullptr;
 }
 
 void ceActorControllerList::Add( ceActorController *controller ){

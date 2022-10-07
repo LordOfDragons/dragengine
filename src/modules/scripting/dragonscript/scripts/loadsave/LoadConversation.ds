@@ -270,9 +270,16 @@ class LoadConversation extends BaseXmlLoader
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("controller")
-				facePose.addControllerValue(ConversationControllerValue.new(\
-					element.getAttributeIntNamed("index"), \
-					element.getAttributeFloatNamed("value")))
+				if element.hasAttributeNamed("index") // deprecated
+					facePose.addControllerValue(ConversationControllerValue.new(\
+						element.getAttributeIntNamed("index"), \
+						element.getAttributeFloatNamed("value")))
+					
+				else
+					facePose.addControllerValue(ConversationControllerValue.new(\
+						element.getAttributeNamed("name"), \
+						element.getAttributeFloatNamed("value")))
+				end
 				
 			else
 				logUnknownTag(element)
