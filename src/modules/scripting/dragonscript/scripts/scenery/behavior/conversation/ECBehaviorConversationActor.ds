@@ -399,11 +399,21 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			if pConversationActor != null and pConversationActor.getPlayback() != null
-				pConversationActor.getPlayback().removeActor(pConversationActor)
+			if pConversationActor != null
+				if pConversationActor.getPlayback() != null
+					pConversationActor.getPlayback().removeActor(pConversationActor)
+				end
+				
+				// just in case somebody uses playback subclass with strong references
+				pConversationActor.setEyesLookAtPlayback(null)
+				pConversationActor.setFacePosePlayback(null)
+				pConversationActor.setGesturePlayback(null)
+				pConversationActor.setHeadLookAtPlayback(null)
+				pConversationActor.setSpeechAnimationPlayback(null)
+				
+				pConversationActor = null
 			end
 			
-			pConversationActor = null
 			pParameterTable = null
 			pComponent = null
 			pActorAnimated = null
