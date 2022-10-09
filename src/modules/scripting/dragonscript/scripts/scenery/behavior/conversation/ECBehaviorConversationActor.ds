@@ -800,12 +800,12 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Actor is in a conversation. */
 		public func bool isInConversation()
-			return pConversationActor.getPlayback() != null
+			return pConversationActor != null and pConversationActor.getPlayback() != null
 		end
 		
 		/** \brief Actor is not in a conversation. */
 		public func bool isNotInConversation()
-			return pConversationActor.getPlayback() == null
+			return pConversationActor == null or pConversationActor.getPlayback() == null
 		end
 		
 		
