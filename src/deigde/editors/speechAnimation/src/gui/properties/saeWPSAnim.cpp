@@ -431,7 +431,7 @@ public:
 		"Insert selected phoneme IPA to selected word phonetics at cursor position" ),
 	pTextFieldPhonetics( textFieldPhonetics ){ }
 	
-	virtual igdeUndo *OnAction( saeSAnimation *sanimation ){
+	virtual igdeUndo *OnAction( saeSAnimation* ){
 		saePhoneme * const phoneme = pPanel.GetActivePhoneme();
 		saeWord * const word = pPanel.GetActiveWord();
 		if( ! phoneme || ! word ){
@@ -441,15 +441,14 @@ public:
 		const decString &oldPhoneticsUtf8 = pTextFieldPhonetics.GetText();
 		const int position = pTextFieldPhonetics.GetCursorPosition();
 		
-		decString phoneticsUtf8( oldPhoneticsUtf8.GetLeft( position ) );
-		phoneticsUtf8.AppendCharacter( phoneme->GetIPA() );
-		phoneticsUtf8 += oldPhoneticsUtf8.GetRight( oldPhoneticsUtf8.GetLength() - position );
+		decUnicodeString phonetics( decUnicodeString::NewFromUTF8( oldPhoneticsUtf8.GetLeft( position ) ) );
 		
-		const decUnicodeString phonetics( decUnicodeString::NewFromUTF8( phoneticsUtf8 ) );
-		if( phonetics == word->GetPhonetics() ){
-			return NULL;
-		}
-		return new saeUWordSetPhonetics( word, phonetics );
+		phonetics.AppendCharacter( phoneme->GetIPA() );
+		
+		phonetics += decUnicodeString::NewFromUTF8(
+			oldPhoneticsUtf8.GetRight( oldPhoneticsUtf8.GetLength() - position ) );
+		
+		return phonetics != word->GetPhonetics() ? new saeUWordSetPhonetics( word, phonetics ) : nullptr;
 	}
 };
 
