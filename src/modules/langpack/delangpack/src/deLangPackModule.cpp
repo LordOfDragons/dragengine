@@ -167,29 +167,40 @@ void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguageP
 		
 		if( tag ){
 			if( tag->GetName() == "identifier" ){
-				languagePack.SetIdentifier( tag->GetFirstData()->GetData() );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetIdentifier( cdata->GetData() );
+				}
 				
 			}else if( strcmp( tag->GetName(), "name" ) == 0 ){
-				languagePack.SetName( decUnicodeString::NewFromUTF8(
-					tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetName( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else if( strcmp( tag->GetName(), "description" ) == 0 ){
-				languagePack.SetDescription( decUnicodeString::NewFromUTF8(
-					tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetDescription( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else if( strcmp( tag->GetName(), "missingText" ) == 0 ){
-				languagePack.SetMissingText( decUnicodeString::NewFromUTF8(
-					tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetMissingText( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else if( strcmp( tag->GetName(), "translation" ) == 0 ){
 				deLanguagePackEntry &entry = languagePack.GetEntryAt( entryIndex++ );
 				entry.SetName( pGetAttributeString( *tag, "name" ) );
-				entry.SetText( decUnicodeString::NewFromUTF8( tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					entry.SetText( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else{
 				LogWarnFormat( "languagePack(%i:%i): Unknown Tag %s, ignoring",
-					tag->GetLineNumber(), tag->GetPositionNumber(),
-					tag->GetName().GetString() );
+					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
 			}
 		}
 	}

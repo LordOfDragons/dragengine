@@ -98,7 +98,7 @@ void deadArchiveFileReader::MovePosition( int offset ){
 }
 
 void deadArchiveFileReader::SetPositionEnd( int position ){
-	SetPositionEnd( pFilesize - 1 - position );
+	SetPosition( pFilesize - 1 - position );
 }
 
 void deadArchiveFileReader::Read( void *buffer, int size ){
