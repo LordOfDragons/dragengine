@@ -77,5 +77,6 @@ deArchiveDelga::~deArchiveDelga(){
 ///////////////
 
 deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *reader ){
-	return new deadContainer( *this, reader );
+	DEASSERT_NOTNULL( reader )
+	return new deadContainer( *this, *reader );
 }

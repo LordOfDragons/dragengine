@@ -47,12 +47,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deadContainer::deadContainer( deArchiveDelga &module, decBaseFileReader *reader ) :
-deBaseArchiveContainer( reader ),
+deadContainer::deadContainer( deArchiveDelga &module, decBaseFileReader &reader ) :
+deBaseArchiveContainer( &reader ),
 pModule( module ),
-pFilename( reader->GetFilename() )
+pFilename( reader.GetFilename() )
 {
-	deadContextUnpack *context = NULL;
+	deadContextUnpack *context = nullptr;
 	
 	try{
 		context = AcquireContextUnpack();
@@ -82,6 +82,7 @@ deadContextUnpack *deadContainer::AcquireContextUnpack(){
 	//      is known as input for this function. in this case the free contexts can be searched
 	//      for one where the last read block contains the data already. this would avoid a
 	//      seek and block read. right now this is simply ignored
+	const deMutexGuard guard( pMutex );
 	deadContextUnpack *context;
 	
 	if( pContextsUnpackFree.GetCount() > 0 ){
@@ -101,9 +102,11 @@ deadContextUnpack *deadContainer::AcquireContextUnpack(){
 }
 
 void deadContainer::ReleaseContextUnpack( deadContextUnpack *context ){
-	if( ! context ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( context )
+	
+	context->CloseFile(); // make sure it is closed just in case
+	
+	const deMutexGuard guard( pMutex );
 	pContextsUnpackFree.Add( context );
 }
 
@@ -128,25 +131,20 @@ bool deadContainer::CanDeleteFile( const decPath & ){
 }
 
 decBaseFileReader *deadContainer::OpenFileForReading( const decPath &path ){
-	const deMutexGuard guard( pMutex );
-	deadContextUnpack *context = nullptr;
+	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
+	if( ! file ){
+		DETHROW( deeFileNotFound );
+	}
+	
+	deadContextUnpack * const context = AcquireContextUnpack();
 	
 	try{
-		const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath( path );
-		if( ! file ){
-			DETHROW( deeFileNotFound );
-		}
-		
-		context = AcquireContextUnpack();
-		
 		const deadArchiveFileReader::Ref reader( context->OpenFileForReading( *file ) );
 		reader->AddReference(); // caller retains reference
 		return reader;
 		
 	}catch( const deException & ){
-		if( context ){
-			ReleaseContextUnpack( context );
-		}
+		ReleaseContextUnpack( context );
 		throw;
 	}
 }

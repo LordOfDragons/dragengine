@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deadContainer( deArchiveDelga &module, decBaseFileReader *reader );
+	deadContainer( deArchiveDelga &module, decBaseFileReader &reader );
 	
 	/** \brief Clean up module. */
 	virtual ~deadContainer();
