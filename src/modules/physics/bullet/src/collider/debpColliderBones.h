@@ -150,6 +150,9 @@ public:
 	/** Apply force field. */
 	void ApplyForceField( const debpForceField &forceField, float fluctStrength, float fluctDirection );
 	
+	/** Update position and rotation. */
+	void UpdateFromKinematic( bool resetInterpolation );
+	
 	/** Prepare bones for collision detection. */
 	void PrepareForDetection( float elapsed );
 	

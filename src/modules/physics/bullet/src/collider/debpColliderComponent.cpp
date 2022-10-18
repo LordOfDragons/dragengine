@@ -1272,6 +1272,9 @@ void debpColliderComponent::PositionChanged(){
 			}
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1312,6 +1315,9 @@ void debpColliderComponent::OrientationChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1396,6 +1402,9 @@ void debpColliderComponent::GeometryChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}

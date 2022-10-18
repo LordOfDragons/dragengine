@@ -490,6 +490,48 @@ float fluctStrength, float fluctDirection ){
 	}
 }
 
+void debpColliderBones::UpdateFromKinematic( bool resetInterpolation ){
+	const bool dynamic = pEngColliderRig->GetResponseType() == deCollider::ertDynamic;
+	if( dynamic ){
+		return;
+	}
+	
+	const decDMatrix &colMatrix = pCollider.GetMatrix();
+	
+	deComponent * const component = GetComponent();
+	if( component ){
+		int i;
+		for( i=0; i<pBoneCount; i++ ){
+			if( pBones[ i ] ){
+				const decDMatrix boneMatrix( component->GetBoneAt( i ).GetMatrix().QuickMultiply( colMatrix ) );
+				debpPhysicsBody &phybody = *pBones[ i ]->GetPhysicsBody();
+				phybody.SetPosition( boneMatrix.GetPosition() );
+				phybody.SetOrientation( boneMatrix.ToQuaternion() );
+				if( resetInterpolation ){
+					phybody.ResetKinematicInterpolation();
+				}
+			}
+		}
+		
+	}else{
+		deRig * const rig = GetRig();
+		if( rig ){
+			int i;
+			for( i=0; i<pBoneCount; i++ ){
+				if( pBones[ i ] ){
+					const decDMatrix boneMatrix( rig->GetBoneAt( i ).GetMatrix().QuickMultiply( colMatrix ) );
+					debpPhysicsBody &phybody = *pBones[ i ]->GetPhysicsBody();
+					phybody.SetPosition( boneMatrix.GetPosition() );
+					phybody.SetOrientation( boneMatrix.ToQuaternion() );
+					if( resetInterpolation ){
+						phybody.ResetKinematicInterpolation();
+					}
+				}
+			}
+		}
+	}
+}
+
 void debpColliderBones::PrepareForDetection( float elapsed ){
 	deComponent * const component = GetComponent();
 	const bool dynamic = pEngColliderRig->GetResponseType() == deCollider::ertDynamic;
