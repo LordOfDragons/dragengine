@@ -327,6 +327,15 @@ void debpColliderComponent::UpdateFromBody(){
 	if( GetAttachmentCount() > 0 ){
 		pUpdateAttachments( true ); // false if the problem would not exist
 	}
+	
+	if(pColliderComponent.GetComponent() && pColliderComponent.GetComponent()->GetModel() && pColliderComponent.GetComponent()->GetModel()->GetFilename().FindString("drawer") != -1){
+		const decDVector &p1 = pColliderComponent.GetPosition();
+		const decDVector &p2 = pColliderComponent.GetComponent()->GetPosition();
+		const decDVector &p3 = pColliderComponent.GetBoneAt(1).GetPosition();
+		const decDVector p4( pBones->GetBoneAt(1) ? pBones->GetBoneAt(1)->GetPhysicsBody()->GetPosition() : decDVector());
+		GetBullet()->LogInfoFormat("CHECK %p pos1=(%f,%f,%f) pos2=(%f,%f,%f) pos3=(%f,%f,%f) pos4=(%f,%f,%f) rt=%d",
+			&pColliderComponent, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, p3.x, p3.y, p3.z, p4.x, p4.y, p4.z, pColliderComponent.GetResponseType());
+	}
 }
 
 void debpColliderComponent::UpdateExtends(){
