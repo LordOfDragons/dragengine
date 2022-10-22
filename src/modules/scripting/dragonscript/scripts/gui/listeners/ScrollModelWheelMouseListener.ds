@@ -36,6 +36,9 @@ class ScrollModelWheelMouseListener extends DefaultMouseListener
 	/** \brief Model. */
 	private var RangeModel pModel
 	
+	/** \brief Invert mouse wheel. */
+	private var bool pInvert
+	
 	
 	
 	/** \brief Create mouse listener. */
@@ -44,6 +47,14 @@ class ScrollModelWheelMouseListener extends DefaultMouseListener
 			throw ENullPointer.new("model")
 		end
 		pModel = model
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \version 1.16
+	 */
+	public func new(RangeModel model, bool invert) this(model)
+		pInvert = invert
 	end
 	
 	
@@ -61,11 +72,30 @@ class ScrollModelWheelMouseListener extends DefaultMouseListener
 		pModel = model
 	end
 	
+	/**
+	 * \brief Invert mouse wheel.
+	 * \brief 1.16
+	 */
+	public func bool getInvert()
+		return pInvert
+	end
+	
+	/**
+	 * \brief Set invert mouse wheel.
+	 * \brief 1.16
+	 */
+	public func void setInvert(bool invert)
+		pInvert = invert
+	end
+	
 	
 	
 	/** \brief Mouse wheel moved. */
 	public func void onMouseWheel(MouseEvent event)
 		var int y = event.getPosition().getY()
+		if pInvert
+			y = -y
+		end
 		
 		if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
 			pModel.setValue(pModel.getValue() + pModel.getPageSize() * y)
