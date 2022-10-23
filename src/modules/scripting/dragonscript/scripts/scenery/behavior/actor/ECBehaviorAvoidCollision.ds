@@ -419,13 +419,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var ShapeList shape = ShapeList.new()
 			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
 			(pCCTAvoidCollision.getCollider() cast ColliderVolume).setShape(shape)
-			
-			shape = ShapeList.new()
-			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
 			(pCCTCheckLeft.getCollider() cast ColliderVolume).setShape(shape)
-			
-			shape = ShapeList.new()
-			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
 			(pCCTCheckRight.getCollider() cast ColliderVolume).setShape(shape)
 			
 			pCheckOffset = radius * 2 + 0.05
