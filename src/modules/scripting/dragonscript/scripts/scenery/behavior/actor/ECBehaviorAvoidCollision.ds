@@ -55,20 +55,20 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		private class MoverEvents extends ECBehaviorActorMover.DefaultListener
 			private var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			public func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void startMoving( ECBehaviorActorMover.Instance instance )
-				this.pInstance.clearAvoiding()
+			public func void startMoving(ECBehaviorActorMover.Instance instance)
+				pInstance.clearAvoiding()
 			end
 			
-			public func void stopMoving( ECBehaviorActorMover.Instance instance )
-				this.pInstance.clearAvoiding()
+			public func void stopMoving(ECBehaviorActorMover.Instance instance)
+				pInstance.clearAvoiding()
 			end
 			
-			public func void modifyMoveTowards( ECBehaviorActorMover.Instance instance, DVector position, float elapsed )
-				this.pInstance.onModifyMoveTowards( position, elapsed )
+			public func void modifyMoveTowards(ECBehaviorActorMover.Instance instance, DVector position, float elapsed)
+				pInstance.onModifyMoveTowards(position, elapsed)
 			end
 		end
 		
@@ -76,12 +76,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		private class RidableChanged extends ECBehaviorRideOn.DefaultListener
 			private var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			public func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void ridableChanged( ECBehaviorRideOn.Instance instance )
-				this.pInstance.onRidableChanged()
+			public func void ridableChanged(ECBehaviorRideOn.Instance instance)
+				pInstance.onRidableChanged()
 			end
 		end
 		
@@ -89,12 +89,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		private class AvoidElement extends ElementVisitor
 			private var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			public func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void visitBehaviorElement( BehaviorElement element )
-				this.pInstance.avoidBehaviorElement( element )
+			public func void visitBehaviorElement(BehaviorElement element)
+				pInstance.avoidBehaviorElement(element)
 			end
 		end
 		
@@ -127,40 +127,40 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorAvoidCollision ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorAvoidCollision ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pAvoidElement = AvoidElement.new( this )
-			this.pAvoidTimeContactCollision = 0.5 // 1
-			this.pWaitBehindObstacles = false
-			this.pCheckOffset = 0.4
-			this.pRadius = 0.4
-			this.pEnabled = true
+			pAvoidElement = AvoidElement.new(this)
+			pAvoidTimeContactCollision = 0.5 // 1
+			pWaitBehindObstacles = false
+			pCheckOffset = 0.4
+			pRadius = 0.4
+			pEnabled = true
 			
-			this.pSpeedMultiplier = 1
-			this.pDeviationAngle = 0
-			this.pDeviationTime = 0
+			pSpeedMultiplier = 1
+			pDeviationAngle = 0
+			pDeviationTime = 0
 			
 			
 			// to calculate the check interval a detection distance of 3m is assumed with a
 			// walking speed of 1.25m. we want to get a check at least every 1/4 to 1/3 detection
 			// distance to avoid problems. for walking speed this is around 0.5s check interval.
 			// for running speed of 4m a check interval of 0.15s should work.
-			this.pCheckInterval = 0.5
-			this.pCheckTimer = 0
+			pCheckInterval = 0.5
+			pCheckTimer = 0
 			
-			this.pActorMover = ecbehavior.getActorMover().instance( element )
+			pActorMover = ecbehavior.getActorMover().instance(element)
 			
-			this.setRequiresThink( true )
+			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.pRidable = null
-			this.pRideOn = null
-			this.pActorMover = null
-			this.pElementResolver = null
-			this.pAvoidElement = null
+			pRidable = null
+			pRideOn = null
+			pActorMover = null
+			pElementResolver = null
+			pAvoidElement = null
 			
 			super.dispose()
 		end
@@ -168,48 +168,48 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		
 		/** \brief Initialize from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		public func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			if this.pECBehavior.getRideOn() != null
-				this.pRideOn = this.pECBehavior.getRideOn().instance( element )
+			if pECBehavior.getRideOn() != null
+				pRideOn = pECBehavior.getRideOn().instance(element)
 			end
 			
-			var Collider collider = this.pActorMover.getLocomotion().getColliderAI().getCollider()
+			var Collider collider = pActorMover.getLocomotion().getColliderAI().getCollider()
 			if collider == null
 				return
 			end
 			
 			// create collision tests
-			var CollisionFilter collisionFilter = this.pECBehavior.getCollisionFilter().getCollisionFilter()
-			this.pRadius = this.pECBehavior.getRadius().getValue( stub )
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			pRadius = pECBehavior.getRadius().getValue(stub)
 			
-			this.pCCTAvoidCollision = ColliderCollisionTest.new( collisionFilter, Vector.new(), Vector.new() )
-			this.pCCTAvoidCollision.setCollider( ColliderVolume.new() )
-			this.pCCTAvoidCollision.setLocalDirection( false )
-			this.pCCTAvoidCollision.setEnabled( false )
-			collider.addCollisionTest( this.pCCTAvoidCollision )
-			collider.addIgnoreCollider( this.pCCTAvoidCollision.getCollider() )
+			pCCTAvoidCollision = ColliderCollisionTest.new(collisionFilter, Vector.new(), Vector.new())
+			pCCTAvoidCollision.setCollider(ColliderVolume.new())
+			pCCTAvoidCollision.setLocalDirection(false)
+			pCCTAvoidCollision.setEnabled(false)
+			collider.addCollisionTest(pCCTAvoidCollision)
+			collider.addIgnoreCollider(pCCTAvoidCollision.getCollider())
 			
-			this.pCCTCheckLeft = ColliderCollisionTest.new( collisionFilter, Vector.new(), Vector.new() )
-			this.pCCTCheckLeft.setCollider( ColliderVolume.new() )
-			this.pCCTCheckLeft.setLocalDirection( false )
-			this.pCCTCheckLeft.setEnabled( false )
-			collider.addCollisionTest( this.pCCTCheckLeft )
-			collider.addIgnoreCollider( this.pCCTCheckLeft.getCollider() )
+			pCCTCheckLeft = ColliderCollisionTest.new(collisionFilter, Vector.new(), Vector.new())
+			pCCTCheckLeft.setCollider(ColliderVolume.new())
+			pCCTCheckLeft.setLocalDirection(false)
+			pCCTCheckLeft.setEnabled(false)
+			collider.addCollisionTest(pCCTCheckLeft)
+			collider.addIgnoreCollider(pCCTCheckLeft.getCollider())
 			
-			this.pCCTCheckRight = ColliderCollisionTest.new( collisionFilter, Vector.new(), Vector.new() )
-			this.pCCTCheckRight.setCollider( ColliderVolume.new() )
-			this.pCCTCheckRight.setLocalDirection( false )
-			this.pCCTCheckRight.setEnabled( false )
-			collider.addCollisionTest( this.pCCTCheckRight )
-			collider.addIgnoreCollider( this.pCCTCheckRight.getCollider() )
+			pCCTCheckRight = ColliderCollisionTest.new(collisionFilter, Vector.new(), Vector.new())
+			pCCTCheckRight.setCollider(ColliderVolume.new())
+			pCCTCheckRight.setLocalDirection(false)
+			pCCTCheckRight.setEnabled(false)
+			collider.addCollisionTest(pCCTCheckRight)
+			collider.addIgnoreCollider(pCCTCheckRight.getCollider())
 			
 			// add listeners
-			this.pActorMover.addListener( MoverEvents.new( this ) )
+			pActorMover.addListener(MoverEvents.new(this))
 			
-			if this.pRideOn != null
-				this.pRideOn.addListener( RidableChanged.new( this ) )
+			if pRideOn != null
+				pRideOn.addListener(RidableChanged.new(this))
 			end
 		end
 		
@@ -217,172 +217,172 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		/** \brief Behavior. */
 		public func ECBehaviorAvoidCollision getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Actor mover behavior. */
 		public func ECBehaviorActorMover.Instance getActorMover()
-			return this.pActorMover
+			return pActorMover
 		end
 		
 		/** \brief Ride on behavior. */
 		public func ECBehaviorRideOn.Instance getRideOn()
-			return this.pRideOn
+			return pRideOn
 		end
 		
 		
 		
 		/** \brief Avoid collider collision test. */
 		public func ColliderCollisionTest getCCTAvoidCollision()
-			return this.pCCTAvoidCollision
+			return pCCTAvoidCollision
 		end
 		
 		/** \brief Check left collider collision test. */
 		public func ColliderCollisionTest getCCTCheckLeft()
-			return this.pCCTCheckLeft
+			return pCCTCheckLeft
 		end
 		
 		/** \brief Check right collider collision test. */
 		public func ColliderCollisionTest getCCTCheckRight()
-			return this.pCCTCheckRight
+			return pCCTCheckRight
 		end
 		
 		/** \brief Avoid element visitor. */
 		public func ElementVisitor getAvoidElement()
-			return this.pAvoidElement
+			return pAvoidElement
 		end
 		
 		/** \brief Set avoid element visitor. */
-		public func void setAvoidElement( ElementVisitor visitor )
-			this.pAvoidElement = visitor
+		public func void setAvoidElement(ElementVisitor visitor)
+			pAvoidElement = visitor
 		end
 		
 		/** \brief Avoid time contact collision. */
 		public func float getAvoidTimeContactCollision()
-			return this.pAvoidTimeContactCollision
+			return pAvoidTimeContactCollision
 		end
 		
 		/** \brief Set avoid time contact collision. */
-		public func void setAvoidTimeContactCollision( float time )
-			this.pAvoidTimeContactCollision = DEMath.max( time, 0.0 )
+		public func void setAvoidTimeContactCollision(float time)
+			pAvoidTimeContactCollision = DEMath.max(time, 0.0)
 		end
 		
 		/** \brief Wait behind obstacles instead of moving around them. */
 		public func bool getWaitBehindObstacles()
-			return this.pWaitBehindObstacles
+			return pWaitBehindObstacles
 		end
 		
 		/** \brief Set wait behind obstacles instead of moving around them. */
-		public func void setWaitBehindObstacles( bool moveAroundActors )
-			this.pWaitBehindObstacles = moveAroundActors
+		public func void setWaitBehindObstacles(bool moveAroundActors)
+			pWaitBehindObstacles = moveAroundActors
 		end
 		
 		/** \brief Avoid radius. */
 		public func float getRadius()
-			return this.pRadius
+			return pRadius
 		end
 		
 		/** \brief Set avoid radius. */
-		public func void setRadius( float radius )
-			this.pRadius = DEMath.max( radius, 0.0 )
+		public func void setRadius(float radius)
+			pRadius = DEMath.max(radius, 0.0)
 		end
 		
 		/** \brief Collision avoiding is enabled. */
 		public func bool getEnabled()
-			return this.pEnabled
+			return pEnabled
 		end
 		
 		/** \brief Set if collision avoiding is enabled. */
-		public func void setEnabled( bool enabled )
-			if enabled == this.pEnabled
+		public func void setEnabled(bool enabled)
+			if enabled == pEnabled
 				return
 			end
 			
-			this.pEnabled = enabled
+			pEnabled = enabled
 			
 			if not enabled
-				this.disarmTest()
-				this.clearAvoiding()
+				disarmTest()
+				clearAvoiding()
 			end
 		end
 		
 		/** \brief Check offset. */
 		public func float getCheckOffset()
-			return this.pCheckOffset
+			return pCheckOffset
 		end
 		
 		/** \brief Set check offset. */
-		public func void setCheckOffset( float offset )
-			this.pCheckOffset = DEMath.max( offset, 0.0 )
+		public func void setCheckOffset(float offset)
+			pCheckOffset = DEMath.max(offset, 0.0)
 		end
 		
 		/** \brief Check interval in seconds. */
 		public func float getCheckInterval()
-			return this.pCheckInterval
+			return pCheckInterval
 		end
 		
 		/** \brief Set check interval in seconds. */
-		public func void setCheckInterval( float interval )
-			this.pCheckInterval = DEMath.max( interval, 0.0 )
+		public func void setCheckInterval(float interval)
+			pCheckInterval = DEMath.max(interval, 0.0)
 		end
 		
 		/** \brief Check timer. */
 		public func float getCheckTimer()
-			return this.pCheckTimer
+			return pCheckTimer
 		end
 		
 		/** \brief Set check timer. */
-		public func void setCheckTimer( float timer )
-			this.pCheckTimer = timer
+		public func void setCheckTimer(float timer)
+			pCheckTimer = timer
 		end
 		
 		
 		
 		/** \brief Speed multiplier. */
 		public func float getSpeedMultiplier()
-			return this.pSpeedMultiplier
+			return pSpeedMultiplier
 		end
 		
 		/** \brief Set speed multiplier. */
-		public func void setSpeedMultiplier( float multiplier )
-			this.pSpeedMultiplier = multiplier
+		public func void setSpeedMultiplier(float multiplier)
+			pSpeedMultiplier = multiplier
 		end
 		
 		/** \brief Deviation angle. */
 		public func float getDeviationAngle()
-			return this.pDeviationAngle
+			return pDeviationAngle
 		end
 		
 		/** \brief Set deviation angle. */
-		public func void setDeviationAngle( float angle )
-			if this.pRidable != null
-				angle -= this.pRidable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
+		public func void setDeviationAngle(float angle)
+			if pRidable != null
+				angle -= pRidable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
 			end
-			this.pDeviationAngle = DEMath.normalize( angle, -180.0, 180.0 )
+			pDeviationAngle = DEMath.normalize(angle, -180.0, 180.0)
 		end
 		
 		/** \brief Deviation time. */
 		public func float getDeviationTime()
-			return this.pDeviationTime
+			return pDeviationTime
 		end
 		
 		/** \brief Set deviation time. */
-		public func void setDeviationTime( float time )
-			this.pDeviationTime = time
+		public func void setDeviationTime(float time)
+			pDeviationTime = time
 		end
 		
 		/** \brief Clear avoiding. */
 		public func void clearAvoiding()
-			this.pSpeedMultiplier = 1
-			this.pDeviationAngle = 0
-			this.pDeviationTime = 0
+			pSpeedMultiplier = 1
+			pDeviationAngle = 0
+			pDeviationTime = 0
 		end
 		
 		
 		
 		/** \brief Rideable the actor is standing upon or \em null. */
 		public func ECBehaviorRidable.Instance getRidable()
-			return this.pRidable
+			return pRidable
 		end
 		
 		/**
@@ -391,20 +391,20 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * Called by RidableChanged. If overwritten do not forget to super-call.
 		 */
 		public func void onRidableChanged()
-			var ECBehaviorRidable.Instance ridable = this.pRideOn.getRidable()
-			if this.pDeviationTime <= 0
-				this.pRidable = ridable
+			var ECBehaviorRidable.Instance ridable = pRideOn.getRidable()
+			if pDeviationTime <= 0
+				pRidable = ridable
 				return
 			end
 			
-			if this.pRidable != null
-				this.pDeviationAngle += this.pRidable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
+			if pRidable != null
+				pDeviationAngle += pRidable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
 			end
 			
-			this.pRidable = ridable
+			pRidable = ridable
 			
 			if ridable != null
-				this.pDeviationAngle -= ridable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
+				pDeviationAngle -= ridable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
 			end
 		end
 		
@@ -415,65 +415,65 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * 
 		 * Uses sphere shape located a distance above ground.
 		 */
-		public func void setShapesSphere( float radius, float distanceAboveGround )
+		public func void setShapesSphere(float radius, float distanceAboveGround)
 			var ShapeList shape = ShapeList.new()
-			shape.addSphere( Vector.new( 0, distanceAboveGround, 0 ), radius )
-			( this.pCCTAvoidCollision.getCollider() cast ColliderVolume ).setShape( shape )
+			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
+			(pCCTAvoidCollision.getCollider() cast ColliderVolume).setShape(shape)
 			
 			shape = ShapeList.new()
-			shape.addSphere( Vector.new( 0, distanceAboveGround, 0 ), radius )
-			( this.pCCTCheckLeft.getCollider() cast ColliderVolume ).setShape( shape )
+			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
+			(pCCTCheckLeft.getCollider() cast ColliderVolume).setShape(shape)
 			
 			shape = ShapeList.new()
-			shape.addSphere( Vector.new( 0, distanceAboveGround, 0 ), radius )
-			( this.pCCTCheckRight.getCollider() cast ColliderVolume ).setShape( shape )
+			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
+			(pCCTCheckRight.getCollider() cast ColliderVolume).setShape(shape)
 			
-			this.pCheckOffset = radius * 2 + 0.05
+			pCheckOffset = radius * 2 + 0.05
 		end
 		
 		/** \brief Add colliders required for avoiding as colliders to ignore. */
-		public func void addIgnoreCollidersTo( Collider collider )
-			collider.addIgnoreCollider( this.pCCTAvoidCollision.getCollider() )
-			collider.addIgnoreCollider( this.pCCTCheckLeft.getCollider() )
-			collider.addIgnoreCollider( this.pCCTCheckRight.getCollider() )
+		public func void addIgnoreCollidersTo(Collider collider)
+			collider.addIgnoreCollider(pCCTAvoidCollision.getCollider())
+			collider.addIgnoreCollider(pCCTCheckLeft.getCollider())
+			collider.addIgnoreCollider(pCCTCheckRight.getCollider())
 		end
 		
 		
 		
 		/** \brief Collision test is armed. */
 		public func bool isTestArmed()
-			return this.pCCTAvoidCollision.getEnabled()
+			return pCCTAvoidCollision.getEnabled()
 		end
 		
 		/** \brief Arm collision test with direction. */
-		public func void armTest( Vector direction )
-			this.pCCTAvoidCollision.setDirection( direction )
-			this.pCCTAvoidCollision.setEnabled( true )
+		public func void armTest(Vector direction)
+			pCCTAvoidCollision.setDirection(direction)
+			pCCTAvoidCollision.setEnabled(true)
 			
 			// direction is not local. we need to calculate the correct offset using the direction and the up vector
 			var Matrix checkMatrix
 			
-			if DEMath.fabs( direction.getY() ) < 0.999
-				checkMatrix = Matrix.newVU( direction, Vector.new( 0, 1, 0 ) )
+			if DEMath.fabs(direction.getY()) < 0.999
+				checkMatrix = Matrix.newVU(direction, Vector.new(0, 1, 0))
 				
 			else
 				checkMatrix = Matrix.new()
 			end
 			
-			this.pCCTCheckLeft.setDirection( direction )
-			this.pCCTCheckLeft.setOrigin( checkMatrix * Vector.new( -this.pCheckOffset, 0, 0 ) )
-			this.pCCTCheckLeft.setEnabled( true )
+			pCCTCheckLeft.setDirection(direction)
+			pCCTCheckLeft.setOrigin(checkMatrix * Vector.new(-pCheckOffset, 0, 0))
+			pCCTCheckLeft.setEnabled(true)
 			
-			this.pCCTCheckRight.setDirection( direction )
-			this.pCCTCheckRight.setOrigin( checkMatrix * Vector.new( this.pCheckOffset, 0, 0 ) )
-			this.pCCTCheckRight.setEnabled( true )
+			pCCTCheckRight.setDirection(direction)
+			pCCTCheckRight.setOrigin(checkMatrix * Vector.new(pCheckOffset, 0, 0))
+			pCCTCheckRight.setEnabled(true)
 		end
 		
 		/** \brief Disarm collision test. */
 		public func void disarmTest()
-			this.pCCTAvoidCollision.setEnabled( false )
-			this.pCCTCheckLeft.setEnabled( false )
-			this.pCCTCheckRight.setEnabled( false )
+			pCCTAvoidCollision.setEnabled(false)
+			pCCTCheckLeft.setEnabled(false)
+			pCCTCheckRight.setEnabled(false)
 		end
 		
 		
@@ -483,51 +483,51 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * 
 		 * Called by think().
 		 */
-		public func void update( float elapsed )
-			if not this.pEnabled
+		public func void update(float elapsed)
+			if not pEnabled
 				return
 			end
 			
-			this.pDeviationTime -= elapsed
+			pDeviationTime -= elapsed
 			
 			// if a collision test has been done the last frame evaluate it
-			if this.isTestArmed()
-				this.avoidCollision( elapsed )
-				this.disarmTest()
+			if isTestArmed()
+				avoidCollision(elapsed)
+				disarmTest()
 			end
 			
 			// update timer. if elapsed trigger a collision test unless not moving. the test
 			// direction depends on the moving orientation but not the movement speed. for this
 			// reason the running state of the actor is used to pick the suitable interval
-			this.pCheckTimer += elapsed
-			if this.pCheckTimer < this.pCheckInterval
+			pCheckTimer += elapsed
+			if pCheckTimer < pCheckInterval
 				return
 			end
 			
 			// trigger a collision test for the next frame update if the actor has a mover goal
 			// and is moving not too slow
-			this.pCheckTimer = 0
-			this.startTests( elapsed )
+			pCheckTimer = 0
+			startTests(elapsed)
 		end
 		
 		
 		
 		/** \brief Avoid collision if required. */
-		public func void avoidCollision( float elapsed )
-			this.clearAvoiding()
+		public func void avoidCollision(float elapsed)
+			clearAvoiding()
 			
-			if not this.pCCTAvoidCollision.getHasCollision()
+			if not pCCTAvoidCollision.getHasCollision()
 				return
 			end
 			
-			//this.checkTargetBlocked()
-			this.avoidElement( this.pCCTAvoidCollision.hitCollider( 0 ).getOwner() cast Element )
+			//checkTargetBlocked()
+			avoidElement(pCCTAvoidCollision.hitCollider(0).getOwner() cast Element)
 		end
 		
 		/** \brief Start collision tests for the next interval if applicable. */
-		public func void startTests( float elapsed )
-			if this.pActorMover.hasNoGoal() or this.pActorMover.getSpeed() < 0.01
-				this.clearAvoiding()
+		public func void startTests(float elapsed)
+			if pActorMover.hasNoGoal() or pActorMover.getSpeed() < 0.01
+				clearAvoiding()
 				return
 			end
 			
@@ -538,29 +538,29 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// test again but it is simpler to use the next path point of the actor mover.
 			// this avoids storing the relative deviation angle and gives us the correct
 			// orientation
-			var DVector nextPathPoint = this.pActorMover.getWorldNextPathPoint()
+			var DVector nextPathPoint = pActorMover.getWorldNextPathPoint()
 			if nextPathPoint == null
 				// this should never happen but better safe than sorry
-				this.clearAvoiding()
+				clearAvoiding()
 				return
 			end
 			
-			var DVector actorPosition = this.pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
+			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
 			var DVector targetDirection = nextPathPoint - actorPosition
 			if targetDirection.getLength() < 0.1
 				// we are nearly at the target. no sense in trying to deviate now
-				this.clearAvoiding()
+				clearAvoiding()
 				return
 			end
 			
-			var Vector velocity = targetDirection.normalize().toVector() * this.pActorMover.getSpeed()
+			var Vector velocity = targetDirection.normalize().toVector() * pActorMover.getSpeed()
 			
 			// calculate the test direction. by default the actor would look ahead 2 or 3 seconds.
 			// if the mover navigation path has a path point closer than this time frame the time
 			// frame is reduced. if this is not done actors would try to avoid obstacles although
 			// their direction changes before the obstacle would be a problem resulting in actors
 			// getting stuck for no obvious reason
-			var Locomotion locomotion = this.pActorMover.getLocomotion().getLocomotion()
+			var Locomotion locomotion = pActorMover.getLocomotion().getLocomotion()
 			var float frameMovementDistance = locomotion.getAbsMovingSpeed() * elapsed
 				// actor moves during the frame before collision tests are done
 			var Vector direction = velocity * 2
@@ -569,19 +569,19 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var float directionLen = direction.getLength()
 			direction = direction / directionLen
 			
-			if this.pActorMover.hasNextPathPoint()
-				directionLen = DEMath.min( directionLen, \
-					this.pActorMover.getWorldDistanceNextPoint() - frameMovementDistance )
+			if pActorMover.hasNextPathPoint()
+				directionLen = DEMath.min(directionLen, \
+					pActorMover.getWorldDistanceNextPoint() - frameMovementDistance)
 			end
 			
-			directionLen = DEMath.min( directionLen, this.pActorMover.getDistanceToGoal() \
-				- this.pActorMover.getGoalDistance() - frameMovementDistance )
+			directionLen = DEMath.min(directionLen, pActorMover.getDistanceToGoal() \
+				- pActorMover.getGoalDistance() - frameMovementDistance)
 			if directionLen < 0.1
-				this.clearAvoiding()
+				clearAvoiding()
 				return
 			end
 			
-			this.armTest( direction * directionLen )
+			armTest(direction * directionLen)
 		end
 		
 		
@@ -592,9 +592,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * Default implementation does nothing if element is null. Otherwise uses avoid-element
 		 * visitor on element to apply element specific avoiding.
 		 */
-		protected func void avoidElement( Element element )
+		protected func void avoidElement(Element element)
 			if element != null
-				element.visit( this.pAvoidElement )
+				element.visit(pAvoidElement)
 			end
 		end
 		
@@ -604,26 +604,26 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * Called by AvoidElement visitor. Default implementation calls avoidAvoidedByActor
 		 * for all ECBehaviorAvoidedByActor instances present in the element.
 		 */
-		public func void avoidBehaviorElement( BehaviorElement element )
+		public func void avoidBehaviorElement(BehaviorElement element)
 			// try to avoid the actor
-			element.forEachInstance( block ECBehaviorAvoidedByActor.Instance each
-				this.avoidAvoidedByActor( each )
-			end )
+			element.forEachInstance(block ECBehaviorAvoidedByActor.Instance each
+				avoidAvoidedByActor(each)
+			end)
 		end
 		
 		/**
 		 * \brief Avoid actor.
 		 */
-		public func void avoidAvoidedByActor( ECBehaviorAvoidedByActor.Instance behavior )
+		public func void avoidAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior)
 			if not behavior.shouldBeAvoided()
 				return // do not avoid but prevent actor from detecting elements behind
 			end
 			
-			if this.pWaitBehindObstacles
-				this.waitBehindAvoidedByActor( behavior )
+			if pWaitBehindObstacles
+				waitBehindAvoidedByActor(behavior)
 				
 			else
-				this.moveAroundAvoidedByActor( behavior )
+				moveAroundAvoidedByActor(behavior)
 			end
 		end
 		
@@ -632,29 +632,29 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		/**
 		 * \brief Move around avoided by actor.
 		 */
-		public func void moveAroundAvoidedByActor( ECBehaviorAvoidedByActor.Instance behavior )
+		public func void moveAroundAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior)
 			// if moving slowly do not avoid collision
-			var float actorSpeed = this.pActorMover.getSpeed()
+			var float actorSpeed = pActorMover.getSpeed()
 			if actorSpeed < 0.01
 				return
 			end
 			
-			var Vector actorVelocity = Matrix.newRotationY( this.pActorMover.getLocomotion() \
-				.getLocomotion().getMovingOrientation() ).getViewVector() * actorSpeed
+			var Vector actorVelocity = Matrix.newRotationY(pActorMover.getLocomotion() \
+				.getLocomotion().getMovingOrientation()).getViewVector() * actorSpeed
 			
 			// if hit normal is pointing away do not avoid
 			var Vector norActorVelocity = actorVelocity / actorSpeed
-			var float hitAngle = DEMath.acos( norActorVelocity * this.pCCTAvoidCollision.hitNormalWorld( 0 ) )
-			if /* this.pCCTAvoidCollision.hitDistance( 0 ) > 0.01 and */ hitAngle < 100
+			var float hitAngle = DEMath.acos(norActorVelocity * pCCTAvoidCollision.hitNormalWorld(0))
+			if /* pCCTAvoidCollision.hitDistance(0) > 0.01 and */ hitAngle < 100
 				return
 			end
 			
 			// find the collider to use
-			var Collider collider = this.bestColliderFor( behavior )
+			var Collider collider = bestColliderFor(behavior)
 			
 			// if the element is behind actor in respect to velocity do not avoid
 			var Vector colliderVelocity = collider.getLinearVelocity()
-			var DVector actorPosition = this.pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
+			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
 			var DVector connection = collider.getPosition() - actorPosition
 			if actorVelocity * connection.toVector() <= 0
 				return
@@ -665,15 +665,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// this check also skips avoiding if collider moves faster than actor:
 			//    speedDiff = actorSpeed - (norActorVelocity * velocity)
 			//    hitDistanceThreshold = speedDiff / actorSpeed
-			if this.pCCTAvoidCollision.getCollisionAt( 0 ).getDistance() \
-			>= 1.0 - ( norActorVelocity * colliderVelocity ) / actorSpeed
+			if pCCTAvoidCollision.getCollisionAt(0).getDistance() \
+			>= 1.0 - (norActorVelocity * colliderVelocity) / actorSpeed
 				return
 			end
 			
 			// if close to the hit point do contact collision avoid
 			/*
-			if this.pCCTAvoidCollision.hitDistance( 0 ) < 0.01
-				this.contactCollision()
+			if pCCTAvoidCollision.hitDistance(0) < 0.01
+				contactCollision()
 				return
 			end
 			*/
@@ -683,9 +683,9 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// which they can better avoid by just waiting a second or two.
 			var float crossAngle = 0
 			if colliderVelocity.getLength() > 0.01
-				crossAngle = DEMath.acos( norActorVelocity * colliderVelocity.normalize() )
+				crossAngle = DEMath.acos(norActorVelocity * colliderVelocity.normalize())
 				if crossAngle > 20 and crossAngle < 160
-					this.waitBehindAvoidedByActor( behavior )
+					waitBehindAvoidedByActor(behavior)
 					return
 				end
 			end
@@ -695,40 +695,40 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// to slow down before continue moving
 			
 			var ECBehaviorAvoidCollision.Instance otherAvoidCollision = \
-				ECBehaviorAvoidCollision.getInstanceIn( behavior.getElement() )
+				ECBehaviorAvoidCollision.getInstanceIn(behavior.getElement())
 			if otherAvoidCollision != null and otherAvoidCollision.pDeviationTime > 0
-				this.waitBehindAvoidedByActor( behavior )
+				waitBehindAvoidedByActor(behavior)
 				return
 			end
 			
 			
 			// moving orientation
-			var float movingOrientation = this.pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
+			var float movingOrientation = pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
 			
 			// find border point pairs for testing. first point has smaller rotation angle in
 			// world space than second point.
-			var Pair borderPoints = this.getPointsBorder( \
-				this.getShapeCorners( behavior, collider.getMatrix() ), actorPosition )
+			var Pair borderPoints = getPointsBorder(\
+				getShapeCorners(behavior, collider.getMatrix()), actorPosition)
 			
 			// test pairs. results in the distance to the tangent position and the absolute
 			// deviation angle for passing by the left and right side
-			var float avoidDistance = this.pRadius + behavior.getRadius()
+			var float avoidDistance = pRadius + behavior.getRadius()
 			
 			var DVector colliderLeft = borderPoints.getSecond() cast DVector
 			var DVector leftVector = colliderLeft - actorPosition
 			var float leftDist = leftVector.getLength()
-			var float leftAngle = DEMath.atan2( -leftVector.getX(), leftVector.getZ() )
-			leftAngle += avoidDistance < leftDist - 0.001 if DEMath.asin( avoidDistance / leftDist ) else 90
-			leftAngle = DEMath.normalize( leftAngle - movingOrientation + 360, -180.0, 180.0 )
-// 			leftAngle = DEMath.clamp( leftAngle, 0.0, 80.0 )
+			var float leftAngle = DEMath.atan2(-leftVector.getX(), leftVector.getZ())
+			leftAngle += avoidDistance < leftDist - 0.001 if DEMath.asin(avoidDistance / leftDist) else 90
+			leftAngle = DEMath.normalize(leftAngle - movingOrientation + 360, -180.0, 180.0)
+// 			leftAngle = DEMath.clamp(leftAngle, 0.0, 80.0)
 			
 			var DVector colliderRight = borderPoints.getFirst() cast DVector
 			var DVector rightVector = colliderRight - actorPosition
 			var float rightDist = rightVector.getLength()
-			var float rightAngle = DEMath.atan2( -rightVector.getX(), rightVector.getZ() )
-			rightAngle -= avoidDistance < rightDist if DEMath.asin( avoidDistance / rightDist ) else 90
-			rightAngle = DEMath.normalize( movingOrientation - rightAngle + 360, -180.0, 180.0 )
-// 			rightAngle = DEMath.clamp( rightAngle, 0.0, 80.0 )
+			var float rightAngle = DEMath.atan2(-rightVector.getX(), rightVector.getZ())
+			rightAngle -= avoidDistance < rightDist if DEMath.asin(avoidDistance / rightDist) else 90
+			rightAngle = DEMath.normalize(movingOrientation - rightAngle + 360, -180.0, 180.0)
+// 			rightAngle = DEMath.clamp(rightAngle, 0.0, 80.0)
 			
 			// choose the side to evade to. use the side with the smaller absolute deviation angle.
 			// use navigation space to rule out sides if impassable. then use left and right check
@@ -736,16 +736,16 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// collision object is not the object to avoid
 			var bool useLeftSide
 			
-			var Collider colliderAvoid = this.pCCTAvoidCollision.hitCollider( 0 )
-			var float distanceAvoid = this.pCCTAvoidCollision.hitDistance( 0 )
+			var Collider colliderAvoid = pCCTAvoidCollision.hitCollider(0)
+			var float distanceAvoid = pCCTAvoidCollision.hitDistance(0)
 			
-			var bool canEvadeLeft = not this.pCCTCheckLeft.getHasCollision() \
-				or Collider.equals( this.pCCTCheckLeft.hitCollider( 0 ), colliderAvoid ) \
-				or this.pCCTCheckLeft.hitDistance( 0 ) > distanceAvoid
+			var bool canEvadeLeft = not pCCTCheckLeft.getHasCollision() \
+				or Collider.equals(pCCTCheckLeft.hitCollider(0), colliderAvoid) \
+				or pCCTCheckLeft.hitDistance(0) > distanceAvoid
 			
-			var bool canEvadeRight = not this.pCCTCheckRight.getHasCollision() \
-				or Collider.equals( this.pCCTCheckRight.hitCollider( 0 ), colliderAvoid ) \
-				or this.pCCTCheckRight.hitDistance( 0 ) > distanceAvoid
+			var bool canEvadeRight = not pCCTCheckRight.getHasCollision() \
+				or Collider.equals(pCCTCheckRight.hitCollider(0), colliderAvoid) \
+				or pCCTCheckRight.hitDistance(0) > distanceAvoid
 			
 			if not canEvadeLeft and not canEvadeRight
 				// NOTE this check can result in problems if the actor ends up in specific locked
@@ -753,14 +753,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				//      but the left/right check hits an obstacle right next to it. in such
 				//      situations the actor should be bold and just try deviating. not sure how
 				//      to solve this properly
-				this.waitBehindAvoidedByActor( behavior )
+				waitBehindAvoidedByActor(behavior)
 				return
 			end
 			
-			select this.navSpaceEvadeSide( actorPosition, movingOrientation, \
-			leftAngle, leftDist, rightAngle, rightDist )
+			select navSpaceEvadeSide(actorPosition, movingOrientation, \
+			leftAngle, leftDist, rightAngle, rightDist)
 			case -1 // no side possible
-				this.waitBehindAvoidedByActor( behavior )
+				waitBehindAvoidedByActor(behavior)
 				return
 				
 			case 0 // both possible
@@ -783,15 +783,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			
 			var float distance = useLeftSide if leftDist else rightDist
 			if distance > avoidDistance
-				distance = DEMath.sqrt( distance * distance - avoidDistance * avoidDistance )
+				distance = DEMath.sqrt(distance * distance - avoidDistance * avoidDistance)
 				
 			else
-				distance = this.pRadius
+				distance = pRadius
 			end
 			
 			// apply deviation
-			this.pDeviationAngle = movingOrientation + deviationAngle
-			this.pDeviationTime = DEMath.max( distance / this.pActorMover.getSpeed(), 1.0 )
+			pDeviationAngle = movingOrientation + deviationAngle
+			pDeviationTime = DEMath.max(distance / pActorMover.getSpeed(), 1.0)
 		end
 		
 		/**
@@ -799,21 +799,21 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * 
 		 * If shape has no size 1 point is returned. If shape has size 4 points are returned.
 		 */
-		protected func Array getShapeCorners( ECBehaviorAvoidedByActor.Instance behavior, DMatrix matrix )
-			var DVector origin = DVector.new( behavior.getOrigin() )
+		protected func Array getShapeCorners(ECBehaviorAvoidedByActor.Instance behavior, DMatrix matrix)
+			var DVector origin = DVector.new(behavior.getOrigin())
 			var Vector2 size = behavior.getSize()
 			var Array points = Array.new()
 			
-			if Vector2.new().equals( size )
-				points.add( matrix * origin )
+			if Vector2.new().equals(size)
+				points.add(matrix * origin)
 				
 			else
 				var float sx = size.getX()
 				var float sy = size.getY()
-				points.add( matrix * ( origin + DVector.new( -sx, 0, sy ) ) )
-				points.add( matrix * ( origin + DVector.new( sx, 0, sy ) ) )
-				points.add( matrix * ( origin + DVector.new( sx, 0, -sy ) ) )
-				points.add( matrix * ( origin + DVector.new( -sx, 0, -sy ) ) )
+				points.add(matrix * (origin + DVector.new(-sx, 0, sy)))
+				points.add(matrix * (origin + DVector.new(sx, 0, sy)))
+				points.add(matrix * (origin + DVector.new(sx, 0, -sy)))
+				points.add(matrix * (origin + DVector.new(-sx, 0, -sy)))
 			end
 			
 			return points
@@ -824,28 +824,28 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * 
 		 * \returns Pair with smallest point as first and largest point as second.
 		 */
-		protected func Pair getPointsBorder( Array points, DVector origin )
+		protected func Pair getPointsBorder(Array points, DVector origin)
 			var DVector smallestPoint, largestPoint, point, vector
 			var float smallestAngle, largestAngle, angle
 			var int i, count = points.getCount()
 			
 			for i = 0 to count
-				point = points.getAt( i ) cast DVector
+				point = points.getAt(i) cast DVector
 				vector = point - origin
-				angle = DEMath.atan2( -vector.getX(), vector.getZ() )
+				angle = DEMath.atan2(-vector.getX(), vector.getZ())
 				
-				if smallestPoint == null or DEMath.normalize( angle - smallestAngle + 360.0, -180.0, 180.0 ) < 0
+				if smallestPoint == null or DEMath.normalize(angle - smallestAngle + 360.0, -180.0, 180.0) < 0
 					smallestPoint = point
 					smallestAngle = angle
 				end
 				
-				if largestPoint == null or DEMath.normalize( angle - largestAngle + 360.0, -180.0, 180.0 ) > 0
+				if largestPoint == null or DEMath.normalize(angle - largestAngle + 360.0, -180.0, 180.0) > 0
 					largestPoint = point
 					largestAngle = angle
 				end
 			end
 			
-			return Pair.new( smallestPoint, largestPoint )
+			return Pair.new(smallestPoint, largestPoint)
 		end
 		
 		/**
@@ -859,15 +859,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * \retval 1 Evade to the left side is recommended.
 		 * \retval 2 Evade to the right side is recommended.
 		 */
-		protected func int navSpaceEvadeSide( DVector position, float orientation, \
-		float leftAngle, float leftDistance, float rightAngle, float rightDistance )
+		protected func int navSpaceEvadeSide(DVector position, float orientation, \
+		float leftAngle, float leftDistance, float rightAngle, float rightDistance)
 			// get nearest points on navigation spaces
-			var Navigator navigator = this.pActorMover.getNavigator().getNavigator()
+			var Navigator navigator = pActorMover.getNavigator().getNavigator()
 			
-			var NavigationInfo niLeft = navigator.nearestPoint( position + DMatrix.newRotationY( \
-				orientation + leftAngle ).getViewVector() * leftDistance, 0.1 )
-			var NavigationInfo niRight = navigator.nearestPoint( position + DMatrix.newRotationY( \
-				orientation - rightAngle ).getViewVector() * rightDistance, 0.1 )
+			var NavigationInfo niLeft = navigator.nearestPoint(position + DMatrix.newRotationY(\
+				orientation + leftAngle).getViewVector() * leftDistance, 0.1)
+			var NavigationInfo niRight = navigator.nearestPoint(position + DMatrix.newRotationY(\
+				orientation - rightAngle).getViewVector() * rightDistance, 0.1)
 			
 			if niLeft == null and niRight == null
 				return -1
@@ -880,10 +880,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			end
 			
 			// both sides are possible so compare the costs
-			var float fixCostRight = navigator.getTypeFixCost( niRight.getCostType() )
-			var float fixCostLeft = navigator.getTypeFixCost( niLeft.getCostType() )
-			var float costPerMeterRight = navigator.getTypeCostPerMeter( niRight.getCostType() )
-			var float costPerMeterLeft = navigator.getTypeCostPerMeter( niLeft.getCostType() )
+			var float fixCostRight = navigator.getTypeFixCost(niRight.getCostType())
+			var float fixCostLeft = navigator.getTypeFixCost(niLeft.getCostType())
+			var float costPerMeterRight = navigator.getTypeCostPerMeter(niRight.getCostType())
+			var float costPerMeterLeft = navigator.getTypeCostPerMeter(niLeft.getCostType())
 			
 			if fixCostRight < fixCostLeft
 				return 2
@@ -905,16 +905,16 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		/** \brief Get out of contact collision. */
 		protected func void contactCollision()
 			// if the actor is not moving enough do nothing
-			var float moveSpeed = this.pActorMover.getSpeed()
+			var float moveSpeed = pActorMover.getSpeed()
 			if moveSpeed < 0.01
 				return // this should not happen
 			end
 			
-			var Locomotion locomotion = this.pActorMover.getLocomotion().getLocomotion()
-			var Vector linearVelocity = Matrix.newRotationY( locomotion.getMovingOrientation() ).getViewVector() * moveSpeed
+			var Locomotion locomotion = pActorMover.getLocomotion().getLocomotion()
+			var Vector linearVelocity = Matrix.newRotationY(locomotion.getMovingOrientation()).getViewVector() * moveSpeed
 			
 			// to get out of the collision a plane using the ground projected hit normal is used
-			var Vector hitNormal = this.pCCTAvoidCollision.hitNormalWorld( 0 ).compSelect( true, false, true )
+			var Vector hitNormal = pCCTAvoidCollision.hitNormalWorld(0).compSelect(true, false, true)
 			
 			// if the actor is moving away from the hit plane do nothing
 			var float dotMoving = linearVelocity * hitNormal
@@ -927,15 +927,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// is dot(cross(hitNormal, up), linearVelocity). since hitNormal though has been projected
 			// to the ground this boils down to dot((hitNormal. furthermore we add a little extra
 			// to the avoid angle to make sure, thus 90 - safetyGap.
-			var float deviationAngle = DEMath.acos( dotMoving / ( hitNormal.getLength() * moveSpeed ) ) - 80
+			var float deviationAngle = DEMath.acos(dotMoving / (hitNormal.getLength() * moveSpeed)) - 80
 			
-			if ( Vector.new( 0, 1, 0 ) % hitNormal ) * linearVelocity < 0
+			if (Vector.new(0, 1, 0) % hitNormal) * linearVelocity < 0
 				deviationAngle = -deviationAngle
 			end
 			
 			// apply avoiding parameters
-			this.pDeviationAngle = locomotion.getOrientation() + deviationAngle
-			this.pDeviationTime = this.pAvoidTimeContactCollision
+			pDeviationAngle = locomotion.getOrientation() + deviationAngle
+			pDeviationTime = pAvoidTimeContactCollision
 		end
 		
 		
@@ -944,61 +944,61 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * \brief Wait behind element.
 		 * \warning For use by avoid element visitor only.
 		 */
-		public func void waitBehindAvoidedByActor( ECBehaviorAvoidedByActor.Instance behavior )
+		public func void waitBehindAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior)
 			// calculate relative velocity along connection between ai and hit collider
-			var Collider collider = this.bestColliderFor( behavior )
-			var Vector connection = ( collider.getPosition() - this.pActorMover.getLocomotion() \
-				.getColliderAI().getCollider().getPosition() ).toVector()
+			var Collider collider = bestColliderFor(behavior)
+			var Vector connection = (collider.getPosition() - pActorMover.getLocomotion() \
+				.getColliderAI().getCollider().getPosition()).toVector()
 			var float connDistance = connection.getLength()
 			connection = connection / connDistance
 			
-			var Vector linearVelocity = Matrix.newRotationY( this.pActorMover.getLocomotion() \
-				.getLocomotion().getMovingOrientation() ).getViewVector() * this.pActorMover.getSpeed()
+			var Vector linearVelocity = Matrix.newRotationY(pActorMover.getLocomotion() \
+				.getLocomotion().getMovingOrientation()).getViewVector() * pActorMover.getSpeed()
 			var float moveSpeed = connection * linearVelocity
 			if moveSpeed < 0
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba ms<0: " + Array.newWith( \
+// 				BaseGameApp.getApp().getConsole().addMessage("wbaba ms<0: " + Array.newWith(\
 // 					getElement().getID(), moveSpeed))
 				return // moving out of collision
 			end
 			
-			var float colliderSpeed = DEMath.max( connection * collider.getLinearVelocity(), 0.0 )
+			var float colliderSpeed = DEMath.max(connection * collider.getLinearVelocity(), 0.0)
 			if moveSpeed <= colliderSpeed
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba ms<cs: " + Array.newWith( \
+// 				BaseGameApp.getApp().getConsole().addMessage("wbaba ms<cs: " + Array.newWith(\
 // 					getElement().getID(), moveSpeed, colliderSpeed))
 				return // same speed or slower
 			end
 			
-			var float angle = DEMath.acos( moveSpeed / this.pActorMover.getSpeed() )
+			var float angle = DEMath.acos(moveSpeed / pActorMover.getSpeed())
 			if angle > 85
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba a>85: " + Array.newWith( \
+// 				BaseGameApp.getApp().getConsole().addMessage("wbaba a>85: " + Array.newWith(\
 // 					getElement().getID(), moveSpeed, colliderSpeed, angle))
 				return // actor is just shrugging along obtacle
 			end
 			
 			// if behind obstacle and bumping into it back off for a short time
-			if this.pCCTAvoidCollision.hitDistance( 0 ) < 0.01
-// 				BaseGameApp.getApp().getConsole().addMessage("wbaba bump: " + Array.newWith( \
-// 					moveSpeed, colliderSpeed, angle, this.pCCTAvoidCollision.hitDistance( 0 )))
-				this.pDeviationAngle = this.pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
-				this.pDeviationTime = DEMath.random( 0.25, 0.5 )
-				this.pSpeedMultiplier = -0.5
+			if pCCTAvoidCollision.hitDistance(0) < 0.01
+// 				BaseGameApp.getApp().getConsole().addMessage("wbaba bump: " + Array.newWith(\
+// 					moveSpeed, colliderSpeed, angle, pCCTAvoidCollision.hitDistance(0)))
+				pDeviationAngle = pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
+				pDeviationTime = DEMath.random(0.25, 0.5)
+				pSpeedMultiplier = -0.5
 				return
 			end
 			
 			// actor is moving faster than obstacle. adjust speed relative to distance. if the
 			// actor is farther away the adjustment is small. if the actor is closer to the
 			// obstacle the adjustment is higher. a linear step function is fine enough for
-			// this. avoid getting in contact with the obstacle if possible
-			var float moverSpeed = this.pActorMover.getSpeed()
-			var float minDistance = behavior.getRadius() + this.pRadius + moverSpeed * 0.25
+			//  avoid getting in contact with the obstacle if possible
+			var float moverSpeed = pActorMover.getSpeed()
+			var float minDistance = behavior.getRadius() + pRadius + moverSpeed * 0.25
 			var float maxDistance = minDistance + moverSpeed * 0.5
 			
-			this.pSpeedMultiplier = DEMath.linearStep( connDistance, \
-				minDistance, maxDistance, colliderSpeed / moverSpeed, 1.0 )
-// 			BaseGameApp.getApp().getConsole().addMessage("wbaba avoid: " + Array.newWith( \
+			pSpeedMultiplier = DEMath.linearStep(connDistance, \
+				minDistance, maxDistance, colliderSpeed / moverSpeed, 1.0)
+// 			BaseGameApp.getApp().getConsole().addMessage("wbaba avoid: " + Array.newWith(\
 // 				getElement().getID(), moveSpeed, colliderSpeed, angle, \
-// 				this.pCCTAvoidCollision.hitDistance( 0 )) + Array.newWith(moverSpeed, \
-// 				minDistance, maxDistance, this.pSpeedMultiplier, behavior.getElement().getID()))
+// 				pCCTAvoidCollision.hitDistance(0)) + Array.newWith(moverSpeed, \
+// 				minDistance, maxDistance, pSpeedMultiplier, behavior.getElement().getID()))
 		end
 		
 		/**
@@ -1010,22 +1010,22 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			// to collision. also the actor locomotion linear velocity is not useful since it can be
 			// also 0 if the speed multiplier drops to 0. to figure out if the collider is in front or
 			// behind the actor the orientation is used. if not in front continue moving otherwise stop
-			var float movingOrientation = this.pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
+			var float movingOrientation = pActorMover.getLocomotion().getLocomotion().getMovingOrientation()
 			
 			/*
-			var ColliderVolume actorCollider = this.pActor.getColliderAI().getCollider()
+			var ColliderVolume actorCollider = pActor.getColliderAI().getCollider()
 			var DVector connection = collider.getPosition() - actorCollider.getPosition()
-			var float connectionOrientation = DEMath.atan2( -connection.getX(), connection.getZ() )
-			var float deviation = DEMath.fabs( DEMath.normalize( \
-				movingOrientation - connectionOrientation, -180.0, 180.0 ) )
+			var float connectionOrientation = DEMath.atan2(-connection.getX(), connection.getZ())
+			var float deviation = DEMath.fabs(DEMath.normalize(\
+				movingOrientation - connectionOrientation, -180.0, 180.0))
 			if deviation > 84.0 // 90 - 6~10 degrees seems fine
 				return
 			end
 			*/
 			
 			// apply avoiding parameters
-			this.pDeviationAngle = movingOrientation + 180
-			this.pDeviationTime = 0.25
+			pDeviationAngle = movingOrientation + 180
+			pDeviationTime = 0.25
 		end
 		
 		
@@ -1035,15 +1035,15 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * 
 		 * Uses ECBehaviorColliderAI if present otherwise ECBehaviorCollider.
 		 */
-		public func Collider bestColliderFor( ECBehaviorAvoidedByActor.Instance behavior )
+		public func Collider bestColliderFor(ECBehaviorAvoidedByActor.Instance behavior)
 			var BehaviorElement element = behavior.getElement()
 			
-			var ECBehaviorColliderAI.Instance colliderAI = ECBehaviorColliderAI.getInstanceIn( element )
+			var ECBehaviorColliderAI.Instance colliderAI = ECBehaviorColliderAI.getInstanceIn(element)
 			if colliderAI != null
 				return colliderAI.getCollider()
 			end
 			
-			var ECBehaviorCollider.Instance collider = ECBehaviorCollider.getInstanceIn( element )
+			var ECBehaviorCollider.Instance collider = ECBehaviorCollider.getInstanceIn(element)
 			if collider != null
 				return collider.getCollider()
 			end
@@ -1054,41 +1054,41 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		
 		/** \brief Apply avoiding to actor mover. */
-		public func void onModifyMoveTowards( DVector position, float elapsed )
-			var Locomotion locomotion = this.pActorMover.getLocomotion().getLocomotion()
-			locomotion.setAnalogMovingSpeed( locomotion.getAnalogMovingSpeed() * this.pSpeedMultiplier )
+		public func void onModifyMoveTowards(DVector position, float elapsed)
+			var Locomotion locomotion = pActorMover.getLocomotion().getLocomotion()
+			locomotion.setAnalogMovingSpeed(locomotion.getAnalogMovingSpeed() * pSpeedMultiplier)
 			
-			if this.pDeviationTime <= 0
+			if pDeviationTime <= 0
 				return
 			end
 			
-			var float orientation = this.pDeviationAngle
-			if this.pRidable != null
-				orientation += this.pRidable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
+			var float orientation = pDeviationAngle
+			if pRidable != null
+				orientation += pRidable.getCollider().getCollider().getOrientation().getEulerAngles().getY()
 			end
 			
-			var float turnAngle = DEMath.normalize( orientation - locomotion.getOrientation(), -180.0, 180.0 )
+			var float turnAngle = DEMath.normalize(orientation - locomotion.getOrientation(), -180.0, 180.0)
 			
 			/*
 			// by disabling this check actors can do potentially sharp turns to avoid obstacles.
 			// it is better to have this behavior instead of actors getting stuck because the
 			// limit prevents them from doing the required deviation
 			
-			if this.pActorMover.getEnableLimitTurnAngle()
-				var float limit = this.pActorMover.getLimitTurnAngle()
-				turnAngle = DEMath.clamp( turnAngle, -limit, limit )
+			if pActorMover.getEnableLimitTurnAngle()
+				var float limit = pActorMover.getLimitTurnAngle()
+				turnAngle = DEMath.clamp(turnAngle, -limit, limit)
 			end
 			*/
 			
-			locomotion.setLookHorizontalGoal( turnAngle )
-			locomotion.setTurnHorizontal( turnAngle )
-			locomotion.setAnalogMovingHorizontalGoal( turnAngle )
+			locomotion.setLookHorizontalGoal(turnAngle)
+			locomotion.setTurnHorizontal(turnAngle)
+			locomotion.setAnalogMovingHorizontalGoal(turnAngle)
 			
 			// if conversation actor head look-at is running clear it since conversation
 			// look-at overrides deviation handling potentially causing troubles. we can
 			// accept this if the turn angle is not too large though
-			if DEMath.fabs( turnAngle ) > 20
-				var ECBehaviorConversationActor.Instance convoActor = this.pActorMover.getConversationActor()
+			if DEMath.fabs(turnAngle) > 20
+				var ECBehaviorConversationActor.Instance convoActor = pActorMover.getConversationActor()
 				if convoActor != null
 					var ConversationLookAtPlayback hlap = convoActor.getConversationActor().getHeadLookAtPlayback()
 					if hlap != null
@@ -1101,52 +1101,52 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think( float elapsed )
-			this.update( elapsed )
+		public func void think(float elapsed)
+			update(elapsed)
 		end
 		
 		
 		
 		/** \brief Element resolver used during loading or \em null if not set. */
 		public func ElementResolver getElementResolver()
-			return this.pElementResolver
+			return pElementResolver
 		end
 		
 		/** \brief Frame update started. */
 		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			this.clearAvoiding()
+			clearAvoiding()
 		end
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
-				this.pWaitBehindObstacles = flags.getAt( 0 )
-				this.pEnabled = flags.getAt( 1 )
+				var PersistencyFlags flags = PersistencyFlags.new(3, reader)
+				pWaitBehindObstacles = flags.getAt(0)
+				pEnabled = flags.getAt(1)
 				
-				this.pSpeedMultiplier = reader.readFloat()
-				this.pDeviationAngle = reader.readFloat()
-				this.pDeviationTime = reader.readFloat()
+				pSpeedMultiplier = reader.readFloat()
+				pDeviationAngle = reader.readFloat()
+				pDeviationTime = reader.readFloat()
 				
-				if flags.getAt( 2 )
-					this.pElementResolver = ElementResolver.new()
-					this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance behavior
-						this.pRidable = behavior
-					end )
-					this.setRequiresEnterFrame( true )
+				if flags.getAt(2)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance behavior
+						pRidable = behavior
+					end)
+					setRequiresEnterFrame(true)
 				end
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
@@ -1157,21 +1157,21 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * being written. The relative collider is not saved. During loading the  base actor is
 		 * responsible to restore the relative collider. This has to be done any.
 		 */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 3 )
-			flags.setAt( 0, this.pWaitBehindObstacles )
-			flags.setAt( 1, this.pEnabled )
-			flags.setAt( 2, this.pRidable != null )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(3)
+			flags.setAt(0, pWaitBehindObstacles)
+			flags.setAt(1, pEnabled)
+			flags.setAt(2, pRidable != null)
+			flags.writeToFile(writer)
 			
-			writer.writeFloat( this.pSpeedMultiplier )
-			writer.writeFloat( this.pDeviationAngle )
-			writer.writeFloat( this.pDeviationTime )
+			writer.writeFloat(pSpeedMultiplier)
+			writer.writeFloat(pDeviationAngle)
+			writer.writeFloat(pDeviationTime)
 			
-			if this.pRidable != null
-				ElementResolver.writeToFileBehavior( writer, this.pRidable )
+			if pRidable != null
+				ElementResolver.writeToFileBehavior(writer, pRidable)
 			end
 		end
 	end
@@ -1190,41 +1190,41 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em rideOn.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorActorMover actorMover, \
-	ECBehaviorRideOn rideOn ) this( eclass, actorMover, rideOn, "avoidCollision." )
+	public func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover, \
+	ECBehaviorRideOn rideOn) this(eclass, actorMover, rideOn, "avoidCollision.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorActorMover actorMover, \
-	ECBehaviorRideOn rideOn, String prefix ) super( eclass )
+	public func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover, \
+	ECBehaviorRideOn rideOn, String prefix) super(eclass)
 		if actorMover == null
-			throw ENullPointer.new( "actorMover" )
+			throw ENullPointer.new("actorMover")
 		end
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pActorMover = actorMover
-		this.pRideOn = rideOn
+		pActorMover = actorMover
+		pRideOn = rideOn
 		
-		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.actorAI )
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
 		
 		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		
-		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
+		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
 		
-		this.pRadius = ECPFloat.new( prefix + "radius", 0.4, 0 )
-		eclass.addProperty( this.pRadius )
+		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
+		eclass.addProperty(pRadius)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pActorMover = null
-		this.pRideOn = null
+		pActorMover = null
+		pRideOn = null
 		super.dispose()
 	end
 	
@@ -1232,29 +1232,29 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	
 	/** \brief Actor mover behavior. */
 	public func ECBehaviorActorMover getActorMover()
-		return this.pActorMover
+		return pActorMover
 	end
 	
 	/** \brief RideOn behavior or null. */
 	public func ECBehaviorRideOn getRideOn()
-		return this.pRideOn
+		return pRideOn
 	end
 	
 	/** \brief Collision filter. */
 	public func ECComposeCollisionFilter getCollisionFilter()
-		return this.pCollisionFilter
+		return pCollisionFilter
 	end
 	
 	/** \brief Avoid radius. */
 	public func ECPFloat getRadius()
-		return this.pRadius
+		return pRadius
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -1265,10 +1265,10 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorAvoidCollision.
 	 */
-	static public func ECBehaviorAvoidCollision getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorAvoidCollision each
+	static public func ECBehaviorAvoidCollision getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorAvoidCollision each
 			return true
-		end ) cast ECBehaviorAvoidCollision
+		end) cast ECBehaviorAvoidCollision
 	end
 	
 	/**
@@ -1277,16 +1277,16 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorAvoidCollision.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
