@@ -30,6 +30,7 @@
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditPointReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -60,6 +61,7 @@ private:
 	igdeActionReference pActionAddRequiredExtension;
 	igdeActionReference pActionRemoveRequiredExtension;
 	igdeActionReference pActionDelgaPath;
+	igdeActionContextMenuReference pActionMenuIdentifier;
 	
 	igdeListBoxReference pListProfiles;
 	
@@ -72,6 +74,7 @@ private:
 	igdeTextFieldReference pEditPathCapture;
 	
 	igdeTextFieldReference pEditIdentifier;
+	igdeButtonReference pBtnMenuIdentifier;
 	igdeTextFieldReference pEditAliasIdentifier;
 	igdeTextFieldReference pEditTitle;
 	igdeTextAreaReference pEditGameDescription;
