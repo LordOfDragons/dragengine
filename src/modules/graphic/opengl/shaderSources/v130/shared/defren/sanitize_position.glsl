@@ -12,7 +12,3 @@
 vec3 sanitizePosition( in vec3 position ){
 	return round( position / vec3( SANITIZE_POSITION_FACTOR ) ) * vec3( SANITIZE_POSITION_FACTOR );
 }
-
-vec4 sanitizePosition( in vec4 position ){
-	return vec4( round( position.xyz / vec3( SANITIZE_POSITION_FACTOR ) ) * vec3( SANITIZE_POSITION_FACTOR ), position.w );
-}

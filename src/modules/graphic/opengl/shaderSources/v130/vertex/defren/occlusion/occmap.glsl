@@ -71,13 +71,13 @@ in vec3 inPosition;
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
-	vec4 position = vec4( pMatrixModel * vec4( inPosition, 1 ), 1 );
+	vec4 position = vec4( sanitizePosition( pMatrixModel * vec4( inPosition, 1 ) ), 1 );
 	
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
-		gl_Position = sanitizePosition( position );
+		gl_Position = position;
 		
 	#else
-		gl_Position = sanitizePosition( pMatrixVP[ inLayer ] * position );
+		gl_Position = pMatrixVP[ inLayer ] * position;
 		#ifdef PERSPECTIVE_TO_LINEAR
 			vDepth = dot( pTransformZ[ inLayer ], position );
 		#endif

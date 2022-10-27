@@ -229,7 +229,7 @@ void main(){
 		#ifdef BILLBOARD
 			gl_Position = pMatrixP[ 0 ] * gl_Position;
 		#else
-			gl_Position = sanitizePosition( pMatrixVP[ 0 ] * gl_Position );
+			gl_Position = pMatrixVP[ 0 ] * gl_Position;
 		#endif
 	#endif
 }
