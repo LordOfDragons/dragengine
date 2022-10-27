@@ -1666,10 +1666,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	addToRenderTask.SetNoShadowNone( true );
 	
 	if( shadowParams.collideList1 ){
-		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1 );
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
 	}
 	if( shadowParams.collideList2 ){
-		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2 );
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
 	}
 	
 	renderTask.PrepareForRender();

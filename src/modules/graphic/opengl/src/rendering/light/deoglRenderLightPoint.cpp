@@ -1915,10 +1915,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		renderTask.SetUseSPBInstanceFlags( true );
 		
 		if( shadowParams.collideList1 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1 );
+			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
 		}
 		if( shadowParams.collideList2 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2 );
+			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
 		}
 		
 		renderTask.PrepareForRender();
@@ -1963,10 +1963,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			
 			addToRenderTask.SetFilterCubeFace( cmf );
 			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1 );
+				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
 			}
 			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2 );
+				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
 			}
 			
 			renderTask.PrepareForRender();

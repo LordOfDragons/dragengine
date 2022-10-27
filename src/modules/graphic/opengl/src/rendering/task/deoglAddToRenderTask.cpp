@@ -725,7 +725,7 @@ void deoglAddToRenderTask::AddHeightTerrains( const deoglCollideList &clist, boo
 
 
 void deoglAddToRenderTask::AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
-deoglRenderTaskTexture *taskTexture ){
+deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 	const deoglRComponent &component = *clcomponent.GetComponent();
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 	if( ! occlusionMesh ){
@@ -738,7 +738,7 @@ deoglRenderTaskTexture *taskTexture ){
 		return;
 	}
 	
-	if( occlusionMesh->GetSingleSidedFaceCount() > 0 ){
+	if( withSingleSided && occlusionMesh->GetSingleSidedFaceCount() > 0 ){
 		AddOcclusionMeshFaces( component, false, taskTexture, clcomponent.GetSpecialFlags() );
 	}
 	if( occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
@@ -747,7 +747,7 @@ deoglRenderTaskTexture *taskTexture ){
 }
 
 void deoglAddToRenderTask::AddOcclusionMesh( deoglRComponent &component,
-deoglRenderTaskTexture *taskTexture ){
+deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 	if( ! occlusionMesh ){
 		return;
@@ -756,7 +756,7 @@ deoglRenderTaskTexture *taskTexture ){
 		return;
 	}
 	
-	if( occlusionMesh->GetSingleSidedFaceCount() > 0 ){
+	if( withSingleSided && occlusionMesh->GetSingleSidedFaceCount() > 0 ){
 		AddOcclusionMeshFaces( component, false, taskTexture, 0 );
 	}
 	if( occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
@@ -764,7 +764,7 @@ deoglRenderTaskTexture *taskTexture ){
 	}
 }
 
-void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
+void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist, bool withSingleSided ){
 	deoglRenderTaskTexture *rttexture = NULL;
 	
 	if( pRenderTask.GetShaderCount() == 0 ){
@@ -775,19 +775,19 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 		rttexture = pRenderTask.GetShaderAt( 0 )->GetTextureAt( 0 );
 	}
 	
-	AddOcclusionMeshes( clist, rttexture );
+	AddOcclusionMeshes( clist, rttexture, withSingleSided );
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist,
-deoglRenderTaskTexture *taskTexture ){
+deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 	const int count = clist.GetComponentCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		AddOcclusionMesh( *clist.GetComponentAt( i ), taskTexture );
+		AddOcclusionMesh( *clist.GetComponentAt( i ), taskTexture, withSingleSided );
 	}
 }
 
-void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list ){
+void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list, bool withSingleSided ){
 	deoglRenderTaskTexture *rttexture = NULL;
 	
 	if( pRenderTask.GetShaderCount() == 0 ){
@@ -798,15 +798,15 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list ){
 		rttexture = pRenderTask.GetShaderAt( 0 )->GetTextureAt( 0 );
 	}
 	
-	AddOcclusionMeshes( list, rttexture );
+	AddOcclusionMeshes( list, rttexture, withSingleSided );
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list,
-deoglRenderTaskTexture *taskTexture ){
+deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 	const int count = list.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		AddOcclusionMesh( *list.GetAt( i ), taskTexture );
+		AddOcclusionMesh( *list.GetAt( i ), taskTexture, withSingleSided );
 	}
 }
 

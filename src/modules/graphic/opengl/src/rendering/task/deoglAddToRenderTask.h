@@ -304,21 +304,24 @@ public:
 	
 	/** Add an occlusion mesh from a component. */
 	void AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
-		deoglRenderTaskTexture *taskTexture );
+		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
 	
-	void AddOcclusionMesh( deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
-	
-	/** Add occlusion meshes for all components in a collide list. */
-	void AddOcclusionMeshes( const deoglCollideList &clist );
+	void AddOcclusionMesh( deoglRComponent &component,
+		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
 	
 	/** Add occlusion meshes for all components in a collide list. */
-	void AddOcclusionMeshes( const deoglCollideList &clist, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMeshes( const deoglCollideList &clist, bool withSingleSided );
+	
+	/** Add occlusion meshes for all components in a collide list. */
+	void AddOcclusionMeshes( const deoglCollideList &clist,
+		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
 	
 	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes( const deoglComponentList &list );
+	void AddOcclusionMeshes( const deoglComponentList &list, bool withSingleSided );
 	
 	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes( const deoglComponentList &list, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMeshes( const deoglComponentList &list,
+		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,
