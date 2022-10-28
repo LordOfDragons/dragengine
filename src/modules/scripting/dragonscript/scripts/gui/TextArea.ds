@@ -35,40 +35,17 @@ pin Dragengine.Utils
  * Supports designing using designer selector "TextArea".
  */
 class TextArea extends TextWidget implements RangeModelListener
-	/** Text layout */
 	private var TextLayout pTextLayout
-	
-	/** Caret position */
 	private var Point pCaret
-	
-	/** Position of cursor in text */
 	private var int pCursorPos
-	
-	/** Maximal width of text before break occurs */
 	private var int pMaxWidth
-	
-	/** Determines if an update is needed */
 	private var bool pNeedsUpdate
-	
-	/** Reference x position for cursor movement */
 	private var int pRefXPos
-	
-	/** Determines if reference position is valid */
 	private var bool pRefXPosDirty
-	
-	/** Selection */
 	private var Point pSelection
-	
-	/** Old cursor used by selecting with mouse */
 	private var int pOldCursorPos
-	
-	/** Selection x offsets */
 	private var Point pSelXOffsets
-	
-	/** Vertical range model */
 	private var DefaultRangeModel pVertRangeModel
-	
-	/** \brief Number display rows. */
 	private var int pRowCount
 	
 	

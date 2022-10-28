@@ -44,8 +44,8 @@ class TextField extends TextWidget
 	/** \brief Use no password character constant */
 	public fixed var int noPasswordChar = 0
 	
-	private var int pCursorPos
-	private var int pFirstChar
+	private var UTF8Navigator pCursorPos
+	private var UTF8Navigator pFirstChar
 	private var int pDispCharCount
 	private var int pPasswordChar
 	private var bool pNeedsUpdate
@@ -66,8 +66,8 @@ class TextField extends TextWidget
 	
 	/** \brief Create Text Field. */
 	public func new(TextModel model, bool readOnly) super(model, readOnly)
-		pCursorPos = 0
-		pFirstChar = 0
+		pCursorPos = UTF8Navigator.new(model.getText())
+		pFirstChar = UTF8Navigator.new(pCursorPos)
 		pDispCharCount = 10
 		pPasswordChar = noPasswordChar
 		pNeedsUpdate = true
@@ -92,13 +92,13 @@ class TextField extends TextWidget
 	
 	
 	
-	/** \brief Current position of the cursor. */
+	/** \brief Current position of the cursor in bytes. */
 	public func int getCursorPosition()
-		return pCursorPos
+		return pCursorPos.getPosition()
 	end
 	
 	/**
-	 * \brief Set current cursor position.
+	 * \brief Set current cursor position in bytes.
 	 * 
 	 * If the cursor is outside the visible area the text is shifted to make the cursor visible
 	 */
@@ -107,18 +107,20 @@ class TextField extends TextWidget
 			throw EInvalidParam.new()
 		end
 		
-		if position == pCursorPos
+		var int p = pCursorPos.getPosition()
+		pCursorPos.setPosition(position)
+		
+		if pCursorPos.getPosition() == p
 			return
 		end
 		
-		pCursorPos = position
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
 	
-	/** \brief Index of the first character visible. */
+	/** \brief Index in bytes of the first visible character. */
 	public func int getFirstCharacter()
-		return pFirstChar
+		return pFirstChar.getPosition()
 	end
 	
 	/** \brief Count of characters the edit field has to be able to display. */
@@ -128,12 +130,12 @@ class TextField extends TextWidget
 	
 	/** \brief Set count of characters the edit field has to be able to display. */
 	public func void setDisplayCharCount(int count)
-		if count < 1
-			throw EInvalidParam.new()
-		end
-		
 		if count == pDispCharCount
 			return
+		end
+		
+		if count < 1
+			throw EInvalidParam.new()
 		end
 		
 		pDispCharCount = count
@@ -168,49 +170,63 @@ class TextField extends TextWidget
 		var Font font = getFont()
 		var int width = getWidth() - getPadding().getWidth()
 		var float limit = (width - 2) cast float
-		var float textLen = 0.0
+		var float textLen = 0
 		var String text
 		var int i
 		
 		// check for password
 		if pPasswordChar == noPasswordChar
 			text = getModel().getText()
+			
 		else
 			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
 		end
 		
 		// check if the cursor is outside the left boundary
-		if pCursorPos < pFirstChar
-			pFirstChar = pCursorPos
+		if pCursorPos.getPosition() < pFirstChar.getPosition()
+			pFirstChar.setFrom(pCursorPos)
 			updateCanvasText()
-		else
-			// check if the cursor is outside the right boundary
-			for i = pCursorPos - 1 downto pFirstChar
-				textLen += font.getCharAdvance(text.getAt(i))
+			return
+		end
+		
+		// check if the cursor is outside the right boundary
+		var UTF8Navigator nav = UTF8Navigator.new(pCursorPos)
+		while nav.getPosition() > pFirstChar.getPosition()
+			nav.backward()
+			textLen += font.getCharAdvance(nav.decodeCharacter())
+			if textLen >= limit
+				nav.forward()
+				pFirstChar.setFrom(nav)
+				updateCanvasText()
+				break
+			end
+		end
+		
+		// check if there is still space to fill up on the right side
+		nav = UTF8Navigator.new(pCursorPos)
+		while not nav.isAtEnd()
+			textLen += font.getCharAdvance(nav.decodeCharacter())
+			if textLen >= limit
+				break
+			end
+			nav.forward()
+		end
+		
+		if textLen < limit
+			var bool requiresUpdate
+			
+			while not pFirstChar.isAtStart()
+				pFirstChar.backward()
+				textLen += font.getCharAdvance(pFirstChar.decodeCharacter())
 				if textLen >= limit
-					pFirstChar = i + 1
-					updateCanvasText()
+					pFirstChar.forward()
 					break
 				end
+				requiresUpdate = true
 			end
 			
-			// check if there is still space to fill up on the right side
-			for i = pCursorPos to text.getLength()
-				textLen += font.getCharAdvance(text.getAt(i))
-				if textLen >= limit
-					break
-				end
-			end
-			
-			if textLen < limit
-				for i = pFirstChar - 1 downto 0
-					textLen += font.getCharAdvance(text.getAt(i))
-					if textLen >= limit
-						break
-					end
-					pFirstChar = i
-					updateCanvasText()
-				end
+			if requiresUpdate
+				updateCanvasText()
 			end
 		end
 	end
@@ -270,29 +286,29 @@ class TextField extends TextWidget
 		select event.getKeyCode()
 		case InputEventKey.arrowLeft
 			// move cursor left
-			if pCursorPos > 0
-				pCursorPos--
+			if not pCursorPos.isAtStart()
+				pCursorPos.backward()
 				pNeedsUpdate = true
 				updateCanvasText()
 			end
 			
 		case InputEventKey.arrowRight
 			// move cursor right
-			if pCursorPos < getModel().getText().getLength()
-				pCursorPos++
+			if not pCursorPos.isAtEnd()
+				pCursorPos.forward()
 				pNeedsUpdate = true
 				updateCanvasText()
 			end
 			
 		case InputEventKey.home
 			// move to the beginning of the line
-			pCursorPos = 0
+			pCursorPos.setPositionBegin()
 			pNeedsUpdate = true
 			updateCanvasText()
 			
 		case InputEventKey.last
 			// move to the end of the line
-			pCursorPos = getModel().getText().getLength()
+			pCursorPos.setPositionEnd()
 			pNeedsUpdate = true
 			updateCanvasText()
 			
@@ -303,16 +319,11 @@ class TextField extends TextWidget
 	
 	
 	
-	/** \brief Check cursor is inside the text boundaries and adjust it if necessary. */
+	/**
+	 * \brief Check cursor is inside the text boundaries and adjust it if necessary.
+	 * \deprecated Using UTF8Navigator this call is not required anymore and is empty now.
+	 */
 	protected func void checkCursor()
-		var String text = getModel().getText()
-		var int textLen = text.getLength()
-		
-		pCursorPos = DEMath.clamp(pCursorPos, 0, textLen)
-		pFirstChar = DEMath.clamp(pFirstChar, 0, textLen)
-		
-		pNeedsUpdate = true
-		updateCanvasText()
 	end
 	
 	
@@ -324,41 +335,46 @@ class TextField extends TextWidget
 	 */
 	public func void onKeyType(KeyEvent event)
 		var String curText, newText = ""
-		var Font font = getFont()
-		var int textLen
 		
 		select event.getKeyCode()
 		case InputEventKey.backspace
 			// delete character to the left of the cursor
-			if pCursorPos > 0
+			if not pCursorPos.isAtStart()
+				var UTF8Navigator nav = UTF8Navigator.new(pCursorPos)
+				nav.backward()
+				
 				curText = getModel().getText()
-				textLen = curText.getLength()
-				if pCursorPos - 1 > 0
-					newText = newText + curText.substring(0, pCursorPos - 1)
+				
+				if not nav.isAtStart()
+					newText = newText + curText.substring(0, nav.getPosition())
 				end
-				if textLen - pCursorPos > 0
-					newText = newText + curText.substring(pCursorPos)
+				if not pCursorPos.isAtEnd()
+					newText = newText + curText.substring(pCursorPos.getPosition())
 				end
+				
 // 				if getValidator() == null or getValidator().validates(newText)
-					pCursorPos--
+					pCursorPos = nav // for delete doing this before setText() is fine
 					setHasTyped(true)
 					getModel().setText(newText)
 					updateCanvasText()
 // 				end
 			end
-		
+			
 		case InputEventKey.delete
 			// delete character to the right of the cursor
 			curText = getModel().getText()
-			textLen = curText.getLength()
 			
-			if pCursorPos < textLen
-				if pCursorPos > 0
-					newText = newText + curText.substring(0, pCursorPos)
+			if not pCursorPos.isAtEnd()
+				var UTF8Navigator nav = UTF8Navigator.new(pCursorPos)
+				nav.forward()
+				
+				if not pCursorPos.isAtStart()
+					newText = newText + curText.substring(0, pCursorPos.getPosition())
 				end
-				if textLen - pCursorPos > 1
-					newText = newText + curText.substring(pCursorPos + 1)
+				if not nav.isAtEnd()
+					newText = newText + curText.substring(nav.getPosition())
 				end
+				
 // 				if getValidator() == null or getValidator().validates(newText)
 					setHasTyped(true)
 					getModel().setText(newText)
@@ -369,39 +385,30 @@ class TextField extends TextWidget
 			// ignore new-line, tab since this is a single line text field
 			
 		else
-			// TEMPORARY HACK UNTIL WIDGET CAN HANDLE UTF8
-			if event.getKeyChar() > 127
-				break
-			end
-			
-			if event.getKeyChar() == 0
+			var int character = event.getKeyChar()
+			if character == 0
 				break  // no printable character
 			end
 			
-			// add character to the right of the cursor
-			// 
-			// WARNING
-			// 
-			// this fails if keyChar is larger than 127, for example non-latin characters.
-			// the only safe solution is to convert TextModel from String to UnicodeString
-			// 
-			if font.getCharAdvance(event.getKeyChar()) <= 0.5
+			if getFont().getCharAdvance(character) <= 0.5
 				break
 			end
 			
 			curText = getModel().getText()
-			textLen = curText.getLength()
-			if pCursorPos > 0
-				newText = newText + curText.substring(0, pCursorPos)
+			if not pCursorPos.isAtStart()
+				newText = curText.substring(0, pCursorPos.getPosition())
 			end
-			newText = newText + event.getKeyChar() cast byte
-			if textLen - pCursorPos > 0
-				newText = newText + curText.substring(pCursorPos)
+			
+			newText = newText + UnicodeString.new(character).toUTF8()
+			
+			if not pCursorPos.isAtEnd()
+				newText = newText + curText.substring(pCursorPos.getPosition())
 			end
+			
 			if getValidator() == null or getValidator().validates(newText)
-				pCursorPos++
 				setHasTyped(true)
 				getModel().setText(newText)
+				pCursorPos.forward() // has to come after setText()
 				updateCanvasText()
 			end
 		end
@@ -420,7 +427,15 @@ class TextField extends TextWidget
 	
 	/** \brief Model text changed. */
 	public func void textChanged(TextModel textModel)
-		checkCursor()
+		var int cursorPos = pCursorPos.countCharacters()
+		var int firstChar = pFirstChar.countCharacters()
+		
+		pCursorPos = UTF8Navigator.new(textModel.getText())
+		pCursorPos.setCharacterPosition(cursorPos)
+		
+		pFirstChar = UTF8Navigator.new(pCursorPos)
+		pFirstChar.setCharacterPosition(firstChar)
+		
 		updateCanvasText()
 	end
 	
@@ -454,8 +469,8 @@ class TextField extends TextWidget
 		
 		// check for update
 		if pNeedsUpdate
-			ensureCursorVisible()
 			pNeedsUpdate = false
+			ensureCursorVisible()
 		end
 		
 		// password check
@@ -472,23 +487,7 @@ class TextField extends TextWidget
 		
 		// text starting at given position
 		if not text.empty()
-			var String subString = text.substring(pFirstChar)
-			
-			// WARNING! right now the model text is not UTF8 anymore if characters are typed
-			//          actually the entire widget has to be modified to properly handle utf8
-			//          by updating pCursorPos with unicode character width (1-4) instead of
-			//          ascii character wide (1). to handle this for the time being the text
-			//          is considered ASCII-8 and being converted into UTF8 for the layout
-			// Too many problems. >127 characters disabled altogether until the widget is fully reworked
-			/*
-			var UnicodeString usstring = UnicodeString.new()
-			var int i, len = subString.getLength()
-			for i = 0 to len
-				usstring = usstring + subString.getAt(i)
-			end
-			subString = usstring.toUTF8()
-			*/
-			// END WARNING
+			var String subString = text.substring(pFirstChar.getPosition())
 			
 			var CanvasText textCanvas = CanvasText.new()
 			textCanvas.setFont(font)
@@ -506,8 +505,14 @@ class TextField extends TextWidget
 			var float fcx = x cast float
 			var int i
 			
-			for i = pFirstChar to pCursorPos
-				fcx += font.getCharAdvance(text.getAt(i))
+			var UTF8Navigator nav = UTF8Navigator.new(pFirstChar)
+			var int character, cursorPos = pCursorPos.getPosition()
+			while nav.getPosition() < cursorPos
+				character = nav.decodeCharacter()
+				if character != -1
+					fcx += font.getCharAdvance(character)
+				end
+				nav.forward()
 			end
 			
 			var int cx = fcx cast int

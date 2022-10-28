@@ -1,0 +1,303 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils
+
+
+/**
+ * \brief Navigate UTF-8 encoded string.
+ * \version 1.16
+ * 
+ * Stores the string and position in bytes from the start of the string. The position moves
+ * forward and backward in a way it always stops at the first byte of a UTF-8 character.
+ * The following table illustrates the possible UTF-8 byte values:
+ * 
+ * ^ Byte 1 ^ Byte 2 ^ Byte 3 ^ Byte 4 ^
+ * | 0xxxxxxx | - | - | - |
+ * | 110xxxxx | 10xxxxxx | - | - |
+ * | 1110xxxx | 10xxxxxx | 10xxxxxx | - |
+ * | 11110xxx | 10xxxxxx | 10xxxxxx | 10xxxxxx |
+ * 
+ * Hence all bytes with the high bits 10 are following bytes and can be skipped.
+ * 
+ * In addition to moving by UTF-8 character it is also possible to count the characters
+ * from the begin of the string to the current position. This allows to properly position
+ * a cursor using the character position.
+ */
+class UTF8Navigator
+	private var String pString
+	private var int pLength
+	private var int pPosition
+	
+	
+	
+	/** \brief Create navigator. */
+	public func new(String string)
+		if string == null
+			throw ENullPointer.new("string")
+		end
+		
+		pString = string
+		pLength = string.getLength()
+	end
+	
+	/** \brief Create copy of navigator. */
+	public func new(UTF8Navigator navigator)
+		pString = navigator.pString
+		pLength = navigator.pLength
+		pPosition = navigator.pPosition
+	end
+	
+	
+	
+	/** \brief String to navigate. */
+	public func String getString()
+		return pString
+	end
+	
+	/**
+	 * \brief Set string to navigate.
+	 * 
+	 * Sets position to 0.
+	 */
+	public func void setString(String string)
+		if string == null
+			throw ENullPointer.new("string")
+		end
+		
+		pString = string
+		pLength = string.getLength()
+		pPosition = 0
+	end
+	
+	/** \brief Length of string in bytes. */
+	public func int getLength()
+		return pLength
+	end
+	
+	/** \brief Position in bytes. */
+	public func int getPosition()
+		return pPosition
+	end
+	
+	/**
+	 * \brief Set position in bytes clamped to valid range.
+	 * 
+	 * If position is not at valid first byte moves backwards until valid first first byte.
+	 */
+	public func void setPosition(int position)
+		position = DEMath.clamp(position, 0, pLength)
+		
+		if position < pLength
+			while (pString.getAt(position) & 0b11000000) == 0b10000000
+				position--
+			end
+		end
+		
+		pPosition = position
+	end
+	
+	/** \brief Position is at start of string. */
+	public func bool isAtStart()
+		return pPosition == 0
+	end
+	
+	/** \brief Position is at end of string. */
+	public func bool isAtEnd()
+		return pPosition == pLength
+	end
+	
+	/** \brief Count of characters in string. */
+	public func int getCharacterCount()
+		var int i, count
+		
+		for i = 0 to pLength
+			if (pString.getAt(i) & 0b11000000) != 0b10000000
+				count++
+			end
+		end
+		
+		return count
+	end
+	
+	/**
+	 * \brief Set position in bytes matching character position clamped to valid range.
+	 */
+	public func void setCharacterPosition(int position)
+		var int p
+		while position-- > 0
+			p++
+			while p < pLength and (pString.getAt(p) & 0b11000000) == 0b10000000
+				p++
+			end
+		end
+		pPosition = DEMath.min(p, pLength)
+	end
+	 
+	/** \brief Count characters from start of string to current position. */
+	public func int countCharacters()
+		var int i, count
+		
+		for i = 0 to pPosition
+			if (pString.getAt(i) & 0b11000000) != 0b10000000
+				count++
+			end
+		end
+		
+		return count
+	end
+	 
+	/** \brief Count characters from current position to end of string. */
+	public func int countCharactersEnd()
+		var int i, count
+		
+		for i = pPosition to pLength
+			if (pString.getAt(i) & 0b11000000) != 0b10000000
+				count++
+			end
+		end
+		
+		return count
+	end
+	
+	/** \brief Move one character towards end of the string. */
+	public func void forward()
+		forward(1)
+	end
+	
+	/** \brief Move multiple characters towards end of the string. */
+	public func void forward(int count)
+		if count < 0
+			throw EInvalidParam.new("count < 0")
+		end
+		
+		var int p = pPosition
+		while count-- > 0
+			p++
+			while p < pLength and (pString.getAt(p) & 0b11000000) == 0b10000000
+				p++
+			end
+		end
+		pPosition = DEMath.min(p, pLength)
+	end
+	
+	/** \brief Move one character towards start of the string. */
+	public func void backward()
+		backward(1)
+	end
+	
+	/** \brief Move multiple characters towards start of the string. */
+	public func void backward(int count)
+		if count < 0
+			throw EInvalidParam.new("count < 0")
+		end
+		
+		var int p = pPosition
+		while count-- > 0
+			p--
+			while p >= 0 and (pString.getAt(p) & 0b11000000) == 0b10000000
+				p--
+			end
+		end
+		pPosition = DEMath.max(p, 0)
+	end
+	
+	/**
+	 * \brief Move multiple characters.
+	 * 
+	 * If count is positive moves towards the end of string. If count is negative moves
+	 * towards the start of string. Does nothing if count is 0.
+	 */
+	public func void move(int count)
+		if count > 0
+			forward(count)
+			
+		elif count < 0
+			backward(-count)
+		end
+	end
+	
+	/** \brief Set position to start of string. */
+	public func void setPositionBegin()
+		pPosition = 0
+	end
+	
+	/** \brief Set position to end of string. */
+	public func void setPositionEnd()
+		pPosition = pLength
+	end
+	
+	/**
+	 * \brief Decode UTF-8 character at position.
+	 * 
+	 * If the position is at the end of string or the UTF-8 character is invalid -1 is returned.
+	 */
+	public func int decodeCharacter()
+		if pPosition == pLength
+			return -1
+		end
+		
+		var int p = pPosition
+		var int v1 = pString.getAt(p++)
+		var int character, count, vn
+		
+		if (v1 & 0b10000000) == 0b00000000
+			character = v1 & 0b01111111
+			
+		elif (v1 & 0b11100000) == 0b11000000
+			character = v1 & 0b00011111
+			count = 1
+			
+		elif (v1 & 0b11110000) == 0b11100000
+			character = v1 & 0b00001111
+			count = 2
+			
+		elif (v1 & 0b11111000) == 0b11110000
+			character = v1 & 0b00000111
+			count = 3
+			
+		else
+			return -1
+		end
+		
+		while count-- > 0
+			if p == pLength
+				return -1
+			end
+			
+			vn = pString.getAt(p++)
+			if (vn & 0b11000000) != 0b10000000
+				return -1
+			end
+			
+			character = (character << 6) | (vn & 0b00111111)
+		end
+		
+		return character
+	end
+	
+	/** \brief Set navigator from another navigator. */
+	public func void setFrom(UTF8Navigator navigator)
+		pString = navigator.pString
+		pLength = navigator.pLength
+		pPosition = navigator.pPosition
+	end
+end
