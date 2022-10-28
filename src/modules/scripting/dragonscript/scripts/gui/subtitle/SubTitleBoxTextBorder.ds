@@ -62,25 +62,38 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 		public func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return SubTitleBoxTextBorder.readFromFile( env, reader )
+		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return SubTitleBoxTextBorder.readFromFile(this, env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
+		end
+		
+		/**
+		 * \brief Create SubTitleBoxTextBorder.
+		 * \version 1.16
+		 * 
+		 * For use by subclass during loading.
+		 */
+		public func SubTitleBoxTextBorder createSubtitleBoxText(String text, String name,\
+		StyledTextDefinition styledText, StyledTextDefinition styledName, Image portraitImage,\
+		Video portraitVideo, Placement placement)
+			return SubTitleBoxTextBorder.new(text, name, styledText, styledName,\
+				portraitImage, portraitVideo, placement)
 		end
 	end
 	
 	/** \brief Hide timer. */
 	protected class HideTimer extends Timer
-		private var SubTitleBoxTextBorder pText
+		protected var SubTitleBoxTextBorder pText
 		
-		public func new( SubTitleBoxTextBorder text, float timeout ) super( timeout, false )
-			this.pText = text
+		public func new(SubTitleBoxTextBorder text, float timeout) super(timeout, false)
+			pText = text
 		end
 		
 		public func void fire()
-			this.pText.hideSubtitleNow()
+			pText.hideTimerElapsed()
 		end
 	end
 	
@@ -98,14 +111,14 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	
 	
 	
-	private var Label pLabelName
-	private var Label pLabelText
-	private var Placement pPlacement
-	private var DisplayStyledText pStyledName
-	private var DisplayStyledText pStyledText
-	private var DisplayImage pImagePortrait
-	private var DisplayVideo pVideoPortrait
-	private var HideTimer pHideTimer
+	protected var Label pLabelName
+	protected var Label pLabelText
+	protected var Placement pPlacement
+	protected var DisplayStyledText pStyledName
+	protected var DisplayStyledText pStyledText
+	protected var DisplayImage pImagePortrait
+	protected var DisplayVideo pVideoPortrait
+	protected var HideTimer pHideTimer
 	
 	
 	
@@ -126,111 +139,119 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	 * \param portraitVideo Portrait video or \em null if not used.
 	 * \param placement Name placement from NAME_*.
 	 */
-	public func new( String text, String name, StyledTextDefinition styledText, \
+	public func new(String text, String name, StyledTextDefinition styledText, \
 	StyledTextDefinition styledName, Image portraitImage, Video portraitVideo, \
-	Placement placement )
+	Placement placement)
 		if text == null and styledText == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPlacement = placement
+		pPlacement = placement
 		
 		// create the individual element. they will be added to the correct place below
 		var Widget widgetName, widgetText, widgetPortrait
 		
 		if styledName != null
-			this.pStyledName = DisplayStyledText.new()
-			this.pStyledName.setPagedMode( false )
-			this.pStyledName.setStyledTextDefinition( styledName )
-			widgetName = this.pStyledName
+			pStyledName = DisplayStyledText.new()
+			pStyledName.setPagedMode(false)
+			pStyledName.setStyledTextDefinition(styledName)
+			widgetName = pStyledName
 			
 		elif name != null
-			this.pLabelName = Label.new( name )
-			widgetName = this.pLabelName
+			pLabelName = Label.new(name)
+			widgetName = pLabelName
 		end
 		
 		if styledText != null
-			this.pStyledText = DisplayStyledText.new()
-			this.pStyledText.setPagedMode( false )
-			this.pStyledText.setStyledTextDefinition( styledText )
-			widgetText = this.pStyledText
+			pStyledText = DisplayStyledText.new()
+			pStyledText.setPagedMode(false)
+			pStyledText.setStyledTextDefinition(styledText)
+			widgetText = pStyledText
 			
 		else
-			this.pLabelText = Label.new( text )
-			this.pLabelText.setWordWrap( true )
-			widgetText = this.pLabelText
+			pLabelText = Label.new(text)
+			pLabelText.setWordWrap(true)
+			widgetText = pLabelText
 		end
 		
 		if portraitVideo != null
-			this.pVideoPortrait = DisplayVideo.new( portraitVideo )
-			this.pVideoPortrait.play()
-			widgetPortrait = this.pVideoPortrait
+			pVideoPortrait = DisplayVideo.new(portraitVideo)
+			pVideoPortrait.play()
+			widgetPortrait = pVideoPortrait
 			
 		elif portraitImage != null
-			this.pImagePortrait = DisplayImage.new( portraitImage )
-			widgetPortrait = this.pImagePortrait
+			pImagePortrait = DisplayImage.new(portraitImage)
+			widgetPortrait = pImagePortrait
 		end
 		
 		// build layout adding the elements in the right place
-		this.runWhileBlockingLayout( block
-			// why no FlowLayout.new( LayoutAxis.x, padding, FlowLayout.Stretch.last ) used here?
+		runWhileBlockingLayout(block
+			// why no FlowLayout.new(LayoutAxis.x, padding, FlowLayout.Stretch.last) used here?
 			// FlowLayout with X_AXIS uses getMinimumSizeForHeight on children. Both Label and
 			// DisplayStyledText return in this case the size for a single line even if they
 			// would wrap around. we need thus a layout here which uses getMinimumSizeForWidth
-			// on all children to work properly. BorderLayout is a candidate for this. Another
+			// on all children to work properly. BorderLayout is a candidate for  Another
 			// solution would be FormLayout but sub titles have at most 3 elements arranged
 			// in a border shape. BorderLayout here is the best solution
-			this.setLayout( BorderLayout.new() )
+			setLayout(BorderLayout.new())
 			
 			var Panel sidePanel = Panel.new()
-			sidePanel.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-			this.addWidget( sidePanel, BorderLayout.Area.left )
+			sidePanel.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+			addWidget(sidePanel, BorderLayout.Area.left)
 			
 			select placement
 			case Placement.leftBelow
 				if widgetPortrait != null
-					sidePanel.addWidget( widgetPortrait )
+					sidePanel.addWidget(widgetPortrait)
 				end
 				if widgetName != null
-					sidePanel.addWidget( widgetName )
+					sidePanel.addWidget(widgetName)
 				end
 				
 			case Placement.leftAbove
 				if widgetName != null
-					sidePanel.addWidget( widgetName )
+					sidePanel.addWidget(widgetName)
 				end
 				if widgetPortrait != null
-					sidePanel.addWidget( widgetPortrait )
+					sidePanel.addWidget(widgetPortrait)
 				end
 				
 			case Placement.above
 				if widgetPortrait != null
-					sidePanel.addWidget( widgetPortrait )
+					sidePanel.addWidget(widgetPortrait)
 				end
 				if widgetName != null
-					this.addWidget( widgetName, BorderLayout.Area.top )
+					addWidget(widgetName, BorderLayout.Area.top)
 				end
 			end
 			
-			this.addWidget( widgetText, BorderLayout.Area.content )
+			addWidget(widgetText, BorderLayout.Area.content)
 			
-			this.setStateChangeNotifyChildren( true )
-			this.setDesignerSelector( "SubTitleBoxText" )
-		end )
+			setStateChangeNotifyChildren(true)
+			setDesignerSelector("SubTitleBoxText")
+		end)
 	end
 	
 	/** \brief Read action from file. */
-	public static func SubTitleBoxTextBorder readFromFile( \
-	PersistencyEnvironment env, FileReader reader )
+	public static func SubTitleBoxTextBorder readFromFile(PersistencyEnvironment env, FileReader reader)
+		return readFromFile(null, env, reader)
+	end
+	
+	/**
+	 * \brief Read action from file.
+	 * \version 1.16
+	 */
+	public static func SubTitleBoxTextBorder readFromFile(Factory factory,\
+	PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			// read content to know what kind of SubTitleBoxTextBorder to create
-			var String labelName = env.readString8OrNullIfEmpty( reader )
-			var String labelText = env.readString16OrNullIfEmpty( reader )
-			var String pathImagePortrait = env.readString16OrNullIfEmpty( reader )
-			var String pathVideoPortrait = env.readString16OrNullIfEmpty( reader )
+			var String labelName = env.readString8OrNullIfEmpty(reader)
+			var String labelText = env.readString16OrNullIfEmpty(reader)
+			var String pathImagePortrait = env.readString16OrNullIfEmpty(reader)
+			var String pathVideoPortrait = env.readString16OrNullIfEmpty(reader)
 			var SubTitleBoxTextBorder.Placement placement = \
-				SubTitleBoxTextBorder.Placement.withOrder( reader.readByte() )
+				SubTitleBoxTextBorder.Placement.withOrder(reader.readByte())
 			
 			// TODO how to read styled text?
 			var StyledTextDefinition styledText
@@ -244,43 +265,51 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 			// create SubTitleBoxTextBorder the right way
 			var Image imagePortrait
 			if pathImagePortrait != null
-				imagePortrait = Image.new( pathImagePortrait )
+				imagePortrait = Image.new(pathImagePortrait)
 			end
 			
 			var Video videoPortrait
 			if pathVideoPortrait != null
-				videoPortrait = Video.new( pathVideoPortrait )
+				videoPortrait = Video.new(pathVideoPortrait)
 			end
 			
-			var SubTitleBoxTextBorder stbt = SubTitleBoxTextBorder.new( labelText, labelName, \
-				styledText, styledName, imagePortrait, videoPortrait, placement )
-			stbt.setDesignerSelector( designerSelector )
+			var SubTitleBoxTextBorder stbt
+			if factory != null
+				stbt = factory.createSubtitleBoxText(labelText, labelName, \
+					styledText, styledName, imagePortrait, videoPortrait, placement)
+				
+			else
+				stbt = SubTitleBoxTextBorder.new(labelText, labelName, \
+					styledText, styledName, imagePortrait, videoPortrait, placement)
+			end
 			
-			if triggerTime > 0.0
-				stbt.pHideTimer = HideTimer.new( stbt, triggerTime )
-				stbt.pHideTimer.setElapsedTime( elapsedTime )
+			stbt.setDesignerSelector(designerSelector)
+			
+			if triggerTime > 0
+				stbt.pHideTimer = HideTimer.new(stbt, triggerTime)
+				stbt.pHideTimer.setElapsedTime(elapsedTime)
 			end
 			
 			return stbt
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		if this.pHideTimer != null
-			this.pHideTimer.giveUp()
-			this.pHideTimer = null
+		if pHideTimer != null
+			pHideTimer.giveUp()
+			pHideTimer = null
 		end
 		
-		this.pStyledText = null
-		this.pStyledName = null
-		this.pLabelText = null
-		this.pLabelName = null
-		this.pImagePortrait = null
-		this.pVideoPortrait = null
+		pStyledText = null
+		pStyledName = null
+		pLabelText = null
+		pLabelName = null
+		pImagePortrait = null
+		pVideoPortrait = null
 		
 		super.dispose()
 	end
@@ -289,53 +318,63 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	
 	/** \brief Name label or \em null. */
 	public func Label getLabelName()
-		return this.pLabelName
+		return pLabelName
 	end
 	
 	/** \brief Text label or \em null. */
 	public func Label getLabelText()
-		return this.pLabelText
+		return pLabelText
 	end
 	
 	/** \brief Placement. */
 	public func Placement getPlacement()
-		return this.pPlacement
+		return pPlacement
 	end
 	
 	/** \brief Name styled text or \em null. */
 	public func DisplayStyledText getStyledName()
-		return this.pStyledName
+		return pStyledName
 	end
 	
 	/** \brief Text styled text or \em null. */
 	public func DisplayStyledText getStyledText()
-		return this.pStyledText
+		return pStyledText
 	end
 	
 	/** \brief Portait image or \em null. */
 	public func DisplayImage getImagePortrait()
-		return this.pImagePortrait
+		return pImagePortrait
 	end
 	
 	/** \brief Video portrait or \em null. */
 	public func DisplayVideo getVideoPortrait()
-		return this.pVideoPortrait
+		return pVideoPortrait
 	end
 	
 	
 	/** \brief Hide after timer elapses. */
-	public func void hideSubtitleAfter( float seconds )
-		if this.pHideTimer != null
-			this.pHideTimer.giveUp()
-			this.pHideTimer = null
+	public func void hideSubtitleAfter(float seconds)
+		if pHideTimer != null
+			pHideTimer.giveUp()
+			pHideTimer = null
 		end
 		
-		this.pHideTimer = HideTimer.new( this, seconds )
+		pHideTimer = HideTimer.new(this, seconds)
 	end
 	
 	/** \brief Hide now. */
 	public func void hideSubtitleNow()
 		safeDispose()
+	end
+	
+	/**
+	 * \brief Hide subtitle due to hide timer elapsed.
+	 * \version 1.16
+	 * 
+	 * Default implementation calls hideSubtitleNow()
+	 */
+	public func void hideTimerElapsed()
+		hideSubtitleNow()
 	end
 	
 	/** \brief Subtitle widget. */
@@ -354,25 +393,25 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	 * Both labels can be designed with selector 'Label.{designerSelector}'.
 	 */
 	public func void onDesignerSelectorChanged()
-		var String selector = this.getDesignerSelector()
+		var String selector = getDesignerSelector()
 		
-		if this.pLabelName != null
-			this.pLabelName.setDesignerSelector( "Label." + selector + ".Name" )
+		if pLabelName != null
+			pLabelName.setDesignerSelector("Label." + selector + ".Name")
 		end
-		if this.pStyledName != null
-			this.pStyledName.setDesignerSelector( "Styled." + selector + ".Name" )
+		if pStyledName != null
+			pStyledName.setDesignerSelector("Styled." + selector + ".Name")
 		end
-		if this.pLabelText != null
-			this.pLabelText.setDesignerSelector( "Label." + selector + ".Text" )
+		if pLabelText != null
+			pLabelText.setDesignerSelector("Label." + selector + ".Text")
 		end
-		if this.pStyledText != null
-			this.pStyledText.setDesignerSelector( "Styled." + selector + ".Text" )
+		if pStyledText != null
+			pStyledText.setDesignerSelector("Styled." + selector + ".Text")
 		end
-		if this.pImagePortrait != null
-			this.pImagePortrait.setDesignerSelector( "Image." + selector + ".Portrait" )
+		if pImagePortrait != null
+			pImagePortrait.setDesignerSelector("Image." + selector + ".Portrait")
 		end
-		if this.pVideoPortrait != null
-			this.pVideoPortrait.setDesignerSelector( "Video." + selector + ".Portrait" )
+		if pVideoPortrait != null
+			pVideoPortrait.setDesignerSelector("Video." + selector + ".Portrait")
 		end
 	end
 	
@@ -394,52 +433,52 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		if this.pLabelName != null
-			writer.writeString8( this.pLabelName.getText() )
+		if pLabelName != null
+			writer.writeString8(pLabelName.getText())
 			
 		else
-			writer.writeString8( "" )
+			writer.writeString8("")
 		end
 		
-		if this.pLabelText != null
-			writer.writeString16( this.pLabelText.getText() )
+		if pLabelText != null
+			writer.writeString16(pLabelText.getText())
 			
 		else
-			writer.writeString16( "" )
+			writer.writeString16("")
 		end
 		
-		if this.pImagePortrait != null and this.pImagePortrait.getImage() != null
-			writer.writeString16( this.pImagePortrait.getImage().getFilename() )
+		if pImagePortrait != null and pImagePortrait.getImage() != null
+			writer.writeString16(pImagePortrait.getImage().getFilename())
 			
 		else
-			writer.writeString16( "" )
+			writer.writeString16("")
 		end
 		
-		if this.pVideoPortrait != null and this.pVideoPortrait.getVideo() != null
-			writer.writeString16( this.pVideoPortrait.getVideo().getFilename() )
+		if pVideoPortrait != null and pVideoPortrait.getVideo() != null
+			writer.writeString16(pVideoPortrait.getVideo().getFilename())
 			
 		else
-			writer.writeString16( "" )
+			writer.writeString16("")
 		end
 		
-		writer.writeByte( this.pPlacement.order() )
+		writer.writeByte(pPlacement.order())
 		
 		// TODO how to write styled text?
 		
 		// selector name
-		writer.writeString8( this.getDesignerSelector() )
+		writer.writeString8(getDesignerSelector())
 		
 		// hide timer
-		if this.pHideTimer == null
-			writer.writeFloat( 0.0 )
-			writer.writeFloat( 0.0 )
+		if pHideTimer == null
+			writer.writeFloat(0.0)
+			writer.writeFloat(0.0)
 			
 		else
-			writer.writeFloat( this.pHideTimer.getTriggerTime() )
-			writer.writeFloat( this.pHideTimer.getElapsedTime() )
+			writer.writeFloat(pHideTimer.getTriggerTime())
+			writer.writeFloat(pHideTimer.getElapsedTime())
 		end
 	end
 end

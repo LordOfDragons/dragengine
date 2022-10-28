@@ -475,7 +475,7 @@ class Window extends Container
 	 * 
 	 * Used to set the initial active widget for a window.
 	 */
-	protected func void setActiveWidget( Widget widget )
+	public func void setActiveWidget( Widget widget )
 		this.pActiveWidget = widget
 	end
 	

@@ -985,7 +985,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				textUtf8 = null
 			end
 			
-			var SubTitleBoxTextBorder stbt = SubTitleBoxTextBorder.new(textUtf8, nameUtf8, \
+			var SubTitleBoxTextBorder stbt = createBareSubTitleTextBorder(textUtf8, nameUtf8, \
 				styledText, styledName, portraitImage, portraitVideo, SubTitleBoxTextBorder.Placement.above)
 			
 			stbt.setDesignerSelector("SubTitleBoxText" + selector)
@@ -997,6 +997,19 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end
 			
 			return stbt
+		end
+		
+		/**
+		 * \brief Create bare sub title border.
+		 * \version 1.16
+		 * 
+		 * For subclass use to replace widget without rewriting entire createSubTitleTextWidget().
+		 */
+		protected func SubTitleBoxTextBorder createBareSubTitleTextBorder(String textUtf8,\
+		String nameUtf8, StyledTextDefinition styledText, StyledTextDefinition styledName,\
+		Image portraitImage, Video portraitVideo, SubTitleBoxTextBorder.Placement placement)
+			return SubTitleBoxTextBorder.new(textUtf8, nameUtf8, styledText, styledName,\
+				portraitImage, portraitVideo, placement)
 		end
 		
 		
