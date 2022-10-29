@@ -103,7 +103,7 @@ class TextField extends TextWidget
 	 * If the cursor is outside the visible area the text is shifted to make the cursor visible
 	 */
 	public func void setCursorPosition(int position)
-		if position < 0 or position > getModel().getText().getLength()
+		if position < 0 or position > getText().getLength()
 			throw EInvalidParam.new()
 		end
 		
@@ -176,10 +176,10 @@ class TextField extends TextWidget
 		
 		// check for password
 		if pPasswordChar == noPasswordChar
-			text = getModel().getText()
+			text = getText()
 			
 		else
-			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
+			text = String.new(pPasswordChar cast byte, getText().getLength())
 		end
 		
 		// check if the cursor is outside the left boundary
@@ -340,10 +340,9 @@ class TextField extends TextWidget
 		case InputEventKey.backspace
 			// delete character to the left of the cursor
 			if not pCursorPos.isAtStart()
-				var UTF8Navigator nav = UTF8Navigator.new(pCursorPos)
-				nav.backward()
+				curText = getText()
 				
-				curText = getModel().getText()
+				var UTF8Navigator nav = pCursorPos - 1
 				
 				if not nav.isAtStart()
 					newText = newText + curText.substring(0, nav.getPosition())
@@ -355,18 +354,17 @@ class TextField extends TextWidget
 // 				if getValidator() == null or getValidator().validates(newText)
 					pCursorPos = nav // for delete doing this before setText() is fine
 					setHasTyped(true)
-					getModel().setText(newText)
+					setText(newText)
 					updateCanvasText()
 // 				end
 			end
 			
 		case InputEventKey.delete
 			// delete character to the right of the cursor
-			curText = getModel().getText()
-			
 			if not pCursorPos.isAtEnd()
-				var UTF8Navigator nav = UTF8Navigator.new(pCursorPos)
-				nav.forward()
+				curText = getText()
+				
+				var UTF8Navigator nav = pCursorPos + 1
 				
 				if not pCursorPos.isAtStart()
 					newText = newText + curText.substring(0, pCursorPos.getPosition())
@@ -377,7 +375,7 @@ class TextField extends TextWidget
 				
 // 				if getValidator() == null or getValidator().validates(newText)
 					setHasTyped(true)
-					getModel().setText(newText)
+					setText(newText)
 // 				end
 			end
 			
@@ -390,11 +388,12 @@ class TextField extends TextWidget
 				break  // no printable character
 			end
 			
-			if getFont().getCharAdvance(character) <= 0.5
+			if not getFont().hasGlyph(character) or getFont().getCharAdvance(character) <= 0.5
 				break
 			end
 			
-			curText = getModel().getText()
+			curText = getText()
+			Engine.log("type " + pCursorPos.getPosition())
 			if not pCursorPos.isAtStart()
 				newText = curText.substring(0, pCursorPos.getPosition())
 			end
@@ -407,7 +406,7 @@ class TextField extends TextWidget
 			
 			if getValidator() == null or getValidator().validates(newText)
 				setHasTyped(true)
-				getModel().setText(newText)
+				setText(newText)
 				pCursorPos.forward() // has to come after setText()
 				updateCanvasText()
 			end
@@ -427,15 +426,9 @@ class TextField extends TextWidget
 	
 	/** \brief Model text changed. */
 	public func void textChanged(TextModel textModel)
-		var int cursorPos = pCursorPos.countCharacters()
-		var int firstChar = pFirstChar.countCharacters()
-		
-		pCursorPos = UTF8Navigator.new(textModel.getText())
-		pCursorPos.setCharacterPosition(cursorPos)
-		
-		pFirstChar = UTF8Navigator.new(pCursorPos)
-		pFirstChar.setCharacterPosition(firstChar)
-		
+		var UTF8Navigator base = UTF8Navigator.new(textModel.getText())
+		pCursorPos = base + pCursorPos.countCharacters()
+		pFirstChar = base + pFirstChar.countCharacters()
 		updateCanvasText()
 	end
 	
@@ -475,10 +468,10 @@ class TextField extends TextWidget
 		
 		// password check
 		if pPasswordChar == noPasswordChar
-			text = getModel().getText()
+			text = getText()
 			
 		else
-			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
+			text = String.new(pPasswordChar cast byte, getText().getLength())
 		end
 		
 		// center vertically
@@ -502,21 +495,7 @@ class TextField extends TextWidget
 		
 		// caret
 		if getHasFocus()
-			var float fcx = x cast float
-			var int i
-			
-			var UTF8Navigator nav = UTF8Navigator.new(pFirstChar)
-			var int character, cursorPos = pCursorPos.getPosition()
-			while nav.getPosition() < cursorPos
-				character = nav.decodeCharacter()
-				if character != -1
-					fcx += font.getCharAdvance(character)
-				end
-				nav.forward()
-			end
-			
-			var int cx = fcx cast int
-			
+			var int cx = x + (measureAdvance(pFirstChar.getPosition(), pCursorPos.getPosition(), font) cast int)
 			if cx >= 0 and cx <= width
 				var CanvasPaint canvasCaret = CanvasPaint.new()
 				canvasCaret.setShapeType(CanvasPaintShape.lines)

@@ -239,6 +239,32 @@ class TextWidget extends Widget implements TextModelListener
 	
 	
 	/**
+	 * \brief Measure advance starting from navigator position.
+	 * \version 1.16
+	 * \param fromPosition Byte position to start measure from.
+	 * \param toPosition End position to measure to. Character at end position is not included.
+	 * \param font Font to use for measuring.
+	 * \throws EInvalidParam toPosition is less than fromPosition
+	 */
+	public func float measureAdvance(int fromPosition, int toPosition, Font font)
+		var UTF8Navigator nav = UTF8Navigator.new(pModel.getText(), fromPosition)
+		var float advance
+		var int character
+		
+		while nav.getPosition() < toPosition
+			character = nav.decodeCharacter()
+			if character != -1
+				advance += font.getCharAdvance(character)
+			end
+			nav.forward()
+		end
+		
+		return advance
+	end
+	
+	
+	
+	/**
 	 * \brief Key typed event.
 	 " 
 	 " Convenience method called if onKeyPress is called with an event containing a printable key.

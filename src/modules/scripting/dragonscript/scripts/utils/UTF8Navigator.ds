@@ -59,11 +59,21 @@ class UTF8Navigator
 		pLength = string.getLength()
 	end
 	
+	/** \brief Create navigator with position. */
+	public func new(String string, int position) this(string)
+		setPosition(position)
+	end
+	
 	/** \brief Create copy of navigator. */
 	public func new(UTF8Navigator navigator)
 		pString = navigator.pString
 		pLength = navigator.pLength
 		pPosition = navigator.pPosition
+	end
+	
+	/** \brief Create copy of navigator with new position. */
+	public func new(UTF8Navigator navigator, int position) this(navigator)
+		setPosition(position)
 	end
 	
 	
@@ -299,5 +309,19 @@ class UTF8Navigator
 		pString = navigator.pString
 		pLength = navigator.pLength
 		pPosition = navigator.pPosition
+	end
+	
+	/** \brief New navigator with moving multiple characters. */
+	public func UTF8Navigator +(int count)
+		var UTF8Navigator navigator = UTF8Navigator.new(this)
+		navigator.move(count)
+		return navigator
+	end
+	
+	/** \brief New navigator with moving multiple characters. */
+	public func UTF8Navigator -(int count)
+		var UTF8Navigator navigator = UTF8Navigator.new(this)
+		navigator.move(-count)
+		return navigator
 	end
 end
