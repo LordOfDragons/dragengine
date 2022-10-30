@@ -311,6 +311,16 @@ class UTF8Navigator
 		pPosition = navigator.pPosition
 	end
 	
+	/** \brief New navigator with position set to start of string. */
+	public func UTF8Navigator atStart()
+		return UTF8Navigator.new(this, 0)
+	end
+	
+	/** \brief New navigator with position set to end of string. */
+	public func UTF8Navigator atEnd()
+		return UTF8Navigator.new(this, pLength)
+	end
+	
 	/** \brief New navigator with moving multiple characters. */
 	public func UTF8Navigator +(int count)
 		var UTF8Navigator navigator = UTF8Navigator.new(this)

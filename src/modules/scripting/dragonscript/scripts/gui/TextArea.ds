@@ -184,7 +184,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		return pTextLayout.getLineCount()
 	end
 	
-	/** Retrieves the number of characters on the current line. */
+	/** Retrieves the number of UTF-8 bytes on the current line. */
 	public func int getCursorLineCharCount()
 		return pTextLayout.getLine(getCursorLine()).getCharCount()
 	end
@@ -454,6 +454,7 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	/** Key pressed event. */
 	public func void onKeyPress(KeyEvent event)
+		var bool shift = (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
 		var String curText = getText()
 		var int line = getCursorLine()
 		var int first = pTextLayout.getLine(line).getFirstChar()
@@ -462,157 +463,127 @@ class TextArea extends TextWidget implements RangeModelListener
 		
 		select event.getKeyCode()
 		case InputEventKey.arrowUp
-			// move cursor up
-			if line < 1
-				break
-			end
-			
-			var UTF8Navigator nextCursorPos = bestCharNearNav(line - 1, getRefXPos())
-			
-			// select text
-			if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
-				if pSelectionStart == null
-					pSelectionStart = UTF8Navigator.new(nextCursorPos)
-					pSelectionEnd = UTF8Navigator.new(pCursorPos)
-					
-				elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
-					pSelectionEnd = UTF8Navigator.new(nextCursorPos)
-					
-				elif pSelectionStart.getPosition() == pCursorPos.getPosition()
-					pSelectionStart = UTF8Navigator.new(nextCursorPos)
-					
-				else
-					pSelectionStart = UTF8Navigator.new(nextCursorPos)
-					pSelectionEnd = UTF8Navigator.new(pCursorPos)
-				end
-				sanitizeSelection()
+			var UTF8Navigator nextCursorPos
+			if line > 0
+				nextCursorPos = bestCharNearNav(line - 1, getRefXPos())
 				
 			else
+				nextCursorPos = pCursorPos.atStart()
+			end
+			
+			if shift
+				if nextCursorPos.getPosition() == pCursorPos.getPosition()
+					break
+				end
+				extendSelectionLeft(UTF8Navigator.new(nextCursorPos))
+				
+			else
+				if pSelectionStart == null and nextCursorPos.getPosition() == pCursorPos.getPosition()
+					break
+				end
 				pSelectionEnd = pSelectionStart = null
 			end
 			
-			// move cursor left
 			pCursorPos = nextCursorPos
+			pRefXPosDirty = true
 			update = true
 			
 		case InputEventKey.arrowDown
-			// move cursor down
-			if line >= getLineCount() - 1
-				break
-			end
-			
-			var UTF8Navigator nextCursorPos = bestCharNearNav(line + 1, getRefXPos())
-			
-			// select text
-			if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
-				if pSelectionStart == null
-					pSelectionStart = UTF8Navigator.new(pCursorPos)
-					pSelectionEnd = UTF8Navigator.new(nextCursorPos)
-					
-				elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
-					pSelectionEnd = UTF8Navigator.new(nextCursorPos)
-					
-				elif pSelectionStart.getPosition() == pCursorPos.getPosition()
-					pSelectionStart = UTF8Navigator.new(nextCursorPos)
-					
-				else
-					pSelectionStart = UTF8Navigator.new(pCursorPos)
-					pSelectionEnd = UTF8Navigator.new(nextCursorPos)
-				end
-				sanitizeSelection()
+			var UTF8Navigator nextCursorPos
+			if line < getLineCount() - 1
+				nextCursorPos = bestCharNearNav(line + 1, getRefXPos())
 				
 			else
+				nextCursorPos = pCursorPos.atEnd()
+			end
+			
+			if shift
+				if nextCursorPos.getPosition() == pCursorPos.getPosition()
+					break
+				end
+				extendSelectionRight(UTF8Navigator.new(nextCursorPos))
+				
+			else
+				if pSelectionStart == null and nextCursorPos.getPosition() == pCursorPos.getPosition()
+					break
+				end
 				pSelectionEnd = pSelectionStart = null
 			end
 			
-			// move cursor left
 			pCursorPos = nextCursorPos
+			pRefXPosDirty = true
 			update = true
 			
 		case InputEventKey.arrowLeft
-			if pCursorPos.isAtStart()
-				break
-			end
-			
-			// select text
-			if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
-				if pSelectionStart == null
-					pSelectionStart = pCursorPos - 1
-					pSelectionEnd = UTF8Navigator.new(pCursorPos)
-					
-				elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
-					pSelectionEnd = pCursorPos - 1
-					sanitizeSelection()
-					
-				elif pSelectionStart.getPosition() == pCursorPos.getPosition()
-					pSelectionStart = pCursorPos - 1
-					
-				else
-					pSelectionStart = pCursorPos - 1
-					pSelectionEnd = UTF8Navigator.new(pCursorPos)
+			if shift
+				if pCursorPos.isAtStart()
+					break
 				end
+				extendSelectionLeft(pCursorPos - 1)
 				
 			else
+				if pSelectionStart == null and pCursorPos.isAtStart()
+					break
+				end
 				pSelectionEnd = pSelectionStart = null
 			end
 			
-			// move cursor left
 			pCursorPos.backward()
 			pRefXPosDirty = true
 			update = true
 			
 		case InputEventKey.arrowRight
-			if pCursorPos.isAtEnd()
-				break
-			end
-			
-			// select text
-			if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
-				if pSelectionStart == null
-					pSelectionStart = UTF8Navigator.new(pCursorPos)
-					pSelectionEnd = pCursorPos + 1
-					
-				elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
-					pSelectionEnd = pCursorPos + 1
-					
-				elif pSelectionStart.getPosition() == pCursorPos.getPosition()
-					pSelectionStart = pCursorPos + 1
-					sanitizeSelection()
-					
-				else
-					pSelectionStart = UTF8Navigator.new(pCursorPos)
-					pSelectionEnd = pCursorPos + 1
+			if shift
+				if pCursorPos.isAtEnd()
+					break
 				end
+				extendSelectionRight(pCursorPos + 1)
 				
 			else
+				if pSelectionStart == null and pCursorPos.isAtEnd()
+					break
+				end
 				pSelectionEnd = pSelectionStart = null
 			end
 			
-			// move cursor right
 			pCursorPos.forward()
 			pRefXPosDirty = true
 			update = true
 			
 		case InputEventKey.home
-			// move to the beginning of the line
-			if pCursorPos.getPosition() == first
-				break
+			if shift
+				if pCursorPos.getPosition() == first
+					break
+				end
+				extendSelectionLeft(UTF8Navigator.new(pCursorPos, first))
+				
+			else
+				if pSelectionStart == null and pCursorPos.getPosition() == first
+					break
+				end
+				pSelectionEnd = pSelectionStart = null
 			end
 			
 			pCursorPos.setPosition(first)
 			pRefXPosDirty = true
-			pSelectionEnd = pSelectionStart = null
 			update = true
 			
 		case InputEventKey.last
-			// move to the end of the line
-			if pCursorPos.getPosition() == first + count
-				break
+			if shift
+				if pCursorPos.getPosition() == first + count
+					break
+				end
+				extendSelectionRight(UTF8Navigator.new(pCursorPos, first + count))
+				
+			else
+				if pSelectionStart == null and pCursorPos.getPosition() == first + count
+					break
+				end
+				pSelectionEnd = pSelectionStart = null
 			end
 			
 			pCursorPos.setPosition(first + count)
 			pRefXPosDirty = true
-			pSelectionEnd = pSelectionStart = null
 			update = true
 			
 		//case InputEventKey.enter
@@ -719,31 +690,22 @@ class TextArea extends TextWidget implements RangeModelListener
 	 * \version 1.16
 	 */
 	protected func UTF8Navigator bestCharNearNav(int line, int refXPos)
-		var String curText = getText()
-		var UTF8Navigator nav = UTF8Navigator.new(curText, pTextLayout.getLine(line).getFirstChar())
-		var int count = pTextLayout.getLine(line).getCharCount()
-		var float floatRefXPos = refXPos cast float
+		var UTF8Navigator nav = UTF8Navigator.new(pCursorPos, pTextLayout.getLine(line).getFirstChar())
+		var int lastChar = nav.getPosition() + pTextLayout.getLine(line).getCharCount()
+		var float floatRefXPos = (refXPos cast float) + 0.1
 		var Font font = getFont()
 		var int i, character
 		var float x
 		
-		if count > 0
+		while nav.getPosition() < lastChar
 			character = nav.decodeCharacter()
 			if character != -1
-				x = font.getCharAdvance(character)
+				x += font.getCharAdvance(character)
 			end
-			
-			for i = 1 to count
-				if floatRefXPos < x
-					break
-				end
-				
-				nav.forward()
-				character = nav.decodeCharacter()
-				if character != -1
-					x += font.getCharAdvance(character)
-				end
+			if x > floatRefXPos
+				break
 			end
+			nav.forward()
 		end
 		
 		return nav
@@ -1181,5 +1143,49 @@ class TextArea extends TextWidget implements RangeModelListener
 				pSelectionEnd = s
 			end
 		end
+	end
+	
+	/**
+	 * \brief Extend selection to the left.
+	 * \version 1.16
+	 */
+	protected func void extendSelectionLeft(UTF8Navigator position)
+		if pSelectionStart == null
+			pSelectionStart = position
+			pSelectionEnd = UTF8Navigator.new(pCursorPos)
+			
+		elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
+			pSelectionEnd = position
+			
+		elif pSelectionStart.getPosition() == pCursorPos.getPosition()
+			pSelectionStart = position
+			
+		else
+			pSelectionStart = position
+			pSelectionEnd = UTF8Navigator.new(pCursorPos)
+		end
+		sanitizeSelection()
+	end
+	
+	/**
+	 * \brief Extend selection to the right.
+	 * \version 1.16
+	 */
+	protected func void extendSelectionRight(UTF8Navigator position)
+		if pSelectionStart == null
+			pSelectionStart = UTF8Navigator.new(pCursorPos)
+			pSelectionEnd = position
+			
+		elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
+			pSelectionEnd = position
+			
+		elif pSelectionStart.getPosition() == pCursorPos.getPosition()
+			pSelectionStart = position
+			
+		else
+			pSelectionStart = UTF8Navigator.new(pCursorPos)
+			pSelectionEnd = position
+		end
+		sanitizeSelection()
 	end
 end
