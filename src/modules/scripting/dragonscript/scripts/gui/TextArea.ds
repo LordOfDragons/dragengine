@@ -292,10 +292,7 @@ class TextArea extends TextWidget implements RangeModelListener
 			var String text = getText()
 			pSelectionStart = UTF8Navigator.new(text, selection.getX())
 			pSelectionEnd = UTF8Navigator.new(text, selection.getY())
-			
-			if pSelectionStart.getPosition() == pSelectionEnd.getPosition()
-				pSelectionEnd = pSelectionStart = null
-			end
+			sanitizeSelection()
 			
 		else
 			pSelectionEnd = pSelectionStart = null
@@ -512,6 +509,11 @@ class TextArea extends TextWidget implements RangeModelListener
 		end
 		
 		var MenuPopup menu = createContextMenu(position, translationManager)
+		if menu.getWidgetCount() == 0
+			menu.safeDispose()
+			return
+		end
+		
 		desktop.addWindow(menu)
 		menu.popup(getDesktopPosition() + position)
 		menu.setGuiTheme(getGuiTheme())
@@ -550,7 +552,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		var int line = getCursorLine()
 		var int first = pTextLayout.getLine(line).getFirstChar()
 		var int count = pTextLayout.getLine(line).getCharCount()
-		var bool update = false
+		var bool update
 		
 		select event.getKeyCode()
 		case InputEventKey.arrowUp
@@ -690,7 +692,6 @@ class TextArea extends TextWidget implements RangeModelListener
 			super.onKeyPress(event)
 		end
 		
-		// update if needed
 		if update
 			pCaret = null
 			pSelXOffsets = null
