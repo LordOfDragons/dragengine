@@ -340,7 +340,7 @@ class TextField extends TextWidget
 		end
 		
 		// check if the cursor is outside the right boundary
-		var UTF8Navigator nav = UTF8Navigator.new(pCursorPos)
+		var UTF8Navigator nav = UTF8Navigator.new(text, pCursorPos.getPosition())
 		while nav.getPosition() > pFirstChar.getPosition()
 			nav.backward()
 			textLen += font.getCharAdvance(nav.decodeCharacter())
@@ -353,7 +353,7 @@ class TextField extends TextWidget
 		end
 		
 		// check if there is still space to fill up on the right side
-		nav = UTF8Navigator.new(pCursorPos)
+		nav = UTF8Navigator.new(text, pCursorPos.getPosition())
 		while not nav.isAtEnd()
 			textLen += font.getCharAdvance(nav.decodeCharacter())
 			if textLen >= limit
@@ -365,16 +365,18 @@ class TextField extends TextWidget
 		if textLen < limit
 			var bool requiresUpdate
 			
-			while not pFirstChar.isAtStart()
-				pFirstChar.backward()
-				textLen += font.getCharAdvance(pFirstChar.decodeCharacter())
+			nav = UTF8Navigator.new(text, pFirstChar.getPosition())
+			while not nav.isAtStart()
+				nav.backward()
+				textLen += font.getCharAdvance(nav.decodeCharacter())
 				if textLen >= limit
-					pFirstChar.forward()
+					nav.forward()
 					break
 				end
 				requiresUpdate = true
 			end
 			
+			pFirstChar.setPosition(nav.getPosition())
 			if requiresUpdate
 				updateCanvasText()
 			end
@@ -1070,5 +1072,29 @@ class TextField extends TextWidget
 			pSelectionEnd = position
 		end
 		sanitizeSelection()
+	end
+	
+	/**
+	 * \brief Measure advance starting from navigator position.
+	 * \version 1.16
+	 * \param fromPosition Byte position to start measure from.
+	 * \param toPosition End position to measure to. Character at end position is not included.
+	 * \param font Font to use for measuring.
+	 * \throws EInvalidParam toPosition is less than fromPosition
+	 */
+	public func float measureAdvance(int fromPosition, int toPosition, Font font)
+		if pPasswordChar == noPasswordChar
+			return super.measureAdvance(fromPosition, toPosition, font)
+		end
+		
+		var UTF8Navigator nav = UTF8Navigator.new(getText(), fromPosition)
+		var int count
+		
+		while nav.getPosition() < toPosition
+			count++
+			nav.forward()
+		end
+		
+		return font.getCharAdvance(pPasswordChar) * count
 	end
 end
