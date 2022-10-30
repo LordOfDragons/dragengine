@@ -35,6 +35,71 @@ pin Dragengine.Scenery
  * Provides onKeyType() method called if key press event contains printable character.
  */
 class TextWidget extends Widget implements TextModelListener
+	/**
+	 * \brief Action listener calling onClipboardCut().
+	 * \version 1.16
+	 */
+	class ActionCut implements ActionListener
+		protected var TextWidget pWidget
+		
+		/** \brief Create action. */
+		public func new(TextWidget widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.onClipboardCut()
+		end
+	end
+	
+	/**
+	 * \brief Action listener calling onClipboardCopy().
+	 * \version 1.16
+	 */
+	class ActionCopy implements ActionListener
+		protected var TextWidget pWidget
+		
+		/** \brief Create action. */
+		public func new(TextWidget widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.onClipboardCopy()
+		end
+	end
+	
+	/**
+	 * \brief Action listener calling onClipboardPaste().
+	 * \version 1.16
+	 */
+	class ActionPaste implements ActionListener
+		protected var TextWidget pWidget
+		
+		/** \brief Create action. */
+		public func new(TextWidget widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.onClipboardPaste()
+		end
+	end
+	
+	
+	
 	private var TextModel pModel
 	private var TextValidator pValidator
 	private var bool pReadOnly

@@ -33,8 +33,62 @@ pin Dragengine.Utils
  * than one line.
  * 
  * Supports designing using designer selector "TextArea".
+ * 
+ * \par Context Menu
+ * 
+ * Since version 1.16 showContextMenu() and createContextMenu() is present. If present the
+ * BaseGameApp translation manager is used. To translate the menu entries add these entries:
+ * - "UI.Menu.Cut": Cut text menu item
+ * - "UI.Menu.Copy": Copy text menu item
+ * - "UI.Menu.Paste": Paste text menu item
+ * - "UI.Menu.SelectAll": Select all text menu item
+ * - "UI.Menu.Deselect": Deselect text menu item
  */
 class TextArea extends TextWidget implements RangeModelListener
+	/**
+	 * \brief Action listener calling setSelection(null).
+	 * \version 1.16
+	 */
+	class ActionDeselect implements ActionListener
+		protected var TextArea pWidget
+		
+		/** \brief Create action. */
+		public func new(TextArea widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.setSelection(null)
+		end
+	end
+	
+	/**
+	 * \brief Action listener calling setSelectionAll().
+	 * \version 1.16
+	 */
+	class ActionSelectAll implements ActionListener
+		protected var TextArea pWidget
+		
+		/** \brief Create action. */
+		public func new(TextArea widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.setSelectionAll()
+		end
+	end
+	
+	
+	
 	private var TextLayout pTextLayout
 	private var Point pCaret
 	private var UTF8Navigator pCursorPos
@@ -205,6 +259,23 @@ class TextArea extends TextWidget implements RangeModelListener
 		updateCanvasText()
 	end
 	
+	/**
+	 * \brief Set cursor position closest to position relative to widget.
+	 * \version 1.16
+	 */
+	public func void setCursorPositionNear(Point position)
+		var int scrollOffsetY = pVertRangeModel.getValue() * getFont().getSize()
+		var int realX = position.getX() - getPadding().getLeft()
+		var int realY = position.getY() - getPadding().getTop() + scrollOffsetY
+		
+		pCursorPos = bestCharNearNav(bestLineNear(realY), realX)
+		pCaret = null
+		pSelectionEnd = pSelectionStart = null
+		pSelXOffsets = null
+		pRefXPosDirty = true
+		updateCanvasText()
+	end
+	
 	/** Sets the cursor position to the start of the text. */
 	public func void setCursorPositionStart()
 		setCursorPosition(0)
@@ -308,47 +379,20 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	/** Ensure that the cursor is visible by scrolling the text if necessary. */
 	public func void ensureCursorVisible()
-		/*
-		var Font font = getFont()
-		var int width = getWidth() - getPadding().getWidth()
-		var int i, textLen = 0
-		var String text
-		// check for password
-		if pPasswordChar == noPasswordChar
-			text = pText
-		else
-			text = String.new(pPasswordChar cast byte, pText.getLength())
+		// make cursor line visible
+		var int height = getHeight() - getPadding().getHeight()
+		var int windowLines = height / getFont().getSize()
+		var int cursorLine = getCursorLine()
+		var int firstLine = pVertRangeModel.getValue()
+		
+		if cursorLine < firstLine
+			pVertRangeModel.setValue(cursorLine)
+			
+		elif cursorLine >= firstLine + windowLines
+			pVertRangeModel.setValue(cursorLine - windowLines + 1)
 		end
-		// check if the cursor is outside the left boundary
-		if pCaretPos < pFirstChar
-			pFirstChar = pCaretPos
-		else
-			// check if the cursor is outside the right boundary
-			for i = pCaretPos - 1 downto pFirstChar
-				textLen += font.getCharAdvance(text.getAt(i))
-				if textLen + 2 >= width
-					pFirstChar = i + 1
-					break
-				end
-			end
-			// check if there is still space to fill up on the right side
-			for i = pCaretPos to text.getLength()
-				textLen += font.getCharAdvance(text.getAt(i))
-				if textLen + 2 >= width
-					break
-				end
-			end
-			if textLen + 2 < width
-				for i = pFirstChar - 1 downto 0
-					textLen += font.getCharAdvance(text.getAt(i))
-					if textLen + 2 >= width
-						break
-					end
-					pFirstChar = i
-				end
-			end
-		end
-		*/
+		
+		// horizontally scrolling is not possible so no check required here
 	end
 	
 	
@@ -448,6 +492,53 @@ class TextArea extends TextWidget implements RangeModelListener
 		end
 		
 		return Point.new(DEMath.min(width, pMaxWidth), font.getSize() * pRowCount + getPadding().getHeight())
+	end
+	
+	
+	
+	/**
+	 * \brief Show context menu at position relative to widget.
+	 * \version 1.16
+	 */
+	public func void showContextMenu(Point position)
+		var Desktop desktop = getDesktop()
+		if desktop == null
+			return
+		end
+		
+		var TranslationManager translationManager
+		if BaseGameApp.getApp() != null
+			translationManager = BaseGameApp.getApp().getTranslationManager()
+		end
+		
+		var MenuPopup menu = createContextMenu(position, translationManager)
+		desktop.addWindow(menu)
+		menu.popup(getDesktopPosition() + position)
+		menu.setGuiTheme(getGuiTheme())
+	end
+	
+	/**
+	 * \brief Create context menu at position relative to widget.
+	 * \version 1.16
+	 * \param position Position relative to text are the context menu has to be created for.
+	 * \param translationManager Translation manager to use or null.
+	 */
+	protected func MenuPopup createContextMenu(Point position, TranslationManager translationManager)
+		var bool hasSelection = pSelectionStart != null
+		var bool hasClipboard = getClipboard() != null
+		var bool hasClip = hasClipboard and getClipboard().hasClip()
+		var bool writeable = not getReadOnly()
+		var MenuPopup menu = MenuPopup.new()
+		
+		menu.addItemCommand(menu, "UI.Menu.Cut", "Cut", null, writeable and hasSelection and hasClipboard, ActionCut.new(this))
+		menu.addItemCommand(menu, "UI.Menu.Copy", "Copy", null, hasSelection and hasClipboard, ActionCopy.new(this))
+		menu.addItemCommand(menu, "UI.Menu.Paste", "Paste", null, writeable and hasClip, ActionPaste.new(this))
+		
+		menu.addWidget(MenuItemSeparator.new())
+		menu.addItemCommand(menu, "UI.Menu.SelectAll", "Select All", null, true, ActionSelectAll.new(this))
+		menu.addItemCommand(menu, "UI.Menu.Deselect", "Deselect", null, hasSelection, ActionDeselect.new(this))
+		
+		return menu
 	end
 	
 	
@@ -618,20 +709,17 @@ class TextArea extends TextWidget implements RangeModelListener
 	public func void onButtonPress(MouseEvent event)
 		super.onButtonPress(event)
 		
-		if event.getButton() == InputEventMouseButton.left
-			var int scrollOffsetY = pVertRangeModel.getValue() * getFont().getSize()
-			var Point position = event.getPosition()
-			var int realX = position.getX() - getPadding().getLeft()
-			var int realY = position.getY() - getPadding().getTop() + scrollOffsetY
-			
-			captureMouse()
-			pCursorPos = bestCharNearNav(bestLineNear(realY), realX)
+		select event.getButton()
+		case InputEventMouseButton.left
+			setCursorPositionNear(event.getPosition())
 			pOldCursorPos = UTF8Navigator.new(pCursorPos)
-			pCaret = null
-			pSelectionEnd = pSelectionStart = null
-			pSelXOffsets = null
-			pRefXPosDirty = true
-			updateCanvasText()
+			captureMouse()
+			
+		case InputEventMouseButton.right
+			if pSelectionStart == null
+				setCursorPositionNear(event.getPosition())
+			end
+			showContextMenu(event.getPosition())
 		end
 	end
 	
@@ -1059,14 +1147,18 @@ class TextArea extends TextWidget implements RangeModelListener
 			newText = newText + curText.substring(pCursorPos.getPosition())
 		end
 		
-		if getValidator() == null or getValidator().validates(newText)
-			setHasTyped(true)
-			setText(newText)
-			
-			// has to come after setText()
-			pCursorPos.setPosition(pCursorPos.getPosition() + text.getLength())
-			updateCanvasText()
+		if getValidator() != null and not getValidator().validates(newText)
+			return
 		end
+		
+		setHasTyped(true)
+		setText(newText)
+		
+		// has to come after setText()
+		pCursorPos.setPosition(pCursorPos.getPosition() + text.getLength())
+		ensureCursorVisible()
+		
+		updateCanvasText()
 	end
 	
 	/**

@@ -167,10 +167,10 @@ class TextField extends TextWidget
 	
 	/** \brief Ensure cursor is visible by scrolling the text if necessary. */
 	public func void ensureCursorVisible()
-		var Font font = getFont()
 		var int width = getWidth() - getPadding().getWidth()
 		var float limit = (width - 2) cast float
-		var float textLen = 0
+		var Font font = getFont()
+		var float textLen
 		var String text
 		var int i
 		
