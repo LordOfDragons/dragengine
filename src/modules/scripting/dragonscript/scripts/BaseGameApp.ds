@@ -423,6 +423,7 @@ class BaseGameApp extends Game
 		pConfiguration = ParameterTree.new()
 		pLoaders = Loaders.new(pConsole)
 		pTranslationManager = TranslationManager.new()
+		EngineTranslations.get() // preload engine translations
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		
 		loadConfiguration()
@@ -922,8 +923,9 @@ class BaseGameApp extends Game
 		
 		pTranslationManager.addFromDirectory(path, true)
 		
-		pTranslationManager.setActiveWithIdIfPresent(pConfiguration.getStringAt(\
-			"defaultLanguagePackIdentifier", defaultLanguagePackIdentifier))
+		var String id = pConfiguration.getStringAt("defaultLanguagePackIdentifier", defaultLanguagePackIdentifier)
+		pTranslationManager.setActiveWithIdIfPresent(id)
+		EngineTranslations.get().setActiveWithIdIfPresent(id)
 		
 		if pTranslationManager.getActive() == null
 			// backwards compatibility

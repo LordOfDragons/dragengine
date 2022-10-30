@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English Language Pack</description>
+	<missingText>(No Translation)</missingText>
+	<translation name='UI.Menu.Cut'>Cut</translation>
+	<translation name='UI.Menu.Copy'>Copy</translation>
+	<translation name='UI.Menu.Paste'>Paste</translation>
+	<translation name='UI.Menu.SelectAll'>Select All</translation>
+	<translation name='UI.Menu.Deselect'>Deselect</translation>
+	<translation name='UI.Settings.Title'>Settings</translation>
+	<translation name='UI.Settings.Save'>Save</translation>
+	<translation name='UI.Settings.Reset'>Reset</translation>
+	<translation name='UI.Settings.Cancel'>Cancel</translation>
+	<translation name='UI.Settings.Bindings'>Controls</translation>
+	<translation name='UI.Settings.ModuleParameters'>Module Parameters</translation>
+	<translation name='UI.Settings.ModuleParameters.Graphic'>Graphic</translation>
+	<translation name='UI.Settings.ModuleParameters.Audio'>Audio</translation>
+	<translation name='UI.Settings.ModuleParameters.Physics'>Physics</translation>
+	<translation name='UI.Settings.ModuleParameters.Input'>Input</translation>
+	<translation name='UI.Settings.ModuleParameters.Network'>Network</translation>
+	<translation name='UI.Settings.ModuleParameters.Animator'>Animator</translation>
+	<translation name='UI.Settings.ModuleParameters.AI'>AI</translation>
+	<translation name='UI.Settings.ModuleParameters.Synthesizer'>Synthesizer</translation>
+	<translation name='UI.Settings.ModuleParameters.AdvancedParameters'>Advanced Parameters</translation>
+</languagePack>

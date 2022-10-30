@@ -41,13 +41,13 @@ class EditModuleParametersPanel extends Panel
 		private var EditModuleParametersPanel pPanel
 		
 		/** \brief Create listener. */
-		public func new( EditModuleParametersPanel panel )
-			this.pPanel = panel
+		public func new(EditModuleParametersPanel panel)
+			pPanel = panel
 		end
 		
 		/** \brief Run action. */
-		public func void onAction( ActionEvent event )
-			this.pPanel.resetChanges()
+		public func void onAction(ActionEvent event)
+			pPanel.resetChanges()
 		end
 	end
 	
@@ -56,13 +56,13 @@ class EditModuleParametersPanel extends Panel
 		private var EditModuleParametersPanel pPanel
 		
 		/** \brief Create listener. */
-		public func new( EditModuleParametersPanel panel )
-			this.pPanel = panel
+		public func new(EditModuleParametersPanel panel)
+			pPanel = panel
 		end
 		
 		/** \brief Run action. */
-		public func void onAction( ActionEvent event )
-			this.pPanel.applyChanges()
+		public func void onAction(ActionEvent event)
+			pPanel.applyChanges()
 		end
 	end
 	
@@ -71,13 +71,13 @@ class EditModuleParametersPanel extends Panel
 		private var EditModuleParametersPanel pPanel
 		
 		/** \brief Create listener. */
-		public func new( EditModuleParametersPanel panel )
-			this.pPanel = panel
+		public func new(EditModuleParametersPanel panel)
+			pPanel = panel
 		end
 		
 		/** \brief Toggled state changed. */
-		public func void toggledChanged( ToggleModel model )
-			this.pPanel.setAdvanced( model.getToggled() )
+		public func void toggledChanged(ToggleModel model)
+			pPanel.setAdvanced(model.getToggled())
 		end
 	end
 	
@@ -88,19 +88,26 @@ class EditModuleParametersPanel extends Panel
 	private var SwitchPanel pPanelSystems
 	private var bool pAdvanced
 	
+	/**
+	 * \brief Translation manager to use.
+	 * \version 1.16
+	 */
+	protected var TranslationManager pTranslationManager
+	
 	
 	
 	/** \brief Create edit module parameters panel. */
 	public func new()
-		this.pAdvanced = false
-		this.createContent()
+		pTranslationManager = EngineTranslations.get()
+		pAdvanced = false
+		createContent()
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		this.pPanelButtons = null
-		this.pButtonGroup = null
-		this.pPanelSystems = null
+		pPanelButtons = null
+		pButtonGroup = null
+		pPanelSystems = null
 		super.dispose()
 	end
 	
@@ -108,143 +115,152 @@ class EditModuleParametersPanel extends Panel
 	
 	/** \brief Buttons panel with instance of ToggleButton. */
 	public func Panel getPanelButtons()
-		return this.pPanelButtons
+		return pPanelButtons
 	end
 	
 	/** \brief Toggle button group. */
 	public func ToggleButtonGroup getButtonGroup()
-		return this.pButtonGroup
+		return pButtonGroup
 	end
 	
 	/** \brief SwitchPanel with EMPSystem instance. */
 	public func SwitchPanel getPanelSystems()
-		return this.pPanelSystems
+		return pPanelSystems
 	end
 	
 	/** \brief Show advanced parameters. */
 	public func bool getAdvanced()
-		return this.pAdvanced
+		return pAdvanced
 	end
 	
 	/** \brief Show advanced parameters. */
-	public func void setAdvanced( bool advanced )
-		if advanced == this.pAdvanced
+	public func void setAdvanced(bool advanced)
+		if advanced == pAdvanced
 			return
 		end
 		
-		this.pAdvanced = advanced
+		pAdvanced = advanced
 		
-		this.pPanelSystems.runWhileBlockingLayout( block
-			this.pPanelSystems.forEachWidget( block EMPSystem each
-				each.rebuildParametersList( this.pAdvanced )
-			end )
-		end )
-		this.pPanelSystems.doLayoutIfBlocked()
+		pPanelSystems.runWhileBlockingLayout(block
+			pPanelSystems.forEachWidget(block EMPSystem each
+				each.rebuildParametersList(pAdvanced)
+			end)
+		end)
+		pPanelSystems.doLayoutIfBlocked()
 	end
 	
 	
 	
 	/** \brief Reset parameter changes. */
 	public func void resetChanges()
-		this.pPanelSystems.runWhileBlockingLayout( block
-			this.pPanelSystems.forEachWidget( block EMPSystem each
+		pPanelSystems.runWhileBlockingLayout(block
+			pPanelSystems.forEachWidget(block EMPSystem each
 				each.resetChanges()
-			end )
-		end )
+			end)
+		end)
 	end
 	
 	/** \brief Apply parameter changes. */
 	public func void applyChanges()
-		this.pPanelSystems.forEachWidget( block EMPSystem each
+		pPanelSystems.forEachWidget(block EMPSystem each
 			each.applyChanges()
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create content with a SwitchPanel of EMPSystem instances. */
 	protected func void createContent()
-		this.runWhileBlockingLayout( block
-			this.setLayout( BorderLayout.new( 2 ) )
-			this.setDesignerSelector( "Panel.EditModuleParametersPanel" )
+		runWhileBlockingLayout(block
+			setLayout(BorderLayout.new(2))
+			setDesignerSelector("Panel.EditModuleParametersPanel")
 			
 			var Panel panelButtons = Panel.new()
-			panelButtons.setLayout( FlowLayout.new( LayoutAxis.x, 2 ) )
-			this.addWidget( panelButtons, BorderLayout.Area.top )
+			panelButtons.setLayout(FlowLayout.new(LayoutAxis.x, 2))
+			addWidget(panelButtons, BorderLayout.Area.top)
 			
-			this.pPanelSystems = SwitchPanel.new()
-			this.addWidget( this.pPanelSystems, BorderLayout.Area.content )
+			pPanelSystems = SwitchPanel.new()
+			addWidget(pPanelSystems, BorderLayout.Area.content)
 			
-			this.pButtonGroup = ToggleButtonGroup.new()
-			this.pButtonGroup.addListener( SwitchPanel.SwitchToggleGroup.new( this.pPanelSystems ) )
+			pButtonGroup = ToggleButtonGroup.new()
+			pButtonGroup.addListener(SwitchPanel.SwitchToggleGroup.new(pPanelSystems))
 			
 			// add systems if they have parameters in order of preference
 			if GraphicSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Graphic" )
-				this.pPanelSystems.addWidget( EMPSystem.new( GraSysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Graphic").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(GraSysParamWrapper.new()))
 			end
 			
 			if AudioSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Audio" )
-				this.pPanelSystems.addWidget( EMPSystem.new( AudSysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Audio").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(AudSysParamWrapper.new()))
 			end
 			
 			if PhysicsSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Physics" )
-				this.pPanelSystems.addWidget( EMPSystem.new( PhySysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Physics").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(PhySysParamWrapper.new()))
 			end
 			
 			if InputSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Input" )
-				this.pPanelSystems.addWidget( EMPSystem.new( InpSysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Input").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(InpSysParamWrapper.new()))
 			end
 			
 			if NetworkSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Network" )
-				this.pPanelSystems.addWidget( EMPSystem.new( NetSysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Network").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(NetSysParamWrapper.new()))
 			end
 			
 			if AnimatorSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Animator" )
-				this.pPanelSystems.addWidget( EMPSystem.new( AmrSysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Animator").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(AmrSysParamWrapper.new()))
 			end
 			
 			if AISystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "AI" )
-				this.pPanelSystems.addWidget( EMPSystem.new( AISysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.AI").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(AISysParamWrapper.new()))
 			end
 			
 			if SynthesizerSystem.getParameterCount() > 0
-				this.addButtonSystem( panelButtons, "Synthesizer" )
-				this.pPanelSystems.addWidget( EMPSystem.new( SynthSysParamWrapper.new() ) )
+				addButtonSystem(panelButtons, pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.Synthesizer").toUTF8())
+				pPanelSystems.addWidget(EMPSystem.new(SynthSysParamWrapper.new()))
 			end
 			
-			//this.addButtonSystem( panelButtons, "Crash Recovery" )
-			//this.pPanelSystems.addWidget( EMPSystem.new( CRSysParamWrapper.new() ) )
+			//addButtonSystem(panelButtons, "Crash Recovery")
+			//pPanelSystems.addWidget(EMPSystem.new(CRSysParamWrapper.new()))
 			
-			//this.addButtonSystem( panelButtons, "Script" )
-			//this.pPanelSystems.addWidget( EMPSystem.new( ScrSysParamWrapper.new() ) )
+			//addButtonSystem(panelButtons, "Script")
+			//pPanelSystems.addWidget(EMPSystem.new(ScrSysParamWrapper.new()))
 			
 			// rebuild parameters of systems
-			this.pPanelSystems.forEachWidget( block EMPSystem each
-				each.rebuildParametersList( this.pAdvanced )
-			end )
+			pPanelSystems.forEachWidget(block EMPSystem each
+				each.rebuildParametersList(pAdvanced)
+			end)
 			
 			// add check box to enable advanced parameters
-			this.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 20 ), block Panel panel
-				var CheckBox checkAdvanced = CheckBox.new( "Advanced Parameters" )
-				checkAdvanced.getToggleModel().addListener( ToggleAdvancedListener.new( this ) )
-				panel.addWidget( checkAdvanced )
-			end ), BorderLayout.Area.bottom )
-		end )
+			addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel panel
+				var CheckBox checkAdvanced = CheckBox.new(pTranslationManager.translate(\
+					"UI.Settings.ModuleParameters.AdvancedParameters").toUTF8())
+				checkAdvanced.getToggleModel().addListener(ToggleAdvancedListener.new(this))
+				panel.addWidget(checkAdvanced)
+			end), BorderLayout.Area.bottom)
+		end)
 	end
 	
 	/** \brief Add button to switch to system panel. */
-	protected func void addButtonSystem( Panel panelButtons, String label )
-		var ToggleButton button = ToggleButton.new( label )
-		button.setStickyToggled( true )
-		button.setDesignerSelector( "Button.EditModuleParametersPanel.System" )
-		this.pButtonGroup.add( button )
-		panelButtons.addWidget( button )
+	protected func void addButtonSystem(Panel panelButtons, String label)
+		var ToggleButton button = ToggleButton.new(label)
+		button.setStickyToggled(true)
+		button.setDesignerSelector("Button.EditModuleParametersPanel.System")
+		pButtonGroup.add(button)
+		panelButtons.addWidget(button)
 	end
 end

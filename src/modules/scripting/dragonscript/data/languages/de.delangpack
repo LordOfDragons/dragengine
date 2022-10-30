@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>de</identifier>
+	<name>Deutsch</name>
+	<description>Deutsches Sprachpaket</description>
+	<missingText>(Keine Übersetzung)</missingText>
+	<translation name='UI.Menu.Cut'>Ausschneiden</translation>
+	<translation name='UI.Menu.Copy'>Kopieren</translation>
+	<translation name='UI.Menu.Paste'>Einfügen</translation>
+	<translation name='UI.Menu.SelectAll'>Alles Auswählen</translation>
+	<translation name='UI.Menu.Deselect'>Auswahl Aufheben</translation>
+	<translation name='UI.Settings.Title'>Einstellungen</translation>
+	<translation name='UI.Settings.Save'>Speichern</translation>
+	<translation name='UI.Settings.Reset'>Zurücksetzen</translation>
+	<translation name='UI.Settings.Cancel'>Abbrechen</translation>
+	<translation name='UI.Settings.Bindings'>Steuerung</translation>
+	<translation name='UI.Settings.ModuleParameters'>Module Parameter</translation>
+	<translation name='UI.Settings.ModuleParameters.Graphic'>Grafik</translation>
+	<translation name='UI.Settings.ModuleParameters.Audio'>Audio</translation>
+	<translation name='UI.Settings.ModuleParameters.Physics'>Physik</translation>
+	<translation name='UI.Settings.ModuleParameters.Input'>Eingabe</translation>
+	<translation name='UI.Settings.ModuleParameters.Network'>Netzwerk</translation>
+	<translation name='UI.Settings.ModuleParameters.Animator'>Animator</translation>
+	<translation name='UI.Settings.ModuleParameters.AI'>KI</translation>
+	<translation name='UI.Settings.ModuleParameters.Synthesizer'>Synthesizer</translation>
+	<translation name='UI.Settings.ModuleParameters.AdvancedParameters'>Erweiterte Einstellungen</translation>
+</languagePack>
