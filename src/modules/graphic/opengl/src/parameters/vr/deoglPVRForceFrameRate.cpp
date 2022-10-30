@@ -42,11 +42,9 @@ deoglPVRForceFrameRate::deoglPVRForceFrameRate( deGraphicOpenGl &ogl ) :
 deoglParameter( ogl )
 {
 	SetName( "vrForceFrameRate" );
-	SetDescription( "Force frame rate for VR rendering. "
-		"By default the graphic module switches to suitable frame rates "
-		"dynamically depending on the scene complexity. "
-		"If switching happens too often the frame rate can be locked "
-		" to get a smoother experience.");
+	SetDescription( "Force frame rate for VR rendering."
+		" By default the graphic module switches to suitable frame rates depending on scene complexity. "
+		" If switching happens too often frame rate can be locked for smoother experience.");
 	SetType( eptSelection );
 	SetCategory( ecBasic );
 	SetDisplayName( "VR Force Frame Rate" );
