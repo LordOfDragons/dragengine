@@ -37,7 +37,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Parameterwert auswählen</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectValue'>Wert auswählen.</translation>
 	<translation name='UI.Command.Quit.DisplayName'>Beenden</translation>
-	<translation name='UI.Command.Quit.Description'>Spiel direkt beenden und zum Desktop zurück gehen.</translation>
+	<translation name='UI.Command.Quit.Description'>Spiel direkt beenden und zum Desktop zurückkehren.</translation>
 	<translation name='UI.Command.Screenshot.DisplayName'>Screenshot</translation>
 	<translation name='UI.Command.Screenshot.Description'>Screenshot im Capture-Verzeichnis speichern.</translation>
 	<translation name='UI.Command.ToggleConsole.DisplayName'>Konsole zeigen</translation>
