@@ -364,7 +364,10 @@ class EMPSystem extends Panel
 		/** \brief Select value from list. */
 		public func void selectFromList()
 			WindowDialog.chooseList(pEMPSystem.getWindow(), \
-				"Select Parameter Value", "Select value.", null, pModelValues, \
+				pEMPSystem.getTranslationManager().translate(\
+					"UI.Settings.ModuleParameters.SelectParameterValue").toUTF8(),\
+				pEMPSystem.getTranslationManager().translate(\
+					"UI.Settings.ModuleParameters.SelectValue").toUTF8(), null, pModelValues, \
 				DefaultListElementRenderer.new(String.new('X', 20)), null, null, \
 					WindowDialog.BlockResultListener.new(block int result
 						if result == -1
@@ -485,10 +488,17 @@ class EMPSystem extends Panel
 	private var Array pEditorWidgets
 	private var DefaultTextModel pModelInfo
 	
+	/**
+	 * \brief Translation manager to use.
+	 * \version 1.16
+	 */
+	protected var TranslationManager pTranslationManager
+	
 	
 	
 	/** \brief Create edit module parameters panel. */
 	public func new(SysParamWrapper wrapper)
+		pTranslationManager = EngineTranslations.get()
 		pWrapper = wrapper
 		pEditorWidgets = Array.new()
 		createContent()
@@ -507,6 +517,14 @@ class EMPSystem extends Panel
 	/** \brief System parameter wrapper. */
 	public func SysParamWrapper getWrapper()
 		return pWrapper
+	end
+	
+	/**
+	 * \brief Translation manager to use.
+	 * \version 1.16
+	 */
+	public func TranslationManager getTranslationManager()
+		return pTranslationManager
 	end
 	
 	
@@ -595,7 +613,6 @@ class EMPSystem extends Panel
 	 * \version 1.7
 	 */
 	public func void resetParameter(ModuleParameter parameter)
-		
 		var String text = parameter.getDescription()
 		
 		if parameter.getType() == ModuleParameterType.selection
@@ -720,7 +737,8 @@ class EMPSystem extends Panel
 	protected func Widget createResetButton(ParameterValueEditor2 editor)
 		var Button button = Button.new(" ", ResetParameter.new(editor))
 		button.setDesignerSelector("Button.EMPSystem.Reset")
-		button.setToolTip("Reset to default value")
+		button.setToolTip(pTranslationManager.translate(\
+			"UI.Settings.ModuleParameters.Tooltip.Reset").toUTF8())
 		return button
 	end
 end

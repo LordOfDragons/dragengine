@@ -14,7 +14,7 @@
 	<translation name='UI.Settings.Reset'>Zurücksetzen</translation>
 	<translation name='UI.Settings.Cancel'>Abbrechen</translation>
 	<translation name='UI.Settings.Bindings'>Steuerung</translation>
-	<translation name='UI.Settings.ModuleParameters'>Module Parameter</translation>
+	<translation name='UI.Settings.ModuleParameters'>Game Engine</translation>
 	<translation name='UI.Settings.ModuleParameters.Graphic'>Grafik</translation>
 	<translation name='UI.Settings.ModuleParameters.Audio'>Audio</translation>
 	<translation name='UI.Settings.ModuleParameters.Physics'>Physik</translation>
@@ -24,4 +24,7 @@
 	<translation name='UI.Settings.ModuleParameters.AI'>KI</translation>
 	<translation name='UI.Settings.ModuleParameters.Synthesizer'>Synthesizer</translation>
 	<translation name='UI.Settings.ModuleParameters.AdvancedParameters'>Erweiterte Einstellungen</translation>
+	<translation name='UI.Settings.ModuleParameters.Tooltip.Reset'>Auf Standardwert zurücksetzen</translation>
+	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Parameterwert auswählen</translation>
+	<translation name='UI.Settings.ModuleParameters.SelectValue'>Wert auswählen.</translation>
 </languagePack>
