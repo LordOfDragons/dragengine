@@ -101,6 +101,10 @@ class EditBindingsListBox extends ListBox
 	
 	
 	
+	private var TranslationManager pTranslationManager
+	
+	
+	
 	/**
 	 * \brief Create edit bindings list box.
 	 * 
@@ -117,8 +121,31 @@ class EditBindingsListBox extends ListBox
 	 */
 	public func new(EditBindingsListModel model, EditBindingsListRenderer renderer) \
 	super(model, renderer)
+		pTranslationManager = TranslationManager.get()
 		setDesignerSelector(getDesignerSelector() + ".EditBindings")
 		addMouseListener(DoubleClickCaptureBinding.new(this))
+	end
+	
+	
+	
+	/**
+	 * \brief Translation manager for command display name and description.
+	 * \version 1.16
+	 * 
+	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
+	 */
+	public func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+	
+	/**
+	 * \brief Set translation manager for command display name and description.
+	 * \version 1.16
+	 * 
+	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
+	 */
+	public func void setTranslationManager(TranslationManager translationManager)
+		pTranslationManager = translationManager
 	end
 	
 	
@@ -130,19 +157,24 @@ class EditBindingsListBox extends ListBox
 			return
 		end
 		
+		var TranslationManager tm = EngineTranslations.get()
 		var EditBindingsListModel model = getModel() cast EditBindingsListModel
 		var EditBindingsListModelEntry entry = model.getAt(selection) cast EditBindingsListModelEntry
 		
 		select entry.getInputSource()
 		case EditBindingsListModelEntry.InputSource.axis
-			WindowCaptureBinding.captureInput(model.getBindingManager(), \
-				EditBindingsListModelEntry.InputSource.axis, getWindow(), "Add Binding", \
-				"Push Axis to Set", CaptureFinished.new(this))
+			WindowCaptureBinding.captureInput(model.getBindingManager(),\
+				EditBindingsListModelEntry.InputSource.axis, getWindow(),\
+				tm.translate("UI.Settings.CaptureBinding.Title").toUTF8(),\
+				tm.translate("UI.Settings.CaptureBinding.PushAxis").toUTF8(),\
+				CaptureFinished.new(this))
 			
 		case EditBindingsListModelEntry.InputSource.button
-			WindowCaptureBinding.captureInput(model.getBindingManager(), \
-				EditBindingsListModelEntry.InputSource.button, getWindow(), "Add Binding", \
-				"Push Button or Axis to Set", CaptureFinished.new(this))
+			WindowCaptureBinding.captureInput(model.getBindingManager(),\
+				EditBindingsListModelEntry.InputSource.button, getWindow(),\
+				tm.translate("UI.Settings.CaptureBinding.Title").toUTF8(),\
+				tm.translate("UI.Settings.CaptureBinding.PushButton").toUTF8(),\
+				CaptureFinished.new(this))
 		end
 	end
 	
@@ -288,14 +320,15 @@ class EditBindingsListBox extends ListBox
 	 * \param captured Captured binding causing the problem.
 	 * \param command Command already assigned to the binding.
 	 */
-	protected func void askUserReassignBinding(\
-	WindowCaptureBinding.CaptureResult captured, Command command)
-		WindowDialog.question(getWindow(), "Replace Binding", \
-			"Binding already assigned to '" + command.getName() + "'.\n" \
-				+ "Do you want to re-assign?", \
+	protected func void askUserReassignBinding(WindowCaptureBinding.CaptureResult captured, Command command)
+		var TranslationManager tm = EngineTranslations.get()
+		
+		WindowDialog.question(getWindow(), tm.translate("UI.Settings.ReplaceBinding.Title").toUTF8(),\
+			tm.translate("UI.Settings.ReplaceBinding.Text").toUTF8().format(\
+				Array.newWith(command.translateDisplayName(pTranslationManager))),\
 			null, Array.newWith(\
-				WindowDialog.ButtonConfiguration.new("Yes", true), \
-				WindowDialog.ButtonConfiguration.new("No", false)), \
+				WindowDialog.ButtonConfiguration.new(tm.translate("UI.Yes").toUTF8(), true),\
+				WindowDialog.ButtonConfiguration.new(tm.translate("UI.No").toUTF8(), false)),\
 			ReassignResult.new(this, captured))
 	end
 	

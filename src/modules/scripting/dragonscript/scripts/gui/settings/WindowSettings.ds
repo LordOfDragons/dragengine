@@ -177,12 +177,6 @@ class WindowSettings extends WindowModal
 	private var Button pButtonReset
 	private var Sheet pActiveSheet
 	
-	/**
-	 * \brief Translation manager to use.
-	 * \version 1.16
-	 */
-	protected var TranslationManager pTranslationManager
-	
 	
 	
 	/** \brief Create settings window. */
@@ -195,8 +189,6 @@ class WindowSettings extends WindowModal
 	
 	/** \brief Create settings window. */
 	public func new(int x, int y, int width, int height) super(x, y, width, height)
-		pTranslationManager = EngineTranslations.get()
-		
 		pSheets = Array.new()
 		pButtonGroup = ToggleButtonGroup.new()
 		pSheetButtonArea = SheetButtonArea.top
@@ -490,10 +482,12 @@ class WindowSettings extends WindowModal
 	 * \warning Called from constructor wrapped by runWhileBlockingLayout.
 	 */
 	protected func void createContent()
+		var TranslationManager tm = EngineTranslations.get()
+		
 		setLayout(BorderLayout.new())
 		setCanMinimize(false)
 		setCanClose(false)
-		setTitle(pTranslationManager.translate("UI.Settings.Title").toUTF8())
+		setTitle(tm.translate("UI.Settings.Title").toUTF8())
 		
 		addWidget(Panel.new(BorderLayout.new(), block Panel panel
 			pPanelSheets = SwitchPanel.new()
@@ -513,16 +507,13 @@ class WindowSettings extends WindowModal
 		end), BorderLayout.Area.content)
 		
 		pPanelButtonsDialog = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel panel
-			pButtonSave = Button.new(pTranslationManager.\
-				translate("UI.Settings.Save").toUTF8(), ActionSave.new(this))
+			pButtonSave = Button.new(tm.translate("UI.Settings.Save").toUTF8(), ActionSave.new(this))
 			panel.addWidget(pButtonSave)
 			
-			pButtonReset = Button.new(pTranslationManager.\
-				translate("UI.Settings.Reset").toUTF8(), ActionReset.new(this))
+			pButtonReset = Button.new(tm.translate("UI.Settings.Reset").toUTF8(), ActionReset.new(this))
 			panel.addWidget(pButtonReset)
 			
-			pButtonCancel = Button.new(pTranslationManager.\
-				translate("UI.Settings.Cancel").toUTF8(), ActionCancel.new(this))
+			pButtonCancel = Button.new(tm.translate("UI.Settings.Cancel").toUTF8(), ActionCancel.new(this))
 			panel.addWidget(pButtonCancel)
 		end)
 		addWidget(pPanelButtonsDialog, BorderLayout.Area.bottom)

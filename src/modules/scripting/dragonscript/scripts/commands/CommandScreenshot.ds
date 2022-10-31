@@ -34,24 +34,27 @@ class CommandScreenshot extends Command
 	
 	
 	/** \brief Create screenshot command. */
-	public func new( ScreenshotCreator screenshotCreator ) \
-	this( screenshotCreator, "screenshot", "Save screenshot" )
+	public func new(ScreenshotCreator screenshotCreator) \
+	this(screenshotCreator, "screenshot", "Save screenshot")
 	end
 	
 	/** \brief Create screenshot command. */
-	public func new( ScreenshotCreator screenshotCreator, String name, String description ) \
-	super( name, description )
+	public func new(ScreenshotCreator screenshotCreator, String name, String description) \
+	super(name, description)
 		if screenshotCreator == null
 			throw EInvalidParam.new()
 		end
-		this.pScreenshotCreator = screenshotCreator
+		pScreenshotCreator = screenshotCreator
+		
+		setTranslateDescription("UI.Command.Screenshot.Description")
+		setTranslateDisplayName("UI.Command.Screenshot.DisplayName")
 	end
 	
 	
 	
 	/** \brief Screenshot creator. */
 	public func ScreenshotCreator getScreenshotCreator()
-		return this.pScreenshotCreator
+		return pScreenshotCreator
 	end
 	
 	
@@ -62,6 +65,6 @@ class CommandScreenshot extends Command
 	 * Called if an input key has been pressed.
 	 */
 	public func void start()
-		this.pScreenshotCreator.takeScreenshot()
+		pScreenshotCreator.takeScreenshot()
 	end
 end

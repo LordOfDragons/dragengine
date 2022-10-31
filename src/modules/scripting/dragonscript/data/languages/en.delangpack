@@ -4,6 +4,8 @@
 	<name>English</name>
 	<description>English Language Pack</description>
 	<missingText>(No Translation)</missingText>
+	<translation name='UI.Yes'>Yes</translation>
+	<translation name='UI.No'>No</translation>
 	<translation name='UI.Menu.Cut'>Cut</translation>
 	<translation name='UI.Menu.Copy'>Copy</translation>
 	<translation name='UI.Menu.Paste'>Paste</translation>
@@ -14,6 +16,13 @@
 	<translation name='UI.Settings.Reset'>Reset</translation>
 	<translation name='UI.Settings.Cancel'>Cancel</translation>
 	<translation name='UI.Settings.Bindings'>Controls</translation>
+	<translation name='UI.Settings.Bindings.Usage'>Press 'Return' to add and 'Delete' to clear bindings</translation>
+	<translation name='UI.Settings.CaptureBinding.Title'>Add Binding</translation>
+	<translation name='UI.Settings.CaptureBinding.PushAxis'>Push Axis</translation>
+	<translation name='UI.Settings.CaptureBinding.PushButton'>Push Button or Axis</translation>
+	<translation name='UI.Settings.ReplaceBinding.Title'>Replace Binding</translation>
+	<translation name='UI.Settings.ReplaceBinding.Text'>Binding already assigned to '{0}'.
+Do you want to re-assign?</translation>
 	<translation name='UI.Settings.ModuleParameters'>Game Engine</translation>
 	<translation name='UI.Settings.ModuleParameters.Graphic'>Graphic</translation>
 	<translation name='UI.Settings.ModuleParameters.Audio'>Audio</translation>
@@ -27,4 +36,58 @@
 	<translation name='UI.Settings.ModuleParameters.Tooltip.Reset'>Reset to default value</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectParameterValue'>Select Parameter Value</translation>
 	<translation name='UI.Settings.ModuleParameters.SelectValue'>Select value.</translation>
+	<translation name='UI.Command.Quit.DisplayName'>Quit</translation>
+	<translation name='UI.Command.Quit.Description'>Quit game immediately.</translation>
+	<translation name='UI.Command.Screenshot.DisplayName'>Screenshot</translation>
+	<translation name='UI.Command.Screenshot.Description'>Save screenshot to game capture directory.</translation>
+	<translation name='UI.Command.ToggleConsole.DisplayName'>Toggle Console</translation>
+	<translation name='UI.Command.ToggleConsole.Description'>Toggle console.</translation>
+	<translation name='UI.Command.PrimaryAction.DisplayName'>Primary Action</translation>
+	<translation name='UI.Command.PrimaryAction.Description'>Primary action.</translation>
+	<translation name='UI.Command.SecondaryAction.DisplayName'>Secondary Action</translation>
+	<translation name='UI.Command.SecondaryAction.Description'>Secondary action.</translation>
+	<translation name='UI.Command.MoveForward.DisplayName'>Move Forward</translation>
+	<translation name='UI.Command.MoveForward.Description'>Move forward.</translation>
+	<translation name='UI.Command.MoveBackward.DisplayName'>Move Backward</translation>
+	<translation name='UI.Command.MoveBackward.Description'>Move backward.</translation>
+	<translation name='UI.Command.MoveLeft.DisplayName'>Move Left</translation>
+	<translation name='UI.Command.MoveLeft.Description'>Move left.</translation>
+	<translation name='UI.Command.MoveRight.DisplayName'>Move Right</translation>
+	<translation name='UI.Command.MoveRight.Description'>Move right.</translation>
+	<translation name='UI.Command.LookLeft.DisplayName'>Look Left</translation>
+	<translation name='UI.Command.LookLeft.Description'>Look left.</translation>
+	<translation name='UI.Command.LookRight.DisplayName'>Look Right</translation>
+	<translation name='UI.Command.LookRight.Description'>Look right.</translation>
+	<translation name='UI.Command.LookUp.DisplayName'>Look Up</translation>
+	<translation name='UI.Command.LookUp.Description'>Look up.</translation>
+	<translation name='UI.Command.LookDown.DisplayName'>Look Down</translation>
+	<translation name='UI.Command.LookDown.Description'>Look down.</translation>
+	<translation name='UI.Command.AnalogMoveFB.DisplayName'>Analog Move Forward/Backward</translation>
+	<translation name='UI.Command.AnalogMoveFB.Description'>Analog move forward and backward.</translation>
+	<translation name='UI.Command.AnalogMoveLR.DisplayName'>Analog Move Left/Right</translation>
+	<translation name='UI.Command.AnalogMoveLR.Description'>Analog move left and right.</translation>
+	<translation name='UI.Command.AnalogLookLR.DisplayName'>Analog Look Left/Right</translation>
+	<translation name='UI.Command.AnalogLookLR.Description'>Analog look left and right.</translation>
+	<translation name='UI.Command.AnalogLookUD.DisplayName'>Analog Look Up/Down</translation>
+	<translation name='UI.Command.AnalogLookUD.Description'>Analog look up and down.</translation>
+	<translation name='UI.Command.Crouch.DisplayName'>Crouch</translation>
+	<translation name='UI.Command.Crouch.Description'>Crouching.</translation>
+	<translation name='UI.Command.ToggleCrouch.DisplayName'>Toggle Crouch</translation>
+	<translation name='UI.Command.ToggleCrouch.Description'>Toggle crouching.</translation>
+	<translation name='UI.Command.Run.DisplayName'>Run</translation>
+	<translation name='UI.Command.Run.Description'>Running.</translation>
+	<translation name='UI.Command.ToggleRun.DisplayName'>Toggle Run</translation>
+	<translation name='UI.Command.ToggleRun.Description'>Toggle running.</translation>
+	<translation name='UI.Command.GrabRight.DisplayName'>Grab Right Hand</translation>
+	<translation name='UI.Command.GrabRight.Description'>Grab right hand.</translation>
+	<translation name='UI.Command.SqueezeRight.DisplayName'>Squeeze Right Hand</translation>
+	<translation name='UI.Command.SqueezeRight.Description'>Squeeze right hand.</translation>
+	<translation name='UI.Command.GrabLeft.DisplayName'>Grab Left Hand</translation>
+	<translation name='UI.Command.GrabLeft.Description'>Grab left hand.</translation>
+	<translation name='UI.Command.SqueezeLeft.DisplayName'>Squeeze Left Hand</translation>
+	<translation name='UI.Command.SqueezeLeft.Description'>Squeeze left hand.</translation>
+	<translation name='UI.Command.MenuRight.DisplayName'>Menu Right Hand</translation>
+	<translation name='UI.Command.MenuRight.Description'>Menu right hand.</translation>
+	<translation name='UI.Command.MenuLeft.DisplayName'>Menu Left Hand</translation>
+	<translation name='UI.Command.MenuLeft.Description'>Menu left hand.</translation>
 </languagePack>
