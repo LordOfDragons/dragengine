@@ -354,6 +354,11 @@ class WindowSettings extends WindowModal
 			doLayout()
 			
 			pSheets.add(realSheet)
+			
+			if pActiveSheet == null
+				setActiveSheet(realSheet)
+			end
+			
 			return realSheet
 			
 		catch Exception e
@@ -377,6 +382,7 @@ class WindowSettings extends WindowModal
 				each.getButton().safeDispose()
 			end)
 			pSheets.removeAll()
+			pActiveSheet = null
 		end)
 		
 		doLayout()
