@@ -2737,4 +2737,14 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorAnchorElement'>
+		<description>Behavior allowing to locate elements in a GameWorld using a unique name.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<property name='anchorID'>
+			<description>Anchor name or empty string to not anchor.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>
