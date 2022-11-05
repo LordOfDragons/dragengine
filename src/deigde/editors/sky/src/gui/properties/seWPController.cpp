@@ -231,7 +231,18 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
 		"Remove the selected controller." ){ }
 	
-	virtual igdeUndo *OnActionController( seSky*, seController *controller ){
+	virtual igdeUndo *OnActionController( seSky *sky, seController *controller ){
+		const int usageCount = sky->CountControllerUsage( controller );
+		
+		if( usageCount > 0 && igdeCommonDialogs::QuestionFormat(
+			&pPanel, igdeCommonDialogs::ebsYesNo, "Remove Controller",
+			"The controller '%s' is used by %i links.\n"
+			"If the controller is removed now it is also removed from\n"
+			"all the links using it. Do you want to remove the controller?",
+			controller->GetName().GetString(), usageCount ) != igdeCommonDialogs::ebYes ){
+				return nullptr;
+		}
+		
 		return new seUControllerRemove( controller );
 	}
 	

@@ -425,6 +425,27 @@ void seSky::SetActiveController( seController *controller ){
 	NotifyActiveControllerChanged();
 }
 
+int seSky::CountControllerUsage( seController *controller ) const{
+	const int layerCount = pLayers.GetCount();
+	int usageCount = 0;
+	int i, j, k;
+	
+	for( i=0; i<layerCount; i++ ){
+		const seLayer &layer = *pLayers.GetAt( i );
+		for( j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++ ){
+			const seLinkList &links = layer.GetTarget( ( deSkyLayer::eTargets )j ).GetLinks();
+			const int linkCount = links.GetCount();
+			for( k=0; k<linkCount; k++ ){
+				if( links.GetAt( k )->GetController() == controller ){
+					usageCount++;
+				}
+			}
+		}
+	}
+	
+	return usageCount;
+}
+
 
 
 // Links
