@@ -699,6 +699,7 @@ deoglLightShaderConfig &config ){
 	case estLumSolid1NoAmbient:
 	case estLumSolid2:
 	case estLumSolid2NoAmbient:
+	case estGIRayNoShadow:
 	case estGIRaySolid1:
 	case estGIRaySolid2:
 		break;

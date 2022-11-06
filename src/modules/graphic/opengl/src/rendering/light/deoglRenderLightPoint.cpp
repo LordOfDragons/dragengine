@@ -743,6 +743,14 @@ const deoglRenderPlanMasked *mask ){
 		}else{
 			DebugTimer2SampleCount( plan, *pDebugInfoTransparentShadow, 1, true );
 		}
+		
+	}else{
+		if( giState ){
+			// gi state lighting changes FBO and other parameters
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			RestoreFBO( plan );
+		}
 	}
 	
 DEBUG_RESET_TIMER
