@@ -387,9 +387,9 @@ void dePng3DTarball::Save3DImage( decBaseFileWriter &file, const deImage &image 
 	// the name, file size and checksum later on and the rest stays the same
 	memset( &header, '\0', 512 );
 	
-	strcpy( &header.mode[ 0 ], "100777 " );
-	strcpy( &header.uid[ 0 ], "     0 " );
-	strcpy( &header.gid[ 0 ], "     0 " );
+	strcpy( &header.mode[ 0 ], "100600 " );
+	strcpy( &header.uid[ 0 ],  "  1750 " );
+	strcpy( &header.gid[ 0 ],  "   144 " );
 	
 	gettimeofday( &curtime, NULL );
 	header.mtime[ 11 ] = ' ';
