@@ -69,11 +69,21 @@ void aeUControllerPaste::Undo(){
 }
 
 void aeUControllerPaste::Redo(){
+	const aeControllerList &controllers = pAnimator->GetControllers();
 	const int controllerCount = pControllerList.GetCount();
 	int i;
 	
 	for( i=0; i<controllerCount; i++ ){
-		pAnimator->InsertControllerAt( pControllerList.GetAt( i ), pIndex + i );
+		aeController * const controller = pControllerList.GetAt( i );
+		
+		decString name( controller->GetName() );
+		int number = 2;
+		while( controllers.HasNamed( name ) ){
+			name.Format( "%s #%d", controller->GetName().GetString(), number++ );
+		}
+		controller->SetName( name );
+		
+		pAnimator->InsertControllerAt( controller, pIndex + i );
 	}
 	
 	pAnimator->SetActiveController( pControllerList.GetAt( controllerCount - 1 ) );
