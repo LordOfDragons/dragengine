@@ -68,6 +68,9 @@ if envModule['with_debug'] and envModule['with_sanitize']:
 	envModule.Append(CPPFLAGS = fixFlags)
 	envModule.Append(LINKFLAGS = fixFlags)
 
+if envModule['with_debug']:
+	envModule.Append(CPPFLAGS = '-DWITH_DEBUG')
+
 envSpecialBullet = envModule.Clone()
 
 """if useDebugSnapshot:
