@@ -74,6 +74,7 @@ private:
 	struct sInitData{
 		dsClass *clsCCT, *clsVoid, *clsInt, *clsFlt, *clsStr, *clsBool, *clsObj;
 		dsClass *clsVec, *clsDVec, *clsTS, *clsCF, *clsCol, *clsCI, *clsComp;
+		dsClass *clsQuaternion;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -103,6 +104,8 @@ private:
 	DEF_NATFUNC( nfSetBone );
 	DEF_NATFUNC( nfGetOrigin );
 	DEF_NATFUNC( nfSetOrigin );
+	DEF_NATFUNC( nfGetOrientation );
+	DEF_NATFUNC( nfSetOrientation );
 	DEF_NATFUNC( nfGetDirection );
 	DEF_NATFUNC( nfSetDirection );
 	DEF_NATFUNC( nfGetLocalDirection );
@@ -111,6 +114,7 @@ private:
 	DEF_NATFUNC( nfSetEnabled );
 	
 	DEF_NATFUNC( nfGetTestOrigin );
+	DEF_NATFUNC( nfGetTestOrientation );
 	DEF_NATFUNC( nfGetTestDirection );
 	
 	DEF_NATFUNC( nfGetHasCollision );

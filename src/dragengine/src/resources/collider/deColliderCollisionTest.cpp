@@ -106,6 +106,10 @@ void deColliderCollisionTest::SetOrigin( const decVector &origin ){
 	pOrigin = origin;
 }
 
+void deColliderCollisionTest::SetOrientation( const decQuaternion &orientation ){
+	pOrientation = orientation;
+}
+
 void deColliderCollisionTest::SetDirection( const decVector &direction ){
 	pDirection = direction;
 }
@@ -140,6 +144,10 @@ void deColliderCollisionTest::RemoveAllCollisionInfo(){
 
 void deColliderCollisionTest::SetTestOrigin( const decDVector &testOrigin ){
 	pTestOrigin = testOrigin;
+}
+
+void deColliderCollisionTest::SetTestOrientation( const decQuaternion &orientation ){
+	pTestOrientation = orientation;
 }
 
 void deColliderCollisionTest::SetTestDirection( const decDVector &testDirection ){
