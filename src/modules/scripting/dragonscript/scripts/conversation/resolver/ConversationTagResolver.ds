@@ -37,44 +37,43 @@ pin Dragengine.Utils.StyledText.Definition.Nodes
  * { character. Output is a StyledTextDefinition.
  */
 class ConversationTagResolver
-	/** \brief Supported rules. */
 	private var Dictionary pRules
 	
 	
 	
 	/** \brief Create conversation tag resolver. */
 	public func new()
-		this.pRules = Dictionary.new()
+		pRules = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Number of rules. */
 	public func int getRuleCount()
-		return this.pRules.getCount()
+		return pRules.getCount()
 	end
 	
 	/** \brief Rule matching name or \em null if absent. */
-	public func ConversationTagResolverRule getRuleNamed( String name )
-		return this.pRules.getAt( name, null ) cast ConversationTagResolverRule
+	public func ConversationTagResolverRule getRuleNamed(String name)
+		return pRules.getAt(name, null) cast ConversationTagResolverRule
 	end
 	
 	/** \brief has rule matching name. */
-	public func bool hasRuleNamed( String name )
-		return this.pRules.has( name )
+	public func bool hasRuleNamed(String name)
+		return pRules.has(name)
 	end
 	
 	/** \brief Add rule. */
-	public func void addRule( String name, ConversationTagResolverRule rule )
-		if name == null or rule == null or this.pRules.has( name )
+	public func void addRule(String name, ConversationTagResolverRule rule)
+		if name == null or rule == null or pRules.has(name)
 			throw EInvalidParam.new()
 		end
-		this.pRules.setAt( name, rule )
+		pRules.setAt(name, rule)
 	end
 	
 	/** \brief Remove all rules. */
 	public func void removeAllRules()
-		this.pRules.removeAll()
+		pRules.removeAll()
 	end
 	
 	
@@ -85,18 +84,18 @@ class ConversationTagResolver
 	 * \param pageStyle Type style.
 	 * \param defaultStyle Default text style.
 	 */
-	public func StyledTextDefinition resolveTags( String text, STDStyle pageStyle, STDStyle defaultStyle )
+	public func StyledTextDefinition resolveTags(String text, STDStyle pageStyle, STDStyle defaultStyle)
 		var StyledTextDefinition styledText = StyledTextDefinition.new()
 		
-		styledText.addStyle( pageStyle )
-		styledText.setPageStyle( pageStyle )
+		styledText.addStyle(pageStyle)
+		styledText.setPageStyle(pageStyle)
 		
-		styledText.addStyle( defaultStyle )
-		styledText.setDefaultStyle( defaultStyle )
+		styledText.addStyle(defaultStyle)
+		styledText.setDefaultStyle(defaultStyle)
 		
 		var STDNText nodeText = STDNText.new()
 		var ConversationTagResolverRule rule
-		var int tagBegin = text.find( '{' )
+		var int tagBegin = text.find('{')
 		var int len = text.getLength()
 		var String actionName
 		var int position = 0
@@ -108,46 +107,46 @@ class ConversationTagResolver
 		
 		while tagBegin != -1
 			if position < tagBegin
-				nodeText.addSpan( STDNTextSpan.new( text.substring( position, tagBegin ) ) )
+				nodeText.addSpan(STDNTextSpan.new(text.substring(position, tagBegin)))
 			end
 			
-			if text.getAt( tagBegin + 1 ) == '{'
-				nodeText.addSpan( STDNTextSpan.new( "{" ) )
+			if text.getAt(tagBegin + 1) == '{'
+				nodeText.addSpan(STDNTextSpan.new("{"))
 				tagEnd = tagBegin + 1
 				
 			else
-				tagEnd = text.find( '}', tagBegin + 1 )
-				tagData = text.substring( tagBegin + 1, tagEnd )
-				actionEnd = tagData.find( ':' )
+				tagEnd = text.find('}', tagBegin + 1)
+				tagData = text.substring(tagBegin + 1, tagEnd)
+				actionEnd = tagData.find(':')
 				
 				if actionEnd == -1
 					tagAction = tagData
 					tagParams = ""
 					
 				else
-					tagAction = tagData.substring( 0, actionEnd )
-					tagParams = tagData.substring( actionEnd + 1 )
+					tagAction = tagData.substring(0, actionEnd)
+					tagParams = tagData.substring(actionEnd + 1)
 				end
 				
-				rule = this.pRules.getAt( tagAction, null ) cast ConversationTagResolverRule
+				rule = pRules.getAt(tagAction, null) cast ConversationTagResolverRule
 				
 				if rule == null
-					nodeText.addSpan( STDNTextSpan.new( tagData ) )
+					nodeText.addSpan(STDNTextSpan.new(tagData))
 					
 				else
-					rule.resolveTag( styledText, nodeText, tagParams )
+					rule.resolveTag(styledText, nodeText, tagParams)
 				end
 			end
 			
 			position = tagEnd + 1
-			tagBegin = text.find( '{', position )
+			tagBegin = text.find('{', position)
 		end
 		
 		if position < len
-			nodeText.addSpan( STDNTextSpan.new( text.substring( position ) ) )
+			nodeText.addSpan(STDNTextSpan.new(text.substring(position)))
 		end
 		
-		styledText.addNode( nodeText )
+		styledText.addNode(nodeText)
 		return styledText
 	end
 end

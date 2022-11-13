@@ -41,18 +41,18 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 	
 	
 	/** \brief Create converter. */
-	public func new( StyledTextDefinition definition )
+	public func new(StyledTextDefinition definition)
 		if definition == null
 			throw EInvalidParam.new()
 		end
-		this.pDefinition = definition
+		pDefinition = definition
 	end
 	
 	
 	
 	/** \brief Styled text definition to add the visited content to. */
 	public func StyledTextDefinition getDefinition()
-		return this.pDefinition
+		return pDefinition
 	end
 	
 	
@@ -63,38 +63,38 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 	 * The default implementation returns the variable name in curly brackets.
 	 * This can be used as error fallback.
 	 */
-	public func String resolveVariable( String variableName )
+	public func String resolveVariable(String variableName)
 		return "{" + variableName + "}"
 	end
 	
 	
 	
 	/** \brief Visit node. */
-	public func void visitNode( STDNode node )
-		this.pDefinition.addNode( node )
+	public func void visitNode(STDNode node)
+		pDefinition.addNode(node)
 	end
 	
 	/** \brief Visit text node. */
-	public func void visitText( STDNText node )
+	public func void visitText(STDNText node)
 		var int count = node.getSpanCount()
 		var STDNTextSpan span
 		var int i
 		
 		var STDNText resolvedNode = STDNText.new()
-		resolvedNode.setStyle( node.getStyle() )
+		resolvedNode.setStyle(node.getStyle())
 		
 		for i = 0 to count
-			span = node.getSpanAt( i )
-			resolvedNode.addSpan( STDNTextSpan.new( this.resolveVariables( span.getText() ), \
-				span.getStyle(), span.getImage() ) )
+			span = node.getSpanAt(i)
+			resolvedNode.addSpan(STDNTextSpan.new(resolveVariables(\
+				span.getText()), span.getStyle(), span.getImage()))
 		end
 		
-		this.pDefinition.addNode( resolvedNode )
+		pDefinition.addNode(resolvedNode)
 	end
 	
 	/** \brief Visit image node. */
-	public func void visitImage( STDNImage node )
-		this.pDefinition.addNode( node )
+	public func void visitImage(STDNImage node)
+		pDefinition.addNode(node)
 	end
 	
 	
@@ -102,8 +102,8 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 	/**
 	 * \brief Resolve variables.
 	 */
-	protected func String resolveVariables( String text )
-		var int variableBegin = text.find( '{' )
+	protected func String resolveVariables(String text)
+		var int variableBegin = text.find('{')
 		var int len = text.getLength()
 		var String result = ""
 		var int position = 0
@@ -111,24 +111,24 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 		
 		while variableBegin != -1
 			if position < variableBegin
-				result = result + text.substring( position, variableBegin )
+				result = result + text.substring(position, variableBegin)
 			end
 			
-			if text.getAt( variableBegin + 1 ) == '{'
+			if text.getAt(variableBegin + 1) == '{'
 				variableEnd = variableBegin + 1
 				result = result + "{"
 				
 			else
-				variableEnd = text.find( '}', variableBegin + 1 )
-				result = result + this.resolveVariable( text.substring( variableBegin + 1, variableEnd ) )
+				variableEnd = text.find('}', variableBegin + 1)
+				result = result + resolveVariable(text.substring(variableBegin + 1, variableEnd))
 			end
 			
 			position = variableEnd + 1
-			variableBegin = text.find( '{', position )
+			variableBegin = text.find('{', position)
 		end
 		
 		if position < len
-			result = result + text.substring( position )
+			result = result + text.substring(position)
 		end
 		
 		return result

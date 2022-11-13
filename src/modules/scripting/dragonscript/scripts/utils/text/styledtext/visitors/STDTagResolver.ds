@@ -1,0 +1,286 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+
+/**
+ * \brief Replace tags with resolved content.
+ * \version 1.16
+ * 
+ * Extended version of STDTagResolver supporting replacing tags with STDNTextSpan
+ * instead of just replacing text.
+ * 
+ * Subclass and implement the resolveTag method to add STDNTextSpan. The visited content is
+ * added to a new styled text definition to keep the original intact. Tags are contained
+ * between curly brackets like "{binding quit}". The special token "{{" is converted to "{".
+ * You can change the start and end tag character to something else than "{" and "}".
+ * 
+ * Once a tag is found it is split into a tag name and tag parameters using ":" as delimiter.
+ * You can change the delimiter to something else than ":". The format is "{tag:parameters}".
+ * The tag name is used to look up the rule to use. If no rule with matching name is found
+ * the default rule is used.
+ * 
+ * Non-resolved nodes are copied. The resulting StyledTextDefinition can be safely modified.
+ */
+class STDTagResolver extends DefaultSTDNodeVisitor
+	private var byte pCharTagBegin
+	private var byte pCharTagEnd
+	private var byte pCharDelimiter
+	private var Dictionary pRules
+	private var STDTagResolverRule pDefaultRule
+	private var StyledTextDefinition pDefinition
+	
+	
+	
+	/** \brief Create converter. */
+	public func new()
+		pCharTagBegin = '{'
+		pCharTagEnd = '}'
+		pCharDelimiter = ':'
+		pRules = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Character starting tag. */
+	public func byte getCharTagBegin()
+		return pCharTagBegin
+	end
+	
+	/** \brief Set character starting tag. */
+	public func void setCharTagBegin(byte character)
+		pCharTagBegin = character
+	end
+	
+	/** \brief Character ending tag. */
+	public func byte getCharTagEnd()
+		return pCharTagEnd
+	end
+	
+	/** \brief Set character ending tag. */
+	public func void setCharTagEnd(byte character)
+		pCharTagEnd = character
+	end
+	
+	/** \brief Character separating action from parameters. */
+	public func byte getCharDelimiter()
+		return pCharDelimiter
+	end
+	
+	/** \brief Set character separating action from parameters. */
+	public func void setCharDelimiter(byte character)
+		pCharDelimiter = character
+	end
+	
+	
+	
+	/** \brief Number of rules. */
+	public func int getRuleCount()
+		return pRules.getCount()
+	end
+	
+	/** \brief Rule matching name or \em null if absent. */
+	public func STDTagResolverRule getRuleNamed(String name)
+		return pRules.getAt(name, null) cast STDTagResolverRule
+	end
+	
+	/** \brief has rule matching name. */
+	public func bool hasRuleNamed(String name)
+		return pRules.has(name)
+	end
+	
+	/** \brief Add rule replacing rule with same name if present. */
+	public func void addRule(String name, STDTagResolverRule rule)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		if rule == null
+			throw ENullPointer.new("rule")
+		end
+		pRules.setAt(name, rule)
+	end
+	
+	/** \brief Remove all rules. */
+	public func void removeAllRules()
+		pRules.removeAll()
+	end
+	
+	
+	
+	/** \brief Rule to use if no rule matches or null to return tag unmodified. */
+	public func STDTagResolverRule getDefaultRule()
+		return pDefaultRule
+	end
+	
+	/** \brief Set rule to use if no rule matches or null to return tag unmodified. */
+	public func void setDefaultRule(STDTagResolverRule rule)
+		pDefaultRule = rule
+	end
+	
+	
+	
+	/** \brief Styled text definition to add the visited content to. */
+	public func StyledTextDefinition getDefinition()
+		return pDefinition
+	end
+	
+	/** \brief Set styled text definition to add the visited content to. */
+	public func void setDefinition(StyledTextDefinition definition)
+		pDefinition = definition
+	end
+	
+	
+	
+	/**
+	 * \brief Convenience call to resolve tags in definition.
+	 * 
+	 * Calls setDefinition(target) then source.visitNodes(this) then setDefinition(null).
+	 */
+	public func void resolve(StyledTextDefinition target, StyledTextDefinition source)
+		if target == null
+			throw ENullPointer.new("target")
+		end
+		if source == null
+			throw ENullPointer.new("source")
+		end
+		
+		pDefinition = target
+		source.visitNodes(this)
+		pDefinition = null
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tag adding STDNTextSpan to STDNText.
+	 * 
+	 * Parses first the tag of the form "{name:parameters}" and looks up the rule with name.
+	 * If not found the default rule is used. If this is also null adds STDNTextSpan containing
+	 * the tagName including curly brackets to target using style stored in source. If the tag
+	 * is the first text in the span first is set to true and the image assigned to source has
+	 * to be assigned to the first span added to target. This ensures the first resolved span
+	 * has the image assigned to source unless the tag wants to replace it.
+	 */
+	public func void resolveTag(STDNText target, STDNTextSpan source, bool first, String tagContent)
+		var int tagDeli = tagContent.find(pCharDelimiter)
+		var String tagName, tagParams
+		
+		if tagDeli == -1
+			tagName = tagContent
+			tagParams = ""
+			
+		else
+			tagName = tagContent.substring(0, tagDeli)
+			tagParams = tagContent.substring(tagDeli + 1)
+		end
+		
+		var STDTagResolverRule rule = pRules.getAt(tagName, null) cast STDTagResolverRule
+		if rule == null
+			rule = pDefaultRule
+		end
+		
+		if rule != null
+			rule.resolveTag(this, target, source, first, tagParams)
+			
+		else
+			target.addSpan(STDNTextSpan.new("" + pCharTagBegin + tagContent + pCharTagEnd,\
+				source.getStyle(), first if source.getImage() else null))
+		end
+	end
+	
+	
+	
+	/** \brief Visit text node. */
+	public func void visitText(STDNText node)
+		var STDNText resolved = STDNText.new()
+		resolved.setStyle(node.getStyle())
+		
+		node.forEachSpan(block int index, STDNTextSpan each
+			resolveTags(resolved, each, index == 0)
+		end)
+		
+		pDefinition.addNode(resolved)
+	end
+	
+	/** \brief Visit image node. */
+	public func void visitImage(STDNImage node)
+		pDefinition.addNode(STDNImage.new(node))
+	end
+	
+	/** \brief Visit video node. */
+	public func void visitVideo(STDNVideo node)
+		pDefinition.addNode(STDNVideo.new(node))
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tags.
+	 * 
+	 * Adds all text between tags as STDNTextSpan to target using style set in source.
+	 * For each found tag calls resolveTag() to add resolved STDNTextSpan to target.
+	 */
+	protected func void resolveTags(STDNText target, STDNTextSpan source, bool first)
+		var String text = source.getText()
+		var String style = source.getStyle()
+		var int tagEnd, tagBegin = text.find(pCharTagBegin)
+		var int position, len = text.getLength()
+		var String accumText = ""
+		
+		while tagBegin != -1
+			if position < tagBegin
+				accumText = accumText + text.substring(position, tagBegin)
+			end
+			
+			if text.getAt(tagBegin + 1) == pCharTagBegin
+				tagEnd = tagBegin + 1
+				accumText = accumText + pCharTagBegin
+				
+			else
+				tagEnd = text.find(pCharTagEnd, tagBegin + 1)
+				if not accumText.empty()
+					target.addSpan(STDNTextSpan.new(accumText, style, first if source.getImage() else null))
+					accumText = ""
+					first = false
+				end
+				
+				resolveTag(target, source, first, text.substring(tagBegin + 1, tagEnd))
+				first = false
+			end
+			
+			position = tagEnd + 1
+			tagBegin = text.find(pCharTagBegin, position)
+		end
+		
+		if position < len
+			accumText = accumText + text.substring(position)
+		end
+		if not accumText.empty()
+			target.addSpan(STDNTextSpan.new(accumText, style, first if source.getImage() else null))
+		end
+	end
+end
