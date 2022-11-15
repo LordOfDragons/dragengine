@@ -31,12 +31,13 @@ pin Dragengine.Utils
  *
  * \par Deceleration (1.16)
  * 
- * Supports continue scrolling with last drag velocity decelerating
- * down to zero over time. This can be used to simplify larger scale
- * scrolling by using fling type movement.
+ * Supports continue scrolling with last drag velocity decelerating over time. This can be
+ * used to simplify larger scale scrolling by using fling type movement.
  *
- * By default continue scrolling is disabled. To enabled continuous
- * scrolling set the continue scroll time to a value larger than 0.
+ * By default continue scrolling is disabled. To enabled continuous scrolling set the
+ * deceleration to a value larger than 0. Velocity is reduced by deceleration times elapsed
+ * time. Hence a value of 100 reduces velocity by 100 pixels/second every second. A good
+ * starting value for deceleration is 200.
  */
 class ScrollWidgetMouseListener extends DefaultMouseListener
 	/**
@@ -78,8 +79,7 @@ class ScrollWidgetMouseListener extends DefaultMouseListener
 	private var Point pLastDisplacement
 	private var float pVelocityVertical
 	private var float pVelocityHorizontal
-	private var float pContinueScrollTime
-	private var float pContinueScrollElapsed
+	private var float pDeceleration
 	private var ScrollUpdater pScrollUpdater
 	
 	
@@ -94,7 +94,6 @@ class ScrollWidgetMouseListener extends DefaultMouseListener
 		pAnchorPosition = null
 		pAnchorVertical = 0
 		pAnchorHorizontal = 0
-		pContinueScrollTime = 0
 	end
 	
 	
@@ -200,35 +199,21 @@ class ScrollWidgetMouseListener extends DefaultMouseListener
 	end
 
 	/**
-	 * \brief Continue scroll time in seconds.
+	 * \brief Velocity deceleration in pixels/second per second.
 	 * \version 1.16
 	 */
-	public func float getContinueScrollTime()
-		return pContinueScrollTime
+	public func float getDeceleration()
+		return pDeceleration
 	end
 
 	/**
-	 * \brief Set continue scroll time in seconds.
+	 * \brief Set velocity deceleration in pixels/second per second.
 	 * \version 1.16
+	 * 
+	 * A good starting value is 200. For weaker deceleration 100 is a good value.
 	 */
-	public func void setContinueScrollTime(float time)
-		pContinueScrollTime = DEMath.max(time, 0.0)
-	end
-
-	/**
-	 * \brief Elapsed continue scroll time in seconds.
-	 * \version 1.16
-	 */
-	public func float getContinueScrollElapsed()
-		return pContinueScrollElapsed
-	end
-
-	/**
-	 * \brief Set elapsed continue scroll time in seconds.
-	 * \version 1.16
-	 */
-	public func void setContinueScrollElapsed(float elapsed)
-		pContinueScrollElapsed = DEMath.max(elapsed, 0.0)
+	public func void setDeceleration(float deceleration)
+		pDeceleration = DEMath.max(deceleration, 0.0)
 	end
 	
 	
@@ -246,7 +231,6 @@ class ScrollWidgetMouseListener extends DefaultMouseListener
 			pLastDisplacement = Point.new()
 			pVelocityHorizontal = 0
 			pVelocityVertical = 0
-			pContinueScrollElapsed = 0
 			
 			var RangeModel model = pWidget.getVerticalRangeModel()
 			if model != null
@@ -327,23 +311,32 @@ class ScrollWidgetMouseListener extends DefaultMouseListener
 				pVelocityHorizontal = 0
 				pVelocityVertical = 0
 			end
-
+			
 			pLastDisplacement = Point.new()
 			return
 		end
-
-		pContinueScrollElapsed += elapsed
-
-		if pContinueScrollElapsed >= pContinueScrollTime
+		
+		if pVelocityHorizontal > 0
+			pVelocityHorizontal = DEMath.max(pVelocityHorizontal - pDeceleration * elapsed, 0.0)
+			
+		elif pVelocityHorizontal < 0
+			pVelocityHorizontal = DEMath.min(pVelocityHorizontal + pDeceleration * elapsed, 0.0)
+		end
+		
+		if pVelocityVertical > 0
+			pVelocityVertical = DEMath.max(pVelocityVertical - pDeceleration * elapsed, 0.0)
+			
+		else
+			pVelocityVertical = DEMath.min(pVelocityVertical + pDeceleration * elapsed, 0.0)
+		end
+		
+		if pVelocityHorizontal == 0 and pVelocityVertical == 0
 			stopScrollUpdater()
 			return
 		end
-
-		var float factor = pContinueScrollElapsed / pContinueScrollTime
-		factor = (1.0 - factor * factor) * elapsed
-
-		pAnchorVertical += (pVelocityVertical * factor) cast int
-		pAnchorHorizontal += (pVelocityHorizontal * factor) cast int
+		
+		pAnchorVertical -= (pVelocityVertical * elapsed) cast int
+		pAnchorHorizontal -= (pVelocityHorizontal * elapsed) cast int
 		
 		var RangeModel model = pWidget.getHorizontalRangeModel()
 		if model != null
