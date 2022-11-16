@@ -938,6 +938,23 @@ void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanM
 	pUpdateIsRendered();
 }
 
+void deoglRComponentTexture::UpdateRenderableMapping(){
+	pComponent.GetRenderThread().GetLogger().LogInfoFormat("*** Texture.UpdateRenderableMapping %d %p %p %p", pIndex, pSkinState, pSkin, pDynamicSkin);
+	if( ! pSkinState ){
+		return;
+	}
+	
+	pSkinState->RemoveAllRenderables();
+	
+	deoglRDynamicSkin * const dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
+	if( pSkin && dynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *dynamicSkin );
+	}
+	
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
 
 
 // Private Functions

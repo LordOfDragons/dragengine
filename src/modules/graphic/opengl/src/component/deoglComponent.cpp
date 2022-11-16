@@ -208,6 +208,7 @@ void deoglComponent::SyncToRender(){
 		pDirtyResetStatic = false;
 	}
 	if( pDirtyRenderableMapping ){
+		// PROBLEM: UpdateRenderableMapping requires pTextures[i]->SyncToRender() to be called first
 		pRComponent->UpdateRenderableMapping();
 		pDirtyRenderableMapping = false;
 		
@@ -410,6 +411,7 @@ void deoglComponent::DynamicSkinRequiresSync(){
 }
 
 void deoglComponent::TextureDynamicSkinRenderableChanged(){
+	// called by deoglComponentTexture upon receiving changed notification from dynamic skin
 	pTextureDynamicSkinRenderablesChanged = true;
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtyRenderableMapping = true;
@@ -434,6 +436,13 @@ void deoglComponent::DirtyRenderableMapping(){
 void deoglComponent::DirtyTextureUseSkin(){
 	pDirtyTextureUseSkin = true;
 	pRequiresSync();
+}
+
+void deoglComponent::DirtyAllTexturesUpdateRenderableMappings(){
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ]->DirtyRenderableMapping();
+	}
 }
 
 void deoglComponent::DecalRequiresSync(){
@@ -569,6 +578,7 @@ void deoglComponent::SkinChanged(){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	DirtyAllTexturesUpdateRenderableMappings();
 	
 	pRequiresSync();
 }
@@ -599,6 +609,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	DirtyAllTexturesUpdateRenderableMappings();
 	
 	pRequiresSync();
 }
@@ -723,6 +734,7 @@ void deoglComponent::DynamicSkinChanged(){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	DirtyAllTexturesUpdateRenderableMappings();
 	
 	pRequiresSync();
 }

@@ -49,6 +49,7 @@ private:
 	
 	bool pDirtyTexture;
 	bool pDynamicSkinRenderablesChanged;
+	bool pDirtyRenderableMapping;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -87,6 +88,7 @@ public:
 	inline bool GetDynamicSkinRenderablesChanged() const{ return pDynamicSkinRenderablesChanged; }
 	void SetDynamicSkinRenderablesChanged( bool changed );
 	
+	void DirtyRenderableMapping();
 	
 	
 	/** Init skin state. */

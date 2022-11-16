@@ -55,6 +55,7 @@
 #include "../../texture/texunitsconfig/deoglTexUnitConfig.h"
 
 #include <dragengine/common/exceptions.h>
+#include <../../../modules/graphic/opengl/src/skin/state/deoglSkinState.h>
 
 
 
@@ -872,6 +873,10 @@ deoglRDynamicSkin *dynamicSkin ) const{
 		const deoglSkinTextureProperty &property = skinTexture
 			.GetMaterialPropertyAt( deoglSkinTexture::empColorTint );
 		decColor colorTint( property.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
+			pRenderThread.GetLogger().LogInfoFormat("*** resolve: %p %p (%g,%g,%g)", skinState, dynamicSkin, colorTint.r, colorTint.g, colorTint.g);
+			if(skinState && dynamicSkin){
+				pRenderThread.GetLogger().LogInfoFormat("*** check: %d %d", property.GetRenderable(), skinState->GetRenderableCount());
+			}
 		
 		colorTint.r = powf( decMath::max( colorTint.r, 0.0f ), 2.2f );
 		colorTint.g = powf( decMath::max( colorTint.g, 0.0f ), 2.2f );
