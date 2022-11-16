@@ -208,7 +208,6 @@ void deoglComponent::SyncToRender(){
 		pDirtyResetStatic = false;
 	}
 	if( pDirtyRenderableMapping ){
-		// PROBLEM: UpdateRenderableMapping requires pTextures[i]->SyncToRender() to be called first
 		pRComponent->UpdateRenderableMapping();
 		pDirtyRenderableMapping = false;
 		

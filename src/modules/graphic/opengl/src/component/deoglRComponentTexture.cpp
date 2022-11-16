@@ -939,7 +939,6 @@ void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanM
 }
 
 void deoglRComponentTexture::UpdateRenderableMapping(){
-	pComponent.GetRenderThread().GetLogger().LogInfoFormat("*** Texture.UpdateRenderableMapping %d %p %p %p", pIndex, pSkinState, pSkin, pDynamicSkin);
 	if( ! pSkinState ){
 		return;
 	}
