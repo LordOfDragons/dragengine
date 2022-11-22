@@ -92,6 +92,18 @@ public:
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
 	virtual void ProcessEventLoop( bool sendToInputModule );
+	
+	/**
+	 * \brief Current user locale language (ISO 639 language code) in lower case.
+	 * \version 1.16
+	 */
+	virtual decString GetUserLocaleLanguage();
+	
+	/**
+	 * \brief Current user locale territory (ISO 3166 country code) lower case or empty string.
+	 * \version 1.16
+	 */
+	virtual decString GetUserLocaleTerritory();
 	/*@}*/
 	
 	

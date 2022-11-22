@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <locale.h>
 
 // required before shlobj.h or SHGetKnownFolderPath is not found
 #ifdef _WIN32_WINNT
@@ -68,6 +69,9 @@ pCurWindow( NULL )
 {
 	pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
 	pScreenHeight = GetSystemMetrics( SM_CYFULLSCREEN );
+	
+	// init locale
+	setlocale( LC_ALL, "" );
 	
 	#ifndef OS_W32_APPSTORE
 	const char *value;
@@ -212,6 +216,33 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			inputModule.EventLoop( message );
 		}
     }
+}
+
+decString deOSWindows::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSWindows::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+			}
+		}
+	}
+	return "";
 }
 
 

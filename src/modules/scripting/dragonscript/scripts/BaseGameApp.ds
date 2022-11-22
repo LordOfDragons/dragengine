@@ -292,7 +292,8 @@ class BaseGameApp extends Game
 	 * \brief Name of default language pack to activate.
 	 * \version 1.16
 	 * 
-	 * Default value is "en". If no such language pack is found internationalization is disabled.
+	 * Default value is the current user locale language at the start of the game.
+	 * If no such language pack is found internationalization is disabled.
 	 */
 	protected var String defaultLanguagePackIdentifier
 	
@@ -362,7 +363,7 @@ class BaseGameApp extends Game
 		pathDesktopGuiTheme = defaultPathGuiTheme
 		pathLanguagePacks = null
 		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
-		defaultLanguagePackIdentifier = "en"
+		defaultLanguagePackIdentifier = Engine.getUserLocaleLanguage()
 		pathConfiguration = "/configuration.ptree.xml"
 		pathSavedBindings = "/config/bindings.xml"
 		pathSavedSettings = "/config/settings.ptree.xml"
