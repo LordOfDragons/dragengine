@@ -534,7 +534,6 @@ void deOSWindows::pCleanUp(){
 }
 
 decString deOSWindows::pGetUserLanguage() const{
-	const LANGID lang = GetUserDefaultUILanguage();
 	ULONG numLanguages = 0;
 	ULONG langBufSize = 0;
 	
