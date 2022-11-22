@@ -13,7 +13,7 @@ jobs:
   build_windows:
     uses: ./.github/workflows/build_windows.yml
     with:
-      releaseVersion: development
+      releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
       debugBuild: true
@@ -22,6 +22,6 @@ jobs:
     needs: [build_windows]
     uses: ./.github/workflows/build_windows_installer.yml
     with:
-      releaseVersion: development
+      releaseVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
       artifactInstaller: installers-windows
