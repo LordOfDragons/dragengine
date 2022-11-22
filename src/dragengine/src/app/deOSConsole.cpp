@@ -124,6 +124,9 @@ decString deOSConsole::GetUserLocaleLanguage(){
 		const int deli = ls.Find( '_' );
 		if( deli != -1 ){
 			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
 		}
 	}
 	return "en";
@@ -138,7 +141,13 @@ decString deOSConsole::GetUserLocaleTerritory(){
 			const int deli2 = ls.Find( '.', deli + 1 );
 			if( deli2 != -1 ){
 				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
 			}
+			
+		}else{
+			return ls.GetLower();
 		}
 	}
 	return "";

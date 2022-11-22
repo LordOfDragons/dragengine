@@ -293,6 +293,7 @@ public:
 	
 private:
 	void pCleanUp();
+	decString pGetUserLanguage() const;
 };
 
 #endif
