@@ -8,6 +8,11 @@ on:
         required: true
         type: string
         default: '9999'
+      debugBuild:
+        description: 'Debug build'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   build_windows:
@@ -16,7 +21,7 @@ jobs:
       releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
-      debugBuild: true
+      debugBuild: ${{ github.event.inputs.debugBuild }}
   
   build_windows_installer:
     needs: [build_windows]
