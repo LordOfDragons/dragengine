@@ -241,7 +241,6 @@ decString deOSWindows::GetUserLocaleTerritory(){
 	}else{
 		return language.GetLower();
 	}
-	}
 	return "";
 }
 
