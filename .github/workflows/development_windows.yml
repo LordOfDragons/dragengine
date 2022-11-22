@@ -21,7 +21,7 @@ jobs:
       releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       artifactArchive: archives-windows
-      debugBuild: ${{ github.event.inputs.debugBuild }}
+      debugBuild: ${{ github.event.inputs.debugBuild == 'true' }}
   
   build_windows_installer:
     needs: [build_windows]
