@@ -1,7 +1,7 @@
 layout( triangles ) in;
 layout( triangle_strip, max_vertices=3 ) out;
 
-out flat int vLayer;
+flat out int vLayer;
 
 void main( void ){
 	int i;

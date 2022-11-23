@@ -265,9 +265,12 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			if pPlayback.getPlaying()
 				setRequiresThink(true)
 				
+				if pPlayback.getController() == null
+					pPlayback.apply() // apply once since no update happens later
+				end
+				
 			else
-				// apply animator at least once
-				pPlayback.apply()
+				pPlayback.apply() // apply once since no update happens later
 			end
 			
 			pECBehavior.createListeners(this)

@@ -50,13 +50,13 @@ int decNullFileWriter::GetPosition(){
 	return 0;
 }
 
-void decNullFileWriter::SetPosition( int position ){
+void decNullFileWriter::SetPosition( int ){
 }
 
-void decNullFileWriter::MovePosition( int offset ){
+void decNullFileWriter::MovePosition( int ){
 }
 
-void decNullFileWriter::SetPositionEnd( int position ){
+void decNullFileWriter::SetPositionEnd( int ){
 }
 
 
@@ -68,5 +68,9 @@ const char *decNullFileWriter::GetFilename(){
 	return pFilename;
 }
 
-void decNullFileWriter::Write( const void *buffer, int size ){
+void decNullFileWriter::Write( const void*, int ){
+}
+
+decBaseFileWriter::Ref decNullFileWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new decNullFileWriter( pFilename ) );
 }

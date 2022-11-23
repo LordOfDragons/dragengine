@@ -364,7 +364,10 @@ class EMPSystem extends Panel
 		/** \brief Select value from list. */
 		public func void selectFromList()
 			WindowDialog.chooseList(pEMPSystem.getWindow(), \
-				"Select Parameter Value", "Select value.", null, pModelValues, \
+				EngineTranslations.get().translate(\
+					"UI.Settings.ModuleParameters.SelectParameterValue").toUTF8(),\
+				EngineTranslations.get().translate(\
+					"UI.Settings.ModuleParameters.SelectValue").toUTF8(), null, pModelValues, \
 				DefaultListElementRenderer.new(String.new('X', 20)), null, null, \
 					WindowDialog.BlockResultListener.new(block int result
 						if result == -1
@@ -595,7 +598,6 @@ class EMPSystem extends Panel
 	 * \version 1.7
 	 */
 	public func void resetParameter(ModuleParameter parameter)
-		
 		var String text = parameter.getDescription()
 		
 		if parameter.getType() == ModuleParameterType.selection
@@ -720,7 +722,8 @@ class EMPSystem extends Panel
 	protected func Widget createResetButton(ParameterValueEditor2 editor)
 		var Button button = Button.new(" ", ResetParameter.new(editor))
 		button.setDesignerSelector("Button.EMPSystem.Reset")
-		button.setToolTip("Reset to default value")
+		button.setToolTip(EngineTranslations.get().translate(\
+			"UI.Settings.ModuleParameters.Tooltip.Reset").toUTF8())
 		return button
 	end
 end

@@ -614,6 +614,8 @@
 	    EditBindingsListRenderer name label with command name to configurate bindings for
 	- 'Label.EditBindingsEntry.Binding' {+'.Selected' for selected}
 	    EditBindingsListRenderer binding label
+	- 'TextArea.EditBindings.CommandInfo'
+	    TextArea in EditBindingsPanel showing command description
 	- 'WindowDialog.CaptureBinding'
 	    Dialog window for capturing binding
 	- 'Label.WindowDialog.CaptureBinding'

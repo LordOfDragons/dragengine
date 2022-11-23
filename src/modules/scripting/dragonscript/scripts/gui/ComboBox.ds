@@ -456,8 +456,6 @@ class ComboBox extends Container implements ListModelListener
 		end
 		pEditor.getWidget().setVisible(true)
 		pEditor.startEditing()
-		
-		pDropDown.moveToTop() // startEditing grabs the focus raising the window. we need an alwaysOnTop
 	end
 	
 	/**

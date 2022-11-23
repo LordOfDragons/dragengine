@@ -10,7 +10,7 @@
 	layout( triangle_strip, max_vertices=18 ) out;
 #endif
 
-out flat int vLayer;
+flat out int vLayer;
 
 void main( void ){
 	int face;

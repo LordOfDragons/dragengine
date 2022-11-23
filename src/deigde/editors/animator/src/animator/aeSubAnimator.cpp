@@ -301,6 +301,19 @@ void aeSubAnimator::EnableRule( int rule, bool enable ){
 
 
 
+void aeSubAnimator::SetComponent( deComponent *component ){
+	pEngAnimator->SetRig( NULL );
+	pEngAnimatorInstance->SetComponent( NULL );
+	
+	if( component ){
+		pEngAnimator->SetRig( component->GetRig() );
+		
+	}else{
+		pEngAnimator->SetRig( NULL );
+	}
+	pEngAnimatorInstance->SetComponent( component );
+}
+
 void aeSubAnimator::SetComponentAndAnimation( deComponent *component, deAnimation *animation ){
 	pEngAnimator->SetAnimation( NULL );
 	pEngAnimator->SetRig( NULL );

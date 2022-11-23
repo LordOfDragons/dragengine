@@ -30,9 +30,10 @@ pin Dragengine.XML
 
 
 /**
- * Loads a conversation script from a conversation.xml file. Supports caching conversations
- * to avoid loading the same conversation multiple times. The returned conversation can thus
- * be shared so do not change it.
+ * \brief Load conversation script from a conversation.xml file.
+ * 
+ * Supports caching conversations to avoid loading the same conversation multiple times.
+ * The returned conversation can thus be shared so do not change it.
  */
 class LoadConversation extends BaseXmlLoader
 	/** Dictionary of loaded conversations. */
@@ -41,40 +42,40 @@ class LoadConversation extends BaseXmlLoader
 	
 	
 	/** \brief Creates a new loader. */
-	public func new( Console console ) this( console, "LoadConversation" )
+	public func new(Console console) this(console, "LoadConversation")
 	end
 	
 	/** \brief Creates a new loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pConversations = Dictionary.new()
+	public func new(Console console, String name) super(console, name)
+		pConversations = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Load conversation from file. */
-	public func Conversation loadFromFile( String filename )
-		var Conversation conversation = this.pConversations.getAt( filename, null ) cast Conversation
+	public func Conversation loadFromFile(String filename)
+		var Conversation conversation = pConversations.getAt(filename, null) cast Conversation
 		if conversation != null
 			return conversation
 		end
 		
-		this.logLoadingFromFile( filename )
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
-		if not root.getTagName().equals( "conversation" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("conversation")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
-		conversation = Conversation.new( filename )
-		this.pReadConversation( root, conversation, File.new( filename ).getParent().getPath() )
-		this.pConversations.setAt( filename, conversation )
+		conversation = Conversation.new(filename)
+		pReadConversation(root, conversation, File.new(filename).getParent().getPath())
+		pConversations.setAt(filename, conversation)
 		
 		return conversation
 	end
@@ -82,327 +83,334 @@ class LoadConversation extends BaseXmlLoader
 	
 	
 	/** \brief Read conversation tag. */
-	protected func void pReadConversation( EasyXMLElement root, Conversation conversation, String basePath )
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "target" )
-				this.pReadTarget( element, conversation )
+	protected func void pReadConversation(EasyXMLElement root, Conversation conversation, String basePath)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("target")
+				pReadTarget(element, conversation)
 				
-			elif tagName.equals( "cameraShot" )
-				this.pReadCameraShot( element, conversation )
+			elif tagName.equals("cameraShot")
+				pReadCameraShot(element, conversation)
 				
-			elif tagName.equals( "pose" )
+			elif tagName.equals("pose")
 				// deprecated
 				
-			elif tagName.equals( "gesture" )
-				this.pReadGesture( element, conversation )
+			elif tagName.equals("gesture")
+				pReadGesture(element, conversation)
 				
-			elif tagName.equals( "facePoseControllerNames" )
+			elif tagName.equals("facePoseControllerNames")
 				// for editing only
 				
-			elif tagName.equals( "facePose" )
-				this.pReadFacePose( element, conversation )
+			elif tagName.equals("facePose")
+				pReadFacePose(element, conversation)
 				
-			elif tagName.equals( "lookAt" )
+			elif tagName.equals("lookAt")
 				// deprecated
 				
-			elif tagName.equals( "group" ) or tagName.equals( "file" ) // "file" DEPRECATED
-				this.pReadTopicGroup( element, conversation, basePath )
+			elif tagName.equals("group") or tagName.equals("file") // "file" DEPRECATED
+				pReadTopicGroup(element, conversation, basePath)
 				
-			elif tagName.equals( "import" )
+			elif tagName.equals("import")
 				var String filename = element.getFirstCData()
 				try
-					conversation.import( this.loadFromFile( File.absolutePath( filename, basePath ).getPath() ) )
+					conversation.import(loadFromFile(File.absolutePath(filename, basePath).getPath()))
 					
 				catch Exception e
-					this.logLoadFileFailed( element, filename )
+					logLoadFileFailed(element, filename)
 					throw
 				end
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Read target tag. */
-	protected func void pReadTarget( EasyXMLElement root, Conversation conversation )
-		var ConversationTarget target = ConversationTarget.new( \
-			StringID.new( root.getAttributeNamed( "name" ) ) )
+	protected func void pReadTarget(EasyXMLElement root, Conversation conversation)
+		var ConversationTarget target = ConversationTarget.new(\
+			StringID.new(root.getAttributeNamed("name")))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				target.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				target.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "coordSystem" )
-				target.setCoordSystemID( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("coordSystem")
+				target.setCoordSystemID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "bone" )
-				target.setBone( element.getFirstCData() )
+			elif tagName.equals("bone")
+				target.setBone(element.getFirstCData())
 				
-			elif tagName.equals( "position" )
-				target.setPosition( this.readVector( element ) )
+			elif tagName.equals("position")
+				target.setPosition(readVector(element))
 				
-			elif tagName.equals( "orientation" )
-				target.setOrientation( Matrix.newRotation( this.readVector( element ) ).toQuaternion() )
+			elif tagName.equals("orientation")
+				target.setOrientation(Matrix.newRotation(readVector(element)).toQuaternion())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
-		conversation.addTarget( target )
+		conversation.addTarget(target)
 	end
 	
 	/** \brief Read camera shot tag. */
-	protected func void pReadCameraShot( EasyXMLElement root, Conversation conversation )
-		var ConversationCameraShot cameraShot = ConversationCameraShot.new( \
-			StringID.new( root.getAttributeNamed( "name" ) ) )
+	protected func void pReadCameraShot(EasyXMLElement root, Conversation conversation)
+		var ConversationCameraShot cameraShot = ConversationCameraShot.new(\
+			StringID.new(root.getAttributeNamed("name")))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actorCount" )
-				cameraShot.setActorCount( element.getFirstCDataInt() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actorCount")
+				cameraShot.setActorCount(element.getFirstCDataInt())
 				
-			elif tagName.equals( "cameraTarget" )
+			elif tagName.equals("cameraTarget")
 				// only for editing purpose
 				
-			elif tagName.equals( "offsetCameraFrom" )
-				cameraShot.setOffsetCameraFrom( this.readVector( element ) )
+			elif tagName.equals("offsetCameraFrom")
+				cameraShot.setOffsetCameraFrom(readVector(element))
 				
-			elif tagName.equals( "offsetCameraTo" )
-				cameraShot.setOffsetCameraTo( this.readVector( element ) )
+			elif tagName.equals("offsetCameraTo")
+				cameraShot.setOffsetCameraTo(readVector(element))
 				
-			elif tagName.equals( "cameraOrbitFrom" )
-				cameraShot.setCameraOrbitFrom( this.readVector( element ) )
+			elif tagName.equals("cameraOrbitFrom")
+				cameraShot.setCameraOrbitFrom(readVector(element))
 				
-			elif tagName.equals( "cameraOrbitTo" )
-				cameraShot.setCameraOrbitTo( this.readVector( element ) )
+			elif tagName.equals("cameraOrbitTo")
+				cameraShot.setCameraOrbitTo(readVector(element))
 				
-			elif tagName.equals( "cameraDistanceFrom" )
-				cameraShot.setCameraDistanceFrom( element.getFirstCDataFloat() )
+			elif tagName.equals("cameraDistanceFrom")
+				cameraShot.setCameraDistanceFrom(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "cameraDistanceTo" )
-				cameraShot.setCameraDistanceTo( element.getFirstCDataFloat() )
+			elif tagName.equals("cameraDistanceTo")
+				cameraShot.setCameraDistanceTo(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "lookAtTarget" )
+			elif tagName.equals("lookAtTarget")
 				// only for editing purpose
 				
-			elif tagName.equals( "offsetLookAtFrom" )
-				cameraShot.setOffsetLookAtFrom( this.readVector( element ) )
+			elif tagName.equals("offsetLookAtFrom")
+				cameraShot.setOffsetLookAtFrom(readVector(element))
 				
-			elif tagName.equals( "offsetLookAtTo" )
-				cameraShot.setOffsetLookAtTo( this.readVector( element ) )
+			elif tagName.equals("offsetLookAtTo")
+				cameraShot.setOffsetLookAtTo(readVector(element))
 				
-			elif tagName.equals( "positionFrom" )
-				cameraShot.setPositionFrom( this.readVector( element ) )
+			elif tagName.equals("positionFrom")
+				cameraShot.setPositionFrom(readVector(element))
 				
-			elif tagName.equals( "positionTo" )
-				cameraShot.setPositionTo( this.readVector( element ) )
+			elif tagName.equals("positionTo")
+				cameraShot.setPositionTo(readVector(element))
 				
-			elif tagName.equals( "rotationFrom" )
-				cameraShot.setRotationFrom( this.readVector( element ) )
+			elif tagName.equals("rotationFrom")
+				cameraShot.setRotationFrom(readVector(element))
 				
-			elif tagName.equals( "rotationTo" )
-				cameraShot.setRotationTo( this.readVector( element ) )
+			elif tagName.equals("rotationTo")
+				cameraShot.setRotationTo(readVector(element))
 				
-			elif tagName.equals( "tiltFrom" )
-				cameraShot.setTiltFrom( element.getFirstCDataFloat() )
+			elif tagName.equals("tiltFrom")
+				cameraShot.setTiltFrom(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "tiltTo" )
-				cameraShot.setTiltTo( element.getFirstCDataFloat() )
+			elif tagName.equals("tiltTo")
+				cameraShot.setTiltTo(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "fovFrom" )
-				cameraShot.setFovFrom( element.getFirstCDataFloat() )
+			elif tagName.equals("fovFrom")
+				cameraShot.setFovFrom(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "fovTo" )
-				cameraShot.setFovTo( element.getFirstCDataFloat() )
+			elif tagName.equals("fovTo")
+				cameraShot.setFovTo(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "alignTargets" )
-				cameraShot.setAlignTargets( element.getFirstCDataBool() )
+			elif tagName.equals("alignTargets")
+				cameraShot.setAlignTargets(element.getFirstCDataBool())
 				
-			elif tagName.equals( "lockUpAxis" )
-				cameraShot.setLockUpAxis( element.getFirstCDataBool() )
+			elif tagName.equals("lockUpAxis")
+				cameraShot.setLockUpAxis(element.getFirstCDataBool())
 				
-			elif tagName.equals( "relativeToLookAt" )
-				cameraShot.setRelativeToLookAt( element.getFirstCDataBool() )
+			elif tagName.equals("relativeToLookAt")
+				cameraShot.setRelativeToLookAt(element.getFirstCDataBool())
 				
-			elif tagName.equals( "lockCameraTarget" )
-				cameraShot.setLockCameraTarget( element.getFirstCDataBool() )
+			elif tagName.equals("lockCameraTarget")
+				cameraShot.setLockCameraTarget(element.getFirstCDataBool())
 				
-			elif tagName.equals( "lockLookAtTarget" )
-				cameraShot.setLockLookAtTarget( element.getFirstCDataBool() )
+			elif tagName.equals("lockLookAtTarget")
+				cameraShot.setLockLookAtTarget(element.getFirstCDataBool())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
-		conversation.addCameraShot( cameraShot )
+		conversation.addCameraShot(cameraShot)
 	end
 	
 	/** \brief Read gesture tag. */
-	protected func void pReadGesture( EasyXMLElement root, Conversation conversation )
-		var ConversationGesture gesture = ConversationGesture.new( \
-			StringID.new( root.getAttributeNamed( "name" ) ) )
+	protected func void pReadGesture(EasyXMLElement root, Conversation conversation)
+		var ConversationGesture gesture = ConversationGesture.new(\
+			StringID.new(root.getAttributeNamed("name")))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "animator" )
-				gesture.setAnimator( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("animator")
+				gesture.setAnimator(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "hold" )
-				gesture.setHold( element.getFirstCDataBool() )
+			elif tagName.equals("hold")
+				gesture.setHold(element.getFirstCDataBool())
 				
 			elif tagName.equals("duration")
 				gesture.setDuration(element.getFirstCDataFloat())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
-		conversation.addGesture( gesture )
+		conversation.addGesture(gesture)
 	end
 	
 	/** \brief Read face pose tag. */
-	protected func void pReadFacePose( EasyXMLElement root, Conversation conversation )
-		var ConversationFacePose facePose = ConversationFacePose.new( \
-			StringID.new( root.getAttributeNamed( "name" ) ) )
+	protected func void pReadFacePose(EasyXMLElement root, Conversation conversation)
+		var ConversationFacePose facePose = ConversationFacePose.new(\
+			StringID.new(root.getAttributeNamed("name")))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "controller" )
-				facePose.addControllerValue( ConversationControllerValue.new( \
-					element.getAttributeIntNamed( "index" ), \
-					element.getAttributeFloatNamed( "value" ) ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("controller")
+				if element.hasAttributeNamed("index") // deprecated
+					facePose.addControllerValue(ConversationControllerValue.new(\
+						element.getAttributeIntNamed("index"), \
+						element.getAttributeFloatNamed("value")))
+					
+				else
+					facePose.addControllerValue(ConversationControllerValue.new(\
+						element.getAttributeNamed("name"), \
+						element.getAttributeFloatNamed("value")))
+				end
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
-		conversation.addFacePose( facePose )
+		conversation.addFacePose(facePose)
 	end
 	
 	/** \brief Read file tag. */
-	protected func void pReadTopicGroup( EasyXMLElement root, Conversation conversation, String basePath )
-		var StringID id = StringID.new( root.getAttributeNamed( "id" ) )
+	protected func void pReadTopicGroup(EasyXMLElement root, Conversation conversation, String basePath)
+		var StringID id = StringID.new(root.getAttributeNamed("id"))
 		
-		var ConversationTopicGroup group = conversation.getTopicGroupWithID( id )
+		var ConversationTopicGroup group = conversation.getTopicGroupWithID(id)
 		if group == null
-			group = ConversationTopicGroup.new( id )
-			conversation.addTopicGroup( group )
+			group = ConversationTopicGroup.new(id)
+			conversation.addTopicGroup(group)
 		end
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "topic" )
-				this.pReadTopic( element, group, basePath )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("topic")
+				pReadTopic(element, group, basePath)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Read topic tag. */
-	protected func void pReadTopic( EasyXMLElement root, ConversationTopicGroup group, String basePath )
-		var ConversationTopic topic = ConversationTopic.new( StringID.new( root.getAttributeNamed( "id" ) ) )
+	protected func void pReadTopic(EasyXMLElement root, ConversationTopicGroup group, String basePath)
+		var ConversationTopic topic = ConversationTopic.new(StringID.new(root.getAttributeNamed("id")))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actions" )
-				this.pReadActions( element, basePath ).forEach( block ConversationAction each
-					topic.addAction( each )
-				end )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actions")
+				pReadActions(element, basePath).forEach(block ConversationAction each
+					topic.addAction(each)
+				end)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
-		group.addTopic( topic )
+		group.addTopic(topic)
 	end
 	
 	/** \brief Read actions. */
-	protected func Array pReadActions( EasyXMLElement root, String basePath )
+	protected func Array pReadActions(EasyXMLElement root, String basePath)
 		var Array actions = Array.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "cameraShot" )
-				actions.add( this.pReadActionCameraShot( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("cameraShot")
+				actions.add(pReadActionCameraShot(element))
 				
-			elif tagName.equals( "music" )
-				actions.add( this.pReadActionMusic( element ) )
+			elif tagName.equals("music")
+				actions.add(pReadActionMusic(element))
 				
-			elif tagName.equals( "actorSpeak" )
-				actions.add( this.pReadActionActorSpeak( element, basePath ) )
+			elif tagName.equals("actorSpeak")
+				actions.add(pReadActionActorSpeak(element, basePath))
 				
-			elif tagName.equals( "ifElse" )
-				actions.add( this.pReadActionIfElse( element, basePath ) )
+			elif tagName.equals("ifElse")
+				actions.add(pReadActionIfElse(element, basePath))
 				
-			elif tagName.equals( "playerChoice" )
-				actions.add( this.pReadActionPlayerChoice( element, basePath ) )
+			elif tagName.equals("playerChoice")
+				actions.add(pReadActionPlayerChoice(element, basePath))
 				
-			elif tagName.equals( "stopConversation" )
-				actions.add( this.pReadActionStopConversation( element ) )
+			elif tagName.equals("stopConversation")
+				actions.add(pReadActionStopConversation(element))
 				
-			elif tagName.equals( "stopTopic" )
-				actions.add( this.pReadActionStopTopic( element ) )
+			elif tagName.equals("stopTopic")
+				actions.add(pReadActionStopTopic(element))
 				
-			elif tagName.equals( "snippet" )
-				actions.add( this.pReadActionSnippet( element ) )
+			elif tagName.equals("snippet")
+				actions.add(pReadActionSnippet(element))
 				
-			elif tagName.equals( "setVariable" )
-				actions.add( this.pReadActionSetVariable( element ) )
+			elif tagName.equals("setVariable")
+				actions.add(pReadActionSetVariable(element))
 				
-			elif tagName.equals( "setActorParameter" )
-				actions.add( this.pReadActionSetActorParameter( element ) )
+			elif tagName.equals("setActorParameter")
+				actions.add(pReadActionSetActorParameter(element))
 				
-			elif tagName.equals( "actorCommand" )
-				actions.add( this.pReadActionActorCommand( element ) )
+			elif tagName.equals("actorCommand")
+				actions.add(pReadActionActorCommand(element))
 				
-			elif tagName.equals( "gameCommand" )
-				actions.add( this.pReadActionGameCommand( element ) )
+			elif tagName.equals("gameCommand")
+				actions.add(pReadActionGameCommand(element))
 				
-			elif tagName.equals( "wait" )
-				actions.add( this.pReadActionWait( element, basePath ) )
+			elif tagName.equals("wait")
+				actions.add(pReadActionWait(element, basePath))
 				
-			elif tagName.equals( "trigger" )
-				actions.add( this.pReadActionTrigger( element ) )
+			elif tagName.equals("trigger")
+				actions.add(pReadActionTrigger(element))
 				
-			elif tagName.equals( "actorAdd" )
-				actions.add( this.pReadActionActorAdd( element ) )
+			elif tagName.equals("actorAdd")
+				actions.add(pReadActionActorAdd(element))
 				
-			elif tagName.equals( "actorRemove" )
-				actions.add( this.pReadActionActorRemove( element ) )
+			elif tagName.equals("actorRemove")
+				actions.add(pReadActionActorRemove(element))
 				
-			elif tagName.equals( "coordSystemAdd" )
-				actions.add( this.pReadActionCoordSystemAdd( element ) )
+			elif tagName.equals("coordSystemAdd")
+				actions.add(pReadActionCoordSystemAdd(element))
 				
-			elif tagName.equals( "coordSystemRemove" )
-				actions.add( this.pReadActionCoordSystemRemove( element ) )
+			elif tagName.equals("coordSystemRemove")
+				actions.add(pReadActionCoordSystemRemove(element))
 				
-			elif tagName.equals( "comment" )
+			elif tagName.equals("comment")
 				// comments are ignored
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return actions
 	end
 	
 	/** \brief Read common action. */
-	protected func bool pReadActionCommon( EasyXMLElement root, ConversationAction action )
+	protected func bool pReadActionCommon(EasyXMLElement root, ConversationAction action)
 		var String tagName = root.getTagName()
 		
-		if tagName.equals( "waitForActor" )
-			action.setWaitForActor( root.getFirstCDataBool() )
+		if tagName.equals("waitForActor")
+			action.setWaitForActor(root.getFirstCDataBool())
 			return true
 			
-		elif tagName.equals( "waitForActorID" )
-			action.setWaitForActorID( root.getFirstCData() )
+		elif tagName.equals("waitForActorID")
+			action.setWaitForActorID(root.getFirstCData())
 			return true
 			
-		elif tagName.equals( "delay" )
-			action.setDelay( root.getFirstCDataFloat() )
+		elif tagName.equals("delay")
+			action.setDelay(root.getFirstCDataFloat())
 			return true
 		end
 		
@@ -410,835 +418,838 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read camera shot action. */
-	protected func ConversationAction pReadActionCameraShot( EasyXMLElement root )
+	protected func ConversationAction pReadActionCameraShot(EasyXMLElement root)
 		var CActionCameraShot action = CActionCameraShot.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "name" )
-				action.setName( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("name")
+				action.setName(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "duration" )
-				action.setDuration( element.getFirstCDataFloat() )
+			elif tagName.equals("duration")
+				action.setDuration(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "cameraTarget" )
-				action.setCameraTarget( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("cameraTarget")
+				action.setCameraTarget(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "lookAtTarget" )
-				action.setLookAtTarget( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("lookAtTarget")
+				action.setLookAtTarget(StringID.new(element.getFirstCData()))
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read music action. */
-	protected func ConversationAction pReadActionMusic( EasyXMLElement root )
+	protected func ConversationAction pReadActionMusic(EasyXMLElement root)
 		var CActionMusic action = CActionMusic.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "name" )
-				action.setName( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("name")
+				action.setName(element.getFirstCData())
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read actor speak action. */
-	protected func ConversationAction pReadActionActorSpeak( EasyXMLElement root, String basePath )
+	protected func ConversationAction pReadActionActorSpeak(EasyXMLElement root, String basePath)
 		var CActionActorSpeak action = CActionActorSpeak.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
 				var String actorID = element.getFirstCData()
 				
 				if not actorID.empty()
-					action.setActorID( StringID.new( actorID ) )
+					action.setActorID(StringID.new(actorID))
 				end
 				
-			elif tagName.equals( "textBoxText" )
-				action.setTextBoxText( UnicodeString.newFromUTF8( this.readMultilineString( element ) ) )
+			elif tagName.equals("textBoxText")
+				action.setTextBoxText(UnicodeString.newFromUTF8(readMultilineString(element)))
 				
-			elif tagName.equals( "textBoxTextStyle" )
-				action.setTextBoxTextStyle( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("textBoxTextTranslate")
+				action.setTextBoxTextTranslate(element.getFirstCData())
 				
-			elif tagName.equals( "pathSound" )
-				action.setPathSound( File.absolutePath( element.getFirstCData(), basePath ).getPath() )
+			elif tagName.equals("textBoxTextStyle")
+				action.setTextBoxTextStyle(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "words" )
-				this.pReadStrips( element ).forEach( block ConversationStrip each
-					action.addWord( each )
-				end )
+			elif tagName.equals("pathSound")
+				action.setPathSound(File.absolutePath(element.getFirstCData(), basePath).getPath())
 				
-			elif tagName.equals( "facePoses" )
-				this.pReadStrips( element ).forEach( block ConversationStrip each
-					action.addFacePose( each )
-				end )
+			elif tagName.equals("words")
+				pReadStrips(element).forEach(block ConversationStrip each
+					action.addWord(each)
+				end)
 				
-			elif tagName.equals( "gestures" )
-				this.pReadStrips( element ).forEach( block ConversationStrip each
-					action.addGesture( each )
-				end )
+			elif tagName.equals("facePoses")
+				pReadStrips(element).forEach(block ConversationStrip each
+					action.addFacePose(each)
+				end)
 				
-			elif tagName.equals( "bodyLookAts" )
-				this.pReadStrips( element ).forEach( block ConversationStrip each
-					action.addBodyLookAt( each )
-				end )
+			elif tagName.equals("gestures")
+				pReadStrips(element).forEach(block ConversationStrip each
+					action.addGesture(each)
+				end)
 				
-			elif tagName.equals( "headLookAts" )
-				this.pReadStrips( element ).forEach( block ConversationStrip each
-					action.addHeadLookAt( each )
-				end )
+			elif tagName.equals("bodyLookAts")
+				pReadStrips(element).forEach(block ConversationStrip each
+					action.addBodyLookAt(each)
+				end)
 				
-			elif tagName.equals( "eyesLookAts" )
-				this.pReadStrips( element ).forEach( block ConversationStrip each
-					action.addEyesLookAt( each )
-				end )
+			elif tagName.equals("headLookAts")
+				pReadStrips(element).forEach(block ConversationStrip each
+					action.addHeadLookAt(each)
+				end)
 				
-			elif tagName.equals( "movement" )
+			elif tagName.equals("eyesLookAts")
+				pReadStrips(element).forEach(block ConversationStrip each
+					action.addEyesLookAt(each)
+				end)
+				
+			elif tagName.equals("movement")
 				// not yet used
 				
-			elif tagName.equals( "useSpeechAnimation" )
-				action.setUseSpeechAnimation( element.getFirstCDataBool() )
+			elif tagName.equals("useSpeechAnimation")
+				action.setUseSpeechAnimation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "minSpeechTime" )
-				action.setMinSpeechTime( element.getFirstCDataFloat() )
+			elif tagName.equals("minSpeechTime")
+				action.setMinSpeechTime(element.getFirstCDataFloat())
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read if-else action. */
-	protected func ConversationAction pReadActionIfElse( EasyXMLElement root, String basePath )
+	protected func ConversationAction pReadActionIfElse(EasyXMLElement root, String basePath)
 		var CActionIfElse action = CActionIfElse.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "case" )
-				action.addCase( this.pReadActionIfElseCase( element, basePath ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("case")
+				action.addCase(pReadActionIfElseCase(element, basePath))
 				
-			elif tagName.equals( "else" )
-				this.pReadActions( element, basePath ).forEach( block ConversationAction each
-					action.addElseAction( each )
-				end )
+			elif tagName.equals("else")
+				pReadActions(element, basePath).forEach(block ConversationAction each
+					action.addElseAction(each)
+				end)
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read if-else if-case action. */
-	protected func CActionIfElseCase pReadActionIfElseCase( EasyXMLElement root, String basePath )
+	protected func CActionIfElseCase pReadActionIfElseCase(EasyXMLElement root, String basePath)
 		var CActionIfElseCase ifcase = CActionIfElseCase.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "condition" )
-				ifcase.setCondition( this.pReadSingleCondition( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("condition")
+				ifcase.setCondition(pReadSingleCondition(element))
 				
-			elif tagName.equals( "actions" )
-				this.pReadActions( element, basePath ).forEach( block ConversationAction each
-					ifcase.addAction( each )
-				end )
+			elif tagName.equals("actions")
+				pReadActions(element, basePath).forEach(block ConversationAction each
+					ifcase.addAction(each)
+				end)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return ifcase
 	end
 	
 	/** \brief Read player choice action. */
-	protected func ConversationAction pReadActionPlayerChoice( EasyXMLElement root, String basePath )
+	protected func ConversationAction pReadActionPlayerChoice(EasyXMLElement root, String basePath)
 		var CActionPlayerChoice action = CActionPlayerChoice.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "variable" )
-				action.setVariable( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("variable")
+				action.setVariable(element.getFirstCData())
 				
-			elif tagName.equals( "option" )
-				action.addOption( this.pReadActionPlayerChoiceOption( element, basePath ) )
+			elif tagName.equals("option")
+				action.addOption(pReadActionPlayerChoiceOption(element, basePath))
 				
-			elif tagName.equals( "actions" )
-				this.pReadActions( element, basePath ).forEach( block ConversationAction each
-					action.addAction( each )
-				end )
+			elif tagName.equals("actions")
+				pReadActions(element, basePath).forEach(block ConversationAction each
+					action.addAction(each)
+				end)
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read player choice option action. */
-	protected func CActionPlayerChoiceOption pReadActionPlayerChoiceOption( EasyXMLElement root, String basePath )
+	protected func CActionPlayerChoiceOption pReadActionPlayerChoiceOption(EasyXMLElement root, String basePath)
 		var CActionPlayerChoiceOption option = CActionPlayerChoiceOption.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "text" )
-				option.setText( UnicodeString.newFromUTF8( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("text")
+				option.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
 				
-			elif tagName.equals( "condition" )
-				option.setCondition( this.pReadSingleCondition( element ) )
+			elif tagName.equals("condition")
+				option.setCondition(pReadSingleCondition(element))
 				
-			elif tagName.equals( "actions" )
-				this.pReadActions( element, basePath ).forEach( block ConversationAction each
-					option.addAction( each )
-				end )
+			elif tagName.equals("actions")
+				pReadActions(element, basePath).forEach(block ConversationAction each
+					option.addAction(each)
+				end)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return option
 	end
 	
 	/** \brief Read stop conversation action. */
-	protected func ConversationAction pReadActionStopConversation( EasyXMLElement root )
+	protected func ConversationAction pReadActionStopConversation(EasyXMLElement root)
 		var CActionStopConversation action = CActionStopConversation.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read stop topic action. */
-	protected func ConversationAction pReadActionStopTopic( EasyXMLElement root )
+	protected func ConversationAction pReadActionStopTopic(EasyXMLElement root)
 		var CActionStopTopic action = CActionStopTopic.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read snippet action. */
-	protected func ConversationAction pReadActionSnippet( EasyXMLElement root )
+	protected func ConversationAction pReadActionSnippet(EasyXMLElement root)
 		var CActionSnippet action = CActionSnippet.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "group" ) or tagName.equals( "file" ) // "file" DEPRECATED
-				action.setGroupID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("group") or tagName.equals("file") // "file" DEPRECATED
+				action.setGroupID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "topic" )
-				action.setTopicID( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("topic")
+				action.setTopicID(StringID.new(element.getFirstCData()))
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read set variable action. */
-	protected func ConversationAction pReadActionSetVariable( EasyXMLElement root )
+	protected func ConversationAction pReadActionSetVariable(EasyXMLElement root)
 		var CActionSetVariable action = CActionSetVariable.new()
 		var String identifier
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "name" )
-				action.setName( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("name")
+				action.setName(element.getFirstCData())
 				
-			elif tagName.equals( "operator" )
+			elif tagName.equals("operator")
 				identifier = element.getFirstCData()
 				
-				if identifier.equals( "set" )
-					action.setOperator( CActionSetVariable.Operator.set )
+				if identifier.equals("set")
+					action.setOperator(CActionSetVariable.Operator.set)
 					
-				elif identifier.equals( "increment" )
-					action.setOperator( CActionSetVariable.Operator.increment )
+				elif identifier.equals("increment")
+					action.setOperator(CActionSetVariable.Operator.increment)
 					
-				elif identifier.equals( "decrement" )
-					action.setOperator( CActionSetVariable.Operator.decrement )
+				elif identifier.equals("decrement")
+					action.setOperator(CActionSetVariable.Operator.decrement)
 					
-				elif identifier.equals( "random" )
-					action.setOperator( CActionSetVariable.Operator.random )
+				elif identifier.equals("random")
+					action.setOperator(CActionSetVariable.Operator.random)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif tagName.equals( "value" )
-				action.setValue( element.getFirstCDataInt() )
+			elif tagName.equals("value")
+				action.setValue(element.getFirstCDataInt())
 				
-			elif tagName.equals( "valueVariable" )
+			elif tagName.equals("valueVariable")
 				var String valueVariable = element.getFirstCData()
 				if not valueVariable.empty()
-					action.setValueVariable( valueVariable )
+					action.setValueVariable(valueVariable)
 				end
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read set actor parameter action. */
-	protected func ConversationAction pReadActionSetActorParameter( EasyXMLElement root )
+	protected func ConversationAction pReadActionSetActorParameter(EasyXMLElement root)
 		var CActionSetActorParameter action = CActionSetActorParameter.new()
 		var String identifier
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				action.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				action.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "name" )
-				action.setName( element.getFirstCData() )
+			elif tagName.equals("name")
+				action.setName(element.getFirstCData())
 				
-			elif tagName.equals( "operator" )
+			elif tagName.equals("operator")
 				identifier = element.getFirstCData()
 				
-				if identifier.equals( "set" )
-					action.setOperator( CActionSetActorParameter.Operator.set )
+				if identifier.equals("set")
+					action.setOperator(CActionSetActorParameter.Operator.set)
 					
-				elif identifier.equals( "increment" )
-					action.setOperator( CActionSetActorParameter.Operator.increment )
+				elif identifier.equals("increment")
+					action.setOperator(CActionSetActorParameter.Operator.increment)
 					
-				elif identifier.equals( "decrement" )
-					action.setOperator( CActionSetActorParameter.Operator.decrement )
+				elif identifier.equals("decrement")
+					action.setOperator(CActionSetActorParameter.Operator.decrement)
 					
-				elif identifier.equals( "random" )
-					action.setOperator( CActionSetActorParameter.Operator.random )
+				elif identifier.equals("random")
+					action.setOperator(CActionSetActorParameter.Operator.random)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif tagName.equals( "value" )
-				action.setValue( element.getFirstCDataInt() )
+			elif tagName.equals("value")
+				action.setValue(element.getFirstCDataInt())
 				
-			elif tagName.equals( "valueVariable" )
+			elif tagName.equals("valueVariable")
 				var String valueVariable = element.getFirstCData()
 				if not valueVariable.empty()
-					action.setValueVariable( valueVariable )
+					action.setValueVariable(valueVariable)
 				end
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read send actor command action. */
-	protected func ConversationAction pReadActionActorCommand( EasyXMLElement root )
+	protected func ConversationAction pReadActionActorCommand(EasyXMLElement root)
 		var CActionActorCommand action = CActionActorCommand.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				action.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				action.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "command" )
-				action.setCommand( element.getFirstCData() )
+			elif tagName.equals("command")
+				action.setCommand(element.getFirstCData())
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read send ganme command action. */
-	protected func ConversationAction pReadActionGameCommand( EasyXMLElement root )
+	protected func ConversationAction pReadActionGameCommand(EasyXMLElement root)
 		var CActionGameCommand action = CActionGameCommand.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "command" )
-				action.setCommand( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("command")
+				action.setCommand(element.getFirstCData())
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read wait action. */
-	protected func ConversationAction pReadActionWait( EasyXMLElement root, String basePath )
+	protected func ConversationAction pReadActionWait(EasyXMLElement root, String basePath)
 		var CActionWait action = CActionWait.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "condition" )
-				action.setCondition( this.pReadSingleCondition( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("condition")
+				action.setCondition(pReadSingleCondition(element))
 				
-			elif tagName.equals( "interval" )
-				action.setInterval( element.getFirstCDataFloat() )
+			elif tagName.equals("interval")
+				action.setInterval(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "actions" )
-				this.pReadActions( element, basePath ).forEach( block ConversationAction each
-					action.addAction( each )
-				end )
+			elif tagName.equals("actions")
+				pReadActions(element, basePath).forEach(block ConversationAction each
+					action.addAction(each)
+				end)
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read set variable action. */
-	protected func ConversationAction pReadActionTrigger( EasyXMLElement root )
+	protected func ConversationAction pReadActionTrigger(EasyXMLElement root)
 		var CActionTrigger action = CActionTrigger.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "name" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("name")
 				var String name = element.getFirstCData()
 				if not name.empty()
-					action.setName( StringID.new( name ) )
+					action.setName(StringID.new(name))
 				end
 				
-			elif tagName.equals( "action" )
+			elif tagName.equals("action")
 				var String identifier = element.getFirstCData()
 				
-				if identifier.equals( "fire" )
-					action.setAction( CActionTrigger.Action.fire )
+				if identifier.equals("fire")
+					action.setAction(CActionTrigger.Action.fire)
 					
-				elif identifier.equals( "reset" )
-					action.setAction( CActionTrigger.Action.reset )
+				elif identifier.equals("reset")
+					action.setAction(CActionTrigger.Action.reset)
 					
-				elif identifier.equals( "pulse" )
-					action.setAction( CActionTrigger.Action.pulse )
+				elif identifier.equals("pulse")
+					action.setAction(CActionTrigger.Action.pulse)
 					
-				elif identifier.equals( "fullReset" )
-					action.setAction( CActionTrigger.Action.fullReset )
+				elif identifier.equals("fullReset")
+					action.setAction(CActionTrigger.Action.fullReset)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read actor add action. */
-	protected func ConversationAction pReadActionActorAdd( EasyXMLElement root )
+	protected func ConversationAction pReadActionActorAdd(EasyXMLElement root)
 		var CActionActorAdd action = CActionActorAdd.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				action.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				action.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "aliasID" )
-				action.setAliasID( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("aliasID")
+				action.setAliasID(StringID.new(element.getFirstCData()))
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read actor remove action. */
-	protected func ConversationAction pReadActionActorRemove( EasyXMLElement root )
+	protected func ConversationAction pReadActionActorRemove(EasyXMLElement root)
 		var CActionActorRemove action = CActionActorRemove.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				action.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				action.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read coordinate system add action. */
-	protected func ConversationAction pReadActionCoordSystemAdd( EasyXMLElement root )
+	protected func ConversationAction pReadActionCoordSystemAdd(EasyXMLElement root)
 		var CActionCoordSystemAdd action = CActionCoordSystemAdd.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "coordSystem" )
-				action.setCoordSystemID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("coordSystem")
+				action.setCoordSystemID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "aliasID" )
-				action.setAliasID( StringID.new( element.getFirstCData() ) )
+			elif tagName.equals("aliasID")
+				action.setAliasID(StringID.new(element.getFirstCData()))
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read coordinate system remove action. */
-	protected func ConversationAction pReadActionCoordSystemRemove( EasyXMLElement root )
+	protected func ConversationAction pReadActionCoordSystemRemove(EasyXMLElement root)
 		var CActionCoordSystemRemove action = CActionCoordSystemRemove.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "coordSystem" )
-				action.setCoordSystemID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("coordSystem")
+				action.setCoordSystemID(StringID.new(element.getFirstCData()))
 				
-			elif not this.pReadActionCommon( element, action )
-				this.logUnknownTag( element )
+			elif not pReadActionCommon(element, action)
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read conditions. */
-	protected func Array pReadConditions( EasyXMLElement root )
+	protected func Array pReadConditions(EasyXMLElement root)
 		var Array conditions = Array.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "logic" )
-				conditions.add( this.pReadConditionLogic( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("logic")
+				conditions.add(pReadConditionLogic(element))
 				
-			elif tagName.equals( "hasActor" )
-				conditions.add( this.pReadConditionHasActor( element ) )
+			elif tagName.equals("hasActor")
+				conditions.add(pReadConditionHasActor(element))
 				
-			elif tagName.equals( "actorInConversation" )
-				conditions.add( this.pReadConditionActorInConversation( element ) )
+			elif tagName.equals("actorInConversation")
+				conditions.add(pReadConditionActorInConversation(element))
 				
-			elif tagName.equals( "variable" )
-				conditions.add( this.pReadConditionVariable( element ) )
+			elif tagName.equals("variable")
+				conditions.add(pReadConditionVariable(element))
 				
-			elif tagName.equals( "actorParameter" )
-				conditions.add( this.pReadConditionActorParameter( element ) )
+			elif tagName.equals("actorParameter")
+				conditions.add(pReadConditionActorParameter(element))
 				
-			elif tagName.equals( "actorCommand" )
-				conditions.add( this.pReadConditionActorCommand( element ) )
+			elif tagName.equals("actorCommand")
+				conditions.add(pReadConditionActorCommand(element))
 				
-			elif tagName.equals( "gameCommand" )
-				conditions.add( this.pReadConditionGameCommand( element ) )
+			elif tagName.equals("gameCommand")
+				conditions.add(pReadConditionGameCommand(element))
 				
-			elif tagName.equals( "trigger" )
-				conditions.add( this.pReadConditionTrigger( element ) )
+			elif tagName.equals("trigger")
+				conditions.add(pReadConditionTrigger(element))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return conditions
 	end
 	
 	/** \brief Read at most one conditions. */
-	protected func ConversationCondition pReadSingleCondition( EasyXMLElement root )
-		var Array conditions = this.pReadConditions( root )
+	protected func ConversationCondition pReadSingleCondition(EasyXMLElement root)
+		var Array conditions = pReadConditions(root)
 		
 		if conditions.getCount() == 1
-			return conditions.getAt( 0 ) cast ConversationCondition
+			return conditions.getAt(0) cast ConversationCondition
 			
 		else
-			this.printOnConsole( root, "Exactly one condition expected but not found." )
+			printOnConsole(root, "Exactly one condition expected but not found.")
 			throw EInvalidParam.new()
 		end
 	end
 	
 	/** \brief Read logic condition. */
-	protected func ConversationCondition pReadConditionLogic( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionLogic(EasyXMLElement root)
 		var CConditionLogic condition = CConditionLogic.new()
 		var String identifier
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "operator" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("operator")
 				identifier = element.getFirstCData()
 				
-				if identifier.equals( "none" )
-					condition.setOperator( CConditionLogic.Operator.none )
+				if identifier.equals("none")
+					condition.setOperator(CConditionLogic.Operator.none)
 					
-				elif identifier.equals( "any" )
-					condition.setOperator( CConditionLogic.Operator.any )
+				elif identifier.equals("any")
+					condition.setOperator(CConditionLogic.Operator.any)
 					
-				elif identifier.equals( "all" )
-					condition.setOperator( CConditionLogic.Operator.all )
+				elif identifier.equals("all")
+					condition.setOperator(CConditionLogic.Operator.all)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif tagName.equals( "conditions" )
-				this.pReadConditions( element ).forEach( block ConversationCondition each
-					condition.addCondition( each )
-				end )
+			elif tagName.equals("conditions")
+				pReadConditions(element).forEach(block ConversationCondition each
+					condition.addCondition(each)
+				end)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read has actor condition. */
-	protected func ConversationCondition pReadConditionHasActor( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionHasActor(EasyXMLElement root)
 		var CConditionHasActor condition = CConditionHasActor.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				condition.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				condition.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "negate" )
-				condition.setNegate( element.getFirstCDataBool() )
+			elif tagName.equals("negate")
+				condition.setNegate(element.getFirstCDataBool())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read actor in conversation condition. */
-	protected func ConversationCondition pReadConditionActorInConversation( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionActorInConversation(EasyXMLElement root)
 		var CConditionActorInConversation condition = CConditionActorInConversation.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				condition.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				condition.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "negate" )
-				condition.setNegate( element.getFirstCDataBool() )
+			elif tagName.equals("negate")
+				condition.setNegate(element.getFirstCDataBool())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read variable condition. */
-	protected func ConversationCondition pReadConditionVariable( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionVariable(EasyXMLElement root)
 		var CConditionVariable condition = CConditionVariable.new()
 		var String identifier
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "operator" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("operator")
 				identifier = element.getFirstCData()
 				
-				if identifier.equals( "equal" )
-					condition.setOperator( CConditionVariable.Operator.equal )
+				if identifier.equals("equal")
+					condition.setOperator(CConditionVariable.Operator.equal)
 					
-				elif identifier.equals( "notEqual" )
-					condition.setOperator( CConditionVariable.Operator.notEqual )
+				elif identifier.equals("notEqual")
+					condition.setOperator(CConditionVariable.Operator.notEqual)
 					
-				elif identifier.equals( "less" )
-					condition.setOperator( CConditionVariable.Operator.lessThan )
+				elif identifier.equals("less")
+					condition.setOperator(CConditionVariable.Operator.lessThan)
 					
-				elif identifier.equals( "lessEqual" )
-					condition.setOperator( CConditionVariable.Operator.lessThanOrEqual )
+				elif identifier.equals("lessEqual")
+					condition.setOperator(CConditionVariable.Operator.lessThanOrEqual)
 					
-				elif identifier.equals( "greater" )
-					condition.setOperator( CConditionVariable.Operator.greaterThan )
+				elif identifier.equals("greater")
+					condition.setOperator(CConditionVariable.Operator.greaterThan)
 					
-				elif identifier.equals( "greaterEqual" )
-					condition.setOperator( CConditionVariable.Operator.greaterThanOrEqual )
+				elif identifier.equals("greaterEqual")
+					condition.setOperator(CConditionVariable.Operator.greaterThanOrEqual)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif tagName.equals( "variable" )
-				condition.setVariable( element.getFirstCData() )
+			elif tagName.equals("variable")
+				condition.setVariable(element.getFirstCData())
 				
-			elif tagName.equals( "testValue" )
-				condition.setTestValue( element.getFirstCDataInt() )
+			elif tagName.equals("testValue")
+				condition.setTestValue(element.getFirstCDataInt())
 				
-			elif tagName.equals( "testVariable" )
-				condition.setTestVariable( element.getFirstCData() )
+			elif tagName.equals("testVariable")
+				condition.setTestVariable(element.getFirstCData())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read actor parameter condition. */
-	protected func ConversationCondition pReadConditionActorParameter( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionActorParameter(EasyXMLElement root)
 		var CConditionActorParameter condition = CConditionActorParameter.new()
 		var String identifier
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				condition.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				condition.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "operator" )
+			elif tagName.equals("operator")
 				identifier = element.getFirstCData()
 				
-				if identifier.equals( "equal" )
-					condition.setOperator( CConditionActorParameter.Operator.equal )
+				if identifier.equals("equal")
+					condition.setOperator(CConditionActorParameter.Operator.equal)
 					
-				elif identifier.equals( "notEqual" )
-					condition.setOperator( CConditionActorParameter.Operator.notEqual )
+				elif identifier.equals("notEqual")
+					condition.setOperator(CConditionActorParameter.Operator.notEqual)
 					
-				elif identifier.equals( "less" )
-					condition.setOperator( CConditionActorParameter.Operator.lessThan )
+				elif identifier.equals("less")
+					condition.setOperator(CConditionActorParameter.Operator.lessThan)
 					
-				elif identifier.equals( "lessEqual" )
-					condition.setOperator( CConditionActorParameter.Operator.lessThanOrEqual )
+				elif identifier.equals("lessEqual")
+					condition.setOperator(CConditionActorParameter.Operator.lessThanOrEqual)
 					
-				elif identifier.equals( "greater" )
-					condition.setOperator( CConditionActorParameter.Operator.greaterThan )
+				elif identifier.equals("greater")
+					condition.setOperator(CConditionActorParameter.Operator.greaterThan)
 					
-				elif identifier.equals( "greaterEqual" )
-					condition.setOperator( CConditionActorParameter.Operator.greaterThanOrEqual )
+				elif identifier.equals("greaterEqual")
+					condition.setOperator(CConditionActorParameter.Operator.greaterThanOrEqual)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif tagName.equals( "parameter" )
-				condition.setParameter( element.getFirstCData() )
+			elif tagName.equals("parameter")
+				condition.setParameter(element.getFirstCData())
 				
-			elif tagName.equals( "testValue" )
-				condition.setTestValue( element.getFirstCDataInt() )
+			elif tagName.equals("testValue")
+				condition.setTestValue(element.getFirstCDataInt())
 				
-			elif tagName.equals( "testVariable" )
-				condition.setTestVariable( element.getFirstCData() )
+			elif tagName.equals("testVariable")
+				condition.setTestVariable(element.getFirstCData())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read actor command condition. */
-	protected func ConversationCondition pReadConditionActorCommand( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionActorCommand(EasyXMLElement root)
 		var CConditionActorCommand condition = CConditionActorCommand.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "actor" )
-				condition.setActorID( StringID.new( element.getFirstCData() ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actor")
+				condition.setActorID(StringID.new(element.getFirstCData()))
 				
-			elif tagName.equals( "command" )
-				condition.setCommand( element.getFirstCData() )
+			elif tagName.equals("command")
+				condition.setCommand(element.getFirstCData())
 				
-			elif tagName.equals( "negate" )
-				condition.setNegate( element.getFirstCDataBool() )
+			elif tagName.equals("negate")
+				condition.setNegate(element.getFirstCDataBool())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read game command condition. */
-	protected func ConversationCondition pReadConditionGameCommand( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionGameCommand(EasyXMLElement root)
 		var CConditionGameCommand condition = CConditionGameCommand.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "command" )
-				condition.setCommand( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("command")
+				condition.setCommand(element.getFirstCData())
 				
-			elif tagName.equals( "negate" )
-				condition.setNegate( element.getFirstCDataBool() )
+			elif tagName.equals("negate")
+				condition.setNegate(element.getFirstCDataBool())
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read trigger condition. */
-	protected func ConversationCondition pReadConditionTrigger( EasyXMLElement root )
+	protected func ConversationCondition pReadConditionTrigger(EasyXMLElement root)
 		var CConditionTrigger condition = CConditionTrigger.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "testMode" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("testMode")
 				var String identifier = element.getFirstCData()
 				
-				if identifier.equals( "fired" )
-					condition.setTestMode( CConditionTrigger.TestMode.fired )
+				if identifier.equals("fired")
+					condition.setTestMode(CConditionTrigger.TestMode.fired)
 					
-				elif identifier.equals( "notFired" )
-					condition.setTestMode( CConditionTrigger.TestMode.notFired )
+				elif identifier.equals("notFired")
+					condition.setTestMode(CConditionTrigger.TestMode.notFired)
 					
-				elif identifier.equals( "everFired" )
-					condition.setTestMode( CConditionTrigger.TestMode.everFired )
+				elif identifier.equals("everFired")
+					condition.setTestMode(CConditionTrigger.TestMode.everFired)
 					
-				elif identifier.equals( "neverFired" )
-					condition.setTestMode( CConditionTrigger.TestMode.neverFired )
+				elif identifier.equals("neverFired")
+					condition.setTestMode(CConditionTrigger.TestMode.neverFired)
 					
 				else
-					this.logInvalidValue( element, identifier )
+					logInvalidValue(element, identifier)
 				end
 				
-			elif tagName.equals( "trigger" )
+			elif tagName.equals("trigger")
 				var String trigger = element.getFirstCData()
 				if not trigger.empty()
-					condition.setTrigger( StringID.new( trigger ) )
+					condition.setTrigger(StringID.new(trigger))
 				end
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return condition
 	end
 	
 	/** \brief Read strips. */
-	protected func Array pReadStrips( EasyXMLElement root )
+	protected func Array pReadStrips(EasyXMLElement root)
 		var Array strips = Array.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "entry" )
-				var float duration = element.getAttributeFloatNamed( "duration" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("entry")
+				var float duration = element.getAttributeFloatNamed("duration")
 				var String id = element.getFirstCData()
 				var float pause = 0.0
 				
-				if element.hasAttributeNamed( "pause" )
-					pause = element.getAttributeFloatNamed( "pause" )
+				if element.hasAttributeNamed("pause")
+					pause = element.getAttributeFloatNamed("pause")
 				end
 				
 				if id.empty()
-					strips.add( ConversationStrip.new( null, pause, duration ) )
+					strips.add(ConversationStrip.new(null, pause, duration))
 					
 				else
-					strips.add( ConversationStrip.new( StringID.new( id ), pause, duration ) )
+					strips.add(ConversationStrip.new(StringID.new(id), pause, duration))
 				end
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return strips
 	end

@@ -760,6 +760,13 @@ const deoglRenderPlanMasked *mask ){
 		if( pglClipControl && defren.GetUseInverseDepth() ){
 			pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 		}
+		
+		if( giState ){
+			// gi state lighting changes FBO and other parameters
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			RestoreFBO( plan );
+		}
 	}
 	
 	// set up the opengl states we need for all this
@@ -1507,6 +1514,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				shadowParams.matrixCamera * shadowParams.matrixProjection );
 		}
 		
+		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+		
 	}catch( const deException & ){
 		renderParamBlock->UnmapBuffer();
 		throw;
@@ -1664,10 +1673,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	addToRenderTask.SetNoShadowNone( true );
 	
 	if( shadowParams.collideList1 ){
-		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1 );
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
 	}
 	if( shadowParams.collideList2 ){
-		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2 );
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
 	}
 	
 	renderTask.PrepareForRender();

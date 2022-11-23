@@ -59,6 +59,9 @@ private:
 	bool pNoRendered;
 	bool pOutline;
 	
+	bool pFilterXRay;
+	bool pXRay;
+	
 	bool pFilterHoles;
 	bool pWithHoles;
 	
@@ -129,6 +132,20 @@ public:
 	
 	/** Set if outline transparent texture are added. */
 	void SetOutline( bool outline );
+	
+	
+	
+	/** Filtering for XRay is enabled. */
+	inline bool GetFilterXRay() const{ return pFilterXRay; }
+	
+	/** Set if filtering for XRay is enabled. */
+	void SetFilterXRay( bool filterXRay );
+	
+	/** XRay textures are added. */
+	inline bool GetXRay() const{ return pXRay; }
+	
+	/** Set if xray texture are added. */
+	void SetXRay( bool xray );
 	
 	
 	

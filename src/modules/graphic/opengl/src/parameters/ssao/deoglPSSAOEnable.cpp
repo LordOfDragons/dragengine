@@ -39,17 +39,8 @@
 
 deoglPSSAOEnable::deoglPSSAOEnable( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
 	SetName( "ssaoEnable" );
-	SetDescription( "Sets if screen space ambient occlusion is enabled."
-		" Screen space ambient occlusion calculates a dynamic ambient occlusion using the"
-		" rendered depth image to determine the degree of visibility of geometry on screen"
-		" relative to nearby geometry."
-		" This works though only for information present in the rendered depth image."
-		" Ambient occlusion is used to improve the lighting especially for shadow areas."
-		" The used screen space ambient occlusion algorithm is rather fast to calculate"
-		" while producing reasonably good results."
-		" The screen space ambient occlusion works together with the ambient.occlusion"
-		" related texture properties."
-		" To fine tune the screen space ambient occlusion see the ssao* module parameters." );
+	SetDescription( "Enables Screen Space Ambient Occlusion (SSAO)."
+		" This adds gradual shadows near touching surfaces but works only for geometry visible on screen.");
 	SetCategory( ecBasic );
 	SetDisplayName( "SSAO" );
 	SetDefaultValue( "1" );

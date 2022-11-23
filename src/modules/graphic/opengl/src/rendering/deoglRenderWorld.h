@@ -41,6 +41,7 @@ class deoglSPBlockUBO;
 class deoglRenderWorld : public deoglRenderBase{
 private:
 	deoglSPBlockUBO *pRenderPB;
+	deoglSPBlockUBO *pRenderXRayPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
@@ -50,6 +51,9 @@ private:
 	deoglShaderProgramUsage pShaderFinalize;
 	deoglShaderProgramUsage pShaderFinalizeSplit;
 	deoglShaderProgramUsage pShaderFinalizeStereo;
+	
+	deoglShaderProgramUsage pShaderCopyDepth;
+	deoglShaderProgramUsage pShaderCopyDepthStereo;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	
@@ -74,6 +78,9 @@ public:
 	
 	/** Render parameter block. */
 	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
+	
+	/** Render XRay parameter block. */
+	inline deoglSPBlockUBO *GetRenderXRayPB() const{ return pRenderXRayPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }
@@ -118,6 +125,9 @@ public:
 	
 	/** Render finalize pass to active graphics context with color correction. */
 	void RenderFinalizeContext( deoglRenderPlan &plan );
+	
+	/** Copy depth to XRay depth. */
+	void CopyDepthToXRayDepth( deoglRenderPlan &plan );
 	
 	
 	

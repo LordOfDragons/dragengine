@@ -26,13 +26,13 @@ fixed class Font
 	 * objects can point to the same loaded font resource. Once no object instance uses an
 	 * font file anymore it is released from memory.
 	 */
-	public func new( String filename, int fontSize )
+	public func new(String filename, int fontSize)
 	end
 	
 	/**
 	 * \brief Use font with different size.
 	 */
-	public func new( Font font, int fontSize )
+	public func new(Font font, int fontSize)
 	end
 	
 	/**
@@ -42,7 +42,7 @@ fixed class Font
 	 * is already loaded the listener is used to deliver the loaded font or \em null if the
 	 * loading failed.
 	 */
-	static public func void loadAsynchron( String filename, ResourceListener listener )
+	static public func void loadAsynchron(String filename, ResourceListener listener)
 	end
 	/*@}*/
 	
@@ -56,23 +56,31 @@ fixed class Font
 	end
 	
 	/** \brief Size of text in pixels using this font. */
-	public func Point getTextSize( String text )
+	public func Point getTextSize(String text)
 		return null
 	end
 	
 	/** \brief Width of character in pixels using this font. */
-	public func float getCharWidth( int char )
+	public func float getCharWidth(int char)
 		return 0.0
 	end
 	
 	/** \brief Advance of character in pixels using this font. */
-	public func float getCharAdvance( int char )
+	public func float getCharAdvance(int char)
 		return 0.0
 	end
 	
 	/** \brief Bearing of character in pixels using this font. */
-	public func float getCharBearing( int char )
+	public func float getCharBearing(int char)
 		return 0.0
+	end
+	
+	/**
+	 * \brief Font has glyph.
+	 * \version 1.16
+	 */
+	public func bool hasGlyph(int character)
+		return false
 	end
 	
 	/**
@@ -98,7 +106,7 @@ fixed class Font
 	 * 
 	 * \returns \em true if \em other is of type Font and both point to the same engine font resource.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	

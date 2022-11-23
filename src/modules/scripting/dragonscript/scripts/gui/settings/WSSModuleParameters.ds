@@ -30,10 +30,11 @@ pin Dragengine.Utils
  */
 class WSSModuleParameters extends DefaultWindowSettingsSheet
 	/** \brief Create window settings sheet. */
-	public func new() this( "moduleParameters", "Module Parameters" )
+	public func new() this("moduleParameters",\
+	EngineTranslations.get().translate("UI.Settings.ModuleParameters").toUTF8())
 	end
 	
-	public func new( String identifier, String title ) super( identifier, title )
+	public func new(String identifier, String title) super(identifier, title)
 	end
 	
 	
@@ -50,14 +51,14 @@ class WSSModuleParameters extends DefaultWindowSettingsSheet
 	/**
 	 * Save settings.
 	 */
-	public func void saveSettings( Widget widget )
-		( widget cast EditModuleParametersPanel ).applyChanges()
+	public func void saveSettings(Widget widget)
+		(widget cast EditModuleParametersPanel).applyChanges()
 	end
 	
 	/**
 	 * Reset settings.
 	 */
-	public func void resetSettings( Widget widget )
-		( widget cast EditModuleParametersPanel ).resetChanges()
+	public func void resetSettings(Widget widget)
+		(widget cast EditModuleParametersPanel).resetChanges()
 	end
 end

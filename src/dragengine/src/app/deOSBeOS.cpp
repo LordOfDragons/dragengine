@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 
 #include <Application.h>
@@ -59,6 +60,9 @@ pHostingRenderWindow( NULL )
 	const BRect screenSize( BScreen().Frame() );
 	pScreenWidth = screenSize.IntegerWidth();
 	pScreenHeight = screenSize.IntegerHeight();
+	
+	// init locale
+	setlocale( LC_ALL, "" );
 }
 
 deOSBeOS::~deOSBeOS(){
@@ -252,6 +256,42 @@ void deOSBeOS::MessageReceived( BMessage *message ){
 	pMessageQueue.Lock();
 	pMessageQueue.AddMessage( new BMessage( *message ) );
 	pMessageQueue.Unlock();
+}
+
+decString deOSBeOS::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSBeOS::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
 }
 
 

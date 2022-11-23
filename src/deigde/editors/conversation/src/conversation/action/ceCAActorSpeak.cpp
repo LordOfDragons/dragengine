@@ -65,19 +65,20 @@ ceCAActorSpeak::ceCAActorSpeak( const ceCAActorSpeak &action ) : ceConversationA
 	pEngSound = NULL;
 	pLoaded = true;
 	
-	pActor = action.GetActor();
-	pTextBoxText = action.GetTextBoxText();
-	pTextBoxTextStyle = action.GetTextBoxTextStyle();
-	pPathSound = action.GetPathSound();
-	pMovement = action.GetMovement();
-	pWords.AddCopyFrom( action.GetWordList() );
-	pFacePoses.AddCopyFrom( action.GetFacePoseList() );
-	pGestures.AddCopyFrom( action.GetGestureList() );
-	pBodyLookAt.AddCopyFrom( action.GetBodyLookAtList() );
-	pHeadLookAt.AddCopyFrom( action.GetHeadLookAtList() );
-	pEyesLookAt.AddCopyFrom( action.GetEyesLookAtList() );
-	pMinSpeechTime = action.GetMinSpeechTime();
-	pUseSpeechAnimation = action.GetUseSpeechAnimation();
+	pActor = action.pActor;
+	pTextBoxText = action.pTextBoxText;
+	pTextBoxTextTranslate = action.pTextBoxTextTranslate;
+	pTextBoxTextStyle = action.pTextBoxTextStyle;
+	pPathSound = action.pPathSound;
+	pMovement = action.pMovement;
+	pWords.AddCopyFrom( action.pWords );
+	pFacePoses.AddCopyFrom( action.pFacePoses );
+	pGestures.AddCopyFrom( action.pGestures );
+	pBodyLookAt.AddCopyFrom( action.pBodyLookAt );
+	pHeadLookAt.AddCopyFrom( action.pHeadLookAt );
+	pEyesLookAt.AddCopyFrom( action.pEyesLookAt );
+	pMinSpeechTime = action.pMinSpeechTime;
+	pUseSpeechAnimation = action.pUseSpeechAnimation;
 	
 	pEngSound = action.pEngSound;
 	if( pEngSound ){
@@ -113,6 +114,10 @@ void ceCAActorSpeak::SetActor( const char *id ){
 
 void ceCAActorSpeak::SetTextBoxText( const decUnicodeString &text ){
 	pTextBoxText = text;
+}
+
+void ceCAActorSpeak::SetTextBoxTextTranslate( const char *text ){
+	pTextBoxTextTranslate = text;
 }
 
 void ceCAActorSpeak::SetTextBoxTextStyle( const char *style ){

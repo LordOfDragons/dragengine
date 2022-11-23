@@ -102,6 +102,9 @@ public:
 	 * \throws deeReadFile Can not read from file.
 	 */
 	virtual void Read( void *buffer, int size );
+	
+	/** \brief Duplicate file reader. */
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 };
 

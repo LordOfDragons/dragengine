@@ -152,11 +152,28 @@ class CommandsBAAVRGrab
 	 * - squeezeLeft: Squeeze left hand
 	 */
 	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(GrabAction.new(tracker, "grabRight", "Grab Right Hand", true))
-		commands.add(SqueezeAction.new(tracker, "squeezeRight", "Squeeze Right Hand", true))
+		var GrabAction grab
+		var SqueezeAction squeeze
 		
-		commands.add(GrabAction.new(tracker, "grabLeft", "Grab Left Hand", false))
-		commands.add(SqueezeAction.new(tracker, "squeezeLeft", "Squeeze Left Hand", false))
+		grab = GrabAction.new(tracker, "grabRight", "Grab Right Hand", true)
+		grab.setTranslateDescription("UI.Command.GrabRight.Description")
+		grab.setTranslateDisplayName("UI.Command.GrabRight.DisplayName")
+		commands.add(grab)
+		
+		squeeze = SqueezeAction.new(tracker, "squeezeRight", "Squeeze Right Hand", true)
+		squeeze.setTranslateDescription("UI.Command.SqueezeRight.Description")
+		squeeze.setTranslateDisplayName("UI.Command.SqueezeRight.DisplayName")
+		commands.add(squeeze)
+		
+		grab = GrabAction.new(tracker, "grabLeft", "Grab Left Hand", false)
+		grab.setTranslateDescription("UI.Command.GrabLeft.Description")
+		grab.setTranslateDisplayName("UI.Command.GrabLeft.DisplayName")
+		commands.add(grab)
+		
+		squeeze = SqueezeAction.new(tracker, "squeezeLeft", "Squeeze Left Hand", false)
+		squeeze.setTranslateDescription("UI.Command.SqueezeLeft.Description")
+		squeeze.setTranslateDisplayName("UI.Command.SqueezeLeft.DisplayName")
+		commands.add(squeeze)
 	end
 	
 	

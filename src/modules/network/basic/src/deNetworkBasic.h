@@ -169,6 +169,10 @@ private:
 	
 	//deNetworkMessage *pMessage;
 	
+	#ifdef OS_W32
+	bool pWSAStartupCalled;
+	#endif
+	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/

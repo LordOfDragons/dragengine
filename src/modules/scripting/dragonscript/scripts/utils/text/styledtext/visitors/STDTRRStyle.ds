@@ -1,0 +1,117 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Utils.StyledText
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+/**
+ * \brief Rule for resolving a style tag in STDTagResolver.
+ * \version 1.16
+ * 
+ * Resolves tags of the form {stylename:text}. Formats text with a specific style
+ * instead of the default style. Useful to put emphasis on some words for example.
+ * Style can be a style name to resolve inside the styled text or an explicit style
+ * definition to use. If explicit style definition is used it is added to the styled
+ * text definition if absent.
+ */
+class STDTRRStyle implements STDTagResolverRule
+	private var String pStyleName
+	private var STDStyle pStyle
+	
+	
+	
+	/** \brief Create resolve tag rule. */
+	public func new(String styleName)
+		if styleName == null
+			throw ENullPointer.new("styleName")
+		end
+		pStyleName = styleName
+	end
+	
+	/** \brief Create resolve tag rule. */
+	public func new(STDStyle style)
+		if style == null
+			throw ENullPointer.new("style")
+		end
+		pStyle = style
+	end
+	
+	
+	
+	/** \brief Style name or \em null if not used. */
+	public func String getStyleName()
+		return pStyleName
+	end
+	
+	/** \brief Set style or \em null if not used. */
+	public func void setStyleName(String name)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		pStyleName = name
+	end
+	
+	/** \brief Style or \em null if not used. */
+	public func STDStyle getStyle()
+		return pStyle
+	end
+	
+	/** \brief Set style or \em null if not used. */
+	public func void setStyle(STDStyle style)
+		if style == null
+			throw ENullPointer.new("style")
+		end
+		pStyle = style
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tag adding STDNTextSpan to STDNText.
+	 * 
+	 * \param resolver STDTagResolver using the rule to resolve.
+	 * \param target STDNText to add resolved STDNTextSpan to.
+	 * \param source STDNTextSpan containing the tag name to resolve.
+	 * \param first First span to be added. Image of source should be set to first added span.
+	 * \param parameters Content of tag between curly brackets after ":" delimiter
+	 */
+	public func void resolveTag(STDTagResolver resolver, STDNText target,\
+	STDNTextSpan source, bool first, String parameters)
+		var StyledTextDefinition definition = resolver.getDefinition()
+		var STDStyle style
+		
+		if pStyle != null
+			if not definition.hasStyleNamed(pStyle.getName())
+				definition.addStyle(pStyle)
+			end
+			style = pStyle
+			
+		elif pStyleName != null
+			style = definition.getStyleNamed(pStyleName)
+		end
+		
+		target.addSpan(STDNTextSpan.new(parameters, style.getName(), first if source.getImage() else null))
+	end
+end

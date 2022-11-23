@@ -23,7 +23,6 @@
 #define _DECWEAKFILEREADER_H_
 
 #include "decBaseFileReader.h"
-#include "decBaseFileReaderReference.h"
 
 
 /**
@@ -41,7 +40,7 @@ public:
 	
 	
 private:
-	decBaseFileReaderReference pReader;
+	decBaseFileReader::Ref pReader;
 	
 	
 	
@@ -111,6 +110,9 @@ public:
 	 * \throws deeInvalidParam Error decompressing content.
 	 */
 	virtual void Read( void *buffer, int size );
+	
+	/** \brief Duplicate file reader. */
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 };
 

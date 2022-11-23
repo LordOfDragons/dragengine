@@ -67,6 +67,7 @@ pTextureCount( 0 ),
 
 pIsSolid( true ),
 pHasHoles( false ),
+pHasXRay( false ),
 pShadeless( false ),
 pHasMirrors( false ),
 pHasDynamicChannels( false ),
@@ -159,6 +160,9 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 			}
 			if( pTextures[ i ]->GetHasHoles() ){
 				pHasHoles = true;
+			}
+			if( pTextures[ i ]->GetXRay() ){
+				pHasXRay = true;
 			}
 			if( pTextures[ i ]->GetMirror() ){
 				pHasMirrors = true;

@@ -550,24 +550,8 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		sl.maxExtend = frustumCorners[ 0 ];
 		
 		for( c=1; c<8; c++ ){
-			if( frustumCorners[ c ].x < sl.minExtend.x ){
-				sl.minExtend.x = frustumCorners[ c ].x;
-			}
-			if( frustumCorners[ c ].y < sl.minExtend.y ){
-				sl.minExtend.y = frustumCorners[ c ].y;
-			}
-			if( frustumCorners[ c ].z < sl.minExtend.z ){
-				sl.minExtend.z = frustumCorners[ c ].z;
-			}
-			if( frustumCorners[ c ].x > sl.maxExtend.x ){
-				sl.maxExtend.x = frustumCorners[ c ].x;
-			}
-			if( frustumCorners[ c ].y > sl.maxExtend.y ){
-				sl.maxExtend.y = frustumCorners[ c ].y;
-			}
-			if( frustumCorners[ c ].z > sl.maxExtend.z ){
-				sl.maxExtend.z = frustumCorners[ c ].z;
-			}
+			sl.minExtend.SetSmallest( frustumCorners[ c ] );
+			sl.maxExtend.SetLargest( frustumCorners[ c ] );
 		}
 		
 		if( pPlan.GetRenderThread().GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){

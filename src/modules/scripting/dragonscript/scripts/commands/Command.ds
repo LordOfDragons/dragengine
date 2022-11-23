@@ -22,6 +22,8 @@
 
 namespace Dragengine.Commands
 
+pin Dragengine.Utils.Text
+
 
 /**
  * \brief Command carrying out a specific task.
@@ -29,31 +31,31 @@ namespace Dragengine.Commands
  * Can be bound to player input events or used in widgets.
  */
 class Command
-	/** \brief Unique name. */
 	private var String pName
-	
-	/** \brief Description. */
 	private var String pDescription
+	private var String pTranslateDescription
+	private var String pDisplayName
+	private var String pTranslateDisplayName
 	
 	
 	
 	/** \brief Create command. */
 	public func new()
-		this.pName = "unnamed"
-		this.pDescription = ""
+		pName = "unnamed"
+		pDescription = ""
 	end
 	
 	/** \brief Create command. */
-	public func new( String name, String description )
-		this.setName( name )
-		this.setDescription( description )
+	public func new(String name, String description)
+		setName(name)
+		setDescription(description)
 	end
 	
 	
 	
 	/** \brief Unique name. */
 	public func String getName()
-		return this.pName
+		return pName
 	end
 	
 	/**
@@ -61,24 +63,180 @@ class Command
 	 * 
 	 * Allowed are only upper and lower case letters, numbers and underscores.
 	 */
-	public func void setName( String name )
+	public func void setName(String name)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pName = name
+		pName = name
 	end
 	
 	/** \brief Description. */
 	public func String getDescription()
-		return this.pDescription
+		return pDescription
 	end
 	
 	/** \brief Set description. */
-	public func void setDescription( String description )
+	public func void setDescription(String description)
 		if description == null
 			throw EInvalidParam.new()
 		end
-		this.pDescription = description
+		pDescription = description
+	end
+	
+	/**
+	 * \brief Translation description or null.
+	 * \version 1.16
+	 * 
+	 * If not null use TranslationManager to get description. If null or no translation
+	 * can be found getDescription() has to be used.
+	 */
+	public func String getTranslateDescription()
+		return pTranslateDescription
+	end
+	
+	/**
+	 * \brief Set translate description or null.
+	 * \version 1.16
+	 * 
+	 * If not null use TranslationManager to get display name. If null or no translation
+	 * can be found getDescription() has to be used.
+	 */
+	public func void setTranslateDescription(String translateName)
+		pTranslateDescription = translateName
+	end
+	
+	/**
+	 * \brief Display name or null.
+	 * \version 1.16
+	 * 
+	 * Display name is used for EditBindingsPanel and other placers where commands
+	 * have to be shown to the user in a UI. If null getName() has to be used.
+	 */
+	public func String getDisplayName()
+		return pDisplayName
+	end
+	
+	/**
+	 * \brief Set display name or null.
+	 * \version 1.16
+	 * 
+	 * Display name is used for EditBindingsPanel and other placers where commands
+	 * have to be shown to the user in a UI. If null getName() has to be used.
+	 */
+	public func void setDisplayName(String displayName)
+		pDisplayName = displayName
+	end
+	
+	/**
+	 * \brief Translation display name or null.
+	 * \version 1.16
+	 * 
+	 * If not null use TranslationManager to get display name. If null or no translation
+	 * can be found getDisplayName() has to be used.
+	 */
+	public func String getTranslateDisplayName()
+		return pTranslateDisplayName
+	end
+	
+	/**
+	 * \brief Set translate display name or null.
+	 * \version 1.16
+	 * 
+	 * If not null use TranslationManager to get display name. If null or no translation
+	 * can be found getDisplayName() has to be used.
+	 */
+	public func void setTranslateDisplayName(String translateName)
+		pTranslateDisplayName = translateName
+	end
+	
+	
+	
+	/**
+	 * \brief Translated display name.
+	 * \version 1.16
+	 * 
+	 * Tries first to translate using translationManager. If translationManager is null
+	 * or the transation can not be found tries translate using EngineTranslations.
+	 * If this does not provide a translation returns getDisplayName(). If getDisplayName()
+	 * is null returns getName().
+	 * 
+	 * Returns UTF-8 string.
+	 * 
+	 * \param translationManager TranslationManager to use or null.
+	 */
+	public func String translateDisplayName(TranslationManager translationManager)
+		var UnicodeString text
+		
+		if pTranslateDisplayName != null
+			if translationManager != null
+				text = translationManager.translate(pTranslateDisplayName, null)
+			end
+			if text == null
+				text = EngineTranslations.get().translate(pTranslateDisplayName, null)
+			end
+		end
+		
+		if text != null
+			return text.toUTF8()
+			
+		elif pDisplayName != null
+			return pDisplayName
+			
+		else
+			return pName
+		end
+	end
+	
+	/**
+	 * \brief Translated display name using default TranslationManager.
+	 * \version 1.16
+	 * 
+	 * Same as translateDisplayName(TranslationManager) using TranslationManager.get() .
+	 */
+	public func String translateDisplayName()
+		return translateDisplayName(TranslationManager.get())
+	end
+	
+	/**
+	 * \brief Translated command description.
+	 * \version 1.16
+	 * 
+	 * Tries first to translate using translationManager. If translationManager is null
+	 * or no translation is found tries translate using EngineTranslations. If no translation
+	 * is found returns getDescription().
+	 * 
+	 * Returns UTF-8 string.
+	 * 
+	 * \param translationManager TranslationManager to use or null.
+	 */
+	public func String translateDescription(TranslationManager translationManager)
+		var UnicodeString text
+		
+		if pTranslateDescription != null
+			if translationManager != null
+				text = translationManager.translate(pTranslateDescription, null)
+			end
+			if text == null
+				text = EngineTranslations.get().translate(pTranslateDescription, null)
+			end
+		end
+		
+		if text != null
+			return text.toUTF8()
+			
+		else
+			return pDescription
+		end
+	end
+	
+	/**
+	 * \brief Translated command description using default TranslationManager.
+	 * \version 1.16
+	 * 
+	 * Same as translateDescription(TranslationManager) using TranslationManager.get() .
+	 */
+	public func String translateDescription()
+		return translateDescription(TranslationManager.get())
 	end
 	
 	
@@ -97,8 +255,8 @@ class Command
 	 * Used for example to run the command for different reasons than input handling.
 	 */
 	public func void pulse()
-		this.start()
-		this.stop()
+		start()
+		stop()
 	end
 	
 	/**
@@ -111,7 +269,7 @@ class Command
 	 * \param value Relative axis position change in axis units. Caller is responsible to
 	 *              adjust the range to make different input devices match in magnitude.
 	 */
-	public func void analogRelative( float value )
+	public func void analogRelative(float value)
 	end
 	
 	/**
@@ -122,7 +280,7 @@ class Command
 	 * 
 	 * \param value New axis position in the range -1 to 1.
 	 */
-	public func void analogAbsolute( float value )
+	public func void analogAbsolute(float value)
 	end
 	
 	/**

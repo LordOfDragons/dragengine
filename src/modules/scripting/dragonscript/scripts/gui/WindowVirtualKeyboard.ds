@@ -105,6 +105,36 @@ class WindowVirtualKeyboard extends Window
 		end
 	end
 	
+	/**
+	 * \brief Hide keyboard listener.
+	 * \versoin 1.15
+	 */
+	class HideVirtualKeyboard extends DefaultMouseListener
+		private var WindowVirtualKeyboard pWindow
+		private var Widget pWidget
+		private var bool pButtonPressed
+		
+		public func new(WindowVirtualKeyboard window, Widget widget)
+			pWindow = window
+			pWidget = widget
+		end
+		
+		public func void onButtonPress(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left
+				pWidget.captureMouse()
+				pButtonPressed = true
+			end
+		end
+		
+		public func void onButtonRelease(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left and pButtonPressed
+				pButtonPressed = false
+				pWidget.releaseMouse()
+				pWindow.popdown()
+			end
+		end
+	end
+	
 	
 	
 	private var Widget pInputWidget
@@ -132,11 +162,14 @@ class WindowVirtualKeyboard extends Window
 			setCanClose(false)
 			setCanMaximize(false)
 			setCanMinimize(false)
+			setAlwaysOnTop(true)
 			setDesignerSelector("WindowVirtualKeyboard")
 			
 			setLayout(StackLayout.new())
 			createKeyboardLayoutPanels(this)
 		end)
+		
+		startFrameUpdater()
 	end
 	
 	/** \brief Dispose of widget. */
@@ -305,6 +338,13 @@ class WindowVirtualKeyboard extends Window
 		return visibleAreay.clamp(desired)
 	end
 	
+	/** \brief Do frame update. */
+	public func void onFrameUpdate(float elapsed)
+		if pInputWidget != null
+			setPosition(calculatePopupPosition(pInputWidget))
+		end
+	end
+	
 	
 	
 	/** \brief Select keyboard layout best matching input widget. */
@@ -449,17 +489,15 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create default keyboard layout panel row 5. */
 	protected func Panel createKeyboardLayoutDefaultPanelRow5()
 		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			var String dir = "/shareddata/guithemes/modern/keyboard/"
 			p.addWidget(createVirtualKey(InputEventKey.home, 0, "Home", ".Wide"))
-			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_up.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_down.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0, Image.new(dir + "arrow_up.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0, Image.new(dir + "arrow_down.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.space, ' ', " ", ".Space"))
-			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_left.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_right.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0, Image.new(dir + "arrow_left.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0, Image.new(dir + "arrow_right.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
+			p.addWidget(createVirtualKeyHide(Image.new(dir + "hide.png"), ""))
 		end)
 	end
 	
@@ -503,16 +541,14 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create numeric keyboard layout panel row 3. */
 	protected func Panel createKeyboardLayoutNumericPanelRow3()
 		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			var String dir = "/shareddata/guithemes/modern/keyboard/"
 			p.addWidget(createVirtualKey(InputEventKey.home, 0, "Home", ".Wide"))
-			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_up.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_down.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_left.png"), ""))
-			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0,\
-				Image.new("/shareddata/guithemes/modern/keyboard/arrow_right.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0, Image.new(dir + "arrow_up.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0, Image.new(dir + "arrow_down.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0, Image.new(dir + "arrow_left.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0, Image.new(dir + "arrow_right.png"), ""))
 			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
+			p.addWidget(createVirtualKeyHide(Image.new(dir + "hide.png"), ""))
 		end)
 	end
 	
@@ -536,6 +572,16 @@ class WindowVirtualKeyboard extends Window
 	protected func Widget createVirtualKey(int keyCode, int keyChar, Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
 		display.addMouseListener(VirtualKeyType.new(this, display, keyCode, keyChar, keyChar))
+		return display
+	end
+	
+	/**
+	 * \brief Create virtual key widget.
+	 * \versoin 1.15
+	 */
+	protected func Widget createVirtualKeyHide(Image image, String designerSuffix)
+		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.addMouseListener(HideVirtualKeyboard.new(this, display))
 		return display
 	end
 end

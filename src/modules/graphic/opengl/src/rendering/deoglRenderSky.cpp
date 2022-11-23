@@ -581,7 +581,6 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 	
 	const int * const textures = layer.GetTextures();
 	decColor layerColor( instanceLayer.GetColor() );
-	float layerIntensity = instanceLayer.GetIntensity();
 	const deoglRSkin * const skin = layer.GetSkin();
 	
 	if( ! skin || skin->GetTextureCount() == 0 ){
@@ -597,6 +596,7 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 	
 	// if we render full bright ignore the intensity
 	if( ! plan.GetDisableLights() ){
+		const float layerIntensity = instanceLayer.GetIntensity();
 		layerColor.r *= layerIntensity;
 		layerColor.g *= layerIntensity;
 		layerColor.b *= layerIntensity;
@@ -654,7 +654,6 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	const deoglRSkyLayer::sBody * const bodies = layer.GetBodies();
 	int b, bodyCount = layer.GetBodyCount();
 	decColor layerColor = instanceLayer.GetColor();
-	const float layerIntensity = instanceLayer.GetIntensity();
 	const decMatrix &matrixLayer = instanceLayer.GetMatrix();
 	
 	// adjust gamma
@@ -665,6 +664,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	
 	// if we render full bright ignore the intensity
 	if( ! plan.GetDisableLights() ){
+		const float layerIntensity = instanceLayer.GetIntensity();
 		layerColor.r *= layerIntensity;
 		layerColor.g *= layerIntensity;
 		layerColor.b *= layerIntensity;

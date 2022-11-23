@@ -183,6 +183,7 @@ private:
 	bool pEmptyPass;
 	bool pSkyVisible;
 	bool pHasTransparency;
+	bool pHasXRayTransparency;
 	bool pClearStencilPassBits;
 	bool pClearColor;
 	
@@ -570,6 +571,9 @@ public:
 	
 	/** There are transparent objects. */
 	inline bool GetHasTransparency() const{ return pHasTransparency; }
+	
+	/** There are transparent XRay objects. */
+	inline bool GetHasXRayTransparency() const{ return pHasXRayTransparency; }
 	
 	/** Stencil pass bits have to be cleared. */
 	inline bool GetClearStencilPassBits() const{ return pClearStencilPassBits; }

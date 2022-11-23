@@ -263,7 +263,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 		// images
 		"apng", "jpg", "jpeg", "png", "png3d", "tga", "exr", "gif", "webp",
 		// vector graphics
-		"svg", "svgz",
+		"svgz",
 		// videos
 		"ogg", "ogv", "m4a", "webm",
 		// audio
@@ -290,7 +290,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 		// dragengine specific
 		"delga",
 		// end of list
-		NULL };
+		nullptr };
 	
 	int i;
 	decString line;

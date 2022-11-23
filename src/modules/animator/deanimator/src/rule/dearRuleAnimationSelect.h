@@ -23,6 +23,8 @@
 #define _DEARRULEANIMATIONSELECT_H_
 
 #include "dearRule.h"
+#include "../dearMapAnimationBones.h"
+#include "../dearMapAnimationBones.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 
@@ -37,6 +39,7 @@ class deAnimatorRuleAnimationSelect;
 class dearRuleAnimationSelect : public dearRule{
 private:
 	const deAnimatorRuleAnimationSelect &pAnimationSelect;
+	dearMapAnimationBones pMapAnimationBones;
 	
 	decObjectList pMoves;
 	

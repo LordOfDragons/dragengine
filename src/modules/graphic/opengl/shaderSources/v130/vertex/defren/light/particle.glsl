@@ -28,7 +28,7 @@ out vec3 vGSParticleLightColor;
 out float vGSParticleLightRange;
 
 #ifdef VS_RENDER_STEREO
-out flat int vGSLayer;
+flat out int vGSLayer;
 #endif
 
 const vec2 curveOffset1 = vec2( 0, 1.0 / 4.0 );

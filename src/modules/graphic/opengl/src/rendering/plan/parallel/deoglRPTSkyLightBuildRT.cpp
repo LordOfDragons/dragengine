@@ -103,8 +103,12 @@ void deoglRPTSkyLightBuildRT::Run(){
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetNoShadowNone( true );
 			
+			// we render only double sided occlusion meshes here since for single sided
+			// we can not be sure from what side the camera sees them in the shadow map.
+			// only double sided occlusion meshes are guaranteed to work correctly.
+			// this allows to speed up rendering in the majority of situations
 			addToRenderTask.AddOcclusionMeshes( pTempCollideList, addToRenderTask.GetRenderTask().
-				AddShader( shaderOccMesh->GetRTSShader() )->AddTexture( sharedTexOccMesh ) );
+				AddShader( shaderOccMesh->GetRTSShader() )->AddTexture( sharedTexOccMesh ), false );
 			
 			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 			addToRenderTask.AddComponents( pTempCollideList );

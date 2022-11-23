@@ -14,7 +14,7 @@ in mediump vec2 vTexCoord;
 in mediump vec2 vScreenCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	in flat int vLayer;
+	flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

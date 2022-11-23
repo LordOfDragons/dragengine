@@ -31,6 +31,7 @@
 #include "../../animator/aeAnimator.h"
 #include "../../animator/locomotion/aeAnimatorLocomotion.h"
 #include "../../animator/controller/aeController.h"
+#include "../../clipboard/aeClipboardDataController.h"
 #include "../../undosys/controller/aeUAddController.h"
 #include "../../undosys/controller/aeURemoveController.h"
 #include "../../undosys/controller/aeUMoveControllerUp.h"
@@ -41,7 +42,9 @@
 #include "../../undosys/controller/aeUControllerSetFromMove.h"
 #include "../../undosys/controller/aeUControllerToggleClamp.h"
 #include "../../undosys/controller/aeUControllerToggleFrozen.h"
+#include "../../undosys/controller/aeUControllerPaste.h"
 
+#include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -148,6 +151,65 @@ public:
 
 
 
+class cActionCopy : public cBaseAction{
+public:
+	cActionCopy( aeWPController &panel ) : cBaseAction( panel, "Copy",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+		"Copy controller to clipboard" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
+		igdeClipboardDataReference cdata;
+		cdata.TakeOver( new aeClipboardDataController( controller ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		return nullptr;
+	}
+};
+
+class cActionCut : public cBaseAction{
+public:
+	cActionCut( aeWPController &panel ) : cBaseAction( panel, "Cut",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
+		"Cut controller into clipboard" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator, aeController *controller ){
+		igdeClipboardDataReference cdata;
+		cdata.TakeOver( new aeClipboardDataController( controller ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		return new aeURemoveController( animator, controller );
+	}
+};
+
+class cActionPaste : public igdeAction{
+	aeWPController &pPanel;
+	
+public:
+	cActionPaste( aeWPController &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+		"Paste controller from clipboard" ), pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		if( ! animator ){
+			return;
+		}
+		
+		aeClipboardDataController * const cdata = ( aeClipboardDataController* )pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataController::TYPE_NAME );
+		if( ! cdata ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeUControllerPaste( animator, cdata->GetControllers() ) );
+		animator->GetUndoSystem()->Add( undo );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
+			.GetWithTypeName( aeClipboardDataController::TYPE_NAME ) && pPanel.GetAnimator() );
+	}
+};
+
 class cListControllers : public igdeListBoxListener{
 	aeWPController &pPanel;
 	
@@ -166,11 +228,17 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand( menu, windowMain.GetActionControllerAdd() );
+		helper.MenuCommand( menu, windowMain.GetActionControllerDuplicate() );
 		helper.MenuCommand( menu, windowMain.GetActionControllerRemove() );
 		
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, windowMain.GetActionControllerUp() );
 		helper.MenuCommand( menu, windowMain.GetActionControllerDown() );
+		
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionCopy( pPanel ), true );
+		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPaste( pPanel ), true );
 	}
 };
 

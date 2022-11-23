@@ -76,14 +76,13 @@ void debpColliderCollisionTest::Update(){
 		return;
 	}
 	
-	const deCollider &parentCollider = pParentCollider.GetCollider();
-	const decQuaternion &orientation = parentCollider.GetOrientation();
 	const decDMatrix &matrix = pParentCollider.GetMatrix();
 	
 	// cast position altered by bone if existing. for the time being this is just
 	// done by preparing the matrices in the parent collider component if existing.
 	// this will be optimized later
 	decDVector position( pCollisionTest.GetOrigin() );
+	decQuaternion orientation( pCollisionTest.GetOrientation() );
 	decVector direction( pCollisionTest.GetDirection() );
 	
 	if( ! pCollisionTest.GetBone().IsEmpty() ){
@@ -103,6 +102,7 @@ void debpColliderCollisionTest::Update(){
 					position = decDVector( boneMatrix * pCollisionTest.GetOrigin() );
 					
 					if( pCollisionTest.GetLocalDirection() ){
+						orientation *= boneMatrix.ToQuaternion();
 						direction = boneMatrix.TransformNormal( direction );
 					}
 				}
@@ -112,6 +112,7 @@ void debpColliderCollisionTest::Update(){
 	
 	if( pCollisionTest.GetLocalDirection() ){
 		position = matrix * position;
+		orientation *= matrix.ToQuaternion();
 		direction = pParentCollider.GetMatrixNormal().TransformNormal( direction );
 		
 	}else{
@@ -120,14 +121,13 @@ void debpColliderCollisionTest::Update(){
 	
 	// store the used test parameters in case somebody needs them
 	pCollisionTest.SetTestOrigin( position );
+	pCollisionTest.SetTestOrientation( orientation );
 	pCollisionTest.SetTestDirection( direction );
 	
 	// test collision and store the result
-	deCollider * const collider = pCollisionTest.GetCollider();
-	
 	pCollisionInfoCount = 0;
 	
-	if( collider ){
+	if( pCollisionTest.GetCollider() ){
 		if( direction.IsZero() ){
 			ColliderHits( position, orientation );
 			
@@ -141,7 +141,7 @@ void debpColliderCollisionTest::Update(){
 	
 	SetCollisionTestResult();
 // 	pParentCollider.GetBullet()->LogInfoFormat( "CT: p(%f,%f,%f) d(%f,%f,%f) c=%p hc=%i hd=%f ts=(%f,%f,%f)\n",
-// 		position.x, position.y, position.z, direction.x, direction.y, direction.z, collider,
+// 		position.x, position.y, position.z, direction.x, direction.y, direction.z, pCollisionTest.GetCollider(),
 // 		pHasCollision, pHitDistance, pCollisionTest.GetTouchSensor()->GetPosition().x,
 // 		pCollisionTest.GetTouchSensor()->GetPosition().y, pCollisionTest.GetTouchSensor()->GetPosition().z );
 }

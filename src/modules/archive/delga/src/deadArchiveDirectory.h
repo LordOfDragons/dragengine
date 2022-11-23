@@ -44,6 +44,11 @@ class deFileSearchVisitor;
  * Directories are virtual. They are added if one or more file uses the directory.
  */
 class deadArchiveDirectory : public deObject{
+public:
+	typedef deTObjectReference<deadArchiveDirectory> Ref;
+	
+	
+	
 private:
 	deArchiveDelga &pModule;
 	

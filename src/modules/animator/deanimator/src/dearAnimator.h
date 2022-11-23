@@ -41,6 +41,7 @@ private:
 	dearAnimation *pAnimation;
 	unsigned int pUpdateTracker;
 	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

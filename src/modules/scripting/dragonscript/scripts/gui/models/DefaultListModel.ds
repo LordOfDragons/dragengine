@@ -498,11 +498,20 @@ class DefaultListModel implements ListModel
 		
 		pElements.sort()
 		
+		var bool notifySelectedChanged
 		if pSelected != -1
+			var int oldSelection = pSelected
 			pSelected = indexOf(selected)
+			notifySelectedChanged = pSelected != oldSelection
 		end
 		
 		notifyContentChanged(0, pElements.getCount() - 1)
+		
+		if notifySelectedChanged
+			pListeners.forEach(block ListModelListener each
+				each.selectionChanged(this)
+			end)
+		end
 	end
 	
 	/**
@@ -523,11 +532,20 @@ class DefaultListModel implements ListModel
 		
 		pElements.sort(ablock)
 		
+		var bool notifySelectedChanged
 		if pSelected != -1
+			var int oldSelection = pSelected
 			pSelected = indexOf(selected)
+			notifySelectedChanged = pSelected != oldSelection
 		end
 		
 		notifyContentChanged(0, pElements.getCount() - 1)
+		
+		if notifySelectedChanged
+			pListeners.forEach(block ListModelListener each
+				each.selectionChanged(this)
+			end)
+		end
 	end
 	
 	

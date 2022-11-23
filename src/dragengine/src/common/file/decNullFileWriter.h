@@ -82,6 +82,9 @@ public:
 	
 	/** \brief Write \em size bytes from \em buffer and advances the file pointer. */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

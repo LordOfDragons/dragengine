@@ -40,8 +40,7 @@
 deoglPLODMaxPixelError::deoglPLODMaxPixelError( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
 	SetName( "lodMaxPixelError" );
 	SetDescription( "Maximum allowed error in pixels for LOD calculation."
-		" Higher values chooses LOD geometry quicker improving performance at the cost"
-		" of higher chance of popping." );
+		" Higher values chooses LOD geometry quicker improving performance but can increase popping." );
 	SetType( deModuleParameter::eptSelection );
 	SetCategory( ecAdvanced );
 	SetDisplayName( "LOD Max Pixel Error" );

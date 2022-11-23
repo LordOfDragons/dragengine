@@ -120,6 +120,7 @@ void deWebpModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 	
 	try{
 		if( image.GetComponentCount() == 4 ){
+			// WebPEncodeLosslessRGB
 			size = WebPEncodeRGBA( ( const uint8_t* )image.GetDataRGBA8(), image.GetWidth(),
 				image.GetHeight(), image.GetWidth() * 4, quality, &output );
 			

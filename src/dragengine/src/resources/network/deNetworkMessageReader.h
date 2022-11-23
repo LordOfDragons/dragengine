@@ -48,6 +48,9 @@ public:
 	/** \brief Create network message reader. */
 	deNetworkMessageReader( deNetworkMessage *message );
 	
+private:
+	deNetworkMessageReader( const deNetworkMessageReader &reader );
+	
 protected:
 	/**
 	 * \brief Clean up network message reader.
@@ -103,6 +106,9 @@ public:
 	 * \throws deeInvalidParam GetPosition() + \em size is larger than GetLength().
 	 */
 	virtual void Read( void *buffer, int size );
+	
+	/** \brief Duplicate file reader. */
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 };
 

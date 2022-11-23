@@ -52,6 +52,9 @@ public:
 	 */
 	decMemoryFileWriter( decMemoryFile *memoryFile, bool append );
 	
+private:
+	decMemoryFileWriter( const decMemoryFileWriter &writer );
+	
 protected:
 	/**
 	 * \brief Clean up memory file reader.
@@ -88,6 +91,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

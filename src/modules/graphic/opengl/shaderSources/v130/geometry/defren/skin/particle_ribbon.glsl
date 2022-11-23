@@ -145,7 +145,7 @@ out vec4 vParticleColor; // from curve property
 #endif
 
 #ifdef GS_RENDER_STEREO
-	out flat int vLayer;
+	flat out int vLayer;
 #else
 	const int vLayer = 0;
 #endif

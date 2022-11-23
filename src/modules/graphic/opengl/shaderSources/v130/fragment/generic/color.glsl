@@ -1,36 +1,32 @@
 precision highp float;
 precision highp int;
 
-#ifdef WITH_DEPTH
-uniform HIGHP sampler2D texDepth;
-#endif
-
 uniform vec4 pColor;
-#ifdef WITH_DEPTH
-uniform vec2 pSCToDTC; // screen coordinates to depth texture coordinates
-#endif
 
 out vec4 outColor;
 
-#ifdef ENCODE_DEPTH
-const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif // ENCODE_DEPTH
+#ifdef WITH_DEPTH
+	#include "v130/shared/ubo_defines.glsl"
+	#include "v130/shared/defren/ubo_render_parameters.glsl"
+	
+	uniform HIGHP sampler2DArray texDepth;
+	
+	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		flat in int vLayer;
+	#else
+		const int vLayer = 0;
+	#endif
+	
+	#include "v130/shared/defren/sample_depth.glsl"
+#endif
 
 void main( void ){
 	#ifdef WITH_DEPTH
+		float depth = sampleDepth( texDepth, ivec3( gl_FragCoord.xy, vLayer ) );
 		#ifdef INVERSE_DEPTH
-			#ifdef ENCODE_DEPTH
-				if( gl_FragCoord.z < dot( texture( texDepth, gl_FragCoord.xy * pSCToDTC ).rgb, unpackDepth ) ) discard;
-			#else
-				if( gl_FragCoord.z < texture( texDepth, gl_FragCoord.xy * pSCToDTC ).r ) discard;
-			#endif
-			
+			if( gl_FragCoord.z < depth ) discard;
 		#else
-			#ifdef ENCODE_DEPTH
-				if( gl_FragCoord.z > dot( texture( texDepth, gl_FragCoord.xy * pSCToDTC ).rgb, unpackDepth ) ) discard;
-			#else
-				if( gl_FragCoord.z > texture( texDepth, gl_FragCoord.xy * pSCToDTC ).r ) discard;
-			#endif
+			if( gl_FragCoord.z > depth ) discard;
 		#endif
 	#endif
 	

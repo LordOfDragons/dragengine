@@ -96,6 +96,15 @@ void deClassLanguagePack::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mys
 // management
 ///////////////
 
+// public func String getIdentifier()
+deClassLanguagePack::nfGetIdentifier::nfGetIdentifier( const sInitData &init ) :
+dsFunction( init.clsLP, "getIdentifier", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassLanguagePack::nfGetIdentifier::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deLanguagePack &langPack = *( ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack );
+	rt->PushString( langPack.GetIdentifier() );
+}
+
 // public func UnicodeString getName()
 deClassLanguagePack::nfGetName::nfGetName( const sInitData &init ) :
 dsFunction( init.clsLP, "getName", DSFT_FUNCTION,
@@ -160,10 +169,32 @@ void deClassLanguagePack::nfTranslate2::RunFunction( dsRunTime *rt, dsValue *mys
 	deClassUnicodeString &clsUS = *ds.GetClassUnicodeString();
 	
 	const char * const name = rt->GetValue( 0 )->GetString();
-	const decUnicodeString &defaultValue = clsUS.GetUnicodeString(
-		rt->GetValue( 1 )->GetRealObject() );
+	const decUnicodeString *text = nullptr;
 	
-	clsUS.PushUnicodeString( rt, langPack.Translate( name, defaultValue ) );
+	if( langPack.Translate( name, &text ) ){
+		clsUS.PushUnicodeString( rt, *text );
+		
+	}else{
+		dsRealObject * const objDefaultValue = rt->GetValue( 1 )->GetRealObject();
+		if( objDefaultValue ){
+			clsUS.PushUnicodeString( rt, clsUS.GetUnicodeString( objDefaultValue ) );
+			
+		}else{
+			rt->PushObject( nullptr, &clsUS );
+		}
+	}
+}
+
+// public func UnicodeString getMissingText()
+deClassLanguagePack::nfGetMissingText::nfGetMissingText( const sInitData &init ) :
+dsFunction( init.clsLP, "getMissingText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS ){
+}
+
+void deClassLanguagePack::nfGetMissingText::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deLanguagePack &langPack = *( ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack );
+	deScriptingDragonScript &ds = ( ( deClassLanguagePack* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassUnicodeString()->PushUnicodeString( rt, langPack.GetMissingText() );
 }
 
 
@@ -242,12 +273,14 @@ void deClassLanguagePack::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
+	AddFunction( new nfGetIdentifier( init ) );
 	AddFunction( new nfGetName( init ) );
 	AddFunction( new nfGetDescription( init ) );
 	AddFunction( new nfGetFilename( init ) );
 	
 	AddFunction( new nfTranslate( init ) );
 	AddFunction( new nfTranslate2( init ) );
+	AddFunction( new nfGetMissingText( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

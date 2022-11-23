@@ -73,6 +73,9 @@ pNoNotReflected( false ),
 pNoRendered( false ),
 pOutline( false ),
 
+pFilterXRay( false ),
+pXRay( false ),
+
 pFilterHoles( false ),
 pWithHoles( false ),
 
@@ -117,6 +120,14 @@ void deoglAddToPersistentRenderTask::SetNoRendered( bool noRendered ){
 
 void deoglAddToPersistentRenderTask::SetOutline( bool outline ){
 	pOutline = outline;
+}
+
+void deoglAddToPersistentRenderTask::SetFilterXRay( bool filterXRay ){
+	pFilterXRay = filterXRay;
+}
+
+void deoglAddToPersistentRenderTask::SetXRay( bool xray ){
+	pXRay = xray;
 }
 
 void deoglAddToPersistentRenderTask::SetNoShadowNone( bool noShadowNone ){
@@ -256,6 +267,9 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 //////////////////////
 
 bool deoglAddToPersistentRenderTask::pFilterReject( const deoglSkinTexture *skinTexture ) const{
+	if( ! skinTexture ){
+		return true;
+	}
 	if( pOutline ){
 		if( ! skinTexture->GetHasOutline() ){
 			return true;
@@ -278,6 +292,9 @@ bool deoglAddToPersistentRenderTask::pFilterReject( const deoglSkinTexture *skin
 
 bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const{
 	if( ! skinTexture ){
+		return true;
+	}
+	if( pFilterXRay && pXRay != skinTexture->GetXRay() ){
 		return true;
 	}
 	if( pFilterHoles && pWithHoles != skinTexture->GetHasHoles() ){

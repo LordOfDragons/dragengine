@@ -816,7 +816,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deog
 	
 	pAddToRenderTask->SetEnforceShader( GetRenderOcclusionMapRTS( plan, mask, true ) );
 	
-	pAddToRenderTask->AddOcclusionMeshes( plan.GetComponentsOccMap() );
+	pAddToRenderTask->AddOcclusionMeshes( plan.GetComponentsOccMap(), true );
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Build RT" );
 	
 	RenderOcclusionMap( plan, *pRenderTask );
@@ -942,7 +942,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	renderThread.GetShader().ActivateShader( program );
 	shader = program->GetCompiled();
 	
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) ); // ati bug, disabling depth testing gets you in hell's kitchen
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -1418,7 +1418,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 			pRenderTask->SetRenderParamBlock( pRenderParamBlock );
 			pRenderTask->SetUseSPBInstanceFlags( useGSRenderCube );
 			
-			pAddToRenderTask->AddOcclusionMeshes( collideList );
+			pAddToRenderTask->AddOcclusionMeshes( collideList, true );
 			
 			pRenderTask->PrepareForRender();
 			rengeom.RenderTask( *pRenderTask );
@@ -1454,7 +1454,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 				pRenderTask->SetRenderParamBlock( pRenderParamBlock );
 				
 				pAddToRenderTask->SetFilterCubeFace( cmf );
-				pAddToRenderTask->AddOcclusionMeshes( collideList );
+				pAddToRenderTask->AddOcclusionMeshes( collideList, true );
 				
 				pRenderTask->PrepareForRender();
 				rengeom.RenderTask( *pRenderTask );

@@ -392,11 +392,19 @@ bool debpColliderBones::UpdateFromBody(){
 	return anyBoneChanged;
 }
 
+void debpColliderBones::SetAllBonesDirty(){
+	int i;
+	for( i=0; i<pBonePhysicsCount; i++ ){
+		pBonesPhysics[ i ]->SetDirty( true );
+	}
+}
+
 void debpColliderBones::ActivateDirtyPhysicsBodies(){
 	int i;
 	for( i=0; i<pBonePhysicsCount; i++ ){
-		if( pBonesPhysics[ i ]->GetDirty() ){
+		if( pBonesPhysics[ i ]->GetDirty() || pBonesPhysics[ i ]->RequiresAutoDirty() ){
 			pBonesPhysics[ i ]->GetPhysicsBody()->Activate();
+			pBonesPhysics[ i ]->SetDirty( false );
 		}
 	}
 }
@@ -479,6 +487,48 @@ float fluctStrength, float fluctDirection ){
 		
 		phyBody.ApplyForce( flucmat.TransformNormal( direction ) * addForce );
 		//phyBody.ApplyTorque( addtorque ); // += direction * addtorque;
+	}
+}
+
+void debpColliderBones::UpdateFromKinematic( bool resetInterpolation ){
+	const bool dynamic = pEngColliderRig->GetResponseType() == deCollider::ertDynamic;
+	if( dynamic ){
+		return;
+	}
+	
+	const decDMatrix &colMatrix = pCollider.GetMatrix();
+	
+	deComponent * const component = GetComponent();
+	if( component ){
+		int i;
+		for( i=0; i<pBoneCount; i++ ){
+			if( pBones[ i ] ){
+				const decDMatrix boneMatrix( component->GetBoneAt( i ).GetMatrix().QuickMultiply( colMatrix ) );
+				debpPhysicsBody &phybody = *pBones[ i ]->GetPhysicsBody();
+				phybody.SetPosition( boneMatrix.GetPosition() );
+				phybody.SetOrientation( boneMatrix.ToQuaternion() );
+				if( resetInterpolation ){
+					phybody.ResetKinematicInterpolation();
+				}
+			}
+		}
+		
+	}else{
+		deRig * const rig = GetRig();
+		if( rig ){
+			int i;
+			for( i=0; i<pBoneCount; i++ ){
+				if( pBones[ i ] ){
+					const decDMatrix boneMatrix( rig->GetBoneAt( i ).GetMatrix().QuickMultiply( colMatrix ) );
+					debpPhysicsBody &phybody = *pBones[ i ]->GetPhysicsBody();
+					phybody.SetPosition( boneMatrix.GetPosition() );
+					phybody.SetOrientation( boneMatrix.ToQuaternion() );
+					if( resetInterpolation ){
+						phybody.ResetKinematicInterpolation();
+					}
+				}
+			}
+		}
 	}
 }
 

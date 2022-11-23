@@ -28,6 +28,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 
 #include <android/configuration.h>
@@ -141,6 +142,42 @@ void deOSAndroid::ProcessEventLoop( bool sendToInputModule ){
 	// not supported yet
 	pScreenWidth = ANativeWindow_getWidth( &pNativeWindow );
 	pScreenHeight = ANativeWindow_getHeight( &pNativeWindow );
+}
+
+decString deOSAndroid::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSAndroid::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
 }
 
 
@@ -286,6 +323,9 @@ void deOSAndroid::pGetOSParameters(){
 	jclass clsDisplay = env->GetObjectClass( objDisplay );
 	jmethodID metGetRefreshRate = env->GetMethodID( clsDisplay, "getRefreshRate", "()F" );
 	pScreenRefreshRate = ( int )( env->CallFloatMethod( objDisplay, metGetRefreshRate ) + 0.1f );
+	
+	// init locale
+	setlocale( LC_ALL, "" );
 }
 
 #endif

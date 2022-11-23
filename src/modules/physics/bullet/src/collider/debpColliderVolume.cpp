@@ -377,7 +377,6 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 		return;
 	}
 	
-	dePhysicsBullet &bullet = *GetBullet();
 	debpWorld &world = *GetParentWorld();
 	deCollisionInfo *colinfo = world.GetCollisionInfo();
 	debpCollisionWorld &dynamicsWorld = *world.GetDynamicsWorld();
@@ -388,7 +387,7 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 	
 	int cspmax = 20;
 	int cheapStuckPrevention = 0;
-	float csphist[ cspmax + 1 ];
+	BP_DEBUG_IF( float csphist[ cspmax + 1 ] )
 	float localElapsed = elapsed;
 	
 	//pUpdateBPShape();
@@ -555,19 +554,18 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 		
 		localElapsed -= localElapsed * colliderMoveHits.GetHitDistance();
 		
-		csphist[ cheapStuckPrevention ] = colliderMoveHits.GetHitDistance();
+		BP_DEBUG_IF( csphist[ cheapStuckPrevention ] = colliderMoveHits.GetHitDistance() )
 		cheapStuckPrevention++;
 		
 		if( cheapStuckPrevention == cspmax ){
+			#ifdef WITH_DEBUG
+			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderVolume.GetPosition();
 			const decVector rotation( decMatrix::CreateFromQuaternion(
 				pColliderVolume.GetOrientation() ).GetEulerAngles() / DEG2RAD );
 			const decVector &lvelo = pColliderVolume.GetLinearVelocity();
 			const decVector avelo( pColliderVolume.GetAngularVelocity() / DEG2RAD );
 			int i;
-			
-			pColliderVolume.SetLinearVelocity( decVector() );
-			pColliderVolume.SetAngularVelocity( decVector() );
 			
 			bullet.LogWarnFormat( "STUCK! collider=%p responseType=%i",
 				&pColliderVolume, pColliderVolume.GetResponseType() );
@@ -583,6 +581,10 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 			}
 			text.Append( "]" );
 			bullet.LogWarn( text );
+			#endif
+			
+			pColliderVolume.SetLinearVelocity( decVector() );
+			pColliderVolume.SetAngularVelocity( decVector() );
 			break;
 		}
 	}

@@ -284,6 +284,17 @@ void deClassFont::nfGetMaxWidth::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushFloat( ( float )nd.font->GetFontWidth() * nd.scale );
 }
 
+// public func bool hasGlyph(int character)
+deClassFont::nfHasGlyph::nfHasGlyph( const sInitData &init ) :
+dsFunction( init.clsFont, "hasGlyph", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsInteger ); // char
+}
+void deClassFont::nfHasGlyph::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
+	const int character = rt->GetValue( 0 )->GetInt();
+	rt->PushBool( character >= 0 && nd.font->HasGlyph( character ) );
+}
+
 
 
 // public func int hashCode()
@@ -376,6 +387,7 @@ void deClassFont::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetCharAdvance( init ) );
 	AddFunction( new nfGetCharBearing( init ) );
 	AddFunction( new nfGetMaxWidth( init ) );
+	AddFunction( new nfHasGlyph( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

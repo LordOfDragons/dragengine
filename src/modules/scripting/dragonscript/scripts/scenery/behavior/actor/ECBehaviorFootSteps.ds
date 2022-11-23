@@ -34,7 +34,7 @@ pin Dragengine.Utils
  * Uses a list of events to play random foot steps according to an elapsing time value.
  * The elapsed time is updated with the elapsed game time while the actor is walking.
  * If auto-update is true (which is the default) update() is called automatically by
- * the behavior on thining. Otherwise the actor has to call update(float) to advance the
+ * the behavior on thinking. Otherwise the actor has to call update(float) to advance the
  * elapsed time. Independent of auto-updating the actor has to call reset() when standing
  * still to ensure the events fire at the right time.
  * 

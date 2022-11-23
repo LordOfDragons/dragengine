@@ -378,4 +378,57 @@ class MenuPopup extends WindowPopup
 		// continue processing event according to super class logic
 		return false
 	end
+	
+	
+	
+	/**
+	 * \brief Convenience method to add menu item to context menu.
+	 * \version 1.16
+	 * 
+	 * Same as addItemCommand(MenuPopup,TranslationManager,String,String,Image,bool,ActionListener)
+	 * but uses BaseGameApp.getApp().getTranslationManager() as translation manager if
+	 * BaseGameApp.getApp() is not null.
+	 */
+	public func MenuItemCommand addItemCommand(MenuPopup menu, String labelId,\
+	String label, Image icon, bool enabled, ActionListener action)
+		var TranslationManager translationManager
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			translationManager = app.getTranslationManager()
+		end
+		return addItemCommand(menu, translationManager, labelId, label, icon, enabled, action)
+	end
+	
+	/**
+	 * \brief Convenience method to add menu item to context menu.
+	 * \version 1.16
+	 * 
+	 * Creates instance of MenuItemCommand with potentially translated text, icon and action,
+	 * sets the enabled state and adds it to the menu.
+	 * 
+	 * \param menu Menu to add item to.
+	 * \param translationManager Translation manager to use or null.
+	 * \param labelId Translation entry identifier to use if translationManager is not null.
+	 * \param label Label to use if translationManager is null or translation is not found.
+	 * \param icon Icon to use or null.
+	 * \param enable Enable menu item.
+	 * \param action Action to use.
+	 * \returns created menu item.
+	 */
+	public func MenuItemCommand addItemCommand(MenuPopup menu,\
+	TranslationManager translationManager, String labelId, String label, Image icon,\
+	bool enabled, ActionListener action)
+		if translationManager != null and not labelId.empty()
+			var UnicodeString translated = translationManager.translate(labelId, null)
+			if translated != null
+				label = translated.toUTF8()
+			end
+		end
+		
+		var MenuItemCommand command = MenuItemCommand.new(icon, label, action)
+		command.setEnabled(enabled)
+		addWidget(command)
+		
+		return command
+	end
 end

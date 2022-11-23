@@ -37,6 +37,7 @@ class lpeLangPackListener;
  */
 class lpeLangPack : public igdeEditableEntity{
 private:
+	decString pIdentifier;
 	decUnicodeString pName;
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
@@ -57,6 +58,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Identifier. */
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
+	
+	/** Sets identifier. */
+	void SetIdentifier( const char *identifier );
+	
 	/** Retrieves the name in the native language. */
 	inline const decUnicodeString &GetName() const{ return pName; }
 	/** Sets the name in the native language. */

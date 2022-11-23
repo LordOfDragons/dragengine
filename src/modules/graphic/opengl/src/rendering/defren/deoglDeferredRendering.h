@@ -73,6 +73,7 @@ private:
 	deoglArrayTexture *pTextureDepth1;
 	deoglArrayTexture *pTextureDepth2;
 	deoglArrayTexture *pTextureDepth3;
+	deoglArrayTexture *pTextureDepthXRay;
 	deoglArrayTexture *pTextureDiffuse;
 	deoglArrayTexture *pTextureNormal;
 	deoglArrayTexture *pTextureReflectivity;
@@ -85,7 +86,7 @@ private:
 	deoglArrayTexture *pTextureTemporary2;
 	deoglArrayTexture *pTextureTemporary3;
 	
-	deoglFramebuffer *pFBOs[ 37 ];
+	deoglFramebuffer *pFBOs[ 38 ];
 	deoglFramebuffer **pFBOMipMapDepth1;
 	deoglFramebuffer **pFBOMipMapDepth2;
 	deoglFramebuffer **pFBOMipMapTemporary1;
@@ -95,7 +96,7 @@ private:
 	bool pModeDepth;
 	bool pModePostProcess;
 	
-	deoglFramebuffer *pFBOCopyDepth[ 6 ];
+	deoglFramebuffer *pFBOCopyDepth[ 8 ];
 	
 	deoglDRDepthMinMax *pDepthMinMax;
 	
@@ -154,35 +155,35 @@ public:
 	
 	
 	
-	/** \brief Fade out near render range. */
+	/** Fade out near render range. */
 	inline bool GetUseFadeOutRange() const{ return pUseFadeOutRange; }
 	
 	
 	
-	/** \brief Enable inverse depth using floating point depth buffer if supported. */
+	/** Enable inverse depth using floating point depth buffer if supported. */
 	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
 	
-	/** \brief Regular depth compare function. */
+	/** Regular depth compare function. */
 	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
 	
-	/** \brief Reversed depth compare function. */
+	/** Reversed depth compare function. */
 	inline GLenum GetDepthCompareFuncReversed() const{ return pDepthCompareFuncReversed; }
 	
-	/** \brief Regular clear depth value. */
+	/** Regular clear depth value. */
 	inline GLfloat GetClearDepthValueRegular() const{ return pClearDepthValueRegular; }
 	
-	/** \brief Reversed clear depth value. */
+	/** Reversed clear depth value. */
 	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
 	
 	/**
-	 * \brief Create projection matrix matching depth usage mode.
+	 * Create projection matrix matching depth usage mode.
 	 * \details Depending on the inverse depth mode used the projection matrix is either
 	 *          infinite or non-infinite.
 	 */
 	decDMatrix CreateProjectionDMatrix( int width, int height, float fov, float fovRatio, float znear, float zfar ) const;
 	
 	/**
-	 * \brief Create frustum matrix.
+	 * Create frustum matrix.
 	 * \details This is the same as CreateProjectionDMatrix but always creates a
 	 *          non-infinite projection matrix.
 	 */
@@ -190,32 +191,41 @@ public:
 	
 	
 	
-	/** \brief Render buffer. */
+	/** Render buffer. */
 	inline deoglRenderbuffer *GetRenderbuffer() const{ return pRenderbuffer; }
 	
-	/** \brief First depth texture. */
+	/** First depth texture. */
 	deoglArrayTexture *GetDepthTexture1() const;
 	
-	/** \brief Second depth texture. */
+	/** Second depth texture. */
 	deoglArrayTexture *GetDepthTexture2() const;
 	
-	/** \brief Third depth texture. */
+	/** Third depth texture. */
 	inline deoglArrayTexture *GetDepthTexture3() const{ return pTextureDepth3; }
 	
-	/** \brief Swap first depth texture to second. */
+	/** XRay depth texture. */
+	inline deoglArrayTexture *GetDepthTextureXRay() const{ return pTextureDepthXRay; }
+	
+	/** Swap first depth texture to second. */
 	void SwapDepthTextures();
 	
 	/**
-	 * \brief Copy first depth texture to second using framebuffer blitting.
+	 * Copy first depth texture to second using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
 	void CopyFirstDepthToSecond( bool copyDepth, bool copyStencil );
 	
 	/**
-	 * \brief Copy first depth texture to third depth using framebuffer blitting.
+	 * Copy first depth texture to third depth using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
 	void CopyFirstDepthToThirdDepth( bool copyDepth, bool copyStencil );
+	
+	/**
+	 * Copy first depth texture to XRay depth using framebuffer blitting.
+	 * \details After call returns active framebuffer is undefined.
+	 */
+	void CopyFirstDepthToXRayDepth( bool copyDepth, bool copyStencil );
 	
 	/** Retrieves the diffuse texture. */
 	inline deoglArrayTexture *GetTextureDiffuse() const{ return pTextureDiffuse; }
@@ -251,14 +261,17 @@ public:
 	
 	
 	
-	/** \brief Activate fbo for rendering to first depth texture. */
+	/** Activate fbo for rendering to first depth texture. */
 	void ActivateFBODepth();
 	
-	/** \brief Activate fbo for rendering to mip-map level of current depth texture. */
+	/** Activate fbo for rendering to mip-map level of current depth texture. */
 	void ActivateFBODepthLevel( int level );
 	
-	/** \brief Activate fbo for rendering to third depth texture. */
+	/** Activate fbo for rendering to third depth texture. */
 	void ActivateFBODepth3();
+	
+	/** Activate fbo for rendering to XRay depth texture. */
+	void ActivateFBODepthXRay();
 	
 	/** Activates the current post process fbo with or without depth enabled. */
 	void ActivatePostProcessFBO( bool withDepth );

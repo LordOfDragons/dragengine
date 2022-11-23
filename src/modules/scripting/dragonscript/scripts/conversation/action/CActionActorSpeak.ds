@@ -55,6 +55,7 @@ class CActionActorSpeak extends ConversationAction
 	private var Sound pSound
 	private var StringID pActorID
 	private var UnicodeString pTextBoxText
+	private var String pTextBoxTextTranslate
 	private var StringID pTextBoxTextStyle
 	private var String pPathSound
 	private var Array pWords
@@ -84,60 +85,68 @@ class CActionActorSpeak extends ConversationAction
 	public func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			var PersistencyFlags flags = PersistencyFlags.new(1, reader)
-			pUseSpeechAnimation = flags.getAt(0)
-			
-			pActorID = env.readStringIDOrNullIfEmpty(reader)
-			
-			var String text = reader.readString16()
-			if not text.empty()
-				pTextBoxText = UnicodeString.newFromUTF8(text)
-			end
-			
-			pTextBoxTextStyle = env.readStringIDOrNullIfEmpty(reader)
-			pPathSound = env.readString16OrNullIfEmpty(reader)
-			
-			var int i, count = reader.readUShort()
-			pWords = Array.new()
-			for i = 0 to count
-				pWords.add(ConversationStrip.readFromFile(reader))
-			end
-			
-			count = reader.readUShort()
-			pFacePoses = Array.new()
-			for i = 0 to count
-				pFacePoses.add(ConversationStrip.readFromFile(reader))
-			end
-			
-			count = reader.readUShort()
-			pGestures = Array.new()
-			for i = 0 to count
-				pGestures.add(ConversationStrip.readFromFile(reader))
-			end
-			
-			count = reader.readUShort()
-			pBodyLookAts = Array.new()
-			for i = 0 to count
-				pBodyLookAts.add(ConversationStrip.readFromFile(reader))
-			end
-			
-			count = reader.readUShort()
-			pHeadLookAts = Array.new()
-			for i = 0 to count
-				pHeadLookAts.add(ConversationStrip.readFromFile(reader))
-			end
-			
-			count = reader.readUShort()
-			pEyesLookAts = Array.new()
-			for i = 0 to count
-				pEyesLookAts.add(ConversationStrip.readFromFile(reader))
-			end
-			
-			pMinSpeechTime = reader.readFloat()
+			readV0(env, reader)
+
+		case 1
+			readV0(env, reader)
+			pTextBoxTextTranslate = env.readString16OrNullIfEmpty(reader)
 			
 		else
 			throw EInvalidParam.new("unsupported version")
 		end
+	end
+	
+	protected func void readV0(PersistencyEnvironment env, FileReader reader)
+		var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+		pUseSpeechAnimation = flags.getAt(0)
+		
+		pActorID = env.readStringIDOrNullIfEmpty(reader)
+		
+		var String text = reader.readString16()
+		if not text.empty()
+			pTextBoxText = UnicodeString.newFromUTF8(text)
+		end
+		
+		pTextBoxTextStyle = env.readStringIDOrNullIfEmpty(reader)
+		pPathSound = env.readString16OrNullIfEmpty(reader)
+		
+		var int i, count = reader.readUShort()
+		pWords = Array.new()
+		for i = 0 to count
+			pWords.add(ConversationStrip.readFromFile(reader))
+		end
+		
+		count = reader.readUShort()
+		pFacePoses = Array.new()
+		for i = 0 to count
+			pFacePoses.add(ConversationStrip.readFromFile(reader))
+		end
+		
+		count = reader.readUShort()
+		pGestures = Array.new()
+		for i = 0 to count
+			pGestures.add(ConversationStrip.readFromFile(reader))
+		end
+		
+		count = reader.readUShort()
+		pBodyLookAts = Array.new()
+		for i = 0 to count
+			pBodyLookAts.add(ConversationStrip.readFromFile(reader))
+		end
+		
+		count = reader.readUShort()
+		pHeadLookAts = Array.new()
+		for i = 0 to count
+			pHeadLookAts.add(ConversationStrip.readFromFile(reader))
+		end
+		
+		count = reader.readUShort()
+		pEyesLookAts = Array.new()
+		for i = 0 to count
+			pEyesLookAts.add(ConversationStrip.readFromFile(reader))
+		end
+		
+		pMinSpeechTime = reader.readFloat()
 	end
 	
 	
@@ -169,6 +178,22 @@ class CActionActorSpeak extends ConversationAction
 	/** \brief Set text box text or null to not set the text. */
 	public func void setTextBoxText(UnicodeString text)
 		pTextBoxText = text
+	end
+	
+	/**
+	 * \brief Translated text box text or null to use regular text box text.
+	 * \version 1.16
+	 */
+	public func String getTextBoxTextTranslate()
+		return pTextBoxTextTranslate
+	end
+	
+	/**
+	 * \brief Set translated text box text or null to use regular text box text.
+	 * \version 1.16
+	 */
+	public func void setTextBoxTextTranslate(String name)
+		pTextBoxTextTranslate = name
 	end
 	
 	/** \brief Text box text style id. */
@@ -503,7 +528,15 @@ class CActionActorSpeak extends ConversationAction
 	
 	/** \brief Execute sub title. */
 	public func void executeSubTitle(ConversationPlayback playback, ConversationActor actor, float speechTime)
-		if pTextBoxText == null or pTextBoxText.getLength() == 0
+		var UnicodeString textBoxText = pTextBoxText
+		if pTextBoxTextTranslate != null
+			var TranslationManager tm = playback.getTranslationManager()
+			if tm != null
+				textBoxText = tm.translate(pTextBoxTextTranslate)
+			end
+		end
+		
+		if textBoxText == null or textBoxText.getLength() == 0
 			return
 		end
 		
@@ -512,7 +545,7 @@ class CActionActorSpeak extends ConversationAction
 			return
 		end
 		
-		var SubTitleBoxText text = actor.createSubTitleText(pTextBoxText, pTextBoxTextStyle)
+		var SubTitleBoxText text = actor.createSubTitleText(textBoxText, pTextBoxTextStyle)
 		subTitle.addSubTitleText(text.subtitleWidget())
 		actor.setSubTitleText(text)
 		
@@ -576,22 +609,28 @@ class CActionActorSpeak extends ConversationAction
 		
 		facePosePlayback.removeAllPoses()
 		
-		pFacePoses.forEach(block ConversationStrip each
+		pFacePoses.forEach(block ConversationStrip strip
 			var Array playbackPose
 			
-			if each.getID() != null
-				var ConversationFacePose facePose = conversation.getFacePoseNamed(each.getID())
+			if strip.getID() != null
+				var ConversationFacePose facePose = conversation.getFacePoseNamed(strip.getID())
 				
 				if facePose != null
 					playbackPose = Array.new()
-					facePose.forEachController(block ConversationControllerValue each2
-						playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
-							each2.getController(), each2.getValue()))
+					facePose.forEachController(block ConversationControllerValue each
+						if each.getControllerName() != null
+							playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
+								each.getControllerName(), each.getValue()))
+								
+						else // deprecated
+							playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
+								each.getController(), each.getValue()))
+						end
 					end)
 				end
 			end
 			
-			facePosePlayback.addPose(playbackPose, each)
+			facePosePlayback.addPose(playbackPose, strip)
 		end)
 	end
 	
@@ -679,7 +718,7 @@ class CActionActorSpeak extends ConversationAction
 	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte(0) // version
+		writer.writeByte(1) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new(1)
 		flags.setAt(0, pUseSpeechAnimation)
@@ -723,5 +762,6 @@ class CActionActorSpeak extends ConversationAction
 		end)
 		
 		writer.writeFloat(pMinSpeechTime)
+		env.writeString16OrEmptyIfNull(writer, pTextBoxTextTranslate)
 	end
 end

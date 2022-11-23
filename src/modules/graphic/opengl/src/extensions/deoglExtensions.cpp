@@ -608,6 +608,20 @@ void deoglExtensions::pScanExtensions(){
 		pHasExtension[ ext_ARB_shader_draw_parameters ] = false;
 	}
 	
+	// the same problem for gl_Layer in vertex shaders. looks like core 4.5 is required
+	// otherwise it fails. maybe later on create a bug-test to figure out if these two
+	// parameters are supported so we do not have to hard-code things here
+	if( pHasExtension[ ext_ARB_shader_viewport_layer_array ] && pGLVersion < evgl4p5 ){
+		pRenderThread.GetLogger().LogWarn( "Extension ARB_shader_viewport_layer_array forcefully"
+			" disabled since OpenGL is less then 4.5 Core" );
+		pHasExtension[ ext_ARB_shader_viewport_layer_array ] = false;
+	}
+	if( pHasExtension[ ext_AMD_vertex_shader_layer ] && pGLVersion < evgl4p5 ){
+		pRenderThread.GetLogger().LogWarn( "Extension AMD_vertex_shader_layer forcefully"
+			" disabled since OpenGL is less then 4.5 Core" );
+		pHasExtension[ ext_AMD_vertex_shader_layer ] = false;
+	}
+	
 	pHasSeamlessCubeMap = pHasExtension[ ext_ARB_seamless_cube_map ]
 		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
 	
@@ -892,7 +906,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// GL_EXT_texture_object : no opengl version
 	
-	// GL_ARB_compute_shader : opengl version 4.3 but to find on most GPUs with 3.3 onwards
+	// GL_ARB_compute_shader : opengl version 4.3
 	#ifdef ANDROID
 	if( ! pSupportsComputeShader ){
 		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
@@ -903,6 +917,9 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
 	#endif
+	
+	// memory barrier required by compute shaders
+	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
 	
 	// no opengl version: 2.0 stuff
 	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
@@ -1148,10 +1165,10 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	#endif
 	
-	// OpenGL 4.2 : no extension
-	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
-		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
-	}
+	// OpenGL 4.2 : no extension (moved to required)
+// 	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
+// 		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
+// 	}
 	
 	// OpenGL 4.3 : no extension
 	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0 ){

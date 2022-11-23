@@ -297,6 +297,20 @@ void igdeViewCurveBezier::cActionEditClamp::OnAction(){
 
 
 
+// class igdeViewCurveBezier::cActionAutoHandles
+//////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionAutoHandles::cActionAutoHandles( igdeViewCurveBezier &view ) :
+igdeAction( "Auto Handles", nullptr, "Set default handles for interpolation type" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionAutoHandles::OnAction(){
+	pView.SetAutoHandles();
+}
+
+
+
 // Class igdeViewCurveBezier
 //////////////////////////////
 
@@ -449,6 +463,54 @@ void igdeViewCurveBezier::SetDefaultBezier(){
 	FitViewToCurve();
 }
 
+void igdeViewCurveBezier::SetAutoHandles(){
+	const int count = pCurve.GetPointCount();
+	const float f = 0.25f;
+	decCurveBezier curve;
+	int i;
+	
+	if( pCurve.GetInterpolationMode() == decCurveBezier::eimBezier ){
+		if( count == 1 ){
+			const decVector2 &pt = pCurve.GetPointAt( 0 ).GetPoint();
+			const decVector2 offset( f, 0.0f );
+			curve.AddPoint( decCurveBezierPoint( pt, pt - offset, pt + offset ) );
+			
+		}else if( count > 1 ){
+			for( i=0; i<count; i++ ){
+				const decVector2 &pt = pCurve.GetPointAt( i ).GetPoint();
+				
+				if( i == 0 ){
+					decVector2 h1( pt.Mix( pCurve.GetPointAt( i + 1 ).GetPoint(), f ) );
+					h1.y = pt.y;
+					const decVector2 h2( pt - ( h1 - pt ) );
+					curve.AddPoint( decCurveBezierPoint( pt, h2, h1 ) );
+					
+				}else if( i == count - 1 ){
+					decVector2 h1( pt.Mix( pCurve.GetPointAt( i - 1 ).GetPoint(), f ) );
+					h1.y = pt.y;
+					const decVector2 h2( pt + ( pt - h1 ) );
+					curve.AddPoint( decCurveBezierPoint( pt, h1, h2 ) );
+					
+				}else{
+					decVector2 h1( pt.Mix( pCurve.GetPointAt( i - 1 ).GetPoint(), f ) );
+					decVector2 h2( pt.Mix( pCurve.GetPointAt( i + 1 ).GetPoint(), f ) );
+					h1.y = pt.y;
+					h2.y = pt.y;
+					curve.AddPoint( decCurveBezierPoint( pt, h1, h2 ) );
+				}
+			}
+		}
+		
+	}else{
+		for( i=0; i<count; i++ ){
+			const decVector2 &pt = pCurve.GetPointAt( i ).GetPoint();
+			curve.AddPoint( decCurveBezierPoint( pt, pt, pt ) );
+		}
+	}
+	
+	SetCurve( curve );
+}
+
 
 
 void igdeViewCurveBezier::SetSelectedPoint( int index ){
@@ -544,6 +606,7 @@ void igdeViewCurveBezier::ShowContextMenu( const decPoint &position ){
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, new cActionInvertCurveX( *this ), true );
 	helper.MenuCommand( menu, new cActionInvertCurveY( *this ), true );
+	helper.MenuCommand( menu, new cActionAutoHandles( *this ), true );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, new cActionEditClamp( *this ), true );

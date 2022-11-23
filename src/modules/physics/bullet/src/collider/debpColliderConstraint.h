@@ -173,6 +173,9 @@ public:
 	 */
 	bool CheckHasBroken();
 	
+	/** Requires bone auto-dirty. */
+	bool RequiresAutoDirty() const;
+	
 	
 	
 	/** Notify constraint changed. */
@@ -244,6 +247,10 @@ private:
 	void pCreateSliderConstraint();
 	void pCreateGenericConstraint();
 	void pCreateGenericSpringConstraint();
+	
+	btScalar pLinearDamping() const;
+	btScalar pAngularDamping() const;
+	btScalar pSpringDamping() const;
 };
 
 #endif

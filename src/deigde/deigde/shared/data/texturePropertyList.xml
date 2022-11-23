@@ -863,7 +863,7 @@
 			results. Of course if you want to ensure emissive materials to white out and
 			bloom starting at an emissivity of 2.0 and above is a good way to ensure this.
 			<br/>
-			Other values are mapped to the closed of these two values.<br/>
+			Other values are mapped to 0 or 1 whichever is closer.<br/>
 			<br/>
 			Usually this property is an single value, either 0 or 1. The default is 0.
 		</description>
@@ -1629,6 +1629,32 @@
 			Due to this mapping various materials can not be properly represented.
 		</description>
 		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='xray'>
+		<description>
+			Defines if the object is visible through other objects.<br/>
+			<br/>
+			The property is a boolean type property.<br/>
+			<br/>
+			A value of 0 indicates this object is covered by other objects located closer to the camera.<br/>
+			<br/>
+			A value of 1 indicates this object is rendered in front of all other objects.
+			All objects with XRay enabled keep their depth order while rendered in front
+			of all objects with XRay disabled.<br/>
+			<br/>
+			Other values are mapped to 0 or 1 whichever is closer.<br/>
+			<br/>
+			Usually this property is an single value, either 0 or 1. The default is 0.
+		</description>
+		<type>value</type>
 		<components>1</components>
 		<default>
 			<value>0</value>

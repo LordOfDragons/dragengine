@@ -190,4 +190,28 @@ fixed class Engine
 		return false
 	end
 	/*@}*/
+	
+	
+	
+	/**
+	 * \brief Get current user locale language.
+	 * \version 1.16
+	 * 
+	 * Returns language as ISO 639 language code in lower case. If the locale can not be
+	 * determined "en" is returned.
+	 */
+	public static func String getUserLocaleLanguage()
+		return null
+	end
+	
+	/**
+	 * \brief Get current user locale territory.
+	 * \version 1.16
+	 * 
+	 * Returns language as ISO 3166 country code in lower case. If the locale can not be
+	 * determined or the locale does not contain a country code empty string is returned.
+	 */
+	public static func String getUserLocaleTerritory()
+		return null
+	end
 end

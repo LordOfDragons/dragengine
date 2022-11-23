@@ -31,8 +31,10 @@ namespace Dragengine.Commands
 class CommandQuitGame extends Command
 	/** \brief Create command. */
 	public func new()
-		this.setName( "quit" )
-		this.setDescription( "Quit game" )
+		setName("quit")
+		setDescription("Quit game")
+		setTranslateDescription("UI.Command.Quit.Description")
+		setTranslateDisplayName("UI.Command.Quit.DisplayName")
 	end
 	
 	

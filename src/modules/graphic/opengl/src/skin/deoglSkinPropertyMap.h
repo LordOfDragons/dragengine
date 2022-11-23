@@ -39,12 +39,14 @@ namespace deoglSkinPropertyMap{
 		eptColorOmnidir,
 		eptColorOmnidirEquirect,
 		eptColorSolidityMultiplier,
+		
 		eptAmbientOcclusion,
 		eptAmbientOcclusionSolidityMultiplier,
 		
 		eptNormal,
 		eptNormalStrength,
 		eptNormalSolidityMultiplier,
+		
 		eptHeight,
 		eptHeightScale,
 		eptHeightOffset,
@@ -57,16 +59,19 @@ namespace deoglSkinPropertyMap{
 		
 		eptTransparency,
 		eptTransparencyMultiplier,
+		
 		eptSolidity,
 		eptSolidityMasked,
 		eptSolidityMultiplier,
 		eptSolidityFilterPriority,
+		
 		eptRefractionDistort,
 		eptRefractionDistortStrength,
 		
 		eptReflectivity,
 		eptReflectivityMultiplier,
 		eptReflectivitySolidityMultiplier,
+		
 		eptEnvironmentMap,
 		eptReflected,
 		eptMirror,
@@ -85,11 +90,13 @@ namespace deoglSkinPropertyMap{
 		eptEnvironmentRoomEmissivityIntensity,
 		
 		eptThickness,
+		
 		eptAbsorption,
 		eptAbsorptionRange,
 		eptAbsorptionHalfIntensityDistance,
 		
 		eptShadeless,
+		
 		eptShadowNone,
 		eptShadowImportance,
 		
@@ -100,6 +107,7 @@ namespace deoglSkinPropertyMap{
 		eptTexCoordOffset,
 		eptTexCoordScale,
 		eptTexCoordRotate,
+		
 		eptOmniDirRotate,
 		eptOmniDirRotateSpot,
 		
@@ -125,7 +133,9 @@ namespace deoglSkinPropertyMap{
 		eptRimExponent,
 		
 		eptNonPbrAlbedo,
-		eptNonPbrMetalness
+		eptNonPbrMetalness,
+		
+		eptXRay
 	};
 	
 	/** Type for texture property number. */

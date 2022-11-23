@@ -447,6 +447,11 @@ DEBUG_RESET_TIMERS;
 // 			pColliderComponent.GetComponent()->PrepareBones();  // TODO IS THIS REQUIRED?!
 // 		}
 		
+		// this is dirty but i've got no better idea right now
+		if( GetConstraintCount() > 0 ){
+			pBones->SetAllBonesDirty();
+		}
+		
 		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
 DEBUG_PRINT_TIMER( "Update bone phy bodies" );
@@ -476,7 +481,6 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 		return;
 	}
 	
-	dePhysicsBullet &bullet = *GetBullet();
 	debpWorld &world = *GetParentWorld();
 	debpCollisionWorld &dynamicsWorld = *world.GetDynamicsWorld();
 	debpClosestConvexResultCallback colliderMoveHits;
@@ -488,7 +492,7 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 	
 	int cspmax = 20;
 	int cheapStuckPrevention = 0;
-	float csphist[ cspmax + 1 ];
+	BP_DEBUG_IF( float csphist[ cspmax + 1 ] )
 	
 	// hack, apply rotation before moving. has to be done correctly later on
 	PredictRotation( elapsed );
@@ -621,19 +625,18 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 		
 		localElapsed -= localElapsed * colinfo->GetDistance();
 		
-		csphist[ cheapStuckPrevention ] = colinfo->GetDistance();
+		BP_DEBUG_IF( csphist[ cheapStuckPrevention ] = colinfo->GetDistance() )
 		cheapStuckPrevention++;
 		
 		if( cheapStuckPrevention == cspmax ){
+			#ifdef WITH_DEBUG
+			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderComponent.GetPosition();
 			const decVector rotation( decMatrix::CreateFromQuaternion(
 				pColliderComponent.GetOrientation() ).GetEulerAngles() / DEG2RAD );
 			const decVector &lvelo = pColliderComponent.GetLinearVelocity();
 			const decVector avelo( pColliderComponent.GetAngularVelocity() / DEG2RAD );
 			int i;
-			
-			pColliderComponent.SetLinearVelocity( decVector() );
-			pColliderComponent.SetAngularVelocity( decVector() );
 			
 			bullet.LogWarnFormat( "STUCK! collider=%p responseType=%i",
 				&pColliderComponent, pColliderComponent.GetResponseType() );
@@ -649,6 +652,10 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 			}
 			text.Append( "]" );
 			bullet.LogWarn( text );
+			#endif
+			
+			pColliderComponent.SetLinearVelocity( decVector() );
+			pColliderComponent.SetAngularVelocity( decVector() );
 			break;
 		}
 	}
@@ -1258,6 +1265,9 @@ void debpColliderComponent::PositionChanged(){
 			}
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1298,6 +1308,9 @@ void debpColliderComponent::OrientationChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1382,6 +1395,9 @@ void debpColliderComponent::GeometryChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}

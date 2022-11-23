@@ -1101,6 +1101,24 @@ void deClassEasyXMLElement::nfAddDataTagBool::RunFunction( dsRunTime *rt, dsValu
 	}
 }
 
+// public func EasyXMLElement addCData( String value )
+deClassEasyXMLElement::nfAddCData::nfAddCData( const sInitData &init ) :
+dsFunction( init.clsXmlElement, "addCData", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsXmlElement ){
+	p_AddParameter( init.clsString ); // value
+}
+void deClassEasyXMLElement::nfAddCData::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decXmlElement &element = *( ( ( sXMLElNatDat* )p_GetNativeData( myself ) )->element );
+	deClassEasyXMLElement * const clsXmlElement = ( deClassEasyXMLElement* )GetOwnerClass();
+	
+	const char * const value = rt->GetValue( 0 )->GetString();
+	decXmlContainer &container = *element.CastToContainer();
+	
+	const decXmlCharacterData::Ref cdata( decXmlCharacterData::Ref::New( new decXmlCharacterData( value ) ) );
+	container.AddElement( cdata );
+	clsXmlElement->PushElement( rt, cdata );
+}
+
 // public func void addComment( String comment )
 deClassEasyXMLElement::nfAddComment::nfAddComment( const sInitData &init ) :
 dsFunction( init.clsXmlElement, "addComment", DSFT_FUNCTION,
@@ -1284,6 +1302,7 @@ void deClassEasyXMLElement::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfAddDataTagInteger( init ) );
 	AddFunction( new nfAddDataTagFloat( init ) );
 	AddFunction( new nfAddDataTagBool( init ) );
+	AddFunction( new nfAddCData( init ) );
 	AddFunction( new nfAddComment( init ) );
 	
 	AddFunction( new nfForEachTag( init ) );

@@ -148,7 +148,7 @@ class ECBehaviorCollider extends DefaultECBehavior
 		 * \param collider Collider involded in the collision.
 		 * \param info Information about collision partner.
 		 */
-		func void collisionResponse( Instance instance, Collider collider, CollisionInfo info )
+		func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -163,14 +163,14 @@ class ECBehaviorCollider extends DefaultECBehavior
 		 * \param collider Collider involded in the collision.
 		 * \param info Information about collision partner.
 		 */
-		public func void collisionResponse( Instance instance, Collider collider, CollisionInfo info )
+		public func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
@@ -178,16 +178,16 @@ class ECBehaviorCollider extends DefaultECBehavior
 		private var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		public func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -200,21 +200,21 @@ class ECBehaviorCollider extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorCollider ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pListeners = Array.new()
+		public func new(ECBehaviorCollider ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of composeable instance. */
 		public func void dispose()
-			if this.pCollider != null
-				this.pCollider.setColliderListener( null )
-				this.pCollider.setOwner( null )
-				this.pCollider.removeAllCollisionTests()
-				this.pCollider.removeAllIgnoreColliders()
-				//this.pCollider = null // not doing this prevents depending behaviors fail while disposing
+			if pCollider != null
+				pCollider.setColliderListener(null)
+				pCollider.setOwner(null)
+				pCollider.removeAllCollisionTests()
+				pCollider.removeAllIgnoreColliders()
+				//pCollider = null // not doing this prevents depending behaviors fail while disposing
 			end
-			this.pListeners = null
+			pListeners = null
 			
 			super.dispose()
 		end
@@ -222,29 +222,29 @@ class ECBehaviorCollider extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		public func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
 			var ECBehaviorComponent.Instance component
-			if this.pECBehavior.getComponent() != null
-				component = this.pECBehavior.getComponent().instance( element )
+			if pECBehavior.getComponent() != null
+				component = pECBehavior.getComponent().instance(element)
 			end
 			
-			this.pCollider = this.createCollider( stub, component )
-			this.pCollider.setColliderListener( this )
-			this.pCollider.setOwner( this.getElement() )
-			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+			pCollider = createCollider(stub, component)
+			pCollider.setColliderListener(this)
+			pCollider.setOwner(getElement())
+			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
 			
 			// if response type is dynamic update bone position. this is required for dynamic
 			// rigs with bones. upon initializing the bones they are set to zero but bones
 			// in colliders are in world space. without init dynamic bones end up everywhere
 			// but not where we want them
-			if this.pCollider.getResponseType() == CollisionResponse.dynamic \
-			and this.pCollider castable ColliderComponent
-				( this.pCollider cast ColliderComponent ).copyStatesFromComponent()
+			if pCollider.getResponseType() == CollisionResponse.dynamic \
+			and pCollider castable ColliderComponent
+				(pCollider cast ColliderComponent).copyStatesFromComponent()
 			end
 			
-			this.pECBehavior.createListeners( this )
+			pECBehavior.createListeners(this)
 		end
 		
 		/**
@@ -252,17 +252,17 @@ class ECBehaviorCollider extends DefaultECBehavior
 		 * \param stub Stub to use.
 		 * \param component Component to use or \em null if absent.
 		 */
-		protected func Collider createCollider( StubElement stub, ECBehaviorComponent.Instance component )
-			var BehaviorElement element = this.getElement()
+		protected func Collider createCollider(StubElement stub, ECBehaviorComponent.Instance component)
+			var BehaviorElement element = getElement()
 			var Collider collider
 			
 			if component != null
-				collider = this.pECBehavior.getCollider().createCollider( \
-					this.getElement(), stub, component.getComponent() )
+				collider = pECBehavior.getCollider().createCollider(\
+					getElement(), stub, component.getComponent())
 			end
 			
 			if collider == null
-				collider = this.pECBehavior.getCollider().createCollider( this.getElement(), stub )
+				collider = pECBehavior.getCollider().createCollider(getElement(), stub)
 			end
 			
 			return collider
@@ -272,42 +272,42 @@ class ECBehaviorCollider extends DefaultECBehavior
 		
 		/** \brief Behavior. */
 		public func ECBehaviorCollider getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Collider. */
 		public func Collider getCollider()
-			return this.pCollider
+			return pCollider
 		end
 		
 		
 		
 		/** \brief Rig shape property or null if not possible.*/
-		public func String getRigShapeProperty( int bone, int shape )
-			if shape == -1 or this.pCollider == null or not this.pCollider castable ColliderRig
+		public func String getRigShapeProperty(int bone, int shape)
+			if shape == -1 or pCollider == null or not pCollider castable ColliderRig
 				return null
 			end
 			
-			var Rig rig = ( this.pCollider cast ColliderRig ).getRig()
+			var Rig rig = (pCollider cast ColliderRig).getRig()
 			if rig == null
 				return null
 			end
 			
 			if bone != -1
-				return rig.boneShapeGetProperty( bone, shape )
+				return rig.boneShapeGetProperty(bone, shape)
 				
 			else
-				return rig.shapeGetProperty( shape )
+				return rig.shapeGetProperty(shape)
 			end
 		end
 		
 		/** \brief Rig shape property from collision or null if not possible. */
-		public func String getRigShapeProperty( CollisionInfo info, bool owner )
+		public func String getRigShapeProperty(CollisionInfo info, bool owner)
 			if owner
-				return this.getRigShapeProperty( info.getOwnerBone(), info.getOwnerShape() )
+				return getRigShapeProperty(info.getOwnerBone(), info.getOwnerShape())
 				
 			elif info.hasBone() and info.hasShape()
-				return this.getRigShapeProperty( info.getBone(), info.getShape() )
+				return getRigShapeProperty(info.getBone(), info.getShape())
 				
 			else
 				return  null
@@ -317,45 +317,45 @@ class ECBehaviorCollider extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		public func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief State changed (visble, touchable). */
 		public func void stateChanged()
-			this.pCollider.setEnabled( this.getElement().getTouchable() )
+			pCollider.setEnabled(getElement().getTouchable())
 		end
 		
 		/** \brief Position or orientation changed. */
 		public func void geometryChanged()
-			var BehaviorElement element = this.getElement()
-			this.pCollider.setGeometry( element.getPosition(), element.getOrientation(), element.getScaling() )
+			var BehaviorElement element = getElement()
+			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
 		end
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			this.getElement().getGameWorld().getWorld().addCollider( this.pCollider )
+			getElement().getGameWorld().getWorld().addCollider(pCollider)
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			this.getElement().getGameWorld().getWorld().removeCollider( this.pCollider )
+			getElement().getGameWorld().getWorld().removeCollider(pCollider)
 		end
 		
 		
 		
 		/** \brief Colliders can hit each other. */
-		public func bool canHitCollider( Collider owner, Collider collider )
+		public func bool canHitCollider(Collider owner, Collider collider)
 			return true
 		end
 		
@@ -366,53 +366,182 @@ class ECBehaviorCollider extends DefaultECBehavior
 		 * to handle collision properly. Otherwise for static and kinematic collision response
 		 * clears linear and angular velocity. For dynamic collision response nothing is done.
 		 */
-		public func void collisionResponse( Collider owner, CollisionInfo info )
-			if this.pListeners.getCount() > 0
-				this.pListeners.forEach( block Listener each
-					each.collisionResponse( this, owner, info )
-				end )
+		public func void collisionResponse(Collider owner, CollisionInfo info)
+			if pListeners.getCount() > 0
+				pListeners.forEach(block Listener each
+					each.collisionResponse(this, owner, info)
+				end)
 				
-			elif this.pCollider.getResponseType() != CollisionResponse.dynamic
-				owner.setLinearVelocity( Vector.new() )
-				owner.setAngularVelocity( Vector.new() )
+			elif pCollider.getResponseType() != CollisionResponse.dynamic
+				owner.setLinearVelocity(Vector.new())
+				owner.setAngularVelocity(Vector.new())
 			end
 		end
 		
 		/** \brief Collider position and/or orientation changed. */
-		public func void colliderChanged( Collider owner )
-			this.getElement().setGeometry( owner.getPosition(), owner.getOrientation() )
+		public func void colliderChanged(Collider owner)
+			getElement().setGeometry(owner.getPosition(), owner.getOrientation())
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var DVector position = DVector.readFromFile( reader )
-				var Quaternion orientation = Quaternion.readFromFile( reader )
-				var Vector scaling = Vector.readFromFile( reader )
+				readColliderState(env, reader)
 				
-				this.getElement().setGeometry( position, orientation, scaling )
-				
-				this.pCollider.setLinearVelocity( Vector.readFromFile( reader ) )
-				this.pCollider.setAngularVelocity( Vector.readFromFile( reader ) )
+			case 1
+				readColliderState(env, reader)
+				readBoneStates(env, reader)
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
-		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		/**
+		 * \brief Read collider parameters from file.
+		 * \version 1.15
+		 */
+		protected func void readColliderState(PersistencyEnvironment env, FileReader reader)
+			var DVector position = DVector.readFromFile(reader)
+			var Quaternion orientation = Quaternion.readFromFile(reader)
+			var Vector scaling = Vector.readFromFile(reader)
 			
-			var BehaviorElement element = this.getElement()
-			element.getPosition().writeToFile( writer )
-			element.getOrientation().writeToFile( writer )
-			element.getScaling().writeToFile( writer )
-			this.pCollider.getLinearVelocity().writeToFile( writer )
-			this.pCollider.getAngularVelocity().writeToFile( writer )
+			getElement().setGeometry(position, orientation, scaling)
+			
+			pCollider.setLinearVelocity(Vector.readFromFile(reader))
+			pCollider.setAngularVelocity(Vector.readFromFile(reader))
+		end
+		
+		/**
+		 * \brief Read bone states from file.
+		 * \version 1.15
+		 * 
+		 * Calls readBoneState() until the false is returned. If any bone states have been
+		 * read and collider is castable to ColliderComponent then copyStatesToComponent() is
+		 * called to ensure component bone states match collider bone states.
+		 */
+		protected func void readBoneStates(PersistencyEnvironment env, FileReader reader)
+			var ColliderRig collider
+			if pCollider castable ColliderRig
+				collider = pCollider cast ColliderRig
+			end
+			
+			var bool hasStates
+			while readBoneState(env, reader, collider)
+				hasStates = true
+			end
+			
+			if hasStates and pCollider castable ColliderComponent
+				(pCollider cast ColliderComponent).copyStatesToComponent()
+			end
+		end
+		
+		/**
+		 * \brief Read bone state from file.
+		 * \version 1.15
+		 * 
+		 * Reads first the bone name. If the name is empty string this marks the end of the bone
+		 * state list and the function exits. Otherwise reads position (DVector), orientation
+		 * (Quaternion), linear velocity (Vector) and angular velocity (Vector). If the bone name
+		 * is found int he collider the respective bone parameters are set. If the bone name is
+		 * not found in the rig nothing is done. This allows loading bone states from file in
+		 * case the rig does not match anymore. The so restored bone states are potentially
+		 * incomplete but at last the bone states can be successfully read from file.
+		 * 
+		 * The parameter collider can be null if collider is not of the matching type. In this
+		 * case bone state has to be read but not applied as if the bone name is not found.
+		 * 
+		 * \returns true if bone state has been read or false if empty string has been read.
+		 */
+		protected func bool readBoneState(PersistencyEnvironment env, FileReader reader, ColliderRig collider)
+			var String name = reader.readString8()
+			if name.empty()
+				return false
+			end
+			
+			var DVector position = DVector.readFromFile(reader)
+			var Quaternion orientation = Quaternion.readFromFile(reader)
+			var Vector linearVelocity = Vector.readFromFile(reader)
+			var Vector angularVelocity = Vector.readFromFile(reader)
+			
+			if collider != null
+				var int bone = collider.getRig().indexOfBoneNamed(name)
+				if bone != -1
+					collider.boneSetPosition(bone, position)
+					collider.boneSetOrientation(bone, orientation)
+					collider.boneSetLinearVelocity(bone, linearVelocity)
+					collider.boneSetAngularVelocity(bone, angularVelocity)
+				end
+			end
+			
+			return true
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(1) // version
+			
+			var BehaviorElement element = getElement()
+			element.getPosition().writeToFile(writer)
+			element.getOrientation().writeToFile(writer)
+			element.getScaling().writeToFile(writer)
+			pCollider.getLinearVelocity().writeToFile(writer)
+			pCollider.getAngularVelocity().writeToFile(writer)
+			
+			writeBoneStates(env, writer)
+		end
+		
+		/**
+		 * \brief Write bone states to file.
+		 * \version 1.15
+		 * 
+		 * Subclass can overwrite to determine which bone states to write. Default implementation
+		 * calls writeDynamicBoneStates() if collider response type is CollisionResponse.dynamic.
+		 * For each bone state to write call writeBoneStates(). After writing all bone states
+		 * write an empty 8-bit string to mark the end of the bone state list.
+		 */
+		protected func void writeBoneStates(PersistencyEnvironment env, FileWriter writer)
+			if pCollider.getResponseType() == CollisionResponse.dynamic
+				writeDynamicBoneStates(writer)
+			end
+			writer.writeString8("")
+		end
+		
+		/**
+		 * \brief Write dynamic bone states to file.
+		 * \version 1.15
+		 */
+		protected func void writeDynamicBoneStates(FileWriter writer)
+			if pCollider castable ColliderRig
+				var ColliderRig colliderRig = pCollider cast ColliderRig
+				var Rig rig = colliderRig.getRig()
+				if rig != null
+					var int i, count = rig.getBoneCount()
+					for i = 0 to count
+						if rig.boneGetDynamic(i)
+							writeDynamicBoneState(writer, colliderRig, i)
+						end
+					end
+				end
+			end
+		end
+		
+		/**
+		 * \brief Write bone state to file.
+		 * \version 1.15
+		 * 
+		 * Writes bone name as 8-bit string then position (DVector), orientation (Quaternion)
+		 * linear velocity (Vector) and angular velocity (Vector).
+		 */
+		protected func void writeDynamicBoneState(FileWriter writer, ColliderRig collider, int bone)
+			writer.writeString8(collider.getRig().boneGetName(bone))
+			collider.boneGetPosition(bone).writeToFile(writer)
+			collider.boneGetOrientation(bone).writeToFile(writer)
+			collider.boneGetLinearVelocity(bone).writeToFile(writer)
+			collider.boneGetAngularVelocity(bone).writeToFile(writer)
 		end
 	end
 	
@@ -429,38 +558,38 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em component.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
-	this( eclass, component, "collider." )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component) \
+	this(eclass, component, "collider.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pComponent = component
-		this.pListenerFactories = Array.new()
+		pComponent = component
+		pListenerFactories = Array.new()
 		
-		this.pCollider = ECComposeCollider.new( eclass, prefix )
+		pCollider = ECComposeCollider.new(eclass, prefix)
 		
-		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.geometry)
 		
 		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.dynamic )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.particle )
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
 		
-		this.pCollider.setCollisionFilter( CollisionFilter.new( cfCategory, cfFilter ) )
+		pCollider.setCollisionFilter(CollisionFilter.new(cfCategory, cfFilter))
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pComponent = null
-		this.pListenerFactories = null
+		pComponent = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -473,10 +602,10 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * nothing and are useful to attach elements composing only of resources like ECBehaviorLight. 
 	 */
 	public func void setGhost()
-		this.pCollider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
-		this.pCollider.getLocalGravity().setVector( Vector.new() )
-		this.pCollider.getWeight().setValue( 1 )
-		this.pCollider.setCollisionFilter( CollisionFilter.new() )
+		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		pCollider.getLocalGravity().setVector(Vector.new())
+		pCollider.getWeight().setValue(1)
+		pCollider.setCollisionFilter(CollisionFilter.new())
 		// TODO setShape small spher once ECComposeCollider can do this
 	end
 	
@@ -484,20 +613,20 @@ class ECBehaviorCollider extends DefaultECBehavior
 	
 	/** \brief Composeable collider for element class. */
 	public func ECComposeCollider getCollider()
-		return this.pCollider
+		return pCollider
 	end
 	
 	/** \brief Component behavior. */
 	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+		return pComponent
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	public func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -505,27 +634,27 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -536,10 +665,10 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorCollider getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorCollider each
+	static public func ECBehaviorCollider getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorCollider each
 			return true
-		end ) cast ECBehaviorCollider
+		end) cast ECBehaviorCollider
 	end
 	
 	/**
@@ -548,16 +677,16 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorCollider.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

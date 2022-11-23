@@ -62,12 +62,14 @@ private:
 	deComponentReference pComponent;
 	decString pBone;
 	decVector pOrigin;
+	decQuaternion pOrientation;
 	decVector pDirection;
 	bool pLocalDirection;
 	bool pEnabled;
 	
 	decObjectList pCollisionInfo;
 	decDVector pTestOrigin;
+	decQuaternion pTestOrientation;
 	decDVector pTestDirection;
 	
 	
@@ -136,6 +138,18 @@ public:
 	/** \brief Set cast origin. */
 	void SetOrigin( const decVector &origin );
 	
+	/**
+	 * \brief Cast orientation.
+	 * \version 1.16
+	 */
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	
+	/**
+	 * \brief Set cast orientation.
+	 * \version 1.16
+	 */
+	void SetOrientation( const decQuaternion &orientation );
+	
 	/** \brief Cast direction. */
 	inline const decVector &GetDirection() const{ return pDirection; }
 	
@@ -178,13 +192,25 @@ public:
 	inline const decDVector &GetTestOrigin() const{ return pTestOrigin; }
 	
 	/** \brief Set test origin used by physics module. */
-	void SetTestOrigin( const decDVector &testOrigin );
+	void SetTestOrigin( const decDVector &origin );
+	
+	/**
+	 * \brief Test orientation used by physics module.
+	 * \version 1.16
+	 */
+	inline const decQuaternion &GetTestOrientation() const{ return pTestOrientation; }
+	
+	/**
+	 * \brief Set test orientation used by physics module.
+	 * \version 1.16
+	 */
+	void SetTestOrientation( const decQuaternion &orientation );
 	
 	/** \brief Test direction used by physics module. */
 	inline const decDVector &GetTestDirection() const{ return pTestDirection; }
 	
 	/** \brief Set test direction used by physics module. */
-	void SetTestDirection( const decDVector &testDirection );
+	void SetTestDirection( const decDVector &direction );
 	/*@}*/
 	
 	

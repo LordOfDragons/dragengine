@@ -183,6 +183,29 @@ UBOLAYOUT uniform RenderParameters{
 	// x: strength
 	vec2 pToneMapBloom;
 	#define pToneMapBloomStrength (pToneMapBloom.x)
+	
+	
+	
+	// debug
+	
+	// debug depth scale and shift
+	// x: depth scale
+	// y: depth shift
+	vec2 pDebugDepthTransform;
+	#define pDebugDepthScale (pDebugDepthTransform.x)
+	#define pDebugDepthOffset (pDebugDepthTransform.y)
+	
+	
+	
+	// render conditions, aka specializations
+	
+	// x: use clip plane
+	// y: use XRay
+	// z: -
+	// w: -
+	bvec4 pConditions1;
+	#define pCondClipPlane (pConditions1.x)
+	#define pCondXRay (pConditions1.y)
 };
 
 // helper functions

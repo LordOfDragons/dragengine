@@ -628,9 +628,20 @@ void debpPhysicsBody::pCreateRigidBody(){
 	cinfo.m_restitution = 0.0f; // default 0
 	
 	// sleeping thresholds. body goes to sleep if both linear and angular velocity magnitudes
-	// are less than threshold-squared for the entire sleep time (2s)
-	cinfo.m_linearSleepingThreshold = 0.8f; // default 0.8
-	cinfo.m_angularSleepingThreshold = 2.0f; // default 1
+	// are less than threshold for the entire sleep time (2s).
+	
+	// default is 0.8 m/s . this is quite high and causes objects to stop moving quickly.
+	// the value used here is 5cm/s . most probably this value should be adjusted by the
+	// size or the mass of the object. larger objects should most probably have larger
+	// threshold while smaller objects should have lower. needs more testing. in general
+	// damping and friction should make the velocity drop below the threshold to get
+	// stable results not using high thresholds.
+	cinfo.m_linearSleepingThreshold = 0.05f;
+	
+	// default is 1 rad/s which is roughly 57 deg/s . this is even more huge than the linear
+	// velocity threshold above. using 2 deg/s instead. again size or mass could be used
+	// later on to modify this value.
+	cinfo.m_angularSleepingThreshold = DEG2RAD * 2.0f;
 	
 	pRigidBody = new btRigidBody( cinfo );
 	

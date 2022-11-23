@@ -57,8 +57,7 @@ pTargetBlendFactor( rule.GetTargetBlendFactor(), firstLink ),
 pBlendMode( rule.GetBlendMode() ),
 pBlendFactor( rule.GetBlendFactor() ),
 pInvertBlendFactor( rule.GetInvertBlendFactor() ),
-pEnabled( rule.GetEnabled() )
-{
+pEnabled( rule.GetEnabled() ){
 }
 
 dearRule::~dearRule(){

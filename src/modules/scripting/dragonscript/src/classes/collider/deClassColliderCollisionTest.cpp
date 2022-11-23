@@ -28,6 +28,7 @@
 #include "../graphics/deClassComponent.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
+#include "../math/deClassQuaternion.h"
 #include "../physics/deClassTouchSensor.h"
 #include "../physics/deClassCollisionFilter.h"
 #include "../physics/deClassCollisionInfo.h"
@@ -461,6 +462,40 @@ void deClassColliderCollisionTest::nfSetOrigin::RunFunction( dsRunTime *rt, dsVa
 	}
 }
 
+// public func Quaternion getOrientation()
+deClassColliderCollisionTest::nfGetOrientation::nfGetOrientation( const sInitData &init ) :
+dsFunction( init.clsCCT, "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion ){
+}
+void deClassColliderCollisionTest::nfGetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deColliderCollisionTest &collisionTest = *( ( ( sCCTNatDat* )p_GetNativeData( myself ) )->collisionTest );
+	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassQuaternion()->PushQuaternion( rt, collisionTest.GetOrientation() );
+}
+
+// public func void setOrientation(Quaternion orientation)
+deClassColliderCollisionTest::nfSetOrientation::nfSetOrientation( const sInitData &init ) :
+dsFunction( init.clsCCT, "setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsQuaternion ); // orientation
+}
+void deClassColliderCollisionTest::nfSetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCCTNatDat &nd = *( ( sCCTNatDat* )p_GetNativeData( myself ) );
+	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
+	
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 0 )->GetRealObject() );
+	
+	if( orientation.IsEqualTo( nd.collisionTest->GetOrientation() ) ){
+		return;
+	}
+	
+	nd.collisionTest->SetOrientation( orientation );
+	
+	if( nd.parentCollider ){
+		nd.parentCollider->NotifyCollisionTestChanged(
+			nd.parentCollider->IndexOfCollisionTest( nd.collisionTest ) );
+	}
+}
+
 // public func Vector getDirection()
 deClassColliderCollisionTest::nfGetDirection::nfGetDirection( const sInitData &init ) : dsFunction( init.clsCCT,
 "getDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
@@ -570,6 +605,17 @@ void deClassColliderCollisionTest::nfGetTestOrigin::RunFunction( dsRunTime *rt, 
 	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
 	
 	ds.GetClassDVector()->PushDVector( rt, collisionTest.GetTestOrigin() );
+}
+
+// public func Quaternion getTestOrientation()
+deClassColliderCollisionTest::nfGetTestOrientation::nfGetTestOrientation( const sInitData &init ) :
+dsFunction( init.clsCCT, "getTestOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion ){
+}
+void deClassColliderCollisionTest::nfGetTestOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deColliderCollisionTest &collisionTest = *( ( ( sCCTNatDat* )p_GetNativeData( myself ) )->collisionTest );
+	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassQuaternion()->PushQuaternion( rt, collisionTest.GetTestOrientation() );
 }
 
 // public func DVector getTestDirection()
@@ -788,6 +834,7 @@ void deClassColliderCollisionTest::CreateClassMembers( dsEngine *engine ){
 	init.clsCol = pDS.GetClassCollider();
 	init.clsCI = pDS.GetClassCollisionInfo();
 	init.clsComp = pDS.GetClassComponent();
+	init.clsQuaternion = pDS.GetClassQuaternion();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -812,6 +859,8 @@ void deClassColliderCollisionTest::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBone( init ) );
 	AddFunction( new nfGetOrigin( init ) );
 	AddFunction( new nfSetOrigin( init ) );
+	AddFunction( new nfGetOrientation( init ) );
+	AddFunction( new nfSetOrientation( init ) );
 	AddFunction( new nfGetDirection( init ) );
 	AddFunction( new nfSetDirection( init ) );
 	AddFunction( new nfGetLocalDirection( init ) );
@@ -820,6 +869,7 @@ void deClassColliderCollisionTest::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnabled( init ) );
 	
 	AddFunction( new nfGetTestOrigin( init ) );
+	AddFunction( new nfGetTestOrientation( init ) );
 	AddFunction( new nfGetTestDirection( init ) );
 	
 	AddFunction( new nfGetHasCollision( init ) );

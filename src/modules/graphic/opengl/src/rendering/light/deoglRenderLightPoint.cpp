@@ -743,6 +743,14 @@ const deoglRenderPlanMasked *mask ){
 		}else{
 			DebugTimer2SampleCount( plan, *pDebugInfoTransparentShadow, 1, true );
 		}
+		
+	}else{
+		if( giState ){
+			// gi state lighting changes FBO and other parameters
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			RestoreFBO( plan );
+		}
 	}
 	
 DEBUG_RESET_TIMER
@@ -1520,6 +1528,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					deoglSkinShader::erutMatrixVn, cmf, matrixCamera.GetRotationMatrix().Invert() );
 			}
 			
+			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+			
 		}catch( const deException & ){
 			renderParamBlock->UnmapBuffer();
 			throw;
@@ -1630,6 +1640,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					deoglSkinShader::erutMatrixVP, matrixCamera * shadowParams.matrixProjection );
 				renderParamBlock->SetParameterDataMat3x3(
 					deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
+				
+				renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 				
 			}catch( const deException & ){
 				renderParamBlock->UnmapBuffer();
@@ -1757,6 +1769,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 						deoglSkinShader::erutMatrixV, matrixCamera );
 					renderParamBlock->SetParameterDataMat4x4(
 						deoglSkinShader::erutMatrixVP, matrixCamera * shadowParams.matrixProjection );
+					
+					renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 					
 				}catch( const deException & ){
 					renderParamBlock->UnmapBuffer();
@@ -1909,10 +1923,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		renderTask.SetUseSPBInstanceFlags( true );
 		
 		if( shadowParams.collideList1 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1 );
+			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
 		}
 		if( shadowParams.collideList2 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2 );
+			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
 		}
 		
 		renderTask.PrepareForRender();
@@ -1957,10 +1971,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			
 			addToRenderTask.SetFilterCubeFace( cmf );
 			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1 );
+				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
 			}
 			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2 );
+				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
 			}
 			
 			renderTask.PrepareForRender();

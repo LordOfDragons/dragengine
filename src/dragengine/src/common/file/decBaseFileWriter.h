@@ -83,6 +83,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
 	virtual void Write( const void *buffer, int size ) = 0;
+	
+	/** \brief Duplicate file writer. */
+	virtual Ref Duplicate() = 0;
 	/*@}*/
 	
 	

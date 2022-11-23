@@ -100,4 +100,5 @@ void aeWindowProperties::SetAnimator( aeAnimator *animator ){
 void aeWindowProperties::OnAnimatorPathChanged(){
 	pPropAnimator->OnAnimatorPathChanged();
 	pPropRule->OnAnimatorPathChanged();
+	pPropView->OnAnimatorPathChanged();
 }

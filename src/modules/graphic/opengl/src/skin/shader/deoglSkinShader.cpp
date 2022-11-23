@@ -88,7 +88,8 @@ static const char *vTextureTargetNames[ deoglSkinShader::ETT_COUNT ] = {
 	"texSamples", // ettSamples
 	"texSubInstance1", // ettSubInstance1
 	"texSubInstance2", // ettSubInstance2
-	"texHeightMapMask" // ettHeightMapMask
+	"texHeightMapMask", // ettHeightMapMask
+	"texXRayDepth" // ettXRayDepth
 };
 
 static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
@@ -565,6 +566,10 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThre
 		spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 		spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 		
+		spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+		
+		spb->GetParameterAt( erutConditions1 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
+		
 		spb->MapToStd140();
 		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
@@ -873,8 +878,7 @@ deoglRDynamicSkin *dynamicSkin ) const{
 		colorTint.b = powf( decMath::max( colorTint.b, 0.0f ), 2.2f );
 		colorTint.a = 1.0f;
 		
-		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstColorTint ],
-			element, colorTint );
+		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstColorTint ], element, colorTint );
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstColorGamma ] != -1 ){
@@ -1466,6 +1470,11 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 		units[ pTextureTargets[ ettDepthTest ] ].EnableSpecial( deoglTexUnitConfig::estPrevDepth,
 			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	}
+	
+	if( pTextureTargets[ ettXRayDepth ] != -1 ){
+		units[ pTextureTargets[ ettXRayDepth ] ].EnableSpecial( deoglTexUnitConfig::estXRayDepth,
+			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+	}
 }
 
 int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
@@ -1872,13 +1881,17 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.SetDefine( "MASKED_SOLIDITY", true );
 	}
 	
-	if( pConfig.GetDepthTestMode() == deoglSkinShaderConfig::edtmLarger ){
-		defines.SetDefine( "DEPTH_TEST", true );
-		defines.SetDefine( "DEPTH_TEST_LARGER", true );
+	switch( pConfig.GetDepthTestMode() ){
+	case deoglSkinShaderConfig::edtmLarger:
+		defines.SetDefines( "DEPTH_TEST", "DEPTH_TEST_LARGER" );
+		break;
 		
-	}else if( pConfig.GetDepthTestMode() == deoglSkinShaderConfig::edtmSmaller ){
-		defines.SetDefine( "DEPTH_TEST", true );
-		defines.SetDefine( "DEPTH_TEST_SMALLER", true );
+	case deoglSkinShaderConfig::edtmSmaller:
+		defines.SetDefines( "DEPTH_TEST", "DEPTH_TEST_SMALLER" );
+		break;
+		
+	default:
+		break;
 	}
 	
 	if( pConfig.GetClipPlane() ){
@@ -1902,8 +1915,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		defines.SetDefine( "GS_RENDER_CUBE", true );
-		defines.SetDefine( "GS_RENDER_CUBE_CULLING", true );
+		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
 		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
@@ -1984,8 +1996,8 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	// texture property usage definitions
-	defines.SetDefine( "TP_NORMAL_STRENGTH", true ); // needs an option to select if this is required or not
-	defines.SetDefine( "TP_ROUGHNESS_REMAP", true ); // needs an option to select if this is required or not
+	defines.SetDefines( "TP_NORMAL_STRENGTH", "TP_ROUGHNESS_REMAP" );
+		// ^== needs an option to select if this is required or not
 	
 	if( pConfig.GetUseNormalRoughnessCorrection() ){
 		defines.SetDefine( "USE_NORMAL_ROUGHNESS_CORRECTION", true );
@@ -2109,32 +2121,6 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetDynamicOutlineEmissivityTint() ){
 		defines.SetDefine( "DYNAMIC_OUTLINE_EMISSIVITY_TINT", true );
 	}
-	
-	
-	
-	/*
-	* for nodes only
-	* NODE_VERTEX_UNIFORMS
-	*     optional code block with all additional uniforms required by nodes in the vertex unit
-	* NODE_VERTEX_INPUTS
-	*     optional code block with all additional inputs required by nodes in the vertex unit
-	* NODE_VERTEX_OUTPUTS
-	*     optional code block with all additional outputs required by nodes in the vertex unit
-	* NODE_VERTEX_MAIN
-	*     optional code block required by nodes in the vertex unit at the end of the main function
-	* 
-	* NODE_FRAGMENT_UNIFORMS
-	*     optional code block with all additional uniforms required by nodes in the fragment unit
-	* NODE_FRAGMENT_SAMPLERS
-	*     optional code block with all additional samplers required by nodes in the fragment unit
-	* NODE_FRAGMENT_INPUTS
-	*     optional code block with all additional inputs required by nodes in the fragment unit
-	* NODE_FRAGMENT_OUTPUTS
-	*     optional code block with all additional outputs required by nodes in the fragment unit
-	* NODE_FRAGMENT_MAIN
-	*     optional code block calculating the node defined texture properties in the fragment unit
-	* 
-	*/
 }
 
 void deoglSkinShader::GenerateVertexSC(){
@@ -2378,6 +2364,8 @@ void deoglSkinShader::UpdateTextureTargets(){
 		pTextureTargets[ ettHeightMapMask ] = textureUnitNumber++;
 	}
 	
+	pTextureTargets[ ettXRayDepth ] = textureUnitNumber++;
+	
 	pUsedTextureTargetCount = textureUnitNumber;
 }
 
@@ -2564,6 +2552,8 @@ void deoglSkinShader::InitShaderParameters(){
 		parameterList.Add( "pToneMapSceneKey" ); // erutToneMapSceneKey
 		parameterList.Add( "pToneMapAdaption" ); // erutToneMapAdaption
 		parameterList.Add( "pToneMapBloom" ); // erutToneMapBloom
+		parameterList.Add( "pDebugDepthTransform" ); // erutDebugDepthTransform
+		parameterList.Add( "pConditions1" ); // erutConditions1
 	}
 	
 	for( i=0; i<ETUT_COUNT; i++ ){

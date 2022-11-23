@@ -282,6 +282,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	const deoglRModel * const model = pComponent.GetModel();
 	if( ! model ){
 		pIsRendered = false;
+		InvalidateParamBlocks();
 		pUpdateRenderTaskFilters();
 		return;
 	}
@@ -329,6 +330,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 		pUseSkinTexture = &pUseSkin->GetTextureAt( pUseTextureNumber );
 	}
 	
+	InvalidateParamBlocks();
 	pUpdateIsRendered();
 	pUpdateRenderTaskFilters();
 }
@@ -934,6 +936,22 @@ void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanM
 	}
 	
 	pUpdateIsRendered();
+}
+
+void deoglRComponentTexture::UpdateRenderableMapping(){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	pSkinState->RemoveAllRenderables();
+	
+	deoglRDynamicSkin * const dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
+	if( pSkin && dynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *dynamicSkin );
+	}
+	
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
 }
 
 

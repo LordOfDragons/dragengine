@@ -21,7 +21,7 @@ if not buildModule:
 useDebugSnapshot = True
 
 # fetch values in expanded form for later use
-versionString = '1.14'
+versionString = '1.16'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -67,6 +67,9 @@ if envModule['with_debug'] and envModule['with_sanitize']:
 	
 	envModule.Append(CPPFLAGS = fixFlags)
 	envModule.Append(LINKFLAGS = fixFlags)
+
+if envModule['with_debug']:
+	envModule.Append(CPPFLAGS = '-DWITH_DEBUG')
 
 envSpecialBullet = envModule.Clone()
 

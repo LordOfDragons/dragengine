@@ -172,6 +172,9 @@ public:
 	
 	/** \brief Set active controller or \em NULL. */
 	void SetActiveController( seController *controller );
+	
+	/** \brief Count controller usage. */
+	int CountControllerUsage( seController *controller ) const;
 	/*@}*/
 	
 	

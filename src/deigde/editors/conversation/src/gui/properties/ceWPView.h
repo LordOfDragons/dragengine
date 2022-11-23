@@ -44,6 +44,7 @@ class ceWindowProperties;
 class ceConversationActor;
 class ceActorPose;
 class ceActorGesture;
+class ceActorController;
 class ceConversationFile;
 class ceConversationTopic;
 
@@ -54,7 +55,7 @@ class ceConversation;
 
 
 /**
- * \brief View property window.
+ * View property window.
  */
 class ceWPView : public igdeContainerScroll{
 private:
@@ -95,6 +96,7 @@ private:
 	igdeButtonReference pBtnActorPoseMenu;
 	igdeEditPathReference pEditActorPosePathAnimator;
 	igdeComboBoxReference pCBActorPoseController;
+	igdeButtonReference pBtnActorPoseControllerMenu;
 	igdeComboBoxReference pCBActorPoseControllerUpdateType;
 	igdeTextFieldReference pEditActorPoseControllerValue;
 	igdeEditVectorReference pEditActorPoseControllerVector;
@@ -134,11 +136,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	ceWPView( ceWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~ceWPView();
 	/*@}*/
 	
@@ -147,109 +149,115 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Conversation. */
+	/** Conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set conversation. */
+	/** Set conversation. */
 	void SetConversation( ceConversation *conversation );
 	
-	/** \brief Update view. */
+	/** Update view. */
 	void UpdateView();
 	
-	/** \brief Update sky. */
+	/** Update sky. */
 	void UpdateSky();
 	
-	/** \brief Update environment object. */
+	/** Update environment object. */
 	void UpdateEnvObject();
 	
-	/** \brief Update camera. */
+	/** Update camera. */
 	void UpdateCamera();
 	
-	/** \brief Active prop. */
+	/** Active prop. */
 	ceProp *GetProp() const;
 	
-	/** \brief Update prop list. */
+	/** Update prop list. */
 	void UpdatePropList();
 	
-	/** \brief Update prop. */
+	/** Update prop. */
 	void UpdateProp();
 	
-	/** \brief Active actor. */
+	/** Active actor. */
 	ceConversationActor *GetActor() const;
 	
-	/** \brief Active actor pose. */
+	/** Active actor pose. */
 	ceActorPose *GetActorPose() const;
 	
-	/** \brief Active actor gesture. */
+	/** Active actor pose. */
+	ceActorController *GetActorPoseController() const;
+	
+	/** Active actor gesture. */
 	ceActorGesture *GetActorGesture() const;
 	
-	/** \brief Update actors. */
+	/** Update actors. */
 	void UpdateActors();
 	
-	/** \brief Update actor poses. */
+	/** Update actor poses. */
 	void UpdateActorPoses();
 	
-	/** \brief Select active actor pose. */
+	/** Select active actor pose. */
 	void SelectActiveActorPose();
 	
-	/** \brief Update actor pose. */
+	/** Update actor pose. */
 	void UpdateActorPose();
 	
-	/** \brief Update actor gestures. */
+	/** Update actor gestures. */
 	void UpdateActorGestures();
 	
-	/** \brief Select actor pose gesture. */
+	/** Select actor pose gesture. */
 	void SelectActorPoseGesture( ceActorGesture *gesture );
 	
-	/** \brief Update actor gesture. */
+	/** Update actor gesture. */
 	void UpdateActorGesture();
 	
-	/** \brief Update actor controllers. */
+	/** Update actor controllers. */
 	void UpdateActorControllers();
 	
-	/** \brief Update actor controller. */
+	/** Update actor controller. */
 	void UpdateActorController();
 	
-	/** \brief Update actor commands list. */
+	/** Select active actor pose. */
+	void SelectActorPoseController( ceActorController *controller );
+	
+	/** Update actor commands list. */
 	void UpdateActorCommands();
 	
-	/** \brief Update actor parameter list. */
+	/** Update actor parameter list. */
 	void UpdateActorParameters();
 	
-	/** \brief Active coordinate system. */
+	/** Active coordinate system. */
 	ceCoordSystem *GetCoordSys() const;
 	
-	/** \brief Update coordinate systems. */
+	/** Update coordinate systems. */
 	void UpdateCoordSystems();
 	
-	/** \brief Update playback file list. */
+	/** Update playback file list. */
 	void UpdatePlaybackFileList();
 	
-	/** \brief Selected playback file. */
+	/** Selected playback file. */
 	ceConversationFile *GetSelectedPlaybackFile() const;
 	
-	/** \brief Update playback topic list. */
+	/** Update playback topic list. */
 	void UpdatePlaybackTopicList();
 	
-	/** \brief Selected playback topic. */
+	/** Selected playback topic. */
 	ceConversationTopic *GetSelectedPlaybackTopic() const;
 	
-	/** \brief Update playback parameters. */
+	/** Update playback parameters. */
 	void UpdatePlayback();
 	
-	/** \brief Update playback commands list. */
+	/** Update playback commands list. */
 	void UpdatePlaybackCommands();
 	
-	/** \brief Update playback variables list. */
+	/** Update playback variables list. */
 	void UpdatePlaybackVariables();
 	
-	/** \brief Update playback trigger table. */
+	/** Update playback trigger table. */
 	void UpdatePlaybackTriggerTable();
 	
-	/** \brief Update playback missing words. */
+	/** Update playback missing words. */
 	void UpdatePlaybackMissingWords();
 	/*@}*/
 };

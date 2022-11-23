@@ -67,7 +67,7 @@ public:
 	 * - count transparency
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	 * Invalidates no attachments.
 	 */
 	void RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
-		bool solid, bool maskedOnly, bool reverseDepthTest );
+		bool solid, bool maskedOnly, bool reverseDepthTest, bool xray );
 	
 	
 	

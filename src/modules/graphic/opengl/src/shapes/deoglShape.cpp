@@ -24,8 +24,10 @@
 #include <stdlib.h>
 
 #include "deoglShape.h"
+#include "../rendering/plan/deoglRenderPlan.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
@@ -182,6 +184,36 @@ void deoglShape::RenderLines(){
 	OGL_CHECK( pRenderThread, glDrawArrays( GL_LINES, GetVBOBlock()->GetOffset() + pPointOffsetLines, pPointCountLines ) );
 }
 
+void deoglShape::RenderLines( const deoglRenderPlan &plan ){
+	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+		const GLint first[ 2 ] = {
+			GetVBOBlock()->GetOffset() + pPointOffsetLines,
+			GetVBOBlock()->GetOffset() + pPointOffsetLines };
+		
+		const GLsizei count[ 2 ] = { pPointCountLines, pPointCountLines };
+		
+		OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_LINES, first, count, 2 ) );
+		
+	}else{
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_LINES, GetVBOBlock()->GetOffset() + pPointOffsetLines, pPointCountLines ) );
+	}
+}
+
 void deoglShape::RenderFaces(){
 	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, GetVBOBlock()->GetOffset() + pPointOffsetFaces, pPointCountFaces ) );
+}
+
+void deoglShape::RenderFaces( const deoglRenderPlan &plan ){
+	if( plan.GetRenderStereo() && pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
+		const GLint first[ 2 ] = {
+			GetVBOBlock()->GetOffset() + pPointOffsetFaces,
+			GetVBOBlock()->GetOffset() + pPointOffsetFaces };
+		
+		const GLsizei count[ 2 ] = { pPointCountFaces, pPointCountFaces };
+		
+		OGL_CHECK( pRenderThread, pglMultiDrawArrays( GL_TRIANGLES, first, count, 2 ) );
+		
+	}else{
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, GetVBOBlock()->GetOffset() + pPointOffsetFaces, pPointCountFaces ) );
+	}
 }

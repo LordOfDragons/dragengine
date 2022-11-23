@@ -41,15 +41,9 @@ deoglPSSREnable::deoglPSSREnable( deGraphicOpenGl &ogl ) :
 deoglParameterBool( ogl )
 {
 	SetName( "ssrEnable" );
-	SetDescription( "Sets if screen space reflections are enabled."
-		" Screen space reflections add local reflections between objects using the rendered image."
-		" This works though only for information present in the rendered image."
-		" In general many reflections can not be calculated in screen space."
-		" For these global reflections are always used."
-		" Local reflections improve though the spatial perception of rendered scenes."
-		" As a downside though screen space reflections are heavy on the graphic card."
-		" Disabling screen space reflections improves rendering speed a lot on weaker cards."
-		" To fine tune the screen space reflections see the ssr* module parameters." );
+	SetDescription( "Enables Screen Space Reflections (SSR)."
+		" This adds higher quality reflections between objects but only for objects visible on screen."
+		" Enabling SSR is expensive. Disable SSR to improve performance." );
 	SetCategory( ecBasic );
 	SetDisplayName( "SSR" );
 	SetDefaultValue( "1" );

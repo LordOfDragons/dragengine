@@ -41,11 +41,8 @@ deoglPAOSelfShadowEnable::deoglPAOSelfShadowEnable( deGraphicOpenGl &ogl ) :
 deoglParameterBool( ogl )
 {
 	SetName( "aoSelfShadowEnable" );
-	SetDescription( "Sets if ambient occlusion self shadowing is enabled."
-		" This renders limited self-shadows on flat surfaces due to ambient occlusion values."
-		" Both texture defined and screen space ambient occlusion is taken into account."
-		" Ambient occlusion self shadowing is cheap but enhances the 3-dimensional look on flat geometry."
-		" To fine tune the ambient occlusion self shadowing see the aoSelfShadow* module parameters." );
+	SetDescription( "Enables Ambient Occlusion (AO) self shadowing."
+		" This adds more details to shadows near object surface." );
 	SetCategory( ecBasic );
 	SetDisplayName( "AO Self Shadow" );
 	SetDefaultValue( "1" );

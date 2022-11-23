@@ -319,6 +319,11 @@ void debpColliderRig::PrepareForStep(){
 	pPreventAttNotify = true;
 	RegisterColDetFinish(); // to disable pPreventAttNotify
 	
+	// this is dirty but i've got no better idea right now
+	if( GetConstraintCount() > 0 ){
+		pBones->SetAllBonesDirty();
+	}
+	
 	if( pBones ){
 		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
@@ -643,6 +648,9 @@ void debpColliderRig::PositionChanged(){
 			pSimplePhyBody->SetPosition( position );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			}
 			DirtyBones();
 		}
 	}
@@ -674,6 +682,9 @@ void debpColliderRig::OrientationChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			}
 			DirtyBones();
 		}
 	}
@@ -736,6 +747,9 @@ void debpColliderRig::GeometryChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			}
 			DirtyBones();
 		}
 	}

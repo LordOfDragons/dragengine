@@ -163,6 +163,7 @@ pLLPrepareForRenderWorld( this )
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pXRaySolid = true;
 	pDirtySolid = true;
 	
 	pMarked = false;
@@ -1354,29 +1355,14 @@ void deoglRComponent::UpdateRenderableMapping(){
 		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
 	}
 	
-	// update mappings of dynamic skins of component textures if existing
-	const int textureCount = pTextures.GetCount();
-	int i;
+	// update mappings of dynamic skins of component textures is done in the texture
+	// SyncToRender call since otherwise the mapping is updated before the skin and
+	// dynamic skin in the texture have been potentially updated
 	
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		deoglSkinState * const skinState = texture.GetSkinState();
-		if( ! skinState ){
-			continue;
-		}
-		
-		skinState->RemoveAllRenderables();
-		
-		deoglRDynamicSkin * const dynamicSkin = texture.GetDynamicSkin() ? texture.GetDynamicSkin() : pDynamicSkin;
-		if( texture.GetSkin() && dynamicSkin ){
-			skinState->AddRenderables( *texture.GetSkin(), *dynamicSkin );
-		}
-	}
-	
+	// setting skin rendered dirty here is fine
 	pSkinRendered.SetDirty();
 	
-	MarkAllTexturesParamBlocksDirty();
-	MarkAllTexturesTUCsDirty();
+	// textures will mark their param blocks and tucs dirty if they need to update renderable mappings
 }
 
 void deoglRComponent::UpdateTexturesUseSkin(){
@@ -1901,6 +1887,7 @@ void deoglRComponent::pPrepareSolidity(){
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pXRaySolid = true;
 	
 	if( ! pModel ){
 		return;
@@ -1935,6 +1922,7 @@ void deoglRComponent::pPrepareSolidity(){
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt( textureNumber );
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
+			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
 		}
 		
 	}else{
@@ -1950,6 +1938,7 @@ void deoglRComponent::pPrepareSolidity(){
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt( 0 );
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
+			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
 		}
 	}
 }

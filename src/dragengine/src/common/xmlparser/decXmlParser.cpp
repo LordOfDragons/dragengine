@@ -689,10 +689,10 @@ bool decXmlParser::ParseComment( decXmlContainer *container ){
 				if( nextChar != '>' ) RaiseFatalError();
 				break;
 			}
-			if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 			if( ! IsChar( nextChar ) ) RaiseFatalError();
 			count++;
 		}else{
-			if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 			if( ! IsChar( nextChar ) ) RaiseFatalError();
 		}
 		count++;
 	}
@@ -742,10 +742,10 @@ bool decXmlParser::ParsePI( decXmlContainer *container ){
 					nextChar = GetTokenAt( count + 1 );
 					if( nextChar == DEXP_EOF ) RaiseFatalError();
 					if( nextChar == '>' ) break;
-					if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 					if( ! IsChar( nextChar ) ) RaiseFatalError();
 					count++;
 				}else{
-					if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 					if( ! IsChar( nextChar ) ) RaiseFatalError();
 				}
 				count++;
 			}

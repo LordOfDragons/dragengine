@@ -24,12 +24,16 @@
 
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/resources/sky/deSkyLayer.h>
+
 class seController;
 class seSky;
+class seLayer;
+class seLink;
 
 
 /**
- * \brief Undo action remove controller.
+ * Undo action remove controller.
  */
 class seUControllerRemove : public igdeUndo{
 private:
@@ -37,16 +41,19 @@ private:
 	seController *pController;
 	int pIndex;
 	
+	seLink **pLinks;
+	int pLinkCount;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo action. */
+	/** Create undo action. */
 	seUControllerRemove( seController *controller );
 	
 protected:
-	/** \brief Clean up undo action. */
+	/** Clean up undo action. */
 	virtual ~seUControllerRemove();
 	/*@}*/
 	
@@ -55,12 +62,17 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo. */
 	virtual void Undo();
 	
-	/** \brief Redo. */
+	/** Redo. */
 	virtual void Redo();
 	/*@}*/
+	
+	
+	
+private:
+	void pCleanUp();
 };
 
 #endif

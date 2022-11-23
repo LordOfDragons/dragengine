@@ -77,7 +77,7 @@
 	out vec3 vClipCoord;
 #endif
 
-out flat int vLayer;
+flat out int vLayer;
 
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
@@ -90,7 +90,7 @@ out flat int vLayer;
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
 void emitCorner( in int layer, in vec4 position, in vec4 preTransformedPosition ){
-	gl_Position = sanitizePosition( preTransformedPosition );
+	gl_Position = preTransformedPosition;
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;

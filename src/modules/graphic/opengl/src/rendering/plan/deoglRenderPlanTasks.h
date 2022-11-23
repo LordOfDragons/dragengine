@@ -45,6 +45,14 @@ private:
 	deoglRenderTask *pSolidGeometryOutlineTask;
 	deoglRenderTask *pSolidDecalsTask;
 	
+	deoglRenderTask *pSolidDepthXRayTask;
+	deoglRenderTask *pSolidDepthOutlineXRayTask;
+	deoglRenderTask *pSolidGeometryXRayTask;
+	deoglRenderTask *pSolidGeometryHeight1XRayTask;
+	deoglRenderTask *pSolidGeometryHeight2XRayTask;
+	deoglRenderTask *pSolidGeometryOutlineXRayTask;
+	deoglRenderTask *pSolidDecalsXRayTask;
+	
 	deoglRPTBuildRTsDepth *pTaskDepth;
 	deoglRPTBuildRTsGeometry *pTaskGeometry;
 	
@@ -67,24 +75,37 @@ public:
 	/** Parent plan. */
 	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
 	
-	/** Solid depth. */
+	
+	
 	inline deoglRenderTask &GetSolidDepthTask(){ return *pSolidDepthTask; }
 	
-	/** Solid depth outline. */
 	inline deoglRenderTask &GetSolidDepthOutlineTask(){ return *pSolidDepthOutlineTask; }
 	
-	/** Solid geometry. */
 	inline deoglRenderTask &GetSolidGeometryTask(){ return *pSolidGeometryTask; }
 	
-	/** Solid geometry height terrain. */
 	inline deoglRenderTask &GetSolidGeometryHeight1Task(){ return *pSolidGeometryHeight1Task; }
 	inline deoglRenderTask &GetSolidGeometryHeight2Task(){ return *pSolidGeometryHeight2Task; }
 	
-	/** Solid geometry outline. */
 	inline deoglRenderTask &GetSolidGeometryOutlineTask(){ return *pSolidGeometryOutlineTask; }
 	
-	/** Solid decals. */
 	inline deoglRenderTask &GetSolidDecalsTask(){ return *pSolidDecalsTask; }
+	
+	
+	
+	inline deoglRenderTask &GetSolidDepthXRayTask(){ return *pSolidDepthXRayTask; }
+	
+	inline deoglRenderTask &GetSolidDepthOutlineXRayTask(){ return *pSolidDepthOutlineXRayTask; }
+	
+	inline deoglRenderTask &GetSolidGeometryXRayTask(){ return *pSolidGeometryXRayTask; }
+	
+	inline deoglRenderTask &GetSolidGeometryHeight1XRayTask(){ return *pSolidGeometryHeight1XRayTask; }
+	inline deoglRenderTask &GetSolidGeometryHeight2XRayTask(){ return *pSolidGeometryHeight2XRayTask; }
+	
+	inline deoglRenderTask &GetSolidGeometryOutlineXRayTask(){ return *pSolidGeometryOutlineXRayTask; }
+	
+	inline deoglRenderTask &GetSolidDecalsXRayTask(){ return *pSolidDecalsXRayTask; }
+	
+	
 	
 	/** Start building render tasks. */
 	void StartBuildTasks( const deoglRenderPlanMasked *mask );

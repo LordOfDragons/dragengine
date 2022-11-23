@@ -175,6 +175,10 @@ bool debpColliderConstraint::CheckHasBroken(){
 	return false;
 }
 
+bool debpColliderConstraint::RequiresAutoDirty() const{
+	return pEnabled && ! pHasBroken && pBpConstraint && pPhyBody2 && pPhyBody2->GetIsActive();
+}
+
 
 
 void debpColliderConstraint::ConstraintChanged(){
@@ -1049,20 +1053,23 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 	//   proportional to CFM times the restoring force that is needed to enforce the constraint. Note that setting CFM to a
 	//   negative value can have undesirable bad effects, such as instability. Don't do it.
 	
-	// the daming and softness is useless. bullet doesn't use them unless motors are set to produce force
+	// the damping and softness is useless. bullet doesn't use them unless motors are set to produce force.
+	// even if the motors are enabled the damping force is clamped against the max motor force
+	// which reduces it to 0 all time (because higher max force would cause unwanted effects)
+	const bool body1Dynamic = pPhyBody1 && pPhyBody1->GetResponseType() == debpPhysicsBody::ertDynamic;
+	const bool body2Dynamic = pPhyBody2 && pPhyBody2->GetResponseType() == debpPhysicsBody::ertDynamic;
 	bool requiresJointFeedback = false;
 	
 	float cfm = 0.0f; // default 0.0
 	float erp = 0.2f; //0.2f; // default 0.2
-	float linearDamping = 1.0f; // default 1.0
+	float linearDamping = pLinearDamping(); // default 1.0
 	float linearSoftness = 0.7f; // default 0.7
 	float linearRestitution = 0.5f; // default 0.5
-	float angularDamping = 1.0f; //1.0f; // default 1.0
+	float angularDamping = pAngularDamping(); //1.0f; // default 1.0
 	float angularSoftness = 0.5f; // default 0.5
 	float angularRestitution = 0.0f; // default 0.0
 	
-	if( ! pPhyBody1 || ! pPhyBody2 || pPhyBody1->GetResponseType() != debpPhysicsBody::ertDynamic
-	|| pPhyBody2->GetResponseType() != debpPhysicsBody::ertDynamic ){
+	if( ! body1Dynamic && ! body2Dynamic ){
 		erp = 0.8f;
 		linearDamping = 1.0f;
 		linearSoftness = 1.0f;
@@ -1092,6 +1099,9 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 		motorAngular.m_limitSoftness = angularSoftness; // Relaxation factor: default 0.5
 		motorAngular.m_bounce = angularRestitution; // restitution factor: default 0.0
 	}
+	
+	// damping
+	generic6Dof->SetDamping( linearDamping );
 	
 	// constraint breaking
 	if( pConstraint.GetBreakingThreshold() > 0.001f ){
@@ -1169,7 +1179,7 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	decVector position1( pConstraint.GetPosition1() - pOffset1 );
 	decVector position2( pConstraint.GetPosition2() - pOffset2 );
 	debpBPConstraint6DofSpring *generic6Dof = NULL;
-	float springDamping;
+	float springDamping = pSpringDamping();
 	
 	const decVector linearLowerLimits = decVector( dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit() );
 	const decVector linearUpperLimits = decVector( dofLinearX.GetUpperLimit(), dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit() );
@@ -1214,14 +1224,6 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	position2 = axisMatrix * position2;
 	orientation1 = axisMatrix.ToQuaternion() * orientation1;
 	orientation2 = axisMatrix.ToQuaternion() * orientation2;
-	
-	// determine the damping coefficient. bullet calculates (1/timestep)*damping
-	// to be the damping value where timestep is 1/60 (60Hz) by default. Hence
-	// this is 60*damping. in the engine though the damping is supposed to
-	// indicate the perecentage of force feedback of the spring. this though
-	// requires dividing the damping by the fps value ( 60Hz in default bullet )
-	// to obtain a corresponding bullet value.
-	springDamping = pConstraint.GetSpringDamping() * pDynWorld->GetWorld().GetSimulationTimeStep();
 	
 	// create a constraint for two bodies if phy body 2 is not NULL
 	if( pPhyBody2 ){
@@ -1273,18 +1275,19 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	// the default settings of the 6dof constraint are rather relaxed producing
 	// rubber constraints which can be violated way too much. currently they
 	// are set to be very rigid to avoid the rubber-band effect.
+	const bool body1Dynamic = pPhyBody1 && pPhyBody1->GetResponseType() == debpPhysicsBody::ertDynamic;
+	const bool body2Dynamic = pPhyBody2 && pPhyBody2->GetResponseType() == debpPhysicsBody::ertDynamic;
 	
 	float cfm = 0.0f; // default 0.0
 	float erp = 0.2f; // default 0.2
-	float linearDamping = 1.0f; // default 1.0
+	float linearDamping = pLinearDamping(); // default 1.0
 	float linearSoftness = 1.0f; // default 0.7
 	float linearRestitution = 1.0f; // default 0.5
-	float angularDamping = 1.0f; // default 1.0
+	float angularDamping = pAngularDamping(); // default 1.0
 	float angularSoftness = 1.0f; // default 0.5
 	float angularRestitution = 0.0f; // default 0.0
 	
-	if( ! pPhyBody1 || ! pPhyBody2 || pPhyBody1->GetResponseType() != debpPhysicsBody::ertDynamic
-	|| pPhyBody2->GetResponseType() != debpPhysicsBody::ertDynamic ){
+	if( ! body1Dynamic && ! body2Dynamic ){
 		erp = 0.8f;
 		linearDamping = 1.0f;
 		linearSoftness = 1.0f;
@@ -1358,4 +1361,21 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	}
 	
 	//generic6Dof->setEquilibriumPoint(); // not sure if this is going to work as expected
+}
+
+btScalar debpColliderConstraint::pLinearDamping() const {
+	// linear damping coefficient
+	return pConstraint.GetLinearDamping();
+}
+
+btScalar debpColliderConstraint::pAngularDamping() const {
+	// angular damping coefficient
+	return pConstraint.GetAngularDamping();
+}
+
+btScalar debpColliderConstraint::pSpringDamping() const {
+	// spring damping coefficient. bullet calculates (1/timestep)*damping as damping value to
+	// use where timestep is 1/60 (60Hz) by default. Hence bullet uses 60*damping. this requires
+	// dividing damping by fps
+	return pConstraint.GetSpringDamping() * pDynWorld->GetWorld().GetSimulationTimeStep();
 }

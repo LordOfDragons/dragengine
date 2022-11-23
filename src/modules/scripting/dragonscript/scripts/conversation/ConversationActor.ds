@@ -331,7 +331,7 @@ class ConversationActor
 	 * (playback (if existing) is playing back.
 	 */
 	public func bool isSpeaking()
-		return pRemainingSpeechTime > 0.0
+		return pRemainingSpeechTime > 0
 		//return (pVoiceSpeaker != null and pVoiceSpeaker.getPlaying()) \
 		//	or (pSpeechAnimationPlayback != null and pSpeechAnimationPlayback.getSpeaking())
 	end

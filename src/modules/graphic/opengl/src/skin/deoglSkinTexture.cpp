@@ -613,6 +613,7 @@ pSharedSPBElement( NULL )
 	
 	pNonPbrAlbedo.Set( 0.0f, 0.0f, 0.0f );
 	pNonPbrMetalness = 0.0f;
+	pXRay = false;
 	
 	pMirror = false;
 	pRendered = false;
@@ -1631,6 +1632,18 @@ void deoglSkinTexture::SetOutlineEmissivityIntensity( float intensity ){
 	pOutlineEmissivityIntensity = decMath::max( intensity, 0.0f );
 }
 
+void deoglSkinTexture::SetNonPbrAlbedo( const decColor &albedo ){
+	pNonPbrAlbedo = albedo;
+}
+
+void deoglSkinTexture::SetNonPbrMetalness( float metalness ){
+	pNonPbrMetalness = metalness;
+}
+
+void deoglSkinTexture::SetXRay( bool xray ){
+	pXRay = xray;
+}
+
 
 
 void deoglSkinTexture::SetMirror( bool mirror ){
@@ -2580,6 +2593,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pNonPbrMetalness = value;
 			break;
 			
+		case deoglSkinPropertyMap::eptXRay:
+			pXRay = value > 0.5f;
+			break;
+			
 		default:
 			break;
 		}
@@ -3365,6 +3382,9 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 
 void deoglSkinTexture::pUpdateRenderTaskFilters(){
 	pRenderTaskFilters = ertfRender;
+	if( pXRay ){
+		pRenderTaskFilters |= ertfXRay;
+	}
 	if( pSolid ){
 		pRenderTaskFilters |= ertfSolid;
 	}

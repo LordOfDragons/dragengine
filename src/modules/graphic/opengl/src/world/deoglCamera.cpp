@@ -217,7 +217,7 @@ void deoglCamera::SyncToRender(){
 	// vr
 	if( pDirtyVR ){
 		pRCamera->EnableVR( pEnableVR );
-		if( pOgl.GetVRCamera() == this ){
+		if( ! pEnableVR && pOgl.GetVRCamera() == this ){
 			pOgl.SetVRCamera( nullptr );
 		}
 		pDirtyVR = false;

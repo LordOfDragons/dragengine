@@ -35,7 +35,7 @@ out vec3 vParticleLightPosition;
 out vec3 vParticleLightColor;
 out float vParticleLightRange;
 
-out flat int vLayer;
+flat out int vLayer;
 
 
 void emitCorner( in vec3 position, in vec3 range, in int layer ){

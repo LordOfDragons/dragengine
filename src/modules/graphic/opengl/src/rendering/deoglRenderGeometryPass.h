@@ -69,7 +69,7 @@ public:
 	 * - Light.RenderAO (if not No-Reflections)
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/**
 	 * \brief Render luminance only pass.
@@ -84,7 +84,7 @@ public:
 	 * Using FBO Def-Ren Material buffers set by RenderSolidGeometryPass. No clearing.
 	 * Invalidating no buffers.
 	 */
-	void RenderDecals( deoglRenderPlan &plan );
+	void RenderDecals( deoglRenderPlan &plan, bool xray );
 	
 	/** \brief Render volumetric pass. */
 	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );

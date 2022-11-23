@@ -135,7 +135,6 @@ dearBoneStateList *dearBoneStateList::CreateCopy() const{
 			stateTo.SetRigBone( stateFrom.GetRigBone() );
 			stateTo.SetRigBoneName( stateFrom.GetRigBoneName() );
 			stateTo.SetIndex( stateFrom.GetIndex() );
-			stateTo.SetAnimationBone( stateFrom.GetAnimationBone() );
 			if( stateFrom.GetParentState() ){
 				stateTo.SetParentState( stalist->GetStateAt( stateFrom.GetParentState()->GetIndex() ) );
 			}
@@ -168,7 +167,6 @@ void dearBoneStateList::SetFrom( const dearBoneStateList &stateList ){
 		stateTo.SetRigBone( stateFrom.GetRigBone() );
 		stateTo.SetRigBoneName( stateFrom.GetRigBoneName() );
 		stateTo.SetIndex( stateFrom.GetIndex() );
-		stateTo.SetAnimationBone( stateFrom.GetAnimationBone() );
 		if( stateFrom.GetParentState() ){
 			stateTo.SetParentState( pStates[ stateFrom.GetParentState()->GetIndex() ] );
 		}
@@ -209,7 +207,6 @@ void dearBoneStateList::UpdateMappings( const deAnimator &animator ){
 		return;
 	}
 	
-	deAnimation * const animation = animator.GetAnimation();
 	const decStringSet &bones = animator.GetListBones();
 	int boneCount = bones.GetCount();
 	int boneIndex;
@@ -228,19 +225,12 @@ void dearBoneStateList::UpdateMappings( const deAnimator &animator ){
 		
 		for( s=0; s<pStateCount; s++ ){
 			deRigBone &rigBone = rig->GetBoneAt( s );
-			const decString &rigBoneName = rigBone.GetName();
 			parent = rigBone.GetParent();
 			
 			pStates[ s ]->SetIndex( s );
 			pStates[ s ]->SetRigIndex( s );
 			pStates[ s ]->SetRigBone( &rigBone );
-			pStates[ s ]->SetRigBoneName( rigBoneName );
-			if( animation ){
-				pStates[ s ]->SetAnimationBone( animation->FindBone( rigBoneName ) );
-				
-			}else{
-				pStates[ s ]->SetAnimationBone( -1 );
-			}
+			pStates[ s ]->SetRigBoneName( rigBone.GetName() );
 			pStates[ s ]->SetRigLocalMatrix( decMatrix::CreateRT(
 				rigBone.GetRotation(), rigBone.GetPosition() ) );
 			
@@ -272,19 +262,12 @@ void dearBoneStateList::UpdateMappings( const deAnimator &animator ){
 		for( s=0; s<pStateCount; s++ ){
 			boneIndex = foundBones.GetAt( s );
 			deRigBone &rigBone = rig->GetBoneAt( boneIndex );
-			const decString &rigBoneName = rigBone.GetName();
 			parent = rigBone.GetParent();
 			
 			pStates[ s ]->SetIndex( s );
 			pStates[ s ]->SetRigIndex( boneIndex );
 			pStates[ s ]->SetRigBone( &rigBone );
-			pStates[ s ]->SetRigBoneName( rigBoneName );
-			if( animation ){
-				pStates[ s ]->SetAnimationBone( animation->FindBone( rigBoneName ) );
-				
-			}else{
-				pStates[ s ]->SetAnimationBone( -1 );
-			}
+			pStates[ s ]->SetRigBoneName( rigBone.GetName() );
 			pStates[ s ]->SetRigLocalMatrix( decMatrix::CreateRT(
 				rigBone.GetRotation(), rigBone.GetPosition() ) );
 			

@@ -89,13 +89,13 @@ public:
 	inline const deoglShaderProgramUsage &GetShaderOccMesh() const{ return pShaderOccMesh; }
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
 	
 	/** Render sky light. */
-	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** Render shadows maps. */
 	void RenderShadows( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );

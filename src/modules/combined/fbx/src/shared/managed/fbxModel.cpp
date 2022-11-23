@@ -191,7 +191,7 @@ fbxModelCluster *fbxModel::GetClusterNamed( const char *name ) const{
 void fbxModel::MatchClusters( const fbxRig &rig ){
 	const int count = pClusters.GetCount();
 	decPointerList connections;
-	int i;
+	int i, j;
 	
 	for( i=0; i<count; i++ ){
 		fbxModelCluster &cluster = *( ( fbxModelCluster* )( deObject* )pClusters.GetAt( i ) );
@@ -201,8 +201,8 @@ void fbxModel::MatchClusters( const fbxRig &rig ){
 		pScene.FindConnections( cluster.GetNodeClusterID(), connections );
 		const int conCount = connections.GetCount();
 		
-		for( i=0; i<conCount; i++ ){
-			const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );
+		for( j=0; j<conCount; j++ ){
+			const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( j ) );
 			if( connection.GetTarget() != cluster.GetNodeClusterID() || connection.GetSource() == 0 ){
 				continue;
 			}

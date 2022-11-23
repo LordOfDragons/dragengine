@@ -56,22 +56,22 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorLocomotion ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorLocomotion ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
 			if ecbehavior.getColliderAI() != null
-				this.pColliderAI = ecbehavior.getColliderAI().instance( element )
+				pColliderAI = ecbehavior.getColliderAI().instance(element)
 				
 			else
-				this.pCollider = ecbehavior.getCollider().instance( element )
+				pCollider = ecbehavior.getCollider().instance(element)
 			end
 		end
 		
 		/** \brief Dispose of instance. */
 		public func void dispose()
-			this.pColliderAI = null
-			this.pCollider = null
-			this.pLocomotion = null
+			pColliderAI = null
+			pCollider = null
+			pLocomotion = null
 			super.dispose()
 		end
 		
@@ -82,22 +82,22 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * 
 		 * Calls initHuman() with a speed of 4.
 		 */
-		public func void init( StubElement stub )
+		public func void init(StubElement stub)
 			var Collider collider
 			
-			if this.pColliderAI != null
-				collider = this.pColliderAI.getCollider()
+			if pColliderAI != null
+				collider = pColliderAI.getCollider()
 				
 			else
-				collider = this.pCollider.getCollider()
+				collider = pCollider.getCollider()
 			end
 			
-			this.pLocomotion = this.createLocomotion( stub )
+			pLocomotion = createLocomotion(stub)
 			if collider != null
-				this.pLocomotion.setAICollider( collider )
+				pLocomotion.setAICollider(collider)
 			end
 			
-			this.initHuman( 4 )
+			initHuman(4)
 		end
 		
 		/**
@@ -105,7 +105,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * 
 		 * Creates instance of Locomotion.
 		 */
-		protected func Locomotion createLocomotion( StubElement stub )
+		protected func Locomotion createLocomotion(StubElement stub)
 			return Locomotion.new()
 		end
 		
@@ -113,22 +113,22 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		
 		/** \brief Behavior. */
 		public func ECBehaviorLocomotion getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief ColliderAI behavior instance or null. */
 		public func ECBehaviorColliderAI.Instance getColliderAI()
-			return this.pColliderAI
+			return pColliderAI
 		end
 		
 		/** \brief Collider behavior instance or null. */
 		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+			return pCollider
 		end
 		
 		/** \brief Locomotion. */
 		public func Locomotion getLocomotion()
-			return this.pLocomotion
+			return pLocomotion
 		end
 		
 		
@@ -152,27 +152,27 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * \param speed Average speed of actor used to calculate adjustment speed.
 		 *              Using running speed of actor is a good value.
 		 */
-		public func void initHuman( float averageSpeed )
-			this.pLocomotion.setAdjustRangeLinearVelocity( averageSpeed )
-			this.pLocomotion.setAdjustTimeAnalogMovingHorizontal( 0 )
+		public func void initHuman(float averageSpeed)
+			pLocomotion.setAdjustRangeLinearVelocity(averageSpeed)
+			pLocomotion.setAdjustTimeAnalogMovingHorizontal(0)
 			
-			this.pLocomotion.setLimitLookUp( 80 )
-			this.pLocomotion.setLimitLookDown( -80 )
-			this.pLocomotion.setLimitLookLeft( -90 )
-			this.pLocomotion.setLimitLookRight( 90 )
+			pLocomotion.setLimitLookUp(80)
+			pLocomotion.setLimitLookDown(-80)
+			pLocomotion.setLimitLookLeft(-90)
+			pLocomotion.setLimitLookRight(90)
 			
-			this.pLocomotion.setCanTurn( true )
-			this.pLocomotion.setCanTurnInPlace( true )
-			this.pLocomotion.setTurnAdjustLookHorizontal( true )
-			this.pLocomotion.setLimitTurnInPlaceLeft( -70 )
-			this.pLocomotion.setLimitTurnInPlaceRight( 70 )
+			pLocomotion.setCanTurn(true)
+			pLocomotion.setCanTurnInPlace(true)
+			pLocomotion.setTurnAdjustLookHorizontal(true)
+			pLocomotion.setLimitTurnInPlaceLeft(-70)
+			pLocomotion.setLimitTurnInPlaceRight(70)
 			
-			this.pLocomotion.setAdjustTimeOrientation( 1 )
-			this.pLocomotion.setAdjustTimeTurnIP( 1 )
+			pLocomotion.setAdjustTimeOrientation(1)
+			pLocomotion.setAdjustTimeTurnIP(1)
 			
-			this.pLocomotion.setAdjustTimeVertical( 0.5 )
-			this.pLocomotion.setAdjustTimeHorizontal( 0.5 )
-			this.pLocomotion.setAdjustTimeLinearVelocity( 1 )
+			pLocomotion.setAdjustTimeVertical(0.5)
+			pLocomotion.setAdjustTimeHorizontal(0.5)
+			pLocomotion.setAdjustTimeLinearVelocity(1)
 		end
 	
 		/**
@@ -199,28 +199,28 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * \param speed Average speed of actor used to calculate adjustment speed.
 		 *              Using running speed of actor is a good value.
 		 */
-		public func void initVehicle( float averageSpeed )
-			this.pLocomotion.setAdjustRangeLinearVelocity( averageSpeed )
-			this.pLocomotion.setAdjustTimeAnalogMovingHorizontal( 0 )
+		public func void initVehicle(float averageSpeed)
+			pLocomotion.setAdjustRangeLinearVelocity(averageSpeed)
+			pLocomotion.setAdjustTimeAnalogMovingHorizontal(0)
 			
-			this.pLocomotion.setLimitLookUp( 80 )
-			this.pLocomotion.setLimitLookDown( -80 )
-			this.pLocomotion.setLimitLookLeft( -90 )
-			this.pLocomotion.setLimitLookRight( 90 )
+			pLocomotion.setLimitLookUp(80)
+			pLocomotion.setLimitLookDown(-80)
+			pLocomotion.setLimitLookLeft(-90)
+			pLocomotion.setLimitLookRight(90)
 			
-			this.pLocomotion.setCanTurn( true )
-			this.pLocomotion.setCanTurnInPlace( false )
-			this.pLocomotion.setTurnAdjustLookHorizontal( false )
+			pLocomotion.setCanTurn(true)
+			pLocomotion.setCanTurnInPlace(false)
+			pLocomotion.setTurnAdjustLookHorizontal(false)
 			
-			this.pLocomotion.setAdjustTimeOrientation( 1 )
+			pLocomotion.setAdjustTimeOrientation(1)
 			
-			this.pLocomotion.setAdjustTimeVertical( 0 )
-			this.pLocomotion.setAdjustTimeHorizontal( 0 )
-			this.pLocomotion.setAdjustTimeLinearVelocity( 0.5 )
+			pLocomotion.setAdjustTimeVertical(0)
+			pLocomotion.setAdjustTimeHorizontal(0)
+			pLocomotion.setAdjustTimeLinearVelocity(0.5)
 			
-			//this.pLocomotion.setAdjustTimeVertical( 1 )
-			//this.pLocomotion.setAdjustTimeHorizontal( 1 )
-			//this.pLocomotion.setAdjustTimeLinearVelocity( 1 )
+			//pLocomotion.setAdjustTimeVertical(1)
+			//pLocomotion.setAdjustTimeHorizontal(1)
+			//pLocomotion.setAdjustTimeLinearVelocity(1)
 		end
 		
 		/**
@@ -228,9 +228,9 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * 
 		 * Typically called for player controlled actors only.
 		 */
-		public func void applyLookAround( float deltaHorizontal, float deltaVertical )
-			this.pLocomotion.setLookVerticalGoal( this.pLocomotion.getLookVerticalGoal() + deltaVertical )
-			this.pLocomotion.setLookHorizontalGoal( this.pLocomotion.getLookHorizontalGoal() + deltaHorizontal )
+		public func void applyLookAround(float deltaHorizontal, float deltaVertical)
+			pLocomotion.setLookVerticalGoal(pLocomotion.getLookVerticalGoal() + deltaVertical)
+			pLocomotion.setLookHorizontalGoal(pLocomotion.getLookHorizontalGoal() + deltaHorizontal)
 		end
 		
 		
@@ -238,20 +238,20 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		/**
 		 * \brief Set locomotion orientation in euler angles in world coordinates.
 		 */
-		public func void setOrientation( float orientation )
-			this.pLocomotion.setOrientation( orientation )
-			this.pLocomotion.setMovingOrientation( orientation )
+		public func void setOrientation(float orientation)
+			pLocomotion.setOrientation(orientation)
+			pLocomotion.setMovingOrientation(orientation)
 		end
 		
 		/** \brief View direction. */
 		public func Vector getViewDirection()
-			return this.getViewMatrix().getViewVector()
+			return getViewMatrix().getViewVector()
 		end
 		
 		/** \brief View matrix. */
 		public func Matrix getViewMatrix()
-			return Matrix.newRotation( this.pLocomotion.getLookVertical(), \
-				this.pLocomotion.getOrientation() + this.pLocomotion.getLookHorizontal(), 0 )
+			return Matrix.newRotation(pLocomotion.getLookVertical(), \
+				pLocomotion.getOrientation() + pLocomotion.getLookHorizontal(), 0)
 		end
 		
 		
@@ -263,9 +263,9 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * values with the set adjustment velocities. Then Locomotion.updateLocomotion() is
 		 * called to update all the locomotion parameters for later use.
 		 */
-		public func void update( float elapsed )
-			this.pLocomotion.updateLooking( elapsed )
-			this.pLocomotion.updateLocomotion( elapsed )
+		public func void update(float elapsed)
+			pLocomotion.updateLooking(elapsed)
+			pLocomotion.updateLocomotion(elapsed)
 		end
 		
 		/**
@@ -274,8 +274,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Calls Locomotion.updateAnimatorInstance() to update animator controller for which
 		 * mappings have been defined.
 		 */
-		public func void updateAnimator( float elapsed )
-			this.pLocomotion.updateAnimatorInstance( elapsed )
+		public func void updateAnimator(float elapsed)
+			pLocomotion.updateAnimatorInstance(elapsed)
 		end
 		
 		/**
@@ -287,25 +287,25 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Calls Locomotion.updatePostLocomotion() to apply tilting and foot projecting which
 		 * can be done only after physics have been calculated.
 		 */
-		public func void updatePost( float elapsed )
-			this.pLocomotion.updatePostLocomotion( elapsed )
+		public func void updatePost(float elapsed)
+			pLocomotion.updatePostLocomotion(elapsed)
 		end
 		
 		/**
 		 * \brief Clear all movement to ensure actor is not unintentially moving.
 		 */
 		public func void stopMoving()
-			this.pLocomotion.applyStates()
-			this.pLocomotion.cancelMotion()
+			pLocomotion.applyStates()
+			pLocomotion.cancelMotion()
 		end
 		
 		/**
 		 * \brief Reset looking vertically and horizontally to 0.
 		 */
 		public func void resetLooking()
-			this.pLocomotion.setLookHorizontal( 0 )
-			this.pLocomotion.setLookVertical( 0 )
-			this.pLocomotion.cancelInput()
+			pLocomotion.setLookHorizontal(0)
+			pLocomotion.setLookVertical(0)
+			pLocomotion.cancelInput()
 		end
 		
 		/**
@@ -315,8 +315,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Moving orientation is kept untouched with moving direction adjusted to be correct.
 		 */
 		public func void setOrientationFromUpAxis()
-			this.pLocomotion.setOrientation( this.getElement().getOrientation().getEulerAngles().getY() )
-			this.pLocomotion.setMovingDirection( this.pLocomotion.getMovingOrientation() - this.pLocomotion.getOrientation() )
+			pLocomotion.setOrientation(getElement().getOrientation().getEulerAngles().getY())
+			pLocomotion.setMovingDirection(pLocomotion.getMovingOrientation() - pLocomotion.getOrientation())
 		end
 		
 		
@@ -328,31 +328,31 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Moving orientation is kept untouched with moving direction adjusted to be correct.
 		 */
 		public func void geometryChanged()
-			this.setOrientationFromUpAxis()
+			setOrientationFromUpAxis()
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				this.pLocomotion.readFromFile( reader )
+				pLocomotion.readFromFile(reader)
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 			
 			// restore parameters
-			this.pLocomotion.updateAICollider()
-			this.getElement().setOrientation( this.pLocomotion.getOrientationQuaternion() )
+			pLocomotion.updateAICollider()
+			getElement().setOrientation(pLocomotion.getOrientationQuaternion())
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			this.pLocomotion.writeToFile( writer )
+			pLocomotion.writeToFile(writer)
 		end
 	end
 	
@@ -364,44 +364,44 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI ) \
-	this( eclass, colliderAI, "locomotion." )
+	public func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI) \
+	this(eclass, colliderAI, "locomotion.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, "locomotion." )
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	this(eclass, collider, "locomotion.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, String prefix ) \
-	this( eclass, colliderAI, null, prefix )
+	public func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, String prefix) \
+	this(eclass, colliderAI, null, prefix)
 		if colliderAI == null
-			throw ENullPointer.new( "colliderAI" )
+			throw ENullPointer.new("colliderAI")
 		end
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String prefix ) \
-	this( eclass, null, collider, prefix )
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String prefix) \
+	this(eclass, null, collider, prefix)
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
 	end
 	
-	private func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
-	ECBehaviorCollider collider, String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	private func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorCollider collider, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pColliderAI = colliderAI
-		this.pCollider = collider
+		pColliderAI = colliderAI
+		pCollider = collider
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pCollider = null
-		this.pColliderAI = null
+		pCollider = null
+		pColliderAI = null
 		super.dispose()
 	end
 	
@@ -409,19 +409,19 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	
 	/** \brief ColliderAI behavior or null. */
 	public func ECBehaviorColliderAI getColliderAI()
-		return this.pColliderAI
+		return pColliderAI
 	end
 	
 	/** \brief Collider behavior or null. */
 	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+		return pCollider
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -432,10 +432,10 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorLocomotion.
 	 */
-	static public func ECBehaviorLocomotion getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorLocomotion each
+	static public func ECBehaviorLocomotion getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorLocomotion each
 			return true
-		end ) cast ECBehaviorLocomotion
+		end) cast ECBehaviorLocomotion
 	end
 	
 	/**
@@ -444,16 +444,16 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorLocomotion.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

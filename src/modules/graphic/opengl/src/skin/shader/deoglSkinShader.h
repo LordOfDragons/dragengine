@@ -79,6 +79,7 @@ public:
 		ettSubInstance1,
 		ettSubInstance2,
 		ettHeightMapMask,
+		ettXRayDepth,
 		ETT_COUNT
 	};
 	
@@ -130,6 +131,8 @@ public:
 		erutToneMapSceneKey,
 		erutToneMapAdaption,
 		erutToneMapBloom,
+		erutDebugDepthTransform,
+		erutConditions1,
 		ERUT_COUNT
 	};
 	

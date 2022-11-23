@@ -120,8 +120,15 @@ class CommandsBAAVRTriggerInput
 	 * - triggerLeft: Left hand trigger
 	 */
 	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(TriggerAction.new(tracker, "triggerRight", "Trigger Right Hand", true))
-		commands.add(TriggerAction.new(tracker, "triggerLeft", "Trigger Left Hand", false))
+		var TriggerAction trigger = TriggerAction.new(tracker, "triggerRight", "Trigger Right Hand", true)
+		trigger.setTranslateDescription("UI.Command.TriggerRight.Description")
+		trigger.setTranslateDisplayName("UI.Command.TriggerRight.DisplayName")
+		commands.add(trigger)
+		
+		trigger = TriggerAction.new(tracker, "triggerLeft", "Trigger Left Hand", false)
+		trigger.setTranslateDescription("UI.Command.TriggerLeft.Description")
+		trigger.setTranslateDisplayName("UI.Command.TriggerLeft.DisplayName")
+		commands.add(trigger)
 	end
 	
 	

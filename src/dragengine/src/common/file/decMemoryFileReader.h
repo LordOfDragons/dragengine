@@ -52,6 +52,9 @@ public:
 	 */
 	decMemoryFileReader( decMemoryFile *memoryFile );
 	
+private:
+	decMemoryFileReader( const decMemoryFileReader &reader );
+	
 protected:
 	/**
 	 * \brief Clean up memory file reader.
@@ -107,6 +110,9 @@ public:
 	 * \throws deeInvalidParam GetPosition() + \em size is larger than GetLength().
 	 */
 	virtual void Read( void *buffer, int size );
+	
+	/** \brief Duplicate file reader. */
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 };
 

@@ -31,7 +31,7 @@ class debpColliderConstraint;
 
 
 /**
- * \brief Bullet physics 6-Dof constraint adapter.
+ * Bullet physics 6-Dof constraint adapter.
  */
 class debpBPConstraint6Dof : public btGeneric6DofConstraint, debpBPConstraintBase{
 private:
@@ -48,20 +48,22 @@ private:
 	bool pHasJointFrictionLinear[ 3 ];
 	bool pHasJointFrictionAngular[ 3 ];
 	
+	btScalar pDamping;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create constraint. */
+	/** Create constraint. */
 	debpBPConstraint6Dof( debpColliderConstraint &constraint, btRigidBody &rbA,
 		btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB );
 	
-	/** \brief Create constraint. */
+	/** Create constraint. */
 	debpBPConstraint6Dof( debpColliderConstraint &constraint, btRigidBody &rbA,
 		const btTransform &frameInA, const btTransform &frameInB );
 	
-	/** \brief Clean up constraint. */
+	/** Clean up constraint. */
 	virtual ~debpBPConstraint6Dof();
 	/*@}*/
 	
@@ -69,20 +71,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set motor indices. */
+	/** Set motor indices. */
 	void SetMotorIndices( int x, int y, int z );
 	
-	/** \brief Save limits for special use. */
+	/** Save limits for special use. */
 	void SaveLimits();
 	
-	/** \brief Set if linear joint friction is present. */
+	/** Set if linear joint friction is present. */
 	void SetHasJointFrictionLinear( int index, bool enabled );
 	
-	/** \brief Set if angular joint friction is present. */
+	/** Set if angular joint friction is present. */
 	void SetHasJointFrictionAngular( int index, bool enabled );
 	
+	/** Damping. */
+	inline btScalar GetDamping() const{ return pDamping; }
+	
+	/** Set damping. */
+	void SetDamping( btScalar damping );
+	
 	/**
-	 * \brief Prepare constraint for next simulation step.
+	 * Prepare constraint for next simulation step.
 	 * \details From debpBPConstraintBase.
 	 */
 	virtual void PrepareForStep();
@@ -90,7 +98,7 @@ public:
 	
 	
 	/**
-	 * \brief Determine number of rows required for constraint friction.
+	 * Determine number of rows required for constraint friction.
 	 * 
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
@@ -98,7 +106,7 @@ public:
 	virtual int GetConstraintFrictionCount();
 	
 	/**
-	 * \brief Get constraint friction forces.
+	 * Get constraint friction forces.
 	 * 
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
@@ -108,13 +116,13 @@ public:
 	
 	
 	/**
-	 * \brief Bullet internal method used by the constraint solver.
+	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
 	virtual void getInfo1( btConstraintInfo1 *info );
 	
 	/**
-	 * \brief Bullet internal method used by the constraint solver.
+	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
 	virtual void getInfo2( btConstraintInfo2 *info );

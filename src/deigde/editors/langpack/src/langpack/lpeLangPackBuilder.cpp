@@ -62,6 +62,7 @@ void lpeLangPackBuilder::BuildLanguagePack( deLanguagePack &langPack ){
 	
 	langPack.SetEntryCount( entryCount );
 	
+	langPack.SetIdentifier( pLangPack->GetIdentifier() );
 	langPack.SetName( pLangPack->GetName() );
 	langPack.SetDescription( pLangPack->GetDescription() );
 	langPack.SetMissingText( pLangPack->GetMissingText() );

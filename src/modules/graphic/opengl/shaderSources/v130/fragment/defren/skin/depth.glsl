@@ -41,9 +41,7 @@
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2DArray texDepthTest;
 #endif
-#ifdef NODE_FRAGMENT_SAMPLERS
-NODE_FRAGMENT_SAMPLERS
-#endif
+uniform HIGHP sampler2DArray texXRayDepth;
 
 
 
@@ -100,7 +98,7 @@ NODE_FRAGMENT_SAMPLERS
 #endif
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	in flat int vLayer;
+	flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif
@@ -342,11 +340,9 @@ void main( void ){
 		#define fragmentDepth gl_FragCoord.z
 	#endif
 	
-	// discard fragments if the depth is larger than the corresponding fragment in the back depth texture
+	// discard against previous depth
 	#ifdef DEPTH_TEST
-		ivec2 tc = ivec2( gl_FragCoord.xy );
-		
-		float depthTestValue = sampleDepth( texDepthTest, ivec3( tc, vLayer ) );
+		float depthTestValue = sampleDepth( texDepthTest, ivec3( gl_FragCoord.xy, vLayer ) );
 		
 		#ifdef INVERSE_DEPTH
 			#ifdef DEPTH_TEST_LARGER
@@ -362,6 +358,17 @@ void main( void ){
 			#endif
 		#endif
 	#endif
+	
+	// discard against xray depth
+	if( pCondXRay ){
+		float xrayDepth = sampleDepth( texXRayDepth, ivec3( gl_FragCoord.xy, vLayer ) );
+		
+		#ifdef INVERSE_DEPTH
+			if( fragmentDepth >= xrayDepth ) discard;
+		#else
+			if( fragmentDepth <= xrayDepth ) discard;
+		#endif
+	}
 	
 	// encode the output depth
 	#ifdef ENCODE_OUT_DEPTH

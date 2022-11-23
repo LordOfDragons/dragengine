@@ -388,7 +388,14 @@ void ceLoadSaveConversation::pWriteFacePose( decXmlWriter &writer, const ceFaceP
 		const ceControllerValue &entry = *controllerList.GetAt( i );
 		
 		writer.WriteOpeningTagStart( "controller" );
-		writer.WriteAttributeInt( "index", entry.GetController() );
+		
+		if( entry.GetControllerIndex() == -1 ){
+			writer.WriteAttributeString( "name", entry.GetController() );
+			
+		}else{ // deprecated
+			writer.WriteAttributeInt( "index", entry.GetControllerIndex() );
+		}
+		
 		writer.WriteAttributeFloat( "value", entry.GetValue() );
 		writer.WriteOpeningTagEnd( true );
 	}
@@ -537,8 +544,11 @@ void ceLoadSaveConversation::pWriteActionActorSpeak( decXmlWriter &writer, const
 	
 	writer.WriteDataTagString( "actor", action.GetActor() );
 	
-	if( action.GetTextBoxText().GetLength() > 0 ){
+	if( ! action.GetTextBoxText().IsEmpty() ){
 		WriteMultilineString( writer, "textBoxText", action.GetTextBoxText().ToUTF8() );
+	}
+	if( ! action.GetTextBoxTextTranslate().IsEmpty() ){
+		writer.WriteDataTagString( "textBoxTextTranslate", action.GetTextBoxTextTranslate() );
 	}
 	if( ! action.GetTextBoxTextStyle().IsEmpty() ){
 		writer.WriteDataTagString( "textBoxTextStyle", action.GetTextBoxTextStyle() );
@@ -1461,7 +1471,12 @@ void ceLoadSaveConversation::pReadFacePose( const decXmlElementTag &root, ceConv
 			
 			if( tag ){
 				if( strcmp( tag->GetName(), "controller" ) == 0 ){
-					entry = new ceControllerValue( GetAttributeInt( *tag, "index" ), GetAttributeFloat( *tag, "value" ) );
+					if( HasAttribute( *tag, "index" ) ){ // deprecated
+						entry = new ceControllerValue( GetAttributeInt( *tag, "index" ), GetAttributeFloat( *tag, "value" ) );
+						
+					}else{
+						entry = new ceControllerValue( GetAttributeString( *tag, "name" ), GetAttributeFloat( *tag, "value" ) );
+					}
 					facePose->GetControllerList().Add( entry );
 					entry->FreeReference();
 					
@@ -1981,8 +1996,11 @@ void ceLoadSaveConversation::pReadActionActorSpeak( const decXmlElementTag &root
 			if( strcmp( tag->GetName(), "actor" ) == 0 ){
 				action.SetActor( GetCDataString( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "textBoxText" ) == 0 ){
+			}else if( tag->GetName() == "textBoxText" ){
 				action.SetTextBoxText( decUnicodeString::NewFromUTF8( ReadMultilineString( *tag ) ) );
+				
+			}else if( tag->GetName() == "textBoxTextTranslate" ){
+				action.SetTextBoxTextTranslate( GetCDataString( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "textBoxTextStyle" ) == 0 ){
 				action.SetTextBoxTextStyle( GetCDataString( *tag ) );

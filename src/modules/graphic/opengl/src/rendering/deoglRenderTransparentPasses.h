@@ -57,13 +57,13 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** \brief Render Transparent Passes. */
-	void RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** \brief Render transparent geometry pass. */
-	void RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** \brief Render transparent depth limite pass. */
-	void RenderTransparentLimitDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderTransparentLimitDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** \brief Render volumetric pass. */
 	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );

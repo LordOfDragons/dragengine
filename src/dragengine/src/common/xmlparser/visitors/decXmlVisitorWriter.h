@@ -35,6 +35,8 @@ class DE_DLL_EXPORT decXmlVisitorWriter : public decXmlVisitor{
 private:
 	bool pCompact;
 	decXmlWriter *pWriter;
+	bool pTagIndent;
+	bool pTagNewline;
 	
 	
 	

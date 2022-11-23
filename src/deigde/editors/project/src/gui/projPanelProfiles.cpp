@@ -345,6 +345,39 @@ public:
 	}
 };
 
+class cActionGenerateIdentifier : public cActionBase{
+public:
+	cActionGenerateIdentifier( projPanelProfiles &panel ) : cActionBase( panel,
+		"Generate Identifier", nullptr, "Generate Identifier" ){}
+	
+	virtual igdeUndo *OnAction( projProject*, projProfile *profile ){
+		if( igdeCommonDialogs::Question( &pPanel, igdeCommonDialogs::ebsYesNo, "Generate Identifier",
+		"Generating new identifier can break the game. Do you really want to generate new identifier?" )
+		== igdeCommonDialogs::ebYes ){
+			return new projUProfileSetIdentifier( profile, decUuid::Random() );
+		}
+		return nullptr;
+	}
+};
+
+class cActionMenuIdentifier : public igdeActionContextMenu{
+	projPanelProfiles &pPanel;
+	
+public:
+	cActionMenuIdentifier( projPanelProfiles &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Identifier menu" ),
+	pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		if( ! pPanel.GetActiveProfile() ){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, new cActionGenerateIdentifier( pPanel ), true );
+	}
+};
+
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
 	cTextIdentifier( projPanelProfiles &panel ) : cBaseTextFieldListener( panel ){ }
@@ -639,7 +672,7 @@ pListener( NULL )
 	helper.Button( sidePanel, windowMain.GetActionProfileRemove() );
 	helper.Button( sidePanel, windowMain.GetActionProfileDuplicate() );
 	
-	igdeContainerReference groupBox;
+	igdeContainerReference groupBox, formLine;
 	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Content:" );
 	helper.Button( groupBox, windowMain.GetActionShowContent() );
 	
@@ -694,8 +727,13 @@ pListener( NULL )
 	pActionPathCapture.TakeOver( new cActionPathCapture( *this ) );
 	helper.Button( frameLine, pActionPathCapture );
 	
-	helper.EditString( groupBox, "Identifier:", "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
+	pActionMenuIdentifier.TakeOver( new cActionMenuIdentifier( *this ) );
+	helper.FormLineStretchFirst( groupBox, "Identifier:",
+		"Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!", formLine );
+	helper.EditString( formLine, "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
 		pEditIdentifier, new cTextIdentifier( *this ) );
+	helper.Button( formLine, pBtnMenuIdentifier, pActionMenuIdentifier );
+	pActionMenuIdentifier->SetWidget( pBtnMenuIdentifier );
 	
 	helper.EditString( groupBox, "Alias Identifier:", "Alias identifier of game used by Launchers to simplify running the game.",
 		pEditAliasIdentifier, new cTextAliasIdentifier( *this ) );

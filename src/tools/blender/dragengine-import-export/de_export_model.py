@@ -97,6 +97,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				with open(self.filepath, "wb") as f:
 					self.safeExport(context, f)
 		finally:
+			self.restoreStates(context)
 			self.progress.hide()
 	
 	def initFindMeshArmRef(self, context):
@@ -119,13 +120,16 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			testmesh = self.mesh
 			prevLodLevelHasLodError = False
 			predLodError = 0
-			while testmesh and testmesh.object and testmesh.object.dragengine_lodmesh in bpy.data.objects:
+			while testmesh\
+					and testmesh.object\
+					and testmesh.object.dragengine_lodmesh\
+					and testmesh.object.dragengine_lodmesh.name in bpy.data.objects:
 				if testmesh.object.dragengine_lodmesh in loopProtection:
 					self.report({ 'INFO', 'ERROR' }, "Loop in LOD meshes!")
 					return False
-				loopProtection.append(testmesh.object.dragengine_lodmesh)
+				loopProtection.append(testmesh.object.dragengine_lodmesh.name)
 				
-				testmesh.lodMesh = Mesh(bpy.data.objects[testmesh.object.dragengine_lodmesh])
+				testmesh.lodMesh = Mesh(testmesh.object.dragengine_lodmesh)
 				
 				if testmesh.lodMesh.object.dragengine_hasloderror:
 					testmesh.lodMesh.lodError = testmesh.lodMesh.object.dragengine_loderror
@@ -161,6 +165,13 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				#print('{} = {}'.format(text, timer - self.timer))
 				self.timer = timer
 		timer = Timer()
+		
+		# since we apply modifiers we run into a problem if armature modifiers are used.
+		# in this case the model is not exported in the rest post but in some arbitrary
+		# animation pose which breaks the export. to solve this set the armature to
+		# 'rest pose' while exporting then switch it back to the original value
+		if self.armature is not None and not self.armature.restPose:
+			self.armature.armature.pose_position = 'REST'
 		
 		self.depsgraph = context.evaluated_depsgraph_get()
 		
@@ -561,5 +572,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		f.write(struct.pack(fmt, face.tangents[i4], face.tangents[i3], face.tangents[i2], face.tangents[i1]))
 		for tcs in face.texCoordSets:
 			f.write(struct.pack(fmt, tcs[i4].index, tcs[i3].index, tcs[i2].index, tcs[i1].index))
+	
+	def restoreStates(self, context):
+		# restore rig pose position if changed
+		if self.armature is not None and not self.armature.restPose:
+			self.armature.armature.pose_position = 'POSE'
 	
 registerClass(OBJECT_OT_ExportModel)

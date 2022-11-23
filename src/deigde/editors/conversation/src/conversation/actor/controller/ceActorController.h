@@ -33,6 +33,12 @@
  */
 class ceActorController : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceActorController> Ref;
+	
+	
+	
+public:
 	/** \brief Update types. */
 	enum eUpdateTypes{
 		/** \brief Set controller to a fixed value. */

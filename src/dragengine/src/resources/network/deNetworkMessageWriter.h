@@ -50,6 +50,9 @@ public:
 	/** \brief Create network message writer. */
 	deNetworkMessageWriter( deNetworkMessage *message, bool append );
 	
+private:
+	deNetworkMessageWriter( const deNetworkMessageWriter &writer );
+	
 protected:
 	/**
 	 * \brief Clean up network message reader.
@@ -86,6 +89,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

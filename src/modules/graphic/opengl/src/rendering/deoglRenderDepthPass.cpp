@@ -220,7 +220,8 @@ deoglRenderDepthPass::~deoglRenderDepthPass(){
 
 
 
-void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan,
+const deoglRenderPlanMasked *mask, bool xray ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.RenderSolidDepthPass" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -256,7 +257,7 @@ void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const de
 	
 	// render depth geometry
 	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	RenderDepth( plan, mask, true, false, false ); // +solid, -maskedOnly, -reverseDepthTest
+	RenderDepth( plan, mask, true, false, false, xray ); // +solid, -maskedOnly, -reverseDepthTest
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapDepthPassBuffers ){
 		deoglDebugSnapshot snapshot( renderThread );
 		snapshot.SetEnableDepth( true );
@@ -269,8 +270,10 @@ void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const de
 	// now is a good time to do occlusion queries for all lights having passed
 	// the quick rejection test as well as all components which are costly
 	// enough to justify wasting an occlusion query on them.
-	RenderOcclusionQueryPass( plan, mask );
-	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryOcclusion, true );
+	if( ! xray ){
+		RenderOcclusionQueryPass( plan, mask );
+		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryOcclusion, true );
+	}
 	
 	// if we are rendering a solid pass and we have transparency render the
 	// transparency counter pass to determine how many layers we need
@@ -285,7 +288,7 @@ void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const de
 
 
 void deoglRenderDepthPass::RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
-bool solid, bool maskedOnly, bool reverseDepthTest ){
+bool solid, bool maskedOnly, bool reverseDepthTest, bool xray ){
 DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.RenderDepth" );
@@ -338,8 +341,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
 		tasks.WaitFinishBuildingTasksDepth();
 		
-		tasks.GetSolidDepthTask().SetRenderParamBlock( renworld.GetRenderPB() );
-		renderTask = &tasks.GetSolidDepthTask();
+		renderTask = xray ? &tasks.GetSolidDepthXRayTask() : &tasks.GetSolidDepthTask();
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		
 	}else{
 		DebugTimer1Reset( plan, true );
@@ -348,13 +351,17 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		
 		// build render task
 		renderTask->Clear();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		addToRenderTask.Reset();
 		addToRenderTask.SetSolid( solid );
 		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 		addToRenderTask.SetNoRendered( mask );
+		if( xray ){
+			addToRenderTask.SetFilterXRay( true );
+			addToRenderTask.SetXRay( true );
+		}
 		
 		// components
 		if( mask && mask->GetUseClipPlane() ){
@@ -595,8 +602,8 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	const deoglDebugTraceGroup debugTraceOutline( renderThread, "DepthPass.RenderDepth.Outline" );
 	if( solid ){
 		deoglRenderPlanTasks &tasks = plan.GetTasks();
-		tasks.GetSolidDepthOutlineTask().SetRenderParamBlock( renworld.GetRenderPB() );
-		renderTask = &tasks.GetSolidDepthOutlineTask();
+		renderTask = xray ? &tasks.GetSolidDepthOutlineXRayTask() : &tasks.GetSolidDepthOutlineTask();
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		
 	}else{
 		DebugTimer1Reset( plan, true );
@@ -604,7 +611,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
 		renderTask->Clear();
-		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
+		renderTask->SetRenderParamBlock( xray ? renworld.GetRenderXRayPB() : renworld.GetRenderPB() );
 		renderTask->SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
 		
 		addToRenderTask.Reset();
@@ -614,6 +621,10 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		addToRenderTask.SetSolid( solid );
 		addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 		addToRenderTask.SetNoRendered( mask );
+		if( xray ){
+			addToRenderTask.SetFilterXRay( true );
+			addToRenderTask.SetXRay( xray );
+		}
 		
 		if( mask && mask->GetUseClipPlane() ){
 			if( reverseDepthTest ){

@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine IGDE Conversation Editor
+ * Drag[en]gine IGDE Animator Editor
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,42 +19,44 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _CEUCFPCONTROLLERSETCONTROLLER_H_
-#define _CEUCFPCONTROLLERSETCONTROLLER_H_
+
+#ifndef _AEULINKPASTE_H_
+#define _AEULINKPASTE_H_
 
 #include <deigde/undo/igdeUndo.h>
-
-class ceFacePose;
-class ceControllerValue;
+#include "../../animator/aeAnimator.h"
+#include "../../animator/link/aeLinkList.h"
+#include "../../animator/controller/aeControllerList.h"
 
 
 
 /**
- * \brief Undo Action Face Pose Controller Set Controller.
+ * Undo action paste link.
  */
-class ceUCFPControllerSetController : public igdeUndo{
+class aeULinkPaste : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
-	int pOldController;
-	int pNewController;
+	const aeAnimator::Ref pAnimator;
+	aeLinkList pLinkList;
+	aeControllerList pRemoveControllerList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo. */
-	ceUCFPControllerSetController( ceFacePose *facePose, ceControllerValue *controller, int newController );
+	/** Create a new undo object. */
+	aeULinkPaste( aeAnimator *animator, const aeLinkList &linkList );
+	
 protected:
-	/** \brief Clean up undo. */
-	virtual ~ceUCFPControllerSetController();
+	/** Clean up undo. */
+	virtual ~aeULinkPaste();
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo. */
+	/** Undo action. */
 	virtual void Undo();
-	/** \brief Redo. */
+	
+	/** Redo action. */
 	virtual void Redo();
 	/*@}*/
 };
