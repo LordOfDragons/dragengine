@@ -1,3 +1,9 @@
+dragengine (1.16-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
+
+  * Changelog 1.16: https://dragondreams.ch/?page_id=1260
+
+ -- Roland Plüss <roland@rptd.ch>  Wed, 23 Nov 2022 00:28:49 +0000
+
 dragengine (1.15-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
 
   * Changelog 1.15: https://dragondreams.ch/?page_id=1234
