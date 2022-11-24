@@ -354,30 +354,19 @@ void deXSystemInput::EventLoop( XEvent &event ){
 		}
 		pKeyStates[ keyCode ] = true;
 		
-		const int button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( keyCode );
-		if( button == -1 ){
+		sKey key;
+		if( ! pLookUpKey( event.xkey, key ) ){
 			break;
-		}
-		
-		const int virtualKeyCode = XLookupKeysym( &event.xkey, 0 );
-		if( virtualKeyCode == NoSymbol ){
-			break;
-		}
-		
-		KeySym keySym = 0;
-		unsigned char character = 0;
-		if( ! XLookupString( &event.xkey, ( char* )&character, 1, &keySym, NULL ) ){
-			character = 0;
 		}
 		
 		timeval eventTime;
 		eventTime.tv_sec = ( time_t )( event.xkey.time / 1000 );
 		eventTime.tv_usec = ( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( button );
+		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( key.button );
 		deviceButton.SetPressed( true );
 		
-		pAddKeyPress( pDevices->GetPrimaryKeyboard()->GetIndex(), button, character,
+		pAddKeyPress( pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
 			deviceButton.GetKeyCode(), pModifiersFromXState( event.xkey.state ), eventTime );
 		}break;
 		
@@ -391,30 +380,19 @@ void deXSystemInput::EventLoop( XEvent &event ){
 		}
 		pKeyStates[ keyCode ] = false;
 		
-		const int button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( keyCode );
-		if( button == -1 ){
+		sKey key;
+		if( ! pLookUpKey( event.xkey, key ) ){
 			break;
-		}
-		
-		const int virtualKeyCode = XLookupKeysym( &event.xkey, 0 );
-		if( virtualKeyCode == NoSymbol ){
-			break;
-		}
-		
-		KeySym keySym = 0;
-		unsigned char character = 0;
-		if( ! XLookupString( &event.xkey, ( char* )&character, 1, &keySym, NULL ) ){
-			character = 0;
 		}
 		
 		timeval eventTime;
 		eventTime.tv_sec = ( time_t )( event.xkey.time / 1000 );
 		eventTime.tv_usec = ( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( button );
+		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( key.button );
 		deviceButton.SetPressed( false );
 		
-		pAddKeyRelease( pDevices->GetPrimaryKeyboard()->GetIndex(), button, character,
+		pAddKeyRelease( pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
 			deviceButton.GetKeyCode(), pModifiersFromXState( event.xkey.state ), eventTime );
 		}break;
 		
@@ -781,6 +759,49 @@ int deXSystemInput::pModifiersFromXState( int xstate ) const{
 	*/
 	
 	return modifiers;
+}
+
+bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ) const{
+	key.button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( event.keycode );
+	if( key.button == -1 ){
+		return false;
+	}
+	
+	key.virtualKeyCode = XLookupKeysym( &event, 0 );
+	if( key.virtualKeyCode == NoSymbol ){
+		return false;
+	}
+	
+	key.keySym = 0;
+	key.character = 0;
+	
+	char utf8[ 4 ];
+	const int count = XLookupString( &event, ( char* )&utf8, 4, &key.keySym, nullptr );
+	
+	switch( count ){
+	case 1:
+		key.character = utf8[ 0 ] & 0x7f;
+		break;
+		
+	case 2:
+		key.character = ( ( utf8[ 0 ] & 0x1f ) << 6 ) + ( utf8[ 1 ] & 0x3f );
+		break;
+		
+	case 3:
+		key.character = ( ( utf8[ 0 ] & 0xf ) << 12 ) + ( ( utf8[ 1 ] & 0x3f ) << 6 )
+			+ ( utf8[ 2 ] & 0x3f );
+		break;
+		
+	case 4:
+		key.character = ( ( utf8[ 0 ] & 0x7 ) << 18 ) + ( ( utf8[ 1 ] & 0x3f ) << 12 )
+			+ ( ( utf8[ 2 ] & 0x3f ) << 6 ) + ( utf8[ 3 ] & 0x3f );
+		break;
+		
+	default:
+		key.character = 0;
+	}
+	
+	return true;
 }
 
 void deXSystemInput::pUpdateAutoRepeat(){
