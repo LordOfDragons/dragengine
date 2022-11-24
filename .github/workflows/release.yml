@@ -181,4 +181,4 @@ jobs:
           curl -X POST https://api.github.com/repos/:LordOfDragons/:dedistribute/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACTION_KEY }} \
-          --data '{"event_type": "Trigger Workflow", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
+          --data '{"event_type": "Trigger Workflow", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'
