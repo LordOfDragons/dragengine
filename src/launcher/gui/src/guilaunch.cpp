@@ -24,16 +24,16 @@
 #include <string.h>
 #include <signal.h>
 
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
+
 #include "guilaunch.h"
 #include "gui/deglWindowMain.h"
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/exceptions.h>
-
-#ifdef OS_W32
-#include <dragengine/app/deOSWindows.h>
-#endif
 
 
 
