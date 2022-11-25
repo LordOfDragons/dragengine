@@ -93,9 +93,6 @@ void igdeApplication::Run( int argCount, char **args ){
 
 #elif defined OS_W32
 void igdeApplication::Run(){
-	// silence certification tool
-	(void)SetProcessDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
-	
 	// quick note on why we use GetCommandLineW() here and not the value from wWinMain.
 	// MinGW does not support wWinMain so it has to be faked by implementing WinMain which
 	// calls GetCommandLineW(). This can be unfortunatly not fed directly to wWinMain
