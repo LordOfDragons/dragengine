@@ -6,7 +6,7 @@ AppPublisher=Dragon Dreams
 AppPublisherURL=https://dragondreams.ch
 AppSupportURL=https://dragondreams.ch
 AppUpdatesURL=https://dragondreams.ch
-DefaultDirName={pf}\DEIGDE
+DefaultDirName={commonpf}\DEIGDE
 DisableDirPage=no
 DefaultGroupName=Drag[en]gine IGDE
 DisableProgramGroupPage=no
@@ -28,6 +28,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 Source: "unpacked\@ProgramFiles\DEIGDE\Bin\*"; DestDir: "{app}\Bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "unpacked\@ProgramFiles\DEIGDE\Data\*"; DestDir: "{app}\Data"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "unpacked\@ProgramFiles\DEIGDE\Share\*"; DestDir: "{app}\Share"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "unpacked\@System\deigdeshared.dll"; DestDir: "{sys}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 ; InnoSetup ignore hidden files, which seems to include .* files. Whoever had this idea should be smacked
 ;Source: "unpacked\@ProgramFiles\DEIGDE\Share\templates\dscriptBasic\.kdev4\*"; DestDir: "{app}\Share\templates\dscriptBasic\.kdev4"; Flags: ignoreversion recursesubdirs createallsubdirs
