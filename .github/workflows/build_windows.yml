@@ -23,7 +23,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    # we need ubuntu-22.04 not ubuntu-latest or mingw is too old
     
     steps:
       - uses: actions/checkout@v3
