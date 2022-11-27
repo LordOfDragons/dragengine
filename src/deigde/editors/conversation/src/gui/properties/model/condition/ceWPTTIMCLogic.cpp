@@ -119,8 +119,10 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	int i;
 	
 	// child action specific
+	helper.MenuSeparator( contextMenu );
+	
 	igdeMenuCascadeReference subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Condition",
+	subMenu.TakeOver( new igdeMenuCascade( environment, "Logic: Add Condition",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );
 	
@@ -131,14 +133,8 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	
 	helper.MenuCommand( contextMenu, new ceWPTMACLogicClearCondition( windowMain, conversation,
 		*topic, action, logic ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicCutCondition( windowMain, conversation,
-		*topic, action, logic, GetCondition() ), true );
 	helper.MenuCommand( contextMenu, new ceWPTMACLogicPasteCondition( windowMain, conversation,
 		*topic, action, logic ), true );
-	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicRemoveCondition( windowMain, conversation,
-		*topic, action, logic, GetCondition() ), true );
 }
 
 void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition ){

@@ -39,7 +39,7 @@
 ceWPTMACLogicPasteCondition::ceWPTMACLogicPasteCondition( ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic ) :
-ceWPTMAPasteCondition( windowMain, conversation ),
+ceWPTMAPasteCondition( windowMain, conversation, "Logic: Paste Condition" ),
 pTopic( &topic ),
 pAction( &action ),
 pLogic( &logic ){

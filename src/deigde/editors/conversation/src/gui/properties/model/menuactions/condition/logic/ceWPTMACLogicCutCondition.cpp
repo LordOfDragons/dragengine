@@ -47,7 +47,7 @@ ceWPTMACLogicCutCondition::ceWPTMACLogicCutCondition( ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic,
 ceConversationCondition *condition ) :
-ceWPTMACopyCondition( windowMain, condition, "Cut Condition",
+ceWPTMACopyCondition( windowMain, condition, "Logic: Cut Condition",
 	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
 pConversation( &conversation ),
 pTopic( &topic ),
