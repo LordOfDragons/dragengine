@@ -136,6 +136,7 @@ void deoalSourceManager::UnbindSource( deoalSource *source ){
 	source->SetOwner( NULL );
 	source->Stop();
 	source->ClearFilter();
+	source->ClearAllSendEffects();
 	pCountBound--;
 	pCountUnbound++;
 }
