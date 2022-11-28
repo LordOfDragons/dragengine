@@ -143,6 +143,9 @@ public:
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
+	/** \brief Speaker gain changed. */
+	virtual void SpeakerGainChanged();
+	
 	/** \brief Speaker has been added. */
 	virtual void SpeakerAdded( deSpeaker *speaker );
 	

@@ -36,7 +36,7 @@ class deoalWorldOctreeVisitor;
 
 
 /**
- * \brief Audio thread world.
+ * Audio thread world.
  */
 class deoalAWorld : public deObject{
 private:
@@ -59,19 +59,19 @@ private:
 	int pSoundLevelMeterCount;
 	
 	deoalWorldOctree *pOctree;
-	
 	decLayerMask pAllMicLayerMask;
+	float pSpeakerGain;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world peer. */
+	/** Create world peer. */
 	deoalAWorld( deoalAudioThread &audioThread, const decDVector &size );
 	
 protected:
-	/** \brief Clean up world peer. */
+	/** Clean up world peer. */
 	virtual ~deoalAWorld();
 	/*@}*/
 	
@@ -80,54 +80,60 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenAL module. */
+	/** OpenAL module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
-	/** \brief Octree. */
+	/** Octree. */
 	inline deoalWorldOctree *GetOctree() const{ return pOctree; }
 	
-	/** \brief Visit content of world. */
+	/** Visit content of world. */
 	void VisitRegion( const decDVector &center, const decDVector &halfSize,
 		deoalWorldOctreeVisitor &visitor );
 	
-	/** \brief Layer mask containing all bits of all microphones. */
+	/** Layer mask containing all bits of all microphones. */
 	inline const decLayerMask &GetAllMicLayerMask() const{ return pAllMicLayerMask; }
 	
+	/** Speaker gain. */
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
+	
+	/** Set speaker gain. */
+	void SetSpeakerGain( float gain );
 	
 	
-	/** \brief Invalidate environment probes. */
+	
+	/** Invalidate environment probes. */
 	void InvalidateEnvProbes( const decDVector &minExtend, const decDVector &maxExtend,
 		const decLayerMask &layerMask );
 	
 	
 	
-	/** \brief World is audible. */
+	/** World is audible. */
 	bool IsAudible() const;
 	
 	/**
-	 * \brief Enable or disable all speakers in the world.
+	 * Enable or disable all speakers in the world.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetAllSpeakersEnabled( bool enabled );
 	
 	/**
-	 * \brief Set all microphone layer mask.
+	 * Set all microphone layer mask.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetAllMicLayerMask( const decLayerMask &layerMask );
 	
-	/** \brief Update all speakers. */
+	/** Update all speakers. */
 	void UpdateAllSpeakers();
 	
-	/** \brief Update sound level metering. */
+	/** Update sound level metering. */
 	void UpdateSoundLevelMetering();
 	
-	/** \brief Prepare processing audio for one frame update. */
+	/** Prepare processing audio for one frame update. */
 	void PrepareProcessAudio();
 	
-	/** \brief Process deactivate. */
+	/** Process deactivate. */
 	void ProcessDeactivate();
 	/*@}*/
 	
@@ -135,22 +141,22 @@ public:
 	
 	/** \name Components. */
 	/*@{*/
-	/** \brief Number of components. */
+	/** Number of components. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Root component. */
+	/** Root component. */
 	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void AddComponent( deoalAComponent *component );
 	
-	/** \brief Remove component. */
+	/** Remove component. */
 	void RemoveComponent( deoalAComponent *component );
 	
-	/** \brief Remove all component. */
+	/** Remove all component. */
 	void RemoveAllComponents();
 	
-	/** \brief Remove components marked for removal. */
+	/** Remove components marked for removal. */
 	void RemoveRemovalMarkedComponents();
 	/*@}*/
 	
@@ -158,32 +164,32 @@ public:
 	
 	/** \name Speakers. */
 	/*@{*/
-	/** \brief Number of speakers. */
+	/** Number of speakers. */
 	inline int GetSpeakerCount() const{ return pSpeakerCount; }
 	
-	/** \brief Root speaker. */
+	/** Root speaker. */
 	inline deoalASpeaker *GetRootSpeaker() const{ return pRootSpeaker; }
 	
 	/**
-	 * \brief Add speaker.
+	 * Add speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void AddSpeaker( deoalASpeaker *speaker );
 	
 	/**
-	 * \brief Remove speaker.
+	 * Remove speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveSpeaker( deoalASpeaker *speaker );
 	
 	/**
-	 * \brief Remove all speaker.
+	 * Remove all speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveAllSpeakers();
 	
 	/**
-	 * \brief Remove speakers marked for removal.
+	 * Remove speakers marked for removal.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveRemovalMarkedSpeakers();
@@ -193,22 +199,22 @@ public:
 	
 	/** \name Microphones. */
 	/*@{*/
-	/** \brief Number of microphones. */
+	/** Number of microphones. */
 	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
 	
-	/** \brief Root microphone. */
+	/** Root microphone. */
 	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
 	
-	/** \brief Add microphone. */
+	/** Add microphone. */
 	void AddMicrophone( deoalAMicrophone *microphone );
 	
-	/** \brief Remove microphone. */
+	/** Remove microphone. */
 	void RemoveMicrophone( deoalAMicrophone *microphone );
 	
-	/** \brief Remove all microphone. */
+	/** Remove all microphone. */
 	void RemoveAllMicrophones();
 	
-	/** \brief Remove microphones marked for removal. */
+	/** Remove microphones marked for removal. */
 	void RemoveRemovalMarkedMicrophones();
 	/*@}*/
 	
@@ -216,32 +222,32 @@ public:
 	
 	/** \name Sound level meters. */
 	/*@{*/
-	/** \brief Number of sound level meters. */
+	/** Number of sound level meters. */
 	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
 	
-	/** \brief Root sound level meter. */
+	/** Root sound level meter. */
 	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pRootSoundLevelMeter; }
 	
 	/**
-	 * \brief Add sound level meter.
+	 * Add sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void AddSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
 	
 	/**
-	 * \brief Remove sound level meter.
+	 * Remove sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
 	
 	/**
-	 * \brief Remove all sound level meter.
+	 * Remove all sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveAllSoundLevelMeters();
 	
 	/**
-	 * \brief Remove sound level meters marked for removal.
+	 * Remove sound level meters marked for removal.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveRemovalMarkedSoundLevelMeters();

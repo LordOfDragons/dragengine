@@ -268,6 +268,25 @@ void deClassMicrophone::nfSetLayerMask::RunFunction( dsRunTime *rt, dsValue *mys
 	microphone.SetLayerMask( ds.GetClassLayerMask()->GetLayerMask( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// public func float getSpeakerGain()
+deClassMicrophone::nfGetSpeakerGain::nfGetSpeakerGain( const sInitData &init ) :
+dsFunction( init.clsMic, "getSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+}
+void deClassMicrophone::nfGetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	rt->PushFloat( microphone.GetSpeakerGain() );
+}
+
+// public func void setSpeakerGain(float gain)
+deClassMicrophone::nfSetSpeakerGain::nfSetSpeakerGain(const sInitData &init) :
+dsFunction( init.clsMic, "setSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // gain
+}
+void deClassMicrophone::nfSetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	microphone.SetSpeakerGain( rt->GetValue( 0 )->GetFloat() );
+}
+
 
 
 // Speakers
@@ -416,6 +435,9 @@ void deClassMicrophone::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );
+	
+	AddFunction( new nfGetSpeakerGain( init ) );
+	AddFunction( new nfSetSpeakerGain( init ) );
 	
 	AddFunction( new nfAddSpeaker( init ) );
 	AddFunction( new nfRemoveSpeaker( init ) );

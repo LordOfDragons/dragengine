@@ -66,100 +66,101 @@
 deWorld::deWorld( deWorldManager *manager ) :
 deResource( manager ),
 
-pHeightTerrain( NULL ),
+pHeightTerrain( nullptr ),
 pSize( 1000.0, 1000.0, 1000.0 ),
 
 pDisableLights( false ),
+pSpeakerGain( 1.0f ),
 
-pSkyRoot( NULL ),
-pSkyTail( NULL ),
+pSkyRoot( nullptr ),
+pSkyTail( nullptr ),
 pSkyCount( 0 ),
 
-pBillboardRoot( NULL ),
-pBillboardTail( NULL ),
+pBillboardRoot( nullptr ),
+pBillboardTail( nullptr ),
 pBillboardCount( 0 ),
 
-pCameraRoot( NULL ),
-pCameraTail( NULL ),
+pCameraRoot( nullptr ),
+pCameraTail( nullptr ),
 pCameraCount( 0 ),
 
-pColliderRoot( NULL ),
-pColliderTail( NULL ),
+pColliderRoot( nullptr ),
+pColliderTail( nullptr ),
 pColliderCount( 0 ),
 
-pComponentRoot( NULL ),
-pComponentTail( NULL ),
+pComponentRoot( nullptr ),
+pComponentTail( nullptr ),
 pComponentCount( 0 ),
 
-pDebugDrawerRoot( NULL ),
-pDebugDrawerTail( NULL ),
+pDebugDrawerRoot( nullptr ),
+pDebugDrawerTail( nullptr ),
 pDebugDrawerCount( 0 ),
 
-pEnvMapProbeRoot( NULL ),
-pEnvMapProbeTail( NULL ),
+pEnvMapProbeRoot( nullptr ),
+pEnvMapProbeTail( nullptr ),
 pEnvMapProbeCount( 0 ),
 
-pForceFieldRoot( NULL ),
-pForceFieldTail( NULL ),
+pForceFieldRoot( nullptr ),
+pForceFieldTail( nullptr ),
 pForceFieldCount( 0 ),
 
-pLightRoot( NULL ),
-pLightTail( NULL ),
+pLightRoot( nullptr ),
+pLightTail( nullptr ),
 pLightCount( 0 ),
 
-pLumimeterRoot( NULL ),
-pLumimeterTail( NULL ),
+pLumimeterRoot( nullptr ),
+pLumimeterTail( nullptr ),
 pLumimeterCount( 0 ),
 
-pMicrophoneRoot( NULL ),
-pMicrophoneTail( NULL ),
+pMicrophoneRoot( nullptr ),
+pMicrophoneTail( nullptr ),
 pMicrophoneCount( 0 ),
 
-pNavSpaceRoot( NULL ),
-pNavSpaceTail( NULL ),
+pNavSpaceRoot( nullptr ),
+pNavSpaceTail( nullptr ),
 pNavSpaceCount( 0 ),
 
-pNavBlockerRoot( NULL ),
-pNavBlockerTail( NULL ),
+pNavBlockerRoot( nullptr ),
+pNavBlockerTail( nullptr ),
 pNavBlockerCount( 0 ),
 
-pNavigatorRoot( NULL ),
-pNavigatorTail( NULL ),
+pNavigatorRoot( nullptr ),
+pNavigatorTail( nullptr ),
 pNavigatorCount( 0 ),
 
-pNetworkStateRoot( NULL ),
-pNetworkStateTail( NULL ),
+pNetworkStateRoot( nullptr ),
+pNetworkStateTail( nullptr ),
 pNetworkStateCount( 0 ),
 
-pParticleEmitterRoot( NULL ),
-pParticleEmitterTail( NULL ),
+pParticleEmitterRoot( nullptr ),
+pParticleEmitterTail( nullptr ),
 pParticleEmitterCount( 0 ),
 
-pPropFieldRoot( NULL ),
-pPropFieldTail( NULL ),
+pPropFieldRoot( nullptr ),
+pPropFieldTail( nullptr ),
 pPropFieldCount( 0 ),
 
-pSmokeEmitterRoot( NULL ),
-pSmokeEmitterTail( NULL ),
+pSmokeEmitterRoot( nullptr ),
+pSmokeEmitterTail( nullptr ),
 pSmokeEmitterCount( 0 ),
 
-pSpeakerRoot( NULL ),
-pSpeakerTail( NULL ),
+pSpeakerRoot( nullptr ),
+pSpeakerTail( nullptr ),
 pSpeakerCount( 0 ),
 
-pTouchSensorRoot( NULL ),
-pTouchSensorTail( NULL ),
+pTouchSensorRoot( nullptr ),
+pTouchSensorTail( nullptr ),
 pTouchSensorCount( 0 ),
 
-pSoundLevelMeterRoot( NULL ),
-pSoundLevelMeterTail( NULL ),
+pSoundLevelMeterRoot( nullptr ),
+pSoundLevelMeterTail( nullptr ),
 pSoundLevelMeterCount( 0 ),
 
-pPeerGraphic ( NULL ),
-pPeerPhysics ( NULL ),
-pPeerAudio ( NULL ),
-pPeerNetwork ( NULL ),
-pPeerAI( NULL ){
+pPeerGraphic ( nullptr ),
+pPeerPhysics ( nullptr ),
+pPeerAudio ( nullptr ),
+pPeerNetwork ( nullptr ),
+pPeerAI( nullptr ){
 }
 
 deWorld::~deWorld(){
@@ -317,6 +318,18 @@ void deWorld::SetLightColorMatrix( const decMatrix &matrix ){
 
 
 
+void deWorld::SetSpeakerGain( float gain ){
+	gain = decMath::max( gain, 0.0f );
+	if( fabsf( gain - pSpeakerGain ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pSpeakerGain = gain;
+	pNotifyAudioChanged();
+}
+
+
+
 void deWorld::SetHeightTerrain( deHeightTerrain *heightTerrain ){
 	if( heightTerrain != pHeightTerrain ){
 		if( pHeightTerrain ) pHeightTerrain->FreeReference();
@@ -350,11 +363,11 @@ void deWorld::AddSky( deSkyInstance *sky ){
 	if( pSkyTail ){
 		pSkyTail->SetLLWorldNext( sky );
 		sky->SetLLWorldPrev( pSkyTail );
-		sky->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		sky->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		sky->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		sky->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		sky->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		sky->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pSkyRoot = sky;
 	}
 	
@@ -387,9 +400,9 @@ void deWorld::RemoveSky( deSkyInstance *sky ){
 	}
 	pSkyCount--;
 	
-	sky->SetParentWorld( NULL );
-	sky->SetLLWorldPrev( NULL );
-	sky->SetLLWorldNext( NULL );
+	sky->SetParentWorld( nullptr );
+	sky->SetLLWorldPrev( nullptr );
+	sky->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->SkyRemoved( sky );
 	}
@@ -403,7 +416,7 @@ void deWorld::RemoveAllSkies(){
 	
 	while( pSkyTail ){
 		deSkyInstance * const next = pSkyTail->GetLLWorldPrev();
-		pSkyTail->SetParentWorld( NULL );
+		pSkyTail->SetParentWorld( nullptr );
 		pSkyTail->FreeReference();
 		pSkyTail = next;
 		pSkyCount--;
@@ -422,11 +435,11 @@ void deWorld::AddBillboard( deBillboard *billboard ){
 	if( pBillboardTail ){
 		pBillboardTail->SetLLWorldNext( billboard );
 		billboard->SetLLWorldPrev( pBillboardTail );
-		billboard->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		billboard->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		billboard->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		billboard->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		billboard->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		billboard->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pBillboardRoot = billboard;
 	}
 	
@@ -457,9 +470,9 @@ void deWorld::RemoveBillboard( deBillboard *billboard ){
 	}
 	pBillboardCount--;
 	
-	billboard->SetParentWorld( NULL );
-	billboard->SetLLWorldPrev( NULL );
-	billboard->SetLLWorldNext( NULL );
+	billboard->SetParentWorld( nullptr );
+	billboard->SetLLWorldPrev( nullptr );
+	billboard->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->BillboardRemoved( billboard );
 	}
@@ -473,7 +486,7 @@ void deWorld::RemoveAllBillboards(){
 	
 	while( pBillboardTail ){
 		deBillboard * const next = pBillboardTail->GetLLWorldPrev();
-		pBillboardTail->SetParentWorld( NULL );
+		pBillboardTail->SetParentWorld( nullptr );
 		pBillboardTail->FreeReference();
 		pBillboardTail = next;
 		pBillboardCount--;
@@ -494,11 +507,11 @@ void deWorld::AddCamera( deCamera *camera ){
 	if( pCameraTail ){
 		pCameraTail->SetLLWorldNext( camera );
 		camera->SetLLWorldPrev( pCameraTail );
-		camera->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		camera->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		camera->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		camera->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		camera->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		camera->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pCameraRoot = camera;
 	}
 	
@@ -531,9 +544,9 @@ void deWorld::RemoveCamera( deCamera *camera ){
 	}
 	pCameraCount--;
 	
-	camera->SetParentWorld( NULL );
-	camera->SetLLWorldPrev( NULL );
-	camera->SetLLWorldNext( NULL );
+	camera->SetParentWorld( nullptr );
+	camera->SetLLWorldPrev( nullptr );
+	camera->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->CameraRemoved( camera );
 	}
@@ -547,7 +560,7 @@ void deWorld::RemoveAllCameras(){
 	
 	while( pCameraTail ){
 		deCamera * const next = pCameraTail->GetLLWorldPrev();
-		pCameraTail->SetParentWorld( NULL );
+		pCameraTail->SetParentWorld( nullptr );
 		pCameraTail->FreeReference();
 		pCameraTail = next;
 		pCameraCount--;
@@ -568,11 +581,11 @@ void deWorld::AddCollider( deCollider *collider ){
 	if( pColliderTail ){
 		pColliderTail->SetLLWorldNext( collider );
 		collider->SetLLWorldPrev( pColliderTail );
-		collider->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		collider->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		collider->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		collider->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		collider->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		collider->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pColliderRoot = collider;
 	}
 	
@@ -605,9 +618,9 @@ void deWorld::RemoveCollider( deCollider *collider ){
 	}
 	pColliderCount--;
 	
-	collider->SetParentWorld( NULL );
-	collider->SetLLWorldPrev( NULL );
-	collider->SetLLWorldNext( NULL );
+	collider->SetParentWorld( nullptr );
+	collider->SetLLWorldPrev( nullptr );
+	collider->SetLLWorldNext( nullptr );
 	if( pPeerPhysics ){
 		pPeerPhysics->ColliderRemoved( collider );
 	}
@@ -621,7 +634,7 @@ void deWorld::RemoveAllColliders(){
 	
 	while( pColliderTail ){
 		deCollider * const next = pColliderTail->GetLLWorldPrev();
-		pColliderTail->SetParentWorld( NULL );
+		pColliderTail->SetParentWorld( nullptr );
 		pColliderTail->FreeReference();
 		pColliderTail = next;
 		pColliderCount--;
@@ -642,11 +655,11 @@ void deWorld::AddComponent( deComponent *component ){
 	if( pComponentTail ){
 		pComponentTail->SetLLWorldNext( component );
 		component->SetLLWorldPrev( pComponentTail );
-		component->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		component->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		component->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		component->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		component->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		component->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pComponentRoot = component;
 	}
 	
@@ -685,9 +698,9 @@ void deWorld::RemoveComponent( deComponent *component ){
 	}
 	pComponentCount--;
 	
-	component->SetParentWorld( NULL );
-	component->SetLLWorldPrev( NULL );
-	component->SetLLWorldNext( NULL );
+	component->SetParentWorld( nullptr );
+	component->SetLLWorldPrev( nullptr );
+	component->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->ComponentRemoved( component );
 	}
@@ -713,7 +726,7 @@ void deWorld::RemoveAllComponents(){
 	
 	while( pComponentTail ){
 		deComponent * const next = pComponentTail->GetLLWorldPrev();
-		pComponentTail->SetParentWorld( NULL );
+		pComponentTail->SetParentWorld( nullptr );
 		pComponentTail->FreeReference();
 		pComponentTail = next;
 		pComponentCount--;
@@ -734,11 +747,11 @@ void deWorld::AddDebugDrawer( deDebugDrawer *debugDrawer ){
 	if( pDebugDrawerTail ){
 		pDebugDrawerTail->SetLLWorldNext( debugDrawer );
 		debugDrawer->SetLLWorldPrev( pDebugDrawerTail );
-		debugDrawer->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		debugDrawer->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		debugDrawer->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		debugDrawer->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		debugDrawer->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		debugDrawer->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pDebugDrawerRoot = debugDrawer;
 	}
 	
@@ -771,9 +784,9 @@ void deWorld::RemoveDebugDrawer( deDebugDrawer *debugDrawer ){
 	}
 	pDebugDrawerCount--;
 	
-	debugDrawer->SetParentWorld( NULL );
-	debugDrawer->SetLLWorldPrev( NULL );
-	debugDrawer->SetLLWorldNext( NULL );
+	debugDrawer->SetParentWorld( nullptr );
+	debugDrawer->SetLLWorldPrev( nullptr );
+	debugDrawer->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->DebugDrawerRemoved( debugDrawer );
 	}
@@ -787,7 +800,7 @@ void deWorld::RemoveAllDebugDrawers(){
 	
 	while( pDebugDrawerTail ){
 		deDebugDrawer * const next = pDebugDrawerTail->GetLLWorldPrev();
-		pDebugDrawerTail->SetParentWorld( NULL );
+		pDebugDrawerTail->SetParentWorld( nullptr );
 		pDebugDrawerTail->FreeReference();
 		pDebugDrawerTail = next;
 		pDebugDrawerCount--;
@@ -808,11 +821,11 @@ void deWorld::AddEnvMapProbe( deEnvMapProbe *envMapProbe ){
 	if( pEnvMapProbeTail ){
 		pEnvMapProbeTail->SetLLWorldNext( envMapProbe );
 		envMapProbe->SetLLWorldPrev( pEnvMapProbeTail );
-		envMapProbe->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		envMapProbe->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		envMapProbe->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		envMapProbe->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		envMapProbe->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		envMapProbe->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pEnvMapProbeRoot = envMapProbe;
 	}
 	
@@ -845,9 +858,9 @@ void deWorld::RemoveEnvMapProbe( deEnvMapProbe *envMapProbe ){
 	}
 	pEnvMapProbeCount--;
 	
-	envMapProbe->SetParentWorld( NULL );
-	envMapProbe->SetLLWorldPrev( NULL );
-	envMapProbe->SetLLWorldNext( NULL );
+	envMapProbe->SetParentWorld( nullptr );
+	envMapProbe->SetLLWorldPrev( nullptr );
+	envMapProbe->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->EnvMapProbeRemoved( envMapProbe );
 	}
@@ -861,7 +874,7 @@ void deWorld::RemoveAllEnvMapProbes(){
 	
 	while( pEnvMapProbeTail ){
 		deEnvMapProbe * const next = pEnvMapProbeTail->GetLLWorldPrev();
-		pEnvMapProbeTail->SetParentWorld( NULL );
+		pEnvMapProbeTail->SetParentWorld( nullptr );
 		pEnvMapProbeTail->FreeReference();
 		pEnvMapProbeTail = next;
 		pEnvMapProbeCount--;
@@ -882,11 +895,11 @@ void deWorld::AddForceField( deForceField *forceField ){
 	if( pForceFieldTail ){
 		pForceFieldTail->SetLLWorldNext( forceField );
 		forceField->SetLLWorldPrev( pForceFieldTail );
-		forceField->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		forceField->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		forceField->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		forceField->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		forceField->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		forceField->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pForceFieldRoot = forceField;
 	}
 	
@@ -919,9 +932,9 @@ void deWorld::RemoveForceField( deForceField *forceField ){
 	}
 	pForceFieldCount--;
 	
-	forceField->SetParentWorld( NULL );
-	forceField->SetLLWorldPrev( NULL );
-	forceField->SetLLWorldNext( NULL );
+	forceField->SetParentWorld( nullptr );
+	forceField->SetLLWorldPrev( nullptr );
+	forceField->SetLLWorldNext( nullptr );
 	if( pPeerPhysics ){
 		pPeerPhysics->ForceFieldRemoved( forceField );
 	}
@@ -935,7 +948,7 @@ void deWorld::RemoveAllForceFields(){
 	
 	while( pForceFieldTail ){
 		deForceField * const next = pForceFieldTail->GetLLWorldPrev();
-		pForceFieldTail->SetParentWorld( NULL );
+		pForceFieldTail->SetParentWorld( nullptr );
 		pForceFieldTail->FreeReference();
 		pForceFieldTail = next;
 		pForceFieldCount--;
@@ -956,11 +969,11 @@ void deWorld::AddLight( deLight *light ){
 	if( pLightTail ){
 		pLightTail->SetLLWorldNext( light );
 		light->SetLLWorldPrev( pLightTail );
-		light->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		light->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		light->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		light->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		light->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		light->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pLightRoot = light;
 	}
 	
@@ -993,9 +1006,9 @@ void deWorld::RemoveLight( deLight *light ){
 	}
 	pLightCount--;
 	
-	light->SetParentWorld( NULL );
-	light->SetLLWorldPrev( NULL );
-	light->SetLLWorldNext( NULL );
+	light->SetParentWorld( nullptr );
+	light->SetLLWorldPrev( nullptr );
+	light->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->LightRemoved( light );
 	}
@@ -1009,7 +1022,7 @@ void deWorld::RemoveAllLights(){
 	
 	while( pLightTail ){
 		deLight * const next = pLightTail->GetLLWorldPrev();
-		pLightTail->SetParentWorld( NULL );
+		pLightTail->SetParentWorld( nullptr );
 		pLightTail->FreeReference();
 		pLightTail = next;
 		pLightCount--;
@@ -1030,11 +1043,11 @@ void deWorld::AddLumimeter( deLumimeter *lumimeter ){
 	if( pLumimeterTail ){
 		pLumimeterTail->SetLLWorldNext( lumimeter );
 		lumimeter->SetLLWorldPrev( pLumimeterTail );
-		lumimeter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		lumimeter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		lumimeter->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		lumimeter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		lumimeter->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		lumimeter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pLumimeterRoot = lumimeter;
 	}
 	
@@ -1067,9 +1080,9 @@ void deWorld::RemoveLumimeter( deLumimeter *lumimeter ){
 	}
 	pLumimeterCount--;
 	
-	lumimeter->SetParentWorld( NULL );
-	lumimeter->SetLLWorldPrev( NULL );
-	lumimeter->SetLLWorldNext( NULL );
+	lumimeter->SetParentWorld( nullptr );
+	lumimeter->SetLLWorldPrev( nullptr );
+	lumimeter->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->LumimeterRemoved( lumimeter );
 	}
@@ -1083,7 +1096,7 @@ void deWorld::RemoveAllLumimeters(){
 	
 	while( pLumimeterTail ){
 		deLumimeter * const next = pLumimeterTail->GetLLWorldPrev();
-		pLumimeterTail->SetParentWorld( NULL );
+		pLumimeterTail->SetParentWorld( nullptr );
 		pLumimeterTail->FreeReference();
 		pLumimeterTail = next;
 		pLumimeterCount--;
@@ -1104,11 +1117,11 @@ void deWorld::AddMicrophone( deMicrophone *microphone ){
 	if( pMicrophoneTail ){
 		pMicrophoneTail->SetLLWorldNext( microphone );
 		microphone->SetLLWorldPrev( pMicrophoneTail );
-		microphone->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		microphone->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		microphone->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		microphone->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		microphone->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		microphone->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pMicrophoneRoot = microphone;
 	}
 	
@@ -1141,9 +1154,9 @@ void deWorld::RemoveMicrophone( deMicrophone *microphone ){
 	}
 	pMicrophoneCount--;
 	
-	microphone->SetParentWorld( NULL );
-	microphone->SetLLWorldPrev( NULL );
-	microphone->SetLLWorldNext( NULL );
+	microphone->SetParentWorld( nullptr );
+	microphone->SetLLWorldPrev( nullptr );
+	microphone->SetLLWorldNext( nullptr );
 	if( pPeerAudio ){
 		pPeerAudio->MicrophoneRemoved( microphone );
 	}
@@ -1157,7 +1170,7 @@ void deWorld::RemoveAllMicrophones(){
 	
 	while( pMicrophoneTail ){
 		deMicrophone * const next = pMicrophoneTail->GetLLWorldPrev();
-		pMicrophoneTail->SetParentWorld( NULL );
+		pMicrophoneTail->SetParentWorld( nullptr );
 		pMicrophoneTail->FreeReference();
 		pMicrophoneTail = next;
 		pMicrophoneCount--;
@@ -1178,11 +1191,11 @@ void deWorld::AddNavigationSpace( deNavigationSpace *navspace ){
 	if( pNavSpaceTail ){
 		pNavSpaceTail->SetLLWorldNext( navspace );
 		navspace->SetLLWorldPrev( pNavSpaceTail );
-		navspace->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		navspace->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		navspace->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		navspace->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		navspace->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		navspace->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pNavSpaceRoot = navspace;
 	}
 	
@@ -1215,9 +1228,9 @@ void deWorld::RemoveNavigationSpace( deNavigationSpace *navspace ){
 	}
 	pNavSpaceCount--;
 	
-	navspace->SetParentWorld( NULL );
-	navspace->SetLLWorldPrev( NULL );
-	navspace->SetLLWorldNext( NULL );
+	navspace->SetParentWorld( nullptr );
+	navspace->SetLLWorldPrev( nullptr );
+	navspace->SetLLWorldNext( nullptr );
 	if( pPeerAI ){
 		pPeerAI->NavigationSpaceRemoved( navspace );
 	}
@@ -1231,7 +1244,7 @@ void deWorld::RemoveAllNavigationSpaces(){
 	
 	while( pNavSpaceTail ){
 		deNavigationSpace * const next = pNavSpaceTail->GetLLWorldPrev();
-		pNavSpaceTail->SetParentWorld( NULL );
+		pNavSpaceTail->SetParentWorld( nullptr );
 		pNavSpaceTail->FreeReference();
 		pNavSpaceTail = next;
 		pNavSpaceCount--;
@@ -1252,11 +1265,11 @@ void deWorld::AddNavigationBlocker( deNavigationBlocker *blocker ){
 	if( pNavBlockerTail ){
 		pNavBlockerTail->SetLLWorldNext( blocker );
 		blocker->SetLLWorldPrev( pNavBlockerTail );
-		blocker->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		blocker->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		blocker->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		blocker->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		blocker->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		blocker->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pNavBlockerRoot = blocker;
 	}
 	
@@ -1289,9 +1302,9 @@ void deWorld::RemoveNavigationBlocker( deNavigationBlocker *blocker ){
 	}
 	pNavBlockerCount--;
 	
-	blocker->SetParentWorld( NULL );
-	blocker->SetLLWorldPrev( NULL );
-	blocker->SetLLWorldNext( NULL );
+	blocker->SetParentWorld( nullptr );
+	blocker->SetLLWorldPrev( nullptr );
+	blocker->SetLLWorldNext( nullptr );
 	if( pPeerAI ){
 		pPeerAI->NavigationBlockerRemoved( blocker );
 	}
@@ -1305,7 +1318,7 @@ void deWorld::RemoveAllNavigationBlockers(){
 	
 	while( pNavBlockerTail ){
 		deNavigationBlocker * const next = pNavBlockerTail->GetLLWorldPrev();
-		pNavBlockerTail->SetParentWorld( NULL );
+		pNavBlockerTail->SetParentWorld( nullptr );
 		pNavBlockerTail->FreeReference();
 		pNavBlockerTail = next;
 		pNavBlockerCount--;
@@ -1326,11 +1339,11 @@ void deWorld::AddNavigator( deNavigator *navigator ){
 	if( pNavigatorTail ){
 		pNavigatorTail->SetLLWorldNext( navigator );
 		navigator->SetLLWorldPrev( pNavigatorTail );
-		navigator->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		navigator->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		navigator->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		navigator->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		navigator->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		navigator->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pNavigatorRoot = navigator;
 	}
 	
@@ -1363,9 +1376,9 @@ void deWorld::RemoveNavigator( deNavigator *navigator ){
 	}
 	pNavigatorCount--;
 	
-	navigator->SetParentWorld( NULL );
-	navigator->SetLLWorldPrev( NULL );
-	navigator->SetLLWorldNext( NULL );
+	navigator->SetParentWorld( nullptr );
+	navigator->SetLLWorldPrev( nullptr );
+	navigator->SetLLWorldNext( nullptr );
 	if( pPeerAI ){
 		pPeerAI->NavigatorRemoved( navigator );
 	}
@@ -1379,7 +1392,7 @@ void deWorld::RemoveAllNavigators(){
 	
 	while( pNavigatorTail ){
 		deNavigator * const next = pNavigatorTail->GetLLWorldPrev();
-		pNavigatorTail->SetParentWorld( NULL );
+		pNavigatorTail->SetParentWorld( nullptr );
 		pNavigatorTail->FreeReference();
 		pNavigatorTail = next;
 		pNavigatorCount--;
@@ -1400,11 +1413,11 @@ void deWorld::AddNetworkState( deNetworkState *networkState ){
 	if( pNetworkStateTail ){
 		pNetworkStateTail->SetLLWorldNext( networkState );
 		networkState->SetLLWorldPrev( pNetworkStateTail );
-		networkState->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		networkState->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		networkState->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		networkState->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		networkState->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		networkState->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pNetworkStateRoot = networkState;
 	}
 	
@@ -1437,9 +1450,9 @@ void deWorld::RemoveNetworkState( deNetworkState *networkState ){
 	}
 	pNetworkStateCount--;
 	
-	networkState->SetParentWorld( NULL );
-	networkState->SetLLWorldPrev( NULL );
-	networkState->SetLLWorldNext( NULL );
+	networkState->SetParentWorld( nullptr );
+	networkState->SetLLWorldPrev( nullptr );
+	networkState->SetLLWorldNext( nullptr );
 	if( pPeerNetwork ){
 		pPeerNetwork->NetworkStateRemoved( networkState );
 	}
@@ -1453,7 +1466,7 @@ void deWorld::RemoveAllNetworkStates(){
 	
 	while( pNetworkStateTail ){
 		deNetworkState * const next = pNetworkStateTail->GetLLWorldPrev();
-		pNetworkStateTail->SetParentWorld( NULL );
+		pNetworkStateTail->SetParentWorld( nullptr );
 		pNetworkStateTail->FreeReference();
 		pNetworkStateTail = next;
 		pNetworkStateCount--;
@@ -1474,11 +1487,11 @@ void deWorld::AddParticleEmitter( deParticleEmitterInstance *emitter ){
 	if( pParticleEmitterTail ){
 		pParticleEmitterTail->SetLLWorldNext( emitter );
 		emitter->SetLLWorldPrev( pParticleEmitterTail );
-		emitter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		emitter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		emitter->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		emitter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		emitter->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		emitter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pParticleEmitterRoot = emitter;
 	}
 	
@@ -1514,9 +1527,9 @@ void deWorld::RemoveParticleEmitter( deParticleEmitterInstance *emitter ){
 	}
 	pParticleEmitterCount--;
 	
-	emitter->SetParentWorld( NULL );
-	emitter->SetLLWorldPrev( NULL );
-	emitter->SetLLWorldNext( NULL );
+	emitter->SetParentWorld( nullptr );
+	emitter->SetLLWorldPrev( nullptr );
+	emitter->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->ParticleEmitterRemoved( emitter );
 	}
@@ -1536,7 +1549,7 @@ void deWorld::RemoveAllParticleEmitters(){
 	
 	while( pParticleEmitterTail ){
 		deParticleEmitterInstance * const next = pParticleEmitterTail->GetLLWorldPrev();
-		pParticleEmitterTail->SetParentWorld( NULL );
+		pParticleEmitterTail->SetParentWorld( nullptr );
 		pParticleEmitterTail->FreeReference();
 		pParticleEmitterTail = next;
 		pParticleEmitterCount--;
@@ -1557,11 +1570,11 @@ void deWorld::AddPropField( dePropField *propField ){
 	if( pPropFieldTail ){
 		pPropFieldTail->SetLLWorldNext( propField );
 		propField->SetLLWorldPrev( pPropFieldTail );
-		propField->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		propField->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		propField->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		propField->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		propField->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		propField->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pPropFieldRoot = propField;
 	}
 	
@@ -1597,9 +1610,9 @@ void deWorld::RemovePropField( dePropField *propField ){
 	}
 	pPropFieldCount--;
 	
-	propField->SetParentWorld( NULL );
-	propField->SetLLWorldPrev( NULL );
-	propField->SetLLWorldNext( NULL );
+	propField->SetParentWorld( nullptr );
+	propField->SetLLWorldPrev( nullptr );
+	propField->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->PropFieldRemoved( propField );
 	}
@@ -1619,7 +1632,7 @@ void deWorld::RemoveAllPropFields(){
 	
 	while( pPropFieldTail ){
 		dePropField * const next = pPropFieldTail->GetLLWorldPrev();
-		pPropFieldTail->SetParentWorld( NULL );
+		pPropFieldTail->SetParentWorld( nullptr );
 		pPropFieldTail->FreeReference();
 		pPropFieldTail = next;
 		pPropFieldCount--;
@@ -1640,11 +1653,11 @@ void deWorld::AddSmokeEmitter( deSmokeEmitter *smokeEmitter ){
 	if( pSmokeEmitterTail ){
 		pSmokeEmitterTail->SetLLWorldNext( smokeEmitter );
 		smokeEmitter->SetLLWorldPrev( pSmokeEmitterTail );
-		smokeEmitter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		smokeEmitter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		smokeEmitter->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		smokeEmitter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		smokeEmitter->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		smokeEmitter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pSmokeEmitterRoot = smokeEmitter;
 	}
 	
@@ -1680,9 +1693,9 @@ void deWorld::RemoveSmokeEmitter( deSmokeEmitter *smokeEmitter ){
 	}
 	pSmokeEmitterCount--;
 	
-	smokeEmitter->SetParentWorld( NULL );
-	smokeEmitter->SetLLWorldPrev( NULL );
-	smokeEmitter->SetLLWorldNext( NULL );
+	smokeEmitter->SetParentWorld( nullptr );
+	smokeEmitter->SetLLWorldPrev( nullptr );
+	smokeEmitter->SetLLWorldNext( nullptr );
 	if( pPeerGraphic ){
 		pPeerGraphic->SmokeEmitterRemoved( smokeEmitter );
 	}
@@ -1702,7 +1715,7 @@ void deWorld::RemoveAllSmokeEmitters(){
 	
 	while( pSmokeEmitterTail ){
 		deSmokeEmitter * const next = pSmokeEmitterTail->GetLLWorldPrev();
-		pSmokeEmitterTail->SetParentWorld( NULL );
+		pSmokeEmitterTail->SetParentWorld( nullptr );
 		pSmokeEmitterTail->FreeReference();
 		pSmokeEmitterTail = next;
 		pSmokeEmitterCount--;
@@ -1767,11 +1780,11 @@ void deWorld::AddSpeaker( deSpeaker *speaker ){
 	if( pSpeakerTail ){
 		pSpeakerTail->SetLLWorldNext( speaker );
 		speaker->SetLLWorldPrev( pSpeakerTail );
-		speaker->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		speaker->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		speaker->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		speaker->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		speaker->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		speaker->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pSpeakerRoot = speaker;
 	}
 	
@@ -1804,9 +1817,9 @@ void deWorld::RemoveSpeaker( deSpeaker *speaker ){
 	}
 	pSpeakerCount--;
 	
-	speaker->SetParentWorld( NULL );
-	speaker->SetLLWorldPrev( NULL );
-	speaker->SetLLWorldNext( NULL );
+	speaker->SetParentWorld( nullptr );
+	speaker->SetLLWorldPrev( nullptr );
+	speaker->SetLLWorldNext( nullptr );
 	if( pPeerAudio ){
 		pPeerAudio->SpeakerRemoved( speaker );
 	}
@@ -1820,7 +1833,7 @@ void deWorld::RemoveAllSpeakers(){
 	
 	while( pSpeakerTail ){
 		deSpeaker * const next = pSpeakerTail->GetLLWorldPrev();
-		pSpeakerTail->SetParentWorld( NULL );
+		pSpeakerTail->SetParentWorld( nullptr );
 		pSpeakerTail->FreeReference();
 		pSpeakerTail = next;
 		pSpeakerCount--;
@@ -1841,11 +1854,11 @@ void deWorld::AddSoundLevelMeter( deSoundLevelMeter *soundLevelMeter ){
 	if( pSoundLevelMeterTail ){
 		pSoundLevelMeterTail->SetLLWorldNext( soundLevelMeter );
 		soundLevelMeter->SetLLWorldPrev( pSoundLevelMeterTail );
-		soundLevelMeter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		soundLevelMeter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		soundLevelMeter->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		soundLevelMeter->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		soundLevelMeter->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		soundLevelMeter->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pSoundLevelMeterRoot = soundLevelMeter;
 	}
 	
@@ -1878,9 +1891,9 @@ void deWorld::RemoveSoundLevelMeter( deSoundLevelMeter *soundLevelMeter ){
 	}
 	pSoundLevelMeterCount--;
 	
-	soundLevelMeter->SetParentWorld( NULL );
-	soundLevelMeter->SetLLWorldPrev( NULL );
-	soundLevelMeter->SetLLWorldNext( NULL );
+	soundLevelMeter->SetParentWorld( nullptr );
+	soundLevelMeter->SetLLWorldPrev( nullptr );
+	soundLevelMeter->SetLLWorldNext( nullptr );
 	if( pPeerAudio ){
 		pPeerAudio->SoundLevelMeterRemoved( soundLevelMeter );
 	}
@@ -1894,7 +1907,7 @@ void deWorld::RemoveAllSoundLevelMeters(){
 	
 	while( pSoundLevelMeterTail ){
 		deSoundLevelMeter * const next = pSoundLevelMeterTail->GetLLWorldPrev();
-		pSoundLevelMeterTail->SetParentWorld( NULL );
+		pSoundLevelMeterTail->SetParentWorld( nullptr );
 		pSoundLevelMeterTail->FreeReference();
 		pSoundLevelMeterTail = next;
 		pSoundLevelMeterCount--;
@@ -1915,11 +1928,11 @@ void deWorld::AddTouchSensor( deTouchSensor *touchSensor ){
 	if( pTouchSensorTail ){
 		pTouchSensorTail->SetLLWorldNext( touchSensor );
 		touchSensor->SetLLWorldPrev( pTouchSensorTail );
-		touchSensor->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		touchSensor->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		
 	}else{
-		touchSensor->SetLLWorldPrev( NULL ); // not required by definition, just to make sure...
-		touchSensor->SetLLWorldNext( NULL ); // not required by definition, just to make sure...
+		touchSensor->SetLLWorldPrev( nullptr ); // not required by definition, just to make sure...
+		touchSensor->SetLLWorldNext( nullptr ); // not required by definition, just to make sure...
 		pTouchSensorRoot = touchSensor;
 	}
 	
@@ -1952,9 +1965,9 @@ void deWorld::RemoveTouchSensor( deTouchSensor *touchSensor ){
 	}
 	pTouchSensorCount--;
 	
-	touchSensor->SetParentWorld( NULL );
-	touchSensor->SetLLWorldPrev( NULL );
-	touchSensor->SetLLWorldNext( NULL );
+	touchSensor->SetParentWorld( nullptr );
+	touchSensor->SetLLWorldPrev( nullptr );
+	touchSensor->SetLLWorldNext( nullptr );
 	if( pPeerPhysics ){
 		pPeerPhysics->TouchSensorRemoved( touchSensor );
 	}
@@ -1968,7 +1981,7 @@ void deWorld::RemoveAllTouchSensors(){
 	
 	while( pTouchSensorTail ){
 		deTouchSensor * const next = pTouchSensorTail->GetLLWorldPrev();
-		pTouchSensorTail->SetParentWorld( NULL );
+		pTouchSensorTail->SetParentWorld( nullptr );
 		pTouchSensorTail->FreeReference();
 		pTouchSensorTail = next;
 		pTouchSensorCount--;
@@ -2061,5 +2074,11 @@ void deWorld::pNotifyPhysicsChanged(){
 void deWorld::pNotifyLightingChanged(){
 	if( pPeerGraphic ){
 		pPeerGraphic->LightingChanged();
+	}
+}
+
+void deWorld::pNotifyAudioChanged(){
+	if( pPeerAudio ){
+		pPeerAudio->AudioChanged();
 	}
 }

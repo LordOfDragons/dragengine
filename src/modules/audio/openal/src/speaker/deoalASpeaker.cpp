@@ -445,6 +445,9 @@ void deoalASpeaker::PrepareProcessAudio(){
 		if( pDirtyGain ){
 			pDirtyGain = false;
 			pAttenuatedGain = pMuted ? 0.0f : pVolume;
+			if( pParentWorld ) {
+				pAttenuatedGain *= pParentWorld->GetSpeakerGain();
+			}
 			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
 		}
 		
@@ -1379,7 +1382,7 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 		return;
 	}
 	
-	pAttenuatedGain = pVolume;
+	pAttenuatedGain = pFullVolume();
 	
 	// what we do here is fixing the problem with openal attenuation. the openal supports
 	// only an inverse-linear model without pulling to 0. this results in all real-world
@@ -1605,7 +1608,8 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 // 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
 // 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
 	
-	const float reverbGain = pEnvironment->GetReverbGain() * pVolume / decMath::max( pAttenuatedGain, 0.001f );
+	const float volume = pFullVolume();
+	const float reverbGain = pEnvironment->GetReverbGain() * volume / decMath::max( pAttenuatedGain, 0.001f );
 	
 	const ALuint effect = pSource->GetSendEffect( 0 );
 	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
@@ -1680,4 +1684,16 @@ float deoalASpeaker::pCustomGainMultiplier() const{
 		return AttenuatedGain( ( float )( microphonePos - pPosition ).Length() );
 	}
 	return 1.0f;
+}
+
+float deoalASpeaker::pFullVolume() const{
+	if( pParentMicrophone ){
+		return pVolume * pParentMicrophone->GetSpeakerGain();
+		
+	}else if( pParentWorld ){
+		return pVolume * pParentWorld->GetSpeakerGain();
+		
+	}else{
+		return pVolume;
+	}
 }

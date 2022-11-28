@@ -59,6 +59,7 @@ deoalAMicrophone::deoalAMicrophone( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
 pVolume( 1.0f ),
 pMuted( true ),
+pSpeakerGain( 1.0f ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
 pEnvProbeList( NULL ),
@@ -128,6 +129,10 @@ void deoalAMicrophone::SetLayerMask( const decLayerMask &layerMask ){
 	if( pEnvProbeList ){
 		pEnvProbeList->SetLayerMask( layerMask );
 	}
+}
+
+void deoalAMicrophone::SetSpeakerGain( float gain ){
+	pSpeakerGain = gain;
 }
 
 

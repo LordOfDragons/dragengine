@@ -461,6 +461,7 @@ private:
 	
 	bool pUseCustomGain() const;
 	float pCustomGainMultiplier() const;
+	float pFullVolume() const;
 };
 
 #endif

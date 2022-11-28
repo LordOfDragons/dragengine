@@ -55,6 +55,12 @@ public:
 	/** \brief Size changed. */
 	virtual void SizeChanged();
 	
+	/**
+	 * \brief Audio changed.
+	 * \version 1.16
+	 */
+	virtual void AudioChanged();
+	
 	
 	
 	/** \brief Speaker has been added. */

@@ -1520,6 +1520,25 @@ void deClassWorld::nfSetLightColorMatrix::RunFunction( dsRunTime *rt, dsValue *m
 	world->SetLightColorMatrix( clsWorld->GetClassMatrix()->GetMatrix( object ) );
 }
 
+// public func float getSpeakerGain()
+deClassWorld::nfGetSpeakerGain::nfGetSpeakerGain( const sInitData &init ) :
+dsFunction( init.clsWorld, "getSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+}
+void deClassWorld::nfGetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deWorld &world = *( ( ( sWorldNatDat* )p_GetNativeData( myself ) )->world );
+	rt->PushFloat( world.GetSpeakerGain() );
+}
+
+// public func void setSpeakerGain(float gain)
+deClassWorld::nfSetSpeakerGain::nfSetSpeakerGain(const sInitData &init) :
+dsFunction( init.clsWorld, "setSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // gain
+}
+void deClassWorld::nfSetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deWorld &world = *( ( ( sWorldNatDat* )p_GetNativeData( myself ) )->world );
+	world.SetSpeakerGain( rt->GetValue( 0 )->GetFloat() );
+}
+
 
 
 // Height Terrain
@@ -1835,6 +1854,9 @@ void deClassWorld::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetAmbientLight( init ) );
 	AddFunction( new nfGetLightColorMatrix( init ) );
 	AddFunction( new nfSetLightColorMatrix( init ) );
+	
+	AddFunction( new nfGetSpeakerGain( init ) );
+	AddFunction( new nfSetSpeakerGain( init ) );
 	
 	AddFunction( new nfGetHeightTerrain( init ) );
 	AddFunction( new nfSetHeightTerrain( init ) );

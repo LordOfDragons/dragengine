@@ -48,6 +48,7 @@ private:
 	bool pDirtyMicrophones;
 	bool pDirtySoundLevelMeters;
 	bool pDirtyAllMicLayerMask;
+	bool pDirtyAudioParameters;
 	
 	decPointerLinkedList pListSyncComponents;
 	decPointerLinkedList pListSyncSpeakers;
@@ -136,6 +137,12 @@ public:
 	/** \brief Size changed. */
 	virtual void SizeChanged();
 	
+	/**
+	 * \brief Audio changed.
+	 * \version 1.16
+	 */
+	virtual void AudioChanged();
+	
 	
 	
 	/** \brief Speaker has been added. */
@@ -192,6 +199,7 @@ private:
 	void pSyncSoundLevelMeters();
 	
 	void pSyncAllMicLayerMask();
+	void pSyncAudioParameters();
 };
 
 #endif

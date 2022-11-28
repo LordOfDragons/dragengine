@@ -63,6 +63,26 @@ class World
 	
 	
 	
+	/** \name Audio */
+	/*@{*/
+	/**
+	 * \brief Gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	public func float getSpeakerGain()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	public func void setSpeakerGain(float gain)
+	end
+	/*@}*/
+	
+	
+	
 	/** \name Lighting */
 	/*@{*/
 	/** \brief All lights are disabled rendering world in full bright. */
