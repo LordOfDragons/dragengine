@@ -81,6 +81,18 @@ public:
 	bool TryLock();
 	
 	/**
+	 * \brief Try locking mutex with timeout.
+	 * \version 1.16
+	 * 
+	 * If the mutex is already locked this call returns false and no lock is taken.
+	 * If the mutex is not locked this call acquires the lock and return true.
+	 * If the timeout elapses before acquiring the lock false is returned.
+	 * 
+	 * \param[in] timeout Timeout in milli-seconds.
+	 */
+	bool TryLock( int timeout );
+	
+	/**
 	 * \brief Unlock the mutex.
 	 * 
 	 * An exception is thrown if this thread is not holding the mutex.

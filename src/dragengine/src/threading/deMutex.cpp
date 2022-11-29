@@ -130,8 +130,35 @@ bool deMutex::TryLock(){
 #endif
 }
 
+bool deMutex::TryLock( int timeout ){
+#if defined OS_UNIX || defined OS_BEOS
+	timespec ts;
+	ts.tv_nsec = ( long )( timeout % 1000 ) * 1000000000L;
+	ts.tv_sec = timeout / 1000;
+	
+	switch( pthread_mutex_timedlock( &pMutex, &ts ) ){
+	case 0:
+		return true;
+		
+	case ETIMEDOUT:
+		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
+#endif
+	
 #ifdef OS_W32
-	return TryEnterCriticalSection( &pCritSec ) != 0;
+	switch( WaitForSingleObject( pMutex, timeout ) ){
+	case WAIT_OBJECT_0:
+		return true;
+		
+	case WAIT_TIMEOUT:
+		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
 #endif
 }
 

@@ -26,6 +26,10 @@
 #include <errno.h>
 #endif
 
+#if defined OS_UNIX || defined OS_BEOS
+#include <sys/time.h>
+#endif
+
 #include "deBarrier.h"
 #include "../common/exceptions.h"
 
@@ -223,6 +227,145 @@ void deBarrier::Wait(){
 	LeaveCriticalSection( &pCSWaitCounter );
 #endif
 }
+
+bool deBarrier::TryWait( int timeout ){
+#if defined OS_UNIX || defined OS_BEOS
+	if( pthread_mutex_lock( &pMutex ) != 0 ){
+		DETHROW( deeInvalidAction );
+	}
+	
+	DBGBARRIER( "Wait() in" );
+	if( pOpen ){
+		DBGBARRIER( "Wait() slip" );
+		if( pthread_mutex_unlock( &pMutex ) != 0 ){
+			DETHROW( deeInvalidAction );
+		}
+		return true;
+	}
+	
+	pCounter++;
+	
+	if( pCounter == pThreshold ){
+		DBGBARRIER( "Wait() open" );
+		pOpen = true;
+		
+		if( pthread_cond_broadcast( &pCondition ) != 0 ){
+			pthread_mutex_unlock( &pMutex );
+			DETHROW( deeInvalidAction );
+		}
+		
+	}else{
+		DBGBARRIER( "Wait() wait" );
+		const long timeoutUSec = ( long )timeout * 1000L;
+		long elapsedUSec = 0L;
+		timeval tvStart, tvStop;
+		timespec ts;
+		
+		gettimeofday( &tvStart, nullptr );
+		
+		while( ! pOpen ){
+			const long remainingUSec = timeoutUSec - elapsedUSec;
+			ts.tv_nsec = ( remainingUSec % 1000000L ) * 1000000000L;
+			ts.tv_sec = remainingUSec / 1000000L;
+			
+			switch( pthread_cond_timedwait( &pCondition, &pMutex, &ts ) ){
+			case 0:
+				if( ! pOpen ){
+					gettimeofday( &tvStop, nullptr );
+					
+					elapsedUSec = ( tvStop.tv_sec - tvStart.tv_sec ) * 1000000L
+						+ ( tvStop.tv_usec - tvStart.tv_usec );
+					
+					if( elapsedUSec >= timeoutUSec ){
+						pCounter--;
+						pthread_mutex_unlock( &pMutex );
+						return false;
+					}
+				}
+				break;
+				
+			case ETIMEDOUT:
+				pCounter--;
+				pthread_mutex_unlock( &pMutex );
+				return false;
+				
+			default:
+				pthread_mutex_unlock( &pMutex );
+				DETHROW( deeInvalidAction );
+			}
+		}
+	}
+	
+	pCounter--;
+	
+	if( pCounter == 0 ){
+		pOpen = false;
+	}
+	DBGBARRIER( "Wait() out" );
+	
+	if( pthread_mutex_unlock( &pMutex ) != 0 ){
+		DETHROW( deeInvalidAction );
+	}
+	return true;
+#endif
+	
+	// windows
+#ifdef OS_W32
+	EnterCriticalSection( &pCSWaitCounter );
+	
+	if( pOpen ){
+		LeaveCriticalSection( &pCSWaitCounter );
+		return false;
+	}
+	
+	pCounter++;
+	
+	if( pCounter == pThreshold ){
+		pOpen = true;
+		
+		int i;
+		for( i=0; i<pCounter; i++ ){
+			LeaveCriticalSection( &pCSWaitCounter );
+			if( ! SetEvent( pEvent ) ){
+				DETHROW( deeInvalidAction );
+			}
+			EnterCriticalSection( &pCSWaitCounter );
+		}
+		
+	}else{
+		const ULONGLONG timeStart = GetTickCount64();
+		
+		while( ! pOpen ){
+			LeaveCriticalSection( &pCSWaitCounter );
+			
+			switch( WaitForSingleObject( pEvent, timeout ) ){
+			case WAIT_OBJECT_0:
+				break;
+				
+			case WAIT_TIMEOUT:
+				return false;
+				
+			default:
+				DETHROW( deeInvalidAction );
+			}
+			
+			EnterCriticalSection( &pCSWaitCounter );
+			
+			if( ! pOpen && GetTickCount64() - timeStart >= ( ULONGLONG )timeout ){
+				return false;
+			}
+		}
+	}
+	
+	pCounter--;
+	
+	if( pCounter == 0 ){
+		pOpen = false;
+	}
+	
+	LeaveCriticalSection( &pCSWaitCounter );
+	return true;
+#endif
 }
 
 void deBarrier::Open(){
