@@ -432,6 +432,24 @@ void deoalAMicrophone::ProcessAudio(){
 	pProcessEffects();
 }
 
+void deoalAMicrophone::ProcessAudioFast(){
+	if( ! pActive ){
+		return;
+	}
+	
+	pActiveSpeakers.UpdateAll();
+	
+	if( pParentWorld ){
+		pParentWorld->PrepareProcessAudio();
+	}
+	
+	const int count = pSpeakers.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+}
+
 void deoalAMicrophone::ProcessDeactivate(){
 	const int count = pSpeakers.GetCount();
 	int i;

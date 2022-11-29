@@ -139,6 +139,8 @@ pEstimatedAudioTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
 pReadyToWait( true ),
+pWaitSkipped( false ),
+pWaitSkippedElapsed( 0.0f ),
 
 // thread control parameters
 pThreadState( etsStopped ),
@@ -284,7 +286,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 				remainingTime / estimatedGameTime, ratioTimes );
 			*/
 			
-			if( remainingTime / estimatedGameTime >= ratioTimes ){
+			if( remainingTime / estimatedGameTime >= ratioTimes && ! pReadyToWait ){
 				return false; // enough time to do another game frame update
 			}
 		}
@@ -436,87 +438,134 @@ void deoalAudioThread::Run(){
 	pBarrierSyncOut.Wait();
 	DEBUG_SYNC_RT_PASS("out")
 	
+	// maximum timeout used for skipping waiting on the barrier to avoid buffer underruns.
+	// 
+	// for sound streaming 1s is buffered using 5 chunks of 200ms length. this is resiliant
+	// to a longer delay in the main thread. the same applies to video streaming.
+	// 
+	// for synthesizer streaming 100ms is buffered using 2 50ms buffers. here short buffer
+	// time is required to ensure quick reaction to changing synthesizer controllers.
+	// this processing is resiliant only to short delays.
+	// 
+	// the limiting factor is thus synthesizer processing. if we want to avoid buffer
+	// underruns in those we have to refill buffers before 100ms finishes. 75ms should be
+	// enough but to be on the safe side 50ms is used. this equals a frame rate of 20Hz.
+	// the main thread should never get this slow so 50ms is a good value to use.
+	const int maxSyncSkipDelay = 50;
+	
 	// audio loop
+	pWaitSkipped = false;
+	pWaitSkippedElapsed = 0.0f;
+	
 	pTimerElapsed.Reset();
+	
 	while( true ){
-		// wait for entering synchronize
+		// wait for entering synchronize. we use a timeout here to avoid a long delay by the
+		// main thread causing the buffers to underrun.
 		pReadyToWait = true;
 		
+		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000 ), 0 );
+		
 		DEBUG_SYNC_RT_WAIT("in")
-		pBarrierSyncIn.Wait();
-		DEBUG_SYNC_RT_PASS("in")
-		
-		pReadyToWait = false;
-		
-		// main thread is messing with our state here. proceed to next barrier doing nothing
-		// except alter the estimated render time. this value is used by the main thread
-		// only outside the synchronization part so we can update it here
-		
-		pEstimatedAudioTime = decMath::max( pTimeHistoryAudio.GetAverage(),
-			pTimeHistoryAudioEstimated.GetAverage(), pFrameTimeLimit );
-		
-		// wait for leaving synchronize
-		DEBUG_SYNC_RT_WAIT("out")
-		pBarrierSyncOut.Wait();
-		DEBUG_SYNC_RT_PASS("out")
-		
-		// exit if shutting down
-		if( pThreadState == etsCleaningUp ){
-			break;
+		if( pBarrierSyncIn.TryWait( barrierTimeout ) ){
+			DEBUG_SYNC_RT_PASS("in")
 			
-		// audio if ready
-		}else if( pThreadState == etsAudio ){
-			try{
-				pRTParallelEnvProbe->ResetCounters();
-				pRTParallelEnvProbe->ResetElapsedRTTime();
-				pTimerAudio.Reset();
+			pReadyToWait = false;
+			
+			// main thread is messing with our state here. proceed to next barrier doing nothing
+			// except alter the estimated render time. this value is used by the main thread
+			// only outside the synchronization part so we can update it here
+			
+			pEstimatedAudioTime = decMath::max( pTimeHistoryAudio.GetAverage(),
+				pTimeHistoryAudioEstimated.GetAverage(), pFrameTimeLimit );
+			
+			// wait for leaving synchronize
+			DEBUG_SYNC_RT_WAIT("out")
+			pBarrierSyncOut.Wait();
+			DEBUG_SYNC_RT_PASS("out")
+			
+			if( pThreadState == etsCleaningUp ){
+				break;
 				
-				pProcessAudio();
-				pThreadFailure = false;
-				DEBUG_SYNC_RT_FAILURE
-				
-				const float timeAudio = pTimerAudio.GetElapsedTime();
-				pTimeHistoryAudio.Add( timeAudio );
-				//pLogger->LogInfo( decString("TimeHistory Audio: ") + pTimeHistoryAudio.DebugPrint() );
-				/*
-				pLogger->LogInfoFormat( "AudioThread Elapsed %dms (FPS %d)",
-					( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
-				*/
-				
-				// we do not use directly the time history average value. this is because we
-				// avoid time consuming processes like ray tracing as much as possible. this
-				// means some elapsed audio processing times will be low while other in
-				// between high. to counter this problem we also estimate an expected processing
-				// time by using the timing data collected by the ray tracer.
-				const float elapsedNonRTTime = decMath::max( 0.0f,
-					timeAudio - pRTParallelEnvProbe->GetElapsedRTTime() );
-				const int assumedRTTraceRaysCount = 1;
-				const int assumedRTEstimateRoomCount = 0;
-				const int assumedRTListenCount = 2;
-				const float estimatedAvgRTTime =
-					pRTParallelEnvProbe->GetTimeHistoryTraceSoundRays().GetAverage()
-						* assumedRTTraceRaysCount
-					+ pRTParallelEnvProbe->GetTimeHistoryEstimateRoom().GetAverage()
-						* assumedRTEstimateRoomCount
-					+ pRTParallelEnvProbe->GetTimeHistoryListen().GetAverage()
-						* assumedRTListenCount;
-				pTimeHistoryAudioEstimated.Add( elapsedNonRTTime + estimatedAvgRTTime );
-				
-				// apply frame limiter
-				pLimitFrameRate( timeAudio );
-				pDebugInfo->StoreTimeFrameLimiter( pTimeHistoryMain,
-					pTimeHistoryAudio, pTimeHistoryAudioEstimated );
-				pThreadFailure = false;
-				DEBUG_SYNC_RT_FAILURE
-				
-			}catch( const deException &exception ){
-				pLogger->LogException( exception );
-				pTimerAudio.Reset();
-				pThreadFailure = true;
-				DEBUG_SYNC_RT_FAILURE
+			}else if( pThreadState == etsAudio ){
+				try{
+					pRTParallelEnvProbe->ResetCounters();
+					pRTParallelEnvProbe->ResetElapsedRTTime();
+					pTimerAudio.Reset();
+					
+					pProcessAudio();
+					pThreadFailure = false;
+					DEBUG_SYNC_RT_FAILURE
+					
+					const float timeAudio = pTimerAudio.GetElapsedTime();
+					pTimeHistoryAudio.Add( timeAudio );
+					//pLogger->LogInfo( decString("TimeHistory Audio: ") + pTimeHistoryAudio.DebugPrint() );
+					/*
+					pLogger->LogInfoFormat( "AudioThread Elapsed %dms (FPS %d)",
+						( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
+					*/
+					
+					// we do not use directly the time history average value. this is because we
+					// avoid time consuming processes like ray tracing as much as possible. this
+					// means some elapsed audio processing times will be low while other in
+					// between high. to counter this problem we also estimate an expected processing
+					// time by using the timing data collected by the ray tracer.
+					const float elapsedNonRTTime = decMath::max( 0.0f,
+						timeAudio - pRTParallelEnvProbe->GetElapsedRTTime() );
+					const int assumedRTTraceRaysCount = 1;
+					const int assumedRTEstimateRoomCount = 0;
+					const int assumedRTListenCount = 2;
+					const float estimatedAvgRTTime =
+						pRTParallelEnvProbe->GetTimeHistoryTraceSoundRays().GetAverage()
+							* assumedRTTraceRaysCount
+						+ pRTParallelEnvProbe->GetTimeHistoryEstimateRoom().GetAverage()
+							* assumedRTEstimateRoomCount
+						+ pRTParallelEnvProbe->GetTimeHistoryListen().GetAverage()
+							* assumedRTListenCount;
+					pTimeHistoryAudioEstimated.Add( elapsedNonRTTime + estimatedAvgRTTime );
+					
+					// apply frame limiter
+					pLimitFrameRate( timeAudio );
+					pDebugInfo->StoreTimeFrameLimiter( pTimeHistoryMain,
+						pTimeHistoryAudio, pTimeHistoryAudioEstimated );
+					pThreadFailure = false;
+					DEBUG_SYNC_RT_FAILURE
+					
+				}catch( const deException &exception ){
+					pLogger->LogException( exception );
+					pTimerAudio.Reset();
+					pThreadFailure = true;
+					DEBUG_SYNC_RT_FAILURE
+				}
 			}
 			
-		// everything else take another turn
+		}else{
+			// waiting skipped to avoid buffer underruns. only fill up buffers avoiding
+			// all processing which takes potentially a long time.
+			// 
+			// for this reason we do also not update the timings since this is no full
+			// audio run.
+			// 
+			// also the pReadyToWait flag is not cleared so the main thread waits on
+			// the barrier in case it arrives while we fill up buffers
+			DEBUG_SYNC_RT_PASS("in")
+			
+			if( pThreadState == etsCleaningUp ){
+				break;
+				
+			}else if( pThreadState == etsAudio ){
+				try{
+					pProcessAudioFast();
+					pThreadFailure = false;
+					DEBUG_SYNC_RT_FAILURE
+					
+				}catch( const deException &exception ){
+					pLogger->LogException( exception );
+					pTimerAudio.Reset();
+					pThreadFailure = true;
+					DEBUG_SYNC_RT_FAILURE
+				}
+			}
 		}
 	}
 	
@@ -776,7 +825,14 @@ void deoalAudioThread::pProcessAudio(){
 	pDebugInfo->ResetTimersAudioThread();
 	pDelayed->ProcessFreeOperations( false );
 	
-	pElapsed = pTimerElapsed.GetElapsedTime();
+	if( pWaitSkipped ){
+		pElapsed = pWaitSkippedElapsed;
+		pWaitSkipped = false;
+		
+	}else{
+		pElapsed = pTimerElapsed.GetElapsedTime();
+	}
+	
 	pTimeHistoryUpdate.Add( pElapsed );
 	
 	if( pDeactiveMicrophone ){
@@ -794,6 +850,24 @@ void deoalAudioThread::pProcessAudio(){
 	pDelayed->ProcessFreeOperations( false );
 	pLogger->Synchronize();
 	pDebugInfo->StoreTimeAudioThread();
+}
+
+void deoalAudioThread::pProcessAudioFast(){
+	pElapsed = pTimerElapsed.GetElapsedTime();
+	
+	if( pWaitSkipped ){
+		pLogger->LogWarnFormat( "Buffer underflow protection: %dms (+)", ( int )( pElapsed * 1000.0f ) );
+		
+	}else{
+		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
+		pWaitSkippedElapsed = pElapsed;
+		pWaitSkipped = true;
+	}
+	
+	if( pActiveMicrophone ){
+		pActiveMicrophone->ProcessAudioFast();
+	}
+	pLogger->Synchronize();
 }
 
 void deoalAudioThread::pReportLeaks(){

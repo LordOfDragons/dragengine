@@ -122,6 +122,8 @@ private:
 	float pFrameTimeLimit;
 	int pFPSRate;
 	bool pReadyToWait;
+	bool pWaitSkipped;
+	float pWaitSkippedElapsed;
 	
 	// thread control
 	eThreadStates pThreadState;
@@ -324,6 +326,7 @@ private:
 	void pPrepareConfiguration();
 	
 	void pProcessAudio();
+	void pProcessAudioFast();
 	
 	void pReportLeaks();
 };

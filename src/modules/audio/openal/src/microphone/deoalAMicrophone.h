@@ -240,6 +240,9 @@ public:
 	/** Process audio. */
 	void ProcessAudio();
 	
+	/** Process audio fast. */
+	void ProcessAudioFast();
+	
 	/** Process deactivate. */
 	void ProcessDeactivate();
 	
