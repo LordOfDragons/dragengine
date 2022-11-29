@@ -856,10 +856,10 @@ void deoalAudioThread::pProcessAudioFast(){
 	pElapsed = pTimerElapsed.GetElapsedTime();
 	
 	if( pWaitSkipped ){
-		pLogger->LogWarnFormat( "Buffer underflow protection: %dms (+)", ( int )( pElapsed * 1000.0f ) );
+// 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms (+)", ( int )( pElapsed * 1000.0f ) );
 		
 	}else{
-		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
+// 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
 		pWaitSkippedElapsed = pElapsed;
 		pWaitSkipped = true;
 	}

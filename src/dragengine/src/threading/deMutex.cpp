@@ -133,8 +133,13 @@ bool deMutex::TryLock(){
 bool deMutex::TryLock( int timeout ){
 #if defined OS_UNIX || defined OS_BEOS
 	timespec ts;
-	ts.tv_nsec = ( long )( timeout % 1000 ) * 1000000000L;
-	ts.tv_sec = timeout / 1000;
+	clock_gettime( CLOCK_REALTIME, &ts );
+	ts.tv_sec += timeout / 1000;
+	ts.tv_nsec += ( long )( timeout % 1000 ) * 1000000L;
+	if( ts.tv_nsec >= 1000000000L ){
+		ts.tv_sec++;
+		ts.tv_nsec %= 1000000000L;
+	}
 	
 	switch( pthread_mutex_timedlock( &pMutex, &ts ) ){
 	case 0:

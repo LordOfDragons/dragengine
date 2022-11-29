@@ -256,32 +256,19 @@ bool deBarrier::TryWait( int timeout ){
 		
 	}else{
 		DBGBARRIER( "Wait() wait" );
-		const long timeoutUSec = ( long )timeout * 1000L;
-		long elapsedUSec = 0L;
-		timeval tvStart, tvStop;
 		timespec ts;
 		
-		gettimeofday( &tvStart, nullptr );
+		clock_gettime( CLOCK_REALTIME, &ts );
+		ts.tv_sec += timeout / 1000;
+		ts.tv_nsec += ( long )( timeout % 1000 ) * 1000000L;
+		if( ts.tv_nsec >= 1000000000L ){
+			ts.tv_sec++;
+			ts.tv_nsec %= 1000000000L;
+		}
 		
 		while( ! pOpen ){
-			const long remainingUSec = timeoutUSec - elapsedUSec;
-			ts.tv_nsec = ( remainingUSec % 1000000L ) * 1000000000L;
-			ts.tv_sec = remainingUSec / 1000000L;
-			
 			switch( pthread_cond_timedwait( &pCondition, &pMutex, &ts ) ){
 			case 0:
-				if( ! pOpen ){
-					gettimeofday( &tvStop, nullptr );
-					
-					elapsedUSec = ( tvStop.tv_sec - tvStart.tv_sec ) * 1000000L
-						+ ( tvStop.tv_usec - tvStart.tv_usec );
-					
-					if( elapsedUSec >= timeoutUSec ){
-						pCounter--;
-						pthread_mutex_unlock( &pMutex );
-						return false;
-					}
-				}
 				break;
 				
 			case ETIMEDOUT:
