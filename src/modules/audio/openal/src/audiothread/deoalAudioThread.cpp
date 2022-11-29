@@ -287,6 +287,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 			*/
 			
 			if( remainingTime / estimatedGameTime >= ratioTimes && ! pReadyToWait ){
+				pBarrierSyncOut.TryWait( 0 ); // sanity kick to ensure thread can never block forver
 				return false; // enough time to do another game frame update
 			}
 		}
@@ -298,6 +299,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 		// accurate than graphic rendering for example. it is better to skip a synchronization
 		// than having the main thread stutter on random waits
 		if( ! pReadyToWait ){
+			pBarrierSyncOut.TryWait( 0 ); // sanity kick to ensure thread can never block forver
 			return false;
 		}
 		
