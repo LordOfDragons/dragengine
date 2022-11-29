@@ -33,6 +33,10 @@
 #include "deBarrier.h"
 #include "../common/exceptions.h"
 
+#ifdef OS_W32
+#include "../common/math/decMath.h"
+#endif
+
 
 
 // #define DEBUG_BARRIER 1
@@ -302,7 +306,7 @@ bool deBarrier::TryWait( int timeout ){
 	
 	if( pOpen ){
 		LeaveCriticalSection( &pCSWaitCounter );
-		return false;
+		return true;
 	}
 	
 	pCounter++;
@@ -321,15 +325,17 @@ bool deBarrier::TryWait( int timeout ){
 		
 	}else{
 		const ULONGLONG timeStart = GetTickCount64();
+		int elapsed = 0;
 		
 		while( ! pOpen ){
 			LeaveCriticalSection( &pCSWaitCounter );
 			
-			switch( WaitForSingleObject( pEvent, timeout ) ){
+			switch( WaitForSingleObject( pEvent, decMath::max( timeout - elapsed, 0 ) ) ){
 			case WAIT_OBJECT_0:
 				break;
 				
 			case WAIT_TIMEOUT:
+				pCounter--;
 				return false;
 				
 			default:
@@ -338,8 +344,13 @@ bool deBarrier::TryWait( int timeout ){
 			
 			EnterCriticalSection( &pCSWaitCounter );
 			
-			if( ! pOpen && GetTickCount64() - timeStart >= ( ULONGLONG )timeout ){
-				return false;
+			if( ! pOpen ){
+				elapsed = ( int )( GetTickCount64() - timeStart );
+				if( elapsed >= timeout ){
+					pCounter--;
+					LeaveCriticalSection( &pCSWaitCounter );
+					return false;
+				}
 			}
 		}
 	}
