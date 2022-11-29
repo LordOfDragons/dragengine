@@ -46,7 +46,7 @@ private:
 	pthread_mutex_t pMutex;
 #endif
 #ifdef OS_W32
-	CRITICAL_SECTION pCritSec;
+	HANDLE pMutex;
 #endif
 	
 	

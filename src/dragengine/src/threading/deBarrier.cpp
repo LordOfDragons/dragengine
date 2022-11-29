@@ -61,57 +61,70 @@ pOpen( false )
 	}
 	
 	// unix, beos
-	#if defined OS_UNIX || defined OS_BEOS
+#if defined OS_UNIX || defined OS_BEOS
 	if( pthread_mutex_init( &pMutex, NULL ) != 0 ){
 		DETHROW( deeOutOfMemory );
 	}
 	if( pthread_cond_init( &pCondition, NULL ) != 0 ){
 		DETHROW( deeOutOfMemory );
 	}
-	#endif
+#endif
 	
 	// windows
-	#ifdef OS_W32
+#ifdef OS_W32
 	pEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
 	if( ! pEvent ){
 		DETHROW( deeOutOfMemory );
 	}
 	InitializeCriticalSection( &pCSWaitCounter );
-	#endif
+#endif
 }
 
 deBarrier::~deBarrier(){
 	// unix, beos
-	#if defined OS_UNIX || defined OS_BEOS
+#if defined OS_UNIX || defined OS_BEOS
 	int result = pthread_cond_destroy( &pCondition );
-	if( result != 0 ){
-		if( result == EBUSY ){
-			printf( "Barrier %p: Condition still in use!\n", this );
-		}
-		if( result == EINVAL ){
-			printf( "Barrier %p: Invalid condition!\n", this );
-		}
+	switch( result ){
+	case 0:
+		break;
+		
+	case EBUSY:
+		printf( "Barrier %p: Condition still in use!\n", this );
+		break;
+		
+	case EINVAL:
+		printf( "Barrier %p: Invalid condition!\n", this );
+		break;
+		
+	default:
 		printf( "Barrier %p: Condition cleanup failed ( %i )\n", this, result );
 	}
 	
 	result = pthread_mutex_destroy( &pMutex );
-	if( result != 0 ){
-		if( result == EBUSY ){
-			printf( "Barrier %p: Mutex still locked!\n", this );
-		}
-		if( result == EINVAL ){
-			printf( "Barrier %p: Invalid mutex!\n", this );
-		}
+	switch( result ){
+	case 0:
+		break;
+		
+	case EBUSY:
+		printf( "Barrier %p: Mutex still locked!\n", this );
+		break;
+		
+	case EINVAL:
+		printf( "Barrier %p: Invalid mutex!\n", this );
+		break;
+		
+	default:
 		printf( "Barrier %p: Mutex cleanup failed ( %i )\n", this, result );
 	}
-	#endif
+#endif
 	
 	// windows
-	#ifdef OS_W32
+#ifdef OS_W32
 	if( pEvent ){
 		CloseHandle( pEvent );
 	}
-	#endif
+	DeleteCriticalSection( &pCSWaitCounter );
+#endif
 }
 
 
@@ -121,7 +134,7 @@ deBarrier::~deBarrier(){
 
 void deBarrier::Wait(){
 	// unix, beos
-	#if defined OS_UNIX || defined OS_BEOS
+#if defined OS_UNIX || defined OS_BEOS
 	if( pthread_mutex_lock( &pMutex ) != 0 ){
 		DETHROW( deeInvalidAction );
 	}
@@ -166,10 +179,10 @@ void deBarrier::Wait(){
 	if( pthread_mutex_unlock( &pMutex ) != 0 ){
 		DETHROW( deeInvalidAction );
 	}
-	#endif
+#endif
 	
 	// windows
-	#ifdef OS_W32
+#ifdef OS_W32
 	EnterCriticalSection( &pCSWaitCounter );
 	
 	if( pOpen ){
@@ -208,12 +221,13 @@ void deBarrier::Wait(){
 	}
 	
 	LeaveCriticalSection( &pCSWaitCounter );
-	#endif
+#endif
+}
 }
 
 void deBarrier::Open(){
 	// unix, beos
-	#if defined OS_UNIX || defined OS_BEOS
+#if defined OS_UNIX || defined OS_BEOS
 	if( pthread_mutex_lock( &pMutex ) != 0 ){
 		DETHROW( deeInvalidAction );
 	}
@@ -237,10 +251,10 @@ void deBarrier::Open(){
 	if( pthread_mutex_unlock( &pMutex ) != 0 ){
 		DETHROW( deeInvalidAction );
 	}
-	#endif
+#endif
 	
 	// windows
-	#ifdef OS_W32
+#ifdef OS_W32
 	EnterCriticalSection( &pCSWaitCounter );
 	
 	if( pCounter == 0 ){
@@ -260,7 +274,7 @@ void deBarrier::Open(){
 	}
 	
 	LeaveCriticalSection( &pCSWaitCounter );
-	#endif
+#endif
 }
 
 void deBarrier::SetThreshold( int threshold ){
@@ -269,7 +283,7 @@ void deBarrier::SetThreshold( int threshold ){
 	}
 	
 	// unix, beos
-	#if defined OS_UNIX || defined OS_BEOS
+#if defined OS_UNIX || defined OS_BEOS
 	if( pthread_mutex_lock( &pMutex ) != 0 ){
 		DETHROW( deeInvalidAction );
 	}
@@ -290,10 +304,10 @@ void deBarrier::SetThreshold( int threshold ){
 	if( pthread_mutex_unlock( &pMutex ) != 0 ){
 		DETHROW( deeInvalidAction );
 	}
-	#endif
+#endif
 	
 	// windows
-	#ifdef OS_W32
+#ifdef OS_W32
 	EnterCriticalSection( &pCSWaitCounter );
 	
 	pThreshold = threshold;
@@ -312,5 +326,5 @@ void deBarrier::SetThreshold( int threshold ){
 	}
 	
 	LeaveCriticalSection( &pCSWaitCounter );
-	#endif
+#endif
 }

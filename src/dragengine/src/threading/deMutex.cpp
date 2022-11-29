@@ -37,7 +37,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMutex::deMutex(){
+deMutex::deMutex()
+#ifdef OS_W32
+pMutex( NULL )
+#endif
+{
 #if defined OS_UNIX || defined OS_BEOS
 	/*
 	const int result = pthread_mutex_init( &pMutex, NULL );
@@ -55,7 +59,10 @@ deMutex::deMutex(){
 #endif
 
 #ifdef OS_W32
-	InitializeCriticalSection( &pCritSec );
+	pMutex = CreateMutex( NULL, FALSE, NULL );
+	if( pMutex == NULL ){
+		DETHROW( deeOutOfMemory );
+	}
 #endif
 }
 
@@ -70,7 +77,9 @@ deMutex::~deMutex(){
 #endif
 
 #ifdef OS_W32
-	DeleteCriticalSection( &pCritSec );
+	if( pMutex != NULL ){
+		CloseHandle( pMutex );
+	}
 #endif
 }
 
@@ -85,24 +94,41 @@ void deMutex::Lock(){
 		DETHROW( deeInvalidAction );
 	}
 #endif
-
+	
 #ifdef OS_W32
-	EnterCriticalSection( &pCritSec );
+	if( WaitForSingleObject( pMutex, INFINITE ) != WAIT_OBJECT_0 ){
+		DETHROW( deeInvalidAction );
+	}
 #endif
 }
 
 bool deMutex::TryLock(){
 #if defined OS_UNIX || defined OS_BEOS
-	const int result = pthread_mutex_trylock( &pMutex );
-	if( result == 0 ){
+	switch( pthread_mutex_trylock( &pMutex ) ){
+	case 0:
 		return true;
-	}
-	if( result == EBUSY ){
+		
+	case EBUSY:
 		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
 	}
-	
-	DETHROW( deeInvalidAction );
 #endif
+	
+#ifdef OS_W32
+	switch( WaitForSingleObject( pMutex, 0 ) ){
+	case WAIT_OBJECT_0:
+		return true;
+		
+	case WAIT_TIMEOUT:
+		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
+#endif
+}
 
 #ifdef OS_W32
 	return TryEnterCriticalSection( &pCritSec ) != 0;
@@ -115,8 +141,10 @@ void deMutex::Unlock(){
 		DETHROW( deeInvalidAction );
 	}
 #endif
-
+	
 #ifdef OS_W32
-	LeaveCriticalSection( &pCritSec );
+	if( ! ReleaseMutex( pMutex ) ){
+		DETHROW( deeInvalidAction );
+	}
 #endif
 }
