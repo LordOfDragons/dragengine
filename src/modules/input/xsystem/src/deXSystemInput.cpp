@@ -785,9 +785,16 @@ bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ){
 		// larger than 127 a UTF-8 character composed of 2 bytes. on other systems
 		// XLookupString returns an ASCII-8 character composed of 1 byte. for the UTF-8
 		// case we would have to do "utf8[ 0 ] & 0x7f" to get a correctly encoded character.
-		// due to other systems returning a single ASCII-8 this would break. if we do not
+		// for other systems returning a single ASCII-8 this would break. if we do not
 		// apply the mask and simply use the byte as-is we can get both systems working.
 		// the conversation to unsigned char is required or it breaks.
+		// 
+		// the reason for this problem is that XLookupString uses the user locale to
+		// return the character. modern systems should use an utf8 based locale in which
+		// case the handling is easy. in the case an older system is used without utf8
+		// the returned value should be latin-1 but you can not bet on it. the correct
+		// solution would be using Xutf8LookupString but this requires using XI which
+		// causes various changes to this input module. something for a rainy day.
 // 		key.character = utf8[ 0 ] & 0x7f;
 		key.character = ( unsigned char )utf8[ 0 ];
 		break;
