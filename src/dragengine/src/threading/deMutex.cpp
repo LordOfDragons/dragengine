@@ -39,7 +39,7 @@
 
 deMutex::deMutex()
 #ifdef OS_W32
-pMutex( NULL )
+: pMutex( NULL )
 #endif
 {
 #if defined OS_UNIX || defined OS_BEOS
