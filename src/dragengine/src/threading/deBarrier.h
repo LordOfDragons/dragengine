@@ -66,8 +66,8 @@ private:
 	#endif
 	
 	#ifdef OS_W32
-	HANDLE pEvent;
-	CRITICAL_SECTION pCSWaitCounter;
+	CONDITION_VARIABLE pConditionVariable;
+	CRITICAL_SECTION pCriticalSection;
 	#endif
 	
 	

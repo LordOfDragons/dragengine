@@ -59,10 +59,6 @@ deBarrier::deBarrier( int threshold ) :
 pThreshold( threshold ),
 pCounter( 0 ),
 pOpen( false )
-
-#ifdef OS_W32
-,pEvent( NULL )
-#endif
 {
 	if( threshold < 1 ){
 		DETHROW( deeInvalidParam );
@@ -80,11 +76,8 @@ pOpen( false )
 	
 	// windows
 #ifdef OS_W32
-	pEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
-	if( ! pEvent ){
-		DETHROW( deeOutOfMemory );
-	}
-	InitializeCriticalSection( &pCSWaitCounter );
+	InitializeConditionVariable( &pConditionVariable );
+	InitializeCriticalSection( &pCriticalSection );
 #endif
 }
 
@@ -128,10 +121,8 @@ deBarrier::~deBarrier(){
 	
 	// windows
 #ifdef OS_W32
-	if( pEvent ){
-		CloseHandle( pEvent );
-	}
-	DeleteCriticalSection( &pCSWaitCounter );
+	// there seems to be no function to delete a condition variable
+	DeleteCriticalSection( &pCriticalSection );
 #endif
 }
 
@@ -191,10 +182,10 @@ void deBarrier::Wait(){
 	
 	// windows
 #ifdef OS_W32
-	EnterCriticalSection( &pCSWaitCounter );
+	EnterCriticalSection( &pCriticalSection );
 	
 	if( pOpen ){
-		LeaveCriticalSection( &pCSWaitCounter );
+		LeaveCriticalSection( &pCriticalSection );
 		return;
 	}
 	
@@ -202,23 +193,13 @@ void deBarrier::Wait(){
 	
 	if( pCounter == pThreshold ){
 		pOpen = true;
-		
-		int i;
-		for( i=0; i<pCounter; i++ ){
-			LeaveCriticalSection( &pCSWaitCounter );
-			if( ! SetEvent( pEvent ) ){
-				DETHROW( deeInvalidAction );
-			}
-			EnterCriticalSection( &pCSWaitCounter );
-		}
+		WakeAllConditionVariable( &pConditionVariable );
 		
 	}else{
 		while( ! pOpen ){
-			LeaveCriticalSection( &pCSWaitCounter );
-			if( WaitForSingleObject( pEvent, INFINITE ) != WAIT_OBJECT_0 ){
+			if( ! SleepConditionVariableCS( &pConditionVariable, pCriticalSection, INFINITE ) ){
 				DETHROW( deeInvalidAction );
 			}
-			EnterCriticalSection( &pCSWaitCounter );
 		}
 	}
 	
@@ -228,7 +209,7 @@ void deBarrier::Wait(){
 		pOpen = false;
 	}
 	
-	LeaveCriticalSection( &pCSWaitCounter );
+	LeaveCriticalSection( &pCriticalSection );
 #endif
 }
 
@@ -277,10 +258,17 @@ bool deBarrier::TryWait( int timeout ){
 				
 			case ETIMEDOUT:
 				pCounter--;
+				if( pCounter == 0 ){
+					pOpen = false;
+				}
 				pthread_mutex_unlock( &pMutex );
 				return false;
 				
 			default:
+				pCounter--;
+				if( pCounter == 0 ){
+					pOpen = false;
+				}
 				pthread_mutex_unlock( &pMutex );
 				DETHROW( deeInvalidAction );
 			}
@@ -302,10 +290,10 @@ bool deBarrier::TryWait( int timeout ){
 	
 	// windows
 #ifdef OS_W32
-	EnterCriticalSection( &pCSWaitCounter );
+	EnterCriticalSection( &pCriticalSection );
 	
 	if( pOpen ){
-		LeaveCriticalSection( &pCSWaitCounter );
+		LeaveCriticalSection( &pCriticalSection );
 		return true;
 	}
 	
@@ -313,42 +301,35 @@ bool deBarrier::TryWait( int timeout ){
 	
 	if( pCounter == pThreshold ){
 		pOpen = true;
-		
-		int i;
-		for( i=0; i<pCounter; i++ ){
-			LeaveCriticalSection( &pCSWaitCounter );
-			if( ! SetEvent( pEvent ) ){
-				DETHROW( deeInvalidAction );
-			}
-			EnterCriticalSection( &pCSWaitCounter );
-		}
+		WakeAllConditionVariable( &pConditionVariable );
 		
 	}else{
 		const ULONGLONG timeStart = GetTickCount64();
 		int elapsed = 0;
 		
 		while( ! pOpen ){
-			LeaveCriticalSection( &pCSWaitCounter );
-			
-			switch( WaitForSingleObject( pEvent, decMath::max( timeout - elapsed, 0 ) ) ){
-			case WAIT_OBJECT_0:
-				break;
-				
-			case WAIT_TIMEOUT:
+			const int sleepTimeout = decMath::max( timeout - elapsed, 0 );
+			if( ! SleepConditionVariableCS( &pConditionVariable, pCriticalSection, sleepTimeout ) ){
+				const bool timedOut = GetLastError() == ERROR_TIMEOUT;
 				pCounter--;
+				if( pCounter == 0 ){
+					pOpen = false;
+				}
+				LeaveCriticalSection( &pCriticalSection );
+				if( ! timedOut ){
+					DETHROW( deeInvalidAction );
+				}
 				return false;
-				
-			default:
-				DETHROW( deeInvalidAction );
 			}
-			
-			EnterCriticalSection( &pCSWaitCounter );
 			
 			if( ! pOpen ){
 				elapsed = ( int )( GetTickCount64() - timeStart );
 				if( elapsed >= timeout ){
 					pCounter--;
-					LeaveCriticalSection( &pCSWaitCounter );
+					if( pCounter == 0 ){
+						pOpen = false;
+					}
+					LeaveCriticalSection( &pCriticalSection );
 					return false;
 				}
 			}
@@ -361,7 +342,7 @@ bool deBarrier::TryWait( int timeout ){
 		pOpen = false;
 	}
 	
-	LeaveCriticalSection( &pCSWaitCounter );
+	LeaveCriticalSection( &pCriticalSection );
 	return true;
 #endif
 }
@@ -396,25 +377,17 @@ void deBarrier::Open(){
 	
 	// windows
 #ifdef OS_W32
-	EnterCriticalSection( &pCSWaitCounter );
+	EnterCriticalSection( &pCriticalSection );
 	
 	if( pCounter == 0 ){
-		LeaveCriticalSection( &pCSWaitCounter );
+		LeaveCriticalSection( &pCriticalSection );
 		return;
 	}
 	
 	pOpen = true;
+	WakeAllConditionVariable( &pConditionVariable );
 	
-	int i;
-	for( i=0; i<pCounter; i++ ){
-		LeaveCriticalSection( &pCSWaitCounter );
-		if( ! SetEvent( pEvent ) ){
-			DETHROW( deeInvalidAction );
-		}
-		EnterCriticalSection( &pCSWaitCounter );
-	}
-	
-	LeaveCriticalSection( &pCSWaitCounter );
+	LeaveCriticalSection( &pCriticalSection );
 #endif
 }
 
@@ -449,23 +422,15 @@ void deBarrier::SetThreshold( int threshold ){
 	
 	// windows
 #ifdef OS_W32
-	EnterCriticalSection( &pCSWaitCounter );
+	EnterCriticalSection( &pCriticalSection );
 	
 	pThreshold = threshold;
 	
 	if( pCounter >= pThreshold ){
 		pOpen = true;
-		
-		int i;
-		for( i=0; i<pCounter; i++ ){
-			LeaveCriticalSection( &pCSWaitCounter );
-			if( ! SetEvent( pEvent ) ){
-				DETHROW( deeInvalidAction );
-			}
-			EnterCriticalSection( &pCSWaitCounter );
-		}
+		WakeAllConditionVariable( &pConditionVariable );
 	}
 	
-	LeaveCriticalSection( &pCSWaitCounter );
+	LeaveCriticalSection( &pCriticalSection );
 #endif
 }
