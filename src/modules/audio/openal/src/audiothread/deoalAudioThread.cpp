@@ -138,7 +138,7 @@ pTimeHistoryUpdate( 29, 2 ),
 pEstimatedAudioTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
-pReadyToWait( true ),
+pReadyToWait( false ),
 pWaitSkipped( false ),
 pWaitSkippedElapsed( 0.0f ),
 
@@ -313,7 +313,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 	
 	pDebugInfo->StoreTimeThreadMainWaitFinish();
 	
-	return true;
+	return pThreadState == etsFinishedAudio;
 }
 
 void deoalAudioThread::WaitFinishAudio(){
