@@ -197,7 +197,7 @@ void deBarrier::Wait(){
 		
 	}else{
 		while( ! pOpen ){
-			if( ! SleepConditionVariableCS( &pConditionVariable, pCriticalSection, INFINITE ) ){
+			if( ! SleepConditionVariableCS( &pConditionVariable, &pCriticalSection, INFINITE ) ){
 				DETHROW( deeInvalidAction );
 			}
 		}
@@ -309,7 +309,7 @@ bool deBarrier::TryWait( int timeout ){
 		
 		while( ! pOpen ){
 			const int sleepTimeout = decMath::max( timeout - elapsed, 0 );
-			if( ! SleepConditionVariableCS( &pConditionVariable, pCriticalSection, sleepTimeout ) ){
+			if( ! SleepConditionVariableCS( &pConditionVariable, &pCriticalSection, sleepTimeout ) ){
 				const bool timedOut = GetLastError() == ERROR_TIMEOUT;
 				pCounter--;
 				if( pCounter == 0 ){
