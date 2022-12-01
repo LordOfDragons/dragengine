@@ -24,16 +24,16 @@
 #include <string.h>
 #include <signal.h>
 
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
+
 #include "guilaunch.h"
 #include "gui/deglWindowMain.h"
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/exceptions.h>
-
-#ifdef OS_W32
-#include <dragengine/app/deOSWindows.h>
-#endif
 
 
 
@@ -51,6 +51,9 @@ int main( int argc, char **argv ){
 #ifdef OS_W32
 	char **foxArgs = NULL;
 	int foxArgCount = 0;
+	
+	// silence certification tool
+	(void)SetProcessDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
 #endif
 	
 	int returnValue = 0;

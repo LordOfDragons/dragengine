@@ -220,7 +220,8 @@ void deAudioOpenAL::CleanUp(){
 void deAudioOpenAL::ProcessAudio(){
 	// wait for audio to finish. if done asynchronously uses time history to judge if audio is
 	// finished soon enough to wait for this event or to skip synchronization and running
-	// another game frame update
+	// another game frame update. this method returns only true if the main thread is allowed
+	// to modify synchronization data. in all other situations false is returned
 	if( ! pAudioThread->MainThreadWaitFinishAudio() ){
 		return; // enough time left to run another game frame update
 	}

@@ -122,6 +122,7 @@ void deoalMicrophone::Synchronize(){
 	if( pDirtyMicrophone ){
 		pAMicrophone->SetVolume( pMicrophone.GetVolume() );
 		pAMicrophone->SetMuted( pMicrophone.GetMuted() );
+		pAMicrophone->SetSpeakerGain( pMicrophone.GetSpeakerGain() );
 		pDirtyMicrophone = false;
 	}
 	
@@ -229,6 +230,12 @@ void deoalMicrophone::LayerMaskChanged(){
 	if( pParentWorld ){
 		pParentWorld->SetDirtyAllMicLayerMask();
 	}
+}
+
+void deoalMicrophone::SpeakerGainChanged(){
+	pDirtyMicrophone = true;
+	
+	pRequiresSync();
 }
 
 

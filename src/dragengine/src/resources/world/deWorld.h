@@ -83,6 +83,8 @@ private:
 	bool pDisableLights;
 	decMatrix pLightColorMatrix;
 	
+	float pSpeakerGain;
+	
 	deSkyInstance *pSkyRoot;
 	deSkyInstance *pSkyTail;
 	int pSkyCount;
@@ -235,6 +237,18 @@ public:
 	
 	/** \brief Set light color matrix. */
 	void SetLightColorMatrix( const decMatrix &matrix );
+	
+	/**
+	 * \brief Gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
+	
+	/**
+	 * \brief Set gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	void SetSpeakerGain( float gain );
 	
 	/**
 	 * \brief Update dynamic world parts.
@@ -946,6 +960,7 @@ private:
 	void pCleanUp();
 	void pNotifyPhysicsChanged();
 	void pNotifyLightingChanged();
+	void pNotifyAudioChanged();
 };
 
 #endif

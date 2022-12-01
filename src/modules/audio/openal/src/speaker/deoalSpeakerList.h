@@ -29,7 +29,7 @@ class deoalASpeaker;
 
 
 /**
- * \brief Speaker list.
+ * Speaker list.
  */
 class deoalSpeakerList{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create speaker list. */
+	/** Create speaker list. */
 	deoalSpeakerList();
 	
-	/** \brief Clean up speaker list. */
+	/** Clean up speaker list. */
 	~deoalSpeakerList();
 	/*@}*/
 	
@@ -51,51 +51,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of speakers. */
+	/** Number of speakers. */
 	int GetCount() const;
 	
-	/** \brief Speaker at index. */
+	/** Speaker at index. */
 	deoalASpeaker *GetAt( int index ) const;
 	
-	/** \brief Speaker is present. */
+	/** Speaker is present. */
 	bool Has( deoalASpeaker *speaker ) const;
 	
-	/** \brief Index of speaker or -1 if absent. */
+	/** Index of speaker or -1 if absent. */
 	int IndexOf( deoalASpeaker *speaker ) const;
 	
-	/** \brief Add speaker. */
+	/** Add speaker. */
 	void Add( deoalASpeaker *speaker );
 	
-	/** \brief Remove speaker. */
+	/** Remove speaker. */
 	void Remove( deoalASpeaker *speaker );
 	
-	/** \brief Remove speaker if present. */
+	/** Remove speaker if present. */
 	void RemoveIfExisting( deoalASpeaker *speaker );
 	
-	/** \brief Remove all speakers. */
+	/** Remove all speakers. */
 	void RemoveAll();
 	
 	
 	
-	/** \brief Flag all speakers. */
+	/** Flag all speakers. */
 	void FlagAll( bool flag );
 	
 	/**
-	 * \brief Set enabled state for all speakers.
+	 * Set enabled state for all speakers.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void EnableAll( bool enabled );
 	
 	/**
-	 * \brief Set enabled state of all speakers to match their flag state.
+	 * Set enabled state of all speakers to match their flag state.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void FlagToEnabledAll();
 	
-	/** \brief Update all speakers. */
+	/** Update all speakers. */
 	void UpdateAll();
 	
-	/** \brief Update effects all speakers. */
+	/** Update effects all speakers. */
 	void UpdateEffectsAll();
 	/*@}*/
 	
@@ -103,19 +103,19 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Assign list. */
+	/** Assign list. */
 	deoalSpeakerList &operator=( const deoalSpeakerList &list );
 	
-	/** \brief Append list. */
+	/** Append list. */
 	deoalSpeakerList &operator+=( const deoalSpeakerList &list );
 	
-	/** \brief Combined list. */
+	/** Combined list. */
 	deoalSpeakerList operator+( const deoalSpeakerList &list ) const;
 	
-	/** \brief Lists are equal. */
+	/** Lists are equal. */
 	bool operator==( const deoalSpeakerList &list ) const;
 	
-	/** \brief Lists are not equal. */
+	/** Lists are not equal. */
 	bool operator!=( const deoalSpeakerList &list ) const;
 	/*@}*/
 };

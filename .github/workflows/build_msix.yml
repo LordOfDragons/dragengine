@@ -54,4 +54,6 @@ jobs:
           path: |
             dragengine-${{ inputs.releaseVersion }}.msix
             deigde-${{ inputs.releaseVersion }}.msix
+            installer/build_msix/msix/dragengine/AppxManifest.xml
+            installer/build_msix/msix/deigde/AppxManifest.xml
           if-no-files-found: error

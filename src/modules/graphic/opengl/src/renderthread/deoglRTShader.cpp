@@ -135,9 +135,13 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 	}
 	
 	// OpenGL extensions would define symbols for these extentions which would work in
-	// shaders but our pre-processor does not know about them. so add them manually
+	// shaders but our pre-processor does not know about them. so add them manually.
+	// this is mainly required for broken intel and nvidia drivers
 	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_viewport_layer_array ) ){
 		defines.SetDefine( "EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY", true );
+		
+	}else if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_AMD_vertex_shader_layer ) ){
+		defines.SetDefine( "EXT_AMD_VERTEX_SHADER_LAYER", true );
 	}
 	
 	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){

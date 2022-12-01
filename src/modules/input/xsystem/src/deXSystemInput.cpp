@@ -761,7 +761,7 @@ int deXSystemInput::pModifiersFromXState( int xstate ) const{
 	return modifiers;
 }
 
-bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ) const{
+bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ){
 	key.button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( event.keycode );
 	if( key.button == -1 ){
 		return false;
@@ -777,10 +777,26 @@ bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ) c
 	
 	char utf8[ 4 ];
 	const int count = XLookupString( &event, ( char* )&utf8, 4, &key.keySym, nullptr );
+// 	LogInfoFormat("lookUpKey: %d %d %d %d %d\n", count, utf8[0], utf8[1], utf8[2], utf8[3]);
 	
 	switch( count ){
 	case 1:
-		key.character = utf8[ 0 ] & 0x7f;
+		// this is a huge hack here. on some systems XLookupString returns for characters
+		// larger than 127 a UTF-8 character composed of 2 bytes. on other systems
+		// XLookupString returns an ASCII-8 character composed of 1 byte. for the UTF-8
+		// case we would have to do "utf8[ 0 ] & 0x7f" to get a correctly encoded character.
+		// for other systems returning a single ASCII-8 this would break. if we do not
+		// apply the mask and simply use the byte as-is we can get both systems working.
+		// the conversation to unsigned char is required or it breaks.
+		// 
+		// the reason for this problem is that XLookupString uses the user locale to
+		// return the character. modern systems should use an utf8 based locale in which
+		// case the handling is easy. in the case an older system is used without utf8
+		// the returned value should be latin-1 but you can not bet on it. the correct
+		// solution would be using Xutf8LookupString but this requires using XI which
+		// causes various changes to this input module. something for a rainy day.
+// 		key.character = utf8[ 0 ] & 0x7f;
+		key.character = ( unsigned char )utf8[ 0 ];
 		break;
 		
 	case 2:

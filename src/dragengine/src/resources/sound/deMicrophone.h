@@ -71,6 +71,7 @@ private:
 	float pVolume;
 	
 	decLayerMask pLayerMask;
+	float pSpeakerGain;
 	
 	deSpeaker *pSpeakerRoot;
 	deSpeaker *pSpeakerTail;
@@ -146,6 +147,18 @@ public:
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
+	
+	/**
+	 * \brief Gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
+	
+	/**
+	 * \brief Set gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	void SetSpeakerGain( float gain );
 	/*@}*/
 	
 	

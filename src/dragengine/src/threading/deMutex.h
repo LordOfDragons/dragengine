@@ -46,7 +46,7 @@ private:
 	pthread_mutex_t pMutex;
 #endif
 #ifdef OS_W32
-	CRITICAL_SECTION pCritSec;
+	HANDLE pMutex;
 #endif
 	
 	
@@ -79,6 +79,18 @@ public:
 	 * If the mutex is not locked this call acquires the lock and return true.
 	 */
 	bool TryLock();
+	
+	/**
+	 * \brief Try locking mutex with timeout.
+	 * \version 1.16
+	 * 
+	 * If the mutex is already locked this call returns false and no lock is taken.
+	 * If the mutex is not locked this call acquires the lock and return true.
+	 * If the timeout elapses before acquiring the lock false is returned.
+	 * 
+	 * \param[in] timeout Timeout in milli-seconds.
+	 */
+	bool TryLock( int timeout );
 	
 	/**
 	 * \brief Unlock the mutex.

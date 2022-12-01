@@ -35,6 +35,16 @@
 	#define _WIN32_WINNT _WIN32_WINNT_WIN7
 #endif
 
+// required to use SetProcessDpiAwarenessContext
+#ifdef WINVER
+	#if WINVER < 0x0605
+		#undef WINVER
+		#define WINVER 0x0605
+	#endif
+#else
+	#define WINVER 0x0605
+#endif
+
 #include <windows.h>
 
 

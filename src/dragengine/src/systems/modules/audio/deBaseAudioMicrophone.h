@@ -64,6 +64,9 @@ public:
 	/** \brief Volume changed. */
 	virtual void VolumeChanged();
 	
+	/** \brief Speaker gain changed. */
+	virtual void SpeakerGainChanged();
+	
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();
 	

@@ -246,7 +246,7 @@ void deoalSource::ClearAllSendEffects(){
 //////////////////////
 
 void deoalSource::pCleanUp(){
-	ClearSendEffect( 0 );
+	ClearAllSendEffects();
 	if( pSendSlot ){
 		palDeleteAuxiliaryEffectSlots( 1, &pSendSlot );
 		pSendSlot = 0;

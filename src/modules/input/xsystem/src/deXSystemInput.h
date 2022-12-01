@@ -249,7 +249,7 @@ private:
 	void pAddMouseMove( int device, int state, int x, int y, const timeval &eventTime );
 	void pQueryMousePosition( bool sendEvents );
 	int pModifiersFromXState( int xstate ) const;
-	bool pLookUpKey( XKeyEvent &event, sKey &key ) const;
+	bool pLookUpKey( XKeyEvent &event, sKey &key );
 	//int pModifiersFromKeyState() const;
 	void pUpdateAutoRepeat();
 	void pSetAutoRepeatEnabled( bool enabled );

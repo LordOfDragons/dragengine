@@ -96,6 +96,8 @@ private:
 	
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC( nfGetSpeakerGain );
+	DEF_NATFUNC( nfSetSpeakerGain);
 	
 	DEF_NATFUNC( nfAddSpeaker );
 	DEF_NATFUNC( nfRemoveSpeaker );

@@ -175,10 +175,15 @@ jobs:
             dragengine-live-${{ github.event.inputs.version }}.zip,
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
             install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
-            
-      - name: Trigger Distribute Build
+
+  distribute:
+    needs: [upload]
+    runs-on: ubuntu-20.04
+    
+    steps:
+      - name: Distribute Build
         run: |
-          curl -X POST https://api.github.com/repos/:LordOfDragons/:dedistribute/dispatches \
-          -H 'Accept: application/vnd.github.everest-preview+json' \
-          -u ${{ secrets.ACTION_KEY }} \
-          --data '{"event_type": "Trigger Workflow", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'
+          curl -X POST https://api.github.com/repos/LordOfDragons/dedistribute/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.ACTION_KEY }}" \
+            --data '{"event_type": "Release", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'
