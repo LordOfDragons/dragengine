@@ -257,6 +257,10 @@ bool deBarrier::TryWait( int timeout ){
 				break;
 				
 			case ETIMEDOUT:
+				if( pOpen ){
+					break; // prevent return false even though barrier opened
+				}
+				
 				pCounter--;
 				if( pCounter == 0 ){
 					pOpen = false;
@@ -265,6 +269,10 @@ bool deBarrier::TryWait( int timeout ){
 				return false;
 				
 			default:
+				if( pOpen ){
+					break; // this should never be possible but better safe than sorry
+				}
+				
 				pCounter--;
 				if( pCounter == 0 ){
 					pOpen = false;
@@ -310,16 +318,24 @@ bool deBarrier::TryWait( int timeout ){
 		while( ! pOpen ){
 			const int sleepTimeout = decMath::max( timeout - elapsed, 0 );
 			if( ! SleepConditionVariableCS( &pConditionVariable, &pCriticalSection, sleepTimeout ) ){
+				if( pOpen ){
+					break; // prevent return false even though barrier opened
+				}
+				
 				const bool timedOut = GetLastError() == ERROR_TIMEOUT;
+				
 				pCounter--;
 				if( pCounter == 0 ){
 					pOpen = false;
 				}
 				LeaveCriticalSection( &pCriticalSection );
-				if( ! timedOut ){
+				
+				if( timedOut ){
+					return false;
+					
+				}else{
 					DETHROW( deeInvalidAction );
 				}
-				return false;
 			}
 			
 			if( ! pOpen ){
