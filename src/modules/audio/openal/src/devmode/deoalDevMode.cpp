@@ -238,7 +238,20 @@ void deoalDevMode::pCmdShowActiveMicInfo( const decUnicodeArgumentList &command,
 
 void deoalDevMode::pCmdCaptureMicRays( const decUnicodeArgumentList &command, decUnicodeString & ){
 	pCaptureMicRays = true;
-	pCaptureMicRaysXRay = command.GetArgumentCount() > 1 && command.GetArgumentAt( 1 )->ToUTF8() == "xray";
+	pCaptureMicRaysXRay = false;
+	pCaptureMicRaysVolume = false;
+	
+	const int count = command.GetArgumentCount();
+	int i;
+	for( i=1; i<count; i++ ){
+		const decString arg( command.GetArgumentAt( i )->ToUTF8() );
+		if( arg == "xray" ){
+			pCaptureMicRaysXRay = true;
+			
+		}else if( arg == "volume" ){
+			pCaptureMicRaysVolume = true;
+		}
+	}
 }
 
 void deoalDevMode::pCmdShowAudioModels( const decUnicodeArgumentList &command, decUnicodeString &answer ){

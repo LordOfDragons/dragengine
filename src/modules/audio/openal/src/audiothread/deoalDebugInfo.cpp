@@ -355,7 +355,8 @@ void deoalDebugInfo::CaptureActiveMicRays(){
 			}
 		}
 		microphone->GetAMicrophone()->DebugCaptureRays( pDDActiveMicRays,
-			pAudioThread.GetOal().GetDevMode()->GetCaptureMicRaysXRay() );
+			pAudioThread.GetOal().GetDevMode()->GetCaptureMicRaysXRay(),
+			pAudioThread.GetOal().GetDevMode()->GetCaptureMicRaysVolume() && false );
 		
 	}else{
 		if( pDDActiveMicRays->GetParentWorld() ){
