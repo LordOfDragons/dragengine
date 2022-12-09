@@ -13,11 +13,12 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-#oalversion = '1.19.1'
-oalversion = '1.20.0'
-
-if envLibrary['OSWindows']:
-	oalversion = '1.19.1'
+# 
+# the following versions are bugged and cause SIGKILL when used:
+# - 1.22.0
+# - 1.22.1
+# - 1.22.2
+oalversion = '1.21.1'
 
 if envLibrary['platform_android'] != 'no' and False:
 	srcdir = 'android-libopenalsoft-1.0.0'
@@ -39,6 +40,7 @@ else:
 
 # check if system openal is present
 hasSystemOpenAL = False
+""" force false due to annoying limitations
 conf = envLibrary.Configure()
 if envLibrary['with_system_openal'] != TernaryVariableNo:
 	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
@@ -46,6 +48,7 @@ conf.Finish()
 
 if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:
 	Exit('Requested to use system OpenAL but no usable OpenAL found.')
+"""
 
 libs = [libLinkName]
 #libs.extend(parent_targets['lib_sndio']['libs'])

@@ -1,0 +1,24 @@
+diff -rupN org-openal-soft-1.21.1/alc/alu.h openal-soft-1.21.1/alc/alu.h
+--- org-openal-soft-1.21.1/alc/alu.h	2021-02-04 20:09:06.000000000 +0100
++++ openal-soft-1.21.1/alc/alu.h	2022-12-09 22:52:28.361537586 +0100
+@@ -17,7 +17,7 @@ struct EffectSlot;
+ struct MixParams;
+ 
+ 
+-#define MAX_SENDS  6
++#define MAX_SENDS  64
+ 
+ 
+ using MixerFunc = void(*)(const al::span<const float> InSamples,
+diff -rupN org-openal-soft-1.21.1/core/filters/biquad.cpp openal-soft-1.21.1/core/filters/biquad.cpp
+--- org-openal-soft-1.21.1/core/filters/biquad.cpp	2021-02-04 20:09:06.000000000 +0100
++++ openal-soft-1.21.1/core/filters/biquad.cpp	2022-12-09 22:51:36.254251650 +0100
+@@ -14,7 +14,7 @@ template<typename Real>
+ void BiquadFilterR<Real>::setParams(BiquadType type, Real f0norm, Real gain, Real rcpQ)
+ {
+     // Limit gain to -100dB
+-    assert(gain > 0.00001f);
++    gain = gain > 0.00001f ? gain : 0.00001f;
+ 
+     const Real w0{al::MathDefs<Real>::Tau() * f0norm};
+     const Real sin_w0{std::sin(w0)};
