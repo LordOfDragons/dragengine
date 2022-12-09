@@ -408,12 +408,18 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		
 		
 		
-		/** \brief Play sound as one shot speaker. */
-		public func void play()
+		/**
+		 * \brief Play sound as one shot speaker.
+		 * 
+		 * \par 1.16
+		 * 
+		 * Returns speaker added to game world or null if unable to play sound.
+		 */
+		public func Speaker play()
 			var BehaviorElement element = getElement()
 			var GameWorld gameWorld = element.getGameWorld()
 			if gameWorld == null
-				return
+				return null
 			end
 			
 			var Speaker speaker = createSpeaker()
@@ -422,6 +428,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 			speaker.play()
 			
 			gameWorld.addOneShotSpeaker(speaker)
+			return speaker
 		end
 	end
 	
