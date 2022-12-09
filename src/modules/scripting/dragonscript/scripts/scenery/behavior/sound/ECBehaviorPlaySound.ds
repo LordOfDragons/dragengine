@@ -244,8 +244,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 			if pBoneIndex != -1 and pCollider != null
 				var Collider collider = pCollider.getCollider()
 				if collider != null and collider castable ColliderRig
-					(collider cast ColliderRig).attachBone(speaker, \
-						pBone, pPosition, pOrientation)
+					(collider cast ColliderRig).attachBone(speaker, pBone, pPosition, pOrientation)
 				end
 			end
 		end
