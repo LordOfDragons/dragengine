@@ -114,6 +114,7 @@ private:
 	float pAttenuationRolloff;
 	float pAttenuationDistanceOffset;
 	
+	float pFinalGain;
 	float pAttenuatedGain;
 	deoalEnvironment *pEnvironment;
 	
@@ -373,6 +374,15 @@ public:
 	
 	
 	
+	/** Full volume with parent speaker gain applied. */
+	float GetFullVolume() const;
+	
+	/** Final gain of speaker with all effects applied. */
+	inline float GetFinalGain() const{ return pFinalGain; }
+	
+	/** Attenuated gain relative to full volume. */
+	inline float GetAttenuatedGain() const{ return pAttenuatedGain; }
+	
 	/** Environment or \em NULL if not present. */
 	inline deoalEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
@@ -461,7 +471,6 @@ private:
 	
 	bool pUseCustomGain() const;
 	float pCustomGainMultiplier() const;
-	float pFullVolume() const;
 };
 
 #endif

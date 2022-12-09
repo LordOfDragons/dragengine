@@ -133,7 +133,7 @@ void deoalSourceManager::UnbindSource( deoalSource *source ){
 	DEBUG( pAudioThread.GetLogger().LogInfoFormat(
 		"Unbind source %i from %p (%i,%i,%i)", pSources.IndexOf( source ),
 		source->GetOwner(), pSources.GetCount(), pCountBound, pCountUnbound ) );
-	source->SetOwner( NULL );
+	source->SetOwner( nullptr );
 	source->Stop();
 	source->ClearFilter();
 	source->ClearAllSendEffects();

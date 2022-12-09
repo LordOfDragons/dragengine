@@ -37,8 +37,10 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/shape/decShapeSphere.h>
 #include <dragengine/debug/deDebugBlockInfo.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -67,7 +69,9 @@ pDebugFPSAudio( 0 ),
 pDebugFPSAudioEstimated( 0 ),
 
 pDIActiveMic( NULL ),
-pDISpeakerAtPosition( NULL ){
+pDISpeakerAtPosition( NULL ),
+
+pModeVisAudSpeakers( 0 ){
 }
 
 deoalDebugInfo::~deoalDebugInfo(){
@@ -176,6 +180,7 @@ void deoalDebugInfo::UpdateDebugInfo(){
 	UpdateDISpeakerAtPosition();
 	UpdateDIClosestSpeakers();
 	CaptureDDClosestSpeakersDirect();
+	UpdateVisAudSpeakers();
 }
 
 
@@ -629,5 +634,129 @@ void deoalDebugInfo::CaptureDDClosestSpeakersDirect(){
 		if( i < speakers.GetCount() && microphone ){
 			speakers.GetAt( i )->GetEnvironment()->DebugUpdateDirect( dd, *microphone );
 		}
+	}
+}
+
+void deoalDebugInfo::VisAudSpeakers( int mode ){
+	pModeVisAudSpeakers = mode;
+	
+	if( mode == 0 ){
+		const int count = pDDVisAudSpeakers.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			deDebugDrawer * const dd = ( deDebugDrawer* )pDDVisAudSpeakers.GetAt( i );
+			if( dd->GetParentWorld() ){
+				dd->GetParentWorld()->RemoveDebugDrawer( dd );
+			}
+		}
+		pDDVisAudSpeakers.RemoveAll();
+	}
+}
+
+void deoalDebugInfo::UpdateVisAudSpeakers(){
+	if( pModeVisAudSpeakers == 0 ){
+		return;
+	}
+	
+	deoalMicrophone * const engMicrophone = pAudioThread.GetOal().GetActiveMicrophone();
+	deoalAMicrophone * const microphone = pAudioThread.GetActiveMicrophone();
+	int count = 0;
+	
+	if( engMicrophone && microphone && engMicrophone->GetParentWorld() ){
+		deWorld &world = engMicrophone->GetParentWorld()->GetWorld();
+		const deoalSpeakerList &speakers = microphone->GetActiveSpeakers();
+		const decColor soundHigh( 1.0f, 0.0f, 0.0f );
+		const decColor soundLow( 0.0f, 0.5f, 0.0f );
+		float factor;
+		int i;
+		
+		for( i=0; i<speakers.GetCount(); i++ ){
+			const deoalASpeaker &speaker = *speakers.GetAt( i );
+			if( speaker.GetEnabled() && speaker.GetPlaying() ){
+				if( count == pDDVisAudSpeakers.GetCount() ){
+					const deDebugDrawer::Ref dd( deDebugDrawer::Ref::New( pAudioThread.GetOal().
+						GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer() ) );
+					dd->SetXRay( true );
+					
+					deDebugDrawerShape * const shape = new deDebugDrawerShape;
+					shape->GetShapeList().Add( new decShapeSphere( 0.05f ) );
+					dd->AddShape( shape );
+					
+					world.AddDebugDrawer( dd );
+					pDDVisAudSpeakers.Add( dd );
+				}
+				
+				deDebugDrawer &dd = *( ( deDebugDrawer* )pDDVisAudSpeakers.GetAt( count++ ) );
+				
+				if( speaker.GetEnvironment() && speaker.GetEnvironment()->GetValid() ){
+					const deoalEnvironment &env = *speaker.GetEnvironment();
+					float low, high;
+					
+					switch( pModeVisAudSpeakers ){
+					case 1:
+						factor = speaker.GetAttenuatedGain();
+						break;
+						
+					case 2:
+						low = env.GetBandPassGain() * env.GetBandPassGainLF();
+						high = env.GetBandPassGain() * env.GetBandPassGainHF();
+						factor = decMath::max( low, high );
+						break;
+						
+					case 3:
+						low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain();
+						high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain();
+						factor = decMath::max( low, high );
+						break;
+						
+					case 4:
+						low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
+						high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
+						factor = decMath::max( low, high );
+						break;
+						
+					case 5:
+						low = env.GetBandPassGain() * env.GetBandPassGainLF()
+							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
+							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
+						high = env.GetBandPassGain() * env.GetBandPassGainHF()
+							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
+							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
+						factor = speaker.GetAttenuatedGain() + decMath::max( low, high );
+						break;
+						
+					case 6:
+						low = env.GetBandPassGain() * env.GetBandPassGainLF()
+							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
+							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
+						high = env.GetBandPassGain() * env.GetBandPassGainHF()
+							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
+							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
+						factor = speaker.GetFinalGain() + decMath::max( low, high );
+						break;
+						
+					default:
+						factor = 0.0f;
+					}
+					
+				}else{
+					factor = 0.0f;
+				}
+				factor = decMath::clamp( factor, 0.0f, 1.0f );
+				
+				dd.GetShapeAt( 0 )->SetEdgeColor( soundLow * ( 1.0f - factor ) + soundHigh * factor );
+				dd.NotifyShapeColorChanged();
+				dd.SetPosition( speaker.GetPosition() );
+			}
+		}
+	}
+	
+	while( pDDVisAudSpeakers.GetCount() < count ){
+		const int index = pDDVisAudSpeakers.GetCount() - 1;
+		deDebugDrawer * const dd = ( deDebugDrawer* )pDDVisAudSpeakers.GetAt( index );
+		if( dd->GetParentWorld() ){
+			dd->GetParentWorld()->RemoveDebugDrawer( dd );
+		}
+		pDDVisAudSpeakers.RemoveFrom( index );
 	}
 }

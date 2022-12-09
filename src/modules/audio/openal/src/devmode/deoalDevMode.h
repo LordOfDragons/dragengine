@@ -50,6 +50,7 @@ private:
 	bool pCaptureMicRaysVolume;
 	bool pShowAudioModels;
 	int pCaptureSpeakerDirectClosest;
+	int pVisualizeAudibleSpeakers;
 	
 	
 	
@@ -109,6 +110,8 @@ public:
 	/** Capture speaker closest direct. */
 	inline int GetCaptureSpeakerClosestDirect() const{ return pCaptureSpeakerDirectClosest; }
 	
+	inline int GetVisualizeAudibleSpeakers() const{ return pVisualizeAudibleSpeakers; }
+	
 	/** Clear capture speaker closest direct. */
 	void ClearCaptureSpeakerClosestDirect();
 	
@@ -132,6 +135,7 @@ private:
 	void pCmdShowActiveMicInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdCaptureMicRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowAudioModels( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdVisualizeAudibleSpeakers( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdCaptureSpeakerDirectClosest( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pActiveWorldNotifyDevModeChanged();

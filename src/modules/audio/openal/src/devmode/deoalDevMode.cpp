@@ -56,7 +56,8 @@ pShowActiveMicInfo( false ),
 pCaptureMicRays( false ),
 pCaptureMicRaysXRay( false ),
 pShowAudioModels( false ),
-pCaptureSpeakerDirectClosest( 0 ){
+pCaptureSpeakerDirectClosest( 0 ),
+pVisualizeAudibleSpeakers( 0 ){
 }
 
 deoalDevMode::~deoalDevMode(){
@@ -115,6 +116,10 @@ bool deoalDevMode::ExecuteCommand( const decUnicodeArgumentList &command, decUni
 			
 		}else if( command.MatchesArgumentAt( 0, "dm_capture_speaker_direct_closest" ) ){
 			pCmdCaptureSpeakerDirectClosest( command, answer );
+			return true;
+			
+		}else if( command.MatchesArgumentAt( 0, "dm_visualize_audible_speakers" ) ){
+			pCmdVisualizeAudibleSpeakers( command, answer );
 			return true;
 		}
 		
@@ -272,6 +277,21 @@ void deoalDevMode::pCmdShowAudioModels( const decUnicodeArgumentList &command, d
 void deoalDevMode::pCmdCaptureSpeakerDirectClosest( const decUnicodeArgumentList &command, decUnicodeString & ){
 	if( command.GetArgumentCount() == 2 ){
 		pCaptureSpeakerDirectClosest = command.GetArgumentAt( 1 )->ToInt();
+	}
+}
+
+void deoalDevMode::pCmdVisualizeAudibleSpeakers( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	const int oldValue = pVisualizeAudibleSpeakers;
+	if( command.GetArgumentCount() == 2 ){
+		pVisualizeAudibleSpeakers = command.GetArgumentAt( 1 )->ToInt();
+	}
+	
+	decString text;
+	text.Format( "dm_visualize_audible_speakers = %d\n", pVisualizeAudibleSpeakers );
+	answer.AppendFromUTF8( text );
+	
+	if( pVisualizeAudibleSpeakers != oldValue ){
+		pActiveWorldNotifyDevModeChanged();
 	}
 }
 
