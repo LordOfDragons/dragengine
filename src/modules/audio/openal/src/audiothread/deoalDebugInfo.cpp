@@ -665,6 +665,9 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 	if( engMicrophone && microphone && engMicrophone->GetParentWorld() ){
 		deWorld &world = engMicrophone->GetParentWorld()->GetWorld();
 		const deoalSpeakerList &speakers = microphone->GetActiveSpeakers();
+		const bool useEnv = pAudioThread.GetConfiguration().GetAurealizationMode()
+			!= deoalConfiguration::eAurealizationModes::eamDisabled 
+			&& pAudioThread.GetConfiguration().GetEnableEFX();
 		const decColor soundHigh( 1.0f, 0.0f, 0.0f );
 		const decColor soundLow( 0.0f, 0.5f, 0.0f );
 		float factor;
@@ -672,86 +675,92 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 		
 		for( i=0; i<speakers.GetCount(); i++ ){
 			const deoalASpeaker &speaker = *speakers.GetAt( i );
-			if( speaker.GetEnabled() && speaker.GetPlaying() ){
-				if( count == pDDVisAudSpeakers.GetCount() ){
-					const deDebugDrawer::Ref dd( deDebugDrawer::Ref::New( pAudioThread.GetOal().
-						GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer() ) );
-					dd->SetXRay( true );
-					
-					deDebugDrawerShape * const shape = new deDebugDrawerShape;
-					shape->GetShapeList().Add( new decShapeSphere( 0.05f ) );
-					dd->AddShape( shape );
-					
-					world.AddDebugDrawer( dd );
-					pDDVisAudSpeakers.Add( dd );
-				}
+			if( ! speaker.GetEnabled() || ! speaker.GetPlaying() ){
+				continue;
+			}
+			
+			if( useEnv && ( ! speaker.GetEnvironment() || ! speaker.GetEnvironment()->GetValid() ) ){
+				continue;
+			}
+			
+			if( count == pDDVisAudSpeakers.GetCount() ){
+				const deDebugDrawer::Ref dd( deDebugDrawer::Ref::New( pAudioThread.GetOal().
+					GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer() ) );
+				dd->SetXRay( true );
 				
-				deDebugDrawer &dd = *( ( deDebugDrawer* )pDDVisAudSpeakers.GetAt( count++ ) );
+				deDebugDrawerShape * const shape = new deDebugDrawerShape;
+				shape->GetShapeList().Add( new decShapeSphere( 0.05f ) );
+				dd->AddShape( shape );
 				
-				if( speaker.GetEnvironment() && speaker.GetEnvironment()->GetValid() ){
-					const deoalEnvironment &env = *speaker.GetEnvironment();
-					float low, high;
+				world.AddDebugDrawer( dd );
+				pDDVisAudSpeakers.Add( dd );
+			}
+			
+			deDebugDrawer &dd = *( ( deDebugDrawer* )pDDVisAudSpeakers.GetAt( count++ ) );
+			
+			if( speaker.GetEnvironment() || speaker.GetEnvironment()->GetValid() ){
+				const deoalEnvironment &env = *speaker.GetEnvironment();
+				float low, high;
+				
+				switch( pModeVisAudSpeakers ){
+				case 1:
+					factor = speaker.GetAttenuatedGain();
+					break;
 					
-					switch( pModeVisAudSpeakers ){
-					case 1:
-						factor = speaker.GetAttenuatedGain();
-						break;
-						
-					case 2:
-						low = env.GetBandPassGain() * env.GetBandPassGainLF();
-						high = env.GetBandPassGain() * env.GetBandPassGainHF();
-						factor = decMath::max( low, high );
-						break;
-						
-					case 3:
-						low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain();
-						high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain();
-						factor = decMath::max( low, high );
-						break;
-						
-					case 4:
-						low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
-						high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
-						factor = decMath::max( low, high );
-						break;
-						
-					case 5:
-						low = env.GetBandPassGain() * env.GetBandPassGainLF()
-							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
-							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
-						high = env.GetBandPassGain() * env.GetBandPassGainHF()
-							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
-							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
-						factor = speaker.GetAttenuatedGain() + decMath::max( low, high );
-						break;
-						
-					case 6:
-						low = env.GetBandPassGain() * env.GetBandPassGainLF()
-							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
-							+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
-						high = env.GetBandPassGain() * env.GetBandPassGainHF()
-							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
-							+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
-						factor = speaker.GetFinalGain() + decMath::max( low, high );
-						break;
-						
-					default:
-						factor = 0.0f;
-					}
+				case 2:
+					low = env.GetBandPassGain() * env.GetBandPassGainLF();
+					high = env.GetBandPassGain() * env.GetBandPassGainHF();
+					factor = decMath::max( low, high );
+					break;
 					
-				}else{
+				case 3:
+					low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain();
+					high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain();
+					factor = decMath::max( low, high );
+					break;
+					
+				case 4:
+					low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
+					high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
+					factor = decMath::max( low, high );
+					break;
+					
+				case 5:
+					low = env.GetBandPassGain() * env.GetBandPassGainLF()
+						+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
+						+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
+					high = env.GetBandPassGain() * env.GetBandPassGainHF()
+						+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
+						+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
+					factor = speaker.GetAttenuatedGain() + decMath::max( low, high );
+					break;
+					
+				case 6:
+					low = env.GetBandPassGain() * env.GetBandPassGainLF()
+						+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
+						+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
+					high = env.GetBandPassGain() * env.GetBandPassGainHF()
+						+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
+						+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
+					factor = speaker.GetFinalGain() + decMath::max( low, high );
+					break;
+					
+				default:
 					factor = 0.0f;
 				}
 				factor = decMath::clamp( factor, 0.0f, 1.0f );
 				
-				dd.GetShapeAt( 0 )->SetEdgeColor( soundLow * ( 1.0f - factor ) + soundHigh * factor );
-				dd.NotifyShapeColorChanged();
-				dd.SetPosition( speaker.GetPosition() );
+			}else{
+				factor = 1.0f;
 			}
+			
+			dd.GetShapeAt( 0 )->SetEdgeColor( soundLow * ( 1.0f - factor ) + soundHigh * factor );
+			dd.NotifyShapeColorChanged();
+			dd.SetPosition( speaker.GetPosition() );
 		}
 	}
 	
-	while( pDDVisAudSpeakers.GetCount() < count ){
+	while( pDDVisAudSpeakers.GetCount() > count ){
 		const int index = pDDVisAudSpeakers.GetCount() - 1;
 		deDebugDrawer * const dd = ( deDebugDrawer* )pDDVisAudSpeakers.GetAt( index );
 		if( dd->GetParentWorld() ){
