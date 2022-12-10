@@ -40,7 +40,12 @@ pOwner( nullptr ),
 pImportance( 1000.0f )
 {
 	try{
-		OAL_CHECK( audioThread, palGenAuxiliaryEffectSlots( 1, &pSlot ) );
+		alGetError();
+		palGenAuxiliaryEffectSlots( 1, &pSlot );
+		if( alGetError() != AL_NO_ERROR ){
+			DETHROW( deeOutOfMemory );
+		}
+		
 		OAL_CHECK( audioThread, palGenEffects( 1, &pEffect ) );
 		OAL_CHECK( audioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
 		

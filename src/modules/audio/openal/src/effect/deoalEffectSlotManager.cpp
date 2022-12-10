@@ -39,7 +39,7 @@
 
 deoalEffectSlotManager::deoalEffectSlotManager( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
-pMaxCount( audioThread.GetCapabilities().GetEfxMaxAuxSend() ){
+pMaxCount( 0 ){
 }
 
 deoalEffectSlotManager::~deoalEffectSlotManager(){
@@ -116,11 +116,28 @@ deoalEffectSlot *deoalEffectSlotManager::pBestRebindable() const{
 }
 
 deoalEffectSlot *deoalEffectSlotManager::pCreateNew(){
-	if( pSlots.GetCount() == pMaxCount ){
+	if( pMaxCount != 0 && pSlots.GetCount() == pMaxCount ){
 		return nullptr;
 	}
 	
-	const deoalEffectSlot::Ref slot( deoalEffectSlot::Ref::New( new deoalEffectSlot( pAudioThread ) ) );
-	pSlots.Add( slot );
-	return slot;
+	try{
+		const deoalEffectSlot::Ref slot( deoalEffectSlot::Ref::New( new deoalEffectSlot( pAudioThread ) ) );
+		pSlots.Add( slot );
+		return slot;
+		
+	}catch( const deeOutOfMemory & ){
+		// assume we hit the maximum count of effect slots. according to openal code
+		// this should be 64 but since we can not query this limit we use this version
+		pMaxCount = pSlots.GetCount();
+		pAudioThread.GetLogger().LogInfoFormat( "OutOfMemoy while creating effect."
+			" Assuming maximum effect slot count %d", pMaxCount );
+		return nullptr;
+		
+	}catch( const deException &e ){
+		pAudioThread.GetLogger().LogException( e );
+		pMaxCount = pSlots.GetCount();
+		pAudioThread.GetLogger().LogInfoFormat( "Exception while creating effect."
+			" Assuming maximum effect slot count %d", pMaxCount );
+		return nullptr;
+	}
 }

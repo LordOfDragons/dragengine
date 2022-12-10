@@ -38,7 +38,7 @@ private:
 	deoalAudioThread &pAudioThread;
 	
 	decObjectList pSlots;
-	const int pMaxCount;
+	int pMaxCount;
 	
 public:
 	/** \name Constructors and Destructors */
