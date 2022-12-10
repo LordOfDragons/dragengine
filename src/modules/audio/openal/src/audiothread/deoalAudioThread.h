@@ -50,6 +50,7 @@ class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalSharedBufferList;
 class deoalSoundRayInteractionList;
+class deoalEffectSlotManager;
 class deoalSourceManager;
 class deoalSpeakerList;
 class deoalWOVCollectElements;
@@ -93,6 +94,7 @@ private:
 	
 	deoalExtensions *pExtensions;
 	deoalCapabilities *pCapabilities;
+	deoalEffectSlotManager *pEffectSlotManager;
 	deoalSourceManager *pSourceManager;
 	deoalSharedBufferList *pSharedBufferList;
 	
@@ -269,6 +271,9 @@ public:
 	
 	/** Capabilities. */
 	inline deoalCapabilities &GetCapabilities() const{ return *pCapabilities; }
+	
+	/** Effect slot manager. */
+	inline deoalEffectSlotManager &GetEffectSlotManager() const{ return *pEffectSlotManager; }
 	
 	/** Source manager. */
 	inline deoalSourceManager &GetSourceManager() const{ return *pSourceManager; }

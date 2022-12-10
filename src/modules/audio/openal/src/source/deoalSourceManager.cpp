@@ -136,7 +136,7 @@ void deoalSourceManager::UnbindSource( deoalSource *source ){
 	source->SetOwner( nullptr );
 	source->Stop();
 	source->ClearFilter();
-	source->ClearAllSendEffects();
+	source->DropEffectSlot();
 	pCountBound--;
 	pCountUnbound++;
 }

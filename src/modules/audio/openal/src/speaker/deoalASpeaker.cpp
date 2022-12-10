@@ -32,6 +32,7 @@
 #include "../audiothread/deoalATDebug.h"
 #include "../environment/deoalEnvironment.h"
 #include "../effect/deoalFilter.h"
+#include "../effect/deoalEffectSlot.h"
 #include "../extensions/deoalExtensions.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../sound/deoalDecodeBuffer.h"
@@ -505,6 +506,9 @@ void deoalASpeaker::UpdateEffects(){
 	// update gain by attenutation. extends openal attenuation system not supporting this.
 	// takes into account environment calculated parameters
 	pUpdateAttenuatedGain();
+	
+	// update source importance
+	pUpdateSourceImportance();
 	
 	// update environment effect
 	pUpdateEnvironmentEffect();
@@ -1378,18 +1382,19 @@ void deoalASpeaker::pCheckStillSourceOwner(){
 }
 
 void deoalASpeaker::pUpdateSourceImportance(){
-	if( pSound && pSound->GetStreaming() ){
-		pSource->SetImportance( 1.0f );
-		
-	}else if( pSynthesizer ){
-		pSource->SetImportance( 1.0f );
-		
-	}else if( pVideoPlayer ){
-		pSource->SetImportance( 1.0f );
+	float importance = 0.0f;
+	
+	if( pSound || pSynthesizer || pVideoPlayer ){
+		importance = 0.0f;
 		
 	}else{
-		pSource->SetImportance( 0.0f );
+		pSource->SetImportance( 1000.0f );
+		return;
 	}
+	
+	importance += decMath::clamp( pFinalGain, 0.0f, 1.0f );
+	
+	pSource->SetImportance( importance );
 }
 
 void deoalASpeaker::pUpdateAttenuatedGain(){
@@ -1628,7 +1633,12 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	
 	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max( pAttenuatedGain, 0.001f );
 	
-	const ALuint effect = pSource->GetSendEffect( 0 );
+	const deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
+	if( ! effectSlot ){
+		return;
+	}
+	
+	const ALuint effect = effectSlot->GetEffect();
 	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
@@ -1667,7 +1677,6 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// to be in place for the effect to work
 	// 
 	// see deoalSource::GetSendSlot()
-	pSource->AssignSendEffect( 0 );
 }
 
 

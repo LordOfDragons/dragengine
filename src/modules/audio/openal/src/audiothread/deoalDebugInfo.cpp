@@ -736,13 +736,15 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 					break;
 					
 				case 6:
-					low = env.GetBandPassGain() * env.GetBandPassGainLF()
-						+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
+					low = env.GetBandPassGain() * env.GetBandPassGainLF();
+					high = env.GetBandPassGain() * env.GetBandPassGainHF();
+					factor = speaker.GetFinalGain() * decMath::max( low, high );
+					
+					low = env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbReflectionGain()
 						+ env.GetReverbGain() * env.GetReverbGainLF() * env.GetReverbLateReverbGain();
-					high = env.GetBandPassGain() * env.GetBandPassGainHF()
-						+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
+					high = env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbReflectionGain()
 						+ env.GetReverbGain() * env.GetReverbGainHF() * env.GetReverbLateReverbGain();
-					factor = speaker.GetFinalGain() + decMath::max( low, high );
+					factor += decMath::max( low, high );
 					break;
 					
 				default:

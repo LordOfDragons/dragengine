@@ -37,6 +37,7 @@
 #include "../buffer/deoalSharedBufferList.h"
 #include "../capabilities/deoalCapabilities.h"
 #include "../component/deoalComponent.h"
+#include "../effect/deoalEffectSlotManager.h"
 #include "../environment/raytrace/deoalRayTraceResult.h"
 #include "../environment/raytrace/deoalRayTraceHitElementList.h"
 #include "../environment/raytrace/deoalSoundRayInteractionList.h"
@@ -98,35 +99,36 @@ pOal( oal ),
 
 pAsyncAudio( false ),
 
-pContext( NULL ),
+pContext( nullptr ),
 
 pLeakTracker( *this ),
 
-pDebugInfo( NULL ),
-pDebug( NULL ),
-pSpeakerList( NULL ),
-pLogger( NULL ),
-pDelayed( NULL ),
-pRayTracing( NULL ),
+pDebugInfo( nullptr ),
+pDebug( nullptr ),
+pSpeakerList( nullptr ),
+pLogger( nullptr ),
+pDelayed( nullptr ),
+pRayTracing( nullptr ),
 
-pCaches( NULL ),
-pDecodeBuffer( NULL ),
+pCaches( nullptr ),
+pDecodeBuffer( nullptr ),
 
-pExtensions( NULL ),
-pCapabilities( NULL ),
-pSourceManager( NULL ),
-pSharedBufferList( NULL ),
+pExtensions( nullptr ),
+pCapabilities( nullptr ),
+pEffectSlotManager( nullptr ),
+pSourceManager( nullptr ),
+pSharedBufferList( nullptr ),
 
-pRTParallelEnvProbe( NULL ),
-pRTResultDirect( NULL ),
-pRTHitElementList( NULL ),
-pSRInteractionList( NULL ),
-pWOVRayHitsElement( NULL ),
-pWOVCollectElements( NULL ),
+pRTParallelEnvProbe( nullptr ),
+pRTResultDirect( nullptr ),
+pRTHitElementList( nullptr ),
+pSRInteractionList( nullptr ),
+pWOVRayHitsElement( nullptr ),
+pWOVCollectElements( nullptr ),
 
-pActiveMicrophone( NULL ),
-pDeactiveMicrophone( NULL ),
-pActiveWorld( NULL ),
+pActiveMicrophone( nullptr ),
+pDeactiveMicrophone( nullptr ),
+pActiveWorld( nullptr ),
 
 pElapsed( 0.0f ),
 
@@ -244,7 +246,7 @@ void deoalAudioThread::CleanUp(){
 		pCleanUpThread();
 	}
 	
-	SetActiveMicrophone( NULL );
+	SetActiveMicrophone( nullptr );
 	
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->FreeReference();
@@ -665,6 +667,7 @@ void deoalAudioThread::pInitThreadPhase1(){
 	
 	// create working objects
 	pCaches = new deoalCaches( *this );
+	pEffectSlotManager = new deoalEffectSlotManager( *this );
 	pSourceManager = new deoalSourceManager( *this );
 	pSpeakerList = new deoalSpeakerList;
 	pDecodeBuffer = new deoalDecodeBuffer( ( 44100 / 10 ) * 4 );
@@ -690,7 +693,7 @@ void deoalAudioThread::pCleanUpThread(){
 	
 	pLogger->Synchronize();
 	
-	SetActiveMicrophone( NULL );
+	SetActiveMicrophone( nullptr );
 	
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->FreeReference();
@@ -737,6 +740,9 @@ void deoalAudioThread::pCleanUpThread(){
 	
 	if( pSourceManager ){
 		delete pSourceManager;
+	}
+	if( pEffectSlotManager ){
+		delete pEffectSlotManager;
 	}
 	
 	if( pSharedBufferList ){

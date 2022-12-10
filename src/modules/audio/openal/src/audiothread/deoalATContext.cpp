@@ -95,9 +95,9 @@ void deoalATContext::CreateContext(){
 	if( extensions.GetHasEFX() ){
 		attributes[ index++ ] = ALC_MAX_AUXILIARY_SENDS;
 		attributes[ index++ ] = 64;
-			// NOTE a send can have both an effect and a filter. to do environment simulation
-			//      it is enough to have a reverb effect and a low-pass filter. thus 1 send
-			//      is enough to simulate 1 indirect sound path
+			// a send can have both an effect and a filter. to do environment simulation
+			// it is enough to have a reverb effect and a low-pass filter. thus 1 send
+			// is enough to simulate 1 indirect sound path
 	}
 	
 	if( extensions.GetHasHRTF() ){
