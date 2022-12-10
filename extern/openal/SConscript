@@ -13,12 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-# 
-# the following versions are bugged and cause SIGKILL when used:
-# - 1.22.0
-# - 1.22.1
-# - 1.22.2
-oalversion = '1.21.1'
+oalversion = '1.22.2'
 
 if envLibrary['platform_android'] != 'no' and False:
 	srcdir = 'android-libopenalsoft-1.0.0'
