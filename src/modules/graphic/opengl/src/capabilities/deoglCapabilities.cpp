@@ -169,8 +169,8 @@ void deoglCapabilities::DetectCapabilities(){
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 			if( pglGetInteger64v ){
 				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
-				if( resultsInt64[ 0 ] > 0xfffffffc ){
-					resultsInt64[ 0 ] = 0xfffffffc;
+				if( resultsInt64[ 0 ] > 0x7fffffff ){
+					resultsInt64[ 0 ] = 0x7fffffff; // max 2GB is enough and does not overflow int32
 				}
 				pSSBOMaxSize = ( int )resultsInt64[ 0 ];
 				
