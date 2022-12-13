@@ -208,9 +208,22 @@ const deoglRenderPlanMasked *renderPlanMask ){
 		skinStateRenderable.Clear();
 		
 		const int hostIndex = skinStateRenderable.GetHostRenderable();
-		
 		if( hostIndex != -1 && dynamicSkin ){
 			dynamicSkin->GetRenderableAt( hostIndex )->PrepareForRender( renderPlanMask );
+		}
+	}
+}
+
+void deoglSkinState::RenderRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+const deoglRenderPlanMasked *renderPlanMask ){
+	int i;
+	for( i=0; i<pRenderableCount; i++ ){
+		deoglSkinStateRenderable &skinStateRenderable = *pRenderables[ i ];
+		skinStateRenderable.Clear();
+		
+		const int hostIndex = skinStateRenderable.GetHostRenderable();
+		if( hostIndex != -1 && dynamicSkin ){
+			dynamicSkin->GetRenderableAt( hostIndex )->Render( renderPlanMask );
 		}
 	}
 }

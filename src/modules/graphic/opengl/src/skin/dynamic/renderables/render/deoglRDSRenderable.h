@@ -35,7 +35,7 @@ class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render dynamic skin renderable.
+ * Render dynamic skin renderable.
  */
 class deoglRDSRenderable : public deObject{
 private:
@@ -45,10 +45,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin renderable. */
+	/** Create render dynamic skin renderable. */
 	deoglRDSRenderable( deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Clean up render dynamic skin renderable. */
+	/** Clean up render dynamic skin renderable. */
 	virtual ~deoglRDSRenderable();
 	/*@}*/
 	
@@ -56,44 +56,47 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Dynamic skin. */
+	/** Dynamic skin. */
 	inline deoglRDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ) = 0;
 	
+	/** Render if required. */
+	virtual void Render( const deoglRenderPlanMasked *renderPlanMask );
+	
 	/**
-	 * \brief Get value if support or default value.
+	 * Get value if support or default value.
 	 * \details Default implementation returns default value.
 	 */
 	virtual float GetRenderValue( float defaultValue );
 	
 	/**
-	 * \brief Get color if support or default color.
+	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
 	virtual decColor GetRenderColor( const decColor &defaultColor );
 	
 	/**
-	 * \brief Get texture to use for rendering or \em NULL if not applicable.
+	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglTexture *GetRenderTexture();
 	
 	/**
-	 * \brief Get cubemap to use for rendering or \em NULL if not applicable.
+	 * Get cubemap to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglCubeMap *GetRenderCubeMap();
 	
 	/**
-	 * \brief Get render plan to use for rendering or \em NULL if not applicable.
+	 * Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglRenderPlan *GetRenderPlan() const;

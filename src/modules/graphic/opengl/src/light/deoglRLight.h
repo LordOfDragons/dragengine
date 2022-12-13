@@ -132,6 +132,7 @@ public:
 	deoglSkinState *pSkinState;
 	deoglSkinTexture *pUseSkinTexture;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	bool pDirtyPrepareLightCanvas;
 	
@@ -372,6 +373,7 @@ public:
 	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
@@ -514,6 +516,9 @@ public:
 	
 	/** Prepare for rendering. */
 	void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Prepare for rendering render. */
+	void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	
 	

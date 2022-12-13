@@ -68,6 +68,9 @@ public:
 	/** Prepare for render. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
+	/** Render. */
+	virtual void Render( const deoglRenderPlanMasked *renderPlanMask );
+	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.

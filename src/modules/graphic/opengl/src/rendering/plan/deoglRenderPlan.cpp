@@ -423,8 +423,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// NOTE these calls indirectly access projection matrix. this requires per-eye updating
 	const int componentCount = pCollideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
-		deoglRComponent &oglComponent = *pCollideList.GetComponentAt( i )->GetComponent();
-		oglComponent.AddSkinStateRenderPlans( *this );
+		pCollideList.GetComponentAt( i )->GetComponent()->AddSkinStateRenderPlans( *this );
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();

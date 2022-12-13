@@ -938,6 +938,19 @@ void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanM
 	pUpdateIsRendered();
 }
 
+void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	if( pDynamicSkin ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
+		
+	}else{
+		pSkinState->RenderRenderables( pSkin, pComponent.GetDynamicSkin(), renderPlanMask );
+	}
+}
+
 void deoglRComponentTexture::UpdateRenderableMapping(){
 	if( ! pSkinState ){
 		return;

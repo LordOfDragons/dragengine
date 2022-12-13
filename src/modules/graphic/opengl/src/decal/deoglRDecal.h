@@ -75,6 +75,7 @@ public:
 	deoglSkinState *pUseSkinState;
 	
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	deoglSharedVBOBlock *pVBOBlock;
 	int pPointCount;
@@ -286,6 +287,9 @@ public:
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
+	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
 	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
 	
@@ -344,6 +348,7 @@ private:
 	void pPrepareTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void pUpdateRTSInstance();
 	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
 		int element, deoglSkinShader &skinShader );

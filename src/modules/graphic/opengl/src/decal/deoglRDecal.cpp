@@ -113,6 +113,7 @@ pListenerIndex( 0 )
 	pUseSkinState = NULL;
 	
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 	
 	pVBOBlock = NULL;
@@ -341,6 +342,7 @@ void deoglRDecal::UpdateSkinState(){
 
 void deoglRDecal::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pDirtyUseTexture = true;
 	
 	pRequiresPrepareForRender();
@@ -443,6 +445,10 @@ void deoglRDecal::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMaske
 	pPrepareParamBlocks();
 	pPrepareTUCs();
 	pPrepareSkinStateRenderables( mask );
+}
+
+void deoglRDecal::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	pRenderSkinStateRenderables( mask );
 }
 
 void deoglRDecal::PrepareQuickDispose(){
@@ -951,11 +957,22 @@ void deoglRDecal::pPrepareSkinStateRenderables( const deoglRenderPlanMasked *ren
 	if( ! pDirtyPrepareSkinStateRenderables ){
 		return;
 	}
-	
 	pDirtyPrepareSkinStateRenderables = false;
+	pDirtyRenderSkinStateRenderables = true;
 	
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRDecal::pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( ! pDirtyRenderSkinStateRenderables ){
+		return;
+	}
+	pDirtyRenderSkinStateRenderables = false;
+	
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 

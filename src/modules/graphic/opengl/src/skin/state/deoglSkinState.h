@@ -139,6 +139,10 @@ public:
 	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
 		const deoglRenderPlanMasked *renderPlanMask );
 	
+	/** Render renderables if required. */
+	void RenderRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+		const deoglRenderPlanMasked *renderPlanMask );
+	
 	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	

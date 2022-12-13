@@ -34,7 +34,7 @@ class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render canvas.
+ * Render canvas.
  */
 class deoglRCanvas : public deObject{
 private:
@@ -56,10 +56,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvas( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvas();
 	/*@}*/
 	
@@ -67,81 +67,84 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decVector2 &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decVector2 &position );
 	
-	/** \brief Size. */
+	/** Size. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
-	/** \brief Set size. */
+	/** Set size. */
 	virtual void SetSize( const decVector2 &size );
 	
-	/** \brief Transformation matrix. */
+	/** Transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set transformation matrix. */
+	/** Set transformation matrix. */
 	void SetTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Color transformation matrix. */
+	/** Color transformation matrix. */
 	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
-	/** \brief Set color transformation matrix. */
+	/** Set color transformation matrix. */
 	void SetColorTransform( const decColorMatrix &transform );
 	
-	/** \brief Order used for sorting. */
+	/** Order used for sorting. */
 	inline float GetOrder() const{ return pOrder; }
 	
-	/** \brief Set order. */
+	/** Set order. */
 	void SetOrder( float order );
 	
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency. */
+	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** \brief OpenGL source blend mode. */
+	/** OpenGL source blend mode. */
 	inline GLenum GetBlendSrc() const{ return pBlendSrc; }
 	
-	/** \brief Set OpenGL source blend mode. */
+	/** Set OpenGL source blend mode. */
 	void SetBlendSrc( GLenum blendSrc );
 	
-	/** \brief OpenGL destination blend mode. */
+	/** OpenGL destination blend mode. */
 	inline GLenum GetBlendDest() const{ return pBlendDest; }
 	
-	/** \brief Set OpenGL destination blend mode. */
+	/** Set OpenGL destination blend mode. */
 	void SetBlendDest( GLenum blendDest );
 	
-	/** \brief Mask. */
+	/** Mask. */
 	inline deoglRCanvas *GetMask() const{ return pMask; }
 	
-	/** \brief Set mask. */
+	/** Set mask. */
 	void SetMask( deoglRCanvas *mask );
 	
-	/** \brief Visible. */
+	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set visible. */
+	/** Set visible. */
 	void SetVisible( bool visible );
 	
-	/** \brief Mask render target or \em NULL if not ready. */
+	/** Mask render target or \em NULL if not ready. */
 	inline deoglRenderTarget *GetMaskRenderTarget() const{ return pMaskRenderTarget; }
 	
-	/** \brief Dirty mask render target if present. */
+	/** Dirty mask render target if present. */
 	void DirtyMaskRenderTarget();
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Render. */
+	/** Prepare for rendering render. */
+	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context ) = 0;
 	/*@}*/
 };

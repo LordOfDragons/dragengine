@@ -118,6 +118,7 @@ pDynamicSkin( NULL ),
 pSkinState( NULL ),
 pUseSkinTexture( NULL ),
 pDirtyPrepareSkinStateRenderables( true ),
+pDirtyRenderSkinStateRenderables( true ),
 pDirtyPrepareLightCanvas( true ),
 
 pWorldMarkedRemove( false ),
@@ -419,12 +420,19 @@ void deoglRLight::UpdateSkinStateCalculatedProperties(){
 
 void deoglRLight::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 }
 
 void deoglRLight::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRLight::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
@@ -646,6 +654,7 @@ void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask 
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( renderPlanMask );
 		pDirtyPrepareSkinStateRenderables = false;
+		pDirtyRenderSkinStateRenderables = true;
 	}
 	
 	pCheckTouching();
@@ -663,6 +672,13 @@ void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask 
 	// force update next frame if required
 	if( pShadowCaster->RequiresUpdate() ){
 		pRequiresPrepareForRender();
+	}
+}
+
+void deoglRLight::PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pDirtyRenderSkinStateRenderables ){
+		RenderSkinStateRenderables( renderPlanMask );
+		pDirtyRenderSkinStateRenderables = false;
 	}
 }
 

@@ -329,6 +329,9 @@ public:
 	/** Prepare skin state renderables if dirty. */
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	
+	/** Render skin state renderables if dirty. */
+	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	
 	void UpdateRenderableMapping();
 	/*@}*/
 	

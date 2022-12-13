@@ -80,6 +80,9 @@ public:
 	/** \brief Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
+	/** Prepare for rendering render. */
+	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	
 	/** \brief Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/

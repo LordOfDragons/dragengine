@@ -131,6 +131,7 @@ pSkinRendered( renderThread, *this ),
 pDirtyTextureTUCs( true ),
 pDirtyTextureParamBlocks( true ),
 pDirtyDecals( true ),
+pDirtyDecalsRenderRenderables( true ),
 
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
@@ -149,6 +150,7 @@ pLLPrepareForRenderWorld( this )
 	
 	pSkinState = NULL;
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	
 	pFirstRender = true;
 	pRenderStatic = true;
@@ -573,6 +575,7 @@ void deoglRComponent::UpdateSkinStateCalculatedProperties(){
 
 void deoglRComponent::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1164,6 +1167,11 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 // 	if(pModel) printf("RComponent.PrepareForRender %s %dys\n", pModel->GetFilename().GetString(), (int)(timer.GetElapsedTime()*1e6f));
 }
 
+void deoglRComponent::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	pRenderSkinStateRenderables( mask );
+	pPrepareDecalsRenderRenderables( plan, mask );
+}
+
 
 
 void deoglRComponent::PrepareQuickDispose(){
@@ -1447,6 +1455,7 @@ void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
 
 void deoglRComponent::DecalRequiresPrepareForRender(){
 	pDirtyDecals = true;
+	pDirtyDecalsRenderRenderables = true;
 	pRequiresPrepareForRender();
 }
 
@@ -2063,6 +2072,7 @@ void deoglRComponent::pPrepareSkinStateRenderables( const deoglRenderPlanMasked 
 		return;
 	}
 	pDirtyPrepareSkinStateRenderables = false;
+	pDirtyRenderSkinStateRenderables = true;
 	
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, plan );
@@ -2072,6 +2082,23 @@ void deoglRComponent::pPrepareSkinStateRenderables( const deoglRenderPlanMasked 
 	int i;
 	for( i=0; i<textureCount; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables( plan );
+	}
+}
+
+void deoglRComponent::pRenderSkinStateRenderables( const deoglRenderPlanMasked *plan ){
+	if( ! pDirtyRenderSkinStateRenderables ){
+		return;
+	}
+	pDirtyRenderSkinStateRenderables = false;
+	
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, plan );
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->RenderSkinStateRenderables( plan );
 	}
 }
 
@@ -2174,11 +2201,25 @@ void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPl
 		return;
 	}
 	pDirtyDecals = false;
+	pDirtyDecalsRenderRenderables = true;
 	
 	const int count = pDecals.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan, mask );
+	}
+}
+
+void deoglRComponent::pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( ! pDirtyDecalsRenderRenderables ){
+		return;
+	}
+	pDirtyDecalsRenderRenderables = false;
+	
+	const int count = pDecals.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRenderRender( plan, mask );
 	}
 }
 

@@ -137,6 +137,7 @@ public:
 	deoglSkinState *pSkinState;
 	deoglSkinRendered pSkinRendered;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	decObjectList pTextures;
 	bool pDirtyTextureTUCs;
@@ -144,6 +145,7 @@ public:
 	
 	decObjectList pDecals;
 	bool pDirtyDecals;
+	bool pDirtyDecalsRenderRenderables;
 	
 	decDMatrix pMatrix;
 	decDMatrix pInverseMatrix;
@@ -495,6 +497,9 @@ public:
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
+	/** Prepare for render render. Called by deoglRWorld if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
 	/*@}*/
@@ -720,10 +725,12 @@ private:
 	void pPrepareLODRenderTaskConfigs();
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
+	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
 	void pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	void pPrepareOccMeshVBO();
 	void pPrepareOccMeshRTSInstances();
 	void pPrepareDynOccMesh();

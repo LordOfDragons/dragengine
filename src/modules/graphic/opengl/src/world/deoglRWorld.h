@@ -106,6 +106,11 @@ private:
 	decPointerLinkedList pListPrepareForRenderLights;
 	decPointerLinkedList pListPrepareForRenderPropFields;
 	
+	decPointerList pListPrepareRenderComponents;
+	decPointerList pListPrepareRenderBillboards;
+	decPointerList pListPrepareRenderLights;
+	decPointerList pListPrepareRenderPropFields;
+	
 	
 	
 public:
@@ -188,6 +193,11 @@ public:
 	
 	/** Prepare for rendering. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for rendering render. */
+protected:
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+public:
 	
 	void AddPrepareForRenderComponent( deoglRComponent *component );
 	void RemovePrepareForRenderComponent( deoglRComponent *component );

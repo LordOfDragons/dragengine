@@ -94,6 +94,7 @@ pSkyShadowSplitMask( 0 ),
 pSortDistance( 0.0f ),
 pOccluded( false ),
 pDirtyPrepareSkinStateRenderables( true ),
+pDirtyRenderSkinStateRenderables( true ),
 
 pRenderEnvMap( NULL ),
 pRenderEnvMapFade( NULL ),
@@ -301,6 +302,7 @@ void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
 
 void deoglRBillboard::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 }
 
@@ -326,6 +328,12 @@ void deoglRBillboard::DynamicSkinRenderablesChanged(){
 void deoglRBillboard::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRBillboard::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
@@ -824,10 +832,18 @@ void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanM
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( mask );
 		pDirtyPrepareSkinStateRenderables = false;
+		pDirtyRenderSkinStateRenderables = true;
 	}
 	
 	pPrepareTUCs();
 	pPrepareParamBlocks();
+}
+
+void deoglRBillboard::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( pDirtyRenderSkinStateRenderables ){
+		RenderSkinStateRenderables( mask );
+		pDirtyRenderSkinStateRenderables = false;
+	}
 }
 
 void deoglRBillboard::PrepareQuickDispose(){

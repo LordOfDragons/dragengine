@@ -81,6 +81,7 @@ public:
 	float pSortDistance;
 	bool pOccluded;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	deoglEnvironmentMap *pRenderEnvMap;
 	deoglEnvironmentMap *pRenderEnvMapFade;
@@ -191,6 +192,7 @@ public:
 	
 	void DirtyPrepareSkinStateRenderables();
 	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
 	
@@ -470,6 +472,9 @@ public:
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for render render. Called by deoglRWorld if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();

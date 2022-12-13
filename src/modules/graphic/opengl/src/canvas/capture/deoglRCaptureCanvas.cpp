@@ -183,6 +183,7 @@ void deoglRCaptureCanvas::CapturePending(){
 	
 	if( pCanvasView ){
 		pCanvasView->PrepareRenderTarget( nullptr, pComponentCount, pBitCount );
+		pCanvasView->RenderRenderTarget( nullptr );
 			// TODO capturing can be a problem. if a render world view is contained and it is
 			//      not rendered yet it will be rendered. doing so using NULL as mask causes
 			//      a full blown rendering as if the camera is used in a render window.
