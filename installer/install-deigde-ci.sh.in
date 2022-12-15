@@ -42,9 +42,9 @@ function unpack_payload()
 {
 	echo ">>> Copy files..."
 	
-	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
+	match=$(grep --text --line-number '^PAYLOAD:$' "$0" | cut -d ':' -f 1)
 	payload_start=$((match + 1))
-	tail -n +$payload_start $0 | tar -C "$1" -xjf -
+	tail -n +$payload_start "$0" | tar -C "$1" -xjf -
 }
 
 function uninstall_files()
