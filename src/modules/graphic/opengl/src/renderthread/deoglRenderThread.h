@@ -356,7 +356,7 @@ public:
 	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
 	
 	/** Vulkan device if present. */
-	inline devkDevice *GetVulkanDevice() const{ return pVulkanDevice; }
+	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }
 	
 	
 	

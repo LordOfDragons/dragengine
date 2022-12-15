@@ -293,18 +293,27 @@ devkPipeline( device, configuration )
 	memset( &dynamicStateInfo, 0, sizeof( dynamicStateInfo ) );
 	
 	dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	VkDynamicState dynamicStates[] = {
-		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_SCISSOR,
-		VK_DYNAMIC_STATE_DEPTH_BIAS,
-// 		VK_DYNAMIC_STATE_BLEND_CONSTANTS,
-// 		VK_DYNAMIC_STATE_DEPTH_BOUNDS,
-		VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
-		VK_DYNAMIC_STATE_STENCIL_WRITE_MASK,
-		VK_DYNAMIC_STATE_STENCIL_REFERENCE
-	};
+	VkDynamicState dynamicStates[ 8 ];
+	int countDynamicStates = 0;
 	
-	dynamicStateInfo.dynamicStateCount = 6;
+	if( configuration.GetDynamicViewport() ){
+		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_VIEWPORT;
+	}
+	if( configuration.GetDynamicScissor() ){
+		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_SCISSOR;
+	}
+	if( configuration.GetDynamicDepthBias() ){
+		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_DEPTH_BIAS;
+	}
+	if( configuration.GetDynamicStencil() ){
+		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK;
+		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_STENCIL_WRITE_MASK;
+		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_STENCIL_REFERENCE;
+	}
+	// VK_DYNAMIC_STATE_BLEND_CONSTANTS
+	// VK_DYNAMIC_STATE_DEPTH_BOUNDS
+	
+	dynamicStateInfo.dynamicStateCount = countDynamicStates;
 	dynamicStateInfo.pDynamicStates = dynamicStates;
 	
 	pipelineInfo.pDynamicState = &dynamicStateInfo;

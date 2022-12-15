@@ -1027,14 +1027,13 @@ void deoglRenderThread::pInitThreadPhase4(){
 	// load vulkan and create device if supported
 	try{
 		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
-		#ifdef DO_VULKAN_TEST
 		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic( 0 );
-		#else
-		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
-		#endif
+		// pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
 		
 	}catch( const deException &e ){
 		pLogger->LogException( e );
+		pVulkanDevice = nullptr;
+		pVulkan = nullptr;
 	}
 	
 #ifdef DO_VULKAN_TEST
