@@ -44,12 +44,12 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	deoglShaderProgramUsage pShaderCanvasColor;
-	deoglShaderProgramUsage pShaderCanvasColorMask;
-	deoglShaderProgramUsage pShaderCanvasImage;
-	deoglShaderProgramUsage pShaderCanvasImageMask;
-	deoglShaderProgramUsage pShaderCanvasRenderWorld;
-	deoglShaderProgramUsage pShaderCanvasRenderWorldMask;
+	deoglPipeline::Ref pPipelineCanvasColor;
+	deoglPipeline::Ref pPipelineCanvasColorMask;
+	deoglPipeline::Ref pPipelineCanvasImage;
+	deoglPipeline::Ref pPipelineCanvasImageMask;
+	deoglPipeline::Ref pPipelineCanvasRenderWorld;
+	deoglPipeline::Ref pPipelineCanvasRenderWorldMask;
 	
 	GLenum pBlendSrc;
 	GLenum pBlendDest;

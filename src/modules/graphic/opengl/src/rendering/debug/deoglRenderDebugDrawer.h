@@ -23,7 +23,6 @@
 #define _DEOGLRENDERDEBUGDRAWER_H_
 
 #include "../deoglRenderBase.h"
-#include "../../pipeline/deoglPipeline.h"
 
 class deoglRenderPlan;
 class deoglRDebugDrawer;
