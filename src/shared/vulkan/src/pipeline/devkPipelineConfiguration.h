@@ -114,8 +114,6 @@ private:
 	int pAttributeCount;
 	VkVertexInputAttributeDescription *pAttributes;
 	
-	bool pDynamicViewport;
-	bool pDynamicScissor;
 	bool pDynamicDepthBias;
 	bool pDynamicStencil;
 	
@@ -364,18 +362,6 @@ public:
 	inline const VkVertexInputAttributeDescription *GetAttributes() const{ return pAttributes; }
 	
 	
-	
-	/** Dynamic viewport. */
-	inline bool GetDynamicViewport() const{ return pDynamicViewport; }
-	
-	/** Set dynamic viewport. */
-	void SetDynamicViewport( bool dynamic );
-	
-	/** Dynamic scissor. */
-	inline bool GetDynamicScissor() const{ return pDynamicScissor; }
-	
-	/** Set dynamic scissor. */
-	void SetDynamicScissor( bool dynamic );
 	
 	/** Dynamic depth bias. */
 	inline bool GetDynamicDepthBias() const{ return pDynamicDepthBias; }

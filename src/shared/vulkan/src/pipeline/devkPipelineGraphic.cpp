@@ -38,12 +38,8 @@
 devkPipelineGraphic::devkPipelineGraphic( devkDevice &device, const devkPipelineConfiguration &configuration ) :
 devkPipeline( device, configuration )
 {
-	if( ! configuration.GetRenderPass() ){
-		DETHROW_INFO( deeNullPointer, "configuration.renderPass" );
-	}
-	if( ! configuration.GetShaderVertex() && ! configuration.GetShaderFragment() ){
-		DETHROW_INFO( deeNullPointer, "configuration.shaderVertex and configuration.shaderFragment" );
-	}
+	DEASSERT_NOTNULL( configuration.GetRenderPass() )
+	DEASSERT_TRUE( configuration.GetShaderVertex() || configuration.GetShaderFragment() )
 	
 	const devkSpecialization * const specialization = configuration.GetSpecialization();
 	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
@@ -296,12 +292,8 @@ devkPipeline( device, configuration )
 	VkDynamicState dynamicStates[ 8 ];
 	int countDynamicStates = 0;
 	
-	if( configuration.GetDynamicViewport() ){
-		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_VIEWPORT;
-	}
-	if( configuration.GetDynamicScissor() ){
-		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_SCISSOR;
-	}
+	dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_VIEWPORT;
+	dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_SCISSOR;
 	if( configuration.GetDynamicDepthBias() ){
 		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_DEPTH_BIAS;
 	}

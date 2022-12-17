@@ -37,7 +37,7 @@
 ////////////////////////////
 
 deoglShaderProgramUsage::deoglShaderProgramUsage() :
-pProgram( NULL ){
+pProgram( nullptr ){
 }
 
 deoglShaderProgramUsage::deoglShaderProgramUsage( deoglShaderProgram *program ) :
@@ -74,24 +74,20 @@ deoglShaderProgramUsage deoglShaderProgramUsage::New( deoglShaderProgram *progra
 ///////////////
 
 bool deoglShaderProgramUsage::operator!() const{
-	return pProgram == NULL;
+	return pProgram == nullptr;
 }
 
 deoglShaderProgramUsage::operator bool() const{
-	return pProgram != NULL;
+	return pProgram != nullptr;
 }
 
 deoglShaderProgramUsage::operator deoglShaderProgram &() const{
-	if( ! pProgram ){
-		DETHROW( deeNullPointer );
-	}
+	DEASSERT_NOTNULL( pProgram )
 	return *pProgram;
 }
 
 deoglShaderProgram *deoglShaderProgramUsage::operator->() const{
-	if( ! pProgram ){
-		DETHROW( deeNullPointer );
-	}
+	DEASSERT_NOTNULL( pProgram )
 	return pProgram;
 }
 

@@ -57,6 +57,7 @@
 #include "../occlusiontest/deoglOcclusionTestPool.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
+#include "../pipeline/deoglPipelineManager.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
@@ -101,33 +102,33 @@ pVRCamera( nullptr ),
 
 pLeakTracker( *this ),
 
-pCanvasInputOverlay( NULL ),
-pCanvasDebugOverlay( NULL ),
+pCanvasInputOverlay( nullptr ),
+pCanvasDebugOverlay( nullptr ),
 
-pBufferObject( NULL ),
-pContext( NULL ),
-pDebug( NULL ),
-pDefaultTextures( NULL ),
-pFramebuffer( NULL ),
-pLogger( NULL ),
-pRenderers( NULL ),
-pShader( NULL ),
-pTexture( NULL ),
+pBufferObject( nullptr ),
+pContext( nullptr ),
+pDebug( nullptr ),
+pDefaultTextures( nullptr ),
+pFramebuffer( nullptr ),
+pLogger( nullptr ),
+pRenderers( nullptr ),
+pShader( nullptr ),
+pTexture( nullptr ),
 
-pCapabilities( NULL ),
-pDeferredRendering( NULL ),
-pDelayedOperations( NULL ),
-pEnvMapSlotManager( NULL ),
-pExtensions( NULL ),
-pLightBoundarybox( NULL ),
-pOccQueryMgr( NULL ),
-pGI( NULL ),
-pShadowMapper( NULL ),
-pTriangleSorter( NULL ),
-pPersistentRenderTaskPool( NULL ),
-pRenderTaskSharedPool( NULL ),
-pUniqueKey( NULL ),
-pOcclusionTestPool( NULL ),
+pCapabilities( nullptr ),
+pDeferredRendering( nullptr ),
+pDelayedOperations( nullptr ),
+pEnvMapSlotManager( nullptr ),
+pExtensions( nullptr ),
+pLightBoundarybox( nullptr ),
+pOccQueryMgr( nullptr ),
+pGI( nullptr ),
+pShadowMapper( nullptr ),
+pTriangleSorter( nullptr ),
+pPersistentRenderTaskPool( nullptr ),
+pRenderTaskSharedPool( nullptr ),
+pUniqueKey( nullptr ),
+pOcclusionTestPool( nullptr ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -149,13 +150,13 @@ pDebugTimeThreadRenderCapture( 0.0f ),
 pDebugCountThreadWindows( 0 ),
 
 // deprecated
-pQuickSorter( NULL ),
-pPreloader( NULL ),
-pEdgeFinder( NULL ),
-pOptimizerManager( NULL ),
+pQuickSorter( nullptr ),
+pPreloader( nullptr ),
+pEdgeFinder( nullptr ),
+pOptimizerManager( nullptr ),
 
 // thread control parameters
-pInitialRenderWindow( NULL ), // temporary variable for thread initialization
+pInitialRenderWindow( nullptr ), // temporary variable for thread initialization
 pThreadState( etsStopped ),
 pThreadFailure( false ),
 pBarrierSyncIn( 2 ),
@@ -940,6 +941,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pFramebuffer = new deoglRTFramebuffer( *this );
 	pShader = new deoglRTShader( *this );
 	pDelayedOperations = new deoglDelayedOperations( *this );
+	pPipelineManager.TakeOver( new deoglPipelineManager( *this ) );
 	
 	pInitCapabilities();
 	
@@ -1674,7 +1676,7 @@ bool deoglRenderThread::DoesDebugMemoryUsage() const{
 	if( ! pTexture ) return false;
 	if( ! pDeferredRendering ) return false;
 	
-	return pOgl.GetGameEngine()->GetCacheAppID() == "zoids";
+	return pOgl.GetGameEngine()->GetCacheAppID() == "testing";
 }
 
 void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
@@ -2444,6 +2446,7 @@ void deoglRenderThread::pCleanUpThread(){
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
+		pPipelineManager = nullptr;
 		if( pTexture ){
 			delete pTexture;
 			pTexture = NULL;

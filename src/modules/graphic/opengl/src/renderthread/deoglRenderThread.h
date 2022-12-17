@@ -27,6 +27,7 @@
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
+#include "../pipeline/deoglPipelineManager.h"
 
 #include <deSharedVulkan.h>
 #include <devkDevice.h>
@@ -125,6 +126,7 @@ private:
 	deoglRTRenderers *pRenderers;
 	deoglRTShader *pShader;
 	deoglRTTexture *pTexture;
+	deoglPipelineManager::Ref pPipelineManager;
 	
 	deoglCapabilities *pCapabilities;
 	deoglDeferredRendering *pDeferredRendering;
@@ -302,6 +304,9 @@ public:
 	
 	/** Texture related. */
 	inline deoglRTTexture &GetTexture() const{ return *pTexture; }
+	
+	/** Pipeline manager. */
+	inline deoglPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
 	
 	
 	

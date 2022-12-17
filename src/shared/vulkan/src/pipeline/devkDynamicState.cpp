@@ -24,6 +24,8 @@
 
 #include "devkDynamicState.h"
 #include "devkPipeline.h"
+#include "../devkDevice.h"
+#include "../deSharedVulkan.h"
 #include "../queue/devkCommandBuffer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -49,25 +51,29 @@ devkDynamicState::~devkDynamicState(){
 // Management
 ///////////////
 
-void devkDynamicState::Apply( devkCommandBuffer &commandBuffer, const devkPipeline &pipeline ){
+void devkDynamicState::Apply( devkCommandBuffer &commandBuffer, const devkPipeline &pipeline ) const{
 	const devkPipelineConfiguration &config = pipeline.GetConfiguration();
-	
-	if( config.GetDynamicViewport() ){
-		// VK_DYNAMIC_STATE_VIEWPORT;
-	}
-	
-	if( config.GetDynamicScissor() ){
-		// VK_DYNAMIC_STATE_SCISSOR;
-	}
+	devkDevice &device = pipeline.GetDevice();
 	
 	if( config.GetDynamicDepthBias() ){
-		// VK_DYNAMIC_STATE_DEPTH_BIAS;
+		device.vkCmdSetDepthBias( commandBuffer.GetBuffer(),
+			depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
 	}
 	
 	if( config.GetDynamicStencil() ){
-		// VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK;
-		// VK_DYNAMIC_STATE_STENCIL_WRITE_MASK;
-		// VK_DYNAMIC_STATE_STENCIL_REFERENCE;
+		#define SET_FRONT_BACK(func,front,back) \
+			if( front == back ){ \
+				device.func( commandBuffer.GetBuffer(), VK_STENCIL_FACE_FRONT_AND_BACK, front ); \
+			}else{ \
+				device.func( commandBuffer.GetBuffer(), VK_STENCIL_FACE_FRONT_BIT, front ); \
+				device.func( commandBuffer.GetBuffer(), VK_STENCIL_FACE_BACK_BIT, back ); \
+			}
+		
+		SET_FRONT_BACK( vkCmdSetStencilCompareMask, stencilFrontCompareMask, stencilBackCompareMask )
+		SET_FRONT_BACK( vkCmdSetStencilWriteMask, stencilFrontWriteMask, stencilBackWriteMask )
+		SET_FRONT_BACK( vkCmdSetStencilReference, stencilFrontReference, stencilBackWriteMask )
+		
+		#undef SET_FRONT_BACK
 	}
 }
 

@@ -77,10 +77,10 @@ void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
 	decString value;
 	
-	defines.SetDefine( "SHARED_SPB", "1" );
+	defines.SetDefines( "SHARED_SPB" );
 	
 	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.SetDefine( "SHARED_SPB_USE_SSBO", "1" );
+		defines.SetDefines( "SHARED_SPB_USE_SSBO" );
 		
 		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );

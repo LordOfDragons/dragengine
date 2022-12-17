@@ -54,14 +54,14 @@ public:
 	 * VkPipelineViewportStateCreateInfo will be ignored and must be set dynamically with
 	 * vkCmdSetViewport before any drawing commands.
 	 */
-	VkViewport viewport;
+	// VkViewport viewport => done by devkCommandBuffer::BeginRenderPass
 	
 	/**
 	 * VK_DYNAMIC_STATE_SCISSOR specifies that the pScissors state in
 	 * VkPipelineViewportStateCreateInfo will be ignored and must be set dynamically with
 	 * vkCmdSetScissor before any drawing commands.
 	 */
-	VkRect2D scissor;
+	// VkRect2D scissor => done by devkCommandBuffer::BeginRenderPass
 	
 	/**
 	 * VK_DYNAMIC_STATE_LINE_WIDTH specifies that the lineWidth state in
@@ -77,9 +77,9 @@ public:
 	 * and must be set dynamically with vkCmdSetDepthBias before any draws are performed with
 	 * depthBiasEnable in VkPipelineRasterizationStateCreateInfo set to VK_TRUE.
 	 */
-	// float depthBiasConstantFactor;
-	// float depthBiasClamp;
-	// float depthBiasSlopeFactor;
+	float depthBiasConstantFactor;
+	float depthBiasClamp;
+	float depthBiasSlopeFactor;
 	
 	/**
 	 * VK_DYNAMIC_STATE_BLEND_CONSTANTS specifies that the blendConstants state in
@@ -254,7 +254,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply dynamic state. */
-	void Apply( devkCommandBuffer &commandBuffer, const devkPipeline &pipeline );
+	void Apply( devkCommandBuffer &commandBuffer, const devkPipeline &pipeline ) const;
 	/*@}*/
 };
 

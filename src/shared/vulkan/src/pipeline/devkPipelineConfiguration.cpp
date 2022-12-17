@@ -61,8 +61,6 @@ pBindingCount( 0 ),
 pBindings( nullptr ),
 pAttributeCount( 0 ),
 pAttributes( nullptr ),
-pDynamicViewport( false ),
-pDynamicScissor( false ),
 pDynamicDepthBias( false ),
 pDynamicStencil( false )
 {
@@ -101,8 +99,6 @@ pBindingCount( 0 ),
 pBindings( nullptr ),
 pAttributeCount( 0 ),
 pAttributes( nullptr ),
-pDynamicViewport( false ),
-pDynamicScissor( false ),
 pDynamicDepthBias( false ),
 pDynamicStencil( false )
 {
@@ -440,14 +436,6 @@ eAttributeFormat format, int offset ){
 
 
 
-void devkPipelineConfiguration::SetDynamicViewport( bool dynamic ){
-	pDynamicViewport = dynamic;
-}
-
-void devkPipelineConfiguration::SetDynamicScissor( bool dynamic ){
-	pDynamicScissor = dynamic;
-}
-
 void devkPipelineConfiguration::SetDynamicDepthBias( bool dynamic ){
 	pDynamicDepthBias = dynamic;
 }
@@ -508,8 +496,6 @@ bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &con
 		&& pDepthFunction == configuration.pDepthFunction
 		&& pDepthTest == configuration.pDepthTest
 		&& pStencilTest == configuration.pStencilTest
-		&& pDynamicViewport == configuration.pDynamicViewport
-		&& pDynamicScissor == configuration.pDynamicScissor
 		&& pDynamicDepthBias == configuration.pDynamicDepthBias
 		&& pDynamicStencil == configuration.pDynamicStencil;
 }
@@ -545,8 +531,6 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pDepthFunction = configuration.pDepthFunction;
 	pDepthTest = configuration.pDepthTest;
 	pStencilTest = configuration.pStencilTest;
-	pDynamicViewport = configuration.pDynamicViewport;
-	pDynamicScissor = configuration.pDynamicScissor;
 	pDynamicDepthBias = configuration.pDynamicDepthBias;
 	pDynamicStencil = configuration.pDynamicStencil;
 	
