@@ -83,6 +83,15 @@ const deoglShaderProgram::Ref &deoglPipeline::GetGlShader() const{
 	return GetGlConfiguration().GetShader();
 }
 
+void deoglPipeline::Activate(){
+	if( pGlConfiguration ){
+		pGlConfiguration->Activate( pRenderThread );
+		
+	}else if( pVkPipeline ){
+		DETHROW_INFO( deeInvalidAction, "missing implementation" );
+	}
+}
+
 
 
 // Private Functions

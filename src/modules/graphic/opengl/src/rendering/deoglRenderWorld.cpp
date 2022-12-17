@@ -54,6 +54,7 @@
 #include "../gi/deoglGIState.h"
 #include "../gi/deoglGICascade.h"
 #include "../particle/deoglParticleSorter.h"
+#include "../pipeline/deoglPipelineConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -161,20 +162,23 @@ static decTimer dtimer;
 deoglRenderWorld::deoglRenderWorld( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
-pRenderPB( NULL ),
-pRenderXRayPB( NULL ),
-pRenderTask( NULL ),
-pAddToRenderTask( NULL ),
-pParticleSorter( NULL ),
-pRenderTaskParticles( NULL ),
-pAddToRenderTaskParticles( NULL ),
+pRenderPB( nullptr ),
+pRenderXRayPB( nullptr ),
+pRenderTask( nullptr ),
+pAddToRenderTask( nullptr ),
+pParticleSorter( nullptr ),
+pRenderTaskParticles( nullptr ),
+pAddToRenderTaskParticles( nullptr ),
 
 pDebugInfo( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const bool useFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
+	deoglPipelineConfiguration pipconf, pipconf2;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
@@ -190,40 +194,67 @@ pDebugInfo( renderThread )
 		pAddToRenderTaskParticles = new deoglAddToRenderTaskParticles( renderThread, pRenderTaskParticles );
 		
 		
-		defines = commonDefines;
+		
+		// finlize
+		pipconf.Reset();
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
+		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
-		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineFinalize = pipelineManager.GetWith( pipconf );
 		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		pipconf2 = pipconf;
+		pipconf2.EnableBlendBlend();
+		pPipelineFinalizeBlend = pipelineManager.GetWith( pipconf2 );
+		
+		// finalize stereo
+		defines.SetDefines( useFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! useFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineFinalizeStereo = pipelineManager.GetWith( pipconf );
 		
+		pipconf2 = pipconf;
+		pipconf2.EnableBlendBlend();
+		pPipelineFinalizeBlendStereo = pipelineManager.GetWith( pipconf2 );
+		
+		// finalize split
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen Finalize Split" );
 		defines.SetDefines( "NO_POSTRANSFORM", "SPLIT_LAYERS" );
-		pShaderFinalizeSplit = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, "DefRen Finalize Split", defines );
+		pPipelineFinalizeSplit = pipelineManager.GetWith( pipconf );
 		
 		
-		defines = commonDefines;
+		
+		// copy depth
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTestAlways();
+		pipconf.SetEnableScissorTest( true );
+		
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
+		defines = commonDefines;
 		if( ! defren.GetUseInverseDepth() ){
 			defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
 		}
-		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
 		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
-			defines.SetDefines( "GS_RENDER_STEREO" );
-		}
-		pShaderCopyDepthStereo = shaderManager.GetProgramWith( sources, defines );
+		// copy depth stereo
+		defines.SetDefines( useFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		
+		// black screen
+		pipconf.Reset();
+		pipconf.SetDepthMask( false );
+		pPipelineBlackScreen = pipelineManager.GetWith( pipconf );
+		
 		
 		
 		DevModeDebugInfoChanged();
@@ -279,18 +310,16 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderBlackScreen" );
+	const int viewportHeight = plan.GetViewportHeight();
+	const int viewportWidth = plan.GetViewportWidth();
 	
 	defren.InitPostProcessTarget();
 	defren.ActivatePostProcessFBO( true );
 	
-	const int viewportHeight = plan.GetViewportHeight();
-	const int viewportWidth = plan.GetViewportWidth();
+	pPipelineBlackScreen->Activate();
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
@@ -329,7 +358,7 @@ DEBUG_RESET_TIMER
 	const bool disableLights = plan.GetDisableLights();
 	
 	if( disableLights ){
-		renderers.GetGeometry().SetAmbient( decColor( 1.0, 1.0, 1.0 ) );
+		renderers.GetGeometry().SetAmbient( decColor( 1.0f, 1.0f, 1.0f ) );
 		
 	}else{
 		decColor ambient = world.GetAmbientLight();
@@ -611,28 +640,15 @@ DEBUG_RESET_TIMER
 		// tone mapping
 		if( disableLights || ! plan.GetUseToneMap() ){
 			const deoglDebugTraceGroup debugTraceToneMap( renderThread, "World.ToneMap" );
-			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-			OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-			
-			OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-			
-			OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-			
-			OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-			
-			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-			OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+			deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineFinalizeStereo : pPipelineFinalize;
+			pipeline.Activate();
 			
 			defren.ActivateFBOTemporary2( false );
 			tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 			
-			deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
-			renderThread.GetShader().ActivateShader( program );
-			shader = program->GetCompiled();
-			
 			pRenderPB->Activate();
 			
+			shader = pipeline.GetGlShader()->GetCompiled();
 			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 			shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 			shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
@@ -1145,19 +1161,12 @@ void deoglRenderWorld::RenderDebugDrawers( deoglRenderPlan &plan ){
 DBG_ENTER("RenderDebugDrawers")
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderDebugDrawers" );
-	deoglRenderDebugDrawer &rendd = GetRenderThread().GetRenderers().GetDebugDrawer();
 	
 	// attach diffuse texture as this is the output from the tone map pass
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	defren.ActivatePostProcessFBO( false );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	rendd.RenderDebugDrawers( plan );
+	GetRenderThread().GetRenderers().GetDebugDrawer().RenderDebugDrawers( plan );
 DBG_EXIT("RenderDebugDrawers")
 }
 
@@ -1232,6 +1241,10 @@ DBG_ENTER("RenderFinalizeFBO")
 	const int upscaleWidth = plan.GetUpscaleWidth();
 	const int upscaleHeight = plan.GetUpscaleHeight();
 	
+	deoglPipeline &pipeline = plan.GetRenderVR() == deoglRenderPlan::ervrStereo
+		? pPipelineFinalizeSplit : ( plan.GetRenderStereo() ? pPipelineFinalizeStereo : pPipelineFinalize );
+	pipeline.Activate();
+	
 	renderThread.GetFramebuffer().Activate( plan.GetFBOTarget() );
 	
 	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
@@ -1240,27 +1253,13 @@ DBG_ENTER("RenderFinalizeFBO")
 	renderThread.GetTexture().GetStages().DisableAllStages();
 	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	deoglTexSamplerConfig * const sampler = plan.GetUseUpscaling()
-		? &GetSamplerClampLinear() : &GetSamplerClampNearest();
-	
-	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
-	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
-	// set program and parameters
-	deoglShaderProgram * const program = plan.GetRenderVR() == deoglRenderPlan::ervrStereo
-		? pShaderFinalizeSplit : ( plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize );
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled * const shader = program->GetCompiled();
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(),
+		plan.GetUseUpscaling() ? GetSamplerClampLinear() : GetSamplerClampNearest() );
 	
 	pRenderPB->Activate();
+	
+	deoglShaderCompiled * const shader = pipeline.GetGlShader()->GetCompiled();
 	
 	if( withGammaCorrection ){
 		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
@@ -1334,40 +1333,23 @@ DBG_ENTER("RenderFinalizeContext")
 	float brightness = config.GetBrightness();
 	float pbn = brightness + ( 1.0f - contrast ) * 0.5f;
 	deoglShaderCompiled *shader;
-	deoglTexSamplerConfig *sampler;
 	
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
 	
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineFinalizeBlendStereo : pPipelineFinalizeBlend;
+	pipeline.Activate();
+	
 	renderThread.GetTexture().GetStages().DisableAllStages();
 	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	if( plan.GetUseUpscaling() ){
-		sampler = &GetSamplerClampLinear();
-		
-	}else{
-		sampler = &GetSamplerClampNearest();
-	}
-	
-	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
-	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	// set program and parameters
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), plan.GetUseUpscaling()
+		? GetSamplerClampLinear() : GetSamplerClampNearest() );
 	
 	pRenderPB->Activate();
 	
+	shader = pipeline.GetGlShader()->GetCompiled();
 	shader->SetParameterFloat( spfinGamma, gamma, gamma, gamma, 1.0f );
 	shader->SetParameterFloat( spfinBrightness, pbn, pbn, pbn, 0.0f );
 	shader->SetParameterFloat( spfinContrast, contrast, contrast, contrast, 1.0f );
@@ -1413,23 +1395,16 @@ void deoglRenderWorld::CopyDepthToXRayDepth( deoglRenderPlan &plan ){
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
 	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineCopyDepthStereo : pPipelineCopyDepth;
+	pipeline.Activate();
+	
 	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	
 	defren.ActivateFBODepthXRay();
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyDepthStereo : pShaderCopyDepth;
-	renderThread.GetShader().ActivateShader( program );
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	defren.SetShaderParamFSQuad( *program->GetCompiled(), spcdQuadParams );
+	defren.SetShaderParamFSQuad( *pipeline.GetGlShader()->GetCompiled(), spcdQuadParams );
 	
 	RenderFullScreenQuadVAO( plan );
 }

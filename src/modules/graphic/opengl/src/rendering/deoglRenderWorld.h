@@ -24,6 +24,7 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
+#include "../pipeline/deoglPipeline.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;
@@ -48,12 +49,16 @@ private:
 	deoglRenderTaskParticles *pRenderTaskParticles;
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
-	deoglShaderProgramUsage pShaderFinalize;
-	deoglShaderProgramUsage pShaderFinalizeSplit;
-	deoglShaderProgramUsage pShaderFinalizeStereo;
+	deoglPipeline::Ref pPipelineFinalize;
+	deoglPipeline::Ref pPipelineFinalizeStereo;
+	deoglPipeline::Ref pPipelineFinalizeBlend;
+	deoglPipeline::Ref pPipelineFinalizeBlendStereo;
+	deoglPipeline::Ref pPipelineFinalizeSplit;
 	
-	deoglShaderProgramUsage pShaderCopyDepth;
-	deoglShaderProgramUsage pShaderCopyDepthStereo;
+	deoglPipeline::Ref pPipelineCopyDepth;
+	deoglPipeline::Ref pPipelineCopyDepthStereo;
+	
+	deoglPipeline::Ref pPipelineBlackScreen;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	

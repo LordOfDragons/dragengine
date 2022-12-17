@@ -25,6 +25,7 @@
 #include "deoglPipelineConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
+#include "../shaders/deoglShaderManager.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -37,8 +38,10 @@
 ////////////////////////////
 
 deoglPipelineConfiguration::deoglPipelineConfiguration() :
+pEnableScissorTest( false ),
 pEnableRasterizerDiscard( false ),
 pPolygonMode( GL_FILL ),
+pEnableCullFace( false ),
 pCullFace( GL_BACK ),
 pEnablePolygonOffset( false ),
 pPolygonOffsetFactor( 0.0f ),
@@ -58,6 +61,7 @@ pStencilRef( 0 ),
 pStencilRefMask( ~0 ),
 pStencilMask( ~0 ),
 pStencilSameFrontBack( true ),
+pEnableBlend( false ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
 pDynamicCullFace( false ),
@@ -71,8 +75,10 @@ pDynamicStencil( false )
 }
 
 deoglPipelineConfiguration::deoglPipelineConfiguration( const deoglPipelineConfiguration &config ) :
+pEnableScissorTest( false ),
 pEnableRasterizerDiscard( false ),
 pPolygonMode( GL_FILL ),
+pEnableCullFace( false ),
 pCullFace( GL_BACK ),
 pEnablePolygonOffset( false ),
 pPolygonOffsetFactor( 0.0f ),
@@ -91,6 +97,7 @@ pStencilFunc( GL_ALWAYS ),
 pStencilRef( 0 ),
 pStencilRefMask( ~0 ),
 pStencilMask( ~0 ),
+pEnableBlend( false ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
 pDynamicCullFace( false ),
@@ -113,17 +120,63 @@ void deoglPipelineConfiguration::SetShader( const deoglShaderProgramUsage &shade
 	pShader = shader;
 }
 
+void deoglPipelineConfiguration::SetShader( deoglRenderThread &renderThread,
+const char *sources, const deoglShaderDefines &defines ){
+	deoglShaderManager &sm = renderThread.GetShader().GetShaderManager();
+	SetShader( sm.GetProgramWith( sm.GetSourcesNamed( sources ), defines ) );
+}
+
+void deoglPipelineConfiguration::SetShader( deoglRenderThread &renderThread,
+deoglShaderSources *sources, const deoglShaderDefines &defines ){
+	SetShader( renderThread.GetShader().GetShaderManager().GetProgramWith( sources, defines ) );
+}
+
+
+
+bool deoglPipelineConfiguration::GetColorMask( int component ) const{
+	DEASSERT_TRUE( component >= 0 && component <= 3 )
+	return pColorMask[ component ];
+}
+
+void deoglPipelineConfiguration::SetColorMask( bool red, bool green, bool blue, bool alpha ){
+	pColorMask[ 0 ] = red;
+	pColorMask[ 1 ] = green;
+	pColorMask[ 2 ] = blue;
+	pColorMask[ 3 ] = alpha;
+}
+
+void deoglPipelineConfiguration::SetMasks( bool red, bool green, bool blue, bool alpha, bool depth ){
+	SetColorMask( red, green, blue, alpha );
+	SetDepthMask( depth );
+}
+
+
+
+void deoglPipelineConfiguration::SetEnableScissorTest( bool enable ){
+	pEnableScissorTest = enable;
+}
+
+
+
 void deoglPipelineConfiguration::SetEnableRasterizerDiscard( bool enable ){
 	pEnableRasterizerDiscard = enable;
 }
+
+
 
 void deoglPipelineConfiguration::SetPolygonMode( GLenum mode ){
 	pPolygonMode = mode;
 }
 
+void deoglPipelineConfiguration::SetEnableCullFace( bool enable ){
+	pEnableCullFace = enable;
+}
+
 void deoglPipelineConfiguration::SetCullFace( GLenum mode ){
 	pCullFace = mode;
 }
+
+
 
 void deoglPipelineConfiguration::SetEnablePolygonOffset( bool enable ){
 	pEnablePolygonOffset = enable;
@@ -137,6 +190,8 @@ void deoglPipelineConfiguration::SetPolygonOffsetBias( float bias ){
 	pPolygonOffsetBias = bias;
 }
 
+
+
 void deoglPipelineConfiguration::SetEnableDepthTest( bool enable ){
 	pEnableDepthTest = enable;
 }
@@ -148,6 +203,13 @@ void deoglPipelineConfiguration::SetDepthFunc( GLenum mode ){
 void deoglPipelineConfiguration::SetDepthMask( bool mask ){
 	pDepthMask = mask;
 }
+
+void deoglPipelineConfiguration::EnableDepthTestAlways(){
+	pEnableDepthTest = true;
+	pDepthFunc = GL_ALWAYS;
+}
+
+
 
 void deoglPipelineConfiguration::SetEnableStencilTest( bool enable ){
 	pEnableStencilTest = enable;
@@ -190,17 +252,48 @@ void deoglPipelineConfiguration::SetStencilFunc( GLenum mode ){
 
 void deoglPipelineConfiguration::SetStencilRef( int ref ){
 	pStencilRef = ref;
-	pUpdateStencilSameFrontBack();
 }
 
 void deoglPipelineConfiguration::SetStencilRefMask( int mask ){
 	pStencilRefMask = mask;
-	pUpdateStencilSameFrontBack();
 }
 
 void deoglPipelineConfiguration::SetStencilMask( int mask ){
 	pStencilMask = mask;
+}
+
+void deoglPipelineConfiguration::SetStencil( GLenum func, int ref, int refMask, int mask ){
+	pStencilFunc = func;
+	pStencilRef = ref;
+	pStencilRefMask = refMask;
+	pStencilMask = mask;
+}
+
+void deoglPipelineConfiguration::SetStencilOp( GLenum opFail, GLenum opZFail, GLenum opZPass ){
+	pStencilOpFailBack = pStencilOpFailFront = opFail;
+	pStencilOpZFailBack = pStencilOpZFailFront = opZFail;
+	pStencilOpZPassBack = pStencilOpZPassFront = opZPass;
 	pUpdateStencilSameFrontBack();
+}
+
+void deoglPipelineConfiguration::SetStencilOpFront( GLenum opFail, GLenum opZFail, GLenum opZPass ){
+	pStencilOpFailFront = opFail;
+	pStencilOpZFailFront = opZFail;
+	pStencilOpZPassFront = opZPass;
+	pUpdateStencilSameFrontBack();
+}
+
+void deoglPipelineConfiguration::SetStencilOpBack( GLenum opFail, GLenum opZFail, GLenum opZPass ){
+	pStencilOpFailBack = opFail;
+	pStencilOpZFailBack = opZFail;
+	pStencilOpZPassBack = opZPass;
+	pUpdateStencilSameFrontBack();
+}
+
+
+
+void deoglPipelineConfiguration::SetEnableBlend( bool enable ){
+	pEnableBlend = enable;
 }
 
 void deoglPipelineConfiguration::SetBlendColor( const decColor &color ){
@@ -215,21 +308,47 @@ void deoglPipelineConfiguration::SetBlendFuncDest( GLenum mode ){
 	pBlendFuncDest = mode;
 }
 
-bool deoglPipelineConfiguration::GetColorMask( int component ) const{
-	DEASSERT_TRUE( component >= 0 && component <= 3 )
-	return pColorMask[ component ];
+void deoglPipelineConfiguration::EnableBlendReplace(){
+	pEnableBlend = true;
+	pBlendFuncSource = GL_ONE;
+	pBlendFuncDest = GL_ZERO;
 }
 
-void deoglPipelineConfiguration::SetColorMask( bool red, bool green, bool blue, bool alpha ){
-	pColorMask[ 0 ] = red;
-	pColorMask[ 1 ] = green;
-	pColorMask[ 2 ] = blue;
-	pColorMask[ 3 ] = alpha;
+void deoglPipelineConfiguration::EnableBlendBlend(){
+	pEnableBlend = true;
+	pBlendFuncSource = GL_SRC_ALPHA;
+	pBlendFuncDest = GL_ONE_MINUS_SRC_ALPHA;
+}
+
+void deoglPipelineConfiguration::EnableBlendAdd(){
+	pEnableBlend = true;
+	pBlendFuncSource = GL_ONE;
+	pBlendFuncDest = GL_ONE;
 }
 
 
 
-void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ){
+void deoglPipelineConfiguration::SetDynamicCullFace( bool dynamic ){
+	pDynamicCullFace = dynamic;
+}
+
+void deoglPipelineConfiguration::SetDynamicPolygonOffset( bool dynamic ){
+	pDynamicPolygonOffset = dynamic;
+}
+
+void deoglPipelineConfiguration::SetDynamicStencil( bool dynamic ){
+	pDynamicStencil = dynamic;
+}
+
+
+
+void deoglPipelineConfiguration::Reset(){
+	*this = deoglPipelineConfiguration();
+}
+
+
+
+void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) const{
 	#define ENABLE_GL_STATE(flag,state) \
 		if( flag ){ \
 			OGL_CHECK( renderThread, glEnable( state ) ); \
@@ -237,12 +356,16 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ){
 			OGL_CHECK( renderThread, glDisable( state ) ); \
 		}
 	
-	renderThread.GetShader().ActivateShader( pShader );
+	renderThread.GetShader().ActivateShader( pShader ); // shader can be null which is allowed
+	
+	ENABLE_GL_STATE( pEnableScissorTest, GL_SCISSOR_TEST )
 	
 	ENABLE_GL_STATE( pEnableRasterizerDiscard, GL_RASTERIZER_DISCARD )
 	
 	OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, pPolygonMode ) );
-	if( ! pDynamicCullFace ){
+	
+	ENABLE_GL_STATE( pEnableCullFace, GL_CULL_FACE )
+	if( pEnableCullFace && ! pDynamicCullFace ){
 		OGL_CHECK( renderThread, glCullFace( pCullFace ) );
 	}
 	
@@ -274,9 +397,12 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ){
 		OGL_CHECK( renderThread, glStencilMask( pStencilMask ) );
 	}
 	
-	OGL_CHECK( renderThread, pglBlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a ) );
-	OGL_CHECK( renderThread, glBlendFunc( pBlendFuncSource, pBlendFuncDest ) );
-	OGL_CHECK( renderThread, glColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] ) );
+	ENABLE_GL_STATE( pEnableBlend, GL_BLEND )
+	if( pEnableBlend ){
+		OGL_CHECK( renderThread, pglBlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a ) );
+		OGL_CHECK( renderThread, glBlendFunc( pBlendFuncSource, pBlendFuncDest ) );
+		OGL_CHECK( renderThread, glColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] ) );
+	}
 	
 	#undef ENABLE_GL_STATE
 }
@@ -288,8 +414,14 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ){
 
 deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPipelineConfiguration &config ){
 	pShader = config.pShader;
+	pColorMask[ 0 ] = config.pColorMask[ 0 ];
+	pColorMask[ 1 ] = config.pColorMask[ 1 ];
+	pColorMask[ 2 ] = config.pColorMask[ 2 ];
+	pColorMask[ 3 ] = config.pColorMask[ 3 ];
+	pEnableScissorTest = config.pEnableScissorTest;
 	pEnableRasterizerDiscard = config.pEnableRasterizerDiscard;
 	pPolygonMode = config.pPolygonMode;
+	pEnableCullFace = config.pEnableCullFace;
 	pCullFace = config.pCullFace;
 	pEnablePolygonOffset = config.pEnablePolygonOffset;
 	pPolygonOffsetFactor = config.pPolygonOffsetFactor;
@@ -308,13 +440,10 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 	pStencilRef = config.pStencilRef;
 	pStencilRefMask = config.pStencilRefMask;
 	pStencilMask = config.pStencilMask;
+	pEnableBlend = config.pEnableBlend;
 	pBlendColor = config.pBlendColor;
 	pBlendFuncSource = config.pBlendFuncSource;
 	pBlendFuncDest = config.pBlendFuncDest;
-	pColorMask[ 0 ] = config.pColorMask[ 0 ];
-	pColorMask[ 1 ] = config.pColorMask[ 1 ];
-	pColorMask[ 2 ] = config.pColorMask[ 2 ];
-	pColorMask[ 3 ] = config.pColorMask[ 3 ];
 	pDynamicCullFace = config.pDynamicCullFace;
 	pDynamicPolygonOffset = config.pDynamicPolygonOffset;
 	pDynamicStencil = config.pDynamicStencil;
@@ -323,8 +452,14 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 
 bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &config ) const{
 	return pShader == config.pShader
+		&& pColorMask[ 0 ] == config.pColorMask[ 0 ]
+		&& pColorMask[ 1 ] == config.pColorMask[ 1 ]
+		&& pColorMask[ 2 ] == config.pColorMask[ 2 ]
+		&& pColorMask[ 3 ] == config.pColorMask[ 3 ]
+		&& pEnableScissorTest == config.pEnableScissorTest
 		&& pEnableRasterizerDiscard == config.pEnableRasterizerDiscard
 		&& pPolygonMode == config.pPolygonMode
+		&& pEnableCullFace == config.pEnableCullFace
 		&& pCullFace == config.pCullFace
 		&& pEnablePolygonOffset == config.pEnablePolygonOffset
 		&& pPolygonOffsetFactor == config.pPolygonOffsetFactor
@@ -343,13 +478,10 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pStencilRef == config.pStencilRef
 		&& pStencilRefMask == config.pStencilRefMask
 		&& pStencilMask == config.pStencilMask
+		&& pEnableBlend == config.pEnableBlend
 		&& pBlendColor.IsEqualTo( config.pBlendColor )
 		&& pBlendFuncSource == config.pBlendFuncSource
 		&& pBlendFuncDest == config.pBlendFuncDest
-		&& pColorMask[ 0 ] == config.pColorMask[ 0 ]
-		&& pColorMask[ 1 ] == config.pColorMask[ 1 ]
-		&& pColorMask[ 2 ] == config.pColorMask[ 2 ]
-		&& pColorMask[ 3 ] == config.pColorMask[ 3 ]
 		&& pDynamicCullFace == config.pDynamicCullFace
 		&& pDynamicPolygonOffset == config.pDynamicPolygonOffset
 		&& pDynamicStencil == config.pDynamicStencil;

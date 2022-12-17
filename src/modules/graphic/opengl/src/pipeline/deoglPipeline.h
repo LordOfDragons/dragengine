@@ -154,6 +154,11 @@ public:
 	
 	/** Vulkan pipeline. */
 	inline devkPipeline *GetVkPipeline() const{ return pVkPipeline; }
+	
+	
+	
+	/** Activate pipeline. */
+	void Activate();
 	/*@}*/
 	
 	

@@ -28,18 +28,55 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
+class deoglShaderSources;
+class deoglShaderDefines;
 
 
 /**
  * Pipeline configuration for OpenGL.
+ * 
+ * Default values:
+ * - EnableStencilTest: false
+ * - EnableRasterizerDiscard: false
+ * - PolygonMode: GL_FILL
+ * - EnableCullFace: false
+ * - CullFace: GL_BACK
+ * - EnablePolygonOffset: false
+ * - PolygonOffsetFactor: 0
+ * - PolygonOffsetBias: 0
+ * - EnableDepthTest: false
+ * - DepthFunc: GL_LESS
+ * - DepthMask: true
+ * - EnableStencilTest: false
+ * - StencilOpFailFront: GL_KEEP
+ * - StencilOpZFailFront: GL_KEEP
+ * - StencilOpZPassFront: GL_KEEP
+ * - StencilOpFailBack: GL_KEEP
+ * - StencilOpZFailBack: GL_KEEP
+ * - StencilOpZPassBack: GL_KEEP
+ * - StencilFunc: GL_ALWAYS
+ * - StencilRef: 0
+ * - StencilRefMask: ~0
+ * - StencilMask: ~0
+ * - StencilSameFrontBack: true
+ * - BlendFuncSource: GL_ONE
+ * - BlendFuncDest: GL_ZERO
+ * - DynamicCullFace: false
+ * - DynamicPolygonOffset: false
+ * - DynamicStencil: false
  */
 class deoglPipelineConfiguration{
 private:
 	deoglShaderProgramUsage pShader;
 	
+	bool pColorMask[ 4 ];
+	
+	bool pEnableScissorTest;
+	
 	bool pEnableRasterizerDiscard;
 	
 	GLenum pPolygonMode;
+	bool pEnableCullFace;
 	GLenum pCullFace;
 	
 	bool pEnablePolygonOffset;
@@ -63,10 +100,10 @@ private:
 	int pStencilMask;
 	bool pStencilSameFrontBack;
 	
+	bool pEnableBlend;
 	decColor pBlendColor;
 	GLenum pBlendFuncSource;
 	GLenum pBlendFuncDest;
-	bool pColorMask[ 4 ];
 	
 	bool pDynamicCullFace;
 	bool pDynamicPolygonOffset;
@@ -89,7 +126,29 @@ public:
 	/*@{*/
 	/** Shader program. */
 	inline const deoglShaderProgramUsage &GetShader() const{ return pShader; }
+	
 	void SetShader( const deoglShaderProgramUsage &shader );
+	
+	void SetShader( deoglRenderThread &renderThread,
+		const char *sources, const deoglShaderDefines &defines );
+	
+	void SetShader( deoglRenderThread &renderThread,
+		deoglShaderSources *sources, const deoglShaderDefines &defines );
+	
+	
+	
+	/** Color mask. */
+	bool GetColorMask( int component ) const;
+	void SetColorMask( bool red, bool green, bool blue, bool alpha );
+	
+	/** Set color and depth mask. */
+	void SetMasks( bool red, bool green, bool blue, bool alpha, bool depth );
+	
+	
+	
+	/** Enable scissor test. */
+	inline bool GetEnableScissorTest() const{ return pEnableScissorTest; }
+	void SetEnableScissorTest( bool enable );
 	
 	
 	
@@ -102,6 +161,10 @@ public:
 	/** Polygon mode. */
 	inline GLenum GetPolygonMode() const{ return pPolygonMode; }
 	void SetPolygonMode( GLenum mode );
+	
+	/** Enable cull face. */
+	inline bool GetEnableCullFace() const{ return pEnableCullFace; }
+	void SetEnableCullFace( bool enable );
 	
 	/** Cull face. */
 	inline GLenum GetCullFace() const{ return pCullFace; }
@@ -134,6 +197,9 @@ public:
 	/** Depth mask. */
 	inline bool GetDepthMask() const{ return pDepthMask; }
 	void SetDepthMask( bool mask );
+	
+	/** Enable depth test with function always. */
+	void EnableDepthTestAlways();
 	
 	
 	
@@ -181,7 +247,23 @@ public:
 	inline int GetStencilMask() const{ return pStencilMask; }
 	void SetStencilMask( int mask );
 	
+	/** Set stencil parameters. */
+	void SetStencil( GLenum func, int ref, int refMask, int mask );
 	
+	/** Set stencil parameters for front and back. */
+	void SetStencilOp( GLenum opFail, GLenum opZFail, GLenum opZPass );
+	
+	/** Set stencil parameters for front. */
+	void SetStencilOpFront( GLenum opFail, GLenum opZFail, GLenum opZPass );
+	
+	/** Set stencil parameters for back. */
+	void SetStencilOpBack( GLenum opFail, GLenum opZFail, GLenum opZPass );
+	
+	
+	
+	/** Enable blend. */
+	inline bool GetEnableBlend() const{ return pEnableBlend; }
+	void SetEnableBlend( bool enable );
 	
 	/** Blend color. */
 	inline const decColor &GetBlendColor() const{ return pBlendColor; }
@@ -195,9 +277,14 @@ public:
 	inline GLenum GetBlendFuncDest() const{ return pBlendFuncDest; }
 	void SetBlendFuncDest( GLenum mode );
 	
-	/** Color mask. */
-	bool GetColorMask( int component ) const;
-	void SetColorMask( bool red, bool green, bool blue, bool alpha );
+	/** Enable blend with function GL_ONE / GL_ZERO. */
+	void EnableBlendReplace();
+	
+	/** Enable blend with function GL_SRC_ALPHA / GL_ONE_MINUS_SRC_ALPHA. */
+	void EnableBlendBlend();
+	
+	/** Enable blend with function GL_ONE / GL_ONE. */
+	void EnableBlendAdd();
 	
 	
 	
@@ -215,8 +302,13 @@ public:
 	
 	
 	
+	/** Reset to default parameters. */
+	void Reset();
+	
+	
+	
 	/** Activate pipeline. Sets shader and states that are not dynamic. */
-	void Activate( deoglRenderThread &renderThread );
+	void Activate( deoglRenderThread &renderThread ) const;
 	/*@}*/
 	
 	
