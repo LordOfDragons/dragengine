@@ -23,11 +23,13 @@
 #define _DESCRIPTINGDRAGONSCRIPT_H_
 
 #include <libdscript/libdscript.h>
-#include "dragengine/systems/modules/scripting/deBaseScriptingModule.h"
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
+
+#include "dedsLoadingScreen.h"
+
 
 class deClassPhysicsSystem;
-// predefinitions
 class deEngine;
 
 class deClassAISystem;
@@ -237,6 +239,16 @@ public:
 		eeiCount, // no value, just count of entries
 	};
 	
+	enum eState{
+		esStopped,
+		esSkipOneFrame,
+		esLoadBasicPackages,
+		esLoadGame,
+		esCreateGameObject,
+		esInitGameObject,
+		esReady
+	};
+	
 	struct sModuleVersion{
 		decString version;
 		int major;
@@ -250,6 +262,7 @@ public:
 private:
 	sModuleVersion pCompatibleVersion;
 	sModuleVersion pModuleVersion;
+	eState pState;
 	
 	deClassAISystem *pClsAISys;
 	deClassAnimation *pClsAnim;
@@ -432,6 +445,11 @@ private:
 	deClassVRSystem *pClsVRSys;
 	deClassWorld *pClsWorld;
 	
+	dedsLoadingScreen::Ref pLoadingScreen;
+	
+	decString pInitScriptDirectory;
+	decString pInitGameObject;
+	
 	dsClass *pClsResourceLoaderType;
 	
 	dsEngine *pScriptEngine;
@@ -448,6 +466,7 @@ private:
 	
 	// objects
 	dsValue *pGameObj;
+	
 public:
 	// constructor, destructor
 	deScriptingDragonScript( deLoadableModule &loadableModule );
@@ -466,8 +485,9 @@ public:
 	 */
 	virtual const char *GetVFSSharedDataDir() const;
 	
-	bool Init( const char *scriptDirectory, const char *gameObject );
-	void ShutDown();
+	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	
+	virtual void ShutDown();
 
 	// script packages
 	void LoadPackage(const char *name, const char *directory);
