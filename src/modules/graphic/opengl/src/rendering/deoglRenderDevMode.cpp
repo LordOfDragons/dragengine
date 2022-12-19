@@ -965,7 +965,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 	deoglHTView *htview = plan.GetHeightTerrainView();
 	if( ! htview ) return;
 	
-	deoglRenderThread &renderThread = GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
 	const deoglRHeightTerrain &heightTerrain = htview->GetHeightTerrain();
 	const int sectorCount = heightTerrain.GetSectorCount();
 	const decDVector &campos = plan.GetCameraPosition();
@@ -1078,7 +1078,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 }
 
 void deoglRenderDevMode::RenderTraspLevelCount( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
-	deoglRenderThread &renderThread = GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
 	const int transpLevelCount = plan.GetTransparencyLayerCount();
 	const decColor clrBorder( 0.0f, 0.0f, 0.0f );
 	const decColor clrDotOn( 1.0f, 0.0f, 0.0f );
