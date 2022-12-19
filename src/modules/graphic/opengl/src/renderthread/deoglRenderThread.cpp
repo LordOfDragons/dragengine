@@ -495,18 +495,27 @@ void deoglRenderThread::Run(){
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
-		pBarrierSyncIn.Wait();
-		DEBUG_SYNC_RT_PASS("in")
-		
-		// main thread is messing with our state here. proceed to next barrier doing nothing
-		// except alter the estimated render time. this value is used by the main thread
-		// only outside the synchronization part so we can update it here
-		pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
-		
-		// wait for leaving synchronize
-		DEBUG_SYNC_RT_WAIT("out")
-		pBarrierSyncOut.Wait();
-		DEBUG_SYNC_RT_PASS("out")
+		if( pBarrierSyncIn.TryWait( 250 ) ){
+			DEBUG_SYNC_RT_PASS("in")
+			
+			// main thread is messing with our state here. proceed to next barrier doing nothing
+			// except alter the estimated render time. this value is used by the main thread
+			// only outside the synchronization part so we can update it here
+			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+			
+			// wait for leaving synchronize
+			DEBUG_SYNC_RT_WAIT("out")
+			pBarrierSyncOut.Wait();
+			DEBUG_SYNC_RT_PASS("out")
+			
+		}else{
+			DEBUG_SYNC_RT_PASS("in timeout")
+			
+			// main thread did not synchronize in time. render another time using the old state
+			// then wait for synchronization again. we still have to update the estimated render
+			// time though
+			pEstimatedRenderTime = decMath::max( pTimeHistoryRender.GetAverage(), pFrameTimeLimit );
+		}
 		
 		// exit if shutting down
 		if( pThreadState == etsCleaningUp ){
