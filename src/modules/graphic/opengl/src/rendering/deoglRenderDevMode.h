@@ -29,16 +29,14 @@ class deoglDebugInformation;
 class decString;
 
 
-
 /**
- * @brief OpenGL Developer Mode Renderer.
- * Renders developer mode information.
+ * Render developer mode information.
  */
 class deoglRenderDevMode : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderSolidColor2D;
-	deoglShaderProgramUsage pShaderSolidColor3D;
-	deoglShaderProgramUsage pShaderShape;
+	deoglPipeline::Ref pPipelineSolidColor2D;
+	deoglPipeline::Ref pPipelineSolidColor3D;
+	deoglPipeline::Ref pPipelineShape;
 	
 	decVector2 pScalePosition;
 	decVector2 pOffsetPosition;
@@ -46,8 +44,10 @@ private:
 	GLuint pVBOShapes;
 	GLuint pVAOShapes;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderDevMode( deoglRenderThread &renderThread );
@@ -55,7 +55,7 @@ public:
 	~deoglRenderDevMode();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Renders the developer mode information. */
 	void RenderDevMode( deoglRenderPlan &plan );

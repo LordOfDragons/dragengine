@@ -46,16 +46,13 @@ private:
 		decColor color;
 	};
 	
-	deoglShaderProgramUsage pShaderXRay;
+	deoglPipeline::Ref pPipelineXRay;
 	
-	deoglShaderProgramUsage pShaderSphere;
+	deoglPipeline::Ref pPipelineOutTexLayer;
+	deoglPipeline::Ref pPipelineOutArrTex;
 	
-	deoglShaderProgramUsage pShaderOutTex;
-	deoglShaderProgramUsage pShaderOutTexLayer;
-	deoglShaderProgramUsage pShaderOutArrTex;
-	
-	deoglShaderProgramUsage pShaderRenderText;
-	deoglShaderProgramUsage pShaderRectangle;
+	deoglPipeline::Ref pPipelineRenderText;
+	deoglPipeline::Ref pPipelineRectangle;
 	
 	deoglDebugFont *pDebugFont;
 	
