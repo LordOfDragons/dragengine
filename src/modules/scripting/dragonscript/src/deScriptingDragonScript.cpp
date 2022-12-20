@@ -1005,7 +1005,7 @@ bool deScriptingDragonScript::OnResizeRenderWindow(){
 
 bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 	if( pState != esReady ){
-		return false;
+		return true; // ignore
 	}
 	
 	switch( event->GetType() ){
