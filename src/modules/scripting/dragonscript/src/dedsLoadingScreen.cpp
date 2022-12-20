@@ -26,6 +26,8 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deGraphicSystem.h>
 
@@ -68,8 +70,12 @@ void dedsLoadingScreen::Update(){
 	const decPoint &size = content->GetSize();
 	
 	if( pCanvasBackground ){
-		pDS.LogInfoFormat( "UPDATE %dx%d", size.x, size.y );
 		pCanvasBackground->SetSize( size );
+	}
+	
+	if( pCanvasImage ){
+		const decPoint &imageSize = pCanvasImage->GetSize();
+		pCanvasImage->SetPosition( decPoint( ( size.x - imageSize.x ) / 2, size.y - imageSize.y - 20 ) );
 	}
 }
 
@@ -82,6 +88,7 @@ void dedsLoadingScreen::pCreateScreen(){
 	pDS.LogInfo( "Create loading screen" );
 	deEngine &engine = *pDS.GetGameEngine();
 	deCanvasManager &canvasManager = *engine.GetCanvasManager();
+	deImageManager &imageManager = *engine.GetImageManager();
 	
 	deCanvasView * const content = engine.GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
 	DEASSERT_NOTNULL( content )
@@ -92,11 +99,30 @@ void dedsLoadingScreen::pCreateScreen(){
 	pCanvasBackground->SetThickness( 0.0f );
 	pCanvasBackground->SetOrder( content->GetCanvasCount() );
 	content->AddCanvas( pCanvasBackground );
+	
+	const deImage::Ref image( deImage::Ref::New(
+		imageManager.LoadImage( "loadingScreen.webp", "/shareddata/images" ) ) );
+	
+	pCanvasImage.TakeOver( canvasManager.CreateCanvasImage() );
+	pCanvasImage->SetImage( image );
+	pCanvasImage->SetSize( decPoint( image->GetWidth(), image->GetHeight() ) );
+	pCanvasImage->SetOrder( content->GetCanvasCount() );
+	pCanvasImage->SetTransparency( 0.5f );
+	content->AddCanvas( pCanvasImage );
 }
 
 void dedsLoadingScreen::pCleanUp(){
 	pDS.LogInfo( "Clean up loading screen" );
 	deCanvasView * const content = pDS.GetGameEngine()->GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
+	
+	if( pCanvasImage ){
+		if( content ){
+			try{
+				content->RemoveCanvas( pCanvasImage );
+			}catch( ... ){}
+		}
+		pCanvasImage = nullptr;
+	}
 	
 	if( pCanvasBackground ){
 		if( content ){
