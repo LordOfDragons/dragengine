@@ -358,6 +358,9 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 	
 	renderThread.GetShader().ActivateShader( pShader ); // shader can be null which is allowed
 	
+	OGL_CHECK( renderThread, glColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] ) );
+	OGL_CHECK( renderThread, glDepthMask( pDepthMask ) );
+	
 	ENABLE_GL_STATE( pEnableScissorTest, GL_SCISSOR_TEST )
 	
 	ENABLE_GL_STATE( pEnableRasterizerDiscard, GL_RASTERIZER_DISCARD )
@@ -377,7 +380,6 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 	ENABLE_GL_STATE( pEnableDepthTest, GL_DEPTH_TEST )
 	if( pEnableDepthTest ){
 		OGL_CHECK( renderThread, glDepthFunc( pDepthFunc ) );
-		OGL_CHECK( renderThread, glDepthMask( pDepthMask ) );
 	}
 	
 	ENABLE_GL_STATE( pEnableStencilTest, GL_STENCIL_TEST )
@@ -401,7 +403,6 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 	if( pEnableBlend ){
 		OGL_CHECK( renderThread, pglBlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a ) );
 		OGL_CHECK( renderThread, glBlendFunc( pBlendFuncSource, pBlendFuncDest ) );
-		OGL_CHECK( renderThread, glColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] ) );
 	}
 	
 	#undef ENABLE_GL_STATE

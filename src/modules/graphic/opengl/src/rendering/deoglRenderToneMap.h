@@ -41,25 +41,25 @@ private:
 	deoglFramebuffer *pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
-	deoglShaderProgramUsage pShaderColor2LogLum;
-	deoglShaderProgramUsage pShaderColor2LogLumStereo;
-	deoglShaderProgramUsage pShaderAvgLogLum;
-	deoglShaderProgramUsage pShaderAvgLogLumStereo;
-	deoglShaderProgramUsage pShaderParameters;
-	deoglShaderProgramUsage pShaderParametersStereo;
-	deoglShaderProgramUsage pShaderBrightPass;
-	deoglShaderProgramUsage pShaderBrightPassStereo;
-	deoglShaderProgramUsage pShaderBloomReduce;
-	deoglShaderProgramUsage pShaderBloomBlur;
-	deoglShaderProgramUsage pShaderBloomBlurStereo;
-	deoglShaderProgramUsage pShaderBloomAdd;
-	deoglShaderProgramUsage pShaderToneMap;
-	deoglShaderProgramUsage pShaderToneMapStereo;
-	deoglShaderProgramUsage pShaderFinalize;
-	deoglShaderProgramUsage pShaderFinalizeStereo;
+	deoglPipeline::Ref pPipelineColor2LogLum;
+	deoglPipeline::Ref pPipelineColor2LogLumStereo;
+	deoglPipeline::Ref pPipelineAvgLogLum;
+	deoglPipeline::Ref pPipelineAvgLogLumStereo;
+	deoglPipeline::Ref pPipelineParameters;
+	deoglPipeline::Ref pPipelineParametersStereo;
+	deoglPipeline::Ref pPipelineBrightPass;
+	deoglPipeline::Ref pPipelineBrightPassStereo;
+	deoglPipeline::Ref pPipelineBloomReduce;
+	deoglPipeline::Ref pPipelineBloomBlur;
+	deoglPipeline::Ref pPipelineBloomBlurStereo;
+	deoglPipeline::Ref pPipelineBloomAdd;
+	deoglPipeline::Ref pPipelineToneMap;
+	deoglPipeline::Ref pPipelineToneMapStereo;
+	deoglPipeline::Ref pPipelineLdr;
+	deoglPipeline::Ref pPipelineLdrStereo;
 	
-	deoglShaderProgramUsage pShaderLumPrepare;
-	deoglShaderProgramUsage pShaderLumPrepareStereo;
+	deoglPipeline::Ref pPipelineLumPrepare;
+	deoglPipeline::Ref pPipelineLumPrepareStereo;
 	
 	
 public:
