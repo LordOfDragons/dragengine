@@ -43,7 +43,7 @@ class IMMMenuFader
 	/** \brief Create widget fader for interactive main menu. */
 	public func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("mainMenu")
 		end
 		
 		pMainMenu = mainMenu
