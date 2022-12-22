@@ -23,11 +23,11 @@
 #define _DEOGLREFFECTFILTERKERNEL_H_
 
 #include "deoglREffect.h"
-#include "../../shaders/deoglShaderProgramUsage.h"
+#include "../../pipeline/deoglPipeline.h"
 
 
 /**
- * \brief Render effect filter kernel.
+ * Render effect filter kernel.
  */
 class deoglREffectFilterKernel : public deoglREffect{
 private:
@@ -36,18 +36,18 @@ private:
 	int pKernelCols;
 	float pScale;
 	
-	deoglShaderProgramUsage pShader;
-	deoglShaderProgramUsage pShaderStereo;
-	deoglShaderProgramUsage pShaderDownsample;
-	deoglShaderProgramUsage pShaderDownsampleStereo;
+	deoglPipeline::Ref pPipeline;
+	deoglPipeline::Ref pPipelineStereo;
+	deoglPipeline::Ref pPipelineDownsample;
+	deoglPipeline::Ref pPipelineDownsampleStereo;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffectFilterKernel( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffectFilterKernel();
 	/*@}*/
 	
@@ -55,38 +55,38 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of kernel rows. */
+	/** Number of kernel rows. */
 	inline int GetKernelRows() const{ return pKernelRows; }
 	
-	/** \brief Number of kernel cols. */
+	/** Number of kernel cols. */
 	inline int GetKernelCols() const{ return pKernelCols; }
 	
-	/** \brief Set kernel size. */
+	/** Set kernel size. */
 	void SetKernelSize( int rows, int cols );
 	
-	/** \brief Kernel value. */
+	/** Kernel value. */
 	float GetKernelValueAt( int row, int col ) const;
 	
-	/** \brief Set kernel value. */
+	/** Set kernel value. */
 	void SetKernelValueAt( int row, int col, float value );
 	
-	/** \brief Kernel scale. */
+	/** Kernel scale. */
 	inline float GetScale() const{ return pScale; }
 	
-	/** \brief Set kernel scale. */
+	/** Set kernel scale. */
 	void SetScale( float scale );
 	
 	
 	
-	/** \brief Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
-	deoglShaderProgram *GetShaderStereo();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline::Ref &GetPipeline();
+	const deoglPipeline::Ref &GetPipelineStereo();
 	
-	/** \brief Get downsample shader creating it if required. */
-	deoglShaderProgram *GetShaderDownsample();
-	deoglShaderProgram *GetShaderDownsampleStereo();
+	/** Get downsample pipeline creating it if required. */
+	const deoglPipeline::Ref &GetPipelineDownsample();
+	const deoglPipeline::Ref &GetPipelineDownsampleStereo();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );
 };
 

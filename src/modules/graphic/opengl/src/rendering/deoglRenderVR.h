@@ -28,7 +28,6 @@
 
 class deoglRWorld;
 class deoglSharedVBOBlock;
-class deoglShaderProgram;
 
 
 /**
@@ -36,9 +35,13 @@ class deoglShaderProgram;
  */
 class deoglRenderVR : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderHiddenArea;
-	deoglShaderProgramUsage pShaderHiddenAreaStereoLeft;
-	deoglShaderProgramUsage pShaderHiddenAreaStereoRight;
+	deoglPipeline::Ref pPipelineHiddenAreaDepth;
+	deoglPipeline::Ref pPipelineHiddenAreaDepthStereoLeft;
+	deoglPipeline::Ref pPipelineHiddenAreaDepthStereoRight;
+	
+	deoglPipeline::Ref pPipelineHiddenAreaClearMask;
+	deoglPipeline::Ref pPipelineHiddenAreaClearMaskStereoLeft;
+	deoglPipeline::Ref pPipelineHiddenAreaClearMaskStereoRight;
 	
 	
 	
@@ -57,14 +60,14 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render hidden area. */
-	void RenderHiddenArea( deoglRenderPlan &plan );
+	void RenderHiddenArea( deoglRenderPlan &plan, bool clearMask );
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pRenderHiddenArea( const deoglSharedVBOBlock &vboBlock, deoglShaderProgram &shader );
+	void pRenderHiddenArea( const deoglSharedVBOBlock &vboBlock );
 };
 
 #endif

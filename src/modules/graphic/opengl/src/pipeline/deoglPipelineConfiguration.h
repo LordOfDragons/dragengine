@@ -61,6 +61,9 @@ class deoglShaderDefines;
  * - StencilSameFrontBack: true
  * - BlendFuncSource: GL_ONE
  * - BlendFuncDest: GL_ZERO
+ * - ClipControl:
+ *   - true: GL_LOWER_LEFT, GL_ZERO_TO_ONE
+ *   - false: GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE
  * - DynamicCullFace: false
  * - DynamicPolygonOffset: false
  * - DynamicStencil: false
@@ -104,6 +107,8 @@ private:
 	decColor pBlendColor;
 	GLenum pBlendFuncSource;
 	GLenum pBlendFuncDest;
+	
+	bool pClipControl;
 	
 	bool pDynamicCullFace;
 	bool pDynamicPolygonOffset;
@@ -258,6 +263,12 @@ public:
 	
 	/** Set stencil parameters for back. */
 	void SetStencilOpBack( GLenum opFail, GLenum opZFail, GLenum opZPass );
+	
+	
+	
+	/** Clip control. */
+	inline bool GetClipControl() const{ return pClipControl; }
+	void SetClipControl( bool clipControl );
 	
 	
 	

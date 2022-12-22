@@ -23,28 +23,28 @@
 #define _DEOGLREFFECTCOLORMATRIX_H_
 
 #include "deoglREffect.h"
-#include "../../shaders/deoglShaderProgramUsage.h"
+#include "../../pipeline/deoglPipeline.h"
 
 #include <dragengine/common/math/decMath.h>
 
 
 /**
- * \brief Render effect color matrix.
+ * Render effect color matrix.
  */
 class deoglREffectColorMatrix : public deoglREffect{
 private:
 	decColorMatrix pColorMatrix;
 	
-	deoglShaderProgramUsage pShader;
-	deoglShaderProgramUsage pShaderStereo;
+	deoglPipeline::Ref pPipeline;
+	deoglPipeline::Ref pPipelineStereo;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffectColorMatrix( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffectColorMatrix();
 	/*@}*/
 	
@@ -52,19 +52,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Color matrix. */
+	/** Color matrix. */
 	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
 	
-	/** \brief Set color matrix. */
+	/** Set color matrix. */
 	void SetColorMatrix( const decColorMatrix &colorMatrix );
 	
 	
 	
-	/** \brief Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
-	deoglShaderProgram *GetShaderStereo();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline::Ref &GetPipeline();
+	const deoglPipeline::Ref &GetPipelineStereo();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );
 };
 

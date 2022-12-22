@@ -105,42 +105,53 @@ void deoglREffectOverlayImage::SetImage( deoglRImage *image ){
 
 
 
-deoglShaderProgram *deoglREffectOverlayImage::GetShader(){
-	if( ! pShader ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline::Ref &deoglREffectOverlayImage::GetPipeline(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Overlay" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		pipconf.EnableBlendBlend();
+		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
-		pShader = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( GetRenderThread(), "Effect Overlay", defines );
+		pPipeline = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShader;
+	return pPipeline;
 }
 
-deoglShaderProgram *deoglREffectOverlayImage::GetShaderStereo(){
-	if( ! pShaderStereo ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
-		deoglShaderSources *sources;
+const deoglPipeline::Ref &deoglREffectOverlayImage::GetPipelineStereo(){
+	if( ! pPipelineStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
 		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "TEXCOORD_FLIP_Y" );
 		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		pipconf.EnableBlendBlend();
+		
 		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			sources = shaderManager.GetSourcesNamed( "Effect Overlay" );
 			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Overlay", defines );
 			
 		}else{
-			sources = shaderManager.GetSourcesNamed( "Effect Overlay Stereo" );
 			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Overlay Stereo", defines );
 		}
 		
-		pShaderStereo = shaderManager.GetProgramWith( sources, defines );
+		pPipelineStereo = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShaderStereo;
+	return pPipelineStereo;
 }
 
 void deoglREffectOverlayImage::PrepareForRender(){
@@ -161,41 +172,26 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "EffectOverlayImage.Render" );
+	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
 	
-	// swap render texture
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? GetPipelineStereo() : GetPipeline();
+	pipeline.Activate();
+	
+	renderWorld.SetViewport( plan );
+	
 	defren.ActivatePostProcessFBO( false );
 	tsmgr.EnableTexture( 0, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	renderWorld.GetRenderPB()->Activate();
 	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	// set shader program
 	// [-1,1] * su/2 + su/2 = [0,su]
 	// [-1,1] * sv/2 + sv/2 = [0,sv]
-	deoglShaderProgram * const shaderProgram = plan.GetRenderStereo() ? GetShaderStereo() : GetShader();
-	rtshader.ActivateShader( shaderProgram );
-	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
-	
-	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
-	
+	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
 	shader.SetParameterFloat( speGamma, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, 1.0 );
 	shader.SetParameterFloat( speColor, 1.0f, 1.0f, 1.0f, pTransparency );
 	
-	if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defren.RenderFSQuadVAOStereo();
-		
-	}else{
-		defren.RenderFSQuadVAO();
-	}
+	renderWorld.RenderFullScreenQuadVAO( plan );
 }

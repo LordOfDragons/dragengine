@@ -935,7 +935,7 @@ DEBUG_RESET_TIMER
 			
 			ActivateTextures( planLight, *lightShader, shadowDepthMaps );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 		}
 	}
 DEBUG_PRINT_TIMER( "Render" );
@@ -1449,7 +1449,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
@@ -1548,7 +1547,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT,  GL_NEGATIVE_ONE_TO_ONE ); // reset, point light uses linear depth
 	}
 	
@@ -1830,7 +1829,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightPoint.RenderAmbientMap" );
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
@@ -1890,7 +1888,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT,  GL_NEGATIVE_ONE_TO_ONE ); // reset, point light uses linear depth
 	}
 	
@@ -2071,12 +2069,11 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight ){
 
 void deoglRenderLightPoint::UpdateInstanceParamBlock( deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps ){
-	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	const deoglRenderPlan &plan = planLight.GetPlan();
 	
-	const bool isDepthCompareLEqual = defren.GetDepthCompareFuncRegular() == GL_LEQUAL;
+	const bool isDepthCompareLEqual = GetRenderThread().GetChoices().GetDepthCompareFuncRegular() == GL_LEQUAL;
 	const bool isCameraInside = planLight.GetLight()->GetCameraInside();
 	const decDMatrix &matrixLight = light.GetMatrix();
 	const decDVector &lightPosition = matrixLight.GetPosition();

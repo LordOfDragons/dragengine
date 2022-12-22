@@ -56,6 +56,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -130,7 +131,6 @@ enum eSPShape{
 ////////////////////////////
 
 deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
@@ -155,7 +155,7 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		
 		// shape
 		defines.SetDefines( "WITH_SELECTOR" );
-		if( defren.GetUseInverseDepth() ){
+		if( renderThread.GetChoices().GetUseInverseDepth() ){
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		//defines.SetDefines( "WITH_DEPTH" );

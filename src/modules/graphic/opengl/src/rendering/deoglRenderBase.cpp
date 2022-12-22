@@ -39,6 +39,7 @@
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -143,7 +144,7 @@ deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinear() const{
 }
 
 deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinearInverse() const{
-	if( pRenderThread.GetDeferredRendering().GetUseInverseDepth() ){
+	if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 		return *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscShadowClampLinearInverse );
 		
 	}else{
@@ -153,20 +154,24 @@ deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinearInverse() con
 
 
 
-void deoglRenderBase::SetCullMode( bool renderBackFaces ){
-	if( renderBackFaces ){
-		OGL_CHECK( GetRenderThread(), glCullFace( GL_FRONT ) );
-		
-	}else{
-		OGL_CHECK( GetRenderThread(), glCullFace( GL_BACK ) );
-	}
+void deoglRenderBase::SetViewport( const deoglRenderPlan &plan ) const{
+	SetViewport( plan.GetViewportWidth(), plan.GetViewportHeight() );
 }
 
-void deoglRenderBase::RenderFullScreenQuad(){
+void deoglRenderBase::SetViewport( int width, int height ) const{
+	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
+	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
+}
+
+void deoglRenderBase::SetCullMode( bool renderBackFaces ) const{
+	OGL_CHECK( GetRenderThread(), glCullFace( renderBackFaces ? GL_FRONT : GL_BACK ) );
+}
+
+void deoglRenderBase::RenderFullScreenQuad() const{
 	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 }
 
-void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ){
+void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ) const{
 	if( plan.GetRenderStereo() ){
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 		
@@ -175,17 +180,25 @@ void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ){
 	}
 }
 
-void deoglRenderBase::RenderFullScreenQuadVAO(){
-	pRenderThread.GetDeferredRendering().RenderFSQuadVAO();
+void deoglRenderBase::RenderFullScreenQuadVAO() const{
+	OGL_CHECK( pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 }
 
-void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ){
+void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const{
+	OGL_CHECK( pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
+	
 	if( plan.GetRenderStereo() ){
-		pRenderThread.GetDeferredRendering().RenderFSQuadVAOStereo();
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 		
 	}else{
-		pRenderThread.GetDeferredRendering().RenderFSQuadVAO();
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
+	
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 }
 
 

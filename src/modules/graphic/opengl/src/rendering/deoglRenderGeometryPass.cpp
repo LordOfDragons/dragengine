@@ -146,14 +146,13 @@ DBG_ENTER("RenderDecals")
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	// set opengl states
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_POLYGON_OFFSET_FILL ) );
 	
-	if( defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		OGL_CHECK( renderThread, pglPolygonOffset( -config.GetDecalOffsetScale(), -config.GetDecalOffsetBias() ) );
 		
 	}else{
@@ -379,7 +378,7 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 	}
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
@@ -387,7 +386,7 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	const GLfloat clearLuminance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
@@ -401,7 +400,7 @@ void deoglRenderGeometryPass::RenderLuminanceOnly( deoglRenderPlan &plan ){
 	
 	// render geometry
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	renderTask.Clear();

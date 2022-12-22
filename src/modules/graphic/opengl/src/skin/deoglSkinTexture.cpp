@@ -913,7 +913,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	}
 	
 	config.SetMaterialNormalModeEnc( deoglSkinShaderConfig::emnmFloat );
-	config.SetInverseDepth( defren.GetUseInverseDepth() );
+	config.SetInverseDepth( pRenderThread.GetChoices().GetUseInverseDepth() );
 	if( ! luminanceOnly && ! giMaterial ){
 		config.SetMaskedSolidity( pSolidityMasked || pHasZeroSolidity );
 	}

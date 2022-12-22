@@ -223,7 +223,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 	//OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );

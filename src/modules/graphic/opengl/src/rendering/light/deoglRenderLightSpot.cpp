@@ -244,7 +244,6 @@ deoglRTRenderers &renderers ) :
 deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
@@ -256,7 +255,7 @@ deoglRenderLightBase( renderThread )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
-		if( defren.GetUseInverseDepth() ){
+		if( renderThread.GetChoices().GetUseInverseDepth() ){
 			defines.SetDefine( "SHADOW_INVERSE_DEPTH", "1" );
 		}
 		defines.SetDefine( "DEPTH_INPUT", "1" );
@@ -398,7 +397,7 @@ void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlanLight &planLight
 	
 	decVector4 depth2Pos;
 	
-	if( defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		depth2Pos.x = -znear;
 		depth2Pos.y = 0.0f;
 		
@@ -756,8 +755,8 @@ const deoglRenderPlanMasked *mask ){
 		}
 		
 	}else{
-		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) ); // spot light is using similar
-		if( pglClipControl && defren.GetUseInverseDepth() ){
+		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) ); // spot light is using similar
+		if( renderThread.GetChoices().GetUseInverseDepth() ){
 			pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 		}
 		
@@ -949,7 +948,7 @@ const deoglRenderPlanMasked *mask ){
 			
 			ActivateTextures( planLight, *lightShader, shadowDepthMaps );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 		}
 	}
 }
@@ -960,7 +959,7 @@ deoglLightShader &shader, const sShadowDepthMaps &shadowDepthMaps ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRTDefaultTextures &dt = renderThread.GetDefaultTextures();
-	deoglTexture &dtshadow = renderThread.GetDeferredRendering().GetUseInverseDepth()
+	deoglTexture &dtshadow = renderThread.GetChoices().GetUseInverseDepth()
 		? *dt.GetShadowMapInverseDepth() : *dt.GetShadowMap();
 	int target;
 	
@@ -1100,7 +1099,6 @@ void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, sShad
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
@@ -1197,12 +1195,12 @@ void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, sShad
 			// shape of the object as well as possible thus the shadow error is small. on a distance where the
 			// rendered lod level can differ from the static shadow casting lod level this is hard to spot anyways
 			shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize(
-				staticShadowMapSize, false, defren.GetUseInverseDepth() ) );
+				staticShadowMapSize, false, renderThread.GetChoices().GetUseInverseDepth() ) );
 			
 			if( ! shadowParams.solid && shadowParams.transparentStaticShadow ){
 				shadowMapper.SetForeignTransparentDepthTexture(
 					sctransp.ObtainStaticShadowMapWithSize( staticTranspShadowMapSize,
-						defren.GetUseInverseDepth() ) );
+						renderThread.GetChoices().GetUseInverseDepth() ) );
 				shadowMapper.SetForeignTransparentColorTexture(
 					sctransp.ObtainStaticColorMapWithSize( staticTranspShadowMapSize ) );
 			}
@@ -1224,7 +1222,7 @@ void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, sShad
 			// ambient map
 			if( useAmbient ){
 				shadowMapper.SetForeignAmbientTexture( scambient.ObtainStaticMapWithSize(
-					staticAmbientMapSize, defren.GetUseInverseDepth() ) );
+					staticAmbientMapSize, renderThread.GetChoices().GetUseInverseDepth() ) );
 				RenderAmbientMap( planLight, shadowMapper, shadowParams );
 				shadowMapper.DropForeignAmbientTextures();
 			}
@@ -1327,22 +1325,22 @@ void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, sShad
 		if( requiresUpdate ){
 			if( useTemporary ){
 				shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainTemporaryMapWithSize(
-					dynamicShadowMapSize, false, defren.GetUseInverseDepth() )->GetTexture() );
+					dynamicShadowMapSize, false, renderThread.GetChoices().GetUseInverseDepth() )->GetTexture() );
 				
 				if( shadowParams.transparentDynamicShadow ){
 					shadowMapper.SetForeignTransparentDepthTexture( sctransp.ObtainTemporaryShadowMapWithSize(
-						dynamicTranspShadowMapSize, defren.GetUseInverseDepth() )->GetTexture() );
+						dynamicTranspShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() )->GetTexture() );
 					shadowMapper.SetForeignTransparentColorTexture(
 						sctransp.ObtainTemporaryColorMapWithSize( dynamicTranspShadowMapSize )->GetTexture() );
 				}
 				
 			}else{
 				shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize(
-					dynamicShadowMapSize, false, defren.GetUseInverseDepth() ) );
+					dynamicShadowMapSize, false, renderThread.GetChoices().GetUseInverseDepth() ) );
 				
 				if( shadowParams.transparentDynamicShadow ){
 					shadowMapper.SetForeignTransparentDepthTexture( sctransp.ObtainDynamicShadowMapWithSize(
-						dynamicTranspShadowMapSize, defren.GetUseInverseDepth() ) );
+						dynamicTranspShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() ) );
 					shadowMapper.SetForeignTransparentColorTexture(
 						sctransp.ObtainDynamicColorMapWithSize( dynamicTranspShadowMapSize ) );
 				}
@@ -1373,11 +1371,11 @@ void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, sShad
 			if( useAmbient ){
 				if( useTemporary ){
 					shadowMapper.SetForeignAmbientTexture( scambient.ObtainTemporaryMapWithSize(
-						dynamicAmbientMapSize, defren.GetUseInverseDepth() )->GetTexture() );
+						dynamicAmbientMapSize, renderThread.GetChoices().GetUseInverseDepth() )->GetTexture() );
 					
 				}else{
 					shadowMapper.SetForeignAmbientTexture( scambient.ObtainDynamicMapWithSize(
-						dynamicAmbientMapSize, defren.GetUseInverseDepth() ) );
+						dynamicAmbientMapSize, renderThread.GetChoices().GetUseInverseDepth() ) );
 				}
 				
 				RenderAmbientMap( planLight, shadowMapper, shadowParams );
@@ -1421,7 +1419,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const float smOffsetScale = config.GetShadowMapOffsetScale();
 	const float smOffsetBias = config.GetShadowMapOffsetBias();
@@ -1446,17 +1443,17 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// activate shadow map with the proper size
-	shadowMapper.ActivateSolidTexture( shadowParams.solidShadowMapSize, defren.GetUseInverseDepth() );
+	shadowMapper.ActivateSolidTexture( shadowParams.solidShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 	
 	// clear or copy shadow map
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 	}
 	
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
 	if( shadowParams.solid ){
@@ -1466,7 +1463,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClear, true );
 	}
 	
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	SetCullMode( false );
@@ -1497,7 +1494,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			shadowParams.matrixCamera.GetRotationMatrix().Invert() );
 		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f ); // not used
 		
-		if( defren.GetUseInverseDepth() ){
+		if( renderThread.GetChoices().GetUseInverseDepth() ){
 			decDMatrix matProj( shadowParams.matrixProjection );
 			matProj.a34 -= 0.0001f;
 			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
@@ -1558,7 +1555,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	// transparent pass only if we need a transparent shadow
 	if( shadowParams.withTransparent ){
-		shadowMapper.ActivateTransparentTexture( shadowParams.transpShadowMapSize, defren.GetUseInverseDepth() );
+		shadowMapper.ActivateTransparentTexture( shadowParams.transpShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 		
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -1613,7 +1610,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const float smOffsetScale = config.GetShadowMapOffsetScale();
 	const float smOffsetBias = config.GetShadowMapOffsetBias();
@@ -1624,18 +1620,18 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// activate shadow map with the proper size
-	shadowMapper.ActivateAmbientTexture( shadowParams.ambientMapSize, defren.GetUseInverseDepth() );
+	shadowMapper.ActivateAmbientTexture( shadowParams.ambientMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 	
 	// clear map
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 	}
 	
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
@@ -1644,7 +1640,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	// setup polygon offset
 	OGL_CHECK( renderThread, glEnable( GL_POLYGON_OFFSET_FILL ) );
 	
-	if( defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		OGL_CHECK( renderThread, pglPolygonOffset( -smOffsetScale, -smOffsetBias ) );
 		
 	}else{
@@ -1829,11 +1825,10 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight ){
 void deoglRenderLightSpot::UpdateInstanceParamBlock( deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, const deoglCollideListLight &cllight,
 sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
-	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	const deoglRLight &light = *cllight.GetLight();
 	
-	const bool isDepthCompareLEqual = defren.GetDepthCompareFuncRegular() == GL_LEQUAL;
+	const bool isDepthCompareLEqual = GetRenderThread().GetChoices().GetDepthCompareFuncRegular() == GL_LEQUAL;
 	const bool isCameraInside = cllight.GetCameraInside();
 	const decDMatrix &matrixLight = light.GetMatrix();
 	
@@ -1842,7 +1837,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 	
 	// calculate matrices
 	decDMatrix matrixBias( decDMatrix::CreateBiasMatrix() );
-	if( defren.GetUseInverseDepth() ){
+	if( GetRenderThread().GetChoices().GetUseInverseDepth() ){
 		// for the inverse depth case we need the bias matrix without the z transformation
 		// since the z transformation has been already done in the inverse projection matrix
 		matrixBias.a33 = 1.0;
@@ -2008,7 +2003,7 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			//const float zfar = light.GetRange();
 			decVector2 depth2Pos;
 			
-			if( defren.GetUseInverseDepth() ){
+			if( GetRenderThread().GetChoices().GetUseInverseDepth() ){
 				depth2Pos.x = -znear;
 				depth2Pos.y = 0.0f;
 				

@@ -175,8 +175,8 @@ deoglRenderBase( renderThread )
 {
 	const bool indirectMatrixAccessBug = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken();
 	const bool bugUBODirectLinkDeadloop = renderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const deoglExtensions &extensions = renderThread.GetExtensions();
 	deoglShaderDefines defines, commonDefines;
@@ -291,7 +291,7 @@ deoglRenderBase( renderThread )
 		if( pUseEquiEnvMap ){
 			defines.SetDefine( "ENVMAP_EQUI", true );
 		}
-		if( defren.GetUseInverseDepth() ){
+		if( useInverseDepth ){
 			defines.SetDefine( "INVERSE_DEPTH", true );
 		}
 		
@@ -337,7 +337,7 @@ deoglRenderBase( renderThread )
 		if( pUseEquiEnvMap ){
 			defines.SetDefine( "ENVMAP_EQUI", true );
 		}
-		if( defren.GetUseInverseDepth() ){
+		if( useInverseDepth ){
 			defines.SetDefine( "INVERSE_DEPTH", true );
 		}
 		//defines.SetDefine( "HACK_NO_SSR", true ); // set to 1 to examine env-map reflection only
@@ -394,7 +394,7 @@ deoglRenderBase( renderThread )
 		//if( pUseEquiEnvMap ){
 			defines.SetDefine( "ENVMAP_EQUI", true );
 		//}
-		if( defren.GetUseInverseDepth() ){
+		if( useInverseDepth ){
 			defines.SetDefine( "INVERSE_DEPTH", true );
 		}
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
@@ -505,7 +505,6 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.ConvertCubeMap2EquiMap" );
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const int height = equimap->GetHeight();
 	const int width = equimap->GetWidth();
 	deoglFramebuffer *fbo = NULL;
@@ -541,7 +540,7 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 		
 		shader->SetParameterFloat( spcm2emLevel, 0.0f );
 		
-		defren.RenderFSQuadVAO();
+		RenderFullScreenQuadVAO();
 		
 		renderThread.GetFramebuffer().Activate( oldfbo );
 		if( fbo ){
@@ -912,7 +911,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	if( shader ){
 		deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 		deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-		deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 		deoglFramebuffer *fbo = NULL;
 		int height, width;
 		
@@ -996,7 +994,7 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			shader->SetParameterFloat( spbemMipMapLevel, 0.0f );
 			
 			DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Prepare" );
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Render" );
 			
 			renderThread.GetFramebuffer().Activate( oldfbo );
@@ -1243,7 +1241,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		
 		shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 		
-		defren.RenderFSQuadVAO();
+		RenderFullScreenQuadVAO();
 		DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Initial Pass" );
 		
 		// downsample up to the max level. the first level has been done already by the initial pass
@@ -1263,7 +1261,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Downsample Pass" );
 		}
 		
@@ -1275,7 +1273,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			text.Format( "depth_minmax_level0_%ix%i", width, height );
 			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
-				*depthMinMap.GetTexture(), 0, text.GetString(), defren.GetUseInverseDepth() ?
+				*depthMinMap.GetTexture(), 0, text.GetString(), renderThread.GetChoices().GetUseInverseDepth() ?
 					deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion );
 			
 			for( i=1; i<mipMapLevelCount; i++ ){
@@ -1284,7 +1282,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				
 				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
 				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
-					*depthMinMap.GetTexture(), i, text.GetString(), defren.GetUseInverseDepth() ?
+					*depthMinMap.GetTexture(), i, text.GetString(), renderThread.GetChoices().GetUseInverseDepth() ?
 						deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion	);
 			}
 		}
@@ -1338,7 +1336,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Min Pass" );
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
@@ -1387,7 +1385,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Max Pass" );
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
@@ -1429,7 +1427,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		shader->SetParameterInt( spmmmmMipMapLevel, 0 );
 		shader->SetParameterInt( spmmmmSplitPos, width );
 		
-		defren.RenderFSQuadVAO();
+		RenderFullScreenQuadVAO();
 		DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Initial Pass" );
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 			decString text;
@@ -1463,7 +1461,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			OGL_CHECK( renderThread, glViewport( 0, 0, width << 1, height ) );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Downsample Pass" );
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
@@ -1598,7 +1596,7 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 }
@@ -1710,7 +1708,7 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 		// WARNING do not move this outside of the loop or the GPU may freeze/crash!
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		
-		defren.RenderFSQuadVAO();
+		RenderFullScreenQuadVAO();
 		
 		envmap->GetEnvironmentMap()->CreateMipMaps();
 		
@@ -1755,7 +1753,7 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	
 	tsmgr.EnableArrayTexture( 3, source, GetSamplerClampNearest() ); // texEmissive
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 }

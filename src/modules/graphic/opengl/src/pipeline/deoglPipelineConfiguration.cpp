@@ -64,6 +64,7 @@ pStencilSameFrontBack( true ),
 pEnableBlend( false ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
+pClipControl( false ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
 pDynamicStencil( false )
@@ -100,6 +101,7 @@ pStencilMask( ~0 ),
 pEnableBlend( false ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
+pClipControl( false ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
 pDynamicStencil( false )
@@ -328,6 +330,12 @@ void deoglPipelineConfiguration::EnableBlendAdd(){
 
 
 
+void deoglPipelineConfiguration::SetClipControl( bool clipControl ){
+	pClipControl = clipControl;
+}
+
+
+
 void deoglPipelineConfiguration::SetDynamicCullFace( bool dynamic ){
 	pDynamicCullFace = dynamic;
 }
@@ -405,6 +413,10 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 		OGL_CHECK( renderThread, glBlendFunc( pBlendFuncSource, pBlendFuncDest ) );
 	}
 	
+	if( pglClipControl ){
+		pglClipControl( GL_LOWER_LEFT, pClipControl ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE );
+	}
+	
 	#undef ENABLE_GL_STATE
 }
 
@@ -445,6 +457,7 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 	pBlendColor = config.pBlendColor;
 	pBlendFuncSource = config.pBlendFuncSource;
 	pBlendFuncDest = config.pBlendFuncDest;
+	pClipControl = config.pClipControl;
 	pDynamicCullFace = config.pDynamicCullFace;
 	pDynamicPolygonOffset = config.pDynamicPolygonOffset;
 	pDynamicStencil = config.pDynamicStencil;
@@ -483,6 +496,7 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pBlendColor.IsEqualTo( config.pBlendColor )
 		&& pBlendFuncSource == config.pBlendFuncSource
 		&& pBlendFuncDest == config.pBlendFuncDest
+		&& pClipControl == config.pClipControl
 		&& pDynamicCullFace == config.pDynamicCullFace
 		&& pDynamicPolygonOffset == config.pDynamicPolygonOffset
 		&& pDynamicStencil == config.pDynamicStencil;

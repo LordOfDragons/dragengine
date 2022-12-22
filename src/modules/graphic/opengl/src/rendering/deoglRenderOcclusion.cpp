@@ -847,7 +847,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT,  GL_NEGATIVE_ONE_TO_ONE ); // reset, occlusion uses linear depth
 	}
 	
@@ -1376,7 +1376,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT,  GL_NEGATIVE_ONE_TO_ONE ); // reset, occlusion uses linear depth
 	}
 	

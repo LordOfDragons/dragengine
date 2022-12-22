@@ -41,6 +41,8 @@
 ////////////////////////////
 
 deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
+	const deoglConfiguration &conf = renderThread.GetConfiguration();
+	const deoglCapabilities &caps = renderThread.GetCapabilities();
 	const deoglExtensions &ext = renderThread.GetExtensions();
 	
 	#define HASEXT(e) ext.GetHasExtension(deoglExtensions::e)
@@ -104,6 +106,30 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	#undef HASEXT
 	
+	// inverse depth
+	pUseInverseDepth = conf.GetUseInverseDepth();
+	
+	if( ! caps.GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
+	||  ! caps.GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF )
+	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
+	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF )
+	||  ! pglClipControl ){
+		pUseInverseDepth = false; // not supported
+	}
+	
+	if( pUseInverseDepth ){
+		pDepthCompareFuncRegular = GL_GEQUAL;
+		pDepthCompareFuncReversed = GL_LEQUAL;
+		pClearDepthValueRegular = ( GLfloat )0.0f;
+		pClearDepthValueReversed = ( GLfloat )1.0f;
+		
+	}else{
+		pDepthCompareFuncRegular = GL_LEQUAL;
+		pDepthCompareFuncReversed = GL_GEQUAL;
+		pClearDepthValueRegular = ( GLfloat )1.0f;
+		pClearDepthValueReversed = ( GLfloat )0.0f;
+	}
+	
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();
 	
@@ -131,6 +157,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	l.LogInfoFormat( "- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No" );
 	l.LogInfoFormat( "- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No" );
 	l.LogInfoFormat( "- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No" );
+	l.LogInfoFormat( "- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No" );
 }
 
 deoglRTChoices::~deoglRTChoices(){

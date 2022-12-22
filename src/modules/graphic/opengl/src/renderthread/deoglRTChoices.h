@@ -50,6 +50,11 @@ private:
 	bool pVRRenderStereo;
 	bool pRenderStereoVSLayer;
 	bool pRenderFSQuadStereoVSLayer;
+	bool pUseInverseDepth;
+	GLenum pDepthCompareFuncRegular;
+	GLenum pDepthCompareFuncReversed;
+	GLfloat pClearDepthValueRegular;
+	GLfloat pClearDepthValueReversed;
 	
 	
 	
@@ -101,6 +106,21 @@ public:
 	
 	/** Use layer in vertex shaders for fullscreen quad stereo rendering. */
 	inline bool GetRenderFSQuadStereoVSLayer() const{ return pRenderFSQuadStereoVSLayer; }
+	
+	/** Use inverse depth. */
+	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
+	
+	/** Regular depth compare function. */
+	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
+	
+	/** Reversed depth compare function. */
+	inline GLenum GetDepthCompareFuncReversed() const{ return pDepthCompareFuncReversed; }
+	
+	/** Regular clear depth value. */
+	inline GLfloat GetClearDepthValueRegular() const{ return pClearDepthValueRegular; }
+	
+	/** Reversed clear depth value. */
+	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
 	/*@}*/
 };
 

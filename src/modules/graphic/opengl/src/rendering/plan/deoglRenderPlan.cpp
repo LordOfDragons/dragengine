@@ -524,7 +524,7 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pFrustumMatrix = defren.CreateFrustumDMatrix( pViewportWidth, pViewportHeight,
 			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
 		
-		if( defren.GetUseInverseDepth() ){
+		if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 			pDepthToPosition.x = -pCameraImageDistance;
 			pDepthToPosition.y = 0.0f;
 			

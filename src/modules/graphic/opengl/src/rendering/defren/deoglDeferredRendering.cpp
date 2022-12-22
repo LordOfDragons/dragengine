@@ -35,6 +35,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -279,6 +280,8 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 // pFBOLuminance( NULL ),
 // pFBOLuminanceNormal( NULL )
 {
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	
 	struct sQuadPoint{
 		GLfloat x, y;
 		GLint layer;
@@ -323,31 +326,7 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 	pFSQuadOffU = 0.0f;
 	pFSQuadOffV = 0.0f;
 	
-	pUseInverseDepth = renderThread.GetConfiguration().GetUseInverseDepth();
-	if( ! renderThread.GetCapabilities().GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
-	||  ! renderThread.GetCapabilities().GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF )
-	||  ! renderThread.GetCapabilities().GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
-	||  ! renderThread.GetCapabilities().GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF )
-	||  ! pglClipControl ){
-		pUseInverseDepth = false; // not supported
-	}
-	
-	pUseFadeOutRange = pUseInverseDepth;
-	
-	renderThread.GetLogger().LogInfoFormat( "DefRen: Use Inverse Depth = %s", pUseInverseDepth ? "on" : "off" );
-	
-	if( pUseInverseDepth ){
-		pDepthCompareFuncRegular = GL_GEQUAL;
-		pDepthCompareFuncReversed = GL_LEQUAL;
-		pClearDepthValueRegular = ( GLfloat )0.0;
-		pClearDepthValueReversed = ( GLfloat )1.0;
-		
-	}else{
-		pDepthCompareFuncRegular = GL_LEQUAL;
-		pDepthCompareFuncReversed = GL_GEQUAL;
-		pClearDepthValueRegular = ( GLfloat )1.0;
-		pClearDepthValueReversed = ( GLfloat )0.0;
-	}
+	pUseFadeOutRange = useInverseDepth;
 	
 	pTextureDepth1 = NULL;
 	pTextureDepth2 = NULL;
@@ -681,7 +660,7 @@ float fov, float fovRatio, float znear, float zfar ) const{
 	m.a31 = 0.0;
 	m.a32 = 0.0;
 	
-	if( pUseInverseDepth ){
+	if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 		// due to inverse depth changing z-clamping
 		m.a33 = 0.0;
 		m.a34 = znear;
@@ -934,20 +913,6 @@ void deoglDeferredRendering::ActivateFBOLuminance(){
 
 
 
-void deoglDeferredRendering::RenderFSQuadVAO(){
-	OGL_CHECK( pRenderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
-	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
-}
-
-void deoglDeferredRendering::RenderFSQuadVAOStereo(){
-	OGL_CHECK( pRenderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
-	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
-	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
-}
-
-
-
 void deoglDeferredRendering::SetShaderViewport( deoglShaderCompiled &shader, int parameter, bool normalized ){
 	if( normalized ){
 		shader.SetParameterFloat( parameter, 0.0f, 0.0f, pClampU, pClampV );
@@ -1183,25 +1148,27 @@ void deoglDeferredRendering::pCleanUp(){
 }
 
 void deoglDeferredRendering::pCreateTextures(){
+	const bool useInverseDepth = pRenderThread.GetChoices().GetUseInverseDepth();
+	
 	// create depth textures
 	pTextureDepth1 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth1->SetMipMapped( true );
-	pTextureDepth1->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepth1->SetDepthFormat( true, useInverseDepth );
 	pTextureDepth1->SetDebugObjectLabel( "DefRen.Depth1" );
 	
 	pTextureDepth2 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth2->SetMipMapped( true );
-	pTextureDepth2->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepth2->SetDepthFormat( true, useInverseDepth );
 	pTextureDepth2->SetDebugObjectLabel( "DefRen.Depth2" );
 	
 	pTextureDepth3 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth3->SetMipMapped( true );
-	pTextureDepth3->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepth3->SetDepthFormat( true, useInverseDepth );
 	pTextureDepth3->SetDebugObjectLabel( "DefRen.Depth3" );
 	
 	pTextureDepthXRay = new deoglArrayTexture( pRenderThread );
 	pTextureDepthXRay->SetMipMapped( true );
-	pTextureDepthXRay->SetDepthFormat( true, pUseInverseDepth );
+	pTextureDepthXRay->SetDepthFormat( true, useInverseDepth );
 	pTextureDepthXRay->SetDebugObjectLabel( "DefRen.DepthXRay" );
 	
 	// create diffuse texture
@@ -1279,7 +1246,7 @@ void deoglDeferredRendering::pCreateTextures(){
 	pTextureLuminanceNormal->CreateTexture();
 	
 	pTextureLuminanceDepth = new deoglArrayTexture( pRenderThread );
-	pTextureLuminanceDepth->SetDepthFormat( true, pUseInverseDepth );
+	pTextureLuminanceDepth->SetDepthFormat( true, useInverseDepth );
 	pTextureLuminanceDepth->SetSize( 128, 64 );
 	pTextureLuminanceDepth->CreateTexture();
 	*/

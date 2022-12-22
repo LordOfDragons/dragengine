@@ -125,28 +125,33 @@ public:
 	deoglTexSamplerConfig &GetSamplerShadowClampLinearInverse() const;
 	
 	
+	/** Set viewport and scissor to render plan size. */
+	void SetViewport( const deoglRenderPlan &plan ) const;
+	
+	/** Set viewport and scissor size. */
+	void SetViewport( int width, int height ) const;
 	
 	/** Set cull mode. */
-	void SetCullMode( bool renderBackFaces );
+	void SetCullMode( bool renderBackFaces ) const;
 	
 	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
-	void RenderFullScreenQuad();
+	void RenderFullScreenQuad() const;
 	
 	/**
 	 * Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to
 	 * be active. If stereo rendering is active and specific hardware support is present
 	 * renders two quads using multi-draw instead of one.
 	 */
-	void RenderFullScreenQuad( const deoglRenderPlan &plan );
+	void RenderFullScreenQuad( const deoglRenderPlan &plan ) const;
 	
 	/** Render full screen quad with changing VAO. */
-	void RenderFullScreenQuadVAO();
+	void RenderFullScreenQuadVAO() const;
 	
 	/**
 	 * Render full screen quad with changing VAO. If stereo rendering is active and specific
 	 * hardware support is present renders two quads using multi-draw instead of one.
 	 */
-	void RenderFullScreenQuadVAO( const deoglRenderPlan &plan );
+	void RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const;
 	/*@}*/
 	
 	

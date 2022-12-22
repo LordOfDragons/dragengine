@@ -79,8 +79,8 @@ deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const bool renderStereoVRLayer = GetRenderThread().GetChoices().GetRenderStereoVSLayer();
+	const bool renderStereoVRLayer = renderThread.GetChoices().GetRenderStereoVSLayer();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines commonDefines;
 	deoglShaderSources *sources;
@@ -118,7 +118,7 @@ deoglRenderBase( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines = commonDefines;
 		defines.SetDefines( "WITH_DEPTH", "WITH_SELECTOR" );
-		if( defren.GetUseInverseDepth() ){
+		if( useInverseDepth ){
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		pipconf.SetShader( renderThread, sources, defines );
@@ -154,7 +154,7 @@ deoglRenderBase( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines = commonDefines;
 		defines.SetDefines( "WITH_DEPTH" );
-		if( defren.GetUseInverseDepth() ){
+		if( useInverseDepth ){
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		pipconf.SetShader( renderThread, sources, defines );

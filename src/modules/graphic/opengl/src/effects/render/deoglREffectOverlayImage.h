@@ -23,7 +23,7 @@
 #define _DEOGLREFFECTOVERLAYIMAGE_H_
 
 #include "deoglREffect.h"
-#include "../../shaders/deoglShaderProgramUsage.h"
+#include "../../pipeline/deoglPipeline.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -38,8 +38,8 @@ private:
 	float pTransparency;
 	deoglRImage *pImage;
 	
-	deoglShaderProgramUsage pShader;
-	deoglShaderProgramUsage pShaderStereo;
+	deoglPipeline::Ref pPipeline;
+	deoglPipeline::Ref pPipelineStereo;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -69,11 +69,9 @@ public:
 	
 	
 	
-	/** Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
-	
-	/** Get stereo shader creating it if required. */
-	deoglShaderProgram *GetShaderStereo();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline::Ref &GetPipeline();
+	const deoglPipeline::Ref &GetPipelineStereo();
 	
 	/** Prepare for render. */
 	virtual void PrepareForRender();

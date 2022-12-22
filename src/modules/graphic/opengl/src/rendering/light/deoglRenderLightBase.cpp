@@ -46,6 +46,7 @@
 #include "../../renderthread/deoglRTDefaultTextures.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/cubemap/deoglRenderableDepthCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -106,8 +107,8 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 	}
 	

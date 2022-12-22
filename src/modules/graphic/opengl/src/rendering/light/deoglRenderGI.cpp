@@ -1095,7 +1095,6 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderLightGIRay" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -1115,7 +1114,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	tsmgr.EnableArrayTexture( 8, giStateRender->GetTextureProbeOffset(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 8 );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
 	// clean up
 	if( pDebugInfoGI->GetVisible() ){
@@ -1177,7 +1176,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		}else{
 			OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 		}
-		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		

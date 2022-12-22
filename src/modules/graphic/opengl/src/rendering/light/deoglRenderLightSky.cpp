@@ -546,7 +546,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 					tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
 				}
 				
-				defren.RenderFSQuadVAO();
+				RenderFullScreenQuadVAO();
 			}
 		}
 	}
@@ -600,7 +600,6 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 // 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	const decDVector &referencePosition = world.GetReferencePosition();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	decMatrix matrixCamera;
 	
@@ -637,7 +636,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
 	}
 	
@@ -839,7 +838,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 			SSDT("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitRender, true );
@@ -962,7 +961,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			
 			pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 			
-			defren.RenderFSQuadVAO();
+			RenderFullScreenQuadVAO();
 		}
 			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
@@ -1202,7 +1201,6 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 			#ifdef SKY_SHADOW_DEBUG_TIME
 			decTimer timer;
 			#endif
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	// opengl states
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
@@ -1212,7 +1210,7 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glCullFace( GL_BACK ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
 	}
 	
@@ -1264,7 +1262,7 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		
 		pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 		
-		defren.RenderFSQuadVAO();
+		RenderFullScreenQuadVAO();
 				SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	}
 }

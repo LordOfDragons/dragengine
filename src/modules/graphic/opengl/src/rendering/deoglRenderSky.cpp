@@ -332,7 +332,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
@@ -972,7 +972,6 @@ decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool 
 }
 
 void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan ){
-	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
 	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
@@ -983,7 +982,7 @@ void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPla
 		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
 		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
 		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
+		pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, GetRenderThread().GetChoices().GetClearDepthValueRegular() );
 		
 	}catch( const deException & ){
 		pRenderSkyIntoEnvMapPB->UnmapBuffer();

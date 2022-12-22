@@ -174,8 +174,8 @@ pDebugInfo( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const bool useFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	deoglPipelineConfiguration pipconf, pipconf2;
@@ -238,7 +238,7 @@ pDebugInfo( renderThread )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 		defines = commonDefines;
-		if( ! defren.GetUseInverseDepth() ){
+		if( ! useInverseDepth ){
 			defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
 		}
 		pipconf.SetShader( renderThread, sources, defines );
@@ -933,7 +933,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			
 			spb.SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
 			spb.SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
-			spb.SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
+			spb.SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, renderThread.GetChoices().GetClearDepthValueRegular() );
 			
 			defren.SetShaderViewport( spb, deoglSkinShader::erutViewport, true );
 			spb.SetParameterDataArrayVec4( deoglSkinShader::erutClipPlane, 0, clipPlaneNormal, clipPlaneDistance );
@@ -1094,7 +1094,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
-			defren.GetClearDepthValueRegular(), 0 ) );
+			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 		
@@ -1128,10 +1128,9 @@ DBG_EXIT("RenderMaskedPass(early)")
 		rengeom.RenderTask( *pRenderTask );
 		
 		// render vr hidden mesh clearing the mask
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x01 ) );
 		debugTrace2.Close();
 		
-		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
+		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan, true );
 		
 		// render the world using this mask
 		deoglRenderPlan &maskedPlanPlan = *maskedPlan->GetPlan();

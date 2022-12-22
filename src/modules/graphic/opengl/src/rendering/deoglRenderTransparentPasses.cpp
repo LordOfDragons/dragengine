@@ -112,7 +112,7 @@ deoglRenderTransparentPasses::deoglRenderTransparentPasses( deoglRenderThread &r
 deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	
@@ -123,14 +123,14 @@ deoglRenderBase( renderThread )
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
 	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
-	if( defren.GetUseInverseDepth() ){
+	if( useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	
 	defines = commonDefines;
 	defines.SetDefine( "DEPTH_TEST", true );
-	if( ! defren.GetUseInverseDepth() ){
+	if( ! useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pShaderCopyDepthLimit = shaderManager.GetProgramWith( sources, defines );
@@ -138,7 +138,7 @@ deoglRenderBase( renderThread )
 	
 	defines = commonDefines;
 	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
-	if( defren.GetUseInverseDepth() ){
+	if( useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	
@@ -153,7 +153,7 @@ deoglRenderBase( renderThread )
 	
 	defines = commonDefines;
 	defines.SetDefine( "DEPTH_TEST", true );
-	if( ! defren.GetUseInverseDepth() ){
+	if( ! useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	
@@ -463,7 +463,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glStencilMask( ~0 ) );
-	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, defren.GetClearDepthValueReversed(), 0 ) );
+	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, renderThread.GetChoices().GetClearDepthValueReversed(), 0 ) );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -492,7 +492,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
 	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
 	
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncReversed() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncReversed() ) );
 	rendepth.RenderDepth( plan, mask, false, false, false, xray ); // -solid, -maskedOnly, -reverseDepthTest
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -563,7 +563,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	
@@ -799,7 +799,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	
-	const GLfloat clearDepth = defren.GetClearDepthValueReversed();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueReversed();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
 	defren.SwapDepthTextures(); // solid depth is now depth1
@@ -820,7 +820,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
-			defren.GetClearDepthValueRegular(), 0 ) );
+			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
 		// render depth to depth3 using reversed depth compare with depth tested against depth2
 		// with withstencil. depth is written. stencil is written with current layer stencil
@@ -831,7 +831,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		// right after if applied
 		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
-		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 		rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 		
 		// copy depth3 to depth2 using stencil mask and shader test to discard not
@@ -841,7 +841,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		
 		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) ); // can be modified by RenderDepthPass
 		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncReversed() ) );
+		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncReversed() ) );
 		
 		if( mask ){
 			OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 1 ) );
@@ -888,7 +888,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, prevStencilRefValue, 0 ) );
 	}
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -1015,10 +1015,10 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 	
 	if( inbetween ){
-		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncReversed() ) );
+		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncReversed() ) );
 		
 	}else{
-		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	}
 	
 	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );

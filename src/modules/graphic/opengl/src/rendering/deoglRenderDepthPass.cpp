@@ -124,7 +124,7 @@ deoglRenderBase( renderThread )
 {
 	deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	
@@ -134,7 +134,7 @@ deoglRenderBase( renderThread )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
-	if( defren.GetUseInverseDepth() ){
+	if( useInverseDepth ){
 		defines.SetDefine( "INVERSE_DEPTH", true );
 	}
 	defines.SetDefine( "NO_TEXCOORD", true );
@@ -143,7 +143,7 @@ deoglRenderBase( renderThread )
 	
 	
 	defines = commonDefines;
-	if( defren.GetUseInverseDepth() ){
+	if( useInverseDepth ){
 		defines.SetDefine( "INVERSE_DEPTH", true );
 	}
 	defines.SetDefine( "NO_TEXCOORD", true );
@@ -235,7 +235,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
+	if( renderThread.GetChoices().GetUseInverseDepth() ){
 		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
 	}
 	
@@ -249,14 +249,14 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 		// NOTE: Haiku MESA 17.1.10 fails to properly clear. No idea why
 	
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	// render depth geometry
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	RenderDepth( plan, mask, true, false, false, xray ); // +solid, -maskedOnly, -reverseDepthTest
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapDepthPassBuffers ){
 		deoglDebugSnapshot snapshot( renderThread );
@@ -329,7 +329,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	}
 	
 	if( solid && ! mask ){
-		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
+		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan, false );
 	}
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
@@ -719,7 +719,7 @@ DBG_ENTER("DownsampleDepth")
 	int height, width, i;
 	
 	const int mipMapLevelCount = texture.GetRealMipMapLevelCount();
-	const GLfloat clearDepth = defren.GetClearDepthValueRegular();
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	
 	height = defren.GetHeight();
 	width = defren.GetWidth();
@@ -821,7 +821,7 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	

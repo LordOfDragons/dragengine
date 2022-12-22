@@ -180,7 +180,6 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	int texWidth = texture->GetWidth();
@@ -234,7 +233,7 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	
 	tsmgr.EnableTexture( 0, *texture, GetSamplerClampNearestMipMap() );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
 	tsmgr.DisableStage( 0 );
 }
@@ -249,7 +248,6 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	if( ! texture || layer < 0 || layer >= texture->GetLayerCount() ) DETHROW( deeInvalidParam );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	int texWidth = texture->GetWidth();
@@ -300,7 +298,7 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	
 	tsmgr.EnableArrayTexture( 0, *texture, GetSamplerClampNearest() );
 	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
 	tsmgr.DisableStage( 0 );
 }
