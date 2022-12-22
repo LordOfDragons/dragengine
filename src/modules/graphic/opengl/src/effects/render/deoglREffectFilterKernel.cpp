@@ -298,7 +298,8 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 			}
 			
 			renderWorld.SetViewport( width, height );
-			renderWorld.RenderFullScreenQuadVAO( plan );
+			renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+				&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 		}
 	}
 	
@@ -321,5 +322,6 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	shader.SetParameterFloat( speKernel2, GetKernelValueAt( 1, 0 ), GetKernelValueAt( 1, 1 ), GetKernelValueAt( 1, 2 ) );
 	shader.SetParameterFloat( speKernel3, GetKernelValueAt( 2, 0 ), GetKernelValueAt( 2, 1 ), GetKernelValueAt( 2, 2 ) );
 	
-	renderWorld.RenderFullScreenQuadVAO( plan );
+	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 }

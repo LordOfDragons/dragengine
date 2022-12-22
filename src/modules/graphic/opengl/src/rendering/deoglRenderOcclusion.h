@@ -45,26 +45,26 @@ class deoglRenderTaskSharedShader;
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderOccMap;
-	deoglShaderProgramUsage pShaderOccMapStereo;
-	deoglShaderProgramUsage pShaderOccMapClipPlane;
-	deoglShaderProgramUsage pShaderOccMapClipPlaneStereo;
-	deoglShaderProgramUsage pShaderOccMapOrtho;
-	deoglShaderProgramUsage pShaderOccMapOrthoStereo;
-	deoglShaderProgramUsage pShaderOccMapOrthoClipPlane;
-	deoglShaderProgramUsage pShaderOccMapOrthoClipPlaneStereo;
-	deoglShaderProgramUsage pShaderOccMapDownSample;
-	deoglShaderProgramUsage pShaderOccMapDownSampleStereo;
-	deoglShaderProgramUsage pShaderOccTest;
-	deoglShaderProgramUsage pShaderOccTestDual;
-	deoglShaderProgramUsage pShaderOccTestSun;
-	deoglShaderProgramUsage pShaderOccTestStereo;
-	deoglShaderProgramUsage pShaderOccTestDualStereo;
-	deoglShaderProgramUsage pShaderOccTestSunStereo;
-	deoglShaderProgramUsage pShaderOccTestTFB;
-	deoglShaderProgramUsage pShaderOccTestTFBDual;
-	deoglShaderProgramUsage pShaderOccTestTFBSun;
-	deoglShaderProgramUsage pShaderOccMapCube;
+	deoglPipeline::Ref pPipelineOccMap;
+	deoglPipeline::Ref pPipelineOccMapStereo;
+	deoglPipeline::Ref pPipelineOccMapClipPlane;
+	deoglPipeline::Ref pPipelineOccMapClipPlaneStereo;
+	deoglPipeline::Ref pPipelineOccMapOrtho;
+	deoglPipeline::Ref pPipelineOccMapOrthoStereo;
+	deoglPipeline::Ref pPipelineOccMapOrthoClipPlane;
+	deoglPipeline::Ref pPipelineOccMapOrthoClipPlaneStereo;
+	deoglPipeline::Ref pPipelineOccMapDownSample;
+	deoglPipeline::Ref pPipelineOccMapDownSampleStereo;
+	deoglPipeline::Ref pPipelineOccTest;
+	deoglPipeline::Ref pPipelineOccTestDual;
+	deoglPipeline::Ref pPipelineOccTestSun;
+	deoglPipeline::Ref pPipelineOccTestStereo;
+	deoglPipeline::Ref pPipelineOccTestDualStereo;
+	deoglPipeline::Ref pPipelineOccTestSunStereo;
+	deoglPipeline::Ref pPipelineOccTestTFB;
+	deoglPipeline::Ref pPipelineOccTestTFBDual;
+	deoglPipeline::Ref pPipelineOccTestTFBSun;
+	deoglPipeline::Ref pPipelineOccMapCube;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglSPBlockUBO *pOccMapFrustumParamBlock;
@@ -75,7 +75,7 @@ private:
 	GLuint pVAOFrustumPlanes;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderOcclusion( deoglRenderThread &renderThread );
@@ -83,9 +83,9 @@ public:
 	virtual ~deoglRenderOcclusion();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
-	/** \brief Add basic defines for occlusion map shaders. */
+	/** Add basic defines for occlusion map shaders. */
 	void AddOccMapDefines( deoglShaderDefines &defines );
 	
 	/** Render occlusion tests. */

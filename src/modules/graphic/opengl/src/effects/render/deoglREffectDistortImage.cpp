@@ -204,5 +204,6 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// TODO correctly we need an explicite clamp in the shader here since the texture
 	// can be larger than the area we tap into.
 	
-	renderWorld.RenderFullScreenQuadVAO( plan );
+	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 }

@@ -188,10 +188,14 @@ void deoglRenderBase::RenderFullScreenQuadVAO() const{
 }
 
 void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const{
+	RenderFullScreenQuadVAO( plan.GetRenderStereo() );
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO( bool useStereo ) const{
 	OGL_CHECK( pRenderThread, pglBindVertexArray(
 		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	if( plan.GetRenderStereo() ){
+	if( useStereo ){
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 		
 	}else{

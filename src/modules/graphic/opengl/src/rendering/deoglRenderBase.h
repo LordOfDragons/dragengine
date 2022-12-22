@@ -152,6 +152,7 @@ public:
 	 * hardware support is present renders two quads using multi-draw instead of one.
 	 */
 	void RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const;
+	void RenderFullScreenQuadVAO( bool useStereo ) const;
 	/*@}*/
 	
 	

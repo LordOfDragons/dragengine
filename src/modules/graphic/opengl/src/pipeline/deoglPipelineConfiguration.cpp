@@ -25,7 +25,9 @@
 #include "deoglPipelineConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../shaders/deoglShaderManager.h"
+#include "../shaders/deoglShaderProgram.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -133,6 +135,21 @@ deoglShaderSources *sources, const deoglShaderDefines &defines ){
 	SetShader( renderThread.GetShader().GetShaderManager().GetProgramWith( sources, defines ) );
 }
 
+void deoglPipelineConfiguration::EnsureRTSShader(){
+	DEASSERT_NOTNULL( pShader );
+	
+	pShader->EnsureRTSShader();
+	pShader->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+}
+
+void deoglPipelineConfiguration::EnsureRTSShader( int drawIDOffset ){
+	DEASSERT_NOTNULL( pShader );
+	
+	pShader->EnsureRTSShader();
+	pShader->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+	pShader->GetRTSShader()->SetDrawIDOffset( drawIDOffset );
+}
+
 
 
 bool deoglPipelineConfiguration::GetColorMask( int component ) const{
@@ -178,6 +195,11 @@ void deoglPipelineConfiguration::SetCullFace( GLenum mode ){
 	pCullFace = mode;
 }
 
+void deoglPipelineConfiguration::EnableCulling( bool renderBackFaces ){
+	pEnableCullFace = true;
+	pCullFace = renderBackFaces ? GL_FRONT : GL_BACK;
+}
+
 
 
 void deoglPipelineConfiguration::SetEnablePolygonOffset( bool enable ){
@@ -209,6 +231,11 @@ void deoglPipelineConfiguration::SetDepthMask( bool mask ){
 void deoglPipelineConfiguration::EnableDepthTestAlways(){
 	pEnableDepthTest = true;
 	pDepthFunc = GL_ALWAYS;
+}
+
+void deoglPipelineConfiguration::EnableDepthTestLessEqual(){
+	pEnableDepthTest = true;
+	pDepthFunc = GL_LEQUAL;
 }
 
 

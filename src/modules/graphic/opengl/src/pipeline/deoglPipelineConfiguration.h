@@ -140,6 +140,10 @@ public:
 	void SetShader( deoglRenderThread &renderThread,
 		deoglShaderSources *sources, const deoglShaderDefines &defines );
 	
+	/** Ensure RTS shader exists. */
+	void EnsureRTSShader();
+	void EnsureRTSShader( int drawIDOffset );
+	
 	
 	
 	/** Color mask. */
@@ -175,6 +179,9 @@ public:
 	inline GLenum GetCullFace() const{ return pCullFace; }
 	void SetCullFace( GLenum mode );
 	
+	/** Enabl culling. */
+	void EnableCulling( bool renderBackFaces );
+	
 	
 	
 	/** Enable polygon offset. */
@@ -205,6 +212,9 @@ public:
 	
 	/** Enable depth test with function always. */
 	void EnableDepthTestAlways();
+	
+	/** Enable depth test with function less-equal. */
+	void EnableDepthTestLessEqual();
 	
 	
 	
