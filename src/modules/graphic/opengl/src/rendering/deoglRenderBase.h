@@ -130,6 +130,8 @@ public:
 	
 	/** Set viewport and scissor size. */
 	void SetViewport( int width, int height ) const;
+	void SetViewport( const decPoint &point ) const;
+	void SetViewport( const decPoint3 &point ) const;
 	
 	/** Set cull mode. */
 	void SetCullMode( bool renderBackFaces ) const;

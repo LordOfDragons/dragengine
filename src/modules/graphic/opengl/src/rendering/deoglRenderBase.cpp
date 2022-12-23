@@ -160,8 +160,17 @@ void deoglRenderBase::SetViewport( const deoglRenderPlan &plan ) const{
 
 void deoglRenderBase::SetViewport( int width, int height ) const{
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
+	OGL_CHECK( pRenderThread, glScissor( 0, 0, width, height ) );
 }
+
+void deoglRenderBase::SetViewport( const decPoint &point ) const{
+	SetViewport( point.x, point.y );
+}
+
+void deoglRenderBase::SetViewport( const decPoint3 &point ) const{
+	SetViewport( point.x, point.y );
+}
+
 
 void deoglRenderBase::SetCullMode( bool renderBackFaces ) const{
 	OGL_CHECK( GetRenderThread(), glCullFace( renderBackFaces ? GL_FRONT : GL_BACK ) );

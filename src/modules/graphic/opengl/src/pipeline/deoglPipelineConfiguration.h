@@ -112,7 +112,7 @@ private:
 	
 	bool pDynamicCullFace;
 	bool pDynamicPolygonOffset;
-	bool pDynamicStencil;
+	bool pDynamicStencilTest;
 	
 	
 	
@@ -164,6 +164,9 @@ public:
 	/** Enable rasterizer discard. */
 	inline bool GetEnableRasterizerDiscard() const{ return pEnableRasterizerDiscard; }
 	void SetEnableRasterizerDiscard( bool enable );
+	
+	/** Enable rasterizer discard and set color and depth masks to false. */
+	void EnableRasterizerDiscard();
 	
 	
 	
@@ -274,6 +277,9 @@ public:
 	/** Set stencil parameters for back. */
 	void SetStencilOpBack( GLenum opFail, GLenum opZFail, GLenum opZPass );
 	
+	/** Enable dynamic stencil test. */
+	void EnableDynamicStencilTest();
+	
 	
 	
 	/** Clip control. */
@@ -307,6 +313,9 @@ public:
 	/** Enable blend with function GL_ONE / GL_ONE. */
 	void EnableBlendAdd();
 	
+	/** Enable blend with function GL_SRC_ALPHA / GL_ONE. */
+	void EnableBlendTranspAdd();
+	
 	/** Enable blend with function. */
 	void EnableBlend( GLenum source, GLenum dest );
 	
@@ -321,8 +330,8 @@ public:
 	void SetDynamicPolygonOffset( bool dynamic );
 	
 	/** Dynamic stencil. */
-	inline bool GetDynamicStencil() const{ return pDynamicStencil; }
-	void SetDynamicStencil( bool dynamic );
+	inline bool GetDynamicStencilTest() const{ return pDynamicStencilTest; }
+	void SetDynamicStencilTest( bool dynamic );
 	
 	
 	

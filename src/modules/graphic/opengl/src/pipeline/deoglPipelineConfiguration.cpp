@@ -69,7 +69,7 @@ pBlendFuncDest( GL_ZERO ),
 pClipControl( false ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
-pDynamicStencil( false )
+	pDynamicStencilTest ( false )
 {
 	pColorMask[ 0 ] = true;
 	pColorMask[ 1 ] = true;
@@ -106,7 +106,7 @@ pBlendFuncDest( GL_ZERO ),
 pClipControl( false ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
-pDynamicStencil( false )
+	pDynamicStencilTest ( false )
 {
 	pColorMask[ 0 ] = true;
 	pColorMask[ 1 ] = true;
@@ -179,6 +179,12 @@ void deoglPipelineConfiguration::SetEnableScissorTest( bool enable ){
 
 void deoglPipelineConfiguration::SetEnableRasterizerDiscard( bool enable ){
 	pEnableRasterizerDiscard = enable;
+}
+
+void deoglPipelineConfiguration::EnableRasterizerDiscard(){
+	SetColorMask( false, false, false, false );
+	SetDepthMask( false );
+	SetEnableRasterizerDiscard( true );
 }
 
 
@@ -319,6 +325,11 @@ void deoglPipelineConfiguration::SetStencilOpBack( GLenum opFail, GLenum opZFail
 	pUpdateStencilSameFrontBack();
 }
 
+void deoglPipelineConfiguration::EnableDynamicStencilTest(){
+	SetEnableStencilTest( true );
+	SetDynamicStencilTest ( true );
+}
+
 
 
 void deoglPipelineConfiguration::SetEnableBlend( bool enable ){
@@ -349,6 +360,10 @@ void deoglPipelineConfiguration::EnableBlendAdd(){
 	EnableBlend( GL_ONE, GL_ONE );
 }
 
+void deoglPipelineConfiguration::EnableBlendTranspAdd(){
+	EnableBlend( GL_SRC_ALPHA, GL_ONE );
+}
+
 void deoglPipelineConfiguration::EnableBlend( GLenum source, GLenum dest ){
 	pEnableBlend = true;
 	pBlendFuncSource = source;
@@ -371,8 +386,8 @@ void deoglPipelineConfiguration::SetDynamicPolygonOffset( bool dynamic ){
 	pDynamicPolygonOffset = dynamic;
 }
 
-void deoglPipelineConfiguration::SetDynamicStencil( bool dynamic ){
-	pDynamicStencil = dynamic;
+void deoglPipelineConfiguration::SetDynamicStencilTest( bool dynamic ){
+	pDynamicStencilTest = dynamic;
 }
 
 
@@ -418,7 +433,7 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 	}
 	
 	ENABLE_GL_STATE( pEnableStencilTest, GL_STENCIL_TEST )
-	if( pEnableStencilTest && ! pDynamicStencil ){
+	if( pEnableStencilTest && ! pDynamicStencilTest ){
 		if( pStencilSameFrontBack ){
 			OGL_CHECK( renderThread, glStencilOp(
 				pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront ) );
@@ -487,7 +502,7 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 	pClipControl = config.pClipControl;
 	pDynamicCullFace = config.pDynamicCullFace;
 	pDynamicPolygonOffset = config.pDynamicPolygonOffset;
-	pDynamicStencil = config.pDynamicStencil;
+	pDynamicStencilTest = config.pDynamicStencilTest;
 	return *this;
 }
 
@@ -526,7 +541,7 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pClipControl == config.pClipControl
 		&& pDynamicCullFace == config.pDynamicCullFace
 		&& pDynamicPolygonOffset == config.pDynamicPolygonOffset
-		&& pDynamicStencil == config.pDynamicStencil;
+		&& pDynamicStencilTest == config.pDynamicStencilTest;
 }
 
 
