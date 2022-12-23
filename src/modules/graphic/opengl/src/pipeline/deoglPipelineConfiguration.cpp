@@ -338,21 +338,21 @@ void deoglPipelineConfiguration::SetBlendFuncDest( GLenum mode ){
 }
 
 void deoglPipelineConfiguration::EnableBlendReplace(){
-	pEnableBlend = true;
-	pBlendFuncSource = GL_ONE;
-	pBlendFuncDest = GL_ZERO;
+	EnableBlend( GL_ONE, GL_ZERO );
 }
 
 void deoglPipelineConfiguration::EnableBlendBlend(){
-	pEnableBlend = true;
-	pBlendFuncSource = GL_SRC_ALPHA;
-	pBlendFuncDest = GL_ONE_MINUS_SRC_ALPHA;
+	EnableBlend( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 }
 
 void deoglPipelineConfiguration::EnableBlendAdd(){
+	EnableBlend( GL_ONE, GL_ONE );
+}
+
+void deoglPipelineConfiguration::EnableBlend( GLenum source, GLenum dest ){
 	pEnableBlend = true;
-	pBlendFuncSource = GL_ONE;
-	pBlendFuncDest = GL_ONE;
+	pBlendFuncSource = source;
+	pBlendFuncDest = dest;
 }
 
 

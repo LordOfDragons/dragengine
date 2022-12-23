@@ -307,6 +307,9 @@ public:
 	/** Enable blend with function GL_ONE / GL_ONE. */
 	void EnableBlendAdd();
 	
+	/** Enable blend with function. */
+	void EnableBlend( GLenum source, GLenum dest );
+	
 	
 	
 	/** Dynamic cull face. */

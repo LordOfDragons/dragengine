@@ -174,12 +174,14 @@ deoglRenderReflection::deoglRenderReflection( deoglRenderThread &renderThread ) 
 deoglRenderBase( renderThread )
 {
 	const bool indirectMatrixAccessBug = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken();
-	const bool bugUBODirectLinkDeadloop = renderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken();
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const deoglExtensions &extensions = renderThread.GetExtensions();
 	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
 	deoglShaderSources *sources;
 	
 	pRenderParamBlock = NULL;
@@ -192,6 +194,7 @@ deoglRenderBase( renderThread )
 	pEnvMapsParamBlock = NULL;
 	
 	pDirectEnvMapActive  = NULL;
+
 	pDirectEnvMapFading = NULL;
 	
 	pUseEquiEnvMap = config.GetEnvMapUseEqui() || ! extensions.GetHasArrayCubeMap();
@@ -200,79 +203,83 @@ deoglRenderBase( renderThread )
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
+		
+		// copy color
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, false, false );
+		pipconf.SetEnableScissorTest( true );
+		
 		defines = commonDefines;
+		defines.SetDefines( "INPUT_ARRAY_TEXTURE" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
-		pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyColor = pipelineManager.GetWith( pipconf );
 		
-		defines.SetDefine( "MIPMAP", true );
-		pShaderCopyColorMipMap = shaderManager.GetProgramWith( sources, defines );
+		defines.SetDefines( "MIPMAP" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyColorMipMap = pipelineManager.GetWith( pipconf );
 		
 		defines = commonDefines;
-		defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		defines.SetDefines( "INPUT_ARRAY_TEXTURE" );
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
-			defines.SetDefine( "GS_RENDER_STEREO", true );
 		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyColorStereo = pipelineManager.GetWith( pipconf );
 		
-		pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
+		defines.SetDefines( "MIPMAP" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyColorMipMapStereo = pipelineManager.GetWith( pipconf );
 		
-		defines.SetDefine( "MIPMAP", true );
-		pShaderCopyColorMipMapStereo = shaderManager.GetProgramWith( sources, defines );
 		
-		
+		// min max
+		pipconf.Reset();
+		pipconf.SetEnableScissorTest( true );
 		
 		if( deoglDRDepthMinMax::USAGE_VERSION == 0 ){
+			pipconf.SetMasks( true, true, false, false, false );
+		
 			defines = commonDefines;
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap 2" );
-			if( ! sources ){
-				DETHROW( deeInvalidParam );
-			}
-			defines.SetDefine( "NO_TEXCOORD", true );
-			defines.SetDefine( "INITIAL", true );
-			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
+			defines.SetDefines( "NO_TEXCOORD", "INITIAL" );
+			pipconf.SetShader( renderThread, sources, defines );
+			pPipelineMinMaxMipMapInitial = pipelineManager.GetWith( pipconf );
 			
 			defines = commonDefines;
-			defines.SetDefine( "NO_TEXCOORD", true );
-			defines.SetDefine( "DOWNSAMPLE", true );
-			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
+			defines.SetDefines( "NO_TEXCOORD", "DOWNSAMPLE" );
+			pipconf.SetShader( renderThread, sources, defines );
+			pPipelineMinMaxMipMapDownsample = pipelineManager.GetWith( pipconf );
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
-			defines = commonDefines;
-			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
-			if( ! sources ){
-				DETHROW( deeInvalidParam );
-			}
-			defines.SetDefine( "NO_TEXCOORD", true );
-			defines.SetDefine( "CLAMP_TC", true );
-			defines.SetDefine( "FUNC_MIN", true );
-			pShaderMinMaxMipMapMin = shaderManager.GetProgramWith( sources, defines );
+			pipconf.SetMasks( true, true, true, false, true );
+			pipconf.EnableDepthTestAlways();
 			
 			defines = commonDefines;
-			defines.SetDefine( "NO_TEXCOORD", true );
-			defines.SetDefine( "CLAMP_TC", true );
-			defines.SetDefine( "FUNC_MAX", true );
-			pShaderMinMaxMipMapMax = shaderManager.GetProgramWith( sources, defines );
+			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
+			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "FUNC_MIN" );
+			pipconf.SetShader( renderThread, sources, defines );
+			pPipelineMinMaxMipMapMin = pipelineManager.GetWith( pipconf );
+			
+			defines = commonDefines;
+			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "FUNC_MAX" );
+			pipconf.SetShader( renderThread, sources, defines );
+			pPipelineMinMaxMipMapMax = pipelineManager.GetWith( pipconf );
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
-			defines = commonDefines;
-			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
-			if( ! sources ){
-				DETHROW( deeInvalidParam );
-			}
-			defines.SetDefine( "NO_TEXCOORD", true );
-			defines.SetDefine( "CLAMP_TC", true );
-			defines.SetDefine( "SPLIT_VERSION", true );
-			defines.SetDefine( "SPLIT_SHIFT_TC", true );
-			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
+			pipconf.SetMasks( true, true, true, false, true );
+			pipconf.EnableDepthTestAlways();
 			
 			defines = commonDefines;
-			defines.SetDefine( "NO_TEXCOORD", true );
-			defines.SetDefine( "SPLIT_VERSION", true );
-			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
+			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
+			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "SPLIT_VERSION", "SPLIT_SHIFT_TC" );
+			pipconf.SetShader( renderThread, sources, defines );
+			pPipelineMinMaxMipMapInitial = pipelineManager.GetWith( pipconf );
+			
+			defines = commonDefines;
+			defines.SetDefines( "NO_TEXCOORD", "SPLIT_VERSION" );
+			pipconf.SetShader( renderThread, sources, defines );
+			pPipelineMinMaxMipMapDownsample = pipelineManager.GetWith( pipconf );
 		}
 		
 		
@@ -285,14 +292,21 @@ deoglRenderBase( renderThread )
 		// 
 		// For the time being view-space stepping is used until the position texture is back in use. Then the final
 		// version will be used using screen-space stepping with z-position
-		// 
+		//
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, false, false );
+		pipconf.SetEnableScissorTest( true );
+		// pipconf.SetEnableStencilTest( true );
+		// pipconf.SetStencil( GL_EQUAL, plan.GetStencilRefValue(), ~0, 0 );
+		// pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace" );
 		if( pUseEquiEnvMap ){
-			defines.SetDefine( "ENVMAP_EQUI", true );
+			defines.SetDefines( "ENVMAP_EQUI" );
 		}
 		if( useInverseDepth ){
-			defines.SetDefine( "INVERSE_DEPTH", true );
+			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		
 		if( config.GetSSRMethod() == 0 ){ // 0 = groundTruth
@@ -301,138 +315,167 @@ deoglRenderBase( renderThread )
 		}else if( config.GetSSRMethod() == 1 ){ // 1 = stepedSS
 			defines.SetDefine( "SSR_VERSION", 1 );
 			//defines.SetDefine( "RESULT_AFTER_FIRST_LOOP", true ); // this yields wrong results (moving reflections)
-				defines.SetDefine( "NESTED_LOOP", true ); // enabled slows down on Radeon 4870 but can't do better quality
-				defines.SetDefine( "MULTI_STEPPING", true );
+				defines.SetDefines( "NESTED_LOOP" ); // enabled slows down on Radeon 4870 but can't do better quality
+				defines.SetDefines( "MULTI_STEPPING" );
 				// integrated seems worse with SSR_VERSION=1 but required as otherwise NaN/Inf polutes the rendering
 				//defines.SetDefine( "INTEGRATED_THRESHOLD_TEST", true );
 			
 			if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-				defines.SetDefine( "USE_DEPTH_MIPMAP", true );
+				defines.SetDefines( "USE_DEPTH_MIPMAP" );
 			}
 		}
 		
 		//defines.SetDefine( "ROUGHNESS_TAPPING", true );
 		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pShaderScreenSpace = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineScreenSpace = pipelineManager.GetWith( pipconf );
 		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
-			defines.SetDefine( "GS_RENDER_STEREO", true );
 		}
-		pShaderScreenSpaceStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineScreenSpaceStereo = pipelineManager.GetWith( pipconf );
 		
+		
+		// apply reflections
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, false, false );
+		pipconf.SetEnableScissorTest( true );
+		pipconf.EnableBlendAdd();
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections" );
-		if( indirectMatrixAccessBug ){
-			defines.SetDefine( "UBO_IDMATACCBUG", true );
-		}
-		if( bugUBODirectLinkDeadloop ){
-			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
-		}
 		if( pUseEquiEnvMap ){
-			defines.SetDefine( "ENVMAP_EQUI", true );
+			defines.SetDefines( "ENVMAP_EQUI" );
 		}
 		if( useInverseDepth ){
-			defines.SetDefine( "INVERSE_DEPTH", true );
+			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		//defines.SetDefine( "HACK_NO_SSR", true ); // set to 1 to examine env-map reflection only
 		
 		if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
-			defines.SetDefine( "ENVMAP_SINGLE", true ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
+			defines.SetDefines( "ENVMAP_SINGLE" ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 			
 		}else if( config.GetEnvMapMethod() == deoglConfiguration::eemmMultipleBoxProjection ){
-			defines.SetDefine( "ENVMAP_BOX_PROJECTION", true ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
+			defines.SetDefines( "ENVMAP_BOX_PROJECTION" ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
 			
 		//}else{ // not ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
 		}
 		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pShaderApplyReflections = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineApplyReflections = pipelineManager.GetWith( pipconf );
 		
 		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
-			defines.SetDefine( "GS_RENDER_STEREO", true );
+			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderApplyReflectionsStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineApplyReflectionsStereo = pipelineManager.GetWith( pipconf );
 		
 		
-		
+		// copy material
 		// input is framebuffer normal format (usually float). output is hard-coded shifted-int
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, false, false );
+		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Material Copy" );
-		pShaderCopyMaterial = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyMaterial = pipelineManager.GetWith( pipconf );
 		
 		
+		// env map copy
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Light GI" );
 		if( pUseEquiEnvMap ){
-			defines.SetDefine( "ENVMAP_EQUI", true );
+			defines.SetDefines( "ENVMAP_EQUI" );
 		}
-		pShaderEnvMapCopy = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineEnvMapCopy = pipelineManager.GetWith( pipconf );
 		
-		defines.SetDefine( "WITH_GI", true );
-		pShaderEnvMapLightGI = shaderManager.GetProgramWith( sources, defines );
+		// env map light gi
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
+		
+		defines.SetDefines( "WITH_GI" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineEnvMapLightGI = pipelineManager.GetWith( pipconf );
 		
 		
-		
+		// reflection
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, false, false );
+		pipconf.SetEnableScissorTest( true );
+		pipconf.EnableBlendAdd();
+		// pipconf.SetEnableStencilTest( true );
+		// pipconf.SetStencil( GL_EQUAL, plan.GetStencilRefValue(), ~0, 0 );
+		// pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection" );
-		if( indirectMatrixAccessBug ){
-			defines.SetDefine( "UBO_IDMATACCBUG", true );
-		}
-		if( bugUBODirectLinkDeadloop ){
-			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
-		}
 		//if( pUseEquiEnvMap ){
-			defines.SetDefine( "ENVMAP_EQUI", true );
+			defines.SetDefines( "ENVMAP_EQUI" );
 		//}
 		if( useInverseDepth ){
-			defines.SetDefine( "INVERSE_DEPTH", true );
+			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineReflection = pipelineManager.GetWith( pipconf );
 		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
-			defines.SetDefine( "GS_RENDER_STEREO", true );
 		}
-		pShaderReflectionStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineReflectionStereo = pipelineManager.GetWith( pipconf );
 		
 		
+		// cube map to equi rect map
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection CubeMap 2 EquiMap" );
-		pShaderCubeMap2EquiMap = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCubeMap2EquiMap = pipelineManager.GetWith( pipconf );
 		
 		
+		// build env map
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
 		
 		defines = commonDefines;
 		if( pUseEquiEnvMap ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap Equi" );
-			defines.SetDefine( "ENVMAP_EQUI", true );
+			defines.SetDefines( "ENVMAP_EQUI" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap" );
 		}
-		pShaderBuildEnvMap = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBuildEnvMap = pipelineManager.GetWith( pipconf );
 		
 		
+		// env map mask
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, true, false );
+		pipconf.EnableBlend( GL_SRC_COLOR, GL_ZERO );
+		pipconf.EnableCulling( false );
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection EnvMap Mask" );
-		//defines.SetDefine( "FULLSCREENQUAD", true );
-		pShaderEnvMapMask = shaderManager.GetProgramWith( sources, defines );
+		//defines.SetDefines( "FULLSCREENQUAD" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineEnvMapMask = pipelineManager.GetWith( pipconf );
 		
 		
 		
@@ -510,19 +553,9 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 	deoglFramebuffer *fbo = NULL;
 	deoglShaderCompiled *shader;
 	
-	// set states
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	pPipelineCubeMap2EquiMap->Activate();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
-	renderThread.GetShader().ActivateShader( pShaderCubeMap2EquiMap );
-	shader = pShaderCubeMap2EquiMap->GetCompiled();
+	shader = pPipelineCubeMap2EquiMap->GetGlShader()->GetCompiled();
 	
 	tsmgr.EnableCubeMap( 0, cubemap, GetSamplerClampNearest() ); // GetSamplerClampLinear()
 	
@@ -563,8 +596,7 @@ void deoglRenderReflection::RenderEnvMapMask( deoglRenderPlan &plan, deoglEnviro
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Reflection.RenderEnvMapMask" );
 	
-	// set state we need at least for clearing
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE ) );
+	pPipelineEnvMapMask->Activate();
 	
 	// clear the alpha value to 1
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -579,20 +611,9 @@ void deoglRenderReflection::RenderEnvMapMask( deoglRenderPlan &plan, deoglEnviro
 		decDMatrix matrixCamera;
 		int i;
 		
-		// set states
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_COLOR, GL_ZERO ) );
-		OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-		SetCullMode( false );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+		SetViewport( size, size );
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, size, size ) );
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-		
-		renderThread.GetShader().ActivateShader( pShaderEnvMapMask );
-		shader = pShaderEnvMapMask->GetCompiled();
+		shader = pPipelineEnvMapMask->GetGlShader()->GetCompiled();
 		
 		shader->SetParameterMatrix4x4( speemMatrixP, plan.GetProjectionMatrix() );
 		
@@ -888,8 +909,9 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	
 	// for the sake of simplicity we use the shader always even for simple cases. there is no real speed
 	// gain in trying to use a copy especially since envmaps can have different dimensions
-	renderThread.GetShader().ActivateShader( pShaderBuildEnvMap );
-	shader = pShaderBuildEnvMap->GetCompiled();
+	pPipelineBuildEnvMap->Activate();
+	
+	shader = pPipelineBuildEnvMap->GetGlShader()->GetCompiled();
 	
 	// for the time beeing we need all textures set
 	for( i=1; i<4; i++ ){
@@ -922,16 +944,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			height = pEnvMap->GetSize();
 			width = pEnvMap->GetSize();
 		}
-		
-		// set states
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-		
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 		
 		try{
 			fbo = renderThread.GetFramebuffer().GetManager().GetFBOWithResolution( width, height );
@@ -982,7 +994,7 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			}
 			fbo->Verify();
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+			SetViewport( width, height );
 			
 			if( pEnvMapEqui ){
 				tsmgr.EnableTexture( 0, *blendEnvMapEqui[ 0 ], *blendSampler[ 0 ] );
@@ -1064,26 +1076,9 @@ void deoglRenderReflection::RenderReflections( deoglRenderPlan &plan ){
 		envMapSky = renderThread.GetDefaultTextures().GetEmissivity();
 	}
 	
-	// set states
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-//OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	( plan.GetRenderStereo() ? pPipelineReflectionStereo : pPipelineReflection )->Activate();
 	
-	//OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-	//OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	//OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	//OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
-OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	DEBUG_PRINT_TIMER( "Reflection: Set States" );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	DEBUG_PRINT_TIMER( "Reflection: Viewport/Scissor" );
+	SetViewport( plan );
 	
 	// activate fbo
 //defren.ActivateFBOTemporary1( false );
@@ -1091,8 +1086,6 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	DEBUG_PRINT_TIMER( "Reflection: Activate FBO" );
 	
 	// activate shader and set the parameters
-	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderReflectionStereo : pShaderReflection );
-	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	pRenderParamBlock->Activate();
 	DEBUG_PRINT_TIMER( "Reflection: Activate Shader" );
@@ -1215,6 +1208,8 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		const int mipMapLevelCount = depthMinMap.GetTexture()->GetRealMipMapLevelCount();
 		
 		// create initial min-max texture from the current depth texture
+		pPipelineMinMaxMipMapInitial->Activate();
+		
 		renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( 0 ) );
 		
 		/*if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
@@ -1225,17 +1220,9 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
 		
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-		OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+		SetViewport( width, height );
 		
-		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapInitial );
-		shader = pShaderMinMaxMipMapInitial->GetCompiled();
+		shader = pPipelineMinMaxMipMapInitial->GetGlShader()->GetCompiled();
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
@@ -1245,8 +1232,9 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Initial Pass" );
 		
 		// downsample up to the max level. the first level has been done already by the initial pass
-		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapDownsample );
-		shader = pShaderMinMaxMipMapDownsample->GetCompiled();
+		pPipelineMinMaxMipMapDownsample->Activate();
+		
+		shader = pPipelineMinMaxMipMapDownsample->GetGlShader()->GetCompiled();
 		
 		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
@@ -1258,8 +1246,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			width = decMath::max( width >> 1, 1 );
 			height = decMath::max( height >> 1, 1 );
-			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+			SetViewport( width, height );
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Downsample Pass" );
@@ -1291,18 +1278,10 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
 		const int mipMapLevelCount = depthMinMap.GetMaxLevelCount();
-		
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+		pPipelineMinMaxMipMapMin->Activate();
 		
 		// create minimum texture
-		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapMin );
-		shader = pShaderMinMaxMipMapMin->GetCompiled();
+		shader = pPipelineMinMaxMipMapMin->GetGlShader()->GetCompiled();
 		
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
@@ -1334,7 +1313,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				}
 			}
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+			SetViewport( width, height );
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Min Pass" );
@@ -1350,8 +1329,9 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		}
 			
 		// create maximum texture
-		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapMax );
-		shader = pShaderMinMaxMipMapMax->GetCompiled();
+		pPipelineMinMaxMipMapMax->Activate();
+		
+		shader = pPipelineMinMaxMipMapMax->GetGlShader()->GetCompiled();
 		
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
@@ -1383,7 +1363,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				}
 			}
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+			SetViewport( width, height );
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Max Pass" );
@@ -1403,23 +1383,16 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
 		const int mipMapLevelCount = depthMinMap.GetMaxLevelCount();
 		
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+		pPipelineMinMaxMipMapInitial->Activate();
 		
 		// create min-max texture
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
 		
 		renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( 0 ) );
-		OGL_CHECK( renderThread, glViewport( 0, 0, width << 1, height ) );
+		SetViewport( width << 1, height );
 		
-		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapInitial );
-		shader = pShaderMinMaxMipMapInitial->GetCompiled();
+		shader = pPipelineMinMaxMipMapInitial->GetGlShader()->GetCompiled();
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
@@ -1437,8 +1410,9 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		}
 		
 		// downsample up to the max level. the first level has been done already by the initial pass
-		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapDownsample );
-		shader = pShaderMinMaxMipMapDownsample->GetCompiled();
+		pPipelineMinMaxMipMapDownsample->Activate();
+		
+		shader = pPipelineMinMaxMipMapDownsample->GetGlShader()->GetCompiled();
 		
 		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
@@ -1459,7 +1433,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			
 			shader->SetParameterInt( spmmmmSplitPos, width );
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width << 1, height ) );
+			SetViewport( width << 1, height );
 			
 			RenderFullScreenQuadVAO();
 			DEBUG_PRINT_TIMER( "Reflection Depth Min-Max: Downsample Pass" );
@@ -1487,27 +1461,15 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	int height = defren.GetHeight();
 	int width = defren.GetWidth();
 	
-	// copy base level
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineCopyColorStereo : pPipelineCopyColor;
+	pipeline.Activate();
+	
 	defren.ActivateFBOTemporary1Level( 0 );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	
 	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyColorStereo : pShaderCopyColor;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	shader = pipeline.GetGlShader()->GetCompiled();
 	
 	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
 	
@@ -1562,11 +1524,11 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
+	pPipelineCopyMaterial->Activate();
+	
 	renderThread.GetFramebuffer().Activate( plan.GetFBOMaterial() );
 	
-	renderThread.GetShader().ActivateShader( pShaderCopyMaterial );
-	
-	deoglShaderCompiled &shader = *pShaderCopyMaterial->GetCompiled();
+	deoglShaderCompiled &shader = *pPipelineCopyMaterial->GetGlShader()->GetCompiled();
 	shader.SetParameterVector4( spcmPosTransform, plan.GetDepthToPosition() );
 	shader.SetParameterVector2( spcmPosTransform2, plan.GetDepthToPosition2() );
 	shader.SetParameterMatrix4x3( spcmMatrixPosition, plan.GetFBOMaterialMatrix() );
@@ -1582,15 +1544,7 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 		defren.SetShaderParamFSQuadUpsideDown( shader, spcmTCTransform );
 	}
 	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, plan.GetViewportWidth(), plan.GetViewportHeight() ) );
+	SetViewport( plan );
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
@@ -1651,24 +1605,16 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
+	pPipelineEnvMapLightGI->Activate();
+	
 	renderThread.GetFramebuffer().Activate( &fbo );
 	fbo.DetachAllImages();
 	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderEnvMapLightGI );
-	
 	tsmgr.EnableArrayTexture( 4, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 5, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 6, giState->GetTextureProbeOffset(), GetSamplerClampLinear() );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -1730,15 +1676,7 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	renderThread.GetShader().ActivateShader( pShaderEnvMapCopy );
+	pPipelineEnvMapCopy->Activate();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -1749,7 +1687,7 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	fbo.Verify();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, target.GetSize(), target.GetSize() ) );
+	SetViewport( target.GetSize(), target.GetSize() );
 	
 	tsmgr.EnableArrayTexture( 3, source, GetSamplerClampNearest() ); // texEmissive
 	
@@ -1783,31 +1721,16 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	}
 	
 	// render screen space reflection
+	( plan.GetRenderStereo() ? pPipelineScreenSpaceStereo : pPipelineScreenSpace )->Activate();
+	
 	//defren.GetDepthTexture1()->CreateMipMaps();
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	//OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-	//OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	//OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	//OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	SetViewport( plan );
 	
 	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	
-	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderScreenSpaceStereo : pShaderScreenSpace );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -1912,15 +1835,9 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	pEnvMapsParamBlock->UnmapBuffer();
 	
 	// apply reflections
+	( plan.GetRenderStereo() ? pPipelineApplyReflectionsStereo : pPipelineApplyReflections )->Activate();
+	
 	defren.ActivateFBOColor( false, false );
-	
-//OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderApplyReflectionsStereo : pShaderApplyReflections;
-	renderThread.GetShader().ActivateShader( program );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	pEnvMapsParamBlock->Activate();
