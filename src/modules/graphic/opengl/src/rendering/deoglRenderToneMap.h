@@ -41,25 +41,25 @@ private:
 	deoglFramebuffer *pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
-	deoglPipeline::Ref pPipelineColor2LogLum;
-	deoglPipeline::Ref pPipelineColor2LogLumStereo;
-	deoglPipeline::Ref pPipelineAvgLogLum;
-	deoglPipeline::Ref pPipelineAvgLogLumStereo;
-	deoglPipeline::Ref pPipelineParameters;
-	deoglPipeline::Ref pPipelineParametersStereo;
-	deoglPipeline::Ref pPipelineBrightPass;
-	deoglPipeline::Ref pPipelineBrightPassStereo;
-	deoglPipeline::Ref pPipelineBloomReduce;
-	deoglPipeline::Ref pPipelineBloomBlur;
-	deoglPipeline::Ref pPipelineBloomBlurStereo;
-	deoglPipeline::Ref pPipelineBloomAdd;
-	deoglPipeline::Ref pPipelineToneMap;
-	deoglPipeline::Ref pPipelineToneMapStereo;
-	deoglPipeline::Ref pPipelineLdr;
-	deoglPipeline::Ref pPipelineLdrStereo;
+	deoglPipeline *pPipelineColor2LogLum;
+	deoglPipeline *pPipelineColor2LogLumStereo;
+	deoglPipeline *pPipelineAvgLogLum;
+	deoglPipeline *pPipelineAvgLogLumStereo;
+	deoglPipeline *pPipelineParameters;
+	deoglPipeline *pPipelineParametersStereo;
+	deoglPipeline *pPipelineBrightPass;
+	deoglPipeline *pPipelineBrightPassStereo;
+	deoglPipeline *pPipelineBloomReduce;
+	deoglPipeline *pPipelineBloomBlur;
+	deoglPipeline *pPipelineBloomBlurStereo;
+	deoglPipeline *pPipelineBloomAdd;
+	deoglPipeline *pPipelineToneMap;
+	deoglPipeline *pPipelineToneMapStereo;
+	deoglPipeline *pPipelineLdr;
+	deoglPipeline *pPipelineLdrStereo;
 	
-	deoglPipeline::Ref pPipelineLumPrepare;
-	deoglPipeline::Ref pPipelineLumPrepareStereo;
+	deoglPipeline *pPipelineLumPrepare;
+	deoglPipeline *pPipelineLumPrepareStereo;
 	
 	
 public:

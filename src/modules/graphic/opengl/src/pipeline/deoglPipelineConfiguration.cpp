@@ -67,6 +67,8 @@ pEnableBlend( false ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
 pClipControl( false ),
+pSPBInstanceIndexBase( -1 ),
+pDrawIDOffset( -1 ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
 	pDynamicStencilTest ( false )
@@ -104,6 +106,8 @@ pEnableBlend( false ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
 pClipControl( false ),
+pSPBInstanceIndexBase( -1 ),
+pDrawIDOffset( -1 ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
 	pDynamicStencilTest ( false )
@@ -378,6 +382,16 @@ void deoglPipelineConfiguration::SetClipControl( bool clipControl ){
 
 
 
+void deoglPipelineConfiguration::SetSPBInstanceIndexBase( int parameter ){
+	pSPBInstanceIndexBase = parameter;
+}
+
+void deoglPipelineConfiguration::SetDrawIDOffset( int parameter ){
+	pDrawIDOffset = parameter;
+}
+
+
+
 void deoglPipelineConfiguration::SetDynamicCullFace( bool dynamic ){
 	pDynamicCullFace = dynamic;
 }
@@ -500,6 +514,8 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 	pBlendFuncSource = config.pBlendFuncSource;
 	pBlendFuncDest = config.pBlendFuncDest;
 	pClipControl = config.pClipControl;
+	pSPBInstanceIndexBase = config.pSPBInstanceIndexBase;
+	pDrawIDOffset = config.pDrawIDOffset;
 	pDynamicCullFace = config.pDynamicCullFace;
 	pDynamicPolygonOffset = config.pDynamicPolygonOffset;
 	pDynamicStencilTest = config.pDynamicStencilTest;
@@ -539,6 +555,8 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pBlendFuncSource == config.pBlendFuncSource
 		&& pBlendFuncDest == config.pBlendFuncDest
 		&& pClipControl == config.pClipControl
+		&& pSPBInstanceIndexBase == config.pSPBInstanceIndexBase
+		&& pDrawIDOffset == config.pDrawIDOffset
 		&& pDynamicCullFace == config.pDynamicCullFace
 		&& pDynamicPolygonOffset == config.pDynamicPolygonOffset
 		&& pDynamicStencilTest == config.pDynamicStencilTest;

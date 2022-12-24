@@ -30,11 +30,7 @@
 
 class deoglParticleEmitterInstanceList;
 class deoglRenderTaskParticles;
-class deoglRenderTaskParticlesStep;
 class deoglRenderThread;
-class deoglSPBlockUBO;
-class deoglRenderTaskSharedShader;
-class deoglTexture;
 
 
 /**

@@ -60,6 +60,7 @@
 #include "../../particle/deoglRParticleEmitterInstance.h"
 #include "../../particle/deoglRParticleEmitterInstanceType.h"
 #include "../../particle/deoglRParticleEmitterType.h"
+#include "../../pipeline/deoglPipeline.h"
 #include "../../propfield/deoglPropFieldCluster.h"
 #include "../../propfield/deoglRPropField.h"
 #include "../../propfield/deoglRPropFieldType.h"
@@ -157,6 +158,10 @@ void deoglAddToRenderTask::SetOutline( bool outline ){
 	pUpdateFilters();
 }
 
+void deoglAddToRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
+	pForceDoubleSided = forceDoubleSided;
+}
+
 void deoglAddToRenderTask::SetFilterXRay( bool filterXRay ){
 	pFilterXRay = filterXRay;
 	pUpdateFilters();
@@ -200,6 +205,10 @@ void deoglAddToRenderTask::SetUseSpecialParamBlock( bool use ){
 	pUseSpecialParamBlock = use;
 }
 
+void deoglAddToRenderTask::SetEnforcePipeline( deoglPipeline *pipeline ){
+	pEnforceShader = nullptr;
+}
+
 void deoglAddToRenderTask::SetEnforceShader( deoglRenderTaskSharedShader *shader ){
 	pEnforceShader = shader;
 }
@@ -214,6 +223,7 @@ void deoglAddToRenderTask::Reset(){
 	pNoNotReflected = false;
 	pNoRendered = false;
 	pOutline = false;
+	pForceDoubleSided = false;
 	
 	pFilterXRay = false;
 	pXRay = false;
@@ -230,7 +240,8 @@ void deoglAddToRenderTask::Reset(){
 	
 	pUseSpecialParamBlock = false;
 	
-	pEnforceShader = NULL;
+	pEnforcePipeline = nullptr;
+	pEnforceShader = nullptr;
 }
 
 // #define SPECIAL_DEBUG_ON

@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglRenderTask.h"
+#include "deoglRenderTaskPipeline.h"
 #include "deoglRenderTaskShader.h"
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
@@ -36,6 +37,7 @@
 #include "shared/deoglRenderTaskSharedPool.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../pipeline/deoglPipeline.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTBufferObject.h"
@@ -76,6 +78,11 @@ pRenderVSStereo( false ),
 pVBODrawIndirect( 0 ),
 pVBODrawIndirectSize( 0 ),
 
+pPipelineCount( 0 ),
+pHasPipeline( nullptr ),
+pHasPipelineCount( 0 ),
+pHasPipelineSize( 0 ),
+
 pShaderCount( 0 ),
 pHasShader( NULL ),
 pHasShaderCount( 0 ),
@@ -87,12 +94,21 @@ pConfigTextureSize( 0 ){
 }
 
 deoglRenderTask::~deoglRenderTask(){
+	if( pHasPipeline ){
+		delete [] pHasPipeline;
+	}
 	if( pHasShader ){
 		delete [] pHasShader;
 	}
 	
-	const int shaderCount = pShaders.GetCount();
+	const int pipelineCount = pPipelines.GetCount();
 	int i;
+	for( i=0; i<pipelineCount; i++ ){
+		delete ( deoglRenderTaskPipeline* )pPipelines.GetAt( i );
+	}
+	pPipelines.RemoveAll();
+	
+	const int shaderCount = pShaders.GetCount();
 	for( i=0; i<shaderCount; i++ ){
 		delete ( deoglRenderTaskShader* )pShaders.GetAt( i );
 	}
@@ -112,6 +128,8 @@ deoglRenderTask::~deoglRenderTask(){
 
 void deoglRenderTask::Clear(){
 	RemoveAllConfigTextures();
+	pHasPipelineCount = 0;
+	pPipelineCount = 0;
 	pHasShaderCount = 0;
 	pShaderCount = 0;
 	
@@ -123,7 +141,7 @@ void deoglRenderTask::Clear(){
 }
 
 void deoglRenderTask::PrepareForRender(){
-	if( pShaderCount == 0 ){
+	if( pPipelineCount == 0 && pShaderCount == 0 ){
 		return;
 	}
 	
@@ -140,6 +158,20 @@ void deoglRenderTask::SortInstancesByDistance( deoglQuickSorter &sorter,
 const decDVector &position, const decDVector &direction ){
 	const double posDotDir = position * direction;
 	int i, j, k;
+	
+	for( i=0; i<pPipelineCount; i++ ){
+		const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) );
+		const int textureCount = pipeline.GetTextureCount();
+		
+		for( j=0; j<textureCount; j++ ){
+			const deoglRenderTaskTexture &texture = *pipeline.GetTextureAt( j );
+			const int vaoCount = texture.GetVAOCount();
+			
+			for( k=0; k<vaoCount; k++ ){
+				texture.GetVAOAt( k )->SortInstancesByDistance( sorter, position, direction, posDotDir );
+			}
+		}
+	}
 	
 	for( i=0; i<pShaderCount; i++ ){
 		const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pShaders.GetAt( i ) );
@@ -174,6 +206,72 @@ void deoglRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
 
 void deoglRenderTask::SetRenderVSStereo( bool renderVSStereo ){
 	pRenderVSStereo = renderVSStereo;
+}
+
+
+
+deoglRenderTaskPipeline *deoglRenderTask::GetPipelineAt( int index ) const{
+	return ( deoglRenderTaskPipeline* )pPipelines.GetAt( index );
+}
+
+deoglRenderTaskPipeline *deoglRenderTask::AddPipeline( const deoglPipeline *pipeline ){
+	const int index = pipeline->GetIndex();
+	
+	if( index >= pHasPipelineCount ){
+		if( index >= pHasPipelineSize ){
+			deoglRenderTaskPipeline ** const newArray = new deoglRenderTaskPipeline*[ index + 1 ];
+			
+			if( pHasPipeline ){
+				if( pHasPipelineCount > 0 ){
+					memcpy( newArray, pHasPipeline, sizeof( deoglRenderTaskPipeline* ) * pHasPipelineCount );
+				}
+				delete [] pHasPipeline;
+			}
+			
+			pHasPipeline = newArray;
+			pHasPipelineSize = index + 1;
+		}
+		
+		if( pHasPipelineCount <= index ){
+			memset( pHasPipeline + pHasPipelineCount, 0, sizeof( deoglRenderTaskPipeline* ) * ( index - pHasPipelineCount + 1 ) );
+			pHasPipelineCount = index + 1;
+		}
+	}
+	
+	deoglRenderTaskPipeline *rtpipeline = pHasPipeline[ index ];
+	if( rtpipeline ){
+		return rtpipeline;
+	}
+	
+	if( pPipelineCount == pPipelines.GetCount() ){
+		rtpipeline = new deoglRenderTaskPipeline;
+		pPipelines.Add( rtpipeline );
+		
+	}else{
+		rtpipeline = ( deoglRenderTaskPipeline* )pPipelines.GetAt( pPipelineCount );
+		rtpipeline->Reset();
+	}
+	pPipelineCount++;
+	
+	rtpipeline->SetPipeline( pipeline );
+	pHasPipeline[ index ] = rtpipeline;
+	return rtpipeline;
+}
+
+deoglRenderTaskPipeline *deoglRenderTask::AddPipelineDirect( const deoglPipeline *pipeline ){
+	deoglRenderTaskPipeline *rtpipeline;
+	if( pPipelineCount == pPipelines.GetCount() ){
+		rtpipeline = new deoglRenderTaskPipeline;
+		pPipelines.Add( rtpipeline );
+		
+	}else{
+		rtpipeline = ( deoglRenderTaskPipeline* )pPipelines.GetAt( pPipelineCount );
+		rtpipeline->Reset();
+	}
+	pPipelineCount++;
+	
+	rtpipeline->SetPipeline( pipeline );
+	return rtpipeline;
 }
 
 
@@ -257,14 +355,16 @@ void deoglRenderTask::AddConfigTexture( const deoglRenderTaskConfigTexture &text
 	}
 	
 	sConfigTexture &ct = pConfigTextures[ pConfigTextureCount++ ];
+	ct.pipeline = texture.GetPipeline();
 	ct.shader = texture.GetShader();
 	ct.texture = texture.GetTexture();
 	ct.vao = texture.GetVAO();
 	ct.instance = texture.GetInstance();
-	ct.rtshader = NULL;
-	ct.rttexture = NULL;
-	ct.rtvao = NULL;
-	ct.rtinstance = NULL;
+	ct.rtpipeline = nullptr;
+	ct.rtshader = nullptr;
+	ct.rttexture = nullptr;
+	ct.rtvao = nullptr;
+	ct.rtinstance = nullptr;
 // 	ct.shaderIndex = texture.GetShaderIndex();
 // 	ct.textureIndex = texture.GetTextureIndex();
 // 	ct.vaoIndex = texture.GetVAOIndex();
@@ -331,6 +431,9 @@ void deoglRenderTask::ApplyConfigTextures(){
 
 int deoglRenderTask::GetTotalPointCount() const{
 	int i, totalPointCount = 0;
+	for( i=0; i<pPipelineCount; i++ ){
+		totalPointCount += ( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) )->GetTotalPointCount();
+	}
 	for( i=0; i<pShaderCount; i++ ){
 		totalPointCount += ( ( deoglRenderTaskShader* )pShaders.GetAt( i ) )->GetTotalPointCount();
 	}
@@ -339,6 +442,9 @@ int deoglRenderTask::GetTotalPointCount() const{
 
 int deoglRenderTask::GetTotalTextureCount() const{
 	int i, totalTextureCount = 0;
+	for( i=0; i<pPipelineCount; i++ ){
+		totalTextureCount += ( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) )->GetTextureCount();
+	}
 	for( i=0; i<pShaderCount; i++ ){
 		totalTextureCount += ( ( deoglRenderTaskShader* )pShaders.GetAt( i ) )->GetTextureCount();
 	}
@@ -347,6 +453,9 @@ int deoglRenderTask::GetTotalTextureCount() const{
 
 int deoglRenderTask::GetTotalVAOCount() const{
 	int i, totalVAOCount = 0;
+	for( i=0; i<pPipelineCount; i++ ){
+		totalVAOCount += ( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) )->GetTotalVAOCount();
+	}
 	for( i=0; i<pShaderCount; i++ ){
 		totalVAOCount += ( ( deoglRenderTaskShader* )pShaders.GetAt( i ) )->GetTotalVAOCount();
 	}
@@ -355,6 +464,9 @@ int deoglRenderTask::GetTotalVAOCount() const{
 
 int deoglRenderTask::GetTotalInstanceCount() const{
 	int i, totalInstanceCount = 0;
+	for( i=0; i<pPipelineCount; i++ ){
+		totalInstanceCount += ( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) )->GetTotalInstanceCount();
+	}
 	for( i=0; i<pShaderCount; i++ ){
 		totalInstanceCount += ( ( deoglRenderTaskShader* )pShaders.GetAt( i ) )->GetTotalInstanceCount();
 	}
@@ -363,6 +475,9 @@ int deoglRenderTask::GetTotalInstanceCount() const{
 
 int deoglRenderTask::GetTotalSubInstanceCount() const{
 	int i, totalSubInstanceCount = 0;
+	for( i=0; i<pPipelineCount; i++ ){
+		totalSubInstanceCount += ( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) )->GetTotalSubInstanceCount();
+	}
 	for( i=0; i<pShaderCount; i++ ){
 		totalSubInstanceCount += ( ( deoglRenderTaskShader* )pShaders.GetAt( i ) )->GetTotalSubInstanceCount();
 	}
@@ -379,8 +494,95 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	int s, t, v, i, u, d, sic;
 	decString text;
 	
-	rtlogger.LogInfoFormat( "RenderTask %p: spb=%p shaders=%d points=%d textures=%d",
-		this, pRenderParamBlock, pShaderCount, GetTotalPointCount(), GetTotalTextureCount() );
+	rtlogger.LogInfoFormat( "RenderTask %p: spb=%p pipelines=%d shaders=%d points=%d textures=%d",
+		this, pRenderParamBlock, pHasPipelineCount, pShaderCount, GetTotalPointCount(), GetTotalTextureCount() );
+	
+	for( s=0; s<pPipelineCount; s++ ){
+		const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( s ) );
+		const deoglShaderDefines &defines = pipeline.GetPipeline()->GetGlShader()->GetDefines();
+		const deoglShaderProgram &shader = *pipeline.GetPipeline()->GetGlShader();
+		
+		rtlogger.LogInfoFormat( "- pipeline %d: shader=%p textures=%d points=%d vaos=%d "
+			"instances=%d subInstances=%d", s, &shader, pipeline.GetTextureCount(),
+			pipeline.GetTotalPointCount(), pipeline.GetTotalVAOCount(),
+			pipeline.GetTotalInstanceCount(), pipeline.GetTotalSubInstanceCount() );
+		
+		rtlogger.LogInfo( "  - configuration:" );
+		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode() ? shader.GetVertexSourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode() ? shader.GetGeometrySourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode() ? shader.GetFragmentSourceCode()->GetFilePath() : "-" );
+		
+		text = "    - defines: ";
+		const int defineCount = defines.GetDefineCount();
+		for( d=0; d<defineCount; d++ ){
+			const char *defineName = defines.GetDefineNameAt( d );
+			const char *defineValue = defines.GetDefineValueAt( d );
+			
+			if( strlen( defineValue ) > 10 ){
+				text.AppendFormat( "%s %s=%.10s...", d == 0 ? "" : ",", defineName, defineValue );
+				
+			}else{
+				text.AppendFormat( "%s %s=%s", d == 0 ? "" : ",", defineName, defineValue );
+			}
+		}
+		rtlogger.LogInfo( text.GetString() );
+		
+		const int textureCount = pipeline.GetTextureCount();
+		for( t=0; t<textureCount; t++ ){
+			const deoglRenderTaskTexture &rttexture = *pipeline.GetTextureAt( t );
+			rtlogger.LogInfoFormat( "  - texture %i: tuc=%p texture=%p vaos=%i "
+				"points=%i instances=%i subInstances=%i", t, rttexture.GetTexture()->GetTUC(),
+				rttexture.GetTexture(), rttexture.GetVAOCount(), rttexture.GetTotalPointCount(),
+				rttexture.GetTotalInstanceCount(), rttexture.GetTotalSubInstanceCount() );
+			
+			const int unitCount = rttexture.GetTexture()->GetTUC()->GetUnitCount();
+			text.Format( "    units(" );
+			for( u=0; u<unitCount; u++ ){
+				const deoglTexUnitConfig &unit = rttexture.GetTexture()->GetTUC()->GetUnitAt( u );
+				if( unit.GetTexture() ){
+					text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
+					
+				}else if( unit.GetCubeMap() ){
+					text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );
+					
+				}else if( unit.GetSpecial() != deoglTexUnitConfig::estNone ){
+					text.AppendFormat( " S%i", unit.GetSpecial() );
+					
+				}else{
+					text.AppendFormat( " -" );
+				}
+			}
+			text.AppendFormat( " )" );
+			rtlogger.LogInfo( text.GetString() );
+			
+			const int vaoCount = rttexture.GetVAOCount();
+			for( v=0; v<vaoCount; v++ ){
+				const deoglRenderTaskVAO &rtvao = *rttexture.GetVAOAt( v );
+				sic = rtvao.GetTotalSubInstanceCount();
+				
+				rtlogger.LogInfoFormat( "    - vao %i: vao=%i instances=%i points=%i "
+					"subInstances=%i", v, rtvao.GetVAO()->GetVAO()->GetVAO(),
+					rtvao.GetInstanceCount(), rtvao.GetTotalPointCount(), sic );
+				
+				if( detailsInstances ){
+					const int instanceCount = rtvao.GetInstanceCount();
+					for( i=0; i<instanceCount; i++ ){
+						const deoglRenderTaskInstance &rtinstance = *rtvao.GetInstanceAt( i );
+						const deoglRenderTaskSharedInstance &instance = *rtinstance.GetInstance();
+						if( instance.GetSubInstanceSPB() ){
+							rtlogger.LogInfoFormat( "        - instance %i: ds=%s fp=%i pc=%i "
+								"fi=%i ic=%i sic=%i sispbi=%p sispbfi=%d", i,
+								instance.GetDoubleSided() ? "t" : "n", instance.GetFirstPoint(),
+								instance.GetPointCount(), instance.GetFirstIndex(),
+								instance.GetIndexCount(), instance.GetSubInstanceCount(),
+								rtinstance.GetSIIndexInstanceSPB(),
+								rtinstance.GetSIIndexInstanceFirst() );
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	for( s=0; s<pShaderCount; s++ ){
 		const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pShaders.GetAt( s ) );
@@ -498,6 +700,41 @@ void deoglRenderTask::pAssignSPBInstances(){
 	int firstIndex = 0;
 	int i, j, k, l;
 	
+	for( i=0; i<pPipelineCount; i++ ){
+		const deoglRenderTaskPipeline &rtpipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) );
+		const int textureCount = rtpipeline.GetTextureCount();
+		
+		for( j=0; j<textureCount; j++ ){
+			const deoglRenderTaskTexture &rttexture = *rtpipeline.GetTextureAt( j );
+			const int vaoCount = rttexture.GetVAOCount();
+			
+			for( k=0; k<vaoCount; k++ ){
+				const deoglRenderTaskVAO &rtvao = *rttexture.GetVAOAt( k );
+				const int instanceCount = rtvao.GetInstanceCount();
+				
+				for( l=0; l<instanceCount; l++ ){
+					deoglRenderTaskInstance &rtinstance = *rtvao.GetInstanceAt( l );
+					
+					if( ! paramBlock || firstIndex + rtinstance.GetSubInstanceCount() > pSPBInstanceMaxEntries ){
+						if( paramBlock ){
+							paramBlock->SetElementCount( componentsPerIndex
+								* decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 ) );
+						}
+						
+						if( paramBlockCount == pSPBInstances.GetCount() ){
+							pCreateSPBInstanceParamBlock();
+						}
+						paramBlock = pSPBInstances.GetAt( paramBlockCount++ );
+						firstIndex = 0;
+					}
+					
+					rtinstance.SetSIIndexInstanceParam( paramBlock, firstIndex );
+					firstIndex += rtinstance.GetSubInstanceCount();
+				}
+			}
+		}
+	}
+	
 	for( i=0; i<pShaderCount; i++ ){
 		const deoglRenderTaskShader &rtshader = *( ( deoglRenderTaskShader* )pShaders.GetAt( i ) );
 		const int textureCount = rtshader.GetTextureCount();
@@ -544,6 +781,37 @@ void deoglRenderTask::pUpdateSPBInstances(){
 	int i, j, k, l;
 	
 	try{
+		for( i=0; i<pPipelineCount; i++ ){
+			const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) );
+			const int textureCount = pipeline.GetTextureCount();
+			
+			for( j=0; j<textureCount; j++ ){
+				const deoglRenderTaskTexture &texture = *pipeline.GetTextureAt( j );
+				const int vaoCount = texture.GetVAOCount();
+				
+				for( k=0; k<vaoCount; k++ ){
+					const deoglRenderTaskVAO &vao = *texture.GetVAOAt( k );
+					const int instanceCount = vao.GetInstanceCount();
+					
+					for( l=0; l<instanceCount; l++ ){
+						deoglRenderTaskInstance &instance = *vao.GetInstanceAt( l );
+						
+						if( instance.GetSIIndexInstanceSPB() != paramBlock ){
+							if( paramBlock ){
+								paramBlock->UnmapBuffer();
+								paramBlock = NULL;
+							}
+							
+							instance.GetSIIndexInstanceSPB()->MapBuffer();
+							paramBlock = instance.GetSIIndexInstanceSPB();
+						}
+						
+						instance.WriteSIIndexInstanceInt( pUseSPBInstanceFlags );
+					}
+				}
+			}
+		}
+		
 		for( i=0; i<pShaderCount; i++ ){
 			const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pShaders.GetAt( i ) );
 			const int textureCount = shader.GetTextureCount();

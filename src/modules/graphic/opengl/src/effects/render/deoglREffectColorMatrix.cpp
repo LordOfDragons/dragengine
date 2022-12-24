@@ -83,7 +83,7 @@ void deoglREffectColorMatrix::SetColorMatrix( const decColorMatrix &colorMatrix 
 
 
 
-const deoglPipeline::Ref &deoglREffectColorMatrix::GetPipeline(){
+deoglPipeline *deoglREffectColorMatrix::GetPipeline(){
 	if( ! pPipeline ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -102,7 +102,7 @@ const deoglPipeline::Ref &deoglREffectColorMatrix::GetPipeline(){
 	return pPipeline;
 }
 
-const deoglPipeline::Ref &deoglREffectColorMatrix::GetPipelineStereo(){
+deoglPipeline *deoglREffectColorMatrix::GetPipelineStereo(){
 	if( ! pPipelineStereo ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -171,7 +171,7 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	
 	colorMatrix = pColorMatrix;
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? GetPipelineStereo() : GetPipeline();
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
 	renderWorld.SetViewport( plan );

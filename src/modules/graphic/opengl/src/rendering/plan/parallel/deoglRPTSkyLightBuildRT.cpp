@@ -38,7 +38,7 @@
 #include "../../../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../../../rendering/task/deoglRenderTask.h"
 #include "../../../rendering/task/deoglAddToRenderTask.h"
-#include "../../../rendering/task/deoglRenderTaskShader.h"
+#include "../../../rendering/task/deoglRenderTaskPipeline.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
 #include "../../../renderthread/deoglRTRenderers.h"
@@ -85,8 +85,8 @@ void deoglRPTSkyLightBuildRT::Run(){
 	}
 	
 	try{
-		const deoglShaderProgramUsage &shaderOccMesh = pPlan.GetPlan().GetRenderThread().
-			GetRenderers().GetLight().GetRenderLightSky().GetShaderOccMesh();
+		const deoglPipeline * const pipeline = pPlan.GetPlan().GetRenderThread().
+			GetRenderers().GetLight().GetRenderLightSky().GetPipelineOccMesh();
 		deoglRenderTaskSharedTexture * const sharedTexOccMesh = pPlan.GetPlan().GetRenderThread().
 			GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture();
 		decTimer timer;
@@ -102,13 +102,14 @@ void deoglRPTSkyLightBuildRT::Run(){
 			
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetNoShadowNone( true );
+			addToRenderTask.SetForceDoubleSided( true );
 			
 			// we render only double sided occlusion meshes here since for single sided
 			// we can not be sure from what side the camera sees them in the shadow map.
 			// only double sided occlusion meshes are guaranteed to work correctly.
 			// this allows to speed up rendering in the majority of situations
 			addToRenderTask.AddOcclusionMeshes( pTempCollideList, addToRenderTask.GetRenderTask().
-				AddShader( shaderOccMesh->GetRTSShader() )->AddTexture( sharedTexOccMesh ), false );
+				AddPipeline( pipeline )->AddTexture( sharedTexOccMesh ), false );
 			
 			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 			addToRenderTask.AddComponents( pTempCollideList );

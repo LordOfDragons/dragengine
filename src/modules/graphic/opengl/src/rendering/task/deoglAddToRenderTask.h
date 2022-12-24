@@ -37,6 +37,7 @@ class deoglCubeMap;
 class deoglHTViewSector;
 class deoglParticleEmitterInstanceList;
 class deoglModelLOD;
+class deoglPipeline;
 class deoglRBillboard;
 class deoglRComponent;
 class deoglRComponentLOD;
@@ -81,6 +82,7 @@ private:
 	bool pNoNotReflected;
 	bool pNoRendered;
 	bool pOutline;
+	bool pForceDoubleSided;
 	
 	bool pFilterXRay;
 	bool pXRay;
@@ -99,6 +101,7 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
+	deoglPipeline *pEnforcePipeline;
 	deoglRenderTaskSharedShader *pEnforceShader;
 	
 	
@@ -170,6 +173,12 @@ public:
 	/** Set if outline transparent texture are added. */
 	void SetOutline( bool outline );
 	
+	/** Force double sided. */
+	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
+	
+	/** Set to force double sided. */
+	void SetForceDoubleSided( bool forceDoubleSided );
+	
 	
 	
 	/** Filtering for XRay is enabled. */
@@ -229,6 +238,12 @@ public:
 	void SetUseSpecialParamBlock( bool use );
 	
 	
+	
+	/** Pipeline to enforce or nullptr if free. */
+	inline deoglPipeline *GetEnforcedPipeline() const{ return pEnforcePipeline; }
+	
+	/** Set pipeline to enforce or nullptr if free. */
+	void SetEnforcePipeline( deoglPipeline *pipeline );
 	
 	/** Shader to enforce or NULL if free. */
 	inline deoglRenderTaskSharedShader *GetEnforcedShader() const{ return pEnforceShader; }

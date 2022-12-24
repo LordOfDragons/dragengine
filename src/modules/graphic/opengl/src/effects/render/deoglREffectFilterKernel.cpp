@@ -134,7 +134,7 @@ void deoglREffectFilterKernel::SetScale( float scale ){
 
 
 
-const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipeline(){
+deoglPipeline *deoglREffectFilterKernel::GetPipeline(){
 	if( ! pPipeline ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -153,7 +153,7 @@ const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipeline(){
 	return pPipeline;
 }
 
-const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipelineStereo(){
+deoglPipeline *deoglREffectFilterKernel::GetPipelineStereo(){
 	if( ! pPipelineStereo ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -181,7 +181,7 @@ const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipelineStereo(){
 	return pPipelineStereo;
 }
 
-const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipelineDownsample(){
+deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsample(){
 	if( ! pPipeline ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -200,7 +200,7 @@ const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipelineDownsample(){
 	return pPipelineDownsample;
 }
 
-const deoglPipeline::Ref &deoglREffectFilterKernel::GetPipelineDownsampleStereo(){
+deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsampleStereo(){
 	if( ! pPipelineDownsampleStereo ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -257,7 +257,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	if( downsampleCount > 0 ){
 		int i;
 		
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? GetPipelineDownsampleStereo() : GetPipelineDownsample();
+		deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineDownsampleStereo() : *GetPipelineDownsample();
 		renderWorld.GetRenderPB()->Activate();
 		
 		deoglShaderCompiled &shaderDownsample = *pipeline.GetGlShader()->GetCompiled();
@@ -303,7 +303,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		}
 	}
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? GetPipelineStereo() : GetPipeline();
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
 	renderWorld.SetViewport( plan );

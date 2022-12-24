@@ -155,36 +155,28 @@ deoglRenderTaskSharedInstance *deoglRenderTaskSharedPool::GetInstance(){
 
 
 void deoglRenderTaskSharedPool::ReturnShader( deoglRenderTaskSharedShader *shader ){
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( shader )
 	
 	shader->Clear();
 	pShaders.Add( shader );
 }
 
 void deoglRenderTaskSharedPool::ReturnTexture( deoglRenderTaskSharedTexture *texture ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( texture )
 	
 	texture->Clear();
 	pTextures.Add( texture );
 }
 
 void deoglRenderTaskSharedPool::ReturnVAO( deoglRenderTaskSharedVAO *vao ){
-	if( ! vao ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( vao )
 	
 	vao->Clear();
 	pVAOs.Add( vao );
 }
 
 void deoglRenderTaskSharedPool::ReturnInstance( deoglRenderTaskSharedInstance *instance ){
-	if( ! instance ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( instance )
 	
 	instance->Clear();
 	pInstances.Add( instance );

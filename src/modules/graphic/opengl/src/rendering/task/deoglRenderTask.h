@@ -29,6 +29,7 @@
 #include "../../shaders/paramblock/deoglShaderParameterBlockList.h"
 
 class deoglQuickSorter;
+class deoglRenderTaskPipeline;
 class deoglRenderTaskInstance;
 class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
@@ -44,6 +45,7 @@ class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
+class deoglPipeline;
 
 
 /**
@@ -57,10 +59,12 @@ class deoglTexUnitsConfig;
 class deoglRenderTask{
 private:
 	struct sConfigTexture{
+		const deoglPipeline *pipeline;
 		const deoglRenderTaskSharedShader *shader;
 		const deoglRenderTaskSharedTexture *texture;
 		const deoglRenderTaskSharedVAO *vao;
 		const deoglRenderTaskSharedInstance *instance;
+		deoglRenderTaskPipeline *rtpipeline;
 		deoglRenderTaskShader *rtshader;
 		deoglRenderTaskTexture *rttexture;
 		deoglRenderTaskVAO *rtvao;
@@ -84,6 +88,12 @@ private:
 	bool pRenderVSStereo;
 	GLuint pVBODrawIndirect;
 	int pVBODrawIndirectSize;
+	
+	decPointerList pPipelines;
+	int pPipelineCount;
+	deoglRenderTaskPipeline **pHasPipeline;
+	int pHasPipelineCount;
+	int pHasPipelineSize;
 	
 	decPointerList pShaders;
 	int pShaderCount;
@@ -163,6 +173,18 @@ public:
 	
 	
 	
+	/** Number of pipelines. */
+	inline int GetPipelineCount() const{ return pPipelineCount; }
+	
+	/** Pipeline at index. */
+	deoglRenderTaskPipeline *GetPipelineAt( int index ) const;
+	
+	/** Add pipeline. */
+	deoglRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
+	deoglRenderTaskPipeline *AddPipelineDirect( const deoglPipeline *pipeline );
+	
+	
+	
 	/** Number of shaders. */
 	inline int GetShaderCount() const{ return pShaderCount; }
 	
@@ -189,16 +211,16 @@ public:
 	/** Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
-	/** Total amount of textures in this shader. */
+	/** Total amount of textures. */
 	int GetTotalTextureCount() const;
 	
-	/** Total amount of vaos in this shader. */
+	/** Total amount of vaos. */
 	int GetTotalVAOCount() const;
 	
-	/** Total amount of instances in this shader. */
+	/** Total amount of instances. */
 	int GetTotalInstanceCount() const;
 	
-	/** Total amount of subinstances in this shader. */
+	/** Total amount of subinstances. */
 	int GetTotalSubInstanceCount() const;
 	/*@}*/
 	

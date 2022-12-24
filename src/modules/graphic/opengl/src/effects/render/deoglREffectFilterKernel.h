@@ -36,10 +36,10 @@ private:
 	int pKernelCols;
 	float pScale;
 	
-	deoglPipeline::Ref pPipeline;
-	deoglPipeline::Ref pPipelineStereo;
-	deoglPipeline::Ref pPipelineDownsample;
-	deoglPipeline::Ref pPipelineDownsampleStereo;
+	deoglPipeline *pPipeline;
+	deoglPipeline *pPipelineStereo;
+	deoglPipeline *pPipelineDownsample;
+	deoglPipeline *pPipelineDownsampleStereo;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -79,12 +79,12 @@ public:
 	
 	
 	/** Get pipeline creating it if required. */
-	const deoglPipeline::Ref &GetPipeline();
-	const deoglPipeline::Ref &GetPipelineStereo();
+	deoglPipeline *GetPipeline();
+	deoglPipeline *GetPipelineStereo();
 	
 	/** Get downsample pipeline creating it if required. */
-	const deoglPipeline::Ref &GetPipelineDownsample();
-	const deoglPipeline::Ref &GetPipelineDownsampleStereo();
+	deoglPipeline *GetPipelineDownsample();
+	deoglPipeline *GetPipelineDownsampleStereo();
 	
 	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );

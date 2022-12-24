@@ -110,6 +110,9 @@ private:
 	
 	bool pClipControl;
 	
+	int pSPBInstanceIndexBase;
+	int pDrawIDOffset;
+	
 	bool pDynamicCullFace;
 	bool pDynamicPolygonOffset;
 	bool pDynamicStencilTest;
@@ -318,6 +321,16 @@ public:
 	
 	/** Enable blend with function. */
 	void EnableBlend( GLenum source, GLenum dest );
+	
+	
+	
+	/** Shader parameter index of pSPBInstanceIndexBase or -1. */
+	inline int GetSPBInstanceIndexBase() const{ return pSPBInstanceIndexBase; }
+	void SetSPBInstanceIndexBase( int parameter );
+	
+	/** Shader parameter index of pDrawIDOffset or -1. */
+	inline int GetDrawIDOffset() const{ return pDrawIDOffset; }
+	void SetDrawIDOffset( int parameter );
 	
 	
 	

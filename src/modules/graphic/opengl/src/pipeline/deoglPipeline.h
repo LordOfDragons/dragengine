@@ -115,6 +115,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
+	const int pIndex;
 	
 	// opengl
 	const deoglPipelineConfiguration *pGlConfiguration;
@@ -128,8 +129,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	deoglPipeline( deoglRenderThread &renderThread, const deoglPipelineConfiguration &configuration );
-	deoglPipeline( deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration );
+	deoglPipeline( deoglRenderThread &renderThread, int index,
+		const deoglPipelineConfiguration &configuration );
+	
+	deoglPipeline( deoglRenderThread &renderThread, int index,
+		const devkPipelineConfiguration &configuration );
 	
 	/** Clean up pipeline. */
 	virtual ~deoglPipeline();
@@ -141,6 +145,9 @@ public:
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
@@ -158,7 +165,7 @@ public:
 	
 	
 	/** Activate pipeline. */
-	void Activate();
+	void Activate() const;
 	/*@}*/
 	
 	

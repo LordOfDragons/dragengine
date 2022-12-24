@@ -252,8 +252,8 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 	int i, j;
 	
 	deoglPipeline &pipeline = debugDrawer.GetXRay()
-		? ( plan.GetRenderStereo() ? pPipelineShapeXRayStereo : pPipelineShapeXRay )
-		: ( plan.GetRenderStereo() ? pPipelineShapeSolidStereo : pPipelineShapeSolid );
+		? ( plan.GetRenderStereo() ? *pPipelineShapeXRayStereo : *pPipelineShapeXRay )
+		: ( plan.GetRenderStereo() ? *pPipelineShapeSolidStereo : *pPipelineShapeSolid );
 	pipeline.Activate();
 	
 	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
@@ -331,8 +331,8 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 	OGL_CHECK( renderThread, pglBindVertexArray( vao->GetVAO() ) );
 	
 	deoglPipeline &pipeline = debugDrawer.GetXRay()
-		? ( plan.GetRenderStereo() ? pPipelineMeshXRayStereo : pPipelineMeshXRay )
-		: ( plan.GetRenderStereo() ? pPipelineMeshSolidStereo : pPipelineMeshSolid );
+		? ( plan.GetRenderStereo() ? *pPipelineMeshXRayStereo : *pPipelineMeshXRay )
+		: ( plan.GetRenderStereo() ? *pPipelineMeshSolidStereo : *pPipelineMeshSolid );
 	pipeline.Activate();
 	
 	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();

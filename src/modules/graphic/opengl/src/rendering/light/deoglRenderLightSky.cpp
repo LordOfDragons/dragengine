@@ -162,29 +162,35 @@ pColList2( NULL ),
 
 pSolidShadowMap( NULL )
 {
-// 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-// 	bool useEncodeDepth = config.GetUseEncodeDepth();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-// 		sources = shaderManager.GetSourcesNamed( "DefRen AO Sky" );
-// 		if( useEncodeDepth ){
-// 			defines.SetDefine( "GEOM_ENCODED_DEPTH", "1" );
-// 		}
-// 		pShaderAO = shaderManager.GetProgramWith( sources, defines );
-// 		defines.RemoveAllDefines();
+		// clear depth
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTestLessEqual();
+		pipconf.EnableCulling( false );
+		pipconf.SetStencil( GL_NOTEQUAL, 0, 0xff, 0xff );
+		pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		pipconf.SetEnableStencilTest( true );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Clear Depth" );
-		pShaderClearDepth = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, "DefRen Clear Depth", defines );
+		pPipelineClearDepth = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
+		
+		// occlusion mesh
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTestLessEqual();
+		
 		AddSharedSPBDefines( defines );
-		defines.SetDefine( "WITH_SHADOWMAP", true );
-		pShaderOccMesh = shaderManager.GetProgramWith( sources, defines );
-		pShaderOccMesh->EnsureRTSShader();
-		pShaderOccMesh->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		defines.SetDefines( "WITH_SHADOWMAP" );
+		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
+		pipconf.EnsureRTSShader();
+		pPipelineOccMesh = pipelineManager.GetWith( pipconf );
 		defines.RemoveAllDefines();
 		
 		
@@ -432,9 +438,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 		}
 	}
 	
-	if( ! lightShader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( lightShader )
 	
 	renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 	
@@ -831,12 +835,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	// the sky light right at the near end of the shadow map. by clearing back facing fragments
 	// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 	// issues on front facing fragments but makes underground scenes safe
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
+	pPipelineClearDepth->Activate();
 	
-	renderThread.GetShader().ActivateShader( pShaderClearDepth );
-	
-	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
+	pPipelineClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 	
 	RenderFullScreenQuadVAO();
 			SSDT("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
@@ -954,13 +955,8 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 		// issues on front facing fragments but makes underground scenes safe
 		if( clearBackFaceFragments ){
-			OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
-			
-			renderThread.GetShader().ActivateShader( pShaderClearDepth );
-			
-			pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
-			
+			pPipelineClearDepth->Activate();
+			pPipelineClearDepth->GetGlShader()->GetCompiled()->SetParameterFloat( 0, -1.0f );
 			RenderFullScreenQuadVAO();
 		}
 			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
@@ -1255,13 +1251,8 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		// the sky light right at the near end of the shadow map. by clearing back facing fragments
 		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 		// issues on front facing fragments but makes underground scenes safe
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
-		
-		renderThread.GetShader().ActivateShader( pShaderClearDepth );
-		
-		pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
-		
+		pPipelineClearDepth->Activate();
+		pPipelineClearDepth->GetGlShader()->GetCompiled()->SetParameterFloat( 0, -1.0f );
 		RenderFullScreenQuadVAO();
 				SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	}

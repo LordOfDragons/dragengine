@@ -35,9 +35,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
+deoglPipeline::deoglPipeline( deoglRenderThread &renderThread, int index,
 	const deoglPipelineConfiguration &configuration ) :
 pRenderThread( renderThread ),
+pIndex( index ),
 pGlConfiguration( nullptr ),
 pVkPipeline( nullptr )
 {
@@ -50,9 +51,10 @@ pVkPipeline( nullptr )
 	}
 }
 
-deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
+deoglPipeline::deoglPipeline( deoglRenderThread &renderThread, int index,
 	const devkPipelineConfiguration &configuration ) :
 pRenderThread( renderThread ),
+pIndex( index ),
 pGlConfiguration( nullptr ),
 pVkPipeline( nullptr )
 {
@@ -83,7 +85,7 @@ const deoglShaderProgram::Ref &deoglPipeline::GetGlShader() const{
 	return GetGlConfiguration().GetShader();
 }
 
-void deoglPipeline::Activate(){
+void deoglPipeline::Activate() const{
 	if( pGlConfiguration ){
 		pGlConfiguration->Activate( pRenderThread );
 		

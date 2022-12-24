@@ -105,7 +105,7 @@ void deoglREffectOverlayImage::SetImage( deoglRImage *image ){
 
 
 
-const deoglPipeline::Ref &deoglREffectOverlayImage::GetPipeline(){
+deoglPipeline *deoglREffectOverlayImage::GetPipeline(){
 	if( ! pPipeline ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -125,7 +125,7 @@ const deoglPipeline::Ref &deoglREffectOverlayImage::GetPipeline(){
 	return pPipeline;
 }
 
-const deoglPipeline::Ref &deoglREffectOverlayImage::GetPipelineStereo(){
+deoglPipeline *deoglREffectOverlayImage::GetPipelineStereo(){
 	if( ! pPipelineStereo ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -177,7 +177,7 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? GetPipelineStereo() : GetPipeline();
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
 	renderWorld.SetViewport( plan );

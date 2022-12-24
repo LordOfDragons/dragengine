@@ -217,12 +217,14 @@ pAddToRenderTask( NULL )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.EnsureRTSShader();
 		pPipelineOccMapOrtho = pipelineManager.GetWith( pipconf );
 		
 		// occlusion map orthogonal clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.EnsureRTSShader();
 		pPipelineOccMapOrthoClipPlane = pipelineManager.GetWith( pipconf );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
@@ -230,12 +232,14 @@ pAddToRenderTask( NULL )
 		// occlusion map perspective
 		defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.EnsureRTSShader();
 		pPipelineOccMap = pipelineManager.GetWith( pipconf );
 		
 		// occlusion map perspective clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.EnsureRTSShader();
 		pPipelineOccMapClipPlane = pipelineManager.GetWith( pipconf );
 		
@@ -248,12 +252,16 @@ pAddToRenderTask( NULL )
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
 		}
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
+		pipconf.SetDrawIDOffset( drawIDOffset );
 		pipconf.EnsureRTSShader( drawIDOffset );
 		pPipelineOccMapOrthoStereo = pipelineManager.GetWith( pipconf );
 		
 		// occlusion map orthogonal stereo clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
+		pipconf.SetDrawIDOffset( drawIDOffset );
 		pipconf.EnsureRTSShader( drawIDOffset );
 		pPipelineOccMapOrthoClipPlaneStereo = pipelineManager.GetWith( pipconf );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
@@ -261,12 +269,16 @@ pAddToRenderTask( NULL )
 		// occlusion map perspective stereo
 		defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
+		pipconf.SetDrawIDOffset( drawIDOffset );
 		pipconf.EnsureRTSShader( drawIDOffset );
 		pPipelineOccMapStereo = pipelineManager.GetWith( pipconf );
 		
 		// occlusion map perspective stereo clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
+		pipconf.SetDrawIDOffset( drawIDOffset );
 		pipconf.EnsureRTSShader( drawIDOffset );
 		pPipelineOccMapClipPlaneStereo = pipelineManager.GetWith( pipconf );
 		
@@ -1010,7 +1022,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) ); // TODO DELETE
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineOccTestStereo : pPipelineOccTest;
+		deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestStereo : *pPipelineOccTest;
 		pipeline.Activate();
 		
 		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
@@ -1140,7 +1152,7 @@ const decMatrix &matrixCamera2Stereo ){
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineOccTestSunStereo : pPipelineOccTestSun;
+		deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestSunStereo : *pPipelineOccTestSun;
 		pipeline.Activate();
 		
 		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
@@ -1221,7 +1233,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineOccTestDualStereo : pPipelineOccTestDual;
+		deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestDualStereo : *pPipelineOccTestDual;
 		pipeline.Activate();
 		
 		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );

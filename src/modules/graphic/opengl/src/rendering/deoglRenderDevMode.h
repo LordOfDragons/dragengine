@@ -34,9 +34,9 @@ class decString;
  */
 class deoglRenderDevMode : public deoglRenderBase{
 private:
-	deoglPipeline::Ref pPipelineSolidColor2D;
-	deoglPipeline::Ref pPipelineSolidColor3D;
-	deoglPipeline::Ref pPipelineShape;
+	deoglPipeline *pPipelineSolidColor2D;
+	deoglPipeline *pPipelineSolidColor3D;
+	deoglPipeline *pPipelineShape;
 	
 	decVector2 pScalePosition;
 	decVector2 pOffsetPosition;

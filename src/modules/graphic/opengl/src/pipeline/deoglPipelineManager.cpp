@@ -66,9 +66,11 @@ deoglPipeline *deoglPipelineManager::GetWith( const deoglPipelineConfiguration &
 		}
 	}
 	
-	const deoglPipeline::Ref pipeline( deoglPipeline::Ref::New(
-		new deoglPipeline( pRenderThread, configuration ) ) );
+	deoglPipeline * const pipeline = new deoglPipeline(
+		pRenderThread, pPipelines.GetCount(), configuration );
+	
 	pPipelines.Add( pipeline );
+	
 	return pipeline;
 }
 

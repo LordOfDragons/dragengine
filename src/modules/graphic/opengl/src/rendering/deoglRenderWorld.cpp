@@ -640,7 +640,7 @@ DEBUG_RESET_TIMER
 		// tone mapping
 		if( disableLights || ! plan.GetUseToneMap() ){
 			const deoglDebugTraceGroup debugTraceToneMap( renderThread, "World.ToneMap" );
-			deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineFinalizeStereo : pPipelineFinalize;
+			deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineFinalizeStereo : *pPipelineFinalize;
 			pipeline.Activate();
 			
 			defren.ActivateFBOTemporary2( false );
@@ -1241,7 +1241,7 @@ DBG_ENTER("RenderFinalizeFBO")
 	const int upscaleHeight = plan.GetUpscaleHeight();
 	
 	deoglPipeline &pipeline = plan.GetRenderVR() == deoglRenderPlan::ervrStereo
-		? pPipelineFinalizeSplit : ( plan.GetRenderStereo() ? pPipelineFinalizeStereo : pPipelineFinalize );
+		? *pPipelineFinalizeSplit : ( plan.GetRenderStereo() ? *pPipelineFinalizeStereo : *pPipelineFinalize );
 	pipeline.Activate();
 	
 	renderThread.GetFramebuffer().Activate( plan.GetFBOTarget() );
@@ -1336,7 +1336,7 @@ DBG_ENTER("RenderFinalizeContext")
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineFinalizeBlendStereo : pPipelineFinalizeBlend;
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineFinalizeBlendStereo : *pPipelineFinalizeBlend;
 	pipeline.Activate();
 	
 	renderThread.GetTexture().GetStages().DisableAllStages();
@@ -1394,7 +1394,7 @@ void deoglRenderWorld::CopyDepthToXRayDepth( deoglRenderPlan &plan ){
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? pPipelineCopyDepthStereo : pPipelineCopyDepth;
+	deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthStereo : *pPipelineCopyDepth;
 	pipeline.Activate();
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
