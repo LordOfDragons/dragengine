@@ -594,7 +594,10 @@ class InteractiveMainMenu extends Window
 	/** \brief Parent changed. */
 	public func void setParent(Container parent)
 		super.setParent(parent)
-		onFrameUpdate(0)
+		
+		if getDesktop() != null // dispose protection
+			onFrameUpdate(0)
+		end
 	end
 	
 	/** \brief Temporary hack until class is working then remove. */
