@@ -52,7 +52,13 @@
 ////////////////////////////
 
 deoglRenderBase::deoglRenderBase( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread )
+{
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
+	
+	pipconf.SetMasks( true, true, true, true, true );
+	pPipelineClearBuffers = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderBase::~deoglRenderBase(){

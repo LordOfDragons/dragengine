@@ -309,17 +309,11 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	RestoreFBO( plan );
 	
 	if( sssssEnable ){
-		deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+		pPipelineClearBuffers->Activate();
+		renderThread.GetDeferredRendering().ActivateFBOTemporary2( false );
+		
 		GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		
-		defren.ActivateFBOTemporary2( false );
-		
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-		
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-		
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	}
 	
 	if( hasGIStateRender ){
@@ -445,9 +439,9 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const float blurWeights[ 4 ] = { 2.967529e-1f, 9.442139e-2f, 1.037598e-2f, 2.593994e-4f };
 	const float edgeBlurThreshold = config.GetSSAOEdgeBlurThreshold();
 	
+	pPipelineClearBuffers->Activate();
 	defren.ActivateFBOTemporary3();
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	

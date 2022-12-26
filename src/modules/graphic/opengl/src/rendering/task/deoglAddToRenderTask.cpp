@@ -205,7 +205,7 @@ void deoglAddToRenderTask::SetUseSpecialParamBlock( bool use ){
 	pUseSpecialParamBlock = use;
 }
 
-void deoglAddToRenderTask::SetEnforcePipeline( deoglPipeline *pipeline ){
+void deoglAddToRenderTask::SetEnforcePipeline( const deoglPipeline *pipeline ){
 	pEnforceShader = nullptr;
 }
 

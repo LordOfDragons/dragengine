@@ -62,8 +62,10 @@ public:
 	
 	
 	
-private:
+protected:
 	deoglRenderThread &pRenderThread;
+	
+	const deoglPipeline *pPipelineClearBuffers;
 	
 	decTimer pDebugTimer[ 4 ];
 	

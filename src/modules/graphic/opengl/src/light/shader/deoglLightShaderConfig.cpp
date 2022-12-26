@@ -40,6 +40,10 @@ deoglLightShaderConfig::deoglLightShaderConfig(){
 	Reset();
 }
 
+deoglLightShaderConfig::deoglLightShaderConfig( const deoglLightShaderConfig &config ){
+	*this = config;
+}
+
 deoglLightShaderConfig::~deoglLightShaderConfig(){
 }
 

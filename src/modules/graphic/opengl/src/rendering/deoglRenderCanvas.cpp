@@ -314,7 +314,7 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 	const float transparency = context.GetTransparency();
 	const float thickness = decMath::max( 0.0f, canvas.GetThickness() );
 	
-	deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasColorMask : *pPipelineCanvasColor;
+	const deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasColorMask : *pPipelineCanvasColor;
 	pipeline.Activate();
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
@@ -388,7 +388,7 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	
 	pActivateVAOShapes();
 	
-	deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
+	const deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
 	pipeline.Activate();
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
@@ -451,7 +451,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	
 	pActivateVAOShapes();
 	
-	deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
+	const deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
 	pipeline.Activate();
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
@@ -508,7 +508,7 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	
 	pActivateVAOShapes();
 	
-	deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
+	const deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
 	pipeline.Activate();
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
@@ -575,7 +575,7 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	
 	pActivateVAOShapes();
 	
-	deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
+	const deoglPipeline &pipeline = context.GetMask() ? *pPipelineCanvasImageMask : *pPipelineCanvasImage;
 	pipeline.Activate();
 	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	
@@ -746,7 +746,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	// TODO time finalize pass too
 	renderThread.GetFramebuffer().Activate( context.GetFBO() );
 	
-	deoglPipeline &pipeline = context.GetMask()
+	const deoglPipeline &pipeline = context.GetMask()
 		? ( vr ? *pPipelineCanvasImageMask : *pPipelineCanvasRenderWorldMask )
 		: ( vr ? *pPipelineCanvasImage : *pPipelineCanvasRenderWorld );
 	pipeline.Activate();

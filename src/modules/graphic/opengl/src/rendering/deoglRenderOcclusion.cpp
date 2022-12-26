@@ -876,7 +876,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	deoglShaderCompiled *shader;
 	int i, width, height;
 	
-	deoglPipeline *pipeline = perspective
+	const deoglPipeline *pipeline = perspective
 		? ( plan.GetRenderStereo() ? pPipelineOccMapStereo : pPipelineOccMap )
 		: ( plan.GetRenderStereo() ? pPipelineOccMapOrthoStereo : pPipelineOccMapOrtho );
 	pipeline->Activate();
@@ -1022,7 +1022,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) ); // TODO DELETE
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestStereo : *pPipelineOccTest;
+		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestStereo : *pPipelineOccTest;
 		pipeline.Activate();
 		
 		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
@@ -1152,7 +1152,7 @@ const decMatrix &matrixCamera2Stereo ){
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestSunStereo : *pPipelineOccTestSun;
+		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestSunStereo : *pPipelineOccTestSun;
 		pipeline.Activate();
 		
 		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );
@@ -1233,7 +1233,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
-		deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestDualStereo : *pPipelineOccTestDual;
+		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestDualStereo : *pPipelineOccTestDual;
 		pipeline.Activate();
 		
 		renderThread.GetFramebuffer().Activate( occlusionTest.GetFBOResult() );

@@ -224,6 +224,12 @@ void deoglPipelineConfiguration::SetPolygonOffsetBias( float bias ){
 	pPolygonOffsetBias = bias;
 }
 
+void deoglPipelineConfiguration::EnablePolygonOffset( float factor, float bias ){
+	pEnablePolygonOffset = true;
+	pPolygonOffsetFactor = factor;
+	pPolygonOffsetBias = bias;
+}
+
 
 
 void deoglPipelineConfiguration::SetEnableDepthTest( bool enable ){
@@ -239,13 +245,16 @@ void deoglPipelineConfiguration::SetDepthMask( bool mask ){
 }
 
 void deoglPipelineConfiguration::EnableDepthTestAlways(){
-	pEnableDepthTest = true;
-	pDepthFunc = GL_ALWAYS;
+	EnableDepthTest( GL_ALWAYS );
 }
 
 void deoglPipelineConfiguration::EnableDepthTestLessEqual(){
+	EnableDepthTest( GL_LEQUAL );
+}
+
+void deoglPipelineConfiguration::EnableDepthTest( GLenum function ){
 	pEnableDepthTest = true;
-	pDepthFunc = GL_LEQUAL;
+	pDepthFunc = function;
 }
 
 
@@ -534,8 +543,8 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pEnableCullFace == config.pEnableCullFace
 		&& pCullFace == config.pCullFace
 		&& pEnablePolygonOffset == config.pEnablePolygonOffset
-		&& pPolygonOffsetFactor == config.pPolygonOffsetFactor
-		&& pPolygonOffsetBias == config.pPolygonOffsetBias
+		&& fabsf( pPolygonOffsetFactor - config.pPolygonOffsetFactor ) < FLOAT_SAFE_EPSILON
+		&& fabsf( pPolygonOffsetBias - config.pPolygonOffsetBias ) < FLOAT_SAFE_EPSILON
 		&& pEnableDepthTest == config.pEnableDepthTest
 		&& pDepthFunc == config.pDepthFunc
 		&& pDepthMask == config.pDepthMask

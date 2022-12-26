@@ -28,8 +28,10 @@
 #include "deoglRenderGI.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
+#include "../plan/deoglRenderPlanLight.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListLight.h"
 #include "../../component/deoglComponentSet.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -189,20 +191,7 @@ void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
 	deoglGITraceRays &giTraceRays = renderThread.GetGI().GetTraceRays();
 	renderThread.GetFramebuffer().Activate( &giTraceRays.GetFBOLight() );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	
-	const decPoint &sampleImageSize = giState.GetSampleImageSize();
-	OGL_CHECK( renderThread, glViewport( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, sampleImageSize.x, sampleImageSize.y ) );
+	SetViewport( giState.GetSampleImageSize() );
 	
 	tsmgr.EnableTexture( 0, giTraceRays.GetTexturePosition(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, giTraceRays.GetTextureDiffuse(), GetSamplerClampNearest() );
@@ -211,8 +200,7 @@ void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
 	tsmgr.DisableStagesAbove( 3 );
 	
 	#ifdef GI_RENDERDOC_DEBUG
-		OGL_CHECK( renderThread, glViewport( 0, 0, 512, 256 ) );
-		OGL_CHECK( renderThread, glScissor( 0, 0, 512, 256 ) );
+		SetViewport( 512, 256 );
 		
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		renderThread.GetDeferredRendering().ActivateFBOColor( false,false );
@@ -225,4 +213,39 @@ void deoglRenderLightBase::AddTopLevelDebugInfoSolid(){
 }
 
 void deoglRenderLightBase::AddTopLevelDebugInfoTransparent(){
+}
+
+
+
+// Protected Functions
+////////////////////////
+
+int deoglRenderLightBase::PipelineModifiers( const deoglRenderPlanLight &planLight,
+bool solid, bool hasAmbient ) const{
+	int modifiers = 0;
+	
+	if( ! hasAmbient ){
+		modifiers |= deoglLightPipelines::emNoAmbient;
+	}
+	
+	if( ! solid ){
+		modifiers |= deoglLightPipelines::emTransparent;
+	}
+	
+	if( planLight.GetPlan().GetRenderStereo() ){
+		modifiers |= deoglLightPipelines::emStereo;
+	}
+	
+	if( planLight.GetLight()->GetCameraInside() ){ // cull front faces, no depth test
+		if( ! planLight.GetPlan().GetFlipCulling() ){
+			modifiers |= deoglLightPipelines::emFlipCullFace;
+		}
+		
+	}else{ // cull back faces, no depth test (opengl can not handle depth test with depth read)
+		if( planLight.GetPlan().GetFlipCulling() ){
+			modifiers |= deoglLightPipelines::emFlipCullFace;
+		}
+	}
+	
+	return modifiers;
 }

@@ -35,13 +35,13 @@ class deoglSharedVBOBlock;
  */
 class deoglRenderVR : public deoglRenderBase{
 private:
-	deoglPipeline *pPipelineHiddenAreaDepth;
-	deoglPipeline *pPipelineHiddenAreaDepthStereoLeft;
-	deoglPipeline *pPipelineHiddenAreaDepthStereoRight;
+	const deoglPipeline *pPipelineHiddenAreaDepth;
+	const deoglPipeline *pPipelineHiddenAreaDepthStereoLeft;
+	const deoglPipeline *pPipelineHiddenAreaDepthStereoRight;
 	
-	deoglPipeline *pPipelineHiddenAreaClearMask;
-	deoglPipeline *pPipelineHiddenAreaClearMaskStereoLeft;
-	deoglPipeline *pPipelineHiddenAreaClearMaskStereoRight;
+	const deoglPipeline *pPipelineHiddenAreaClearMask;
+	const deoglPipeline *pPipelineHiddenAreaClearMaskStereoLeft;
+	const deoglPipeline *pPipelineHiddenAreaClearMaskStereoRight;
 	
 	
 	

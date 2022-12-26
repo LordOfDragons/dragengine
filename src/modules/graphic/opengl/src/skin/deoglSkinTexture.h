@@ -110,6 +110,19 @@ public:
 		EMP_COUNT
 	};
 	
+	/** Pipeline types. */
+	enum ePipelineTypes{
+		eptComponent,
+		eptBillboard,
+		eptDecal,
+		eptPropField,
+		eptHeightMap,
+		eptParticle,
+		eptParticleRibbon,
+		eptParticleBeam,
+		eptOutline
+	};
+	
 	/** Shader Types. */
 	enum eShaderTypes{
 		estComponentGeometry,

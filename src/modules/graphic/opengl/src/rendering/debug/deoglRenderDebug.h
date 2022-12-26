@@ -46,13 +46,13 @@ private:
 		decColor color;
 	};
 	
-	deoglPipeline *pPipelineXRay;
+	const deoglPipeline *pPipelineXRay;
 	
-	deoglPipeline *pPipelineOutTexLayer;
-	deoglPipeline *pPipelineOutArrTex;
+	const deoglPipeline *pPipelineOutTexLayer;
+	const deoglPipeline *pPipelineOutArrTex;
 	
-	deoglPipeline *pPipelineRenderText;
-	deoglPipeline *pPipelineRectangle;
+	const deoglPipeline *pPipelineRenderText;
+	const deoglPipeline *pPipelineRectangle;
 	
 	deoglDebugFont *pDebugFont;
 	

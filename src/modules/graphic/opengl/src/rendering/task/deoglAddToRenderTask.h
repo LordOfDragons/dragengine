@@ -101,7 +101,7 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	deoglPipeline *pEnforcePipeline;
+	const deoglPipeline *pEnforcePipeline;
 	deoglRenderTaskSharedShader *pEnforceShader;
 	
 	
@@ -240,10 +240,10 @@ public:
 	
 	
 	/** Pipeline to enforce or nullptr if free. */
-	inline deoglPipeline *GetEnforcedPipeline() const{ return pEnforcePipeline; }
+	inline const deoglPipeline *GetEnforcedPipeline() const{ return pEnforcePipeline; }
 	
 	/** Set pipeline to enforce or nullptr if free. */
-	void SetEnforcePipeline( deoglPipeline *pipeline );
+	void SetEnforcePipeline( const deoglPipeline *pipeline );
 	
 	/** Shader to enforce or NULL if free. */
 	inline deoglRenderTaskSharedShader *GetEnforcedShader() const{ return pEnforceShader; }

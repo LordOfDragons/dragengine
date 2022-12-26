@@ -28,7 +28,7 @@
 class deoglComponentSet;
 class deoglRenderPlan;
 class deoglGIState;
-
+class deoglRenderPlanLight;
 
 
 /**
@@ -84,6 +84,11 @@ public:
 	/** \brief Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoTransparent();
 	/*@}*/
+	
+	
+	
+protected:
+	int PipelineModifiers( const deoglRenderPlanLight &planLight, bool solid, bool hasAmbient ) const;
 };
 
 #endif

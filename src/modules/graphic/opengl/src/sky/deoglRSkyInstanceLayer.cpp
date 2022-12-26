@@ -34,6 +34,7 @@
 #include "../gi/deoglGIState.h"
 #include "../light/shader/deoglLightShader.h"
 #include "../light/shader/deoglLightShaderManager.h"
+#include "../pipeline/deoglPipelineConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -133,150 +134,25 @@ bool deoglRSkyInstanceLayer::GetHasLightAmbient() const{
 
 
 
-deoglLightShader *deoglRSkyInstanceLayer::GetShaderFor( eShaderTypes shaderType ){
-	if( ! pShaders[ shaderType ] ){
-		deoglLightShaderConfig config;
-		
-		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ].TakeOver( pInstance.GetRenderThread().GetShader().
-				GetLightShaderManager().GetShaderWith( config ) );
-		}
+deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
+	if( ! pPipelines ){
+		pPipelines.TakeOver( new deoglLightPipelinesSky( *this ) );
+		pPipelines->Prepare();
 	}
-	
-	return pShaders[ shaderType ];
-}
-
-bool deoglRSkyInstanceLayer::GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config ){
-	const deoglConfiguration &oglconfig = pInstance.GetRenderThread().GetConfiguration();
-	
-	config.Reset();
-	
-	config.SetLightMode( deoglLightShaderConfig::elmSky );
-	config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esma2D );
-	
-	config.SetHWDepthCompare( true );
-	config.SetDecodeInShadow( false );
-	
-	switch( shaderType ){
-	case estStereoNoShadow:
-	case estStereoAmbient:
-	case estStereoSolid:
-		if( pInstance.GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
-			config.SetVSRenderStereo( true );
-			
-		}else{
-			config.SetGSRenderStereo( true );
-		}
-		break;
-		
-	default:
-		break;
-	}
-	
-	switch( shaderType ){
-	case estGIRayNoShadow:
-	case estGIRaySolid1:
-	case estGIRaySolid2:
-		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
-		// regular sky shadow casting uses PCF 9-Tap mode. for GI shadow map resollution
-		// is rather low and rays spread by a large angle. for this reason 1-Tap mode is
-		// a possible solution which is slightly faster (17ys versus 22ys). so what to
-		// choose? difficult to say. the PCF 9-Tap version smoothes shadows more than
-		// the 1-Tap version (which uses HW bilinear filtering by the way). This can help
-		// reduce flickering in GI probes due to the smoothing
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		config.SetSubSurface( false );
-		config.SetGIRay( true );
-		break;
-		
-	default:
-		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
-	}
-	
-	config.SetTextureNoise( false );
-	
-	config.SetFullScreenQuad( true );
-	
-	switch( shaderType ){
-	case estNoShadow:
-	case estStereoNoShadow:
-		config.SetAmbientLighting( true );
-		break;
-		
-	case estAmbient:
-	case estStereoAmbient:
-		config.SetAmbientLighting( true );
-		break;
-		
-	case estSolid:
-	case estStereoSolid:
-		config.SetAmbientLighting( true );
-		config.SetTextureShadow1Solid( true );
-		break;
-		
-	case estGIRayNoShadow:
-		config.SetAmbientLighting( false );
-		break;
-		
-	case estGIRaySolid1:
-		config.SetAmbientLighting( false );
-		config.SetTextureShadow1Solid( true );
-		break;
-		
-	case estGIRaySolid2:
-		config.SetAmbientLighting( false );
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow2Solid( true );
-		break;
-	}
-	
-	return true;
+	return pPipelines;
 }
 
 deoglSPBlockUBO *deoglRSkyInstanceLayer::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		deoglLightShader *shader = nullptr;
-		int i;
-		
-		for( i=0; i<ShaderTypeCount; i++ ){
-			if( pShaders[ i ] ){
-				shader = pShaders[ i ];
-				break;
-			}
-		}
-		if( ! shader ){
-			shader = GetShaderFor( estNoShadow );
-		}
-		
-		shader->EnsureShaderExists();
-		pParamBlockLight = shader->CreateSPBLightParam();
+		pParamBlockLight = GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
 	}
-	
 	return pParamBlockLight;
 }
 
 deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 	if( ! pParamBlockInstance ){
-		deoglLightShader *shader = nullptr;
-		int i;
-		
-		for( i=0; i<ShaderTypeCount; i++ ){
-			if( pShaders[ i ] ){
-				shader = pShaders[ i ];
-				break;
-			}
-		}
-		if( ! shader ){
-			shader = GetShaderFor( estNoShadow );
-		}
-		
-		shader->EnsureShaderExists();
-		pParamBlockInstance = shader->CreateSPBInstParam();
+		pParamBlockInstance = GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
 	}
-	
 	return pParamBlockInstance;
 }
 

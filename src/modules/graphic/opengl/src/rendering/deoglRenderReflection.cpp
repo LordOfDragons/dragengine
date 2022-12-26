@@ -1461,7 +1461,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	int height = defren.GetHeight();
 	int width = defren.GetWidth();
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyColorStereo : *pPipelineCopyColor;
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyColorStereo : *pPipelineCopyColor;
 	pipeline.Activate();
 	
 	defren.ActivateFBOTemporary1Level( 0 );

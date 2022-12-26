@@ -35,8 +35,8 @@ class deoglREffectColorMatrix : public deoglREffect{
 private:
 	decColorMatrix pColorMatrix;
 	
-	deoglPipeline *pPipeline;
-	deoglPipeline *pPipelineStereo;
+	const deoglPipeline *pPipeline;
+	const deoglPipeline *pPipelineStereo;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -61,8 +61,8 @@ public:
 	
 	
 	/** Get pipeline creating it if required. */
-	deoglPipeline *GetPipeline();
-	deoglPipeline *GetPipelineStereo();
+	const deoglPipeline *GetPipeline();
+	const deoglPipeline *GetPipelineStereo();
 	
 	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );

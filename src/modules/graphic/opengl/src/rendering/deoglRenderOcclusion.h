@@ -45,26 +45,26 @@ class deoglRenderTaskSharedShader;
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	deoglPipeline *pPipelineOccMap;
-	deoglPipeline *pPipelineOccMapStereo;
-	deoglPipeline *pPipelineOccMapClipPlane;
-	deoglPipeline *pPipelineOccMapClipPlaneStereo;
-	deoglPipeline *pPipelineOccMapOrtho;
-	deoglPipeline *pPipelineOccMapOrthoStereo;
-	deoglPipeline *pPipelineOccMapOrthoClipPlane;
-	deoglPipeline *pPipelineOccMapOrthoClipPlaneStereo;
-	deoglPipeline *pPipelineOccMapDownSample;
-	deoglPipeline *pPipelineOccMapDownSampleStereo;
-	deoglPipeline *pPipelineOccTest;
-	deoglPipeline *pPipelineOccTestDual;
-	deoglPipeline *pPipelineOccTestSun;
-	deoglPipeline *pPipelineOccTestStereo;
-	deoglPipeline *pPipelineOccTestDualStereo;
-	deoglPipeline *pPipelineOccTestSunStereo;
-	deoglPipeline *pPipelineOccTestTFB;
-	deoglPipeline *pPipelineOccTestTFBDual;
-	deoglPipeline *pPipelineOccTestTFBSun;
-	deoglPipeline *pPipelineOccMapCube;
+	const deoglPipeline *pPipelineOccMap;
+	const deoglPipeline *pPipelineOccMapStereo;
+	const deoglPipeline *pPipelineOccMapClipPlane;
+	const deoglPipeline *pPipelineOccMapClipPlaneStereo;
+	const deoglPipeline *pPipelineOccMapOrtho;
+	const deoglPipeline *pPipelineOccMapOrthoStereo;
+	const deoglPipeline *pPipelineOccMapOrthoClipPlane;
+	const deoglPipeline *pPipelineOccMapOrthoClipPlaneStereo;
+	const deoglPipeline *pPipelineOccMapDownSample;
+	const deoglPipeline *pPipelineOccMapDownSampleStereo;
+	const deoglPipeline *pPipelineOccTest;
+	const deoglPipeline *pPipelineOccTestDual;
+	const deoglPipeline *pPipelineOccTestSun;
+	const deoglPipeline *pPipelineOccTestStereo;
+	const deoglPipeline *pPipelineOccTestDualStereo;
+	const deoglPipeline *pPipelineOccTestSunStereo;
+	const deoglPipeline *pPipelineOccTestTFB;
+	const deoglPipeline *pPipelineOccTestTFBDual;
+	const deoglPipeline *pPipelineOccTestTFBSun;
+	const deoglPipeline *pPipelineOccMapCube;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglSPBlockUBO *pOccMapFrustumParamBlock;

@@ -27,10 +27,12 @@
 #include "deoglRLight.h"
 #include "deoglLightTestForTouch.h"
 #include "deoglLightGatherOcclusionMeshes.h"
-#include "volume/deoglLightVolume.h"
-#include "volume/deoglLightVolumeBuilder.h"
+#include "pipeline/deoglLightPipelinesPoint.h"
+#include "pipeline/deoglLightPipelinesSpot.h"
 #include "shader/deoglLightShader.h"
 #include "shader/deoglLightShaderManager.h"
+#include "volume/deoglLightVolume.h"
+#include "volume/deoglLightVolumeBuilder.h"
 #include "deoglNotifyEnvMapLightChanged.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../collidelist/deoglCollideListComponent.h"
@@ -684,359 +686,46 @@ void deoglRLight::PrepareForRenderRender( const deoglRenderPlanMasked *renderPla
 
 
 
-deoglLightShader *deoglRLight::GetShaderFor( deoglRLight::eShaderTypes shaderType ){
-	if( ! pShaders[ shaderType ] ){
-		deoglLightShaderConfig config;
-		
-		if( GetShaderConfigFor( shaderType, config ) ){
-			//#ifdef OS_ANDROID
-			//	decString debugString;
-			//	config.DebugGetConfigString(debugString);
-			//	pRenderThread.GetLogger().LogInfoFormat("GetShaderFor(%p): IN %s", this, debugString.GetString());
-			//#endif
-			pShaders[ shaderType ].TakeOver( pRenderThread.GetShader().GetLightShaderManager().GetShaderWith( config ) );
-			//#ifdef OS_ANDROID
-			//	pRenderThread.GetLogger().LogInfoFormat("GetShaderFor(%p): OUT %p", this, pShaders[shaderType]);
-			//#endif
-		}
-	}
-	
-	return pShaders[ shaderType ];
-}
-
-bool deoglRLight::GetShaderConfigFor( deoglRLight::eShaderTypes shaderType,
-deoglLightShaderConfig &config ){
-	const deoglConfiguration &oglconfig = pRenderThread.GetConfiguration();
-	
-	config.Reset();
-	
-	switch( shaderType ){
-	case estLumSolid1:
-	case estLumSolid1NoAmbient:
-	case estLumSolid2:
-	case estLumSolid2NoAmbient:
-	case estGIRayNoShadow:
-	case estGIRaySolid1:
-	case estGIRaySolid2:
-		break;
-		
-	default:
-		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
-	}
-	
-	switch( shaderType ){
-	case estStereoNoShadow:
-	case estStereoSolid1:
-	case estStereoSolid1Transp1:
-	case estStereoSolid1NoAmbient:
-	case estStereoSolid1Transp1NoAmbient:
-	case estStereoSolid2:
-	case estStereoSolid2Transp1:
-	case estStereoSolid2Transp2:
-	case estStereoSolid2NoAmbient:
-	case estStereoSolid2Transp1NoAmbient:
-	case estStereoSolid2Transp2NoAmbient:
-		// NOTE light volumes
-		if( pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
-			config.SetVSRenderStereo( true );
+deoglLightPipelines &deoglRLight::GetPipelines(){
+	if( ! pPipelines ){
+		if( pLightType == deLight::eltPoint ){
+			pPipelines.TakeOver( new deoglLightPipelinesPoint( *this ) );
 			
 		}else{
-			config.SetGSRenderStereo( true );
+			pPipelines.TakeOver( new deoglLightPipelinesSpot( *this ) );
 		}
-		break;
-		
-	default:
-		break;
+		pPipelines->Prepare();
 	}
 	
-	switch( pLightType ){
-	case deLight::eltPoint:
-		config.SetLightMode( deoglLightShaderConfig::elmPoint );
-		config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esmaCube );
-		config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esmaCube );
-		config.SetHWDepthCompare( true );
-		config.SetDecodeInShadow( false );
-		config.SetShadowMatrix2EqualsMatrix1( true );
-		
-		switch( shaderType ){
-		case estLumSolid1:
-		case estLumSolid1NoAmbient:
-		case estLumSolid2:
-		case estLumSolid2NoAmbient:
-		case estGIRaySolid1:
-		case estGIRaySolid2:
-			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
-			break;
-			
-		default:
-			config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-			//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
-		}
-		config.SetTextureNoise( false );
-		
-		if( pLightCanvas ){
-			// right now canvas can not have depth. once it has light canvas can only be used
-			// as cube map texture. since this is not possible right now equirect is used.
-			config.SetTextureColorOmnidirEquirect( true );
-			
-		}else if( pUseSkinTexture ){
-			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
-				config.SetTextureColorOmnidirCube( true );
-				
-			}else if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirEquirect ) ){
-				config.SetTextureColorOmnidirEquirect( true );
-				
-			}else if( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empColorOmnidirCube ).GetRenderable() != -1 ){
-				config.SetTextureColorOmnidirCube( true );
-				
-			}else if( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empColorOmnidirEquirect ).GetRenderable() != -1 ){
-				config.SetTextureColorOmnidirEquirect( true );
-			}
-		}
-		break;
-		
-	case deLight::eltSpot:
-	case deLight::eltProjector:
-		if( pLightType == deLight::eltSpot ){
-			config.SetLightMode( deoglLightShaderConfig::elmSpot );
-			
-		}else{
-			config.SetLightMode( deoglLightShaderConfig::elmProjector );
-		}
-		
-		config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esma2D );
-		config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esma2D );
-		
-		config.SetHWDepthCompare( true );
-		config.SetDecodeInShadow( false );
-		config.SetShadowMatrix2EqualsMatrix1( true );
-		config.SetShadowInverseDepth( true );
-		
-		switch( shaderType ){
-		case estLumSolid1:
-		case estLumSolid1NoAmbient:
-		case estLumSolid2:
-		case estLumSolid2NoAmbient:
-		case estGIRaySolid1:
-		case estGIRaySolid2:
-			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
-			break;
-			
-		default:
-			config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-			//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
-		}
-		config.SetTextureNoise( false );
-		
-		if( pLightCanvas ){
-			config.SetTextureColor( true );
-			
-		}else if( pUseSkinTexture ){
-			// usually spot/projector lights use 2D textures. it is though also allowed to use
-			// omni-directional textures like point lights. in this case the spot properties
-			// clamp the texture into the positive Z direction
-			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
-				config.SetTextureColorOmnidirCube( true );
-				
-			}else if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirEquirect ) ){
-				config.SetTextureColorOmnidirEquirect( true );
-				
-			}else if( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empColorOmnidirCube ).GetRenderable() != -1 ){
-				config.SetTextureColorOmnidirCube( true );
-				
-			}else if( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empColorOmnidirEquirect ).GetRenderable() != -1 ){
-				config.SetTextureColorOmnidirEquirect( true );
-				
-			}else{
-				config.SetTextureColor( true );
-			}
-		}
-		break;
-	}
-	
-	switch( shaderType ){
-	case estNoShadow:
-	case estGIRayNoShadow:
-	case estStereoNoShadow:
-		break;
-		
-	case estSolid1:
-	case estLumSolid1:
-	case estStereoSolid1:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Ambient( true );
-		break;
-		
-	case estSolid1NoAmbient:
-	case estLumSolid1NoAmbient:
-	case estStereoSolid1NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		break;
-		
-	case estSolid1Transp1:
-	case estStereoSolid1Transp1:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow1Ambient( true );
-		break;
-		
-	case estSolid1Transp1NoAmbient:
-	case estStereoSolid1Transp1NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		break;
-		
-	case estSolid2:
-	case estLumSolid2:
-	case estStereoSolid2:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadow1Ambient( true );
-		config.SetTextureShadow2Ambient( true );
-		break;
-		
-	case estSolid2NoAmbient:
-	case estLumSolid2NoAmbient:
-	case estStereoSolid2NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow2Solid( true );
-		break;
-		
-	case estSolid2Transp1:
-	case estStereoSolid2Transp1:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadow1Ambient( true );
-		config.SetTextureShadow2Ambient( true );
-		break;
-		
-	case estSolid2Transp1NoAmbient:
-	case estStereoSolid2Transp1NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow2Solid( true );
-		break;
-		
-	case estSolid2Transp2:
-	case estStereoSolid2Transp2:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadow2Transparent( true );
-		config.SetTextureShadow1Ambient( true );
-		config.SetTextureShadow2Ambient( true );
-		break;
-		
-	case estSolid2Transp2NoAmbient:
-	case estStereoSolid2Transp2NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadow2Transparent( true );
-		break;
-		
-	case estGIRaySolid1:
-		config.SetTextureShadow1Solid( true );
-		break;
-		
-	case estGIRaySolid2:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow2Solid( true );
-		break;
-		
-	default:
-		return false;
-	}
-	
-	switch( shaderType ){
-	case estGIRayNoShadow:
-	case estGIRaySolid1:
-	case estGIRaySolid2:
-		config.SetGIRay( true );
-		config.SetFullScreenQuad( true );
-		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
-		break;
-		
-	default:
-		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
-	}
-	
-	return true;
+	return *pPipelines;
 }
 
 deoglSPBlockUBO *deoglRLight::GetLightParameterBlock(){
-	if( pParamBlockLight ){
-		return pParamBlockLight;
+	if( ! pParamBlockLight ){
+		pParamBlockLight = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
 	}
-	
-	deoglLightShader *shader = nullptr;
-	int i;
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		if( pShaders[ i ] ){
-			shader = pShaders[ i ];
-			break;
-		}
-	}
-	if( ! shader ){
-		// this is correct since the light parameter block only contains parameters which
-		// depend on the light configuration and are the same for all possible shaders
-		shader = GetShaderFor( estNoShadow );
-	}
-	
-	shader->EnsureShaderExists();
-	pParamBlockLight = shader->CreateSPBLightParam();
-	
 	return pParamBlockLight;
 }
 
 deoglSPBlockUBO *deoglRLight::GetInstanceParameterBlock(){
-	if( pParamBlockInstance ){
-		return pParamBlockInstance;
+	if( ! pParamBlockInstance ){
+		pParamBlockInstance = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
 	}
-	
-	deoglLightShader *shader = nullptr;
-	int i;
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		if( pShaders[ i ] ){
-			shader = pShaders[ i ];
-			break;
-		}
-	}
-	if( ! shader ){
-		// this is correct since the light parameter block only contains parameters which
-		// depend on the light configuration and are the same for all possible shaders
-		shader = GetShaderFor( estNoShadow );
-	}
-	
-	shader->EnsureShaderExists();
-	pParamBlockInstance = shader->CreateSPBInstParam();
-	
 	return pParamBlockInstance;
 }
 
-void deoglRLight::DropShaders(){
-	int i;
-	
+void deoglRLight::DropPipelines(){
 	if( pParamBlockInstance ){
 		pParamBlockInstance->FreeReference();;
-		pParamBlockInstance = NULL;
+		pParamBlockInstance = nullptr;
 	}
-	
 	if( pParamBlockLight ){
 		pParamBlockLight->FreeReference();;
-		pParamBlockLight = NULL;
+		pParamBlockLight = nullptr;
 	}
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		pShaders[ i ] = nullptr;
-	}
+	pPipelines = nullptr;
 }
 
 

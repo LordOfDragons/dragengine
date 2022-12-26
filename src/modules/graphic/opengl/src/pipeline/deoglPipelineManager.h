@@ -68,10 +68,10 @@ public:
 	int GetCount() const;
 	
 	/** Pipeline at index. Caller does not hold reference. */
-	deoglPipeline *GetAt( int index ) const;
+	const deoglPipeline *GetAt( int index ) const;
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
-	deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration );
+	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration );
 	
 	/** Pipeline with configuration is present. */
 	bool HasWith( const deoglPipelineConfiguration &configuration ) const;

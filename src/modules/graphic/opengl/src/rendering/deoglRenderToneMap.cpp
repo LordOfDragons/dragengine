@@ -595,7 +595,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 // 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
-	deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineColor2LogLumStereo : pPipelineColor2LogLum;
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineColor2LogLumStereo : pPipelineColor2LogLum;
 	pipeline->Activate();
 	shader = pipeline->GetGlShader()->GetCompiled();
 	
@@ -839,7 +839,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	bloomWidth = curWidth;
 	bloomHeight = curHeight;
 	
-	deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineBrightPassStereo : pPipelineBrightPass;
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineBrightPassStereo : pPipelineBrightPass;
 	pipeline->Activate();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
@@ -1102,7 +1102,7 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap;
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap;
 	pipeline.Activate();
 	shader = pipeline.GetGlShader()->GetCompiled();
 	
@@ -1132,7 +1132,7 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr;
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr;
 	pipeline.Activate();
 	shader = pipeline.GetGlShader()->GetCompiled();
 	

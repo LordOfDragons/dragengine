@@ -251,7 +251,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 	deoglVolumeShape visitor( renderThread );
 	int i, j;
 	
-	deoglPipeline &pipeline = debugDrawer.GetXRay()
+	const deoglPipeline &pipeline = debugDrawer.GetXRay()
 		? ( plan.GetRenderStereo() ? *pPipelineShapeXRayStereo : *pPipelineShapeXRay )
 		: ( plan.GetRenderStereo() ? *pPipelineShapeSolidStereo : *pPipelineShapeSolid );
 	pipeline.Activate();
@@ -330,7 +330,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( vao->GetVAO() ) );
 	
-	deoglPipeline &pipeline = debugDrawer.GetXRay()
+	const deoglPipeline &pipeline = debugDrawer.GetXRay()
 		? ( plan.GetRenderStereo() ? *pPipelineMeshXRayStereo : *pPipelineMeshXRay )
 		: ( plan.GetRenderStereo() ? *pPipelineMeshSolidStereo : *pPipelineMeshSolid );
 	pipeline.Activate();

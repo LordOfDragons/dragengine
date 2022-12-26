@@ -34,14 +34,14 @@ class deoglRDebugDrawer;
  */
 class deoglRenderDebugDrawer : public deoglRenderBase{
 private:
-	deoglPipeline *pPipelineShapeXRay;
-	deoglPipeline *pPipelineShapeXRayStereo;
-	deoglPipeline *pPipelineShapeSolid;
-	deoglPipeline *pPipelineShapeSolidStereo;
-	deoglPipeline *pPipelineMeshXRay;
-	deoglPipeline *pPipelineMeshXRayStereo;
-	deoglPipeline *pPipelineMeshSolid;
-	deoglPipeline *pPipelineMeshSolidStereo;
+	const deoglPipeline *pPipelineShapeXRay;
+	const deoglPipeline *pPipelineShapeXRayStereo;
+	const deoglPipeline *pPipelineShapeSolid;
+	const deoglPipeline *pPipelineShapeSolidStereo;
+	const deoglPipeline *pPipelineMeshXRay;
+	const deoglPipeline *pPipelineMeshXRayStereo;
+	const deoglPipeline *pPipelineMeshSolid;
+	const deoglPipeline *pPipelineMeshSolidStereo;
 	
 	
 	

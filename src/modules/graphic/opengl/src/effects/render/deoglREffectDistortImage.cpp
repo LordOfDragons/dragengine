@@ -103,7 +103,7 @@ void deoglREffectDistortImage::SetImage( deoglRImage *image ){
 
 
 
-deoglPipeline *deoglREffectDistortImage::GetPipeline(){
+const deoglPipeline *deoglREffectDistortImage::GetPipeline(){
 	if( ! pPipeline ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -122,7 +122,7 @@ deoglPipeline *deoglREffectDistortImage::GetPipeline(){
 	return pPipeline;
 }
 
-deoglPipeline *deoglREffectDistortImage::GetPipelineStereo(){
+const deoglPipeline *deoglREffectDistortImage::GetPipelineStereo(){
 	if( ! pPipelineStereo ){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
@@ -179,7 +179,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	float su = pStrength.x * defren.GetScalingU(); //( float )width;
 	float sv = pStrength.y * defren.GetScalingV(); //( float )height;
 	
-	deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
 	renderWorld.SetViewport( plan );

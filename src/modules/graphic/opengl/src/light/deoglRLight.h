@@ -22,6 +22,9 @@
 #ifndef _DEOGLRLIGHT_H_
 #define _DEOGLRLIGHT_H_
 
+#include "pipeline/deoglLightPipelines.h"
+#include "../component/deoglComponentSet.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -29,28 +32,25 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/light/deLight.h>
 
-#include "shader/deoglLightShader.h"
-#include "../component/deoglComponentSet.h"
-
 class deoglCollideList;
 class deoglLightShaderConfig;
 class deoglLightVolume;
 class deoglOcclusionQuery;
+class deoglOcclusionTest;
 class deoglOptimizerLight;
 class deoglRCanvasView;
 class deoglRComponent;
+class deoglRDynamicSkin;
 class deoglRenderPlan;
+class deoglRenderPlanMasked;
 class deoglRenderThread;
 class deoglRSkin;
-class deoglRDynamicSkin;
 class deoglRWorld;
-class deoglSPBlockUBO;
 class deoglShadowCaster;
 class deoglSkinState;
 class deoglSkinTexture;
+class deoglSPBlockUBO;
 class deoglWorldOctree;
-class deoglOcclusionTest;
-class deoglRenderPlanMasked;
 
 class decConvexVolumeList;
 class deoglDCollisionVolume;
@@ -62,46 +62,6 @@ class decShapeBox;
  * Render light.
  */
 class deoglRLight : public deObject{
-public:
-	/** Shader Types. */
-	enum eShaderTypes{
-		estNoShadow, //<! No shadow casting.
-		estSolid1, //<! Single solid no transparent shadow.
-		estSolid1Transp1, //<! Single solid and transparent shadow.
-		estSolid1NoAmbient, //<! Single solid no transparent shadow without ambient lighting.
-		estSolid1Transp1NoAmbient, //<! Single solid and transparent shadow without ambient lighting.
-		estSolid2, //<! Double solid no transparent shadow.
-		estSolid2Transp1, //<! Double solid and single transparent shadow.
-		estSolid2Transp2, //<! Double solid and transparent shadow.
-		estSolid2NoAmbient, //<! Double solid no transparent shadow.
-		estSolid2Transp1NoAmbient, //<! Double solid and single transparent shadow.
-		estSolid2Transp2NoAmbient, //<! Double solid and transparent shadow.
-		estLumSolid1, //<! Luminance only single solid (unused).
-		estLumSolid1NoAmbient, //<! Luminance only single solid without ambient lighting (unused).
-		estLumSolid2, //<! Luminance only double solid (unused).
-		estLumSolid2NoAmbient, //<! Luminance only double solid (unused).
-		estGIRayNoShadow, //<! GI rays no shadow casting.
-		estGIRaySolid1, //<! GI rays single solid shadow.
-		estGIRaySolid2, //<! GI rays double solid shadow.
-		
-		// stereo
-		estStereoNoShadow, //<! No shadow casting.
-		estStereoSolid1, //<! Single solid no transparent shadow.
-		estStereoSolid1Transp1, //<! Single solid and transparent shadow.
-		estStereoSolid1NoAmbient, //<! Single solid no transparent shadow without ambient lighting.
-		estStereoSolid1Transp1NoAmbient, //<! Single solid and transparent shadow without ambient lighting.
-		estStereoSolid2, //<! Double solid no transparent shadow.
-		estStereoSolid2Transp1, //<! Double solid and single transparent shadow.
-		estStereoSolid2Transp2, //<! Double solid and transparent shadow.
-		estStereoSolid2NoAmbient, //<! Double solid no transparent shadow.
-		estStereoSolid2Transp1NoAmbient, //<! Double solid and single transparent shadow.
-		estStereoSolid2Transp2NoAmbient, //<! Double solid and transparent shadow.
-	};
-	
-	static const int ShaderTypeCount = estStereoSolid2Transp2NoAmbient + 1;
-	
-	
-	
 public:
 	deoglRenderThread &pRenderThread;
 	
@@ -181,7 +141,7 @@ public:
 	
 	bool pUpdateOnRemoveComponent;
 	
-	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
+	deoglLightPipelines::Ref pPipelines;
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	
@@ -522,11 +482,8 @@ public:
 	
 	
 	
-	/** Shader for a shader type. */
-	deoglLightShader *GetShaderFor( eShaderTypes shaderType );
-	
-	/** Shader configuration for a shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
 	
 	/** Light parameter block. */
 	deoglSPBlockUBO *GetLightParameterBlock();
@@ -534,8 +491,8 @@ public:
 	/** Instance parameter block. */
 	deoglSPBlockUBO *GetInstanceParameterBlock();
 	
-	/** Drop all shaders and parameter blocks. */
-	void DropShaders();
+	/** Drop all pipelines and parameter blocks. */
+	void DropPipelines();
 	
 	
 	

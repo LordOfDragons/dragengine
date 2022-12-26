@@ -42,27 +42,27 @@ class deoglArrayTexture;
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:
-	deoglPipeline *pPipelineCopyColor;
-	deoglPipeline *pPipelineCopyColorMipMap;
-	deoglPipeline *pPipelineCopyColorStereo;
-	deoglPipeline *pPipelineCopyColorMipMapStereo;
-	deoglPipeline *pPipelineMinMaxMipMapMin;
-	deoglPipeline *pPipelineMinMaxMipMapMax;
-	deoglPipeline *pPipelineMinMaxMipMapInitial;
-	deoglPipeline *pPipelineMinMaxMipMapDownsample;
-	deoglPipeline *pPipelineScreenSpace;
-	deoglPipeline *pPipelineScreenSpaceStereo;
-	deoglPipeline *pPipelineApplyReflections;
-	deoglPipeline *pPipelineApplyReflectionsStereo;
+	const deoglPipeline *pPipelineCopyColor;
+	const deoglPipeline *pPipelineCopyColorMipMap;
+	const deoglPipeline *pPipelineCopyColorStereo;
+	const deoglPipeline *pPipelineCopyColorMipMapStereo;
+	const deoglPipeline *pPipelineMinMaxMipMapMin;
+	const deoglPipeline *pPipelineMinMaxMipMapMax;
+	const deoglPipeline *pPipelineMinMaxMipMapInitial;
+	const deoglPipeline *pPipelineMinMaxMipMapDownsample;
+	const deoglPipeline *pPipelineScreenSpace;
+	const deoglPipeline *pPipelineScreenSpaceStereo;
+	const deoglPipeline *pPipelineApplyReflections;
+	const deoglPipeline *pPipelineApplyReflectionsStereo;
 	
-	deoglPipeline *pPipelineCopyMaterial;
-	deoglPipeline *pPipelineEnvMapLightGI;
-	deoglPipeline *pPipelineEnvMapCopy;
-	deoglPipeline *pPipelineReflection;
-	deoglPipeline *pPipelineReflectionStereo;
-	deoglPipeline *pPipelineCubeMap2EquiMap;
-	deoglPipeline *pPipelineBuildEnvMap;
-	deoglPipeline *pPipelineEnvMapMask;
+	const deoglPipeline *pPipelineCopyMaterial;
+	const deoglPipeline *pPipelineEnvMapLightGI;
+	const deoglPipeline *pPipelineEnvMapCopy;
+	const deoglPipeline *pPipelineReflection;
+	const deoglPipeline *pPipelineReflectionStereo;
+	const deoglPipeline *pPipelineCubeMap2EquiMap;
+	const deoglPipeline *pPipelineBuildEnvMap;
+	const deoglPipeline *pPipelineEnvMapMask;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglRenderTask *pRenderTask;

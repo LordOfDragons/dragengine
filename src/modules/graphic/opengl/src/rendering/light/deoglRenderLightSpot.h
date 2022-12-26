@@ -91,12 +91,12 @@ public:
 	
 	
 private:
-	deoglShaderProgramUsage pShaderShadowCopy;
-	deoglShaderProgramUsage pShaderBoxBoundary1;
-	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
-	deoglShaderProgramUsage pShaderBoxBoundary2;
-	deoglShaderProgramUsage pShaderOccMap;
 	deoglCollideList pCollideList;
+	
+	const deoglPipeline *pPipelineBoxBoundary1;
+	const deoglPipeline *pPipelineBoxBoundary1Ambient;
+	const deoglPipeline *pPipelineBoxBoundary2;
+	const deoglPipeline *pPipelineOccMap;
 	
 	
 	

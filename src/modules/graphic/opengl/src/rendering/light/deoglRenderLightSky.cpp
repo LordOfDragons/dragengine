@@ -385,8 +385,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderLight" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	//deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglLightShader *lightShader;
+	const deoglLightPipeline *pipeline = nullptr;
 	
 	const bool useShadow = plan.GetUseShadow();
 	int shadowMapSize = plan.GetPlan().GetShadowSkySize();
@@ -401,57 +400,42 @@ const deoglRenderPlanMasked *mask, bool xray ){
 		DebugTimer2SampleCount( plan.GetPlan(), *pDebugInfoSolidShadow, 1, true );
 	}
 	
-	// render light
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	if( solid ){
-		OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE ) );
+	int pipelineModifiers = 0;
+	if( ! solid ){
+		pipelineModifiers |= deoglLightPipelines::emTransparent;
+	}
+	if( plan.GetPlan().GetRenderStereo() ){
+		pipelineModifiers |= deoglLightPipelines::emStereo;
 	}
 	
-	// set shader
+	// activate pipeline
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	if( useShadow ){
-		lightShader = skyLayer.GetShaderFor( plan.GetPlan().GetRenderStereo()
-			? deoglRSkyInstanceLayer::estStereoSolid
-			: deoglRSkyInstanceLayer::estSolid );
+		pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etSolid1, pipelineModifiers );
 		
 	}else{
 		if( skyLayer.GetHasLightDirect() ){
-			lightShader = skyLayer.GetShaderFor( plan.GetPlan().GetRenderStereo()
-				? deoglRSkyInstanceLayer::estStereoNoShadow
-				: deoglRSkyInstanceLayer::estNoShadow );
+			pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etNoShadow, pipelineModifiers );
 			
 		}else{
-			lightShader = skyLayer.GetShaderFor( plan.GetPlan().GetRenderStereo()
-				? deoglRSkyInstanceLayer::estStereoAmbient
-				: deoglRSkyInstanceLayer::estAmbient );
+			pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etAmbient, pipelineModifiers );
 		}
 	}
 	
-	DEASSERT_NOTNULL( lightShader )
+	DEASSERT_NOTNULL( pipeline )
+	pipeline->GetPipeline()->Activate();
 	
-	renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+	SetViewport( plan.GetPlan() );
 	
 	// set program parameters
 	deoglSPBlockUBO * const spbInstance = skyLayer.GetInstanceParameterBlock();
 	deoglSPBlockUBO * const spbLight = skyLayer.GetLightParameterBlock();
+	DEASSERT_NOTNULL( spbInstance )
+	DEASSERT_NOTNULL( spbLight )
 	
-	if( ! spbLight || ! spbInstance ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	UpdateLightParamBlock( *lightShader, *spbLight, plan );
-	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, shadowMapSize, passCount );
+	const deoglLightShader &lightShader = pipeline->GetShader();
+	UpdateLightParamBlock( lightShader, *spbLight, plan );
+	UpdateInstanceParamBlock( lightShader, *spbInstance, plan, shadowMapSize, passCount );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	spbLight->Activate();
@@ -460,17 +444,17 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	// set textures
 	int target;
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+	target = lightShader.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 	if( target != -1 ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerShadowClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
+	target = lightShader.GetTextureTarget( deoglLightShader::ettNoise );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );
+	target = lightShader.GetTextureTarget( deoglLightShader::ettLightDepth1 );
 	if( target != -1 ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerClampLinear() );
 	}
@@ -499,7 +483,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 			
 			deoglTexture *texture1 = renderThread.GetDefaultTextures().GetShadowMap();
 			deoglTexture *texture2 = texture1;
-			lightShader = NULL;
+			pipeline = nullptr;
 			
 			if( useShadow && scsolid ){
 				if( scsolid->GetStaticMap() ){
@@ -507,26 +491,26 @@ const deoglRenderPlanMasked *mask, bool xray ){
 					
 					if( scsolid->GetDynamicMap() ){
 						texture2 = scsolid->GetDynamicMap();
-						lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid2 );
+						pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRaySolid2, 0 );
 						
 					}else{
-						lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid1 );
+						pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRaySolid1, 0 );
 					}
 					
 				}else if( scsolid->GetDynamicMap() ){
 					texture1 = scsolid->GetDynamicMap();
-					lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid1 );
+					pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRaySolid1, 0 );
 					
 				}else{
-					lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRayNoShadow );
+					pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRayNoShadow, 0 );
 				}
 				
 			}else if( skyLayer.GetHasLightDirect() ){
-				lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRayNoShadow );
+				pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRayNoShadow, 0 );
 			}
 			
-			if( lightShader ){
-				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+			if( pipeline ){
+				pipeline->GetPipeline()->Activate();
 				
 				// WARNING always non-stereo!
 				renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
@@ -534,18 +518,18 @@ const deoglRenderPlanMasked *mask, bool xray ){
 				spbLight->Activate();
 				spbInstance->Activate();
 				
-				target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+				const deoglLightShader &lightShaderGI = pipeline->GetShader();
+				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *texture1, GetSamplerShadowClampLinear() );
-					
 				}
 				
-				target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
+				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *texture2, GetSamplerShadowClampLinear() );
 				}
 				
-				target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
+				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettNoise );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
 				}
@@ -1260,7 +1244,7 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 
 
 
-void deoglRenderLightSky::UpdateLightParamBlock( deoglLightShader &lightShader,
+void deoglRenderLightSky::UpdateLightParamBlock( const deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan ){
 	int target;
 	
@@ -1343,7 +1327,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan ){
 	paramBlock.UnmapBuffer();
 }
 
-void deoglRenderLightSky::UpdateInstanceParamBlock( deoglLightShader &lightShader,
+void deoglRenderLightSky::UpdateInstanceParamBlock( const deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	const deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();

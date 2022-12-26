@@ -44,12 +44,12 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	deoglPipeline *pPipelineCanvasColor;
-	deoglPipeline *pPipelineCanvasColorMask;
-	deoglPipeline *pPipelineCanvasImage;
-	deoglPipeline *pPipelineCanvasImageMask;
-	deoglPipeline *pPipelineCanvasRenderWorld;
-	deoglPipeline *pPipelineCanvasRenderWorldMask;
+	const deoglPipeline *pPipelineCanvasColor;
+	const deoglPipeline *pPipelineCanvasColorMask;
+	const deoglPipeline *pPipelineCanvasImage;
+	const deoglPipeline *pPipelineCanvasImageMask;
+	const deoglPipeline *pPipelineCanvasRenderWorld;
+	const deoglPipeline *pPipelineCanvasRenderWorldMask;
 	
 	GLenum pBlendSrc;
 	GLenum pBlendDest;

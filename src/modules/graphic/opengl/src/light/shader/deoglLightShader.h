@@ -33,9 +33,8 @@ class deoglShaderDefines;
 class deoglSPBlockUBO;
 
 
-
 /**
- * @brief Skin Shader.
+ * Skin Shader.
  */
 class deoglLightShader : public deObject{
 public:
@@ -132,10 +131,12 @@ public:
 		EUB_COUNT
 	};
 	
+	
+	
 public:
 	deoglRenderThread &pRenderThread;
 	
-	deoglLightShaderConfig pConfig;
+	const deoglLightShaderConfig pConfig;
 	
 	int pTextureTargets[ ETT_COUNT ];
 	int pUsedTextureTargetCount;
@@ -147,8 +148,10 @@ public:
 	deoglShaderSources *pSources;
 	deoglShaderProgram *pShader;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin shader. */
 	deoglLightShader( deoglRenderThread &renderThread, const deoglLightShaderConfig &config );
@@ -156,60 +159,78 @@ public:
 	virtual ~deoglLightShader();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves the configuration. */
+	/** Configuration. */
 	inline const deoglLightShaderConfig &GetConfig() const{ return pConfig; }
 	
-	/** Retrieves the index for a texture target or -1 if not used. */
+	/** Index for texture target or -1 if not used. */
 	int GetTextureTarget( eTextureTargets target ) const;
-	/** Sets the index for a texture target or -1 if not used. */
+	
+	/** Set index for texture target or -1 if not used. */
 	void SetTextureTarget( eTextureTargets target, int index );
-	/** Retrieves the used texture target count. */
+	
+	/** Used texture target count. */
 	inline int GetUsedTextureTargetCount() const{ return pUsedTextureTargetCount; }
-	/** Sets the used texture target count. */
+	
+	/** Set used texture target count. */
 	void SetUsedTextureTargetCount( int usedTextureTargetCount );
 	
-	/** Retrieves the index for an instance parameter uniform target or -1 if not used. */
+	/** Index for instance parameter uniform target or -1 if not used. */
 	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
-	/** Sets the index for an instance parameter uniform target or -1 if not used. */
-	void SetInstanceUniformTarget( eInstanceUniformTargets target, int index );
-	/** Retrieves the index for a light parameter uniform target or -1 if not used. */
-	int GetLightUniformTarget( eLightUniformTargets target ) const;
-	/** Sets the index for a light parameter uniform target or -1 if not used. */
-	void SetLightUniformTarget( eLightUniformTargets target, int index );
 	
-	/** Ensures the shader is created if not existing already. */
+	/** Set index for instance parameter uniform target or -1 if not used. */
+	void SetInstanceUniformTarget( eInstanceUniformTargets target, int index );
+	
+	/** Index for light parameter uniform target or -1 if not used. */
+	int GetLightUniformTarget( eLightUniformTargets target ) const;
+	
+	/** Ensure shader is created if not existing already. */
 	void EnsureShaderExists();
-	/** Retrieves the shader generating it if not existing already. */
+	
+	/** Shader generating it if not existing already. */
 	deoglShaderProgram *GetShader();
 	
-	/** \brief Create instance parameter shader parameter block. */
+	/** Set index for light parameter uniform target or -1 if not used. */
+	void SetLightUniformTarget( eLightUniformTargets target, int index );
+	
+	/** Create instance parameter shader parameter block. */
 	deoglSPBlockUBO *CreateSPBInstParam() const;
 	
-	/** \brief Create light parameter shader parameter block. */
+	/** Create light parameter shader parameter block. */
 	deoglSPBlockUBO *CreateSPBLightParam() const;
 	/*@}*/
 	
-	/** @name Shader Generation */
+	
+	
+	/** \name Shader Generation */
 	/*@{*/
 	/** Generate shader. */
 	void GenerateShader();
+	
 	/** Generate shader defines. */
 	void GenerateDefines( deoglShaderDefines &defines );
+	
 	/** Generate source code for the vertex unit. */
 	void GenerateVertexSC();
+	
 	/** Generate source code for the geometry unit. */
 	void GenerateGeometrySC();
+	
 	/** Generate source code for the fragment unit. */
 	void GenerateFragmentSC();
+	
 	/** Update texture targets. */
 	void UpdateTextureTargets();
+	
 	/** Update static and dynamic uniform targets. */
 	void UpdateUniformTargets();
+	
 	/** Init shader parameters. */
 	void InitShaderParameters();
 	/*@}*/

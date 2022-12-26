@@ -37,7 +37,7 @@ class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render point lights.
+ * Render point lights.
  */
 class deoglRenderLightPoint : public deoglRenderLightBase{
 public:
@@ -88,15 +88,15 @@ public:
 	
 	
 private:
-	deoglShaderProgramUsage pShaderBoxBoundary1;
-	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
-	deoglShaderProgramUsage pShaderBoxBoundary2;
-	deoglShaderProgramUsage pShaderOccMap;
-	deoglShaderProgramUsage pShaderOccMapCube;
-	
 	int pCubeFaces[ 6 ];
 	
 	deoglCollideList pCollideList;
+	
+	const deoglPipeline *pPipelineBoxBoundary1;
+	const deoglPipeline *pPipelineBoxBoundary1Ambient;
+	const deoglPipeline *pPipelineBoxBoundary2;
+	const deoglPipeline *pPipelineOccMap;
+	const deoglPipeline *pPipelineOccMapCube;
 	
 	
 	
@@ -134,10 +134,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderLightPoint( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderLightPoint();
 	/*@}*/
 	
@@ -145,61 +145,58 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Calculate box boundary for a point light. */
+	/** Calculate box boundary for a point light. */
 	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
 	
-	/** \brief Renders lights. */
+	/** Renders lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Render point light. */
+	/** Render point light. */
 	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Activate textures for lighting. */
+	/** Activate textures for lighting. */
 	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
 		const sShadowDepthMaps &shadowDepthMaps );
 	
-	/** \brief Render shadows for a point light. */
+	/** Render shadows for a point light. */
 	void RenderShadows( deoglRenderPlanLight &planLight, sShadowParams &shadowParams );
 	
-	/** \brief Clear cube map. */
-	void ClearCubeMap( deoglShadowMapper &shadowMapper, int shadowMapSize );
-	
-	/** \brief Render shadow cube map. */
+	/** Render shadow cube map. */
 	void RenderShadowMaps( deoglRenderPlanLight &planLight,
 		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
-	/** \brief Render ambient map. */
+	/** Render ambient map. */
 	void RenderAmbientMap( deoglRenderPlanLight &planLight,
 		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
-	/** \brief Update light shader parameter block. */
+	/** Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanLight &planLight );
 	
-	/** \brief Update instance shader parameter block. */
+	/** Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps );
 	
 	
 	
-	/** \brief Debug information solid lighting. */
+	/** Debug information solid lighting. */
 	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
-	/** \brief Debug information transparent lighting. */
+	/** Debug information transparent lighting. */
 	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	
-	/** \brief Reset debug information. */
+	/** Reset debug information. */
 	void ResetDebugInfo();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoSolid();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoTransparent();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

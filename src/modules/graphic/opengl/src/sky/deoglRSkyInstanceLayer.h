@@ -22,11 +22,11 @@
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
+#include "../light/pipeline/deoglLightPipelinesSky.h"
+
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
-
-#include "../light/shader/deoglLightShader.h"
 
 class deoglLightShaderConfig;
 class deoglRenderThread;
@@ -45,25 +45,6 @@ class deoglRComponent;
  * Render sky Layer.
  */
 class deoglRSkyInstanceLayer{
-public:
-	/** Shader Types. */
-	enum eShaderTypes{
-		estNoShadow, //<! No shadow casting.
-		estAmbient, //<! Ambient light only.
-		estSolid, //<! Solid shadow.
-		estGIRayNoShadow, //<! No shadow casting.
-		estGIRaySolid1, //<! Solid shadow using one texture.
-		estGIRaySolid2, //<! Solid shadow using two textures.
-		
-		estStereoNoShadow, //<! No shadow casting.
-		estStereoAmbient, //<! Ambient light only.
-		estStereoSolid, //<! Solid shadow.
-	};
-	
-	static const int ShaderTypeCount = estStereoSolid + 1;
-	
-	
-	
 private:
 	deoglRSkyInstance &pInstance;
 	int pIndex;
@@ -85,7 +66,7 @@ private:
 	deoglSkyLayerTracker *pTrackerEnvMap;
 	bool pSkyNeedsUpdate;
 	
-	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
+	deoglLightPipelines::Ref pPipelines;
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	
@@ -165,13 +146,10 @@ public:
 	
 	
 	
-	/** Shader for shader type. */
-	deoglLightShader *GetShaderFor( eShaderTypes shaderType );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
 	
-	/** Shader configuration for shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config );
-	
-	/** Light parameter block. */
+	// /** Light parameter block. */
 	deoglSPBlockUBO *GetLightParameterBlock();
 	
 	/** Instance parameter block. */

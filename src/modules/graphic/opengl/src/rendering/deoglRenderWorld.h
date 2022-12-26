@@ -49,16 +49,16 @@ private:
 	deoglRenderTaskParticles *pRenderTaskParticles;
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
-	deoglPipeline *pPipelineFinalize;
-	deoglPipeline *pPipelineFinalizeStereo;
-	deoglPipeline *pPipelineFinalizeBlend;
-	deoglPipeline *pPipelineFinalizeBlendStereo;
-	deoglPipeline *pPipelineFinalizeSplit;
+	const deoglPipeline *pPipelineFinalize;
+	const deoglPipeline *pPipelineFinalizeStereo;
+	const deoglPipeline *pPipelineFinalizeBlend;
+	const deoglPipeline *pPipelineFinalizeBlendStereo;
+	const deoglPipeline *pPipelineFinalizeSplit;
 	
-	deoglPipeline *pPipelineCopyDepth;
-	deoglPipeline *pPipelineCopyDepthStereo;
+	const deoglPipeline *pPipelineCopyDepth;
+	const deoglPipeline *pPipelineCopyDepthStereo;
 	
-	deoglPipeline *pPipelineBlackScreen;
+	const deoglPipeline *pPipelineBlackScreen;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	

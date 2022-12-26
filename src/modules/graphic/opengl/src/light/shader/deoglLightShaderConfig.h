@@ -150,6 +150,9 @@ public:
 	/** Create light shader configuration. */
 	deoglLightShaderConfig();
 	
+	/** Create copy of light shader configuration. */
+	deoglLightShaderConfig( const deoglLightShaderConfig &config );
+	
 	/** Clean up light shader configuration. */
 	~deoglLightShaderConfig();
 	/*@}*/

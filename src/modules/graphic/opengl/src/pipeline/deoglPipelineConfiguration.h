@@ -202,6 +202,9 @@ public:
 	inline float GetPolygonOffsetBias() const{ return pPolygonOffsetBias; }
 	void SetPolygonOffsetBias( float bias );
 	
+	/** Enable polygon offset. */
+	void EnablePolygonOffset( float factor, float bias );
+	
 	
 	
 	/** Enable depth test. */
@@ -221,6 +224,9 @@ public:
 	
 	/** Enable depth test with function less-equal. */
 	void EnableDepthTestLessEqual();
+	
+	/** Enable depth test with function less-equal. */
+	void EnableDepthTest( GLenum function );
 	
 	
 	

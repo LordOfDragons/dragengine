@@ -1073,7 +1073,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 		DebugTimer1Reset( plan, true );
 	}
 	
-	deoglPipeline &pipeline = solid
+	const deoglPipeline &pipeline = solid
 		? ( plan.GetRenderStereo() ? *pPipelineLightStereo : *pPipelineLight )
 		: ( plan.GetRenderStereo() ? *pPipelineLightTranspStereo : *pPipelineLightTransp );
 	pipeline.Activate();
@@ -1162,7 +1162,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	// probe
 	if( devmode.GetGIShowProbes() ){
-		deoglPipeline &pipeline = xray ? *pPipelineDebugProbeXRay : *pPipelineDebugProbe;
+		const deoglPipeline &pipeline = xray ? *pPipelineDebugProbeXRay : *pPipelineDebugProbe;
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
@@ -1186,7 +1186,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	// offset
 	if( devmode.GetGIShowProbes() && devmode.GetGIShowProbeOffsets() ){
-		deoglPipeline &pipeline = xray ? *pPipelineDebugProbeXRay : *pPipelineDebugProbe;
+		const deoglPipeline &pipeline = xray ? *pPipelineDebugProbeXRay : *pPipelineDebugProbe;
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
