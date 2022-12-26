@@ -74,6 +74,9 @@ public:
 	/** Drop VBO. For internal use only. */
 	void DropVBO();
 	
+	/** Delayed remove block. */
+	void DelayedRemove();
+	
 	
 	
 	/** Offset to block (points). */

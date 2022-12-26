@@ -99,6 +99,9 @@ private:
 	deMutex pMutexCameras;
 	decObjectOrderedSet pCleanUpCameraList;
 	
+	deMutex pMutexReleaseObjects;
+	decObjectOrderedSet pReleaseObjects;
+	
 	deMutex pMutexSynchronize;
 	bool pHasSynchronizeOperations;
 	decPointerOrderedSet pFileWriteList;
@@ -275,6 +278,14 @@ public:
 	
 	/** Add clean up camera (thread-safe). */
 	void AddCleanUpCamera( deoglRCamera *camera );
+	
+	
+	
+	/** Release objects list (not thread-safe). */
+	inline const decObjectOrderedSet &GetReleaseObjects() const{ return pReleaseObjects; }
+	
+	/** Add release object (thread-safe). */
+	void AddReleaseObject( deObject *object );
 	
 	
 	

@@ -326,6 +326,23 @@ void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
 	// 	const float accumCamera = timer.GetElapsedTime();
 	}
 	
+	while( true ){
+		decObjectList list;
+		{
+		const deMutexGuard guard( pMutexReleaseObjects );
+		const int count = pReleaseObjects.GetCount();
+		if( count == 0 ){
+			break;
+		}
+		
+		int i;
+		for( i=0; i<count; i++ ){
+			list.Add( pReleaseObjects.GetAt( i ) );
+		}
+		pReleaseObjects.RemoveAll();
+		}
+	}
+	
 	// delete opengl objects
 	{
 		const deMutexGuard guard( pMutexOGLObjects );
@@ -418,12 +435,17 @@ void deoglDelayedOperations::AddSaveImage( deoglDelayedSaveImage *saveImage ){
 }
 
 void deoglDelayedOperations::AddCleanUpCamera( deoglRCamera *camera ){
-	if( ! camera ){
-		return;
+	if( camera ){
+		const deMutexGuard guard( pMutexCameras );
+		pCleanUpCameraList.AddIfAbsent( camera );
 	}
-	
-	const deMutexGuard guard( pMutexCameras );
-	pCleanUpCameraList.AddIfAbsent( camera );
+}
+
+void deoglDelayedOperations::AddReleaseObject( deObject *object ){
+	if( object ){
+		const deMutexGuard guard( pMutexReleaseObjects );
+		pReleaseObjects.Add( object );
+	}
 }
 
 
@@ -438,6 +460,8 @@ void deoglDelayedOperations::Clear(){
 //////////////////////
 
 void deoglDelayedOperations::pCleanUp(){
+	ProcessFreeOperations( true );
+	
 	// drop shaders to avoid cleanup finding them as leaking
 	pShaderGenConeMap = nullptr;
 	pShaderGenConeMapLayer = nullptr;

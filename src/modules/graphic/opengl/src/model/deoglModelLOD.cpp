@@ -841,23 +841,23 @@ void deoglModelLOD::pCleanUp(){
 	}
 	
 	if( pVBOBlockWithWeight ){
-		pVBOBlockWithWeight->GetVBO()->RemoveBlock( pVBOBlockWithWeight );
+		pVBOBlockWithWeight->DelayedRemove();
 		pVBOBlockWithWeight->FreeReference();
 	}
 	if( pVBOBlockWriteSkinnedVBO ){
-		pVBOBlockWriteSkinnedVBO->GetVBO()->RemoveBlock( pVBOBlockWriteSkinnedVBO );
+		pVBOBlockWriteSkinnedVBO->DelayedRemove();
 		pVBOBlockWriteSkinnedVBO->FreeReference();
 	}
 	if( pVBOBlockCalcNormalTangent ){
-		pVBOBlockCalcNormalTangent->GetVBO()->RemoveBlock( pVBOBlockCalcNormalTangent );
+		pVBOBlockCalcNormalTangent->DelayedRemove();
 		pVBOBlockCalcNormalTangent->FreeReference();
 	}
 	if( pVBOBlockPositionWeight ){
-		pVBOBlockPositionWeight->GetVBO()->RemoveBlock( pVBOBlockPositionWeight );
+		pVBOBlockPositionWeight->DelayedRemove();
 		pVBOBlockPositionWeight->FreeReference();
 	}
 	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
 	

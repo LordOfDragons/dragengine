@@ -150,7 +150,7 @@ deoglRDecal::~deoglRDecal(){
 	}
 	
 	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
 	if( pTUCGeometry ){
