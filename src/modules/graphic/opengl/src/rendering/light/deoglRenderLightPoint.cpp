@@ -748,8 +748,7 @@ const deoglRenderPlanMasked *mask ){
 	}else{
 		if( giState ){
 			// gi state lighting changes FBO and other parameters
-			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			SetViewport( plan );
 			RestoreFBO( plan );
 		}
 	}

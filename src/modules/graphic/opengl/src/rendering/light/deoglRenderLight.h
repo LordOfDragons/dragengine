@@ -42,16 +42,16 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgramUsage pShaderAOLocal;
-	deoglShaderProgramUsage pShaderAOLocalStereo;
-	deoglShaderProgramUsage pShaderAOBlur1;
-	deoglShaderProgramUsage pShaderAOBlur1Stereo;
-	deoglShaderProgramUsage pShaderAOBlur2;
-	deoglShaderProgramUsage pShaderAOBlur2Stereo;
-	deoglShaderProgramUsage pShaderDebugAO;
+	const deoglPipeline *pPipelineAOLocal;
+	const deoglPipeline *pPipelineAOLocalStereo;
+	const deoglPipeline *pPipelineAOBlur1;
+	const deoglPipeline *pPipelineAOBlur1Stereo;
+	const deoglPipeline *pPipelineAOBlur2;
+	const deoglPipeline *pPipelineAOBlur2Stereo;
+	const deoglPipeline *pPipelineDebugAO;
 	
-	deoglShaderProgramUsage pShaderSSSSS;
-	deoglShaderProgramUsage pShaderSSSSSStereo;
+	const deoglPipeline *pPipelineSSSSS;
+	const deoglPipeline *pPipelineSSSSSStereo;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;
