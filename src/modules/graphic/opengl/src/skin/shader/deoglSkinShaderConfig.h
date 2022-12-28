@@ -224,6 +224,9 @@ public:
 	/** Create skin shader configuration. */
 	deoglSkinShaderConfig();
 	
+	/** Create copy of skin shader configuration. */
+	deoglSkinShaderConfig( const deoglSkinShaderConfig &copy );
+	
 	/** Clean up skin shader configuration. */
 	~deoglSkinShaderConfig();
 	/*@}*/

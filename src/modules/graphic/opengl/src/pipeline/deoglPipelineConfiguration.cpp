@@ -252,6 +252,10 @@ void deoglPipelineConfiguration::EnableDepthTestLessEqual(){
 	EnableDepthTest( GL_LEQUAL );
 }
 
+void deoglPipelineConfiguration::EnableDepthTestEqual(){
+	EnableDepthTest( GL_EQUAL );
+}
+
 void deoglPipelineConfiguration::EnableDepthTest( GLenum function ){
 	pEnableDepthTest = true;
 	pDepthFunc = function;
@@ -375,6 +379,11 @@ void deoglPipelineConfiguration::EnableBlendAdd(){
 
 void deoglPipelineConfiguration::EnableBlendTranspAdd(){
 	EnableBlend( GL_SRC_ALPHA, GL_ONE );
+}
+
+void deoglPipelineConfiguration::EnableBlendAddConst( const decColor &color ){
+	EnableBlend( GL_CONSTANT_COLOR, GL_ONE );
+	SetBlendColor( color );
 }
 
 void deoglPipelineConfiguration::EnableBlend( GLenum source, GLenum dest ){

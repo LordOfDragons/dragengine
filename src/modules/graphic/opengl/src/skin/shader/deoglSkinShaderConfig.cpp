@@ -39,6 +39,11 @@ deoglSkinShaderConfig::deoglSkinShaderConfig(){
 	Reset();
 }
 
+deoglSkinShaderConfig::deoglSkinShaderConfig( const deoglSkinShaderConfig &copy ){
+	Reset();
+	*this = copy;
+}
+
 deoglSkinShaderConfig::~deoglSkinShaderConfig(){
 }
 

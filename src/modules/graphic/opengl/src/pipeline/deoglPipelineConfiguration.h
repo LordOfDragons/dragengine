@@ -225,6 +225,9 @@ public:
 	/** Enable depth test with function less-equal. */
 	void EnableDepthTestLessEqual();
 	
+	/** Enable depth test with function equal. */
+	void EnableDepthTestEqual();
+	
 	/** Enable depth test with function less-equal. */
 	void EnableDepthTest( GLenum function );
 	
@@ -324,6 +327,9 @@ public:
 	
 	/** Enable blend with function GL_SRC_ALPHA / GL_ONE. */
 	void EnableBlendTranspAdd();
+	
+	/** Enable blend with function GL_CONSTANT_COLOR / GL_ONE. */
+	void EnableBlendAddConst( const decColor &color );
 	
 	/** Enable blend with function. */
 	void EnableBlend( GLenum source, GLenum dest );

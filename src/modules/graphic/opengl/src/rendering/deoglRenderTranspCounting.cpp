@@ -216,8 +216,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// attach the first counter texture to store the count of layers per pixel
 	defren.ActivateFBODiffuse( true );
-	OGL_CHECK( renderThread, glViewport( 0, 0, realWidth, realHeight ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, realWidth, realHeight ) );
+	SetViewport( plan );
 	
 	// set opengl states
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
