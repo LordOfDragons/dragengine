@@ -456,10 +456,6 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				pCmdShowSSAO( command, answer );
 				result = true;
 				
-			}else if( command.MatchesArgumentAt( 0, "dm_generate_shader" ) ){
-				pCmdTestGenerateShader( command, answer );
-				result = true;
-				
 			}else if( command.MatchesArgumentAt( 0, "dm_debug_enable_light_depth_stencil" ) ){
 				pCmdDebugEnableLightDepthStencil( command, answer );
 				result = true;
@@ -525,7 +521,6 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &, decUnicodeStr
 	answer.AppendFromUTF8( "dm_debug_renderplan [1|0] => Display render plan debug information.\n" );
 	answer.AppendFromUTF8( "dm_debug_snapshot [num] => Creates a debug snapshot of something given by num.\n" );
 	answer.AppendFromUTF8( "dm_enable_envmap_fresnel [1|0] => Enable environment map fresnel.\n" );
-	answer.AppendFromUTF8( "dm_generate_shader [pathSkin [type]] => Generate skin shader and output source code.\n" );
 	answer.AppendFromUTF8( "dm_height_terrain => Show LOD levels and bounding boxes of the height terrain.\n" );
 	answer.AppendFromUTF8( "dm_highlight_transparent_objects [1|0] => Highlight transparent objects.\n" );
 	answer.AppendFromUTF8( "dm_meminfo => Displays memory information.\n" );
@@ -1099,96 +1094,6 @@ void deoglDeveloperMode::pCmdShowEnvMapHull( const decUnicodeArgumentList &comma
 
 void deoglDeveloperMode::pCmdShowSSAO( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	pBaseCmdBool( command, answer, pShowSSAO, "dm_show_ssao" );
-}
-
-
-
-void deoglDeveloperMode::pCmdTestGenerateShader( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() != 3 ){
-		answer.AppendFromUTF8( "dm_generate_shader pathSkin typeNumber\n" );
-		
-	}else{
-		deSkinManager &skinmgr = *pRenderThread.GetOgl().GetGameEngine()->GetSkinManager();
-		decString skinPath = command.GetArgumentAt( 1 )->ToUTF8();
-		deoglSkinTexture::eShaderTypes shaderType = deoglSkinTexture::estComponentGeometry;
-		deoglSkinShader *skinShader = NULL;
-		deoglShaderProgram *shader = NULL;
-		deSkin *skin = NULL;
-		decString text;
-		int i, count;
-		
-		if( skinPath.GetLength() > 1 && skinPath.GetAt( 0 ) == '"' ){
-			const int slen = skinPath.GetLength();
-			
-			for( i=1; i<slen-1; i++ ){
-				skinPath.SetAt( i - 1, skinPath.GetAt( i ) );
-			}
-			skinPath.SetAt( slen - 1, '\0' );
-		}
-		
-		shaderType = ( deoglSkinTexture::eShaderTypes )command.GetArgumentAt( 2 )->ToUTF8().ToInt();
-		
-		text.Format( "generating shader for skin '%s' type %i\n", skinPath.GetString(), shaderType );
-		answer.AppendFromUTF8( text.GetString() );
-		
-		try{
-			skin = skinmgr.LoadSkin( skinPath.GetString(), "/" );
-			
-			skinShader = ( ( deoglSkin* )skin->GetPeerGraphic() )->GetRSkin()->GetTextureAt( 0 ).GetShaderFor( shaderType );
-			shader = skinShader->GetShader();
-			
-			const deoglShaderDefines &defines = shader->GetDefines();
-			
-			answer.AppendFromUTF8( "defines:\n" );
-			
-			count = defines.GetDefineCount();
-			for( i=0; i<count; i++ ){
-				const char *defineName = defines.GetDefineNameAt( i );
-				const char *defineValue = defines.GetDefineValueAt( i );
-				
-				if( strlen( defineValue ) > 10 ){
-					text.Format( "\t%s = %.10s...\n", defineName, defineValue );
-					
-				}else{
-					text.Format( "\t%s = %s\n", defineName, defineValue );
-				}
-				
-				answer.AppendFromUTF8( text.GetString() );
-			}
-			
-			answer.AppendFromUTF8( "textures:\n" );
-			const deoglShaderBindingList &textureList = shader->GetSources()->GetTextureList();
-			count = textureList.GetCount();
-			for( i=0; i<count; i++ ){
-				text.Format( "\t%s = %i\n", textureList.GetNameAt( i ), textureList.GetTargetAt( i ) );
-				answer.AppendFromUTF8( text.GetString() );
-			}
-			
-			answer.AppendFromUTF8( "inputs:\n" );
-			const deoglShaderBindingList &inputList = shader->GetSources()->GetAttributeList();
-			count = inputList.GetCount();
-			for( i=0; i<count; i++ ){
-				text.Format( "\t%s = %i\n", inputList.GetNameAt( i ), inputList.GetTargetAt( i ) );
-				answer.AppendFromUTF8( text.GetString() );
-			}
-			
-			answer.AppendFromUTF8( "outputs:\n" );
-			const deoglShaderBindingList &outputList = shader->GetSources()->GetOutputList();
-			count = outputList.GetCount();
-			for( i=0; i<count; i++ ){
-				text.Format( "\t%s = %i\n", outputList.GetNameAt( i ), outputList.GetTargetAt( i ) );
-				answer.AppendFromUTF8( text.GetString() );
-			}
-			
-			skin->FreeReference();
-			
-		}catch( const deException &e ){
-			if( skin ){
-				skin->FreeReference();
-			}
-			throw;
-		}
-	}
 }
 
 

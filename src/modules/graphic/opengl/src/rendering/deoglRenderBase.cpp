@@ -71,11 +71,11 @@ deoglRenderBase::~deoglRenderBase(){
 
 void deoglRenderBase::AddBasicDefines( deoglShaderDefines &defines ){
 	if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-		defines.SetDefine( "UBO_IDMATACCBUG", "1" );
+		defines.SetDefines( "UBO_IDMATACCBUG" );
 	}
 	
 	if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-		defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+		defines.SetDefines( "BUG_UBO_DIRECT_LINK_DEAD_LOOP" );
 	}
 }
 

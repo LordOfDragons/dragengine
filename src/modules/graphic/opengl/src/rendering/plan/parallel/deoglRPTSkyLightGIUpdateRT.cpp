@@ -133,9 +133,9 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
 	
 	// components
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 	const int componentCount = collideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
@@ -146,7 +146,6 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
 	}
 	
 	// height terrain
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
 	addToRenderTask.AddHeightTerrains( collideList, true );
 }
 
@@ -159,9 +158,9 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
 	
 	// components
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 	const int componentCount = collideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
@@ -172,7 +171,6 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	}
 	
 	// prop fields
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
 	addToRenderTask.AddPropFields( collideList, false );
 }
 

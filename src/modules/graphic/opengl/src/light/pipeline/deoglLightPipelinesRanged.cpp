@@ -35,6 +35,7 @@
 ////////////////////////////
 
 deoglLightPipelinesRanged::deoglLightPipelinesRanged( const deoglRLight &light ) :
+deoglLightPipelines( light.GetRenderThread() ),
 pLight( light ){
 }
 

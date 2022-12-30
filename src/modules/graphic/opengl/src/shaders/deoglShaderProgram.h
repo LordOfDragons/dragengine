@@ -29,7 +29,6 @@ class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderSources;
 class deoglShaderCompiled;
-class deoglRenderTaskSharedShader;
 
 
 
@@ -57,7 +56,6 @@ private:
 	deoglShaderCompiled *pCompiled;
 	
 	unsigned int pUniqueKey;
-	deoglRenderTaskSharedShader *pRTSShader;
 	
 	int pUsageCount;
 	
@@ -115,12 +113,6 @@ public:
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
-	
-	/** Render task shared shader. */
-	inline deoglRenderTaskSharedShader *GetRTSShader() const{ return pRTSShader; }
-	
-	/** Ensure render task sharded shader is present. */
-	void EnsureRTSShader();
 	
 	/** Retrieves the usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }

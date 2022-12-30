@@ -257,8 +257,6 @@ private:
 	
 	void pCmdShowSSAO( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
-	void pCmdTestGenerateShader( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	
 	void pCmdDebugEnableLightDepthStencil( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );

@@ -32,13 +32,15 @@
 // Class deoglPipeline
 ////////////////////////
 
+int deoglPipeline::pNextRTSPipelineIndex = 0;
+
 // Constructor, destructor
 ////////////////////////////
 
-deoglPipeline::deoglPipeline( deoglRenderThread &renderThread, int index,
+deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
 	const deoglPipelineConfiguration &configuration ) :
 pRenderThread( renderThread ),
-pIndex( index ),
+pRTSPipelineIndex( -1 ),
 pGlConfiguration( nullptr ),
 pVkPipeline( nullptr )
 {
@@ -51,10 +53,10 @@ pVkPipeline( nullptr )
 	}
 }
 
-deoglPipeline::deoglPipeline( deoglRenderThread &renderThread, int index,
+deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
 	const devkPipelineConfiguration &configuration ) :
 pRenderThread( renderThread ),
-pIndex( index ),
+pRTSPipelineIndex( -1 ),
 pGlConfiguration( nullptr ),
 pVkPipeline( nullptr )
 {
@@ -83,6 +85,12 @@ const deoglPipelineConfiguration &deoglPipeline::GetGlConfiguration() const{
 
 const deoglShaderProgram::Ref &deoglPipeline::GetGlShader() const{
 	return GetGlConfiguration().GetShader();
+}
+
+void deoglPipeline::AssignRTSPipelineIndex(){
+	if( pRTSPipelineIndex == -1 ){
+		pRTSPipelineIndex = pNextRTSPipelineIndex++;
+	}
 }
 
 void deoglPipeline::Activate() const{

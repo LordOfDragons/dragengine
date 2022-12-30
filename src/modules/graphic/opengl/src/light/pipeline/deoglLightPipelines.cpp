@@ -25,6 +25,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../renderthread/deoglRTShader.h"
+#include "../../renderthread/deoglRTLogger.h"
 #include "../../configuration/deoglConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
@@ -34,10 +35,41 @@
 // Class deoglLightPipelines
 //////////////////////////////
 
+static const deoglDebugNamesEnum::sEntry vDebugNamesTypesEntries[] = {
+	{ deoglLightPipelines::etNoShadow, "etNoShadow" },
+	{ deoglLightPipelines::etAmbient, "etAmbient" },
+	{ deoglLightPipelines::etSolid1, "etSolid1" },
+	{ deoglLightPipelines::etSolid1Transp1, "etSolid1Transp1" },
+	{ deoglLightPipelines::etSolid2, "etSolid2" },
+	{ deoglLightPipelines::etSolid2Transp1, "etSolid2Transp1" },
+	{ deoglLightPipelines::etSolid2Transp2, "etSolid2Transp2" },
+	{ deoglLightPipelines::etLumSolid1, "etLumSolid1" },
+	{ deoglLightPipelines::etLumSolid2, "etLumSolid2" },
+	{ deoglLightPipelines::etGIRayNoShadow, "etGIRayNoShadow" },
+	{ deoglLightPipelines::etGIRaySolid1, "etGIRaySolid1" },
+	{ deoglLightPipelines::etGIRaySolid2, "etGIRaySolid2" },
+	deoglDebugNamesEnum::EndOfList
+};
+
+const deoglDebugNamesEnum deoglLightPipelines::DebugNamesTypes(
+	"deoglLightPipelines::eTypes", vDebugNamesTypesEntries );
+
+static const deoglDebugNamesEnum::sEntry vDebugNamesModifiersEntries[] = {
+	{ deoglLightPipelines::emNoAmbient, "emNoAmbient" },
+	{ deoglLightPipelines::emStereo, "emStereo" },
+	{ deoglLightPipelines::emTransparent, "emTransparent" },
+	{ deoglLightPipelines::emFlipCullFace, "emFlipCullFace" },
+	deoglDebugNamesEnum::EndOfList
+};
+
+const deoglDebugNamesEnumSet deoglLightPipelines::DebugNamesModifiers(
+	"deoglLightPipelines::eModifiers", vDebugNamesModifiersEntries );
+
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightPipelines::deoglLightPipelines() :
+deoglLightPipelines::deoglLightPipelines( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ),
 pPrepared( false ){
 }
 
@@ -53,10 +85,22 @@ const deoglLightPipeline *deoglLightPipelines::GetWith( eTypes type, int modifie
 	return pPipelines[ type ][ modifiers ];
 }
 
-const deoglLightPipeline &deoglLightPipelines::GetWithRef( deoglLightPipelines::eTypes type, int modifiers ) const{
-	const deoglLightPipeline * const pipeline = pPipelines[ type ][ modifiers ];
-	DEASSERT_NOTNULL( pipeline );
-	return *pipeline;
+const deoglLightPipeline &deoglLightPipelines::GetWithRef( eTypes type, int modifiers ) const{
+	try{
+		return pPipelines[ type ][ modifiers ];
+		
+	}catch( ... ){
+		deoglRTLogger &l = pRenderThread.GetLogger();
+		l.LogErrorFormat( "%s::GetWithRef(%s, %s)",
+			GetDebugName(), DebugNamesTypes.EntryName( type ).GetString(),
+			DebugNamesModifiers.SetName( modifiers ).GetString() );
+		int i;
+		for( i=0; i<ModifiersPerType; i++ ){
+			l.LogErrorFormat( "- %s: %s", DebugNamesModifiers.SetName( i ).GetString(),
+				( deoglLightPipeline* )pPipelines[ type ][ i ] ? "Present" : "Absent" );
+		}
+		throw;
+	}
 }
 
 void deoglLightPipelines::Prepare(){
@@ -84,7 +128,6 @@ deoglPipelineConfiguration &config ){
 void deoglLightPipelines::pBasePipelineConfigGI( deoglPipelineConfiguration &config ){
 	config.Reset();
 	config.SetMasks( true, true, true, true, false );
-	config.SetEnableScissorTest( true );
 	config.EnableBlendAdd();
 }
 
@@ -143,9 +186,22 @@ deoglLightPipelines::eTypes type, int modifierMask ){
 		pipconf.SetCullFace( modifier & emFlipCullFace ? flipCullFace : cullFace );
 		
 		// create shader and pipeline
-		const deoglLightShader::Ref shader( deoglLightShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
+		const deoglLightShader::Ref shader(
+			deoglLightShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
+		
+		try{
+			shader->EnsureShaderExists();
+			
+		}catch( ... ){
+			pRenderThread.GetLogger().LogErrorFormat( "%s::pCreatePipelines(%s, %s)",
+				GetDebugName(), DebugNamesTypes.EntryName( type ).GetString(),
+				DebugNamesModifiers.SetName( modifier ).GetString() );
+			throw;
+		}
+		
 		pipconf.SetShader( shader->GetShader() );
 		
-		pPipelines[ type ][ modifier ].TakeOver( new deoglLightPipeline( pipelineManager.GetWith( pipconf ), shader ) );
+		pPipelines[ type ][ modifier ].TakeOver(
+			new deoglLightPipeline( pipelineManager.GetWith( pipconf ), shader ) );
 	}
 }

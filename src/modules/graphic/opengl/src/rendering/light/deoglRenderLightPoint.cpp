@@ -36,8 +36,6 @@
 #include "../plan/deoglRenderPlanLight.h"
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTask.h"
-#include "../task/deoglRenderTaskShader.h"
-#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../../canvas/render/deoglRCanvasView.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
@@ -286,7 +284,7 @@ deoglRenderLightBase( renderThread )
 		defines.SetDefines( "DEPTH_DISTANCE" );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pPipelineOccMap = pipelineManager.GetWith( pipconf );
+		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveAllDefines();
 		
 		// occlusion map cube
@@ -297,7 +295,7 @@ deoglRenderLightBase( renderThread )
 			
 			pipconf.SetShader( renderThread, "DefRen Occlusion OccMap Cube", defines );
 			pipconf.SetSPBInstanceIndexBase( 0 );
-			pPipelineOccMapCube = pipelineManager.GetWith( pipconf );
+			pPipelineOccMapCube = pipelineManager.GetWith( pipconf, true );
 			defines.RemoveAllDefines();
 		}
 		
@@ -664,8 +662,8 @@ const deoglRenderPlanMasked *mask ){
 		RenderShadows( planLight, shadowParams );
 		
 		// switch back to our framebuffer
-		SetViewport( plan  );
 		RestoreFBO( plan );
+		SetViewport( plan  );
 		
 		// determine shadow maps to use
 		switch( shadowType ){
@@ -748,8 +746,8 @@ const deoglRenderPlanMasked *mask ){
 	}else{
 		if( giState ){
 			// gi state lighting changes FBO and other parameters
-			SetViewport( plan );
 			RestoreFBO( plan );
+			SetViewport( plan );
 		}
 	}
 	
@@ -791,7 +789,7 @@ DEBUG_RESET_TIMER
 	DEASSERT_NOTNULL( spbInstance )
 	DEASSERT_NOTNULL( spbLight )
 	
-	deoglLightShader &lightShader = *pipeline->GetShader();
+	deoglLightShader &lightShader = pipeline->GetShader();
 	UpdateLightParamBlock( lightShader, *spbLight, planLight );
 	
 	sShadowDepthMaps shadowDepthMaps;
@@ -859,7 +857,7 @@ DEBUG_RESET_TIMER
 			spbLight->Activate();
 			spbInstance->Activate();
 			
-			ActivateTextures( planLight, *pipeline->GetShader(), shadowDepthMaps );
+			ActivateTextures( planLight, pipeline->GetShader(), shadowDepthMaps );
 			
 			RenderFullScreenQuadVAO();
 		}
@@ -1447,31 +1445,16 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		renderParamBlock->UnmapBuffer();
 	}
 	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // point light uses linear depth
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( false );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	
-	if( renderThread.GetChoices().GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT,  GL_NEGATIVE_ONE_TO_ONE ); // reset, point light uses linear depth
-	}
-	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
 	
 	if( useGSRenderCube ){
 		addToRenderTask.SetUseSpecialParamBlock( true );
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowDistanceCube );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistanceCube );
 		
 	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowDistance );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistance );
 	}
 	
 	const GLfloat clearColor[ 4 ] = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -1479,6 +1462,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	// render the solid shadow cube map
 	if( ! bugClearEntireCubeMap ){
+		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateSolidCubeMap( shadowParams.solidShadowMapSize );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 		
@@ -1497,15 +1481,17 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		renderTask.Clear();
 		renderTask.SetRenderParamBlock( renderParamBlock );
 		renderTask.SetUseSPBInstanceFlags( true );
-		renderTask.SetForceDoubleSided( true );
 		
 		addToRenderTask.SetSolid( true );
+		addToRenderTask.SetForceDoubleSided( true );
 		if( shadowParams.collideList1 ){
 			addToRenderTask.AddComponents( *shadowParams.collideList1 );
 		}
 		if( shadowParams.collideList2 ){
 			addToRenderTask.AddComponents( *shadowParams.collideList2 );
 		}
+		
+		addToRenderTask.SetForceDoubleSided( false );
 		
 		if( shadowParams.solid ){
 			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTask, true );
@@ -1518,8 +1504,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 // 			renderThread.GetLogger().LogInfo( "RenderLightPoint: render task" );
 // 			renderTask.DebugPrint( renderThread.GetLogger() );
 		rengeom.RenderTask( renderTask );
-		
-		renderTask.SetForceDoubleSided( false );
 		
 		if( shadowParams.solid ){
 			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
@@ -1562,6 +1546,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			shadowMapper.ActivateSolidCubeMapFace( shadowParams.solidShadowMapSize, pCubeFaces[ cmf ] );
 			
 			if( bugClearEntireCubeMap ){
+				pPipelineClearBuffers->Activate();
 				OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 				OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 				
@@ -1575,16 +1560,19 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			
 			renderTask.Clear();
 			renderTask.SetRenderParamBlock( renderParamBlock );
-			renderTask.SetForceDoubleSided( true );
 			
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetFilterCubeFace( cmf );
+			addToRenderTask.SetForceDoubleSided( true );
+			
 			if( shadowParams.collideList1 ){
 				addToRenderTask.AddComponents( *shadowParams.collideList1 );
 			}
 			if( shadowParams.collideList2 ){
 				addToRenderTask.AddComponents( *shadowParams.collideList2 );
 			}
+			
+			addToRenderTask.SetForceDoubleSided( false );
 			
 			if( shadowParams.solid ){
 				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceTask, true );
@@ -1595,8 +1583,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			
 			renderTask.PrepareForRender();
 			rengeom.RenderTask( renderTask );
-			
-			renderTask.SetForceDoubleSided( false );
 			
 			if( shadowParams.solid ){
 				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
@@ -1616,6 +1602,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		addToRenderTask.SetSolid( false );
 		
 		if( ! bugClearEntireCubeMap ){
+			pPipelineClearBuffers->Activate();
 			shadowMapper.ActivateTransparentCubeMap( shadowParams.transpShadowMapSize );
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
@@ -1690,6 +1677,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				
 				shadowMapper.ActivateTransparentCubeMapFace( shadowParams.transpShadowMapSize, pCubeFaces[ cmf ] );
 				if( bugClearEntireCubeMap ){
+					pPipelineClearBuffers->Activate();
 					OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 					OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 					
@@ -1803,6 +1791,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const GLfloat clearDepth = ( GLfloat )1.0f; // point light uses linear depth
 	
 	if( ! bugClearEntireCubeMap ){
+		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateAmbientCubeMap( shadowParams.ambientMapSize );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	}
@@ -1855,6 +1844,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			shadowMapper.ActivateAmbientCubeMapFace( shadowParams.ambientMapSize, pCubeFaces[ cmf ] );
 			
 			if( bugClearEntireCubeMap ){
+				pPipelineClearBuffers->Activate();
 				OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 			}
 			

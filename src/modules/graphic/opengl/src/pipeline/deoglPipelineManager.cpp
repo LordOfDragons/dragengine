@@ -55,7 +55,8 @@ const deoglPipeline *deoglPipelineManager::GetAt( int index ) const{
 	return ( deoglPipeline* )pPipelines.GetAt( index );
 }
 
-const deoglPipeline *deoglPipelineManager::GetWith( const deoglPipelineConfiguration &configuration ){
+const deoglPipeline *deoglPipelineManager::GetWith(
+const deoglPipelineConfiguration &configuration, bool assignRTSPipelineIndex ){
 	const int count = pPipelines.GetCount();
 	int i;
 	
@@ -66,9 +67,14 @@ const deoglPipeline *deoglPipelineManager::GetWith( const deoglPipelineConfigura
 		}
 	}
 	
-	const deoglPipeline::Ref pipeline( deoglPipeline::Ref::New( new deoglPipeline(
-		pRenderThread, pPipelines.GetCount(), configuration ) ) );
+	const deoglPipeline::Ref pipeline( deoglPipeline::Ref::New(
+		new deoglPipeline( pRenderThread, configuration ) ) );
 	pPipelines.Add( pipeline );
+	
+	if( assignRTSPipelineIndex ){
+		pipeline->AssignRTSPipelineIndex();
+	}
+	
 	return pipeline; // caller does not hold reference
 }
 

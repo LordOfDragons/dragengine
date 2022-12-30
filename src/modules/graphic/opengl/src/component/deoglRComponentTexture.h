@@ -26,6 +26,7 @@
 #include <dragengine/common/collection/decObjectList.h>
 
 #include "../skin/deoglSkinTexture.h"
+#include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
 class deoglRComponent;
 class deoglRDynamicSkin;
@@ -200,7 +201,8 @@ public:
 	void UpdateRTSInstances();
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes shaderType ) const;
+	deoglTexUnitsConfig *GetTUCForOutlinePipelineType( deoglSkinTexturePipelines::eTypes shaderType ) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -300,7 +302,8 @@ public:
 	/**
 	 * Obtain texture units configuration for a shader type. Bare call not to be used directly.
 	 */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetOutlineTUCFor( deoglSkinTexturePipelines::eTypes shaderType ) const;
 	
 	/** Prepare TUCs. */
 	void PrepareTUCs();

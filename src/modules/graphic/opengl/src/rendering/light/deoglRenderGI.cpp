@@ -29,11 +29,10 @@
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../task/deoglRenderTask.h"
-#include "../task/deoglRenderTaskShader.h"
 #include "../task/deoglRenderTaskTexture.h"
 #include "../task/deoglAddToRenderTaskGIMaterial.h"
+#include "../task/deoglRenderTaskPipeline.h"
 #include "../task/shared/deoglRenderTaskSharedInstance.h"
-#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../task/shared/deoglRenderTaskSharedTexture.h"
 #include "../task/shared/deoglRenderTaskSharedVAO.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -359,8 +358,7 @@ deoglRenderLightBase( renderThread )
 		// render light gi ray
 		pipconf.Reset();
 		pipconf.SetMasks( true, true, true, true, false );
-		pipconf.SetEnableScissorTest( true );
-		pipconf.EnableDynamicStencilTest();
+		pipconf.EnableBlendAdd();
 		
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "GI_RAY" );
@@ -654,8 +652,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.RenderMaterials" );
 	deoglGI &gi = renderThread.GetGI();
 	
-	const int shaderCount = renderTask.GetShaderCount();
-	if( shaderCount == 0 ){
+	const int pipelineCount = renderTask.GetPipelineCount();
+	if( pipelineCount == 0 ){
 		return;
 	}
 	
@@ -671,17 +669,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	
 	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+	SetViewport( width, height );
 	
 	const int mapsPerRow = materials.GetMaterialsPerRow();
 	const int rowsPerImage = materials.GetRowsPerImage();
@@ -692,16 +681,15 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	const float offsetBaseU = offsetScaleU * 0.5f - 1.0f;
 	const float offsetBaseV = offsetScaleV * 0.5f - 1.0f;
 	
-	for( i=0; i<shaderCount; i++ ){
-		const deoglRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
-		deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
-		const deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
+	for( i=0; i<pipelineCount; i++ ){
+		const deoglRenderTaskPipeline &rtpipeline = *renderTask.GetPipelineAt( i );
+		rtpipeline.GetPipeline()->Activate();
 		
-		renderThread.GetShader().ActivateShader( &shaderProgram );
+		const deoglShaderCompiled &shader = *rtpipeline.GetPipeline()->GetGlShader()->GetCompiled();
 		
-		const int textureCount = rtshader.GetTextureCount();
+		const int textureCount = rtpipeline.GetTextureCount();
 		for( j=0; j<textureCount; j++ ){
-			const deoglRenderTaskTexture &rttexture = *rtshader.GetTextureAt( j );
+			const deoglRenderTaskTexture &rttexture = *rtpipeline.GetTextureAt( j );
 			const deoglTexUnitsConfig &tuc = *rttexture.GetTexture()->GetTUC();
 			const int matMapIndex = tuc.GetMaterialIndex();
 			if( matMapIndex < 1 ){ // no slot (-1), fallback slot (0)

@@ -376,13 +376,12 @@ void deoglRDecal::SetComponentMarkedRemove( bool marked ){
 
 
 
-deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estDecalGeometry:
-	case deoglSkinTexture::estStereoDecalGeometry:
+deoglTexUnitsConfig *deoglRDecal::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estDecalEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
 	default:
@@ -390,7 +389,7 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShader
 	}
 }
 
-deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
@@ -403,7 +402,8 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes 
 		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
 	}
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptDecal ).GetWithRef( type ).GetShader();
 	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
@@ -870,14 +870,14 @@ void deoglRDecal::pPrepareTUCs(){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estDecalGeometry );
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 	
 	// shadow
 	if( pTUCShadow ){
 		pTUCShadow->RemoveUsage();
 		pTUCShadow = NULL;
 	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
+	pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
 	
 	// envmap
 	if( pTUCEnvMap ){
@@ -889,18 +889,22 @@ void deoglRDecal::pPrepareTUCs(){
 		deoglTexUnitConfig unit[ 8 ];
 		
 		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetColorArray() );
+			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetColorArray() );
 			
-			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivityArray() );
+			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetEmissivityArray() );
 			
 		}else{
-			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetColor() );
+			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetColor() );
 			
-			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivity() );
+			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetEmissivity() );
 		}
 		
 		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
@@ -934,8 +938,9 @@ void deoglRDecal::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estComponentGeometry );
+			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptDecal ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
 			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
@@ -983,7 +988,6 @@ void deoglRDecal::pUpdateRTSInstance(){
 	
 	pRTSInstance->SetFirstPoint( pVBOBlock->GetOffset() );
 	pRTSInstance->SetPointCount( pPointCount );
-	pRTSInstance->SetDoubleSided( true );
 	
 }
 

@@ -36,7 +36,6 @@
 #include "light/deoglRenderLight.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
-#include "task/deoglRenderTaskShader.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../configuration/deoglConfiguration.h"

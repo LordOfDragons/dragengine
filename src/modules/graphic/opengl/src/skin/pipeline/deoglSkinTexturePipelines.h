@@ -25,6 +25,7 @@
 #include "deoglSkinTexturePipeline.h"
 #include "../channel/deoglSkinChannel.h"
 #include "../../pipeline/deoglPipeline.h"
+#include "../../utils/deoglDebugNamesEnumSet.h"
 
 #include <dragengine/deObject.h>
 
@@ -47,6 +48,8 @@ public:
 		etDepthReversed,
 		etDepthClipPlaneReversed,
 		etCounter,
+		etCounterClipPlane,
+		etMask,
 		etShadowProjection,
 		etShadowOrthogonal,
 		etShadowOrthogonalCascaded,
@@ -57,12 +60,16 @@ public:
 		etGIMaterial
 	};
 	
+	static const deoglDebugNamesEnum DebugNamesTypes;
+	
 	/** Modifier. */
 	enum eModifiers{
 		emStereo = 0x1,
 		emFlipCullFace = 0x2,
 		emDoubleSided = 0x4
 	};
+	
+	static const deoglDebugNamesEnumSet DebugNamesModifiers;
 	
 	
 	
@@ -97,13 +104,16 @@ public:
 	inline const deoglSkinTexture &GetTexture() const{ return pTexture; }
 	
 	/** Pipeline with type and modifiers or nullptr. */
-	const deoglSkinTexturePipeline *GetWith( eTypes type, int modifiers ) const;
+	const deoglSkinTexturePipeline *GetWith( eTypes type, int modifiers = 0 ) const;
 	
 	/** Pipeline with type and modifiers or throws exception. */
-	const deoglSkinTexturePipeline &GetWithRef( eTypes type, int modifiers ) const;
+	const deoglSkinTexturePipeline &GetWithRef( eTypes type, int modifiers = 0 ) const;
 	
 	/** Prepare pipelines. */
 	void Prepare();
+	
+	/** Debug name. */
+	virtual const char *GetDebugName() const = 0;
 	/*@}*/
 	
 	
@@ -138,8 +148,16 @@ protected:
 	virtual void pPrepareDepthClipPlaneReversed( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
 	
-	virtual void pPrepareCounter( deoglSkinShaderConfig &baseShaderConfig,
+	virtual void pPrepareAllCounter( deoglSkinShaderConfig &baseShaderConfig,
 		const ChannelInfo &cinfo );
+	
+	virtual void pPrepareCounter( deoglPipelineConfiguration &basePipelineConfig,
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+	
+	virtual void pPrepareCounterClipPlane( deoglPipelineConfiguration &basePipelineConfig,
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+	
+	virtual void pPrepareMask( deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
 	
 	virtual void pPrepareAllShadow( deoglSkinShaderConfig &baseShaderConfig,
 		const ChannelInfo &cinfo );
@@ -171,8 +189,10 @@ protected:
 	virtual void pInitChannelInfo( ChannelInfo &cinfo );
 	
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowLinear( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigGIMaterial( deoglPipelineConfiguration &config );
@@ -183,6 +203,7 @@ protected:
 	virtual void pSetGeometryDepthTest( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowProjection( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowOrthogonal( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowOrthogonalCascaded( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
@@ -197,6 +218,7 @@ protected:
 	virtual void pSetTypeGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTypeDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTypeCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetTypeMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTypeShadow( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTypeOutline( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	
@@ -209,6 +231,7 @@ protected:
 	virtual void pSetDynamicDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetDynamicDepthOutline( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetDynamicCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetDynamicMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	
 	virtual void pCreatePipelines( deoglPipelineConfiguration &pipconf,
 		deoglSkinShaderConfig &shaconf, eTypes type, int modifierMask );

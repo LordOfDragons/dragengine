@@ -26,7 +26,6 @@
 
 class deoglRenderThread;
 class deoglRenderTaskSharedInstance;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
 
@@ -38,12 +37,10 @@ class deoglRenderTaskSharedPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	int pNextIndexShader;
 	int pNextIndexTexture;
 	int pNextIndexVAO;
 	int pNextIndexInstance;
 	
-	decPointerList pShaders;
 	decPointerList pTextures;
 	decPointerList pVAOs;
 	decPointerList pInstances;
@@ -64,9 +61,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Get shader. */
-	deoglRenderTaskSharedShader *GetShader();
-	
 	/** Get texture. */
 	deoglRenderTaskSharedTexture *GetTexture();
 	
@@ -77,9 +71,6 @@ public:
 	deoglRenderTaskSharedInstance *GetInstance();
 	
 	
-	
-	/** Return shader. */
-	void ReturnShader( deoglRenderTaskSharedShader *shader );
 	
 	/** Return texture. */
 	void ReturnTexture( deoglRenderTaskSharedTexture *texture );

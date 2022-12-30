@@ -58,8 +58,6 @@ private:
 	const deoglPipeline *pPipelineCopyDepth;
 	const deoglPipeline *pPipelineCopyDepthStereo;
 	
-	const deoglPipeline *pPipelineBlackScreen;
-	
 	deoglRenderWorldInfo pDebugInfo;
 	
 	

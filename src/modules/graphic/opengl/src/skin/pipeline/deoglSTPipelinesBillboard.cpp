@@ -45,6 +45,15 @@ deoglSTPipelinesBillboard::~deoglSTPipelinesBillboard(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesBillboard::GetDebugName() const{
+	return "deoglSTPipelinesBillboard";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -57,7 +66,8 @@ void deoglSTPipelinesBillboard::pPreparePipelines( const ChannelInfo &cinfo ){
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
 	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareCounter( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	pPrepareMask( baseShaderConfig, cinfo );
 	// pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );

@@ -26,12 +26,11 @@
 #include "deoglAddToRenderTask.h"
 #include "deoglRenderTask.h"
 #include "deoglRenderTaskInstance.h"
-#include "deoglRenderTaskShader.h"
 #include "deoglRenderTaskTexture.h"
+#include "deoglRenderTaskPipeline.h"
 #include "deoglRenderTaskVAO.h"
 #include "config/deoglRenderTaskConfig.h"
 #include "config/deoglRenderTaskConfigTexture.h"
-#include "shared/deoglRenderTaskSharedShader.h"
 #include "shared/deoglRenderTaskSharedInstance.h"
 #include "shared/deoglRenderTaskSharedVAO.h"
 #include "../defren/deoglDeferredRendering.h"
@@ -124,16 +123,12 @@ deoglAddToRenderTask::~deoglAddToRenderTask(){
 // Management
 ///////////////
 
-void deoglAddToRenderTask::SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	pSkinShaderType = shaderType;
+void deoglAddToRenderTask::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+	pSkinPipelineType = type;
 }
 
-void deoglAddToRenderTask::SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType ){
-	pSkinShaderTypeRibbon = shaderType;
-}
-
-void deoglAddToRenderTask::SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType ){
-	pSkinShaderTypeBeam = shaderType;
+void deoglAddToRenderTask::SetSkinPipelineModifier( int modifier ){
+	pSkinPipelineModifier = modifier;
 }
 
 
@@ -206,17 +201,14 @@ void deoglAddToRenderTask::SetUseSpecialParamBlock( bool use ){
 }
 
 void deoglAddToRenderTask::SetEnforcePipeline( const deoglPipeline *pipeline ){
-	pEnforceShader = nullptr;
-}
-
-void deoglAddToRenderTask::SetEnforceShader( deoglRenderTaskSharedShader *shader ){
-	pEnforceShader = shader;
+	pEnforcePipeline = pipeline;
 }
 
 
 
 void deoglAddToRenderTask::Reset(){
-	pSkinShaderType = deoglSkinTexture::estComponentGeometry;
+	pSkinPipelineType = deoglSkinTexturePipelines::etGeometry;
+	pSkinPipelineModifier = 0;
 	
 	pSolid = false;
 	pNoShadowNone = false;
@@ -241,7 +233,6 @@ void deoglAddToRenderTask::Reset(){
 	pUseSpecialParamBlock = false;
 	
 	pEnforcePipeline = nullptr;
-	pEnforceShader = nullptr;
 }
 
 // #define SPECIAL_DEBUG_ON
@@ -264,7 +255,7 @@ static decTimer atrtTimer;
 void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod, int specialFlags ){
 	const deoglRComponent &component = lod.GetComponent();
 	
-	const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinShaderType );
+	const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinPipelineType );
 	if( rtc ){
 			#ifdef ATRT_TIMING
 			atrtElapsed0 += atrtTimer.GetElapsedTime();
@@ -318,7 +309,7 @@ void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
 				return;
 			}
 			
-			const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinShaderType );
+			const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pPipelineType );
 			if( rtc ){
 				const int specialFlags = component.GetSpecialFlags();
 				const int count2 = rtc->GetTextureCount();
@@ -386,9 +377,28 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		#endif
 	
 	// obtain render task vao and add faces
+	deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
+	int pipelineModifier = pSkinPipelineModifier;
+	
+	if( pOutline ){
+		pipelinesType = deoglSkinTexturePipelinesList::eptOutline;
+		
+	}else{
+		if( componentTexture.GetUseDecal() ){
+			pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
+			
+		}else{
+			pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
+		}
+		
+		if( componentTexture.GetUseDoubleSided() || pForceDoubleSided ){
+			pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
+		}
+	}
+	
 	try{
-		pGetTaskVAO( pSkinShaderType, componentTexture.GetUseSkinTexture(),
-			componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
+		pGetTaskVAO( pipelinesType, pSkinPipelineType, pipelineModifier, componentTexture.GetUseSkinTexture(),
+			componentTexture.GetTUCForPipelineType( pSkinPipelineType ), rtvao->GetVAO() )->
 				AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
 				AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags );
 		
@@ -400,9 +410,9 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 	}
 #if 0
 	const deoglRenderTaskSharedShader * const rts = componentTexture.GetUseSkinTexture()->
-		GetShaderFor( pSkinShaderType )->GetShader()->GetRTSShader();
+		GetShaderFor( pPipelineType )->GetShader()->GetRTSShader();
 	
-	const deoglTexUnitsConfig *tuc = componentTexture.GetTUCForShaderType( pSkinShaderType );
+	const deoglTexUnitsConfig *tuc = componentTexture.GetTUCForShaderType( pPipelineType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
@@ -478,7 +488,10 @@ void deoglAddToRenderTask::AddBillboard( const deoglRBillboard &billboard ){
 	}
 	
 	// obtain render task vao and add faces
-	pGetTaskVAO( pSkinShaderType, &texture, billboard.GetTUCForShaderType( pSkinShaderType ),
+	int pipelineModifier = pSkinPipelineModifier | deoglSkinTexturePipelines::emDoubleSided;
+	
+	pGetTaskVAO( deoglSkinTexturePipelinesList::eptBillboard, pSkinPipelineType, pipelineModifier,
+		&texture, billboard.GetTUCForPipelineType( pSkinPipelineType ),
 		pRenderThread.GetDeferredRendering().GetVAOBillboard() )->
 			AddInstance( billboard.GetSharedSPBRTIGroup().GetRTSInstance() )->
 			AddSubInstance( billboard.GetSharedSPBElement()->GetIndex(), billboard.GetSpecialFlags() );
@@ -509,9 +522,10 @@ void deoglAddToRenderTask::AddDecal( const deoglRDecal &decal, int lodLevel ){
 	//      the last step and the texture of the decal are different. this is less optimal but the
 	//      only solution to properly respect decal sorting order.
 	// TODO add step support to support the NOTE above
+	int pipelineModifier = pSkinPipelineModifier | deoglSkinTexturePipelines::emDoubleSided;
 	
-	pGetTaskVAO( pSkinShaderType, skinTexture,
-		decal.GetTUCForShaderType( pSkinShaderType ), vboBlock->GetVBO()->GetVAO() )->
+	pGetTaskVAO( deoglSkinTexturePipelinesList::eptDecal, pSkinPipelineType, pipelineModifier, skinTexture,
+		decal.GetTUCForPipelineType( pSkinPipelineType ), vboBlock->GetVBO()->GetVAO() )->
 			AddInstance( decal.GetRTSInstance() )->
 			AddSubInstance( decal.GetSharedSPBElement()->GetIndex(), 0 );
 }
@@ -563,20 +577,20 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 		return;
 	}
 	
-	// retrieve the shader and texture units configuration to use
-	const deoglSkinShader *skinShader = skinTexture->GetShaderFor( pSkinShaderType );
-	const deoglShaderProgram *shader = NULL;
-	
-	if( pEnforceShader ){
-		shader = pEnforceShader->GetShader();
-		
-	}else if( skinShader ){
-		shader = skinShader->GetShader();
+	int pipelineModifier = pSkinPipelineModifier;
+	if( modelTex.GetDoubleSided() || pForceDoubleSided ){
+		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
 	}
 	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
+	const deoglPipeline *pipeline = skinTexture->GetPipelines().
+		GetAt( imposters ? deoglSkinTexturePipelinesList::eptPropFieldImposter : deoglSkinTexturePipelinesList::eptPropField ).
+		GetWithRef( pSkinPipelineType, pipelineModifier ).GetPipeline();
+	
+	if( pEnforcePipeline ){
+		pipeline = pEnforcePipeline;
 	}
+	
+	DEASSERT_NOTNULL( pipeline )
 	
 	// obtain render task. this is the same for all clusters in the type
 	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
@@ -589,7 +603,7 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 		vao = modelLOD.GetVBOBlock()->GetVBO()->GetVAO();
 	}
 	
-	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
+	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
 	
 	// the rest is specific for each cluster except for the vao which is also the same
 	// for all clusters in the type
@@ -607,13 +621,10 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 		const deoglPropFieldCluster &cluster = *clPropFieldType.GetClusterAt( i ).GetCluster();
 		
 		// retrieve the tuc. this is potentially different for clusters as they use shared TBOs
-		const deoglTexUnitsConfig * const tuc = cluster.GetTUCForShaderType( pSkinShaderType );
-		if( ! tuc ){
-			DETHROW( deeInvalidParam );
-		}
+		const deoglTexUnitsConfig * const tuc = cluster.GetTUCForPipelineType( pSkinPipelineType );
+		DEASSERT_NOTNULL( tuc )
 		
-		rtshader.AddTexture( tuc->GetRTSTexture() )->
-			AddVAO( vao->GetRTSVAO() )->
+		rtpipeline.AddTexture( tuc->GetRTSTexture() )->AddVAO( vao->GetRTSVAO() )->
 			AddInstance( cluster.GetRTSInstance() );
 	}
 }
@@ -641,7 +652,7 @@ void deoglAddToRenderTask::AddPropFields( const deoglCollideList &clist, bool im
 
 
 void deoglAddToRenderTask::AddHeightTerrainSectorClusters(
-const deoglCollideListHTSector &clhtsector, int texture ){
+const deoglCollideListHTSector &clhtsector, int texture, bool firstMask ){
 	const deoglHTViewSector &htvsector = *clhtsector.GetSector();
 	const deoglRHTSector &sector = htvsector.GetSector();
 	if( ! sector.GetValid() || ! sector.GetValidTextures() ){
@@ -658,30 +669,25 @@ const deoglCollideListHTSector &clhtsector, int texture ){
 	}
 	
 	// retrieve the shader and texture units configuration to use
-	const deoglSkinShader * const skinShader = skinTexture->GetShaderFor( pSkinShaderType );
-	const deoglShaderProgram *shader = NULL;
+	const deoglPipeline *pipeline = skinTexture->GetPipelines().
+		GetAt( firstMask ? deoglSkinTexturePipelinesList::eptHeightMap1
+			: deoglSkinTexturePipelinesList::eptHeightMap2 )
+		.GetWithRef( pSkinPipelineType, pSkinPipelineModifier ).GetPipeline();
 	
-	if( pEnforceShader ){
-		shader = pEnforceShader->GetShader();
-		
-	}else if( skinShader ){
-		shader = skinShader->GetShader();
+	if( pEnforcePipeline ){
+		pipeline = pEnforcePipeline;
 	}
 	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pipeline )
 	
-	// obtain render task. this is the same for all clusters in the type
-	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
+	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
 	
-	// retrieve tuc
-	const deoglTexUnitsConfig *tuc = httexture.GetTUCForShaderType( pSkinShaderType );
+	const deoglTexUnitsConfig *tuc = httexture.GetTUCForPipelineType( pSkinPipelineType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( tuc->GetRTSTexture() );
+	deoglRenderTaskTexture &rttexture = *rtpipeline.AddTexture( tuc->GetRTSTexture() );
 	
 	// the rest is specific for each cluster
 	const deoglHTSCluster * const htsclusters = sector.GetClusters();
@@ -714,12 +720,12 @@ void deoglAddToRenderTask::AddHeightTerrainSector( const deoglCollideListHTSecto
 	}
 	
 	if( firstMask ){
-		AddHeightTerrainSectorClusters( clhtsector, 0 );
+		AddHeightTerrainSectorClusters( clhtsector, 0, firstMask );
 		
 	}else{
 		int i;
 		for( i=1; i<textureCount; i++ ){
-			AddHeightTerrainSectorClusters( clhtsector, i );
+			AddHeightTerrainSectorClusters( clhtsector, i, firstMask );
 		}
 	}
 }
@@ -778,12 +784,12 @@ deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist, bool withSingleSided ){
 	deoglRenderTaskTexture *rttexture = NULL;
 	
-	if( pRenderTask.GetShaderCount() == 0 ){
-		rttexture = pRenderTask.AddShader( pEnforceShader )->AddTexture(
+	if( pRenderTask.GetPipelineCount() == 0 ){
+		rttexture = pRenderTask.AddPipeline( pEnforcePipeline )->AddTexture(
 			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 		
 	}else{
-		rttexture = pRenderTask.GetShaderAt( 0 )->GetTextureAt( 0 );
+		rttexture = pRenderTask.GetPipelineAt( 0 )->GetTextureAt( 0 );
 	}
 	
 	AddOcclusionMeshes( clist, rttexture, withSingleSided );
@@ -801,12 +807,12 @@ deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list, bool withSingleSided ){
 	deoglRenderTaskTexture *rttexture = NULL;
 	
-	if( pRenderTask.GetShaderCount() == 0 ){
-		rttexture = pRenderTask.AddShader( pEnforceShader )->AddTexture(
+	if( pRenderTask.GetPipelineCount() == 0 ){
+		rttexture = pRenderTask.AddPipeline( pEnforcePipeline )->AddTexture(
 			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 		
 	}else{
-		rttexture = pRenderTask.GetShaderAt( 0 )->GetTextureAt( 0 );
+		rttexture = pRenderTask.GetPipelineAt( 0 )->GetTextureAt( 0 );
 	}
 	
 	AddOcclusionMeshes( list, rttexture, withSingleSided );
@@ -918,16 +924,6 @@ deoglRParticleEmitterInstanceType &type ){
 		}
 	}
 	
-	// determine the skin shader type to use
-	deoglSkinTexture::eShaderTypes skinShaderType = pSkinShaderType;
-	
-	if( simulationRibbon ){
-		skinShaderType = pSkinShaderTypeRibbon;
-		
-	}else if( simulationBeam ){
-		skinShaderType = pSkinShaderTypeBeam;
-	}
-	
 	// update index buffer
 	const int firstParticle = type.GetFirstParticle();
 	const deoglRParticleEmitterInstance::sParticle * const particles = emitter.GetParticles() + firstParticle;
@@ -961,8 +957,14 @@ deoglRParticleEmitterInstanceType &type ){
 	}
 	
 	// obtain render task vao and add particles
-	deoglRenderTaskVAO &rtvao = *pGetTaskVAO( skinShaderType, skinTexture,
-		type.GetTUCForShaderType( skinShaderType ), emitter.GetVAO() );
+	int pipelineModifier = pSkinPipelineModifier;
+	if( doubleSided || pForceDoubleSided ){
+		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
+	}
+	
+	deoglRenderTaskVAO &rtvao = *pGetTaskVAO( type.GetSkinPipelinesType(),
+		pSkinPipelineType, pipelineModifier, skinTexture,
+		type.GetTUCForPipelineType( pSkinPipelineType ), emitter.GetVAO() );
 	
 	// NOTE using RTSInstance for the time beeing has to be updated by hand
 	
@@ -970,7 +972,6 @@ deoglRParticleEmitterInstanceType &type ){
 	instance.SetParameterBlock( type.GetParamBlock() );
 	instance.SetFirstIndex( firstIndex );
 	instance.SetIndexCount( indexCount );
-	instance.SetDoubleSided( doubleSided );
 	instance.SetPrimitiveType( primitiveType );
 	
 	rtvao.AddInstance( &instance );
@@ -992,7 +993,7 @@ void deoglAddToRenderTask::AddRenderTaskConfig( const deoglRenderTaskConfig &con
 		atrtElapsed1 += atrtTimer.GetElapsedTime();
 		#endif
 		
-		pRenderTask.AddShader( texture.GetShader() )->AddTexture( texture.GetTexture() )->
+		pRenderTask.AddPipeline( texture.GetPipeline() )->AddTexture( texture.GetTexture() )->
 			AddVAO( texture.GetVAO() )->AddInstance( texture.GetInstance() )->
 			AddSubInstance( texture.GetGroupIndex(), specialFlags );
 		#ifdef ATRT_TIMING
@@ -1093,29 +1094,23 @@ bool deoglAddToRenderTask::pFilterRejectNoSolid( const deoglSkinTexture &skinTex
 	return false;
 }
 
-deoglRenderTaskVAO *deoglAddToRenderTask::pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
+deoglRenderTaskVAO *deoglAddToRenderTask::pGetTaskVAO(
+deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
+deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
 const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
-	deoglShaderProgram *shader = NULL;
-	if( pEnforceShader ){
-		shader = pEnforceShader->GetShader();
+	const deoglPipeline *pipeline = pEnforcePipeline;
+	
+	if( ! pipeline ){
+		pipeline = skinTexture->GetPipelines().GetAt( pipelinesType ).
+			GetWithRef( pipelineType, pipelineModifier ).GetPipeline();
 	}
 	
-	if( ! shader ){
-		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( shaderType );
-		if( skinShader ){
-			shader = skinShader->GetShader();
-		}
-	}
-	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pipeline )
 	
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	return pRenderTask.AddShader( shader->GetRTSShader() )->
-		AddTexture( tuc->GetRTSTexture() )->
-		AddVAO( vao->GetRTSVAO() );
+	return pRenderTask.AddPipeline( pipeline )->
+		AddTexture( tuc->GetRTSTexture() )->AddVAO( vao->GetRTSVAO() );
 }

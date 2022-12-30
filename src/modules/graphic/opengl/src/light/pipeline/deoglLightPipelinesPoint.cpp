@@ -45,6 +45,15 @@ deoglLightPipelinesPoint::~deoglLightPipelinesPoint(){
 
 
 
+// Management
+///////////////
+
+const char *deoglLightPipelinesPoint::GetDebugName() const{
+	return "deoglLightPipelinesPoint";
+}
+
+
+
 // Protected Functions
 /////////////////////////
 

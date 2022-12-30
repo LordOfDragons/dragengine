@@ -19,42 +19,30 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLSTPIPELINESPROPFIELDIMPOSTER_H_
-#define _DEOGLSTPIPELINESPROPFIELDIMPOSTER_H_
+#ifndef _DEOGLDEBUGNAMESENUMSET_H_
+#define _DEOGLDEBUGNAMESENUMSET_H_
 
-#include "deoglSTPipelinesPropField.h"
+#include "deoglDebugNamesEnum.h"
 
 
 /**
- * PropFieldImposter skin texture pipelines.
+ * Debug names enumeration set.
  */
-class deoglSTPipelinesPropFieldImposter : public deoglSTPipelinesPropField{
+class deoglDebugNamesEnumSet : public deoglDebugNamesEnum{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create skin texture pipeline. */
-	deoglSTPipelinesPropFieldImposter( const deoglSkinTexture &texture );
-	
-protected:
-	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesPropFieldImposter();
+	/** Create debug names enumeration. */
+	deoglDebugNamesEnumSet( const char *name, const sEntry *entries );
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
-	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	/** Names of enumeration constants. */
+	decString SetName( int value, bool full = false ) const;
 	/*@}*/
-	
-	
-	
-protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo );
-	
-	virtual void pSetBase( deoglSkinShaderConfig &config );
 };
 
 #endif

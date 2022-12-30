@@ -71,7 +71,8 @@ public:
 	const deoglPipeline *GetAt( int index ) const;
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
-	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration );
+	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration,
+		bool assignRTSPipelineIndex = false );
 	
 	/** Pipeline with configuration is present. */
 	bool HasWith( const deoglPipelineConfiguration &configuration ) const;

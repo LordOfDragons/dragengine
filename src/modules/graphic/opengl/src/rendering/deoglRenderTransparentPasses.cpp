@@ -602,30 +602,12 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	// render geometry pass to depth1 using EQUAL with stencil mask and temporary with last layer
 	// color. no depth and stencil written. color, normal and specularity written for light pass
 	deoglDebugTraceGroup debugTraceGeometry( renderThread, "TransparentPasses.RenderTransparentPasses.Geometry" );
+	pPipelineClearBuffers->Activate();
 	defren.ActivateFBOMaterialColor();
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( plan.GetFlipCulling() );
-	
-	if( defren.GetUseFadeOutRange() && false /* alpha blend problem */ ){
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	}
-	
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glStencilMask( 0 ) );
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 	OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
-	
-	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	
 	const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
@@ -649,47 +631,30 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearReflectivity[ 0 ] ) );
 	}
 	
-	
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+	
+	int pipelineModifier = 0;
+	if( plan.GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	if( plan.GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoRendered( mask );
 	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
 	
-	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-		? deoglSkinTexture::estStereoComponentGeometry
-		: deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );
-	
-	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-		? deoglSkinTexture::estStereoBillboardGeometry
-		: deoglSkinTexture::estBillboardGeometry );
 	addToRenderTask.AddBillboards( collideList );
-	
-	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-		? deoglSkinTexture::estStereoPropFieldGeometry
-		: deoglSkinTexture::estPropFieldGeometry );
 	addToRenderTask.AddPropFields( collideList, false );
-	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-		? deoglSkinTexture::estStereoPropFieldImposterGeometry
-		: deoglSkinTexture::estPropFieldImposterGeometry );
 	addToRenderTask.AddPropFields( collideList, true );
-	
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoParticleGeometry
-			: deoglSkinTexture::estParticleGeometry );
-		addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoParticleRibbonGeometry
-			: deoglSkinTexture::estParticleRibbonGeometry );
-		addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoParticleBeamGeometry
-			: deoglSkinTexture::estParticleBeamGeometry );
 		addToRenderTask.AddParticles( collideList );
 	}
 	
@@ -712,16 +677,15 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetDecal( false );
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoRendered( true );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
 	
-	addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-		? deoglSkinTexture::estStereoOutlineGeometry
-		: deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
 	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
-	if( renderTask.GetShaderCount() > 0 ){
+	if( renderTask.GetPipelineCount() > 0 ){
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( renderTask );
 		SetCullMode( plan.GetFlipCulling() );
@@ -958,32 +922,21 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 			particleEmitterList.GetAt( e )->ClearIBO();
 		}
 		
+		int pipelineModifier = 0;
+		if( plan.GetRenderStereo() ){
+			pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+		}
+		if( plan.GetFlipCulling() ){
+			pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+		}
+		
 		renderTaskParticles.Clear();
 		renderTaskParticles.SetRenderParamBlock( renworld.GetRenderPB() );
 // 		renderTaskParticles.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetVRRenderStereo() );
 		
-		if( inbetween ){
-			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleGeometryDepthTest
-				: deoglSkinTexture::estParticleGeometryDepthTest );
-			addToRenderTaskParticles.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleRibbonGeometryDepthTest
-				: deoglSkinTexture::estParticleRibbonGeometryDepthTest );
-			addToRenderTaskParticles.SetSkinShaderTypeBeam( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleBeamGeometryDepthTest
-				: deoglSkinTexture::estParticleBeamGeometryDepthTest );
-			
-		}else{
-			addToRenderTaskParticles.SetSkinShaderType( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleGeometry
-				: deoglSkinTexture::estParticleGeometry );
-			addToRenderTaskParticles.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleRibbonGeometry
-				: deoglSkinTexture::estParticleRibbonGeometry );
-			addToRenderTaskParticles.SetSkinShaderTypeBeam( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleBeamGeometry
-				: deoglSkinTexture::estParticleBeamGeometry );
-		}
+		addToRenderTaskParticles.SetSkinPipelineType( inbetween
+			? deoglSkinTexturePipelines::etGeometryDepthTest : deoglSkinTexturePipelines::etGeometry );
+		addToRenderTaskParticles.SetSkinPipelineModifier( pipelineModifier );
 		
 		particleSorter.AddToRenderTask( addToRenderTaskParticles );
 		
@@ -1008,35 +961,20 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	// reference value mask to render only behind the pixels affecting the current layer.
 	defren.ActivateFBOColor( true, false );
 	
-	SetCullMode( plan.GetFlipCulling() );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE/*GL_TRUE*/ ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	
+	OGL_CHECK( renderThread, glStencilMask( 0 ) );
 	if( inbetween ){
-		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncReversed() ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
-	}
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	if( inbetween ){
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
 		
 	}else{
 		if( mask ){
-			OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 			OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 			OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 1, 1 ) );
 			
 		}else{
-			OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+			// OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+			OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0, 0 ) );
 		}
 	}
 	

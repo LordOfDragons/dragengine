@@ -94,39 +94,22 @@ decColor deoglRenderLightBase::TransformColor( const decMatrix &matrix, const de
 
 void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const bool hasDepthCopy = renderThread.GetDebug().GetDeveloperMode().GetDebugEnableLightDepthStencil();
 	const bool sssssEnable = renderThread.GetConfiguration().GetSSSSSEnable();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( sssssEnable ){
-		defren.ActivateFBOColorTemp2( hasDepthCopy, true );
+		defren.ActivateFBOColorTemp2( false, true );
 		
 	}else{
-		defren.ActivateFBOColor( hasDepthCopy, true );
+		defren.ActivateFBOColor( false, true );
 	}
 	
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
-	if( renderThread.GetChoices().GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
-	}
-	
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glStencilMask( 0 ) );
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 	OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
 	
-	if( hasDepthCopy ){
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
-		
-	}else{
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	}
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
 		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );

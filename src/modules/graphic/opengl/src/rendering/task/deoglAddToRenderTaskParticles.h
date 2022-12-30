@@ -34,7 +34,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Add To Render Task Particles.
+ * Add To Render Task Particles.
  */
 class deoglAddToRenderTaskParticles{
 private:
@@ -42,19 +42,18 @@ private:
 	
 	deoglRenderTaskParticles *pRenderTask;
 	
-	deoglSkinTexture::eShaderTypes pSkinShaderType;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeRibbon;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeBeam;
+	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create add to render task particles object. */
+	/** Create add to render task particles object. */
 	deoglAddToRenderTaskParticles( deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask );
 	
-	/** \brief Clean up add to render task particles object. */
+	/** Clean up add to render task particles object. */
 	~deoglAddToRenderTaskParticles();
 	/*@}*/
 	
@@ -62,30 +61,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Shader type to be used for skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
+	/** Pipeline type. */
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
-	/** \brief Set shader type to be used for skin shaders. */
-	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline type. */
+	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
-	/** \brief Shader type to be used for ribbon skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeRibbon() const{ return pSkinShaderTypeRibbon; }
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
 	
-	/** \brief Set shader type to be used for ribbon skin shaders. */
-	void SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/** \brief Shader type to be used for beam skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeBeam() const{ return pSkinShaderTypeBeam; }
-	
-	/** \brief Set shader type to be used for beam skin shaders. */
-	void SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
 	
 	
 	
-	/** \brief Add particle emitter particless from all emitters in a list to the render task. */
+	/** Add particle emitter particless from all emitters in a list to the render task. */
 	void AddParticles( const deoglParticleEmitterInstanceList &list );
 	
-	/** \brief Add a particle emitter particles to the render task. */
+	/** Add a particle emitter particles to the render task. */
 	void AddParticle( deoglRParticleEmitterInstance &emitter, const deoglRParticleEmitterInstance::sParticle *particle );
 	/*@}*/
 };

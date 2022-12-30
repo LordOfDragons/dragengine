@@ -142,11 +142,17 @@ public:
 	
 	
 	
+	/** Skin pipelines type. */
+	deoglSkinTexturePipelinesList::ePipelineTypes GetSkinPipelinesType() const;
+	
+	/** Skin shader pipelines for emitter type. */
+	const deoglSkinTexturePipelines &GetUseSkinPipelines() const;
+	
 	/** Shader parameter block or NULL if there is no valid skin texture. */
 	deoglSPBlockUBO *GetParamBlock();
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type );
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -176,7 +182,7 @@ public:
 	 * Texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	
 	

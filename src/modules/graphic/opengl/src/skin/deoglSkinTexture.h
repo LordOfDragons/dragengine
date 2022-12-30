@@ -24,6 +24,7 @@
 
 #include "deoglSkinTextureProperty.h"
 #include "channel/deoglSkinChannel.h"
+#include "pipeline/deoglSkinTexturePipelinesList.h"
 #include "shader/deoglSkinShader.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -110,194 +111,10 @@ public:
 		EMP_COUNT
 	};
 	
-	/** Pipeline types. */
-	enum ePipelineTypes{
-		eptComponent,
-		eptBillboard,
-		eptDecal,
-		eptPropField,
-		eptHeightMap,
-		eptParticle,
-		eptParticleRibbon,
-		eptParticleBeam,
-		eptOutline
-	};
-	
-	/** Shader Types. */
-	enum eShaderTypes{
-		estComponentGeometry,
-		estComponentDepth,
-		estComponentDepthClipPlane,
-		estComponentDepthReversed,
-		estComponentDepthClipPlaneReversed,
-		estComponentCounter,
-		estComponentCounterClipPlane,
-		estComponentShadowProjection,
-		estComponentShadowOrthogonal,
-		estComponentShadowOrthogonalCascaded,
-		estComponentShadowDistance,
-		estComponentShadowDistanceCube,
-		estComponentEnvMap,
-		estComponentLuminance,
-		estComponentGIMaterial,
-		
-		estBillboardGeometry,
-		estBillboardDepth,
-		estBillboardDepthClipPlane,
-		estBillboardDepthReversed,
-		estBillboardDepthClipPlaneReversed,
-		estBillboardCounter,
-		estBillboardCounterClipPlane,
-		estBillboardEnvMap,
-		
-		estDecalGeometry,
-		estDecalEnvMap,
-		
-		estPropFieldGeometry,
-		estPropFieldImposterGeometry,
-		estPropFieldDepth,
-		estPropFieldImposterDepth,
-		estPropFieldDepthClipPlane,
-		estPropFieldImposterDepthClipPlane,
-		estPropFieldDepthReversed,
-		estPropFieldImposterDepthReversed,
-		estPropFieldDepthClipPlaneReversed,
-		estPropFieldImposterDepthClipPlaneReversed,
-		estPropFieldCounter,
-		estPropFieldCounterClipPlane,
-		estPropFieldShadowProjection,
-		estPropFieldShadowOrthogonal,
-		estPropFieldShadowDistance,
-		estPropFieldEnvMap,
-		
-		estHeightMapGeometry,
-		estHeightMapDepth,
-		estHeightMapDepthClipPlane,
-		estHeightMapDepthReversed,
-		estHeightMapDepthClipPlaneReversed,
-		estHeightMapTranspCount,
-		estHeightMapTranspCountClipPlane,
-		estHeightMapShadowProjection,
-		estHeightMapShadowOrthogonal,
-		estHeightMapShadowDistance,
-		estHeightMapEnvMap,
-		estHeightMapLuminance,
-		
-		estParticleGeometry,
-		estParticleGeometryDepthTest,
-		estParticleDepth,
-		estParticleDepthClipPlane,
-		estParticleDepthReversed,
-		estParticleDepthClipPlaneReversed,
-		estParticleShadowProjection,
-		estParticleShadowOrthogonal,
-		estParticleShadowDistance,
-		estParticleCounter,
-		estParticleCounterClipPlane,
-		estParticleRibbonGeometry,
-		estParticleRibbonGeometryDepthTest,
-		estParticleRibbonDepth,
-		estParticleRibbonDepthClipPlane,
-		estParticleRibbonDepthReversed,
-		estParticleRibbonDepthClipPlaneReversed,
-		estParticleRibbonCounter,
-		estParticleRibbonCounterClipPlane,
-		estParticleBeamGeometry,
-		estParticleBeamGeometryDepthTest,
-		estParticleBeamDepth,
-		estParticleBeamDepthClipPlane,
-		estParticleBeamDepthReversed,
-		estParticleBeamDepthClipPlaneReversed,
-		estParticleBeamCounter,
-		estParticleBeamCounterClipPlane,
-		
-		estOutlineGeometry,
-		estOutlineDepth,
-		estOutlineDepthClipPlane,
-		estOutlineDepthReversed,
-		estOutlineDepthClipPlaneReversed,
-		estOutlineCounter,
-		estOutlineCounterClipPlane,
-		
-		// stereo rendering
-		estStereoComponentGeometry,
-		estStereoComponentDepth,
-		estStereoComponentDepthClipPlane,
-		estStereoComponentDepthReversed,
-		estStereoComponentDepthClipPlaneReversed,
-		estStereoComponentCounter,
-		estStereoComponentCounterClipPlane,
-		
-		estStereoBillboardGeometry,
-		estStereoBillboardDepth,
-		estStereoBillboardDepthClipPlane,
-		estStereoBillboardDepthReversed,
-		estStereoBillboardDepthClipPlaneReversed,
-		estStereoBillboardCounter,
-		estStereoBillboardCounterClipPlane,
-		
-		estStereoDecalGeometry,
-		
-		estStereoPropFieldGeometry,
-		estStereoPropFieldImposterGeometry,
-		estStereoPropFieldDepth,
-		estStereoPropFieldImposterDepth,
-		estStereoPropFieldDepthClipPlane,
-		estStereoPropFieldImposterDepthClipPlane,
-		estStereoPropFieldDepthReversed,
-		estStereoPropFieldImposterDepthReversed,
-		estStereoPropFieldDepthClipPlaneReversed,
-		estStereoPropFieldImposterDepthClipPlaneReversed,
-		estStereoPropFieldCounter,
-		estStereoPropFieldCounterClipPlane,
-		
-		estStereoHeightMapGeometry,
-		estStereoHeightMapDepth,
-		estStereoHeightMapDepthClipPlane,
-		estStereoHeightMapDepthReversed,
-		estStereoHeightMapDepthClipPlaneReversed,
-		estStereoHeightMapTranspCount,
-		estStereoHeightMapTranspCountClipPlane,
-		
-		estStereoParticleGeometry,
-		estStereoParticleGeometryDepthTest,
-		estStereoParticleDepth,
-		estStereoParticleDepthClipPlane,
-		estStereoParticleDepthReversed,
-		estStereoParticleDepthClipPlaneReversed,
-		estStereoParticleCounter,
-		estStereoParticleCounterClipPlane,
-		estStereoParticleRibbonGeometry,
-		estStereoParticleRibbonGeometryDepthTest,
-		estStereoParticleRibbonDepth,
-		estStereoParticleRibbonDepthClipPlane,
-		estStereoParticleRibbonDepthReversed,
-		estStereoParticleRibbonDepthClipPlaneReversed,
-		estStereoParticleRibbonCounter,
-		estStereoParticleRibbonCounterClipPlane,
-		estStereoParticleBeamGeometry,
-		estStereoParticleBeamGeometryDepthTest,
-		estStereoParticleBeamDepth,
-		estStereoParticleBeamDepthClipPlane,
-		estStereoParticleBeamDepthReversed,
-		estStereoParticleBeamDepthClipPlaneReversed,
-		estStereoParticleBeamCounter,
-		estStereoParticleBeamCounterClipPlane,
-		
-		estStereoOutlineGeometry,
-		estStereoOutlineDepth,
-		estStereoOutlineDepthClipPlane,
-		estStereoOutlineDepthReversed,
-		estStereoOutlineDepthClipPlaneReversed,
-		estStereoOutlineCounter,
-		estStereoOutlineCounterClipPlane
-	};
-	
-	static const int ShaderTypeCount = estStereoOutlineCounterClipPlane + 1;
-	
 private:
 	deoglRenderThread &pRenderThread;
 	
+	const deoglRSkin &pSkin;
 	decString pName;
 	
 	bool pHasSolidity;
@@ -315,7 +132,7 @@ private:
 	bool pRenderableChannels;
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
-	deoglSkinShader::Ref pShaders[ ShaderTypeCount ];
+	deoglSkinTexturePipelinesList pPipelines;
 	deoglSharedSPBElement *pSharedSPBElement;
 	
 	decColor pAbsorption;
@@ -440,6 +257,9 @@ public:
 	
 	
 	
+	/** Owner skin. */
+	inline const deoglRSkin &GetSkin() const{ return pSkin; }
+	
 	/** Texture name. */
 	inline const decString &GetName() const{ return pName; }
 	
@@ -520,14 +340,9 @@ public:
 	/** Set if texture has renderable material properties. */
 	void SetRenderableMaterialProperties( bool renderableMaterialProperties );
 	
-	/** Retrieves the shader for a shader type. */
-	deoglSkinShader *GetShaderFor( eShaderTypes shaderType ) const;
-	
-	/** Prepare shaders. */
-	void PrepareShaders();
-	
-	/** Retrieves the shader configuration for a shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config ) const;
+	/** Pipelines list. */
+	inline deoglSkinTexturePipelinesList &GetPipelines(){ return pPipelines; }
+	inline const deoglSkinTexturePipelinesList &GetPipelines() const{ return pPipelines; }
 	
 	/** Shared shader parameter block element. */
 	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }

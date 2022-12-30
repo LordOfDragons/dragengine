@@ -229,40 +229,25 @@ void deoglPropFieldCluster::PrepareBendStateData( const dePropFieldType &type ){
 
 
 
-deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estPropFieldGeometry:
-	case deoglSkinTexture::estPropFieldImposterGeometry:
-	case deoglSkinTexture::estStereoPropFieldGeometry:
-	case deoglSkinTexture::estStereoPropFieldImposterGeometry:
+deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
+	case deoglSkinTexturePipelines::etGeometryDepthTest:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estPropFieldDepth:
-	case deoglSkinTexture::estPropFieldImposterDepth:
-	case deoglSkinTexture::estPropFieldDepthClipPlane:
-	case deoglSkinTexture::estPropFieldImposterDepthClipPlane:
-	case deoglSkinTexture::estPropFieldDepthReversed:
-	case deoglSkinTexture::estPropFieldImposterDepthReversed:
-	case deoglSkinTexture::estPropFieldDepthClipPlaneReversed:
-	case deoglSkinTexture::estPropFieldImposterDepthClipPlaneReversed:
-	case deoglSkinTexture::estPropFieldCounter:
-	case deoglSkinTexture::estPropFieldCounterClipPlane:
-	case deoglSkinTexture::estPropFieldShadowProjection:
-	case deoglSkinTexture::estPropFieldShadowOrthogonal:
-	case deoglSkinTexture::estPropFieldShadowDistance:
-	case deoglSkinTexture::estStereoPropFieldDepth:
-	case deoglSkinTexture::estStereoPropFieldImposterDepth:
-	case deoglSkinTexture::estStereoPropFieldDepthClipPlane:
-	case deoglSkinTexture::estStereoPropFieldImposterDepthClipPlane:
-	case deoglSkinTexture::estStereoPropFieldDepthReversed:
-	case deoglSkinTexture::estStereoPropFieldImposterDepthReversed:
-	case deoglSkinTexture::estStereoPropFieldDepthClipPlaneReversed:
-	case deoglSkinTexture::estStereoPropFieldImposterDepthClipPlaneReversed:
-	case deoglSkinTexture::estStereoPropFieldCounter:
-	case deoglSkinTexture::estStereoPropFieldCounterClipPlane:
+	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
+	case deoglSkinTexturePipelines::etShadowProjection:
+	case deoglSkinTexturePipelines::etShadowOrthogonal:
+	case deoglSkinTexturePipelines::etShadowDistance:
+	case deoglSkinTexturePipelines::etShadowDistanceCube:
 		return GetTUCShadow();
 		
-	case deoglSkinTexture::estPropFieldEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
 	default:
@@ -270,7 +255,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForShaderType( deoglSkinTextur
 	}
 }
 
-deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
 	if( ! skinTexture ){
 		return NULL;
@@ -282,7 +267,9 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexture::eSh
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
-	deoglSkinShader &skinShader = *skinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = skinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptPropField ).
+		GetWithRef( type ).GetShader();
 	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *skinTexture, skinState, dynamicSkin );
@@ -338,21 +325,21 @@ void deoglPropFieldCluster::pPrepareTUCs(){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estPropFieldDepth );
+	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
 	
 	// geometry
 	if( pTUCGeometry ){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estPropFieldGeometry );
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 	
 	// shadow
 	if( pTUCShadow ){
 		pTUCShadow->RemoveUsage();
 		pTUCShadow = NULL;
 	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estPropFieldShadowProjection );
+	pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
 	
 	// envmap
 	if( pTUCEnvMap ){
@@ -517,7 +504,6 @@ void deoglPropFieldCluster::pUpdateRTSInstances(){
 	
 	const deoglModelTexture &modelTexture = modelLod.GetTextureAt( 0 );
 	pRTSInstance->SetIndexCount( modelTexture.GetFaceCount() * 3 );
-	pRTSInstance->SetDoubleSided( modelTexture.GetDoubleSided() );
 	
 	if( modelLod.GetVBOBlock() ){
 		const deoglSharedVBOBlock &vboBlock = *modelLod.GetVBOBlock();

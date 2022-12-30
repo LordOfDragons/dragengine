@@ -45,6 +45,15 @@ deoglSTPipelinesDecal::~deoglSTPipelinesDecal(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesDecal::GetDebugName() const{
+	return "deoglSTPipelinesDecal";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -56,12 +65,31 @@ void deoglSTPipelinesDecal::pPreparePipelines( const ChannelInfo &cinfo ){
 	
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
-	// pPrepareAllDepth( baseShaderConfig, cinfo );
-	// pPrepareCounter( baseShaderConfig, cinfo );
-	// pPrepareAllShadow( baseShaderConfig, cinfo );
+	pPrepareAllDepth( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	// pPrepareMask( baseShaderConfig, cinfo );
+	pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );
 	// pPrepareGIMaterial( baseShaderConfig, cinfo );
+}
+
+void deoglSTPipelinesDecal::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
+	
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
+	
+	config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+	
+	if( choices.GetUseInverseDepth() ){
+		config.EnablePolygonOffset( -modconfig.GetDecalOffsetScale(), -modconfig.GetDecalOffsetBias() );
+		
+	}else{
+		config.EnablePolygonOffset( modconfig.GetDecalOffsetScale(), modconfig.GetDecalOffsetBias() );
+	}
+	
+	config.EnableBlendBlend();
 }
 
 void deoglSTPipelinesDecal::pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){

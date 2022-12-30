@@ -54,7 +54,6 @@ pFirstPoint( 0 ),
 pPointCount( 0 ),
 pFirstIndex( 0 ),
 pIndexCount( 0 ),
-pDoubleSided( false ),
 pPrimitiveType( GL_TRIANGLES ),
 pTessPatchVertexCount( 3 ),
 
@@ -99,10 +98,6 @@ void deoglPersistentRenderTaskInstance::SetFirstIndex( int firstIndex ){
 
 void deoglPersistentRenderTaskInstance::SetIndexCount( int indexCount ){
 	pIndexCount = indexCount;
-}
-
-void deoglPersistentRenderTaskInstance::SetDoubleSided( bool doubleSided ){
-	pDoubleSided = doubleSided;
 }
 
 void deoglPersistentRenderTaskInstance::SetPrimitiveType( GLenum primitiveType ){
@@ -250,7 +245,6 @@ void deoglPersistentRenderTaskInstance::Clear(){
 	pPointCount = 0;
 	pFirstIndex = 0;
 	pIndexCount = 0;
-	pDoubleSided = false;
 	pPrimitiveType = GL_TRIANGLES;
 	pTessPatchVertexCount = 3;
 	

@@ -36,8 +36,6 @@
 #include "../plan/deoglRenderPlanLight.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglAddToRenderTask.h"
-#include "../task/deoglRenderTaskShader.h"
-#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../canvas/render/deoglRCanvasView.h"
 #include "../../collidelist/deoglCollideList.h"
@@ -288,7 +286,7 @@ deoglRenderLightBase( renderThread )
 		renderers.GetOcclusion().AddOccMapDefines( defines );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pPipelineOccMap = pipelineManager.GetWith( pipconf );
+		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveAllDefines();
 		
 		
@@ -767,7 +765,7 @@ const deoglRenderPlanMasked *mask ){
 	DEASSERT_NOTNULL( spbInstance )
 	DEASSERT_NOTNULL( spbLight )
 	
-	deoglLightShader &lightShader = *pipeline->GetShader();
+	deoglLightShader &lightShader = pipeline->GetShader();
 	UpdateLightParamBlock( lightShader, *spbLight, planLight );
 	
 	sShadowDepthMaps shadowDepthMaps;
@@ -1327,22 +1325,12 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	// no problem but it spams the logs having negative impact on performance while debugging
 	renderThread.GetShader().ActivateShader( NULL );
 	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
 	// activate shadow map with the proper size
+	pPipelineClearBuffers->Activate();
 	shadowMapper.ActivateSolidTexture( shadowParams.solidShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 	
 	// clear or copy shadow map
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	
-	if( renderThread.GetChoices().GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_ZERO_TO_ONE );
-	}
-	
+	pPipelineClearBuffers->Activate();
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
@@ -1352,11 +1340,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	}else{
 		DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClear, true );
 	}
-	
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( false );
 	
 	// calculate lod level to use
 	deoglLODCalculator lodCalculator;
@@ -1411,12 +1394,13 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renderParamBlock );
-	renderTask.SetForceDoubleSided( true );
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowProjection );
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
+	addToRenderTask.SetForceDoubleSided( true );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowProjection );
+	
 	if( shadowParams.collideList1 ){
 		addToRenderTask.AddComponents( *shadowParams.collideList1 );
 	}
@@ -1434,7 +1418,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
-	renderTask.SetForceDoubleSided( false );
+	addToRenderTask.SetForceDoubleSided( false );
 	
 	if( shadowParams.solid ){
 		DebugTimer3Sample( plan, *pDebugInfoSolidShadowRender, true );
@@ -1445,9 +1429,9 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	// transparent pass only if we need a transparent shadow
 	if( shadowParams.withTransparent ){
+		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateTransparentTexture( shadowParams.transpShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 		
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
@@ -1505,6 +1489,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	shadowMapper.ActivateAmbientTexture( shadowParams.ambientMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 	
 	// clear map
+	pPipelineClearBuffers->Activate();
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	

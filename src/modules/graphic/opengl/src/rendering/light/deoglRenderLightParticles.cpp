@@ -107,16 +107,6 @@ void deoglRenderLightParticles::RenderLights( deoglRenderPlan &plan ){
 	int i;
 	
 	RestoreFBO( plan );
-	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	SetCullMode( ! plan.GetFlipCulling() );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	// render

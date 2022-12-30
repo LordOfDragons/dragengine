@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "deoglPersistentRenderTaskPool.h"
-#include "deoglPersistentRenderTaskShader.h"
+#include "deoglPersistentRenderTaskPipeline.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
 #include "deoglPersistentRenderTaskInstance.h"
@@ -44,7 +44,7 @@
 deoglPersistentRenderTaskPool::deoglPersistentRenderTaskPool()
 /*:
 pOwners( 20000 ),
-pShaders( 100 ),
+pPipelines( 100 ),
 pTextures( 200 ),
 pVAOs( 2000 ),
 pInstances( 5000 )
@@ -83,19 +83,19 @@ deoglPersistentRenderTaskOwner *deoglPersistentRenderTaskPool::GetOwner(){
 	return owner;
 }
 
-deoglPersistentRenderTaskShader *deoglPersistentRenderTaskPool::GetShader(){
-	deoglPersistentRenderTaskShader *shader;
+deoglPersistentRenderTaskPipeline *deoglPersistentRenderTaskPool::GetPipeline(){
+	deoglPersistentRenderTaskPipeline *pipeline;
 	
-	const int index = pShaders.GetCount() - 1;
+	const int index = pPipelines.GetCount() - 1;
 	if( index > -1 ){
-		shader = ( deoglPersistentRenderTaskShader* )pShaders.GetAt( index );
-		pShaders.RemoveFrom( index );
+		pipeline = ( deoglPersistentRenderTaskPipeline* )pPipelines.GetAt( index );
+		pPipelines.RemoveFrom( index );
 		
 	}else{
-		shader = new deoglPersistentRenderTaskShader( *this );
+		pipeline = new deoglPersistentRenderTaskPipeline( *this );
 	}
 	
-	return shader;
+	return pipeline;
 }
 
 deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskPool::GetTexture(){
@@ -169,13 +169,13 @@ void deoglPersistentRenderTaskPool::ReturnOwner( deoglPersistentRenderTaskOwner 
 	pOwners.Add( owner );
 }
 
-void deoglPersistentRenderTaskPool::ReturnShader( deoglPersistentRenderTaskShader *shader ){
-	if( ! shader ){
+void deoglPersistentRenderTaskPool::ReturnPipeline( deoglPersistentRenderTaskPipeline *pipeline ){
+	if( ! pipeline ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	shader->Clear();
-	pShaders.Add( shader );
+	pipeline->Clear();
+	pPipelines.Add( pipeline );
 }
 
 void deoglPersistentRenderTaskPool::ReturnTexture( deoglPersistentRenderTaskTexture *texture ){
@@ -240,9 +240,9 @@ void deoglPersistentRenderTaskPool::pCleanUp(){
 		delete ( deoglPersistentRenderTaskTexture* )pTextures.GetAt( i );
 	}
 	
-	count = pShaders.GetCount();
+	count = pPipelines.GetCount();
 	for( i=0; i<count; i++ ){
-		delete ( deoglPersistentRenderTaskShader* )pShaders.GetAt( i );
+		delete ( deoglPersistentRenderTaskPipeline* )pPipelines.GetAt( i );
 	}
 	
 	count = pOwners.GetCount();
@@ -257,7 +257,7 @@ void deoglPersistentRenderTaskPool::pCreateInitial(){
 	// 
 	// typical values for sky shadow render plan:
 	// - owners: 8000
-	// - shaders: 2
+	// - pipelines: 2
 	// - textures: 20
 	// - vaos: 600
 	// - instances: 2500
@@ -277,7 +277,7 @@ void deoglPersistentRenderTaskPool::pCreateInitial(){
 	}
 	
 	for( i=0; i<100; i++ ){
-		pShaders.Add( new deoglPersistentRenderTaskShader( *this ) );
+		pPipelines.Add( new deoglPersistentRenderTaskPipeline( *this ) );
 	}
 	
 	for( i=0; i<200; i++ ){

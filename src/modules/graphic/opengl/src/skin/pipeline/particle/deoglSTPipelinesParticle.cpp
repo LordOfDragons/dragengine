@@ -45,6 +45,15 @@ deoglSTPipelinesParticle::~deoglSTPipelinesParticle(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesParticle::GetDebugName() const{
+	return "deoglSTPipelinesParticle";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -57,11 +66,41 @@ void deoglSTPipelinesParticle::pPreparePipelines( const ChannelInfo &cinfo ){
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
 	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareCounter( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	pPrepareMask( baseShaderConfig, cinfo );
 	pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );
 	// pPrepareGIMaterial( baseShaderConfig, cinfo );
+}
+
+
+
+void deoglSTPipelinesParticle::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
+	
+	config.SetMasks( true, true, true, false, false );
+	config.EnableBlend( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+	
+	config.EnableDepthTest( pTexture.GetRenderThread().GetChoices().GetDepthCompareFuncRegular() );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config ){
+	pPipelineConfigGeometry( config );
+	
+	config.EnableDepthTest( pTexture.GetRenderThread().GetChoices().GetDepthCompareFuncReversed() );
+}
+
+
+
+void deoglSTPipelinesParticle::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
+deoglSkinShaderConfig &, const ChannelInfo & ){
+	// not supported
+}
+
+void deoglSTPipelinesParticle::pPrepareShadowDistanceCube( deoglPipelineConfiguration &,
+deoglSkinShaderConfig &, const ChannelInfo & ){
+	// not supported
 }
 
 

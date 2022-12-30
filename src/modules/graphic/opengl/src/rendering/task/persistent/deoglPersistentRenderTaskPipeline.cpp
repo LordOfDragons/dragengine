@@ -25,7 +25,7 @@
 
 #include "deoglPersistentRenderTask.h"
 #include "deoglPersistentRenderTaskPool.h"
-#include "deoglPersistentRenderTaskShader.h"
+#include "deoglPersistentRenderTaskPipeline.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 
@@ -33,13 +33,13 @@
 
 
 
-// Class deoglPersistentRenderTaskShader
+// Class deoglPersistentRenderTaskPipeline
 //////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglPersistentRenderTaskShader::deoglPersistentRenderTaskShader( deoglPersistentRenderTaskPool &pool ) :
+deoglPersistentRenderTaskPipeline::deoglPersistentRenderTaskPipeline( deoglPersistentRenderTaskPool &pool ) :
 pPool( pool ),
 pLLTask( this ),
 pParentTask( NULL ),
@@ -48,7 +48,7 @@ pSPBInstanceIndexBase( -1 ),
 pDrawIDOffset( -1 ){
 }
 
-deoglPersistentRenderTaskShader::~deoglPersistentRenderTaskShader(){
+deoglPersistentRenderTaskPipeline::~deoglPersistentRenderTaskPipeline(){
 	Clear();
 }
 
@@ -57,7 +57,7 @@ deoglPersistentRenderTaskShader::~deoglPersistentRenderTaskShader(){
 // Management
 ///////////////
 
-int deoglPersistentRenderTaskShader::GetTotalPointCount() const{
+int deoglPersistentRenderTaskPipeline::GetTotalPointCount() const{
 	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
 	int pointCount = 0;
 	
@@ -69,7 +69,7 @@ int deoglPersistentRenderTaskShader::GetTotalPointCount() const{
 	return pointCount;
 }
 
-int deoglPersistentRenderTaskShader::GetTotalVAOCount() const{
+int deoglPersistentRenderTaskPipeline::GetTotalVAOCount() const{
 	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
 	int vaoCount = 0;
 	
@@ -81,7 +81,7 @@ int deoglPersistentRenderTaskShader::GetTotalVAOCount() const{
 	return vaoCount;
 }
 
-int deoglPersistentRenderTaskShader::GetTotalInstanceCount() const{
+int deoglPersistentRenderTaskPipeline::GetTotalInstanceCount() const{
 	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
 	int instanceCount = 0;
 	
@@ -93,7 +93,7 @@ int deoglPersistentRenderTaskShader::GetTotalInstanceCount() const{
 	return instanceCount;
 }
 
-int deoglPersistentRenderTaskShader::GetTotalSubInstanceCount() const{
+int deoglPersistentRenderTaskPipeline::GetTotalSubInstanceCount() const{
 	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
 	int subInstanceCount = 0;
 	
@@ -105,39 +105,39 @@ int deoglPersistentRenderTaskShader::GetTotalSubInstanceCount() const{
 	return subInstanceCount;
 }
 
-void deoglPersistentRenderTaskShader::SetParentTask( deoglPersistentRenderTask *task ){
+void deoglPersistentRenderTaskPipeline::SetParentTask( deoglPersistentRenderTask *task ){
 	pParentTask = task;
 }
 
 
 
-void deoglPersistentRenderTaskShader::SetShader( const deoglShaderProgram *shader ){
-	pShader = shader;
+void deoglPersistentRenderTaskPipeline::SetPipeline( const deoglPipeline *pipeline ){
+	pPipeline = pipeline;
 }
 
-void deoglPersistentRenderTaskShader::SetParameterBlock( deoglSPBlockUBO *block ){
+void deoglPersistentRenderTaskPipeline::SetParameterBlock( deoglSPBlockUBO *block ){
 	pParamBlock = block;
 }
 
-void deoglPersistentRenderTaskShader::SetSPBInstanceIndexBase( int parameter ){
+void deoglPersistentRenderTaskPipeline::SetSPBInstanceIndexBase( int parameter ){
 	pSPBInstanceIndexBase = parameter;
 }
 
-void deoglPersistentRenderTaskShader::SetDrawIDOffset( int parameter ){
+void deoglPersistentRenderTaskPipeline::SetDrawIDOffset( int parameter ){
 	pDrawIDOffset = parameter;
 }
 
 
 
-int deoglPersistentRenderTaskShader::GetTextureCount() const{
+int deoglPersistentRenderTaskPipeline::GetTextureCount() const{
 	return pTextures.GetCount();
 }
 
-decPointerLinkedList::cListEntry *deoglPersistentRenderTaskShader::GetRootTexture() const{
+decPointerLinkedList::cListEntry *deoglPersistentRenderTaskPipeline::GetRootTexture() const{
 	return pTextures.GetRoot();
 }
 
-deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskShader::GetTextureWith(
+deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskPipeline::GetTextureWith(
 const deoglTexUnitsConfig *tuc ) const{
 	if( ! tuc ){
 		DETHROW( deeInvalidParam );
@@ -147,36 +147,36 @@ const deoglTexUnitsConfig *tuc ) const{
 	return pTexturesMap.GetAt( tuc, tuc->GetUniqueKey(), ( void** )&texture ) ? texture : NULL;
 }
 
-deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskShader::AddTexture(
+deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskPipeline::AddTexture(
 const deoglTexUnitsConfig *tuc ){
 	if( ! tuc ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	// commented out in the name of performance
-// 	if( pShadersMap.Has( tuc, tuc->GetUniqueKey() ) ){
+// 	if( pPipelinesMap.Has( tuc, tuc->GetUniqueKey() ) ){
 // 		DETHROW( deeInvalidParam );
 // 	}
 	
 	deoglPersistentRenderTaskTexture * const texture = pPool.GetTexture();
-	pTextures.Add( &texture->GetLLShader() );
-	texture->SetParentShader( this );
+	pTextures.Add( &texture->GetLLTexture() );
+	texture->SetParentPipeline( this );
 	texture->SetTUC( tuc );
 	pTexturesMap.SetAt( tuc, tuc->GetUniqueKey(), texture );
 	return texture;
 }
 
-void deoglPersistentRenderTaskShader::RemoveTexture( deoglPersistentRenderTaskTexture *texture ){
+void deoglPersistentRenderTaskPipeline::RemoveTexture( deoglPersistentRenderTaskTexture *texture ){
 	if( ! texture ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	pTexturesMap.Remove( texture->GetTUC(), texture->GetTUC()->GetUniqueKey() );
-	pTextures.Remove( &texture->GetLLShader() );
+	pTextures.Remove( &texture->GetLLTexture() );
 	pPool.ReturnTexture( texture );
 }
 
-void deoglPersistentRenderTaskShader::RemoveAllTextures(){
+void deoglPersistentRenderTaskPipeline::RemoveAllTextures(){
 	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
 	while( iter ){
 		pPool.ReturnTexture( ( deoglPersistentRenderTaskTexture* )iter->GetOwner() );
@@ -188,15 +188,15 @@ void deoglPersistentRenderTaskShader::RemoveAllTextures(){
 
 
 
-void deoglPersistentRenderTaskShader::Clear(){
+void deoglPersistentRenderTaskPipeline::Clear(){
 	RemoveAllTextures();
 	pParamBlock = NULL;
 	pSPBInstanceIndexBase = -1;
 	pDrawIDOffset = -1;
 }
 
-void deoglPersistentRenderTaskShader::RemoveFromParentIfEmpty(){
+void deoglPersistentRenderTaskPipeline::RemoveFromParentIfEmpty(){
 	if( pTextures.GetCount() == 0 ){
-		pParentTask->RemoveShader( this );
+		pParentTask->RemovePipeline( this );
 	}
 }

@@ -103,6 +103,7 @@ void deoglRPTSkyLightBuildRT::Run(){
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetNoShadowNone( true );
 			addToRenderTask.SetForceDoubleSided( true );
+			addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
 			
 			// we render only double sided occlusion meshes here since for single sided
 			// we can not be sure from what side the camera sees them in the shadow map.
@@ -111,13 +112,8 @@ void deoglRPTSkyLightBuildRT::Run(){
 			addToRenderTask.AddOcclusionMeshes( pTempCollideList, addToRenderTask.GetRenderTask().
 				AddPipeline( pipeline )->AddTexture( sharedTexOccMesh ), false );
 			
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 			addToRenderTask.AddComponents( pTempCollideList );
-			
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
 			addToRenderTask.AddPropFields( pTempCollideList, false );
-			
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
 			addToRenderTask.AddHeightTerrains( pTempCollideList, true );
 		}
 		

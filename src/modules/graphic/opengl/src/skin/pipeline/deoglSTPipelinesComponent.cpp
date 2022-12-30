@@ -45,6 +45,15 @@ deoglSTPipelinesComponent::~deoglSTPipelinesComponent(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesComponent::GetDebugName() const{
+	return "deoglSTPipelinesComponent";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -58,7 +67,8 @@ void deoglSTPipelinesComponent::pPreparePipelines( const ChannelInfo &cinfo ){
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
 	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareCounter( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	pPrepareMask( baseShaderConfig, cinfo );
 	pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );

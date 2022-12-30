@@ -32,7 +32,6 @@
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../rendering/deoglRenderReflection.h"
-#include "../../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTBufferObject.h"
 #include "../../renderthread/deoglRTChoices.h"
@@ -1712,9 +1711,6 @@ void deoglSkinShader::GenerateShader(){
 		
 		// compile shader
 		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
-		pShader->EnsureRTSShader();
-		pShader->GetRTSShader()->SetSPBInstanceIndexBase( pTargetSPBInstanceIndexBase );
-		pShader->GetRTSShader()->SetDrawIDOffset( pTargetDrawIDOffset );
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();

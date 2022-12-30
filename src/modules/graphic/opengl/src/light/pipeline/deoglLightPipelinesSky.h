@@ -49,6 +49,12 @@ public:
 	
 	
 	
+public:
+	/** Debug name. */
+	virtual const char *GetDebugName() const;
+	
+	
+	
 protected:
 	virtual void pPreparePipelines();
 	

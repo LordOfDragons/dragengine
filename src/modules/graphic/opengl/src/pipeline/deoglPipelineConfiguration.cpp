@@ -25,7 +25,6 @@
 #include "deoglPipelineConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
-#include "../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 
@@ -137,21 +136,6 @@ const char *sources, const deoglShaderDefines &defines ){
 void deoglPipelineConfiguration::SetShader( deoglRenderThread &renderThread,
 deoglShaderSources *sources, const deoglShaderDefines &defines ){
 	SetShader( renderThread.GetShader().GetShaderManager().GetProgramWith( sources, defines ) );
-}
-
-void deoglPipelineConfiguration::EnsureRTSShader(){
-	DEASSERT_NOTNULL( pShader );
-	
-	pShader->EnsureRTSShader();
-	pShader->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
-}
-
-void deoglPipelineConfiguration::EnsureRTSShader( int drawIDOffset ){
-	DEASSERT_NOTNULL( pShader );
-	
-	pShader->EnsureRTSShader();
-	pShader->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
-	pShader->GetRTSShader()->SetDrawIDOffset( drawIDOffset );
 }
 
 

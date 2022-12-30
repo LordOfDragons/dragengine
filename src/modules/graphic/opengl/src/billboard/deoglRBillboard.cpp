@@ -370,31 +370,22 @@ void deoglRBillboard::UpdateExtends( const deBillboard &billboard ){
 
 
 
-deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estBillboardGeometry:
-	case deoglSkinTexture::estDecalGeometry:
-	case deoglSkinTexture::estStereoBillboardGeometry:
-	case deoglSkinTexture::estStereoDecalGeometry:
+deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estBillboardDepth:
-	case deoglSkinTexture::estBillboardDepthClipPlane:
-	case deoglSkinTexture::estBillboardDepthReversed:
-	case deoglSkinTexture::estBillboardDepthClipPlaneReversed:
-	case deoglSkinTexture::estStereoBillboardDepth:
-	case deoglSkinTexture::estStereoBillboardDepthClipPlane:
-	case deoglSkinTexture::estStereoBillboardDepthReversed:
-	case deoglSkinTexture::estStereoBillboardDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
 		return GetTUCDepth();
 		
-	case deoglSkinTexture::estBillboardCounter:
-	case deoglSkinTexture::estBillboardCounterClipPlane:
-	case deoglSkinTexture::estStereoBillboardCounter:
-	case deoglSkinTexture::estStereoBillboardCounterClipPlane:
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
 		return GetTUCCounter();
 		
-	case deoglSkinTexture::estBillboardEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
 	default:
@@ -402,12 +393,13 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eSh
 	}
 }
 
-deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptBillboard ).GetWithRef( type ).GetShader();
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
@@ -915,21 +907,21 @@ void deoglRBillboard::pPrepareTUCs(){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estBillboardDepth );
+	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
 	
 	// geometry
 	if( pTUCGeometry ){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estBillboardGeometry );
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 	
 	// counter
 	if( pTUCCounter ){
 		pTUCCounter->RemoveUsage();
 		pTUCCounter = NULL;
 	}
-	pTUCCounter = BareGetTUCFor( deoglSkinTexture::estBillboardCounter );
+	pTUCCounter = BareGetTUCFor( deoglSkinTexturePipelines::etCounter );
 	
 	// envmap
 	if( pTUCEnvMap ){
@@ -989,7 +981,9 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry );
+			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptBillboard ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
 			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
@@ -1020,7 +1014,6 @@ void deoglRBillboard::pPrepareParamBlocks(){
 			rtsi.SetFirstPoint( 0 );
 			rtsi.SetFirstIndex( 0 );
 			rtsi.SetPointCount( 4 );
-			rtsi.SetDoubleSided( true );
 			rtsi.SetPrimitiveType( GL_TRIANGLE_FAN );
 		}
 	}

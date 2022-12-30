@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,30 +19,30 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLPERSISTENTRENDERTASKSHADER_H_
-#define _DEOGLPERSISTENTRENDERTASKSHADER_H_
+#ifndef _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
+#define _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
 
 class deoglPersistentRenderTask;
 class deoglPersistentRenderTaskPool;
-class deoglShaderProgram;
+class deoglPipeline;
 class deoglPersistentRenderTaskTexture;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 
 
 /**
- * Persistent render task shader.
+ * Persistent render task pipeline.
  */
-class deoglPersistentRenderTaskShader{
+class deoglPersistentRenderTaskPipeline{
 private:
 	deoglPersistentRenderTaskPool &pPool;
 	decPointerLinkedList::cListEntry pLLTask;
 	
 	deoglPersistentRenderTask *pParentTask;
-	const deoglShaderProgram *pShader;
+	const deoglPipeline *pPipeline;
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
 	int pDrawIDOffset;
@@ -54,27 +54,27 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create persistent render task shader. */
-	deoglPersistentRenderTaskShader( deoglPersistentRenderTaskPool &pool );
+	/** Create persistent render task pipeline. */
+	deoglPersistentRenderTaskPipeline( deoglPersistentRenderTaskPool &pool );
 	
-	/** Clean up persistent render task shader. */
-	~deoglPersistentRenderTaskShader();
+	/** Clean up persistent render task pipeline. */
+	~deoglPersistentRenderTaskPipeline();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Total amount of points in this shader. */
+	/** Total amount of points in this pipeline. */
 	int GetTotalPointCount() const;
 	
-	/** Total amount of vaos in this shader. */
+	/** Total amount of vaos in this pipeline. */
 	int GetTotalVAOCount() const;
 	
-	/** Total amount of instances in this shader. */
+	/** Total amount of instances in this pipeline. */
 	int GetTotalInstanceCount() const;
 	
-	/** Total amount of subinstances in this shader. */
+	/** Total amount of subinstances in this pipeline. */
 	int GetTotalSubInstanceCount() const;
 	
 	/** Parent task. */
@@ -83,28 +83,28 @@ public:
 	/** Set parent task. */
 	void SetParentTask( deoglPersistentRenderTask *task );
 	
-	/** Shader. */
-	inline const deoglShaderProgram *GetShader() const{ return pShader; }
+	/** Pipeline. */
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
 	
-	/** Set shader. */
-	void SetShader( const deoglShaderProgram *shader );
+	/** Set pipeline. */
+	void SetPipeline( const deoglPipeline *pipeline );
 	
-	/** Shader parameter block or \em NULL if not used. */
+	/** Pipeline parameter block or \em NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
-	/** Set shader parameter block or \em NULL if not used. */
+	/** Set pipeline parameter block or \em NULL if not used. */
 	void SetParameterBlock( deoglSPBlockUBO *block );
 	
-	/** Shader parameter index of pSPBInstanceIndexBase or -1. */
+	/** Pipeline parameter index of pSPBInstanceIndexBase or -1. */
 	inline int GetSPBInstanceIndexBase() const{ return pSPBInstanceIndexBase; }
 	
-	/** Set shader parameter index of pSPBInstanceIndexBase or -1. */
+	/** Set pipeline parameter index of pSPBInstanceIndexBase or -1. */
 	void SetSPBInstanceIndexBase( int parameter );
 	
-	/** Shader parameter index of pDrawIDOffset or -1. */
+	/** Pipeline parameter index of pDrawIDOffset or -1. */
 	inline int GetDrawIDOffset() const{ return pDrawIDOffset; }
 	
-	/** Set shader parameter index of pDrawIDOffset or -1. */
+	/** Set pipeline parameter index of pDrawIDOffset or -1. */
 	void SetDrawIDOffset( int parameter );
 	
 	

@@ -632,8 +632,9 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 		}
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader =
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry );
+			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
 				pParamBlock = new deoglSPBlockUBO( *pPropField.GetRenderThread()
@@ -650,8 +651,9 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( *pParamBlock,
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry ) );
+			UpdateInstanceParamBlock( *pParamBlock, pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}
 		
 		pDirtyParamBlock = false;

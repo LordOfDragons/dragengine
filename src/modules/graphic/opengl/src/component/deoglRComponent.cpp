@@ -2244,7 +2244,6 @@ void deoglRComponent::pPrepareOccMeshRTSInstances(){
 			rtsi.SetFirstPoint( pointOffset );
 			rtsi.SetFirstIndex( block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
 			rtsi.SetIndexCount( pOcclusionMesh->GetDoubleSidedFaceCount() * 3 );
-			rtsi.SetDoubleSided( true );
 		}
 		
 		if( pOccMeshSharedSPBSingleSided ){
@@ -2252,7 +2251,6 @@ void deoglRComponent::pPrepareOccMeshRTSInstances(){
 			rtsi.SetFirstPoint( pointOffset );
 			rtsi.SetFirstIndex( block.GetIndexOffset() );
 			rtsi.SetIndexCount( pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
-			rtsi.SetDoubleSided( false );
 		}
 	}
 }

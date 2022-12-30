@@ -37,10 +37,20 @@
 ////////////////////////////
 
 deoglLightPipelinesSky::deoglLightPipelinesSky( const deoglRSkyInstanceLayer &layer ) :
+deoglLightPipelines( layer.GetInstance().GetRenderThread() ),
 pLayer( layer ){
 }
 
 deoglLightPipelinesSky::~deoglLightPipelinesSky(){
+}
+
+
+
+// Management
+///////////////
+
+const char *deoglLightPipelinesSky::GetDebugName() const{
+	return "deoglLightPipelinesSky";
 }
 
 

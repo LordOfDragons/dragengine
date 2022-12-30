@@ -48,7 +48,6 @@ private:
 	int pIndexCount;
 	int pSubInstanceCount;
 	deoglSharedSPB *pSubInstanceSPB;
-	bool pDoubleSided;
 	GLenum pPrimitiveType;
 	int pTessPatchVertexCount;
 	
@@ -125,12 +124,6 @@ public:
 	
 	/** Set sub instances SPB or NULL. */
 	void SetSubInstanceSPB( deoglSharedSPB *element );
-	
-	/** Double sided. */
-	inline bool GetDoubleSided() const{ return pDoubleSided; }
-	
-	/** Set double sided. */
-	void SetDoubleSided( bool doubleSided );
 	
 	/** Primitive type. */
 	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }

@@ -691,7 +691,7 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 	for( t=0; t<textureCount; t++ ){
 		deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
 		skinTexture.PrepareParamBlock();
-		skinTexture.PrepareShaders();
+		skinTexture.GetPipelines().Prepare();
 	}
 }
 

@@ -43,6 +43,15 @@ protected:
 	
 	
 	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Debug name. */
+	virtual const char *GetDebugName() const;
+	/*@}*/
+	
+	
+	
 protected:
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
 };

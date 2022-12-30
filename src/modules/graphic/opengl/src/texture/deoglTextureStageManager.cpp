@@ -247,9 +247,8 @@ void deoglTextureStageManager::DisableAllStages(){
 
 
 void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum type ){
-	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( stage >= 0 )
+	DEASSERT_TRUE( stage < OGL_MAX_TEXTURE_STAGES )
 	
 	OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
 	

@@ -250,13 +250,6 @@ pDebugInfo( renderThread )
 		
 		
 		
-		// black screen
-		pipconf.Reset();
-		pipconf.SetDepthMask( false );
-		pPipelineBlackScreen = pipelineManager.GetWith( pipconf );
-		
-		
-		
 		DevModeDebugInfoChanged();
 		
 	}catch( const deException & ){
@@ -314,7 +307,7 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	defren.InitPostProcessTarget();
 	defren.ActivatePostProcessFBO( true );
 	
-	pPipelineBlackScreen->Activate();
+	pPipelineClearBuffers->Activate();
 	SetViewport( plan );
 	
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -370,17 +363,11 @@ DEBUG_RESET_TIMER
 	PrepareRenderParamBlock( plan, mask );
 	
 	// this part is done only for the main render pass
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	SetViewport( plan );
 	
 	// set the stencil mask
 	plan.SetRenderPassNumber( 1 );
 	
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	if( mask ){
 		// if there is a mask set the stencil write mask to only affect the
 		// bits of the render pass number and use the mask to filter
@@ -416,8 +403,7 @@ DEBUG_RESET_TIMER
 		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
 		if( plan.GetUpdateGIState() ){
 			renderGI.TraceRays( plan );
-			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			SetViewport( plan );
 			DebugTimer2Sample( plan, *pDebugInfo.infoGITraceRays, true );
 			
 			// calculate probe offset and extends. done here to avoid stalling since the results
@@ -527,8 +513,8 @@ DEBUG_RESET_TIMER
 	QUICK_DEBUG_END
 	
 	// xray pass
-	if( plan.GetTasks().GetSolidDepthXRayTask().GetShaderCount() > 0
-	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetShaderCount() > 0
+	if( plan.GetTasks().GetSolidDepthXRayTask().GetPipelineCount() > 0
+	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetPipelineCount() > 0
 	|| plan.GetHasXRayTransparency() ){
 		// TODO render xray pass. requires doing these steps:
 		// - switch texture but not with secondary depth texture but with third depth texture.
@@ -1070,41 +1056,32 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		// clear depth texture
 		deoglDebugTraceGroup debugTrace2( renderThread, "World.RenderMaskedPass.Mask" );
+		
+		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth();
 		
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		
-		OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-		SetCullMode( plan.GetFlipCulling() );
-		
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-		
-		// clear the depth and stencil buffer
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-		
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
 			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-		
 		// render the mask
+		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
 		OGL_CHECK( renderThread, glStencilMask( 0x01 ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x01, 0x01 ) );
 		
-		// restore the render parameter shader parameter block
+		// render solid content
 		if( m > 0 ){ // already prepared before the first mask
-			PrepareRenderParamBlock( plan, NULL );
+			PrepareRenderParamBlock( plan, nullptr );
 		}
 		
-		// render solid content
+		int pipelineModifier = 0;
+		if( plan.GetFlipCulling() ){
+			pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+		}
+		if( plan.GetRenderStereo() ){
+			pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+		}
+		
 		pRenderTask->Clear();
 		pRenderTask->SetRenderParamBlock( pRenderPB );
 		pRenderTask->SetRenderVSStereo( plan.GetRenderStereo()
@@ -1112,10 +1089,9 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		pAddToRenderTask->Reset();
 		pAddToRenderTask->SetSolid( true );
-		pAddToRenderTask->SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoComponentDepth
-			: deoglSkinTexture::estComponentDepth );
 		pAddToRenderTask->SetNoRendered( false );
+		pAddToRenderTask->SetSkinPipelineType( deoglSkinTexturePipelines::etMask );
+		pAddToRenderTask->SetSkinPipelineModifier( pipelineModifier );
 		
 		pAddToRenderTask->AddComponentFaces( maskedPlan->GetComponent()->GetLODAt( 0 ),
 			maskedPlan->GetComponentTexture(), 0 );
@@ -1139,7 +1115,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 	plan.SetClearColor( clearColor );
 	
 	// restore the render parameter shader parameter block
-	PrepareRenderParamBlock( plan, NULL );
+	PrepareRenderParamBlock( plan, nullptr );
 	
 	// the occlusion maps are trashed now. the best solution would be to use a set of occlusion
 	// maps for each masked plan avoiding the trashing of the main occlusion maps

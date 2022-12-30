@@ -37,6 +37,7 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
+#include "../../texture/deoglTextureStageManager.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -757,6 +758,14 @@ void deoglLightShader::UpdateTextureTargets(){
 	}
 	
 	pUsedTextureTargetCount = textureUnitNumber;
+	
+	if( pUsedTextureTargetCount > OGL_MAX_TEXTURE_STAGES ){
+		decString string;
+		pConfig.DebugGetConfigString( string );
+		pRenderThread.GetLogger().LogErrorFormat( "Too many texture targets: %d", pUsedTextureTargetCount );
+		pRenderThread.GetLogger().LogError( string );
+		DETHROW_INFO( deeInvalidAction, "Too many texture targets" );
+	}
 }
 
 void deoglLightShader::UpdateUniformTargets(){

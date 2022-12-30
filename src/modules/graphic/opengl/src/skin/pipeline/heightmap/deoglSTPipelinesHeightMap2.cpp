@@ -45,6 +45,15 @@ deoglSTPipelinesHeightMap2::~deoglSTPipelinesHeightMap2(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesHeightMap2::GetDebugName() const{
+	return "deoglSTPipelinesHeightMap2";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 

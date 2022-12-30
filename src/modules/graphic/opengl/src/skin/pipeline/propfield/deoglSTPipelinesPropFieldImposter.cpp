@@ -45,6 +45,15 @@ deoglSTPipelinesPropFieldImposter::~deoglSTPipelinesPropFieldImposter(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesPropFieldImposter::GetDebugName() const{
+	return "deoglSTPipelinesPropFieldImposter";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -57,7 +66,8 @@ void deoglSTPipelinesPropFieldImposter::pPreparePipelines( const ChannelInfo &ci
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
 	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareCounter( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	// pPrepareMask( baseShaderConfig, cinfo );
 	pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );

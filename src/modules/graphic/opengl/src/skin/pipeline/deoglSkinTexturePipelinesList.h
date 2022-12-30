@@ -19,25 +19,50 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLSTPIPELINESPROPFIELDIMPOSTER_H_
-#define _DEOGLSTPIPELINESPROPFIELDIMPOSTER_H_
+#ifndef _DEOGLSKINTEXTUREPIPELINESLIST_H_
+#define _DEOGLSKINTEXTUREPIPELINESLIST_H_
 
-#include "deoglSTPipelinesPropField.h"
+#include "deoglSkinTexturePipelines.h"
 
 
 /**
- * PropFieldImposter skin texture pipelines.
+ * Skin texture pipelines list.
  */
-class deoglSTPipelinesPropFieldImposter : public deoglSTPipelinesPropField{
+class deoglSkinTexturePipelinesList{
+public:
+	enum ePipelineTypes{
+		eptComponent,
+		eptBillboard,
+		eptDecal,
+		eptPropField,
+		eptPropFieldImposter,
+		eptHeightMap1,
+		eptHeightMap2,
+		eptParticle,
+		eptParticleRibbon,
+		eptParticleBeam,
+		eptOutline
+	};
+	
+	static const int PipelineTypesCount = eptOutline + 1;
+	
+	
+	
+private:
+	const deoglSkinTexture &pTexture;
+	
+	deoglSkinTexturePipelines::Ref pPipelines[ PipelineTypesCount ];
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesPropFieldImposter( const deoglSkinTexture &texture );
+	deoglSkinTexturePipelinesList( const deoglSkinTexture &texture );
 	
-protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesPropFieldImposter();
+	~deoglSkinTexturePipelinesList();
 	/*@}*/
 	
 	
@@ -45,16 +70,12 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	/** Get pipelines. */
+	deoglSkinTexturePipelines &GetAt( ePipelineTypes type ) const;
+	
+	/** Prepare all pipelines. */
+	void Prepare();
 	/*@}*/
-	
-	
-	
-protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo );
-	
-	virtual void pSetBase( deoglSkinShaderConfig &config );
 };
 
 #endif

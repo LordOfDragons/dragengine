@@ -26,7 +26,6 @@
 #include "deoglShaderProgram.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
-#include "../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTUniqueKey.h"
 
@@ -41,8 +40,7 @@
 ////////////////////////////
 
 deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources ) :
-pRenderThread( renderThread ),
-pRTSShader( NULL )
+pRenderThread( renderThread )
 {
 	if( ! sources ){
 		DETHROW( deeInvalidParam );
@@ -65,8 +63,7 @@ pRTSShader( NULL )
 
 deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
 deoglShaderSources *sources, const deoglShaderDefines &defines ) :
-pRenderThread( renderThread ),
-pRTSShader( NULL )
+pRenderThread( renderThread )
 {
 	if( ! sources ){
 		DETHROW( deeInvalidParam );
@@ -90,9 +87,6 @@ pRTSShader( NULL )
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
-	if( pRTSShader ){
-		pRTSShader->ReturnToPool();
-	}
 	if( pCompiled ){
 		delete pCompiled;
 	}
@@ -137,15 +131,6 @@ void deoglShaderProgram::SetCompiled( deoglShaderCompiled *compiled ){
 	}
 }
 
-void deoglShaderProgram::EnsureRTSShader(){
-	if( pRTSShader ){
-		return;
-	}
-	
-	pRTSShader = pRenderThread.GetRenderTaskSharedPool().GetShader();
-	pRTSShader->SetShader( this );
-}
-
 
 
 void deoglShaderProgram::AddUsage(){
@@ -159,9 +144,4 @@ void deoglShaderProgram::RemoveUsage(){
 	}
 	
 	pUsageCount--;
-	
-	if( pUsageCount == 0 && pRTSShader ){
-		pRTSShader->ReturnToPool();
-		pRTSShader = NULL;
-	}
 }

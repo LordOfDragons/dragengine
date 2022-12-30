@@ -31,10 +31,8 @@
 class deoglQuickSorter;
 class deoglRenderTaskPipeline;
 class deoglRenderTaskInstance;
-class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedInstance;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
@@ -60,16 +58,14 @@ class deoglRenderTask{
 private:
 	struct sConfigTexture{
 		const deoglPipeline *pipeline;
-		const deoglRenderTaskSharedShader *shader;
 		const deoglRenderTaskSharedTexture *texture;
 		const deoglRenderTaskSharedVAO *vao;
 		const deoglRenderTaskSharedInstance *instance;
 		deoglRenderTaskPipeline *rtpipeline;
-		deoglRenderTaskShader *rtshader;
 		deoglRenderTaskTexture *rttexture;
 		deoglRenderTaskVAO *rtvao;
 		deoglRenderTaskInstance *rtinstance;
-// 		int shaderIndex;
+// 		int pipelineIndex;
 // 		int textureIndex;
 // 		int vaoIndex;
 // 		int instanceIndex;
@@ -84,7 +80,6 @@ private:
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
-	bool pForceDoubleSided;
 	bool pRenderVSStereo;
 	GLuint pVBODrawIndirect;
 	int pVBODrawIndirectSize;
@@ -94,12 +89,6 @@ private:
 	deoglRenderTaskPipeline **pHasPipeline;
 	int pHasPipelineCount;
 	int pHasPipelineSize;
-	
-	decPointerList pShaders;
-	int pShaderCount;
-	deoglRenderTaskShader **pHasShader;
-	int pHasShaderCount;
-	int pHasShaderSize;
 	
 	sConfigTexture *pConfigTextures;
 	int pConfigTextureCount;
@@ -152,12 +141,6 @@ public:
 	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags( bool useFlags );
 	
-	/** Force double sided rendering. */
-	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
-	
-	/** Set force double sided rendering. */
-	void SetForceDoubleSided( bool forceDoubleSided );
-	
 	/** Use vertex shader stereo rendering. */
 	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
@@ -182,18 +165,6 @@ public:
 	/** Add pipeline. */
 	deoglRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
 	deoglRenderTaskPipeline *AddPipelineDirect( const deoglPipeline *pipeline );
-	
-	
-	
-	/** Number of shaders. */
-	inline int GetShaderCount() const{ return pShaderCount; }
-	
-	/** Shader at index. */
-	deoglRenderTaskShader *GetShaderAt( int index ) const;
-	
-	/** Add shader. */
-	deoglRenderTaskShader *AddShader( const deoglRenderTaskSharedShader *shader );
-	deoglRenderTaskShader *AddShaderDirect( const deoglRenderTaskSharedShader *shader );
 	
 	
 	

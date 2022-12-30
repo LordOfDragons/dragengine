@@ -713,35 +713,35 @@ void deoglRComponentLOD::DropGIDynamicBVH(){
 
 
 
-const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinTexture::eShaderTypes type ) const{
+const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinTexturePipelines::eTypes type ) const{
 	switch( type ){
-	case deoglSkinTexture::estComponentShadowProjection:
+	case deoglSkinTexturePipelines::etShadowProjection:
 		return &pRenderTaskConfigs[ 0 ];
 		
-	case deoglSkinTexture::estComponentShadowOrthogonal:
+	case deoglSkinTexturePipelines::etShadowOrthogonal:
 		return &pRenderTaskConfigs[ 1 ];
 		
-	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
+	case deoglSkinTexturePipelines::etShadowOrthogonalCascaded:
 		return &pRenderTaskConfigs[ 2 ];
 		
-	case deoglSkinTexture::estComponentShadowDistance:
+	case deoglSkinTexturePipelines::etShadowDistance:
 		return &pRenderTaskConfigs[ 3 ];
 		
-	case deoglSkinTexture::estComponentShadowDistanceCube:
+	case deoglSkinTexturePipelines::etShadowDistanceCube:
 		return &pRenderTaskConfigs[ 4 ];
 		
 	default:
-		return NULL;
+		return nullptr;
 	}
 }
 
 void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
-	const deoglSkinTexture::eShaderTypes typesShadow[ 5 ] = {
-		deoglSkinTexture::estComponentShadowProjection,
-		deoglSkinTexture::estComponentShadowOrthogonal,
-		deoglSkinTexture::estComponentShadowOrthogonalCascaded,
-		deoglSkinTexture::estComponentShadowDistance,
-		deoglSkinTexture::estComponentShadowDistanceCube };
+	const deoglSkinTexturePipelines::eTypes typesShadow[ 5 ] = {
+		deoglSkinTexturePipelines::etShadowProjection,
+		deoglSkinTexturePipelines::etShadowOrthogonal,
+		deoglSkinTexturePipelines::etShadowOrthogonalCascaded,
+		deoglSkinTexturePipelines::etShadowDistance,
+		deoglSkinTexturePipelines::etShadowDistanceCube };
 	int i;
 	
 	for( i=0; i<5; i++ ){
@@ -789,12 +789,21 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 			rtsi = texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance();
 		}
 		
+		deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
+		
+		if( texture.GetUseDecal() ){
+			pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
+			
+		}else{
+			pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
+		}
+		
 		int j;
 		for( j=0; j<5; j++ ){
 			deoglRenderTaskConfigTexture &rct = pRenderTaskConfigs[ j ].AddTexture();
 			rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
-			rct.SetShader( skinTexture->GetShaderFor( typesShadow[ j ] )->GetShader()->GetRTSShader() );
-			const deoglTexUnitsConfig *tuc = texture.GetTUCForShaderType( typesShadow[ j ] );
+			rct.SetPipeline( skinTexture->GetPipelines().GetAt( pipelinesType ).GetWithRef( typesShadow[ j ] ).GetPipeline() );
+			const deoglTexUnitsConfig *tuc = texture.GetTUCForPipelineType( typesShadow[ j ] );
 			if( ! tuc ){
 				tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 			}
@@ -1646,7 +1655,7 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 }
 
 void deoglRComponentLOD::pUpdateRenderTaskConfig( deoglRenderTaskConfig &config,
-deoglSkinTexture::eShaderTypes type, int renderTaskFlags, int renderTaskFlagMask, bool shadow ){
+deoglSkinTexturePipelines::eTypes type, int renderTaskFlags, int renderTaskFlagMask, bool shadow ){
 	config.RemoveAllTextures();
 	
 	if( ! pComponent.GetModel() ){
@@ -1673,7 +1682,7 @@ deoglSkinTexture::eShaderTypes type, int renderTaskFlags, int renderTaskFlagMask
 			continue;
 		}
 		
-		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
 		if( ! skinTexture ){
 			continue; // actually covered by filter above but better safe than sorry
 		}
@@ -1688,10 +1697,19 @@ deoglSkinTexture::eShaderTypes type, int renderTaskFlags, int renderTaskFlagMask
 			}
 		}
 		
+		deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
+		
+		if( texture.GetUseDecal() ){
+			pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
+			
+		}else{
+			pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
+		}
+		
 		deoglRenderTaskConfigTexture &rct = config.AddTexture();
 		rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
-		rct.SetShader( skinTexture->GetShaderFor( type )->GetShader()->GetRTSShader() );
-		const deoglTexUnitsConfig *tuc = texture.GetTUCForShaderType( type );
+		rct.SetPipeline( skinTexture->GetPipelines().GetAt( pipelinesType ).GetWithRef( type ).GetPipeline() );
+		const deoglTexUnitsConfig *tuc = texture.GetTUCForPipelineType( type );
 		if( ! tuc ){
 			tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 		}

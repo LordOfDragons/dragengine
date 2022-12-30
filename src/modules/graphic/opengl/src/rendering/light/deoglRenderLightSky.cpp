@@ -34,8 +34,6 @@
 #include "../plan/deoglRenderPlanSkyLight.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglAddToRenderTask.h"
-#include "../task/deoglRenderTaskShader.h"
-#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../lod/deoglLODCalculator.h"
 #include "../deoglRenderOcclusion.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -189,8 +187,7 @@ pSolidShadowMap( NULL )
 		defines.SetDefines( "WITH_SHADOWMAP" );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pipconf.EnsureRTSShader();
-		pPipelineOccMesh = pipelineManager.GetWith( pipconf );
+		pPipelineOccMesh = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveAllDefines();
 		
 		
@@ -659,6 +656,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 #ifdef SKY_SHADOW_LAYERED_RENDERING
 	if( bugClearEntireArrTex ){
+		pPipelineClearBuffers->Activate();
 		for( i=0; i<layerCount; i++ ){
 			shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i, true );
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
@@ -671,6 +669,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	}
 #else
 	if( ! bugClearEntireArrTex ){
+		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
 		if( clearBackFaceFragments ){
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
@@ -887,6 +886,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		// need for a geometry program to be used.
 		shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i, true );
 		if( bugClearEntireArrTex ){
+			pPipelineClearBuffers->Activate();
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
 			DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitClear, true );
 		}
@@ -918,7 +918,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 #ifdef SKY_SHADOW_FILTERED
 		sl.renderTask->SetRenderParamBlock( renderParamBlock );
-		sl.renderTask->SetForceDoubleSided( true );
+		sl.addToRenderTask->SetForceDoubleSided( true );
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
 			renderThread.GetLogger().LogInfoFormat( "RenderLightSky: shadow split %i", i );
@@ -1125,7 +1125,7 @@ deoglShadowMapper &shadowMapper ){
 		
 		// render
 		plan.GetGIRenderTaskStatic().SetRenderParamBlock( renderParamBlock );
-		plan.GetGIRenderTaskStatic().SetForceDoubleSided( true );
+		plan.GetGIRenderTaskAddStatic().SetForceDoubleSided( true );
 		
 		shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize( shadowMapSize, true, false ) );
 		RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskStatic(), shadowMapSize, false /*true*/ );
@@ -1159,7 +1159,7 @@ deoglShadowMapper &shadowMapper ){
 	
 	// render
 	plan.GetGIRenderTaskDynamic().SetRenderParamBlock( renderParamBlock );
-	plan.GetGIRenderTaskDynamic().SetForceDoubleSided( true );
+	plan.GetGIRenderTaskAddDynamic().SetForceDoubleSided( true );
 	
 	if( scsolid.GetDynamicMap() && scsolid.GetDynamicMap()->GetWidth() != shadowMapSize ){
 		scsolid.DropDynamic();
@@ -1182,20 +1182,9 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 			decTimer timer;
 			#endif
 	
-	// opengl states
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // lequal, sky light uses linear depth
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glCullFace( GL_BACK ) );
-	
-	if( renderThread.GetChoices().GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
-	}
-	
 	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
 	// front faces set 0x0 as stencil value and back faces 0xff
+	/*
 	if( clearBackFaceFragments ){
 		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
@@ -1206,11 +1195,13 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	}
+	*/
 	
 	// get shadow map
 			SSDTLOG("RenderGIShadowMap Prepare %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// clear shadow map
+	pPipelineClearBuffers->Activate();
 	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
 	
 	if( clearBackFaceFragments ){

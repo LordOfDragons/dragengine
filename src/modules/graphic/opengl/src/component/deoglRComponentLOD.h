@@ -26,6 +26,7 @@
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 #include "../rendering/task/config/deoglRenderTaskConfig.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -248,7 +249,7 @@ public:
 	
 	
 	/** Render task configuration or NULL. */
-	const deoglRenderTaskConfig *GetRenderTaskConfig( deoglSkinTexture::eShaderTypes type ) const;
+	const deoglRenderTaskConfig *GetRenderTaskConfig( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/** Update render task configuration. */
 	void UpdateRenderTaskConfigurations();
@@ -269,7 +270,7 @@ private:
 	
 	void pPrepareVBOLayout( const deoglModelLOD &modelLOD );
 	
-	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexture::eShaderTypes type,
+	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexturePipelines::eTypes type,
 		int renderTaskFlags, int renderTaskFlagMask, bool shadow );
 };
 

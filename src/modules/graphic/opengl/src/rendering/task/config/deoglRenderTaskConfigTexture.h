@@ -24,7 +24,6 @@
 
 class deoglPipeline;
 class deoglRenderTaskSharedInstance;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
 
@@ -37,13 +36,11 @@ private:
 	int pRenderTaskFilter;
 	
 	const deoglPipeline *pPipeline;
-	const deoglRenderTaskSharedShader *pShader;
 	const deoglRenderTaskSharedTexture *pTexture;
 	const deoglRenderTaskSharedVAO *pVAO;
 	const deoglRenderTaskSharedInstance *pInstance;
 	
 	int pPipelineIndex;
-	int pShaderIndex;
 	int pTextureIndex;
 	int pVAOIndex;
 	int pInstanceIndex;
@@ -77,12 +74,6 @@ public:
 	/** Set pipeline. */
 	void SetPipeline( const deoglPipeline *pipeline );
 	
-	/** Shader. */
-	inline const deoglRenderTaskSharedShader *GetShader() const{ return pShader; }
-	
-	/** Set shader. */
-	void SetShader( const deoglRenderTaskSharedShader *shader );
-	
 	/** Texture. */
 	inline const deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
 	
@@ -105,9 +96,6 @@ public:
 	
 	/** Pipeline index. */
 	inline int GetPipelineIndex() const{ return pPipelineIndex; }
-	
-	/** Shader index. */
-	inline int GetShaderIndex() const{ return pShaderIndex; }
 	
 	/** Texture index. */
 	inline int GetTextureIndex() const{ return pTextureIndex; }

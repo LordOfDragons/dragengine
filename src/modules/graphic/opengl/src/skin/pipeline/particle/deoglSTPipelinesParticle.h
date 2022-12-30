@@ -42,8 +42,26 @@ protected:
 	
 	
 	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Debug name. */
+	virtual const char *GetDebugName() const;
+	/*@}*/
+	
+	
+	
 protected:
 	virtual void pPreparePipelines( const ChannelInfo &cinfo );
+	
+	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
+	
+	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+	
+	virtual void pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
 	
 	virtual void pSetTypeGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );

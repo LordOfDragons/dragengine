@@ -45,6 +45,15 @@ deoglSTPipelinesPropField::~deoglSTPipelinesPropField(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesPropField::GetDebugName() const{
+	return "deoglSTPipelinesPropField";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -56,9 +65,15 @@ void deoglSTPipelinesPropField::pPreparePipelines( const ChannelInfo &cinfo ){
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
 	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareCounter( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	// pPrepareMask( baseShaderConfig, cinfo );
 	pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );
 	// pPrepareGIMaterial( baseShaderConfig, cinfo );
+}
+
+void deoglSTPipelinesPropField::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
+deoglSkinShaderConfig &, const ChannelInfo & ){
+	// not supported
 }

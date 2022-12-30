@@ -34,8 +34,6 @@
 #include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
-#include "task/deoglRenderTaskShader.h"
-#include "task/shared/deoglRenderTaskSharedShader.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
@@ -172,11 +170,13 @@ enum eSPTestTFB{
 	spttfbMatrix2Stereo
 };
 
+/*
 static const int vCubeFaces[] = {
 	deoglCubeMap::efPositiveX, deoglCubeMap::efNegativeX,
 	deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
 	deoglCubeMap::efPositiveZ, deoglCubeMap::efNegativeZ
 };
+*/
 
 
 
@@ -218,30 +218,26 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pipconf.EnsureRTSShader();
-		pPipelineOccMapOrtho = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapOrtho = pipelineManager.GetWith( pipconf, true );
 		
 		// occlusion map orthogonal clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pipconf.EnsureRTSShader();
-		pPipelineOccMapOrthoClipPlane = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapOrthoClipPlane = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
 		// occlusion map perspective
 		defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pipconf.EnsureRTSShader();
-		pPipelineOccMap = pipelineManager.GetWith( pipconf );
+		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
 		
 		// occlusion map perspective clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
-		pipconf.EnsureRTSShader();
-		pPipelineOccMapClipPlane = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapClipPlane = pipelineManager.GetWith( pipconf, true );
 		
 		
 		// occlusion map orthogonal stereo
@@ -254,16 +250,14 @@ pAddToRenderTask( NULL )
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.SetDrawIDOffset( drawIDOffset );
-		pipconf.EnsureRTSShader( drawIDOffset );
-		pPipelineOccMapOrthoStereo = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapOrthoStereo = pipelineManager.GetWith( pipconf, true );
 		
 		// occlusion map orthogonal stereo clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.SetDrawIDOffset( drawIDOffset );
-		pipconf.EnsureRTSShader( drawIDOffset );
-		pPipelineOccMapOrthoClipPlaneStereo = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapOrthoClipPlaneStereo = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveDefine( "USE_CLIP_PLANE" );
 		
 		// occlusion map perspective stereo
@@ -271,16 +265,14 @@ pAddToRenderTask( NULL )
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.SetDrawIDOffset( drawIDOffset );
-		pipconf.EnsureRTSShader( drawIDOffset );
-		pPipelineOccMapStereo = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapStereo = pipelineManager.GetWith( pipconf, true );
 		
 		// occlusion map perspective stereo clip plane
 		defines.SetDefines( "USE_CLIP_PLANE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pipconf.SetDrawIDOffset( drawIDOffset );
-		pipconf.EnsureRTSShader( drawIDOffset );
-		pPipelineOccMapClipPlaneStereo = pipelineManager.GetWith( pipconf );
+		pPipelineOccMapClipPlaneStereo = pipelineManager.GetWith( pipconf, true );
 		
 		
 		// occlusion map downsample
@@ -376,9 +368,8 @@ pAddToRenderTask( NULL )
 			defines.SetDefine( "GS_RENDER_CUBE", true );
 			defines.SetDefine( "GS_RENDER_CUBE_CULLING", true );
 			
-			pPipelineOccMapCube = shaderManager.GetProgramWith( sources, defines );
-			pPipelineOccMapCube->EnsureRTSShader();
-			pPipelineOccMapCube->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+			pipconf.SetSPBInstanceIndexBase( 0 );
+			pPipelineOccMapCube = pipelineManager.GetWith( pipconf, true );
 		}
 #endif
 		
@@ -826,22 +817,22 @@ deoglRenderPlanSkyLight &planSkyLight ){
 }
 
 
-deoglRenderTaskSharedShader *deoglRenderOcclusion::GetRenderOcclusionMapRTS(
+const deoglPipeline *deoglRenderOcclusion::GetRenderOcclusionMapRTS(
 const deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective ) const{
 	if( perspective ){
 		if( mask && mask->GetUseClipPlane() ){
-			return ( plan.GetRenderStereo() ? pPipelineOccMapClipPlaneStereo : pPipelineOccMapClipPlane )->GetGlShader()->GetRTSShader();
+			return plan.GetRenderStereo() ? pPipelineOccMapClipPlaneStereo : pPipelineOccMapClipPlane;
 			
 		}else{
-			return ( plan.GetRenderStereo() ? pPipelineOccMapStereo : pPipelineOccMap )->GetGlShader()->GetRTSShader();
+			return plan.GetRenderStereo() ? pPipelineOccMapStereo : pPipelineOccMap;
 		}
 		
 	}else{
 		if( mask && mask->GetUseClipPlane() ){
-			return ( plan.GetRenderStereo() ? pPipelineOccMapOrthoClipPlaneStereo : pPipelineOccMapOrthoClipPlane )->GetGlShader()->GetRTSShader();
+			return plan.GetRenderStereo() ? pPipelineOccMapOrthoClipPlaneStereo : pPipelineOccMapOrthoClipPlane;
 			
 		}else{
-			return ( plan.GetRenderStereo() ? pPipelineOccMapOrthoStereo : pPipelineOccMapOrtho )->GetGlShader()->GetRTSShader();
+			return plan.GetRenderStereo() ? pPipelineOccMapOrthoStereo : pPipelineOccMapOrtho;
 		}
 	}
 }
@@ -852,8 +843,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deog
 	pAddToRenderTask->Reset();
 	pAddToRenderTask->SetSolid( true );
 	pAddToRenderTask->SetNoRendered( plan.GetNoRenderedOccMesh() );
-	
-	pAddToRenderTask->SetEnforceShader( GetRenderOcclusionMapRTS( plan, mask, true ) );
+	pAddToRenderTask->SetEnforcePipeline( GetRenderOcclusionMapRTS( plan, mask, true ) );
 	
 	pAddToRenderTask->AddOcclusionMeshes( plan.GetComponentsOccMap(), true );
 	DEBUG_PRINT_TIMER( "RenderOcclusionMap Build RT" );

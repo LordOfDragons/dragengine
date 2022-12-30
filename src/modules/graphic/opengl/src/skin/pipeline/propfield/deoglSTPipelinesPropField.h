@@ -42,8 +42,20 @@ protected:
 	
 	
 	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Debug name. */
+	virtual const char *GetDebugName() const;
+	/*@}*/
+	
+	
+	
 protected:
 	virtual void pPreparePipelines( const ChannelInfo &cinfo );
+	
+	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
 };
 
 #endif

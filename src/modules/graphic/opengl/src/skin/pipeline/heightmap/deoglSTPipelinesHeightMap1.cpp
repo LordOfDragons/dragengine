@@ -45,6 +45,15 @@ deoglSTPipelinesHeightMap1::~deoglSTPipelinesHeightMap1(){
 
 
 
+// Management
+///////////////
+
+const char *deoglSTPipelinesHeightMap1::GetDebugName() const{
+	return "deoglSTPipelinesHeightMap1";
+}
+
+
+
 // Protected Functions
 ////////////////////////
 
@@ -56,7 +65,8 @@ void deoglSTPipelinesHeightMap1::pPreparePipelines( const ChannelInfo &cinfo ){
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
 	pPrepareAllDepth( baseShaderConfig, cinfo );
-	pPrepareCounter( baseShaderConfig, cinfo );
+	pPrepareAllCounter( baseShaderConfig, cinfo );
+	// pPrepareMask( baseShaderConfig, cinfo );
 	pPrepareAllShadow( baseShaderConfig, cinfo );
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );
@@ -67,4 +77,9 @@ void deoglSTPipelinesHeightMap1::pPipelineConfigGeometry( deoglPipelineConfigura
 	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
 	
 	config.SetEnableBlend( false );
+}
+
+void deoglSTPipelinesHeightMap1::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
+deoglSkinShaderConfig &, const ChannelInfo & ){
+	// not supported
 }

@@ -24,6 +24,7 @@
 
 #include "deoglLightPipeline.h"
 #include "../../pipeline/deoglPipeline.h"
+#include "../../utils/deoglDebugNamesEnumSet.h"
 
 #include <dragengine/deObject.h>
 
@@ -51,6 +52,8 @@ public:
 		etGIRaySolid2 //<! GI rays double solid shadow.
 	};
 	
+	static const deoglDebugNamesEnum DebugNamesTypes;
+	
 	/** Modifier. */
 	enum eModifiers{
 		emNoAmbient = 0x1,
@@ -59,12 +62,15 @@ public:
 		emFlipCullFace = 0x8
 	};
 	
+	static const deoglDebugNamesEnumSet DebugNamesModifiers;
+	
 	
 	
 protected:
 	const static int TypeCount = etGIRaySolid2 + 1;
 	const static int ModifiersPerType = emTransparent << 1;
 	
+	deoglRenderThread &pRenderThread;
 	deoglLightPipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];
 	bool pPrepared;
 	
@@ -74,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelines();
+	deoglLightPipelines( deoglRenderThread &renderThread );
 	
 protected:
 	/** Clean up light pipeline. */
@@ -94,6 +100,9 @@ public:
 	
 	/** Prepare pipelines. */
 	void Prepare();
+	
+	/** Debug name. */
+	virtual const char *GetDebugName() const = 0;
 	/*@}*/
 	
 	

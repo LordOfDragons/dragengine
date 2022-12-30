@@ -215,43 +215,31 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	
 	// attach the first counter texture to store the count of layers per pixel
+	pPipelineClearBuffers->Activate();
 	defren.ActivateFBODiffuse( true );
 	SetViewport( plan );
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	//OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_CONSTANT_COLOR, GL_ONE ) );
-	OGL_CHECK( renderThread, pglBlendColor( 1.0f / 255.0f, 0.0f, 0.0f, 0.0f ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( plan.GetFlipCulling() );
-	
-	if( mask ){
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	}
-	
 	// clear the counter texture to 0
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	
-	
 	// render transparent scene elements
+	deoglSkinTexturePipelines::eTypes pipelineType;
+	if( mask && mask->GetUseClipPlane() ){
+		pipelineType = deoglSkinTexturePipelines::etCounterClipPlane;
+		
+	}else{
+		pipelineType = deoglSkinTexturePipelines::etCounter;
+	}
+	
+	int pipelineModifier = 0;
+	if( plan.GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( plan.GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
@@ -259,58 +247,13 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	
-	// components
-	if( mask && mask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoComponentCounterClipPlane
-			: deoglSkinTexture::estComponentCounterClipPlane );
-		
-	}else{
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoComponentCounter
-			: deoglSkinTexture::estComponentCounter );
-	}
+	addToRenderTask.SetSkinPipelineType( pipelineType );
+	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
 	
 	addToRenderTask.AddComponents( collideList );
-	
-	// billboards
-	if( mask && mask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoBillboardCounterClipPlane
-			: deoglSkinTexture::estBillboardCounterClipPlane );
-		
-	}else{
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoBillboardCounter
-			: deoglSkinTexture::estBillboardCounter );
-	}
-	
 	addToRenderTask.AddBillboards( collideList );
 	
-	// particles
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
-		if( mask && mask->GetUseClipPlane() ){
-			addToRenderTask.SetSkinShaderType(
-				deoglSkinTexture::estParticleCounterClipPlane );
-			addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleRibbonCounterClipPlane
-				: deoglSkinTexture::estParticleRibbonCounterClipPlane );
-			addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleBeamCounterClipPlane
-				: deoglSkinTexture::estParticleBeamCounterClipPlane );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleCounter
-				: deoglSkinTexture::estParticleCounter );
-			addToRenderTask.SetSkinShaderTypeRibbon( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleRibbonCounter
-				: deoglSkinTexture::estParticleRibbonCounter );
-			addToRenderTask.SetSkinShaderTypeBeam( plan.GetRenderStereo()
-				? deoglSkinTexture::estStereoParticleBeamCounter
-				: deoglSkinTexture::estParticleBeamCounter );
-		}
 		addToRenderTask.AddParticles( collideList );
 	}
 	
@@ -337,25 +280,14 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	addToRenderTask.SetDecal( false );
 	addToRenderTask.SetSolid( false );
 	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	
-	if( mask && mask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoOutlineCounterClipPlane
-			: deoglSkinTexture::estOutlineCounterClipPlane );
-		
-	}else{
-		addToRenderTask.SetSkinShaderType( plan.GetRenderStereo()
-			? deoglSkinTexture::estStereoOutlineCounter
-			: deoglSkinTexture::estOutlineCounter );
-	}
+	addToRenderTask.SetSkinPipelineType( pipelineType );
+	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
 	
 	addToRenderTask.AddComponents( collideList );
 	
-	if( renderTask.GetShaderCount() > 0 ){
+	if( renderTask.GetPipelineCount() > 0 ){
 		renderTask.PrepareForRender();
-		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( renderTask );
-		SetCullMode( plan.GetFlipCulling() );
 	}
 	
 	
@@ -392,8 +324,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 				defren.ActivateFBODiffuse( false );
 				tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 			}
-			OGL_CHECK( renderThread, glViewport( 0, 0, nextSize, curHeight ) );
-// 			OGL_CHECK( renderThread, glScissor( 0, 0, nextSize, curHeight ) );
+			SetViewport( nextSize, curHeight );
 			
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			
@@ -433,8 +364,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 				defren.ActivateFBODiffuse( false );
 				tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 			}
-			OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, nextSize ) );
-// 			OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, nextSize ) );
+			SetViewport( curWidth, nextSize );
 			
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			
@@ -485,8 +415,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			defren.ActivateFBODiffuse( false );
 			tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		}
-		OGL_CHECK( renderThread, glViewport( 0, 0, 100, 1 ) );
-// 		OGL_CHECK( renderThread, glScissor( 0, 0, 100, 1 ) );
+		SetViewport( 100, 1 );
 		
 		renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderTraCountGetCountStereo : pShaderTraCountGetCount );
 		
@@ -522,8 +451,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	renderThread.GetFramebuffer().GetActive()->InvalidateColor( 0 );
 	
 	// reset
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	SetViewport( plan );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 DBG_EXIT("deoglRenderTranspCounting::CountTransparency")
 }

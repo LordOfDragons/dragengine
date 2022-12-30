@@ -143,10 +143,6 @@ public:
 	void SetShader( deoglRenderThread &renderThread,
 		deoglShaderSources *sources, const deoglShaderDefines &defines );
 	
-	/** Ensure RTS shader exists. */
-	void EnsureRTSShader();
-	void EnsureRTSShader( int drawIDOffset );
-	
 	
 	
 	/** Color mask. */

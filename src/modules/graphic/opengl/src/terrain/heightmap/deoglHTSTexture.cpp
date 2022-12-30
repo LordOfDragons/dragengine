@@ -140,35 +140,29 @@ void deoglHTSTexture::MarkTUCsDirty(){
 
 
 
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estHeightMapGeometry:
-	case deoglSkinTexture::estStereoHeightMapGeometry:
+deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estHeightMapDepth:
-	case deoglSkinTexture::estHeightMapDepthClipPlane:
-	case deoglSkinTexture::estHeightMapDepthReversed:
-	case deoglSkinTexture::estHeightMapDepthClipPlaneReversed:
-	case deoglSkinTexture::estHeightMapTranspCount:
-	case deoglSkinTexture::estHeightMapTranspCountClipPlane:
-	case deoglSkinTexture::estStereoHeightMapDepth:
-	case deoglSkinTexture::estStereoHeightMapDepthClipPlane:
-	case deoglSkinTexture::estStereoHeightMapDepthReversed:
-	case deoglSkinTexture::estStereoHeightMapDepthClipPlaneReversed:
-	case deoglSkinTexture::estStereoHeightMapTranspCount:
-	case deoglSkinTexture::estStereoHeightMapTranspCountClipPlane:
+	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
 		return GetTUCDepth();
 		
-	case deoglSkinTexture::estHeightMapShadowProjection:
-	case deoglSkinTexture::estHeightMapShadowOrthogonal:
-	case deoglSkinTexture::estHeightMapShadowDistance:
+	case deoglSkinTexturePipelines::etShadowProjection:
+	case deoglSkinTexturePipelines::etShadowOrthogonal:
+	case deoglSkinTexturePipelines::etShadowDistance:
+	case deoglSkinTexturePipelines::etShadowDistanceCube:
 		return GetTUCShadow();
 		
-	case deoglSkinTexture::estHeightMapEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
-	case deoglSkinTexture::estHeightMapLuminance:
+	case deoglSkinTexturePipelines::etLuminance:
 		return GetTUCLuminance();
 		
 	default:
@@ -178,13 +172,15 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eSh
 
 
 
-deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
 	
 	deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
+		GetWithRef( type ).GetShader();
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
@@ -372,7 +368,9 @@ void deoglHTSTexture::pPrepareParamBlock(){
 		}
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapGeometry );
+			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
 				pParamBlockGeometry = new deoglSPBlockUBO( *pSector.GetHeightTerrain()
@@ -389,8 +387,9 @@ void deoglHTSTexture::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( *pParamBlock,
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapGeometry ) );
+			UpdateInstanceParamBlock( *pParamBlock, pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}
 		
 		pDirtyParamBlock = false;
@@ -408,21 +407,21 @@ void deoglHTSTexture::pPrepareTUCs(){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estHeightMapDepth );
+	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
 	
 	// geometry
 	if( pTUCGeometry ){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estHeightMapGeometry );
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 	
 	// shadow
 	if( pTUCShadow ){
 		pTUCShadow->RemoveUsage();
 		pTUCShadow = NULL;
 	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estHeightMapShadowProjection );
+	pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
 	
 	// envmap
 	if( pTUCEnvMap ){
@@ -465,5 +464,5 @@ void deoglHTSTexture::pPrepareTUCs(){
 		pTUCLuminance->RemoveUsage();
 		pTUCLuminance = NULL;
 	}
-	pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estHeightMapLuminance );
+	// pTUCLuminance = BareGetTUCFor( deoglSkinTexturePipelines::etLuminance );
 }
