@@ -1089,7 +1089,6 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		pAddToRenderTask->Reset();
 		pAddToRenderTask->SetSolid( true );
-		pAddToRenderTask->SetNoRendered( false );
 		pAddToRenderTask->SetSkinPipelineType( deoglSkinTexturePipelines::etMask );
 		pAddToRenderTask->SetSkinPipelineModifier( pipelineModifier );
 		

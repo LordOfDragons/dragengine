@@ -379,6 +379,7 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType( deoglSkinTexturePip
 	case deoglSkinTexturePipelines::etDepthClipPlane:
 	case deoglSkinTexturePipelines::etDepthReversed:
 	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCDepth();
 		
 	case deoglSkinTexturePipelines::etCounter:

@@ -286,6 +286,7 @@ deoglSkinTexturePipelines::eTypes type ){
 	case deoglSkinTexturePipelines::etShadowOrthogonal:
 	case deoglSkinTexturePipelines::etShadowDistance:
 	case deoglSkinTexturePipelines::etShadowDistanceCube:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCDepth();
 		
 	case deoglSkinTexturePipelines::etCounter:

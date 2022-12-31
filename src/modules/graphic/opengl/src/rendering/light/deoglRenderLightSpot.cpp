@@ -622,6 +622,9 @@ const deoglRenderPlanMasked *mask ){
 		planDebug->IncrementRenderedLights();
 	}
 	
+	shadowParams.transparentStaticShadow = false; // TODO problem for the time being
+	shadowParams.transparentDynamicShadow = false; // TODO problem for the time being
+	
 	// calculate light volume matrices
 	shadowParams.matrixProjection = defren.CreateProjectionDMatrix( 1, 1,
 		light.GetSpotAngle(), light.GetSpotRatio(), OGL_REN_LIG_ZNEAR, light.GetRange() );

@@ -245,6 +245,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType( deoglSkinText
 	case deoglSkinTexturePipelines::etShadowOrthogonal:
 	case deoglSkinTexturePipelines::etShadowDistance:
 	case deoglSkinTexturePipelines::etShadowDistanceCube:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCShadow();
 		
 	case deoglSkinTexturePipelines::etEnvMap:

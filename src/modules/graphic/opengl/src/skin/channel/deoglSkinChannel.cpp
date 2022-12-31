@@ -1043,20 +1043,24 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//pUniformColor.a = value; // if combined with color
-		pUniformColor.r = value;
-		texture.SetHasTransparency( true );
+		if( value < 0.999f ){
+			pUniformColor.r = value;
+			texture.SetHasTransparency( true );
+		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		pUniformColor.r = value;
-		
-		texture.SetHasSolidity( true );
-		
-		if( texture.GetSolidityMasked() ){
-			texture.SetHasZeroSolidity( value < 0.5f );
+		if( value < 0.999f ){
+			pUniformColor.r = value;
 			
-		}else{
-			texture.SetHasZeroSolidity( value < 0.001f );
+			texture.SetHasSolidity( true );
+			
+			if( texture.GetSolidityMasked() ){
+				texture.SetHasZeroSolidity( value < 0.5f );
+				
+			}else{
+				texture.SetHasZeroSolidity( value < 0.001f );
+			}
 		}
 		break;
 		
@@ -1118,20 +1122,24 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//pUniformColor.a = color.r; // if combined with color
-		pUniformColor.r = color.r;
-		texture.SetHasTransparency( true );
+		if( color.r < 0.999f ){
+			pUniformColor.r = color.r;
+			texture.SetHasTransparency( true );
+		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		pUniformColor.r = color.r;
-		
-		texture.SetHasSolidity( true );
-		
-		if( texture.GetSolidityMasked() ){
-			texture.SetHasZeroSolidity( color.r < 0.5f );
+		if( color.r < 0.999f ){
+			pUniformColor.r = color.r;
 			
-		}else{
-			texture.SetHasZeroSolidity( color.r < 0.001f );
+			texture.SetHasSolidity( true );
+			
+			if( texture.GetSolidityMasked() ){
+				texture.SetHasZeroSolidity( color.r < 0.5f );
+				
+			}else{
+				texture.SetHasZeroSolidity( color.r < 0.001f );
+			}
 		}
 		break;
 		

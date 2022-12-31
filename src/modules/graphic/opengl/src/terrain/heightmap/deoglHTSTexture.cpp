@@ -151,6 +151,7 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType( deoglSkinTexturePip
 	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
 	case deoglSkinTexturePipelines::etCounter:
 	case deoglSkinTexturePipelines::etCounterClipPlane:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCDepth();
 		
 	case deoglSkinTexturePipelines::etShadowProjection:
