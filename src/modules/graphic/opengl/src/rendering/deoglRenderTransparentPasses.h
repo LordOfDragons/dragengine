@@ -33,12 +33,12 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderTransparentPasses : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderCopyDepthLimit;
-	deoglShaderProgramUsage pShaderCopyDepthLimitStereo;
-	deoglShaderProgramUsage pShaderCopyDepthColor;
-	deoglShaderProgramUsage pShaderCopyDepthColorStereo;
-	deoglShaderProgramUsage pShaderCopyColor;
-	deoglShaderProgramUsage pShaderCopyColorStereo;
+	const deoglPipeline *pPipelineCopyDepthLimit;
+	const deoglPipeline *pPipelineCopyDepthLimitStereo;
+	const deoglPipeline *pPipelineCopyDepthColor;
+	const deoglPipeline *pPipelineCopyDepthColorStereo;
+	const deoglPipeline *pPipelineCopyColor;
+	const deoglPipeline *pPipelineCopyColorStereo;
 	
 	
 	

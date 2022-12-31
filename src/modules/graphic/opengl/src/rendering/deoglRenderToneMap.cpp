@@ -374,10 +374,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		// bloom reduce/add
 		// defines = commonDefines;
 		// pipconf2.SetShader( renderThread, "ToneMap Bloom Reduce", defines );
-		// pShaderBloomReduce = pipelineManager.GetWith( pipconf2 ); // not used
+		// pPipelineBloomReduce = pipelineManager.GetWith( pipconf2 ); // not used
 		//
 		// pipconf2.SetShader( renderThread, "ToneMap Bloom Add", defines );
-		// pShaderBloomAdd = pipelineManager.GetWith( pipconf2 ); // not used
+		// pPipelineBloomAdd = pipelineManager.GetWith( pipconf2 ); // not used
 		
 		
 		// bloom blur
@@ -966,8 +966,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 				tcOffsetT = 1;
 			}
 			
-			renderThread.GetShader().ActivateShader( pShaderBloomReduce );
-			shader = pShaderBloomReduce->GetCompiled();
+			renderThread.GetShader().ActivateShader( pPipelineBloomReduce );
+			shader = pPipelineBloomReduce->GetCompiled();
 			shader->SetParameterInt( spbrParam1, tcScaleS, tcScaleT, tcOffsetS, 0 );
 			shader->SetParameterInt( spbrParam2, 0, tcOffsetT, tcOffsetS, tcOffsetT );
 			
@@ -1053,8 +1053,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		}
 		
 		// add to bloom texture
-		renderThread.GetShader().ActivateShader( pShaderBloomAdd );
-		shader = pShaderBloomAdd->GetCompiled();
+		renderThread.GetShader().ActivateShader( pPipelineBloomAdd );
+		shader = pPipelineBloomAdd->GetCompiled();
 		defren.SetShaderParamFSQuad( *shader, spbaPosToTC, curWidth, curHeight );
 		
 		defren.ActivateFBOTemporary( false );

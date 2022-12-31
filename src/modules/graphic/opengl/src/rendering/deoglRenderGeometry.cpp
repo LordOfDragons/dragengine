@@ -158,34 +158,33 @@ deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : de
 // 	const bool useEncodeDepth = config.GetUseEncodeDepth();
 	
 	#ifndef ANDROID
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-// 		sources = shaderManager.GetSourcesNamed( "DefRen Geometry Particle Old" );
-// 		defines.SetDefine( "HAS_MAP_EMISSIVE", "1" );
-// 		if( useEncodeDepth ){
-// 			defines.SetDefine( "GEOM_ENCODED_DEPTH", "1" );
-// 		}
-// 		pShaderParticle = shaderManager.GetProgramWith( sources, defines );
-// 		defines.RemoveAllDefines();
+		// transform position
+		pipconf.Reset();
+		pipconf.EnableRasterizerDiscard();
+		pipconf.SetShader( renderThread, "DefRen Transform Positions", defines );
+		pPipelineTransformPositions = pipelineManager.GetWith( pipconf );
+		
+		// write skinned vbo
+		pipconf.SetShader( renderThread, "DefRen Write Skinned VBO", defines );
+		pPipelineWriteSkinnedVBO = pipelineManager.GetWith( pipconf );
+		
+		// approximate transform vertices, normals and tangents
+		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
+		pPipelineApproxTransformVNT = pipelineManager.GetWith( pipconf );
 		
 		
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Transform Positions" );
-		pShaderTransformPositions = shaderManager.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Calculate Normals Tangents" );
-		pShaderCalcNormalsTangents = shaderManager.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Write Skinned VBO" );
-		pShaderWriteSkinnedVBO = shaderManager.GetProgramWith( sources, defines );
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Approx Transform VNT" );
-		pShaderApproxTransformVNT = shaderManager.GetProgramWith( sources, defines );
+		// calculate normals and trangents
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
+		pipconf.EnableBlendAdd();
+		pipconf.SetShader( renderThread, "DefRen Calculate Normals Tangents", defines );
+		pPipelineCalcNormalsTangents = pipelineManager.GetWith( pipconf );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -641,15 +640,9 @@ GLuint vboTransformed, int firstPoint, int pointCount ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.TransformPositions" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	renderThread.GetShader().ActivateShader( pShaderTransformPositions );
+	pPipelineTransformPositions->Activate();
 	
 	tsmgr.EnableTBO( 0, tboWeightMatrices, GetSamplerClampNearest() );
-	
-	if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	}
-	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
 	
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboTransformed ) );
 	
@@ -674,38 +667,21 @@ int normalCount, int /*tangentCount*/, int firstPoint, int pointCount ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.CalcNormalsTangents" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	// set states
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	// prepare fbo
+	pPipelineCalcNormalsTangents->Activate();
 	renderThread.GetFramebuffer().Activate( fbo );
+	SetViewport( outputWidth, outputHeight );
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, outputWidth, outputHeight ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
-	// clear the texture
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, clearColor ) );
 	
-	// set shader
-	renderThread.GetShader().ActivateShader( pShaderCalcNormalsTangents );
-	deoglShaderCompiled &shader = *pShaderCalcNormalsTangents->GetCompiled();
-	
+	deoglShaderCompiled &shader = *pPipelineCalcNormalsTangents->GetGlShader()->GetCompiled();
 	shader.SetParameterFloat( 0, 2.0f / ( float )outputWidth, 2.0f / ( float )outputHeight,
 		0.5f / ( float )outputWidth - 1.0f, 0.5f / ( float )outputHeight - 1.0f );
 	shader.SetParameterInt( 1, outputWidth );
 	shader.SetParameterInt( 2, positionCount, positionCount + normalCount );
 	
-	// bind textures
 	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
 	
-	// render
 	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
 	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -722,23 +698,14 @@ int firstPoint, int pointCount ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.WriteSkinnedVBO" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	// set shader
-	renderThread.GetShader().ActivateShader( pShaderWriteSkinnedVBO );
-	deoglShaderCompiled &shader = *pShaderWriteSkinnedVBO->GetCompiled();
+	pPipelineWriteSkinnedVBO->Activate();
 	
+	deoglShaderCompiled &shader = *pPipelineWriteSkinnedVBO->GetGlShader()->GetCompiled();
 	shader.SetParameterInt( 0, texNorTan.GetWidth() );
 	shader.SetParameterInt( 1, positionCount, positionCount + normalCount );
 	
-	// bind textures
 	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, texNorTan, GetSamplerClampNearest() );
-	
-	// set states
-	if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	}
-	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
 	
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboSkinned ) );
 	
@@ -763,15 +730,8 @@ GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount 
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.ApproxTransformVNT" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	renderThread.GetShader().ActivateShader( pShaderApproxTransformVNT );
-	
+	pPipelineApproxTransformVNT->Activate();
 	tsmgr.EnableTBO( 0, tboWeightMatrices, GetSamplerClampNearest() );
-	
-	if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	}
-	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
 	
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboTransformed ) );
 	

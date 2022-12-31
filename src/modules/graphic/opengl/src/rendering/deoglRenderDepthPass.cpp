@@ -122,59 +122,50 @@ static decTimer dtimer;
 deoglRenderDepthPass::deoglRenderDepthPass( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
-	deoglConfiguration &config = renderThread.GetConfiguration();
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
 	deoglShaderSources *sources;
 	
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
 	
+	// depth downsample
+	pipconf.Reset();
+	pipconf.SetMasks( false, false, false, false, true );
+	pipconf.EnableDepthTestAlways();
+	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
 	if( useInverseDepth ){
-		defines.SetDefine( "INVERSE_DEPTH", true );
+		defines.SetDefines( "INVERSE_DEPTH" );
 	}
-	defines.SetDefine( "NO_TEXCOORD", true );
-	defines.SetDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
-	pShaderDepthDownsample = shaderManager.GetProgramWith( sources, defines );
+	
+	defines.SetDefines( "NO_TEXCOORD" );
+	defines.SetDefines( "USE_MIN_FUNCTION" ); // so it works for SSR. should also work for SSAO
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineDepthDownsample = pipelineManager.GetWith( pipconf );
 	
 	
+	// depth downsample stereo
 	defines = commonDefines;
 	if( useInverseDepth ){
-		defines.SetDefine( "INVERSE_DEPTH", true );
+		defines.SetDefines( "INVERSE_DEPTH" );
 	}
-	defines.SetDefine( "NO_TEXCOORD", true );
-	defines.SetDefine( "USE_MIN_FUNCTION", true ); // so it works for SSR. should also work for SSAO
+	defines.SetDefines( "NO_TEXCOORD" );
+	defines.SetDefines( "USE_MIN_FUNCTION" ); // so it works for SSR. should also work for SSAO
 	
-	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
-		
-	}else{
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
 	}
 	
-	pShaderDepthDownsampleStereo = shaderManager.GetProgramWith( sources, defines );
-	
-	
-	
-	defines = commonDefines;
-	sources = shaderManager.GetSourcesNamed( "DefRen Depth-Only V3" );
-	if( config.GetUseEncodeDepth() ){
-		defines.SetDefine( "ENCODE_DEPTH", true );
-	}
-	
-	pShaderDepthSolid = shaderManager.GetProgramWith( sources, defines );
-	
-	defines.SetDefine( "USE_CLIP_PLANE", true );
-	if( config.GetUseEncodeDepth() ){
-		defines.SetDefine( "ENCODE_DEPTH", true );
-	}
-	
-	pShaderDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineDepthDownsampleStereo = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderDepthPass::~deoglRenderDepthPass(){
@@ -238,6 +229,16 @@ const deoglRenderPlanMasked *mask, bool xray ){
 		// NOTE: Haiku MESA 17.1.10 fails to properly clear. No idea why
 	
 	// render depth geometry
+	OGL_CHECK( renderThread, glStencilMask( 0 ) );
+	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	
+	if( mask ){
+		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x1, 0x1 ) );
+		
+	}else{
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x0 ) );
+	}
+	
 	RenderDepth( plan, mask, true, false, false, xray ); // +solid, -maskedOnly, -reverseDepthTest
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapDepthPassBuffers ){
 		deoglDebugSnapshot snapshot( renderThread );
@@ -292,16 +293,6 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	// depth pass
 	if( solid && ! mask ){
 		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan, false );
-	}
-	
-	OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	
-	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x0 ) );
 	}
 	
 	deoglSkinTexturePipelines::eTypes pipelineType = deoglSkinTexturePipelines::etDepth;
@@ -521,7 +512,6 @@ DBG_ENTER("DownsampleDepth")
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglArrayTexture &texture = *defren.GetDepthTexture1();
-	deoglShaderCompiled *shader;
 	int height, width, i;
 	
 	const int mipMapLevelCount = texture.GetRealMipMapLevelCount();
@@ -530,21 +520,11 @@ DBG_ENTER("DownsampleDepth")
 	height = defren.GetHeight();
 	width = defren.GetWidth();
 	
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineDepthDownsampleStereo : *pPipelineDepthDownsample;
+	pipeline.Activate();
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderDepthDownsampleStereo : pShaderDepthDownsample;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
 	
 	tsmgr.EnableArrayTexture( 0, texture, GetSamplerClampNearest() );
 	
@@ -553,13 +533,13 @@ DBG_ENTER("DownsampleDepth")
 		
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 		
-		shader->SetParameterInt( spddsTCClamp, width - 1, height - 1 );
-		shader->SetParameterInt( spddsMipMapLevel, i - 1 );
+		shader.SetParameterInt( spddsTCClamp, width - 1, height - 1 );
+		shader.SetParameterInt( spddsMipMapLevel, i - 1 );
 		
 		width = decMath::max( width >> 1, 1 );
 		height = decMath::max( height >> 1, 1 );
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+		SetViewport( width, height );
 		
 		RenderFullScreenQuad( plan );
 	}
@@ -606,77 +586,4 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	collideList.MarkLightsCulled( false );
 	
 	DBG_EXIT("RenderOcclusionQueryPass(disabled)")
-	
-#if 0
-	const int lightCount = collideList.GetLightCount();
-	if( lightCount == 0 ){
-		DBG_EXIT("RenderOcclusionQueryPass(earily)")
-		return;
-	}
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const decDMatrix &matrixV = plan.GetCameraMatrix();
-	const decDMatrix matrixP( plan.GetProjectionMatrix() );
-	deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
-	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const decDVector extoff( 0.1, 0.1, 0.1 );
-	deoglShaderCompiled *shader;
-	int l;
-	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	shapeBox.ActivateVAO();
-	
-	if( mask && mask->GetUseClipPlane() ){
-		const decVector &maskClipNormal = mask->GetClipNormal();
-		
-		renderThread.GetShader().ActivateShader( pShaderDepthClipSolid );
-		shader = pShaderDepthClipSolid->GetCompiled();
-		
-		shader->SetParameterFloat( spdoClipPlane, maskClipNormal.x,
-			maskClipNormal.y, maskClipNormal.z, mask->GetClipDistance() );
-		
-	}else{
-		renderThread.GetShader().ActivateShader( pShaderDepthSolid );
-		shader = pShaderDepthSolid->GetCompiled();
-	}
-	
-	// spdoMatrixDiffuse // hole or clip depth but both not used for light
-	// spdoMaterialGamma // not used
-	// spdoViewport // not used
-	// spdoPFMatrix // not used for light
-	
-	for( l=0; l<lightCount; l++ ){
-		deoglCollideListLight &cllight = *collideList.GetLightAt( l );
-// 		if( cllight.GetCameraInside() ){
-		if( cllight.GetCameraInsideOccQueryBox() ){
-			continue;
-		}
-		
-		const deoglRLight &light = *cllight.GetLight();
-		const decDVector &minExtend = light.GetMinimumExtend();
-		const decDVector &maxExtend = light.GetMaximumExtend();
-		
-		const decDMatrix matrixModel( decDMatrix::CreateScale( ( maxExtend - minExtend ) * 0.5 )
-			* decDMatrix::CreateTranslation( ( minExtend + maxExtend ) * 0.5 ) );
-		const decDMatrix matrixMV( matrixModel * matrixV );
-		
-		shader->SetParameterDMatrix4x3( spdoMatrixMV, matrixMV );
-		shader->SetParameterDMatrix4x4( spdoMatrixMVP, matrixMV * matrixP );
-		
-		deoglOcclusionQuery &occquery = cllight.GetOcclusionQuery();
-		occquery.BeginQuery( deoglOcclusionQuery::eqtAny );
-		shapeBox.RenderFaces();
-		occquery.EndQuery();
-	}
-	
-	pglBindVertexArray( 0 );
-DBG_EXIT("RenderOcclusionQueryPass")
-#endif
 }

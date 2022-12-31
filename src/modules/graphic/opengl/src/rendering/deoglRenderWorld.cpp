@@ -1060,14 +1060,15 @@ DBG_EXIT("RenderMaskedPass(early)")
 		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth();
 		
+		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
 			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
 		// render the mask
 		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0x01 ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x01, 0x01 ) );
+		OGL_CHECK( renderThread, glStencilMask( 0x1 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x1 ) );
 		
 		// render solid content
 		if( m > 0 ){ // already prepared before the first mask
@@ -1362,14 +1363,11 @@ void deoglRenderWorld::CopyDepthToXRayDepth( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int viewportHeight = plan.GetViewportHeight();
-	const int viewportWidth = plan.GetViewportWidth();
 	
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthStereo : *pPipelineCopyDepth;
 	pipeline.Activate();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
+	SetViewport( plan );
 	
 	defren.ActivateFBODepthXRay();
 	

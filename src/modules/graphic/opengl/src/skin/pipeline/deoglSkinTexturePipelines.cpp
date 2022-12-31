@@ -167,6 +167,9 @@ const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
 	
 	pPrepareDepth( pipconf, baseShaderConfig, cinfo );
 	pPrepareDepthClipPlane( pipconf, baseShaderConfig, cinfo );
+	
+	pPipelineConfigDepthReversed( pipconf );
+	
 	pPrepareDepthReversed( pipconf, baseShaderConfig, cinfo );
 	pPrepareDepthClipPlaneReversed( pipconf, baseShaderConfig, cinfo );
 }
@@ -395,16 +398,32 @@ void deoglSkinTexturePipelines::pPipelineConfigDepth( deoglPipelineConfiguration
 	config.Reset();
 	config.SetEnableScissorTest( true );
 	config.SetMasks( false, false, false, false, true );
-	config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
 	config.SetClipControl( choices.GetUseInverseDepth() );
 	config.EnableDynamicStencilTest();
 	config.EnableCulling( false );
+	
+	if( pTexture.GetSolid() ){
+		config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+		
+	}else{
+		config.EnableDepthTest( choices.GetDepthCompareFuncReversed() );
+	}
 	
 	#if 0
 	if( defren.GetUseFadeOutRange() && false /* alpha blend problem */ ){
 		config.EnableBlendBlend();
 	}
 	#endif
+}
+
+void deoglSkinTexturePipelines::pPipelineConfigDepthReversed( deoglPipelineConfiguration &config ){
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	
+	pPipelineConfigDepth( config );
+	
+	if( ! pTexture.GetSolid() ){
+		config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+	}
 }
 
 void deoglSkinTexturePipelines::pPipelineConfigCounter( deoglPipelineConfiguration &config ){

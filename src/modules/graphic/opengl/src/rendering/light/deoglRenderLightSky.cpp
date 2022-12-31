@@ -347,9 +347,9 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
 	// set shader
-	renderThread.GetShader().ActivateShader( pShaderAO );
+	renderThread.GetShader().ActivateShader( pPipelineAO );
 	
-	pShaderAO->GetCompiled()->SetParameterFloat( 0, defren.GetPixelSizeU(), defren.GetPixelSizeV(), 0.0f, 0.0f );
+	pPipelineAO->GetCompiled()->SetParameterFloat( 0, defren.GetPixelSizeU(), defren.GetPixelSizeV(), 0.0f, 0.0f );
 	
 	// mapping (0,1-sv) => (-1,-1) and (su,1) => (1,1)
 	// (x-c)*s = x*s-c*s
@@ -362,10 +362,10 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	// u=su; su*(2/su) + (-1) = 2-1 = 1 (ok)
 	// v=1-sv; (1-sv)*(2/sv) + (1-2/sv) = 2/sv-2 + 1-2/sv = -1 (ok)
 	// v=1; 1*(2/sv) + (1-2/sv) = 2/sv + 1-2/sv = 1 (ok)
-	pShaderAO->GetCompiled()->SetParameterFloat( 1, scaleU, scaleV, offsetU, offsetV );
+	pPipelineAO->GetCompiled()->SetParameterFloat( 1, scaleU, scaleV, offsetU, offsetV );
 	
 	float q = zfar / ( zfar - znear );
-	pShaderAO->GetCompiled()->SetParameterVector4( 2, plan.GetDepthToPosition() );
+	pPipelineAO->GetCompiled()->SetParameterVector4( 2, plan.GetDepthToPosition() );
 	
 	// render probes
 //	rengeom.RenderSkyLOProbes( &plan, plan.GetCollideList(), plan.GetCameraMatrix() );
@@ -630,8 +630,8 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0xff ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 		
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
@@ -808,7 +808,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 	
 	rengeom.RenderTask( renderTask );
 	
@@ -878,7 +878,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		if( clearBackFaceFragments ){
 			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 		}
 		
 		// activate shadow map. since objects mostly reside in only one shadow texture
@@ -1189,8 +1189,8 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0xff ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 		
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
@@ -1205,7 +1205,7 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
 	
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, ~0 ) );
 		
 	}else{
 		const GLfloat clearDepth = 1.0f;

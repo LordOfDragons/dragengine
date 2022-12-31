@@ -108,40 +108,48 @@ pOccQuery( NULL ),
 pHasCount( false ),
 pCount( 0 )
 {
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
 	deoglShaderSources *sources;
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
+	
+	// count max count
+	pipconf.Reset();
+	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
-	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineTraCountMaxCount = pipelineManager.GetWith( pipconf );
 	
-	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
-		
-	}else{
+	// count max count stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
 	}
-	pShaderTraCountMaxCountStereo = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineTraCountMaxCountStereo = pipelineManager.GetWith( pipconf );
 	
 	
+	// count get count
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
-	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineTraCountGetCount = pipelineManager.GetWith( pipconf );
 	
-	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
-		
-	}else{
+	// count get count stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
-		defines.SetDefine( "GS_RENDER_STEREO", true );
 	}
-	pShaderTraCountGetCountStereo = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineTraCountGetCountStereo = pipelineManager.GetWith( pipconf );
 	
 	
 	pOccQuery = new deoglOcclusionQuery( renderThread );
@@ -292,24 +300,17 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	
 	// calculate the maximum layer count. uses ping pong between diffuse and reflectivity buffer.
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderTraCountMaxCountStereo : pShaderTraCountMaxCount;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled * const shader = program->GetCompiled();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineTraCountMaxCountStereo : *pPipelineTraCountMaxCount;
+	pipeline.Activate();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) ); // not required from here on
-	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	useTexture1 = true;
 	curWidth = realWidth;
 	curHeight = realHeight;
+	
+	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
 	
 	while( curWidth > 1 || curHeight > 1 ){
 		// reduce in x direction
@@ -328,11 +329,11 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			
-			shader->SetParameterInt( sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1 );
-			shader->SetParameterInt( sptcmcOffsets1, 1, 0, 2, 0 );
-			shader->SetParameterInt( sptcmcOffsets2, 3, 0, 4, 0 );
-			shader->SetParameterInt( sptcmcOffsets3, 5, 0, 6, 0 );
-			shader->SetParameterInt( sptcmcOffsets4, 7, 0, 8, 1 );
+			shader.SetParameterInt( sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1 );
+			shader.SetParameterInt( sptcmcOffsets1, 1, 0, 2, 0 );
+			shader.SetParameterInt( sptcmcOffsets2, 3, 0, 4, 0 );
+			shader.SetParameterInt( sptcmcOffsets3, 5, 0, 6, 0 );
+			shader.SetParameterInt( sptcmcOffsets4, 7, 0, 8, 1 );
 			
 			RenderFullScreenQuad( plan );
 			
@@ -368,11 +369,11 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 			
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			
-			shader->SetParameterInt( sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1 );
-			shader->SetParameterInt( sptcmcOffsets1, 0, 1, 0, 2 );
-			shader->SetParameterInt( sptcmcOffsets2, 0, 3, 0, 4 );
-			shader->SetParameterInt( sptcmcOffsets3, 0, 5, 0, 6 );
-			shader->SetParameterInt( sptcmcOffsets4, 0, 7, 1, 8 );
+			shader.SetParameterInt( sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1 );
+			shader.SetParameterInt( sptcmcOffsets1, 0, 1, 0, 2 );
+			shader.SetParameterInt( sptcmcOffsets2, 0, 3, 0, 4 );
+			shader.SetParameterInt( sptcmcOffsets3, 0, 5, 0, 6 );
+			shader.SetParameterInt( sptcmcOffsets4, 0, 7, 1, 8 );
 			
 			RenderFullScreenQuad( plan );
 			
@@ -417,7 +418,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 		}
 		SetViewport( 100, 1 );
 		
-		renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderTraCountGetCountStereo : pShaderTraCountGetCount );
+		( plan.GetRenderStereo() ? pPipelineTraCountGetCountStereo : pPipelineTraCountGetCount )->Activate();
 		
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		

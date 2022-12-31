@@ -191,6 +191,7 @@ protected:
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config );

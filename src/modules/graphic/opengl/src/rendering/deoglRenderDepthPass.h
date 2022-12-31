@@ -36,11 +36,8 @@ class deoglOcclusionQuery;
  */
 class deoglRenderDepthPass : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderDepthDownsample;
-	deoglShaderProgramUsage pShaderDepthDownsampleStereo;
-	
-	deoglShaderProgramUsage pShaderDepthSolid;
-	deoglShaderProgramUsage pShaderDepthClipSolid;
+	const deoglPipeline *pPipelineDepthDownsample;
+	const deoglPipeline *pPipelineDepthDownsampleStereo;
 	
 	
 	

@@ -51,13 +51,15 @@ class deoglRenderGeometry : public deoglRenderBase{
 private:
 	decColor pAmbient;
 	
-	deoglShaderProgramUsage pShaderParticle;
+	const deoglPipeline *pPipelineParticle;
 	
-	deoglShaderProgramUsage pShaderTransformPositions;
-	deoglShaderProgramUsage pShaderCalcNormalsTangents;
-	deoglShaderProgramUsage pShaderWriteSkinnedVBO;
+	const deoglPipeline *pPipelineTransformPositions;
+	const deoglPipeline *pPipelineCalcNormalsTangents;
+	const deoglPipeline *pPipelineWriteSkinnedVBO;
 	
-	deoglShaderProgramUsage pShaderApproxTransformVNT;
+	const deoglPipeline *pPipelineApproxTransformVNT;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */

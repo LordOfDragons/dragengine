@@ -32,11 +32,6 @@ class deoglRenderPlanMasked;
  * \brief Geometry pass renderer.
  */
 class deoglRenderGeometryPass : public deoglRenderBase{
-private:
-	deoglShaderProgramUsage pShaderDebug;
-	
-	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

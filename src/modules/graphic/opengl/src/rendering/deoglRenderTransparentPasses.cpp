@@ -111,13 +111,22 @@ static decTimer dtimer;
 deoglRenderTransparentPasses::deoglRenderTransparentPasses( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
 	deoglShaderSources *sources;
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
+	
+	// copy depth color
+	pipconf.Reset();
+	pipconf.SetMasks( true, true, true, true, true );
+	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+	pipconf.EnableDynamicStencilTest();
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
@@ -126,59 +135,56 @@ deoglRenderBase( renderThread )
 	if( useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
-	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepthColor = pipelineManager.GetWith( pipconf );
 	
-	defines = commonDefines;
-	defines.SetDefine( "DEPTH_TEST", true );
-	if( ! useInverseDepth ){
-		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
-	}
-	pShaderCopyDepthLimit = shaderManager.GetProgramWith( sources, defines );
-	
-	
-	defines = commonDefines;
-	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
-	if( useInverseDepth ){
-		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
-	}
-	
-	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
-		
-	}else{
+	// copy depth color stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
 	}
-	pShaderCopyDepthColorStereo = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepthColorStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	// copy depth limit
+	pipconf.Reset();
+	pipconf.SetMasks( false, false, false, false, true );
+	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncReversed() );
+	pipconf.EnableDynamicStencilTest();
 	
 	defines = commonDefines;
 	defines.SetDefine( "DEPTH_TEST", true );
 	if( ! useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepthLimit = pipelineManager.GetWith( pipconf );
 	
-	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
-		
-	}else{
-		defines.SetDefines( "GS_RENDER_STEREO" );
-	}
-	pShaderCopyDepthLimitStereo = shaderManager.GetProgramWith( sources, defines );
+	// copy depth limit stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepthLimitStereo = pipelineManager.GetWith( pipconf );
 	
+	
+	// copy color
+	pipconf.Reset();
+	pipconf.SetMasks( true, true, true, true, false );
+	pipconf.SetEnableScissorTest( true );
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
 	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
-	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyColor = pipelineManager.GetWith( pipconf );
 	
-	if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
-		
-	}else{
+	// copy color stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
-		defines.SetDefines( "GS_RENDER_STEREO" );
 	}
-	pShaderCopyColorStereo = shaderManager.GetProgramWith( sources, defines );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyColorStereo = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
@@ -395,7 +401,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	const deoglCollideList &collideList = plan.GetCollideList();
 	deoglRenderTask &renderTask = *renworld.GetRenderTask();
 	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
-	deoglShaderCompiled *shader;
 	
 	DebugTimer2Reset( plan, false );
 	
@@ -449,28 +454,19 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		snapshot.TakeSnapshot();
 	}
 	
-	// switch to wireframe mode if required
-	if( renderThread.GetConfiguration().GetDebugWireframe() ){
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	}
-	
 	// clear diffuse to 0, depth2 to 0 and stencil to 0. 0 in depth2 and diffuse marks not written pixels
 	// (notes) diffuse clear is not required anymore if stencil mask works properly for lighting
+	pPipelineClearBuffers->Activate();
 	defren.SwapDepthTextures();
 	defren.ActivateFBODiffuse( true );
 	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
 	OGL_CHECK( renderThread, glStencilMask( ~0 ) );
-	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, renderThread.GetChoices().GetClearDepthValueReversed(), 0 ) );
+	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
+		renderThread.GetChoices().GetClearDepthValueReversed(), 0 ) );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentClear, true );
-	
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
 		deoglDebugSnapshot snapshot( renderThread );
@@ -483,16 +479,15 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		snapshot.TakeSnapshot();
 	}
 	
+	
 	// render depth to depth2 using GEQUAL without stencil using depth1 as shader back limit.
 	// depth is written. stencil is written with current layer stencil reference value
 	defren.ActivateFBODepth();
 	
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
 	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
 	
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncReversed() ) );
 	rendepth.RenderDepth( plan, mask, false, false, false, xray ); // -solid, -maskedOnly, -reverseDepthTest
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -541,51 +536,39 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	defren.SwapDepthTextures();
 	
 	if( plan.GetClearStencilPassBits() ){
+		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth();
-		
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 		
 		OGL_CHECK( renderThread, glStencilMask( ~1 ) ); // mask bit has to stay intact
 		const GLint clearStencil = 0;
 		OGL_CHECK( renderThread, pglClearBufferiv( GL_STENCIL, 0, &clearStencil ) );
 		
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-		
 		plan.SetClearStencilPassBits( false );
-		
 	}
 	
 	// copy depth2 to depth1 and color to temporary using stencil mask and shader test to
 	// discard not written pixels (depth = 0 or 1 depending on inverse mode). stencil is
 	// written with current layer stencil reference value
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthColorStereo : *pPipelineCopyDepthColor;
+	pipeline.Activate();
 	defren.ActivateFBOTemporary1( true );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
 	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 1 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 ) );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
 	}
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyDepthColorStereo : pShaderCopyDepthColor;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
+	defren.SetShaderParamFSQuad( shader, spcdQuadParams );
 	RenderFullScreenQuadVAO( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -599,6 +582,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	}
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentCopyDepth, true );
 	
+	
 	// render geometry pass to depth1 using EQUAL with stencil mask and temporary with last layer
 	// color. no depth and stencil written. color, normal and specularity written for light pass
 	deoglDebugTraceGroup debugTraceGeometry( renderThread, "TransparentPasses.RenderTransparentPasses.Geometry" );
@@ -606,8 +590,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	defren.ActivateFBOMaterialColor();
 	
 	OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
 	
 	const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
@@ -630,6 +612,9 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 1, &clearNormal[ 0 ] ) );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearReflectivity[ 0 ] ) );
 	}
+	
+	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
@@ -744,13 +729,6 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	// stored aside for depth testing only
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
 	// from here on the solid texture is called the first texture (depth1) and the texture
 	// accumulating the depth is called the second texture (depth2). the third texture is
 	// used as the working texture. depth textures are swap multiple times to ensure this
@@ -758,11 +736,11 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	// for depth testing
 	
 	// clear second texture. this will be accumulate the limit
+	pPipelineClearBuffers->Activate();
 	defren.SwapDepthTextures(); // solid depth is now depth2
 	defren.ActivateFBODepth();
 	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
+	OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueReversed();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
@@ -779,10 +757,10 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		plan.SetStencilRefValue( ( ( 1 + l ) << 1 ) | maskRefValue );
 		
 		// clear depth3 to 0 and stencil to 0
+		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth3();
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		
+		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
 			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
@@ -794,32 +772,29 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		// otherwise it is used for depth testing producing wrong results. the swap is undone
 		// right after if applied
 		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
-		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
+		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
+		
 		rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 		
 		// copy depth3 to depth2 using stencil mask and shader test to discard not
 		// written pixels. stencil is written with current layer stencil reference value
+		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthLimitStereo : *pPipelineCopyDepthLimit;
+		pipeline.Activate();
 		defren.SwapDepthTextures(); // solid depth is now depth2
 		defren.ActivateFBODepth();
 		
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) ); // can be modified by RenderDepthPass
 		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-		OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncReversed() ) );
 		
 		if( mask ){
-			OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 1 ) );
+			OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 ) );
 			
 		}else{
-			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
+			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
 		}
 		
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-		
-		deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderCopyDepthLimitStereo : pShaderCopyDepthLimit;
-		renderThread.GetShader().ActivateShader( program );
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
-		defren.SetShaderParamFSQuad( *program->GetCompiled(), spcdQuadParams );
+		defren.SetShaderParamFSQuad( *pipeline.GetGlShader()->GetCompiled(), spcdQuadParams );
 		
 		RenderFullScreenQuadVAO( plan );
 		
@@ -845,14 +820,15 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	plan.SetStencilRefValue( prevStencilRefValue );
 	
 	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
+	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, prevStencilRefValue, 1 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, prevStencilRefValue, 0x1 ) );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, prevStencilRefValue, 0 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, prevStencilRefValue, 0x0 ) );
 	}
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() ) );
+	
 	rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspPasses ){
@@ -962,20 +938,15 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	defren.ActivateFBOColor( true, false );
 	
 	OGL_CHECK( renderThread, glStencilMask( 0 ) );
+	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 	if( inbetween ){
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
 		
+	}else if( mask ){
+		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x1, 0x1 ) );
+		
 	}else{
-		if( mask ){
-			OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 1, 1 ) );
-			
-		}else{
-			// OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-			OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0, 0 ) );
-		}
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x0 ) );
 	}
 	
 	if( renderThread.GetConfiguration().GetDebugWireframe() ){
@@ -998,28 +969,15 @@ void deoglRenderTransparentPasses::CopyColorToTemporary( deoglRenderPlan &plan )
 	const deoglDebugTraceGroup debugTrace( renderThread, "TransparentPasses.RenderTransparentLimitDepth.CopyColorToTemporary" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyColorStereo : *pPipelineCopyColor;
+	pipeline.Activate();
 	defren.ActivateFBOTemporary1( false );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	renderThread.GetTexture().GetStages().EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderCopyColorStereo : pShaderCopyColor;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled * const shader = program->GetCompiled();
-	
-	renderThread.GetTexture().GetStages().EnableArrayTexture( 0,
-		*defren.GetTextureColor(), GetSamplerClampNearest() );
-	
-	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
+	defren.SetShaderParamFSQuad( *pipeline.GetGlShader()->GetCompiled(), spcdQuadParams );
 	RenderFullScreenQuadVAO( plan );
 }

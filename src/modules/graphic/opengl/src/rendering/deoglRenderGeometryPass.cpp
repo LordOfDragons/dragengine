@@ -86,14 +86,7 @@ static decTimer dtimer;
 ////////////////////////////
 
 deoglRenderGeometryPass::deoglRenderGeometryPass( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread )
-{
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
-	
-	sources = shaderManager.GetSourcesNamed( "DefRen Skin Debug" );
-	pShaderDebug = shaderManager.GetProgramWith( sources, defines );
+deoglRenderBase( renderThread ){
 }
 
 deoglRenderGeometryPass::~deoglRenderGeometryPass(){
@@ -185,23 +178,9 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	//      temporarily can help? needs first some research if glDrawBuffers has similar
 	//      caveats performance wise as switching FBOs has
 // 	defren.ActivateFBOMaterialColor();
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	SetCullMode( plan.GetFlipCulling() );
-	
-	if( mask ){
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) ); // transparency disables this
-		
-	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	}
-	
 	if( ! xray ){
 		QUICK_DEBUG_START( 16, 19 )
-		renderThread.GetRenderers().GetSky().RenderSky( plan );
+		renderThread.GetRenderers().GetSky().RenderSky( plan, mask );
 		DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometrySky, true );
 		QUICK_DEBUG_END
 	}
@@ -239,10 +218,10 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 1 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 ) );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0 ) );
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
 	}
 	
 	

@@ -301,12 +301,12 @@ void deoglRenderTask::ApplyConfigTextures(){
 	}
 	
 	// texture
-	int s;
-	for( s=0; s<pShaderCount; s++ ){
-		deoglRenderTaskShader * const rtshader = ( deoglRenderTaskShader* )pShaders[ s ];
+	int p;
+	for( p=0; p<pPipelineCount; p++ ){
+		deoglRenderTaskPipeline * const rtpipeline = ( deoglRenderTaskPipeline* )pPipelines[ p ];
 		
 		for( i=0; i<pConfigTextureCount; ){
-			if( pConfigTextures[ i ].shader != 
+			if( pConfigTextures[ i ].pipeline != 
 			const deoglRenderTaskSharedTexture *texture = pConfigTextures[ i ].texture;
 			pConfigTextures[ i ].marker = true;
 			AddShaderDirect( shader );
@@ -633,12 +633,12 @@ void deoglRenderTask::pUpdateVBODrawIndirect(){
 		DEASSERT_NOTNULL( drawCalls );
 		
 		int drawCallIndex = 0;
-		for( i=0; i<pShaderCount; i++ ){
-			const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pShaders.GetAt( i ) );
-			const int textureCount = shader.GetTextureCount();
+		for( i=0; i<pPipelineCount; i++ ){
+			const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( i ) );
+			const int textureCount = pipeline.GetTextureCount();
 			
 			for( j=0; j<textureCount; j++ ){
-				const deoglRenderTaskTexture &texture = *shader.GetTextureAt( j );
+				const deoglRenderTaskTexture &texture = *pipeline.GetTextureAt( j );
 				const int vaoCount = texture.GetVAOCount();
 				
 				for( k=0; k<vaoCount; k++ ){

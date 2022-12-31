@@ -36,11 +36,11 @@ class deoglRenderTranspCounting : public deoglRenderBase{
 private:
 	deoglOcclusionQuery *pOccQuery;
 	
-	deoglShaderProgramUsage pShaderTraCountMaxCount;
-	deoglShaderProgramUsage pShaderTraCountMaxCountStereo;
+	const deoglPipeline *pPipelineTraCountMaxCount;
+	const deoglPipeline *pPipelineTraCountMaxCountStereo;
 	
-	deoglShaderProgramUsage pShaderTraCountGetCount;
-	deoglShaderProgramUsage pShaderTraCountGetCountStereo;
+	const deoglPipeline *pPipelineTraCountGetCount;
+	const deoglPipeline *pPipelineTraCountGetCountStereo;
 	
 	bool pHasCount;
 	int pCount;
