@@ -757,34 +757,32 @@ const deoglRenderPlanMasked *mask ){
 DEBUG_RESET_TIMER
 	// set pipeline
 	const int pipmods = PipelineModifiers( planLight, solid, texAmbient1 );
-	const deoglLightPipeline *pipeline = nullptr;
+	const deoglLightPipeline *pipeline;
 	
 	if( useShadow ){
 		if( texSolidDepth2 ){
 			if( texTranspDepth2 ){
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid2Transp2, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid2Transp2, pipmods );
 				
 			}else if( texTranspDepth1 ){
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid2Transp1, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid2Transp1, pipmods );
 				
 			}else{
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid2, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid2, pipmods );
 			}
 			
 		}else{
 			if( texTranspDepth1 ){
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid1Transp1, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid1Transp1, pipmods );
 				
 			}else{
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid1, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid1, pipmods );
 			}
 		}
 		
 	}else{
-		pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etNoShadow, pipmods );
+		pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, pipmods );
 	}
-	
-	DEASSERT_NOTNULL( pipeline )
 	
 	// set program parameters
 	deoglSPBlockUBO * const spbInstance = light.GetInstanceParameterBlock();

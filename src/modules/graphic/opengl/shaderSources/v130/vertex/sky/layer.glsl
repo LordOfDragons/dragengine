@@ -33,8 +33,10 @@ in vec2 inPosition;
 	flat out int vLayer;
 #endif
 
+const float vZFar = -1; // Z value on far clip plane (cleared depth) in NDC
+
 void main( void ){
-	gl_Position = vec4( inPosition, pClearDepthValue, 1 );
+	gl_Position = vec4( inPosition, vZFar, 1 );
 	vTexCoord = inPosition;
 	
 	#ifdef VS_RENDER_STEREO

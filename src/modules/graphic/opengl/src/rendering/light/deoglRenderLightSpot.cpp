@@ -733,34 +733,32 @@ const deoglRenderPlanMasked *mask ){
 	
 	// set pipeline
 	const int pipmods = PipelineModifiers( planLight, solid, texAmbient1 );
-	const deoglLightPipeline *pipeline = nullptr;
+	const deoglLightPipeline *pipeline;
 	
 	if( useShadow ){
 		if( texSolidDepth2 ){
 			if( texTranspDepth2 ){
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid2Transp2, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid2Transp2, pipmods );
 				
 			}else if( texTranspDepth1 ){
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid2Transp1, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid2Transp1, pipmods );
 				
 			}else{
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid2, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid2, pipmods );
 			}
 			
 		}else{
 			if( texTranspDepth1 ){
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid1Transp1, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid1Transp1, pipmods );
 				
 			}else{
-				pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etSolid1, pipmods );
+				pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etSolid1, pipmods );
 			}
 		}
 		
 	}else{
-		pipeline = light.GetPipelines().GetWith( deoglLightPipelines::etNoShadow, pipmods );
+		pipeline = &light.GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, pipmods );
 	}
-	
-	DEASSERT_NOTNULL( pipeline )
 	
 	// set program parameters
 	deoglSPBlockUBO * const spbInstance = light.GetInstanceParameterBlock();
@@ -1315,18 +1313,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const float smOffsetBias = config.GetShadowMapOffsetBias();
 	
 	DebugTimer3Reset( plan, false );
-	
-	// prevents opengl verifiers from complaining about an error which is none. this problems
-	// is seen on nVidia drivers if the debug mode is enabled. the driver keeps on complaining
-	// about a shader using a shadow-sampler on a non-depth texture. researching the problem
-	// shows this line below is the problem if there is no point light. in this case the sky
-	// light rendering happens right before the spot light shadow map rendering. the sky light
-	// shader leaves behind an activated shader which points to the dynamic shadow map textures
-	// used for various shadow map calculation. these textures become invalid because they will
-	// be rendered here. glClear does not care about the active shader nor what textures are
-	// assigned. Nevertheless the nVidia driver keeps on complaining which by itself would be
-	// no problem but it spams the logs having negative impact on performance while debugging
-	renderThread.GetShader().ActivateShader( NULL );
 	
 	// activate shadow map with the proper size
 	pPipelineClearBuffers->Activate();

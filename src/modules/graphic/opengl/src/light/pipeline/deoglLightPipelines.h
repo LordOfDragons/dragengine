@@ -68,7 +68,7 @@ public:
 	
 protected:
 	const static int TypeCount = etGIRaySolid2 + 1;
-	const static int ModifiersPerType = emTransparent << 1;
+	const static int ModifiersPerType = emFlipCullFace << 1;
 	
 	deoglRenderThread &pRenderThread;
 	deoglLightPipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];

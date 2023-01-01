@@ -408,18 +408,17 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	// activate pipeline
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	if( useShadow ){
-		pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etSolid1, pipelineModifiers );
+		pipeline = &skyLayer.GetPipelines().GetWithRef( deoglLightPipelines::etSolid1, pipelineModifiers );
 		
 	}else{
 		if( skyLayer.GetHasLightDirect() ){
-			pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etNoShadow, pipelineModifiers );
+			pipeline = &skyLayer.GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, pipelineModifiers );
 			
 		}else{
-			pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etAmbient, pipelineModifiers );
+			pipeline = &skyLayer.GetPipelines().GetWithRef( deoglLightPipelines::etAmbient, pipelineModifiers );
 		}
 	}
 	
-	DEASSERT_NOTNULL( pipeline )
 	pipeline->GetPipeline()->Activate();
 	
 	SetViewport( plan.GetPlan() );
