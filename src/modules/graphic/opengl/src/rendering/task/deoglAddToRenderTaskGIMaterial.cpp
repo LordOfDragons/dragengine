@@ -112,7 +112,7 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deo
 	}
 	
 	// obtain render task texture
-	return pGetTaskTexture( skinTexture, componentTexture.GetTUCForPipelineType ( pSkinPipelineType ) );
+	return pGetTaskTexture( skinTexture, componentTexture.GetTUCForPipelineType( pSkinPipelineType ) );
 }
 
 

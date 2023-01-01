@@ -59,9 +59,9 @@ const char *deoglSTPipelinesBillboard::GetDebugName() const{
 
 void deoglSTPipelinesBillboard::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetSharedSPB( true );
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmBillboard );
+	baseShaderConfig.SetBillboard( true );
 	
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );

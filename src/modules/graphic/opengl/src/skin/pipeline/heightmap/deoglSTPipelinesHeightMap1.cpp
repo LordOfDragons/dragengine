@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesHeightMap1::deoglSTPipelinesHeightMap1 ( const deoglSkinTexture &texture ) :
+deoglSTPipelinesHeightMap1::deoglSTPipelinesHeightMap1( const deoglSkinTexture &texture ) :
 deoglSkinTexturePipelines( texture ){
 }
 
@@ -59,7 +59,6 @@ const char *deoglSTPipelinesHeightMap1::GetDebugName() const{
 
 void deoglSTPipelinesHeightMap1::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmHeightMap );
 	
 	pPrepareGeometry( baseShaderConfig, cinfo );

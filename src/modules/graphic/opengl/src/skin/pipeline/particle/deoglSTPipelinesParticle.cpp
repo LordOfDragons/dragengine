@@ -59,7 +59,6 @@ const char *deoglSTPipelinesParticle::GetDebugName() const{
 
 void deoglSTPipelinesParticle::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmParticle );
 	baseShaderConfig.SetParticleMode( deoglSkinShaderConfig::epmParticle );
 	
@@ -81,14 +80,50 @@ void deoglSTPipelinesParticle::pPipelineConfigGeometry( deoglPipelineConfigurati
 	
 	config.SetMasks( true, true, true, false, false );
 	config.EnableBlend( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
-	
 	config.EnableDepthTest( pTexture.GetRenderThread().GetChoices().GetDepthCompareFuncRegular() );
+	config.SetEnableCullFace( false );
 }
 
 void deoglSTPipelinesParticle::pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config ){
 	pPipelineConfigGeometry( config );
 	
 	config.EnableDepthTest( pTexture.GetRenderThread().GetChoices().GetDepthCompareFuncReversed() );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigDepth( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigDepth( config );
+	
+	config.SetEnableCullFace( false );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigDepthReversed( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigDepthReversed( config );
+	
+	config.SetEnableCullFace( false );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigCounter( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigCounter( config );
+	
+	config.SetEnableCullFace( false );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigMask( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigMask( config );
+	
+	config.SetEnableCullFace( false );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigShadowPerspective( config );
+	
+	config.SetEnableCullFace( false );
+}
+
+void deoglSTPipelinesParticle::pPipelineConfigShadowLinear( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigShadowLinear( config );
+	
+	config.SetEnableCullFace( false );
 }
 
 
@@ -123,7 +158,7 @@ void deoglSTPipelinesParticle::pSetTexturesGeometry( deoglSkinShaderConfig &conf
 	}
 }
 
-void deoglSTPipelinesParticle::pSetDynamicGeometry( deoglSkinShaderConfig &, const ChannelInfo & ){
+void deoglSTPipelinesParticle::pSetDynamicsGeometry( deoglSkinShaderConfig &, const ChannelInfo & ){
 	// no dynamics for particles
 }
 
@@ -131,10 +166,6 @@ void deoglSTPipelinesParticle::pSetDynamicsGeometryLuminance( deoglSkinShaderCon
 	// no dynamics for particles
 }
 
-void deoglSTPipelinesParticle::pSetDynamicDepth( deoglSkinShaderConfig &, const ChannelInfo & ){
-	// no dynamics for particles
-}
-
-void deoglSTPipelinesParticle::pSetDynamicDepthOutline( deoglSkinShaderConfig &, const ChannelInfo & ){
+void deoglSTPipelinesParticle::pSetDynamicsDepth( deoglSkinShaderConfig &, const ChannelInfo & ){
 	// no dynamics for particles
 }

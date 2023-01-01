@@ -305,105 +305,27 @@ void deoglRParticleEmitterType::CheckEmitLight( const deParticleEmitterType &typ
 
 
 
-deoglLightShader *deoglRParticleEmitterType::GetShaderFor( eShaderTypes shaderType ){
-	if( ! pShaders[ shaderType ] ){
-		deoglLightShaderConfig config;
-		
-		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ].TakeOver( pEmitter.GetRenderThread().GetShader()
-				.GetLightShaderManager().GetShaderWith( config ) );
-		}
+deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
+	if( ! pPipelines ){
+		pPipelines.TakeOver( new deoglLightPipelinesParticle( *this ) );
+		pPipelines->Prepare();
 	}
-	
-	return pShaders[ shaderType ];
-}
-
-bool deoglRParticleEmitterType::GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config ){
-	const deoglConfiguration &oglconfig = pEmitter.GetRenderThread().GetConfiguration();
-	
-	config.Reset();
-	
-	config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmIntBasic );
-	config.SetMaterialNormalModeEnc( deoglLightShaderConfig::emnmFloat );
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
-	
-	config.SetLightMode( deoglLightShaderConfig::elmParticle );
-	
-	switch( shaderType ){
-	case estStereoNoShadow:
-		if( pEmitter.GetRenderThread().GetChoices().GetRenderStereoVSLayer() ){
-// 			config.SetVSRenderStereo( true );
-			config.SetGSRenderStereo( true );
-			
-		}else{
-			config.SetGSRenderStereo( true );
-		}
-		break;
-		
-	default:
-		break;
-	}
-	
-	switch( pSimulationType ){
-	case deParticleEmitterType::estRibbon:
-		config.SetParticleMode( deoglLightShaderConfig::epmRibbon );
-		break;
-		
-	case deParticleEmitterType::estBeam:
-		config.SetParticleMode( deoglLightShaderConfig::epmBeam );
-		break;
-		
-	default:
-		config.SetParticleMode( deoglLightShaderConfig::epmParticle );
-	}
-	
-	config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esmaCube );
-	config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esmaCube );
-	config.SetHWDepthCompare( true );
-	config.SetDecodeInShadow( false );
-	config.SetShadowMatrix2EqualsMatrix1( true );
-	
-	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-	config.SetTextureNoise( false );
-	
-	config.SetTextureShadow1Solid( false );
-	config.SetTextureShadow1Transparent( false );
-	config.SetTextureShadow2Solid( false );
-	config.SetTextureShadow2Transparent( false );
-	
-	return true;
+	return pPipelines;
 }
 
 deoglSPBlockUBO *deoglRParticleEmitterType::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		deoglLightShader *shader = nullptr;
-		int i;
-		
-		for( i=0; i<ShaderTypeCount; i++ ){
-			if( pShaders[ i ] ){
-				shader = pShaders[ i ];
-				break;
-			}
-		}
-		if( ! shader ){
-			shader = GetShaderFor( estNoShadow );
-		}
-		
-		shader->EnsureShaderExists();
-		pParamBlockLight = shader->CreateSPBLightParam();
+		pParamBlockLight = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
 	}
 	
 	return pParamBlockLight;
 }
 
-void deoglRParticleEmitterType::DropLightShaders(){
+void deoglRParticleEmitterType::DropPipelines(){
 	if( pParamBlockLight ){
 		pParamBlockLight->FreeReference();
 		pParamBlockLight = nullptr;
 	}
-	
-	int i;
-	for( i=0; i<ShaderTypeCount; i++ ){
-		pShaders[ i ] = nullptr;
-	}
+	pPipelines = nullptr;
 }

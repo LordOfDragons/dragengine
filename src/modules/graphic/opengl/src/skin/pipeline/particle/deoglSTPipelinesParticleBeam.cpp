@@ -59,7 +59,6 @@ const char *deoglSTPipelinesParticleBeam::GetDebugName() const{
 
 void deoglSTPipelinesParticleBeam::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmParticle );
 	baseShaderConfig.SetParticleMode( deoglSkinShaderConfig::epmBeam );
 	

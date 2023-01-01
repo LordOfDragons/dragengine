@@ -53,8 +53,6 @@ public:
 	
 protected:
 	virtual void pPreparePipelines( const ChannelInfo &cinfo );
-	
-	virtual void pSetBase( deoglSkinShaderConfig &config );
 };
 
 #endif

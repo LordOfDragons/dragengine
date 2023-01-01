@@ -379,9 +379,11 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 	// obtain render task vao and add faces
 	deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
 	int pipelineModifier = pSkinPipelineModifier;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if( pOutline ){
 		pipelinesType = deoglSkinTexturePipelinesList::eptOutline;
+		tuc = componentTexture.GetTUCForOutlinePipelineType( pSkinPipelineType );
 		
 	}else{
 		if( componentTexture.GetUseDecal() ){
@@ -391,14 +393,16 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 			pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
 		}
 		
+		tuc = componentTexture.GetTUCForPipelineType( pSkinPipelineType );
+		
 		if( componentTexture.GetUseDoubleSided() || pForceDoubleSided ){
 			pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
 		}
 	}
 	
 	// try{
-		pGetTaskVAO( pipelinesType, pSkinPipelineType, pipelineModifier, componentTexture.GetUseSkinTexture(),
-			componentTexture.GetTUCForPipelineType( pSkinPipelineType ), rtvao->GetVAO() )->
+		pGetTaskVAO( pipelinesType, pSkinPipelineType, pipelineModifier,
+			componentTexture.GetUseSkinTexture(), tuc, rtvao->GetVAO() )->
 				AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
 				AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags );
 		

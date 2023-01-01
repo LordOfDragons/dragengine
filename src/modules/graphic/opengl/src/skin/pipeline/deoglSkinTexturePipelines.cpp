@@ -515,7 +515,6 @@ void deoglSkinTexturePipelines::pSetDepth( deoglSkinShaderConfig &config, const 
 	pSetMaskedSolidity( config );
 	pSetTypeDepth( config, cinfo );
 	pSetDynamicDepth( config, cinfo );
-	pSetDynamicDepthOutline( config, cinfo );
 }
 
 void deoglSkinTexturePipelines::pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
@@ -624,7 +623,6 @@ void deoglSkinTexturePipelines::pSetTypeDepth( deoglSkinShaderConfig &config, co
 	config.SetTextureSolidity( pTexture.GetSolid() && pTexture.GetHasHoles() && HASCHANTEX( ectSolidity ) );
 	
 	config.SetTextureHeight( HASCHANTEX( ectHeight ) );
-	config.SetDynamicHeightRemap( ISPROPDYN( empHeightScale ) || ISPROPDYN( empHeightOffset ) );
 	
 	if( config.GetTextureHeight() ){ // temporary
 		//config.SetTessellationMode( deoglSkinShaderConfig::etmLinear );
@@ -677,29 +675,6 @@ void deoglSkinTexturePipelines::pSetTypeShadow( deoglSkinShaderConfig &config, c
 	if( config.GetTextureHeight() ){ // temporary
 		//config.SetTessellationMode( deoglSkinShaderConfig::etmLinear );
 	}
-}
-
-void deoglSkinTexturePipelines::pSetTypeOutline( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
-	config.SetOutline( true );
-	config.SetOutlineThicknessScreen( pTexture.GetOutlineThicknessScreen() );
-	config.SetFadeOutRange( config.GetInverseDepth() );
-	config.SetMaterialNormalModeDec( deoglSkinShaderConfig::emnmIntBasic );
-	
-	config.SetTextureNormal( HASCHANTEX( ectNormal ) );
-	config.SetTextureHeight( HASCHANTEX( ectHeight ) );
-	config.SetTextureRenderColor( ! pTexture.GetIsOutlineSolid() );
-	
-	config.SetDynamicHeightRemap( ISPROPDYN( empHeightScale ) || ISPROPDYN( empHeightOffset ) );
-	config.SetDynamicNormalStrength( ISPROPDYN( empNormalStrength ) );
-	config.SetDynamicVariation( ISPROPDYN( empVariationU ) || ISPROPDYN( empVariationV ) );
-	
-	config.SetDynamicOutlineColor( ISPROPDYN( empOutlineColor ) );
-	config.SetDynamicOutlineColorTint( ISPROPDYN( empOutlineColorTint ) );
-	config.SetDynamicOutlineThickness( ISPROPDYN( empOutlineThickness ) );
-	config.SetDynamicOutlineSolidity( ISPROPDYN( empOutlineSolidity ) );
-	config.SetDynamicOutlineEmissivity( ISPROPDYN( empOutlineEmissivity )
-		|| ISPROPDYN( empOutlineEmissivityIntensity ) );
-	config.SetDynamicOutlineEmissivityTint( ISPROPDYN( empOutlineEmissivityTint ) );
 }
 
 
@@ -833,15 +808,15 @@ void deoglSkinTexturePipelines::pSetDynamicsGeometryLuminance( deoglSkinShaderCo
 }
 
 void deoglSkinTexturePipelines::pSetDynamicDepth( deoglSkinShaderConfig &config, const ChannelInfo & ){
+	config.SetDynamicHeightRemap( ISPROPDYN( empHeightScale ) || ISPROPDYN( empHeightOffset ) );
+	
 	// TODO what's this for? depth has no emissivity
 	if( pTexture.GetHasEmissivity() ){
 		config.SetDynamicEmissivityIntensity( ISPROPDYN( empEmissivityIntensity ) );
 		config.SetDynamicEnvRoomEmissivityIntensity( ISPROPDYN( empEnvironmentRoomEmissivityIntensity ) );
 		config.SetDynamicRimEmissivityIntensity( ISPROPDYN( empRimEmissivityIntensity ) );
 	}
-}
-
-void deoglSkinTexturePipelines::pSetDynamicDepthOutline( deoglSkinShaderConfig &config, const ChannelInfo & ){
+	
 	// required to be compatible with outline shaders if used to build parameter block
 	config.SetDynamicOutlineThickness( ISPROPDYN( empOutlineThickness ) );
 	config.SetDynamicOutlineSolidity( ISPROPDYN( empOutlineSolidity ) );

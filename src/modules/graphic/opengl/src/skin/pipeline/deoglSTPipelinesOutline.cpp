@@ -66,8 +66,9 @@ const char *deoglSTPipelinesOutline::GetDebugName() const{
 
 void deoglSTPipelinesOutline::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
+	baseShaderConfig.SetSharedSPB( true );
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmComponent );
+	baseShaderConfig.SetOutline( true );
 	
 	pPrepareGeometry( baseShaderConfig, cinfo );
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo );
@@ -80,20 +81,60 @@ void deoglSTPipelinesOutline::pPreparePipelines( const ChannelInfo &cinfo ){
 	// pPrepareGIMaterial( baseShaderConfig, cinfo );
 }
 
+
+
 void deoglSTPipelinesOutline::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
 	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
 	
-	// cull face has to be flipped (super class does 'false')
-	config.EnableCulling( true );
+	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
 }
 
-void deoglSTPipelinesOutline::pSetShared( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
-	config.SetOutline( true );
-	config.SetOutlineThicknessScreen( pTexture.GetOutlineThicknessScreen() );
+void deoglSTPipelinesOutline::pPipelineConfigDepth( deoglPipelineConfiguration &config ){
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	
+	deoglSkinTexturePipelines::pPipelineConfigDepth( config );
+	
+	if( pTexture.GetIsOutlineSolid() ){
+		config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+		
+	}else{
+		config.EnableDepthTest( choices.GetDepthCompareFuncReversed() );
+	}
+	
+	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+}
+
+void deoglSTPipelinesOutline::pPipelineConfigDepthReversed( deoglPipelineConfiguration &config ){
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	
+	deoglSkinTexturePipelines::pPipelineConfigDepthReversed( config );
+	
+	if( ! pTexture.GetIsOutlineSolid() ){
+		config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+	}
+	
+	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+}
+
+void deoglSTPipelinesOutline::pPipelineConfigCounter( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigCounter( config );
+	
+	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+}
+
+
+
+void deoglSTPipelinesOutline::pSetBase( deoglSkinShaderConfig &config ){
+	config.SetInverseDepth( pTexture.GetRenderThread().GetChoices().GetUseInverseDepth() );
 	config.SetFadeOutRange( config.GetInverseDepth() );
+	
+	config.SetOutlineThicknessScreen( pTexture.GetOutlineThicknessScreen() );
 }
 
 void deoglSTPipelinesOutline::pSetGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
+	config.SetShaderMode( deoglSkinShaderConfig::esmGeometry );
+	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
+	
 	config.SetMaterialNormalModeDec( deoglSkinShaderConfig::emnmIntBasic );
 	
 	config.SetTextureNormal( HASCHANTEX( ectNormal ) );
@@ -114,6 +155,9 @@ void deoglSTPipelinesOutline::pSetGeometry( deoglSkinShaderConfig &config, const
 }
 
 void deoglSTPipelinesOutline::pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
+	config.SetShaderMode( deoglSkinShaderConfig::esmDepth );
+	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
+	
 	if( pTexture.GetIsOutlineSolid() ){
 		config.SetDepthTestMode( deoglSkinShaderConfig::edtmNone );
 		
@@ -132,6 +176,9 @@ void deoglSTPipelinesOutline::pSetDepth( deoglSkinShaderConfig &config, const Ch
 }
 
 void deoglSTPipelinesOutline::pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
+	config.SetShaderMode( deoglSkinShaderConfig::esmDepth );
+	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
+	
 	config.SetOutputConstant( true );
 	
 	config.SetDynamicOutlineThickness( ISPROPDYN( empOutlineThickness ) );

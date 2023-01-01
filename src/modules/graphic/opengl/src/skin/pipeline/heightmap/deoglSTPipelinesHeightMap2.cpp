@@ -37,7 +37,7 @@
 ////////////////////////////
 
 deoglSTPipelinesHeightMap2::deoglSTPipelinesHeightMap2( const deoglSkinTexture &texture ) :
-	deoglSTPipelinesHeightMap1 ( texture ){
+deoglSTPipelinesHeightMap1( texture ){
 }
 
 deoglSTPipelinesHeightMap2::~deoglSTPipelinesHeightMap2(){

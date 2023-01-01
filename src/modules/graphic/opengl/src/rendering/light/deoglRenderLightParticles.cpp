@@ -154,15 +154,17 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 	}
 	*/
 	
-	// set shader
-	deoglLightShader * const lightShader = etype.GetShaderFor( plan.GetRenderStereo()
-		? deoglRParticleEmitterType::estStereoNoShadow
-		: deoglRParticleEmitterType::estNoShadow );
-	if( ! lightShader ){
-		DETHROW( deeInvalidParam );
+	int pipelineModifiers = 0;
+	if( plan.GetFlipCulling() ){
+		pipelineModifiers |= deoglLightPipelines::emFlipCullFace;
+	}
+	if( plan.GetRenderStereo() ){
+		pipelineModifiers |= deoglLightPipelines::emStereo;
 	}
 	
-	renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+	const deoglLightPipeline &pipeline = etype.GetPipelines().
+		GetWithRef( deoglLightPipelines::etNoShadow, pipelineModifiers );
+	pipeline.GetPipeline()->Activate();
 	
 	// set program parameters
 	deoglSPBlockUBO * const spbInstance = itype.GetLightInstanceParameterBlock();
@@ -171,15 +173,16 @@ deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &ityp
 		DETHROW( deeInvalidParam );
 	}
 	
-	UpdateLightParamBlock( *lightShader, *spbLight, plan, emitter, etype );
-	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, instance, itype );
+	deoglLightShader &lightShader = pipeline.GetShader();
+	UpdateLightParamBlock( lightShader, *spbLight, plan, emitter, etype );
+	UpdateInstanceParamBlock( lightShader, *spbInstance, plan, instance, itype );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	spbLight->Activate();
 	spbInstance->Activate();
 	
 	// set textures
-	int target = lightShader->GetTextureTarget( deoglLightShader::ettSamples );
+	int target = lightShader.GetTextureTarget( deoglLightShader::ettSamples );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *etype.GetTextureSamples(),
 			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );

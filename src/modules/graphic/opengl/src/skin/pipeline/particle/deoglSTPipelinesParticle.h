@@ -56,6 +56,12 @@ protected:
 	
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigGeometryDepthTest( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigShadowLinear( deoglPipelineConfiguration &config );
 	
 	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
@@ -66,10 +72,9 @@ protected:
 	virtual void pSetTypeGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	
-	virtual void pSetDynamicGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetDynamicsGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetDynamicsGeometryLuminance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDynamicDepthOutline( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetDynamicsDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 };
 
 #endif

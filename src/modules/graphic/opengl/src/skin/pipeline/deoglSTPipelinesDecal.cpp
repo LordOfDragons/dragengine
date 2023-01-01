@@ -59,7 +59,6 @@ const char *deoglSTPipelinesDecal::GetDebugName() const{
 
 void deoglSTPipelinesDecal::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetSharedSPB( true );
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmDecal );
 	

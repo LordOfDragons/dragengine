@@ -55,11 +55,14 @@ protected:
 	virtual void pPreparePipelines( const ChannelInfo &cinfo );
 	
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
 	
-	virtual void pSetShared( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetBase( deoglSkinShaderConfig &config );
 	virtual void pSetGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetCounter ( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 };
 
 #endif

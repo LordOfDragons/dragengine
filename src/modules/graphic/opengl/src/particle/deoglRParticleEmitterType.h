@@ -26,7 +26,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-#include "../light/shader/deoglLightShader.h"
+#include "../light/pipeline/deoglLightPipelinesParticle.h"
 
 class deoglLightShaderConfig;
 class deoglPixelBuffer;
@@ -62,15 +62,6 @@ public:
 		ESC_COUNT
 	};
 	
-	/** Shader Types. */
-	enum eShaderTypes{
-		estNoShadow, //<! No shadow casting.
-		
-		estStereoNoShadow, //<! No shadow casting.
-	};
-	
-	static const int ShaderTypeCount = estStereoNoShadow + 1;
-	
 private:
 	deoglRParticleEmitter &pEmitter;
 	
@@ -86,7 +77,7 @@ private:
 	
 	bool pEmitLight;
 	bool pHasTransparency;
-	deoglLightShader::Ref pShaders[ ShaderTypeCount ];
+	deoglLightPipelinesParticle::Ref pPipelines;
 	deoglSPBlockUBO *pParamBlockLight;
 	
 	deParticleEmitterType::eSimulationTypes pSimulationType;
@@ -176,17 +167,14 @@ public:
 	
 	
 	
-	/** Retrieves the shader for a shader type. */
-	deoglLightShader *GetShaderFor( eShaderTypes shaderType );
-	
-	/** Retrieves the shader configuration for a shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglLightShaderConfig &config );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
 	
 	/** Retrieves the light parameter block. */
 	deoglSPBlockUBO *GetLightParameterBlock();
 	
-	/** Drop all light shaders and parameter blocks. */
-	void DropLightShaders();
+	/** Drop all light pipelines and parameter blocks. */
+	void DropPipelines();
 	/*@}*/
 };
 

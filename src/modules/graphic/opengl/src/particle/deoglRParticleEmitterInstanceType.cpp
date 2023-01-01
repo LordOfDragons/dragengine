@@ -519,12 +519,8 @@ deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader ){
 
 deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetLightInstanceParameterBlock(){
 	if( ! pParamBlockLightInstance ){
-		deoglRParticleEmitterType &type = pEmitterInstance.GetEmitter()->GetTypeAt( pIndex );
-		deoglLightShader * const shader = type.GetShaderFor( deoglRParticleEmitterType::estNoShadow );
-		
-		shader->EnsureShaderExists();
-		
-		pParamBlockLightInstance = shader->CreateSPBInstParam();
+		pParamBlockLightInstance = pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetPipelines().
+			GetWithRef( deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
 	}
 	
 	return pParamBlockLightInstance;

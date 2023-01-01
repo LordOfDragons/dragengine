@@ -19,45 +19,52 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLSTPIPELINESHEIGHTMAP1_H_
-#define _DEOGLSTPIPELINESHEIGHTMAP1_H_
+#ifndef _DEOGLLIGHTPIPELINESPARTICLE_H_
+#define _DEOGLLIGHTPIPELINESPARTICLE_H_
 
-#include "../deoglSkinTexturePipelines.h"
+#include "deoglLightPipelines.h"
+
+class deoglRParticleEmitterType;
+class deoglLightShaderConfig;
 
 
 /**
- * HeightMap skin texture pipelines.
+ * Light source specific light pipelines.
  */
-class deoglSTPipelinesHeightMap1 : public deoglSkinTexturePipelines{
+class deoglLightPipelinesParticle : public deoglLightPipelines{
+private:
+	const deoglRParticleEmitterType &pEmitter;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create skin texture pipeline. */
-	deoglSTPipelinesHeightMap1( const deoglSkinTexture &texture );
+	/** Create light pipeline. */
+	deoglLightPipelinesParticle( const deoglRParticleEmitterType &emitter );
 	
-protected:
-	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesHeightMap1();
+	/** Clean up light pipeline. */
+	virtual ~deoglLightPipelinesParticle();
 	/*@}*/
 	
 	
 	
 public:
-	/** \name Management */
-	/*@{*/
 	/** Debug name. */
 	virtual const char *GetDebugName() const;
-	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo );
+	virtual void pPreparePipelines();
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
 	
-	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
-		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+	
+private:
+	void pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig );
+	
+	void pSetNonGI( deoglLightShaderConfig &shaconf );
 };
 
 #endif

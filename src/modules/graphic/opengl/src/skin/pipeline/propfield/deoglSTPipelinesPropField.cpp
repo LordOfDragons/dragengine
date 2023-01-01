@@ -59,7 +59,6 @@ const char *deoglSTPipelinesPropField::GetDebugName() const{
 
 void deoglSTPipelinesPropField::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmPropField );
 	
 	pPrepareGeometry( baseShaderConfig, cinfo );

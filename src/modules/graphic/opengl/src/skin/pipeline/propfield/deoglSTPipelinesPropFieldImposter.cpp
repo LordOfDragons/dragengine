@@ -59,7 +59,6 @@ const char *deoglSTPipelinesPropFieldImposter::GetDebugName() const{
 
 void deoglSTPipelinesPropFieldImposter::pPreparePipelines( const ChannelInfo &cinfo ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.Reset();
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmPropField );
 	baseShaderConfig.SetBillboard( true );
 	
@@ -72,10 +71,4 @@ void deoglSTPipelinesPropFieldImposter::pPreparePipelines( const ChannelInfo &ci
 	// pPrepareEnvMap( baseShaderConfig, cinfo );
 	// pPrepareLuminance( baseShaderConfig, cinfo );
 	// pPrepareGIMaterial( baseShaderConfig, cinfo );
-}
-
-void deoglSTPipelinesPropFieldImposter::pSetBase( deoglSkinShaderConfig &config ){
-	deoglSTPipelinesPropField::pSetBase( config );
-	
-	config.SetBillboard( true );
 }

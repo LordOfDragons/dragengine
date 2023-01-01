@@ -110,11 +110,11 @@ public:
 protected:
 	virtual void pPreparePipelines() = 0;
 	
-	void pBasePipelineConfig( deoglRenderThread &renderThread, deoglPipelineConfiguration &config );
+	virtual void pBasePipelineConfig( deoglRenderThread &renderThread, deoglPipelineConfiguration &config );
 	
-	void pBasePipelineConfigGI( deoglPipelineConfiguration &config );
+	virtual void pBasePipelineConfigGI( deoglPipelineConfiguration &config );
 	
-	void pCreatePipelines( deoglRenderThread &renderThread, deoglPipelineConfiguration &pipconf,
+	virtual void pCreatePipelines( deoglRenderThread &renderThread, deoglPipelineConfiguration &pipconf,
 		deoglLightShaderConfig &shaconf, eTypes type, int modifierMask );
 };
 
