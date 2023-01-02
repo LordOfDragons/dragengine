@@ -22,6 +22,8 @@
 #ifndef _DEOGLPIPELINEMANAGER_H_
 #define _DEOGLPIPELINEMANAGER_H_
 
+#include "deoglPipelineState.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 
@@ -41,6 +43,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
+	deoglPipelineState pState;
 	decObjectList pPipelines;
 	
 	
@@ -63,6 +66,9 @@ public:
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** State. */
+	inline deoglPipelineState &GetState(){ return pState; }
 	
 	/** Count of pipelines. */
 	int GetCount() const;

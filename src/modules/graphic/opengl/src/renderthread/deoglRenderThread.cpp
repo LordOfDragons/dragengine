@@ -1015,6 +1015,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		pDebugInfoFrameLimiter->GetChildren().Add( pDebugInfoFLFrameRateRender );
 	
 	// below depends on capabilities being known
+	pPipelineManager->GetState().Reset();
+	
 	pChoices = new deoglRTChoices( *this );
 	
 	pBufferObject = new deoglRTBufferObject( *this );
@@ -1391,6 +1393,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// some final preparations. is this really required?
 	pTexture->GetStages().DisableAllStages();
+	pPipelineManager->GetState().Reset();
 	
 	#ifdef OS_ANDROID
 	DevModeDebugInfoChanged(); // to enable debug stuff if enabled

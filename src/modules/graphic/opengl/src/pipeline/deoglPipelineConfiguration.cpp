@@ -64,6 +64,7 @@ pStencilRefMask( ~0 ),
 pStencilMask( ~0 ),
 pStencilSameFrontBack( true ),
 pEnableBlend( false ),
+pBlendColor( 0.0f, 0.0f, 0.0f, 0.0f ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
 pClipControl( false ),
@@ -104,6 +105,7 @@ pStencilRef( 0 ),
 pStencilRefMask( ~0 ),
 pStencilMask( ~0 ),
 pEnableBlend( false ),
+pBlendColor( 0.0f, 0.0f, 0.0f, 0.0f ),
 pBlendFuncSource( GL_ONE ),
 pBlendFuncDest( GL_ZERO ),
 pClipControl( false ),
@@ -421,68 +423,57 @@ void deoglPipelineConfiguration::Reset(){
 
 
 void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) const{
-	#define ENABLE_GL_STATE(flag,state) \
-		if( flag ){ \
-			OGL_CHECK( renderThread, glEnable( state ) ); \
-		} else { \
-			OGL_CHECK( renderThread, glDisable( state ) ); \
-		}
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	renderThread.GetShader().ActivateShader( pShader ); // shader can be null which is allowed
 	
-	OGL_CHECK( renderThread, glColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] ) );
-	OGL_CHECK( renderThread, glDepthMask( pDepthMask ) );
+	state.ColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] );
+	state.DepthMask( pDepthMask );
 	
-	ENABLE_GL_STATE( pEnableScissorTest, GL_SCISSOR_TEST )
+	state.EnableScissorTest( pEnableScissorTest );
 	
-	ENABLE_GL_STATE( pEnableRasterizerDiscard, GL_RASTERIZER_DISCARD )
+	state.EnableRasterizerDiscard( pEnableRasterizerDiscard );
 	
-	OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, pPolygonMode ) );
+	state.PolygonMode( pPolygonMode );
 	
-	ENABLE_GL_STATE( pEnableCullFace, GL_CULL_FACE )
+	state.EnableCullFace( pEnableCullFace );
 	if( pEnableCullFace && ! pDynamicCullFace ){
-		OGL_CHECK( renderThread, glCullFace( pCullFace ) );
+		state.CullFace( pCullFace );
 	}
 	
-	ENABLE_GL_STATE( pEnablePolygonOffset, GL_POLYGON_OFFSET_FILL )
+	state.EnablePolygonOffsetFill( pEnablePolygonOffset );
 	if( pEnablePolygonOffset && ! pDynamicPolygonOffset ){
-		OGL_CHECK( renderThread, pglPolygonOffset( pPolygonOffsetFactor, pPolygonOffsetBias ) );
+		state.PolygonOffset( pPolygonOffsetFactor, pPolygonOffsetBias );
 	}
 	
-	ENABLE_GL_STATE( pEnableDepthTest, GL_DEPTH_TEST )
+	state.EnableDepthTest( pEnableDepthTest );
 	if( pEnableDepthTest ){
-		OGL_CHECK( renderThread, glDepthFunc( pDepthFunc ) );
+		state.DepthFunc( pDepthFunc );
 	}
 	
-	ENABLE_GL_STATE( pEnableStencilTest, GL_STENCIL_TEST )
+	state.EnableStencilTest( pEnableStencilTest );
 	if( pEnableStencilTest && ! pDynamicStencilTest ){
 		if( pStencilSameFrontBack ){
-			OGL_CHECK( renderThread, glStencilOp(
-				pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront ) );
+			state.StencilOp( pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront );
 			
 		}else{
-			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT,
-				pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront ) );
-			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK,
-				pStencilOpFailBack, pStencilOpZFailBack, pStencilOpZPassBack ) );
+			state.StencilOpFront( pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront );
+			state.StencilOpBack( pStencilOpFailBack, pStencilOpZFailBack, pStencilOpZPassBack );
 		}
 		
-		OGL_CHECK( renderThread, glStencilFunc( pStencilFunc, pStencilRef, pStencilRefMask ) );
-		OGL_CHECK( renderThread, glStencilMask( pStencilMask ) );
+		state.StencilFunc( pStencilFunc, pStencilRef, pStencilRefMask );
+		state.StencilMask( pStencilMask );
 	}
 	
-	ENABLE_GL_STATE( pEnableBlend, GL_BLEND )
+	state.EnableBlend( pEnableBlend );
 	if( pEnableBlend ){
-		OGL_CHECK( renderThread, pglBlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a ) );
-		OGL_CHECK( renderThread, glBlendFunc( pBlendFuncSource, pBlendFuncDest ) );
+		state.BlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a );
+		state.BlendFunc( pBlendFuncSource, pBlendFuncDest );
 	}
 	
-	if( pglClipControl ){
-		pglClipControl( GL_LOWER_LEFT, pClipControl ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE );
-	}
-	ENABLE_GL_STATE( pDepthClamp, GL_DEPTH_CLAMP );
+	state.ClipControl( pClipControl );
 	
-	#undef ENABLE_GL_STATE
+	state.EnableDepthClamp( pDepthClamp );
 }
 
 

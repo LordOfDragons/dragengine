@@ -1045,6 +1045,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 	const deoglDebugTraceGroup debugTrace( renderThread, "World.RenderMaskedPass" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderGeometry &rengeom = GetRenderThread().GetRenderers().GetGeometry();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	bool clearColor = plan.GetClearColor();
 	int m;
 	
@@ -1057,15 +1058,15 @@ DBG_EXIT("RenderMaskedPass(early)")
 		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth();
 		
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+		state.StencilMask( ~0 );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
 			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
 		// render the mask
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0x1 ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x1 ) );
+		state.StencilMask( ~0 );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+		state.StencilMask( 0x1 );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x1 );
 		
 		// render solid content
 		if( m > 0 ){ // already prepared before the first mask

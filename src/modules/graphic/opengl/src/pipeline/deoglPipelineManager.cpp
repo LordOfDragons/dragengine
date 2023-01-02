@@ -36,7 +36,8 @@
 ////////////////////////////
 
 deoglPipelineManager::deoglPipelineManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread ),
+pState( renderThread ){
 }
 
 deoglPipelineManager::~deoglPipelineManager(){

@@ -97,6 +97,7 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	const bool sssssEnable = renderThread.GetConfiguration().GetSSSSSEnable();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	if( sssssEnable ){
 		defren.ActivateFBOColorTemp2( false, true );
@@ -105,9 +106,9 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 		defren.ActivateFBOColor( false, true );
 	}
 	
-	OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
+	state.StencilMask( 0 );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 );
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	

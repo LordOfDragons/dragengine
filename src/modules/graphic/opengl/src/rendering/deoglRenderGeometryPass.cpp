@@ -159,6 +159,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	deoglConfiguration &config = renderThread.GetConfiguration();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	// render pre-pass depth. this includes rendering depth, occlusion testing and transparency counting
 	rendepth.RenderSolidDepthPass( plan, mask, xray );
@@ -212,14 +213,14 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	
 	// render geometry
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+	state.StencilMask( plan.GetStencilWriteMask() );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 ) );
+		state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
+		state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 	}
 	
 	

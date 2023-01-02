@@ -311,6 +311,7 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMask
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSky" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	DEBUG_RESET_TIMERS;
 	defren.ActivateFBOColor( true, false );
@@ -340,14 +341,14 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMask
 	}
 	
 	// render sky
-	OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	state.StencilMask( 0x0 );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x1, 0x1 ) );
+		state.StencilFunc( GL_EQUAL, 0x1, 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x0 ) );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
 	}
 	
 	bool first = true;
@@ -582,6 +583,7 @@ deoglEnvironmentMap &envmap ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkyIntoEnvMap" );
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglFramebuffer *oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap *cubemap = envmap.GetEnvironmentMap();
@@ -617,9 +619,9 @@ deoglEnvironmentMap &envmap ){
 		
 		fbo->DetachAllImages();
 		
-		OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x0 ) );
+		state.StencilMask( 0x0 );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
 		
 		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
@@ -727,6 +729,7 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderEmptySkyIntoEnvMap" );
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglCubeMap * const cubemap = envmap.GetEnvironmentMap();
 	deoglFramebuffer *fbo = NULL;
 	const int size = envmap.GetSize();
@@ -751,9 +754,9 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 		
 		SetViewport( size, size );
 		
-		OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x0 ) );
+		state.StencilMask( 0x0 );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
 		
 		const GLfloat clearColor[ 4 ] = { skyColor.r, skyColor.g, skyColor.b, 1.0f };
 		

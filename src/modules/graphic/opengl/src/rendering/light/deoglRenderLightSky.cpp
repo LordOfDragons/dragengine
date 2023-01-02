@@ -581,6 +581,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 // 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	const decDVector &referencePosition = world.GetReferencePosition();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	decMatrix matrixCamera;
 	
@@ -609,15 +610,15 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+		state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+		state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+		state.StencilMask( ~0 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilMask( 0x0 );
 	}
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
+	state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 	
 	// get shadow map
 	const int shadowMapSize = plan.GetPlan().GetShadowSkySize();
@@ -788,9 +789,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	renderParamBlock->UnmapBuffer();
 			SSDT("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
-	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
+	state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+	state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+	state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 	
 	rengeom.RenderTask( renderTask );
 	
@@ -858,9 +859,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			* decMatrix::CreateScale( sl.scale * 2.0f );
 		
 		if( clearBackFaceFragments ){
-			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
+			state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+			state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+			state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 		}
 		
 		// activate shadow map. since objects mostly reside in only one shadow texture
@@ -1168,15 +1169,15 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	// front faces set 0x0 as stencil value and back faces 0xff
 	/*
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+		state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+		state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+		state.StencilMask( ~0 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilMask( 0x0 );
 	}
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
+	state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 	*/
 	
 	// get shadow map

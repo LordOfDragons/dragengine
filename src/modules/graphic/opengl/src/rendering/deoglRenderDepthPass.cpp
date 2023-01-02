@@ -217,6 +217,7 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "DepthPass.RenderSolidDepthPass" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	DebugTimer1Reset( plan, true );
 	
@@ -229,14 +230,14 @@ const deoglRenderPlanMasked *mask, bool xray ){
 		// NOTE: Haiku MESA 17.1.10 fails to properly clear. No idea why
 	
 	// render depth geometry
-	OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	state.StencilMask( 0 );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x1, 0x1 ) );
+		state.StencilFunc( GL_EQUAL, 0x1, 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x1, 0x0 ) );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
 	}
 	
 	RenderDepth( plan, mask, true, false, false, xray ); // +solid, -maskedOnly, -reverseDepthTest

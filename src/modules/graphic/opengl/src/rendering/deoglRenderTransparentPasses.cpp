@@ -401,6 +401,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	const deoglCollideList &collideList = plan.GetCollideList();
 	deoglRenderTask &renderTask = *renworld.GetRenderTask();
 	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	DebugTimer2Reset( plan, false );
 	
@@ -460,7 +461,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	defren.SwapDepthTextures();
 	defren.ActivateFBODiffuse( true );
 	
-	OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+	state.StencilMask( ~0 );
 	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
 		renderThread.GetChoices().GetClearDepthValueReversed(), 0 ) );
 	
@@ -484,9 +485,9 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	// depth is written. stencil is written with current layer stencil reference value
 	defren.ActivateFBODepth();
 	
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+	state.StencilMask( plan.GetStencilWriteMask() );
+	state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 	
 	rendepth.RenderDepth( plan, mask, false, false, false, xray ); // -solid, -maskedOnly, -reverseDepthTest
 	
@@ -539,7 +540,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth();
 		
-		OGL_CHECK( renderThread, glStencilMask( ~1 ) ); // mask bit has to stay intact
+		state.StencilMask( ~1 ); // mask bit has to stay intact
 		const GLint clearStencil = 0;
 		OGL_CHECK( renderThread, pglClearBufferiv( GL_STENCIL, 0, &clearStencil ) );
 		
@@ -553,14 +554,14 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	pipeline.Activate();
 	defren.ActivateFBOTemporary1( true );
 	
-	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
+	state.StencilMask( plan.GetStencilWriteMask() );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 ) );
+		state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
+		state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 	}
 	
 	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
@@ -589,7 +590,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	pPipelineClearBuffers->Activate();
 	defren.ActivateFBOMaterialColor();
 	
-	OGL_CHECK( renderThread, glStencilMask( 0 ) );
+	state.StencilMask( 0 );
 	
 	const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const GLfloat clearNormal[ 4 ] = { 0.5f, 0.5f, 1.0f, 0.0f };
@@ -613,8 +614,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearReflectivity[ 0 ] ) );
 	}
 	
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 );
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
@@ -721,6 +722,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	// backwards. this way only the front most N layers are kept. the solid pass depth buffer is
 	// stored aside for depth testing only
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	// from here on the solid texture is called the first texture (depth1) and the texture
 	// accumulating the depth is called the second texture (depth2). the third texture is
@@ -733,7 +735,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	defren.SwapDepthTextures(); // solid depth is now depth2
 	defren.ActivateFBODepth();
 	
-	OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
+	state.StencilMask( 0x0 );
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueReversed();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
@@ -753,7 +755,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		pPipelineClearBuffers->Activate();
 		defren.ActivateFBODepth3();
 		
-		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
+		state.StencilMask( ~0 );
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0,
 			renderThread.GetChoices().GetClearDepthValueRegular(), 0 ) );
 		
@@ -764,9 +766,9 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		// we have to swap textures to move the solid depth to depth1 for all but the last layer
 		// otherwise it is used for depth testing producing wrong results. the swap is undone
 		// right after if applied
-		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
+		state.StencilMask( plan.GetStencilWriteMask() );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+		state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 		
 		rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
 		
@@ -777,13 +779,13 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		defren.SwapDepthTextures(); // solid depth is now depth2
 		defren.ActivateFBODepth();
 		
-		OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
+		state.StencilMask( plan.GetStencilWriteMask() );
 		
 		if( mask ){
-			OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 ) );
+			state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), 0x1 );
 			
 		}else{
-			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 ) );
+			state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 		}
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
@@ -812,14 +814,14 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	plan.SetRenderPassNumber( 1 );
 	plan.SetStencilRefValue( prevStencilRefValue );
 	
-	OGL_CHECK( renderThread, glStencilMask( plan.GetStencilWriteMask() ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	state.StencilMask( plan.GetStencilWriteMask() );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	
 	if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, prevStencilRefValue, 0x1 ) );
+		state.StencilFunc( GL_EQUAL, prevStencilRefValue, 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, prevStencilRefValue, 0x0 ) );
+		state.StencilFunc( GL_ALWAYS, prevStencilRefValue, 0x0 );
 	}
 	
 	rendepth.RenderDepth( plan, mask, false, false, true, xray ); // -solid, -maskedOnly, +reverseDepthTest
@@ -860,6 +862,7 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	deoglParticleSorter &particleSorter = *renworld.GetParticleSorter();
 	deoglRenderTaskParticles &renderTaskParticles = *renworld.GetRenderTaskParticles();
 	deoglAddToRenderTaskParticles &addToRenderTaskParticles = *renworld.GetAddToRenderTaskParticles();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	int e, p;
 	
 	// sort particles only if this is the first layer. for all other layers we can reuse the result
@@ -930,16 +933,16 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 	// reference value mask to render only behind the pixels affecting the current layer.
 	defren.ActivateFBOColor( true, false );
 	
-	OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+	state.StencilMask( 0 );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	if( inbetween ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
+		state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 );
 		
 	}else if( mask ){
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x1, 0x1 ) );
+		state.StencilFunc( GL_EQUAL, 0x1, 0x1 );
 		
 	}else{
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x0 ) );
+		state.StencilFunc( GL_ALWAYS, 0x0, 0x0 );
 	}
 	
 	renpart.RenderTaskParticles( renderTaskParticles );
