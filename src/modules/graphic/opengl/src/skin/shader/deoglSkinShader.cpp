@@ -87,8 +87,7 @@ static const char *vTextureTargetNames[ deoglSkinShader::ETT_COUNT ] = {
 	"texSamples", // ettSamples
 	"texSubInstance1", // ettSubInstance1
 	"texSubInstance2", // ettSubInstance2
-	"texHeightMapMask", // ettHeightMapMask
-	"texXRayDepth" // ettXRayDepth
+	"texHeightMapMask" // ettHeightMapMask
 };
 
 static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
@@ -1469,11 +1468,6 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 		units[ pTextureTargets[ ettDepthTest ] ].EnableSpecial( deoglTexUnitConfig::estPrevDepth,
 			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	}
-	
-	if( pTextureTargets[ ettXRayDepth ] != -1 ){
-		units[ pTextureTargets[ ettXRayDepth ] ].EnableSpecial( deoglTexUnitConfig::estXRayDepth,
-			pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
-	}
 }
 
 int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
@@ -1800,10 +1794,6 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		
 	default:
 		break;
-	}
-	
-	if( pConfig.GetXRay() ){
-		defines.SetDefines( "WITH_XRAY" );
 	}
 	
 	// texture usage definitions
@@ -2363,8 +2353,6 @@ void deoglSkinShader::UpdateTextureTargets(){
 	}else if( geometryMode == deoglSkinShaderConfig::egmHeightMap ){
 		pTextureTargets[ ettHeightMapMask ] = textureUnitNumber++;
 	}
-	
-	pTextureTargets[ ettXRayDepth ] = textureUnitNumber++;
 	
 	pUsedTextureTargetCount = textureUnitNumber;
 }

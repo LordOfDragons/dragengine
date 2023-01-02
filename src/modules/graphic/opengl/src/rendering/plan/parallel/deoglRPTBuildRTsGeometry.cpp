@@ -125,10 +125,8 @@ void deoglRPTBuildRTsGeometry::pSolid( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	if( xray ){
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( true );
-	}
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
@@ -165,10 +163,8 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	if( xray ){
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( true );
-	}
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
@@ -186,10 +182,8 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	if( xray ){
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( true );
-	}
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
@@ -212,10 +206,8 @@ void deoglRPTBuildRTsGeometry::pSolidOutline( bool xray ){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	if( xray ){
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( true );
-	}
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
@@ -233,10 +225,8 @@ void deoglRPTBuildRTsGeometry::pSolidDecals( bool xray ){
 	
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	if( xray ){
-		addToRenderTask.SetFilterXRay( true );
-		addToRenderTask.SetXRay( true );
-	}
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
 	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	

@@ -204,7 +204,7 @@ pVRForceFrameRate( 0 )
 	#endif
 	
 	// rendeerdoc
-	#if 1
+	#if 0
 	pDebugContext = true;
 	pDebugNoMessages = true;
 	#endif

@@ -163,7 +163,6 @@ deoglRenderWorld::deoglRenderWorld( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 pRenderPB( nullptr ),
-pRenderXRayPB( nullptr ),
 pRenderTask( nullptr ),
 pAddToRenderTask( nullptr ),
 pParticleSorter( nullptr ),
@@ -175,7 +174,6 @@ pDebugInfo( renderThread )
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool useFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
-	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderDefines defines, commonDefines;
 	deoglShaderSources *sources;
 	deoglPipelineConfiguration pipconf, pipconf2;
@@ -184,7 +182,6 @@ pDebugInfo( renderThread )
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
 		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread );
-		pRenderXRayPB = deoglSkinShader::CreateSPBRender( renderThread );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -227,26 +224,6 @@ pDebugInfo( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "SPLIT_LAYERS" );
 		pipconf.SetShader( renderThread, "DefRen Finalize Split", defines );
 		pPipelineFinalizeSplit = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// copy depth
-		pipconf.Reset();
-		pipconf.SetMasks( false, false, false, false, true );
-		pipconf.EnableDepthTestAlways();
-		pipconf.SetEnableScissorTest( true );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
-		defines = commonDefines;
-		if( ! useInverseDepth ){
-			defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
-		
-		// copy depth stereo
-		defines.SetDefines( useFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
 		
 		
 		
@@ -516,11 +493,8 @@ DEBUG_RESET_TIMER
 	if( plan.GetTasks().GetSolidDepthXRayTask().GetPipelineCount() > 0
 	|| plan.GetTasks().GetSolidDepthOutlineXRayTask().GetPipelineCount() > 0
 	|| plan.GetHasXRayTransparency() ){
-		// TODO render xray pass. requires doing these steps:
 		// - switch texture but not with secondary depth texture but with third depth texture.
-		//   required for xray shaders to reject fragments located in front of geometry.
-		//   this is required since the geometry in front of all other objects has been already
-		//   rendered. the xray pass has to render only what is hidden.
+		//   required for depth textures to stay usable for upcoming render steps.
 		//   
 		//   possible new texture properties:
 		//   - xray.color  // default black
@@ -542,11 +516,6 @@ DEBUG_RESET_TIMER
 		//   - xray.outline.color.tint  // default black
 		//   
 		//   - xray.outline.emissivity  // emissivity to add to outline emissivity
-		//   
-		//   in general though xray should render as if there is no geometry in front.
-		//   special effects can be added later on and most probably are darkening or
-		//   recoloring the texture or replacing the texture with a screen effect
-		//   
 		// - clear the depth texture
 		// - render below
 		// - switch texture with third depth texture. this restores the depth texture for
@@ -554,10 +523,6 @@ DEBUG_RESET_TIMER
 		//   XRay depth is fine since this only renders what is hidden and does not change
 		//   the front most depth
 		const deoglDebugTraceGroup debugTraceXRay( renderThread, "World.XRay" );
-		
-		// copy depth to XRay depth. this depth is used by XRay shaders to render only hidden fragments
-		//renderThread.GetDeferredRendering().CopyFirstDepthToXRayDepth( true, false );
-		CopyDepthToXRayDepth( plan );
 		
 		// render solid geometry pass. this clears the depth texture
 		renderers.GetGeometryPass().RenderSolidGeometryPass( plan, mask, true );
@@ -887,12 +852,11 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	
 	// conditions, aka specializations
 	const bool condClipPlane = mask && mask->GetUseClipPlane();
-	const bool condXRay[ 2 ] = { false, true };
 	
 	// fill parameter blocks
-	deoglSPBlockUBO * const spbBlocks[ 2 ] = { pRenderPB, pRenderXRayPB };
+	deoglSPBlockUBO * const spbBlocks[ 1 ] = { pRenderPB };
 	
-	for( i=0; i<2; i++ ){
+	for( i=0; i<1; i++ ){
 		deoglSPBlockUBO &spb = *spbBlocks[ i ];
 		
 		spb.MapBuffer();
@@ -997,7 +961,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			spb.SetParameterDataVec2( deoglSkinShader::erutDebugDepthTransform, debugDepthScale, debugDepthShift );
 			
 			// specializations
-			spb.SetParameterDataBVec4( deoglSkinShader::erutConditions1, condClipPlane, condXRay[ i ], false, false );
+			spb.SetParameterDataBVec4( deoglSkinShader::erutConditions1, condClipPlane, false, false, false );
 			
 			// stereo rendering
 			if( plan.GetRenderStereo() ){
@@ -1352,24 +1316,6 @@ DBG_ENTER("RenderFinalizeContext")
 DBG_EXIT("RenderFinalizeContext")
 }
 
-void deoglRenderWorld::CopyDepthToXRayDepth( deoglRenderPlan &plan ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthStereo : *pPipelineCopyDepth;
-	pipeline.Activate();
-	
-	SetViewport( plan );
-	
-	defren.ActivateFBODepthXRay();
-	
-	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	defren.SetShaderParamFSQuad( *pipeline.GetGlShader()->GetCompiled(), spcdQuadParams );
-	
-	RenderFullScreenQuadVAO( plan );
-}
-
 
 
 void deoglRenderWorld::AddTopLevelDebugInfo(){
@@ -1403,8 +1349,5 @@ void deoglRenderWorld::pCleanUp(){
 	}
 	if( pRenderPB ){
 		pRenderPB->FreeReference();
-	}
-	if( pRenderXRayPB ){
-		pRenderXRayPB->FreeReference();
 	}
 }
