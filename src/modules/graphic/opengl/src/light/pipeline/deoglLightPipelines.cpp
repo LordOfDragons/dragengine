@@ -59,6 +59,7 @@ static const deoglDebugNamesEnum::sEntry vDebugNamesModifiersEntries[] = {
 	{ deoglLightPipelines::emStereo, "emStereo" },
 	{ deoglLightPipelines::emTransparent, "emTransparent" },
 	{ deoglLightPipelines::emFlipCullFace, "emFlipCullFace" },
+	{ deoglLightPipelines::emCameraInside, "emCameraInside" },
 	deoglDebugNamesEnum::EndOfList
 };
 
@@ -132,14 +133,16 @@ void deoglLightPipelines::pBasePipelineConfigGI( deoglPipelineConfiguration &con
 }
 
 void deoglLightPipelines::pCreatePipelines( deoglRenderThread &renderThread,
-deoglPipelineConfiguration &pipconf, deoglLightShaderConfig &shaconf,
-deoglLightPipelines::eTypes type, int modifierMask ){
+const deoglPipelineConfiguration &basePipelineConfig,
+const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type, int modifierMask ){
 	deoglLightShaderManager &shaderManager = renderThread.GetShader().GetLightShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool renderStereoVSLayer = renderThread.GetChoices().GetRenderStereoVSLayer();
-	const bool texSha1Amb = shaconf.GetTextureShadow1Ambient();
-	const bool texSha2Amb = shaconf.GetTextureShadow2Ambient();
-	const GLenum cullFace = pipconf.GetCullFace();
+	deoglPipelineConfiguration pipconf( basePipelineConfig );
+	deoglLightShaderConfig shaconf( baseShaderConfig );
+	const bool texSha1Amb = baseShaderConfig.GetTextureShadow1Ambient();
+	const bool texSha2Amb = baseShaderConfig.GetTextureShadow2Ambient();
+	const GLenum cullFace = basePipelineConfig.GetCullFace();
 	const GLenum flipCullFace = cullFace == GL_FRONT ? GL_BACK : GL_FRONT;
 	
 	int modifier;
@@ -185,6 +188,9 @@ deoglLightPipelines::eTypes type, int modifierMask ){
 		// cull mode
 		pipconf.SetCullFace( modifier & emFlipCullFace ? flipCullFace : cullFace );
 		
+		// camera inside
+		pipconf.SetDepthClamp( modifier & emCameraInside );
+		
 		// create shader and pipeline
 		const deoglLightShader::Ref shader(
 			deoglLightShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
@@ -204,7 +210,4 @@ deoglLightPipelines::eTypes type, int modifierMask ){
 		pPipelines[ type ][ modifier ].TakeOver(
 			new deoglLightPipeline( pipelineManager.GetWith( pipconf ), shader ) );
 	}
-	
-	// reset parameters
-	pipconf.SetCullFace( cullFace );
 }

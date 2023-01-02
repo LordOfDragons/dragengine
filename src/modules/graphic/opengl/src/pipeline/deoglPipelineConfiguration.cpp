@@ -50,6 +50,7 @@ pPolygonOffsetBias( 0.0f ),
 pEnableDepthTest( false ),
 pDepthFunc( GL_LESS ),
 pDepthMask( true ),
+pDepthClamp( false ),
 pEnableStencilTest( false ),
 pStencilOpFailFront( GL_KEEP ),
 pStencilOpZFailFront( GL_KEEP ),
@@ -90,6 +91,7 @@ pPolygonOffsetBias( 0.0f ),
 pEnableDepthTest( false ),
 pDepthFunc( GL_LESS ),
 pDepthMask( true ),
+pDepthClamp( false ),
 pEnableStencilTest( false ),
 pStencilOpFailFront( GL_KEEP ),
 pStencilOpZFailFront( GL_KEEP ),
@@ -243,6 +245,10 @@ void deoglPipelineConfiguration::EnableDepthTestEqual(){
 void deoglPipelineConfiguration::EnableDepthTest( GLenum function ){
 	pEnableDepthTest = true;
 	pDepthFunc = function;
+}
+
+void deoglPipelineConfiguration::SetDepthClamp( bool clamp ){
+	pDepthClamp = clamp;
 }
 
 
@@ -474,6 +480,7 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 	if( pglClipControl ){
 		pglClipControl( GL_LOWER_LEFT, pClipControl ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE );
 	}
+	ENABLE_GL_STATE( pDepthClamp, GL_DEPTH_CLAMP );
 	
 	#undef ENABLE_GL_STATE
 }
@@ -500,6 +507,7 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 	pEnableDepthTest = config.pEnableDepthTest;
 	pDepthFunc = config.pDepthFunc;
 	pDepthMask = config.pDepthMask;
+	pDepthClamp = config.pDepthClamp;
 	pEnableStencilTest = config.pEnableStencilTest;
 	pStencilOpFailFront = config.pStencilOpFailFront;
 	pStencilOpZFailFront = config.pStencilOpZFailFront;
@@ -541,6 +549,7 @@ bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &c
 		&& pEnableDepthTest == config.pEnableDepthTest
 		&& pDepthFunc == config.pDepthFunc
 		&& pDepthMask == config.pDepthMask
+		&& pDepthClamp == config.pDepthClamp
 		&& pEnableStencilTest == config.pEnableStencilTest
 		&& pStencilOpFailFront == config.pStencilOpFailFront
 		&& pStencilOpZFailFront == config.pStencilOpZFailFront

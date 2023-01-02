@@ -59,7 +59,8 @@ public:
 		emNoAmbient = 0x1,
 		emStereo = 0x2,
 		emTransparent = 0x4,
-		emFlipCullFace = 0x8
+		emFlipCullFace = 0x8,
+		emCameraInside = 0x10
 	};
 	
 	static const deoglDebugNamesEnumSet DebugNamesModifiers;
@@ -68,7 +69,7 @@ public:
 	
 protected:
 	const static int TypeCount = etGIRaySolid2 + 1;
-	const static int ModifiersPerType = emFlipCullFace << 1;
+	const static int ModifiersPerType = emCameraInside << 1;
 	
 	deoglRenderThread &pRenderThread;
 	deoglLightPipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];
@@ -114,8 +115,9 @@ protected:
 	
 	virtual void pBasePipelineConfigGI( deoglPipelineConfiguration &config );
 	
-	virtual void pCreatePipelines( deoglRenderThread &renderThread, deoglPipelineConfiguration &pipconf,
-		deoglLightShaderConfig &shaconf, eTypes type, int modifierMask );
+	virtual void pCreatePipelines( deoglRenderThread &renderThread,
+		const deoglPipelineConfiguration &basePipelineConfig,
+		const deoglLightShaderConfig &baseShaderConfig, eTypes type, int modifierMask );
 };
 
 #endif

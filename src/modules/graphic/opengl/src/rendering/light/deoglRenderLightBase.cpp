@@ -196,7 +196,7 @@ void deoglRenderLightBase::AddTopLevelDebugInfoTransparent(){
 // Protected Functions
 ////////////////////////
 
-int deoglRenderLightBase::PipelineModifiers( const deoglRenderPlanLight &planLight,
+int deoglRenderLightBase::pPipelineModifiers( const deoglRenderPlanLight &planLight,
 bool solid, bool hasAmbient ) const{
 	int modifiers = 0;
 	
@@ -241,6 +241,8 @@ bool solid, bool hasAmbient ) const{
 		//      in the fragment shader altogether. using 0 for pDepthCompare is then not
 		//      necessary anymore.
 		//      
+		modifiers |= deoglLightPipelines::emCameraInside;
+		
 		if( ! planLight.GetPlan().GetFlipCulling() ){
 			modifiers |= deoglLightPipelines::emFlipCullFace;
 		}

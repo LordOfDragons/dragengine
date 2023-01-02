@@ -144,6 +144,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_fragment_layer_viewport",
 	"GL_ARB_shader_draw_parameters",
 	"GL_ARB_shader_viewport_layer_array",
+	"GL_ARB_depth_clamp",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -282,6 +283,8 @@ void deoglExtensions::PrintSummary(){
 
 bool deoglExtensions::VerifyPresence(){
 	bool allPresent = pHasRequiredFunctions;
+	
+	allPresent &= pHasExtension[ ext_ARB_depth_clamp ];
 	
 	return allPresent;
 }

@@ -98,7 +98,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetSpot( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etNoShadow, emNoAmbient | emStereo | emTransparent | emFlipCullFace );
+		etNoShadow, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesSpot::pPrepareSolid1( deoglPipelineConfiguration &basePipelineConfig,
@@ -109,7 +109,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetSpot( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid1, emNoAmbient | emStereo | emTransparent | emFlipCullFace );
+		etSolid1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesSpot::pPrepareSolid1Transp1( deoglPipelineConfiguration &basePipelineConfig,
@@ -120,7 +120,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetSpot( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid1Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace );
+		etSolid1Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesSpot::pPrepareSolid2( deoglPipelineConfiguration &basePipelineConfig,
@@ -131,7 +131,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetSpot( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid2, emNoAmbient | emStereo | emTransparent | emFlipCullFace );
+		etSolid2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesSpot::pPrepareSolid2Transp1( deoglPipelineConfiguration &basePipelineConfig,
@@ -142,7 +142,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetSpot( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid2Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace );
+		etSolid2Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesSpot::pPrepareSolid2Transp2( deoglPipelineConfiguration &basePipelineConfig,
@@ -153,7 +153,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetSpot( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid2Transp2, emNoAmbient | emStereo | emTransparent | emFlipCullFace );
+		etSolid2Transp2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesSpot::pPrepareLumSolid1( deoglPipelineConfiguration &basePipelineConfig,

@@ -88,7 +88,7 @@ public:
 	
 	
 protected:
-	int PipelineModifiers( const deoglRenderPlanLight &planLight, bool solid, bool hasAmbient ) const;
+	int pPipelineModifiers( const deoglRenderPlanLight &planLight, bool solid, bool hasAmbient ) const;
 };
 
 #endif

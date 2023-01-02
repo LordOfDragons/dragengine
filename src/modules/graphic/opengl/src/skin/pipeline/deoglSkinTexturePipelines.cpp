@@ -838,15 +838,17 @@ void deoglSkinTexturePipelines::pSetDynamicMask( deoglSkinShaderConfig &config, 
 
 
 
-void deoglSkinTexturePipelines::pCreatePipelines( deoglPipelineConfiguration &pipconf,
-deoglSkinShaderConfig &shaconf, eTypes type, int modifierMask ){
+void deoglSkinTexturePipelines::pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
+const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask ){
 	const deoglRenderThread &renderThread = pTexture.GetRenderThread();
 	deoglSkinShaderManager &shaderManager = renderThread.GetShader().GetSkinShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool renderStereoVSLayer = renderThread.GetChoices().GetRenderStereoVSLayer();
-	const GLenum cullFace = pipconf.GetCullFace();
+	deoglPipelineConfiguration pipconf( basePipelineConfig );
+	deoglSkinShaderConfig shaconf( baseShaderConfig );
+	const GLenum cullFace = basePipelineConfig.GetCullFace();
 	const GLenum flipCullFace = cullFace == GL_FRONT ? GL_BACK : GL_FRONT;
-	const bool enableCullFace = pipconf.GetEnableCullFace();
+	const bool enableCullFace = basePipelineConfig.GetEnableCullFace();
 	int modifier;
 	
 	for( modifier=0; modifier<ModifiersPerType; modifier++ ){
@@ -878,15 +880,11 @@ deoglSkinShaderConfig &shaconf, eTypes type, int modifierMask ){
 		pipconf.SetCullFace( modifier & emFlipCullFace ? flipCullFace : cullFace );
 		
 		// double sided
-		if( modifier & emDoubleSided ){
-			pipconf.SetEnableCullFace( false );
-			
-		}else{
-			pipconf.SetEnableCullFace( enableCullFace );
-		}
+		pipconf.SetEnableCullFace( modifier & emDoubleSided ? false : enableCullFace );
 		
 		// create shader and pipeline
-		const deoglSkinShader::Ref shader( deoglSkinShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
+		const deoglSkinShader::Ref shader(
+			deoglSkinShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
 		
 		try{
 			shader->PrepareShader(); // make GetShader() to be present
@@ -908,8 +906,4 @@ deoglSkinShaderConfig &shaconf, eTypes type, int modifierMask ){
 		pPipelines[ type ][ modifier ].TakeOver( new deoglSkinTexturePipeline(
 			pipelineManager.GetWith( pipconf, true ), shader ) );
 	}
-	
-	// reset what has been stored
-	pipconf.SetCullFace( cullFace );
-	pipconf.SetEnableCullFace( enableCullFace );
 }

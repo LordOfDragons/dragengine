@@ -232,8 +232,8 @@ protected:
 	virtual void pSetDynamicCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetDynamicMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	
-	virtual void pCreatePipelines( deoglPipelineConfiguration &pipconf,
-		deoglSkinShaderConfig &shaconf, eTypes type, int modifierMask );
+	virtual void pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
+		const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask );
 };
 
 #endif

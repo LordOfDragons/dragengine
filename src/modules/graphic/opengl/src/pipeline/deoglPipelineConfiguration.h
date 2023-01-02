@@ -47,6 +47,7 @@ class deoglShaderDefines;
  * - EnableDepthTest: false
  * - DepthFunc: GL_LESS
  * - DepthMask: true
+ * - DepthClamp: false
  * - EnableStencilTest: false
  * - StencilOpFailFront: GL_KEEP
  * - StencilOpZFailFront: GL_KEEP
@@ -89,6 +90,7 @@ private:
 	bool pEnableDepthTest;
 	GLenum pDepthFunc;
 	bool pDepthMask;
+	bool pDepthClamp;
 	
 	bool pEnableStencilTest;
 	GLenum pStencilOpFailFront;
@@ -226,6 +228,10 @@ public:
 	
 	/** Enable depth test with function less-equal. */
 	void EnableDepthTest( GLenum function );
+	
+	/** Depth clamp. */
+	inline bool GetDepthClamp() const{ return pDepthClamp; }
+	void SetDepthClamp( bool clamp );
 	
 	
 	

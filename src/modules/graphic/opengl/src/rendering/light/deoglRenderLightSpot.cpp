@@ -622,9 +622,6 @@ const deoglRenderPlanMasked *mask ){
 		planDebug->IncrementRenderedLights();
 	}
 	
-	shadowParams.transparentStaticShadow = false; // TODO problem for the time being
-	shadowParams.transparentDynamicShadow = false; // TODO problem for the time being
-	
 	// calculate light volume matrices
 	shadowParams.matrixProjection = defren.CreateProjectionDMatrix( 1, 1,
 		light.GetSpotAngle(), light.GetSpotRatio(), OGL_REN_LIG_ZNEAR, light.GetRange() );
@@ -732,7 +729,7 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	// set pipeline
-	const int pipmods = PipelineModifiers( planLight, solid, texAmbient1 );
+	const int pipmods = pPipelineModifiers ( planLight, solid, texAmbient1 );
 	const deoglLightPipeline *pipeline;
 	
 	if( useShadow ){
