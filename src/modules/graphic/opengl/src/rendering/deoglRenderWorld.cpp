@@ -553,6 +553,7 @@ DEBUG_RESET_TIMER
 		//   upcoming post processing (and future VR motion texture support). ignoring the
 		//   XRay depth is fine since this only renders what is hidden and does not change
 		//   the front most depth
+		const deoglDebugTraceGroup debugTraceXRay( renderThread, "World.XRay" );
 		
 		// copy depth to XRay depth. this depth is used by XRay shaders to render only hidden fragments
 		//renderThread.GetDeferredRendering().CopyFirstDepthToXRayDepth( true, false );

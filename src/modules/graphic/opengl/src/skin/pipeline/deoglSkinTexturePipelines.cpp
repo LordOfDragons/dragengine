@@ -619,6 +619,10 @@ void deoglSkinTexturePipelines::pSetTypeDepth( deoglSkinShaderConfig &config, co
 		config.SetDepthTestMode( deoglSkinShaderConfig::edtmLarger );
 	}
 	
+	if( pTexture.GetXRay() ){
+		config.SetXRay( true );
+	}
+	
 	//config.SetTextureColorTransparency( pTexture.GetSolid() && pTexture.GetHasHoles() && HASCHANTEX( ectColor ) );
 	config.SetTextureSolidity( pTexture.GetSolid() && pTexture.GetHasHoles() && HASCHANTEX( ectSolidity ) );
 	
@@ -642,6 +646,10 @@ void deoglSkinTexturePipelines::pSetTypeCounter( deoglSkinShaderConfig &config, 
 	config.SetFadeOutRange( config.GetInverseDepth() );
 	config.SetOutputConstant( true );
 	
+	if( pTexture.GetXRay() ){
+		config.SetXRay( true );
+	}
+	
 	//config.SetTextureColorTransparency( pTexture.GetHasHoles() && HASCHANTEX( ectColor ) );
 	
 	if( pTexture.GetHasEmissivity() ){
@@ -656,6 +664,7 @@ void deoglSkinTexturePipelines::pSetTypeCounter( deoglSkinShaderConfig &config, 
 
 void deoglSkinTexturePipelines::pSetTypeMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
 	pSetTypeDepth( config, cinfo );
+	
 	config.SetFadeOutRange( false );
 }
 

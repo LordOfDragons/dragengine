@@ -202,6 +202,12 @@ pVRForceFrameRate( 0 )
 	// disable asynchronous rendering for debug purpose
 	//pAsyncRendering = false;
 	#endif
+	
+	// rendeerdoc
+	#if 1
+	pDebugContext = true;
+	pDebugNoMessages = true;
+	#endif
 }
 
 deoglConfiguration::~deoglConfiguration(){
