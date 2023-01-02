@@ -165,8 +165,7 @@ void deoglRenderBase::SetViewport( const deoglRenderPlan &plan ) const{
 }
 
 void deoglRenderBase::SetViewport( int width, int height ) const{
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( pRenderThread, glScissor( 0, 0, width, height ) );
+	SetViewport( 0, 0, width, height );
 }
 
 void deoglRenderBase::SetViewport( const decPoint &point ) const{
@@ -175,6 +174,15 @@ void deoglRenderBase::SetViewport( const decPoint &point ) const{
 
 void deoglRenderBase::SetViewport( const decPoint3 &point ) const{
 	SetViewport( point.x, point.y );
+}
+
+void deoglRenderBase::SetViewport( int x, int y, int width, int height ) const{
+	OGL_CHECK( pRenderThread, glViewport( x, y, width, height ) );
+	OGL_CHECK( pRenderThread, glScissor( x, y, width, height ) );
+}
+
+void deoglRenderBase::SetViewport( const decPoint &offset, const decPoint &size ) const{
+	SetViewport( offset.x, offset.y, size.x, size.y );
 }
 
 

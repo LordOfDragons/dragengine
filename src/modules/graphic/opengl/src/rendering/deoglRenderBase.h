@@ -137,6 +137,8 @@ public:
 	void SetViewport( int width, int height ) const;
 	void SetViewport( const decPoint &point ) const;
 	void SetViewport( const decPoint3 &point ) const;
+	void SetViewport( int x, int y, int width, int height ) const;
+	void SetViewport( const decPoint &offset, const decPoint &size ) const;
 	
 	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
 	void RenderFullScreenQuad() const;

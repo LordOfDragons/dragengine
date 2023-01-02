@@ -26,6 +26,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/canvas/deCanvas.h>
 
 class deoglRenderCanvasContext;
 class deoglRenderThread;
@@ -37,6 +38,11 @@ class deoglRenderPlanMasked;
  * Render canvas.
  */
 class deoglRCanvas : public deObject{
+public:
+	static const int BlendModeCount = deCanvas::ebmAdd + 1;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	decVector2 pPosition;
@@ -45,8 +51,7 @@ private:
 	decColorMatrix pColorTransform;
 	float pOrder;
 	float pTransparency;
-	GLenum pBlendSrc;
-	GLenum pBlendDest;
+	deCanvas::eBlendModes pBlendMode;
 	deoglRCanvas *pMask;
 	bool pVisible;
 	deoglRenderTarget *pMaskRenderTarget;
@@ -106,17 +111,11 @@ public:
 	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** OpenGL source blend mode. */
-	inline GLenum GetBlendSrc() const{ return pBlendSrc; }
+	/** Blend mode. */
+	inline deCanvas::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
-	/** Set OpenGL source blend mode. */
-	void SetBlendSrc( GLenum blendSrc );
-	
-	/** OpenGL destination blend mode. */
-	inline GLenum GetBlendDest() const{ return pBlendDest; }
-	
-	/** Set OpenGL destination blend mode. */
-	void SetBlendDest( GLenum blendDest );
+	/** Set blend mode. */
+	void SetBlendMode( deCanvas::eBlendModes mode );
 	
 	/** Mask. */
 	inline deoglRCanvas *GetMask() const{ return pMask; }

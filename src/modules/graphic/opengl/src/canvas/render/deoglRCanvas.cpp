@@ -47,8 +47,7 @@ deoglRCanvas::deoglRCanvas( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pOrder( 0.0f ),
 pTransparency( 1.0f ),
-pBlendSrc( GL_SRC_ALPHA ),
-pBlendDest( GL_ONE_MINUS_SRC_ALPHA ),
+pBlendMode( deCanvas::ebmBlend ),
 pMask( NULL ),
 pVisible( true ),
 pMaskRenderTarget( NULL ){
@@ -92,12 +91,8 @@ void deoglRCanvas::SetTransparency( float transparency ){
 	pTransparency = transparency;
 }
 
-void deoglRCanvas::SetBlendSrc( GLenum blendSrc ){
-	pBlendSrc = blendSrc;
-}
-
-void deoglRCanvas::SetBlendDest( GLenum blendDest ){
-	pBlendDest = blendDest;
+void deoglRCanvas::SetBlendMode( deCanvas::eBlendModes mode ){
+	pBlendMode = mode;
 }
 
 void deoglRCanvas::SetMask( deoglRCanvas *mask ){
