@@ -1028,11 +1028,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
-	pGI = new deoglGI( *this );
 	pLightBoundarybox = new deoglLightBoundaryMap( *this,
 		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
 	
 	pRenderers = new deoglRTRenderers( *this );
+	pGI = new deoglGI( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
 	// load vulkan and create device if supported

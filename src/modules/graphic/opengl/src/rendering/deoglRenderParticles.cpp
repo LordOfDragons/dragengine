@@ -113,13 +113,6 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 	
 	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
 	
-	// conventional particles work with culling enabled. beams and ribbons though are tricky
-	// to calculate so they easily end up backfacing. for these culling has to be disabled
-	// to get them working. since conventional particles work with culling disabled too
-	// culling is disabled for all particles to avoid any problems
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-// 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	
 	for( i=0; i<stepCount; i++ ){
 		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( i );
 		

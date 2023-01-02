@@ -35,6 +35,7 @@
 #include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
+#include "../rendering/deoglRenderWorld.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -803,9 +804,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	}
 	
 	if( pClearMaps ){
-		OGL_CHECK( pRenderThread, glDisable( GL_BLEND ) ); // silence performance warning
-		OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
-		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+		pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
 		
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeIrradiance );
 		const GLfloat clearIrradiance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };

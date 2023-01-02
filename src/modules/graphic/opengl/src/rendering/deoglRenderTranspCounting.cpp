@@ -397,7 +397,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// start the occlusion query to determine the count. occlusion queries always have a little
 	// delay so we fetch the result after the solid pass
-	//OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	#ifdef OS_ANDROID
 		// OpenGL ES does not support counting queries only any samples passed type queries.
 		// we are forced to do a slower glReadPixels on the last set frame buffer attachment
@@ -450,10 +449,6 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// invalidate buffer. it is not needed anymore
 	renderThread.GetFramebuffer().GetActive()->InvalidateColor( 0 );
-	
-	// reset
-	SetViewport( plan );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 DBG_EXIT("deoglRenderTranspCounting::CountTransparency")
 }
 

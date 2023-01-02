@@ -359,7 +359,9 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		}
 		pRenderGI->UpdateProbes( plan );
 		pRenderGI->MoveProbes( plan );
+		SetViewport( plan );
 	}
+	
 	if( hasGIStateRender ){
 		pRenderGI->RenderLight( plan, solid );
 	}

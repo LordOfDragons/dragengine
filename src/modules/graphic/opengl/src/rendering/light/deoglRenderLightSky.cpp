@@ -548,9 +548,6 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	RenderShadowMap( plan, shadowMapper );
-	
-	// activate stencil as we had to disable it for rendering the shadow maps
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 }
 
 // #define SKY_SHADOW_LAYERED_RENDERING 1
@@ -610,31 +607,17 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	const decMatrix matLigInv = matLig.Invert();
 	const decMatrix matCL = matCamInv.GetRotationMatrix().ToMatrix() * matLigInv;
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // lequal, sky light uses linear depth
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( false );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	
-	if( renderThread.GetChoices().GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
-	}
-	
 	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
 		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 		
 	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+		OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
 	}
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 	
 	// get shadow map
 	const int shadowMapSize = plan.GetPlan().GetShadowSkySize();
@@ -1185,15 +1168,15 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	// front faces set 0x0 as stencil value and back faces 0xff
 	/*
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
 		OGL_CHECK( renderThread, glStencilMask( ~0 ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 		
 	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
+		OGL_CHECK( renderThread, glStencilMask( 0x0 ) );
 	}
+	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, ~0, ~0 ) );
 	*/
 	
 	// get shadow map

@@ -88,6 +88,9 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
+	/** Clear buffers pipeline. */
+	inline const deoglPipeline *GetPipelineClearBuffers() const{ return pPipelineClearBuffers; }
+	
 	
 	
 	/** Add basic defines for shaders. */
@@ -134,9 +137,6 @@ public:
 	void SetViewport( int width, int height ) const;
 	void SetViewport( const decPoint &point ) const;
 	void SetViewport( const decPoint3 &point ) const;
-	
-	/** Set cull mode. */
-	void SetCullMode( bool renderBackFaces ) const;
 	
 	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
 	void RenderFullScreenQuad() const;

@@ -146,9 +146,6 @@ DBG_ENTER("RenderDecals")
 	deoglRenderTask &renderTask = xray ? tasks.GetSolidDecalsXRayTask() : tasks.GetSolidDecalsTask();
 	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
 	rengeom.RenderTask( renderTask );
-	
-	// cleanup
-	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
 DBG_EXIT("RenderDecals")
 }
 
@@ -177,6 +174,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	//      would avoid the need to switch FBO attachment. maybe glDrawBuffers switching
 	//      temporarily can help? needs first some research if glDrawBuffers has similar
 	//      caveats performance wise as switching FBOs has
+	SetViewport( plan );
 // 	defren.ActivateFBOMaterialColor();
 	if( ! xray ){
 		QUICK_DEBUG_START( 16, 19 )
@@ -257,9 +255,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	renderTask = xray ? &tasks.GetSolidGeometryOutlineXRayTask() : &tasks.GetSolidGeometryOutlineTask();
 	if( renderTask->GetPipelineCount() > 0 ){
 		renderTask->SetRenderParamBlock( renworld.GetRenderPB() );
-		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( *renderTask );
-		SetCullMode( plan.GetFlipCulling() );
 	}
 	
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryRender, true );
@@ -267,7 +263,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	
 	// decals
 	RenderDecals( plan, xray );
-// 	OGL_CHECK( renderThread, glDepthFunc( GL_EQUAL ) );  // WARNING! this can disable z-optimizations if switched, really necessary???????????
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDecals, true );
 	QUICK_DEBUG_END
 	

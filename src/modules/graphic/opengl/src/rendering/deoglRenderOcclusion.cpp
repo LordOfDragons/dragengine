@@ -1009,8 +1009,6 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		OGL_CHECK( renderThread, pglEndTransformFeedback() );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
-		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) ); // TODO DELETE
-		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
 		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccTestStereo : *pPipelineOccTest;
 		pipeline.Activate();
@@ -1137,8 +1135,6 @@ const decMatrix &matrixCamera2Stereo ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglEndTransformFeedback() );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-		
-		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) ); // TODO DELETE
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture
@@ -1218,8 +1214,6 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglEndTransformFeedback() );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-		
-		OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) ); // TODO DELETE
 		DEBUG_PRINT_TIMER( "Draw with Feedback" );
 		
 	}else{ // invalid deoglConfiguration::eoctmTransformFeedback or deoglConfiguration::eoctmVBOToTexture

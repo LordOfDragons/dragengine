@@ -181,13 +181,6 @@ void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
 	tsmgr.EnableTexture( 2, giTraceRays.GetTextureNormal(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 3, giTraceRays.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 3 );
-	
-	#ifdef GI_RENDERDOC_DEBUG
-		SetViewport( 512, 256 );
-		
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		renderThread.GetDeferredRendering().ActivateFBOColor( false,false );
-	#endif
 }
 
 
@@ -219,12 +212,41 @@ bool solid, bool hasAmbient ) const{
 		modifiers |= deoglLightPipelines::emStereo;
 	}
 	
-	if( planLight.GetLight()->GetCameraInside() ){ // cull front faces, no depth test
+	if( planLight.GetLight()->GetCameraInside() ){
+		// cull front faces, no shader depth test
+		// 
+		// TODO there is a potential problem here. if the back faces extend beyond the far
+		//      clip plane the lighting is discard. there are two solutions for this problem
+		//      
+		//      1)
+		//      use GL_ARB_depth_clamp (GL_DEPTH_CLAMP). this allows to clamp the depth to
+		//      the valid depth range without discarding fragments beyond the far clip plane.
+		//      this requires checking for the presence of this extension. this seems to be
+		//      though present in 3.2 and newer.
+		//      
+		//      using this solution requires adding the parameter to deoglPipelineConfiguration
+		//      as well as using an "inside-camera" modifier to switch on depth clammping.
+		//      
+		//      2)
+		//      since depth testing is disabled in the shader in camera inside mode we could
+		//      also set gl_Position.z = 0 in the vertex shader. this places the depth either
+		//      at the center between near and far clip plane (not inverse depth) or at the
+		//      near clip plane (inverse depth). in both cases all vertices depth value will
+		//      end up at a constant value inside the depth range. and since the fragment
+		//      shader depth test is disabled this has no influence.
+		//      
+		//      this solution requires an "inside-camera" modifier to switch on this mode as
+		//      solution 1 but does not require an extension to be present. using this
+		//      solution has also the advantage to disable the if-def out the depth test code
+		//      in the fragment shader altogether. using 0 for pDepthCompare is then not
+		//      necessary anymore.
+		//      
 		if( ! planLight.GetPlan().GetFlipCulling() ){
 			modifiers |= deoglLightPipelines::emFlipCullFace;
 		}
 		
-	}else{ // cull back faces, no depth test (opengl can not handle depth test with depth read)
+	}else{
+		// cull back faces, no depth test (opengl can not handle depth test with depth read)
 		if( planLight.GetPlan().GetFlipCulling() ){
 			modifiers |= deoglLightPipelines::emFlipCullFace;
 		}

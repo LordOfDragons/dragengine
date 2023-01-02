@@ -178,6 +178,7 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	pTexEmissivity->SetSize( size, size );
 	pTexEmissivity->CreateTexture();
 	
+	pRenderThread.GetRenderers().GetLight().GetRenderGI().GetPipelineClearBuffers()->Activate();
 	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
 	pFBOMaterial.DetachAllImages();
 	pFBOMaterial.AttachColorTexture( 0, pTexDiffuse );
@@ -186,9 +187,6 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBOMaterial.Verify();
-	
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	
 	const GLfloat clearDiffTintMask[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
 	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };

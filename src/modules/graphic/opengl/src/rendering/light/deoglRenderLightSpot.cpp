@@ -1292,9 +1292,6 @@ void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, sShad
 	if( updateBoxBoundary ){
 		CalculateBoxBoundary( planLight );
 	}
-	
-	// activate stencil as we had to disable it for rendering the shadow maps
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 }
 
 
@@ -1308,9 +1305,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
-	const float smOffsetScale = config.GetShadowMapOffsetScale();
-	const float smOffsetBias = config.GetShadowMapOffsetBias();
 	
 	DebugTimer3Reset( plan, false );
 	
@@ -1319,7 +1313,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	shadowMapper.ActivateSolidTexture( shadowParams.solidShadowMapSize, renderThread.GetChoices().GetUseInverseDepth() );
 	
 	// clear or copy shadow map
-	pPipelineClearBuffers->Activate();
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	
@@ -1364,9 +1357,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				shadowParams.matrixCamera * matProj );
 			
 		}else{
-			OGL_CHECK( renderThread, glEnable( GL_POLYGON_OFFSET_FILL ) );
-			OGL_CHECK( renderThread, pglPolygonOffset( smOffsetScale, smOffsetBias ) );
-			
 			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP,
 				shadowParams.matrixProjection );
 			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP,
@@ -1460,9 +1450,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			DebugTimer3Sample( plan, *pDebugInfoTransparentShadowTranspRender, true );
 		}
 	}
-	
-	// cleanup
-	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
 }
 
 void deoglRenderLightSpot::RenderAmbientMap( deoglRenderPlanLight &planLight,
@@ -1512,9 +1499,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	
 	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
-	
-	// cleanup
-	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) ); // TEMP
 }
 
 

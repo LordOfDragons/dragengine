@@ -204,4 +204,7 @@ deoglLightPipelines::eTypes type, int modifierMask ){
 		pPipelines[ type ][ modifier ].TakeOver(
 			new deoglLightPipeline( pipelineManager.GetWith( pipconf ), shader ) );
 	}
+	
+	// reset parameters
+	pipconf.SetCullFace( cullFace );
 }

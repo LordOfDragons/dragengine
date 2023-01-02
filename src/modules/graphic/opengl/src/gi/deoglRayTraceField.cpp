@@ -236,8 +236,7 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 		pFBORays->Verify();
 	}
 	
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	pRenderThread.GetRenderers().GetLight().GetRenderGI().GetPipelineClearBuffers()->Activate();
 	
 	const GLfloat clear[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 1.0f };
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clear[ 0 ] ) );

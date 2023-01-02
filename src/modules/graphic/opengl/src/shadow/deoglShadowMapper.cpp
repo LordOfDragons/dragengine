@@ -288,7 +288,6 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool
 	pFBOTextureSolid->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth ){
@@ -339,7 +338,6 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	pFBOTextureTransp->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 
@@ -498,7 +496,6 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size ){
 	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateSolidCubeMapFace( int size, int face ){
@@ -535,7 +532,6 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, int face ){
 	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateTransparentCubeMap( int size ){
@@ -579,7 +575,6 @@ void deoglShadowMapper::ActivateTransparentCubeMap( int size ){
 	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, int face ){
@@ -623,7 +618,6 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, int face ){
 	pFBOCube->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 
@@ -788,7 +782,6 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, boo
 	pFBOArrTex->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount, int layer, bool withStencil ){
@@ -830,7 +823,6 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	pFBOArrTex->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCount ){
@@ -875,7 +867,6 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	pFBOArrTex->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 
@@ -929,7 +920,6 @@ void deoglShadowMapper::ActivateOcclusionTexture( int width, int height ){
 	pFBOOcclusion->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 
@@ -1012,7 +1002,6 @@ void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	pFBOAmbient->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 
@@ -1092,7 +1081,6 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size ){
 	pFBOCubeAmbient->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
@@ -1129,7 +1117,6 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
 	pFBOCubeAmbient->Verify();
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
 

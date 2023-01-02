@@ -1598,8 +1598,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	// render the transparent shadow cube maps if required
 	if( shadowParams.withTransparent ){
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-		
 		addToRenderTask.SetSolid( false );
 		
 		if( ! bugClearEntireCubeMap ){

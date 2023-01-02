@@ -178,9 +178,6 @@ void deoglRenderBase::SetViewport( const decPoint3 &point ) const{
 }
 
 
-void deoglRenderBase::SetCullMode( bool renderBackFaces ) const{
-	OGL_CHECK( GetRenderThread(), glCullFace( renderBackFaces ? GL_FRONT : GL_BACK ) );
-}
 
 void deoglRenderBase::RenderFullScreenQuad() const{
 	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );

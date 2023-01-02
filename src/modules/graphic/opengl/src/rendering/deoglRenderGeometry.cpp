@@ -653,7 +653,6 @@ GLuint vboTransformed, int firstPoint, int pointCount ){
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 }
 
 void deoglRenderGeometry::CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions,
@@ -716,7 +715,6 @@ int firstPoint, int pointCount ){
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 }
 
 void deoglRenderGeometry::ApproxTransformVNT( const deoglVAO &vao,
@@ -742,7 +740,6 @@ GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount 
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 	
 	// WARNING temporary hack. without this line below some immediately following rendering
 	//         into render targets result in strange results where texture data is not written

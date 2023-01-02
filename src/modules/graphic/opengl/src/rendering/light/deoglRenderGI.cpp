@@ -916,8 +916,6 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	
 	// clean up
 	defren.ActivatePostProcessFBO( true );
-	SetViewport( plan );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
@@ -999,9 +997,6 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	tsmgr.DisableAllStages();
 	
 	defren.ActivatePostProcessFBO( true );
-	SetViewport( plan );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
@@ -1046,8 +1041,6 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetRayCacheProbeCount() ) );
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 }
 
 void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){

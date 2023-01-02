@@ -607,6 +607,7 @@ void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool cop
 	// WARNING! this is not working because glBlitFramebuffer is NOT synchronized
 	//          with rendering which means shaders using the XRay depth texture
 	//          will NOT see the blitted content. who designed such a mess?!
+#if 0
 	if( ! copyDepth && ! copyStencil ){
 		return;
 	}
@@ -633,6 +634,7 @@ void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool cop
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );
+#endif
 }
 
 decDMatrix deoglDeferredRendering::CreateProjectionDMatrix( int width, int height,

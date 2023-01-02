@@ -403,7 +403,6 @@ DEBUG_RESET_TIMER
 		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
 		if( plan.GetUpdateGIState() ){
 			renderGI.TraceRays( plan );
-			SetViewport( plan );
 			DebugTimer2Sample( plan, *pDebugInfo.infoGITraceRays, true );
 			
 			// calculate probe offset and extends. done here to avoid stalling since the results
@@ -412,6 +411,7 @@ DEBUG_RESET_TIMER
 			// since the rendering happens sequentially on the GPU
 			renderGI.ProbeOffset( plan );
 			renderGI.ProbeExtends( plan );
+			SetViewport( plan );
 		}
 	}
 	
@@ -613,9 +613,6 @@ DEBUG_RESET_TIMER
 			}
 		}
 	}
-	
-	// stop using stencil testing
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	
 	// this happens only in the main pass
 	if( ! mask ){
@@ -1281,9 +1278,6 @@ DBG_ENTER("RenderFinalizeFBO")
 	
 	// revert to 2d mode
 	tsmgr.DisableAllStages(); // deprecated
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) ); // deprecated
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) ); // deprecated
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) ); // deprecated
 	
 	// dev mode debug image check
 	renderThread.GetDebug().GetDeveloperMode().CheckDebugImageUse();
@@ -1350,9 +1344,6 @@ DBG_ENTER("RenderFinalizeContext")
 	
 	// revert to 2d mode
 	tsmgr.DisableAllStages(); // deprecated
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) ); // deprecated
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) ); // deprecated
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) ); // deprecated
 	
 	// dev mode debug image check
 	renderThread.GetDebug().GetDeveloperMode().CheckDebugImageUse();

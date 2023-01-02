@@ -37,6 +37,7 @@ private:
 	const deoglPipeline *pPipelineSolidColor2D;
 	const deoglPipeline *pPipelineSolidColor3D;
 	const deoglPipeline *pPipelineShape;
+	const deoglPipeline *pPipelineShapeLine;
 	
 	decVector2 pScalePosition;
 	decVector2 pOffsetPosition;

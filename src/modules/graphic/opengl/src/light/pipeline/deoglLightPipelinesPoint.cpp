@@ -61,6 +61,7 @@ void deoglLightPipelinesPoint::pPreparePipelines(){
 	// base pipeline configuration
 	deoglPipelineConfiguration basePipelineConfig;
 	pBasePipelineConfig( pLight.GetRenderThread(), basePipelineConfig );
+	basePipelineConfig.EnableCulling( false );
 	
 	deoglPipelineConfiguration basePipelineConfigGI;
 	pBasePipelineConfigGI( basePipelineConfigGI );

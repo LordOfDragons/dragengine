@@ -671,9 +671,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	if( renderTask.GetPipelineCount() > 0 ){
-		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( renderTask );
-		SetCullMode( plan.GetFlipCulling() );
 		DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentRender, true );
 	}
 	
@@ -690,11 +688,6 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		name.Format( "transparency/pass%d/geometry_pass/", plan.GetCurrentTransparencyLayer() );
 		snapshot.SetName( name );
 		snapshot.TakeSnapshot();
-	}
-	
-	// if we used wireframe mode disable it now
-	if( renderThread.GetConfiguration().GetDebugWireframe() ){
-		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 DBG_EXIT("RenderTransparentGeometryPass")
 }
@@ -949,16 +942,8 @@ DBG_ENTER_PARAM2("RenderVolumetricPass", "%p", mask, "%d", inbetween)
 		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x0 ) );
 	}
 	
-	if( renderThread.GetConfiguration().GetDebugWireframe() ){
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	}
-	
 	renpart.RenderTaskParticles( renderTaskParticles );
 //DEBUG_PRINT_TIMER( "RenderWorld: Volumetric Pass Render" );
-	
-	if( renderThread.GetConfiguration().GetDebugWireframe() ){
-		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-	}
 DBG_EXIT("RenderVolumetricPass")
 }
 

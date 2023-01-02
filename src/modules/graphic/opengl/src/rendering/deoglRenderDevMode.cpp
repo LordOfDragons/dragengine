@@ -162,6 +162,10 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pipconf.SetShader( renderThread, "DefRen Shape", defines );
 		pPipelineShape = pipelineManager.GetWith( pipconf );
 		
+		// shape line
+		pipconf.SetPolygonMode( GL_LINE );
+		pPipelineShapeLine = pipelineManager.GetWith( pipconf );
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -569,10 +573,10 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		}
 	}
 	
-	pPipelineShape->Activate();
-	shader = pPipelineShape->GetGlShader()->GetCompiled();
-	
 	if( devMode.GetShowLightVolume() ){
+		// face
+		pPipelineShape->Activate();
+		shader = pPipelineShape->GetGlShader()->GetCompiled();
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
@@ -586,26 +590,41 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 			
 			if( cllight.GetCameraInside() ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.01f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 				
 			}else{
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.01f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+		}
+		
+		// line
+		pPipelineShapeLine->Activate();
+		shader = pPipelineShapeLine->GetGlShader()->GetCompiled();
+		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		
+		for( l=0; l<lightCount; l++ ){
+			const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+			const deoglRLight &light = *cllight.GetLight();
+			const deoglLightVolume &lightVolume = *light.GetLightVolume();
+			
+			pglBindVertexArray( lightVolume.GetVAO() );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP, light.GetMatrix() * matrixVP );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP2, light.GetMatrix() * matrixVP );
+			
+			if( cllight.GetCameraInside() ){
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+				
+			}else{
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
 		}
 	}
 	
 	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
+		pPipelineShape->Activate();
+		shader = pPipelineShape->GetGlShader()->GetCompiled();
+		
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
 		const deoglCollideListLight &cllight = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
 		const deoglRLight &light = *cllight.GetLight();
@@ -801,13 +820,8 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 	
 	// hull
 	if( devMode.GetShowEnvMapHull() ){
-		pPipelineShape->Activate();
-		deoglShaderCompiled *shader = pPipelineShape->GetGlShader()->GetCompiled();
-		
 		double closestDist = 0.0;
 		int closestEnvMap = -1;
-		
-		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( i=0; i<envmapCount; i++ ){
 			deoglEnvironmentMap &envmap = *list.GetAt( i );
@@ -823,6 +837,11 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 			}
 		}
 		
+		// fill
+		pPipelineShape->Activate();
+		deoglShaderCompiled *shader = pPipelineShape->GetGlShader()->GetCompiled();
+		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		
 		for( i=0; i<envmapCount; i++ ){
 			deoglEnvironmentMap &envmap = *list.GetAt( i );
 			const deoglLightVolume &lightVolume = *envmap.GetLightVolume();
@@ -834,22 +853,34 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 			
 			if( i == closestEnvMap ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.05f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 				
 			}else{
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.05f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+		}
+		
+		// line
+		pPipelineShapeLine->Activate();
+		shader = pPipelineShapeLine->GetGlShader()->GetCompiled();
+		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		
+		for( i=0; i<envmapCount; i++ ){
+			deoglEnvironmentMap &envmap = *list.GetAt( i );
+			const deoglLightVolume &lightVolume = *envmap.GetLightVolume();
+			const decDMatrix matrix = decDMatrix::CreateTranslation( envmap.GetPosition() ) * matrixVP;
+			
+			pglBindVertexArray( lightVolume.GetVAO() );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP, matrix );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrix );
+			
+			if( i == closestEnvMap ){
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+				
+			}else{
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
 		}
 	}
 	
