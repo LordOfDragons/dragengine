@@ -509,6 +509,7 @@ void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlanLight &planLight
 
 
 void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "LightSpot.RenderLights" );
 	const int count = plan.GetLightCount();
 	int i;
 	

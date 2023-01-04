@@ -296,6 +296,7 @@ void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "LightSky.RenderLights" );
 	DebugTimersReset( plan, false );
 	
 	//RenderAO( plan );
