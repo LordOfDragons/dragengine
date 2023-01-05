@@ -120,8 +120,8 @@ void deoglSTPipelinesParticle::pPipelineConfigShadowPerspective( deoglPipelineCo
 	config.SetEnableCullFace( false );
 }
 
-void deoglSTPipelinesParticle::pPipelineConfigShadowLinear( deoglPipelineConfiguration &config ){
-	deoglSkinTexturePipelines::pPipelineConfigShadowLinear( config );
+void deoglSTPipelinesParticle::pPipelineConfigShadowDistance( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigShadowDistance( config );
 	
 	config.SetEnableCullFace( false );
 }

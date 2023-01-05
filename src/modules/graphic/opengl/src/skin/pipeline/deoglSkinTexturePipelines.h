@@ -195,8 +195,13 @@ protected:
 	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowLinear( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigShadowOrthogonal( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigShadowDistance( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigGIMaterial( deoglPipelineConfiguration &config );
+	
+	virtual void pPipelineConfigSetShadowOffsetPerspective( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigSetShadowOffsetOrthogonal( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigSetShadowOffsetDistance( deoglPipelineConfiguration &config );
 	
 	virtual void pSetBase( deoglSkinShaderConfig &config );
 	

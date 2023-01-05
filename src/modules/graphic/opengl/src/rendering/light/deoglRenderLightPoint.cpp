@@ -1364,21 +1364,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	DebugTimer3Reset( plan, false );
 	
-	// the problem with regular depth offset is that it is focused on the resolution of
-	// the depth texture. while this is correct in general it has the problem that the
-	// real distance depends on the view range of the texture. if the view range is large
-	// the distance between possible depth values is reasonably large. but if the range
-	// is small the distance between depth values gets very small. it is then so small
-	// the difference becomes too small in real distances causing flickering to appear.
-	// and if the offset is increased to counter this with large view range the real
-	// offset turns way too large. thus the offset has to be chosen depending on the
-	// resolution of the depth texture but using the desired real world distance shift
-	// in relation to the view range as measurement. this guarantees the shift matches
-	// the desired real world distance and thus is constant nullifying both problems.
-	
-	// Epsylon version
-	const float smOffsetScale = config.GetDistShadowScale();
-	const float smOffsetBias = config.GetDistShadowBias() * shadowParams.shadowScale;
+	// depth scale and bias is done in the vertex or geometry shader. the scale has to be
+	// the size of a pixel in meters. the bias is in meters too
+	float smOffsetScale = config.GetDistShadowScale() / shadowParams.solidShadowMapSize;
+	const float smOffsetBias = config.GetDistShadowBias();
 	
 	const decVector lightPosition( light.GetMatrix().GetPosition() - plan.GetWorld()->GetReferencePosition() );
 	int cmf;
@@ -1646,6 +1635,8 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			}
 			
 		}else{
+			smOffsetScale = config.GetDistShadowScale() / shadowParams.transpShadowMapSize;
+			
 			for( cmf=0; cmf<6; cmf++ ){
 				DebugTimer4Reset( plan, false );
 				deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );

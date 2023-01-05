@@ -59,8 +59,8 @@ pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
 pOcclusionReduction( 1 ),
 
-pDistShadowScale( 1.0f ),
-pDistShadowBias( 0.001f ), //4.0f ), // 24-bit: 1 step is 1.192093e-7
+pDistShadowScale( 0.05f ), // old: 1
+pDistShadowBias( 0.01f ), // old: 0.001
 
 pTextOffsetU( 0.0f ),
 pTextOffsetV( 0.0f ),

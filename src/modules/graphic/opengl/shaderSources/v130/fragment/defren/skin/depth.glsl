@@ -82,6 +82,8 @@
 	#ifdef WITH_BITANGENT
 		in vec3 vBitangent;
 	#endif
+#elif defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
+	in vec3 vNormal; // dummy, find a way to remove this later on
 #endif
 #ifdef TEXTURE_RIM_EMISSIVITY
 	in vec3 vReflectDir;
@@ -165,12 +167,16 @@ void main( void ){
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
 	#ifdef DEPTH_ORTHOGONAL
-		vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
+		#ifdef DEPTH_OFFSET
+			vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
+		#endif
 		gl_FragDepth = vZCoord;
 	#endif
 	#ifdef DEPTH_DISTANCE
 		float depth = length( vPosition ) * pDepthTransform.x + pDepthTransform.y;
-		vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+		#ifdef DEPTH_OFFSET
+// 			vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+		#endif
 		gl_FragDepth = depth;
 	#endif
 	
@@ -181,7 +187,7 @@ void main( void ){
 		}
 	#endif
 	
-	#ifdef DEPTH_OFFSET
+	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL
 		/*if( gl_FrontFacing ){
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].x + pDepthOffset[ vLayer ].y;
 			
@@ -218,7 +224,7 @@ void main( void ){
 		
 		// relief mapping. definition of macros has to be delied until here since undefine
 		// symbols can lead to tricky situations resulting in compilers failing
-		#ifndef HAS_TESSELLATION_SHADER
+		#if ! defined HAS_TESSELLATION_SHADER && defined REQUIRES_TEX_COLOR
 			vec2 tcReliefMapped = vTCColor;
 			reliefMapping( tcReliefMapped, realNormal );
 			

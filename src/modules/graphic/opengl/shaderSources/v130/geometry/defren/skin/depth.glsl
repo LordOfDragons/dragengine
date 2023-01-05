@@ -47,6 +47,12 @@
 // Inputs
 ///////////
 
+#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
+	#ifndef REQUIRES_NORMAL
+		#define REQUIRES_NORMAL
+	#endif
+#endif
+
 #ifdef REQUIRES_TEX_COLOR
 	in vec2 vGSTCColor[ 3 ];
 #endif
@@ -124,6 +130,10 @@ flat out int vLayer;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
+#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
+
 void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
 	gl_Position = preTransformedPosition;
 	
@@ -188,6 +198,11 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef HEIGHT_MAP
 		vHTMask = vGSHTMask[ corner ];
+	#endif
+	
+	// depth offset
+	#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
+	applyDepthOffset();
 	#endif
 	
 	vLayer = layer;

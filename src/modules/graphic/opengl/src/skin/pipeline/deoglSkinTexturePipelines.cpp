@@ -263,9 +263,11 @@ const ChannelInfo &cinfo ){
 	pPipelineConfigShadowPerspective( pipconf );
 	pPrepareShadowProjection( pipconf, baseShaderConfig, cinfo );
 	
-	pPipelineConfigShadowLinear( pipconf );
+	pPipelineConfigShadowOrthogonal( pipconf );
 	pPrepareShadowOrthogonal( pipconf, baseShaderConfig, cinfo );
 	pPrepareShadowOrthogonalCascaded( pipconf, baseShaderConfig, cinfo );
+	
+	pPipelineConfigShadowDistance ( pipconf );
 	pPrepareShadowDistance( pipconf, baseShaderConfig, cinfo );
 	pPrepareShadowDistanceCube( pipconf, baseShaderConfig, cinfo );
 }
@@ -459,18 +461,66 @@ void deoglSkinTexturePipelines::pPipelineConfigShadowPerspective( deoglPipelineC
 	config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
 	config.SetClipControl( choices.GetUseInverseDepth() );
 	config.EnableCulling( false );
+	
+	pPipelineConfigSetShadowOffsetPerspective( config );
 }
 
-void deoglSkinTexturePipelines::pPipelineConfigShadowLinear( deoglPipelineConfiguration &config ){
+void deoglSkinTexturePipelines::pPipelineConfigShadowOrthogonal( deoglPipelineConfiguration &config ){
 	config.Reset();
 	config.SetMasks( false, false, false, false, true );
 	config.EnableDepthTestLessEqual();
 	config.EnableCulling( false );
+	
+	pPipelineConfigSetShadowOffsetOrthogonal( config );
+}
+
+void deoglSkinTexturePipelines::pPipelineConfigShadowDistance( deoglPipelineConfiguration &config ){
+	config.Reset();
+	config.SetMasks( false, false, false, false, true );
+	config.EnableDepthTestLessEqual();
+	config.EnableCulling( false );
+	
+	pPipelineConfigSetShadowOffsetDistance( config );
 }
 
 void deoglSkinTexturePipelines::pPipelineConfigGIMaterial( deoglPipelineConfiguration &config ){
 	config.Reset();
 	config.SetMasks( true, true, true, true, false );
+}
+
+
+
+void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetPerspective( deoglPipelineConfiguration &config ){
+	/*
+	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	const float smOffsetScale = modconfig.GetShadowMapOffsetScale();
+	const float smOffsetBias = 0.0f; //modconfig.GetShadowMapOffsetBias();
+	
+	config.EnablePolygonOffset( choices.GetUseInverseDepth() ? -smOffsetScale : smOffsetScale, -smOffsetBias );
+	*/
+}
+
+void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetOrthogonal( deoglPipelineConfiguration &config ){
+	/*
+	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	const float smOffsetScale = modconfig.GetDistShadowScale();
+	const float smOffsetBias = modconfig.GetDistShadowBias();
+	
+	config.EnablePolygonOffset( choices.GetUseInverseDepth() ? -smOffsetScale : smOffsetScale, -smOffsetBias );
+	*/
+}
+
+void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetDistance( deoglPipelineConfiguration &config ){
+	/*
+	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	const float smOffsetScale = modconfig.GetDistShadowScale();
+	const float smOffsetBias = 0.0f; //modconfig.GetDistShadowBias();
+	
+	config.EnablePolygonOffset( choices.GetUseInverseDepth() ? -smOffsetScale : smOffsetScale, -smOffsetBias );
+	*/
 }
 
 
