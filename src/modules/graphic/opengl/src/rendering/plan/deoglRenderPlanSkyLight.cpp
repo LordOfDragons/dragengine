@@ -410,12 +410,6 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 }
 
 void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
-// 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
-// 	const float smOffsetScale = config.GetDistShadowScale();
-	//const float smOffsetBias = config.GetDistShadowBias() / ( float )( ( 1 << 24 ) - 1 ); // config.GetShadowMapOffsetBias();
-	//const float smOffsetBias = 0.001f; //config.GetDistShadowBias() / ( float )( ( 1 << 16 ) - 1 ); // config.GetShadowMapOffsetBias();
-// 	const float smOffsetBias = config.GetDistShadowBias();
-	
 //	const deSkyLayer &engSkyLayer = *pLayer->GetLayer();
 	const decDMatrix &matCamInv = pPlan.GetInverseCameraMatrix();
 	float znear = pPlan.GetCameraImageDistance();
@@ -492,22 +486,6 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		}
 	}
 	
-	//const float baseDistFactor = 1.0f / ( pShadowLayers[ 0 ].frustumFar - pShadowLayers[ 0 ].frustumNear );
-	pShadowLayers[ 0 ].zscale = 1.0f; //smOffsetScale;
-	pShadowLayers[ 0 ].zoffset = 0.01f; // smOffsetBias;
-	
-	//const float distScale1 = baseDistFactor * ( pShadowLayers[ 1 ].frustumFar - pShadowLayers[ 1 ].frustumNear );
-	pShadowLayers[ 1 ].zscale = 1.5f; //smOffsetScale;
-	pShadowLayers[ 1 ].zoffset = 0.01f; // smOffsetBias;
-	
-	//const float distScale2 = baseDistFactor * ( pShadowLayers[ 2 ].frustumFar - pShadowLayers[ 2 ].frustumNear );
-	pShadowLayers[ 2 ].zscale = 2.0f; //smOffsetScale;
-	pShadowLayers[ 2 ].zoffset = 0.01f; // smOffsetBias;
-	
-	//const float distScale3 = baseDistFactor * ( pShadowLayers[ 3 ].frustumFar - pShadowLayers[ 3 ].frustumNear );
-	pShadowLayers[ 3 ].zscale = 2.5f; //smOffsetScale;
-	pShadowLayers[ 3 ].zoffset = 0.01f; // smOffsetBias;
-	
 	/*
 	float / * lambda = 0.5f, * / N = ( float )layerCount;
 	ogl.LogInfoFormat( "RenderSkyLight: znear=%f zfar=%f", znear, zfar );
@@ -525,6 +503,9 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 	*/
 	
 	// calculate layer parameters
+	// const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
+	const float smDepthScaleFactor = 1.2f; // TODO add config option
+	
 	for( p=0; p<pShadowLayerCount; p++ ){
 		sShadowLayer &sl = pShadowLayers[ p ];
 		
@@ -553,6 +534,15 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 			sl.minExtend.SetSmallest( frustumCorners[ c ] );
 			sl.maxExtend.SetLargest( frustumCorners[ c ] );
 		}
+		
+		// depth offset requires extends to be known
+		const float smSize = sl.maxExtend.x - sl.minExtend.x;
+		const float smDepthScale = sl.scale.z * 2.0f;
+		const float smOffsetScale = smSize / pPlan.GetShadowSkySize();
+		const float smOffsetBias = smOffsetScale; // * 0.5f;
+		
+		sl.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
+		sl.zoffset = smOffsetBias * smDepthScale;
 		
 		if( pPlan.GetRenderThread().GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
 			const float zf = sl.frustumFar;
@@ -598,6 +588,12 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		//ogl.LogInfoFormat( "RenderSkyLight: box min=(%f,%f,%f) max=(%f,%f,%f)", minExtend.x, minExtend.y, minExtend.z,
 		//	maxExtend.x, maxExtend.y, maxExtend.z );
 	}
+	
+	// adjust shadow depth offsets
+	// pShadowLayers[ 0 ].zscale *= 1.0f;
+	// pShadowLayers[ 1 ].zscale *= 1.5f;
+	// pShadowLayers[ 2 ].zscale *= 2.0f;
+	// pShadowLayers[ 3 ].zscale *= 2.5f;
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){

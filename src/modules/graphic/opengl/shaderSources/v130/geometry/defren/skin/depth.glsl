@@ -38,19 +38,15 @@
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/ubo_render_parameters.glsl"
-#ifdef SHARED_SPB
-	#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-#endif
+#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 
 
 
 // Inputs
 ///////////
 
-#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
-	#ifndef REQUIRES_NORMAL
-		#define REQUIRES_NORMAL
-	#endif
+#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
+	#define REQUIRES_NORMAL
 #endif
 
 #ifdef REQUIRES_TEX_COLOR
@@ -130,7 +126,7 @@ flat out int vLayer;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
-#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
+#if defined DEPTH_OFFSET
 	#include "v130/shared/defren/skin/depth_offset.glsl"
 #endif
 
@@ -157,7 +153,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef WITH_REFLECT_DIR
 		#ifdef BILLBOARD
-			vReflectDir = position.xyz;
+			vReflectDir = vec3( position );
 		#else
 			vReflectDir = pMatrixV[ layer ] * position;
 		#endif
@@ -174,7 +170,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef DEPTH_DISTANCE
 		#ifdef BILLBOARD
-			vPosition = position.xyz;
+			vPosition = vec3( position );
 		#else
 			vPosition = pMatrixV[ layer ] * position;
 		#endif
@@ -182,7 +178,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	#ifdef CLIP_PLANE
 		#ifdef BILLBOARD
-			vClipCoord = position.xyz;
+			vClipCoord = vec3( position );
 		#else
 			vClipCoord = pMatrixV[ layer ] * position;
 		#endif
@@ -201,8 +197,12 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	#endif
 	
 	// depth offset
-	#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
-	applyDepthOffset();
+	#if defined DEPTH_OFFSET
+		#ifdef GS_RENDER_CUBE
+			applyDepthOffset( 0, vNormal, pDoubleSided );
+		#else
+			applyDepthOffset( layer, vNormal, pDoubleSided );
+		#endif
 	#endif
 	
 	vLayer = layer;

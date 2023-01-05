@@ -82,7 +82,7 @@
 	#ifdef WITH_BITANGENT
 		in vec3 vBitangent;
 	#endif
-#elif defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
+#elif defined DEPTH_OFFSET
 	in vec3 vNormal; // dummy, find a way to remove this later on
 #endif
 #ifdef TEXTURE_RIM_EMISSIVITY
@@ -168,7 +168,7 @@ void main( void ){
 	// because derivatives become undefined otherwise.
 	#ifdef DEPTH_ORTHOGONAL
 		#ifdef DEPTH_OFFSET
-			vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
+// 			vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
 		#endif
 		gl_FragDepth = vZCoord;
 	#endif
@@ -187,7 +187,7 @@ void main( void ){
 		}
 	#endif
 	
-	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL
+	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL && NEVER_DEFINED
 		/*if( gl_FrontFacing ){
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].x + pDepthOffset[ vLayer ].y;
 			

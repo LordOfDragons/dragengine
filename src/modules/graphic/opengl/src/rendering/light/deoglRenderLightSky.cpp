@@ -780,7 +780,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			renderParamBlock->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
 				i, matrixCamera.GetRotationMatrix().Invert() );
 			renderParamBlock->SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
-				i, sl.zscale, sl.zoffset * sl.scale.z, -sl.zscale, -sl.zoffset * sl.scale.z );
+				i, sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		}
 		
 	}catch( const deException & ){
@@ -878,9 +878,6 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		// render solid content. two different depth offsets for front and back faces are used. double sided always
 		// counts as front facing. this way all can be rendered in one go
-		const float depthScale = sl.zscale;
-		const float depthOffset = sl.zoffset * sl.scale.z;
-		
 		renderParamBlock->MapBuffer();
 		try{
 			renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
@@ -889,7 +886,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
 				matrixCamera.GetRotationMatrix().Invert() );
 			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				depthScale, depthOffset, -depthScale, -depthOffset );
+				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 			
 			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 			
@@ -1063,8 +1060,6 @@ deoglShadowMapper &shadowMapper ){
 	//      fragment shader. not touching gl_FragDepth is faster. using a geometry
 	//      shader does make rendering more expensive but not touching gl_FragDepth
 	//      should allow double-write speed to be used and should compensate
-	const float depthOffset = sl.zoffset * sl.scale.z;
-	const float depthScale = 0.0f; //sl.zscale;
 	
 	// static shadow map
 	const int shadowMapSize = plan.GetGIShadowSize();
@@ -1095,8 +1090,7 @@ deoglShadowMapper &shadowMapper ){
 			//      exact same pixels as it should. this inconsistent behavior causes
 			//      problems. for this reason this trick is disabled until a better idea
 			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				depthScale, depthOffset, -depthScale, -depthOffset ); // due to disabled
-//				depthScale, depthOffset, depthScale, depthOffset );
+				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset ); // due to disabled
 			
 			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 			
@@ -1130,7 +1124,7 @@ deoglShadowMapper &shadowMapper ){
 		// in general only dynamic shadow map is rendered so the situation of this
 		// parameter blockt to be updated twice (and stalling) is little
 		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-			depthScale, depthOffset, -depthScale, -depthOffset );
+			sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		
 		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		

@@ -1,35 +1,42 @@
 /**
  * Apply depth offset.
  */
-void applyDepthOffset(){
+void applyDepthOffset( in int layer, in vec3 normal, in bool doubleSided ){
+	// WARNING "normal" is NOT a good value for front/back face calculation. this normal is
+	//         not the face normal but a smoothed normal (by normal index). if faces are flat
+	//         with hard edges this will work but for faces with normals shared across (round
+	//         surfaces) this can fail by shifting one face corner backward and another forward.
+	//         
+	//         the real solution would required to store the face normal in the VBO and using
+	//         it to do the calculation. adding more data to the VBO just for this calculation
+	//         is not a good thing.
+	//         
+	//         the other solution would be to use geometry shader since there face orientation
+	//         can be calculated. this though reduces performance and is thus not a good thing.
+	//         
+	//         last solution is to go back again to do the calculation in the fragment shader.
+	//         this disabled early z buffer and double depth write which is also a bad thing.
+	//         
+	//         solution pending... or rather... picking the lesser evil.
+	
+	float depthSlope = length( normal.xy ) / max( abs( normal.z ), 0.01 );
+	
 	#ifdef DEPTH_ORTHOGONAL
-		/*
-		#ifdef GS_RENDER_CUBE
-			vec2 depthOffset = mix( pDepthOffset[ 0 ].zw, pDepthOffset[ 0 ].xy,
-				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
-		#else
-			vec2 depthOffset = mix( pDepthOffset[ inLayer ].zw, pDepthOffset[ inLayer ].xy,
-				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
-		#endif
-		
-		vZCoord += depthBias;
-		*/
+		bool frontFacing = normal.z < 0 || doubleSided;
+		vec2 depthOffset = frontFacing ? pDepthOffset[ layer ].xy : pDepthOffset[ layer ].zw;
 	#else
-		#ifdef GS_RENDER_CUBE
-			vec2 depthBias = pDepthOffset[ 0 ].xy;
-		#else
-			vec2 depthBias = pDepthOffset[ inLayer ].xy;
-		#endif
-		
-		float depthSlope = length( vNormal.xy ) / max( abs( vNormal.z ), 0.01 );
-		float depthScale = depthBias.x * depthSlope;
-		
-		#ifdef DEPTH_DISTANCE
-// 			float dotNormal = dot( vNormal, normalize( vPosition ) );
-// 			float scale = depthBias.x * ( 1 - abs( dotNormal ) );
-			vPosition.z += vPosition.z * depthScale + depthBias.y;
-		#else
-			gl_Position.z += gl_Position.z * depthScale + gl_Position.w * depthBias.y;
-		#endif
+		vec2 depthOffset = pDepthOffset[ layer ].xy;
+	#endif
+	
+	float depthScale = depthOffset.x * depthSlope;
+	
+	#ifdef DEPTH_ORTHOGONAL
+		vZCoord += ( depthScale + depthOffset.y ) * 0.5;
+	#elif defined DEPTH_DISTANCE
+// 		float dotNormal = dot( normal, normalize( vPosition ) );
+// 		float scale = depthOffset.x * ( 1 - abs( dotNormal ) );
+		vPosition.z += vPosition.z * depthScale + depthOffset.y;
+	#else
+		gl_Position.z += gl_Position.z * depthScale + gl_Position.w * depthOffset.y;
 	#endif
 }

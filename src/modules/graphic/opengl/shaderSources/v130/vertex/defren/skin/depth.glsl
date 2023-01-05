@@ -59,10 +59,8 @@
 // Outputs
 ////////////
 
-#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
-	#ifndef REQUIRES_NORMAL
-		#define REQUIRES_NORMAL
-	#endif
+#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
+	#define REQUIRES_NORMAL
 #endif
 
 #ifdef HAS_TESSELLATION_SHADER
@@ -176,10 +174,8 @@
 	#include "v130/shared/defren/skin/transform_normal.glsl"
 #endif
 
-#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
-	#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
-		#include "v130/shared/defren/skin/depth_offset.glsl"
-	#endif
+#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+	#include "v130/shared/defren/skin/depth_offset.glsl"
 #endif
 
 void main( void ){
@@ -261,10 +257,8 @@ void main( void ){
 		#endif
 		
 		// depth offset
-		#if defined DEPTH_OFFSET && ! defined DEPTH_ORTHOGONAL
-			#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
-				applyDepthOffset();
-			#endif
+		#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+			applyDepthOffset( inLayer, vNormal, pDoubleSided );
 		#endif
 	#endif
 	

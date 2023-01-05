@@ -491,14 +491,14 @@ void deoglSkinTexturePipelines::pPipelineConfigGIMaterial( deoglPipelineConfigur
 
 
 void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetPerspective( deoglPipelineConfiguration &config ){
-	/*
+	
 	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
 	const float smOffsetScale = modconfig.GetShadowMapOffsetScale();
-	const float smOffsetBias = 0.0f; //modconfig.GetShadowMapOffsetBias();
+	const float smOffsetBias = modconfig.GetShadowMapOffsetBias();
 	
 	config.EnablePolygonOffset( choices.GetUseInverseDepth() ? -smOffsetScale : smOffsetScale, -smOffsetBias );
-	*/
+	
 }
 
 void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetOrthogonal( deoglPipelineConfiguration &config ){
