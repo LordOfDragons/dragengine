@@ -86,9 +86,6 @@ layout( triangles, equal_spacing, ccw ) in;
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
 	#endif
-	#ifdef DEPTH_ORTHOGONAL
-		out float vZCoord;
-	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
 	#endif
@@ -161,15 +158,6 @@ void main(){
 	#endif
 	
 	#ifndef PASS_ON_NEXT_STAGE
-		#ifdef DEPTH_ORTHOGONAL
-			#ifdef NO_ZCLIP
-				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-				gl_Position.z = 0.0;
-			#else
-				vZCoord = gl_Position.z;
-			#endif
-		#endif
-		
 		#ifdef REQUIRES_NORMAL
 			#ifdef DEPTH_DISTANCE
 				#ifdef BILLBOARD

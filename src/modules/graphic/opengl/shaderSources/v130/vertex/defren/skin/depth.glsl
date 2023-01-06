@@ -125,9 +125,6 @@
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
 	#endif
-	#ifdef DEPTH_ORTHOGONAL
-		out float vZCoord;
-	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
 	#endif
@@ -219,16 +216,6 @@ void main( void ){
 			#endif
 		#endif
 		
-		// non-perspective depth values if required
-		#ifdef DEPTH_ORTHOGONAL
-			#ifdef NO_ZCLIP
-				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-				gl_Position.z = 0;
-			#else
-				vZCoord = gl_Position.z;
-			#endif
-		#endif
-		
 		// depth distance
 		#ifdef DEPTH_DISTANCE
 			#ifdef BILLBOARD
@@ -257,7 +244,7 @@ void main( void ){
 		#endif
 		
 		// depth offset
-		#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+		#ifdef DEPTH_OFFSET
 			applyDepthOffset( inLayer, vNormal, pDoubleSided );
 		#endif
 	#endif

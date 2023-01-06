@@ -470,6 +470,7 @@ void deoglSkinTexturePipelines::pPipelineConfigShadowOrthogonal( deoglPipelineCo
 	config.SetMasks( false, false, false, false, true );
 	config.EnableDepthTestLessEqual();
 	config.EnableCulling( false );
+	config.SetDepthClamp( true );
 	
 	pPipelineConfigSetShadowOffsetOrthogonal( config );
 }
@@ -592,7 +593,6 @@ void deoglSkinTexturePipelines::pSetShadowOrthogonal( deoglSkinShaderConfig &con
 	pSetShadowProjection( config, cinfo );
 	
 	config.SetDepthMode( deoglSkinShaderConfig::edmOrthogonal );
-	config.SetNoZClip( true );
 	config.SetInverseDepth( false );
 }
 

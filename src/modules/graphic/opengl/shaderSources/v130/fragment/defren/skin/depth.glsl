@@ -65,9 +65,6 @@
 #ifdef CLIP_PLANE
 	in vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	in float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	in vec3 vPosition;
 #endif
@@ -166,12 +163,6 @@ vec3 finalEmissivityIntensity( in vec3 intensity ){
 void main( void ){
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
-	#ifdef DEPTH_ORTHOGONAL
-		#ifdef DEPTH_OFFSET
-// 			vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
-		#endif
-		gl_FragDepth = vZCoord;
-	#endif
 	#ifdef DEPTH_DISTANCE
 		float depth = length( vPosition ) * pDepthTransform.x + pDepthTransform.y;
 		#ifdef DEPTH_OFFSET
@@ -203,10 +194,6 @@ void main( void ){
 				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
 		#endif
 		gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
-	#endif
-	
-	#ifdef NO_ZCLIP
-		gl_FragDepth = max( gl_FragDepth, 0 );
 	#endif
 	
 	// discard fragments using the clip plane

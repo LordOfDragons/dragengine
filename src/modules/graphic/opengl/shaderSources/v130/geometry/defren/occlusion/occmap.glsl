@@ -89,6 +89,10 @@ flat out int vLayer;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
+#if defined DEPTH_OFFSET
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
+
 void emitCorner( in int layer, in vec4 position, in vec4 preTransformedPosition ){
 	gl_Position = preTransformedPosition;
 	
@@ -104,6 +108,14 @@ void emitCorner( in int layer, in vec4 position, in vec4 preTransformedPosition 
 	#endif
 	#ifdef USE_CLIP_PLANE
 		vClipCoord = pMatrixV[ layer ] * position;
+	#endif
+	
+	#if defined DEPTH_OFFSET
+		#ifdef GS_RENDER_CUBE
+			applyDepthOffset( 0 );
+		#else
+			applyDepthOffset( layer );
+		#endif
 	#endif
 	
 	vLayer = layer;

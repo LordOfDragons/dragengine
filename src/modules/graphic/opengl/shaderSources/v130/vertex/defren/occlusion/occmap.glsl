@@ -71,6 +71,10 @@ in vec3 inPosition;
 
 #include "v130/shared/defren/sanitize_position.glsl"
 
+#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
+
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
@@ -89,6 +93,10 @@ void main( void ){
 		#endif
 		#ifdef USE_CLIP_PLANE
 			vClipCoord = pMatrixV[ inLayer ] * position;
+		#endif
+		
+		#ifdef DEPTH_OFFSET
+			applyDepthOffset( inLayer );
 		#endif
 	#endif
 	

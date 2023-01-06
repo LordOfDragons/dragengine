@@ -88,9 +88,6 @@
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	out float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -156,15 +153,6 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 			vReflectDir = vec3( position );
 		#else
 			vReflectDir = pMatrixV[ layer ] * position;
-		#endif
-	#endif
-	
-	#ifdef DEPTH_ORTHOGONAL
-		#ifdef NO_ZCLIP
-			vZCoord = preTransformedPosition.z * 0.5 + 0.5; // we have to do the normalization ourself
-			gl_Position.z = 0;
-		#else
-			vZCoord = preTransformedPosition.z;
 		#endif
 	#endif
 	

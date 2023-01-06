@@ -542,7 +542,7 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		const float smOffsetBias = smOffsetScale; // * 0.5f;
 		
 		sl.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
-		sl.zoffset = smOffsetBias * smDepthScale;
+		sl.zoffset = smOffsetBias * smDepthScaleFactor * smDepthScale;
 		
 		if( pPlan.GetRenderThread().GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
 			const float zf = sl.frustumFar;
@@ -590,10 +590,17 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 	}
 	
 	// adjust shadow depth offsets
-	// pShadowLayers[ 0 ].zscale *= 1.0f;
-	// pShadowLayers[ 1 ].zscale *= 1.5f;
-	// pShadowLayers[ 2 ].zscale *= 2.0f;
-	// pShadowLayers[ 3 ].zscale *= 2.5f;
+	pShadowLayers[ 0 ].zscale *= 1.0f;
+	pShadowLayers[ 0 ].zoffset *= 1.0f;
+	
+	pShadowLayers[ 1 ].zscale *= 1.5f;
+	pShadowLayers[ 1 ].zoffset *= 1.5f;
+	
+	pShadowLayers[ 2 ].zscale *= 2.0f;
+	pShadowLayers[ 2 ].zoffset *= 2.0f;
+	
+	pShadowLayers[ 3 ].zscale *= 2.5f;
+	pShadowLayers[ 3 ].zoffset *= 2.5f;
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){

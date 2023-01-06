@@ -67,7 +67,6 @@ void deoglSkinShaderConfig::Reset(){
 	pInverseDepth = false;
 	pMaskedSolidity = false;
 	pClipPlane = false;
-	pNoZClip = false;
 	pOutputConstant = false;
 	pOutputColor = false;
 	pAmbientLightProbe = false;
@@ -198,10 +197,6 @@ void deoglSkinShaderConfig::SetMaskedSolidity( bool maskedSolidity ){
 
 void deoglSkinShaderConfig::SetClipPlane( bool clipPlane ){
 	pClipPlane = clipPlane;
-}
-
-void deoglSkinShaderConfig::SetNoZClip( bool noZClip ){
-	pNoZClip = noZClip;
 }
 
 void deoglSkinShaderConfig::SetOutputConstant( bool outputConstant ){
@@ -577,9 +572,6 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pClipPlane ){
 		string.Append( " clipPlane" );
 	}
-	if( pNoZClip ){
-		string.Append( " noZClip" );
-	}
 	if( pOutputConstant ){
 		string.Append( " outputConstant" );
 	}
@@ -823,7 +815,6 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pInverseDepth = config.pInverseDepth;
 	pMaskedSolidity = config.pMaskedSolidity;
 	pClipPlane = config.pClipPlane;
-	pNoZClip = config.pNoZClip;
 	pOutputConstant = config.pOutputConstant;
 	pOutputColor = config.pOutputColor;
 	pAmbientLightProbe = config.pAmbientLightProbe;
@@ -917,7 +908,6 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pInverseDepth == config.pInverseDepth
 		&& pMaskedSolidity == config.pMaskedSolidity
 		&& pClipPlane == config.pClipPlane
-		&& pNoZClip == config.pNoZClip
 		&& pOutputConstant == config.pOutputConstant
 		&& pOutputColor == config.pOutputColor
 		&& pAmbientLightProbe == config.pAmbientLightProbe

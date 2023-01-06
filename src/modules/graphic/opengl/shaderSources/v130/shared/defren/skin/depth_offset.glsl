@@ -31,12 +31,24 @@ void applyDepthOffset( in int layer, in vec3 normal, in bool doubleSided ){
 	float depthScale = depthOffset.x * depthSlope;
 	
 	#ifdef DEPTH_ORTHOGONAL
-		vZCoord += ( depthScale + depthOffset.y ) * 0.5;
+		gl_Position.z += depthScale + depthOffset.y;
 	#elif defined DEPTH_DISTANCE
 // 		float dotNormal = dot( normal, normalize( vPosition ) );
 // 		float scale = depthOffset.x * ( 1 - abs( dotNormal ) );
 		vPosition.z += vPosition.z * depthScale + depthOffset.y;
 	#else
 		gl_Position.z += gl_Position.z * depthScale + gl_Position.w * depthOffset.y;
+	#endif
+}
+
+void applyDepthOffset( in int layer ){
+	float depthBias = pDepthOffset[ layer ].y;
+	
+	#ifdef DEPTH_ORTHOGONAL
+		gl_Position.z += depthBias;
+	#elif defined DEPTH_DISTANCE
+		vPosition.z += depthBias;
+	#else
+		gl_Position.z += gl_Position.w * depthBias;
 	#endif
 }

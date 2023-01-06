@@ -182,9 +182,12 @@ pSolidShadowMap( NULL )
 		pipconf.Reset();
 		pipconf.SetMasks( false, false, false, false, true );
 		pipconf.EnableDepthTestLessEqual();
+		pipconf.SetDepthClamp( true );
 		
 		AddSharedSPBDefines( defines );
 		defines.SetDefines( "WITH_SHADOWMAP" );
+		defines.SetDefines( "DEPTH_ORTHOGONAL" );
+		defines.SetDefines( "DEPTH_OFFSET" );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pPipelineOccMesh = pipelineManager.GetWith( pipconf, true );
@@ -1090,7 +1093,7 @@ deoglShadowMapper &shadowMapper ){
 			//      exact same pixels as it should. this inconsistent behavior causes
 			//      problems. for this reason this trick is disabled until a better idea
 			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset ); // due to disabled
+				0.0f/*sl.zscale*/, sl.zoffset, 0.0f/*-sl.zscale*/, -sl.zoffset ); // due to disabled
 			
 			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 			
