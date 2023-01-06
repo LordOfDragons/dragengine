@@ -1818,18 +1818,13 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 		if( target != -1 ){
 			const float znear = OGL_REN_LIG_ZNEAR;
 			//const float zfar = light.GetRange();
-			decVector2 depth2Pos;
 			
 			if( GetRenderThread().GetChoices().GetUseInverseDepth() ){
-				depth2Pos.x = -znear;
-				depth2Pos.y = 0.0f;
+				paramBlock.SetParameterDataVec4( target, 0.0f, znear, -znear, 0.0f );
 				
 			}else{
-				depth2Pos.x = znear;
-				depth2Pos.y = 1.0f;
+				paramBlock.SetParameterDataVec4( target, 1.0f, -2.0f * znear, znear, 1.0f );
 			}
-			
-			paramBlock.SetParameterDataVec2( target, depth2Pos );
 		}
 		
 	}catch( const deException & ){

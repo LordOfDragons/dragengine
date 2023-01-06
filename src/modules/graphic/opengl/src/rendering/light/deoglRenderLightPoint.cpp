@@ -2099,9 +2099,18 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			// with:
 			//   param1 = 1 / GetStaticScale()
 			//   param2 = -GetStaticOffset() / GetStaticScale()
-			const float scale = 1.0f / shadowCaster.GetStaticScale();
+			/*
+			const float znear = OGL_REN_LIG_ZNEAR;
+			if( GetRenderThread().GetChoices().GetUseInverseDepth() ){
+				paramBlock.SetParameterDataVec4( target, 0.0f, znear, -znear, 0.0f );
+				
+			}else{
+				paramBlock.SetParameterDataVec4( target, 1.0f, -2.0f * znear, znear, 1.0f );
+			}
+			*/
 			
-			paramBlock.SetParameterDataVec2( target, scale, scale * -shadowCaster.GetStaticOffset() );
+			const float scale = 1.0f / shadowCaster.GetStaticScale();
+			paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, scale, scale * -shadowCaster.GetStaticOffset() );
 		}
 		
 	}catch( const deException & ){

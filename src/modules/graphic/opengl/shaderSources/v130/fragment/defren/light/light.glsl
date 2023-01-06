@@ -629,8 +629,8 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 		#else
 			float thicknessShadow2D( in mediump sampler2D texsm, in vec3 position ){
 				float thickness = SSSHATEX( texsm, position.st );
-				thickness = pShadowDepthTransform.x / ( pShadowDepthTransform.y - thickness );
-				thickness = ( pShadowDepthTransform.x / ( pShadowDepthTransform.y - position.p ) ) - thickness;
+				thickness = pShadowDepthTransform.z / ( pShadowDepthTransform.w - thickness );
+				thickness = ( pShadowDepthTransform.z / ( pShadowDepthTransform.w - position.p ) ) - thickness;
 				
 				//return max( thickness, 0.0 );
 				return thickness;
@@ -641,7 +641,7 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 	#ifdef EVALUATE_SHADOWCUBE
 	float thicknessShadowCube( in mediump samplerCube texsm, in vec4 position ){
 		float thickness = SSSHATEX( texsm, position.stp );
-		thickness = thickness * pShadowDepthTransform.x + pShadowDepthTransform.y;
+		thickness = thickness * pShadowDepthTransform.z + pShadowDepthTransform.w;
 		thickness = position.q - thickness;
 		
 		//return max( thickness, 0.0 );
@@ -744,28 +744,28 @@ void main( void ){
 				shapos1 = ( pShadowMatrix1[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 0; // layer 0
 				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform.x;
+				thicknessShadowScale = pShadowDepthTransform.z;
 				#endif
 				
 			}else if( position.z < pLayerBorder.y ){
 				shapos1 = ( pShadowMatrix2[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 1; // layer 1
 				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform.y;
+				thicknessShadowScale = pShadowDepthTransform.w;
 				#endif
 				
 			}else if( position.z < pLayerBorder.z ){
 				shapos1 = ( pShadowMatrix3[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 2; // layer 2
 				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform2.x;
+				thicknessShadowScale = pShadowDepthTransform2.z;
 				#endif
 				
 			}else{
 				shapos1 = ( pShadowMatrix4[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 3; // layer 3
 				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform2.y;
+				thicknessShadowScale = pShadowDepthTransform2.w;
 				#endif
 			}
 			

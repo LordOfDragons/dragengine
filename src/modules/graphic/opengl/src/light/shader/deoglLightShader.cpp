@@ -151,8 +151,8 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EI
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow2Solid ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow2Transparent ( vec3 )
 	
-	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // pShadowDepthTransform ( vec2 )
-	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // pShadowDepthTransform2 ( vec2 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pShadowDepthTransform ( vec4 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pShadowDepthTransform2 ( vec4 )
 	
 	{ deoglSPBParameter::evtFloat, 4, 4, 1 }, // pGIShadowMatrix ( mat4 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 } // pGIShadowParams ( vec3 )

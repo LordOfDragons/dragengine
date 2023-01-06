@@ -1439,12 +1439,12 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec2( target, 1.0f / scaleZ[ 0 ], 1.0f / scaleZ[ 1 ] );
+			paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 0 ], 1.0f / scaleZ[ 1 ] );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform2 );
 		if( target != -1 ){
-			paramBlock.SetParameterDataVec2( target, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
+			paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
 		}
 		
 		// global illumination

@@ -30,9 +30,9 @@ UBOLAYOUT uniform InstanceParameters{
 		vec3 pShadow2Solid; // x=pixelSizeU, y=pixelSizeV, z=noiseScale
 		vec3 pShadow2Transparent; // x=pixelSizeU, y=pixelSizeV, z=noiseScale
 		
-		vec2 pShadowDepthTransform;
+		vec4 pShadowDepthTransform; // x=z2depth.scale, y=z2depth.offset, z=depth2z.scale, w=depth2z.offset
 		#ifdef SKY_LIGHT
-			vec2 pShadowDepthTransform2;
+			vec4 pShadowDepthTransform2; // x=z2depth.scale, y=z2depth.offset, z=depth2z.scale, w=depth2z.offset
 		#endif
 		
 		#ifdef SKY_LIGHT
