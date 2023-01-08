@@ -55,6 +55,7 @@ pShadowMap( NULL ),
 pShadowMapInverseDepth( NULL ),
 pShadowMapColor( NULL ),
 pShadowCube( NULL ),
+pShadowCubeInverseDepth( nullptr ),
 pShadowCubeColor( NULL ),
 
 pWeights( NULL ),
@@ -155,6 +156,9 @@ void deoglRTDefaultTextures::pCleanUp(){
 	}
 	if( pShadowCube ){
 		delete pShadowCube;
+	}
+	if( pShadowCubeInverseDepth ){
+		delete pShadowCubeInverseDepth;
 	}
 	if( pShadowMapColor ){
 		delete pShadowMapColor;
@@ -470,7 +474,7 @@ void deoglRTDefaultTextures::pCreateShadowTextures( deoglRenderThread &renderThr
 	pixelBuffer1.SetToFloatColor( 0.0f, 0.0f, 0.0f, 1.0f );
 	pShadowMapInverseDepth = new deoglTexture( renderThread );
 	pShadowMapInverseDepth->SetSize( 1, 1 );
-	pShadowMapInverseDepth->SetDepthFormat( false, false );
+	pShadowMapInverseDepth->SetDepthFormat( false, true );
 	pShadowMapInverseDepth->SetPixels( pixelBuffer1 );
 	
 	deoglPixelBuffer pixelBuffer1b( deoglPixelBuffer::epfByte3, 1, 1, 1 );
@@ -485,8 +489,15 @@ void deoglRTDefaultTextures::pCreateShadowTextures( deoglRenderThread &renderThr
 	pixelBuffer2.SetToFloatColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	pShadowCube = new deoglCubeMap( renderThread );
 	pShadowCube->SetSize( 1 );
-	pShadowCube->SetDepthFormat();
+	pShadowCube->SetDepthFormat( false );
 	pShadowCube->SetPixels( pixelBuffer2 );
+	
+	// shadow cube inverse depth
+	pixelBuffer2.SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	pShadowCubeInverseDepth = new deoglCubeMap( renderThread );
+	pShadowCubeInverseDepth->SetSize( 1 );
+	pShadowCubeInverseDepth->SetDepthFormat( true );
+	pShadowCubeInverseDepth->SetPixels( pixelBuffer2 );
 	
 	deoglPixelBuffer pixelBuffer2b( deoglPixelBuffer::epfByte3, 1, 1, 6 );
 	pixelBuffer2b.SetToIntColor( 0, 0, 0, 255 );

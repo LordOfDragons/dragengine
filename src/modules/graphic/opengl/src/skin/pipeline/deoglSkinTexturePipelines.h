@@ -51,6 +51,7 @@ public:
 		etCounterClipPlane,
 		etMask,
 		etShadowProjection,
+		etShadowProjectionCube,
 		etShadowOrthogonal,
 		etShadowOrthogonalCascaded,
 		etShadowDistance,
@@ -165,6 +166,9 @@ protected:
 	virtual void pPrepareShadowProjection( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
 	
+	virtual void pPrepareShadowProjectionCube( deoglPipelineConfiguration &basePipelineConfig,
+		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
+	
 	virtual void pPrepareShadowOrthogonal( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo );
 	
@@ -194,12 +198,12 @@ protected:
 	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigShadowProjection( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowOrthogonal( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowDistance( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigGIMaterial( deoglPipelineConfiguration &config );
 	
-	virtual void pPipelineConfigSetShadowOffsetPerspective( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigSetShadowOffsetProjection( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigSetShadowOffsetOrthogonal( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigSetShadowOffsetDistance( deoglPipelineConfiguration &config );
 	
@@ -211,6 +215,7 @@ protected:
 	virtual void pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetMask( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowProjection( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	virtual void pSetShadowProjectionCube( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowOrthogonal( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowOrthogonalCascaded( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
 	virtual void pSetShadowDistance( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );

@@ -114,8 +114,8 @@ void deoglSTPipelinesParticle::pPipelineConfigMask( deoglPipelineConfiguration &
 	config.SetEnableCullFace( false );
 }
 
-void deoglSTPipelinesParticle::pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config ){
-	deoglSkinTexturePipelines::pPipelineConfigShadowPerspective( config );
+void deoglSTPipelinesParticle::pPipelineConfigShadowProjection( deoglPipelineConfiguration &config ){
+	deoglSkinTexturePipelines::pPipelineConfigShadowProjection( config );
 	
 	config.SetEnableCullFace( false );
 }

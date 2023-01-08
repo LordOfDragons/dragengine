@@ -711,20 +711,13 @@ void deoglCubeMap::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
-void deoglCubeMap::SetDepthFormat(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
-}
-
-void deoglCubeMap::SetFBODepthFormat(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
-}
-
-void deoglCubeMap::SetFBODepth16Format(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth16 );
-}
-
-void deoglCubeMap::SetDepthFormatFloat(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+void deoglCubeMap::SetDepthFormat( bool useFloat ){
+	if( useFloat ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+		
+	}else{
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+	}
 }
 
 

@@ -281,7 +281,6 @@ deoglRenderLightBase( renderThread )
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
 		renderers.GetOcclusion().AddOccMapDefines( defines );
-		defines.SetDefines( "DEPTH_DISTANCE" );
 		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
 		pipconf.SetSPBInstanceIndexBase( 0 );
 		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
@@ -291,7 +290,7 @@ deoglRenderLightBase( renderThread )
 		if( renderCubeGS ){
 			renderThread.GetShader().SetCommonDefines( defines );
 			renderers.GetOcclusion().AddOccMapDefines( defines );
-			defines.SetDefines( "DEPTH_DISTANCE", "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
+			defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 			
 			pipconf.SetShader( renderThread, "DefRen Occlusion OccMap Cube", defines );
 			pipconf.SetSPBInstanceIndexBase( 0 );
@@ -411,6 +410,7 @@ deoglRenderLightPoint::~deoglRenderLightPoint(){
 //////////////
 
 void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLight ){
+	const bool useInverseDepth = GetRenderThread().GetChoices().GetUseInverseDepth();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
@@ -430,11 +430,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	int mipMapLevel = boundaryMap.GetBaseLevel( size );
-// 	int i;
 	
-	// calculate light matrix
-	const float depthScale = 1.0f / shadowCaster.GetStaticScale(); // 1 / f1 = 1 / scale
-	const float depthOffset = -shadowCaster.GetStaticOffset() / shadowCaster.GetStaticScale(); // -f2 / f1 = -offset / scale
 	const float pixelStep = 2.0f / ( float )shadowmap.GetSize();
 	
 	decMatrix matrixLRot;
@@ -442,6 +438,17 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	matrixLRot.a22 = -matrixLRot.a22;
 	matrixLRot.a23 = -matrixLRot.a23;
 	matrixLRot.a24 = -matrixLRot.a24;
+	
+	decVector2 depth2Pos;
+	
+	if( useInverseDepth ){
+		depth2Pos.x = -OGL_REN_LIG_ZNEAR;
+		depth2Pos.y = 0.0f;
+		
+	}else{
+		depth2Pos.x = OGL_REN_LIG_ZNEAR;
+		depth2Pos.y = 1.0f;
+	}
 	
 	// first down sampling step with implicit position calculation from the shadow map
 	deoglShaderCompiled *shader;
@@ -461,7 +468,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	renderThread.GetFramebuffer().Activate( boundaryMap.GetFBOAt( mipMapLevel ) );
 	
 	shader->SetParameterFloat( spbbQuadParams, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader->SetParameterFloat( spbbPosTransform, depthScale, depthOffset, pixelStep, 1.0f );
+	shader->SetParameterFloat( spbbPosTransform, depth2Pos.x, depth2Pos.y, pixelStep, 1.0f );
 	shader->SetParameterMatrix3x3( spbbMatrixRotation, matrixLRot );
 	shader->SetParameterFloat( spbbInitialMinValue, 0.0f, 0.0f, 0.0f );
 	shader->SetParameterFloat( spbbInitialMaxValue, 0.0f, 0.0f, 0.0f );
@@ -645,8 +652,8 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	// calculate light volume matrices
-	shadowParams.matrixProjection = defren.CreateFrustumDMatrix( 1, 1, DEG2RAD * 90.0f,
-		1.0f, OGL_REN_LIG_ZNEAR, light.GetRange() );
+	shadowParams.matrixProjection = defren.CreateProjectionDMatrix( 1, 1,
+		DEG2RAD * 90.0f, 1.0f, OGL_REN_LIG_ZNEAR, light.GetRange() );
 	
 	deoglCubeMap *texSolidDepth1 = NULL;
 	deoglCubeMap *texSolidDepth2 = NULL;
@@ -870,6 +877,8 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRTDefaultTextures &dt = renderThread.GetDefaultTextures();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
+	deoglCubeMap &dtshadow = renderThread.GetChoices().GetUseInverseDepth()
+		? *dt.GetShadowCubeInverseDepth() : *dt.GetShadowCube();
 	int target;
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettColorCubemap );
@@ -924,32 +933,14 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 	if( target != -1 ){
-		if( shadowDepthMaps.shadow1Solid ){
-			if( shadowDepthMaps.shadow1Solid->GetFormat()->GetIsDepth() ){
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Solid, GetSamplerShadowClampLinear() );
-				
-			}else{
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Solid, GetSamplerClampLinear() );
-			}
-			
-		}else{
-			tsmgr.EnableCubeMap( target, *dt.GetShadowCube(), GetSamplerShadowClampLinear() );
-		}
+		tsmgr.EnableCubeMap( target, shadowDepthMaps.shadow1Solid
+			? *shadowDepthMaps.shadow1Solid : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1TransparentDepth );
 	if( target != -1 ){
-		if( shadowDepthMaps.shadow1Transp ){
-			if( shadowDepthMaps.shadow1Transp->GetFormat()->GetIsDepth() ){
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Transp, GetSamplerShadowClampLinear() );
-				
-			}else{
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow1Transp, GetSamplerClampLinear() );
-			}
-			
-		}else{
-			tsmgr.EnableCubeMap( target, *dt.GetShadowCube(), GetSamplerShadowClampLinear() );
-		}
+		tsmgr.EnableCubeMap( target, shadowDepthMaps.shadow1Transp
+			? *shadowDepthMaps.shadow1Transp : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1TransparentColor );
@@ -960,32 +951,14 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
 	if( target != -1 ){
-		if( shadowDepthMaps.shadow2Solid ){
-			if( shadowDepthMaps.shadow2Solid->GetFormat()->GetIsDepth() ){
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Solid, GetSamplerShadowClampLinear() );
-				
-			}else{
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Solid, GetSamplerClampLinear() );
-			}
-			
-		}else{
-			tsmgr.EnableCubeMap( target, *dt.GetShadowCube(), GetSamplerShadowClampLinear() );
-		}
+		tsmgr.EnableCubeMap( target, shadowDepthMaps.shadow2Solid
+			? *shadowDepthMaps.shadow2Solid : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2TransparentDepth );
 	if( target != -1 ){
-		if( shadowDepthMaps.shadow2Transp ){
-			if( shadowDepthMaps.shadow2Transp->GetFormat()->GetIsDepth() ){
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Transp, GetSamplerShadowClampLinear() );
-				
-			}else{
-				tsmgr.EnableCubeMap( target, *shadowDepthMaps.shadow2Transp, GetSamplerClampLinear() );
-			}
-			
-		}else{
-			tsmgr.EnableCubeMap( target, *dt.GetShadowCube(), GetSamplerShadowClampLinear() );
-		}
+		tsmgr.EnableCubeMap( target, shadowDepthMaps.shadow2Transp
+			? *shadowDepthMaps.shadow2Transp : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2TransparentColor );
@@ -997,13 +970,13 @@ const sShadowDepthMaps &shadowDepthMaps ){
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow1Ambient );
 	if( target != -1 ){
 		tsmgr.EnableCubeMap( target, shadowDepthMaps.shadow1Ambient
-			? *shadowDepthMaps.shadow1Ambient : *dt.GetShadowCube(), GetSamplerShadowClampLinear() );
+			? *shadowDepthMaps.shadow1Ambient : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettShadow2Ambient );
 	if( target != -1 ){
 		tsmgr.EnableCubeMap( target, shadowDepthMaps.shadow2Ambient
-			? *shadowDepthMaps.shadow2Ambient : *dt.GetShadowCube(), GetSamplerShadowClampLinear() );
+			? *shadowDepthMaps.shadow2Ambient : dtshadow, GetSamplerShadowClampLinearInverse() );
 	}
 	
 	target = shader.GetTextureTarget( deoglLightShader::ettLightDepth1 );
@@ -1023,6 +996,7 @@ void deoglRenderLightPoint::RenderShadows( deoglRenderPlanLight &planLight, sSha
 	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderThread &renderThread = GetRenderThread();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglShadowCaster::eShadowTypes shadowType = shadowCaster.GetShadowType();
@@ -1109,10 +1083,13 @@ DEBUG_RESET_TIMER
 			// TODO for static shadow maps using always lod level 0 is enough. lod levels are supposed to keep the
 			// shape of the object as well as possible thus the shadow error is small. on a distance where the
 			// rendered lod level can differ from the static shadow casting lod level this is hard to spot anyways
-			shadowMapper.SetForeignSolidDepthCubeMap( scsolid.ObtainStaticCubeMapWithSize( staticShadowMapSize ) );
+			shadowMapper.SetForeignSolidDepthCubeMap(
+				scsolid.ObtainStaticCubeMapWithSize( staticShadowMapSize, useInverseDepth ) );
 			if( shadowParams.transparentStaticShadow ){
-				shadowMapper.SetForeignTransparentDepthCubeMap( sctransp.ObtainStaticShadowCubeMapWithSize( staticTranspShadowMapSize ) );
-				shadowMapper.SetForeignTransparentColorCubeMap( sctransp.ObtainStaticColorCubeMapWithSize( staticTranspShadowMapSize ) );
+				shadowMapper.SetForeignTransparentDepthCubeMap(
+					sctransp.ObtainStaticShadowCubeMapWithSize( staticTranspShadowMapSize, useInverseDepth ) );
+				shadowMapper.SetForeignTransparentColorCubeMap(
+					sctransp.ObtainStaticColorCubeMapWithSize( staticTranspShadowMapSize ) );
 			}
 			
 			shadowParams.collideList1 = light.GetStaticCollideList();
@@ -1146,7 +1123,8 @@ DEBUG_RESET_TIMER
 			}
 			*/
 			if( useAmbient ){
-				shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainStaticCubeMapWithSize( staticAmbientMapSize ) );
+				shadowMapper.SetForeignAmbientCubeMap(
+					scambient.ObtainStaticCubeMapWithSize( staticAmbientMapSize, useInverseDepth ) );
 				
 				RenderAmbientMap( planLight, shadowMapper, shadowParams );
 				
@@ -1259,23 +1237,26 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 		if( requiresUpdate ){
 DEBUG_RESET_TIMER
 			if( useTemporary ){
-				shadowMapper.SetForeignSolidDepthCubeMap(
-					scsolid.ObtainTemporaryCubeMapWithSize( dynamicShadowMapSize )->GetCubeMap() );
+				shadowMapper.SetForeignSolidDepthCubeMap( scsolid.ObtainTemporaryCubeMapWithSize(
+					dynamicShadowMapSize, useInverseDepth )->GetCubeMap() );
 				
 				if( shadowParams.transparentDynamicShadow ){
-					shadowMapper.SetForeignTransparentDepthCubeMap( sctransp.
-						ObtainTemporaryShadowCubeMapWithSize( dynamicTranspShadowMapSize )->GetCubeMap() );
-					shadowMapper.SetForeignTransparentColorCubeMap( sctransp.
-						ObtainTemporaryColorCubeMapWithSize( dynamicTranspShadowMapSize )->GetCubeMap() );
+					shadowMapper.SetForeignTransparentDepthCubeMap(
+						sctransp.ObtainTemporaryShadowCubeMapWithSize(
+							dynamicTranspShadowMapSize, useInverseDepth )->GetCubeMap() );
+					shadowMapper.SetForeignTransparentColorCubeMap(
+						sctransp.ObtainTemporaryColorCubeMapWithSize(
+							dynamicTranspShadowMapSize )->GetCubeMap() );
 				}
 				
 			}else{
-				shadowMapper.SetForeignSolidDepthCubeMap(
-					scsolid.ObtainDynamicCubeMapWithSize( dynamicShadowMapSize ) );
+				shadowMapper.SetForeignSolidDepthCubeMap( scsolid.ObtainDynamicCubeMapWithSize(
+					dynamicShadowMapSize, useInverseDepth ) );
 				
 				if( shadowParams.transparentDynamicShadow ){
-					shadowMapper.SetForeignTransparentDepthCubeMap( sctransp.
-						ObtainDynamicShadowCubeMapWithSize( dynamicTranspShadowMapSize ) );
+					shadowMapper.SetForeignTransparentDepthCubeMap(
+						sctransp.ObtainDynamicShadowCubeMapWithSize(
+							dynamicTranspShadowMapSize, useInverseDepth ) );
 					shadowMapper.SetForeignTransparentColorCubeMap( sctransp.
 						ObtainDynamicColorCubeMapWithSize( dynamicTranspShadowMapSize ) );
 				}
@@ -1309,11 +1290,12 @@ DEBUG_PRINT_TIMER( "Shadow Dynamic Transparent" );
 			// ambient map
 			if( useAmbient ){
 				if( useTemporary ){
-					shadowMapper.SetForeignAmbientCubeMap(
-						scambient.ObtainTemporaryCubeMapWithSize( dynamicAmbientMapSize )->GetCubeMap() );
+					shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainTemporaryCubeMapWithSize(
+						dynamicAmbientMapSize, useInverseDepth )->GetCubeMap() );
 					
 				}else{
-					shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainDynamicCubeMapWithSize( dynamicAmbientMapSize ) );
+					shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainDynamicCubeMapWithSize(
+						dynamicAmbientMapSize, useInverseDepth ) );
 				}
 				
 				RenderAmbientMap( planLight, shadowMapper, shadowParams );
@@ -1356,6 +1338,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightPoint.RenderShadowMaps" );
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
@@ -1410,8 +1393,13 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				shadowParams.shadowScale, shadowParams.shadowOffset );
 			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 				smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP,
-				shadowParams.matrixProjection );
+			
+			decDMatrix matProj( shadowParams.matrixProjection );
+			if( renderThread.GetChoices().GetUseInverseDepth() ){
+				matProj.a34 -= 0.0001f;
+			}
+			
+			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
 			
 			for( cmf=0; cmf<6; cmf++ ){
 				deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
@@ -1419,7 +1407,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				renderParamBlock->SetParameterDataArrayMat4x3(
 					deoglSkinShader::erutMatrixV, cmf, matrixCamera );
 				renderParamBlock->SetParameterDataArrayMat4x4(
-					deoglSkinShader::erutMatrixVP, cmf, matrixCamera * shadowParams.matrixProjection );
+					deoglSkinShader::erutMatrixVP, cmf, matrixCamera * matProj );
 				renderParamBlock->SetParameterDataArrayMat3x3(
 					deoglSkinShader::erutMatrixVn, cmf, matrixCamera.GetRotationMatrix().Invert() );
 			}
@@ -1439,19 +1427,21 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	if( useGSRenderCube ){
 		addToRenderTask.SetUseSpecialParamBlock( true );
-		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistanceCube );
+		// addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistanceCube );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowProjectionCube );
 		
 	}else{
-		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistance );
+		// addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistance );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowProjection );
 	}
 	
 	const GLfloat clearColor[ 4 ] = { 1.0f, 0.0f, 0.0f, 0.0f };
-	const GLfloat clearDepth = ( GLfloat )1.0f; // point light uses linear depth
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	
 	// render the solid shadow cube map
 	if( ! bugClearEntireCubeMap ){
 		pPipelineClearBuffers->Activate();
-		shadowMapper.ActivateSolidCubeMap( shadowParams.solidShadowMapSize );
+		shadowMapper.ActivateSolidCubeMap( shadowParams.solidShadowMapSize, useInverseDepth );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 		
 		if( shadowParams.solid ){
@@ -1513,13 +1503,18 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					shadowParams.shadowScale, shadowParams.shadowOffset );
 				renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 					smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-				renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP,
-					shadowParams.matrixProjection );
+				
+				decDMatrix matProj( shadowParams.matrixProjection );
+				if( renderThread.GetChoices().GetUseInverseDepth() ){
+					matProj.a34 -= 0.0001f;
+				}
+				
+				renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
 				
 				renderParamBlock->SetParameterDataMat4x3(
 					deoglSkinShader::erutMatrixV, matrixCamera );
 				renderParamBlock->SetParameterDataMat4x4(
-					deoglSkinShader::erutMatrixVP, matrixCamera * shadowParams.matrixProjection );
+					deoglSkinShader::erutMatrixVP, matrixCamera * matProj );
 				renderParamBlock->SetParameterDataMat3x3(
 					deoglSkinShader::erutMatrixVn, matrixCamera.GetRotationMatrix().Invert() );
 				
@@ -1531,7 +1526,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			}
 			renderParamBlock->UnmapBuffer();
 			
-			shadowMapper.ActivateSolidCubeMapFace( shadowParams.solidShadowMapSize, pCubeFaces[ cmf ] );
+			shadowMapper.ActivateSolidCubeMapFace( shadowParams.solidShadowMapSize, useInverseDepth, pCubeFaces[ cmf ] );
 			
 			if( bugClearEntireCubeMap ){
 				pPipelineClearBuffers->Activate();
@@ -1589,7 +1584,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		
 		if( ! bugClearEntireCubeMap ){
 			pPipelineClearBuffers->Activate();
-			shadowMapper.ActivateTransparentCubeMap( shadowParams.transpShadowMapSize );
+			shadowMapper.ActivateTransparentCubeMap( shadowParams.transpShadowMapSize, useInverseDepth );
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 			
@@ -1647,15 +1642,21 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 						shadowParams.shadowScale, shadowParams.shadowOffset );
 					renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 						smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-					renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP,
-						shadowParams.matrixProjection );
+					
+					decDMatrix matProj( shadowParams.matrixProjection );
+					if( renderThread.GetChoices().GetUseInverseDepth() ){
+						matProj.a34 -= 0.0001f;
+					}
+					
+					renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matProj );
 						
 					renderParamBlock->SetParameterDataMat4x3(
 						deoglSkinShader::erutMatrixV, matrixCamera );
 					renderParamBlock->SetParameterDataMat4x4(
-						deoglSkinShader::erutMatrixVP, matrixCamera * shadowParams.matrixProjection );
+						deoglSkinShader::erutMatrixVP, matrixCamera * matProj );
 					
-					renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
+					renderParamBlock->SetParameterDataBVec4(
+						deoglSkinShader::erutConditions1, false, false, false, false );
 					
 				}catch( const deException & ){
 					renderParamBlock->UnmapBuffer();
@@ -1663,7 +1664,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 				}
 				renderParamBlock->UnmapBuffer();
 				
-				shadowMapper.ActivateTransparentCubeMapFace( shadowParams.transpShadowMapSize, pCubeFaces[ cmf ] );
+				shadowMapper.ActivateTransparentCubeMapFace( shadowParams.transpShadowMapSize, useInverseDepth, pCubeFaces[ cmf ] );
 				if( bugClearEntireCubeMap ){
 					pPipelineClearBuffers->Activate();
 					OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
@@ -1716,6 +1717,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightPoint.RenderAmbientMap" );
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
@@ -1776,11 +1778,11 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	}
 	
 	// clear
-	const GLfloat clearDepth = ( GLfloat )1.0f; // point light uses linear depth
+	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
 	
 	if( ! bugClearEntireCubeMap ){
 		pPipelineClearBuffers->Activate();
-		shadowMapper.ActivateAmbientCubeMap( shadowParams.ambientMapSize );
+		shadowMapper.ActivateAmbientCubeMap( shadowParams.ambientMapSize, useInverseDepth );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
 	}
 	
@@ -1829,7 +1831,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			}
 			renderParamBlock->UnmapBuffer();
 			
-			shadowMapper.ActivateAmbientCubeMapFace( shadowParams.ambientMapSize, pCubeFaces[ cmf ] );
+			shadowMapper.ActivateAmbientCubeMapFace( shadowParams.ambientMapSize, useInverseDepth, pCubeFaces[ cmf ] );
 			
 			if( bugClearEntireCubeMap ){
 				pPipelineClearBuffers->Activate();
@@ -1949,7 +1951,6 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 	const bool isCameraInside = planLight.GetLight()->GetCameraInside();
 	const decDMatrix &matrixLight = light.GetMatrix();
 	const decDVector &lightPosition = matrixLight.GetPosition();
-	const deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	
 	float noiseScale;
 	int target;
@@ -1998,9 +1999,11 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			paramBlock.SetParameterDataArrayVec3( target, 1, matrixMVStereo.GetPosition() );
 		}
 		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightParams );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, isCameraInside ? 0.0f : ( isDepthCompareLEqual ? 1.0f : -1.0f ) );
+			paramBlock.SetParameterDataVec4( target,
+				isCameraInside ? 0.0f : ( isDepthCompareLEqual ? 1.0f : -1.0f ),
+				OGL_REN_LIG_ZNEAR, 0.0f, 0.0f );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
@@ -2026,15 +2029,6 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			paramBlock.SetParameterDataArrayMat4x3( target, 1, matrixRotate.QuickMultiply( matrixMVStereo ).QuickInvert() );
 		}
 		
-		/*
-		float pcfSize = config.GetShadowCubePCFSize() / ( float )shadowMapSize;
-		shader->SetParameterDMatrix4x4( splShadowMatrix, shadowMatrix );
-		shader->SetParameterFloat( splShaStaParams, shadowCaster.GetStaticScale(), -shadowCaster.GetStaticOffset(), pcfSize );
-		shader->SetParameterFloat( splShaDynParams, shadowCaster.GetDynamicScale(), -shadowCaster.GetDynamicOffset(), pcfSize );
-		*/
-		const float shadowScale = shadowCaster.GetStaticScale();
-		const float shadowOffset = shadowCaster.GetStaticOffset();
-		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );
 		if( target != -1 ){
 			if( shadowDepthMaps.shadow1Solid ){
@@ -2044,7 +2038,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 				noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 			}
 			
-			paramBlock.SetParameterDataVec3( target, shadowScale, shadowOffset, noiseScale );
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, noiseScale );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Transparent );
@@ -2056,7 +2050,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 				noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 			}
 			
-			paramBlock.SetParameterDataVec3( target, shadowScale, shadowOffset, noiseScale );
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, noiseScale );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow2Solid );
@@ -2068,7 +2062,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 				noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 			}
 			
-			paramBlock.SetParameterDataVec3( target, shadowScale, shadowOffset, noiseScale );
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, noiseScale );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow2Transparent );
@@ -2080,7 +2074,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 				noiseScale = config.GetShadowCubePCFSize() / 1024.0f;
 			}
 			
-			paramBlock.SetParameterDataVec3( target, shadowScale, shadowOffset, noiseScale );
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, noiseScale );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform );
@@ -2099,18 +2093,29 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			// with:
 			//   param1 = 1 / GetStaticScale()
 			//   param2 = -GetStaticOffset() / GetStaticScale()
-			/*
+			// 
+			// basically matrixLightProjection * matrixBias where matrixBias.zw = (1,0) if
+			// inverse depth is used:
+			// 
+			// z' = z * proj.a33 + proj.a34
+			// z'' = z'' * bias.a33 + bias.a34
+			// z'' = (z * proj.a33 + proj.a34) * bias.a33 + bias.a34
+			// z'' = z * proj.a33 * bias.a33 + proj.a34 * bias.a33 + bias.a34
+			
+			
 			const float znear = OGL_REN_LIG_ZNEAR;
 			if( GetRenderThread().GetChoices().GetUseInverseDepth() ){
+				// proj.a33 = 0,  proj.a34 = znear,  bias.a33 = 1,  bias.a34 = 0
 				paramBlock.SetParameterDataVec4( target, 0.0f, znear, -znear, 0.0f );
 				
 			}else{
-				paramBlock.SetParameterDataVec4( target, 1.0f, -2.0f * znear, znear, 1.0f );
+				// proj.a33 = 1,  proj.a34 = -2 * znear,  bias.a33 = 0.5,  bias.a34 = 0.5
+				paramBlock.SetParameterDataVec4( target, 0.5f, 0.5f - znear, znear, 1.0f );
 			}
-			*/
 			
-			const float scale = 1.0f / shadowCaster.GetStaticScale();
-			paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, scale, scale * -shadowCaster.GetStaticOffset() );
+			
+			// const float scale = 1.0f / shadowCaster.GetStaticScale();
+			// paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, scale, scale * -shadowCaster.GetStaticOffset() );
 		}
 		
 	}catch( const deException & ){

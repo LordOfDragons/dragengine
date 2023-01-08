@@ -512,14 +512,12 @@ float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DT
 float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, in vec4 position ){
 	float shadow;
 	
-	float pdist = position.w;
-	position.w = position.w * params.x + params.y;
-	
 	#ifdef NOISE_TAP
 		vec2 tcnoise = gl_FragCoord.xy / vec2( 32.0 );
 	#endif
 	
 	#if defined PCF_9TAP || defined PCF_4TAP || defined PCF_VARTAP || defined PCF_NOISETAP
+		float pdist = length( position.xyz );
 		float nolen = pdist * params.z;
 		vec3 no1, no2;
 		
@@ -773,29 +771,18 @@ void main( void ){
 		#endif
 		
 	#elif defined PARTICLE_LIGHT
-		vec4 shapos1 = vec4( position - vParticleLightPosition, 1.0 );
+		vec4 shapos1 = vec4( position - vParticleLightPosition, 1 );
 		
 	#else
-		vec4 shapos1 = pShadowMatrix1[ vLayer ] * vec4( position, 1.0 );
-		
-		#ifndef POINT_LIGHT
-			#ifdef SHADOW_INVERSE_DEPTH
-				// for inverse depth z-values below z-near cause the depth value to either approach
-				// +/- infinity. especially negative z-values cause major troubles. if the z-value
-				// drops below z-near it has to be clipped
-				if( shapos1.w < shapos1.z ){
-					discard;
-				}
-			#else
-				if( shapos1.z < epsilon ){
-					discard;
-				}
-			#endif
-		#endif
+		vec4 shapos1 = pShadowMatrix1[ vLayer ] * vec4( position, 1 );
 		
 		#ifdef SMA1_CUBE
-			shapos1.w = length( shapos1.xyz );
+			vec3 absshapos1 = abs( vec3( shapos1 ) );
+			float shaZ1 = max( max( absshapos1.x, absshapos1.y ), max( absshapos1.z, pLightShadowClamp ) );
+			shapos1.q = ( shaZ1 * pShadowDepthTransform.x + pShadowDepthTransform.y ) / shaZ1;
+			
 		#else
+			shapos1.pq = max( shapos1.pq, vec2( pLightShadowClamp ) );
 			shapos1.stp /= shapos1.q;
 		#endif
 		
@@ -825,8 +812,12 @@ void main( void ){
 				vec4 shapos2 = pShadowMatrix2[ vLayer ] * vec4( position, 1.0 );
 				
 				#ifdef SMA2_CUBE
-					shapos2.w = length( shapos2.xyz );
+					//shapos2.w = length( shapos2.xyz );
+					vec3 absshapos2 = abs( shapos2.xyz );
+					float shaZ2 = max( max( absshapos2.x, absshapos2.y ), max( absshapos2.z, pLightShadowClamp ) );
+					shapos2.q = ( shaZ2 * pShadowDepthTransform.x + pShadowDepthTransform.y ) / shaZ2;
 				#else
+					shapos2.pq = max( shapos2.pq, vec2( pLightShadowClamp ) );
 					shapos2.stp /= shapos2.q;
 				#endif
 			#endif

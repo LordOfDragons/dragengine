@@ -718,17 +718,20 @@ const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinT
 	case deoglSkinTexturePipelines::etShadowProjection:
 		return &pRenderTaskConfigs[ 0 ];
 		
-	case deoglSkinTexturePipelines::etShadowOrthogonal:
+	case deoglSkinTexturePipelines::etShadowProjectionCube:
 		return &pRenderTaskConfigs[ 1 ];
 		
-	case deoglSkinTexturePipelines::etShadowOrthogonalCascaded:
+	case deoglSkinTexturePipelines::etShadowOrthogonal:
 		return &pRenderTaskConfigs[ 2 ];
 		
-	case deoglSkinTexturePipelines::etShadowDistance:
+	case deoglSkinTexturePipelines::etShadowOrthogonalCascaded:
 		return &pRenderTaskConfigs[ 3 ];
 		
-	case deoglSkinTexturePipelines::etShadowDistanceCube:
+	case deoglSkinTexturePipelines::etShadowDistance:
 		return &pRenderTaskConfigs[ 4 ];
+		
+	case deoglSkinTexturePipelines::etShadowDistanceCube:
+		return &pRenderTaskConfigs[ 5 ];
 		
 	default:
 		return nullptr;
@@ -736,15 +739,16 @@ const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinT
 }
 
 void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
-	const deoglSkinTexturePipelines::eTypes typesShadow[ 5 ] = {
+	const deoglSkinTexturePipelines::eTypes typesShadow[ 6 ] = {
 		deoglSkinTexturePipelines::etShadowProjection,
+		deoglSkinTexturePipelines::etShadowProjectionCube,
 		deoglSkinTexturePipelines::etShadowOrthogonal,
 		deoglSkinTexturePipelines::etShadowOrthogonalCascaded,
 		deoglSkinTexturePipelines::etShadowDistance,
 		deoglSkinTexturePipelines::etShadowDistanceCube };
 	int i;
 	
-	for( i=0; i<5; i++ ){
+	for( i=0; i<6; i++ ){
 		pRenderTaskConfigs[ i ].RemoveAllTextures();
 	}
 	
@@ -799,7 +803,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 		}
 		
 		int j;
-		for( j=0; j<5; j++ ){
+		for( j=0; j<6; j++ ){
 			deoglRenderTaskConfigTexture &rct = pRenderTaskConfigs[ j ].AddTexture();
 			rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
 			rct.SetPipeline( skinTexture->GetPipelines().GetAt( pipelinesType ).GetWithRef( typesShadow[ j ] ).GetPipeline() );

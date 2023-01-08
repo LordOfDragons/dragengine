@@ -95,7 +95,7 @@ public:
 	deoglGIBVHDynamic *pGIBVHDynamic;
 	bool pDirtyGIBVHPositions;
 	
-	deoglRenderTaskConfig pRenderTaskConfigs[ 5 ];
+	deoglRenderTaskConfig pRenderTaskConfigs[ 6 ];
 	
 	
 public:

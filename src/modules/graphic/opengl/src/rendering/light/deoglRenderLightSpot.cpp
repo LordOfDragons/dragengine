@@ -1706,9 +1706,11 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 			paramBlock.SetParameterDataArrayVec3( target, 1, matrixMVStereo.TransformView() );
 		}
 		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightParams );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, isCameraInside ? 0.0f : ( isDepthCompareLEqual ? 1.0f : -1.0f ) );
+			paramBlock.SetParameterDataVec4( target,
+				isCameraInside ? 0.0f : ( isDepthCompareLEqual ? 1.0f : -1.0f ),
+				OGL_REN_LIG_ZNEAR, 0.0f, 0.0f );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );

@@ -63,7 +63,7 @@ public:
 	const deoglRenderableDepthCubeMap *GetCubeMapAt( int index ) const;
 	
 	/** Retrieves the renderable cubemap for the given format. */
-	deoglRenderableDepthCubeMap *GetCubeMapWith( int size );
+	deoglRenderableDepthCubeMap *GetCubeMapWith( int size, bool useFloat );
 	/*@}*/
 };
 

@@ -82,7 +82,7 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	
 	"pLightPosition", // eiutLightPosition
 	"pLightView", // eiutLightView
-	"pDepthCompare", // eiutDepthCompare
+	"pLightParams", // eiutLightParams
 	
 	"pShadowMatrix", // eiutShadowMatrix
 	"pShadowMatrix2", // eiutShadowMatrix2
@@ -128,23 +128,23 @@ struct sSPBParameterDefinition{
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EIUT_COUNT ] = {
-	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pMatrixMVP ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pMatrixMV ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pMatrixMVP ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pMatrixMV ( mat4x3[2] )
 	
 	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pSamplesParams ( vec4 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pBurstFactor ( float )
 	
-	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightPosition ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightView ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pDepthCompare ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightPosition ( vec3[2] )
+	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightView ( vec3[2] )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pLightParams ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix2 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix3 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix4 ( mat4 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix2 ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix3 ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix4 ( mat4[2] )
 	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pLayerBorder ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pLightImageOmniMatrix ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pLightImageOmniMatrix ( mat4x3[2] )
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow1Solid ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow1Transparent ( vec3 )
@@ -797,11 +797,10 @@ void deoglLightShader::UpdateUniformTargets(){
 	}else{
 		pInstanceUniformTargets[ eiutLightPosition ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutLightView ] = pUsedInstanceUniformTargetCount++;
-		pInstanceUniformTargets[ eiutDepthCompare ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutLightParams ] = pUsedInstanceUniformTargetCount++;
 		
 		pInstanceUniformTargets[ eiutShadowMatrix1 ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutShadowMatrix2 ] = pUsedInstanceUniformTargetCount++;
-		
 		if( modeSky ){
 			pInstanceUniformTargets[ eiutShadowMatrix3 ] = pUsedInstanceUniformTargetCount++;
 			pInstanceUniformTargets[ eiutShadowMatrix4 ] = pUsedInstanceUniformTargetCount++;
@@ -818,7 +817,6 @@ void deoglLightShader::UpdateUniformTargets(){
 		pInstanceUniformTargets[ eiutShadow2Transparent ] = pUsedInstanceUniformTargetCount++;
 		
 		pInstanceUniformTargets[ eiutShadowDepthTransform ] = pUsedInstanceUniformTargetCount++;
-		
 		if( modeSky ){
 			pInstanceUniformTargets[ eiutShadowDepthTransform2 ] = pUsedInstanceUniformTargetCount++;
 		}

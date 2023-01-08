@@ -60,7 +60,7 @@ protected:
 	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigMask( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigShadowProjection( deoglPipelineConfiguration &config );
 	virtual void pPipelineConfigShadowDistance( deoglPipelineConfiguration &config );
 	
 	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,

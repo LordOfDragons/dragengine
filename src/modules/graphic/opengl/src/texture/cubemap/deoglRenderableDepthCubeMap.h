@@ -37,6 +37,7 @@ class deoglCubeMap;
 class deoglRenderableDepthCubeMap{
 private:
 	int pSize;
+	bool pUseFloat;
 	bool pInUse;
 	
 	deoglCubeMap *pCubeMap;
@@ -47,7 +48,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
-	deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size );
+	deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size, bool useFloat );
 	/** Cleans up the renderable cubemap. */
 	~deoglRenderableDepthCubeMap();
 	/*@}*/
@@ -57,8 +58,11 @@ public:
 	/** Retrieves the size. */
 	inline int GetSize() const{ return pSize; }
 	
+	/** Use float depth. */
+	inline bool GetUseFloat() const{ return pUseFloat; }
+	
 	/** Determines if the format matches the given format. */
-	bool Matches( int size ) const;
+	bool Matches( int size, bool useFloat ) const;
 	
 	/** Determines if the shadow map is in use. */
 	inline bool GetInUse() const{ return pInUse; }

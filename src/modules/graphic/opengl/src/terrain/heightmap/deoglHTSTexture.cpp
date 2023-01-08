@@ -155,6 +155,7 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType( deoglSkinTexturePip
 		return GetTUCDepth();
 		
 	case deoglSkinTexturePipelines::etShadowProjection:
+	case deoglSkinTexturePipelines::etShadowProjectionCube:
 	case deoglSkinTexturePipelines::etShadowOrthogonal:
 	case deoglSkinTexturePipelines::etShadowDistance:
 	case deoglSkinTexturePipelines::etShadowDistanceCube:

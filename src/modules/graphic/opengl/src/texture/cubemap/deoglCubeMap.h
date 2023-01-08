@@ -143,16 +143,7 @@ public:
 	void SetFBOFormat( int channels, bool useFloat );
 	
 	/** Sets the suitable depth texture format. */
-	void SetDepthFormat();
-	
-	/** Sets the suitable depth texture format for rendering using an FBO. */
-	void SetFBODepthFormat();
-	
-	/** Sets the suitable depth16 texture format for rendering using an FBO. */
-	void SetFBODepth16Format();
-	
-	/** \brief Set floating point depth texture format suitable for rendering using an FBO. */
-	void SetDepthFormatFloat();
+	void SetDepthFormat( bool useFloat );
 	
 	/** Creates a camera matrix for a cube map face. */
 	static void CreateMatrixForFace( decMatrix &matrix, const decVector &position, int face );

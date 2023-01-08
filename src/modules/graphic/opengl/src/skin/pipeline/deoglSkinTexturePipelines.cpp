@@ -55,6 +55,7 @@ static const deoglDebugNamesEnum::sEntry vDebugNamesTypesEntries[] = {
 	{ deoglSkinTexturePipelines::etCounterClipPlane, "etCounterClipPlane" },
 	{ deoglSkinTexturePipelines::etMask, "etMask" },
 	{ deoglSkinTexturePipelines::etShadowProjection, "etShadowProjection" },
+	{ deoglSkinTexturePipelines::etShadowProjectionCube, "etShadowProjectionCube" },
 	{ deoglSkinTexturePipelines::etShadowOrthogonal, "etShadowOrthogonal" },
 	{ deoglSkinTexturePipelines::etShadowOrthogonalCascaded, "etShadowOrthogonalCascaded" },
 	{ deoglSkinTexturePipelines::etShadowDistance, "etShadowDistance" },
@@ -260,8 +261,9 @@ const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
 void deoglSkinTexturePipelines::pPrepareAllShadow( deoglSkinShaderConfig &baseShaderConfig,
 const ChannelInfo &cinfo ){
 	deoglPipelineConfiguration pipconf;
-	pPipelineConfigShadowPerspective( pipconf );
+	pPipelineConfigShadowProjection( pipconf );
 	pPrepareShadowProjection( pipconf, baseShaderConfig, cinfo );
+	pPrepareShadowProjectionCube( pipconf, baseShaderConfig, cinfo );
 	
 	pPipelineConfigShadowOrthogonal( pipconf );
 	pPrepareShadowOrthogonal( pipconf, baseShaderConfig, cinfo );
@@ -279,6 +281,15 @@ deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo ) {
 	pSetShadowProjection( shaconf, cinfo );
 	
 	pCreatePipelines( basePipelineConfig, shaconf, etShadowProjection, emDoubleSided );
+}
+
+void deoglSkinTexturePipelines::pPrepareShadowProjectionCube( deoglPipelineConfiguration &basePipelineConfig,
+deoglSkinShaderConfig &baseShaderConfig, const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+	deoglSkinShaderConfig shaconf( baseShaderConfig );
+	pSetBase( shaconf );
+	pSetShadowProjectionCube( shaconf, cinfo );
+	
+	pCreatePipelines( basePipelineConfig, shaconf, etShadowProjectionCube, emDoubleSided );
 }
 
 void deoglSkinTexturePipelines::pPrepareShadowOrthogonal( deoglPipelineConfiguration &basePipelineConfig,
@@ -453,7 +464,7 @@ void deoglSkinTexturePipelines::pPipelineConfigMask( deoglPipelineConfiguration 
 	config.EnableCulling( false );
 }
 
-void deoglSkinTexturePipelines::pPipelineConfigShadowPerspective( deoglPipelineConfiguration &config ){
+void deoglSkinTexturePipelines::pPipelineConfigShadowProjection( deoglPipelineConfiguration &config ){
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
 	
 	config.Reset();
@@ -462,7 +473,7 @@ void deoglSkinTexturePipelines::pPipelineConfigShadowPerspective( deoglPipelineC
 	config.SetClipControl( choices.GetUseInverseDepth() );
 	config.EnableCulling( false );
 	
-	pPipelineConfigSetShadowOffsetPerspective( config );
+	pPipelineConfigSetShadowOffsetProjection( config );
 }
 
 void deoglSkinTexturePipelines::pPipelineConfigShadowOrthogonal( deoglPipelineConfiguration &config ){
@@ -491,7 +502,7 @@ void deoglSkinTexturePipelines::pPipelineConfigGIMaterial( deoglPipelineConfigur
 
 
 
-void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetPerspective( deoglPipelineConfiguration &config ){
+void deoglSkinTexturePipelines::pPipelineConfigSetShadowOffsetProjection( deoglPipelineConfiguration &config ){
 	
 	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
@@ -587,6 +598,13 @@ void deoglSkinTexturePipelines::pSetShadowProjection( deoglSkinShaderConfig &con
 	
 	pSetMaskedSolidity( config );
 	pSetTypeShadow( config, cinfo );
+}
+
+void deoglSkinTexturePipelines::pSetShadowProjectionCube( deoglSkinShaderConfig &config,
+const deoglSkinTexturePipelines::ChannelInfo &cinfo ){
+	pSetShadowProjection( config, cinfo );
+	
+	config.SetGSRenderCube( true );
 }
 
 void deoglSkinTexturePipelines::pSetShadowOrthogonal( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){

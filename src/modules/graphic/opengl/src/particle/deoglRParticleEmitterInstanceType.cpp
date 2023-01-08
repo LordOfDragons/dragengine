@@ -283,6 +283,7 @@ deoglSkinTexturePipelines::eTypes type ){
 	case deoglSkinTexturePipelines::etDepthReversed:
 	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
 	case deoglSkinTexturePipelines::etShadowProjection:
+	case deoglSkinTexturePipelines::etShadowProjectionCube:
 	case deoglSkinTexturePipelines::etShadowOrthogonal:
 	case deoglSkinTexturePipelines::etShadowDistance:
 	case deoglSkinTexturePipelines::etShadowDistanceCube:

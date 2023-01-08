@@ -80,7 +80,7 @@ public:
 		
 		eiutLightPosition,
 		eiutLightView,
-		eiutDepthCompare,
+		eiutLightParams,
 		
 		eiutShadowMatrix1,
 		eiutShadowMatrix2,
