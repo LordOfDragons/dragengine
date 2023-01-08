@@ -650,6 +650,19 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 
 
 
+// Discard fragment without disabling early-z
+///////////////////////////////////////////////
+
+void outputUnlit(){
+	outColor = vec4( 0 );
+	outLuminance = 0;
+	#ifdef WITH_SUBSURFACE
+		outSubSurface = vec4( 0 );
+	#endif
+}
+
+
+
 // Main Function
 //////////////////
 
@@ -668,36 +681,30 @@ void main( void ){
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
 	#ifndef GI_RAY
-		if( diffuse.a == 0.0 ){
-			discard;
+		if( diffuse.a == 0 ){
+			outputUnlit();
+			return;
 		}
 	#endif
 	
 	// determine position of fragment to light
 	#ifdef GI_RAY
 		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
-		if( positionDistance.a > 9999.0 ){
+		if( positionDistance.a > 9999 ){
 			// ray hits nothing. for sky lights this adds the ambient light contribution.
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT
 				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
 				outLuminance = dot( lightColor, lumiFactors );
 				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
-				return;
 			#else
-				discard;
+				outputUnlit();
 			#endif
+			return;
 		}
 		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1.0 ) );
 	#else
 		float depth = sampleDepth( texDepth, tc );
-		
-		#ifndef PARTICLE_LIGHT
-			if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
-				discard;
-			}
-		#endif
-		
 		#ifdef FULLSCREENQUAD
 			vec3 position = depthToPosition( depth, vScreenCoord, vLayer );
 		#else
@@ -713,8 +720,9 @@ void main( void ){
 		float dist = length( lightDir );
 		
 		// discard if pre-lit (length = 0) or outside the light range
-		if( dist == 0.0 || dist > pLightRange ){
-			discard;
+		if( dist == 0 || dist > pLightRange ){
+			outputUnlit();
+			return;
 		}
 		lightDir /= dist;
 		
@@ -794,14 +802,16 @@ void main( void ){
 			// the same no matter how squashed the cone is
 			float spotConeRadius = length( shapos1.st - vec2( 0.5 ) );
 			if( spotConeRadius > 0.5 ){
-				discard;
+				outputUnlit();
+				return;
 			}
 			
 		#elif defined PROJECTOR_LIGHT
 			// discard fragments outide the projector frustum
 			vec2 spotConeRadius = abs( shapos1.st - vec2( 0.5 ) );
 			if( any( greaterThan( spotConeRadius, vec2( 0.5 ) ) ) ){
-				discard;
+				outputUnlit();
+				return;
 			}
 		#endif
 		
@@ -897,12 +907,13 @@ void main( void ){
 		#ifdef OPTIMIZE_SHADOW_BACKFACE
 		if( dotval <= shadowThreshold ){
 			#ifdef AMBIENT_LIGHTING
-				shadow = 0.0;
+				shadow = 0;
 			#else
 				#ifdef WITH_SUBSURFACE
 				if( shadowThickness > largestAbsorptionRadius ){
 				#endif
-				discard;
+				outputUnlit();
+				return;
 				#ifdef WITH_SUBSURFACE
 				}
 				#endif
@@ -1013,7 +1024,8 @@ void main( void ){
 				#ifdef WITH_SUBSURFACE
 				if( shadowThickness > largestAbsorptionRadius ){
 				#endif
-				discard;
+				outputUnlit();
+				return;
 				#ifdef WITH_SUBSURFACE
 				}
 				#endif
