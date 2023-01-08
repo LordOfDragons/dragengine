@@ -100,17 +100,17 @@ void deoglRenderLightBase::RestoreFBO( deoglRenderPlan &plan ){
 	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	if( sssssEnable ){
-		defren.ActivateFBOColorTemp2( false, true );
+		defren.ActivateFBOColorTemp2( true, true );
 		
 	}else{
-		defren.ActivateFBOColor( false, true );
+		defren.ActivateFBOColor( true, true );
 	}
 	
 	state.StencilMask( 0 );
 	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 	state.StencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 );
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
 		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
@@ -138,7 +138,7 @@ void deoglRenderLightBase::RestoreDRTexturesSmooth(){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampLinear() );
 		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampLinear() );
 		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampLinear() );
@@ -147,7 +147,7 @@ void deoglRenderLightBase::RestoreDRTexturesSmooth(){
 		tsmgr.EnableArrayTexture( 6, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampLinear() );
 		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampLinear() );
 		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampLinear() );
@@ -164,7 +164,7 @@ void deoglRenderLightBase::RestoreDRTextureDepthSmooth(){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 0 );
 }
 

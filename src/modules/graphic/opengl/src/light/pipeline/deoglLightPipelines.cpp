@@ -122,6 +122,8 @@ deoglPipelineConfiguration &config ){
 	config.SetMasks( true, true, true, true, false );
 	config.SetEnableScissorTest( true );
 	config.SetClipControl( renderThread.GetChoices().GetUseInverseDepth() );
+	config.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+	config.EnableCulling( false );
 	config.EnableDynamicStencilTest();
 	config.EnableBlendAdd();
 }
@@ -144,6 +146,7 @@ const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type
 	const bool texSha2Amb = baseShaderConfig.GetTextureShadow2Ambient();
 	const GLenum cullFace = basePipelineConfig.GetCullFace();
 	const GLenum flipCullFace = cullFace == GL_FRONT ? GL_BACK : GL_FRONT;
+	const GLenum depthFunc = basePipelineConfig.GetDepthFunc();
 	
 	int modifier;
 	
@@ -189,7 +192,14 @@ const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type
 		pipconf.SetCullFace( modifier & emFlipCullFace ? flipCullFace : cullFace );
 		
 		// camera inside
-		pipconf.SetDepthClamp( modifier & emCameraInside );
+		if( modifier & emCameraInside ){
+			pipconf.SetDepthFunc( GL_ALWAYS );
+			pipconf.SetDepthClamp( true );
+			
+		}else{
+			pipconf.SetDepthFunc( depthFunc );
+			pipconf.SetDepthClamp( false );
+		}
 		
 		// create shader and pipeline
 		const deoglLightShader::Ref shader(

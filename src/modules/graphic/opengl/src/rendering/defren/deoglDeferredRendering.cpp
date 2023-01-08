@@ -27,15 +27,18 @@
 #include "deoglDRDepthMinMax.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../extensions/deoglExtResult.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglRestoreFramebuffer.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTChoices.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -555,6 +558,10 @@ void deoglDeferredRendering::CopyFirstDepthToSecond( bool copyDepth, bool copySt
 	// we are done with the copy.
 	// 
 	// NOTE layer blitting is not supported. this has to be done manually
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "CopyFirstDepthToSecond" );
+	
+	pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
+	
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
 	const int copyFrom = pModeDepth ? efbocdDepth1Layer0 : efbocdDepth2Layer0;
 	const int copyTo = pModeDepth ? efbocdDepth2Layer0 : efbocdDepth1Layer0;
@@ -568,9 +575,26 @@ void deoglDeferredRendering::CopyFirstDepthToSecond( bool copyDepth, bool copySt
 	}
 	
 	for( i=0; i<pLayerCount; i++ ){
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ copyTo + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1, 0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
+		deoglFramebuffer &fbo = *pFBOCopyDepth[ copyTo + i ];
+		
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, fbo.GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth, pHeight,
+			0, 0, pWidth, pHeight, mask, GL_NEAREST ) );
+		/*
+		if( copyDepth ){
+			if( copyStencil ){
+				fbo.InvalidateDepthStencil();
+				
+			}else{
+				fbo.InvalidateDepth();
+			}
+			
+		}else{
+			fbo.InvalidateStencil();
+		}
+		*/
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );
@@ -593,11 +617,26 @@ void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool co
 	}
 	
 	for( i=0; i<pLayerCount; i++ ){
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepth3Layer0 + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		deoglFramebuffer &fbo = *pFBOCopyDepth[ efbocdDepth3Layer0 + i ];
 		
-		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
-			0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, fbo.GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth, pHeight,
+			0, 0, pWidth, pHeight, mask, GL_NEAREST ) );
+		/*
+		if( copyDepth ){
+			if( copyStencil ){
+				fbo.InvalidateDepthStencil();
+				
+			}else{
+				fbo.InvalidateDepth();
+			}
+			
+		}else{
+			fbo.InvalidateStencil();
+		}
+		*/
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );

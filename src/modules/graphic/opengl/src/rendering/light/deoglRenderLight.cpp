@@ -95,6 +95,10 @@ enum pSPDebugAO{
 	spdaoLayer
 };
 
+enum eSPCopyDepth{
+	spcdQuadParams
+};
+
 
 
 // Class deoglRenderLight
@@ -243,6 +247,26 @@ pAddToRenderTask( NULL )
 		
 		
 		
+		// copy depth
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTestAlways();
+		
+		defines = commonDefines;
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
+		
+		// copy depth stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		
 		// debug information
 		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
 		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
@@ -311,6 +335,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	DebugTimersReset( plan, false );
 	
 	// copy the depth. this is only required if we are not using encoded depth
+	/*
 	if( renderThread.GetDebug().GetDeveloperMode().GetDebugEnableLightDepthStencil() ){
 		renderThread.GetDeferredRendering().CopyFirstDepthToSecond( true, true );
 		
@@ -320,6 +345,16 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		}else{
 			DebugTimer2Sample( plan, *pDebugInfoTransparentCopyDepth, true );
 		}
+	}*/
+	
+	// renderThread.GetDeferredRendering().CopyFirstDepthToSecond( true, false );
+	CopyDepth1ToDepth3( plan );
+	
+	if( solid ){
+		DebugTimer2Sample( plan, *pDebugInfoSolidCopyDepth, true );
+		
+	}else{
+		DebugTimer2Sample( plan, *pDebugInfoTransparentCopyDepth, true );
 	}
 	
 	// render lights
@@ -583,6 +618,25 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 	
+	RenderFullScreenQuadVAO( plan );
+}
+
+
+
+void deoglRenderLight::CopyDepth1ToDepth3( deoglRenderPlan &plan ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Light.CopyDepth1ToDepth3" );
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthStereo : *pPipelineCopyDepth;
+	pipeline.Activate();
+	defren.ActivateFBODepth3();
+	
+	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	
+	renderThread.GetTexture().GetStages().EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	
+	defren.SetShaderParamFSQuad( shader, spcdQuadParams );
 	RenderFullScreenQuadVAO( plan );
 }
 

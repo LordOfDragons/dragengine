@@ -62,6 +62,8 @@ void deoglLightPipelinesSky::pPreparePipelines(){
 	// base pipeline configuration
 	deoglPipelineConfiguration basePipelineConfig;
 	pBasePipelineConfig( pLayer.GetInstance().GetRenderThread(), basePipelineConfig );
+	basePipelineConfig.SetEnableDepthTest( false );
+	basePipelineConfig.SetEnableCullFace( false );
 	
 	deoglPipelineConfiguration basePipelineConfigGI;
 	pBasePipelineConfigGI( basePipelineConfigGI );

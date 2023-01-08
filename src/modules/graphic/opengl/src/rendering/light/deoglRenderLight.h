@@ -53,6 +53,9 @@ private:
 	const deoglPipeline *pPipelineSSSSS;
 	const deoglPipeline *pPipelineSSSSSStereo;
 	
+	const deoglPipeline *pPipelineCopyDepth;
+	const deoglPipeline *pPipelineCopyDepthStereo;
+	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;
 	deoglRenderLightPoint *pRenderLightPoint;
@@ -152,6 +155,9 @@ public:
 	
 	/** Render screen space sub surface scattering. */
 	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
+	
+	/** Copy first depth to third depth. */
+	void CopyDepth1ToDepth3( deoglRenderPlan &plan );
 	
 	
 	
