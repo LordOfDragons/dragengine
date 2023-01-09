@@ -1898,31 +1898,19 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetGSRenderCube() ){
-		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_TRUE( pRenderThread.GetExtensions().SupportsGeometryShader() )
 		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
-		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_TRUE( pRenderThread.GetExtensions().SupportsGeometryShader() )
 		defines.SetDefines( "GS_RENDER_CASCADED" );
 		
 	}else if( pConfig.GetGSRenderStereo() ){
-		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_TRUE( pRenderThread.GetExtensions().SupportsGeometryShader() )
 		defines.SetDefines( "GS_RENDER_STEREO" );
 		
 	}else if( pConfig.GetVSRenderStereo() ){
-		if( ! pRenderThread.GetChoices().GetRenderStereoVSLayer() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_TRUE( pRenderThread.GetChoices().GetRenderStereoVSLayer() )
 		defines.SetDefines( "VS_RENDER_STEREO" );
 	}
 	

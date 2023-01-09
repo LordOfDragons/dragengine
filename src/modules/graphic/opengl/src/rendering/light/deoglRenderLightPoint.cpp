@@ -48,6 +48,7 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSaveTexture.h"
 #include "../../debug/deoglDebugTraceGroup.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -225,7 +226,8 @@ withTransparent( false ),
 shadowScale( 1.0f ),
 shadowOffset( 0.0f ),
 lodMaxPixelError( 1 ),
-lodOffset( 0 ){
+lodOffset( 0 ),
+copyShadow( nullptr ){
 }
 
 
@@ -237,19 +239,24 @@ lodOffset( 0 ){
 
 deoglRenderLightPoint::deoglRenderLightPoint( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
-deoglRenderLightBase( renderThread )
+deoglRenderLightBase( renderThread ),
+pVBOCopyShadow( 0 ),
+pVAOCopyShadow( nullptr )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	const bool renderCubeGS = renderThread.GetChoices().GetRenderCubeGS();
 	const float smOffsetScale = renderThread.GetConfiguration().GetShadowMapOffsetScale();
 	const float smOffsetBias = renderThread.GetConfiguration().GetShadowMapOffsetBias();
+	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
 		// box boundary
 		pipconf.Reset();
 		pipconf.SetMasks( true, true, true, true, false );
@@ -288,7 +295,7 @@ deoglRenderLightBase( renderThread )
 		
 		// occlusion map cube
 		if( renderCubeGS ){
-			renderThread.GetShader().SetCommonDefines( defines );
+			defines = commonDefines;
 			renderers.GetOcclusion().AddOccMapDefines( defines );
 			defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 			
@@ -300,12 +307,98 @@ deoglRenderLightBase( renderThread )
 		
 		
 		
+		// copy depth
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+		pipconf.SetClipControl( useInverseDepth );
+		
+		defines = commonDefines;
+		defines.SetDefines( "SHADOW_CUBE" );
+		
+		if( renderFSQuadStereoVSLayer ){
+			defines.SetDefines( "VS_LAYER" );
+			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow" );
+			
+		}else if( renderCubeGS ){
+			defines.SetDefines( "GS_LAYER" );
+			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow GS" );
+			
+		}else{
+			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow" );
+		}
+		
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
+		defines.RemoveAllDefines();
+		
+		
+		
 		pCubeFaces[ 0 ] = deoglCubeMap::efPositiveX;
 		pCubeFaces[ 1 ] = deoglCubeMap::efNegativeX;
 		pCubeFaces[ 2 ] = deoglCubeMap::efNegativeY; //deoglCubeMap::efPositiveY;
 		pCubeFaces[ 3 ] = deoglCubeMap::efPositiveY; //deoglCubeMap::efNegativeY;
 		pCubeFaces[ 4 ] = deoglCubeMap::efPositiveZ;
 		pCubeFaces[ 5 ] = deoglCubeMap::efNegativeZ;
+		
+		
+		
+		// copy shadow vao
+		struct sCopyShadowPoint{
+			GLfloat x, y;
+			GLint layer;
+			GLfloat s, t, p;
+		};
+		
+		const sCopyShadowPoint baseCsp[ 6 ] = {
+			{ -1.0f,  1.0f,   0,   -1.0f,  1.0f,  0.0f },
+			{  1.0f,  1.0f,   0,    1.0f,  1.0f,  0.0f },
+			{  1.0f, -1.0f,   0,    1.0f, -1.0f,  0.0f },
+			{ -1.0f, -1.0f,   0,   -1.0f, -1.0f,  0.0f },
+			{ -1.0f,  1.0f,   0,   -1.0f,  1.0f,  0.0f },
+			{  1.0f, -1.0f,   0,    1.0f, -1.0f,  0.0f }
+		};
+		
+		#define CFP_XP(b,i) {b[i].x, b[i].y, 0,    1.0f, -b[i].t, -b[i].s}
+		#define CFP_XN(b,i) {b[i].x, b[i].y, 1,   -1.0f, -b[i].t,  b[i].s}
+		#define CFP_YP(b,i) {b[i].x, b[i].y, 2,  b[i].s,    1.0f,  b[i].t}
+		#define CFP_YN(b,i) {b[i].x, b[i].y, 3,  b[i].s,   -1.0f, -b[i].t}
+		#define CFP_ZP(b,i) {b[i].x, b[i].y, 4,  b[i].s, -b[i].t,    1.0f}
+		#define CFP_ZN(b,i) {b[i].x, b[i].y, 5, -b[i].s, -b[i].t,   -1.0f}
+		
+		#define CFP(c,o,r) for(i=0; i<6; i++) c[o+i] = r;
+		
+		sCopyShadowPoint csp[ 36 ];
+		int i;
+		CFP( csp, 0, CFP_XP( baseCsp, i ) )
+		CFP( csp, 6, CFP_XN( baseCsp, i ) )
+		CFP( csp, 12, CFP_YP( baseCsp, i ) )
+		CFP( csp, 18, CFP_YN( baseCsp, i ) )
+		CFP( csp, 24, CFP_ZP( baseCsp, i ) )
+		CFP( csp, 30, CFP_ZN( baseCsp, i ) )
+		
+		#undef CFP
+		#undef CFP_ZN
+		#undef CFP_ZP
+		#undef CFP_YN
+		#undef CFP_YP
+		#undef CFP_XN
+		#undef CFP_XP
+		
+		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOCopyShadow ) );
+		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOCopyShadow ) );
+		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
+			sizeof( csp ), ( const GLvoid * )&csp, GL_STATIC_DRAW ) );
+		
+		pVAOCopyShadow = new deoglVAO( renderThread );
+		OGL_CHECK( renderThread, pglBindVertexArray( pVAOCopyShadow->GetVAO() ) );
+		
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 24, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
+		OGL_CHECK( renderThread, pglVertexAttribIPointer( 1, 1, GL_INT, 24, ( const GLvoid * )8 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 24, ( const GLvoid * )12 ) );
 		
 		
 		
@@ -1104,6 +1197,8 @@ DEBUG_RESET_TIMER
 			shadowParams.lodMaxPixelError = 2;
 			shadowParams.lodOffset = 0;
 			
+			shadowParams.copyShadow = nullptr;
+			
 			RenderShadowMaps( planLight, shadowMapper, shadowParams );
 			
 			shadowMapper.DropForeignCubeMaps();
@@ -1274,6 +1369,11 @@ DEBUG_RESET_TIMER
 			shadowParams.lodMaxPixelError = 2;
 			shadowParams.lodOffset = 0;
 			
+			shadowParams.copyShadow = nullptr;
+			if( shadowType == deoglShadowCaster::estStaticAndDynamic ){
+				// shadowParams.copyShadow = scsolid.GetStaticCubeMap();
+			}
+			
 			RenderShadowMaps( planLight, shadowMapper, shadowParams );
 			
 			shadowMapper.DropForeignCubeMaps();
@@ -1340,6 +1440,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
@@ -1379,8 +1480,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	
 	// configuration
 	const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();
-	const bool useGSRenderCube = renderThread.GetExtensions().SupportsGeometryShader()
-		&& ! bugClearEntireCubeMap;
+	const bool useGSRenderCube = renderThread.GetChoices().GetRenderCubeGS();
 	
 	// setup render parameters
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
@@ -1449,6 +1549,17 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			
 		}else{
 			DebugTimer3Sample( plan, *pDebugInfoTransparentShadowClear, true );
+		}
+		
+		// copy shadow map
+		if( shadowParams.copyShadow ){
+			pPipelineCopyDepth->Activate();
+			
+			tsmgr.EnableCubeMap( 0, *shadowParams.copyShadow, GetSamplerRepeatNearest() );
+			tsmgr.DisableStagesAbove( 0 );
+			
+			OGL_CHECK( renderThread, pglBindVertexArray( pVAOCopyShadow->GetVAO() ) );
+			OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 36 ) );
 		}
 	}
 	
@@ -1538,6 +1649,17 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 					
 				}else{
 					DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceClear, true );
+				}
+				
+				// copy shadow map
+				if( shadowParams.copyShadow ){
+					pPipelineCopyDepth->Activate();
+					
+					tsmgr.EnableCubeMapFace( 0, *shadowParams.copyShadow, pCubeFaces[ cmf ], GetSamplerRepeatNearest() );
+					tsmgr.DisableStagesAbove( 0 );
+					
+					OGL_CHECK( renderThread, pglBindVertexArray( pVAOCopyShadow->GetVAO() ) );
+					OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 6 * pCubeFaces[ cmf ], 6 ) );
 				}
 			}
 			
@@ -2181,4 +2303,9 @@ void deoglRenderLightPoint::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLightPoint::pCleanUp(){
+	if( pVAOCopyShadow ){
+		delete pVAOCopyShadow;
+	}
+	
+	pRenderThread.GetDelayedOperations().DeleteOpenGLBuffer( pVBOCopyShadow );
 }

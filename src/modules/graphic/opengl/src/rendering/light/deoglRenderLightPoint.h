@@ -24,8 +24,8 @@
 
 #include "deoglRenderLightBase.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../texture/cubemap/deoglCubeMap.h"
 
-class deoglCubeMap;
 class deoglLightShader;
 class deoglRenderPlan;
 class deoglRenderPlanLight;
@@ -34,6 +34,8 @@ class deoglSPBlockUBO;
 class deoglShadowMapper;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
+class deoglVAO;
+
 
 
 /**
@@ -82,13 +84,15 @@ public:
 		int lodMaxPixelError;
 		int lodOffset;
 		
+		deoglCubeMap *copyShadow;
+		
 		sShadowParams();
 	};
 	
 	
 	
 private:
-	int pCubeFaces[ 6 ];
+	deoglCubeMap::eFaces pCubeFaces[ 6 ];
 	
 	deoglCollideList pCollideList;
 	
@@ -97,6 +101,10 @@ private:
 	const deoglPipeline *pPipelineBoxBoundary2;
 	const deoglPipeline *pPipelineOccMap;
 	const deoglPipeline *pPipelineOccMapCube;
+	const deoglPipeline *pPipelineCopyDepth;
+	
+	GLuint pVBOCopyShadow;
+	deoglVAO *pVAOCopyShadow;
 	
 	
 	

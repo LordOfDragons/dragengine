@@ -46,6 +46,17 @@
 
 
 
+static GLenum vCubeMapFaceTarget[ 6 ] = {
+	GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+	GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+	GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+	GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+	GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+	GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+};
+
+
+
 // Struct deoglTextureStageManager::sStage
 ////////////////////////////////////////////
 
@@ -130,6 +141,11 @@ deoglTexSamplerConfig &samplerConfig ){
 void deoglTextureStageManager::EnableCubeMap( int stage, const deoglCubeMap &cubemap,
 deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, samplerConfig.GetSamplerObject() );
+}
+
+void deoglTextureStageManager::EnableCubeMapFace( int stage, const deoglCubeMap &cubemap,
+deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig ){
+	BindTexture( stage, cubemap.GetTexture(), vCubeMapFaceTarget[ face ], samplerConfig.GetSamplerObject() );
 }
 
 void deoglTextureStageManager::EnableArrayTexture( int stage, const deoglArrayTexture &texture,

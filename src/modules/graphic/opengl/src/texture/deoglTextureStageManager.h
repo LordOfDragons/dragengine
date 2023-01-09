@@ -24,11 +24,11 @@
 
 #include "../deoglBasics.h"
 #include "../skin/channel/deoglSkinChannel.h"
+#include "../texture/cubemap/deoglCubeMap.h"
 
 #define OGL_MAX_TEXTURE_STAGES 16
 
 class deoglArrayTexture;
-class deoglCubeMap;
 class deoglRenderThread;
 class deoglRSkin;
 class deoglTexSamplerConfig;
@@ -38,31 +38,31 @@ class deoglTexture1D;
 
 
 /**
- * \brief Texture stage manager.
+ * Texture stage manager.
  * 
  * Allows to enable and disable stages and bind different kinds of textures.
  * Keeps track of bound textures avoiding not require state changes.
  */
 class deoglTextureStageManager{
 public:
-	/** \brief Filtering. */
+	/** Filtering. */
 	enum eTextureFiltering{
-		/** \brief Nearest. */
+		/** Nearest. */
 		etfNearest,
 		
-		/** \brief Nearest with mipmap if possible. */
+		/** Nearest with mipmap if possible. */
 		etfNearestMipMap,
 		
-		/** \brief Nearest with linear mipmap if possible. */
+		/** Nearest with linear mipmap if possible. */
 		etfNearestMipMapLinear,
 		
-		/** \brief Linear no mipmap. */
+		/** Linear no mipmap. */
 		etfLinear,
 		
-		/** \brief Linear with mipmap if possible. */
+		/** Linear with mipmap if possible. */
 		etfLinearMipMap,
 		
-		/** \brief Linear with nearest mipmap if possible. */
+		/** Linear with nearest mipmap if possible. */
 		etfLinearMipMapNearest,
 	};
 	
@@ -81,10 +81,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create texture stage manager. */
+	/** Create texture stage manager. */
 	deoglTextureStageManager( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up texture stage manager. */
+	/** Clean up texture stage manager. */
 	~deoglTextureStageManager();
 	/*@}*/
 	
@@ -92,14 +92,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of enabled stages. */
+	/** Number of enabled stages. */
 	int GetEnabledStageCount() const;
 	
-	/** \brief Type of texture bound to stage. */
+	/** Type of texture bound to stage. */
 	GLenum GetStageType( int stage ) const;
 	
 	/**
-	 * \brief Enable stage and bind array texture.
+	 * Enable stage and bind array texture.
 	 * \details Sets no texture parameters. Useful if an array texture has to be
 	 *          bound only for manipulating opengl states and is unbound
 	 *          immediately afterwards.
@@ -107,28 +107,28 @@ public:
 	void EnableBareArrayTexture( int stage, const deoglArrayTexture &texture );
 	
 	/**
-	 * \brief Enable stage and bind texture
+	 * Enable stage and bind texture
 	 * \details Sets no texture parameters. Useful if a texture has to be bound only
 	 *          for manipulating opengl states and is unbound immediately afterwards.
 	 */
 	void EnableBareTexture( int stage, const deoglTexture &texture );
 	
 	/**
-	 * \brief Enable stage and bind texture.
+	 * Enable stage and bind texture.
 	 * \details Sets no texture parameters. Useful if a texture has to be bound only
 	 *          for manipulating opengl states and is unbound immediately afterwards.
 	 */
 	void EnableBareTexture1D( int stage, const deoglTexture1D &texture );
 	
 	/**
-	 * \brief Enable stage and bind cube map.
+	 * Enable stage and bind cube map.
 	 * \details Sets no texture parameters. Useful if a cube map has to be bound only
 	 *          for manipulating opengl states and is unbound immediately afterwards.
 	 */
 	void EnableBareCubeMap( int stage, const deoglCubeMap &cubemap );
 	
 	/**
-	 * \brief Enable stage and bind tbo without sampler.
+	 * Enable stage and bind tbo without sampler.
 	 * \details Sets no texture paramters. Useful if a tbo has to be bound for for
 	 *          manipulating opegl states and is unbound immediately afterwards.
 	 */
@@ -136,23 +136,27 @@ public:
 	
 	
 	
-	/** \brief Enable stage and bind texture setting texture properties. */
+	/** Enable stage and bind texture setting texture properties. */
 	void EnableTexture( int stage, const deoglTexture &texture, deoglTexSamplerConfig &samplerConfig );
 	
-	/** \brief Enable given stage and bind texture setting texture properties. */
+	/** Enable given stage and bind texture setting texture properties. */
 	void EnableTexture1D( int stage, const deoglTexture1D &texture, deoglTexSamplerConfig &samplerConfig );
 	
-	/** \brief Enable stage and bind cube map setting texture properties. */
+	/** Enable stage and bind cube map setting texture properties. */
 	void EnableCubeMap( int stage, const deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig );
 	
-	/** \brief Enable stage and bind array texture setting texture properties. */
+	/** Enable stage and bind cube map face setting texture properties. */
+	void EnableCubeMapFace( int stage, const deoglCubeMap &cubemap,
+		deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig );
+	
+	/** Enable stage and bind array texture setting texture properties. */
 	void EnableArrayTexture( int stage, const deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig );
 	
-	/** \brief Enable given stage and bind texture buffer object. */
+	/** Enable given stage and bind texture buffer object. */
 	void EnableTBO( int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig );
 	
 	/**
-	 * \brief Enable stage and bind texture channel from a skin.
+	 * Enable stage and bind texture channel from a skin.
 	 * \details This function is aware of different texture properties assigned to the given
 	 *          texture and sets the texture parameters accordingly. If the texture in the skin
 	 *          is for some reason invalid the given default texture is used. Should this also
@@ -164,37 +168,37 @@ public:
 	
 	
 	
-	/** \brief Disable stage. */
+	/** Disable stage. */
 	void DisableStage( int stage );
 	
 	/**
-	 * \brief Disable all stages above stage.
+	 * Disable all stages above stage.
 	 * \details If you have for example 4 enabled stages and you want to disable stages
 	 *          2 and 3 then you have to call this function with the stage of the last
 	 *          stage to remain enabled thus 1 in this case.
 	 */
 	void DisableStagesAbove( int stage );
 	
-	/** \brief Disable all stages. */
+	/** Disable all stages. */
 	void DisableAllStages();
 	
 	
 	
 	/**
-	 * \brief Activate stage and bind texture if not bound already.
+	 * Activate stage and bind texture if not bound already.
 	 * \details Keeps the currently bound texture sampler configuration the same.
 	 */
 	void BindTexture( int stage, GLuint texture, GLenum type );
 	
 	/**
-	 * \brief Activate stage and bind texture if not bound already.
+	 * Activate stage and bind texture if not bound already.
 	 * \details Binds also the texture sampler configuration if different than the current one.
 	 */
 	void BindTexture( int stage, GLuint texture, GLenum type, GLuint samplerConfig );
 	
 	
 	
-	/** \brief Dump the current state to the logger. */
+	/** Dump the current state to the logger. */
 	void LogCurrentState() const;
 	/*@}*/
 };
