@@ -285,6 +285,7 @@ bool deoglExtensions::VerifyPresence(){
 	bool allPresent = pHasRequiredFunctions;
 	
 	allPresent &= pHasExtension[ ext_ARB_depth_clamp ];
+	allPresent &= pHasExtension[ ext_ARB_copy_image ] || pHasExtension[ ext_NV_copy_image ];
 	
 	return allPresent;
 }

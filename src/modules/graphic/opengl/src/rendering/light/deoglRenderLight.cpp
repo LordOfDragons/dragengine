@@ -628,6 +628,9 @@ void deoglRenderLight::CopyDepth1ToDepth3( deoglRenderPlan &plan ){
 	const deoglDebugTraceGroup debugTrace( renderThread, "Light.CopyDepth1ToDepth3" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
+	defren.GetDepthTexture3()->CopyFrom( *defren.GetDepthTexture1(), false );
+	
+	/*
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthStereo : *pPipelineCopyDepth;
 	pipeline.Activate();
 	defren.ActivateFBODepth3();
@@ -638,6 +641,7 @@ void deoglRenderLight::CopyDepth1ToDepth3( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( shader, spcdQuadParams );
 	RenderFullScreenQuadVAO( plan );
+	*/
 }
 
 

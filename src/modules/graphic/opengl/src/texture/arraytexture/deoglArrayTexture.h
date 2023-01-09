@@ -152,12 +152,18 @@ public:
 	void CreateMipMaps();
 	
 	/** Copy from another array texture to this texture. */
+	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps );
+	
+	/** Copy from another array texture to this texture. */
 	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer );
+	
 	/** Copy area from another array texture to this texture. */
 	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer,
 		int width, int height, int layerCount, int srcX, int srcY, int destX, int destY );
+	
 	/** Copy from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer );
+	
 	/** Copy area from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer,
 		int width, int height, int srcX, int srcY, int destX, int destY );
