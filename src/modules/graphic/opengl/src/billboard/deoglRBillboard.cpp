@@ -43,6 +43,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinRenderable.h"
@@ -987,16 +988,8 @@ void deoglRBillboard::pPrepareParamBlocks(){
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
+			const deoglSharedSPBElementMapBuffer mapped( *pSharedSPBElement );
+			UpdateInstanceParamBlock( mapped.GetBlockRef(), pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		pDirtySharedSPBElement = false;

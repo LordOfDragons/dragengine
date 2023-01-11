@@ -46,8 +46,6 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
-#include "../../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -474,332 +472,225 @@ void deoglSkinShader::PrepareShader(){
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	// this shader parameter block will not be optimzed. the layout is always the
 	// same no matter what configuration is used for skins. this is also why this
 	// method is a static method not an regular method
 	
-	deoglSPBlockUBO *spb = nullptr;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( ERUT_COUNT );
 	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( ERUT_COUNT );
-		
-		spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3
-		spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 2 ); // mat4
-		spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
-		spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 6 ); // mat3
-		spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
-		spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
-		spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 2 ); // vec2
-		
-		spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		spb->GetParameterAt( erutNorRoughCorrStrength ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutSkinDoesReflections ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
-		spb->GetParameterAt( erutFlipCulling ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
-		spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
-		spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		
-		spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		
-		spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 4 ); // vec4
-		
-		spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		
-		spb->GetParameterAt( erutCameraStereoMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		
-		spb->GetParameterAt( erutCameraRange ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
-		
-		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutFSScreenCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		
-		spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSAOParams3 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		
-		spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
-		
-		spb->GetParameterAt( erutSSRParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSRParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutSSRParams3 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
-		
-		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		
-		spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		
-		spb->GetParameterAt( erutToneMapSceneKey ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
-		spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		spb->GetParameterAt( erutConditions1 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
+	spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutMatrixV ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3
+	spb->GetParameterAt( erutMatrixP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 2 ); // mat4
+	spb->GetParameterAt( erutMatrixVP ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
+	spb->GetParameterAt( erutMatrixVn ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 6 ); // mat3
+	spb->GetParameterAt( erutMatrixEnvMap ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+	spb->GetParameterAt( erutMatrixSkyBody ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4
+	spb->GetParameterAt( erutDepthToPosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
+	spb->GetParameterAt( erutDepthToPosition2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 2 ); // vec2
 	
+	spb->GetParameterAt( erutDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutEnvMapLodLevel ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	spb->GetParameterAt( erutNorRoughCorrStrength ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutSkinDoesReflections ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
+	spb->GetParameterAt( erutFlipCulling ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
+	spb->GetParameterAt( erutClearDepthValue ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutViewport ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutClipPlane ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 2 ); // vec4
+	spb->GetParameterAt( erutScreenSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	
+	spb->GetParameterAt( erutRenderSize ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutMipMapParams ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	
+	spb->GetParameterAt( erutDepthOffset ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 4 ); // vec4
+	
+	spb->GetParameterAt( erutParticleLightHack ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	spb->GetParameterAt( erutBillboardZScale ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutFadeRange ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	
+	spb->GetParameterAt( erutCameraStereoMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+	
+	spb->GetParameterAt( erutCameraRange ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutCameraAdaptedIntensity ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	
+	spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutFSScreenCoordToTexCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutFSTexCoordToScreenCoord ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	
+	spb->GetParameterAt( erutSSAOParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSAOParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSAOParams3 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	
+	spb->GetParameterAt( erutSSSSSParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSSSSParams2 ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // ivec2
+	
+	spb->GetParameterAt( erutSSRParams1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSRParams2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	spb->GetParameterAt( erutSSRParams3 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // ivec4
+	
+	spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+	spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
+	
+	spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	
+	spb->GetParameterAt( erutToneMapSceneKey ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	spb->GetParameterAt( erutToneMapAdaption ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	spb->GetParameterAt( erutToneMapBloom ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutDebugDepthTransform ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
+	
+	spb->GetParameterAt( erutConditions1 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
+	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBOccMap( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBOccMap( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *ompb = NULL;
+	const deoglSPBlockUBO::Ref ompb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	ompb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ompb->SetParameterCount( 4 );
+	ompb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
+	ompb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
+	ompb->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
+	ompb->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
 	
-	try{
-		ompb = new deoglSPBlockUBO( renderThread );
-		ompb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		ompb->SetParameterCount( 4 );
-		ompb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
-		ompb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
-		ompb->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
-		ompb->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
-		
-		ompb->MapToStd140();
-		ompb->SetBindingPoint( 0 );//deoglSkinShader::eubRenderParameters );
-		
-	}catch( const deException & ){
-		if( ompb ){
-			ompb->FreeReference();
-		}
-		throw;
-	}
-	
+	ompb->MapToStd140();
+	ompb->SetBindingPoint( 0 );//deoglSkinShader::eubRenderParameters );
 	return ompb;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBSpecial( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBSpecial( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *spb = NULL;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( 1 );
 	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( 1 );
-		
-		spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubSpecialParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
+	spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubSpecialParameters );
 	return spb;
 }
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBTexParam( deoglRenderThread &renderThread ){
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBTexParam( deoglRenderThread &renderThread ){
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *spb = NULL;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetParameterCount( ETUT_COUNT );
 	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( ETUT_COUNT );
-		
-		int i;
-		for( i=0; i<ETUT_COUNT; i++ ){
-			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
-	
-	return spb;
-}
-
-deoglSPBlockUBO *deoglSkinShader::CreateSPBInstParam() const{
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglSPBlockUBO *spb = NULL;
 	int i;
-	
-	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( pUsedInstanceUniformTargetCount );
-		
-		for( i=0; i<EIUT_COUNT; i++ ){
-			const int target = pInstanceUniformTargets[ i ];
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
-					vInstanceSPBParamDefs[ i ].componentCount,
-					vInstanceSPBParamDefs[ i ].vectorCount, 1 );
-			}
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
+	for( i=0; i<ETUT_COUNT; i++ ){
+		spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+			vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
-	deoglSPBlockUBO *ubo = NULL;
-	int i;
+deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
+	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	try{
-		ubo = new deoglSPBlockUBO( renderThread );
-		ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		ubo->SetParameterCount( vUBOInstParamMapCount );
-		
-		for( i=0; i<vUBOInstParamMapCount; i++ ){
-			const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
-			ubo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
+	
+	int i;
+	for( i=0; i<EIUT_COUNT; i++ ){
+		const int target = pInstanceUniformTargets[ i ];
+		if( target != -1 ){
+			spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
+				vInstanceSPBParamDefs[ i ].componentCount,
+				vInstanceSPBParamDefs[ i ].vectorCount, 1 );
 		}
-		
-		ubo->MapToStd140();
-		ubo->SetBindingPoint( eubInstanceParameters );
-		
-	}catch( const deException & ){
-		if( ubo ){
-			ubo->FreeReference();
-		}
-		throw;
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
+	return spb;
+}
+
+deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo->SetParameterCount( vUBOInstParamMapCount );
+	
+	int i;
+	for( i=0; i<vUBOInstParamMapCount; i++ ){
+		const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
+		ubo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
+	}
+	
+	ubo->MapToStd140();
+	ubo->SetBindingPoint( eubInstanceParameters );
 	return ubo;
 }
 
-deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread ){
-	deoglSPBlockSSBO *ssbo = NULL;
-	int i;
+deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
+	ssbo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ssbo->SetParameterCount( vUBOInstParamMapCount );
 	
-	try{
-		ssbo = new deoglSPBlockSSBO( renderThread );
-		ssbo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		ssbo->SetParameterCount( vUBOInstParamMapCount );
-		
-		for( i=0; i<vUBOInstParamMapCount; i++ ){
-			const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
-			ssbo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
-		}
-		
-		ssbo->MapToStd140();
-		ssbo->SetBindingPoint( essboInstanceParameters );
-		
-	}catch( const deException & ){
-		if( ssbo ){
-			ssbo->FreeReference();
-		}
-		throw;
+	int i;
+	for( i=0; i<vUBOInstParamMapCount; i++ ){
+		const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[ vUBOInstParamMap[ i ] ];
+		ssbo->GetParameterAt( i ).SetAll( pdef.dataType, pdef.componentCount, pdef.vectorCount, 1 );
 	}
 	
+	ssbo->MapToStd140();
+	ssbo->SetBindingPoint( essboInstanceParameters );
 	return ssbo;
 }
 
-deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread ){
-	deoglSPBlockUBO * const spb = new deoglSPBlockUBO( renderThread );
-	int i;
+deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetParameterCount( ETUT_COUNT );
 	
-	try{
-		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( ETUT_COUNT );
-		
-		for( i=0; i<ETUT_COUNT; i++ ){
-			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( eubTextureParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
+	int i;
+	for( i=0; i<ETUT_COUNT; i++ ){
+		spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+			vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( eubTextureParameters );
 	return spb;
 }
 
-deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
-	deoglSPBlockSSBO * const spb = new deoglSPBlockSSBO( renderThread );
-	int i;
+deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
+	const deoglSPBlockSSBO::Ref spb( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
+	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetParameterCount( ETUT_COUNT );
 	
-	try{
-		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		spb->SetParameterCount( ETUT_COUNT );
-		
-		for( i=0; i<ETUT_COUNT; i++ ){
-			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
-				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( essboTextureParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
+	int i;
+	for( i=0; i<ETUT_COUNT; i++ ){
+		spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+			vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( essboTextureParameters );
 	return spb;
 }
 

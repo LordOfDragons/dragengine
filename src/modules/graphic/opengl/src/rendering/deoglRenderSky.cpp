@@ -48,6 +48,7 @@
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -204,8 +205,7 @@ enum eSPBody{
 ////////////////////////////
 
 deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread ),
-pRenderSkyIntoEnvMapPB( nullptr )
+deoglRenderBase( renderThread )
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
@@ -214,74 +214,67 @@ pRenderSkyIntoEnvMapPB( nullptr )
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	try{
-		pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
-		
-		
-		renderThread.GetShader().SetCommonDefines( commonDefines );
-		
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written
-		pipconf.EnableBlendBlend();
-		pipconf.SetEnableScissorTest( true );
-		pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
-		pipconf.EnableDynamicStencilTest();
-		
-		
-		// sky sphere
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineSkySphere = pipelineManager.GetWith( pipconf );
-		
-		// sky sphere stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineSkySphereStereo = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// sky box
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineSkyBox = pipelineManager.GetWith( pipconf );
-		
-		// sky box stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineSkyBoxStereo = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// sky body
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Sky Body" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBody = pipelineManager.GetWith( pipconf );
-		
-		// sky body stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBodyStereo = pipelineManager.GetWith( pipconf );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
+	
+	
+	renderThread.GetShader().SetCommonDefines( commonDefines );
+	
+	pipconf.Reset();
+	pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written
+	pipconf.EnableBlendBlend();
+	pipconf.SetEnableScissorTest( true );
+	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+	pipconf.EnableDynamicStencilTest();
+	
+	
+	// sky sphere
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkySphere = pipelineManager.GetWith( pipconf );
+	
+	// sky sphere stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
 	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkySphereStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// sky box
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkyBox = pipelineManager.GetWith( pipconf );
+	
+	// sky box stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkyBoxStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// sky body
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Sky Body" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineBody = pipelineManager.GetWith( pipconf );
+	
+	// sky body stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineBodyStereo = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderSky::~deoglRenderSky(){
-	pCleanUp();
 }
 
 
@@ -804,29 +797,11 @@ void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPla
 	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	const deoglSPBMapBuffer mapped( pRenderSkyIntoEnvMapPB );
 	
-	pRenderSkyIntoEnvMapPB->MapBuffer();
-	try{
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, GetRenderThread().GetChoices().GetClearDepthValueRegular() );
-		
-	}catch( const deException & ){
-		pRenderSkyIntoEnvMapPB->UnmapBuffer();
-		throw;
-	}
-	pRenderSkyIntoEnvMapPB->UnmapBuffer();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglRenderSky::pCleanUp(){
-	if( pRenderSkyIntoEnvMapPB ){
-		pRenderSkyIntoEnvMapPB->FreeReference();
-	}
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
+	pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, GetRenderThread().GetChoices().GetClearDepthValueRegular() );
 }

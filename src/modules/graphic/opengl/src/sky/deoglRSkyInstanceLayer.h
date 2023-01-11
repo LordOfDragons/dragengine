@@ -23,6 +23,7 @@
 #define _DEOGLRSKYINSTANCELAYER_H_
 
 #include "../light/pipeline/deoglLightPipelinesSky.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
@@ -31,7 +32,6 @@
 class deoglLightShaderConfig;
 class deoglRenderThread;
 class deoglRSkyInstance;
-class deoglSPBlockUBO;
 class deoglSkyLayerTracker;
 class deoglShadowCaster;
 class deoglSkyLayerGICascade;
@@ -67,8 +67,8 @@ private:
 	bool pSkyNeedsUpdate;
 	
 	deoglLightPipelines::Ref pPipelines;
-	deoglSPBlockUBO *pParamBlockLight;
-	deoglSPBlockUBO *pParamBlockInstance;
+	deoglSPBlockUBO::Ref pParamBlockLight;
+	deoglSPBlockUBO::Ref pParamBlockInstance;
 	
 	deoglShadowCaster *pShadowCaster;
 	
@@ -150,10 +150,10 @@ public:
 	deoglLightPipelines &GetPipelines();
 	
 	// /** Light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
+	const deoglSPBlockUBO::Ref &GetLightParameterBlock();
 	
 	/** Instance parameter block. */
-	deoglSPBlockUBO *GetInstanceParameterBlock();
+	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
 	
 	/** Shadow caster. */
 	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }

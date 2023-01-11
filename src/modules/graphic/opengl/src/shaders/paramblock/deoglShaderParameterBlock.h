@@ -39,6 +39,11 @@ class deoglSPBParameter;
  * Subclasses provide the actual implementation depending on the chosen backend.
  */
 class deoglShaderParameterBlock : public deObject{
+public:
+	typedef deTObjectReference<deoglShaderParameterBlock> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	

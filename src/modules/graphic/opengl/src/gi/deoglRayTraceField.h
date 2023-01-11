@@ -23,6 +23,7 @@
 #define _DEOGLRAYTRACEFIELD_H_
 
 #include "../texture/texture2d/deoglTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObjectReference.h>
@@ -30,7 +31,6 @@
 class deoglFramebuffer;
 class deoglRenderThread;
 class deoglROcclusionMesh;
-class deoglSPBlockUBO;
 
 
 /**
@@ -72,7 +72,7 @@ private:
 	
 	deoglTexture pTexRays;
 	deoglFramebuffer *pFBORays;
-	deObjectReference pUBO;
+	deoglSPBlockUBO::Ref pUBO;
 	
 	
 	
@@ -140,7 +140,7 @@ public:
 	inline deoglFramebuffer *GetFBORays(){ return pFBORays; }
 	
 	/** \brief UBO. */
-	inline deoglSPBlockUBO &GetUBO() const{ return ( deoglSPBlockUBO& )( deObject& )pUBO; }
+	inline deoglSPBlockUBO &GetUBO() const{ return pUBO; }
 	
 	
 	

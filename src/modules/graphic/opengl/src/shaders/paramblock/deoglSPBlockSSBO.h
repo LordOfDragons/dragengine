@@ -30,6 +30,11 @@
  */
 class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
+	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
+	
+	
+	
+private:
 	GLuint pSSBO;
 	int pBindingPoint;
 	bool pAllocateBuffer;

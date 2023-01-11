@@ -66,9 +66,9 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../sky/deoglRSkyLayer.h"
@@ -189,8 +189,6 @@ static const int vCubeFaces[] = {
 deoglRenderOcclusion::deoglRenderOcclusion( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
-pRenderParamBlock( NULL ),
-pOccMapFrustumParamBlock( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL )
 {
@@ -375,7 +373,7 @@ pAddToRenderTask( NULL )
 		
 		
 		
-		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
+		pRenderParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
 		pRenderParamBlock->SetParameterCount( 5 );
 		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
@@ -386,7 +384,7 @@ pAddToRenderTask( NULL )
 		pRenderParamBlock->MapToStd140();
 		pRenderParamBlock->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
-		pOccMapFrustumParamBlock = new deoglSPBlockUBO( renderThread);
+		pOccMapFrustumParamBlock.TakeOver( new deoglSPBlockUBO( renderThread) );
 		pOccMapFrustumParamBlock->SetParameterCount( 1 );
 		pOccMapFrustumParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 		pOccMapFrustumParamBlock->MapToStd140();
@@ -559,9 +557,8 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	
 	// linear depth: use non-infinite projection matrix 
 	const decDMatrix &matrixProjection = plan.GetFrustumMatrix();
-	
-	pRenderParamBlock->MapBuffer();
-	try{
+	{
+		const deoglSPBMapBuffer mapped( pRenderParamBlock );
 		// 0: pMatrixVP[ 0 ]
 		// 1: pMatrixV[ 0 ]
 		// 2: pTransformZ[ 0 ]
@@ -593,12 +590,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 				pRenderParamBlock->SetParameterDataArrayVec4( 4, 1, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
 			}
 		}
-		
-	}catch( const deException & ){
-		pRenderParamBlock->UnmapBuffer();
-		throw;
 	}
-	pRenderParamBlock->UnmapBuffer();
 	DEBUG_PRINT_TIMER( "Update Param Block" );
 	
 	// render occlusion map
@@ -904,16 +896,11 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	// using a scaling matrix filled with the far frustum point coordinates. only the back faces of the
 	// frustum are rendered.
 	if( renderFrustumPlanesMatrix ){// && false ){
-		pOccMapFrustumParamBlock->MapBuffer();
-		try{
+		{
+			const deoglSPBMapBuffer mapped( pOccMapFrustumParamBlock );
 			// 0: pMatrixModel
 			pOccMapFrustumParamBlock->SetParameterDataMat4x3( 0, *renderFrustumPlanesMatrix );
-			
-		}catch( const deException & ){
-			pOccMapFrustumParamBlock->UnmapBuffer();
-			throw;
 		}
-		pOccMapFrustumParamBlock->UnmapBuffer();
 		
 		pRenderParamBlock->Activate();
 		pOccMapFrustumParamBlock->Activate();
@@ -1322,25 +1309,18 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	// setup render parameters
 	if( useGSRenderCube ){
 		// NOTE Y axis is flipped compared to opengl. pCubeFaces takes care of this
-		pRenderParamBlock->MapBuffer();
-		try{
-			for( cmf=0; cmf<6; cmf++ ){
-				deoglCubeMap::CreateMatrixForFace( matrixCamera, position, vCubeFaces[ cmf ] );
-				
-				pRenderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * matrixProjection );
-				pRenderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );  // unused
-				pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31 * zscale,
-					matrixCamera.a32 * zscale, matrixCamera.a33 * zscale,
-					matrixCamera.a34 * zscale + zoffset ); // pTransformZ
-				pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset ); // pZToDepth
-				pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
-			}
+		const deoglSPBMapBuffer mapped( pRenderParamBlock );
+		for( cmf=0; cmf<6; cmf++ ){
+			deoglCubeMap::CreateMatrixForFace( matrixCamera, position, vCubeFaces[ cmf ] );
 			
-		}catch( const deException & ){
-			pRenderParamBlock->UnmapBuffer();
-			throw;
+			pRenderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * matrixProjection );
+			pRenderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );  // unused
+			pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31 * zscale,
+				matrixCamera.a32 * zscale, matrixCamera.a33 * zscale,
+				matrixCamera.a34 * zscale + zoffset ); // pTransformZ
+			pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset ); // pZToDepth
+			pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
 		}
-		pRenderParamBlock->UnmapBuffer();
 	}
 	
 	// set states
@@ -1404,8 +1384,8 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 			for( cmf=0; cmf<6; cmf++ ){
 				deoglCubeMap::CreateMatrixForFace( matrixCamera, position, vCubeFaces[ cmf ] );
 				
-				pRenderParamBlock->MapBuffer();
-				try{
+				{
+					const deoglSPBMapBuffer mapped( pRenderParamBlock );
 					pRenderParamBlock->SetParameterDataMat4x4( 0, matrixCamera * matrixProjection );
 					pRenderParamBlock->SetParameterDataMat4x3( 1, matrixCamera );  // unused
 					pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31 * zscale,
@@ -1413,12 +1393,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 						matrixCamera.a34 * zscale + zoffset );
 					pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset ); // pZToDepth
 					pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
-					
-				}catch( const deException & ){
-					pRenderParamBlock->UnmapBuffer();
-					throw;
 				}
-				pRenderParamBlock->UnmapBuffer();
 				
 				fbo->AttachDepthCubeMapFace( cubemap, vCubeFaces[ cmf ] );
 				fbo->Verify();
@@ -1464,12 +1439,6 @@ void deoglRenderOcclusion::pCleanUp(){
 	}
 	if( pRenderTask ){
 		delete pRenderTask;
-	}
-	if( pOccMapFrustumParamBlock ){
-		pOccMapFrustumParamBlock->FreeReference();
-	}
-	if( pRenderParamBlock ){
-		pRenderParamBlock->FreeReference();
 	}
 	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();

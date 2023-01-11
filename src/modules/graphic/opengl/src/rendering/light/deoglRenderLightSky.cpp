@@ -79,6 +79,7 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../shadow/deoglSCSolid.h"
 #include "../../shadow/deoglSCTransparent.h"
 #include "../../shadow/deoglShadowCaster.h"
@@ -428,18 +429,16 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	SetViewport( plan.GetPlan() );
 	
 	// set program parameters
-	deoglSPBlockUBO * const spbInstance = skyLayer.GetInstanceParameterBlock();
-	deoglSPBlockUBO * const spbLight = skyLayer.GetLightParameterBlock();
-	DEASSERT_NOTNULL( spbInstance )
-	DEASSERT_NOTNULL( spbLight )
+	deoglSPBlockUBO &spbInstance = skyLayer.GetInstanceParameterBlock();
+	deoglSPBlockUBO &spbLight = skyLayer.GetLightParameterBlock();
 	
 	const deoglLightShader &lightShader = pipeline->GetShader();
-	UpdateLightParamBlock( lightShader, *spbLight, plan );
-	UpdateInstanceParamBlock( lightShader, *spbInstance, plan, shadowMapSize, passCount );
+	UpdateLightParamBlock( lightShader, spbLight, plan );
+	UpdateInstanceParamBlock( lightShader, spbInstance, plan, shadowMapSize, passCount );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
-	spbLight->Activate();
-	spbInstance->Activate();
+	spbLight.Activate();
+	spbInstance.Activate();
 	
 	// set textures
 	int target;
@@ -515,8 +514,8 @@ const deoglRenderPlanMasked *mask, bool xray ){
 				// WARNING always non-stereo!
 				renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 				
-				spbLight->Activate();
-				spbInstance->Activate();
+				spbLight.Activate();
+				spbInstance.Activate();
 				
 				const deoglLightShader &lightShaderGI = pipeline->GetShader();
 				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
@@ -576,9 +575,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderShadowMap" );
 	const deoglRWorld &world = *plan.GetPlan().GetWorld();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
-	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
 #else
-	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 #endif
 	const bool bugClearEntireArrTex = renderThread.GetCapabilities().GetClearEntireArrayTexture().Broken();
 // 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
@@ -725,7 +724,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renderParamBlock );
+	renderTask.SetRenderParamBlock( &renderParamBlock );
 	
 	addToRenderTask.Reset();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
@@ -754,9 +753,10 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 #ifdef SKY_SHADOW_LAYERED_RENDERING
 	// render solid content. two different depth offsets for front and back faces are used. double sided always
 	// counts as front facing. this way all can be rendered in one go
-	renderParamBlock->MapBuffer();
-	try{
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+	{
+		const deoglSPBMapBuffer mapped( renderParamBlock );
+		
+		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
 		
 		for( i=0; i<layerCount; i++ ){
 			deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
@@ -778,19 +778,14 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			matrixCamera = decMatrix::CreateCamera( sl.position, matLig.TransformView(), matLig.TransformUp() )
 				* decMatrix::CreateScale( sl.scale * 2.0f );
 			
-			renderParamBlock->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
-			renderParamBlock->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
-			renderParamBlock->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
+			renderParamBlock.SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
+			renderParamBlock.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
+			renderParamBlock.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
 				i, matrixCamera.GetRotationMatrix().Invert() );
-			renderParamBlock->SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
+			renderParamBlock.SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
 				i, sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		}
-		
-	}catch( const deException & ){
-		renderParamBlock->UnmapBuffer();
-		throw;
 	}
-	renderParamBlock->UnmapBuffer();
 			SSDT("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
@@ -881,27 +876,23 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		// render solid content. two different depth offsets for front and back faces are used. double sided always
 		// counts as front facing. this way all can be rendered in one go
-		renderParamBlock->MapBuffer();
-		try{
-			renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera );
-			renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
+		{
+			const deoglSPBMapBuffer mapped( renderParamBlock );
+			
+			renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera );
+			renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
 				matrixCamera.GetRotationMatrix().Invert() );
-			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+			renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 			
-			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
-			
-		}catch( const deException & ){
-			renderParamBlock->UnmapBuffer();
-			throw;
+			renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		}
-		renderParamBlock->UnmapBuffer();
 			SSDTPF("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 #ifdef SKY_SHADOW_FILTERED
-		sl.renderTask->SetRenderParamBlock( renderParamBlock );
+		sl.renderTask->SetRenderParamBlock( &renderParamBlock );
 		sl.addToRenderTask->SetForceDoubleSided( true );
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
@@ -1069,13 +1060,14 @@ deoglShadowMapper &shadowMapper ){
 	
 	if( plan.GetGIShadowUpdateStatic() ){
 		// parameter block
-		deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
-		renderParamBlock->MapBuffer();
-		try{
-			renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
-			renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
+		deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+		{
+			const deoglSPBMapBuffer mapped( renderParamBlock );
+			
+			renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
+			renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
 				matrixGI.GetRotationMatrix().QuickInvert() );
 			
 			// for static shadow maps we use the clear depth trick. depth offsets though
@@ -1092,20 +1084,15 @@ deoglShadowMapper &shadowMapper ){
 			//      up at the edge of geometry because the front face did not cover the
 			//      exact same pixels as it should. this inconsistent behavior causes
 			//      problems. for this reason this trick is disabled until a better idea
-			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+			renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 				0.0f/*sl.zscale*/, sl.zoffset, 0.0f/*-sl.zscale*/, -sl.zoffset ); // due to disabled
 			
-			renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
-			
-		}catch( const deException & ){
-			renderParamBlock->UnmapBuffer();
-			throw;
+			renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		}
-		renderParamBlock->UnmapBuffer();
 				SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 		
 		// render
-		plan.GetGIRenderTaskStatic().SetRenderParamBlock( renderParamBlock );
+		plan.GetGIRenderTaskStatic().SetRenderParamBlock( &renderParamBlock );
 		plan.GetGIRenderTaskAddStatic().SetForceDoubleSided( true );
 		
 		shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize( shadowMapSize, true, false ) );
@@ -1114,32 +1101,28 @@ deoglShadowMapper &shadowMapper ){
 	}
 	
 	// dynamic shadow map. parameter block
-	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
-	renderParamBlock->MapBuffer();
-	try{
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	{
+		const deoglSPBMapBuffer mapped( renderParamBlock );
+		
 		// this is the same as above and could be shared
-		renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
-		renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixGI.GetRotationMatrix().QuickInvert() );
+		renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
+		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
+		renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixGI.GetRotationMatrix().QuickInvert() );
 		
 		// this though is different and requires an own parameter block to be used.
 		// in general only dynamic shadow map is rendered so the situation of this
 		// parameter blockt to be updated twice (and stalling) is little
-		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+		renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
 			sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		
-		renderParamBlock->SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
-		
-	}catch( const deException & ){
-		renderParamBlock->UnmapBuffer();
-		throw;
+		renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 	}
-	renderParamBlock->UnmapBuffer();
 			SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// render
-	plan.GetGIRenderTaskDynamic().SetRenderParamBlock( renderParamBlock );
+	plan.GetGIRenderTaskDynamic().SetRenderParamBlock( &renderParamBlock );
 	plan.GetGIRenderTaskAddDynamic().SetForceDoubleSided( true );
 	
 	if( scsolid.GetDynamicMap() && scsolid.GetDynamicMap()->GetWidth() != shadowMapSize ){
@@ -1232,71 +1215,64 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan ){
 	lightColor = TransformColor( plan.GetPlan().GetWorld()->GetLightColorMatrix(), lightColor );
 	
 	// set values
-	paramBlock.MapBuffer();
-	try{
-		const bool hasGIState = plan.GetPlan().GetRenderGIState() != NULL;
-		
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
-		if( target != -1 ){
-			if( hasGIState ){
-				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
-				
-			}else{
-				paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
-				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
-			}
+	const deoglSPBMapBuffer mapped( paramBlock );
+	const bool hasGIState = plan.GetPlan().GetRenderGIState() != NULL;
+	
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
+	if( target != -1 ){
+		if( hasGIState ){
+			paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
+			
+		}else{
+			paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
+			// this happens usually only for env-maps. better be dark than wrong lit
+			//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 		}
-		
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
-		if( target != -1 ){
-			if( hasGIState || plan.GetPlan().GetNoAmbientLight() ){
-				paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
-				
-			}else{
-				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
-				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
-			}
-		}
-		
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
-		if( target != -1 ){
-			if( plan.GetPlan().GetNoAmbientLight() ){
-				paramBlock.SetParameterDataFloat( target, 0.0f );
-				
-			}else{
-				paramBlock.SetParameterDataFloat( target,
-					ambientIntensity / decMath::max( lightIntensity + ambientIntensity, 0.1f ) );
-			}
-		}
-		
-		// NOTE sky light is currently using a special handling which has to be replaced with the
-		//      one used by point and spot lights. due to this pLightAmbientRatio can not be
-		//      used in the shader since it is not defined here. to work with the new version the
-		//      following changes have to be done (once the shader is up to it)
-		//      
-		//      - LightColor = lightColor * ( lightIntensity + ambientIntensity )
-		//      - pLightAmbientRatio = ambientIntensity / ( lightIntensity + ambientIntensity )
-		//      - pLightColorAmbient = not used anymore
-		//      
-		//      better would be to change the sky light definition to use ambient-ratio as
-		//      lights do. in this case the solution becomes as simple as in the other lights:
-		//      
-		//      - LightColor = lightColor * lightIntensity
-		//      - pLightAmbientRatio = lightAmbientRatio
-		//      - pLightColorAmbient = not used anymore
-		//      
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, 0.0f );
-		}
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
+	if( target != -1 ){
+		if( hasGIState || plan.GetPlan().GetNoAmbientLight() ){
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
+			
+		}else{
+			paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
+			// this happens usually only for env-maps. better be dark than wrong lit
+			//paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
+		}
+	}
+	
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
+	if( target != -1 ){
+		if( plan.GetPlan().GetNoAmbientLight() ){
+			paramBlock.SetParameterDataFloat( target, 0.0f );
+			
+		}else{
+			paramBlock.SetParameterDataFloat( target,
+				ambientIntensity / decMath::max( lightIntensity + ambientIntensity, 0.1f ) );
+		}
+	}
+	
+	// NOTE sky light is currently using a special handling which has to be replaced with the
+	//      one used by point and spot lights. due to this pLightAmbientRatio can not be
+	//      used in the shader since it is not defined here. to work with the new version the
+	//      following changes have to be done (once the shader is up to it)
+	//      
+	//      - LightColor = lightColor * ( lightIntensity + ambientIntensity )
+	//      - pLightAmbientRatio = ambientIntensity / ( lightIntensity + ambientIntensity )
+	//      - pLightColorAmbient = not used anymore
+	//      
+	//      better would be to change the sky light definition to use ambient-ratio as
+	//      lights do. in this case the solution becomes as simple as in the other lights:
+	//      
+	//      - LightColor = lightColor * lightIntensity
+	//      - pLightAmbientRatio = lightAmbientRatio
+	//      - pLightColorAmbient = not used anymore
+	//      
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, 0.0f );
+	}
 }
 
 void deoglRenderLightSky::UpdateInstanceParamBlock( const deoglLightShader &lightShader,
@@ -1386,87 +1362,81 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 	}
 	
-	paramBlock.MapBuffer();
-	try{
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
-		if( target != -1 ){
-			paramBlock.SetParameterDataArrayVec3( target, 0, matrixLV.TransformView().Normalized() );
-			paramBlock.SetParameterDataArrayVec3( target, 1, matrixLVStereo.TransformView().Normalized() );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 0 ] );
-			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 0 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 1 ] );
-			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 1 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix3 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 2 ] );
-			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 2 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix4 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 3 ] );
-			paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 3 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightParams );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 0.0f, 0.0f );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLayerBorder );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec4( target, layerBorder[ 0 ], layerBorder[ 1 ],
-				layerBorder[ 2 ], layerBorder[ 3 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );
-		if( target != -1 ){
-			pixelSize = 1.0f / ( float )shadowMapSize;
-			noiseScale = config.GetShadowCubePCFSize() / ( float )shadowMapSize;
-			
-			paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 0 ], 1.0f / scaleZ[ 1 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform2 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
-		}
-		
-		// global illumination
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowMatrix );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, giMatrixShadow );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowParams );
-		if( target != -1 ){
-			const int giShadowMapSize = plan.GetGIShadowSize();
-			pixelSize = 1.0f / ( float )giShadowMapSize;
-			noiseScale = config.GetShadowCubePCFSize() / ( float )giShadowMapSize;
-			
-			paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
-		}
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( paramBlock );
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayVec3( target, 0, matrixLV.TransformView().Normalized() );
+		paramBlock.SetParameterDataArrayVec3( target, 1, matrixLVStereo.TransformView().Normalized() );
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 0 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 0 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 1 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 1 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix3 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 2 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 2 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix4 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 3 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 3 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightParams );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 0.0f, 0.0f );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLayerBorder );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, layerBorder[ 0 ], layerBorder[ 1 ],
+			layerBorder[ 2 ], layerBorder[ 3 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );
+	if( target != -1 ){
+		pixelSize = 1.0f / ( float )shadowMapSize;
+		noiseScale = config.GetShadowCubePCFSize() / ( float )shadowMapSize;
+		
+		paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 0 ], 1.0f / scaleZ[ 1 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform2 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
+	}
+	
+	// global illumination
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowMatrix );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat4x4( target, giMatrixShadow );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowParams );
+	if( target != -1 ){
+		const int giShadowMapSize = plan.GetGIShadowSize();
+		pixelSize = 1.0f / ( float )giShadowMapSize;
+		noiseScale = config.GetShadowCubePCFSize() / ( float )giShadowMapSize;
+		
+		paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
+	}
 }
 
 

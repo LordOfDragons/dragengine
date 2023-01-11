@@ -41,7 +41,6 @@ class deoglRenderThread;
 class deoglRTLogger;
 class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
-class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglPipeline;
 

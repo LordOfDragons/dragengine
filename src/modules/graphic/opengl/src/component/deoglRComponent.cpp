@@ -60,6 +60,7 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinRenderable.h"
@@ -2166,16 +2167,8 @@ void deoglRComponent::pPrepareParamBlocks(){
 	
 	if( pDirtyOccMeshSharedSPBElement ){
 		if( pOccMeshSharedSPBElement ){
-			deoglShaderParameterBlock &paramBlock = pOccMeshSharedSPBElement->MapBuffer();
-			try{
-				UpdateOccmeshInstanceParamBlock( paramBlock, pOccMeshSharedSPBElement->GetIndex() );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
+			const deoglSharedSPBElementMapBuffer mapped( *pOccMeshSharedSPBElement );
+			UpdateOccmeshInstanceParamBlock( mapped.GetBlockRef(), pOccMeshSharedSPBElement->GetIndex() );
 		}
 		
 		pDirtyOccMeshSharedSPBElement = false;

@@ -48,6 +48,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -943,15 +944,8 @@ void deoglRDecal::pPrepareParamBlocks(){
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-			try{
-				pUpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			paramBlock.UnmapBuffer();
+			const deoglSharedSPBElementMapBuffer mapped( *pSharedSPBElement );
+			pUpdateInstanceParamBlock( mapped.GetBlockRef(), pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		pDirtySharedSPBElement = false;

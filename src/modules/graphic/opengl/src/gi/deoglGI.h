@@ -86,10 +86,10 @@ private:
 	deoglGITraceRays pTraceRays;
 	deoglGIMaterials pMaterials;
 	
-	deObjectReference pUBOParameter;
-	deObjectReference pUBOProbeIndex;
-	deObjectReference pUBOProbePosition;
-	deObjectReference pUBORayDirection;
+	deoglSPBlockUBO::Ref pUBOParameter;
+	deoglSPBlockUBO::Ref pUBOProbeIndex;
+	deoglSPBlockUBO::Ref pUBOProbePosition;
+	deoglSPBlockUBO::Ref pUBORayDirection;
 	
 	
 	
@@ -123,10 +123,10 @@ public:
 	inline const deoglGIMaterials &GetMaterials() const{ return pMaterials; }
 	
 	/** \brief UBO. */
-	inline deoglSPBlockUBO &GetUBOParameter() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOParameter; }
-	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOProbeIndex; }
-	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOProbePosition; }
-	inline deoglSPBlockUBO &GetUBORayDirection() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORayDirection; }
+	inline deoglSPBlockUBO &GetUBOParameter() const{ return pUBOParameter; }
+	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return pUBOProbeIndex; }
+	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return pUBOProbePosition; }
+	inline deoglSPBlockUBO &GetUBORayDirection() const{ return pUBORayDirection; }
 	/*@}*/
 	
 	

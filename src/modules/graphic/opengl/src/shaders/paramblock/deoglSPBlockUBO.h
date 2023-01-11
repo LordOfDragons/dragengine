@@ -33,6 +33,11 @@
  * data block.
  */
 class deoglSPBlockUBO : public deoglShaderParameterBlock{
+public:
+	typedef deTObjectReference<deoglSPBlockUBO> Ref;
+	
+	
+	
 private:
 	GLuint pUBO;
 	int pBindingPoint;

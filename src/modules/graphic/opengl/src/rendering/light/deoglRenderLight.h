@@ -32,7 +32,6 @@ class deoglRenderLightSpot;
 class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
-class deoglSPBlockUBO;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
 
@@ -62,8 +61,8 @@ private:
 	deoglRenderLightParticles *pRenderLightParticles;
 	deoglRenderGI *pRenderGI;
 	
-	deoglSPBlockUBO *pShadowPB;
-	deoglSPBlockUBO *pOccMapPB;
+	deoglSPBlockUBO::Ref pShadowPB;
+	deoglSPBlockUBO::Ref pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
@@ -110,10 +109,10 @@ public:
 	
 	
 	/** Shadow render parameter block. */
-	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
+	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{ return pShadowPB; }
 	
 	/** Occmap render parameter block. */
-	inline deoglSPBlockUBO *GetOccMapPB() const{ return pOccMapPB; }
+	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{ return pOccMapPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }

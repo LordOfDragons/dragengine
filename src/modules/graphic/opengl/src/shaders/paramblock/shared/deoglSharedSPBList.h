@@ -24,10 +24,11 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 
+#include "../deoglShaderParameterBlock.h"
+
 class deoglRenderThread;
 class deoglSharedSPB;
 class deoglSharedSPBElement;
-class deoglShaderParameterBlock;
 
 
 
@@ -37,7 +38,7 @@ class deoglShaderParameterBlock;
 class deoglSharedSPBList{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglShaderParameterBlock *pLayout;
+	const deoglShaderParameterBlock::Ref pLayout;
 	int pSize;
 	decObjectList pSPBs;
 	
@@ -62,7 +63,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** \brief Layout reference. */
-	inline const deoglShaderParameterBlock &GetLayout() const{ return *pLayout; }
+	inline const deoglShaderParameterBlock::Ref &GetLayout() const{ return pLayout; }
 	
 	/** \brief Maximum number of elements per block. */
 	int GetSize() const;
@@ -85,7 +86,7 @@ public:
 	
 	
 protected:
-	virtual deoglShaderParameterBlock *pCreateBlock() const = 0;
+	virtual deoglShaderParameterBlock::Ref pCreateBlock() const = 0;
 };
 
 #endif

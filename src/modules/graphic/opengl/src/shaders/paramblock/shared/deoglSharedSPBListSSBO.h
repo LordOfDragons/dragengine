@@ -32,6 +32,11 @@ class deoglSPBlockSSBO;
  * \brief OpenGL shared shader parameter block List using SSBO as backing storage.
  */
 class deoglSharedSPBListSSBO : public deoglSharedSPBList{
+private:
+	deoglSPBlockSSBO &pLayoutSSBO;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +47,7 @@ public:
 	
 	
 protected:
-	deoglShaderParameterBlock *pCreateBlock() const;
+	deoglShaderParameterBlock::Ref pCreateBlock() const;
 };
 
 #endif

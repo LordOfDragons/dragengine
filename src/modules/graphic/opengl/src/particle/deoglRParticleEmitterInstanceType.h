@@ -23,12 +23,12 @@
 #define _DEOGLRPARTICLEEMITTERINSTANCETYPE_H_
 
 #include "../skin/deoglSkinTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
 
 class deoglRDynamicSkin;
 class deoglRParticleEmitterInstance;
-class deoglSPBlockUBO;
 class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
@@ -55,7 +55,7 @@ private:
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	
-	deoglSPBlockUBO *pParamBlock;
+	deoglSPBlockUBO::Ref pParamBlock;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCCounter;
@@ -70,7 +70,7 @@ private:
 	bool pDirtyTUCGeometry;
 	bool pDirtyTUCGeometryDepthTest;
 	
-	deoglSPBlockUBO *pParamBlockLightInstance;
+	deoglSPBlockUBO::Ref pParamBlockLightInstance;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	
@@ -149,7 +149,7 @@ public:
 	const deoglSkinTexturePipelines &GetUseSkinPipelines() const;
 	
 	/** Shader parameter block or NULL if there is no valid skin texture. */
-	deoglSPBlockUBO *GetParamBlock();
+	const deoglSPBlockUBO::Ref &GetParamBlock();
 	
 	/** Texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type );
@@ -199,7 +199,7 @@ public:
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
 	
 	/** Light instance parameter block. */
-	deoglSPBlockUBO *GetLightInstanceParameterBlock();
+	const deoglSPBlockUBO::Ref &GetLightInstanceParameterBlock();
 	
 	/** Drop light parameter block. */
 	void DropLightBlocks();

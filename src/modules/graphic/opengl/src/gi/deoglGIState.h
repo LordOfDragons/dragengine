@@ -30,6 +30,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -38,7 +39,6 @@ class deoglGICascade;
 class deoglRenderThread;
 class deoglRComponent;
 class deoglRWorld;
-class deoglSPBlockUBO;
 class deoglDCollisionFrustum;
 
 
@@ -90,7 +90,7 @@ private:
 	
 	decPoint pSampleImageSize;
 	
-	deObjectReference pUBOClearProbes;
+	deoglSPBlockUBO::Ref pUBOClearProbes;
 	
 	deoglArrayTexture pTexProbeIrradiance;
 	deoglArrayTexture pTexProbeDistance;
@@ -223,7 +223,7 @@ public:
 	
 	
 	/** Clear probes UBO. */
-	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOClearProbes; }
+	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return pUBOClearProbes; }
 	
 	/** Prepare clear probes UBO. */
 	void PrepareUBOClearProbes() const;

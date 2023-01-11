@@ -32,6 +32,7 @@
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTBufferObject.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../skin/channel/deoglSkinChannel.h"
@@ -72,8 +73,6 @@ pSector( sector )
 	pSkin = NULL;
 	
 	pUseSkinTexture = NULL;
-	
-	pParamBlock = NULL;
 	
 	pTUCDepth = NULL;
 	pTUCGeometry = NULL;
@@ -233,84 +232,75 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 		return;
 	}
 	
-	// matrix
 	const float sectorDim = pSector.GetHeightTerrain().GetSectorSize();
 	const decDMatrix matrixModel( pSector.CalcWorldMatrix() );
 	
-	// update shader parameter block
-	paramBlock.MapBuffer();
-	try{
-		int target;
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixModel );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
-		}
-		
-		// per texture properties
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat3x2( target, pMatrix );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutHeightTerrainMaskTCTransform );
-		if( target != -1 ){
-			/*
-			deImage * const image = pHTSector->GetSector()->GetTextureAt( pIndex )->GetMaskImage();
-			int imageHeight = 1024;
-			int imageWidth = 1024;
-			
-			if( image ){
-				imageWidth = image->GetWidth();
-				imageHeight = image->GetHeight();
-			}
-			
-			paramBlock.SetParameterDataVec4( target, ( float )( imageWidth - 1 ) / sectorDim, ( float )( imageHeight - 1 ) / sectorDim,
-				( float )( imageWidth - 1 ) * 0.5f, ( float )( imageHeight - 1 ) * 0.5f );
-			*/
-			paramBlock.SetParameterDataVec2( target, 1.0f / sectorDim, 1.0f / sectorDim );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutHeightTerrainMaskSelector );
-		if( target != -1 ){
-			paramBlock.SetParameterDataIVec2( target, 0 /*pIndex >> 2*/, pIndex & 0x3 );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-		if( target != -1 ){
-			paramBlock.SetParameterDataBool( target, false );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, 0.0f ); // TODO
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
-		if( target != -1 ){
-			if( useSkinState ){
-				paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
-				
-			}else{
-				paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
-			}
-		}
-		
-		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
-		
-		// per texture dynamic texture properties
-		skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( paramBlock );
+	int target;
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat4x3( target, matrixModel );
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
+	}
+	
+	// per texture properties
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat3x2( target, pMatrix );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutHeightTerrainMaskTCTransform );
+	if( target != -1 ){
+		/*
+		deImage * const image = pHTSector->GetSector()->GetTextureAt( pIndex )->GetMaskImage();
+		int imageHeight = 1024;
+		int imageWidth = 1024;
+		
+		if( image ){
+			imageWidth = image->GetWidth();
+			imageHeight = image->GetHeight();
+		}
+		
+		paramBlock.SetParameterDataVec4( target, ( float )( imageWidth - 1 ) / sectorDim, ( float )( imageHeight - 1 ) / sectorDim,
+			( float )( imageWidth - 1 ) * 0.5f, ( float )( imageHeight - 1 ) * 0.5f );
+		*/
+		paramBlock.SetParameterDataVec2( target, 1.0f / sectorDim, 1.0f / sectorDim );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutHeightTerrainMaskSelector );
+	if( target != -1 ){
+		paramBlock.SetParameterDataIVec2( target, 0 /*pIndex >> 2*/, pIndex & 0x3 );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
+	if( target != -1 ){
+		paramBlock.SetParameterDataBool( target, false );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, 0.0f ); // TODO
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
+	if( target != -1 ){
+		if( useSkinState ){
+			paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
+			
+		}else{
+			paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
+		}
+	}
+	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+	
+	// per texture dynamic texture properties
+	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 }
 
 void deoglHTSTexture::PrepareForRender(){
@@ -326,11 +316,6 @@ void deoglHTSTexture::PrepareForRender(){
 void deoglHTSTexture::pCleanUp(){
 	if( pSkin ){
 		pSkin->FreeReference();
-	}
-	
-	if( pParamBlock ){
-		pParamBlock->FreeReference();
-		pParamBlock = NULL;
 	}
 	
 	if( pTUCDepth ){
@@ -364,10 +349,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 	pDirtyParamBlock = false;
 	
 	if( ! pValidParamBlock ){
-		if( pParamBlock ){
-			pParamBlock->FreeReference();
-			pParamBlock = NULL;
-		}
+		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
 			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
@@ -375,8 +357,8 @@ void deoglHTSTexture::pPrepareParamBlock(){
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO( *pSector.GetHeightTerrain()
-					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO() );
+				pParamBlockGeometry.TakeOver( new deoglSPBlockUBO( *pSector.GetHeightTerrain()
+					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO() ) );
 				
 			}else{*/
 				pParamBlock = skinShader.CreateSPBInstParam();
@@ -389,7 +371,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( *pParamBlock, pUseSkinTexture->GetPipelines().
+			UpdateInstanceParamBlock( pParamBlock, pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}

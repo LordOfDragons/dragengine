@@ -74,7 +74,7 @@ void deoglGI::pCleanUp(){
 
 void deoglGI::pCreateUBOParameter(){
 	pUBOParameter.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBOParameter();
+	deoglSPBlockUBO &ubo = pUBOParameter;
 	
 	// memory consumption:
 	// - 10 vec4 blocks = 40 components = 160 bytes
@@ -114,7 +114,7 @@ void deoglGI::pCreateUBOParameter(){
 
 void deoglGI::pCreateUBOProbeIndex(){
 	pUBOProbeIndex.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBOProbeIndex();
+	deoglSPBlockUBO &ubo = pUBOProbeIndex;
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 4096 probe indices = 4096 components = 16384 bytes
@@ -127,7 +127,7 @@ void deoglGI::pCreateUBOProbeIndex(){
 
 void deoglGI::pCreateUBOProbePosition(){
 	pUBOProbePosition.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBOProbePosition();
+	deoglSPBlockUBO &ubo = pUBOProbePosition;
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 4096 probe positions = 16384 components = 65536 bytes
@@ -140,7 +140,7 @@ void deoglGI::pCreateUBOProbePosition(){
 
 void deoglGI::pCreateUBORayDirection(){
 	pUBORayDirection.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBORayDirection();
+	deoglSPBlockUBO &ubo = pUBORayDirection;
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 512 rays = 2048 components = 8192 bytes

@@ -34,7 +34,6 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/deoglRSkin.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -65,8 +64,7 @@ pTextureSamples( NULL ),
 
 pSkin( NULL ),
 
-pEmitLight( false ),
-pParamBlockLight( NULL )
+pEmitLight( false )
 {
 	LEAK_CHECK_CREATE( emitter.GetRenderThread(), ParticleEmitterType );
 }
@@ -87,9 +85,6 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 	
 	if( pTextureSamples ){
 		delete pTextureSamples;
-	}
-	if( pParamBlockLight ){
-		pParamBlockLight->FreeReference();
 	}
 }
 
@@ -313,19 +308,15 @@ deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
 	return pPipelines;
 }
 
-deoglSPBlockUBO *deoglRParticleEmitterType::GetLightParameterBlock(){
+deoglSPBlockUBO &deoglRParticleEmitterType::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		pParamBlockLight = GetPipelines().GetWithRef(
-			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
+		pParamBlockLight = GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, 0 )
+			.GetShader()->CreateSPBLightParam();
 	}
-	
 	return pParamBlockLight;
 }
 
 void deoglRParticleEmitterType::DropPipelines(){
-	if( pParamBlockLight ){
-		pParamBlockLight->FreeReference();
-		pParamBlockLight = nullptr;
-	}
+	pParamBlockLight = nullptr;
 	pPipelines = nullptr;
 }

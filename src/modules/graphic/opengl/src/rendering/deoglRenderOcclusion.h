@@ -36,7 +36,6 @@ class deoglRenderPlanMasked;
 class deoglRenderTask;
 class deoglRSkyInstanceLayer;
 class deoglRSkyLayer;
-class deoglSPBlockUBO;
 class deoglPipeline;
 
 
@@ -66,8 +65,8 @@ private:
 	const deoglPipeline *pPipelineOccTestTFBSun;
 	const deoglPipeline *pPipelineOccMapCube;
 	
-	deoglSPBlockUBO *pRenderParamBlock;
-	deoglSPBlockUBO *pOccMapFrustumParamBlock;
+	deoglSPBlockUBO::Ref pRenderParamBlock;
+	deoglSPBlockUBO::Ref pOccMapFrustumParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	

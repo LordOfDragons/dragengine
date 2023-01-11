@@ -260,75 +260,51 @@ deoglShaderProgram *deoglLightShader::GetShader(){
 
 
 
-deoglSPBlockUBO *deoglLightShader::CreateSPBInstParam() const{
+deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *spb = nullptr;
-	int i, target;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
 	
-	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( pUsedInstanceUniformTargetCount );
-		
-		for( i=0; i<EIUT_COUNT; i++ ){
-			target = pInstanceUniformTargets[ i ];
-			
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll(
-					vInstanceSPBParamDefs[ i ].dataType, vInstanceSPBParamDefs[ i ].componentCount,
-					vInstanceSPBParamDefs[ i ].vectorCount, vInstanceSPBParamDefs[ i ].arrayCount );
-			}
+	int i;
+	for( i=0; i<EIUT_COUNT; i++ ){
+		const int target = pInstanceUniformTargets[ i ];
+		if( target != -1 ){
+			spb->GetParameterAt( target ).SetAll(
+				vInstanceSPBParamDefs[ i ].dataType, vInstanceSPBParamDefs[ i ].componentCount,
+				vInstanceSPBParamDefs[ i ].vectorCount, vInstanceSPBParamDefs[ i ].arrayCount );
 		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglLightShader::eubInstanceParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglLightShader::eubInstanceParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglLightShader::CreateSPBLightParam() const{
+deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
-	deoglSPBlockUBO *spb = nullptr;
-	int i, target;
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( pUsedLightUniformTargetCount );
 	
-	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( pUsedLightUniformTargetCount );
-		
-		for( i=0; i<ELUT_COUNT; i++ ){
-			target = pLightUniformTargets[ i ];
-			
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll(
-					vLightSPBParamDefs[ i ].dataType, vLightSPBParamDefs[ i ].componentCount,
-					vLightSPBParamDefs[ i ].vectorCount, vLightSPBParamDefs[ i ].arrayCount );
-			}
+	int i;
+	for( i=0; i<ELUT_COUNT; i++ ){
+		const int target = pLightUniformTargets[ i ];
+		if( target != -1 ){
+			spb->GetParameterAt( target ).SetAll(
+				vLightSPBParamDefs[ i ].dataType, vLightSPBParamDefs[ i ].componentCount,
+				vLightSPBParamDefs[ i ].vectorCount, vLightSPBParamDefs[ i ].arrayCount );
 		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglLightShader::eubLightParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglLightShader::eubLightParameters );
 	return spb;
 }
 

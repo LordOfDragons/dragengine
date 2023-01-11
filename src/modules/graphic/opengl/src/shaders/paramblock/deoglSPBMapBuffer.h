@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,33 +19,42 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef _DEOGLSPBMAPBUFFER_H_
+#define _DEOGLSPBMAPBUFFER_H_
 
-#include "deoglSharedSPBListUBO.h"
-#include "../deoglSPBlockUBO.h"
-
-#include <dragengine/common/exceptions.h>
+class deoglShaderParameterBlock;
 
 
+/**
+ * Map shader parameter block while in scope. Allows manual mapping and unmapping.
+ */
+class deoglSPBMapBuffer{
+private:
+	deoglShaderParameterBlock &pBlock;
+	bool pMapped;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Map block. */
+	deoglSPBMapBuffer( deoglShaderParameterBlock &block );
+	
+	/** Unmap block if mapped. */
+	~deoglSPBMapBuffer();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Map block if not mapped. */
+	void Map();
+	
+	/** Unmap block if mapped. */
+	void Unmap();
+	/*@}*/
+};
 
-// Class deoglSharedSPBListUBO
-////////////////////////////////
-
-// Constructor, destructor
-////////////////////////////
-
-deoglSharedSPBListUBO::deoglSharedSPBListUBO( deoglRenderThread &renderThread, deoglSPBlockUBO *layout ) :
-deoglSharedSPBList( renderThread, layout ),
-pLayoutUBO( *layout ){
-}
-
-
-
-// Management
-///////////////
-
-deoglShaderParameterBlock::Ref deoglSharedSPBListUBO::pCreateBlock() const{
-	 return deoglShaderParameterBlock::Ref::New( new deoglSPBlockUBO( pLayoutUBO ) );
-}
+#endif

@@ -65,8 +65,8 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../shapes/deoglShapeBox.h"
 #include "../shapes/deoglShape.h"
 #include "../shapes/deoglShapeManager.h"
@@ -183,14 +183,12 @@ deoglRenderBase( renderThread )
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	pRenderParamBlock = NULL;
 	pRenderTask = NULL;
 	pAddToRenderTask = NULL;
 	
 	pUseEquiEnvMap = true;
 	pEnvMap = NULL;
 	pEnvMapEqui = NULL;
-	pEnvMapsParamBlock = NULL;
 	
 	pDirectEnvMapActive  = NULL;
 
@@ -478,7 +476,7 @@ deoglRenderBase( renderThread )
 		
 		
 		
-		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
+		pRenderParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
 		pRenderParamBlock->SetParameterCount( 4 );
 		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
@@ -509,7 +507,7 @@ deoglRenderBase( renderThread )
 		}
 		
 		
-		pEnvMapsParamBlock = new deoglSPBlockUBO( renderThread );
+		pEnvMapsParamBlock.TakeOver( new deoglSPBlockUBO( renderThread ) );
 		pEnvMapsParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
 		pEnvMapsParamBlock->SetParameterCount( 8 );
 		pEnvMapsParamBlock->GetParameterAt( spbarEnvMapMatrixInfluence ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
@@ -1144,42 +1142,33 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 	const deoglEnvMapSlotManager &envMapSlotMgr = renderThread.GetEnvMapSlotManager();
 	const decDMatrix &matrixCamera = plan.GetCameraMatrix();
 	const int count = decMath::min( envMapSlotMgr.GetUsedSlotCount(), 100 );
+	const deoglSPBMapBuffer mapped( pRenderParamBlock );
 	int i;
 	
-	pRenderParamBlock->MapBuffer();
+	// we use a blend zone of width 1m
+	pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
+		1.0f / ( 2.0f * /*blendWidth[m]=*/1.0f ), 0.5f );
 	
-	try{
-		// we use a blend zone of width 1m
-		pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
-			1.0f / ( 2.0f * /*blendWidth[m]=*/1.0f ), 0.5f );
+	// the env map lod level is used like this in the shader:
+	//    envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness )
+	// for cube maps pEnvMapLodLevel has to be the size of the cube map. for equi-maps
+	// though this is different. there the height is across 360 degrees. We want a split
+	// into 4 zones as the minimum. this means we want two lod levels less than what a
+	// cube map of the same size wants (down to 4 pixels not 1). this can be achieved
+	// by shifting first the height right by 2 which equals a division by 4
+	pRenderParamBlock->SetParameterDataFloat( spbr2EnvMapLodLevel,
+		( float )( envMapSlotMgr.GetHeight() >> 2 ) );
+	
+	// set the environment map data array
+	pRenderParamBlock->SetParameterDataInt( spbr2LayerCount, count );
+	
+	for( i=0; i<count; i++ ){
+		const int slotIndex = envMapSlotMgr.GetUsedSlotIndexAt( i );
+		const deoglEnvironmentMap &envMap = *envMapSlotMgr.GetSlotAt( slotIndex ).GetEnvMap();
 		
-		// the env map lod level is used like this in the shader:
-		//    envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness )
-		// for cube maps pEnvMapLodLevel has to be the size of the cube map. for equi-maps
-		// though this is different. there the height is across 360 degrees. We want a split
-		// into 4 zones as the minimum. this means we want two lod levels less than what a
-		// cube map of the same size wants (down to 4 pixels not 1). this can be achieved
-		// by shifting first the height right by 2 which equals a division by 4
-		pRenderParamBlock->SetParameterDataFloat( spbr2EnvMapLodLevel,
-			( float )( envMapSlotMgr.GetHeight() >> 2 ) );
-		
-		// set the environment map data array
-		pRenderParamBlock->SetParameterDataInt( spbr2LayerCount, count );
-		
-		for( i=0; i<count; i++ ){
-			const int slotIndex = envMapSlotMgr.GetUsedSlotIndexAt( i );
-			const deoglEnvironmentMap &envMap = *envMapSlotMgr.GetSlotAt( slotIndex ).GetEnvMap();
-			
-			pRenderParamBlock->SetParameterDataArrayVec4( spbr2EnvMapPosLayer, i,
-				matrixCamera * envMap.GetPosition(), ( double )slotIndex );
-		}
-		
-	}catch( const deException & ){
-		pRenderParamBlock->UnmapBuffer();
-		throw;
+		pRenderParamBlock->SetParameterDataArrayVec4( spbr2EnvMapPosLayer, i,
+			matrixCamera * envMap.GetPosition(), ( double )slotIndex );
 	}
-	
-	pRenderParamBlock->UnmapBuffer();
 }
 
 
@@ -1770,9 +1759,8 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	const deoglCubeMap *envMapCubes[ 8 ] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 	const float envMapRoughnessBase = ( float )PI * 0.5f;
 	
-	pEnvMapsParamBlock->MapBuffer();
-	
-	try{
+	{
+		const deoglSPBMapBuffer mapped( pEnvMapsParamBlock );
 		for( i=0; envMapCount<8 && i<plan.GetEnvMapCount(); i++ ){
 			deoglEnvironmentMap * const envmap = plan.GetEnvMapAt( i ).GetEnvMap();
 			if( ! envmap || ! envmap->GetReady() ){
@@ -1825,13 +1813,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 		}
 		
 		pEnvMapsParamBlock->SetParameterDataInt( spbarEnvMapCount, envMapCount );
-		
-	}catch( const deException & ){
-		pEnvMapsParamBlock->UnmapBuffer();
-		throw;
 	}
-	
-	pEnvMapsParamBlock->UnmapBuffer();
 	
 	// apply reflections
 	( plan.GetRenderStereo() ? pPipelineApplyReflectionsStereo : pPipelineApplyReflections )->Activate();
@@ -1917,17 +1899,10 @@ void deoglRenderReflection::pCleanUp(){
 		delete pEnvMap;
 	}
 	
-	if( pEnvMapsParamBlock ){
-		pEnvMapsParamBlock->FreeReference();
-	}
-	
 	if( pAddToRenderTask ){
 		delete pAddToRenderTask;
 	}
 	if( pRenderTask ){
 		delete pRenderTask;
-	}
-	if( pRenderParamBlock ){
-		pRenderParamBlock->FreeReference();
 	}
 }

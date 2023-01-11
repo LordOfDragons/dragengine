@@ -35,6 +35,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../skin/channel/deoglSkinChannel.h"
@@ -79,7 +80,6 @@ pUseSkin( NULL ),
 pUseTextureNumber( 0 ),
 pUseSkinTexture( NULL ),
 
-pParamBlock( NULL ),
 pTUCDepth( NULL ),
 pTUCCounter( NULL ),
 pTUCGeometry( NULL ),
@@ -92,8 +92,6 @@ pDirtyTUCDepth( true ),
 pDirtyTUCCounter( true ),
 pDirtyTUCGeometry( true ),
 pDirtyTUCGeometryDepthTest( true ),
-
-pParamBlockLightInstance( NULL ),
 
 pRTSInstance( NULL )
 {
@@ -115,9 +113,6 @@ deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	if( pUseSkin ){
 		pUseSkin->FreeReference();
 	}
-	if( pParamBlockLightInstance ){
-		pParamBlockLightInstance->FreeReference();
-	}
 	if( pTUCGeometryDepthTest ){
 		pTUCGeometryDepthTest->RemoveUsage();
 	}
@@ -129,9 +124,6 @@ deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	}
 	if( pTUCCounter ){
 		pTUCCounter->RemoveUsage();
-	}
-	if( pParamBlock ){
-		pParamBlock->FreeReference();
 	}
 }
 
@@ -231,12 +223,9 @@ const deoglSkinTexturePipelines &deoglRParticleEmitterInstanceType::GetUseSkinPi
 	return pUseSkinTexture->GetPipelines().GetAt( GetSkinPipelinesType() );
 }
 
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlock(){
+const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetParamBlock(){
 	if( ! pValidParamBlock ){
-		if( pParamBlock ){
-			pParamBlock->FreeReference();
-			pParamBlock = NULL;
-		}
+		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
 			deoglSkinShader &skinShader = GetUseSkinPipelines().
@@ -260,7 +249,7 @@ deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlock(){
 			deoglSkinShader &skinShader = GetUseSkinPipelines().
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
-			UpdateInstanceParamBlock( *pParamBlock, skinShader );
+			UpdateInstanceParamBlock( pParamBlock, skinShader );
 		}
 		
 		pDirtyParamBlock = false;
@@ -472,53 +461,46 @@ deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader ){
 	//deoglSkinState *useSkinState = NULL; //pComponent->GetSkinState();
 	
 	// update shader parameter block
-	paramBlock.MapBuffer();
-	try{
-		int target;
+	const deoglSPBMapBuffer mapped( paramBlock );
+	int target;
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
+	if( target != -1 ){
+		const decDVector &referencePosition = pEmitterInstance.GetParentWorld()->GetReferencePosition();
+		const decDVector &particlePosition = pEmitterInstance.GetReferencePosition();
+		const decDMatrix matrix = decDMatrix::CreateTranslation( particlePosition - referencePosition );
 		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-		if( target != -1 ){
-			const decDVector &referencePosition = pEmitterInstance.GetParentWorld()->GetReferencePosition();
-			const decDVector &particlePosition = pEmitterInstance.GetReferencePosition();
-			const decDMatrix matrix = decDMatrix::CreateTranslation( particlePosition - referencePosition );
-			
-			paramBlock.SetParameterDataMat4x3( target, matrix );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutSamplesParams );
-		if( target != -1 ){
-			//const float width = 256.0f;
-			//const float height = 4.0f;
-			//paramBlock.SetParameterDataVec4( target, 255.0f / width, 0.5f / width, 1.0f / height, 0.5f / height );
-			paramBlock.SetParameterDataVec4( target, 255.0f / 256.0f, 0.5f / 256.0f, 1.0f / 4.0f, 0.5f / 4.0f );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBurstFactor );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, pEmitterInstance.GetBurstTime() );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutRibbonSheetCount );
-		if( target != -1 ){
-			const int sheetCount = 3;
-			paramBlock.SetParameterDataInt( target, sheetCount );
-		}
-		
-		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
-		
-		// per texture dynamic texture properties
-		//skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
+		paramBlock.SetParameterDataMat4x3( target, matrix );
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutSamplesParams );
+	if( target != -1 ){
+		//const float width = 256.0f;
+		//const float height = 4.0f;
+		//paramBlock.SetParameterDataVec4( target, 255.0f / width, 0.5f / width, 1.0f / height, 0.5f / height );
+		paramBlock.SetParameterDataVec4( target, 255.0f / 256.0f, 0.5f / 256.0f, 1.0f / 4.0f, 0.5f / 4.0f );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBurstFactor );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, pEmitterInstance.GetBurstTime() );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutRibbonSheetCount );
+	if( target != -1 ){
+		const int sheetCount = 3;
+		paramBlock.SetParameterDataInt( target, sheetCount );
+	}
+	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+	
+	// per texture dynamic texture properties
+	//skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 }
 
 
 
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetLightInstanceParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetLightInstanceParameterBlock(){
 	if( ! pParamBlockLightInstance ){
 		pParamBlockLightInstance = pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetPipelines().
 			GetWithRef( deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
@@ -528,8 +510,5 @@ deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetLightInstanceParameterBlo
 }
 
 void deoglRParticleEmitterInstanceType::DropLightBlocks(){
-	if( pParamBlockLightInstance ){
-		pParamBlockLightInstance->FreeReference();
-		pParamBlockLightInstance = NULL;
-	}
+	pParamBlockLightInstance = nullptr;
 }

@@ -23,6 +23,8 @@
 #define _DEOGLRRTBUFFEROBJECT_H_
 
 #include "../deoglBasics.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
 
 class deoglRenderThread;
@@ -30,8 +32,6 @@ class deoglSharedVBOList;
 class deoglSharedVBOListList;
 class deoglShapeManager;
 class deoglSharedSPBList;
-class deoglSPBlockUBO;
-class deoglSPBlockSSBO;
 class deoglSharedSPBListUBO;
 
 
@@ -122,12 +122,12 @@ private:
 	int pInstanceArraySizeUBO;
 	int pInstanceArraySizeSSBO;
 	
-	deoglSPBlockUBO *pLayoutSkinInstanceUBO;
-	deoglSPBlockSSBO *pLayoutSkinInstanceSSBO;
-	deoglSPBlockUBO *pLayoutOccMeshInstanceUBO;
-	deoglSPBlockSSBO *pLayoutOccMeshInstanceSSBO;
-	deoglSPBlockUBO *pLayoutSkinTextureUBO;
-	deoglSPBlockSSBO *pLayoutSkinTextureSSBO;
+	deoglSPBlockUBO::Ref pLayoutSkinInstanceUBO;
+	deoglSPBlockSSBO::Ref pLayoutSkinInstanceSSBO;
+	deoglSPBlockUBO::Ref pLayoutOccMeshInstanceUBO;
+	deoglSPBlockSSBO::Ref pLayoutOccMeshInstanceSSBO;
+	deoglSPBlockUBO::Ref pLayoutSkinTextureUBO;
+	deoglSPBlockSSBO::Ref pLayoutSkinTextureSSBO;
 	
 	deoglSharedSPBListUBO *pBillboardSPBListUBO;
 	deoglSharedSPBRTIGroupList::Ref pBillboardRTIGroups;
@@ -172,22 +172,22 @@ public:
 	inline int GetInstanceArraySizeSSBO() const{ return pInstanceArraySizeSSBO; }
 	
 	/** Shared shader parameter block layout for skin instances. */
-	inline deoglSPBlockUBO *GetLayoutSkinInstanceUBO() const{ return pLayoutSkinInstanceUBO; }
+	inline const deoglSPBlockUBO::Ref &GetLayoutSkinInstanceUBO() const{ return pLayoutSkinInstanceUBO; }
 	
 	/** Shared shader parameter block layout for skin instances. */
-	inline deoglSPBlockSSBO *GetLayoutSkinInstanceSSBO() const{ return pLayoutSkinInstanceSSBO; }
+	inline const deoglSPBlockSSBO::Ref &GetLayoutSkinInstanceSSBO() const{ return pLayoutSkinInstanceSSBO; }
 	
 	/** Occlusion mesh shared shader parameter block layout for skin instances. */
-	inline deoglSPBlockUBO *GetLayoutOccMeshInstanceUBO() const{ return pLayoutOccMeshInstanceUBO; }
+	inline const deoglSPBlockUBO::Ref &GetLayoutOccMeshInstanceUBO() const{ return pLayoutOccMeshInstanceUBO; }
 	
 	/** Occlusion Mesh shared shader parameter block layout for skin instances. */
-	inline deoglSPBlockSSBO *GetLayoutOccMeshInstanceSSBO() const{ return pLayoutOccMeshInstanceSSBO; }
+	inline const deoglSPBlockSSBO::Ref &GetLayoutOccMeshInstanceSSBO() const{ return pLayoutOccMeshInstanceSSBO; }
 	
 	/** Shared shader parameter block layout for skin textures. */
-	inline deoglSPBlockUBO *GetLayoutSkinTextureUBO() const{ return pLayoutSkinTextureUBO; }
+	inline const deoglSPBlockUBO::Ref &GetLayoutSkinTextureUBO() const{ return pLayoutSkinTextureUBO; }
 	
 	/** Shared shader parameter block layout for skin textures. */
-	inline deoglSPBlockSSBO *GetLayoutSkinTextureSSBO() const{ return pLayoutSkinTextureSSBO; }
+	inline const deoglSPBlockSSBO::Ref &GetLayoutSkinTextureSSBO() const{ return pLayoutSkinTextureSSBO; }
 	
 	/** Billboard SPB list UBO. */
 	inline deoglSharedSPBListUBO &GetBillboardSPBListUBO() const{ return *pBillboardSPBListUBO; }

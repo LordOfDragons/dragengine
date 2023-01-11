@@ -29,7 +29,6 @@
 class deoglGIState;
 class deoglGIBVH;
 class deoglRenderTask;
-class deoglSPBlockUBO;
 class deoglTexture;
 
 
@@ -64,8 +63,8 @@ private:
 	const deoglPipeline *pPipelineDebugProbeUpdatePass1;
 	const deoglPipeline *pPipelineDebugProbeUpdatePass2;
 	
-	deObjectReference pUBORenderLight;
-	deObjectReference pUBORenderLightSSS;
+	deoglSPBlockUBO::Ref pUBORenderLight;
+	deoglSPBlockUBO::Ref pUBORenderLightSSS;
 	
 	
 	
@@ -95,7 +94,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render light UBO. */
-	inline deoglSPBlockUBO &GetUBORenderLight() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORenderLight; }
+	inline deoglSPBlockUBO &GetUBORenderLight() const{ return pUBORenderLight; }
 	
 	
 	

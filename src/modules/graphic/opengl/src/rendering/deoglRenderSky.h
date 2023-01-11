@@ -33,7 +33,6 @@ class deoglRenderPlanMasked;
 class deoglEnvironmentMap;
 class deoglRWorld;
 class decLayerMask;
-class deoglSPBlockUBO;
 
 
 
@@ -42,7 +41,7 @@ class deoglSPBlockUBO;
  */
 class deoglRenderSky : public deoglRenderBase{
 private:
-	deoglSPBlockUBO *pRenderSkyIntoEnvMapPB;
+	deoglSPBlockUBO::Ref pRenderSkyIntoEnvMapPB;
 	
 	const deoglPipeline *pPipelineSkySphere;
 	const deoglPipeline *pPipelineSkySphereStereo;
@@ -109,11 +108,6 @@ public:
 	/** Prepare render sky into env map parameter block. */
 	void PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan );
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -31,8 +31,6 @@
 #include "../extensions/deoglExtensions.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../shaders/paramblock/deoglSPBlockMemory.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListSSBO.h"
 #include "../shapes/deoglShapeManager.h"
@@ -61,13 +59,6 @@ pSharedVBOListList( NULL ),
 
 pInstanceArraySizeUBO( 0 ),
 pInstanceArraySizeSSBO( 0 ),
-
-pLayoutSkinInstanceUBO( NULL ),
-pLayoutSkinInstanceSSBO( NULL ),
-pLayoutOccMeshInstanceUBO( NULL ),
-pLayoutOccMeshInstanceSSBO( NULL ),
-pLayoutSkinTextureUBO( NULL ),
-pLayoutSkinTextureSSBO( NULL ),
 
 pBillboardSPBListUBO( NULL ),
 pBillboardRTIGroups( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
@@ -101,7 +92,7 @@ void deoglRTBufferObject::Init(){
 	
 	pCreateSharedSPBLists(); // depends on pCreateLayout*()
 	
-	pBillboardSPBListUBO = new deoglSharedSPBListUBO( pRenderThread, GetLayoutSkinInstanceUBO() );
+	pBillboardSPBListUBO = new deoglSharedSPBListUBO( pRenderThread, pLayoutSkinInstanceUBO );
 }
 
 
@@ -151,27 +142,6 @@ void deoglRTBufferObject::pCleanUp(){
 		delete pBillboardSPBListUBO;
 	}
 	
-	if( pLayoutSkinTextureUBO ){
-		pLayoutSkinTextureUBO->FreeReference();
-	}
-	if( pLayoutSkinTextureSSBO ){
-		pLayoutSkinTextureSSBO->FreeReference();
-	}
-	
-	if( pLayoutOccMeshInstanceUBO ){
-		pLayoutOccMeshInstanceUBO->FreeReference();
-	}
-	if( pLayoutOccMeshInstanceSSBO ){
-		pLayoutOccMeshInstanceSSBO->FreeReference();
-	}
-	
-	if( pLayoutSkinInstanceUBO ){
-		pLayoutSkinInstanceUBO->FreeReference();
-	}
-	if( pLayoutSkinInstanceSSBO ){
-		pLayoutSkinInstanceSSBO->FreeReference();
-	}
-	
 	// pSharedVBOListByType are not deleted since they are shared from pSharedVBOListList
 	
 	for( i=esspblSkinInstanceUBO; i<=esspblSkinTextureSSBO; i++ ){
@@ -195,34 +165,34 @@ void deoglRTBufferObject::pCleanUpReports(){
 	if( pSharedSPBList[ esspblSkinInstanceUBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinInstanceUBO ];
 		logger.LogInfoFormat( "pSharedSPBList(SkinInstanceUBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	if( pSharedSPBList[ esspblSkinInstanceSSBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinInstanceSSBO ];
 		logger.LogInfoFormat( "pSharedSPBList(SkinInstanceSSBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	
 	if( pSharedSPBList[ esspblOccMeshInstanceUBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblOccMeshInstanceUBO ];
 		logger.LogInfoFormat( "pSharedSPBList(OccMeshInstanceUBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	if( pSharedSPBList[ esspblOccMeshInstanceSSBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblOccMeshInstanceSSBO ];
 		logger.LogInfoFormat( "pSharedSPBList(OccMeshInstanceSSBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	
 	if( pSharedSPBList[ esspblSkinTextureUBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinTextureUBO ];
 		logger.LogInfoFormat( "pSharedSPBList(SkinTextureUBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	if( pSharedSPBList[ esspblSkinTextureSSBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinTextureSSBO ];
 		logger.LogInfoFormat( "pSharedSPBList(SkinTextureSSBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 }
 
@@ -268,7 +238,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
 	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
 	
-	pLayoutOccMeshInstanceUBO = new deoglSPBlockUBO( pRenderThread );
+	pLayoutOccMeshInstanceUBO.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
 	pLayoutOccMeshInstanceUBO->SetRowMajor( rowMajor );
 	pLayoutOccMeshInstanceUBO->SetParameterCount( 1 );
 	pLayoutOccMeshInstanceUBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
@@ -288,7 +258,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
 		
-		pLayoutOccMeshInstanceSSBO = new deoglSPBlockSSBO( pRenderThread );
+		pLayoutOccMeshInstanceSSBO.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
 		pLayoutOccMeshInstanceSSBO->SetRowMajor( rowMajor );
 		pLayoutOccMeshInstanceSSBO->SetParameterCount( 1 );
 		pLayoutOccMeshInstanceSSBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel

@@ -117,8 +117,6 @@ pRenderLightPoint( NULL ),
 pRenderLightParticles( NULL ),
 pRenderGI( NULL ),
 
-pShadowPB( NULL ),
-pOccMapPB( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL )
 {
@@ -129,190 +127,183 @@ pAddToRenderTask( NULL )
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	try{
-		renderThread.GetShader().SetCommonDefines( commonDefines );
-		
-		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
-		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
-		
-		pRenderTask = new deoglRenderTask( renderThread );
-		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
-		
-		pRenderLightSky = new deoglRenderLightSky( renderThread );
-		pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
-		pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
-		pRenderLightParticles = new deoglRenderLightParticles( renderThread );
-		pRenderGI = new deoglRenderGI( renderThread );
-		
-		
-		
-		// sssss
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, false, false );
-		pipconf.EnableBlendAdd();
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
-		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineSSSSS = pipelineManager.GetWith( pipconf );
-		
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineSSSSSStereo = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// ambient occlusion
-		pipconf.Reset();
-		pipconf.SetMasks( false, true, false, false, false );
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
-		defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
-		defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAOLocal = pipelineManager.GetWith( pipconf );
-		
-		// ambient occlusion stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAOLocalStereo = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// ambient occlusion blur phase 1
-		pipconf.SetMasks( true, false, false, false, false );
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
-		defines.SetDefine( "TAP_COUNT", 9 );
-		defines.SetDefine( "OUT_DATA_SIZE", 1 );
-		defines.SetDefine( "TEX_DATA_SIZE", 1 );
-		defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
-		defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAOBlur1 = pipelineManager.GetWith( pipconf );
-		
-		// ambient occlusion blur phase 1 stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAOBlur1Stereo = pipelineManager.GetWith( pipconf );
-		
-		
-		// ambient occlusion blur phase 2
-		pipconf.SetMasks( false, true, false, false, false );
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
-		defines.SetDefine( "TAP_COUNT", 9 );
-		defines.SetDefine( "OUT_DATA_SIZE", 3 );
-		defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
-		defines.SetDefine( "TEX_DATA_SIZE", 1 );
-		defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAOBlur2 = pipelineManager.GetWith( pipconf );
-		
-		// ambient occlusion blur phase 2 stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAOBlur2Stereo = pipelineManager.GetWith( pipconf );
-		
-		
-		// ambient occlusion debug
-		pipconf.SetMasks( true, true, true, false, false );
-		pipconf.SetEnableBlend( false );
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-		defines.SetDefine( "TEXTURELEVEL", 1 );
-		defines.SetDefine( "OUT_COLOR_SIZE", 3 );
-		defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugAO = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// copy depth
-		pipconf.Reset();
-		pipconf.SetMasks( false, false, false, false, true );
-		pipconf.EnableDepthTestAlways();
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
-		
-		// copy depth stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
-		if( ! renderFSQuadStereoVSLayer ){
-			sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
-		
-		
-		
-		// debug information
-		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
-		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
-		
-		pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Lights Solid", colorText, colorBg ) );
-		
-		pDebugInfoSolidCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
-		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidCopyDepth );
-		
-		pDebugInfoSolid->GetChildren().Add( pRenderLightSky->GetDebugInfoSolid() );
-		pDebugInfoSolid->GetChildren().Add( pRenderLightPoint->GetDebugInfoSolid() );
-		pDebugInfoSolid->GetChildren().Add( pRenderLightSpot->GetDebugInfoSolid() );
-		
-		pDebugInfoSolidParticle.TakeOver( new deoglDebugInformation( "Particle", colorText, colorBgSub ) );
-		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidParticle );
-		
-		pDebugInfoSolidSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
-		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidSSSSS );
-		
-		
-		
-		pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Lights Transp", colorText, colorBg ) );
-		
-		pDebugInfoTransparentCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
-		pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentCopyDepth );
-		
-		pDebugInfoTransparent->GetChildren().Add( pRenderLightSky->GetDebugInfoTransparent() );
-		pDebugInfoTransparent->GetChildren().Add( pRenderLightPoint->GetDebugInfoTransparent() );
-		pDebugInfoTransparent->GetChildren().Add( pRenderLightSpot->GetDebugInfoTransparent() );
-		
-		pDebugInfoTransparentSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
-		pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentSSSSS );
-		
-		
-		
-		DevModeDebugInfoChanged();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	renderThread.GetShader().SetCommonDefines( commonDefines );
+	
+	pShadowPB.TakeOver( deoglSkinShader::CreateSPBRender( renderThread ) );
+	pOccMapPB.TakeOver( deoglSkinShader::CreateSPBOccMap( renderThread ) );
+	
+	pRenderTask = new deoglRenderTask( renderThread );
+	pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
+	
+	pRenderLightSky = new deoglRenderLightSky( renderThread );
+	pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
+	pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
+	pRenderLightParticles = new deoglRenderLightParticles( renderThread );
+	pRenderGI = new deoglRenderGI( renderThread );
+	
+	
+	
+	// sssss
+	pipconf.Reset();
+	pipconf.SetMasks( true, true, true, false, false );
+	pipconf.EnableBlendAdd();
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
+	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSSSS = pipelineManager.GetWith( pipconf );
+	
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
 	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSSSSStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// ambient occlusion
+	pipconf.Reset();
+	pipconf.SetMasks( false, true, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
+	defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
+	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOLocal = pipelineManager.GetWith( pipconf );
+	
+	// ambient occlusion stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOLocalStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// ambient occlusion blur phase 1
+	pipconf.SetMasks( true, false, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
+	defines.SetDefine( "TAP_COUNT", 9 );
+	defines.SetDefine( "OUT_DATA_SIZE", 1 );
+	defines.SetDefine( "TEX_DATA_SIZE", 1 );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
+	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+	defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur1 = pipelineManager.GetWith( pipconf );
+	
+	// ambient occlusion blur phase 1 stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur1Stereo = pipelineManager.GetWith( pipconf );
+	
+	
+	// ambient occlusion blur phase 2
+	pipconf.SetMasks( false, true, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
+	defines.SetDefine( "TAP_COUNT", 9 );
+	defines.SetDefine( "OUT_DATA_SIZE", 3 );
+	defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
+	defines.SetDefine( "TEX_DATA_SIZE", 1 );
+	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+	defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur2 = pipelineManager.GetWith( pipconf );
+	
+	// ambient occlusion blur phase 2 stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur2Stereo = pipelineManager.GetWith( pipconf );
+	
+	
+	// ambient occlusion debug
+	pipconf.SetMasks( true, true, true, false, false );
+	pipconf.SetEnableBlend( false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
+	defines.SetDefine( "TEXTURELEVEL", 1 );
+	defines.SetDefine( "OUT_COLOR_SIZE", 3 );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineDebugAO = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// copy depth
+	pipconf.Reset();
+	pipconf.SetMasks( false, false, false, false, true );
+	pipconf.EnableDepthTestAlways();
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
+	
+	// copy depth stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// debug information
+	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
+	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
+	
+	pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Lights Solid", colorText, colorBg ) );
+	
+	pDebugInfoSolidCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
+	pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidCopyDepth );
+	
+	pDebugInfoSolid->GetChildren().Add( pRenderLightSky->GetDebugInfoSolid() );
+	pDebugInfoSolid->GetChildren().Add( pRenderLightPoint->GetDebugInfoSolid() );
+	pDebugInfoSolid->GetChildren().Add( pRenderLightSpot->GetDebugInfoSolid() );
+	
+	pDebugInfoSolidParticle.TakeOver( new deoglDebugInformation( "Particle", colorText, colorBgSub ) );
+	pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidParticle );
+	
+	pDebugInfoSolidSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
+	pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidSSSSS );
+	
+	
+	
+	pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Lights Transp", colorText, colorBg ) );
+	
+	pDebugInfoTransparentCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
+	pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentCopyDepth );
+	
+	pDebugInfoTransparent->GetChildren().Add( pRenderLightSky->GetDebugInfoTransparent() );
+	pDebugInfoTransparent->GetChildren().Add( pRenderLightPoint->GetDebugInfoTransparent() );
+	pDebugInfoTransparent->GetChildren().Add( pRenderLightSpot->GetDebugInfoTransparent() );
+	
+	pDebugInfoTransparentSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
+	pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentSSSSS );
+	
+	
+	
+	DevModeDebugInfoChanged();
 }
 
 deoglRenderLight::~deoglRenderLight(){
-	pCleanUp();
 }
 
 
@@ -718,12 +709,6 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pRenderTask ){
 		delete pRenderTask;
-	}
-	if( pOccMapPB ){
-		pOccMapPB->FreeReference();
-	}
-	if( pShadowPB ){
-		pShadowPB->FreeReference();
 	}
 	
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();

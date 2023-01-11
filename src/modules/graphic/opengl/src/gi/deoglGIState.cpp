@@ -44,6 +44,7 @@
 #include "../utils/collision/deoglCollisionDetection.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -594,7 +595,8 @@ void deoglGIState::pInitCascadeUpdateCycle(){
 
 void deoglGIState::pInitUBOClearProbes(){
 	pUBOClearProbes.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBOClearProbes();
+	deoglSPBlockUBO &ubo = pUBOClearProbes;
+	
 	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 	ubo.SetParameterCount( 1 );
 	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, ( pRealProbeCount / 32 ) / 4 ); // uvec4
@@ -870,56 +872,50 @@ void deoglGIState::pPrepareUBORayDirections() const{
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
 	
 	deoglSPBlockUBO &ubo = pRenderThread.GetGI().GetUBORayDirection();
-	ubo.MapBuffer();
-	try{
+	const deoglSPBMapBuffer mapped( ubo );
+	
 // #define GI_USE_RANDOM_DIRECTION 1
-		#ifdef  GI_USE_RANDOM_DIRECTION
-		const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
-			decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+	#ifdef  GI_USE_RANDOM_DIRECTION
+	const decMatrix randomOrientation( decMatrix::CreateRotation( decMath::random( -PI, PI ),
+		decMath::random( -PI, PI ), decMath::random( -PI, PI ) ) );
+	#endif
+	
+	const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
+	const float sf_n = ( float )raysPerProbe;
+	#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
+	
+	int i;
+	for( i=0; i<raysPerProbe; i++ ){
+		const float sf_i = ( float )i;
+		const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
+		const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
+		const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
+		const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
+		
+		// the paper uses random rotation matrix. this results though in huge flickering
+		// even if smoothed using hystersis which is close to epiletic attack. disabling
+		// the random rotation keeps the result stable. it is most probably not as smooth
+		// as it could be with random rotation but avoids the unsupportable flickering
+		//ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
+		#ifdef GI_USE_RANDOM_DIRECTION
+		ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
+		#else
+		ubo.SetParameterDataArrayVec3( 0, i, sf );
 		#endif
-		
-		const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
-		const float sf_n = ( float )raysPerProbe;
-		#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
-		
-		int i;
-		for( i=0; i<raysPerProbe; i++ ){
-			const float sf_i = ( float )i;
-			const float phi = TWO_PI * madfrac( sf_i, sf_PHI - 1.0f );
-			const float cosTheta = 1.0f - ( 2.0f * sf_i + 1.0f ) * ( 1.0f / sf_n );
-			const float sinTheta = sqrtf( decMath::clamp( 1.0f - cosTheta * cosTheta, 0.0f, 1.0f ) );
-			const decVector sf( cosf( phi ) * sinTheta, sinf( phi ) * sinTheta, cosTheta );
-			
-			// the paper uses random rotation matrix. this results though in huge flickering
-			// even if smoothed using hystersis which is close to epiletic attack. disabling
-			// the random rotation keeps the result stable. it is most probably not as smooth
-			// as it could be with random rotation but avoids the unsupportable flickering
-			//ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
-			#ifdef GI_USE_RANDOM_DIRECTION
-			ubo.SetParameterDataArrayVec3( 0, i, randomOrientation * sf );
-			#else
-			ubo.SetParameterDataArrayVec3( 0, i, sf );
-			#endif
-		}
-		
-		#undef madfrac
-		
-		// DEBUG
-		/*{
-			for( i=0; i<pRaysPerProbe; i++ ){
-				float pc = TWO_PI * i / pRaysPerProbe;
-				decVector dir( sinf( pc ), 0.0f, cos( pc ) );
-				ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
-			}
-			for( i=0; i<pUpdateProbeCount; i++ ){
-				ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
-			}
-		}*/
-		// DEBUG
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
 	}
-	ubo.UnmapBuffer();
+	
+	#undef madfrac
+	
+	// DEBUG
+	/*{
+		for( i=0; i<pRaysPerProbe; i++ ){
+			float pc = TWO_PI * i / pRaysPerProbe;
+			decVector dir( sinf( pc ), 0.0f, cos( pc ) );
+			ubo.SetParameterDataArrayVec3( eutpRayDirection, i, dir );
+		}
+		for( i=0; i<pUpdateProbeCount; i++ ){
+			ubo.SetParameterDataArrayVec3( eutpProbePosition, i, (i%4)*3.0/4.0-1.5, 1, 0 );
+		}
+	}*/
+	// DEBUG
 }

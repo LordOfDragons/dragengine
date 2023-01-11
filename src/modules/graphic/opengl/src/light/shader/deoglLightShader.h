@@ -25,13 +25,13 @@
 #include "deoglLightShaderConfig.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
 
 class deoglRenderThread;
 class deoglShaderSources;
 class deoglShaderDefines;
-class deoglSPBlockUBO;
 
 
 /**
@@ -201,10 +201,10 @@ public:
 	void SetLightUniformTarget( eLightUniformTargets target, int index );
 	
 	/** Create instance parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBInstParam() const;
+	deoglSPBlockUBO::Ref CreateSPBInstParam() const;
 	
 	/** Create light parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBLightParam() const;
+	deoglSPBlockUBO::Ref CreateSPBLightParam() const;
 	/*@}*/
 	
 	

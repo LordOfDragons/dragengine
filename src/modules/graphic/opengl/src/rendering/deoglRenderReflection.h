@@ -32,7 +32,6 @@ class deoglEnvironmentMap;
 class deoglFramebuffer;
 class deoglRenderPlan;
 class deoglRenderTask;
-class deoglSPBlockUBO;
 class deoglTexture;
 class deoglArrayTexture;
 
@@ -64,14 +63,14 @@ private:
 	const deoglPipeline *pPipelineBuildEnvMap;
 	const deoglPipeline *pPipelineEnvMapMask;
 	
-	deoglSPBlockUBO *pRenderParamBlock;
+	deoglSPBlockUBO::Ref pRenderParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
 	bool pUseEquiEnvMap;
 	deoglCubeMap *pEnvMap;
 	deoglTexture *pEnvMapEqui;
-	deoglSPBlockUBO *pEnvMapsParamBlock;
+	deoglSPBlockUBO::Ref pEnvMapsParamBlock;
 	
 	deoglEnvironmentMap *pDirectEnvMapActive; ///< weak reference
 	deoglEnvironmentMap *pDirectEnvMapFading; ///< weak reference

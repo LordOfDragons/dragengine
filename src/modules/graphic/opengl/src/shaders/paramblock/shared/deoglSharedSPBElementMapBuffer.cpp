@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -23,22 +23,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglSharedSPBListUBO.h"
-#include "../deoglSPBlockUBO.h"
-
-#include <dragengine/common/exceptions.h>
-
+#include "deoglSharedSPBElementMapBuffer.h"
+#include "deoglSharedSPBElement.h"
+#include "../deoglShaderParameterBlock.h"
 
 
-// Class deoglSharedSPBListUBO
-////////////////////////////////
+// Class deoglSharedSPBElementMapBuffer
+/////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBListUBO::deoglSharedSPBListUBO( deoglRenderThread &renderThread, deoglSPBlockUBO *layout ) :
-deoglSharedSPBList( renderThread, layout ),
-pLayoutUBO( *layout ){
+
+deoglSharedSPBElementMapBuffer::deoglSharedSPBElementMapBuffer( deoglSharedSPBElement &element ) :
+pElement( element ),
+pBlock( nullptr )
+{
+	Map();
+}
+
+deoglSharedSPBElementMapBuffer::~deoglSharedSPBElementMapBuffer(){
+	Unmap();
 }
 
 
@@ -46,6 +51,24 @@ pLayoutUBO( *layout ){
 // Management
 ///////////////
 
-deoglShaderParameterBlock::Ref deoglSharedSPBListUBO::pCreateBlock() const{
-	 return deoglShaderParameterBlock::Ref::New( new deoglSPBlockUBO( pLayoutUBO ) );
+void deoglSharedSPBElementMapBuffer::Map(){
+	if( pBlock ){
+		return;
+	}
+	
+	pBlock = &pElement.MapBuffer();
+}
+
+deoglShaderParameterBlock &deoglSharedSPBElementMapBuffer::GetBlockRef() const{
+	DEASSERT_NOTNULL( pBlock );
+	return *pBlock;
+}
+
+void deoglSharedSPBElementMapBuffer::Unmap(){
+	if( ! pBlock ){
+		return;
+	}
+	
+	pBlock->UnmapBuffer();
+	pBlock = nullptr;
 }

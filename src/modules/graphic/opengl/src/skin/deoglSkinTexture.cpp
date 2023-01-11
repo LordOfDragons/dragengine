@@ -52,6 +52,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/compression/deoglTextureCompression.h"
 #include "../texture/cubemap/deoglCubeMap.h"
@@ -426,26 +427,21 @@ bool deoglSkinTexture::IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) 
 }
 
 void deoglSkinTexture::PrepareParamBlock(){
-	if( ! pSharedSPBElement ){
-		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
-			pSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureSSBO ).AddElement();
-			
-		}else{
-			pSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureUBO ).AddElement();
-		}
-		
-		deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-		try{
-			pUpdateParamBlock( paramBlock, pSharedSPBElement->GetIndex() );
-			
-		}catch( const deException & ){
-			paramBlock.UnmapBuffer();
-			throw;
-		}
-		paramBlock.UnmapBuffer();
+	if( pSharedSPBElement ){
+		return;
 	}
+	
+	if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		pSharedSPBElement = pRenderThread.GetBufferObject()
+			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureSSBO ).AddElement();
+		
+	}else{
+		pSharedSPBElement = pRenderThread.GetBufferObject()
+			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureUBO ).AddElement();
+	}
+	
+	const deoglSharedSPBElementMapBuffer mapped( *pSharedSPBElement );
+	pUpdateParamBlock( mapped.GetBlockRef(), pSharedSPBElement->GetIndex() );
 }
 
 

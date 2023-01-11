@@ -24,6 +24,7 @@
 
 #include "pipeline/deoglLightPipelines.h"
 #include "../component/deoglComponentSet.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -49,7 +50,6 @@ class deoglRWorld;
 class deoglShadowCaster;
 class deoglSkinState;
 class deoglSkinTexture;
-class deoglSPBlockUBO;
 class deoglWorldOctree;
 
 class decConvexVolumeList;
@@ -142,8 +142,8 @@ public:
 	bool pUpdateOnRemoveComponent;
 	
 	deoglLightPipelines::Ref pPipelines;
-	deoglSPBlockUBO *pParamBlockLight;
-	deoglSPBlockUBO *pParamBlockInstance;
+	deoglSPBlockUBO::Ref pParamBlockLight;
+	deoglSPBlockUBO::Ref pParamBlockInstance;
 	
 	bool pWorldMarkedRemove;
 	
@@ -486,10 +486,10 @@ public:
 	deoglLightPipelines &GetPipelines();
 	
 	/** Light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
+	const deoglSPBlockUBO::Ref &GetLightParameterBlock();
 	
 	/** Instance parameter block. */
-	deoglSPBlockUBO *GetInstanceParameterBlock();
+	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
 	
 	/** Drop all pipelines and parameter blocks. */
 	void DropPipelines();

@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -23,22 +23,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglSharedSPBListUBO.h"
-#include "../deoglSPBlockUBO.h"
-
-#include <dragengine/common/exceptions.h>
+#include "deoglSPBMapBuffer.h"
+#include "deoglShaderParameterBlock.h"
 
 
-
-// Class deoglSharedSPBListUBO
-////////////////////////////////
+// Class deoglSPBMapBuffer
+////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBListUBO::deoglSharedSPBListUBO( deoglRenderThread &renderThread, deoglSPBlockUBO *layout ) :
-deoglSharedSPBList( renderThread, layout ),
-pLayoutUBO( *layout ){
+
+deoglSPBMapBuffer::deoglSPBMapBuffer( deoglShaderParameterBlock &block ) :
+pBlock( block ),
+pMapped( false )
+{
+	Map();
+}
+
+deoglSPBMapBuffer::~deoglSPBMapBuffer(){
+	Unmap();
 }
 
 
@@ -46,6 +50,20 @@ pLayoutUBO( *layout ){
 // Management
 ///////////////
 
-deoglShaderParameterBlock::Ref deoglSharedSPBListUBO::pCreateBlock() const{
-	 return deoglShaderParameterBlock::Ref::New( new deoglSPBlockUBO( pLayoutUBO ) );
+void deoglSPBMapBuffer::Map(){
+	if( pMapped ){
+		return;
+	}
+	
+	pBlock.MapBuffer();
+	pMapped = true;
+}
+
+void deoglSPBMapBuffer::Unmap(){
+	if( ! pMapped ){
+		return;
+	}
+	
+	pBlock.UnmapBuffer();
+	pMapped = false;
 }

@@ -32,6 +32,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
 
 #include <dragengine/common/exceptions.h>
@@ -190,21 +191,14 @@ void deoglGICascade::ClearClearProbes(){
 }
 
 void deoglGICascade::PrepareUBOClearProbes( deoglSPBlockUBO &ubo ) const{
-	ubo.MapBuffer();
-	try{
-		const int count = pClearProbeCount / 4;
-		int i, j;
-		
-		for( i=0, j=0; i<count; i++, j+=4 ){
-			ubo.SetParameterDataArrayUVec4( 0, i, pClearProbes[ j ],
-				pClearProbes[ j + 1 ], pClearProbes[ j + 2 ], pClearProbes[ j + 3 ] );
-		}
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( ubo );
+	const int count = pClearProbeCount / 4;
+	int i, j;
+	
+	for( i=0, j=0; i<count; i++, j+=4 ){
+		ubo.SetParameterDataArrayUVec4( 0, i, pClearProbes[ j ],
+			pClearProbes[ j + 1 ], pClearProbes[ j + 2 ], pClearProbes[ j + 3 ] );
 	}
-	ubo.UnmapBuffer();
 }
 
 
@@ -552,65 +546,58 @@ void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, 
 	const deoglGI &gi = pGIState.GetRenderThread().GetGI();
 	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
+	const deoglSPBMapBuffer mapped( ubo );
 	
-	ubo.MapBuffer();
-	try{
-		ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
-			1.0f / ( float )pGIState.GetSampleImageSize().x,
-			1.0f / ( float )pGIState.GetSampleImageSize().y );
-		ubo.SetParameterDataInt( deoglGI::eupProbeCount, probeCount );
-		ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
-		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, traceRays.GetProbesPerLine() );
-		ubo.SetParameterDataInt( deoglGI::eupIrradianceMapSize, pGIState.GetIrradianceMapSize() );
-		ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pGIState.GetDistanceMapSize() );
-		ubo.SetParameterDataVec2( deoglGI::eupIrradianceMapScale, pGIState.GetIrradianceMapScale() );
-		ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pGIState.GetDistanceMapScale() );
-		ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
-		ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pGIState.GetDepthSharpness() );
-		ubo.SetParameterDataVec3( deoglGI::eupGridOrigin, pFieldOrigin );
-		ubo.SetParameterDataIVec3( deoglGI::eupGridCoordUnshift, pGridCoordShift );
-		ubo.SetParameterDataVec3( deoglGI::eupFieldSize, pFieldSize );
-		ubo.SetParameterDataFloat( deoglGI::eupBlendUpdateProbe, 1.0f - pGIState.GetHysteresis() );
-		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, bvh.GetIndexRootNode() );
-		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pGIState.GetProbeCount() );
-		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
-		ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pGIState.GetIrradianceGamma() );
-		ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pGIState.GetIrradianceGamma() );
-		ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
-		ubo.SetParameterDataInt( deoglGI::eupCascade, pIndex );
-		ubo.SetParameterDataVec3( deoglGI::eupDetectionBox, pDetectionBox );
-		ubo.SetParameterDataVec3( deoglGI::eupBVHOffset, ( pPosition - bvh.GetPosition() ).ToVector() );
-		
-		// material
-		/*
-		const int materialMapSize = gi.GetMaterials().GetMaterialMapSize();
-		const int materialTexWidth = gi.GetMaterials().GetTextureDiffuseTintMask().GetWidth();
-		const int materialTexHeight = gi.GetMaterials().GetTextureDiffuseTintMask().GetHeight();
-		const float materialScaleU = ( float )materialMapSize / ( float )materialTexWidth;
-		const float materialScaleV = ( float )materialMapSize / ( float )materialTexHeight;
-		//const float materialClamp = ( 1.0f / ( float )materialMapSize ) * 0.5f;
-		ubo.SetParameterDataVec2( deoglGI::eupMaterialMapTCScale, materialScaleU, materialScaleV );
-		*/
-		ubo.SetParameterDataInt( deoglGI::eupMaterialMapsPerRow, gi.GetMaterials().GetMaterialsPerRow() );
-		ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
-		
-		// move probes. probe can move at most 50% inside the grid acording to the paper.
-		// to be on the safe side use 45%. the minimum distance to the surface is set to
-		// 25% of the smallest spacing. this is rather random value with the aim to
-		// increase the visible surface captured by probes but without approaching the
-		// maximum offset too much.
-		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f /*0.45f*/ );
-		ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
-			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
-		
-		// rays
-		ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pGIState.GetRayCache().GetRayMapScale() );
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
-	}
-	ubo.UnmapBuffer();
+	ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
+		1.0f / ( float )pGIState.GetSampleImageSize().x,
+		1.0f / ( float )pGIState.GetSampleImageSize().y );
+	ubo.SetParameterDataInt( deoglGI::eupProbeCount, probeCount );
+	ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
+	ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, traceRays.GetProbesPerLine() );
+	ubo.SetParameterDataInt( deoglGI::eupIrradianceMapSize, pGIState.GetIrradianceMapSize() );
+	ubo.SetParameterDataInt( deoglGI::eupDistanceMapSize, pGIState.GetDistanceMapSize() );
+	ubo.SetParameterDataVec2( deoglGI::eupIrradianceMapScale, pGIState.GetIrradianceMapScale() );
+	ubo.SetParameterDataVec2( deoglGI::eupDistanceMapScale, pGIState.GetDistanceMapScale() );
+	ubo.SetParameterDataFloat( deoglGI::eupMaxProbeDistance, pMaxProbeDistance );
+	ubo.SetParameterDataFloat( deoglGI::eupDepthSharpness, pGIState.GetDepthSharpness() );
+	ubo.SetParameterDataVec3( deoglGI::eupGridOrigin, pFieldOrigin );
+	ubo.SetParameterDataIVec3( deoglGI::eupGridCoordUnshift, pGridCoordShift );
+	ubo.SetParameterDataVec3( deoglGI::eupFieldSize, pFieldSize );
+	ubo.SetParameterDataFloat( deoglGI::eupBlendUpdateProbe, 1.0f - pGIState.GetHysteresis() );
+	ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, bvh.GetIndexRootNode() );
+	ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pGIState.GetProbeCount() );
+	ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
+	ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pGIState.GetIrradianceGamma() );
+	ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pGIState.GetIrradianceGamma() );
+	ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
+	ubo.SetParameterDataInt( deoglGI::eupCascade, pIndex );
+	ubo.SetParameterDataVec3( deoglGI::eupDetectionBox, pDetectionBox );
+	ubo.SetParameterDataVec3( deoglGI::eupBVHOffset, ( pPosition - bvh.GetPosition() ).ToVector() );
+	
+	// material
+	/*
+	const int materialMapSize = gi.GetMaterials().GetMaterialMapSize();
+	const int materialTexWidth = gi.GetMaterials().GetTextureDiffuseTintMask().GetWidth();
+	const int materialTexHeight = gi.GetMaterials().GetTextureDiffuseTintMask().GetHeight();
+	const float materialScaleU = ( float )materialMapSize / ( float )materialTexWidth;
+	const float materialScaleV = ( float )materialMapSize / ( float )materialTexHeight;
+	//const float materialClamp = ( 1.0f / ( float )materialMapSize ) * 0.5f;
+	ubo.SetParameterDataVec2( deoglGI::eupMaterialMapTCScale, materialScaleU, materialScaleV );
+	*/
+	ubo.SetParameterDataInt( deoglGI::eupMaterialMapsPerRow, gi.GetMaterials().GetMaterialsPerRow() );
+	ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
+	
+	// move probes. probe can move at most 50% inside the grid acording to the paper.
+	// to be on the safe side use 45%. the minimum distance to the surface is set to
+	// 25% of the smallest spacing. this is rather random value with the aim to
+	// increase the visible surface captured by probes but without approaching the
+	// maximum offset too much.
+	ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f /*0.45f*/ );
+	ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
+		decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
+	
+	// rays
+	ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pGIState.GetRayCache().GetRayMapScale() );
 }
 
 void deoglGICascade::UpdateUBOProbePosition( deoglSPBlockUBO &ubo ) const{
@@ -913,40 +900,26 @@ int &remainingMatchCount, int maxUpdateCount ){
 }
 
 void deoglGICascade::pUpdateUBOProbePosition( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const{
-	ubo.MapBuffer();
-	try{
-		int i;
-		for( i=0; i<count; i++ ){
-			const sProbe &p = pProbes[ indices[ i ] ];
-			ubo.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
-		}
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( ubo );
+	int i;
+	for( i=0; i<count; i++ ){
+		const sProbe &p = pProbes[ indices[ i ] ];
+		ubo.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
 	}
-	ubo.UnmapBuffer();
 }
 
 void deoglGICascade::pUpdateUBOProbeIndices( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const{
-	ubo.MapBuffer();
-	try{
-		const int realCount = ( count - 1 ) / 4 + 1;
-		int i, j;
-		
-		for( i=0, j=0; i<realCount; i++, j+=4 ){
-			ubo.SetParameterDataArrayIVec4( 0, i,
-				j < count ? indices[ j ] : 0,
-				j + 1 < count ? indices[ j + 1 ] : 0,
-				j + 2 < count ? indices[ j + 2 ] : 0,
-				j + 3 < count ? indices[ j + 3 ] : 0 );
-		}
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( ubo );
+	const int realCount = ( count - 1 ) / 4 + 1;
+	int i, j;
+	
+	for( i=0, j=0; i<realCount; i++, j+=4 ){
+		ubo.SetParameterDataArrayIVec4( 0, i,
+			j < count ? indices[ j ] : 0,
+			j + 1 < count ? indices[ j + 1 ] : 0,
+			j + 2 < count ? indices[ j + 2 ] : 0,
+			j + 3 < count ? indices[ j + 3 ] : 0 );
 	}
-	ubo.UnmapBuffer();
 }
 
 void deoglGICascade::pUpdateHasProbeFlags(){

@@ -22,7 +22,7 @@
 #ifndef _DEOGLSHAREDSPB_H_
 #define _DEOGLSHAREDSPB_H_
 
-#include <dragengine/deObject.h>
+#include "../deoglShaderParameterBlock.h"
 
 class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
@@ -45,7 +45,12 @@ class deoglShaderParameterBlock;
  */
 class deoglSharedSPB : public deObject{
 public:
-	deoglShaderParameterBlock *pParameterBlock;
+	typedef deTObjectReference<deoglSharedSPB> Ref;
+	
+	
+	
+private:
+	const deoglShaderParameterBlock::Ref pParameterBlock;
 	deoglSharedSPBElement **pElements;
 	int pSize;
 	int pCount;
@@ -60,18 +65,20 @@ public:
 	 * 
 	 * \warning Do not modify the parameter block after creating the shared object.
 	 */
-	deoglSharedSPB( deoglShaderParameterBlock *parameterBlock );
+	deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock );
 	
+protected:
 	/** \brief Clean up shared shader parameter block. */
 	virtual ~deoglSharedSPB();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parameter block storing the elements. */
-	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParameterBlock; }
+	inline const deoglShaderParameterBlock::Ref &GetParameterBlock() const{ return pParameterBlock; }
 	
 	/** \brief Maximum number of elements. */
 	inline int GetSize() const{ return pSize; }

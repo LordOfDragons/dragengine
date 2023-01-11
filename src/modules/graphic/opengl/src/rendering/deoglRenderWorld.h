@@ -32,7 +32,6 @@ class deoglParticleSorter;
 class deoglRenderTask;
 class deoglRenderPlanMasked;
 class deoglRenderTaskParticles;
-class deoglSPBlockUBO;
 
 
 
@@ -41,7 +40,7 @@ class deoglSPBlockUBO;
  */
 class deoglRenderWorld : public deoglRenderBase{
 private:
-	deoglSPBlockUBO *pRenderPB;
+	deoglSPBlockUBO::Ref pRenderPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
@@ -76,7 +75,7 @@ public:
 	inline deoglRenderWorldInfo &GetDebugInfo(){ return pDebugInfo; }
 	
 	/** Render parameter block. */
-	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
+	inline const deoglSPBlockUBO::Ref &GetRenderPB() const{ return pRenderPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }

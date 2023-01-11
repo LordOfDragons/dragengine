@@ -27,12 +27,12 @@
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
 #include "../light/pipeline/deoglLightPipelinesParticle.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 class deoglLightShaderConfig;
 class deoglPixelBuffer;
 class deoglRParticleEmitter;
 class deoglRSkin;
-class deoglSPBlockUBO;
 class deoglTexture;
 
 
@@ -78,7 +78,7 @@ private:
 	bool pEmitLight;
 	bool pHasTransparency;
 	deoglLightPipelinesParticle::Ref pPipelines;
-	deoglSPBlockUBO *pParamBlockLight;
+	deoglSPBlockUBO::Ref pParamBlockLight;
 	
 	deParticleEmitterType::eSimulationTypes pSimulationType;
 	
@@ -171,7 +171,7 @@ public:
 	deoglLightPipelines &GetPipelines();
 	
 	/** Retrieves the light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
+	deoglSPBlockUBO &GetLightParameterBlock();
 	
 	/** Drop all light pipelines and parameter blocks. */
 	void DropPipelines();

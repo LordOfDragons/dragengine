@@ -38,7 +38,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTBufferObject.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -80,8 +80,6 @@ pClustersRequirePrepareForRender( true ),
 
 pBendFactor( 1.0f ),
 
-pParamBlock( NULL ),
-
 pValidParamBlock( false ),
 pDirtyParamBlock( true ),
 
@@ -104,9 +102,6 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 	int i;
 	for( i=0; i<clusterCount; i++ ){
 		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
-	}
-	if( pParamBlock ){
-		pParamBlock->FreeReference();
 	}
 }
 
@@ -506,98 +501,92 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 		return;
 	}
 	
-	paramBlock.MapBuffer();
-	try{
-		// prop field matrix
-		const decDVector &referencePosition = pPropField.GetParentWorld()->GetReferencePosition();
-		const decDVector &pfpos = pPropField.GetPosition();
-		decDMatrix matrixModel = decDMatrix::CreateTranslation( pfpos - referencePosition );
-		
-		//printf( "propfield=%p type=%p pos=(%f,%f,%f)\n", pPropField->GetPropField(), pType, matrixModel.a14, matrixModel.a24, matrixModel.a34 );
-		
-		// update shader parameter block
-		int target;
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixModel );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
-		}
-		
-		// per texture properties
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat3x2( target, decTexMatrix() );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutPropFieldParams );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, pBendFactor );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-		if( target != -1 ){
-			if( pModel ){
-				paramBlock.SetParameterDataBool( target, pModel->GetLODAt( 0 ).GetTextureAt( 0 ).GetDoubleSided() );
-				
-			}else{
-				paramBlock.SetParameterDataBool( target, false );
-			}
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, 0.0f );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
-		if( target != -1 ){
-			if( useSkinState ){
-				paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
-				
-			}else{
-				paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
-			}
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardPosTransform );
-		if( target != -1 ){
-			decVector2 scale = decVector2( 1.0f, 1.0f );
-			decVector2 offset;
-			
-			if( pModel && pModel->GetImposterBillboard() ){
-				const deoglImposterBillboard &billboard = *pModel->GetImposterBillboard();
-				const decVector2 &minExtend = billboard.GetMinExtend();
-				const decVector2 &maxExtend = billboard.GetMaxExtend();
-				
-				scale.x = ( maxExtend.x - minExtend.x ) * 0.5f;
-				scale.y = ( maxExtend.y - minExtend.y ) * 0.5f;
-				offset.x = ( maxExtend.x + minExtend.x ) * 0.5f;
-				offset.y = ( maxExtend.y + minExtend.y ) * 0.5f;
-			}
-			
-			paramBlock.SetParameterDataVec4( target, scale.x, scale.y, offset.x, offset.y );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardParams );
-		if( target != -1 ){
-			paramBlock.SetParameterDataBVec3( target, false, false, false );
-		}
-		
-		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
-		
-		// per texture dynamic texture properties
-		skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( paramBlock );
+	
+	// prop field matrix
+	const decDVector &referencePosition = pPropField.GetParentWorld()->GetReferencePosition();
+	const decDVector &pfpos = pPropField.GetPosition();
+	decDMatrix matrixModel = decDMatrix::CreateTranslation( pfpos - referencePosition );
+	
+	//printf( "propfield=%p type=%p pos=(%f,%f,%f)\n", pPropField->GetPropField(), pType, matrixModel.a14, matrixModel.a24, matrixModel.a34 );
+	
+	// update shader parameter block
+	int target;
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat4x3( target, matrixModel );
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
+	}
+	
+	// per texture properties
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat3x2( target, decTexMatrix() );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutPropFieldParams );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, pBendFactor );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
+	if( target != -1 ){
+		if( pModel ){
+			paramBlock.SetParameterDataBool( target, pModel->GetLODAt( 0 ).GetTextureAt( 0 ).GetDoubleSided() );
+			
+		}else{
+			paramBlock.SetParameterDataBool( target, false );
+		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, 0.0f );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
+	if( target != -1 ){
+		if( useSkinState ){
+			paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
+			
+		}else{
+			paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
+		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardPosTransform );
+	if( target != -1 ){
+		decVector2 scale = decVector2( 1.0f, 1.0f );
+		decVector2 offset;
+		
+		if( pModel && pModel->GetImposterBillboard() ){
+			const deoglImposterBillboard &billboard = *pModel->GetImposterBillboard();
+			const decVector2 &minExtend = billboard.GetMinExtend();
+			const decVector2 &maxExtend = billboard.GetMaxExtend();
+			
+			scale.x = ( maxExtend.x - minExtend.x ) * 0.5f;
+			scale.y = ( maxExtend.y - minExtend.y ) * 0.5f;
+			offset.x = ( maxExtend.x + minExtend.x ) * 0.5f;
+			offset.y = ( maxExtend.y + minExtend.y ) * 0.5f;
+		}
+		
+		paramBlock.SetParameterDataVec4( target, scale.x, scale.y, offset.x, offset.y );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardParams );
+	if( target != -1 ){
+		paramBlock.SetParameterDataBVec3( target, false, false, false );
+	}
+	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+	
+	// per texture dynamic texture properties
+	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 }
 
 
@@ -626,10 +615,7 @@ void deoglRPropFieldType::pPrepareModel(){
 
 void deoglRPropFieldType::pPrepareParamBlock(){
 	if( ! pValidParamBlock ){
-		if( pParamBlock ){
-			pParamBlock->FreeReference();
-			pParamBlock = NULL;
-		}
+		pParamBlock = nullptr;
 		
 		if( pUseSkinTexture ){
 			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
@@ -637,8 +623,8 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlock = new deoglSPBlockUBO( *pPropField.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO() );
+				pParamBlock.TakeOver( new deoglSPBlockUBO( *pPropField.GetRenderThread()
+					.GetBufferObject().GetLayoutSkinInstanceUBO() ) );
 				
 			}else{*/
 				pParamBlock = skinShader.CreateSPBInstParam();
@@ -651,7 +637,7 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 	
 	if( pDirtyParamBlock ){
 		if( pParamBlock ){
-			UpdateInstanceParamBlock( *pParamBlock, pUseSkinTexture->GetPipelines().
+			UpdateInstanceParamBlock( pParamBlock, pUseSkinTexture->GetPipelines().
 				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
 		}

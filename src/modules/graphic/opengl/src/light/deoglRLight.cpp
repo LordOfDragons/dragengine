@@ -50,7 +50,6 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTChoices.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shadow/deoglSCSolid.h"
 #include "../shadow/deoglSCTransparent.h"
 #include "../shadow/deoglShadowCaster.h"
@@ -151,9 +150,6 @@ pLLPrepareForRenderWorld( this )
 	pDirtyTouching = true;
 	pMarked = false;
 	pUpdateOnRemoveComponent = true;
-	
-	pParamBlockLight = NULL;
-	pParamBlockInstance = NULL;
 	
 	try{
 		pConvexVolumeList = new decConvexVolumeList;
@@ -700,7 +696,7 @@ deoglLightPipelines &deoglRLight::GetPipelines(){
 	return *pPipelines;
 }
 
-deoglSPBlockUBO *deoglRLight::GetLightParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRLight::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
 		pParamBlockLight = GetPipelines().GetWithRef(
 			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
@@ -708,7 +704,7 @@ deoglSPBlockUBO *deoglRLight::GetLightParameterBlock(){
 	return pParamBlockLight;
 }
 
-deoglSPBlockUBO *deoglRLight::GetInstanceParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
 	if( ! pParamBlockInstance ){
 		pParamBlockInstance = GetPipelines().GetWithRef(
 			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
@@ -717,14 +713,8 @@ deoglSPBlockUBO *deoglRLight::GetInstanceParameterBlock(){
 }
 
 void deoglRLight::DropPipelines(){
-	if( pParamBlockInstance ){
-		pParamBlockInstance->FreeReference();;
-		pParamBlockInstance = nullptr;
-	}
-	if( pParamBlockLight ){
-		pParamBlockLight->FreeReference();;
-		pParamBlockLight = nullptr;
-	}
+	pParamBlockInstance = nullptr;
+	pParamBlockLight = nullptr;
 	pPipelines = nullptr;
 }
 
@@ -1067,13 +1057,6 @@ void deoglRLight::pCleanUp(){
 	}
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
-	}
-	
-	if( pParamBlockInstance ){
-		pParamBlockInstance->FreeReference();
-	}
-	if( pParamBlockLight ){
-		pParamBlockLight->FreeReference();
 	}
 	
 	if( pLightVolume ){

@@ -39,7 +39,6 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkin.h"
@@ -66,10 +65,7 @@ pInstance( instance ),
 pIndex( index ),
 
 pTrackerEnvMap( NULL ),
-pSkyNeedsUpdate( false ),
-
-pParamBlockLight( NULL ),
-pParamBlockInstance( NULL )
+pSkyNeedsUpdate( false )
 {
 	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
 }
@@ -82,12 +78,6 @@ deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 	}
 	if( pShadowCaster ){
 		delete pShadowCaster;
-	}
-	if( pParamBlockInstance ){
-		pParamBlockInstance->FreeReference();
-	}
-	if( pParamBlockLight ){
-		pParamBlockLight->FreeReference();
 	}
 }
 
@@ -142,16 +132,18 @@ deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
 	return pPipelines;
 }
 
-deoglSPBlockUBO *deoglRSkyInstanceLayer::GetLightParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		pParamBlockLight = GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
+		pParamBlockLight = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
 	}
 	return pParamBlockLight;
 }
 
-deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 	if( ! pParamBlockInstance ){
-		pParamBlockInstance = GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
+		pParamBlockInstance = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
 	}
 	return pParamBlockInstance;
 }

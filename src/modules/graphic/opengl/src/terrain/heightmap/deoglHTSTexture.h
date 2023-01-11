@@ -28,7 +28,6 @@
 
 class deoglRHTSector;
 class deoglRSkin;
-class deoglSPBlockUBO;
 class deoglSkinShader;
 class deoglTexUnitsConfig;
 
@@ -47,7 +46,7 @@ private:
 	
 	deoglSkinTexture *pUseSkinTexture;
 	
-	deoglSPBlockUBO *pParamBlock;
+	deoglSPBlockUBO::Ref pParamBlock;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCGeometry;
@@ -98,7 +97,7 @@ public:
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	/** Shader parameter block. */
-	inline deoglSPBlockUBO *GetParamBlock() const{ return pParamBlock; }
+	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{ return pParamBlock; }
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
