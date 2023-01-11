@@ -62,7 +62,7 @@ deoglRenderBase( renderThread )
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines defines, commonDefines;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );

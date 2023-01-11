@@ -152,7 +152,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfRGBA8 );
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglSPBlockUBO *spb = NULL;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	decMatrix matrix1, matrix2;
 	GLubyte result[ 3 ];

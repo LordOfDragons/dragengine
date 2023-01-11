@@ -252,7 +252,7 @@ pVAOCopyShadow( nullptr )
 	const float smOffsetBias = renderThread.GetConfiguration().GetShadowMapOffsetBias();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );

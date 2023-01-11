@@ -127,7 +127,7 @@ pAddToRenderTask( NULL )
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );

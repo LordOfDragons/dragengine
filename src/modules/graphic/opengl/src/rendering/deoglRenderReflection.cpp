@@ -181,7 +181,7 @@ deoglRenderBase( renderThread )
 	const deoglExtensions &extensions = renderThread.GetExtensions();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	pRenderParamBlock = NULL;
 	pRenderTask = NULL;

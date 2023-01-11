@@ -413,9 +413,7 @@ pConfig( config ),
 pUsedTextureTargetCount( 0 ),
 pUsedInstanceUniformTargetCount( 0 ),
 pTargetSPBInstanceIndexBase( -1 ),
-pTargetDrawIDOffset( -1 ),
-pSources( NULL ),
-pShader( NULL )
+pTargetDrawIDOffset( -1 )
 {
 	int i;
 	
@@ -428,12 +426,6 @@ pShader( NULL )
 }
 
 deoglSkinShader::~deoglSkinShader(){
-	if( pShader ){
-		delete pShader;
-	}
-	if( pSources ){
-		delete pSources;
-	}
 }
 
 
@@ -1623,17 +1615,11 @@ void deoglSkinShader::GenerateShader(){
 	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
-	if( pShader ){
-		delete pShader;
-		pShader = NULL;
-	}
-	if( pSources ){
-		delete pSources;
-		pSources = NULL;
-	}
+	pShader = nullptr;
+	pSources = nullptr;
 	
 	try{
-		pSources = new deoglShaderSources;
+		pSources.TakeOver( new deoglShaderSources );
 		
 		pSources->SetVersion( "150" );
 		
@@ -1650,7 +1636,7 @@ void deoglSkinShader::GenerateShader(){
 		InitShaderParameters();
 		
 		// create shader
-		pShader = new deoglShaderProgram( pRenderThread, pSources, defines );
+		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
 		
 		// add unit source codes from source files
 		const decString &pathVSC = pSources->GetPathVertexSourceCode();

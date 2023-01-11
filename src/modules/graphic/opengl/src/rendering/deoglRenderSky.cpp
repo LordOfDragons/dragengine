@@ -212,7 +212,7 @@ pRenderSkyIntoEnvMapPB( nullptr )
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	try{
 		pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );

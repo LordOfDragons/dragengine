@@ -145,7 +145,7 @@ public:
 		const char *sources, const deoglShaderDefines &defines );
 	
 	void SetShader( deoglRenderThread &renderThread,
-		deoglShaderSources *sources, const deoglShaderDefines &defines );
+		const deoglShaderSources *sources, const deoglShaderDefines &defines );
 	
 	
 	

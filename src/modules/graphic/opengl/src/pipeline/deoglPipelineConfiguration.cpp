@@ -143,7 +143,7 @@ const char *sources, const deoglShaderDefines &defines ){
 }
 
 void deoglPipelineConfiguration::SetShader( deoglRenderThread &renderThread,
-deoglShaderSources *sources, const deoglShaderDefines &defines ){
+const deoglShaderSources *sources, const deoglShaderDefines &defines ){
 	SetShader( renderThread.GetShader().GetShaderManager().GetProgramWith( sources, defines ) );
 }
 

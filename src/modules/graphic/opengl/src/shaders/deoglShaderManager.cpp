@@ -61,10 +61,6 @@ pUnitSourceCodes( NULL ),
 pUnitSourceCodeCount( 0 ),
 pUnitSourceCodeSize( 0 ),
 
-pSources( NULL ),
-pSourcesCount( 0 ),
-pSourcesSize( 0 ),
-
 pPathShaderSources( "/share/shaderSources" ),
 pPathShaders( "/share/shaders" )
 {
@@ -73,11 +69,7 @@ pPathShaders( "/share/shaders" )
 
 deoglShaderManager::~deoglShaderManager(){
 	pPrograms.RemoveAll();
-	
-	RemoveAllSources();
-	if( pSources ){
-		delete [] pSources;
-	}
+	pSources.RemoveAll();
 	
 	RemoveAllUnitSourceCodes();
 	if( pUnitSourceCodes ){
@@ -184,23 +176,23 @@ void deoglShaderManager::LoadUnitSourceCodes(){
 // Sources
 ////////////
 
-deoglShaderSources *deoglShaderManager::GetSourcesAt( int index ) const{
-	if( index < 0 || index >= pSourcesCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pSources[ index ];
+int deoglShaderManager::GetSourcesCount() const{
+	return pSources.GetCount();
+}
+
+const deoglShaderSources *deoglShaderManager::GetSourcesAt( int index ) const{
+	return ( const deoglShaderSources * )pSources.GetAt( index );
 }
 
 bool deoglShaderManager::HasSourcesNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( name )
 	
+	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<pSourcesCount; i++ ){
-		if( pSources[ i ]->GetName() == name ){
+	for( i=0; i<count; i++ ){
+		const deoglShaderSources &sources = *( const deoglShaderSources * )pSources.GetAt( i );
+		if( sources.GetName() == name ){
 			return true;
 		}
 	}
@@ -208,60 +200,32 @@ bool deoglShaderManager::HasSourcesNamed( const char *name ) const{
 	return false;
 }
 
-deoglShaderSources *deoglShaderManager::GetSourcesNamed( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
+const deoglShaderSources *deoglShaderManager::GetSourcesNamed( const char *name ){
+	DEASSERT_NOTNULL( name )
 	
+	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<pSourcesCount; i++ ){
-		if( pSources[ i ]->GetName() == name ){
-			return pSources[ i ];
+	for( i=0; i<count; i++ ){
+		const deoglShaderSources &sources = *( const deoglShaderSources * )pSources.GetAt( i );
+		if( sources.GetName() == name ){
+			return &sources;
 		}
 	}
 	
 	return NULL;
 }
 
-void deoglShaderManager::AddSources( deoglShaderSources *sources ){
-	if( ! sources || HasSourcesNamed( sources->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pSourcesCount == pSourcesSize ){
-		int newSize = pSourcesSize * 3 / 2 + 1;
-		deoglShaderSources **newArray = new deoglShaderSources*[ newSize ];
-		
-		if( pSources ){
-			memcpy( newArray, pSources, sizeof( deoglShaderSources* ) * pSourcesSize );
-			delete [] pSources;
-		}
-		
-		pSources = newArray;
-		pSourcesSize = newSize;
-	}
-	
-	pSources[ pSourcesCount++ ] = sources;
-}
-
-void deoglShaderManager::RemoveAllSources(){
-	while( pSourcesCount > 0 ){
-		pSourcesCount--;
-		delete pSources[ pSourcesCount ];
-	}
-}
-
 
 
 void deoglShaderManager::LoadSources(){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
-	const int oldCount = pSourcesCount;
+	const int oldCount = pSources.GetCount();
 	
 	pLoadSourcesIn( "" );
 	
 	if( ogl.GetConfiguration().GetDoLogInfo() ){
-		ogl.LogInfoFormat( "Loaded %i shaders.", pSourcesCount - oldCount );
+		ogl.LogInfoFormat( "Loaded %i shaders.", pSources.GetCount() - oldCount );
 	}
 }
 
@@ -270,11 +234,16 @@ void deoglShaderManager::LoadSources(){
 // Programs
 /////////////
 
+int deoglShaderManager::GetProgramCount() const{
+	return pPrograms.GetCount();
+}
+
 const deoglShaderProgram *deoglShaderManager::GetProgramAt( int index ) const{
 	return ( deoglShaderProgram* )pPrograms.GetAt( index );
 }
 
-bool deoglShaderManager::HasProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ) const{
+bool deoglShaderManager::HasProgramWith( const deoglShaderSources *sources,
+const deoglShaderDefines &defines ) const{
 	DEASSERT_NOTNULL( sources )
 	
 	const int count = pPrograms.GetCount();
@@ -290,7 +259,8 @@ bool deoglShaderManager::HasProgramWith( deoglShaderSources *sources, const deog
 	return false;
 }
 
-const deoglShaderProgram *deoglShaderManager::GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ){
+const deoglShaderProgram *deoglShaderManager::GetProgramWith(
+const deoglShaderSources *sources, const deoglShaderDefines &defines ){
 	DEASSERT_NOTNULL( sources )
 	
 	const int count = pPrograms.GetCount();
@@ -408,8 +378,8 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	deLogger &logger = *ogl.GetGameEngine()->GetLogger();
 	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
-	deoglShaderSources *sources = NULL;
-	decBaseFileReaderReference reader;
+	deoglShaderSources::Ref sources;
+	decBaseFileReader::Ref reader;
 	decString filename;
 	decPath searchPath;
 	decPath basePath;
@@ -445,15 +415,11 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 				DETHROW( deeInvalidParam );
 			}
 			
-			AddSources( sources );
-			sources = NULL;
+			pSources.Add( sources );
 		}
 		
 	}catch( const deException & ){
 		ogl.LogInfoFormat( "Loading shader %s failed!", filename.GetString() );
-		if( sources ){
-			delete sources;
-		}
 		throw;
 	}
 }

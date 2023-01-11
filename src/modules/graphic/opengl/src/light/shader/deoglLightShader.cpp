@@ -185,9 +185,7 @@ static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_
 
 deoglLightShader::deoglLightShader( deoglRenderThread &renderThread, const deoglLightShaderConfig &config ) :
 pRenderThread( renderThread ),
-pConfig( config ),
-pSources( nullptr ),
-pShader( nullptr )
+pConfig( config )
 {
 	int i;
 	for( i=0; i<ETT_COUNT; i++ ){
@@ -206,12 +204,6 @@ pShader( nullptr )
 }
 
 deoglLightShader::~deoglLightShader(){
-	if( pShader ){
-		delete pShader;
-	}
-	if( pSources ){
-		delete pSources;
-	}
 }
 
 
@@ -349,17 +341,11 @@ void deoglLightShader::GenerateShader(){
 	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
-	if( pShader ){
-		delete pShader;
-		pShader = nullptr;
-	}
-	if( pSources ){
-		delete pSources;
-		pSources = nullptr;
-	}
+	pShader = nullptr;
+	pSources = nullptr;
 	
 	try{
-		pSources = new deoglShaderSources;
+		pSources.TakeOver( new deoglShaderSources );
 		
 		pSources->SetVersion( "150" );
 		
@@ -374,7 +360,7 @@ void deoglLightShader::GenerateShader(){
 		InitShaderParameters();
 		
 		// create shader
-		pShader = new deoglShaderProgram( pRenderThread, pSources, defines );
+		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
 		
 		// add unit source codes from source files
 		if( ! pSources->GetPathVertexSourceCode().IsEmpty() ){

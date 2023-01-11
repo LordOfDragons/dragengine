@@ -200,7 +200,7 @@ pAddToRenderTask( NULL )
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	int drawIDOffset;
 	
 	try{

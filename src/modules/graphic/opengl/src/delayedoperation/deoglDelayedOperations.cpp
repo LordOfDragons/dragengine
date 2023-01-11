@@ -99,7 +99,7 @@ pOGLObjectSize( 0 ),
 pHasSynchronizeOperations( false )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{

@@ -107,7 +107,7 @@ void deoglCapCheckGeometryShaderLayer::Check( GLuint fbo ){
 		.GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfR8 );
 	GLubyte pixels[ 6 ] = { 0, 0, 0, 0, 0, 0 };
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	GLuint cubemap = 0;
 	int i;

@@ -23,11 +23,12 @@
 #define _DEOGLLIGHTSHADER_H_
 
 #include "deoglLightShaderConfig.h"
+#include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderSources.h"
 
 #include <dragengine/deObject.h>
 
 class deoglRenderThread;
-class deoglShaderProgram;
 class deoglShaderSources;
 class deoglShaderDefines;
 class deoglSPBlockUBO;
@@ -145,8 +146,8 @@ public:
 	int pLightUniformTargets[ ELUT_COUNT ];
 	int pUsedLightUniformTargetCount;
 	
-	deoglShaderSources *pSources;
-	deoglShaderProgram *pShader;
+	deoglShaderSources::Ref pSources;
+	deoglShaderProgram::Ref pShader;
 	
 	
 	

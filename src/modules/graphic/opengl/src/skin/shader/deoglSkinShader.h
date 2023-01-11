@@ -23,6 +23,8 @@
 #define _DEOGLSKINSHADER_H_
 
 #include "deoglSkinShaderConfig.h"
+#include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderSources.h"
 
 #include <dragengine/deObject.h>
 
@@ -32,8 +34,6 @@ class deoglRenderThread;
 class deoglShaderDefines;
 class deoglSPBlockUBO;
 class deoglSPBlockSSBO;
-class deoglShaderProgram;
-class deoglShaderSources;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitConfig;
@@ -288,8 +288,8 @@ private:
 	int pTargetSPBInstanceIndexBase;
 	int pTargetDrawIDOffset;
 	
-	deoglShaderSources *pSources;
-	deoglShaderProgram *pShader;
+	deoglShaderSources::Ref pSources;
+	deoglShaderProgram::Ref pShader;
 	
 public:
 	/** @name Constructors and Destructors */

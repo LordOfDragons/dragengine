@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources ) :
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources ) :
 pRenderThread( renderThread )
 {
 	DEASSERT_NOTNULL( sources )
@@ -58,7 +58,7 @@ pRenderThread( renderThread )
 }
 
 deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
-deoglShaderSources *sources, const deoglShaderDefines &defines ) :
+const deoglShaderSources *sources, const deoglShaderDefines &defines ) :
 pRenderThread( renderThread )
 {
 	DEASSERT_NOTNULL( sources )

@@ -105,7 +105,7 @@ void deoglCapCheckRasterizerDiscard::Check( GLuint fbo ){
 		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfR8 );
 	GLubyte pixels[ 9 ] = { 255, 255, 255, 255, 255, 255, 255, 255, 255 };
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	GLuint texture = 0;
 	GLuint vbo = 0;

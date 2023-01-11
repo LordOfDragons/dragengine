@@ -175,7 +175,7 @@ pDebugInfo( renderThread )
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool useFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderDefines defines, commonDefines;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglPipelineConfiguration pipconf, pipconf2;
 	
 	try{

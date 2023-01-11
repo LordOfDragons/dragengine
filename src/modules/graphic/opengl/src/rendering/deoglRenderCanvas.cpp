@@ -132,7 +132,7 @@ pDebugCountCanvasCanvasView( 0 )
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );

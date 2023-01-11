@@ -45,7 +45,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	deoglShaderSources *pSources;
+	const deoglShaderSources *pSources;
 	deoglShaderDefines pDefines;
 	
 	deoglShaderUnitSourceCode *pSCCompute;
@@ -62,18 +62,25 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources );
-	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources, const deoglShaderDefines &defines );
-	/** Cleans up the shader program object. */
-	~deoglShaderProgram();
+	/** Create shader program. */
+	deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources );
+	
+	/** Create shader program. */
+	deoglShaderProgram( deoglRenderThread &renderThread,
+		const deoglShaderSources *sources, const deoglShaderDefines &defines );
+	
+protected:
+	/** Clean up shader program. */
+	virtual ~deoglShaderProgram();
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the sources. */
-	inline deoglShaderSources *GetSources() const{ return pSources; }
+	inline const deoglShaderSources *GetSources() const{ return pSources; }
 	/** Retrieves the defines. */
 	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
 	

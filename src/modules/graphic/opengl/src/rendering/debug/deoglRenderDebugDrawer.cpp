@@ -83,7 +83,7 @@ deoglRenderBase( renderThread )
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines commonDefines;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{

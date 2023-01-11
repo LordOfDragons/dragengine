@@ -49,10 +49,7 @@ private:
 	int pUnitSourceCodeCount;
 	int pUnitSourceCodeSize;
 	
-	deoglShaderSources **pSources;
-	int pSourcesCount;
-	int pSourcesSize;
-	
+	decObjectList pSources;
 	decObjectList pPrograms;
 	
 	decString pPathShaderSources;
@@ -97,18 +94,17 @@ public:
 	
 	/** \name Sources */
 	/*@{*/
-	/** Retrieves the number of shader sources. */
-	inline int GetSourcesCount() const{ return pSourcesCount; }
-	/** Retrieves the shader sources at the given index. */
-	deoglShaderSources *GetSourcesAt( int index ) const;
-	/** Determines if a shader sources with the given name exists. */
+	/** Count of shader sources. */
+	int GetSourcesCount() const;
+	
+	/** Shader sources at index. */
+	const deoglShaderSources *GetSourcesAt( int index ) const;
+	
+	/** Named shader sources is exists. */
 	bool HasSourcesNamed( const char *name ) const;
-	/** Retrieves the shader sources with the given name or NULL if not found. */
-	deoglShaderSources *GetSourcesNamed( const char *name );
-	/** Adds a shader sources. */
-	void AddSources( deoglShaderSources *sources );
-	/** Removes all shader sources. */
-	void RemoveAllSources();
+	
+	/** Named shader sources or nullptr. */
+	const deoglShaderSources *GetSourcesNamed( const char *name );
 	
 	/**
 	 * Scan shader directory for shader files and loads them.
@@ -128,10 +124,10 @@ public:
 	const deoglShaderProgram *GetProgramAt( int index ) const;
 	
 	/** Program with sources and defines exists. */
-	bool HasProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ) const;
+	bool HasProgramWith( const deoglShaderSources *sources, const deoglShaderDefines &defines ) const;
 	
 	/** Program with sources and defines. If absent it is first loaded and compiled. */
-	const deoglShaderProgram *GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines );
+	const deoglShaderProgram *GetProgramWith( const deoglShaderSources *sources, const deoglShaderDefines &defines );
 	/*@}*/
 	
 private:

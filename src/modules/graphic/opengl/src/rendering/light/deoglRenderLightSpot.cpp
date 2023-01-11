@@ -247,7 +247,7 @@ deoglRenderLightBase( renderThread )
 	const float smOffsetScale = renderThread.GetConfiguration().GetShadowMapOffsetScale();
 	const float smOffsetBias = renderThread.GetConfiguration().GetShadowMapOffsetBias();
 	deoglPipelineConfiguration pipconf;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{
