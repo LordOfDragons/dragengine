@@ -24,7 +24,6 @@
 
 #include "deoglShaderManager.h"
 #include "deoglShaderProgram.h"
-#include "deoglShaderProgramUsage.h"
 #include "deoglShaderDefines.h"
 #include "deoglShaderSources.h"
 #include "deoglShaderCompiled.h"
@@ -66,10 +65,6 @@ pSources( NULL ),
 pSourcesCount( 0 ),
 pSourcesSize( 0 ),
 
-pPrograms( NULL ),
-pProgramCount( 0 ),
-pProgramSize( 0 ),
-
 pPathShaderSources( "/share/shaderSources" ),
 pPathShaders( "/share/shaders" )
 {
@@ -77,19 +72,7 @@ pPathShaders( "/share/shaders" )
 }
 
 deoglShaderManager::~deoglShaderManager(){
-	int i;
-	
-	for( i=0; i<pProgramCount; i++ ){
-		if( pPrograms[ i ]->GetUsageCount() != 0 ){
-			pRenderThread.GetOgl().LogWarnFormat( "ShaderManager CleanUp: Program '%s' with usage count %i",
-				pPrograms[ i ]->GetSources()->GetName().GetString(), pPrograms[ i ]->GetUsageCount() );
-		}
-	}
-	
-	RemoveAllPrograms();
-	if( pPrograms ){
-		delete [] pPrograms;
-	}
+	pPrograms.RemoveAll();
 	
 	RemoveAllSources();
 	if( pSources ){
@@ -287,118 +270,19 @@ void deoglShaderManager::LoadSources(){
 // Programs
 /////////////
 
-const deoglShaderProgram &deoglShaderManager::GetProgramAt( int index ) const{
-	if( index < 0 || index >= pProgramCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return *pPrograms[ index ];
+const deoglShaderProgram *deoglShaderManager::GetProgramAt( int index ) const{
+	return ( deoglShaderProgram* )pPrograms.GetAt( index );
 }
-/*
-bool deoglShaderManager::HasProgramWith( deoglShaderUnitProgram *fragment, deoglShaderUnitProgram *vertex,
-deoglShaderUnitProgram *geometry, const deoglShaderDefines &defines ) const{
-	if( ! fragment || ! vertex ) DETHROW( deeInvalidParam );
-	
-	int p;
-	
-	for( p=0; p<pProgramCount; p++ ){
-		if( pPrograms[ p ]->Matches( fragment, vertex, geometry, defines ) ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-deoglShaderProgram *deoglShaderManager::GetProgramWith( deoglShaderUnitProgram *fragment, deoglShaderUnitProgram *vertex,
-deoglShaderUnitProgram *geometry, const deoglShaderDefines &defines ){
-	if( ! fragment || ! vertex ) DETHROW( deeInvalidParam );
-	
-	int p;
-	
-	for( p=0; p<pProgramCount; p++ ){
-		if( pPrograms[ p ]->Matches( fragment, vertex, geometry, defines ) ){
-			return pPrograms[ p ];
-		}
-	}
-	
-	deoglShaderProgram *program = NULL;
-	
-	try{
-		program = new deoglShaderProgram( fragment, vertex, geometry, defines );
-		if( ! program ) DETHROW( deeOutOfMemory );
-		
-		AddProgram( program );
-		
-	}catch( const deException & ){
-		if( program ) delete program;
-		throw;
-	}
-	
-	if( pLanguage ){
-		deoglShaderCompiled *compiled = NULL;
-		try{
-			compiled = pLanguage->CompileShader( sources, defines );
-			if( ! compiled ) DETHROW( deeOutOfMemory );
-			
-			program->SetCompiled( compiled );
-			
-		}catch( const deException & ){
-			if( compiled ) delete compiled;
-			throw;
-		}
-	}
-	
-	return program;
-}
-
-deoglShaderProgram *deoglShaderManager::GetProgramWith( const char *pathFragment, const char *pathVertex, const char *pathGeometry, const deoglShaderDefines &defines ){
-	if( ! pathFragment || ! pathVertex ) DETHROW( deeInvalidParam );
-	
-	deoglShaderUnitProgram *fragment = NULL;
-	deoglShaderUnitProgram *vertex = NULL;
-	deoglShaderUnitProgram *geometry = NULL;
-	
-	fragment = GetUnitProgramWith( GetUnitSourceCodeWithPath( pathFragment ), defines );
-	vertex = GetUnitProgramWith( GetUnitSourceCodeWithPath( pathVertex ), defines );
-	if( pathGeometry ){
-	deoglShaderUnitProgram *geometry = NULL;
-	
-	
-	int p;
-	
-	for( p=0; p<pProgramCount; p++ ){
-		if( pPrograms[ p ]->Matches( fragment, vertex, geometry ) ){
-			return pPrograms[ p ];
-		}
-	}
-	
-	deoglShaderProgram *program = NULL;
-	
-	try{
-		program = new deoglShaderProgram( fragment, vertex, geometry );
-		if( ! program ) DETHROW( deeOutOfMemory );
-		
-		AddProgram( program );
-		
-	}catch( const deException & ){
-		if( program ) delete program;
-		throw;
-	}
-	
-	return program;
-}
-*/
 
 bool deoglShaderManager::HasProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ) const{
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( sources )
 	
+	const int count = pPrograms.GetCount();
 	int i;
 	
-	for( i=0; i<pProgramCount; i++ ){
-		if( sources == pPrograms[ i ]->GetSources() && defines.Equals( pPrograms[ i ]->GetDefines() ) ){
+	for( i=0; i<count; i++ ){
+		deoglShaderProgram &program = *( deoglShaderProgram* )pPrograms.GetAt( i );
+		if( sources == program.GetSources() && defines.Equals( program.GetDefines() ) ){
 			return true;
 		}
 	}
@@ -406,72 +290,56 @@ bool deoglShaderManager::HasProgramWith( deoglShaderSources *sources, const deog
 	return false;
 }
 
-deoglShaderProgramUsage deoglShaderManager::GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ){
-	if( ! sources ){
-		DETHROW_INFO( deeNullPointer, "sources" );
-	}
+const deoglShaderProgram *deoglShaderManager::GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ){
+	DEASSERT_NOTNULL( sources )
 	
+	const int count = pPrograms.GetCount();
 	int i;
-	for( i=0; i<pProgramCount; i++ ){
-		if( sources == pPrograms[ i ]->GetSources() && defines.Equals( pPrograms[ i ]->GetDefines() ) ){
-			if( pPrograms[ i ]->GetUsageCount() < 0 ){
-				pRenderThread.GetLogger().LogWarnFormat( "ShaderManager.GetProgramWith(): Program '%s' has usage count %d!",
-					pPrograms[ i ]->GetSources()->GetName().GetString(), pPrograms[ i ]->GetUsageCount() );
-				
-				while( pPrograms[ i ]->GetUsageCount() < 0 ){
-					pPrograms[ i ]->AddUsage();
-				}
-			}
-			return deoglShaderProgramUsage( pPrograms[ i ] );
+	
+	for( i=0; i<count; i++ ){
+		deoglShaderProgram *program = ( deoglShaderProgram* )pPrograms.GetAt( i );
+		if( sources == program->GetSources() && defines.Equals( program->GetDefines() ) ){
+			return program;
 		}
 	}
 	
-	deoglShaderProgram *program = NULL;
+	const deoglShaderProgram::Ref program( deoglShaderProgram::Ref::New(
+		new deoglShaderProgram( pRenderThread, sources, defines ) ) );
 	
-	try{
-		program = new deoglShaderProgram( pRenderThread, sources, defines );
+	if( ! sources->GetPathGeometrySourceCode().IsEmpty() ){
+		program->SetGeometrySourceCode( GetUnitSourceCodeWithPath( sources->GetPathGeometrySourceCode().GetString() ) );
 		
-		if( ! sources->GetPathGeometrySourceCode().IsEmpty() ){
-			program->SetGeometrySourceCode( GetUnitSourceCodeWithPath( sources->GetPathGeometrySourceCode().GetString() ) );
-			
-			if( ! program->GetGeometrySourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Geometry source '%s' not found", sources->GetFilename().GetString(),
-					sources->GetPathGeometrySourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
+		if( ! program->GetGeometrySourceCode() ){
+			pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Geometry source '%s' not found", sources->GetFilename().GetString(),
+				sources->GetPathGeometrySourceCode().GetString() );
+			DETHROW( deeInvalidParam );
 		}
-		
-		if( ! sources->GetPathVertexSourceCode().IsEmpty() ){
-			program->SetVertexSourceCode( GetUnitSourceCodeWithPath( sources->GetPathVertexSourceCode().GetString() ) );
-			
-			if( ! program->GetVertexSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Vertex source '%s' not found", sources->GetFilename().GetString(),
-					sources->GetPathVertexSourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( ! sources->GetPathFragmentSourceCode().IsEmpty() ){
-			program->SetFragmentSourceCode( GetUnitSourceCodeWithPath( sources->GetPathFragmentSourceCode().GetString() ) );
-			
-			if( ! program->GetFragmentSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Fragment source '%s' not found", sources->GetFilename().GetString(),
-					sources->GetPathFragmentSourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		AddProgram( program );
-		
-	}catch( const deException & ){
-		if( program ){
-			delete program;
-		}
-		throw;
 	}
+	
+	if( ! sources->GetPathVertexSourceCode().IsEmpty() ){
+		program->SetVertexSourceCode( GetUnitSourceCodeWithPath( sources->GetPathVertexSourceCode().GetString() ) );
+		
+		if( ! program->GetVertexSourceCode() ){
+			pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Vertex source '%s' not found", sources->GetFilename().GetString(),
+				sources->GetPathVertexSourceCode().GetString() );
+			DETHROW( deeInvalidParam );
+		}
+	}
+	
+	if( ! sources->GetPathFragmentSourceCode().IsEmpty() ){
+		program->SetFragmentSourceCode( GetUnitSourceCodeWithPath( sources->GetPathFragmentSourceCode().GetString() ) );
+		
+		if( ! program->GetFragmentSourceCode() ){
+			pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Fragment source '%s' not found", sources->GetFilename().GetString(),
+				sources->GetPathFragmentSourceCode().GetString() );
+			DETHROW( deeInvalidParam );
+		}
+	}
+	
+	pPrograms.Add( program );
 	
 	if( pLanguage ){
-		deoglShaderCompiled *compiled = NULL;
+		deoglShaderCompiled *compiled = nullptr;
 		
 		try{
 			compiled = pLanguage->CompileShader( *program );
@@ -485,36 +353,7 @@ deoglShaderProgramUsage deoglShaderManager::GetProgramWith( deoglShaderSources *
 		}
 	}
 	
-	return deoglShaderProgramUsage::New( program );
-}
-
-void deoglShaderManager::AddProgram( deoglShaderProgram *program ){
-	if( ! program ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pProgramCount == pProgramSize ){
-		int newSize = pProgramCount * 3 / 2 + 1;
-		deoglShaderProgram **newArray = new deoglShaderProgram*[ newSize ];
-		
-		if( pPrograms ){
-			memcpy( newArray, pPrograms, sizeof( deoglShaderProgram* ) * pProgramSize );
-			delete [] pPrograms;
-		}
-		
-		pPrograms = newArray;
-		pProgramSize = newSize;
-	}
-	
-	pPrograms[ pProgramCount ] = program;
-	pProgramCount++;
-}
-
-void deoglShaderManager::RemoveAllPrograms(){
-	while( pProgramCount > 0 ){
-		pProgramCount--;
-		delete pPrograms[ pProgramCount ];
-	}
+	return program;
 }
 
 

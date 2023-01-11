@@ -548,11 +548,11 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	
 	if( useAmbient && scambient.GetStaticCubeMap() ){
 		pPipelineBoxBoundary1Ambient->Activate();
-		shader = pPipelineBoxBoundary1Ambient->GetGlShader()->GetCompiled();
+		shader = &pPipelineBoxBoundary1Ambient->GetGlShader();
 		
 	}else{
 		pPipelineBoxBoundary1->Activate();
-		shader = pPipelineBoxBoundary1->GetGlShader()->GetCompiled();
+		shader = &pPipelineBoxBoundary1->GetGlShader();
 	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
@@ -583,7 +583,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	// down sampling to 1x1 using mip map levels
 	pPipelineBoxBoundary2->Activate();
 	
-	pPipelineBoxBoundary2->GetGlShader()->GetCompiled()->SetParameterFloat( spbbQuadParams, 1.0f, 1.0f, 0.0f, 0.0f );
+	pPipelineBoxBoundary2->GetGlShader().SetParameterFloat( spbbQuadParams, 1.0f, 1.0f, 0.0f, 0.0f );
 	
 	tsmgr.EnableTexture( 0, *boundaryMap.GetTextureMin(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, *boundaryMap.GetTextureMax(), GetSamplerClampNearest() );
@@ -597,7 +597,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 		
 		renderThread.GetFramebuffer().Activate( boundaryMap.GetFBOAt( mipMapLevel ) );
 		
-		pPipelineBoxBoundary2->GetGlShader()->GetCompiled()->SetParameterInt( spbbMipMapLevel, mipMapLevel - 1 );
+		pPipelineBoxBoundary2->GetGlShader().SetParameterInt( spbbMipMapLevel, mipMapLevel - 1 );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		//ogl.LogInfoFormat( "BoxBoundary %p Step2 size(%i) mipMaplevel(%i)", &light, size, mipMapLevel );

@@ -564,7 +564,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		state.StencilFunc( GL_ALWAYS, plan.GetStencilRefValue(), 0x0 );
 	}
 	
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
@@ -789,7 +789,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		}
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
-		defren.SetShaderParamFSQuad( *pipeline.GetGlShader()->GetCompiled(), spcdQuadParams );
+		defren.SetShaderParamFSQuad( pipeline.GetGlShader(), spcdQuadParams );
 		
 		RenderFullScreenQuadVAO( plan );
 		
@@ -966,6 +966,6 @@ void deoglRenderTransparentPasses::CopyColorToTemporary( deoglRenderPlan &plan )
 	
 	renderThread.GetTexture().GetStages().EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	defren.SetShaderParamFSQuad( *pipeline.GetGlShader()->GetCompiled(), spcdQuadParams );
+	defren.SetShaderParamFSQuad( pipeline.GetGlShader(), spcdQuadParams );
 	RenderFullScreenQuadVAO( plan );
 }

@@ -102,10 +102,7 @@ void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	
 	if( shader ){
 		deoglShaderCompiled * const compiled = shader->GetCompiled();
-		if( ! compiled ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_NOTNULL( compiled )
 		compiled->Activate();
 		
 	}else{

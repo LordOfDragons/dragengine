@@ -310,7 +310,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	curWidth = realWidth;
 	curHeight = realHeight;
 	
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	while( curWidth > 1 || curHeight > 1 ){
 		// reduce in x direction

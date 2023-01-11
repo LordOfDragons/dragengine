@@ -294,7 +294,7 @@ void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &comm
 	
 	programCount = shaderManager.GetProgramCount();
 	for( p=0; p<programCount; p++ ){
-		const deoglShaderProgram &program = shaderManager.GetProgramAt( p );
+		const deoglShaderProgram &program = *shaderManager.GetProgramAt( p );
 		const deoglShaderDefines &defines = program.GetDefines();
 		
 		text.Format( "- Shader '%s' Defines(", program.GetSources()->GetName().GetString() );

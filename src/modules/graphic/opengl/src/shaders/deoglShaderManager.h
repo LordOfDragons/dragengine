@@ -19,14 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEOGLSHADERMANAGER_H_
 #define _DEOGLSHADERMANAGER_H_
 
-// includes
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 
-// predefinitions
 class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderProgram;
@@ -35,14 +33,11 @@ class deoglShaderSources;
 class deoglShaderLanguage;
 class deVirtualFileSystem;
 class decPath;
-class deoglShaderProgramUsage;
 
 
 
 /**
- * @brief Shader Manager.
- *
- * Manages shaders.
+ * Shader Manager.
  */
 class deoglShaderManager{
 private:
@@ -58,15 +53,13 @@ private:
 	int pSourcesCount;
 	int pSourcesSize;
 	
-	deoglShaderProgram **pPrograms;
-	int pProgramCount;
-	int pProgramSize;
+	decObjectList pPrograms;
 	
 	decString pPathShaderSources;
 	decString pPathShaders;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
 	deoglShaderManager( deoglRenderThread &renderThread );
@@ -74,13 +67,13 @@ public:
 	~deoglShaderManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the language used to compiled and drive shaders. */
 	inline deoglShaderLanguage *GetLanguage() const{ return pLanguage; }
 	/*@}*/
 	
-	/** @name Unit Source Codes */
+	/** \name Unit Source Codes */
 	/*@{*/
 	/** Retrieves the number of shader unit source codes. */
 	inline int GetUnitSourceCodeCount() const{ return pUnitSourceCodeCount; }
@@ -96,13 +89,13 @@ public:
 	void RemoveAllUnitSourceCodes();
 	
 	/**
-	 * \brief Scan shader unit source code directory for files and loads them.
+	 * Scan shader unit source code directory for files and loads them.
 	 * \details Main thread call. Uses game engine logger to log problems.
 	 */
 	void LoadUnitSourceCodes();
 	/*@}*/
 	
-	/** @name Sources */
+	/** \name Sources */
 	/*@{*/
 	/** Retrieves the number of shader sources. */
 	inline int GetSourcesCount() const{ return pSourcesCount; }
@@ -118,46 +111,27 @@ public:
 	void RemoveAllSources();
 	
 	/**
-	 * \brief Scan shader directory for shader files and loads them.
+	 * Scan shader directory for shader files and loads them.
 	 * \details Main thread call. Uses game engine logger to log problems.
 	 */
 	void LoadSources();
 	/*@}*/
 	
-	/** @name Programs */
+	
+	
+	/** \name Programs */
 	/*@{*/
-	/** Retrieves the number of programs. */
-	inline int GetProgramCount() const{ return pProgramCount; }
-	/** Retrieves the program at the given index. */
-	const deoglShaderProgram &GetProgramAt( int index ) const;
-	/** Determines if a program with the given sources and defines combination exists. */
-//	bool HasProgramWith( deoglShaderUnitProgram *fragment, deoglShaderUnitProgram *vertex,
-//		deoglShaderUnitProgram *geometry, const deoglShaderDefines &defines ) const;
-	/**
-	 * Retrieves the program with the given sources and defines combination. If such a
-	 * program does not exist yet it is compiled first.
-	 */
-//	deoglShaderProgram *GetProgramWith( deoglShaderUnitProgram *fragment, deoglShaderUnitProgram *vertex,
-//		deoglShaderUnitProgram *geometry, const deoglShaderDefines &defines );
-	/**
-	 * Retrieves the program with the given sources and defines combination. If such a
-	 * program does not exist yet it is compiled first.
-	 */
-//	deoglShaderProgram *GetProgramWith( const char *pathFragment, const char *pathVertex, const char *pathGeometry, const deoglShaderDefines &defines );
-	/** Determines if a program with the given sources and defines combination exists. */
+	/** Count of programs. */
+	int GetProgramCount() const;
+	
+	/** Program at index. */
+	const deoglShaderProgram *GetProgramAt( int index ) const;
+	
+	/** Program with sources and defines exists. */
 	bool HasProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines ) const;
 	
-	/**
-	 * \brief Program with sources and defines combination.
-	 * 
-	 * If program is absent it is loaded and compiled first. A usage is added to the program.
-	 */
-	deoglShaderProgramUsage GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines );
-	
-	/** Adds a program. */
-	void AddProgram( deoglShaderProgram *program );
-	/** Removes all programs. */
-	void RemoveAllPrograms();
+	/** Program with sources and defines. If absent it is first loaded and compiled. */
+	const deoglShaderProgram *GetProgramWith( deoglShaderSources *sources, const deoglShaderDefines &defines );
 	/*@}*/
 	
 private:

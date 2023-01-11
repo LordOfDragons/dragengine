@@ -212,7 +212,7 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
 	pPipelineOutTexLayer->Activate();
-	deoglShaderCompiled &shader = *pPipelineOutTexLayer->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineOutTexLayer->GetGlShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -280,7 +280,7 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
 	pPipelineOutArrTex->Activate();
-	deoglShaderCompiled &shader = *pPipelineOutArrTex->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineOutArrTex->GetGlShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -339,7 +339,7 @@ void deoglRenderDebug::RenderComponentBox( sRenderParameters &params, deoglRComp
 	decColor edgeColor;
 	
 	pPipelineXRay->Activate();
-	deoglShaderCompiled &shader = *pPipelineXRay->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineXRay->GetGlShader();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	

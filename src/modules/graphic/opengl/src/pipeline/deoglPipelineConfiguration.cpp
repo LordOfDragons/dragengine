@@ -127,8 +127,13 @@ pDynamicPolygonOffset( false ),
 // Management
 ///////////////
 
-void deoglPipelineConfiguration::SetShader( const deoglShaderProgramUsage &shader ){
+void deoglPipelineConfiguration::SetShader( const deoglShaderProgram *shader ){
 	pShader = shader;
+}
+
+const deoglShaderProgram &deoglPipelineConfiguration::GetShaderRef() const{
+	DEASSERT_NOTNULL( pShader );
+	return *pShader;
 }
 
 void deoglPipelineConfiguration::SetShader( deoglRenderThread &renderThread,

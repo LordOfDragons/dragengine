@@ -183,7 +183,7 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	shader.SetParameterColorMatrix5x4( speColorMatrix, speColorOffset, colorMatrix );
 	
 	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()

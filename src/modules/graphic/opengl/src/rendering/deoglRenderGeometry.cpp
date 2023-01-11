@@ -284,7 +284,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 			const deoglPipelineConfiguration &pipconf = pipeline.GetGlConfiguration();
 			const int targetSPBInstanceIndexBase = pipconf.GetSPBInstanceIndexBase();
 			const int targetDrawIDOffset = pipconf.GetDrawIDOffset();
-			deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+			deoglShaderCompiled &shader = pipeline.GetGlShader();
 			
 			pipeline.Activate();
 			
@@ -506,7 +506,7 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 	while( iterPipeline ){
 		const deoglPersistentRenderTaskPipeline &rtpipeline = *( ( deoglPersistentRenderTaskPipeline* )iterPipeline->GetOwner() );
 		const deoglPipeline &pipeline = *rtpipeline.GetPipeline();
-		deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+		deoglShaderCompiled &shader = pipeline.GetGlShader();
 		
 		pipeline.Activate();
 		
@@ -673,7 +673,7 @@ int normalCount, int /*tangentCount*/, int firstPoint, int pointCount ){
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, clearColor ) );
 	
-	deoglShaderCompiled &shader = *pPipelineCalcNormalsTangents->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineCalcNormalsTangents->GetGlShader();
 	shader.SetParameterFloat( 0, 2.0f / ( float )outputWidth, 2.0f / ( float )outputHeight,
 		0.5f / ( float )outputWidth - 1.0f, 0.5f / ( float )outputHeight - 1.0f );
 	shader.SetParameterInt( 1, outputWidth );
@@ -699,7 +699,7 @@ int firstPoint, int pointCount ){
 	
 	pPipelineWriteSkinnedVBO->Activate();
 	
-	deoglShaderCompiled &shader = *pPipelineWriteSkinnedVBO->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineWriteSkinnedVBO->GetGlShader();
 	shader.SetParameterInt( 0, texNorTan.GetWidth() );
 	shader.SetParameterInt( 1, positionCount, positionCount + normalCount );
 	

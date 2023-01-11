@@ -23,7 +23,8 @@
 #define _DEOGLSHADERPROGRAM_H_
 
 #include "deoglShaderDefines.h"
-#include "deoglShaderProgramUsage.h"
+
+#include <dragengine/deObject.h>
 
 class deoglRenderThread;
 class deoglShaderUnitSourceCode;
@@ -33,13 +34,14 @@ class deoglShaderCompiled;
 
 
 /**
- * @brief Shader Program.
  * A shader program. Shader programs are compiled from a base code loaded
  * from disk using defines to produce a specialized program.
  */
-class deoglShaderProgram{
+class deoglShaderProgram : public deObject{
 public:
-	typedef deoglShaderProgramUsage Ref;
+	typedef deTObjectReference<deoglShaderProgram> Ref;
+	
+	
 	
 private:
 	deoglRenderThread &pRenderThread;
@@ -57,10 +59,8 @@ private:
 	
 	unsigned int pUniqueKey;
 	
-	int pUsageCount;
-	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader program object. */
 	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources );
@@ -70,7 +70,7 @@ public:
 	~deoglShaderProgram();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the sources. */
 	inline deoglShaderSources *GetSources() const{ return pSources; }
@@ -113,13 +113,6 @@ public:
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
-	
-	/** Retrieves the usage count. */
-	inline int GetUsageCount() const{ return pUsageCount; }
-	/** Add usage increases the usage count by one. */
-	void AddUsage();
-	/** Removes a usage decreasing the usage count by one. */
-	void RemoveUsage();
 	/*@}*/
 };
 

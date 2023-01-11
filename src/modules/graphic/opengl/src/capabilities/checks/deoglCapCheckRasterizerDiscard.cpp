@@ -34,7 +34,6 @@
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
-#include "../../shaders/deoglShaderProgramUsage.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
@@ -118,7 +117,7 @@ void deoglCapCheckRasterizerDiscard::Check( GLuint fbo ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		deoglShaderProgramUsage shader( shaderManager.GetProgramWith( sources, defines ) );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// generate test texture
 		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );

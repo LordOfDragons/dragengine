@@ -42,9 +42,7 @@
 deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources ) :
 pRenderThread( renderThread )
 {
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( sources )
 	
 	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
@@ -57,17 +55,13 @@ pRenderThread( renderThread )
 	pSources = sources;
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
-	
-	pUsageCount = 1;
 }
 
 deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
 deoglShaderSources *sources, const deoglShaderDefines &defines ) :
 pRenderThread( renderThread )
 {
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( sources )
 	
 	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
@@ -82,8 +76,6 @@ pRenderThread( renderThread )
 	pDefines = defines;
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
-	
-	pUsageCount = 1;
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
@@ -124,24 +116,13 @@ void deoglShaderProgram::SetFragmentSourceCode( deoglShaderUnitSourceCode *sourc
 }
 
 void deoglShaderProgram::SetCompiled( deoglShaderCompiled *compiled ){
-	if( compiled != pCompiled ){
-		if( pCompiled ) delete pCompiled;
-		
-		pCompiled = compiled;
-	}
-}
-
-
-
-void deoglShaderProgram::AddUsage(){
-	pUsageCount++;
-}
-
-void deoglShaderProgram::RemoveUsage(){
-	if( pUsageCount == 0 ){
-		//DETHROW( deeInvalidParam );
-		// this is bad. we let it slip though and let the shader manager notify about what happened the next possible time
+	if( compiled == pCompiled ){
+		return;
 	}
 	
-	pUsageCount--;
+	if( pCompiled ){
+		delete pCompiled;
+	}
+	
+	pCompiled = compiled;
 }

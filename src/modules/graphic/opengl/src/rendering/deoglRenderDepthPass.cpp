@@ -525,7 +525,7 @@ DBG_ENTER("DownsampleDepth")
 	pipeline.Activate();
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	tsmgr.EnableArrayTexture( 0, texture, GetSamplerClampNearest() );
 	

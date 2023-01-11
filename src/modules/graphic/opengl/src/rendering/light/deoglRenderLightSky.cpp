@@ -353,7 +353,7 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	// set shader
 	renderThread.GetShader().ActivateShader( pPipelineAO );
 	
-	pPipelineAO->GetCompiled()->SetParameterFloat( 0, defren.GetPixelSizeU(), defren.GetPixelSizeV(), 0.0f, 0.0f );
+	pPipelineAO->GetGlShader().SetParameterFloat( 0, defren.GetPixelSizeU(), defren.GetPixelSizeV(), 0.0f, 0.0f );
 	
 	// mapping (0,1-sv) => (-1,-1) and (su,1) => (1,1)
 	// (x-c)*s = x*s-c*s
@@ -366,10 +366,10 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	// u=su; su*(2/su) + (-1) = 2-1 = 1 (ok)
 	// v=1-sv; (1-sv)*(2/sv) + (1-2/sv) = 2/sv-2 + 1-2/sv = -1 (ok)
 	// v=1; 1*(2/sv) + (1-2/sv) = 2/sv + 1-2/sv = 1 (ok)
-	pPipelineAO->GetCompiled()->SetParameterFloat( 1, scaleU, scaleV, offsetU, offsetV );
+	pPipelineAO->GetGlShader().SetParameterFloat( 1, scaleU, scaleV, offsetU, offsetV );
 	
 	float q = zfar / ( zfar - znear );
-	pPipelineAO->GetCompiled()->SetParameterVector4( 2, plan.GetDepthToPosition() );
+	pPipelineAO->GetGlShader().SetParameterVector4( 2, plan.GetDepthToPosition() );
 	
 	// render probes
 //	rengeom.RenderSkyLOProbes( &plan, plan.GetCollideList(), plan.GetCameraMatrix() );
@@ -807,7 +807,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	// issues on front facing fragments but makes underground scenes safe
 	pPipelineClearDepth->Activate();
 	
-	pPipelineClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
+	pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
 	
 	RenderFullScreenQuadVAO();
 			SSDT("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
@@ -924,7 +924,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		// issues on front facing fragments but makes underground scenes safe
 		if( clearBackFaceFragments ){
 			pPipelineClearDepth->Activate();
-			pPipelineClearDepth->GetGlShader()->GetCompiled()->SetParameterFloat( 0, -1.0f );
+			pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
 			RenderFullScreenQuadVAO();
 		}
 			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
@@ -1208,7 +1208,7 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 		// issues on front facing fragments but makes underground scenes safe
 		pPipelineClearDepth->Activate();
-		pPipelineClearDepth->GetGlShader()->GetCompiled()->SetParameterFloat( 0, -1.0f );
+		pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
 		RenderFullScreenQuadVAO();
 				SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	}

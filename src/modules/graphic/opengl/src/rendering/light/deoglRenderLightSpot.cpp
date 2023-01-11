@@ -427,11 +427,11 @@ void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlanLight &planLight
 	
 	if( useAmbient && scambient.GetStaticMap() ){
 		pPipelineBoxBoundary1Ambient->Activate();
-		shader = pPipelineBoxBoundary1Ambient->GetGlShader()->GetCompiled();
+		shader = &pPipelineBoxBoundary1Ambient->GetGlShader();
 		
 	}else{
 		pPipelineBoxBoundary1->Activate();;
-		shader = pPipelineBoxBoundary1->GetGlShader()->GetCompiled();
+		shader = &pPipelineBoxBoundary1->GetGlShader();
 	}
 	
 	renderThread.GetFramebuffer().Activate( boundaryMap.GetFBOAt( mipMapLevel ) );
@@ -461,7 +461,7 @@ void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlanLight &planLight
 	// down sampling to 1x1 using mip map levels
 	pPipelineBoxBoundary2->Activate();
 	
-	shader = pPipelineBoxBoundary2->GetGlShader()->GetCompiled();
+	shader = &pPipelineBoxBoundary2->GetGlShader();
 	shader->SetParameterFloat( spbbQuadParams, 1.0f, 1.0f, 0.0f, 0.0f );
 	
 	tsmgr.DisableStage( 2 );

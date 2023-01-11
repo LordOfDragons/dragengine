@@ -597,7 +597,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	
 	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineColor2LogLumStereo : pPipelineColor2LogLum;
 	pipeline->Activate();
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -615,7 +615,7 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	// average the log luminances
 	pipeline = plan.GetRenderStereo() ? pPipelineAvgLogLumStereo : pPipelineAvgLogLum;
 	pipeline->Activate();
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -719,7 +719,7 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	pipeline = plan.GetRenderStereo() ? pPipelineParametersStereo : pPipelineParameters;
 	pipeline->Activate();
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	// WARNING we have to use the non-stereo version always even if we sample stereo. the reason
 	//         is that to use the stereo render param block we have to use the GS_RENDER_STEREO
@@ -886,7 +886,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	pipeline = plan.GetRenderStereo() ? pPipelineBloomBlurStereo : pPipelineBloomBlur;
 	pipeline->Activate();
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -967,7 +967,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 			}
 			
 			renderThread.GetShader().ActivateShader( pPipelineBloomReduce );
-			shader = pPipelineBloomReduce->GetCompiled();
+			shader = &pPipelineBloomReduce;
 			shader->SetParameterInt( spbrParam1, tcScaleS, tcScaleT, tcOffsetS, 0 );
 			shader->SetParameterInt( spbrParam2, 0, tcOffsetT, tcOffsetS, tcOffsetT );
 			
@@ -998,7 +998,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		
 		// blur filter in x direction
 		renderThread.GetShader().ActivateShader( pPipelineBloomBlur );
-		shader = pPipelineBloomBlur->GetCompiled();
+		shader = &pPipelineBloomBlur;
 		
 		defren.SetShaderParamFSQuad( *shader, spbbPosToTC, curWidth, curHeight );
 		shader->SetParameterFloat( spbbOffsets, offsetS, 0.0f, -offsetS, 0.0f );
@@ -1054,7 +1054,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		
 		// add to bloom texture
 		renderThread.GetShader().ActivateShader( pPipelineBloomAdd );
-		shader = pPipelineBloomAdd->GetCompiled();
+		shader = &pPipelineBloomAdd;
 		defren.SetShaderParamFSQuad( *shader, spbaPosToTC, curWidth, curHeight );
 		
 		defren.ActivateFBOTemporary( false );
@@ -1104,7 +1104,7 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap;
 	pipeline.Activate();
-	shader = pipeline.GetGlShader()->GetCompiled();
+	shader = &pipeline.GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -1134,7 +1134,7 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr;
 	pipeline.Activate();
-	shader = pipeline.GetGlShader()->GetCompiled();
+	shader = &pipeline.GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	

@@ -685,7 +685,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 		const deoglRenderTaskPipeline &rtpipeline = *renderTask.GetPipelineAt( i );
 		rtpipeline.GetPipeline()->Activate();
 		
-		const deoglShaderCompiled &shader = *rtpipeline.GetPipeline()->GetGlShader()->GetCompiled();
+		const deoglShaderCompiled &shader = rtpipeline.GetPipeline()->GetGlShader();
 		
 		const int textureCount = rtpipeline.GetTextureCount();
 		for( j=0; j<textureCount; j++ ){
@@ -733,7 +733,7 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 		materials.GetMaterialMapSize() * materials.GetRowsPerImage() );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	deoglShaderCompiled &shader = *pPipelineResizeMaterials->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineResizeMaterials->GetGlShader();
 	
 	shader.SetParameterInt( 0, materials.GetMaterialsPerRow(),
 		materials.GetRowsPerImage(), mapsPerRow, rowsPerImage );
@@ -1148,7 +1148,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shaderProbe = *pipeline.GetGlShader()->GetCompiled();
+		deoglShaderCompiled &shaderProbe = pipeline.GetGlShader();
 		shaderProbe.SetParameterDMatrix4x3( spdpMatrixNormal, matrixNormal );
 		shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
@@ -1172,7 +1172,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shaderOffset = *pipeline.GetGlShader()->GetCompiled();
+		deoglShaderCompiled &shaderOffset = pipeline.GetGlShader();
 		shaderOffset.Activate();
 		shaderOffset.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
 		shaderOffset.SetParameterInt( spdpoGIDebugCascade, cascade.GetIndex() );
@@ -1210,7 +1210,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shader2a = *pPipelineDebugProbeUpdatePass1->GetGlShader()->GetCompiled();
+		deoglShaderCompiled &shader2a = pPipelineDebugProbeUpdatePass1->GetGlShader();
 		shader2a.SetParameterFloat( spdpuPosTransform, scale.x * size.x, scale.y * size.y,
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
 		shader2a.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
@@ -1254,7 +1254,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		if( giState->GetActiveCascade().GetIndex() == cascade.GetIndex() ){
 			pPipelineDebugProbeUpdatePass2->Activate();
 			
-			deoglShaderCompiled &shader2b = *pPipelineDebugProbeUpdatePass2->GetGlShader()->GetCompiled();
+			deoglShaderCompiled &shader2b = pPipelineDebugProbeUpdatePass2->GetGlShader();
 			shader2b.SetParameterFloat( spdpuPosTransform, scale.x * 2.0f, scale.y * 2.0f,
 				scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
 			shader2b.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,

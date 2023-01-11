@@ -137,7 +137,7 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 		
 		pipeline = step.GetPipeline();
 		rtlogger.LogInfo( "  - configuration:" );
-		const deoglShaderProgram &shader = pipeline->GetGlShader();
+		const deoglShaderProgram &shader = pipeline->GetGlConfiguration().GetShaderRef();
 		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode()
 			? shader.GetVertexSourceCode()->GetFilePath() : "-" );
 		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode()

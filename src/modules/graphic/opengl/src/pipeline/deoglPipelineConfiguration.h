@@ -23,7 +23,7 @@
 #define _DEOGLPIPELINECONFIGURATION_H_
 
 #include "../deoglBasics.h"
-#include "../shaders/deoglShaderProgramUsage.h"
+#include "../shaders/deoglShaderProgram.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -71,7 +71,7 @@ class deoglShaderDefines;
  */
 class deoglPipelineConfiguration{
 private:
-	deoglShaderProgramUsage pShader;
+	const deoglShaderProgram *pShader;
 	
 	bool pColorMask[ 4 ];
 	
@@ -135,9 +135,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shader program. */
-	inline const deoglShaderProgramUsage &GetShader() const{ return pShader; }
+	inline const deoglShaderProgram *GetShader() const{ return pShader; }
 	
-	void SetShader( const deoglShaderProgramUsage &shader );
+	const deoglShaderProgram &GetShaderRef() const;
+	
+	void SetShader( const deoglShaderProgram *shader );
 	
 	void SetShader( deoglRenderThread &renderThread,
 		const char *sources, const deoglShaderDefines &defines );

@@ -23,7 +23,6 @@
 #define _DEOGLDELAYEDOPERATIONS_H_
 
 #include "../deoglBasics.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
@@ -38,6 +37,7 @@ class deoglRSkin;
 class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
+class deoglShaderProgram;
 
 
 
@@ -107,8 +107,8 @@ private:
 	decPointerOrderedSet pFileWriteList;
 	decPointerOrderedSet pSaveImageList;
 	
-	deoglShaderProgramUsage pShaderGenConeMap;
-	deoglShaderProgramUsage pShaderGenConeMapLayer;
+	const deoglShaderProgram *pShaderGenConeMap;
+	const deoglShaderProgram *pShaderGenConeMapLayer;
 	
 	
 	

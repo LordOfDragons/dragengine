@@ -379,7 +379,7 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	
 	for( s=0; s<pPipelineCount; s++ ){
 		const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( s ) );
-		const deoglShaderProgram &shader = pipeline.GetPipeline()->GetGlShader();
+		const deoglShaderProgram &shader = pipeline.GetPipeline()->GetGlConfiguration().GetShaderRef();
 		const deoglShaderDefines &defines = shader.GetDefines();
 		
 		rtlogger.LogInfoFormat( "- pipeline %d: shader=%p textures=%d points=%d vaos=%d "

@@ -30,6 +30,7 @@
 #include <dragengine/deObject.h>
 
 class deoglRenderThread;
+class deoglShaderCompiled;
 
 
 /**
@@ -151,8 +152,8 @@ public:
 	/** OpenGL configuration or nullptr if not Vulkan. */
 	const deoglPipelineConfiguration &GetGlConfiguration() const;
 	
-	/** OpenGL shader. */
-	const deoglShaderProgram::Ref &GetGlShader() const;
+	/** OpenGL shader program. */
+	deoglShaderCompiled &GetGlShader() const;
 	
 	
 	

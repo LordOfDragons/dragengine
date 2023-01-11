@@ -315,7 +315,6 @@ void deoglCapabilities::DetectCapabilities(){
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 #include "../shaders/deoglShaderSources.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -398,7 +397,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		deoglShaderProgramUsage shader( shaderManager.GetProgramWith( sources, defines ) );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// create test texture
 		texture = new deoglTexture( pRenderThread );

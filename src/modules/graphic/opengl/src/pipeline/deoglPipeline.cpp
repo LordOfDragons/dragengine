@@ -83,8 +83,8 @@ const deoglPipelineConfiguration &deoglPipeline::GetGlConfiguration() const{
 	return *pGlConfiguration;
 }
 
-const deoglShaderProgram::Ref &deoglPipeline::GetGlShader() const{
-	return GetGlConfiguration().GetShader();
+deoglShaderCompiled &deoglPipeline::GetGlShader() const{
+	return *GetGlConfiguration().GetShaderRef().GetCompiled();
 }
 
 void deoglPipeline::AssignRTSPipelineIndex(){

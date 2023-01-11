@@ -554,7 +554,7 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 	
 	pPipelineCubeMap2EquiMap->Activate();
 	
-	shader = pPipelineCubeMap2EquiMap->GetGlShader()->GetCompiled();
+	shader = &pPipelineCubeMap2EquiMap->GetGlShader();
 	
 	tsmgr.EnableCubeMap( 0, cubemap, GetSamplerClampNearest() ); // GetSamplerClampLinear()
 	
@@ -612,7 +612,7 @@ void deoglRenderReflection::RenderEnvMapMask( deoglRenderPlan &plan, deoglEnviro
 		
 		SetViewport( size, size );
 		
-		shader = pPipelineEnvMapMask->GetGlShader()->GetCompiled();
+		shader = &pPipelineEnvMapMask->GetGlShader();
 		
 		shader->SetParameterMatrix4x4( speemMatrixP, plan.GetProjectionMatrix() );
 		
@@ -910,7 +910,7 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	// gain in trying to use a copy especially since envmaps can have different dimensions
 	pPipelineBuildEnvMap->Activate();
 	
-	shader = pPipelineBuildEnvMap->GetGlShader()->GetCompiled();
+	shader = &pPipelineBuildEnvMap->GetGlShader();
 	
 	// for the time beeing we need all textures set
 	for( i=1; i<4; i++ ){
@@ -1221,7 +1221,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		
 		SetViewport( width, height );
 		
-		shader = pPipelineMinMaxMipMapInitial->GetGlShader()->GetCompiled();
+		shader = &pPipelineMinMaxMipMapInitial->GetGlShader();
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
@@ -1233,7 +1233,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		// downsample up to the max level. the first level has been done already by the initial pass
 		pPipelineMinMaxMipMapDownsample->Activate();
 		
-		shader = pPipelineMinMaxMipMapDownsample->GetGlShader()->GetCompiled();
+		shader = &pPipelineMinMaxMipMapDownsample->GetGlShader();
 		
 		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
@@ -1280,7 +1280,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		pPipelineMinMaxMipMapMin->Activate();
 		
 		// create minimum texture
-		shader = pPipelineMinMaxMipMapMin->GetGlShader()->GetCompiled();
+		shader = &pPipelineMinMaxMipMapMin->GetGlShader();
 		
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
@@ -1330,7 +1330,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		// create maximum texture
 		pPipelineMinMaxMipMapMax->Activate();
 		
-		shader = pPipelineMinMaxMipMapMax->GetGlShader()->GetCompiled();
+		shader = &pPipelineMinMaxMipMapMax->GetGlShader();
 		
 		height = depthMinMap.GetHeight();
 		width = depthMinMap.GetWidth();
@@ -1391,7 +1391,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( 0 ) );
 		SetViewport( width << 1, height );
 		
-		shader = pPipelineMinMaxMipMapInitial->GetGlShader()->GetCompiled();
+		shader = &pPipelineMinMaxMipMapInitial->GetGlShader();
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
@@ -1411,7 +1411,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		// downsample up to the max level. the first level has been done already by the initial pass
 		pPipelineMinMaxMipMapDownsample->Activate();
 		
-		shader = pPipelineMinMaxMipMapDownsample->GetGlShader()->GetCompiled();
+		shader = &pPipelineMinMaxMipMapDownsample->GetGlShader();
 		
 		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
@@ -1468,7 +1468,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	shader = pipeline.GetGlShader()->GetCompiled();
+	shader = &pipeline.GetGlShader();
 	
 	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
 	
@@ -1527,7 +1527,7 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	
 	renderThread.GetFramebuffer().Activate( plan.GetFBOMaterial() );
 	
-	deoglShaderCompiled &shader = *pPipelineCopyMaterial->GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pPipelineCopyMaterial->GetGlShader();
 	shader.SetParameterVector4( spcmPosTransform, plan.GetDepthToPosition() );
 	shader.SetParameterVector2( spcmPosTransform2, plan.GetDepthToPosition2() );
 	shader.SetParameterMatrix4x3( spcmMatrixPosition, plan.GetFBOMaterialMatrix() );

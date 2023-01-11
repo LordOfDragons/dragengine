@@ -494,7 +494,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -534,7 +534,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	defren.ActivateFBOAOSolidity( false );
 	SetViewport( plan );
 	
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -566,7 +566,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		renderThread.GetFramebuffer().Activate( devmode.GetFBODebugImageWith( width, height ) );
 		SetViewport( plan );
 		
-		shader = pPipelineDebugAO->GetGlShader()->GetCompiled();
+		shader = &pPipelineDebugAO->GetGlShader();
 		
 		tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
@@ -635,7 +635,7 @@ void deoglRenderLight::CopyDepth1ToDepth3( deoglRenderPlan &plan ){
 	pipeline.Activate();
 	defren.ActivateFBODepth3();
 	
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	renderThread.GetTexture().GetStages().EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	

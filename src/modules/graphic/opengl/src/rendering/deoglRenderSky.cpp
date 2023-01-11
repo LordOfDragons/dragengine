@@ -452,7 +452,7 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	}
 	
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	shader.SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader.SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
 	shader.SetParameterColor4( spsphLayerColor, layerColor );
@@ -517,7 +517,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	}
 	
 	// render bodies
-	deoglShaderCompiled &shader = *pipeline.GetGlShader()->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	deoglTexture * const defTexColor = renderThread.GetDefaultTextures().GetColor();
 	deoglTexture * const defTexTransparency = renderThread.GetDefaultTextures().GetTransparency();
 	deoglTexSamplerConfig &tscClampLinear = *renderThread.GetShader()

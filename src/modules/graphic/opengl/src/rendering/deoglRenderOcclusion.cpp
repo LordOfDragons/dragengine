@@ -871,7 +871,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 		: ( plan.GetRenderStereo() ? pPipelineOccMapOrthoStereo : pPipelineOccMapOrtho );
 	pipeline->Activate();
 	
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	// prepare fbo
 	renderThread.GetFramebuffer().Activate( occmap.GetFBOAt( 0 ) );
@@ -950,7 +950,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	pipeline = plan.GetRenderStereo() ? pPipelineOccMapDownSampleStereo : pPipelineOccMapDownSample;
 	pipeline->Activate();
 	
-	shader = pipeline->GetGlShader()->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -990,7 +990,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 	
 	if( occlusionTest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
 		pPipelineOccTestTFB->Activate();
-		shader = pPipelineOccTestTFB->GetGlShader()->GetCompiled();
+		shader = &pPipelineOccTestTFB->GetGlShader();
 		
 		shader->SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader->SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
@@ -1020,7 +1020,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
-		shader = pipeline.GetGlShader()->GetCompiled();
+		shader = &pipeline.GetGlShader();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
@@ -1104,7 +1104,7 @@ const decMatrix &matrixCamera2Stereo ){
 	
 	if( occlusionTest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
 		pPipelineOccTestTFBSun->Activate();
-		shader = pPipelineOccTestTFBSun->GetGlShader()->GetCompiled();
+		shader = &pPipelineOccTestTFBSun->GetGlShader();
 		DEBUG_PRINT_TIMER( "Activate FBO" );
 		
 		shader->SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
@@ -1148,7 +1148,7 @@ const decMatrix &matrixCamera2Stereo ){
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
-		shader = pipeline.GetGlShader()->GetCompiled();
+		shader = &pipeline.GetGlShader();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
@@ -1191,7 +1191,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 	
 	if( occlusionTest.GetVBOResult() ){ // valid deoglConfiguration::eoctmTransformFeedback
 		pPipelineOccTestTFBDual->Activate();
-		shader = pPipelineOccTestTFBDual->GetGlShader()->GetCompiled();
+		shader = &pPipelineOccTestTFBDual->GetGlShader();
 		DEBUG_PRINT_TIMER( "Activate FBO" );
 		
 		shader->SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
@@ -1227,7 +1227,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 		const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
-		shader = pipeline.GetGlShader()->GetCompiled();
+		shader = &pipeline.GetGlShader();
 		
 		// x:(0..1)=>(-1..1) , y:(0..height)=>(-1..1)
 		shader->SetParameterFloat( sptPosTransform, 2.0f, 2.0f / ( float )( resultSize.y - 1 ), -1.0f, -1.0f );
