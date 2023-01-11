@@ -39,6 +39,7 @@
 ////////////////////////////
 
 deoglPipelineConfiguration::deoglPipelineConfiguration() :
+pShader( nullptr ),
 pEnableScissorTest( false ),
 pEnableRasterizerDiscard( false ),
 pPolygonMode( GL_FILL ),
@@ -72,7 +73,7 @@ pSPBInstanceIndexBase( -1 ),
 pDrawIDOffset( -1 ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
-	pDynamicStencilTest ( false )
+pDynamicStencilTest( false )
 {
 	pColorMask[ 0 ] = true;
 	pColorMask[ 1 ] = true;
@@ -81,6 +82,7 @@ pDynamicPolygonOffset( false ),
 }
 
 deoglPipelineConfiguration::deoglPipelineConfiguration( const deoglPipelineConfiguration &config ) :
+pShader( nullptr ),
 pEnableScissorTest( false ),
 pEnableRasterizerDiscard( false ),
 pPolygonMode( GL_FILL ),

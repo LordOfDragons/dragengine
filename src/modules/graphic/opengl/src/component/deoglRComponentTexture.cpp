@@ -488,8 +488,8 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			const deoglSharedSPBElementMapBuffer mapped( *pSharedSPBElement );
-			UpdateInstanceParamBlock( mapped.GetBlockRef(), pSharedSPBElement->GetIndex(), skinShader );
+			UpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
+				pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		// done

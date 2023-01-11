@@ -440,8 +440,7 @@ void deoglSkinTexture::PrepareParamBlock(){
 			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureUBO ).AddElement();
 	}
 	
-	const deoglSharedSPBElementMapBuffer mapped( *pSharedSPBElement );
-	pUpdateParamBlock( mapped.GetBlockRef(), pSharedSPBElement->GetIndex() );
+	pUpdateParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ), pSharedSPBElement->GetIndex() );
 }
 
 

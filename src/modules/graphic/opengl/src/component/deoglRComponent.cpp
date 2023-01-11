@@ -2167,8 +2167,8 @@ void deoglRComponent::pPrepareParamBlocks(){
 	
 	if( pDirtyOccMeshSharedSPBElement ){
 		if( pOccMeshSharedSPBElement ){
-			const deoglSharedSPBElementMapBuffer mapped( *pOccMeshSharedSPBElement );
-			UpdateOccmeshInstanceParamBlock( mapped.GetBlockRef(), pOccMeshSharedSPBElement->GetIndex() );
+			UpdateOccmeshInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pOccMeshSharedSPBElement ),
+				pOccMeshSharedSPBElement->GetIndex() );
 		}
 		
 		pDirtyOccMeshSharedSPBElement = false;

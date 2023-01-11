@@ -59,6 +59,12 @@ public:
 	/** Block or throws exception if not mapped. */
 	deoglShaderParameterBlock &GetBlockRef() const;
 	
+	/** Block or nullptr if not mapped. */
+	inline operator deoglShaderParameterBlock*() const{ return GetBlock(); }
+	
+	/** Block or throws exception if not mapped. */
+	inline operator deoglShaderParameterBlock&() const{ return GetBlockRef(); }
+	
 	/** Unmap block if mapped. */
 	void Unmap();
 	/*@}*/

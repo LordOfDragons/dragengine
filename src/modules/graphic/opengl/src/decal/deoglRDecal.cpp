@@ -944,8 +944,8 @@ void deoglRDecal::pPrepareParamBlocks(){
 				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			const deoglSharedSPBElementMapBuffer mapped( *pSharedSPBElement );
-			pUpdateInstanceParamBlock( mapped.GetBlockRef(), pSharedSPBElement->GetIndex(), skinShader );
+			pUpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
+				pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		pDirtySharedSPBElement = false;
