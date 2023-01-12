@@ -1865,17 +1865,12 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		// object render cube face special parameter have been already updated by RenderShadowMaps
 	}
 	
+	const deoglPipeline * const pipelineDouble = useGSRenderCube ? pPipelineOccMapCube : pPipelineOccMap;
+	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
-	
-	if( useGSRenderCube ){
-		addToRenderTask.SetUseSpecialParamBlock( true );
-		addToRenderTask.SetEnforcePipeline( pPipelineOccMapCube );
-		
-	}else{
-		addToRenderTask.SetEnforcePipeline( pPipelineOccMap );
-	}
+	addToRenderTask.SetUseSpecialParamBlock( useGSRenderCube );
 	
 	// clear
 	const GLfloat clearDepth = renderThread.GetChoices().GetClearDepthValueRegular();
@@ -1894,10 +1889,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		renderTask.SetUseSPBInstanceFlags( true );
 		
 		if( shadowParams.collideList1 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
+			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, nullptr, pipelineDouble );
 		}
 		if( shadowParams.collideList2 ){
-			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
+			addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, nullptr, pipelineDouble );
 		}
 		
 		renderTask.PrepareForRender();
@@ -1937,10 +1932,10 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 			
 			addToRenderTask.SetFilterCubeFace( cmf );
 			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
+				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, nullptr, pipelineDouble );
 			}
 			if( shadowParams.collideList2 ){
-				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
+				addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, nullptr, pipelineDouble );
 			}
 			
 			renderTask.PrepareForRender();

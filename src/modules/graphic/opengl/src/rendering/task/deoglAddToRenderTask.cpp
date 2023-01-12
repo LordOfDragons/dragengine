@@ -200,10 +200,6 @@ void deoglAddToRenderTask::SetUseSpecialParamBlock( bool use ){
 	pUseSpecialParamBlock = use;
 }
 
-void deoglAddToRenderTask::SetEnforcePipeline( const deoglPipeline *pipeline ){
-	pEnforcePipeline = pipeline;
-}
-
 
 
 void deoglAddToRenderTask::Reset(){
@@ -231,8 +227,6 @@ void deoglAddToRenderTask::Reset(){
 	pUpdateFilters();
 	
 	pUseSpecialParamBlock = false;
-	
-	pEnforcePipeline = nullptr;
 }
 
 // #define SPECIAL_DEBUG_ON
@@ -590,10 +584,6 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 		GetAt( imposters ? deoglSkinTexturePipelinesList::eptPropFieldImposter : deoglSkinTexturePipelinesList::eptPropField ).
 		GetWithRef( pSkinPipelineType, pipelineModifier ).GetPipeline();
 	
-	if( pEnforcePipeline ){
-		pipeline = pEnforcePipeline;
-	}
-	
 	DEASSERT_NOTNULL( pipeline )
 	
 	// obtain render task. this is the same for all clusters in the type
@@ -678,10 +668,6 @@ const deoglCollideListHTSector &clhtsector, int texture, bool firstMask ){
 			: deoglSkinTexturePipelinesList::eptHeightMap2 )
 		.GetWithRef( pSkinPipelineType, pSkinPipelineModifier ).GetPipeline();
 	
-	if( pEnforcePipeline ){
-		pipeline = pEnforcePipeline;
-	}
-	
 	DEASSERT_NOTNULL( pipeline )
 	
 	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
@@ -746,7 +732,7 @@ void deoglAddToRenderTask::AddHeightTerrains( const deoglCollideList &clist, boo
 
 
 void deoglAddToRenderTask::AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
-deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
+const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble ){
 	const deoglRComponent &component = *clcomponent.GetComponent();
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 	if( ! occlusionMesh ){
@@ -759,16 +745,16 @@ deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 		return;
 	}
 	
-	if( withSingleSided && occlusionMesh->GetSingleSidedFaceCount() > 0 ){
-		AddOcclusionMeshFaces( component, false, taskTexture, clcomponent.GetSpecialFlags() );
+	if( pipelineSingle && occlusionMesh->GetSingleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, false, pGetEmptyTexture( pipelineSingle ), clcomponent.GetSpecialFlags() );
 	}
-	if( occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
-		AddOcclusionMeshFaces( component, true, taskTexture, clcomponent.GetSpecialFlags() );
+	if( pipelineDouble && occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, true, pGetEmptyTexture( pipelineDouble ), clcomponent.GetSpecialFlags() );
 	}
 }
 
 void deoglAddToRenderTask::AddOcclusionMesh( deoglRComponent &component,
-deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
+const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble ){
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 	if( ! occlusionMesh ){
 		return;
@@ -777,71 +763,37 @@ deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
 		return;
 	}
 	
-	if( withSingleSided && occlusionMesh->GetSingleSidedFaceCount() > 0 ){
-		AddOcclusionMeshFaces( component, false, taskTexture, 0 );
+	if( pipelineSingle && occlusionMesh->GetSingleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, false, pGetEmptyTexture( pipelineSingle ), 0 );
 	}
-	if( occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
-		AddOcclusionMeshFaces( component, true, taskTexture, 0 );
+	if( pipelineDouble && occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, true, pGetEmptyTexture( pipelineDouble ), 0 );
 	}
-}
-
-void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist, bool withSingleSided ){
-	deoglRenderTaskTexture *rttexture = NULL;
-	
-	if( pRenderTask.GetPipelineCount() == 0 ){
-		rttexture = pRenderTask.AddPipeline( pEnforcePipeline )->AddTexture(
-			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
-		
-	}else{
-		rttexture = pRenderTask.GetPipelineAt( 0 )->GetTextureAt( 0 );
-	}
-	
-	AddOcclusionMeshes( clist, rttexture, withSingleSided );
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist,
-deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
+const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble ){
 	const int count = clist.GetComponentCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		AddOcclusionMesh( *clist.GetComponentAt( i ), taskTexture, withSingleSided );
+		AddOcclusionMesh( *clist.GetComponentAt( i ), pipelineSingle, pipelineDouble );
 	}
-}
-
-void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list, bool withSingleSided ){
-	deoglRenderTaskTexture *rttexture = NULL;
-	
-	if( pRenderTask.GetPipelineCount() == 0 ){
-		rttexture = pRenderTask.AddPipeline( pEnforcePipeline )->AddTexture(
-			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
-		
-	}else{
-		rttexture = pRenderTask.GetPipelineAt( 0 )->GetTextureAt( 0 );
-	}
-	
-	AddOcclusionMeshes( list, rttexture, withSingleSided );
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list,
-deoglRenderTaskTexture *taskTexture, bool withSingleSided ){
+const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble ){
 	const int count = list.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		AddOcclusionMesh( *list.GetAt( i ), taskTexture, withSingleSided );
+		AddOcclusionMesh( *list.GetAt( i ), pipelineSingle, pipelineDouble );
 	}
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshFaces( const deoglRComponent &component,
 bool doubleSided, deoglRenderTaskTexture *taskTexture, int specialFlags ){
 	const deoglDynamicOcclusionMesh * const dynoccmesh = component.GetDynamicOcclusionMesh();
-	const deoglVAO *vao = nullptr;
-	
-	if( dynoccmesh ){
-		vao = dynoccmesh->GetVAO();
-		
-	}else{
-		vao = component.GetOcclusionMesh()->GetVBOBlock()->GetVBO()->GetVAO();
-	}
+	const deoglVAO * const vao = dynoccmesh ? dynoccmesh->GetVAO()
+		: component.GetOcclusionMesh()->GetVBOBlock()->GetVBO()->GetVAO();
 	
 	taskTexture->AddVAO( vao->GetRTSVAO() )->
 		AddInstance( component.GetOccMeshSharedSPBRTIGroup( doubleSided ).GetRTSInstance() )->
@@ -1102,13 +1054,8 @@ deoglRenderTaskVAO *deoglAddToRenderTask::pGetTaskVAO(
 deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
 deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
 const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
-	const deoglPipeline *pipeline = pEnforcePipeline;
-	
-	if( ! pipeline ){
-		pipeline = skinTexture->GetPipelines().GetAt( pipelinesType ).
-			GetWithRef( pipelineType, pipelineModifier ).GetPipeline();
-	}
-	
+	const deoglPipeline * const pipeline = skinTexture->GetPipelines().GetAt( pipelinesType ).
+		GetWithRef( pipelineType, pipelineModifier ).GetPipeline();
 	DEASSERT_NOTNULL( pipeline )
 	
 	if( ! tuc ){
@@ -1117,4 +1064,9 @@ const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) c
 	
 	return pRenderTask.AddPipeline( pipeline )->
 		AddTexture( tuc->GetRTSTexture() )->AddVAO( vao->GetRTSVAO() );
+}
+
+deoglRenderTaskTexture *deoglAddToRenderTask::pGetEmptyTexture ( const deoglPipeline *pipeline ) const{
+	return pRenderTask.AddPipeline( pipeline )->AddTexture(
+		pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 }

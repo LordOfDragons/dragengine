@@ -1474,15 +1474,14 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ) {
 	renderTask.SetRenderParamBlock( &renderParamBlock );
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetEnforcePipeline( pPipelineOccMap );
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
 	
 	if( shadowParams.collideList1 ){
-		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, false );
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList1, nullptr, pPipelineOccMap );
 	}
 	if( shadowParams.collideList2 ){
-		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, false );
+		addToRenderTask.AddOcclusionMeshes( *shadowParams.collideList2, nullptr, pPipelineOccMap );
 	}
 	
 	renderTask.PrepareForRender();

@@ -44,14 +44,22 @@ class deoglPipeline;
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	const deoglPipeline *pPipelineOccMap;
-	const deoglPipeline *pPipelineOccMapStereo;
-	const deoglPipeline *pPipelineOccMapClipPlane;
-	const deoglPipeline *pPipelineOccMapClipPlaneStereo;
-	const deoglPipeline *pPipelineOccMapOrtho;
-	const deoglPipeline *pPipelineOccMapOrthoStereo;
-	const deoglPipeline *pPipelineOccMapOrthoClipPlane;
-	const deoglPipeline *pPipelineOccMapOrthoClipPlaneStereo;
+	const deoglPipeline *pPipelineOccMapSingle;
+	const deoglPipeline *pPipelineOccMapDouble;
+	const deoglPipeline *pPipelineOccMapStereoSingle;
+	const deoglPipeline *pPipelineOccMapStereoDouble;
+	const deoglPipeline *pPipelineOccMapClipPlaneSingle;
+	const deoglPipeline *pPipelineOccMapClipPlaneDouble;
+	const deoglPipeline *pPipelineOccMapClipPlaneStereoSingle;
+	const deoglPipeline *pPipelineOccMapClipPlaneStereoDouble;
+	const deoglPipeline *pPipelineOccMapOrthoSingle;
+	const deoglPipeline *pPipelineOccMapOrthoDouble;
+	const deoglPipeline *pPipelineOccMapOrthoStereoSingle;
+	const deoglPipeline *pPipelineOccMapOrthoStereoDouble;
+	const deoglPipeline *pPipelineOccMapOrthoClipPlaneSingle;
+	const deoglPipeline *pPipelineOccMapOrthoClipPlaneDouble;
+	const deoglPipeline *pPipelineOccMapOrthoClipPlaneStereoSingle;
+	const deoglPipeline *pPipelineOccMapOrthoClipPlaneStereoDouble;
 	const deoglPipeline *pPipelineOccMapDownSample;
 	const deoglPipeline *pPipelineOccMapDownSampleStereo;
 	const deoglPipeline *pPipelineOccTest;
@@ -95,7 +103,7 @@ public:
 	
 	/** Shader to use for occlusion map rendering. */
 	const deoglPipeline *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
-		const deoglRenderPlanMasked *mask, bool perspective ) const;
+		const deoglRenderPlanMasked *mask, bool perspective, bool singleSided ) const;
 	
 	/** Render occlusion meshes into the occlusion map. */
 	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );

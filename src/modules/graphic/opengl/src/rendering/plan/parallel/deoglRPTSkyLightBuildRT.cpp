@@ -87,8 +87,6 @@ void deoglRPTSkyLightBuildRT::Run(){
 	try{
 		const deoglPipeline * const pipeline = pPlan.GetPlan().GetRenderThread().
 			GetRenderers().GetLight().GetRenderLightSky().GetPipelineOccMesh();
-		deoglRenderTaskSharedTexture * const sharedTexOccMesh = pPlan.GetPlan().GetRenderThread().
-			GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture();
 		decTimer timer;
 		int i;
 		
@@ -109,8 +107,7 @@ void deoglRPTSkyLightBuildRT::Run(){
 			// we can not be sure from what side the camera sees them in the shadow map.
 			// only double sided occlusion meshes are guaranteed to work correctly.
 			// this allows to speed up rendering in the majority of situations
-			addToRenderTask.AddOcclusionMeshes( pTempCollideList, addToRenderTask.GetRenderTask().
-				AddPipeline( pipeline )->AddTexture( sharedTexOccMesh ), false );
+			addToRenderTask.AddOcclusionMeshes( pTempCollideList, nullptr, pipeline );
 			
 			addToRenderTask.AddComponents( pTempCollideList );
 			addToRenderTask.AddPropFields( pTempCollideList, false );

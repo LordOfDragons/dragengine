@@ -105,7 +105,7 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap,
 		// note about the calculation of the lod level to use. we tap 4x4 pixels to obtain
 		// the depth value to compare against. hence we need the lod level where the box
 		// covers at most 4 pixels in a row. since the box can though be exactly in the
-		// middle over these four pixels the maximal size of the box can not exceed 3
+		// middle over these four pixels the maximal size of the box can not exceed is 3
 		// pixels. The following graphics illustrates the problem:
 		// | x | x | x | x |
 		// here a pixel is a |x| block with the x the center of the pixel. if the box

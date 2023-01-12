@@ -97,8 +97,6 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	const deoglPipeline *pEnforcePipeline;
-	
 	
 	
 public:
@@ -228,14 +226,6 @@ public:
 	
 	
 	
-	/** Pipeline to enforce or nullptr if free. */
-	inline const deoglPipeline *GetEnforcedPipeline() const{ return pEnforcePipeline; }
-	
-	/** Set pipeline to enforce or nullptr if free. */
-	void SetEnforcePipeline( const deoglPipeline *pipeline );
-	
-	
-	
 	/** Reset render task parameters. */
 	void Reset();
 	
@@ -302,24 +292,18 @@ public:
 	
 	/** Add an occlusion mesh from a component. */
 	void AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	void AddOcclusionMesh( deoglRComponent &component,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
-	
-	/** Add occlusion meshes for all components in a collide list. */
-	void AddOcclusionMeshes( const deoglCollideList &clist, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
-	
-	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes( const deoglComponentList &list, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add occlusion meshes for all components from list. */
 	void AddOcclusionMeshes( const deoglComponentList &list,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,
@@ -356,6 +340,8 @@ private:
 	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
 		deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
 		const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;
+	
+	deoglRenderTaskTexture *pGetEmptyTexture( const deoglPipeline *pipeline ) const;
 };
 
 #endif
