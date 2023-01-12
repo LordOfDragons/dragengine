@@ -144,8 +144,8 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 	}
 }
 
-void deoglLODCalculator::SetComponentLODOrtho( const deoglCollideList &collideList, float boxWidth, float boxHeight,
-int screenWidth, int screenHeight ){
+void deoglLODCalculator::SetComponentLODOrtho( const deoglCollideList &collideList,
+float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
 	// test lod levels starting with the smallest one for the first lod level which still
 	// yields an error on screen not larger than the maximum pixel error. in contrary to
 	// the projective case for the orthogonal case the calculation is simplified using:
@@ -164,10 +164,8 @@ int screenWidth, int screenHeight ){
 	// the smallest lod level is searched where the calculated maximum error is less than the maximum
 	// pixel error.
 	// 
+	const float factor = decMath::max( ( float )screenWidth / boxWidth, ( float )screenHeight / boxHeight );
 	const int componentCount = collideList.GetComponentCount();
-	const float factorX = ( float )screenWidth / boxWidth;
-	const float factorY = ( float )screenHeight / boxHeight;
-	const float factor = ( factorX > factorY ) ? factorX : factorY;
 	int i, j;
 	
 	for( i=0; i<componentCount; i++ ){

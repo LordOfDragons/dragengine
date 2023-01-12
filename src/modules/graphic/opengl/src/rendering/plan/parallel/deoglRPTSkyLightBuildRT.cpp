@@ -36,6 +36,7 @@
 #include "../../../collidelist/deoglCollideListPropField.h"
 #include "../../../collidelist/deoglCollideListPropFieldType.h"
 #include "../../../collidelist/deoglCollideListPropFieldCluster.h"
+#include "../../../rendering/lod/deoglLODCalculator.h"
 #include "../../../rendering/task/deoglRenderTask.h"
 #include "../../../rendering/task/deoglAddToRenderTask.h"
 #include "../../../rendering/task/deoglRenderTaskPipeline.h"
@@ -84,6 +85,11 @@ void deoglRPTSkyLightBuildRT::Run(){
 		return;
 	}
 	
+	const int shadowMapSize = pPlan.GetPlan().GetShadowSkySize();
+	
+	deoglLODCalculator lodCalculator;
+	lodCalculator.SetMaxPixelError( 2 );
+	
 	try{
 		const deoglPipeline * const pipeline = pPlan.GetPlan().GetRenderThread().
 			GetRenderers().GetLight().GetRenderLightSky().GetPipelineOccMesh();
@@ -91,10 +97,14 @@ void deoglRPTSkyLightBuildRT::Run(){
 		int i;
 		
 		for( i=pFromLayer; i<=pToLayer; i++ ){
-			deoglRenderPlanSkyLight::sShadowLayer &layer = pPlan.GetShadowLayerAt( i );
+			const deoglRenderPlanSkyLight::sShadowLayer &layer = pPlan.GetShadowLayerAt( i );
 			deoglAddToRenderTask &addToRenderTask = *layer.addToRenderTask;
 			
 			pFilter( i );
+			
+			lodCalculator.SetComponentLODOrtho( pTempCollideList,
+				layer.maxExtend.x - layer.minExtend.x, layer.maxExtend.y - layer.minExtend.y,
+				shadowMapSize, shadowMapSize );
 			
 			layer.renderTask->Clear();
 			

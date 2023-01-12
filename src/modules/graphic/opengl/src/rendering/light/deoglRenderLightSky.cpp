@@ -841,6 +841,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		// calculate lod levels to use
 #ifdef SKY_SHADOW_FILTERED
+		/* done in parallel task
 		const float lodBoxWidth = sl.maxExtend.x - sl.minExtend.x;
 		const float lodBoxHeight = sl.maxExtend.y - sl.minExtend.y;
 		
@@ -849,6 +850,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
 		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitLODLevels, false );
+		*/
 #endif
 		
 		// setup matrix
