@@ -144,6 +144,7 @@ public:
 	deoglLightPipelines::Ref pPipelines;
 	deoglSPBlockUBO::Ref pParamBlockLight;
 	deoglSPBlockUBO::Ref pParamBlockInstance;
+	deoglSPBlockUBO::Ref pParamBlockOccQuery;
 	
 	bool pWorldMarkedRemove;
 	
@@ -490,6 +491,9 @@ public:
 	
 	/** Instance parameter block. */
 	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
+	
+	/** Occlusion query parameter block. */
+	const deoglSPBlockUBO::Ref &GetOccQueryParameterBlock();
 	
 	/** Drop all pipelines and parameter blocks. */
 	void DropPipelines();

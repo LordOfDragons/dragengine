@@ -84,6 +84,12 @@ public:
 	/** Remove define. */
 	void RemoveDefine( const char *name );
 	
+	/** Remove defines. */
+	void RemoveDefines( const char *name1 );
+	void RemoveDefines( const char *name1, const char *name2 );
+	void RemoveDefines( const char *name1, const char *name2, const char *name3 );
+	void RemoveDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	
 	/** Remove all defines. */
 	void RemoveAllDefines();
 	

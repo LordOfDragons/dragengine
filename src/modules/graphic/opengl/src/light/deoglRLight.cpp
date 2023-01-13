@@ -712,7 +712,15 @@ const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
 	return pParamBlockInstance;
 }
 
+const deoglSPBlockUBO::Ref &deoglRLight::GetOccQueryParameterBlock(){
+	if( ! pParamBlockOccQuery ){
+		pParamBlockOccQuery = deoglLightShader::CreateSPBOccQueryParam( pRenderThread );
+	}
+	return pParamBlockOccQuery;
+}
+
 void deoglRLight::DropPipelines(){
+	pParamBlockOccQuery = nullptr;
 	pParamBlockInstance = nullptr;
 	pParamBlockLight = nullptr;
 	pPipelines = nullptr;

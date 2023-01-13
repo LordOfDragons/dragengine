@@ -156,6 +156,9 @@ public:
 	/** Set color and depth mask. */
 	void SetMasks( bool red, bool green, bool blue, bool alpha, bool depth );
 	
+	/** Disable color and depth masks. */
+	void DisableMasks();
+	
 	
 	
 	/** Enable scissor test. */

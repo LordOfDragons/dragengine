@@ -44,22 +44,16 @@ class deoglPipeline;
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	const deoglPipeline *pPipelineOccMapSingle;
-	const deoglPipeline *pPipelineOccMapDouble;
-	const deoglPipeline *pPipelineOccMapStereoSingle;
-	const deoglPipeline *pPipelineOccMapStereoDouble;
-	const deoglPipeline *pPipelineOccMapClipPlaneSingle;
-	const deoglPipeline *pPipelineOccMapClipPlaneDouble;
-	const deoglPipeline *pPipelineOccMapClipPlaneStereoSingle;
-	const deoglPipeline *pPipelineOccMapClipPlaneStereoDouble;
-	const deoglPipeline *pPipelineOccMapOrthoSingle;
-	const deoglPipeline *pPipelineOccMapOrthoDouble;
-	const deoglPipeline *pPipelineOccMapOrthoStereoSingle;
-	const deoglPipeline *pPipelineOccMapOrthoStereoDouble;
-	const deoglPipeline *pPipelineOccMapOrthoClipPlaneSingle;
-	const deoglPipeline *pPipelineOccMapOrthoClipPlaneDouble;
-	const deoglPipeline *pPipelineOccMapOrthoClipPlaneStereoSingle;
-	const deoglPipeline *pPipelineOccMapOrthoClipPlaneStereoDouble;
+	enum ePipelineModifiers{
+		epmStereo = 0x1,
+		epmClipPlane = 0x2,
+		epmOrtho = 0x4,
+		epmSingle = 0x8
+	};
+	
+	const deoglPipeline *pPipelinesOccMap[ epmSingle << 1 ];
+	const deoglPipeline *pPipelinesOccQuery[ epmOrtho << 1 ];
+	
 	const deoglPipeline *pPipelineOccMapDownSample;
 	const deoglPipeline *pPipelineOccMapDownSampleStereo;
 	const deoglPipeline *pPipelineOccTest;
@@ -108,6 +102,9 @@ public:
 	/** Render occlusion meshes into the occlusion map. */
 	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
+	
+	/** Render occlusion queries using active occlusion map. */
+	void RenderOcclusionQueries( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective );
 	
 	/** Render occlusion tests. */
 	void RenderOcclusionTests( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,

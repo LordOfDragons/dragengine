@@ -205,6 +205,9 @@ public:
 	
 	/** Create light parameter shader parameter block. */
 	deoglSPBlockUBO::Ref CreateSPBLightParam() const;
+	
+	/** Create light occlusion query parameter shader parameter block. */
+	static deoglSPBlockUBO::Ref CreateSPBOccQueryParam( deoglRenderThread &renderThread );
 	/*@}*/
 	
 	

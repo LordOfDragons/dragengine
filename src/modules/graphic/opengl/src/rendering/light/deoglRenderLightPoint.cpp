@@ -1105,9 +1105,14 @@ void deoglRenderLightPoint::RenderShadows( deoglRenderPlanLight &planLight, sSha
 	const int staticTranspShadowMapSize = planLight.GetTranspShadowSizeStatic();
 	const int staticAmbientMapSize = planLight.GetAmbientShadowSizeStatic();
 	
-	const int dynamicShadowMapSize = planLight.GetShadowSizeDynamic();
-	const int dynamicTranspShadowMapSize = planLight.GetTranspShadowSizeDynamic();
-	const int dynamicAmbientMapSize = planLight.GetAmbientShadowSizeDynamic();
+	int dynamicShadowMapSize = planLight.GetShadowSizeDynamic();
+	int dynamicTranspShadowMapSize = planLight.GetTranspShadowSizeDynamic();
+	int dynamicAmbientMapSize = planLight.GetAmbientShadowSizeDynamic();
+	
+	// if hidden but affecting GI reduce shadow map size a lot and increase LOD to max
+	if( planLight.GetLight()->GetCulled() ){
+		dynamicShadowMapSize = planLight.GetGIShadowSizeDynamic();
+	}
 	
 	// if layer mask restriction is used dynamic only shadows have to be used to filter properly
 	if( useTemporary ){
@@ -1367,6 +1372,10 @@ DEBUG_RESET_TIMER
 			
 			shadowParams.lodMaxPixelError = 2;
 			shadowParams.lodOffset = 0;
+			
+			if( planLight.GetLight()->GetCulled() ){
+				shadowParams.lodOffset = 10; // just something large
+			}
 			
 			shadowParams.copyShadow = nullptr;
 			if( shadowType == deoglShadowCaster::estStaticAndDynamic ){

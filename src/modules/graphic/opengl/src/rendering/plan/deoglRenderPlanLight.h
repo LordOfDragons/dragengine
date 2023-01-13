@@ -51,6 +51,8 @@ private:
 	int pTranspShadowSizeDynamic;
 	int pAmbientShadowSizeDynamic;
 	
+	int pGIShadowSizeDynamic;
+	
 	bool pUseShadow;
 	bool pUseShadowTemporary;
 	bool pUseAmbient;
@@ -101,6 +103,8 @@ public:
 	inline int GetShadowSizeDynamic() const{ return pShadowSizeDynamic; }
 	inline int GetTranspShadowSizeDynamic() const{ return pTranspShadowSizeDynamic; }
 	inline int GetAmbientShadowSizeDynamic() const{ return pAmbientShadowSizeDynamic; }
+	
+	inline int GetGIShadowSizeDynamic() const{ return pGIShadowSizeDynamic; }
 	
 	/** Set shadow size. */
 	void SetShadowSizeStatic( int size );

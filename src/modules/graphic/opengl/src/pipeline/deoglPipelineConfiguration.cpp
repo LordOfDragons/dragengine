@@ -168,6 +168,10 @@ void deoglPipelineConfiguration::SetMasks( bool red, bool green, bool blue, bool
 	SetDepthMask( depth );
 }
 
+void deoglPipelineConfiguration::DisableMasks(){
+	SetMasks( false, false, false, false, false );
+}
+
 
 
 void deoglPipelineConfiguration::SetEnableScissorTest( bool enable ){

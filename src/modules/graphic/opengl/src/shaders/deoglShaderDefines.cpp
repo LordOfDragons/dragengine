@@ -188,6 +188,28 @@ void deoglShaderDefines::RemoveDefine( const char *name ){
 	}
 }
 
+void deoglShaderDefines::RemoveDefines( const char *name1 ){
+	RemoveDefine( name1 );
+}
+
+void deoglShaderDefines::RemoveDefines( const char *name1, const char *name2 ){
+	RemoveDefine( name1 );
+	RemoveDefine( name2 );
+}
+
+void deoglShaderDefines::RemoveDefines( const char *name1, const char *name2, const char *name3 ){
+	RemoveDefine( name1 );
+	RemoveDefine( name2 );
+	RemoveDefine( name3 );
+}
+
+void deoglShaderDefines::RemoveDefines( const char *name1, const char *name2, const char *name3, const char *name4 ){
+	RemoveDefine( name1 );
+	RemoveDefine( name2 );
+	RemoveDefine( name3 );
+	RemoveDefine( name4 );
+}
+
 void deoglShaderDefines::RemoveAllDefines(){
 	if( pDefines ){
 		while( pDefineCount > 0 ){

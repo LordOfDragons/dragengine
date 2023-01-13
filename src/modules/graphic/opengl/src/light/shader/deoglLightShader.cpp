@@ -263,8 +263,6 @@ deoglShaderProgram *deoglLightShader::GetShader(){
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
-	DEASSERT_NOTNULL( pglUniformBlockBinding )
-	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
 	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
 	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
@@ -287,8 +285,6 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
-	DEASSERT_NOTNULL( pglUniformBlockBinding )
-	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
 	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
 	spb->SetParameterCount( pUsedLightUniformTargetCount );
@@ -305,6 +301,16 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	
 	spb->MapToStd140();
 	spb->SetBindingPoint( deoglLightShader::eubLightParameters );
+	return spb;
+}
+
+deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam( deoglRenderThread &renderThread ){
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( 1 );
+	spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 );
+	spb->MapToStd140();
+	spb->SetBindingPoint( 2 ); // see occmap.shader.xml
 	return spb;
 }
 
