@@ -15,7 +15,7 @@ out vec3 outNormal;
 out vec4 outTangent;
 
 void main( void ){
-	gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 );
+	gl_Position = vec4( 0, 0, 0, 1 );
 	
 	// if there is no weight write out all positions untransformed
 	if( inWeight == -1 ){
@@ -33,7 +33,7 @@ void main( void ){
 	mat3x4 matrix = mat3x4( row1, row2, row3 );
 	
 	// transform the position. this is correct and accurate
-	outPosition = vec4( inPosition, 1.0 ) * matrix;
+	outPosition = vec4( inPosition, 1 ) * matrix;
 	
 	// transform the normal and tangent. this is not correct and only an approximation
 	// 
@@ -46,26 +46,12 @@ void main( void ){
 	mat3 matrixNormal = mat3( matrix );
 	
 	vec3 realNormal = inRealNormal * matrixNormal;
-	if( dot( realNormal, realNormal ) < 0.00001 ){
-		outRealNormal = vec3( 0.0, 1.0, 0.0 );
-		
-	}else{
-		outRealNormal = realNormal;
-	}
+	outRealNormal = dot( realNormal, realNormal ) > 0.00001 ? realNormal : vec3( 0, 1, 0 );
 	
 	vec3 normal = inNormal * matrixNormal;
-	if( dot( normal, normal ) < 0.00001 ){
-		outNormal = vec3( 0.0, 1.0, 0.0 );
-		
-	}else{
-		outNormal = normal;
-	}
+	outNormal = dot( normal, normal ) > 0.00001 ? normal : vec3( 0, 1, 0 );
 	
 	vec3 tangent = vec3( inTangent ) * matrixNormal;
-	if( dot( tangent, tangent ) < 0.00001 ){
-		outTangent = vec4( 1.0, 0.0, 0.0, inTangent.w );
-		
-	}else{
-		outTangent = vec4( tangent, inTangent.w );
-	}
+	outTangent.xyz = dot( tangent, tangent ) > 0.00001 ? tangent : vec3( 1, 0, 0 );
+	outTangent.w = inTangent.w;
 }

@@ -479,25 +479,18 @@ DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.LuminancePrepare" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int height = defren.GetHeight();
-	const int width = defren.GetWidth();
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	defren.ActivateFBOLuminance();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	SetViewport( plan );
+	renderThread.GetTexture().GetStages().EnableArrayTexture(
+		0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	( plan.GetRenderStereo() ? pPipelineLumPrepareStereo : pPipelineLumPrepare )->Activate();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	RenderFullScreenQuad( plan );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	RenderFullScreenQuadVAO( plan );
 DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
 }
 
