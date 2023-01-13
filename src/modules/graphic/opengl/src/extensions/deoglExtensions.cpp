@@ -286,6 +286,10 @@ bool deoglExtensions::VerifyPresence(){
 	
 	allPresent &= pHasExtension[ ext_ARB_depth_clamp ];
 	allPresent &= pHasExtension[ ext_ARB_copy_image ] || pHasExtension[ ext_NV_copy_image ];
+	allPresent &= pHasExtension[ ext_ARB_compute_shader ];
+	allPresent &= pHasExtension[ ext_ARB_shader_storage_buffer_object ];
+	allPresent &= pHasExtension[ ext_ARB_shader_image_load_store ];
+	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;
 }

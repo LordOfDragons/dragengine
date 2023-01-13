@@ -84,8 +84,8 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
 	pRenderFSQuadStereoVSLayer = HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer );
 	
-	// render cube using geometry shader
-	pRenderCubeGS = ext.SupportsGeometryShader() && caps.GetClearEntireCubeMap().Working();
+	// render cube using geometry shader (required)
+	pRenderCubeGS = caps.GetClearEntireCubeMap().Working();
 	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID

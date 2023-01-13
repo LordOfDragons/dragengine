@@ -457,14 +457,14 @@ public:
 	/** Determines if copy image is supported. */
 	inline bool GetHasCopyImage() const{ return pHasCopyImage; }
 	
-	/** Geometry shader is supported. */
-	inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
+	/** Geometry shader is supported. Required so always true. */
+	// inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
 	
 	/** Geometry shader instancing is supported. */
 	inline bool SupportsGSInstancing() const{ return pSupportsGSInstancing; }
 	
-	/** Compute shader is supported. */
-	inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
+	/** Compute shader is supported. Required so always true. */
+	// inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
 	
 	/** Layer ID output is supported in vertex shaders. */
 	inline bool SupportsVSLayer() const{ return pSupportsVSLayer; }

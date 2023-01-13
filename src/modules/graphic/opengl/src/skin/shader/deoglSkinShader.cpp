@@ -1775,15 +1775,12 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetGSRenderCube() ){
-		DEASSERT_TRUE( pRenderThread.GetExtensions().SupportsGeometryShader() )
 		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
-		DEASSERT_TRUE( pRenderThread.GetExtensions().SupportsGeometryShader() )
 		defines.SetDefines( "GS_RENDER_CASCADED" );
 		
 	}else if( pConfig.GetGSRenderStereo() ){
-		DEASSERT_TRUE( pRenderThread.GetExtensions().SupportsGeometryShader() )
 		defines.SetDefines( "GS_RENDER_STEREO" );
 		
 	}else if( pConfig.GetVSRenderStereo() ){
