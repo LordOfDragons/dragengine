@@ -231,8 +231,6 @@ void deoglRComponentLOD::UpdateVBO(){
 				break;
 				
 			case deoglRTChoices::egputvAccurate:
-				UpdateVBOOnGPUAccurate();
-				break;
 				
 			case deoglRTChoices::egputvApproximate:
 				UpdateVBOOnGPUApproximate();
@@ -276,32 +274,6 @@ void deoglRComponentLOD::UpdateVBOOnCPU(){
 
 
 
-void deoglRComponentLOD::UpdateVBOOnGPUAccurate(){
-	PrepareWeights();
-	
-	WriteWeightMatricesSSBO();
-	GPUTransformVertices();
-	GPUCalcNormalTangents();
-	GPUWriteRenderVBO();
-	
-	#ifdef SPECIAL_DEBUG_ON
-	extDebugCompCount++;
-	extDebugCompTBO += specialTimer.GetElapsedTime();
-	#endif
-	
-// 	#ifdef SPECIAL_DEBUG_ON
-// 	specialTimer.Reset();
-// 	#endif
-// 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
-// 	pBuildVBO( modelLOD );
-// 	#ifdef DO_TIMING
-// 	elapsedCompBuildVBO += timer.GetElapsedTime();
-// 	#endif
-// 	#ifdef SPECIAL_DEBUG_ON
-// 	extDebugCompBuildVBO += specialTimer.GetElapsedTime();
-// 	#endif
-}
-
 void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int weightsCount = modelLOD.GetWeightsCount();
@@ -329,123 +301,6 @@ void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	for( i=0; i<weightsCount; i++ ){
 		pSSBOWeightMatrices->SetParameterDataMat4x3( 0, i, pWeights[ i ] );
 	}
-}
-
-void deoglRComponentLOD::GPUTransformVertices(){
-	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
-	const int positionCount = modelLOD.GetPositionCount();
-	
-	if( positionCount > 0 && modelLOD.GetVBOBlockPositionWeight() ){
-		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-		
-		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockPositionWeight();
-		vboBlock.Prepare();
-		
-		if( ! pVBOTransformVertices ){
-			OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOTransformVertices ) );
-		}
-		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOTransformVertices ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, sizeof( oglVector3 ) * positionCount, NULL, GL_DYNAMIC_DRAW ) );
-		
-		// renderThread.GetRenderers().GetGeometry().TransformPositions( *vboBlock.GetVBO()->GetVAO(),
-		// 	pTBOWeightMatrices, pVBOTransformVertices, vboBlock.GetOffset(), positionCount );
-	}
-}
-
-void deoglRComponentLOD::GPUCalcNormalTangents(){
-	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
-	const int positionCount = modelLOD.GetPositionCount();
-	
-	if( positionCount > 0 && modelLOD.GetVBOBlockCalcNormalTangent() ){
-		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-		
-		const int tangentCount = modelLOD.GetTangentCount();
-		const int normalCount = modelLOD.GetNormalCount();
-		const int norTanCount = positionCount + normalCount + tangentCount;
-		const int faceCount = modelLOD.GetFaceCount();
-		
-		const bool useFP32 = true; // false to use 16FP
-		
-		if( ! pTBOTransformVertices ){
-			deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-			
-			OGL_CHECK( renderThread, glGenTextures( 1, &pTBOTransformVertices ) );
-			if( ! pTBOTransformVertices ){
-				DETHROW( deeInvalidParam );
-			}
-			
-			tsmgr.EnableBareTBO( 0, pTBOTransformVertices );
-			OGL_CHECK( renderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGB32F, pVBOTransformVertices ) );
-			tsmgr.DisableStage( 0 );
-		}
-		
-		if( ! pTexTransformNormTan ){
-			pTexTransformNormTan = new deoglTexture( pComponent.GetRenderThread() );
-			pTexTransformNormTan->SetMipMapped( false );
-			
-			if( useFP32 ){
-				pTexTransformNormTan->SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB32F );
-				
-			}else{
-				pTexTransformNormTan->SetFBOFormat( 3, true );
-			}
-			
-			pTexTransformNormTan->CreateTexture();
-		}
-		
-		if( norTanCount > pTexTransformNormTan->GetWidth() * pTexTransformNormTan->GetHeight() ){
-			//ogl.LogInfoFormat( "pTexTransformNormTan nor=%i tan=%i tot=%i", normalCount, tangentCount, norTanCount );
-			pTexTransformNormTan->SetSize( 256, ( ( norTanCount - 1 ) / 256 ) + 1 );
-			pTexTransformNormTan->CreateTexture();
-		}
-		
-		if( ! pFBOCalcNormalTangent ){
-			pFBOCalcNormalTangent = new deoglFramebuffer( pComponent.GetRenderThread(), false );
-			renderThread.GetFramebuffer().Activate( pFBOCalcNormalTangent );
-			pFBOCalcNormalTangent->AttachColorTexture( 0, pTexTransformNormTan );
-			const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-			pFBOCalcNormalTangent->Verify();
-		}
-		
-		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockCalcNormalTangent();
-		vboBlock.Prepare();
-		
-		renderThread.GetRenderers().GetGeometry().CalcNormalsTangents( *vboBlock.GetVBO()->GetVAO(),
-			pTBOTransformVertices, pFBOCalcNormalTangent, pTexTransformNormTan->GetWidth(),
-			pTexTransformNormTan->GetHeight(), positionCount, normalCount, tangentCount,
-			vboBlock.GetOffset(), faceCount );
-		
-		renderThread.GetFramebuffer().Activate( NULL ); // otherwise we render with an FBO with a texture attached used also to sample
-	}
-}
-
-void deoglRComponentLOD::GPUWriteRenderVBO(){
-// 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
-// 	const int positionCount = modelLOD.GetPositionCount();
-// 	
-// 	if( positionCount > 0 && modelLOD.GetVBOBlockWriteSkinnedVBO() ){
-// 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-// 		const int normalCount = modelLOD.GetNormalCount();
-// 		const int pointCount = modelLOD.GetVertexCount();
-// 		
-// 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWriteSkinnedVBO();
-// 		vboBlock.Prepare();
-// 		
-// 		if( ! pVBO ){
-// 			OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
-// 		}
-// 		
-// 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-// 		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
-// 			pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
-// 		
-// 		renderThread.GetRenderers().GetGeometry().WriteSkinnedVBO( *vboBlock.GetVBO()->GetVAO(),
-// 			pTBOTransformVertices, *pTexTransformNormTan, pVBO, positionCount, normalCount,
-// 			vboBlock.GetOffset(), pointCount );
-// 	}
 }
 
 

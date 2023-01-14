@@ -200,24 +200,8 @@ public:
 	/** Update VBO on the CPU which is slow slow but accurate. */
 	void UpdateVBOOnCPU();
 	
-	
-	
-	/** Update VBO on the GPU using the accurate but slower method. */
-	void UpdateVBOOnGPUAccurate();
-	
 	/** Write weight matrices to the SSBO. */
 	void WriteWeightMatricesSSBO();
-	
-	/** Transform vertices on the GPU. */
-	void GPUTransformVertices();
-	
-	/** Calculate normals and tangets on the GPU. */
-	void GPUCalcNormalTangents();
-	
-	/** Write final VBO from the GPU calculated data to be used by rendering. */
-	void GPUWriteRenderVBO();
-	
-	
 	
 	/** Update VBO on the GPU using the fast but approximate method. */
 	void UpdateVBOOnGPUApproximate();

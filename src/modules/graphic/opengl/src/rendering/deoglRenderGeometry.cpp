@@ -90,63 +90,6 @@
 
 
 
-// Definitions
-////////////////
-
-#define FACTOR_EXPONENT		255.0f
-
-enum eSPRenderTaskBare{
-	sprtbMatrixMVP,
-	sprtbMatrixMV
-};
-
-enum eSPRenderTaskDepth{
-	sprtdMatrixMVP,
-	sprtdMatrixMV,
-	sprtdMatrixDiffuse,
-	sprtdMaterialGamma,
-	sprtdClipPlane,
-	sprtdViewport
-};
-
-enum eSPRenderTaskGeometry{
-	sprtgMatrixMVP,
-	sprtgMatrixMV,
-	sprtgMatrixNor,
-	sprtgTexMatrixDiffuse,
-	sprtgTexMatrixNormal,
-	sprtgTexMatrixEmissive,
-	sprtgTexMatrixAO,
-	sprtgColor,
-	sprtgColorGamma,
-	sprtgAmbient,
-	sprtgReflectivity,
-	sprtgEnvMapParam,
-	sprtgRoughness,
-	sprtgEmissivity,
-	sprtgViewport,
-	sprtgDistortion,
-	sprtgTemporary,
-	sprtgMatrixEnvMap
-};
-
-enum eSPRenderTaskEnvMap{
-	sprtemMatrixMVP,
-	sprtemMatrixNor,
-	sprtemTexMatrixDiffuse,
-	sprtemTexMatrixEmissive,
-	sprtemColor,
-	sprtemColorGamma,
-	sprtemAmbient,
-	sprtemEmissivity,
-	
-	sprtemSkyLightView,
-	sprtemSkyLightColor,
-	sprtemSkyAmbientColor
-};
-
-
-
 // Class deoglRenderGeometry
 //////////////////////////////
 
@@ -154,45 +97,21 @@ enum eSPRenderTaskEnvMap{
 ////////////////////////////
 
 deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
-// 	deoglConfiguration &config = ogl->GetConfiguration();
-// 	const bool useEncodeDepth = config.GetUseEncodeDepth();
-	
-	#ifndef ANDROID
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-		// transform position
-		pipconf.Reset();
-		pipconf.EnableRasterizerDiscard();
-		pipconf.SetShader( renderThread, "DefRen Transform Positions", defines );
-		pPipelineTransformPositions = pipelineManager.GetWith( pipconf );
-		
-		// write skinned vbo
-		pipconf.SetShader( renderThread, "DefRen Write Skinned VBO", defines );
-		pPipelineWriteSkinnedVBO = pipelineManager.GetWith( pipconf );
-		
 		// approximate transform vertices, normals and tangents
 		pipconf.Reset();
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
 		pPipelineApproxTransformVNT = pipelineManager.GetWith( pipconf );
 		
-		
-		
-		// calculate normals and trangents
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		pipconf.EnableBlendAdd();
-		pipconf.SetShader( renderThread, "DefRen Calculate Normals Tangents", defines );
-		pPipelineCalcNormalsTangents = pipelineManager.GetWith( pipconf );
-		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}
-	#endif
 }
 
 deoglRenderGeometry::~deoglRenderGeometry(){
@@ -213,50 +132,6 @@ void deoglRenderGeometry::SetAmbient( const decColor &color ){
 
 // Rendering
 //////////////
-
-/*
-if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
-	const decColor &emissivity = skinTexture.GetEmissivity();
-	const float emissivityIntensity = renderTaskTexture->emissivityIntensity;
-	float colorGamma = skinTexture.GetColorGamma();
-	
-	shader.SetParameterColor4( sprtemAmbient, ambient );
-	shader.SetParameterFloat( sprtemEmissivity, emissivity.r * emissivityIntensity, emissivity.g * emissivityIntensity, emissivity.b * emissivityIntensity );
-	shader.SetParameterFloat( sprtemColorGamma, colorGamma, colorGamma, colorGamma, 1.0f );
-	
-	// sky light
-	decVector skyLightDir = -( decMatrix::CreateRotation( 61.0f * DEG2RAD, 62.0f * DEG2RAD, 0.0f ) ).TransformView();
-	const float skyLightIntensity = 16.0f * CANDELA_TO_INTENSITY;
-	const float skyAmbientIntensity = 4.0f * CANDELA_TO_INTENSITY;
-	
-	decColor skyLightColor = decColor( 1.0f, 1.0f, 1.0f );
-	skyLightColor.r = powf( skyLightColor.r, OGL_RENDER_GAMMA );
-	skyLightColor.g = powf( skyLightColor.g, OGL_RENDER_GAMMA );
-	skyLightColor.b = powf( skyLightColor.b, OGL_RENDER_GAMMA );
-	
-	decVector vector = params.plan->GetWorld()->GetWorld()->GetLightColorMatrix().Transform( skyLightColor.r, skyLightColor.g, skyLightColor.b );
-	skyLightColor = decColor( vector.x, vector.y, vector.z );
-	
-	skyLightDir.Normalize();
-	
-	shader.SetParameterDVector3( sprtemSkyLightView, -params.matrixCamera.TransformNormal( skyLightDir ).ToVector() );
-	shader.SetParameterColor3( sprtemSkyLightColor, skyLightColor * skyLightIntensity );
-	shader.SetParameterColor3( sprtemSkyAmbientColor, skyLightColor * skyAmbientIntensity );
-}
-*/
-
-/*
-if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
-	shader.SetParameterDMatrix4x4( sprtemMatrixMVP, matrixMV * params.matrixProjection );
-	shader.SetParameterDMatrix3x3( sprtemMatrixNor, matrixMV.GetRotationMatrix().Invert().Transpose() );
-	shader.SetParameterColor4( sprtemColor, renderTaskInstance->GetColorTint(), 1.0f );
-	
-	shader.SetParameterColor3( sprtemEmissivity, renderTaskInstance->GetEmissivity() );
-	
-	shader.SetParameterTexMatrix3x2( sprtemTexMatrixDiffuse, matrixTC );
-	shader.SetParameterTexMatrix3x2( sprtemTexMatrixEmissive, matrixTC );
-}
-*/
 
 void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	const int pipelineCount = renderTask.GetPipelineCount();
@@ -631,93 +506,6 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 }
 
 
-
-void deoglRenderGeometry::TransformPositions( const deoglVAO &vao, GLuint tboWeightMatrices,
-GLuint vboTransformed, int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	DETHROW( deeInvalidAction );
-	#endif
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.TransformPositions" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	pPipelineTransformPositions->Activate();
-	
-	tsmgr.EnableTBO( 0, tboWeightMatrices, GetSamplerClampNearest() );
-	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboTransformed ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
-	
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-}
-
-void deoglRenderGeometry::CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions,
-deoglFramebuffer *fbo, int outputWidth, int outputHeight, int positionCount,
-int normalCount, int /*tangentCount*/, int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	DETHROW( deeInvalidAction );
-	#endif
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.CalcNormalsTangents" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	pPipelineCalcNormalsTangents->Activate();
-	renderThread.GetFramebuffer().Activate( fbo );
-	SetViewport( outputWidth, outputHeight );
-	
-	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, clearColor ) );
-	
-	deoglShaderCompiled &shader = pPipelineCalcNormalsTangents->GetGlShader();
-	shader.SetParameterFloat( 0, 2.0f / ( float )outputWidth, 2.0f / ( float )outputHeight,
-		0.5f / ( float )outputWidth - 1.0f, 0.5f / ( float )outputHeight - 1.0f );
-	shader.SetParameterInt( 1, outputWidth );
-	shader.SetParameterInt( 2, positionCount, positionCount + normalCount );
-	
-	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-}
-
-void deoglRenderGeometry::WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions,
-deoglTexture &texNorTan, GLuint vboSkinned, int positionCount, int normalCount,
-int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	DETHROW( deeInvalidAction );
-	#endif
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.WriteSkinnedVBO" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	
-	pPipelineWriteSkinnedVBO->Activate();
-	
-	deoglShaderCompiled &shader = pPipelineWriteSkinnedVBO->GetGlShader();
-	shader.SetParameterInt( 0, texNorTan.GetWidth() );
-	shader.SetParameterInt( 1, positionCount, positionCount + normalCount );
-	
-	tsmgr.EnableTBO( 0, tboPositions, GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, texNorTan, GetSamplerClampNearest() );
-	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboSkinned ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
-	
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-}
 
 void deoglRenderGeometry::ApproxTransformVNT( GLuint vao, GLuint vbo,
 const deoglSPBlockSSBO *weightMatrices, const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount ){
