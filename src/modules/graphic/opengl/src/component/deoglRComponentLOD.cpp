@@ -48,6 +48,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../shaders/deoglShaderProgram.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
@@ -93,16 +94,11 @@ deoglRComponentLOD::deoglRComponentLOD( deoglRComponent &component, int lodIndex
 pComponent( component ),
 pLODIndex( lodIndex ),
 
-pVBOData( NULL ),
-pVBOPointCount( 0 ),
-pVBOPointSize( 0 ),
-
-pVBO( 0 ),
 pVAO( NULL ),
 pVBOLayout( NULL ),
 pVBOBlock( NULL ),
 
-pWeights( NULL ),
+pWeights( nullptr ),
 
 pPositions( NULL ),
 pRealNormals( NULL ),
@@ -122,8 +118,6 @@ pDirtyVAO( true ),
 
 pMemUse( component.GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vbo ),
 
-pVBOWeightMatrices( 0 ),
-pTBOWeightMatrices( 0 ),
 pVBOTransformVertices( 0 ),
 pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
@@ -256,19 +250,8 @@ void deoglRComponentLOD::UpdateVBO(){
 }
 
 void deoglRComponentLOD::FreeVBO(){
+	pVBO = nullptr;
 	pMemUse = 0;
-	
-	if( pVBO ){
-		pComponent.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pVBO );
-		pVBO = 0;
-	}
-	
-	if( pVBOData ){
-		delete [] pVBOData;
-		pVBOData = NULL;
-		pVBOPointCount = 0;
-		pVBOPointSize = 0;
-	}
 }
 
 
@@ -296,7 +279,7 @@ void deoglRComponentLOD::UpdateVBOOnCPU(){
 void deoglRComponentLOD::UpdateVBOOnGPUAccurate(){
 	PrepareWeights();
 	
-	WriteWeightMatricesTBO();
+	WriteWeightMatricesSSBO();
 	GPUTransformVertices();
 	GPUCalcNormalTangents();
 	GPUWriteRenderVBO();
@@ -319,10 +302,9 @@ void deoglRComponentLOD::UpdateVBOOnGPUAccurate(){
 // 	#endif
 }
 
-void deoglRComponentLOD::WriteWeightMatricesTBO(){
+void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int weightsCount = modelLOD.GetWeightsCount();
-	
 	if( weightsCount == 0 ){
 		return;
 	}
@@ -331,30 +313,22 @@ void deoglRComponentLOD::WriteWeightMatricesTBO(){
 	
 	PrepareWeights();
 	
-	if( ! pVBOWeightMatrices ){
-		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOWeightMatrices ) );
-		if( ! pVBOWeightMatrices ){
-			DETHROW( deeOutOfMemory );
-		}
+	if( ! pSSBOWeightMatrices ){
+		pSSBOWeightMatrices.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+		deoglSPBlockSSBO &ssbo = pSSBOWeightMatrices;
+		ssbo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		ssbo.SetParameterCount( 1 );
+		ssbo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 );
+		ssbo.SetElementCount( weightsCount );
+		ssbo.MapToStd140();
+		ssbo.SetBindingPoint( 2 );
 	}
 	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOWeightMatrices ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, sizeof( oglMatrix3x4 ) * weightsCount, pWeights, GL_STATIC_DRAW ) );
-	
-	if( ! pTBOWeightMatrices ){
-		deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-		
-		OGL_CHECK( renderThread, glGenTextures( 1, &pTBOWeightMatrices ) );
-		if( ! pTBOWeightMatrices ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		tsmgr.EnableBareTBO( 0, pTBOWeightMatrices );
-		OGL_CHECK( renderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, pVBOWeightMatrices ) );
-		tsmgr.DisableStage( 0 );
+	const deoglSPBMapBuffer mapped( pSSBOWeightMatrices );
+	int i;
+	for( i=0; i<weightsCount; i++ ){
+		pSSBOWeightMatrices->SetParameterDataMat4x3( 0, i, pWeights[ i ] );
 	}
-	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 }
 
 void deoglRComponentLOD::GPUTransformVertices(){
@@ -369,32 +343,13 @@ void deoglRComponentLOD::GPUTransformVertices(){
 		
 		if( ! pVBOTransformVertices ){
 			OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOTransformVertices ) );
-			if( ! pVBOTransformVertices ){
-				DETHROW( deeOutOfMemory );
-			}
 		}
 		
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOTransformVertices ) );
 		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, sizeof( oglVector3 ) * positionCount, NULL, GL_DYNAMIC_DRAW ) );
 		
-		renderThread.GetRenderers().GetGeometry().TransformPositions( *vboBlock.GetVBO()->GetVAO(),
-			pTBOWeightMatrices, pVBOTransformVertices, vboBlock.GetOffset(), positionCount );
-		
-		// verify
-		/*
-		PreparePositions();
-		oglVector3 * const temp = new oglVector3[ positionCount ];
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOTransformVertices ) );
-		OGL_CHECK( renderThread, pglGetBufferSubData( GL_ARRAY_BUFFER, 0, sizeof( oglVector3 ) * positionCount, temp ) );
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-		int i;
-		for( i=0; i<positionCount; i++ ){
-			pPositions[ i ].x = temp[ i ].x;
-			pPositions[ i ].y = temp[ i ].y;
-			pPositions[ i ].z = temp[ i ].z;
-		}
-		delete [] temp;
-		*/
+		// renderThread.GetRenderers().GetGeometry().TransformPositions( *vboBlock.GetVBO()->GetVAO(),
+		// 	pTBOWeightMatrices, pVBOTransformVertices, vboBlock.GetOffset(), positionCount );
 	}
 }
 
@@ -464,134 +419,33 @@ void deoglRComponentLOD::GPUCalcNormalTangents(){
 			vboBlock.GetOffset(), faceCount );
 		
 		renderThread.GetFramebuffer().Activate( NULL ); // otherwise we render with an FBO with a texture attached used also to sample
-		
-		// verify
-		/*
-		PrepareNormalsTangents();
-		oglVector3 * const temp = new oglVector3[ pTexTransformNormTan->GetWidth() * pTexTransformNormTan->pHeight ];
-		renderThread.GetTexture().GetStages().EnableBareTexture( 0, *pTexTransformNormTan );
-		OGL_CHECK( renderThread, glGet_Tex_Image( GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, ( GLvoid* )temp ) ); // use texture.GetPixels()
-		oglVector3 * const tempNormal = temp;
-		oglVector3 * const tempTangent = temp + normalCount;
-		int i;
-		for( i=0; i<normalCount; i++ ){
-			if( tempNormal[ i ].x == 0.0f && tempNormal[ i ].y == 0.0f && tempNormal[ i ].z == 0.0f ){
-				tempNormal[ i ].x = 0.0f;
-				tempNormal[ i ].y = 1.0f;
-				tempNormal[ i ].z = 0.0f;
-			}
-		}
-		for( i=0; i<tangentCount; i++ ){
-			if( tempTangent[ i ].x == 0.0f && tempTangent[ i ].y == 0.0f && tempTangent[ i ].z == 0.0f ){
-				tempTangent[ i ].x = 1.0f;
-				tempTangent[ i ].y = 0.0f;
-				tempTangent[ i ].z = 0.0f;
-			}
-		}
-		
-		int errorNormals = 0, errorTangents = 0;
-		const float fperr = 0.01f; // with FP16 typically <1 degrees, in bad cases <4 degrees and in very worse cases higher
-		for( i=0; i<normalCount; i++ ){
-			const decVector tempNor1 = decVector( tempNormal[i].x, tempNormal[i].y, tempNormal[i].z ).Normalized();
-			const decVector nor1 = decVector( pNormals[i].x, pNormals[i].y, pNormals[i].z ).Normalized();
-			if( ! tempNor1.IsEqualTo( nor1, fperr ) ){
-				//renderThread.GetLogger().LogInfoFormat( "normal %.2i: (%+f,%+f,%+f) (%+f,%+f,%+f) [%f|%f]\n", i, tempNormal[i].x, tempNormal[i].y, tempNormal[i].z, pNormals[i].x, pNormals[i].y, pNormals[i].z, (tempNor1-nor1).Length(), asinf((tempNor1-nor1).Length())/DEG2RAD );
-				errorNormals++;
-			}
-		}
-		for( i=0; i<tangentCount; i++ ){
-			const decVector tempTan1 = decVector( tempTangent[i].x, tempTangent[i].y, tempTangent[i].z ).Normalized();
-			const decVector tan1 = decVector( pTangents[i].x, pTangents[i].y, pTangents[i].z ).Normalized();
-			if( ! tempTan1.IsEqualTo( tan1, fperr ) ){
-				//renderThread.GetLogger().LogInfoFormat( "tangent %.2i: (%+f,%+f,%+f) (%+f,%+f,%+f) [%f|%f]\n", i, tempTangent[i].x, tempTangent[i].y, tempTangent[i].z, pTangents[i].x, pTangents[i].y, pTangents[i].z, (tempTan1-tan1).Length(), asin((tempTan1-tan1).Length())/DEG2RAD );
-				errorTangents++;
-			}
-		}
-		
-		delete [] temp;
-		renderThread.GetLogger().LogInfoFormat( "errorNormals=%i(%i) errorTangents=%i(%i)\n", errorNormals, normalCount, errorTangents, tangentCount );
-		*/
 	}
 }
 
 void deoglRComponentLOD::GPUWriteRenderVBO(){
-	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
-	const int positionCount = modelLOD.GetPositionCount();
-	
-	if( positionCount > 0 && modelLOD.GetVBOBlockWriteSkinnedVBO() ){
-		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-		const int normalCount = modelLOD.GetNormalCount();
-		const int pointCount = modelLOD.GetVertexCount();
-		
-		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWriteSkinnedVBO();
-		vboBlock.Prepare();
-		
-		if( ! pVBO ){
-			OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
-			if( ! pVBO ){
-				DETHROW( deeOutOfMemory );
-			}
-		}
-		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
-			pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
-		
-		renderThread.GetRenderers().GetGeometry().WriteSkinnedVBO( *vboBlock.GetVBO()->GetVAO(),
-			pTBOTransformVertices, *pTexTransformNormTan, pVBO, positionCount, normalCount,
-			vboBlock.GetOffset(), pointCount );
-		
-		// verify
-		/*
-		PrepareNormalsTangents():
-		struct sHackTest{ GLfloat x, y, z, nx, ny, nz, tx, ty, tz, tw; };
-		const oglModelVertex * const points = modelLOD.GetVertices();
-		const bool * const negateTangents = modelLOD.GetNegateTangents();
-		sHackTest * const temp = new sHackTest[ pointCount ];
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		OGL_CHECK( renderThread, pglGetBufferSubData( GL_ARRAY_BUFFER, 0, pVBOLayout->GetStride() * pointCount, temp ) );
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-		
-		int i;
-		int errorPosition = 0, errorNormals = 0, errorTangents = 0, errorNegTans = 0;
-		const float poserr = 0.00001f;
-		const float fperr = 0.01f; // with FP16 typically <1 degrees, in bad cases <4 degrees and in very worse cases higher
-		for( i=0; i<pointCount; i++ ){
-			const oglModelVertex &point = points[ i ];
-			const oglVector &position = pPositions[ point.position ];
-			const oglVector &normal = pNormals[ point.normal ];
-			const oglVector &tangent = pTangents[ point.tangent ];
-			const float corrNegTan = ( negateTangents[ point.tangent ] ? -1.0f : 1.0f );
-			
-			const decVector testPos( temp[i].x, temp[i].y, temp[i].z );
-			const decVector corrPos( position.x, position.y, position.z );
-			if( ( testPos - corrPos ).Length() > poserr ){
-				errorPosition++;
-			}
-			
-			const decVector testNor = decVector( temp[i].nx, temp[i].ny, temp[i].nz ).Normalized();
-			const decVector corrNor = decVector( normal.x, normal.y, normal.z ).Normalized();
-			if( ! testNor.IsEqualTo( corrNor, fperr ) ){
-				errorNormals++;
-			}
-			
-			const decVector testTan = decVector( temp[i].tx, temp[i].ty, temp[i].tz ).Normalized();
-			const decVector corrTan = decVector( tangent.x, tangent.y, tangent.z ).Normalized();
-			if( ! testTan.IsEqualTo( corrTan, fperr ) ){
-				//renderThread.GetLogger().LogInfoFormat( "tangent %i: (%f,%f,%f) (%f,%f,%f) %f\n", i, corrTan.x, corrTan.y, corrTan.z, testTan.x, testTan.y, testTan.z, (testTan-corrTan).Length() );
-				errorTangents++;
-			}
-			
-			if( fabsf( temp[i].tw - corrNegTan ) > 1e-5f ){
-				errorNegTans++;
-			}
-		}
-		
-		delete [] temp;
-		renderThread.GetLogger().LogInfoFormat( "errorPosition=%i(%i) errorNormals=%i errorTangents=%i errorNegTans=%i\n",
-			errorPosition, pointCount, errorNormals, errorTangents, errorNegTans );
-		*/
-	}
+// 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
+// 	const int positionCount = modelLOD.GetPositionCount();
+// 	
+// 	if( positionCount > 0 && modelLOD.GetVBOBlockWriteSkinnedVBO() ){
+// 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
+// 		const int normalCount = modelLOD.GetNormalCount();
+// 		const int pointCount = modelLOD.GetVertexCount();
+// 		
+// 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWriteSkinnedVBO();
+// 		vboBlock.Prepare();
+// 		
+// 		if( ! pVBO ){
+// 			OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
+// 		}
+// 		
+// 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
+// 		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
+// 			pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
+// 		
+// 		renderThread.GetRenderers().GetGeometry().WriteSkinnedVBO( *vboBlock.GetVBO()->GetVAO(),
+// 			pTBOTransformVertices, *pTexTransformNormTan, pVBO, positionCount, normalCount,
+// 			vboBlock.GetOffset(), pointCount );
+// 	}
 }
 
 
@@ -599,7 +453,7 @@ void deoglRComponentLOD::GPUWriteRenderVBO(){
 void deoglRComponentLOD::UpdateVBOOnGPUApproximate(){
 	PrepareWeights();
 	
-	WriteWeightMatricesTBO();
+	WriteWeightMatricesSSBO();
 	GPUApproxTransformVNT();
 	
 	#ifdef SPECIAL_DEBUG_ON
@@ -618,70 +472,11 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
 		vboBlock.Prepare();
 		
-		if( ! pVBO ){
-			OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
-			if( ! pVBO ){
-				DETHROW( deeOutOfMemory );
-			}
-		}
+		pEnsureVBO();
 		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
-			pVBOLayout->GetStride() * pointCount, NULL, GL_DYNAMIC_DRAW ) );
-		
-		renderThread.GetRenderers().GetGeometry().ApproxTransformVNT( *vboBlock.GetVBO()->GetVAO(),
-			pTBOWeightMatrices, pVBO, vboBlock.GetOffset(), pointCount );
-		
-		// verify
-		/*
-		PrepareNormalsTangents():
-		struct sHackTest{ GLfloat x, y, z, nx, ny, nz, tx, ty, tz, tw; };
-		const oglModelVertex * const points = modelLOD.GetVertices();
-		const bool * const negateTangents = modelLOD.GetNegateTangents();
-		sHackTest * const temp = new sHackTest[ pointCount ];
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-		OGL_CHECK( renderThread, pglGetBufferSubData( GL_ARRAY_BUFFER, 0, pVBOLayout->GetStride() * pointCount, temp ) );
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-		
-		int i;
-		int errorPosition = 0, errorNormals = 0, errorTangents = 0, errorNegTans = 0;
-		const float poserr = 0.00001f;
-		const float fperr = 0.01f; // with FP16 typically <1 degrees, in bad cases <4 degrees and in very worse cases higher
-		for( i=0; i<pointCount; i++ ){
-			const oglModelVertex &point = points[ i ];
-			const oglVector &position = pPositions[ point.position ];
-			const oglVector &normal = pNormals[ point.normal ];
-			const oglVector &tangent = pTangents[ point.tangent ];
-			const float corrNegTan = ( negateTangents[ point.tangent ] ? -1.0f : 1.0f );
-			
-			const decVector testPos( temp[i].x, temp[i].y, temp[i].z );
-			const decVector corrPos( position.x, position.y, position.z );
-			if( ( testPos - corrPos ).Length() > poserr ){
-				errorPosition++;
-			}
-			
-			const decVector testNor = decVector( temp[i].nx, temp[i].ny, temp[i].nz ).Normalized();
-			const decVector corrNor = decVector( normal.x, normal.y, normal.z ).Normalized();
-			if( ! testNor.IsEqualTo( corrNor, fperr ) ){
-				errorNormals++;
-			}
-			
-			const decVector testTan = decVector( temp[i].tx, temp[i].ty, temp[i].tz ).Normalized();
-			const decVector corrTan = decVector( tangent.x, tangent.y, tangent.z ).Normalized();
-			if( ! testTan.IsEqualTo( corrTan, fperr ) ){
-				//renderThread.GetLogger().LogInfoFormat( "tangent %i: (%f,%f,%f) (%f,%f,%f) %f\n", i, corrTan.x, corrTan.y, corrTan.z, testTan.x, testTan.y, testTan.z, (testTan-corrTan).Length() );
-				errorTangents++;
-			}
-			
-			if( fabsf( temp[i].tw - corrNegTan ) > 1e-5f ){
-				errorNegTans++;
-			}
-		}
-		
-		delete [] temp;
-		renderThread.GetLogger().LogInfoFormat( "errorPosition=%i(%i) errorNormals=%i errorTangents=%i errorNegTans=%i\n",
-			errorPosition, pointCount, errorNormals, errorTangents, errorNegTans );
-		*/
+		renderThread.GetRenderers().GetGeometry().ApproxTransformVNT(
+			vboBlock.GetVBO()->GetVAO()->GetVAO(), vboBlock.GetVBO()->GetVBO(),
+			pSSBOWeightMatrices, pVBO, vboBlock.GetOffset(), pointCount );
 	}
 }
 
@@ -835,7 +630,7 @@ deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
 
 void deoglRComponentLOD::PrepareWeights(){
 	if( pDirtyModelWeights ){
-		oglMatrix3x4 *weights = NULL;
+		oglMatrix3x4 *weights = nullptr;
 		
 		if( pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
@@ -1045,13 +840,6 @@ void deoglRComponentLOD::pCleanUp(){
 	
 	pMemUse = 0;
 	
-	if( pVBOData ){
-		delete [] pVBOData;
-		pVBOData = NULL;
-		pVBOPointCount = 0;
-		pVBOPointSize = 0;
-	}
-	
 	if( pTexTransformNormTan ){
 		delete pTexTransformNormTan;
 	}
@@ -1063,181 +851,59 @@ void deoglRComponentLOD::pCleanUp(){
 	}
 	
 	deoglDelayedOperations &dops = pComponent.GetRenderThread().GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pVBOWeightMatrices );
 	dops.DeleteOpenGLBuffer( pTBOTransformVertices );
 	dops.DeleteOpenGLBuffer( pVBOTransformVertices );
-	dops.DeleteOpenGLBuffer( pVBO );
-	dops.DeleteOpenGLTexture( pTBOWeightMatrices );
 }
 
 
 
+void deoglRComponentLOD::pEnsureVBO(){
+	if( pVBO ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = pComponent.GetRenderThread();
+	const int pointCount = pComponent.GetModel()->GetLODAt( pLODIndex ).GetVertexCount();
+	
+	pVBO.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	
+	deoglSPBlockSSBO &vbo = pVBO;
+	vbo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	vbo.SetParameterCount( 4 );
+	vbo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 position
+	vbo.GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 realNormal
+	vbo.GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 normal
+	vbo.GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec3 tangent
+	vbo.SetElementCount( pointCount );
+	vbo.MapToStd140();
+	vbo.SetBindingPoint( 1 );
+	
+	const deoglSPBMapBuffer mapped( pVBO ); // ensure buffer exists
+	pMemUse = pVBOLayout->GetStride() * pointCount;
+}
+
 void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pComponent.GetRenderThread() );
-	const int pointCount = modelLOD.GetVertexCount();
-	deoglVBOpnt *newArray = NULL;
-	int dataSize;
+	pEnsureVBO();
 	
-	// dynamic mesh vbo
-	dataSize = pVBOLayout->GetStride() * pointCount;
-	
-	// create vbo if not existing already and bind it
-	if( ! pVBO ){
-		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-	}
-	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
-	
-	// build data array
-	if( pointCount > pVBOPointSize ){
-		newArray = new deoglVBOpnt[ pointCount ];
-		if( pVBOData ){
-			delete [] pVBOData;
-		}
-		pVBOData = newArray;
-		pVBOPointSize = pointCount;
-		
-		// enlarge vbo
-		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW ) );
-		pMemUse = dataSize;
-	}
-	
-	// write data to buffer
 	if( pPositions && pRealNormals && pNormals && pTangents ){
 		pWriteVBOData( modelLOD );
 	}
-	
-	// update vbo
-	//OGL_CHECK( ogl, pglBufferSubData( GL_ARRAY_BUFFER, 0, dataSize, pVBOData ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, pVBOData, GL_STREAM_DRAW ) );
-	
-	// store number of points written
-	pVBOPointCount = pointCount;
 }
 
 void deoglRComponentLOD::pWriteVBOData( const deoglModelLOD &modelLOD ){
 	const bool * const negateTangents = modelLOD.GetNegateTangents();
 	const oglModelVertex * const points = modelLOD.GetVertices();
 	const int pointCount = modelLOD.GetVertexCount();
-	deoglVBOpnt *data = pVBOData;
-	//int converted;
+	const deoglSPBMapBuffer mapped( pVBO );
 	int i;
 	
 	for( i=0; i<pointCount; i++ ){
-		if( i >= pVBOPointSize ){
-			DETHROW( deeInvalidParam );
-		}
-		
 		const oglModelVertex &point = points[ i ];
-		
-		// position
-		const oglVector &position = pPositions[ point.position ];
-		data->x = position.x;
-		data->y = position.y;
-		data->z = position.z;
-		
-		// real normal
-		const oglVector &realNormal = pRealNormals[ point.position ];
-		data->rnx = realNormal.x;
-		data->rny = realNormal.y;
-		data->rnz = realNormal.z;
-		
-		// normal
-		const oglVector &normal = pNormals[ point.normal ];
-		data->nx = normal.x;
-		data->ny = normal.y;
-		data->nz = normal.z;
-#if 0
-		}else{
-			converted = ( int )( normal.x * 32767.0f );
-			if( converted > 32767 ){
-				data->nx = ( GLshort )32767;
-				
-			}else if( converted < -32768 ){
-				data->nx = ( GLshort )-32768;
-				
-			}else{
-				data->nx = ( GLshort )converted;
-			}
-			
-			converted = ( int )( normal.y * 32767.0f );
-			if( converted > 32767 ){
-				data->ny = ( GLshort )32767;
-				
-			}else if( converted < -32768 ){
-				data->ny = ( GLshort )-32768;
-				
-			}else{
-				data->ny = ( GLshort )converted;
-			}
-			
-			converted = ( int )( normal.z * 32767.0f );
-			if( converted > 32767 ){
-				data->nz = ( GLshort )32767;
-				
-			}else if( converted < -32768 ){
-				data->nz = ( GLshort )-32768;
-				
-			}else{
-				data->nz = ( GLshort )converted;
-			}
-		}
-#endif
-		
-		// tangent
-		const oglVector &tangent = pTangents[ point.tangent ];
-		data->tx = tangent.x;
-		data->ty = tangent.y;
-		data->tz = tangent.z;
-		
-		if( negateTangents[ point.tangent ] ){
-			data->tw = -1.0f;
-			
-		}else{
-			data->tw = 1.0f;
-		}
-#if 0
-		}else{
-			converted = ( int )( tangent.x * 32767.0f );
-			if( converted > 32767 ){
-				data->tx = ( GLshort )32767;
-				
-			}else if( converted < -32768 ){
-				data->tx = ( GLshort )-32768;
-				
-			}else{
-				data->tx = ( GLshort )converted;
-			}
-			
-			converted = ( int )( tangent.y * 32767.0f );
-			if( converted > 32767 ){
-				data->ty = ( GLshort )32767;
-				
-			}else if( converted < -32768 ){
-				data->ty = ( GLshort )-32768;
-				
-			}else{
-				data->ty = ( GLshort )converted;
-			}
-			
-			converted = ( int )( tangent.z * 32767.0f );
-			if( converted > 32767 ){
-				data->tz = ( GLshort )32767;
-				
-			}else if( converted < -32768 ){
-				data->tz = ( GLshort )-32768;
-				
-			}else{
-				data->tz = ( GLshort )converted;
-			}
-		}
-#endif
-		
-		data++;
+		pVBO->SetParameterDataVec3( 0, i, pPositions[ point.position ] );
+		pVBO->SetParameterDataVec3( 1, i, pRealNormals[ point.position ] );
+		pVBO->SetParameterDataVec3( 2, i, pNormals[ point.normal ] );
+		pVBO->SetParameterDataVec4( 3, i, pTangents[ point.tangent ],
+			negateTangents[ point.tangent ] ? -1.0f : 1.0f );
 	}
 }
 
@@ -1254,7 +920,7 @@ void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
 	pVAO = new deoglVAO( renderThread );
 	OGL_CHECK( renderThread, pglBindVertexArray( pVAO->GetVAO() ) );
 	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
+	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO->GetSSBO() ) );
 	pVBOLayout->SetVAOAttributeAt( renderThread, 0, 0 ); // pos(0) => vao(0)
 	pVBOLayout->SetVAOAttributeAt( renderThread, 1, 1 ); // realNormal(1) => vao(1)
 	pVBOLayout->SetVAOAttributeAt( renderThread, 2, 2 ); // normal(2) => vao(2)
@@ -1425,13 +1091,13 @@ void deoglRComponentLOD::pTransformVertices( const deoglModelLOD &modelLOD ){
 		const decVector &orgpos = positions[ i ].position;
 		oglVector &trpos = pPositions[ i ];
 		
-		if( modelPosition.weight == -1 ){
+		if( modelPosition.weights == -1 ){
 			trpos.x = orgpos.x;
 			trpos.y = orgpos.y;
 			trpos.z = orgpos.z;
 			
 		}else{
-			const oglMatrix3x4 &matrix = pWeights[ modelPosition.weight ];
+			const oglMatrix3x4 &matrix = pWeights[ modelPosition.weights ];
 			
 			trpos.x = matrix.a11 * orgpos.x + matrix.a12 * orgpos.y + matrix.a13 * orgpos.z + matrix.a14;
 			trpos.y = matrix.a21 * orgpos.x + matrix.a22 * orgpos.y + matrix.a23 * orgpos.z + matrix.a24;
@@ -1617,23 +1283,18 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 		return;
 	}
 	
-	// for the time being we use a very simple layout without optimizations.
-	// later on certain attributes will be optimized if their values fall
-	// into certain categories. this allows to reduce the memory footprint
-	// of VBOs in certain cases
 	pVBOLayout = new deoglVBOLayout;
  	
- 	// the layout of attributes is the basic geometry attributes. Here
- 	// the data map for the attributes:
+ 	// the layout of attributes. has to be ssbo compatible:
  	//
 	// name        | offset | type  | components
 	// ------------+--------+-------+------------
 	// position    |      0 | float | x, y, z
-	// real-normal |     12 | float | x, y, z
-	// normal      |     24 | float | x, y, z
-	// tangent     |     36 | float | x, y, z, w
+	// real-normal |     16 | float | x, y, z
+	// normal      |     32 | float | x, y, z
+	// tangent     |     48 | float | x, y, z, w
 	pVBOLayout->SetAttributeCount( 4 );
-	pVBOLayout->SetStride( 52 ); // best performance with multiple of 32/64?
+	pVBOLayout->SetStride( 64 );
  	pVBOLayout->SetSize( pVBOLayout->GetStride() * modelLOD.GetVertexCount() );
 	pVBOLayout->SetIndexType( deoglVBOLayout::eitUnsignedInt );
 	
@@ -1645,17 +1306,17 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 	deoglVBOAttribute &attrRealNormal = pVBOLayout->GetAttributeAt( 1 );
 	attrRealNormal.SetComponentCount( 3 );
 	attrRealNormal.SetDataType( deoglVBOAttribute::edtFloat );
-	attrRealNormal.SetOffset( 12 );
+	attrRealNormal.SetOffset( 16 );
 	
 	deoglVBOAttribute &attrNormal = pVBOLayout->GetAttributeAt( 2 );
 	attrNormal.SetComponentCount( 3 );
 	attrNormal.SetDataType( deoglVBOAttribute::edtFloat );
-	attrNormal.SetOffset( 24 );
+	attrNormal.SetOffset( 32 );
 	
 	deoglVBOAttribute &attrTangent = pVBOLayout->GetAttributeAt( 3 );
 	attrTangent.SetComponentCount( 4 );
 	attrTangent.SetDataType( deoglVBOAttribute::edtFloat );
-	attrTangent.SetOffset( 36 );
+	attrTangent.SetOffset( 48 );
 }
 
 void deoglRComponentLOD::pUpdateRenderTaskConfig( deoglRenderTaskConfig &config,

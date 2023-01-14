@@ -717,36 +717,32 @@ int firstPoint, int pointCount ){
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 }
 
-void deoglRenderGeometry::ApproxTransformVNT( const deoglVAO &vao,
-GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount ){
-	#ifdef ANDROID
-	// android OpenGL ES 3.0 does not support texture buffer objects
-	DETHROW( deeInvalidAction );
-	#endif
-	
+void deoglRenderGeometry::ApproxTransformVNT( GLuint vao, GLuint vbo,
+const deoglSPBlockSSBO *weightMatrices, const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Geometry.ApproxTransformVNT" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	pPipelineApproxTransformVNT->Activate();
-	tsmgr.EnableTBO( 0, tboWeightMatrices, GetSamplerClampNearest() );
 	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, vboTransformed ) );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vbo) );
+	transformed.Activate();
+	if( weightMatrices ){
+		weightMatrices->Activate();
+	}
 	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao.GetVAO() ) );
+	pPipelineApproxTransformVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
 	
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, firstPoint, pointCount ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
 	
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0) );
+	transformed.Deactivate();
+	if( weightMatrices ){
+		weightMatrices->Deactivate();
+	}
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( vao ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	
-	// WARNING temporary hack. without this line below some immediately following rendering
-	//         into render targets result in strange results where texture data is not written
-	//         to framebuffers although the result is correct.
-	//         
-	// NOTE we have to replace this with compute shaders. TBF is unstable and error prone
-	glFlush();
 }
 
 

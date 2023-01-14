@@ -25,6 +25,7 @@
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 #include "../rendering/task/config/deoglRenderTaskConfig.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
@@ -56,11 +57,7 @@ public:
 	deoglRComponent &pComponent;
 	const int pLODIndex;
 	
-	deoglVBOpnt *pVBOData;
-	int pVBOPointCount;
-	int pVBOPointSize;
-	
-	GLuint pVBO;
+	deoglSPBlockSSBO::Ref pVBO;
 	deoglVAO *pVAO;
 	deoglVBOLayout *pVBOLayout;
 	const deoglSharedVBOBlock *pVBOBlock;
@@ -85,8 +82,7 @@ public:
 	
 	deoglMemoryConsumptionGPUUse pMemUse;
 	
-	GLuint pVBOWeightMatrices;
-	GLuint pTBOWeightMatrices;
+	deoglSPBlockSSBO::Ref pSSBOWeightMatrices;
 	GLuint pVBOTransformVertices;
 	GLuint pTBOTransformVertices;
 	deoglTexture *pTexTransformNormTan;
@@ -172,12 +168,6 @@ public:
 	
 	
 	
-	/** Number of points. */
-	inline int GetPointCount() const{ return pVBOPointCount; }
-	
-	/** VBO data in client memory. */
-	inline deoglVBOpnt *GetVBOData() const{ return pVBOData; }
-	
 	/** Point offset or 0 if not using a shared vao. */
 	int GetPointOffset() const;
 	
@@ -185,7 +175,7 @@ public:
 	int GetIndexOffset() const;
 	
 	/** VBO. */
-	inline GLuint GetVBO() const{ return pVBO; }
+	inline const deoglSPBlockSSBO::Ref &GetVBO() const{ return pVBO; }
 	
 	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
@@ -215,8 +205,8 @@ public:
 	/** Update VBO on the GPU using the accurate but slower method. */
 	void UpdateVBOOnGPUAccurate();
 	
-	/** Write weight matrices to the TBO. */
-	void WriteWeightMatricesTBO();
+	/** Write weight matrices to the SSBO. */
+	void WriteWeightMatricesSSBO();
 	
 	/** Transform vertices on the GPU. */
 	void GPUTransformVertices();
@@ -260,6 +250,7 @@ public:
 private:
 	void pCleanUp();
 	
+	void pEnsureVBO();
 	void pBuildVBO( const deoglModelLOD &modelLOD );
 	void pWriteVBOData( const deoglModelLOD &modelLOD );
 	void pUpdateVAO( deoglModelLOD &modelLOD );

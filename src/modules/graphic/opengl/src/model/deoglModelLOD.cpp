@@ -1561,9 +1561,8 @@ void deoglModelLOD::pWriteVBODataWithWeight(){
 		
 		writerVBO.WritePoint( pPositions[ vertex.position ].position, pNormals[ vertex.normal ],
 			pTangents[ vertex.tangent ], pNegateTangents[ vertex.tangent ],
-			pTexCoords[ vertex.texcoord ], pPositions[ vertex.position ].normal );
-		
-		writerVBO.WriteWeight( pPositions[ vertex.position ].weight );
+			pTexCoords[ vertex.texcoord ], pPositions[ vertex.position ].normal,
+			pPositions[ vertex.position ].weights );
 	}
 	
 // 	int maxCount = 0;

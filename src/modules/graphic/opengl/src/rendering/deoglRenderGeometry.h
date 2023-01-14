@@ -102,8 +102,8 @@ public:
 	 * Approximately transform model posititions, normals and tangents
 	 *        using component weight matrices using transform feedback.
 	 */
-	void ApproxTransformVNT( const deoglVAO &vao, GLuint tboWeightMatrices,
-		GLuint vboTransformed, int firstPoint, int pointCount );
+	void ApproxTransformVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
+		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount );
 	/*@}*/
 	
 private:
