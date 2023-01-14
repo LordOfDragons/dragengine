@@ -174,6 +174,8 @@ deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : de
 		pPipelineWriteSkinnedVBO = pipelineManager.GetWith( pipconf );
 		
 		// approximate transform vertices, normals and tangents
+		pipconf.Reset();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
 		pPipelineApproxTransformVNT = pipelineManager.GetWith( pipconf );
 		

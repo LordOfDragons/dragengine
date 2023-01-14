@@ -70,7 +70,17 @@ class deoglShaderDefines;
  * - DynamicStencil: false
  */
 class deoglPipelineConfiguration{
+public:
+	enum eTypes{
+		etGraphic,
+		etCompute,
+		etRayTrace
+	};
+	
+	
+	
 private:
+	eTypes pType;
 	const deoglShaderProgram *pShader;
 	
 	bool pColorMask[ 4 ];
@@ -134,6 +144,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Type. */
+	inline eTypes GetType() const{ return pType; }
+	
+	/** Set type. */
+	void SetType( eTypes type );
+	
 	/** Shader program. */
 	inline const deoglShaderProgram *GetShader() const{ return pShader; }
 	

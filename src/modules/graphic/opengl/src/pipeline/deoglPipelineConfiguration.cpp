@@ -39,6 +39,7 @@
 ////////////////////////////
 
 deoglPipelineConfiguration::deoglPipelineConfiguration() :
+pType( etGraphic ),
 pShader( nullptr ),
 pEnableScissorTest( false ),
 pEnableRasterizerDiscard( false ),
@@ -82,6 +83,7 @@ pDynamicStencilTest( false )
 }
 
 deoglPipelineConfiguration::deoglPipelineConfiguration( const deoglPipelineConfiguration &config ) :
+pType( etGraphic ),
 pShader( nullptr ),
 pEnableScissorTest( false ),
 pEnableRasterizerDiscard( false ),
@@ -115,7 +117,7 @@ pSPBInstanceIndexBase( -1 ),
 pDrawIDOffset( -1 ),
 pDynamicCullFace( false ),
 pDynamicPolygonOffset( false ),
-	pDynamicStencilTest ( false )
+pDynamicStencilTest ( false )
 {
 	pColorMask[ 0 ] = true;
 	pColorMask[ 1 ] = true;
@@ -128,6 +130,10 @@ pDynamicPolygonOffset( false ),
 
 // Management
 ///////////////
+
+void deoglPipelineConfiguration::SetType( eTypes type ){
+	pType = type;
+}
 
 void deoglPipelineConfiguration::SetShader( const deoglShaderProgram *shader ){
 	pShader = shader;
@@ -438,53 +444,61 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 	
 	renderThread.GetShader().ActivateShader( pShader ); // shader can be null which is allowed
 	
-	state.ColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] );
-	state.DepthMask( pDepthMask );
-	
-	state.EnableScissorTest( pEnableScissorTest );
-	
-	state.EnableRasterizerDiscard( pEnableRasterizerDiscard );
-	
-	state.PolygonMode( pPolygonMode );
-	
-	state.EnableCullFace( pEnableCullFace );
-	if( pEnableCullFace && ! pDynamicCullFace ){
-		state.CullFace( pCullFace );
-	}
-	
-	state.EnablePolygonOffsetFill( pEnablePolygonOffset );
-	if( pEnablePolygonOffset && ! pDynamicPolygonOffset ){
-		state.PolygonOffset( pPolygonOffsetFactor, pPolygonOffsetBias );
-	}
-	
-	state.EnableDepthTest( pEnableDepthTest );
-	if( pEnableDepthTest ){
-		state.DepthFunc( pDepthFunc );
-	}
-	
-	state.EnableStencilTest( pEnableStencilTest );
-	if( pEnableStencilTest && ! pDynamicStencilTest ){
-		if( pStencilSameFrontBack ){
-			state.StencilOp( pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront );
-			
-		}else{
-			state.StencilOpFront( pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront );
-			state.StencilOpBack( pStencilOpFailBack, pStencilOpZFailBack, pStencilOpZPassBack );
+	switch( pType ){
+	case etGraphic:
+		state.ColorMask( pColorMask[ 0 ], pColorMask[ 1 ], pColorMask[ 2 ], pColorMask[ 3 ] );
+		state.DepthMask( pDepthMask );
+		
+		state.EnableScissorTest( pEnableScissorTest );
+		
+		state.EnableRasterizerDiscard( pEnableRasterizerDiscard );
+		
+		state.PolygonMode( pPolygonMode );
+		
+		state.EnableCullFace( pEnableCullFace );
+		if( pEnableCullFace && ! pDynamicCullFace ){
+			state.CullFace( pCullFace );
 		}
 		
-		state.StencilFunc( pStencilFunc, pStencilRef, pStencilRefMask );
-		state.StencilMask( pStencilMask );
+		state.EnablePolygonOffsetFill( pEnablePolygonOffset );
+		if( pEnablePolygonOffset && ! pDynamicPolygonOffset ){
+			state.PolygonOffset( pPolygonOffsetFactor, pPolygonOffsetBias );
+		}
+		
+		state.EnableDepthTest( pEnableDepthTest );
+		if( pEnableDepthTest ){
+			state.DepthFunc( pDepthFunc );
+		}
+		
+		state.EnableStencilTest( pEnableStencilTest );
+		if( pEnableStencilTest && ! pDynamicStencilTest ){
+			if( pStencilSameFrontBack ){
+				state.StencilOp( pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront );
+				
+			}else{
+				state.StencilOpFront( pStencilOpFailFront, pStencilOpZFailFront, pStencilOpZPassFront );
+				state.StencilOpBack( pStencilOpFailBack, pStencilOpZFailBack, pStencilOpZPassBack );
+			}
+			
+			state.StencilFunc( pStencilFunc, pStencilRef, pStencilRefMask );
+			state.StencilMask( pStencilMask );
+		}
+		
+		state.EnableBlend( pEnableBlend );
+		if( pEnableBlend ){
+			state.BlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a );
+			state.BlendFunc( pBlendFuncSource, pBlendFuncDest );
+		}
+		
+		state.ClipControl( pClipControl );
+		
+		state.EnableDepthClamp( pDepthClamp );
+		break;
+		
+	case etCompute:
+	case etRayTrace:
+		break;
 	}
-	
-	state.EnableBlend( pEnableBlend );
-	if( pEnableBlend ){
-		state.BlendColor( pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a );
-		state.BlendFunc( pBlendFuncSource, pBlendFuncDest );
-	}
-	
-	state.ClipControl( pClipControl );
-	
-	state.EnableDepthClamp( pDepthClamp );
 }
 
 
@@ -493,6 +507,7 @@ void deoglPipelineConfiguration::Activate( deoglRenderThread &renderThread ) con
 //////////////
 
 deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPipelineConfiguration &config ){
+	pType = config.pType;
 	pShader = config.pShader;
 	pColorMask[ 0 ] = config.pColorMask[ 0 ];
 	pColorMask[ 1 ] = config.pColorMask[ 1 ];
@@ -535,7 +550,8 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=( const deoglPi
 }
 
 bool deoglPipelineConfiguration::operator==( const deoglPipelineConfiguration &config ) const{
-	return pShader == config.pShader
+	return pType == config.pType
+		&& pShader == config.pShader
 		&& pColorMask[ 0 ] == config.pColorMask[ 0 ]
 		&& pColorMask[ 1 ] == config.pColorMask[ 1 ]
 		&& pColorMask[ 2 ] == config.pColorMask[ 2 ]
