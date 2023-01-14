@@ -405,8 +405,8 @@ void deoglRModel::pInitExtends( const deModel &engModel ){
 			const decVector &position = positions[ i ].position;
 			
 			int dominatingBone = -1;
-			if( positions[ i ].weight != -1 ){
-				dominatingBone = dominatingBones[ positions[ i ].weight ];
+			if( positions[ i ].weights != -1 ){
+				dominatingBone = dominatingBones[ positions[ i ].weights ];
 			}
 			
 			if( dominatingBone != -1 ){

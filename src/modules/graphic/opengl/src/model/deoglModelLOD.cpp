@@ -1151,7 +1151,7 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 			oglModelPosition &out = pPositions[ pPositionCount ];
 			
 			out.position = in.GetPosition();
-			out.weight = in.GetWeightSet();
+			out.weights = in.GetWeightSet();
 		}
 	}
 	
@@ -1486,7 +1486,7 @@ void deoglModelLOD::pWriteVBODataPositionWeight(){
 		dataPosition[ 0 ] = ( GLfloat )pPositions[ i ].position.x;
 		dataPosition[ 1 ] = ( GLfloat )pPositions[ i ].position.y;
 		dataPosition[ 2 ] = ( GLfloat )pPositions[ i ].position.z;
-		*dataWeight = ( GLint )pPositions[ i ].weight;
+		*dataWeight = ( GLint )pPositions[ i ].weights;
 	}
 }
 
@@ -1549,9 +1549,7 @@ void deoglModelLOD::pWriteVBODataWriteSkinnedVBO(){
 }
 
 void deoglModelLOD::pWriteVBODataWithWeight(){
-	if( ! pVBOBlockWithWeight ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pVBOBlockWithWeight )
 	
 	deoglVBOWriterModel writerVBO( pModel.GetRenderThread() );
 	int i;

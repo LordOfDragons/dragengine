@@ -91,7 +91,7 @@ deoglShaderProgram::~deoglShaderProgram(){
 // Management
 ///////////////
 
-void deoglShaderProgram::SetComputeCode( deoglShaderUnitSourceCode *sourceCode ){
+void deoglShaderProgram::SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode ){
 	pSCCompute = sourceCode;
 }
 

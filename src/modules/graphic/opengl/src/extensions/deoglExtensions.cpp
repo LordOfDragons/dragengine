@@ -826,6 +826,14 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// GL_EXT_gpu_shader4 : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglBindFragDataLocation, "glBindFragDataLocation" );
+	pGetRequiredFunction( (void**)&pglUniform1ui, "glUniform1ui" );
+	pGetRequiredFunction( (void**)&pglUniform2ui, "glUniform2ui" );
+	pGetRequiredFunction( (void**)&pglUniform3ui, "glUniform3ui" );
+	pGetRequiredFunction( (void**)&pglUniform4ui, "glUniform4ui" );
+	pGetRequiredFunction( (void**)&pglUniform1uiv, "glUniform1uiv" );
+	pGetRequiredFunction( (void**)&pglUniform2uiv, "glUniform2uiv" );
+	pGetRequiredFunction( (void**)&pglUniform3uiv, "glUniform3uiv" );
+	pGetRequiredFunction( (void**)&pglUniform4uiv, "glUniform4uiv" );
 	
 	// GL_EXT_texture_array : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglFramebufferTextureLayer, "glFramebufferTextureLayer" );

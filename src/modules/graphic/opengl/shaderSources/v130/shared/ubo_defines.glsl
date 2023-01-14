@@ -5,4 +5,4 @@
 #endif
 #define UBOLAYOUT layout (std140, MATRIX_ORDER)
 
-#define UBOLAYOUT_BIND layout(bp)  layout (binding = bp, std140, MATRIX_ORDER)
+#define UBOLAYOUT_BIND(bp) layout (binding=bp, std140, MATRIX_ORDER)

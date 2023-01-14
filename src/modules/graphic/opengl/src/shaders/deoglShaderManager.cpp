@@ -277,31 +277,69 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines ){
 		new deoglShaderProgram( pRenderThread, sources, defines ) ) );
 	
 	if( ! sources->GetPathGeometrySourceCode().IsEmpty() ){
-		program->SetGeometrySourceCode( GetUnitSourceCodeWithPath( sources->GetPathGeometrySourceCode().GetString() ) );
+		program->SetGeometrySourceCode( GetUnitSourceCodeWithPath( sources->GetPathGeometrySourceCode() ) );
 		
 		if( ! program->GetGeometrySourceCode() ){
-			pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Geometry source '%s' not found", sources->GetFilename().GetString(),
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Geometry source '%s' not found", sources->GetFilename().GetString(),
 				sources->GetPathGeometrySourceCode().GetString() );
 			DETHROW( deeInvalidParam );
 		}
 	}
 	
 	if( ! sources->GetPathVertexSourceCode().IsEmpty() ){
-		program->SetVertexSourceCode( GetUnitSourceCodeWithPath( sources->GetPathVertexSourceCode().GetString() ) );
+		program->SetVertexSourceCode( GetUnitSourceCodeWithPath( sources->GetPathVertexSourceCode() ) );
 		
 		if( ! program->GetVertexSourceCode() ){
-			pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Vertex source '%s' not found", sources->GetFilename().GetString(),
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Vertex source '%s' not found", sources->GetFilename().GetString(),
 				sources->GetPathVertexSourceCode().GetString() );
 			DETHROW( deeInvalidParam );
 		}
 	}
 	
 	if( ! sources->GetPathFragmentSourceCode().IsEmpty() ){
-		program->SetFragmentSourceCode( GetUnitSourceCodeWithPath( sources->GetPathFragmentSourceCode().GetString() ) );
+		program->SetFragmentSourceCode( GetUnitSourceCodeWithPath( sources->GetPathFragmentSourceCode() ) );
 		
 		if( ! program->GetFragmentSourceCode() ){
-			pRenderThread.GetLogger().LogErrorFormat( "Shader(%s): Fragment source '%s' not found", sources->GetFilename().GetString(),
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Fragment source '%s' not found", sources->GetFilename().GetString(),
 				sources->GetPathFragmentSourceCode().GetString() );
+			DETHROW( deeInvalidParam );
+		}
+	}
+	
+	if( ! sources->GetPathComputeSourceCode().IsEmpty() ){
+		program->SetComputeSourceCode( GetUnitSourceCodeWithPath( sources->GetPathComputeSourceCode() ) );
+		
+		if( ! program->GetComputeSourceCode() ){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Compute source '%s' not found", sources->GetFilename().GetString(),
+				sources->GetPathComputeSourceCode().GetString() );
+			DETHROW( deeInvalidParam );
+		}
+	}
+	
+	if( ! sources->GetPathTessellationControlSourceCode().IsEmpty() ){
+		program->SetTessellationControlSourceCode( GetUnitSourceCodeWithPath(
+			sources->GetPathTessellationControlSourceCode() ) );
+		
+		if( ! program->GetTessellationControlSourceCode() ){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Tessellation control source '%s' not found", sources->GetFilename().GetString(),
+				sources->GetPathTessellationControlSourceCode().GetString() );
+			DETHROW( deeInvalidParam );
+		}
+	}
+	
+	if( ! sources->GetPathTessellationEvaluationSourceCode().IsEmpty() ){
+		program->SetTessellationEvaluationSourceCode( GetUnitSourceCodeWithPath(
+			sources->GetPathTessellationEvaluationSourceCode() ) );
+		
+		if( ! program->GetTessellationEvaluationSourceCode() ){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Tessellation evaluation source '%s' not found", sources->GetFilename().GetString(),
+				sources->GetPathTessellationEvaluationSourceCode().GetString() );
 			DETHROW( deeInvalidParam );
 		}
 	}

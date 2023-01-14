@@ -69,18 +69,10 @@ pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bu
 	pDirty = true;
 	
 	try{
-		// create vbo
 		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
 		
-		// create ibo if indices are used
 		if( indexSize > 0 ){
 			OGL_CHECK( renderThread, pglGenBuffers( 1, &pIBO ) );
-			if( ! pIBO ){
-				DETHROW( deeOutOfMemory );
-			}
 		}
 		
 		// create vao

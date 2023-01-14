@@ -334,6 +334,14 @@ GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying = null
 ////////////////////////////////////////////
 
 GLAPI PFNGLBINDFRAGDATALOCATIONEXTPROC pglBindFragDataLocation = nullptr;
+GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui = nullptr;
+GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui = nullptr;
+GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui = nullptr;
+GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui = nullptr;
+GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv = nullptr;
+GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv = nullptr;
+GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv = nullptr;
+GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv = nullptr;
 
 
 

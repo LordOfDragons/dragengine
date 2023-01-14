@@ -88,7 +88,7 @@ public:
 	inline deoglShaderUnitSourceCode *GetComputeSourceCode() const{ return pSCCompute; }
 	
 	/** Set compute source code or NULL. */
-	void SetComputeCode( deoglShaderUnitSourceCode *sourceCode );
+	void SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode );
 	
 	/** Retrieves the tessellation control source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationControlSourceCode() const{ return pSCTessellationControl; }

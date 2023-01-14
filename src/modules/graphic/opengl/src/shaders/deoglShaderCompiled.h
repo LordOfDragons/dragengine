@@ -118,10 +118,16 @@ public:
 	void SetParameterFloat( int index, float p1, float p2 ) const;
 	void SetParameterFloat( int index, float p1, float p2, float p3 ) const;
 	void SetParameterFloat( int index, float p1, float p2, float p3, float p4 ) const;
+	
 	void SetParameterInt( int index, int p1 ) const;
 	void SetParameterInt( int index, int p1, int p2 ) const;
 	void SetParameterInt( int index, int p1, int p2, int p3 ) const;
 	void SetParameterInt( int index, int p1, int p2, int p3, int p4 ) const;
+	
+	void SetParameterUInt( int index, unsigned int p1 ) const;
+	void SetParameterUInt( int index, unsigned int p1, unsigned int p2 ) const;
+	void SetParameterUInt( int index, unsigned int p1, unsigned int p2, unsigned int p3 ) const;
+	void SetParameterUInt( int index, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4 ) const;
 	
 	void SetParameterPoint2( int index, const decPoint &point ) const;
 	void SetParameterPoint3( int index, const decPoint3 &point ) const;
