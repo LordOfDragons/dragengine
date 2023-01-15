@@ -59,12 +59,6 @@ private:
 	const deoglPipeline *pPipelineOccTest;
 	const deoglPipeline *pPipelineOccTestDual;
 	const deoglPipeline *pPipelineOccTestSun;
-	const deoglPipeline *pPipelineOccTestStereo;
-	const deoglPipeline *pPipelineOccTestDualStereo;
-	const deoglPipeline *pPipelineOccTestSunStereo;
-	const deoglPipeline *pPipelineOccTestTFB;
-	const deoglPipeline *pPipelineOccTestTFBDual;
-	const deoglPipeline *pPipelineOccTestTFBSun;
 	const deoglPipeline *pPipelineOccMapCube;
 	
 	deoglSPBlockUBO::Ref pRenderParamBlock;

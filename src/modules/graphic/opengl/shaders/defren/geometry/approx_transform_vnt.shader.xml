@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Approx Transform VNT</name>
 	
-	<version>140</version>
-	
 	<parameter name='pParams'/>
 	
 	<shaderStorageBlock name='ModelData' target='0'/>

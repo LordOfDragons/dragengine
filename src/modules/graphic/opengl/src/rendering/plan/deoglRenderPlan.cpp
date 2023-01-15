@@ -1220,7 +1220,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 		// pFinishOcclusionTests to avoid stalling
 		if( pOcclusionTest->GetInputDataCount() > 0
 		&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-			pOcclusionTest->UpdateVBO();
+			pOcclusionTest->UpdateSSBO();
 			if( pDebug ){
 				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
 			}

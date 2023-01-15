@@ -19,10 +19,6 @@ struct sTransformedData{
 	vec4 tangent;
 };
 
-struct sWeightMatrix{
-	mat4x3 matrix;
-};
-
 UBOLAYOUT_BIND(0) readonly buffer ModelData {
 	sModelData pModelData[];
 };
@@ -32,7 +28,7 @@ UBOLAYOUT_BIND(1) writeonly buffer TransformedData {
 };
 
 UBOLAYOUT_BIND(2) readonly buffer WeightsMatrix {
-	sWeightMatrix pWeightMatrix[];
+	mat4x3 pWeightMatrix[];
 };
 
 layout( local_size_x=64 ) in;
@@ -59,7 +55,7 @@ void main( void ){
 		return;
 	}
 	
-	mat4x3 matrix = pWeightMatrix[ weights ].matrix;
+	mat4x3 matrix = pWeightMatrix[ weights ];
 	
 	// transform the position. this is correct and accurate
 	pTransformedData[ to ].position = matrix * vec4( pModelData[ from ].position, 1 );

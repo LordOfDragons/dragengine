@@ -107,6 +107,9 @@ public:
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
 	
+	/** Read data from SSBO into write buffer. Returns write buffer memory pointer. */
+	char *ReadBuffer();
+	
 	
 	
 	/** GPU memory consumption for the VBO. */

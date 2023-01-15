@@ -6,6 +6,7 @@ uniform HIGHP sampler2DArray texOccMap;
 uniform HIGHP sampler2DArray texOccMap2;
 #endif
 
+uniform uint pInputDataCount;
 uniform mat4 pMatrix; // camera-rotation and projection
 uniform vec2 pScaleSize;
 uniform float pBaseLevel;
@@ -31,10 +32,20 @@ uniform mat4 pMatrixStereo;
 uniform mat4 pMatrix2Stereo;
 #endif
 
-in vec3 inMinExtend;
-in vec3 inMaxExtend;
+#include "v130/shared/ubo_defines.glsl"
 
-out float fbResult;
+struct sInputData{
+	vec3 minExtend;
+	vec3 maxExtend;
+};
+
+UBOLAYOUT_BIND(0) readonly buffer InputData {
+	sInputData pInputData[];
+};
+
+UBOLAYOUT_BIND(1) writeonly buffer ResultData {
+	bvec4 pResultData[];
+};
 
 const float baselog = log2( 3.0 ); // 1.5849625007211563
 #ifdef ENSURE_MIN_SIZE
@@ -180,14 +191,22 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap,
 	//}
 }
 
-
+layout( local_size_x=64 ) in;
 
 const vec2 vScale = vec2( 0.5 );
 const vec2 vOffset = vec2( 0.5 );
 
 void main( void ){
-	gl_Position = vec4( 0, 0, 0, 1 ); // keep broken compilers happy
-	fbResult = 1;
+	// skip outside of parameter space
+	if( gl_GlobalInvocationID.x >= pInputDataCount ){
+		return;
+	}
+	
+	vec3 inMinExtend = pInputData[ gl_GlobalInvocationID.x ].minExtend;
+	vec3 inMaxExtend = pInputData[ gl_GlobalInvocationID.x ].maxExtend;
+	
+	#define outResultData pResultData[ gl_GlobalInvocationID.x / 4 ][ gl_GlobalInvocationID.x % 4 ]
+	outResultData = true;
 	
 	#ifdef ENSURE_MIN_SIZE
 		//vec3 adjustExtends = step( ( inMaxExtend - inMinExtend ), epsilonSize ) * epsilonSize;
@@ -258,7 +277,7 @@ void main( void ){
 		#endif
 		
 		if( ! result ){
-			fbResult = 0;
+			outResultData = false;
 			return;
 		}
 		
@@ -285,7 +304,7 @@ void main( void ){
 		#endif
 		
 		if( ! result ){
-			fbResult = 0;
+			outResultData = false;
 			return;
 		}
 		
@@ -301,7 +320,7 @@ void main( void ){
 			result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
 				testMinExtend.z, pScaleSize2, pBaseLevel2, texOccMap2, 0 );
 			if( ! result ){
-				fbResult = 0;
+				outResultData = false;
 				return;
 			}
 		#endif

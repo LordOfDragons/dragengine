@@ -242,7 +242,7 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	// is delayed until used in the sky light renderer. this avoids stalling
 	if( pOcclusionTest->GetInputDataCount() > 0
 	&& pPlan.GetRenderThread().GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-		pOcclusionTest->UpdateVBO();
+		pOcclusionTest->UpdateSSBO();
 		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
 	}
 }
