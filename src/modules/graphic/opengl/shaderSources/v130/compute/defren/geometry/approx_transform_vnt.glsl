@@ -19,7 +19,6 @@ struct sTransformedData{
 	vec4 tangent;
 };
 
-
 struct sWeightMatrix{
 	mat4x3 matrix;
 };

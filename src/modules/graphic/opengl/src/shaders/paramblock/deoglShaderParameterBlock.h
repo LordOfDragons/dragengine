@@ -157,6 +157,9 @@ public:
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer() = 0;
 	
+	/** Ensure buffer exists. Calls MapBuffer() then UnmapBuffer(). */
+	void EnsureBuffer();
+	
 	
 	
 	/** Set data for float type parameter. */
@@ -169,7 +172,7 @@ public:
 	void SetParameterDataVec3( int parameter, const decColor &color );
 	void SetParameterDataVec3( int parameter, const decVector &vector );
 	void SetParameterDataVec3( int parameter, const decDVector &vector );
-	void SetParameterDataVec3( int parameter, const oglVector &vector );
+	void SetParameterDataVec3( int parameter, const oglVector3 &vector );
 	
 	void SetParameterDataVec4( int parameter, float value1, float value2,
 		float value3, float value4 );
@@ -179,7 +182,7 @@ public:
 	void SetParameterDataVec4( int parameter, const decDVector4 &vector );
 	void SetParameterDataVec4( int parameter, const decVector &vector, float w );
 	void SetParameterDataVec4( int parameter, const decDVector4 &vector, double w );
-	void SetParameterDataVec4( int parameter, const oglVector &vector, float w );
+	void SetParameterDataVec4( int parameter, const oglVector3 &vector, float w );
 	
 	void SetParameterDataMat3x2( int parameter, const float *values );
 	void SetParameterDataMat3x2( int parameter, const decMatrix &matrix );
@@ -229,7 +232,7 @@ public:
 	void SetParameterDataArrayVec3( int parameter, int index, const decColor &color );
 	void SetParameterDataArrayVec3( int parameter, int index, const decVector &vector );
 	void SetParameterDataArrayVec3( int parameter, int index, const decDVector &vector );
-	void SetParameterDataArrayVec3( int parameter, int index, const oglVector &vector );
+	void SetParameterDataArrayVec3( int parameter, int index, const oglVector3 &vector );
 	
 	void SetParameterDataArrayVec4( int parameter, int index,
 		float value1, float value2, float value3, float value4 );
@@ -239,7 +242,7 @@ public:
 	void SetParameterDataArrayVec4( int parameter, int index, const decDVector4 &vector );
 	void SetParameterDataArrayVec4( int parameter, int index, const decVector &vector, float w );
 	void SetParameterDataArrayVec4( int parameter, int index, const decDVector &vector, double w );
-	void SetParameterDataArrayVec4( int parameter, int index, const oglVector &vector, float w );
+	void SetParameterDataArrayVec4( int parameter, int index, const oglVector3 &vector, float w );
 	
 	void SetParameterDataArrayMat3x2( int parameter, int index, const float *values );
 	void SetParameterDataArrayMat3x2( int parameter, int index, const decMatrix &matrix );
@@ -303,7 +306,7 @@ public:
 	void SetParameterDataVec3( int parameter, int element, const decColor &color );
 	void SetParameterDataVec3( int parameter, int element, const decVector &vector );
 	void SetParameterDataVec3( int parameter, int element, const decDVector &vector );
-	void SetParameterDataVec3( int parameter, int element, const oglVector &vector );
+	void SetParameterDataVec3( int parameter, int element, const oglVector3 &vector );
 	
 	void SetParameterDataVec4( int parameter, int element,
 		float value1, float value2, float value3, float value4 );
@@ -313,7 +316,7 @@ public:
 	void SetParameterDataVec4( int parameter, int element, const decDVector4 &vector );
 	void SetParameterDataVec4( int parameter, int element, const decVector &vector, float w );
 	void SetParameterDataVec4( int parameter, int element, const decDVector4 &vector, double w );
-	void SetParameterDataVec4( int parameter, int element, const oglVector &vector, float w );
+	void SetParameterDataVec4( int parameter, int element, const oglVector3 &vector, float w );
 	
 	void SetParameterDataMat3x2( int parameter, int element, const float *values );
 	void SetParameterDataMat3x2( int parameter, int element, const decMatrix &matrix );
@@ -374,7 +377,7 @@ public:
 	void SetParameterDataArrayVec3( int parameter, int element, int index,
 		const decDVector &vector );
 	void SetParameterDataArrayVec3( int parameter, int element, int index,
-		const oglVector &vector );
+		const oglVector3 &vector );
 	
 	void SetParameterDataArrayVec4( int parameter, int element, int index,
 		float value1, float value2, float value3, float value4 );
@@ -391,7 +394,7 @@ public:
 	void SetParameterDataArrayVec4( int parameter, int element, int index,
 		const decDVector &vector, double w );
 	void SetParameterDataArrayVec4( int parameter, int element, int index,
-		const oglVector &vector, float w );
+		const oglVector3 &vector, float w );
 	
 	void SetParameterDataArrayMat3x2( int parameter, int element, int index,
 		const float *values );

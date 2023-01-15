@@ -529,13 +529,13 @@ void deoglRComponentLOD::PreparePositions(){
 	PrepareWeights();
 	
 	if( pDirtyModelPositions ){
-		oglVector *positions = NULL;
+		oglVector3 *positions = NULL;
 		
 		if( pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 			const int positionCount = modelLOD.GetPositionCount();
 			if( positionCount > 0 ){
-				positions = new oglVector[ positionCount ];
+				positions = new oglVector3[ positionCount ];
 			}
 		}
 		
@@ -574,10 +574,10 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 	PreparePositions();
 	
 	if( pDirtyModelNorTan ){
-		oglVector *realNormals = NULL;
-		oglVector *normals = NULL;
-		oglVector *tangents = NULL;
-		oglVector *faceNormals = NULL;
+		oglVector3 *realNormals = NULL;
+		oglVector3 *normals = NULL;
+		oglVector3 *tangents = NULL;
+		oglVector3 *faceNormals = NULL;
 		
 		if( pComponent.GetModel() && pLODIndex >= 0 && pLODIndex < pComponent.GetModel()->GetLODCount() ){
 			deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
@@ -589,16 +589,16 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 			
 			try{
 				if( positionCount > 0 ){
-					realNormals = new oglVector[ positionCount ];
+					realNormals = new oglVector3[ positionCount ];
 				}
 				if( normalCount > 0 ){
-					normals = new oglVector[ normalCount ];
+					normals = new oglVector3[ normalCount ];
 				}
 				if( tangentCount > 0 ){
-					tangents = new oglVector[ tangentCount ];
+					tangents = new oglVector3[ tangentCount ];
 				}
 				if( faceCount > 0 ){
-					faceNormals = new oglVector[ faceCount ];
+					faceNormals = new oglVector3[ faceCount ];
 				}
 				
 			}catch( const deException & ){
@@ -733,7 +733,7 @@ void deoglRComponentLOD::pEnsureVBO(){
 	vbo.MapToStd140();
 	vbo.SetBindingPoint( 1 );
 	
-	const deoglSPBMapBuffer mapped( pVBO ); // ensure buffer exists
+	pVBO->EnsureBuffer();
 	pMemUse = pVBOLayout->GetStride() * pointCount;
 }
 
@@ -933,7 +933,7 @@ void deoglRComponentLOD::pTransformVertices( const deoglModelLOD &modelLOD ){
 		// vertices. this extra check avoids potential bugs if pWeights is incorrectly NULL
 		for( i=0; i<positionCount; i++ ){
 			const decVector &orgpos = positions[ i ].position;
-			oglVector &trpos = pPositions[ i ];
+			oglVector3 &trpos = pPositions[ i ];
 			trpos.x = orgpos.x;
 			trpos.y = orgpos.y;
 			trpos.z = orgpos.z;
@@ -944,7 +944,7 @@ void deoglRComponentLOD::pTransformVertices( const deoglModelLOD &modelLOD ){
 	for( i=0; i<positionCount; i++ ){
 		const oglModelPosition &modelPosition = positions[ i ];
 		const decVector &orgpos = positions[ i ].position;
-		oglVector &trpos = pPositions[ i ];
+		oglVector3 &trpos = pPositions[ i ];
 		
 		if( modelPosition.weights == -1 ){
 			trpos.x = orgpos.x;
@@ -969,8 +969,8 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 	const int tangentCount = modelLOD.GetTangentCount();
 	const int normalCount = modelLOD.GetNormalCount();
 	const int faceCount = modelLOD.GetFaceCount();
-	oglVector edge1, edge2;
-	oglVector tangent;
+	oglVector3 edge1, edge2;
+	oglVector3 tangent;
 	decVector2 d1, d2;
 	float len, invlen;
 	int i;
@@ -998,14 +998,14 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 		const oglModelVertex &point1 = points[ face.GetVertex1() ];
 		const oglModelVertex &point2 = points[ face.GetVertex2() ];
 		const oglModelVertex &point3 = points[ face.GetVertex3() ];
-		const oglVector &position1 = pPositions[ point1.position ];
-		const oglVector &position2 = pPositions[ point2.position ];
-		const oglVector &position3 = pPositions[ point3.position ];
+		const oglVector3 &position1 = pPositions[ point1.position ];
+		const oglVector3 &position2 = pPositions[ point2.position ];
+		const oglVector3 &position3 = pPositions[ point3.position ];
 		const decVector2 &texcoord1 = texcoords[ point1.texcoord ];
 		const decVector2 &texcoord2 = texcoords[ point2.texcoord ];
 		const decVector2 &texcoord3 = texcoords[ point3.texcoord ];
 		
-		oglVector &faceNormal = pFaceNormals[ i ];
+		oglVector3 &faceNormal = pFaceNormals[ i ];
 		
 		// calculate edges
 		edge1.x = position2.x - position1.x;
@@ -1034,33 +1034,33 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 		}
 		
 		// add to real normals
-		oglVector &vrn1 = pRealNormals[ point1.position ];
+		oglVector3 &vrn1 = pRealNormals[ point1.position ];
 		vrn1.x += faceNormal.x;
 		vrn1.y += faceNormal.y;
 		vrn1.z += faceNormal.z;
 		
-		oglVector &vrn2 = pRealNormals[ point2.position ];
+		oglVector3 &vrn2 = pRealNormals[ point2.position ];
 		vrn2.x += faceNormal.x;
 		vrn2.y += faceNormal.y;
 		vrn2.z += faceNormal.z;
 		
-		oglVector &vrn3 = pRealNormals[ point3.position ];
+		oglVector3 &vrn3 = pRealNormals[ point3.position ];
 		vrn3.x += faceNormal.x;
 		vrn3.y += faceNormal.y;
 		vrn3.z += faceNormal.z;
 		
 		// add to normals
-		oglVector &vn1 = pNormals[ point1.normal ];
+		oglVector3 &vn1 = pNormals[ point1.normal ];
 		vn1.x += faceNormal.x;
 		vn1.y += faceNormal.y;
 		vn1.z += faceNormal.z;
 		
-		oglVector &vn2 = pNormals[ point2.normal ];
+		oglVector3 &vn2 = pNormals[ point2.normal ];
 		vn2.x += faceNormal.x;
 		vn2.y += faceNormal.y;
 		vn2.z += faceNormal.z;
 		
-		oglVector &vn3 = pNormals[ point3.normal ];
+		oglVector3 &vn3 = pNormals[ point3.normal ];
 		vn3.x += faceNormal.x;
 		vn3.y += faceNormal.y;
 		vn3.z += faceNormal.z;
@@ -1088,17 +1088,17 @@ void deoglRComponentLOD::pCalculateNormalsAndTangents( const deoglModelLOD &mode
 		}
 		
 		// add to tangents
-		oglVector &vt1 = pTangents[ point1.tangent ];
+		oglVector3 &vt1 = pTangents[ point1.tangent ];
 		vt1.x += tangent.x;
 		vt1.y += tangent.y;
 		vt1.z += tangent.z;
 		
-		oglVector &vt2 = pTangents[ point2.tangent ];
+		oglVector3 &vt2 = pTangents[ point2.tangent ];
 		vt2.x += tangent.x;
 		vt2.y += tangent.y;
 		vt2.z += tangent.z;
 		
-		oglVector &vt3 = pTangents[ point3.tangent ];
+		oglVector3 &vt3 = pTangents[ point3.tangent ];
 		vt3.x += tangent.x;
 		vt3.y += tangent.y;
 		vt3.z += tangent.z;

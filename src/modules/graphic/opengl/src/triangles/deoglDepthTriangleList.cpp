@@ -53,10 +53,10 @@ deoglDepthTriangleList::~deoglDepthTriangleList(){
 void deoglDepthTriangleList::AddTriangle( const decVector &p1, const decVector &p2, const decVector &p3 ){
 	if( pPointCount + 3 >= pPointSize ){
 		int newSize = pPointSize * 3 / 2 + 3;
-		oglVector *newArray = new oglVector[ newSize ];
+		oglVector3 *newArray = new oglVector3[ newSize ];
 		if( ! newArray ) DETHROW( deeOutOfMemory );
 		if( pPoints ){
-			memcpy( newArray, pPoints, sizeof( oglVector ) * pPointSize );
+			memcpy( newArray, pPoints, sizeof( oglVector3 ) * pPointSize );
 			delete [] pPoints;
 		}
 		pPoints = newArray;

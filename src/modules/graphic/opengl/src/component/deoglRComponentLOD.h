@@ -64,11 +64,11 @@ public:
 	
 	oglMatrix3x4 *pWeights;
 	
-	oglVector *pPositions;
-	oglVector *pRealNormals;
-	oglVector *pNormals;
-	oglVector *pTangents;
-	oglVector *pFaceNormals;
+	oglVector3 *pPositions;
+	oglVector3 *pRealNormals;
+	oglVector3 *pNormals;
+	oglVector3 *pTangents;
+	oglVector3 *pFaceNormals;
 	
 	bool pDirtyModelWeights;
 	bool pDirtyModelPositions;
@@ -129,31 +129,31 @@ public:
 	 * Retrieves the face normals.
 	 * \details Valid only after calling PrepareNormalsTangents and faces exist.
 	 */
-	inline oglVector *GetFaceNormals() const{ return pFaceNormals; }
+	inline oglVector3 *GetFaceNormals() const{ return pFaceNormals; }
 	
 	/**
 	 * Retrieves the positions.
 	 * \details Valid only after calling PreparePositions and positions exist.
 	 */
-	inline oglVector *GetPositions() const{ return pPositions; }
+	inline oglVector3 *GetPositions() const{ return pPositions; }
 	
 	/**
 	 * Retrieves the real normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector *GetRealNormals() const{ return pRealNormals; }
+	inline oglVector3 *GetRealNormals() const{ return pRealNormals; }
 	
 	/**
 	 * Retrieves the normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector *GetNormals() const{ return pNormals; }
+	inline oglVector3 *GetNormals() const{ return pNormals; }
 	
 	/**
 	 * Retrieves the tangents.
 	 * \details Valid only after calling PrepareNormalsTangents and tangents exist.
 	 */
-	inline oglVector *GetTangents() const{ return pTangents; }
+	inline oglVector3 *GetTangents() const{ return pTangents; }
 	
 	
 	

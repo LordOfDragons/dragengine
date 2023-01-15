@@ -228,8 +228,8 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( sMirrorMatrix &mirrorMatrix ) 
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
 	componentLOD.PrepareNormalsTangents();
-	const oglVector * const compFaceNormals = componentLOD.GetFaceNormals();
-	const oglVector * const compPositions = componentLOD.GetPositions();
+	const oglVector3 * const compFaceNormals = componentLOD.GetFaceNormals();
+	const oglVector3 * const compPositions = componentLOD.GetPositions();
 	
 	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
@@ -247,19 +247,19 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( sMirrorMatrix &mirrorMatrix ) 
 			const deoglModelFace &face = faces[ i ];
 			
 			if( face.GetTexture() == pModelTexture ){
-				const oglVector &v1 = compPositions[ modelVertices[ face.GetVertex1() ].position ];
+				const oglVector3 &v1 = compPositions[ modelVertices[ face.GetVertex1() ].position ];
 				mirrorMatrix.planePosition += decVector( v1.x, v1.y, v1.z );
 				planePositionCount++;
 				
-				const oglVector &v2 = compPositions[ modelVertices[ face.GetVertex2() ].position ];
+				const oglVector3 &v2 = compPositions[ modelVertices[ face.GetVertex2() ].position ];
 				mirrorMatrix.planePosition += decVector( v2.x, v2.y, v2.z );
 				planePositionCount++;
 				
-				const oglVector &v3 = compPositions[ modelVertices[ face.GetVertex3() ].position ];
+				const oglVector3 &v3 = compPositions[ modelVertices[ face.GetVertex3() ].position ];
 				mirrorMatrix.planePosition += decVector( v3.x, v3.y, v3.z );
 				planePositionCount++;
 				
-				const oglVector &fn = compFaceNormals[ i ];
+				const oglVector3 &fn = compFaceNormals[ i ];
 				mirrorMatrix.planeNormal += decVector( fn.x, fn.y, fn.z );
 			}
 		}
@@ -319,15 +319,15 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	// hack for the time being
 	if( component.GetRenderMode() == deoglRComponent::ermDynamic ){
 		componentLOD.PreparePositions();
-		const oglVector * const compVertices = componentLOD.GetPositions();
+		const oglVector3 * const compVertices = componentLOD.GetPositions();
 		
 		for( f=0; f<faceCount; f++ ){
 			const deoglModelFace &face = faces[ f ];
 			
 			if( face.GetTexture() == pModelTexture ){
-				const oglVector &v1 = compVertices[ modelVertices[ face.GetVertex1() ].position ];
-				const oglVector &v2 = compVertices[ modelVertices[ face.GetVertex2() ].position ];
-				const oglVector &v3 = compVertices[ modelVertices[ face.GetVertex3() ].position ];
+				const oglVector3 &v1 = compVertices[ modelVertices[ face.GetVertex1() ].position ];
+				const oglVector3 &v2 = compVertices[ modelVertices[ face.GetVertex2() ].position ];
+				const oglVector3 &v3 = compVertices[ modelVertices[ face.GetVertex3() ].position ];
 				
 				// vertex 1
 				vector = matrixMVP * decVector4( v1.x, v1.y, v1.z, 1.0f );

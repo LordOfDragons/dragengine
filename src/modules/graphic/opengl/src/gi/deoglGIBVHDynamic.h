@@ -101,7 +101,7 @@ public:
 	void UpdateVertices( const oglModelPosition *positions, int count );
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglVector *positions, int count );
+	void UpdateVertices( const oglVector3 *positions, int count );
 	
 	
 	

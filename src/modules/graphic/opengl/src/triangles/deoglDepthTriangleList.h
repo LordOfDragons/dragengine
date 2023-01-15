@@ -46,7 +46,7 @@
  */
 class deoglDepthTriangleList{
 private:
-	oglVector *pPoints;
+	oglVector3 *pPoints;
 	int pPointCount;
 	int pPointSize;
 	
@@ -64,7 +64,7 @@ public:
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	/** Retrieves the points. */
-	inline oglVector *GetPoints() const{ return pPoints; }
+	inline oglVector3 *GetPoints() const{ return pPoints; }
 	/** Adds a face with the given points. */
 	void AddTriangle( const decVector &p1, const decVector &p2, const decVector &p3 );
 	/**
