@@ -219,21 +219,9 @@ deoglRenderLightBase( renderThread )
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		
-		// copy probes
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Probes" );
-		defines.SetDefines( "MAP_IRRADIANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyProbeIrradiance = pipelineManager.GetWith( pipconf );
-		defines.RemoveDefine( "MAP_IRRADIANCE" );
-		
-		
 		// update probes
 		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		pipconf.EnableBlendBlend();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
 		defines.SetDefines( "MAP_IRRADIANCE" );
@@ -799,61 +787,39 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.UpdateProbes" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
 	}
 	
-	// copy probes: irradiance map
-	pPipelineCopyProbeIrradiance->Activate();
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	tsmgr.DisableAllStages();
-	tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampNearest() );
-	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOCopyProbeIrradiance() );
-	
-	SetViewport( giState->GetTextureProbeIrradiance().GetSize() );
-	
-	pActivateGIUBOs();
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
-	
-	
 	// update probes: irradiance map
 	pPipelineUpdateProbeIrradiance->Activate();
 	
-	tsmgr.DisableAllStages();
-	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, traceRays.GetTextureLight(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 3, giState->GetTextureCopyProbeIrradiance(), GetSamplerClampNearest() );
-	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
-	
-	SetViewport( giState->GetTextureProbeIrradiance().GetSize() );
+	ismgr.DisableAllStages();
+	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 2, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 3, giState->GetTextureProbeIrradiance(), 0, deoglImageStageManager::eaReadWrite );
 	
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
 	
 	// update probes: distance map
 	pPipelineUpdateProbeDistance->Activate();
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeDistance() );
 	
-	SetViewport( giState->GetTextureProbeDistance().GetSize() );
+	ismgr.Enable( 3, giState->GetTextureProbeDistance(), 0, deoglImageStageManager::eaReadWrite );
 	
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
-	
+	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
 	
 	// clean up
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	tsmgr.DisableAllStages();
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );
+	
+	ismgr.DisableAllStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Sample( plan, *pDebugInfoGIUpdateProbes, true );

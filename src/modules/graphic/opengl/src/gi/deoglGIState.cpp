@@ -99,11 +99,9 @@ pCameraForceToneMapAdaptionCount( 0 ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
-pTexCopyProbeIrradiance( renderThread ),
 pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
-pFBOCopyProbeIrradiance( renderThread, false ),
 pClearMaps( true ),
 pProbesHaveMoved( false ),
 
@@ -719,7 +717,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
 		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
 		
-		pTexProbeIrradiance.SetFBOFormat( 3, true );
+		pTexProbeIrradiance.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
 		pTexProbeIrradiance.SetSize( width, height, pCascadeCount );
 		pTexProbeIrradiance.CreateTexture();
 		
@@ -761,22 +759,6 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		pFBOProbeOffset.Verify();
-	}
-	
-	if( ! pTexCopyProbeIrradiance.GetTexture() ){
-		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
-		
-		pTexCopyProbeIrradiance.SetFBOFormat( 3, true );
-		pTexCopyProbeIrradiance.SetSize( width, height );
-		pTexCopyProbeIrradiance.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOCopyProbeIrradiance );
-		pFBOCopyProbeIrradiance.DetachAllImages();
-		pFBOCopyProbeIrradiance.AttachColorTexture( 0, &pTexCopyProbeIrradiance );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOCopyProbeIrradiance.Verify();
 	}
 	
 	if( pClearMaps ){

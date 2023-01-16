@@ -96,11 +96,9 @@ private:
 	deoglArrayTexture pTexProbeIrradiance;
 	deoglArrayTexture pTexProbeDistance;
 	deoglArrayTexture pTexProbeOffset;
-	deoglTexture pTexCopyProbeIrradiance;
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
-	deoglFramebuffer pFBOCopyProbeIrradiance;
 	bool pClearMaps;
 	deoglSPBlockSSBO::Ref pPBProbeOffsets;
 	bool pProbesHaveMoved;
@@ -239,10 +237,6 @@ public:
 	inline deoglArrayTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
 	inline const deoglArrayTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
-	/** Copy irradiance probe texture. */
-	inline deoglTexture &GetTextureCopyProbeIrradiance(){ return pTexCopyProbeIrradiance; }
-	inline const deoglTexture &GetTextureCopyProbeIrradiance() const{ return pTexCopyProbeIrradiance; }
-	
 	/** Probe fbo irradiance. */
 	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
 	
@@ -251,9 +245,6 @@ public:
 	
 	/** Probe offset fbo. */
 	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
-	
-	/** Copy probe fbo irradiance. */
-	inline deoglFramebuffer &GetFBOCopyProbeIrradiance(){ return pFBOCopyProbeIrradiance; }
 	
 	/** Probe offset feedback parameter block. */
 	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{ return pPBProbeOffsets; }

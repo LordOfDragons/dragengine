@@ -12,10 +12,10 @@ precision highp int;
 #endif
 
 
-layout(binding=0, rgba32f) uniform readonly image2D texPosition;
+layout(binding=0, rgba16f) uniform readonly image2D texPosition;
 layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
 #ifdef WITH_RAY_CACHE
-	layout(binding=2, r32f) uniform readonly image2DArray texCacheDistance;
+	layout(binding=2, r16f) uniform readonly image2DArray texCacheDistance;
 	layout(binding=3, rgba8_snorm) uniform readonly image2DArray texCacheNormal;
 #endif
 
@@ -98,7 +98,7 @@ void main( void ){
 	vec3 prevOffset = probePosition - gridPosition;
 	
 	// max offset test scaling factor
-	vec3 moveMaxOffsetFactor = vec3( 1 ) / pGIMoveMaxOffset;
+	UFCONST vec3 moveMaxOffsetFactor = vec3( 1 ) / pGIMoveMaxOffset;
 	
 	// if we apply the offset of all back faces we end up in troubles. for example if
 	// two back faces face each other the offset towards the other side of both faces

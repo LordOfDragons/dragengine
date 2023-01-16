@@ -42,7 +42,6 @@ private:
 	const deoglPipeline *pPipelineTraceRaysCache;
 	const deoglPipeline *pPipelineCopyRayCache;
 	const deoglPipeline *pPipelineInitFromRayCache;
-	const deoglPipeline *pPipelineCopyProbeIrradiance;
 	const deoglPipeline *pPipelineUpdateProbeIrradiance;
 	const deoglPipeline *pPipelineUpdateProbeDistance;
 	const deoglPipeline *pPipelineClearProbeIrradiance;

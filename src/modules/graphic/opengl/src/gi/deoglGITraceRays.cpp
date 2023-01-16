@@ -168,7 +168,7 @@ void deoglGITraceRays::pCreateFBORay(){
 	pTexReflectivity.SetSize( width, height );
 	pTexReflectivity.CreateTexture();
 	
-	pTexLight.SetFBOFormat( 3, true );
+	pTexLight.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
 	pTexLight.SetSize( width, height );
 	pTexLight.CreateTexture();
 	
