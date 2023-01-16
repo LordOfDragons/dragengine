@@ -48,7 +48,6 @@ private:
 	const deoglPipeline *pPipelineClearProbeIrradiance;
 	const deoglPipeline *pPipelineClearProbeDistance;
 	const deoglPipeline *pPipelineMoveProbes;
-	const deoglPipeline *pPipelineDynamicState;
 	const deoglPipeline *pPipelineProbeOffset;
 	const deoglPipeline *pPipelineProbeExtends;
 	const deoglPipeline *pPipelineLight;

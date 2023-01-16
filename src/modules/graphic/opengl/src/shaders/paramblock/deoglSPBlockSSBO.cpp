@@ -89,19 +89,24 @@ void deoglSPBlockSSBO::SetBindingPoint( int bindingPoint ){
 }
 
 void deoglSPBlockSSBO::Activate() const{
-	if( ! pSSBO || IsBufferMapped() ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_FALSE( IsBufferMapped() )
 	
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, pBindingPoint, pSSBO ) );
 }
 
 void deoglSPBlockSSBO::Activate( int bindingPoint ) const{
-	if( ! pSSBO || IsBufferMapped() ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_FALSE( IsBufferMapped() )
 	
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, pSSBO ) );
+}
+
+void deoglSPBlockSSBO::ActivateUBO( int bindingPoint ) const{
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, pSSBO ) );
 }
 
 void deoglSPBlockSSBO::Deactivate() const{
@@ -110,6 +115,10 @@ void deoglSPBlockSSBO::Deactivate() const{
 
 void deoglSPBlockSSBO::Deactivate( int bindingPoint ) const{
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, 0 ) );
+}
+
+void deoglSPBlockSSBO::DeactivateUBO( int bindingPoint ) const{
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, 0 ) );
 }
 
 void deoglSPBlockSSBO::MapBuffer(){
@@ -256,6 +265,12 @@ void deoglSPBlockSSBO::MapToStd430(){
 }
 
 char *deoglSPBlockSSBO::ReadBuffer(){
+	return ReadBuffer( GetElementCount() );
+}
+
+char *deoglSPBlockSSBO::ReadBuffer( int elementCount ){
+	DEASSERT_TRUE( elementCount >= 0 )
+	DEASSERT_TRUE( elementCount <= GetElementCount() )
 	DEASSERT_FALSE( IsBufferMapped()  )
 	DEASSERT_TRUE( GetBufferSize() > 0 )
 	DEASSERT_NOTNULL( pSSBO )
@@ -263,7 +278,8 @@ char *deoglSPBlockSSBO::ReadBuffer(){
 	pGrowWriteBuffer( GetBufferSize() );
 	
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pSSBO ) );
-	OGL_CHECK( GetRenderThread(), pglGetBufferSubData( GL_SHADER_STORAGE_BUFFER, 0, GetBufferSize(), pWriteBuffer ) );
+	OGL_CHECK( GetRenderThread(), pglGetBufferSubData( GL_SHADER_STORAGE_BUFFER, 0,
+		GetElementStride() * elementCount, pWriteBuffer ) );
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
 	return pWriteBuffer;
 }

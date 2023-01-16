@@ -616,13 +616,20 @@ void deoglGICascade::UpdateUBOProbePositionRayCache( deoglSPBlockUBO &ubo ) cons
 	pUpdateUBOProbePosition( ubo, pRayCacheProbes, pRayCacheProbeCount );
 }
 
-void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
+void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
+	struct sProbeOffset{
+		decVector offset;
+		uint32_t flags;
+	};
+	
 	INIT_SPECIAL_TIMING
+	const sProbeOffset * const offsets = ( const sProbeOffset * )data;
 	int i;
-	for( i=0; i<pUpdateProbeCount; i++, data+=4 ){
+	
+	for( i=0; i<pUpdateProbeCount; i++ ){
 		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
 		
-		probe.flags = ( uint8_t )data[ 3 ];
+		probe.flags = ( uint8_t )offsets[ i ].flags;
 		
 		// PROBLEM some probes flicker between two positions and can not make up their mind.
 		//         this causes GI flickering and endless ray cache invalidating.
@@ -640,11 +647,9 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
 				probe.countOffsetMoved = 5;
 			}
 			
-			const decVector offset( data[ 0 ], data[ 1 ], data[ 2 ] );
-			
-			if( ! offset.IsEqualTo( probe.offset, 0.05f ) ){
+			if( ! offsets[ i ].offset.IsEqualTo( probe.offset, 0.05f ) ){
 				// update offset only if it moved far enough to justify an expensive update
-				probe.offset = offset;
+				probe.offset = offsets[ i ].offset;
 				probe.flags &= ~( epfRayCacheValid | epfDynamicDisable );
 			}
 		}

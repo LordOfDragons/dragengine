@@ -99,17 +99,12 @@ pCameraForceToneMapAdaptionCount( 0 ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
-pTexProbeState( renderThread ),
 pTexCopyProbeIrradiance( renderThread ),
 pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
-pFBOProbeState( renderThread, false ),
 pFBOCopyProbeIrradiance( renderThread, false ),
 pClearMaps( true ),
-pVBOProbeOffsets( 0 ),
-pVBOProbeOffsetsTransition( 0 ),
-pVBOProbeOffsetsData( NULL ),
 pProbesHaveMoved( false ),
 
 pVBOProbeExtends( 0 ),
@@ -449,13 +444,8 @@ void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){
 
 void deoglGIState::pCleanUp(){
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pVBOProbeOffsets );
-	dops.DeleteOpenGLBuffer( pVBOProbeOffsetsTransition );
 	dops.DeleteOpenGLBuffer( pVBOProbeExtends );
 	
-	if( pVBOProbeOffsetsData ){
-		delete [] pVBOProbeOffsetsData;
-	}
 	if( pVBOProbeExtendsData ){
 		delete [] pVBOProbeExtendsData;
 	}
@@ -660,13 +650,13 @@ void deoglGIState::pUpdateProbeOffsetFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesHaveMoved = false;
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
-	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
-		0, cascade.GetUpdateProbeCount() * 4 * sizeof( GLfloat ), pVBOProbeOffsetsData ) );
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	// barrier to wait for shader probes update from last frame update
+	OGL_CHECK( pRenderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	
+	const char * const dataOffets = pPBProbeOffsets->ReadBuffer( cascade.GetUpdateProbeCount() );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > GetVBOData")
 	
-	cascade.UpdateProbeOffsetFromShader( pVBOProbeOffsetsData );
+	cascade.UpdateProbeOffsetFromShader( dataOffets );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > UpdateCascade")
 }
 
@@ -718,7 +708,7 @@ void deoglGIState::pPrepareRayCacheProbes( deoglGICascade &cascade ){
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
-	&& pTexProbeOffset.GetTexture() && pTexProbeState.GetTexture() && ! pClearMaps ){
+	&& pTexProbeOffset.GetTexture() && ! pClearMaps ){
 		return;
 	}
 	
@@ -773,22 +763,6 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pFBOProbeOffset.Verify();
 	}
 	
-	if( ! pTexProbeState.GetTexture() ){
-		const int width = pProbeCount.x * pProbeCount.y;
-		const int height = pProbeCount.z;
-		
-		pTexProbeState.SetFBOFormatIntegral( 1, 8, true );
-		pTexProbeState.SetSize( width, height );
-		pTexProbeState.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeState );
-		pFBOProbeState.DetachAllImages();
-		pFBOProbeState.AttachColorTexture( 0, &pTexProbeState );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeState.Verify();
-	}
-	
 	if( ! pTexCopyProbeIrradiance.GetTexture() ){
 		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
 		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
@@ -821,10 +795,6 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
 		const GLfloat clearOffset[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearOffset[ 0 ] ) );
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeState );
-		const GLuint clearState[ 4 ] = { 0, 0, 0, 0 };
-		OGL_CHECK( pRenderThread, pglClearBufferuiv( GL_COLOR, 0, &clearState[ 0 ] ) );
 	}
 	
 	pClearMaps = false;
@@ -832,28 +802,18 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 
 void deoglGIState::pPrepareProbeVBO(){
 	// data arrays
-	pVBOProbeOffsetsData = new GLfloat[ GI_MAX_PROBE_COUNT * 4 ];
 	pVBOProbeExtendsData = new GLfloat[ GI_MAX_PROBE_COUNT * 6 ];
 	
-	// VBO probe offset
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeOffsets ) );
-	if( ! pVBOProbeOffsets ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
-	
-	// transition VBO probe offset
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeOffsetsTransition ) );
-	if( ! pVBOProbeOffsetsTransition ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsetsTransition ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_DRAW ) );
+	// parameter block probe offset
+	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeOffsets->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	pPBProbeOffsets->SetParameterCount( 2 );
+	pPBProbeOffsets->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 offset
+	pPBProbeOffsets->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint flags
+	pPBProbeOffsets->SetElementCount( GI_MAX_PROBE_COUNT );
+	pPBProbeOffsets->MapToStd140();
+	pPBProbeOffsets->SetBindingPoint( 0 );
+	pPBProbeOffsets->EnsureBuffer();
 	
 	// VBO probe extends
 	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeExtends ) );

@@ -6,7 +6,7 @@ precision highp int;
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/trace_probe.glsl"
 
-UBOLAYOUT uniform GINewOffsetState{
+UBOLAYOUT uniform GINewOffsetState {
 	vec4 pGINewOffsetState[ GI_MAX_COUNT_PROBE_POSITIONS ]; // position(xyz), flags(w)
 };
 

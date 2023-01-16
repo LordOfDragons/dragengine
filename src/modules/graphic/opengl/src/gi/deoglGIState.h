@@ -31,6 +31,7 @@
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -95,17 +96,13 @@ private:
 	deoglArrayTexture pTexProbeIrradiance;
 	deoglArrayTexture pTexProbeDistance;
 	deoglArrayTexture pTexProbeOffset;
-	deoglTexture pTexProbeState;
 	deoglTexture pTexCopyProbeIrradiance;
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
-	deoglFramebuffer pFBOProbeState;
 	deoglFramebuffer pFBOCopyProbeIrradiance;
 	bool pClearMaps;
-	GLuint pVBOProbeOffsets;
-	GLuint pVBOProbeOffsetsTransition;
-	GLfloat *pVBOProbeOffsetsData;
+	deoglSPBlockSSBO::Ref pPBProbeOffsets;
 	bool pProbesHaveMoved;
 	
 	GLuint pVBOProbeExtends;
@@ -242,10 +239,6 @@ public:
 	inline deoglArrayTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
 	inline const deoglArrayTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
-	/** Probe state texture. */
-	inline deoglTexture &GetTextureProbeState(){ return pTexProbeState; }
-	inline const deoglTexture &GetTextureProbeState() const{ return pTexProbeState; }
-	
 	/** Copy irradiance probe texture. */
 	inline deoglTexture &GetTextureCopyProbeIrradiance(){ return pTexCopyProbeIrradiance; }
 	inline const deoglTexture &GetTextureCopyProbeIrradiance() const{ return pTexCopyProbeIrradiance; }
@@ -259,17 +252,11 @@ public:
 	/** Probe offset fbo. */
 	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
 	
-	/** Probe state fbo. */
-	inline deoglFramebuffer &GetFBOProbeState(){ return pFBOProbeState; }
-	
 	/** Copy probe fbo irradiance. */
 	inline deoglFramebuffer &GetFBOCopyProbeIrradiance(){ return pFBOCopyProbeIrradiance; }
 	
-	/** Probe offset feedback VBO. */
-	inline GLuint GetVBOProbeOffsets() const{ return pVBOProbeOffsets; }
-	
-	/** Transition probe offset feedback VBO. */
-	inline GLuint GetVBOProbeOffsetsTransition() const{ return pVBOProbeOffsetsTransition; }
+	/** Probe offset feedback parameter block. */
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{ return pPBProbeOffsets; }
 	
 	/** Probe extends feedback VBO. */
 	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }

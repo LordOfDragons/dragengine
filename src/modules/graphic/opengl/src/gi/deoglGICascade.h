@@ -271,7 +271,7 @@ public:
 	void UpdateUBOProbePositionRayCache( deoglSPBlockUBO &ubo ) const;
 	
 	/** Update probe offsets from probe offset shader result. */
-	void UpdateProbeOffsetFromShader( const float *data );
+	void UpdateProbeOffsetFromShader( const char *data );
 	
 	/** Update probe extends from probe extend shader result. */
 	void UpdateProbeExtendsFromShader( const float *data );

@@ -71,6 +71,7 @@
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../texture/deoglTextureStageManager.h"
+#include "../../texture/deoglImageStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../tbo/deoglDynamicTBOFloat16.h"
@@ -259,18 +260,9 @@ deoglRenderLightBase( renderThread )
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
-		// dynamic state
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Dynamic State" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDynamicState = pipelineManager.GetWith( pipconf );
-		
-		
 		// probe offset
 		pipconf.Reset();
-		pipconf.EnableRasterizerDiscard();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Offset" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
@@ -896,7 +888,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
 	
 	pActivateGIUBOs();
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_UNIFORM_BUFFER, 5, giState->GetVBOProbeOffsetsTransition() ) );
+	giState->GetPBProbeOffsets()->ActivateUBO( 5 );
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
 	
@@ -923,30 +915,12 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ProbeOffset" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
 	}
-	
-	
-	// update dynamic state
-	pPipelineDynamicState->Activate();
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	SetViewport( giState->GetTextureProbeOffset().GetSize() );
-	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeState() );
-	
-	const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
-	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 1 );
-	
-	pActivateGIUBOs();
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
 	
 	
 	// calculate new offset and state. it looks strange what two VBO are written to with the
@@ -958,31 +932,32 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	// next frame update read back to avoid stalling while the other is used to move the
 	// probes later on where it does not hurt the read back. GPU performance can be funny
 	pPipelineProbeOffset->Activate();
-	renderThread.GetFramebuffer().ActivateDummy();
 	
 	pActivateGIUBOs();
 	
+	const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
+	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
+	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 		const deoglGIRayCache &rayCache = giState->GetRayCache();
-		tsmgr.EnableArrayTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
-		tsmgr.EnableArrayTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
+		ismgr.Enable( 2, rayCache.GetTextureDistance(), 0, deoglImageStageManager::eaRead );
+		ismgr.Enable( 3, rayCache.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
+		ismgr.DisableStagesAbove( 3 );
 		
 	}else{
-		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
+		ismgr.DisableStagesAbove( 1 );
 	}
-	tsmgr.EnableTexture( 2, giState->GetTextureProbeState(), GetSamplerClampNearest() );
 	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeOffsets() ) );
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 1, giState->GetVBOProbeOffsetsTransition() ) );
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
+	giState->GetPBProbeOffsets()->Activate();
 	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( cascade.GetUpdateProbeCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	
+	giState->GetPBProbeOffsets()->Deactivate();
 	
 	// clean up
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	tsmgr.DisableAllStages();
+	ismgr.DisableAllStages();
 	
 	defren.ActivatePostProcessFBO( true );
 	
