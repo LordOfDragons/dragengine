@@ -123,7 +123,64 @@ void main( void ){
 	// probe size (including border) as work group size the available invocations running in
 	// parallel is 100 for irradiance and 324 for distance.
 	// 
+	// NOTE: ray counts per probe can be 16, 32, 64, 128 and 256 . Only the last 3 are
+	//       multiples of 64. this is a problem for the code below and requires limiting
+	//       the count of threads assisting in the cooperative reading
+	//       
 	// TODO: implement this
+	// 
+	// struct sRayData{
+	//    vec4 position;
+	//    
+	//    vec3 normal;
+	//    bool rayMisses;
+	//    
+	//    vec3 rayDirection;
+	//    bool frontFacing;
+	//    
+	//    #ifdef MAP_IRRADIANCE
+	//       vec3 light;
+	//    #else
+	//       float rayProbeDistance;
+	//    #endif
+	// };
+	// 
+	// shared sRayData vRayData[ 64 ];  // 4096 bytes
+	// 
+	// UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / 64 + 1;
+	// int rg;
+	// for( rg=0; rg<rayGroupCount; rg++ ){
+	//    int rayFirst = rayGroupCount * rg;
+	//    
+	//    // cooperative processing
+	//    int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
+	//    if( rayIndex < pGIRaysPerProbe ){
+	//       ivec2 rayTC = rayOffset + ivec2( gl_LocalInvocationIndex, 0 );
+	//       vRayData[ gl_LocalInvocationIndex ].position = imageLoad( texPosition, rayTC );
+	//       vRayData[ gl_LocalInvocationIndex ].normal = vec3( imageLoad( texNormal, rayTC ) );
+	//       vRayData[ gl_LocalInvocationIndex ].rayMisses =
+	//          vRayData[ gl_LocalInvocationIndex ].position.w > 9999
+	//       vRayData[ gl_LocalInvocationIndex ].rayDirection = pGIRayDirection[ rayIndex ];
+	//       vRayData[ gl_LocalInvocationIndex ].frontFacing =
+	//          vRayData[ gl_LocalInvocationIndex ].rayMisses
+	//             || dot( vRayData[ gl_LocalInvocationIndex ].normal,
+	//                vRayData[ gl_LocalInvocationIndex ].rayDirection ) < 0;
+	//       #ifdef MAP_IRRADIANCE
+	//          vRayData[ gl_LocalInvocationIndex ].light = vec3( imageLoad( texLight, rayTC ) );
+	//       #else
+	//          vRayData[ gl_LocalInvocationIndex ].rayProbeDistance = min(
+	//             vRayData[ gl_LocalInvocationIndex ].position.w, pGIMaxProbeDistance );
+	//       #endif
+	//    }
+	//    memoryBarrier();
+	//    
+	//    // per invocation processing
+	//    int rayLimit = pGIRaysPerProbe - rayFirst;
+	//    for( i=0; i<rayLimit; i++ ){
+	//       ...
+	//    }
+	// }
+	// 
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = rayOffset + ivec2( i, 0 );
