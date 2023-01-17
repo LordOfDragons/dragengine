@@ -58,6 +58,7 @@ pSSBOMaxSize( 0 ),
 pSSBOMaxBlocksVertex( 0 ),
 pSSBOMaxBlocksFragment( 0 ),
 pSSBOMaxBlocksGeometry( 0 ),
+pSSBOMaxBlocksCompute( 0 ),
 pUBOOffsetAlignment( 4 ),
 pGeometryShaderMaxVertices( 0 ),
 pGeometryShaderMaxComponents( 0 ),
@@ -187,6 +188,11 @@ void deoglCapabilities::DetectCapabilities(){
 			
 			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
 			pSSBOMaxBlocksGeometry = ( int )resultsInt[ 0 ];
+			
+			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader ) ){
+				OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
+				pSSBOMaxBlocksCompute = ( int )resultsInt[ 0 ];
+			}
 		}
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_OUTPUT_VERTICES, &resultsInt[ 0 ] ) );
@@ -210,6 +216,7 @@ void deoglCapabilities::DetectCapabilities(){
 			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
 			logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
 			logger.LogInfoFormat( "  - Fragment = %d", pSSBOMaxBlocksFragment );
+			logger.LogInfoFormat( "  - Compute = %d", pSSBOMaxBlocksCompute );
 			logger.LogInfo( "- Geometry Shader:" );
 			logger.LogInfoFormat( "  - Max Vertices = %d", pGeometryShaderMaxVertices );
 			logger.LogInfoFormat( "  - Max Components = %d", pGeometryShaderMaxComponents );
@@ -222,9 +229,10 @@ void deoglCapabilities::DetectCapabilities(){
 		}
 		
 		// disable extensions with troubles
-		if( pSSBOMaxBlocksVertex == 0 || pSSBOMaxBlocksGeometry == 0 || pSSBOMaxBlocksFragment == 0 ){
-			logger.LogWarn( "Capabilities: SSBO not supported on all "
-				"required shader stages. Disable SSBO Support." );
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
+		&& ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
+		&& pSSBOMaxBlocksCompute < 4 ){
+			logger.LogWarn( "Capabilities: SSBO does not support at least 4 compute SSBO blocks. Disable SSBO Support." );
 			ext.DisableExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object );
 		}
 		

@@ -5,7 +5,7 @@ layout( triangles ) in;
 layout( triangle_strip, max_vertices=3 ) out;
 
 in vec3 vGSTexCoord[ 3 ];
-in int vGSLayer[ 3 ];
+flat in int vGSLayer[ 3 ];
 
 out vec3 vTexCoord;
 

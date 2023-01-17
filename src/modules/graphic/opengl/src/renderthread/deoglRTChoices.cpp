@@ -54,8 +54,14 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	pSharedVBOUseBaseVertex = HASEXT( ext_ARB_draw_elements_base_vertex );
 	//pSharedVBOUseBaseVertex = false;
 	
+	// Use SSBO for rendering if enough SSBO blocks are allowed
+	pUseSSBORender = HASEXT( ext_ARB_shader_storage_buffer_object )
+		&& caps.GetSSBOMaxBlocksVertex() >= 4
+		&& caps.GetSSBOMaxBlocksGeometry() >= 4
+		&& caps.GetSSBOMaxBlocksFragment() >= 4;
+	
 	// Using SSBOs allows to use a larger number of parameter block per shared SPB than using UBO
-	pSharedSPBUseSSBO = HASEXT( ext_ARB_shader_storage_buffer_object );
+	pSharedSPBUseSSBO = pUseSSBORender;
 	
 	// use global shared SPB lists for SSBO. for UBO it is not favorable
 	pGlobalSharedSPBLists = pSharedSPBUseSSBO;
@@ -137,6 +143,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	deoglRTLogger &l = renderThread.GetLogger();
 	
 	l.LogInfo( "Render Thread Choices:" );
+	l.LogInfoFormat( "- Use SSBO for Rendering: %s", pUseSSBORender ? "Yes" : "No" );
 	l.LogInfoFormat( "- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No" );
 	l.LogInfoFormat( "- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No" );
 	l.LogInfoFormat( "- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No" );

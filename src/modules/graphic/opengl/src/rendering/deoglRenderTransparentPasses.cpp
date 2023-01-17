@@ -153,6 +153,8 @@ deoglRenderBase( renderThread )
 	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncReversed() );
 	pipconf.EnableDynamicStencilTest();
 	
+	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
+	
 	defines = commonDefines;
 	defines.SetDefine( "DEPTH_TEST", true );
 	if( ! useInverseDepth ){
@@ -163,6 +165,9 @@ deoglRenderBase( renderThread )
 	
 	// copy depth limit stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
+	}
 	pipconf.SetShader( renderThread, sources, defines );
 	pPipelineCopyDepthLimitStereo = pipelineManager.GetWith( pipconf );
 	

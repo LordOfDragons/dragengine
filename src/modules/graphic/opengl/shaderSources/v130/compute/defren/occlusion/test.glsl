@@ -205,7 +205,7 @@ void main( void ){
 	vec3 inMinExtend = pInputData[ gl_GlobalInvocationID.x ].minExtend;
 	vec3 inMaxExtend = pInputData[ gl_GlobalInvocationID.x ].maxExtend;
 	
-	#define outResultData pResultData[ gl_GlobalInvocationID.x / 4 ][ gl_GlobalInvocationID.x % 4 ]
+	#define outResultData pResultData[ gl_GlobalInvocationID.x / uint(4) ][ gl_GlobalInvocationID.x % uint(4) ]
 	outResultData = true;
 	
 	#ifdef ENSURE_MIN_SIZE

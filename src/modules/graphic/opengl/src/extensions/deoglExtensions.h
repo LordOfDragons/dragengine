@@ -330,6 +330,7 @@ public:
 		ext_ARB_shader_draw_parameters,
 		ext_ARB_shader_viewport_layer_array,
 		ext_ARB_depth_clamp,
+		ext_ARB_shading_language_420pack,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

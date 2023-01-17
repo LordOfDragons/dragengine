@@ -42,6 +42,7 @@ public:
 	
 private:
 	bool pSharedVBOUseBaseVertex;
+	bool pUseSSBORender;
 	bool pSharedSPBUseSSBO;
 	bool pGlobalSharedSPBLists;
 	bool pRealTransparentParticles;
@@ -79,6 +80,9 @@ public:
 	 * Requires gl*BaseVertex to be usable and rendering does not required pre-shifted points.
 	 */
 	inline bool GetSharedVBOUseBaseVertex() const{ return pSharedVBOUseBaseVertex; }
+	
+	/** Use SSBO for rendering. */
+	inline bool GetUseSSBORender() const{ return pUseSSBORender; }
 	
 	/**
 	 * Use SSBO for shared SPB.

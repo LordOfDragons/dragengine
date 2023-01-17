@@ -199,9 +199,13 @@ void deoglRTBufferObject::pCleanUpReports(){
 
 
 void deoglRTBufferObject::pCreateLayoutSkinInstance(){
-	const int uboMaxSize = pRenderThread.GetCapabilities().GetUBOMaxSize();
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglCapabilities &caps = pRenderThread.GetCapabilities();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
+	const int uboMaxSize = caps.GetUBOMaxSize();
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
 	pLayoutSkinInstanceUBO = deoglSkinShader::CreateLayoutSkinInstanceUBO( pRenderThread );
 	pLayoutSkinInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
@@ -215,9 +219,8 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 		pLayoutSkinInstanceUBO->GetElementCount() );
 	
 	// shared spb layout using SSBO if supported
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
-		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
+	if( choices.GetUseSSBORender() ){
+		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
 		pLayoutSkinInstanceSSBO = deoglSkinShader::CreateLayoutSkinInstanceSSBO( pRenderThread );
 		pLayoutSkinInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
@@ -232,11 +235,15 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 }
 
 void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglCapabilities &caps = pRenderThread.GetCapabilities();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
 	// ubo layout
-	const bool rowMajor = pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
-	const int uboMaxSize = pRenderThread.GetCapabilities().GetUBOMaxSize();
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const bool rowMajor = caps.GetUBOIndirectMatrixAccess().Working();
+	const int uboMaxSize = caps.GetUBOMaxSize();
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
 	pLayoutOccMeshInstanceUBO.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
 	pLayoutOccMeshInstanceUBO->SetRowMajor( rowMajor );
@@ -254,9 +261,8 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 		pLayoutOccMeshInstanceUBO->GetElementCount() );
 	
 	// ssbo layout
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
-		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
+	if( choices.GetUseSSBORender() ){
+		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
 		pLayoutOccMeshInstanceSSBO.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
 		pLayoutOccMeshInstanceSSBO->SetRowMajor( rowMajor );
@@ -277,9 +283,13 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 }
 
 void deoglRTBufferObject::pCreateLayoutTextureInstance(){
-	const int uboMaxSize = pRenderThread.GetCapabilities().GetUBOMaxSize();
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglCapabilities &caps = pRenderThread.GetCapabilities();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
+	const int uboMaxSize = caps.GetUBOMaxSize();
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
 	pLayoutSkinTextureUBO = deoglSkinShader::CreateLayoutSkinTextureUBO( pRenderThread );
 	pLayoutSkinTextureUBO->SetElementCount( decMath::min( maxUBOIndexCount,
@@ -293,8 +303,8 @@ void deoglRTBufferObject::pCreateLayoutTextureInstance(){
 		pLayoutSkinTextureUBO->GetElementCount() );
 	
 	// shared spb layout using SSBO if supported
-	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
-		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
+	if( choices.GetUseSSBORender() ){
+		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
 		pLayoutSkinTextureSSBO = deoglSkinShader::CreateLayoutSkinTextureSSBO( pRenderThread );
 		pLayoutSkinTextureSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
@@ -309,8 +319,11 @@ void deoglRTBufferObject::pCreateLayoutTextureInstance(){
 }
 
 void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
 	// spb instance constant using int32 indices and ivec4 packing.
 	pInstanceArraySizeUBO = decMath::min( maxUBOIndexCount,
@@ -318,7 +331,7 @@ void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
 	pRenderThread.GetLogger().LogInfoFormat( "pInstanceArraySizeUBO %d", pInstanceArraySizeUBO );
 	
 	// spb instance constant using int32 indices and ivec4 packing.
-	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+	if( choices.GetUseSSBORender() ){
 		pInstanceArraySizeSSBO = decMath::min( maxSSBOIndexCount,
 			pRenderThread.GetCapabilities().GetSSBOMaxSize() / 16 );
 		pRenderThread.GetLogger().LogInfoFormat( "pInstanceArraySizeSSBO %d", pInstanceArraySizeSSBO );
@@ -326,6 +339,8 @@ void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
 }
 
 void deoglRTBufferObject::pCreateSharedSPBLists(){
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	
 	pSharedSPBList[ esspblSkinInstanceUBO ] = new deoglSharedSPBListUBO(
 		pRenderThread, pLayoutSkinInstanceUBO );
 	
@@ -335,8 +350,7 @@ void deoglRTBufferObject::pCreateSharedSPBLists(){
 	pSharedSPBList[ esspblSkinTextureUBO ] = new deoglSharedSPBListUBO(
 		pRenderThread, pLayoutSkinTextureUBO );
 	
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+	if( choices.GetUseSSBORender() ){
 		pSharedSPBList[ esspblSkinInstanceSSBO ] = new deoglSharedSPBListSSBO(
 			pRenderThread, pLayoutSkinInstanceSSBO );
 		

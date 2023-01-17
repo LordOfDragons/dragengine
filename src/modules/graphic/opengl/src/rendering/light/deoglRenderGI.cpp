@@ -340,6 +340,7 @@ deoglRenderLightBase( renderThread )
 		pipconf.SetMasks( true, true, true, true, false );
 		pipconf.EnableBlendAdd();
 		
+		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "GI_RAY" );
 		pipconf.SetShader( renderThread, sources, defines );
@@ -794,7 +795,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 		DebugTimer1Reset( plan, true );
 	}
 	
-	// update probes: irradiance map
+	// update irradiance probes. required 1 quadrant to be processed
 	pPipelineUpdateProbeIrradiance->Activate();
 	
 	ismgr.DisableAllStages();
@@ -807,14 +808,14 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
 	
-	// update probes: distance map
+	// update distance probes. requires 4 quadrants to be processed
 	pPipelineUpdateProbeDistance->Activate();
 	
 	ismgr.Enable( 3, giState->GetTextureProbeDistance(), 0, deoglImageStageManager::eaReadWrite );
 	
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 4, 1 ) );
 	
 	// clean up
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );

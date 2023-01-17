@@ -105,6 +105,7 @@ pLeakTracker( *this ),
 pCanvasInputOverlay( nullptr ),
 pCanvasDebugOverlay( nullptr ),
 
+pChoices( nullptr ),
 pBufferObject( nullptr ),
 pContext( nullptr ),
 pDebug( nullptr ),
@@ -953,6 +954,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pPipelineManager.TakeOver( new deoglPipelineManager( *this ) );
 	
 	pInitCapabilities();
+	
+	if( ! pExtensions->VerifyPresence() ){ // capabilities possibly disabled extensions
+		DETHROW( deeInvalidAction );
+	}
 	
 	// debug information
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
