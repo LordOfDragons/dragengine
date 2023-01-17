@@ -87,13 +87,18 @@ void main( void ){
 	// 
 	// the y work group coordinate is used to select the quadrant. this is used only for
 	// distance map which requires 4 work groups to update the entire probe
-	#ifdef MAP_IRRADIANCE
-		UFCONST int mapProbeSizeBorder = pGIIrradianceMapSize + 2;
-	#else
-		UFCONST int mapProbeSizeBorder = pGIDistanceMapSize + 2;
-	#endif
+	// 
+	// the actual size is
+	// - width = ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2
+	// - height = ( pSizeTexDistance + 2 ) * pProbeCount.z + 2
+	// 
+	// hence each probe is surrounded by a 1-pixel border and the entire grid of probes is
+	// surround by another 1-pixel border.
+	// 
+	// tcProbe is the top-left pixel in the probe excluding the border
+	// tcLocal is the coordinate inside the probe excluding the border
 	
-	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * mapProbeSizeBorder + ivec2( 1 );
+	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * ( mapProbeSize + 2 ) + ivec2( 2 );
 	ivec2 tcLocal = ivec2( gl_LocalInvocationID ) + tcQuadrant[ gl_WorkGroupID.y ];
 	ivec3 tcSample = ivec3( tcProbe + tcLocal, pGICascade );
 	
@@ -418,7 +423,7 @@ void main( void ){
 	if( anyOnEdge.y ){
 		imageStore( texProbe, ivec3( tcFlipped.x, tcSample.y + tcShift.y, tcSample.z ), result );
 	}
-	if( any( anyOnEdge ) ){
+	if( all( anyOnEdge ) ){
 		imageStore( texProbe, ivec3( tcFlipped - tcShift, tcSample.z ), result );
 	}
 }
