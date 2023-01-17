@@ -3,6 +3,7 @@ precision highp int;
 
 #include "v130/shared/octahedral.glsl"
 #include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/trace_probe.glsl"
 
@@ -25,11 +26,7 @@ layout(binding=2, rgba16f) uniform readonly image2D texLight;
 #endif
 
 
-#ifdef MAP_IRRADIANCE
-	layout( local_size_x=10, local_size_y=10 ) in; // 8x8 + 1 pixel border
-#else
-	layout( local_size_x=18, local_size_y=18 ) in; // 16x16 + 1 pixel border
-#endif
+layout( local_size_x=8, local_size_y=8 ) in;
 
 
 // NOTE findMSB exists since GLSL 4.0
@@ -66,12 +63,17 @@ ivec3 probeIndexToGridCoord( in int index ){
 //const float epsilon = 1e-9 * float( pGIRaysPerProbe );
 const float epsilon = 1e-6;
 
+// for distance map the probe size is 16x16 instead of 8x8 as with irradiance. to allow using
+// 8x8 work group size also for distance map 4 work groups are used one operating on each
+// quadrant of the full probe. this constant allows for easy tc shifting for each quadrant
+const ivec2 tcQuadrant[4] = ivec2[4]( ivec2( 0 ), ivec2( 8, 0 ), ivec2( 0, 8 ), ivec2( 8 ) );
+
 
 void main( void ){
-	// parameters
+	// parameters shared across all invocations in the same work group
 	int updateIndex = int( gl_WorkGroupID.x );
 	
-	vec3 probePosition = pGIProbePosition[ updateIndex ].xyz;
+	vec3 probePosition = vec3( pGIProbePosition[ updateIndex ] );
 	int probeFlags = int( pGIProbePosition[ updateIndex ].w );
 	
 	ivec2 rayOffset = ivec2( ( updateIndex % pGIProbesPerLine ) * pGIRaysPerProbe, updateIndex / pGIProbesPerLine );
@@ -82,59 +84,23 @@ void main( void ){
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
 	
 	// map layout: (probeCount.x * probeCount.y) x pGIGridProbeCount.z
+	// 
+	// the y work group coordinate is used to select the quadrant. this is used only for
+	// distance map which requires 4 work groups to update the entire probe
 	#ifdef MAP_IRRADIANCE
-		int mapProbeSizeBorder = pGIIrradianceMapSize + 2;
-		#define mapProbeScale pGIIrradianceMapScale
+		UFCONST int mapProbeSizeBorder = pGIIrradianceMapSize + 2;
 	#else
-		int mapProbeSizeBorder = pGIDistanceMapSize + 2;
-		#define mapProbeScale pGIDistanceMapScale
+		UFCONST int mapProbeSizeBorder = pGIDistanceMapSize + 2;
 	#endif
 	
-	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * mapProbeSizeBorder + 1;
-	ivec2 tcLocal = ivec2( gl_LocalInvocationID.xy );
+	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * mapProbeSizeBorder + ivec2( 1 );
+	ivec2 tcLocal = ivec2( gl_LocalInvocationID ) + tcQuadrant[ gl_WorkGroupID.y ];
 	ivec3 tcSample = ivec3( tcProbe + tcLocal, pGICascade );
 	
 	
-	// this shader is run for the entire map including the 1 pixel border around it
-	// to avoid running extra shader passes to copy border pixels. what is done here instead
-	// is moving the texture coordinate to sample if in the border area. this is not as fast
-	// as a copy but better than running extra shader passes.
-	// 
-	// the original paper does not outline how this is done. found a schematics somewhere
-	// else on the internet. so I had to come up with my own way to do it. basic idea is
-	// to flip texture coordinates to get the right ones.
-	// 
-	// 1) if the pixel U coordinate is on the edge flip the V coordinate.
-	// 2) if the pixel V coordinate is on the edge flip the U coordinate.
-	// 3) if the pixel U coordinate is on the edge move it 1 pixel away from the edge
-	// 4) if the pixel V coordinate is on the edge move it 1 pixel away from the edge
-	// 
-	// this sequence of actions works for pixels on the edge as well as corner pixels.
-	// 
-	// to use only 2 branches instead of 4 the isOnEdge result for the second block
-	// is flipped in the first
-	ivec2 edgeValues = ivec2( 0, mapProbeSize + 1 ); // mapProbeSize + 2 - 1
-	bvec4 isOnEdge = equal( tcLocal.xxyy, edgeValues.xyxy );
-	
-	if( any( isOnEdge.xy ) ){
-		tcLocal.y = edgeValues.y - tcLocal.y;
-		tcLocal.x += isOnEdge.x ? 1 : -1;
-		isOnEdge.zw = isOnEdge.wz;
-	}
-	if( any( isOnEdge.zw ) ){
-		tcLocal.x = edgeValues.y - tcLocal.x;
-		tcLocal.y += isOnEdge.z ? 1 : -1;
-	}
-	
-	// from here on updating works as if borders do not exist. keep in mind though
-	// the texture coordinate starts at the left-top border. for this reason 1 has
-	// to be subtracted to end up at the first map pixel
-	tcLocal -= ivec2( 1 ); // move to first map pixel
-	
 	// the texture coordinates have to be shifted to sample at the center of the
 	// pixel. for this reason the 0.5 shift is used together with mapProbeSize.
-	vec3 texelDirection = octahedralDecode(
-		( vec2( tcLocal ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1 ) );
+	vec3 texelDirection = octahedralDecode( ( vec2( tcLocal ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1 ) );
 	
 	float weight, sumWeight = 0;
 	int i;
@@ -151,6 +117,13 @@ void main( void ){
 // 	int rayMissCount = 0;
 	
 	#define rayDirection pGIRayDirection[ i ]
+	
+	// all invocations in the work group have to sample all traced probe rays. to spead this
+	// up the reading of the samples is done using cooperative reading. since we use the full
+	// probe size (including border) as work group size the available invocations running in
+	// parallel is 100 for irradiance and 324 for distance.
+	// 
+	// TODO: implement this
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = rayOffset + ivec2( i, 0 );
@@ -345,8 +318,50 @@ void main( void ){
 	
 	// update probe state
 	#ifdef MAP_IRRADIANCE
-		imageStore( texProbe, tcSample, vec4( mix( prevProbeState, newProbeState, blendFactor ), 0 ) );
+		vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0 );
 	#else
-		imageStore( texProbe, tcSample, vec4( mix( prevProbeState, newProbeState, blendFactor ), 0, 0 ) );
+		vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0, 0 );
 	#endif
+	
+	imageStore( texProbe, tcSample, result );
+	
+	
+	// update border pixels by copying probe edge pixels. the original paper does not
+	// outline well how this is done. found a schematics somewhere else on the internet
+	// and derived an own copy system from it. the basic idea is to flip texture
+	// coordinates to get the right ones.
+	// 
+	// starting with border pixels the matching probe edge pixels are reached like this:
+	// 
+	// 1) if the pixel U coordinate is on the edge flip the V coordinate.
+	// 2) if the pixel V coordinate is on the edge flip the U coordinate.
+	// 3) if the pixel U coordinate is on the edge move it 1 pixel away from the edge
+	// 4) if the pixel V coordinate is on the edge move it 1 pixel away from the edge
+	// 
+	// this sequence of actions works for pixels on the edge as well as corner pixels.
+	// 
+	// to copy probe edge pixels to border pixels this is sort of done in reverse using
+	// if conditions running only for suitable pixels.
+	// 
+	// the copy rules from probe edge pixels to border pixels are then like this:
+	// 
+	// 1) if U on border => copy to V flipped moving 1 pixel outwards
+	// 2) if V on border => copy to U flipped moving 1 pixel outwards
+	// 3) if U and V on border => copy to U and V flipped moving 1 pixel outwards
+	
+	UFCONST ivec2 edgeValues = ivec2( 0, mapProbeSize - 1 );
+	bvec4 isOnEdge = equal( tcLocal.xxyy, edgeValues.xyxy );
+	bvec2 anyOnEdge = bvec2( any( isOnEdge.xy ), any( isOnEdge.zw ) );
+	ivec2 tcShift = ivec2( isOnEdge.x ? -1 : 1, isOnEdge.z ? -1 : 1 );
+	ivec2 tcFlipped = tcProbe + edgeValues.yy - tcLocal;
+	
+	if( anyOnEdge.x ){
+		imageStore( texProbe, ivec3( tcSample.x + tcShift.x, tcFlipped.y, tcSample.z ), result );
+	}
+	if( anyOnEdge.y ){
+		imageStore( texProbe, ivec3( tcFlipped.x, tcSample.y + tcShift.y, tcSample.z ), result );
+	}
+	if( any( anyOnEdge ) ){
+		imageStore( texProbe, ivec3( tcFlipped - tcShift, tcSample.z ), result );
+	}
 }
