@@ -274,7 +274,7 @@ public:
 	void UpdateProbeOffsetFromShader( const char *data );
 	
 	/** Update probe extends from probe extend shader result. */
-	void UpdateProbeExtendsFromShader( const float *data );
+	void UpdateProbeExtendsFromShader( const char *data );
 	/*@}*/
 	
 	

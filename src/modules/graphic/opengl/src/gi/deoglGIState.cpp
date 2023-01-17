@@ -105,8 +105,6 @@ pFBOProbeOffset( renderThread, false ),
 pClearMaps( true ),
 pProbesHaveMoved( false ),
 
-pVBOProbeExtends( 0 ),
-pVBOProbeExtendsData( NULL ),
 pProbesExtendsChanged( false ),
 
 pInstances( *this ),
@@ -441,13 +439,6 @@ void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){
 //////////////////////
 
 void deoglGIState::pCleanUp(){
-	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pVBOProbeExtends );
-	
-	if( pVBOProbeExtendsData ){
-		delete [] pVBOProbeExtendsData;
-	}
-	
 	if( pCascades ){
 		int i;
 		for( i=0; i<pCascadeCount; i++ ){
@@ -666,13 +657,13 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesExtendsChanged = false;
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
-	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
-		0, cascade.GetRayCacheProbeCount() * 6 * sizeof( GLfloat ), pVBOProbeExtendsData ) );
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	// barrier to wait for shader probes update from last frame update
+	OGL_CHECK( pRenderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	
+	const char * const dataExtends = pPBProbeExtends->ReadBuffer( cascade.GetRayCacheProbeCount() );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > GetVBOData")
 	
-	cascade.UpdateProbeExtendsFromShader( pVBOProbeExtendsData );
+	cascade.UpdateProbeExtendsFromShader( dataExtends );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > UpdateCascade")
 }
 
@@ -783,9 +774,6 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 }
 
 void deoglGIState::pPrepareProbeVBO(){
-	// data arrays
-	pVBOProbeExtendsData = new GLfloat[ GI_MAX_PROBE_COUNT * 6 ];
-	
 	// parameter block probe offset
 	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
 	pPBProbeOffsets->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
@@ -797,15 +785,16 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeOffsets->SetBindingPoint( 0 );
 	pPBProbeOffsets->EnsureBuffer();
 	
-	// VBO probe extends
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeExtends ) );
-	if( ! pVBOProbeExtends ){
-		DETHROW( deeOutOfMemory );
-	}
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		GI_MAX_PROBE_COUNT * 6 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
+	// parameter block probe extends
+	pPBProbeExtends.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeExtends->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	pPBProbeExtends->SetParameterCount( 2 );
+	pPBProbeExtends->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 minExtend
+	pPBProbeExtends->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec3 maxExtend
+	pPBProbeExtends->SetElementCount( GI_MAX_PROBE_COUNT );
+	pPBProbeExtends->MapToStd140();
+	pPBProbeExtends->SetBindingPoint( 0 );
+	pPBProbeExtends->EnsureBuffer();
 }
 
 void deoglGIState::pPrepareUBORayDirections() const{

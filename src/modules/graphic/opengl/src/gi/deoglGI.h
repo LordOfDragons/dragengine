@@ -74,6 +74,7 @@ public:
 		eupSelfShadowBias, // float
 		eupCascade, // int
 		eupDetectionBox, // vec3
+		euppRayCacheProbeCount, // int
 		eupBVHOffset // vec3
 	};
 	

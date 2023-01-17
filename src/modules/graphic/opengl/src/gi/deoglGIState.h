@@ -103,8 +103,7 @@ private:
 	deoglSPBlockSSBO::Ref pPBProbeOffsets;
 	bool pProbesHaveMoved;
 	
-	GLuint pVBOProbeExtends;
-	GLfloat *pVBOProbeExtendsData;
+	deoglSPBlockSSBO::Ref pPBProbeExtends;
 	bool pProbesExtendsChanged;
 	
 	deoglGIInstances pInstances;
@@ -249,8 +248,8 @@ public:
 	/** Probe offset feedback parameter block. */
 	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{ return pPBProbeOffsets; }
 	
-	/** Probe extends feedback VBO. */
-	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
+	/** Probe extends feedback parameter block. */
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeExtends() const{ return pPBProbeExtends; }
 	
 	/** Activate next cascade to use for upcoming Update() call. */
 	void ActivateNextCascade();

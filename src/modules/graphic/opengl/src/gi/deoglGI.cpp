@@ -107,6 +107,7 @@ void deoglGI::pCreateUBOParameter(){
 	ubo.GetParameterAt( eupSelfShadowBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupDetectionBox ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo.GetParameterAt( euppRayCacheProbeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupBVHOffset ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 1 );

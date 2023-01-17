@@ -572,6 +572,7 @@ void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, 
 	ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
 	ubo.SetParameterDataInt( deoglGI::eupCascade, pIndex );
 	ubo.SetParameterDataVec3( deoglGI::eupDetectionBox, pDetectionBox );
+	ubo.SetParameterDataInt( deoglGI::euppRayCacheProbeCount, pRayCacheProbeCount );
 	ubo.SetParameterDataVec3( deoglGI::eupBVHOffset, ( pPosition - bvh.GetPosition() ).ToVector() );
 	
 	// material
@@ -664,13 +665,20 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > > Flags")
 }
 
-void deoglGICascade::UpdateProbeExtendsFromShader( const float *data ){
+void deoglGICascade::UpdateProbeExtendsFromShader( const char *data ){
+	struct sProbeExtend{
+		decVector minExtend;
+		decVector maxExtend;
+	};
+	
 	INIT_SPECIAL_TIMING
+	const sProbeExtend * const extends = ( const sProbeExtend * )data;
 	int i;
+	
 	for( i=0; i<pRayCacheProbeCount; i++, data+=6 ){
 		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
-		probe.minExtend.Set( data[ 0 ], data[ 1 ], data[ 2 ] );
-		probe.maxExtend.Set( data[ 3 ], data[ 4 ], data[ 5 ] );
+		probe.minExtend = extends[ i ].minExtend;
+		probe.maxExtend = extends[ i ].maxExtend;
 	}
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > > Extends")
 	

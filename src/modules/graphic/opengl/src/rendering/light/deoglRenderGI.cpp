@@ -263,7 +263,7 @@ deoglRenderLightBase( renderThread )
 		
 		// probe extends
 		pipconf.Reset();
-		pipconf.EnableRasterizerDiscard();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
@@ -945,8 +945,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ProbeExtends" );
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -955,21 +954,19 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	pPipelineProbeExtends->Activate();
 	pActivateGIUBOs();
 	
-	renderThread.GetFramebuffer().ActivateDummy();
-	
 	#ifdef GI_USE_RAY_CACHE
-		tsmgr.EnableArrayTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
+		ismgr.Enable( 0, giState->GetRayCache().GetTextureDistance(), 0, deoglImageStageManager::eaRead );
 	#else
-		tsmgr.EnableTexture( 0, renderThread.GetGI().GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );
+		ismgr.Enable( 0, renderThread.GetGI().GetTraceRays().GetTexturePosition(), 0, deoglImageStageManager::eaRead );
 	#endif
-	tsmgr.DisableStagesAbove( 0 );
+	ismgr.DisableStagesAbove( 0 );
 	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeExtends() ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetRayCacheProbeCount() ) );
-	OGL_CHECK( renderThread, pglEndTransformFeedback() );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	giState->GetPBProbeExtends()->Activate();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( cascade.GetRayCacheProbeCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	
+	giState->GetPBProbeExtends()->Deactivate();
 }
 
 void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
