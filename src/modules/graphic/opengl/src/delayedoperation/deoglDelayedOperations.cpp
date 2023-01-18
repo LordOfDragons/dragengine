@@ -879,10 +879,6 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			pglDeleteSamplers( 1, &entry.name );
 			break;
 			
-		case eoglotRenderBuffer:
-			pglDeleteRenderbuffers( 1, &entry.name );
-			break;
-			
 		case eoglotProgram:
 			pglDeleteProgram( entry.name );
 			break;

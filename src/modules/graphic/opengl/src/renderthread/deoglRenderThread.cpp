@@ -1805,22 +1805,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
 		cubemapDepthCount, cubemapDepthGPU );
 	
-	// renderbuffer
-	const deoglMemoryConsumptionTexture &consumptionRenderbuffer = pMemoryManager.GetConsumption().GetRenderbuffer();
-	const int renderbufferCount = consumptionRenderbuffer.GetCount();
-	const int renderbufferColorCount = consumptionRenderbuffer.GetColorCount();
-	const int renderbufferDepthCount = consumptionRenderbuffer.GetDepthCount();
-	unsigned int renderbufferGPU = consumptionRenderbuffer.GetGPU();
-	unsigned int renderbufferColorGPU = consumptionRenderbuffer.GetColorGPU();
-	unsigned int renderbufferDepthGPU = consumptionRenderbuffer.GetDepthGPU();
-	
-	renderbufferGPU /= 1000000;
-	renderbufferColorGPU /= 1000000;
-	renderbufferDepthGPU /= 1000000;
-	
-	pLogger->LogInfoFormat( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
-		renderbufferDepthCount, renderbufferDepthGPU );
-	
 	// skin memory consumption
 	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().GetSkin();
 	const int skinCount = consumptionSkin.GetCount();
@@ -1870,7 +1854,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	// deferred rendering system
 	int defrenGPU = pDeferredRendering->GetMemoryUsageGPU() / 1000000;
 	int defrenGPUTexture = pDeferredRendering->GetMemoryUsageGPUTexture() / 1000000;
-	int defrenGPURenBuf = pDeferredRendering->GetMemoryUsageGPURenderbuffer() / 1000000;
 	
 	pLogger->LogInfoFormat( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
 	
@@ -1880,7 +1863,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	totalGPU = consumptionTexture2D.GetGPU();
 	totalGPU += consumptionTextureArray.GetGPU();
 	totalGPU += consumptionTextureCube.GetGPU();
-	totalGPU += consumptionRenderbuffer.GetGPU();
 	totalGPU += consumptionVBO.GetGPU();
 	totalGPU /= 1000000;
 	

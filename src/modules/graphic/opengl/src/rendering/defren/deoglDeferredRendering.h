@@ -29,7 +29,6 @@
 
 class deoglRenderThread;
 class deoglFramebuffer;
-class deoglRenderbuffer;
 class deoglDRDepthMinMax;
 class deoglShaderCompiled;
 class deoglSPBlockUBO;
@@ -63,7 +62,6 @@ private:
 	
 	bool pUseFadeOutRange;
 	
-	deoglRenderbuffer *pRenderbuffer;
 	deoglArrayTexture *pTextureDepth1;
 	deoglArrayTexture *pTextureDepth2;
 	deoglArrayTexture *pTextureDepth3;
@@ -169,9 +167,6 @@ public:
 	decDMatrix CreateFrustumDMatrix( int width, int height, float fov, float fovRatio, float znear, float zfar ) const;
 	
 	
-	
-	/** Render buffer. */
-	inline deoglRenderbuffer *GetRenderbuffer() const{ return pRenderbuffer; }
 	
 	/** First depth texture. */
 	deoglArrayTexture *GetDepthTexture1() const;

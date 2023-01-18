@@ -28,7 +28,6 @@
 class deoglRenderThread;
 class deoglFramebuffer;
 class deoglTexture;
-class deoglRenderbuffer;
 
 
 

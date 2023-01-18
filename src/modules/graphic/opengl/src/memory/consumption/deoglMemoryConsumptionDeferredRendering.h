@@ -32,7 +32,6 @@ class deoglMemoryConsumptionDeferredRendering{
 public:
 	deoglMemoryConsumptionGPU target;
 	deoglMemoryConsumptionGPU texture;
-	deoglMemoryConsumptionGPU renderBuffer;
 	
 	
 	

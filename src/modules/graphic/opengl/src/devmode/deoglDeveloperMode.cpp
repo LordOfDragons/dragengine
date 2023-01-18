@@ -917,37 +917,6 @@ void deoglDeveloperMode::pCmdCapabilities( const decUnicodeArgumentList &command
 				answer.AppendFromUTF8( "\n" );
 			}
 			return;
-			
-		}else if( command.MatchesArgumentAt( 1, "renBuf_found" ) ){
-			const deoglCapsTextureFormatList &formatList = caps.GetFormats().GetFoundRenBufFormats();
-			formatCount = formatList.GetFormatCount();
-			
-			answer.SetFromUTF8( "Found RenderBuffer formats:\n" );
-			for( f=0; f<formatCount; f++ ){
-				format = formatList.GetFormatAt( f );
-				answer.AppendFromUTF8( "- " );
-				answer.AppendFromUTF8( format->GetName().GetString() );
-				answer.AppendFromUTF8( "\n" );
-			}
-			return;
-			
-		}else if( command.MatchesArgumentAt( 1, "renBuf_use" ) ){
-			answer.SetFromUTF8( "Used RenderBuffer formats:\n" );
-			for( f=0; f<deoglCapsFmtSupport::UseTextureFormatCount; f++ ){
-				format = caps.GetFormats().GetUseRenBufFormatFor( ST_UseTextureFormats[ f ].type );
-				
-				answer.AppendFromUTF8( "- " );
-				answer.AppendFromUTF8( ST_UseTextureFormats[ f ].name );
-				answer.AppendFromUTF8( " => " );
-				if( format ){
-					answer.AppendFromUTF8( format->GetName().GetString() );
-					
-				}else{
-					answer.AppendFromUTF8( "< Unsupported >" );
-				}
-				answer.AppendFromUTF8( "\n" );
-			}
-			return;
 		}
 	}
 	
@@ -965,8 +934,6 @@ void deoglDeveloperMode::pCmdCapabilities( const decUnicodeArgumentList &command
 	answer.AppendFromUTF8( "fboTexCube_use => Used FBO Cube-Texture formats.\n" );
 	answer.AppendFromUTF8( "fboArrTex_found => Found working FBO Array-Texture formats.\n" );
 	answer.AppendFromUTF8( "fboArrTex_use => Used FBO Array-Texture formats.\n" );
-	answer.AppendFromUTF8( "renBuf_found => Found working RenderBuffer formats.\n" );
-	answer.AppendFromUTF8( "renBuf_use => Used RenderBuffer formats.\n" );
 }
 
 void deoglDeveloperMode::pCmdMemoryInfo( const decUnicodeArgumentList &, decUnicodeString &answer ){
@@ -983,11 +950,6 @@ void deoglDeveloperMode::pCmdMemoryInfo( const decUnicodeArgumentList &, decUnic
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_TEXTURE_FREE_MEMORY_ATI, &values[ 0 ] ) );
 		text.Format( "Texture: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n",
-			values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
-		answer.AppendFromUTF8( text.GetString() );
-		
-		OGL_CHECK( pRenderThread, glGetIntegerv( GL_RENDERBUFFER_FREE_MEMORY_ATI, &values[ 0 ] ) );
-		text.Format( "Renderbuffer: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n",
 			values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
 		answer.AppendFromUTF8( text.GetString() );
 		

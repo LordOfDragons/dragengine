@@ -72,7 +72,6 @@ pTranspLayerLimit( 4 ),
 pUseOneFBO( false ),
 pUseEncodeDepth( false ),
 pDisableStencil( false ),
-pStencilOnlyOnRB( false ),
 
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
@@ -435,14 +434,6 @@ void deoglConfiguration::SetDisableStencil( bool disableStencil ){
 		return;
 	}
 	pDisableStencil = disableStencil;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
-	if( stencilOnlyOnRB == pStencilOnlyOnRB ){
-		return;
-	}
-	pStencilOnlyOnRB = stencilOnlyOnRB;
 	pDirty = true;
 }
 

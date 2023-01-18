@@ -23,7 +23,6 @@
 #define _DEOGLGITRACERAYS_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../texture/deoglRenderbuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 class deoglRenderThread;

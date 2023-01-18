@@ -24,7 +24,6 @@
 
 #include "deoglMemoryConsumptionBufferObject.h"
 #include "deoglMemoryConsumptionDeferredRendering.h"
-#include "deoglMemoryConsumptionRenderBuffer.h"
 #include "deoglMemoryConsumptionShadow.h"
 #include "deoglMemoryConsumptionSkin.h"
 #include "deoglMemoryConsumptionTexture.h"
@@ -48,7 +47,6 @@ public:
 	deoglMemoryConsumptionTexture textureArrayRenderable;
 	deoglMemoryConsumptionTexture textureCubeRenderable;
 	
-	deoglMemoryConsumptionRenderBuffer renderbuffer;
 	deoglMemoryConsumptionSkin skin;
 	deoglMemoryConsumptionBufferObject bufferObject;
 	deoglMemoryConsumptionDeferredRendering deferredRendering;

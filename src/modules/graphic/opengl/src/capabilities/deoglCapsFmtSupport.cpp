@@ -68,7 +68,6 @@ pCapabilities( capabilities )
 		pUseFBOTex2DFormats[ i ] = NULL;
 		pUseFBOTexCubeFormats[ i ] = NULL;
 		pUseFBOArrTexFormats[ i ] = NULL;
-		pUseRenBufFormats[ i ] = NULL;
 	}
 }
 
@@ -125,14 +124,6 @@ eUseTextureFormats type ) const{
 	return pUseFBOArrTexFormats[ type ];
 }
 
-const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseRenBufFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pUseRenBufFormats[ type ];
-}
-
 
 
 void deoglCapsFmtSupport::DetectFormats( GLuint fbo ){
@@ -149,9 +140,6 @@ void deoglCapsFmtSupport::DetectFormats( GLuint fbo ){
 	pDetectFBOTex2DFormats( fbo );
 	pDetectFBOTexCubeFormats( fbo );
 	pDetectFBOArrayTexFormats( fbo );
-	
-	// test render buffer as color/depth/stencil targets
-	pDetectRenBufFormats( fbo );
 	
 	#ifdef ANDROID
 	/*{
@@ -420,44 +408,6 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 		}
 	}
 	#endif
-}
-
-void deoglCapsFmtSupport::pDetectRenBufFormats( GLuint fbo ){
-	int f, p;
-	
-	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
-		pTestRenBufFormat( fbo, vTestTextureFormats[ f ].format, vTestTextureFormats[ f ].bitsPerPixel,
-			vTestTextureFormats[ f ].flags, vTestTextureFormats[ f ].name, vTestTextureFormats[ f ].what );
-	}
-	
-	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseRenBufFormats[ vTestProgram[ p ].target ] ){
-			pUseRenBufFormats[ vTestProgram[ p ].target ] =
-				pFoundRenBufFormats.GetFormatWith( vTestTextureFormats[ vTestProgram[ p ].testFormat ].format );
-		}
-	}
-	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseRenBufFormats[ vTestFallback[ p ].target ] ){
-			pUseRenBufFormats[ vTestFallback[ p ].target ] = pUseRenBufFormats[ vTestFallback[ p ].fallbackTarget ];
-		}
-	}
-	
-	// verify that all required formats are found
-	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
-		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
-	
-	for( p=0; p<15; p++ ){
-		if( ! pUseRenBufFormats[ required[ p ] ] ){
-			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
-				"Required format %s not found for Renderbuffers!",
-				vTextureFormatNames[ required[ p ] ] );
-			DETHROW( deeInvalidParam );
-		}
-	}
 }
 
 
@@ -919,98 +869,6 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
 		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, 0 ) );
 		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
 	}
-	
-	return errorCode == GL_NO_ERROR;
-}
-
-bool deoglCapsFmtSupport::pTestRenBufFormat( GLuint fbo, GLint format, int bitsPerPixel,
-int flags, const char *name, int what ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
-	
-	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
-	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
-	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
-	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
-	}
-	// ENDHACK
-	
-	GLuint renderbuffer = 0;
-	int errorCode;
-	
-	OGL_CHECK( renderThread, pglGenRenderbuffers( 1, &renderbuffer ) );
-	if( ! renderbuffer ) DETHROW( deeOutOfMemory );
-	
-	OGL_CHECK( renderThread, pglBindRenderbuffer( GL_RENDERBUFFER, renderbuffer ) );
-	pglRenderbufferStorage( GL_RENDERBUFFER, format, 8, 8 );
-	errorCode = glGetError();
-	
-	if( errorCode == GL_NO_ERROR ){
-		if( what == etwColor ){
-			pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer );
-			errorCode = glGetError();
-			
-			const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-			
-		}else if( what == etwDepth ){
-			pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer );
-			errorCode = glGetError();
-			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
-			
-		}else if( what == etwStencil ){
-			pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer );
-			errorCode = glGetError();
-			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
-			
-		}else{ // etwDepthStencil
-			pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer );
-			errorCode = glGetError();
-			if( errorCode == GL_NO_ERROR ){
-				pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer );
-				errorCode = glGetError();
-			}
-			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
-		}
-		
-		if( errorCode == GL_NO_ERROR ){
-			errorCode = pglCheckFramebufferStatus( GL_FRAMEBUFFER );
-			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
-				errorCode = GL_NO_ERROR;
-				pFoundRenBufFormats.AddFormat( format, 0, 0, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
-					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
-			}
-		}
-		
-		pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, 0 );
-		pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0 );
-		pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0 );
-	}
-	
-	OGL_CHECK( renderThread, pglBindRenderbuffer( GL_RENDERBUFFER, 0 ) );
-	OGL_CHECK( renderThread, pglDeleteRenderbuffers( 1, &renderbuffer ) );
 	
 	return errorCode == GL_NO_ERROR;
 }

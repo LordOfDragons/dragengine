@@ -36,7 +36,6 @@ class deoglMemoryConsumptionDeferredRendering;
 class deoglMemoryConsumptionDeferredRenderingUse{
 public:
 	deoglMemoryConsumptionGPUUse texture;
-	deoglMemoryConsumptionGPUUse renderBuffer;
 	
 	
 	

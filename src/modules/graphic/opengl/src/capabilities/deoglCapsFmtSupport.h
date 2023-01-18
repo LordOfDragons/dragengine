@@ -120,7 +120,6 @@ private:
 	deoglCapsTextureFormatList pFoundFBOTex2DFormats;
 	deoglCapsTextureFormatList pFoundFBOTexCubeFormats;
 	deoglCapsTextureFormatList pFoundFBOArrTexFormats;
-	deoglCapsTextureFormatList pFoundRenBufFormats;
 	
 	const deoglCapsTextureFormat *pUseTex2DFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseTexCubeFormats[ UseTextureFormatCount ];
@@ -128,7 +127,6 @@ private:
 	const deoglCapsTextureFormat *pUseFBOTex2DFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseFBOTexCubeFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseFBOArrTexFormats[ UseTextureFormatCount ];
-	const deoglCapsTextureFormat *pUseRenBufFormats[ UseTextureFormatCount ];
 	
 	
 	
@@ -167,10 +165,6 @@ public:
 	const deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats(){ return pFoundFBOArrTexFormats; }
 	
-	/** List of found render buffer formats. */
-	const deoglCapsTextureFormatList &GetFoundRenBufFormats() const{ return pFoundRenBufFormats; }
-	deoglCapsTextureFormatList &GetFoundRenBufFormats(){ return pFoundRenBufFormats; }
-	
 	
 	
 	/** Format to use for texture 2d type or \em NULL if not supported. */
@@ -191,9 +185,6 @@ public:
 	/** Format to use for fbo array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOArrayTexFormatFor( eUseTextureFormats type ) const;
 	
-	/** Format to use for render buffer texture type or \em NULL if not supported. */
-	const deoglCapsTextureFormat *GetUseRenBufFormatFor( eUseTextureFormats type ) const;
-	
 	
 	
 	/** Detect format support. */
@@ -209,7 +200,6 @@ private:
 	void pDetectFBOTex2DFormats( GLuint fbo );
 	void pDetectFBOTexCubeFormats( GLuint fbo );
 	void pDetectFBOArrayTexFormats( GLuint fbo );
-	void pDetectRenBufFormats( GLuint fbo );
 	
 	bool pTestTex2DFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, int flags, const char *name );
@@ -223,8 +213,6 @@ private:
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
 	bool pTestFBOArrayTexFormat( GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
-	bool pTestRenBufFormat( GLuint fbo, GLint format, int bitsPerPixel, int flags,
-		const char *name, int what );
 };
 
 #endif

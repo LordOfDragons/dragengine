@@ -1278,11 +1278,10 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	const char * const fmtTex2D  = "Tex2D (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
 	const char * const fmtTexArr = "TexArr(%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
 	const char * const fmtCube   = "Cube  (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
-	const char * const fmtRenBuf = "RenBuf(%4d): %4" OGLPFLLU "M                 | C(%4d) %4" OGLPFLLU "M                 | D(%3d) %3" OGLPFLLU "M";
 	const char * const fmtSkin   = "Skins (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M";
 	const char * const fmtRender = "Renderables :  2D-C(%2d) %3" OGLPFLLU "M | 2D-D(%2d) %3" OGLPFLLU "M | Arr-C(%2d) %3" OGLPFLLU "M | Arr-D(%2d) %3" OGLPFLLU "M";
 	const char * const fmtVBO    = "VBO   (%4d): %4uM | S(%4d) %4uM | I(%4d) %4uM | S(%4d) %4uM | T(%4d) %4uM";
-	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
+	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM";
 	
 	// textures 2d
 	const deoglMemoryConsumptionTexture &consumptionTexture2D = consumption.texture2D;
@@ -1439,25 +1438,6 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	size.y += fontHeight;
 	y += fontHeight;
 	
-	// renderbuffer
-	const deoglMemoryConsumptionRenderBuffer &consumptionRenderbuffer = consumption.renderbuffer;
-	const int renderbufferCount = consumptionRenderbuffer.all.GetCount();
-	const int renderbufferColorCount = consumptionRenderbuffer.color.GetCount();
-	const int renderbufferDepthCount = consumptionRenderbuffer.depth.GetCount();
-	unsigned long long renderbufferGPU = consumptionRenderbuffer.all.GetConsumption();
-	unsigned long long renderbufferColorGPU = consumptionRenderbuffer.color.GetConsumption();
-	unsigned long long renderbufferDepthGPU = consumptionRenderbuffer.depth.GetConsumption();
-	
-	renderbufferGPU /= 1000000ull;
-	renderbufferColorGPU /= 1000000ull;
-	renderbufferDepthGPU /= 1000000ull;
-	
-	text.Format( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
-		renderbufferDepthCount, renderbufferDepthGPU );
-	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
-	size.y += fontHeight;
-	y += fontHeight;
-	
 	// skin memory consumption
 	const deoglMemoryConsumptionSkin &consumptionSkin = consumption.skin;
 	const int skinCount = consumptionSkin.all.GetCount();
@@ -1527,9 +1507,8 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	const deoglMemoryConsumptionDeferredRendering &consumptionDefren = consumption.deferredRendering;
 	unsigned int defrenGPU = consumptionDefren.target.GetConsumptionMB();
 	unsigned int defrenGPUTexture = consumptionDefren.texture.GetConsumptionMB();
-	unsigned int defrenGPURenBuf = consumptionDefren.renderBuffer.GetConsumptionMB();
 	
-	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
+	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
@@ -1540,7 +1519,6 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	totalGPU = consumptionTexture2D.all.GetConsumption();
 	totalGPU += consumptionTextureArray.all.GetConsumption();
 	totalGPU += consumptionTextureCube.all.GetConsumption();
-	totalGPU += consumptionRenderbuffer.all.GetConsumption();
 	totalGPU += consumptionBO.vbo.GetConsumption();
 	totalGPU += consumptionBO.ibo.GetConsumption();
 	totalGPU += consumptionBO.ubo.GetConsumption();

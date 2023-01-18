@@ -271,11 +271,6 @@ pEnableDebugTrace( false )
 					disableMessages[ disableMessagesCount++ ] = 0x20084;
 					
 					// nVidia:
-					//   Source(API) Type(Other) ID(20061): Framebuffer detailed info:
-					//     The driver allocated storage for renderbuffer 0.
-					disableMessages[ disableMessagesCount++ ] = 0x20061;
-					
-					// nVidia:
 					//   Source(API) Type(Other) ID(0x20060): Framebuffer info: The drawbuffer
 					//     supplied (34854) is currently bound to NONE, no clear will take place.
 					disableMessages[ disableMessagesCount++ ] = 0x20060;

@@ -60,7 +60,6 @@ public:
 		eoglotFramebuffer,
 		eoglotQuery,
 		eoglotSampler,
-		eoglotRenderBuffer,
 		eoglotProgram,
 		eoglotShader
 	};
@@ -237,7 +236,6 @@ public:
 	inline void DeleteOpenGLFramebuffer( GLuint name ){ DeleteOpenGLObject( eoglotFramebuffer, name ); }
 	inline void DeleteOpenGLQuery( GLuint name ){ DeleteOpenGLObject( eoglotQuery, name ); }
 	inline void DeleteOpenGLSampler( GLuint name ){ DeleteOpenGLObject( eoglotSampler, name ); }
-	inline void DeleteOpenGLRenderBuffer( GLuint name ){ DeleteOpenGLObject( eoglotRenderBuffer, name ); }
 	inline void DeleteOpenGLProgram( GLuint name ){ DeleteOpenGLObject( eoglotProgram, name ); }
 	inline void DeleteOpenGLShader( GLuint name ){ DeleteOpenGLObject( eoglotShader, name ); }
 	/*@}*/
