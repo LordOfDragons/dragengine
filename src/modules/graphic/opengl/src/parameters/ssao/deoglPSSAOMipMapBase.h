@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter screen space ambient occlusion mip map base.
+ * Module parameter screen space ambient occlusion mip map base.
  */
 class deoglPSSAOMipMapBase : public deoglParameterFloat{
 public:

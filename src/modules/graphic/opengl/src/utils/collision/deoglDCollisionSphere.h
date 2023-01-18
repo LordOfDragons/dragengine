@@ -39,7 +39,7 @@ private:
 	decDVector pCenter;
 	double pRadius, pSquareRadius;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision sphere with no radius located at the origin. */
 	deoglDCollisionSphere();
@@ -53,13 +53,13 @@ public:
 	~deoglDCollisionSphere();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglDCollisionVolume *volume );
 	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglDCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglDCollisionCylinder *cylinder );
@@ -76,13 +76,13 @@ public:
 	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglDCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglDCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decDVector &point );
@@ -109,12 +109,12 @@ public:
 	virtual bool RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglDCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere collides with this sphere. */
 	bool SphereHitsSphere( deoglDCollisionSphere *sphere );
@@ -125,7 +125,7 @@ public:
 	double SphereMoveHitsSphere( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Parameters */
+	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the center point of the sphere. */
 	inline const decDVector &GetCenter() const{ return pCenter; }

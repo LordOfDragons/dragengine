@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Reflection Maximum Ray Length.
+ * Module Parameter Screen Space Reflection Maximum Ray Length.
  */
 class deoglPSSRMaxRayLength : public deoglParameterFloat{
 public:

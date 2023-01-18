@@ -38,7 +38,7 @@ private:
 	int pPlanSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render plan list. */
 	deoglRenderPlanList();
@@ -46,7 +46,7 @@ public:
 	~deoglRenderPlanList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of render plans. */
 	inline int GetCount() const{ return pPlanCount; }

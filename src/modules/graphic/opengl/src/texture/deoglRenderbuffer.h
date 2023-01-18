@@ -49,7 +49,7 @@ private:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl renderbuffer. */
 	deoglRenderbuffer( deoglRenderThread &renderThread );
@@ -57,7 +57,7 @@ public:
 	~deoglRenderbuffer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the renderbuffer. */
 	inline GLuint GetRenderbuffer() const{ return pRenderbuffer; }
@@ -89,7 +89,7 @@ public:
 	void UpdateMemoryUsage();
 	/*@}*/
 	
-	/** @name Helper Functions */
+	/** \name Helper Functions */
 	/*@{*/
 	/** Sets the format from a capabilities texture format. */
 	void SetFormatFromCaps( const deoglCapsTextureFormat &format );

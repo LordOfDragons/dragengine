@@ -47,7 +47,7 @@ private:
 	int pCubeMapSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap manager. */
 	deoglRenderableColorCubeMapManager( deoglRenderThread &renderThread );
@@ -55,7 +55,7 @@ public:
 	~deoglRenderableColorCubeMapManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable cubemaps. */
 	inline int GetCubeMapCount() const{ return pCubeMapCount; }

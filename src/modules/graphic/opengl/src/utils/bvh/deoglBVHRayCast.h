@@ -28,7 +28,7 @@ class deoglBVHNode;
 
 
 /**
- * \brief Bounding volume hierarchie ray cast visitor.
+ * Bounding volume hierarchie ray cast visitor.
  * 
  * Subclass is responsible to to know how to resolve primitive indices. This class provides
  * basic handling of BVH traversal with the help of the subclass.
@@ -37,10 +37,10 @@ class deoglBVHRayCast{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create ray caster. */
+	/** Create ray caster. */
 	deoglBVHRayCast();
 	
-	/** \brief Clean up ray caster. */
+	/** Clean up ray caster. */
 	virtual ~deoglBVHRayCast();
 	/*@}*/
 	
@@ -48,13 +48,13 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Perform ray cast against BVH. */
+	/** Perform ray cast against BVH. */
 	void RayCast( deoglBVH &bvh );
 	
 	
 	
 protected:
-	/** \brief Ray cast against node. */
+	/** Ray cast against node. */
 	void RayCastNode( deoglBVH &bvh, deoglBVHNode &node );
 	/*@}*/
 };

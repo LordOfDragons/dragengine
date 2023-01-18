@@ -64,7 +64,7 @@ public:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl array texture. */
 	deoglArrayTexture( deoglRenderThread &renderThread );
@@ -72,7 +72,7 @@ public:
 	~deoglArrayTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
@@ -139,10 +139,10 @@ public:
 	/** Sets texture level pixels from a pixel buffer. */
 	void SetPixelsLevel( int level, const deoglPixelBuffer &pixels );
 	
-	/** \brief Copy pixels from first level into pixel buffer. */
+	/** Copy pixels from first level into pixel buffer. */
 	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Copy pixels from level into pixel buffer. */
+	/** Copy pixels from level into pixel buffer. */
 	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
 	
 	/** Retrieves the size of a mip map level. */

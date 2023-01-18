@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Occlusion Reduction Parameter.
+ * Occlusion Reduction Parameter.
  */
 class deoglPOcclusionReduction : public deoglParameterInt{
 public:

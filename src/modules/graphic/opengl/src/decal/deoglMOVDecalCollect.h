@@ -32,7 +32,7 @@ class deoglTriangleSorter;
 
 
 /**
- * \brief Model octree visitor collecting triangles touching decal projection.
+ * Model octree visitor collecting triangles touching decal projection.
  * 
  * \note Before using the visitor you have to call deoglModelLOD::PrepareOctree()
  *       to ensure the octree is valid before visiting.
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create model octree visitor. */
+	/** Create model octree visitor. */
 	deoglMOVDecalCollect( const deoglModelLOD &modelLOD, deoglTriangleSorter &triangleSorter );
 	
-	/** \brief Clean up model octree visitor. */
+	/** Clean up model octree visitor. */
 	virtual ~deoglMOVDecalCollect();
 	/*@}*/
 	
@@ -62,7 +62,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/**
-	 * \brief Visit model octree storing list in triangle sorter.
+	 * Visit model octree storing list in triangle sorter.
 	 * 
 	 * The matrix is the decal matrix (position and orientation) in model coordinate system.
 	 * Faces are clipped against the range (size.x*-0.5, size.y*-0.5, -size.z) to
@@ -72,7 +72,7 @@ public:
 	 */
 	void CollectFaces( const decMatrix &matrix, const decVector &size );
 	
-	/** \brief Visits an octree node. */
+	/** Visits an octree node. */
 	virtual void VisitNode( deoglOctree *node, int intersection );
 	/*@}*/
 };

@@ -47,7 +47,7 @@ private:
 	int pMemoryUsageGPU;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture. */
 	deoglRenderableColorTexture( deoglRenderThread &renderThread, int width, int height, int componentCount, bool isFloat );
@@ -55,7 +55,7 @@ public:
 	~deoglRenderableColorTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
 	inline int GetWidth() const{ return pWidth; }

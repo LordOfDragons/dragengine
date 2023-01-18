@@ -30,7 +30,7 @@ class deCanvasImage;
 
 
 /**
- * \brief Canvas peer.
+ * Canvas peer.
  */
 class deoglCanvasImage : public deoglCanvas{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCanvasImage( deGraphicOpenGl &ogl, deCanvasImage &canvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCanvasImage();
 	/*@}*/
 	
@@ -54,29 +54,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Drop render canvas if not \em NULL. */
+	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
 	
 	/**
-	 * \brief Prepare content for render thread counterpart.
+	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
 	
-	/** \brief Image requires sync. */
+	/** Image requires sync. */
 	void ImageRequiresSync();
 	
-	/** \brief Drop image. */
+	/** Drop image. */
 	void DropImage();
 	
-	/** \brief Content changed. */
+	/** Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
 	
 	
 	
 protected:
-	/** \brief Create render canvas. Subclass responsibility. */
+	/** Create render canvas. Subclass responsibility. */
 	virtual deoglRCanvas *CreateRCanvas();
 };
 

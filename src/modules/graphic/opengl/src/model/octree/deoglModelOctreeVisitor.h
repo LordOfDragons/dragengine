@@ -29,26 +29,26 @@ class deoglModelFace;
 
 
 /**
- * \brief Model octree visitor.
+ * Model octree visitor.
  */
 class deoglModelOctreeVisitor : public deoglOctreeVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new model octree visitor. */
+	/** Creates a new model octree visitor. */
 	deoglModelOctreeVisitor();
-	/** \brief Cleans up the model octree visitor. */
+	/** Cleans up the model octree visitor. */
 	virtual ~deoglModelOctreeVisitor();
 	/*@}*/
 	
 	/** \name Visiting */
 	/*@{*/
 	/**
-	 * \brief Visits an octree node.
+	 * Visits an octree node.
 	 * \details The default implementation is to visit all faces stored in the node.
 	 */
 	virtual void VisitNode( deoglOctree *node, int intersection );
-	/** \brief Visits a face. */
+	/** Visits a face. */
 	virtual void VisitFace( deoglModelFace *face );
 	/*@}*/
 };

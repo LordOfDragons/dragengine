@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Enable Screen Space Reflection.
+ * Module Parameter Enable Screen Space Reflection.
  */
 class deoglPSSREnable : public deoglParameterBool{
 public:

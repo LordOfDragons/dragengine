@@ -35,7 +35,7 @@ class deoglROcclusionMesh;
  */
 class deoglConvexVisHullBuilder{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new convex visibility hull builder. */
 	deoglConvexVisHullBuilder();
@@ -43,7 +43,7 @@ public:
 	~deoglConvexVisHullBuilder();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Builds a sphere volume. */
 	void BuildSphere( decConvexVolumeList &volumeList, const decVector &position, float radius ) const;

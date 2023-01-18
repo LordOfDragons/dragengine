@@ -44,7 +44,7 @@ private:
 	double pDistance;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglFindBestEnvMap();
@@ -52,7 +52,7 @@ public:
 	virtual ~deoglFindBestEnvMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the target position. */
 	inline const decDVector &GetPosition() const{
@@ -74,7 +74,7 @@ public:
 	void Reset();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );

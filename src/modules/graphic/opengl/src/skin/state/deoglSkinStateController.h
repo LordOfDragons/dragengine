@@ -35,7 +35,7 @@ class deVideoPlayer;
 
 
 /**
- * \brief Skin state controller.
+ * Skin state controller.
  */
 class deoglSkinStateController{
 private:
@@ -51,10 +51,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state controller. */
+	/** Create skin state controller. */
 	deoglSkinStateController();
 	
-	/** \brief Clean up skin state controller. */
+	/** Clean up skin state controller. */
 	~deoglSkinStateController();
 	/*@}*/
 	
@@ -62,58 +62,58 @@ public:
 	
 	/** \name Management. */
 	/*@{*/
-	/** \brief Number of shared video players. */
+	/** Number of shared video players. */
 	inline int GetVideoPlayerCount() const{ return pSharedVideoPlayerCount; }
 	
-	/** \brief Set number of video players. */
+	/** Set number of video players. */
 	void SetVideoPlayerCount( int count );
 	
-	/** \brief Video player by index or \em NULL if not existing. */
+	/** Video player by index or \em NULL if not existing. */
 	deVideoPlayer *GetVideoPlayerAt( int index ) const;
 	
-	/** \brief Shared video player by index or \em NULL if not existing. */
+	/** Shared video player by index or \em NULL if not existing. */
 	deoglSharedVideoPlayer *GetSharedVideoPlayerAt( int index ) const;
 	
-	/** \brief Set video player at index or \em NULL if not existing. */
+	/** Set video player at index or \em NULL if not existing. */
 	void SetVideoPlayerAt( int index, deVideoPlayer *videoPlayer );
 	
-	/** \brief Set shared video player at index or \em NULL if not existing. */
+	/** Set shared video player at index or \em NULL if not existing. */
 	void SetSharedVideoPlayerAt( int index, deoglSharedVideoPlayer *videoPlayer );
 	
 	
 	
-	/** \brief Has calculated properties. */
+	/** Has calculated properties. */
 	inline bool GetHasCalculatedProperties() const{ return pHasCalculatedProperties; }
 	
-	/** \brief Set if has calculated properties. */
+	/** Set if has calculated properties. */
 	void SetHasCalculatedProperties( bool hasCalculatedProperties );
 	
 	
 	
-	/** \brief Requires sync every frame update. */
+	/** Requires sync every frame update. */
 	bool RequiresSyncEveryFrameUpdate() const;
 	
-	/** \brief Requires prepare renderables. */
+	/** Requires prepare renderables. */
 	bool RequiresPrepareRenderables() const;
 	
-	/** \brief Init skin state. */
+	/** Init skin state. */
 	void Init( deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world );
 	
-	/** \brief Init skin state. */
+	/** Init skin state. */
 	void Init( deoglSkinState &skinState, deoglRSkin *skin, int textureIndex, deoglWorld *world );
 	
 	
 	
-	/** \brief Reset time. */
+	/** Reset time. */
 	void ResetTime();
 	
-	/** \brief Update time. */
+	/** Update time. */
 	void AdvanceTime( float timeStep );
 	
-	/** \brief Synchronize to render. */
+	/** Synchronize to render. */
 	void SyncToRender();
 	
-	/** \brief Clear. */
+	/** Clear. */
 	void Clear();
 	/*@}*/
 	

@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter normal roughness correction strength.
+ * Module parameter normal roughness correction strength.
  */
 class deoglPNorRougCorrStrength : public deoglParameterFloat{
 public:

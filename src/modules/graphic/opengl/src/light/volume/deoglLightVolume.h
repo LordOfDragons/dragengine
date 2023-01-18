@@ -56,7 +56,7 @@ public:
 	bool pDirtyVBO;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new light volume. */
 	deoglLightVolume( deoglRenderThread &renderThread );
@@ -64,7 +64,7 @@ public:
 	~deoglLightVolume();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }

@@ -38,7 +38,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new developer mode stats object. */
 	deoglDeveloperModeStats( deoglRenderThread &renderThread );
@@ -46,7 +46,7 @@ public:
 	~deoglDeveloperModeStats();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Print stats syntax. */
 	void Help( decUnicodeString &answer );

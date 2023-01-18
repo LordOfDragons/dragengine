@@ -52,7 +52,7 @@ private:
 	int pLevelCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new boundary map. */
 	deoglLightBoundaryMap( deoglRenderThread &renderThread, int size );
@@ -60,7 +60,7 @@ public:
 	~deoglLightBoundaryMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the size of the base level. */
 	inline int GetSize() const{ return pSize; }

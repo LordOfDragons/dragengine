@@ -68,7 +68,7 @@ private:
 	float pAmbientIntensity;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sky layer tracker with values inited from a sky layer. */
 	deoglSkyLayerTracker();
@@ -76,7 +76,7 @@ public:
 	~deoglSkyLayerTracker();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the threshold for squared distance changes in orientation values. */
 	inline float GetThresholdOrientation() const{ return pThresholdOrientation; }

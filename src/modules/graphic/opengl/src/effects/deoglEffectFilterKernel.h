@@ -30,7 +30,7 @@ class deEffectFilterKernel;
 
 
 /**
- * \brief Effect filter kernel.
+ * Effect filter kernel.
  */
 class deoglEffectFilterKernel : public deoglEffect{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create effect peer. */
+	/** Create effect peer. */
 	deoglEffectFilterKernel( deGraphicOpenGl &ogl, const deEffectFilterKernel &effect );
 	
-	/** \brief Clean up effect. */
+	/** Clean up effect. */
 	virtual ~deoglEffectFilterKernel();
 	/*@}*/
 	
@@ -54,20 +54,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Effect color matrix engine resource. */
+	/** Effect color matrix engine resource. */
 	inline const deEffectFilterKernel &GetEffectFilterKernel() const{ return pEffectFilterKernel; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Filter kernel changed. */
+	/** Filter kernel changed. */
 	virtual void FilterKernelChanged();
 	/*@}*/
 };

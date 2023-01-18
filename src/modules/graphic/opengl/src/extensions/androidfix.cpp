@@ -31,7 +31,7 @@
 
 
 /**
- * \brief Wraps eglGetProcAddress returning replacement functions if not found.
+ * Wraps eglGetProcAddress returning replacement functions if not found.
  */
 __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name ){
 	// find native method
@@ -85,7 +85,7 @@ __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name
 
 
 /**
- * \brief glGetTexImage replacement.
+ * glGetTexImage replacement.
  * 
  * Method is not existing in EGL. Potentially simulate it using glBlitFramebuffer.
  * 
@@ -112,7 +112,7 @@ void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvo
 
 
 /**
- * \brief glPolygonMode replacement.
+ * glPolygonMode replacement.
  * 
  * Method does not exist in EGL. EGL supports only GL_FILL thus the entire method call is missing.
  * No direct solution except using GL_LINES rendering with modified buffers. Since this is currently
@@ -124,7 +124,7 @@ void glPolygonMode( GLenum face, GLenum mode ){
 
 
 /**
- * \brief glGetBufferSubData replacement.
+ * glGetBufferSubData replacement.
  * 
  * EGL does not have glGetBuffer*. As replacement glMapBufferRange has to be used.
  */
@@ -146,7 +146,7 @@ void glGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *
 
 
 /**
- * \brief glTexImage1D replacement.
+ * glTexImage1D replacement.
  * 
  * 1D textures are not supported under EGL. Replace with a 2D texture variant.
  * 
@@ -160,7 +160,7 @@ GLint border, GLenum format, GLenum type, const GLvoid *data ){
 
 
 /**
- * \brief glTexSubImage1D replacement.
+ * glTexSubImage1D replacement.
  * 
  * 1D textures are not supported under EGL. Replace with a 2D texture variant.
  * 
@@ -174,7 +174,7 @@ GLenum format, GLenum type, const void *pixels ){
 
 
 /**
- * \brief glCompressedTexImage1D replacement.
+ * glCompressedTexImage1D replacement.
  * 
  * 1D textures are not supported under EGL. Replace with a 2D texture variant.
  * 
@@ -188,7 +188,7 @@ GLsizei width, GLint border, GLsizei imageSize, const void *data ){
 
 
 /**
- * \brief glFramebufferTexture replacement.
+ * glFramebufferTexture replacement.
  * 
  * Use glFramebufferTexture2D instead which fails if not used on a supported type.
  */
@@ -201,7 +201,7 @@ void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLi
 
 
 /**
- * \brief glBindFragDataLocation replacement.
+ * glBindFragDataLocation replacement.
  * 
  * EGL supports no custom named and placed output variables.
  * Replacement is a no-op. Shaders fix this.
@@ -212,7 +212,7 @@ void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ){
 
 
 /**
- * \brief glTexBuffer replacement.
+ * glTexBuffer replacement.
  * 
  * Supported from 3.1 onwards but android has egl 3.0. for the time being the call
  * is silently ignored. problems have to be fixed once known.
@@ -223,7 +223,7 @@ void glTexBuffer( GLenum target, GLenum internalformat, GLuint buffer ){
 
 
 /**
- * \brief glDrawElementsBaseVertex replacement.
+ * glDrawElementsBaseVertex replacement.
  * 
  * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
  * since it requires modifying the VBO data. the shared vbo shifts the indices into
@@ -236,7 +236,7 @@ void glDrawElementsBaseVertex( GLenum mode, GLsizei count, GLenum type, const vo
 
 
 /**
- * \brief glDrawRangeElementsBaseVertex replacement.
+ * glDrawRangeElementsBaseVertex replacement.
  * 
  * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
  * since it requires modifying the VBO data. the shared vbo shifts the indices into
@@ -250,7 +250,7 @@ GLenum type, const void *indices, GLint basevertex ){
 
 
 /**
- * \brief glDrawElementsInstancedBaseVertex replacement.
+ * glDrawElementsInstancedBaseVertex replacement.
  * 
  * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
  * since it requires modifying the VBO data. the shared vbo shifts the indices into
@@ -264,7 +264,7 @@ const void *indices, GLsizei instancecount, GLint basevertex ){
 
 
 /**
- * \brief glQueryCounter replacement.
+ * glQueryCounter replacement.
  * 
  * Not used so simply blanked.
  */
@@ -274,7 +274,7 @@ void glQueryCounter( GLuint id, GLenum target ){
 
 
 /**
- * \brief glGetQueryObjectui64v replacement.
+ * glGetQueryObjectui64v replacement.
  * 
  * Not used so simply blanked.
  */
@@ -284,7 +284,7 @@ void glGetQueryObjectui64v( GLuint id, GLenum pname, GLuint64 *params ){
 
 
 /**
- * \brief glShaderStorageBlockBinding replacement.
+ * glShaderStorageBlockBinding replacement.
  * 
  * Set to empty since under OpenGL ES the shader has to set the binding.
  */

@@ -32,7 +32,7 @@ class deDebugDrawer;
 
 
 /**
- * \brief Debug Drawer Peer.
+ * Debug Drawer Peer.
  */
 class deoglDebugDrawer : public deBaseGraphicDebugDrawer{
 private:
@@ -47,10 +47,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglDebugDrawer( deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDebugDrawer();
 	/*@}*/
 	
@@ -58,18 +58,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Debug drawer resource. */
+	/** Debug drawer resource. */
 	inline const deDebugDrawer &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
-	/** \brief Render debug drawer. */
+	/** Render debug drawer. */
 	inline deoglRDebugDrawer *GetRDebugDrawer() const{ return pRDebugDrawer; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -77,35 +77,35 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Scaling changed. */
+	/** Scaling changed. */
 	virtual void ScalingChanged();
 	
 	
 	
-	/** \brief Visibile changed. */
+	/** Visibile changed. */
 	virtual void VisibleChanged();
 	
-	/** \brief X-Ray changed. */
+	/** X-Ray changed. */
 	virtual void XRayChanged();
 	
 	
 	
-	/** \brief Shape edge or fill colors changed. */
+	/** Shape edge or fill colors changed. */
 	virtual void ShapeColorChanged();
 	
-	/** \brief Shape position, orientation or scaling changed. */
+	/** Shape position, orientation or scaling changed. */
 	virtual void ShapeGeometryChanged();
 	
-	/** \brief Shape shapes or faces changed. */
+	/** Shape shapes or faces changed. */
 	virtual void ShapeContentChanged();
 	
-	/** \brief Shapes have been added or removed. */
+	/** Shapes have been added or removed. */
 	virtual void ShapeLayoutChanged();
 	/*@}*/
 	

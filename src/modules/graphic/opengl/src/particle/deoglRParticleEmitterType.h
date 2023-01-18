@@ -38,7 +38,7 @@ class deoglTexture;
 
 
 /**
- * \brief Render particle emitter type.
+ * Render particle emitter type.
  */
 class deoglRParticleEmitterType : public deObject{
 public:
@@ -85,10 +85,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render type. */
+	/** Create render type. */
 	deoglRParticleEmitterType( deoglRParticleEmitter &emitter );
 	
-	/** \brief Clean up render type. */
+	/** Clean up render type. */
 	virtual ~deoglRParticleEmitterType();
 	/*@}*/
 	
@@ -96,67 +96,67 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Particle emitter. */
+	/** Particle emitter. */
 	inline deoglRParticleEmitter &GetEmitter() const{ return pEmitter; }
 	
 	
 	
-	/** \brief Linear velocity parameter factor. */
+	/** Linear velocity parameter factor. */
 	inline float GetParamFactorLinVelo() const{ return pParamFactorLinVelo; }
 	
-	/** \brief Angular velocity parameter factor. */
+	/** Angular velocity parameter factor. */
 	inline float GetParamFactorAngVelo() const{ return pParamFactorAngVelo; }
 	
-	/** \brief Parameter multiply factor. */
+	/** Parameter multiply factor. */
 	inline const float *GetParamFactorMultiply() const{ return &pParamFactorMultiply[ 0 ]; }
 	
-	/** \brief Parameter add factor. */
+	/** Parameter add factor. */
 	inline const float *GetParamFactorAdd() const{ return &pParamFactorAdd[ 0 ]; }
 	
-	/** \brief Parameter samples. */
+	/** Parameter samples. */
 	inline const float *GetParameterSamples() const{ return pParameterSamples; }
 	
-	/** \brief Texture with the samples. */
+	/** Texture with the samples. */
 	inline deoglTexture *GetTextureSamples() const{ return pTextureSamples; }
 	
 	
 	
-	/** \brief Simulation type. */
+	/** Simulation type. */
 	inline deParticleEmitterType::eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
-	/** \brief Set simulation type. */
+	/** Set simulation type. */
 	void SetSimulationType( deParticleEmitterType::eSimulationTypes simulationType );
 	
 	
 	
-	/** \brief Update parameter samples. */
+	/** Update parameter samples. */
 	void UpdateParameterSamples( const deParticleEmitterType &type );
 	
-	/** \brief Sample a parameter. */
+	/** Sample a parameter. */
 	void SampleParameters( eSampleCurves curveProgress, eSampleCurves curveBeam, const deParticleEmitterParameter &parameter );
 	
-	/** \brief Sampled parameter value using interpolation. */
+	/** Sampled parameter value using interpolation. */
 	float GetSampledParameter( eSampleCurves curve, float location ) const;
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	void PrepareForRender();
 	
 	
 	
-	/** \brief Skin. */
+	/** Skin. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin. */
+	/** Set skin. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Particles emit light. */
+	/** Particles emit light. */
 	inline bool GetEmitLight() const{ return pEmitLight; }
 	
-	/** \brief Check if particles emit light. */
+	/** Check if particles emit light. */
 	void CheckEmitLight( const deParticleEmitterType &type );
 	
 	/**
-	 * \brief Particles have transparency.
+	 * Particles have transparency.
 	 * 
 	 * Returns true if one or more of these conditions are true:
 	 * - One or more transparency curves are not empty.

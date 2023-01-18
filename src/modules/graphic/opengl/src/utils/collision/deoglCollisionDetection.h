@@ -49,13 +49,13 @@ public:
 	};
 	
 public:
-	/** @name Closest Point Routines */
+	/** \name Closest Point Routines */
 	/*@{*/
-	/** \brief Retrieves the closest point on a line to another point. */
+	/** Retrieves the closest point on a line to another point. */
 	static decVector ClosestPointOnLine( const decVector &lineFrom, const decVector &lineTo, const decVector &point );
 	
 	/**
-	 * \brief Retrieves the closest point on an infinite ray to another point.
+	 * Retrieves the closest point on an infinite ray to another point.
 	 * \details rayDirection has to be normalized.
 	 */
 	static decVector ClosestPointOnRay( const decVector &rayOrigin, const decVector &rayDirection, const decVector &point );
@@ -105,7 +105,7 @@ public:
 		const decVector &tp3, const decVector &tp4, const decVector &p );
 	/*@}*/
 	
-	/** @name Intersection Routines */
+	/** \name Intersection Routines */
 	/*@{*/
 	/**
 	 * Intersections a ray with a plane.
@@ -134,7 +134,7 @@ public:
 	static float RaySphere( const decVector &rp, const decVector &rd, const decVector &sc, float sr );
 	/*@}*/
 	
-	/** @name Distance Routines */
+	/** \name Distance Routines */
 	/*@{*/
 	/**
 	 * Retrieves the smallest distance of a line segment to another line segment.
@@ -146,13 +146,13 @@ public:
 	static float SegmentSegmentDistance( const decVector &as, const decVector &ae, const decVector &bs, const decVector &be );
 	
 	/**
-	 * \brief Retrieves the distance of a point to an infinite ray.
+	 * Retrieves the distance of a point to an infinite ray.
 	 * \details rayDirection has to be normalized.
 	 */
 	static float PointRayDistance( const decVector &rayOrigin, const decVector &rayDirection, const decVector &point );
 	/*@}*/
 	
-	/** @name Collision Tests */
+	/** \name Collision Tests */
 	/*@{*/
 	/**
 	 * Determines if a point is inside a triangle. The point has
@@ -368,7 +368,7 @@ public:
 		const decVector &trinormal );
 	/*@}*/
 	
-	/** @name Side Test Routines */
+	/** \name Side Test Routines */
 	/*@{*/
 	/**
 	 * Determines on which side of a plane the given point lies

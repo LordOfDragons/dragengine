@@ -179,19 +179,19 @@ private:
 	void *pPixels;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer. */
 	deoglPixelBuffer( ePixelFormats format, int width, int height, int depth );
 	
-	/** \brief Create copy of pixel buffer. */
+	/** Create copy of pixel buffer. */
 	deoglPixelBuffer( const deoglPixelBuffer &pixelBuffer );
 	
 	/** Cleans up the opengl array texture. */
 	~deoglPixelBuffer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
 	inline int GetWidth() const{ return pWidth; }

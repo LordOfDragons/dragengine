@@ -31,7 +31,7 @@ class deoglRImage;
 
 
 /**
- * \brief Combined Texture List.
+ * Combined Texture List.
  */
 class deoglCombinedTextureList{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create list. */
+	/** Create list. */
 	deoglCombinedTextureList( deoglRenderThread &pRenderThread );
 	
-	/** \brief Clean up list. */
+	/** Clean up list. */
 	~deoglCombinedTextureList();
 	/*@}*/
 	
@@ -55,19 +55,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Number of combined textures in the list. */
+	/** Number of combined textures in the list. */
 	inline int GetCount() const{ return pCount; }
 	
-	/** \brief Root combined texture. */
+	/** Root combined texture. */
 	inline deoglCombinedTexture *GetRoot() const{ return pRoot; }
 	
 	/**
-	 * \brief Combined texture with parameters.
+	 * Combined texture with parameters.
 	 * \details Creates combined texture if not existing. This adds a usage to the combined
 	 *          texture. To remove a usage use the RemoveUsage function on the returned
 	 *          combined texture.
@@ -75,7 +75,7 @@ public:
 	deoglCombinedTexture *GetWith( const decColor &color, deoglRImage *images[ 4 ] );
 	
 	/**
-	 * \brief Remove combined texture.
+	 * Remove combined texture.
 	 * \details For use by deoglCombinedTexture only.
 	 */
 	void Remove( deoglCombinedTexture *combinedTexture );

@@ -28,7 +28,7 @@ class deoglRImage;
 
 
 /**
- * \brief Render canvas image.
+ * Render canvas image.
  */
 class deoglRCanvasImage : public deoglRCanvas{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasImage( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasImage();
 	/*@}*/
 	
@@ -51,36 +51,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Image or \em NULL if not set. */
+	/** Image or \em NULL if not set. */
 	inline deoglRImage *GetImage() const{ return pImage; }
 	
-	/** \brief Set image or \em NULL if not set. */
+	/** Set image or \em NULL if not set. */
 	void SetImage( deoglRImage *image );
 	
-	/** \brief Texture coordinate transformation matrix. */
+	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
-	/** \brief Set texture coordinate transformation matrix. */
+	/** Set texture coordinate transformation matrix. */
 	void SetTCTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Texture coordinates clamp minimum. */
+	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
-	/** \brief Set texture coordinates clamp minimum. */
+	/** Set texture coordinates clamp minimum. */
 	void SetTCClampMinimum( const decVector2 &clamp );
 	
-	/** \brief Texture coordinates clamp maximum. */
+	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
-	/** \brief Set texture coordinates clamp maximum. */
+	/** Set texture coordinates clamp maximum. */
 	void SetTCClampMaximum( const decVector2 &clamp );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Render. */
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/
 };

@@ -32,7 +32,7 @@ class deoglTexture;
 
 
 /**
- * \brief Render video.
+ * Render video.
  * 
  * Stores cached frames if the video is small enough to warrant keeping it
  * in memory. Video player peers are responsible to store cached frames
@@ -65,10 +65,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render video. */
+	/** Create render video. */
 	deoglRVideo( deoglRenderThread &renderThread, int width, int height, int frameCount );
 	
-	/** \brief Clean up render video. */
+	/** Clean up render video. */
 	virtual ~deoglRVideo();
 	/*@}*/
 	
@@ -76,18 +76,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Frame texture or \em NULL if not ready. */
+	/** Frame texture or \em NULL if not ready. */
 	deoglTexture *GetTexture( int frame ) const;
 	
-	/** \brief Number of frames. */
+	/** Number of frames. */
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
-	/** \brief Remaining number of frames to cache or -1 if no caching is used. */
+	/** Remaining number of frames to cache or -1 if no caching is used. */
 	inline int GetFrameCountToCache() const{ return pFrameCountToCache; }
 	
 	
 	/**
-	 * \brief Set pixel buffer to update frame texture with.
+	 * Set pixel buffer to update frame texture with.
 	 * \details Does not free the old pixel buffer. If a pixel buffer is still set
 	 *          during destruction the pixel buffer is freed. This allows to swap
 	 *          pixel buffer with the decode thread.
@@ -95,12 +95,12 @@ public:
 	 */
 	deoglPixelBuffer *SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer );
 	
-	/** \brief Frame to update or -1 if not set to update a frame. */
+	/** Frame to update or -1 if not set to update a frame. */
 	inline int GetUpdateFrame() const{ return pUpdateFrame; }
 	
 	
 	
-	/** \brief Update texture if required. */
+	/** Update texture if required. */
 	void UpdateTexture();
 	/*@}*/
 	

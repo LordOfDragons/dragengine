@@ -36,14 +36,14 @@ class deSkinPropertyConstructed;
 
 
 /**
- * \brief Build channel from constructed property.
+ * Build channel from constructed property.
  */
 class deoglSCBuildConstructed : public deSkinPropertyNodeVisitor{
 private:
 	struct sTarget;
 	struct sContext;
 	
-	/** \brief Target. */
+	/** Target. */
 	struct sTarget{
 		int targetRed;
 		int targetGreen;
@@ -67,7 +67,7 @@ private:
 		~sTarget();
 	};
 	
-	/** \brief Context. */
+	/** Context. */
 	struct sContext{
 		sContext *parent;
 		sContext *child;
@@ -98,10 +98,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglSCBuildConstructed( deoglSkinChannel &channel );
 	
-	/** \brief Clean up visitor. */
+	/** Clean up visitor. */
 	virtual ~deoglSCBuildConstructed();
 	/*@}*/
 	
@@ -109,7 +109,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Build from constructed property. */
+	/** Build from constructed property. */
 	bool BuildFromProperty( const deSkinPropertyConstructed &property, int targetRed,
 		int targetGreen, int targetBlue, int targetAlpha );
 	/*@}*/
@@ -118,16 +118,16 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit group node. */
+	/** Visit group node. */
 	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
 	
-	/** \brief Visit image node. */
+	/** Visit image node. */
 	virtual void VisitImage( deSkinPropertyNodeImage &node );
 	
-	/** \brief Visit shape node. */
+	/** Visit shape node. */
 	virtual void VisitShape( deSkinPropertyNodeShape &node );
 	
-	/** \brief Visit text node. */
+	/** Visit text node. */
 	virtual void VisitText( deSkinPropertyNodeText &node );
 	/*@}*/
 	

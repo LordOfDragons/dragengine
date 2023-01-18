@@ -292,7 +292,7 @@ private:
 	deoglShaderProgram::Ref pShader;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin shader. */
 	deoglSkinShader( deoglRenderThread &renderThread, const deoglSkinShaderConfig &config );
@@ -300,7 +300,7 @@ public:
 	virtual ~deoglSkinShader();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
@@ -407,7 +407,7 @@ public:
 	
 	
 	
-	/** @name Shader Generation */
+	/** \name Shader Generation */
 	/*@{*/
 	/** Generate shader. */
 	void GenerateShader();

@@ -31,7 +31,7 @@ class deoglRCamera;
 
 
 /**
- * \brief Render dynamic skin camera renderable.
+ * Render dynamic skin camera renderable.
  */
 class deoglRDSRenderableCamera : public deoglRDSRenderable{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin camera renderable. */
+	/** Create render dynamic skin camera renderable. */
 	deoglRDSRenderableCamera( deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Clean up render dynamic skin camera renderable. */
+	/** Clean up render dynamic skin camera renderable. */
 	virtual ~deoglRDSRenderableCamera();
 	/*@}*/
 	
@@ -51,14 +51,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set camera. */
+	/** Set camera. */
 	void SetCamera( deoglRCamera *camera );
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
-	 * \brief Get render plan to use for rendering or \em NULL if not applicable.
+	 * Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglRenderPlan *GetRenderPlan() const;

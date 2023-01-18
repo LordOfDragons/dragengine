@@ -100,7 +100,7 @@ private:
 	deoglOctree *pParent;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
 	deoglOctree( const decVector &center, const decVector &halfSize );
@@ -108,7 +108,7 @@ public:
 	virtual ~deoglOctree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
 	inline deoglOctree *GetParent() const{ return pParent; }

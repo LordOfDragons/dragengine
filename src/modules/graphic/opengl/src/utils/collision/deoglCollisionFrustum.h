@@ -69,7 +69,7 @@ private:
 	float pDistTop, pDistBottom;
 	float pDistNear, pDistFar;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creastes a new collision frustum with default parameters. */
 	deoglCollisionFrustum();
@@ -77,13 +77,13 @@ public:
 	virtual ~deoglCollisionFrustum();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume(deoglCollisionVolume *volume);
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume(deoglCollisionSphere *sphere);
 	virtual bool CylinderHitsVolume(deoglCollisionCylinder *cylinder);
@@ -100,13 +100,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -114,12 +114,12 @@ public:
 	virtual decVector ClosestPointTo( const decVector &point );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this frustum. */
 	bool SphereHitsFrustum(deoglCollisionSphere *sphere);
@@ -178,7 +178,7 @@ public:
 	float FrustumMoveHitsFrustum( deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	inline const decVector &GetLeftNormal() const{ return pNormalLeft; }
 	inline const decVector &GetRightNormal() const{ return pNormalRight; }
@@ -222,7 +222,7 @@ public:
 	void SetFrustumBox(const decVector &r1, const decVector &r2, const decVector &r3, const decVector &r4, float nearDist);
 	/*@}*/
 	
-	/** @name Intersection Tests */
+	/** \name Intersection Tests */
 	/*@{*/
 	/**
 	 * Determines if the given sphere intersects this frustum.

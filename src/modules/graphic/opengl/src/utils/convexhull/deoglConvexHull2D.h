@@ -39,7 +39,7 @@ private:
 	int pHullPointSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new 2d convex hull calculator. */
 	deoglConvexHull2D();
@@ -47,7 +47,7 @@ public:
 	~deoglConvexHull2D();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }

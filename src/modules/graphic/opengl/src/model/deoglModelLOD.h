@@ -124,7 +124,7 @@ public:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model lod. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &engModel );
@@ -134,7 +134,7 @@ public:
 	~deoglModelLOD();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent model. */
 	inline deoglRModel &GetModel() const{ return pModel; }

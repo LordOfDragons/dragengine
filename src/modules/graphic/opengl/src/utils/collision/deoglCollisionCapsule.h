@@ -53,7 +53,7 @@ private:
 	bool pTapered;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
 	 * Creates a new unoriented capsule. The half height is set to 0.5, the top
@@ -81,13 +81,13 @@ public:
 	virtual ~deoglCollisionCapsule();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder );
@@ -104,13 +104,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -137,12 +137,12 @@ public:
 	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this capsule. */
 	bool SphereHitsCapsule( deoglCollisionSphere *sphere );
@@ -171,7 +171,7 @@ public:
 	float CapsuleMoveHitsCapsule( deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Retrieves the capsule center.

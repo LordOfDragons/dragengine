@@ -225,7 +225,7 @@ private:
 	deoglSkinTextureProperty pMaterialProperties[ EMP_COUNT ];
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
 	 * Create skin texture.
@@ -238,7 +238,7 @@ public:
 	~deoglSkinTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
@@ -351,7 +351,7 @@ public:
 	void PrepareParamBlock();
 	/*@}*/
 	
-	/** @name Material Properties */
+	/** \name Material Properties */
 	/*@{*/
 	/** Color. */
 	inline const decColor &GetColor() const{ return pColor; }

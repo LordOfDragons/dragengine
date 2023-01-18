@@ -34,7 +34,7 @@ class deoglROcclusionMesh;
 
 
 /**
- * \brief Ray trace field.
+ * Ray trace field.
  * 
  * Stores a grid of ray trace probes. Each probe stores a set of ray traces all with the
  * same direction in the same order. This field can be used to speed up ray tracing for
@@ -42,7 +42,7 @@ class deoglROcclusionMesh;
  */
 class deoglRayTraceField{
 public:
-	/** \brief UBO Parameters. */
+	/** UBO Parameters. */
 	enum eUBOParameter{
 		eupProbeCount,
 		eupProbesPerLine,
@@ -79,10 +79,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create ray trace field. */
+	/** Create ray trace field. */
 	deoglRayTraceField( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up ray trace field. */
+	/** Clean up ray trace field. */
 	~deoglRayTraceField();
 	/*@}*/
 	
@@ -90,32 +90,32 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Field origin. */
+	/** Field origin. */
 	inline const decVector &GetOrigin() const{ return pOrigin; }
 	
-	/** \brief Field size. */
+	/** Field size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
-	/** \brief Count of probes along each axis. */
+	/** Count of probes along each axis. */
 	inline const decPoint3 &GetResolution() const{ return pResolution; }
 	
-	/** \brief Coordinate clamping. */
+	/** Coordinate clamping. */
 	inline const decPoint3 &GetCoordClamp() const{ return pCoordClamp; }
 	
-	/** \brief Spacing between probes in each direction. */
+	/** Spacing between probes in each direction. */
 	inline const decVector &GetSpacing() const{ return pSpacing; }
 	
-	/** \brief Size of single probe image. */
+	/** Size of single probe image. */
 	inline int GetProbeSize() const{ return pProbeSize; }
 	
-	/** \brief Count of probes per line. */
+	/** Count of probes per line. */
 	inline int GetProbesPerLine() const{ return pProbesPerLine; }
 	
 	/**
-	 * \brief Init field parameters.
+	 * Init field parameters.
 	 * 
 	 * The method adds a border around the object of roughly 1m size.
 	 * This border ensures tracing picks up valid resoluts from outside the object.
@@ -124,30 +124,30 @@ public:
 	
 	
 	
-	/** \brief Probe coordinate closest to position. */
+	/** Probe coordinate closest to position. */
 	decPoint3 Position2Coord( const decVector &position ) const;
 	
-	/** \brief Position closest to probe coordinate. */
+	/** Position closest to probe coordinate. */
 	decVector Coord2Position( const decPoint3 &coord ) const;
 	
 	
 	
-	/** \brief Ray texture. */
+	/** Ray texture. */
 	inline deoglTexture &GetTextureRays(){ return pTexRays; }
 	inline const deoglTexture &GetTextureRays() const{ return pTexRays; }
 	
-	/** \brief Ray fbo or NULL. */
+	/** Ray fbo or NULL. */
 	inline deoglFramebuffer *GetFBORays(){ return pFBORays; }
 	
-	/** \brief UBO. */
+	/** UBO. */
 	inline deoglSPBlockUBO &GetUBO() const{ return pUBO; }
 	
 	
 	
-	/** \brief Render field. */
+	/** Render field. */
 	void RenderField( deoglROcclusionMesh &occlusionMesh );
 	
-	/** \brief Drop rays FBO. */
+	/** Drop rays FBO. */
 	void DropFBO();
 	/*@}*/
 	

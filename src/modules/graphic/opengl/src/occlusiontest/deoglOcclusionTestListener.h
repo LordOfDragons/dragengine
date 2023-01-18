@@ -37,7 +37,7 @@
  */
 class deoglOcclusionTestListener{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion test listener. */
 	deoglOcclusionTestListener();
@@ -45,7 +45,7 @@ public:
 	virtual ~deoglOcclusionTestListener();
 	/*@}*/
 	
-	/** @name Listening */
+	/** \name Listening */
 	/*@{*/
 	/** The occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible() = 0;

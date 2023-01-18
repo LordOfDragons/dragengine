@@ -42,7 +42,7 @@ private:
 	decMatrix pMatrix2;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglVolumeShape( deoglRenderThread &renderThread );
@@ -50,7 +50,7 @@ public:
 	~deoglVolumeShape();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the shape. */
 	inline deoglShape *GetShape() const{ return pShape; }
@@ -63,24 +63,24 @@ public:
 	void Reset();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit shape. */
+	/** Visit shape. */
 	virtual void VisitShape( decShape &shape );
 	
-	/** \brief Visit sphere shape. */
+	/** Visit sphere shape. */
 	virtual void VisitShapeSphere( decShapeSphere &sphere );
 	
-	/** \brief Visit box shape. */
+	/** Visit box shape. */
 	virtual void VisitShapeBox( decShapeBox &box );
 	
-	/** \brief Visit cylinder shape. */
+	/** Visit cylinder shape. */
 	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
 	
-	/** \brief Visit capsule shape. */
+	/** Visit capsule shape. */
 	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
 	
-	/** \brief Visit hull shape. */
+	/** Visit hull shape. */
 	virtual void VisitShapeHull( decShapeHull &hull );
 	/*@}*/
 };

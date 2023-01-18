@@ -51,7 +51,7 @@ private:
 	int pPointSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new depth triangle list. */
 	deoglDepthTriangleList();
@@ -59,7 +59,7 @@ public:
 	~deoglDepthTriangleList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }

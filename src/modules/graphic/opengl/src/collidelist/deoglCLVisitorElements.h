@@ -40,17 +40,17 @@ private:
 	deoglDCollisionVolume *pVolume;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglCLVisitorElements( deoglCollideList *collideList, deoglDCollisionVolume *volume );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/**
 	 * Visits an octree node. The default implementation is to visit all

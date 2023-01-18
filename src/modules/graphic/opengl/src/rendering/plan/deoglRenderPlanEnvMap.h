@@ -44,7 +44,7 @@ private:
 	float pFadeTime;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render plan env map. */
 	deoglRenderPlanEnvMap();
@@ -52,7 +52,7 @@ public:
 	~deoglRenderPlanEnvMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the environment map or NULL if not set. */
 	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }

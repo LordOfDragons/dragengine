@@ -43,7 +43,7 @@ class deoglRenderLightParticles : public deoglRenderLightBase{
 private:
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderLightParticles( deoglRenderThread &renderThread );
@@ -51,7 +51,7 @@ public:
 	~deoglRenderLightParticles();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan );

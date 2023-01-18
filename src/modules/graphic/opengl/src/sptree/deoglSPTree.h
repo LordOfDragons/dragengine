@@ -55,7 +55,7 @@ private:
 	int pStride;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new space partition tree. */
 	deoglSPTree( const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount );
@@ -63,7 +63,7 @@ public:
 	~deoglSPTree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend of the boundary box. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }

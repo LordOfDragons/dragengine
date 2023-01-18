@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter deferred rendering size limit.
+ * Module parameter deferred rendering size limit.
  */
 class deoglPDefRenSizeLimit : public deoglParameterInt{
 public:

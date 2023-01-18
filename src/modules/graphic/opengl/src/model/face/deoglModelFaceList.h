@@ -42,7 +42,7 @@ private:
 	int pFaceSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new face list. */
 	deoglModelFaceList();
@@ -50,7 +50,7 @@ public:
 	~deoglModelFaceList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of faces. */
 	inline int GetCount() const{ return pFaceCount; }

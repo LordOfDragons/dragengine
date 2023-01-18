@@ -56,7 +56,7 @@ private:
 	int pUsedSlotsCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map slot manager. */
 	deoglEnvMapSlotManager( deoglRenderThread &renderThread );
@@ -64,9 +64,9 @@ public:
 	~deoglEnvMapSlotManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the array texture. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }

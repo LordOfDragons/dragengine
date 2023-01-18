@@ -46,7 +46,7 @@ public:
 	float pBlendFactor;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map fader. */
 	deoglEnvMapFader();
@@ -54,7 +54,7 @@ public:
 	~deoglEnvMapFader();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the active environment map or NULL if not existing. */
 	inline deoglEnvironmentMap *GetActiveEnvMap() const{ return pEnvMapActive; }

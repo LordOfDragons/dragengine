@@ -30,7 +30,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief OpenGL state snapshot.
+ * OpenGL state snapshot.
  * 
  * Supports comparing snapshots to find differences.
  */
@@ -88,10 +88,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create state snapshot. */
+	/** Create state snapshot. */
 	deoglDebugStateSnapshot( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up state snapshot. */
+	/** Clean up state snapshot. */
 	~deoglDebugStateSnapshot();
 	/*@}*/
 	
@@ -99,10 +99,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Log state. */
+	/** Log state. */
 	void LogState() const;
 	
-	/** \brief Compare this state with another state logging difference. */
+	/** Compare this state with another state logging difference. */
 	void LogDifference( const deoglDebugStateSnapshot &state ) const;
 	/*@}*/
 	

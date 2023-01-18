@@ -33,7 +33,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Render window peer.
+ * Render window peer.
  */
 class deoglRenderWindow : public deBaseGraphicRenderWindow{
 private:
@@ -50,12 +50,12 @@ private:
 	deoglRRenderWindow *pRRenderWindow;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRenderWindow( deGraphicOpenGl &ogl, deRenderWindow &renderWindow );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRenderWindow();
 	/*@}*/
 	
@@ -63,21 +63,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGL module. */
+	/** OpenGL module. */
 	inline deGraphicOpenGl &GetOGL() const{ return pOgl; }
 	
-	/** \brief Render window engine resource. */
+	/** Render window engine resource. */
 	inline deRenderWindow &GetRenderWindow() const{ return pRenderWindow; }
 	
-	/** \brief Canvas view. */
+	/** Canvas view. */
 	inline deoglCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
-	/** \brief Render render window. */
+	/** Render render window. */
 	inline deoglRRenderWindow *GetRRenderWindow() const{ return pRRenderWindow; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -85,25 +85,25 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Host window changed. */
+	/** Host window changed. */
 	virtual void HostWindowChanged();
 	
-	/** \brief Size of render window changed. */
+	/** Size of render window changed. */
 	virtual void SizeChanged();
 	
-	/** \brief Title of render window changed. */
+	/** Title of render window changed. */
 	virtual void TitleChanged();
 	
-	/** \brief Full screen changed. */
+	/** Full screen changed. */
 	virtual void FullScreenChanged();
 	
-	/** \brief Notification of script on resize changed. */
+	/** Notification of script on resize changed. */
 	virtual void ScriptNotifyChanged();
 	
-	/** \brief Painting enabled changed. */
+	/** Painting enabled changed. */
 	virtual void PaintEnabledChanged();
 	
-	/** \brief Icon changed. */
+	/** Icon changed. */
 	virtual void IconChanged();
 	/*@}*/
 	

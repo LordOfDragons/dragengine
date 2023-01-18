@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Brightness Parameter.
+ * Brightness Parameter.
  *
  * Module parameter to alter the brightness applied during the
  * finalization step of rendering a world.

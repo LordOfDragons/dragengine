@@ -33,7 +33,7 @@ class deoglRImage;
 
 
 /**
- * \brief Render font.
+ * Render font.
  */
 class deoglRFont : public deObject{
 public:
@@ -62,10 +62,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render font. */
+	/** Create render font. */
 	deoglRFont( deoglRenderThread &renderThread, const deFont &font );
 	
-	/** \brief Clean up render font. */
+	/** Clean up render font. */
 	virtual ~deoglRFont();
 	/*@}*/
 	
@@ -73,29 +73,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Finalize after asynchronous resource loading. */
+	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
 	
 	
 	
-	/** \brief Undefined glyph. */
+	/** Undefined glyph. */
 	inline const sGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
-	/** \brief Glyphs. */
+	/** Glyphs. */
 	inline const sGlyph *GetGlyphs() const{ return pGlyphs; }
 	
-	/** \brief Line height. */
+	/** Line height. */
 	inline int GetLineHeight() const{ return pLineHeight; }
 	
-	/** \brief Font is a colorable font. */
+	/** Font is a colorable font. */
 	inline bool GetIsColorFont() const{ return pIsColorFont; }
 	
-	/** \brief Render image or \em NULL if not existing. */
+	/** Render image or \em NULL if not existing. */
 	inline deoglRImage *GetImage() const{ return pImage; }
 	/*@}*/
 	

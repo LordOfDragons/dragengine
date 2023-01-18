@@ -32,7 +32,7 @@ class deoglRenderPlanLight;
 
 
 /**
- * \brief Base class for light renderer classes.
+ * Base class for light renderer classes.
  */
 class deoglRenderLightBase : public deoglRenderBase{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderLightBase( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderLightBase();
 	/*@}*/
 	
@@ -54,34 +54,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Collider list. */
+	/** Collider list. */
 	inline deoglCollideList &GetCollideList(){ return pColList; }
 	inline const deoglCollideList &GetCollideList() const{ return pColList; }
 	
-	/** \brief Populate collider list with components from a component list. */
+	/** Populate collider list with components from a component list. */
 	void AddComponentsToColliderList( const deoglComponentSet &list );
 	
-	/** \brief Transform color by matrix. */
+	/** Transform color by matrix. */
 	decColor TransformColor( const decMatrix &matrix, const decColor &color ) const;
 	
-	/** \brief Restore frame buffer configuration. */
+	/** Restore frame buffer configuration. */
 	void RestoreFBO( deoglRenderPlan &plan );
 	
-	/** \brief Restore texture bindings from the deferred rendering pass using linear interpolation. */
+	/** Restore texture bindings from the deferred rendering pass using linear interpolation. */
 	void RestoreDRTexturesSmooth();
 	
-	/** \brief Restore depth texture binding from the deferred rendering pass using linear interpolation. */
+	/** Restore depth texture binding from the deferred rendering pass using linear interpolation. */
 	void RestoreDRTextureDepthSmooth();
 	
-	/** \brief Restore GI Rays frame buffer configuration. */
+	/** Restore GI Rays frame buffer configuration. */
 	void RestoreFBOGITraceRays( deoglGIState &giState );
 	
 	
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoSolid();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoTransparent();
 	/*@}*/
 	

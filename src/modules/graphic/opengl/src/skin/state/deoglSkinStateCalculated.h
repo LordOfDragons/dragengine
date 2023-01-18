@@ -34,7 +34,7 @@ class deComponent;
 
 
 /**
- * \brief Skin State Calculated.
+ * Skin State Calculated.
  * 
  * Stores the calculated property state.
  */
@@ -52,10 +52,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state calculated. */
+	/** Create skin state calculated. */
 	deoglSkinStateCalculated();
 	
-	/** \brief Clean up skin state calculated. */
+	/** Clean up skin state calculated. */
 	~deoglSkinStateCalculated();
 	/*@}*/
 	
@@ -63,43 +63,43 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Calculated color. */
+	/** Calculated color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Set calculated color. */
+	/** Set calculated color. */
 	void SetColor( const decColor &color );
 	
-	/** \brief Temporary texture or NULL if not existing. */
+	/** Temporary texture or NULL if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Set temporary texture or NULL if not existing. */
+	/** Set temporary texture or NULL if not existing. */
 	void SetTexture( deoglTexture *texture );
 	
-	/** \brief Skin calculated property. */
+	/** Skin calculated property. */
 	deoglSkinCalculatedProperty *GetProperty() const{ return pProperty; }
 	
-	/** \brief Set skin calculated property. */
+	/** Set skin calculated property. */
 	void SetProperty( deoglSkinCalculatedProperty *property );
 	
-	/** \brief Component for bone calculate or NULL. */
+	/** Component for bone calculate or NULL. */
 	inline const deoglRComponent *GetComponent() const{ return pComponent; }
 	
-	/** \brief Set component for bone calculate or NULL. */
+	/** Set component for bone calculate or NULL. */
 	void SetComponent( const deoglRComponent *component );
 	
-	/** \brief Bone index or -1 if not found. */
+	/** Bone index or -1 if not found. */
 	int GetBone( int component ) const;
 	
-	/** \brief Bone input value. */
+	/** Bone input value. */
 	float GetBoneInputValue( int component ) const;
 	
-	/** \brief Map bones. */
+	/** Map bones. */
 	void MapBones( const deComponent &component );
 	
-	/** \brief Update bones. */
+	/** Update bones. */
 	void UpdateBones( const deComponent &component );
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( deoglSkinState &skinState );
 	/*@}*/
 };

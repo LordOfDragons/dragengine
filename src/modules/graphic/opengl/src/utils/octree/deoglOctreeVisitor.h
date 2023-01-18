@@ -31,7 +31,7 @@ class deoglOctree;
  */
 class deoglOctreeVisitor{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new octree node visitor. */
 	deoglOctreeVisitor();
@@ -39,7 +39,7 @@ public:
 	virtual ~deoglOctreeVisitor();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
 	virtual void VisitNode( deoglOctree *node, int intersection );

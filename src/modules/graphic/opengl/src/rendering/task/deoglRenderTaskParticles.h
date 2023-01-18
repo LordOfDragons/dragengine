@@ -40,7 +40,7 @@ private:
 	bool pRenderVSStereo;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task. */
 	deoglRenderTaskParticles();
@@ -48,7 +48,7 @@ public:
 	~deoglRenderTaskParticles();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Clear the render task preparing it for a new task. */
 	void Clear();
@@ -73,7 +73,7 @@ public:
 	/** Removes all steps. */
 	void RemoveAllSteps();
 	
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
 	/*@}*/
 };

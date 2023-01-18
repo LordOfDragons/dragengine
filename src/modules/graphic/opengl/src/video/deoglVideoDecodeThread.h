@@ -31,7 +31,7 @@ class deoglPixelBuffer;
 
 
 /**
- * \brief Video Decode Thread.
+ * Video Decode Thread.
  */
 class deoglVideoDecodeThread : public deThread{
 public:
@@ -55,10 +55,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new thread. */
+	/** Create new thread. */
 	deoglVideoDecodeThread( deVideoDecoder *decoder, deVideo *video );
 	
-	/** \brief Clean up thread. */
+	/** Clean up thread. */
 	virtual ~deoglVideoDecodeThread();
 	/*@}*/
 	
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Start decoding a frame.
+	 * Start decoding a frame.
 	 * 
 	 * If a decoding is in progress the new decoding parameters are
 	 * stored aside. Once the current decoding is finished the decoding continues with the
@@ -79,21 +79,21 @@ public:
 	void StartDecode( int frame );
 	
 	/**
-	 * \brief Pixel buffer to upload to the texture.
+	 * Pixel buffer to upload to the texture.
 	 * 
 	 * Waits for the decoding to finish. If no decoding is in progress \em NULL is returned.
 	 */
 	deoglPixelBuffer *GetTexturePixelBuffer();
 	
 	/**
-	 * \brief Set texture pixel buffer without deleting the old one.
+	 * Set texture pixel buffer without deleting the old one.
 	 * \details Pixel buffer can be \em NULL in which case a new one is created the next time.
 	 *          Allows swaping pixel buffers with the render video player.
 	 */
 	void SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffer );
 	
 	/**
-	 * \brief Wait for decoding to finish and clear decode parameters.
+	 * Wait for decoding to finish and clear decode parameters.
 	 * 
 	 * This removes all pointers to engine resources to avoid accessing invalid memory.
 	 */
@@ -101,16 +101,16 @@ public:
 	
 	
 	
-	/** \brief Run function of the thread */
+	/** Run function of the thread */
 	virtual void Run();
 	
-	/** \brief Ensure pixel buffers are ready for decoding. */
+	/** Ensure pixel buffers are ready for decoding. */
 	void PreparePixelBuffers();
 	
-	/** \brief Decode frame. */
+	/** Decode frame. */
 	void DecodeFrame();
 	
-	/** \brief Set pixel buffer to the error result. */
+	/** Set pixel buffer to the error result. */
 	void SetErrorPixelBuffer();
 	/*@}*/
 	

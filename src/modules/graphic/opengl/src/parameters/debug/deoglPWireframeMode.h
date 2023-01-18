@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Wireframe Mode Parameter.
+ * Wireframe Mode Parameter.
  */
 class deoglPWireframeMode : public deoglParameterBool{
 public:

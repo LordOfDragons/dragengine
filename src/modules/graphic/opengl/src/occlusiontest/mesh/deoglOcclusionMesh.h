@@ -32,7 +32,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Occlusion mesh peer.
+ * Occlusion mesh peer.
  */
 class deoglOcclusionMesh : public deBaseGraphicOcclusionMesh{
 public:
@@ -43,10 +43,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
+	/** Create new peer. */
 	deoglOcclusionMesh( deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglOcclusionMesh();
 	/*@}*/
 	
@@ -54,13 +54,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Occlusion mesh. */
+	/** Occlusion mesh. */
 	inline const deOcclusionMesh &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
-	/** \brief Render occlusion mesh. */
+	/** Render occlusion mesh. */
 	inline deoglROcclusionMesh *GetROcclusionMesh() const{ return pROcclusionMesh; }
 	/*@}*/
 	

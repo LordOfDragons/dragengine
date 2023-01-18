@@ -47,7 +47,7 @@ private:
 	int pFBOSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new framebuffer manager. */
 	deoglFramebufferManager( deoglRenderThread &renderThread );
@@ -55,11 +55,11 @@ public:
 	~deoglFramebufferManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of framebuffers. */
 	inline int GetFBOCount() const{ return pFBOCount; }

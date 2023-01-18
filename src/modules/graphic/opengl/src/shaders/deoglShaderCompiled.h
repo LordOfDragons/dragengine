@@ -52,7 +52,7 @@ private:
 	int pParameterCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader compiled object. */
 	deoglShaderCompiled( deoglRenderThread &renderThread );
@@ -60,7 +60,7 @@ public:
 	~deoglShaderCompiled();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
@@ -104,7 +104,7 @@ public:
 	bool GetHasTessellation() const;
 	/*@}*/
 	
-	/** @name Parameters */
+	/** \name Parameters */
 	/*@{*/
 	/** Sets the number of parameters. */
 	void SetParameterCount( int count );

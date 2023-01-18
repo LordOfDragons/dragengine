@@ -28,7 +28,7 @@ class deoglTexture;
 
 
 /**
- * \brief Renderable depth texture.
+ * Renderable depth texture.
  * 
  * Stores a renderable texture of any kind. Renderable textures can not be
  * used by more than one entity at the same time. They can also not change
@@ -52,11 +52,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable texture. */
+	/** Create renderable texture. */
 	deoglRenderableDepthTexture( deoglRenderThread &renderThread,
 		int width, int height, bool withStencil, bool useFloat );
 	
-	/** \brief Clean up renderable texture. */
+	/** Clean up renderable texture. */
 	~deoglRenderableDepthTexture();
 	/*@}*/
 	
@@ -64,40 +64,40 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Width. */
+	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height. */
+	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief With stencil buffer. */
+	/** With stencil buffer. */
 	inline bool GetWithStencil() const{ return pWithStencil; }
 	
-	/** \brief Use float depth. */
+	/** Use float depth. */
 	inline bool GetUseFloat() const{ return pUseFloat; }
 	
 	
 	
-	/** \brief Format matche. */
+	/** Format matche. */
 	bool Matches( int width, int height, bool withStencil, bool useFloat ) const;
 	
-	/** \brief Texture is in use. */
+	/** Texture is in use. */
 	inline bool GetInUse() const{ return pInUse; }
 	
-	/** \brief Set if texture is in use. */
+	/** Set if texture is in use. */
 	void SetInUse( bool inUse );
 	
 	
 	
-	/** \brief Texture. */
+	/** Texture. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	
 	
-	/** \brief GPU memory usage. */
+	/** GPU memory usage. */
 	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
 	
-	/** \brief Update GPU memory consumption. */
+	/** Update GPU memory consumption. */
 	void UpdateMemoryUsage();
 	/*@}*/
 	

@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Shadow Map Offset Bias Parameter.
+ * Shadow Map Offset Bias Parameter.
  */
 class deoglPShadowMapOffsetBias : public deoglParameterFloat{
 public:

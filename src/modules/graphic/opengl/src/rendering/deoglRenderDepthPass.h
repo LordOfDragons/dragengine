@@ -32,7 +32,7 @@ class deoglOcclusionQuery;
 
 
 /**
- * \brief World renderer.
+ * World renderer.
  */
 class deoglRenderDepthPass : public deoglRenderBase{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderDepthPass( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderDepthPass();
 	/*@}*/
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Render solid depth pass.
+	 * Render solid depth pass.
 	 * 
 	 * Using FBO Def-Ren Depth. Clears depth.
 	 * - RenderDepth
@@ -69,7 +69,7 @@ public:
 	
 	
 	/**
-	 * \brief Render depth.
+	 * Render depth.
 	 * 
 	 * Using FBO Def-Ren Depth. No clearing.
 	 * - render geometry
@@ -81,7 +81,7 @@ public:
 	
 	
 	/**
-	 * \brief Downsample depth texture.
+	 * Downsample depth texture.
 	 * 
 	 * Using FBO Def-Ren Depth-MipMap. Renders from one mip map level to the next one.
 	 * Clears each level. Invalidates no buffers.
@@ -89,7 +89,7 @@ public:
 	void DownsampleDepth( deoglRenderPlan &plan );
 	
 	/**
-	 * \brief Render occlusion query pass.
+	 * Render occlusion query pass.
 	 * 
 	 * Using FBO Def-Ren Depth set by RenderSolidGeometryPass. No clearing.
 	 * Invalidates no attachments.

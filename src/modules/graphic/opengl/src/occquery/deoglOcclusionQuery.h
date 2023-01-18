@@ -30,18 +30,18 @@ class deoglShape;
 
 
 /**
- * \brief Occlusion Query.
+ * Occlusion Query.
  *
  * Allows to query how many pixels/samples an operation touched.
  */
 class deoglOcclusionQuery{
 public:
-	/** \brief Query type. */
+	/** Query type. */
 	enum eQueryTypes{
-		/** \brief Result is 1 if any samples passed otherwise 0. */
+		/** Result is 1 if any samples passed otherwise 0. */
 		eqtAny,
 		
-		/** \brief Result is the number of samples passed. */
+		/** Result is the number of samples passed. */
 		eqtCount
 	};
 	
@@ -57,10 +57,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create occlusion query. */
+	/** Create occlusion query. */
 	deoglOcclusionQuery( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up occlusion query. */
+	/** Clean up occlusion query. */
 	~deoglOcclusionQuery();
 	/*@}*/
 	
@@ -68,14 +68,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Query is active. */
+	/** Query is active. */
 	bool IsActive() const;
 	
 	/**
-	 * \brief Start query making it the active one.
+	 * Start query making it the active one.
 	 * 
 	 * If another query is active already it is first stopped before starting this query.
 	 * 
@@ -85,19 +85,19 @@ public:
 	void BeginQuery( eQueryTypes type );
 	
 	/**
-	 * \brief End query.
+	 * End query.
 	 * 
 	 * Has no effect if this query is not the active one.
 	 */
 	void EndQuery();
 	
-	/** \brief Result of the query is present. */
+	/** Result of the query is present. */
 	bool HasResult() const;
 	
-	/** \brief Result of the query blocking until the result is available. */
+	/** Result of the query blocking until the result is available. */
 	int GetResult() const;
 	
-	/** \brief Result of the query blocking until the result is available. */
+	/** Result of the query blocking until the result is available. */
 	bool GetResultAny() const;
 	/*@}*/
 };

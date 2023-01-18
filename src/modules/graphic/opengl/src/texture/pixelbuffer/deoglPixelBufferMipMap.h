@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Pixel Buffer Mip Map.
+ * Pixel Buffer Mip Map.
  * Mip map chain of pixel buffers.
  */
 class deoglPixelBufferMipMap{

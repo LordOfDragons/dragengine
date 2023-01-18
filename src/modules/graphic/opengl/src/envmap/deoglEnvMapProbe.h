@@ -31,7 +31,7 @@ class deEnvMapProbe;
 
 
 /**
- * \brief Environment map probe peer.
+ * Environment map probe peer.
  */
 class deoglEnvMapProbe : public deBaseGraphicEnvMapProbe{
 private:
@@ -49,10 +49,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglEnvMapProbe( deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglEnvMapProbe();
 	/*@}*/
 	
@@ -60,18 +60,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Environment map probe. */
+	/** Environment map probe. */
 	inline const deEnvMapProbe &GetEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	
 	
-	/** \brief Render environment map probe. */
+	/** Render environment map probe. */
 	inline deoglREnvMapProbe *GetREnvMapProbe() const{ return pREnvMapProbe; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -79,31 +79,31 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Scaling changed. */
+	/** Scaling changed. */
 	virtual void ScalingChanged();
 	
-	/** \brief Shape list influence changed. */
+	/** Shape list influence changed. */
 	virtual void ShapeListInfluenceChanged();
 	
-	/** \brief Shape reflection changed. */
+	/** Shape reflection changed. */
 	virtual void ShapeReflectionChanged();
 	
-	/** \brief Influence border size changed. */
+	/** Influence border size changed. */
 	virtual void InfluenceBorderSizeChanged();
 	
-	/** \brief Influence priority changed. */
+	/** Influence priority changed. */
 	virtual void InfluencePriorityChanged();
 	
-	/** \brief Image changed. */
+	/** Image changed. */
 	virtual void ImageChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	/*@}*/
 	

@@ -34,7 +34,7 @@ class deImage;
 
 
 /**
- * \brief Image Peer.
+ * Image Peer.
  * 
  * Images can be used by two different types of parties.
  * 
@@ -72,10 +72,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create image. */
+	/** Create image. */
 	deoglImage( deGraphicOpenGl &ogl, deImage &image );
 	
-	/** \brief Clean up image. */
+	/** Clean up image. */
 	virtual ~deoglImage();
 	/*@}*/
 	
@@ -83,29 +83,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Image resource. */
+	/** Image resource. */
 	inline const deImage &GetImage() const{ return pImage; }
 	
-	/** \brief Render image or \em NULL if not created. */
+	/** Render image or \em NULL if not created. */
 	inline deoglRImage *GetRImage() const{ return pRImage; }
 	
 	/**
-	 * \brief Update render thread counterpart if required.
+	 * Update render thread counterpart if required.
 	 * \warning Only allowed to be called from main thread.
 	 */
 	void SyncToRender();
 	
-	/** \brief Mark texture dirty. */
+	/** Mark texture dirty. */
 	void MarkTextureDirty();
 	
-	/** \brief Canvas to notify about dirty events. */
+	/** Canvas to notify about dirty events. */
 	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
 	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	
 	
 	
 	/**
-	 * \brief Add use to pixel buffer ensuring pixel buffer is created.
+	 * Add use to pixel buffer ensuring pixel buffer is created.
 	 * 
 	 * If pixel buffer is not created image data is retained and released if required and
 	 * the pixel buffer created. Increments use count by one.
@@ -115,7 +115,7 @@ public:
 	void CreatePixelBuffer();
 	
 	/**
-	 * \brief Remove use to pixel buffer releasing it if not used anymore.
+	 * Remove use to pixel buffer releasing it if not used anymore.
 	 * 
 	 * Decrements use count by one. If use count drops to 0 pixel buffer is released.
 	 * 
@@ -124,7 +124,7 @@ public:
 	void ReleasePixelBuffer();
 	
 	/**
-	 * \brief Pixel buffer present only if CreatePixelBuffer() has been called.
+	 * Pixel buffer present only if CreatePixelBuffer() has been called.
 	 * */
 	inline deoglPixelBuffer *GetPixelBuffer() const{ return pPixelBuffer; }
 	/*@}*/
@@ -133,14 +133,14 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Image data changed. */
+	/** Image data changed. */
 	virtual void ImageDataChanged();
 	
-	/** \brief Image data has been restored from original file. */
+	/** Image data has been restored from original file. */
 	virtual void ImageDataRestored();
 	
 	/**
-	 * \brief Graphic module requires image data to remain loaded.
+	 * Graphic module requires image data to remain loaded.
 	 * 
 	 * Used to optimized memory consumption. Default implementation returns \em false.
 	 */

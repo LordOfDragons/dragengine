@@ -32,7 +32,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Canvas peer.
+ * Canvas peer.
  */
 class deoglCanvas : public deBaseGraphicCanvas{
 private:
@@ -54,10 +54,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCanvas( deGraphicOpenGl &ogl, deCanvas &canvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCanvas();
 	/*@}*/
 	
@@ -65,33 +65,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGL module. */
+	/** OpenGL module. */
 	inline deGraphicOpenGl &GetOgl(){ return pOgl; }
 	inline const deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Canvas engine resource. */
+	/** Canvas engine resource. */
 	inline deCanvas &GetCanvas(){ return pCanvas; }
 	inline const deCanvas &GetCanvas() const{ return pCanvas; }
 	
-	/** \brief Render canvas or \em NULL if not set. */
+	/** Render canvas or \em NULL if not set. */
 	inline deoglRCanvas *GetRCanvas() const{ return pRCanvas; }
 	
-	/** \brief Drop render canvas if not \em NULL. */
+	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
 	
-	/** \brief Set parent paint dirty. */
+	/** Set parent paint dirty. */
 	void SetDirtyParentPaint();
 	
-	/** \brief Set mask content dirty. */
+	/** Set mask content dirty. */
 	void SetDirtyMaskContent();
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	
 	/**
-	 * \brief Prepare content for render thread counterpart.
+	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
@@ -101,41 +101,41 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Size changed. */
+	/** Size changed. */
 	virtual void SizeChanged();
 	
-	/** \brief Transform changed. */
+	/** Transform changed. */
 	virtual void TransformChanged();
 	
-	/** \brief Color transform changed. */
+	/** Color transform changed. */
 	virtual void ColorTransformChanged();
 	
-	/** \brief Visible changed. */
+	/** Visible changed. */
 	virtual void VisibleChanged();
 	
-	/** \brief Render order changed. */
+	/** Render order changed. */
 	virtual void OrderChanged();
 	
-	/** \brief Transparency changed. */
+	/** Transparency changed. */
 	virtual void TransparencyChanged();
 	
-	/** \brief Blend mode changed. */
+	/** Blend mode changed. */
 	virtual void BlendModeChanged();
 	
-	/** \brief Mask changed. */
+	/** Mask changed. */
 	virtual void MaskChanged();
 	
-	/** \brief Content changed. */
+	/** Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
 	
 	
 	
 protected:
-	/** \brief Create render canvas. Subclass responsibility. */
+	/** Create render canvas. Subclass responsibility. */
 	virtual deoglRCanvas *CreateRCanvas() = 0;
 };
 

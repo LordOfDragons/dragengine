@@ -36,7 +36,7 @@ class deParticleEmitterInstance;
 
 
 /**
- * \brief Particle emitter instance peer.
+ * Particle emitter instance peer.
  */
 class deoglParticleEmitterInstance : public deBaseGraphicParticleEmitterInstance{
 private:
@@ -59,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglParticleEmitterInstance( deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglParticleEmitterInstance();
 	/*@}*/
 	
@@ -70,29 +70,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Particle emitter instance. */
+	/** Particle emitter instance. */
 	inline const deParticleEmitterInstance &GetInstance() const{ return pInstance; }
 	
 	
 	
-	/** \brief Render particle emitter instance. */
+	/** Render particle emitter instance. */
 	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Emitter or \em NULL if not set. */
+	/** Emitter or \em NULL if not set. */
 	inline deoglParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
-	/** \brief Number of types. */
+	/** Number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	
-	/** \brief Type at index. */
+	/** Type at index. */
 	deoglParticleEmitterInstanceType &GetTypeAt( int index );
 	/*@}*/
 	
@@ -100,46 +100,46 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Emitter changed. */
+	/** Emitter changed. */
 	virtual void EmitterChanged();
 	
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Reference position changed. */
+	/** Reference position changed. */
 	virtual void ReferencePositionChanged();
 	
-	/** \brief Enable casting changed. */
+	/** Enable casting changed. */
 	virtual void EnableCastingChanged();
 	
-	/** \brief Collision filter changed. */
+	/** Collision filter changed. */
 	virtual void CollisionFilterChanged();
 	
-	/** \brief Warm up time changed. */
+	/** Warm up time changed. */
 	virtual void WarmUpTimeChanged();
 	
-	/** \brief Burst time changed. */
+	/** Burst time changed. */
 	virtual void BurstTimeChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int controller );
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	virtual void TypeChanged( int type );
 	
-	/** \brief Type particles changed. */
+	/** Type particles changed. */
 	virtual void TypeParticlesChanged( int type );
 	
-	/** \brief Reset burst particles. */
+	/** Reset burst particles. */
 	virtual void ResetBurst();
 	
-	/** \brief Kill all particles. */
+	/** Kill all particles. */
 	virtual void KillAllParticles();
 	/*@}*/
 	

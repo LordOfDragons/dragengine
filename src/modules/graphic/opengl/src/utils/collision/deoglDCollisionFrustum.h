@@ -78,7 +78,7 @@ private:
 	};
 	sPlane pPlane[ 6 ];
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creastes a new collision frustum with default parameters. */
 	deoglDCollisionFrustum();
@@ -86,13 +86,13 @@ public:
 	virtual ~deoglDCollisionFrustum();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume(deoglDCollisionVolume *volume);
 	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume(deoglDCollisionSphere *sphere);
 	virtual bool CylinderHitsVolume(deoglDCollisionCylinder *cylinder);
@@ -109,13 +109,13 @@ public:
 	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglDCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglDCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decDVector &point );
@@ -123,12 +123,12 @@ public:
 	virtual decDVector ClosestPointTo( const decDVector &point );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglDCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this frustum. */
 	bool SphereHitsFrustum(deoglDCollisionSphere *sphere);
@@ -199,7 +199,7 @@ public:
 	double FrustumMoveHitsFrustum( deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	inline const decDVector &GetLeftNormal() const{ return pPlane[ epLeft ].normal; }
 	inline const decDVector &GetRightNormal() const{ return pPlane[ epRight ].normal; }
@@ -243,7 +243,7 @@ public:
 	void SetFrustumBox(const decDVector &r1, const decDVector &r2, const decDVector &r3, const decDVector &r4, double nearDist);
 	/*@}*/
 	
-	/** @name Intersection Tests */
+	/** \name Intersection Tests */
 	/*@{*/
 	/**
 	 * Determines if the given sphere intersects this frustum.

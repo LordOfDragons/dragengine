@@ -32,7 +32,7 @@ class deCanvasVideoPlayer;
 
 
 /**
- * \brief Canvas peer.
+ * Canvas peer.
  */
 class deoglCanvasVideoPlayer : public deoglCanvas{
 private:
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCanvasVideoPlayer( deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCanvasVideoPlayer();
 	/*@}*/
 	
@@ -57,19 +57,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Drop render canvas if not \em NULL. */
+	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
 	
 	/**
-	 * \brief Prepare content for render thread counterpart.
+	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
 	
-	/** \brief Video player requires sync. */
+	/** Video player requires sync. */
 	void VideoPlayerRequiresSync();
 	
-	/** \brief Drop video player. */
+	/** Drop video player. */
 	void DropVideoPlayer();
 	/*@}*/
 	
@@ -77,14 +77,14 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Content changed. */
+	/** Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
 	
 	
 	
 protected:
-	/** \brief Create render canvas. Subclass responsibility. */
+	/** Create render canvas. Subclass responsibility. */
 	virtual deoglRCanvas *CreateRCanvas();
 };
 

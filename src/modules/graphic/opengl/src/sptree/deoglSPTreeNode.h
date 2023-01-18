@@ -58,7 +58,7 @@ private:
 	int pSplitState;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new space partition tree node. */
 	deoglSPTreeNode( const decVector &center, const decVector &halfSize );
@@ -66,7 +66,7 @@ public:
 	~deoglSPTreeNode();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the center of the node. */
 	inline const decVector &GetCenter() const{ return pCenter; }

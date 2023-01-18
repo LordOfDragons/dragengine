@@ -28,7 +28,7 @@ class deoglTexture1D;
 
 
 /**
- * \brief Renderable 1D Texture.
+ * Renderable 1D Texture.
  * \details Stores a renderable 1d texture of any kind. Renderable 1d textures can not
  *          be used by more than one entity at the same time. They can also not change
  *          the size or format once created. They can though be reused if the entity
@@ -47,33 +47,33 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new renderable 1d texture. */
+	/** Creates a new renderable 1d texture. */
 	deoglRenderableTexture1D( deoglRenderThread &renderThread, int size, int format );
-	/** \brief Cleans up the renderable 1d texture. */
+	/** Cleans up the renderable 1d texture. */
 	~deoglRenderableTexture1D();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the size. */
+	/** Retrieves the size. */
 	inline int GetSize() const{ return pSize; }
-	/** \brief Retrieves the format. */
+	/** Retrieves the format. */
 	inline int GetFormat() const{ return pFormat; }
 	
-	/** \brief Determines if this array texture has the matching parameters. */
+	/** Determines if this array texture has the matching parameters. */
 	bool Matches( int size, int format ) const;
 	
-	/** \brief Determines if the shadow map is in use. */
+	/** Determines if the shadow map is in use. */
 	inline bool GetInUse() const{ return pInUse; }
-	/** \brief Sets if the shadow map is in use. */
+	/** Sets if the shadow map is in use. */
 	void SetInUse( bool inUse );
 	
-	/** \brief Retrieves the 1d texture. */
+	/** Retrieves the 1d texture. */
 	inline deoglTexture1D *GetTexture() const{ return pTexture; }
 	
-	/** \brief Retrieves the GPU memory usage. */
+	/** Retrieves the GPU memory usage. */
 	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
-	/** \brief Updates the GPU memory consumption. */
+	/** Updates the GPU memory consumption. */
 	void UpdateMemoryUsage();
 	/*@}*/
 	

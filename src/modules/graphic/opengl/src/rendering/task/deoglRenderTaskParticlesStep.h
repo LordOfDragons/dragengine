@@ -65,7 +65,7 @@ private:
 	GLenum pPrimitiveType;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task particles step. */
 	deoglRenderTaskParticlesStep();
@@ -73,7 +73,7 @@ public:
 	~deoglRenderTaskParticlesStep();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the step. */
 	void Reset();
@@ -130,7 +130,7 @@ public:
 	void SetPrimitiveType( GLenum primitiveType );
 	/*@}*/
 	
-	/** @name Instances */
+	/** \name Instances */
 	/*@{*/
 	/** Retrieves the direct pointer to the instances. */
 	inline sInstance *GetInstances() const{ return pInstances; }

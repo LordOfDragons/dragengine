@@ -44,7 +44,7 @@ private:
 	decVector pNormal;
 	float pDist;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision triangle with all points 0. */
 	deoglCollisionTriangle();
@@ -60,13 +60,13 @@ public:
 	virtual ~deoglCollisionTriangle();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder );
@@ -83,13 +83,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -97,12 +97,12 @@ public:
 	virtual decVector ClosestPointTo( const decVector &point );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this triangle. */
 	bool SphereHitsTriangle( deoglCollisionSphere *sphere );
@@ -145,7 +145,7 @@ public:
 	float TriangleMoveHitsTriangle( deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	inline const decVector &GetCorner1() const{ return pCorners[ 0 ]; }
 	inline const decVector &GetCorner2() const{ return pCorners[ 1 ]; }

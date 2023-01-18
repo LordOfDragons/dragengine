@@ -39,7 +39,7 @@ private:
 	int pBillboardSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new billboard list. */
 	deoglBillboardList();
@@ -47,7 +47,7 @@ public:
 	~deoglBillboardList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of billboards. */
 	inline int GetCount() const{ return pBillboardCount; }

@@ -35,7 +35,7 @@ class deVideo;
 
 
 /**
- * \brief Video peer.
+ * Video peer.
  */
 class deoglVideo : public deBaseGraphicVideo{
 public:
@@ -52,10 +52,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglVideo( deGraphicOpenGl &ogl, deVideo &video );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglVideo();
 	/*@}*/
 	
@@ -63,24 +63,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Video resource. */
+	/** Video resource. */
 	inline deVideo &GetVideo() const{ return pVideo; }
 	
-	/** \brief Render video or \em NULL if not existing. */
+	/** Render video or \em NULL if not existing. */
 	inline deoglRVideo *GetRVideo() const{ return pRVideo; }
 	
 	
 	
 	/**
-	 * \brief Video player has to use and update the cached frames.
+	 * Video player has to use and update the cached frames.
 	 */
 	inline bool CacheFrames() const{ return pCacheFrames; }
 	
 	/**
-	 * \brief All video frames are cached and ready to be used.
+	 * All video frames are cached and ready to be used.
 	 * \retval true Video player does not have to do caching work. Any frames can
 	 *              be directly used for rendering without further work.
 	 * \retval false Video player has to check if the desired frame is already
@@ -89,14 +89,14 @@ public:
 	 */
 	bool AllFramesAreCached() const;
 	
-	/** \brief Frame is cached and ready. */
+	/** Frame is cached and ready. */
 	bool IsFrameReady( int frame ) const;
 	
-	/** \brief Can cache frame. */
+	/** Can cache frame. */
 	bool CanCacheFrame( int frame ) const;
 	
 	/**
-	 * \brief Cache frame.
+	 * Cache frame.
 	 * \details Does not free the old pixel buffer. If a pixel buffer is still set
 	 *          during destruction the pixel buffer is freed. This allows to swap
 	 *          pixel buffer with the decode thread.
@@ -104,7 +104,7 @@ public:
 	 */
 	deoglPixelBuffer *CacheFrame( int frame, deoglPixelBuffer *pixelBuffer );
 	
-	/** \brief Cache frame texture or \em NULL if not ready. */
+	/** Cache frame texture or \em NULL if not ready. */
 	deoglTexture *GetCachedFrameTexture( int frame ) const;
 	/*@}*/
 	

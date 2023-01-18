@@ -63,7 +63,7 @@ private:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderToneMap( deoglRenderThread &renderThread );
@@ -71,7 +71,7 @@ public:
 	virtual ~deoglRenderToneMap();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Prepare luminance texture from solid color and depth texture. */
 	void LuminancePrepare( deoglRenderPlan &plan );

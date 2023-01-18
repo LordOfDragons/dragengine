@@ -44,7 +44,7 @@ class deoglVAO;
 
 
 /**
- * \brief OpenGL Geometry Renderer.
+ * OpenGL Geometry Renderer.
  * Renderer for 3D geometry.
  */
 class deoglRenderGeometry : public deoglRenderBase{

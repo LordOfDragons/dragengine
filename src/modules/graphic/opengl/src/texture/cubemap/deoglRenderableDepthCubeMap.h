@@ -45,7 +45,7 @@ private:
 	int pMemoryUsageGPU;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
 	deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size, bool useFloat );
@@ -53,7 +53,7 @@ public:
 	~deoglRenderableDepthCubeMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the size. */
 	inline int GetSize() const{ return pSize; }

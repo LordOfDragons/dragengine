@@ -75,7 +75,7 @@ private:
 	int pCasterStage;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new optimizer. */
 	deoglOptimizerLight( deoglRLight *light, deoglWorld *world );
@@ -83,7 +83,7 @@ public:
 	virtual ~deoglOptimizerLight();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the light to optimize. */
 	inline deoglRLight *GetLight() const{ return pLight; }

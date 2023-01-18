@@ -27,7 +27,7 @@
 
 
 /**
- * \brief GI Quality Parameter.
+ * GI Quality Parameter.
  */
 class deoglPGIQuality : public deoglParameter{
 public:

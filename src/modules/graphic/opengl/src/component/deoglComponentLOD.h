@@ -27,7 +27,7 @@ class deoglComponent;
 
 
 /**
- * \brief Component LOD.
+ * Component LOD.
  */
 class deoglComponentLOD{
 public:
@@ -39,10 +39,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component lod. */
+	/** Create component lod. */
 	deoglComponentLOD( deoglComponent &component, int lodIndex );
 	
-	/** \brief Clean up component lod. */
+	/** Clean up component lod. */
 	~deoglComponentLOD();
 	/*@}*/
 	
@@ -50,13 +50,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent component. */
+	/** Parent component. */
 	inline deoglComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief LOD index. */
+	/** LOD index. */
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
-	/** \brief Render component lod. */
+	/** Render component lod. */
 	inline deoglRComponentLOD *GetRLOD() const{ return pRLOD; }
 	/*@}*/
 	

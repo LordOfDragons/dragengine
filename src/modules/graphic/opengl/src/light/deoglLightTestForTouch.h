@@ -41,7 +41,7 @@ private:
 	deoglRLight &pLight;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglLightTestForTouch( deoglRLight &touchSensor );
@@ -49,7 +49,7 @@ public:
 	virtual ~deoglLightTestForTouch();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/**
 	 * Visits an octree node. The default implementation is to visit all

@@ -51,7 +51,7 @@ private:
 	bool pTapered;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
 	 * Creates a new unoriented cylinder. The half height is set to 0.5, the top
@@ -79,13 +79,13 @@ public:
 	virtual ~deoglDCollisionCylinder();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglDCollisionVolume *volume );
 	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglDCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglDCollisionCylinder *Cylinder );
@@ -102,13 +102,13 @@ public:
 	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglDCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglDCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decDVector &point );
@@ -135,12 +135,12 @@ public:
 	virtual bool RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglDCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/**
 	 * Determines if the given sphere collides with this Cylinder.
@@ -164,7 +164,7 @@ public:
 	double CylinderMoveHitsCylinder( deoglDCollisionCylinder *Cylinder, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Retrieves the cylinder center.

@@ -119,7 +119,7 @@ private:
 	int pUsageCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new framebuffer object either as primary or offscreen. */
 	deoglFramebuffer( deoglRenderThread &renderThread, bool primary );
@@ -127,7 +127,7 @@ public:
 	~deoglFramebuffer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Determines if the framebuffer is a primary framebuffer. */
 	inline bool GetIsPrimary() const{ return pPrimary; }

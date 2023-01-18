@@ -30,7 +30,7 @@ class deoglOcclusionQuery;
 
 
 /**
- * \brief Transparency counting renderer.
+ * Transparency counting renderer.
  */
 class deoglRenderTranspCounting : public deoglRenderBase{
 private:
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderTranspCounting( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderTranspCounting();
 	/*@}*/
 	
@@ -62,7 +62,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Count transparency.
+	 * Count transparency.
 	 * 
 	 * Using FBO Def-Ren Diffuse+Depth. Clears diffuse buffer.
 	 * - render transparent geometry writing 1/255 for each fragment
@@ -77,7 +77,7 @@ public:
 	void CountTransparency( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/**
-	 * \brief Last found transparency count.
+	 * Last found transparency count.
 	 * 
 	 * Count is cached until the next time CountTransparency() is called.
 	 */

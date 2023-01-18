@@ -36,7 +36,7 @@ private:
 	int pLastUsed;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map slot. */
 	deoglEnvMapSlot();
@@ -44,7 +44,7 @@ public:
 	~deoglEnvMapSlot();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Clears the slot. */
 	void Clear();

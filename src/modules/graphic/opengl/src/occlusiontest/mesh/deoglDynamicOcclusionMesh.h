@@ -67,7 +67,7 @@ public:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dynamic occlusion mesh object. */
 	deoglDynamicOcclusionMesh( deoglRenderThread &renderThread,
@@ -77,7 +77,7 @@ public:
 	~deoglDynamicOcclusionMesh();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }

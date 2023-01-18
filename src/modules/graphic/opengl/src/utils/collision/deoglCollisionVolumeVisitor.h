@@ -44,7 +44,7 @@ class deoglCollisionFrustum;
  */
 class deoglCollisionVolumeVisitor{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision volume visitor. */
 	deoglCollisionVolumeVisitor();
@@ -52,7 +52,7 @@ public:
 	virtual ~deoglCollisionVolumeVisitor();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Visits a collision sphere. */
 	virtual void VisitSphere( deoglCollisionSphere *sphere );

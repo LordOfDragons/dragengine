@@ -44,7 +44,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new preloader. */
 	deoglPreloader( deoglRenderThread &renderThread );
@@ -52,7 +52,7 @@ public:
 	~deoglPreloader();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Preload all objects. */
 	void PreloadAll();

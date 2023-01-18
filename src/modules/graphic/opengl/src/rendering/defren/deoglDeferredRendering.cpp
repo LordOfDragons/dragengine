@@ -179,9 +179,9 @@ enum eFBOMappingsDepth{
 	efbomdD1,
 	/** No-Color with Depth2. */
 	efbomdD2,
-	/** \brief No-Color with Depth3. */
+	/** No-Color with Depth3. */
 	efbomdD3,
-	/** \brief No-Color with DepthXRay. */
+	/** No-Color with DepthXRay. */
 	efbomdDXRay,
 	/** Diffuse. */
 	efbomdDiff,

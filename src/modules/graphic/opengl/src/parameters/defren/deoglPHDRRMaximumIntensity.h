@@ -26,7 +26,7 @@
 
 
 /**
- * \brief HDRR Maximum Intensity Parameter.
+ * HDRR Maximum Intensity Parameter.
  */
 class deoglPHDRRMaximumIntensity : public deoglParameterFloat{
 public:

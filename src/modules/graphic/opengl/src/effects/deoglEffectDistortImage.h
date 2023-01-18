@@ -30,7 +30,7 @@ class deEffectDistortImage;
 
 
 /**
- * \brief Effect distort image.
+ * Effect distort image.
  */
 class deoglEffectDistortImage : public deoglEffect{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create effect peer. */
+	/** Create effect peer. */
 	deoglEffectDistortImage( deGraphicOpenGl &ogl, const deEffectDistortImage &effect );
 	
-	/** \brief Clean up effect. */
+	/** Clean up effect. */
 	virtual ~deoglEffectDistortImage();
 	/*@}*/
 	
@@ -55,23 +55,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Effect color matrix engine resource. */
+	/** Effect color matrix engine resource. */
 	inline const deEffectDistortImage &GetEffectDistortImage() const{ return pEffectDistortImage; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Image changed. */
+	/** Image changed. */
 	virtual void ImageChanged();
 	
-	/** \brief Strength changed. */
+	/** Strength changed. */
 	virtual void StrengthChanged();
 	/*@}*/
 };

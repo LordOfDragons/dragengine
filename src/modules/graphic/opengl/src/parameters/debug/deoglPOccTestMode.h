@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Occlusion Test Mode Parameter.
+ * Occlusion Test Mode Parameter.
  */
 class deoglPOccTestMode : public deoglParameter{
 public:
@@ -41,10 +41,10 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual decString GetParameterValue();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterValue( const char *value );
 	/*@}*/
 };

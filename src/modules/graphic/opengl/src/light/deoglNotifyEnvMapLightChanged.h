@@ -31,7 +31,7 @@ class deoglRLight;
 
 
 /**
- * \brief Notify touching environment maps light changed visitor.
+ * Notify touching environment maps light changed visitor.
  */
 class deoglNotifyEnvMapLightChanged : public deoglDefaultWorldOctreeVisitor{
 private:
@@ -42,7 +42,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglNotifyEnvMapLightChanged( deoglRLight &light );
 	/*@}*/
 	
@@ -50,7 +50,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit environment maps. */
+	/** Visit environment maps. */
 	virtual void VisitEnvMaps( deoglEnvironmentMap *envmap );
 	/*@}*/
 };

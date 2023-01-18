@@ -42,7 +42,7 @@ private:
 	int pNextOptimizer;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new optimizer manager. */
 	deoglOptimizerManager();
@@ -50,7 +50,7 @@ public:
 	~deoglOptimizerManager();
 	/*@}*/
 	
-	/** @name Optimizer Management */
+	/** \name Optimizer Management */
 	/*@{*/
 	/** Retrieves the number of optimizers. */
 	inline int GetOptimizerCount() const{ return pOptimizerCount; }
@@ -68,7 +68,7 @@ public:
 	void RemoveAllOptimizers();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Runs optimizers until the given time slice in micro-seconds has elapsed. */
 	void Run( int timeSlice );

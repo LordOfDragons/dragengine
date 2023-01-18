@@ -32,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render capture canvas.
+ * Render capture canvas.
  */
 class deoglRCaptureCanvas : public deObject{
 private:
@@ -48,10 +48,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCaptureCanvas( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCaptureCanvas();
 	/*@}*/
 	
@@ -59,39 +59,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Canvas view. */
+	/** Canvas view. */
 	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
-	/** \brief Set canvas view. */
+	/** Set canvas view. */
 	void SetCanvasView( deoglRCanvasView *canvasView );
 	
-	/** \brief Pixel buffer or \em NULL if no capture is pending. */
+	/** Pixel buffer or \em NULL if no capture is pending. */
 	inline deoglPixelBuffer *GetPixelBuffer() const{ return pPixelBuffer; }
 	
-	/** \brief Create pixel buffer. */
+	/** Create pixel buffer. */
 	void StartCapture( int width, int height, int componentCount, int bitCount );
 	
-	/** \brief Drop pixel buffer. */
+	/** Drop pixel buffer. */
 	void DropPixelBuffer();
 	
-	/** \brief Capture is pending. */
+	/** Capture is pending. */
 	inline bool GetCapturePending() const{ return pCapturePending; }
 	
-	/** \brief Set capture is pending. */
+	/** Set capture is pending. */
 	void SetCapturePending( bool capturePending );
 	
 	
 	
-	/** \brief Capture render window canvas view required. */
+	/** Capture render window canvas view required. */
 	void CaptureRenderWindow( deoglRRenderWindow &renderWindow );
 	
-	/** \brief Capture canvas view not linked to a render window. */
+	/** Capture canvas view not linked to a render window. */
 	void CapturePending();
 	
-	/** \brief Set capture to black. */
+	/** Set capture to black. */
 	void CaptureBlack();
 	/*@}*/
 };

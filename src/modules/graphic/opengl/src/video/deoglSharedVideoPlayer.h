@@ -29,7 +29,7 @@ class deoglSharedVideoPlayerList;
 
 
 /**
- * \brief Shared video player.
+ * Shared video player.
  * 
  * Video players are shared if they share the same deVideo, the same current playback
  * frame and the same playback speed. The playback position and speed are taken
@@ -47,10 +47,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared video player. */
+	/** Create shared video player. */
 	deoglSharedVideoPlayer( deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer );
 	
-	/** \brief Clean up shared video player. */
+	/** Clean up shared video player. */
 	~deoglSharedVideoPlayer();
 	/*@}*/
 	
@@ -58,32 +58,32 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGL module. */
+	/** OpenGL module. */
 	inline deGraphicOpenGl &GetOpenGL(){ return pOgl; }
 	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Video player. */
+	/** Video player. */
 	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
-	/** \brief Usage count. */
+	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }
 	
-	/** \brief Increase usage count by one. */
+	/** Increase usage count by one. */
 	void AddUsage();
 	
-	/** \brief Decrease usage count by one. */
+	/** Decrease usage count by one. */
 	void FreeUsage();
 	
 	
 	
 	/**
-	 * \brief Update the video player.
+	 * Update the video player.
 	 * \details Called from the main thread.
 	 */
 	void Update( float elapsed );
 	
 	/**
-	 * \brief Update render thread counterparts.
+	 * Update render thread counterparts.
 	 * \details Called from the main thread during synchronizing.
 	 */
 	void SyncToRender();

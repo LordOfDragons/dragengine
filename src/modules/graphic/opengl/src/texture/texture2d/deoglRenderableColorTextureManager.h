@@ -44,7 +44,7 @@ private:
 	int pTextureSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture manager. */
 	deoglRenderableColorTextureManager( deoglRenderThread &renderThread );
@@ -52,7 +52,7 @@ public:
 	~deoglRenderableColorTextureManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }

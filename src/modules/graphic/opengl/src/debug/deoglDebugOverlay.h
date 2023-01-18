@@ -31,7 +31,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Debug overlay manager.
+ * Debug overlay manager.
  */
 class deoglDebugOverlay{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create debug overlay manager. */
+	/** Create debug overlay manager. */
 	deoglDebugOverlay( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up debug overlay manager. */
+	/** Clean up debug overlay manager. */
 	~deoglDebugOverlay();
 	/*@}*/
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Prepare debug overlay.
+	 * Prepare debug overlay.
 	 * 
 	 * Aligns the children canvas and synchronizes.
 	 */

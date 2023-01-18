@@ -56,7 +56,7 @@ public:
 	int pVBOPointCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new convex visibility hull. */
 	deoglConvexVisHull( deoglRenderThread &renderThread );
@@ -64,7 +64,7 @@ public:
 	~deoglConvexVisHull();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }

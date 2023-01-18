@@ -401,7 +401,7 @@ private:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new object. */
 	deoglExtensions( deoglRenderThread &renderThread );
@@ -409,7 +409,7 @@ public:
 	~deoglExtensions();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Initializes the extensions. Determines existing extensions and

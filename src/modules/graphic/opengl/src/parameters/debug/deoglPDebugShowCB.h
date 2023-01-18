@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Show Collision Boxes Parameter.
+ * Show Collision Boxes Parameter.
  */
 class deoglPDebugShowCB : public deoglParameterBool{
 public:

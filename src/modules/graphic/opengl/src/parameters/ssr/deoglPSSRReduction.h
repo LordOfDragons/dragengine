@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Reflection Reduction.
+ * Module Parameter Screen Space Reflection Reduction.
  */
 class deoglPSSRReduction : public deoglParameterInt{
 public:

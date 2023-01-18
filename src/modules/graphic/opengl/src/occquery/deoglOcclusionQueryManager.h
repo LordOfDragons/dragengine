@@ -53,7 +53,7 @@ private:
 	deoglOcclusionQuery *pActiveQuery;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion queries. */
 	deoglOcclusionQueryManager( deoglRenderThread &renderThread );
@@ -61,9 +61,9 @@ public:
 	~deoglOcclusionQueryManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Claim a new query. */

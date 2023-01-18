@@ -41,7 +41,7 @@ private:
 	deoglTriangleSorter pTriangleSorter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglLightGatherOcclusionMeshes( deoglRLight &light );
@@ -49,7 +49,7 @@ public:
 	virtual ~deoglLightGatherOcclusionMeshes();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Retrieves the triangle sorter. */
 	inline deoglTriangleSorter &GetTriangleSorter(){ return pTriangleSorter; }

@@ -33,7 +33,7 @@
  */
 class deoglShapeBox : public deoglShape{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
 	deoglShapeBox( deoglRenderThread &renderThread );
@@ -41,7 +41,7 @@ public:
 	virtual ~deoglShapeBox();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Calculate matrix for box parameters. */
 	void CalcMatrix( decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector  &halfExtends );

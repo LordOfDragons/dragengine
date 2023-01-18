@@ -64,7 +64,7 @@ class deoglDCollisionVolumeVisitor;
  */
 class deoglDCollisionVolume{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision volume. */
 	deoglDCollisionVolume();
@@ -72,7 +72,7 @@ public:
 	virtual ~deoglDCollisionVolume();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	/**
 	 * Determines if this volume collides with the given one. The
@@ -92,7 +92,7 @@ public:
 	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal ) = 0;
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	/**
 	 * Determines if the given sphere collides with this volume. The
@@ -205,7 +205,7 @@ public:
 	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal ) = 0;
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	/**
 	 * Retrieves the sphere volume best enclosing this volume.
@@ -217,7 +217,7 @@ public:
 	virtual void GetEnclosingBox( deoglDCollisionBox *box ) = 0;
 	/*@}*/
 
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decDVector &point ) = 0;
@@ -243,7 +243,7 @@ public:
 	virtual bool RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	/** Visits the collision volume. */
 	virtual void Visit( deoglDCollisionVolumeVisitor *visitor ) = 0;

@@ -29,7 +29,7 @@ class deoglShaderParameterBlock;
 
 
 /**
- * \brief Shader Parameter Block List.
+ * Shader Parameter Block List.
  */
 class deoglShaderParameterBlockList{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create list. */
+	/** Create list. */
 	deoglShaderParameterBlockList();
 	
-	/** \brief Clean up list. */
+	/** Clean up list. */
 	~deoglShaderParameterBlockList();
 	/*@}*/
 	
@@ -51,25 +51,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of blocks. */
+	/** Number of blocks. */
 	int GetCount() const;
 	
-	/** \brief Index of a block or -1 if not in the list. */
+	/** Index of a block or -1 if not in the list. */
 	int IndexOf( deoglShaderParameterBlock *block ) const;
 	
-	/** \brief Block exists. */
+	/** Block exists. */
 	bool Has( deoglShaderParameterBlock *block ) const;
 	
-	/** \brief Block by index. */
+	/** Block by index. */
 	deoglShaderParameterBlock *GetAt( int index ) const;
 	
-	/** \brief Add block. */
+	/** Add block. */
 	void Add( deoglShaderParameterBlock *block );
 	
-	/** \brief Remove block. */
+	/** Remove block. */
 	void Remove( deoglShaderParameterBlock *block );
 	
-	/** \brief Remove all blocks. */
+	/** Remove all blocks. */
 	void RemoveAll();
 	/*@}*/
 };

@@ -46,7 +46,7 @@ private:
 	int pMemoryUsageGPU;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
 	deoglRenderableColorCubeMap( deoglRenderThread &renderThread, int size, int componentCount, bool isFloat );
@@ -54,7 +54,7 @@ public:
 	~deoglRenderableColorCubeMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the size. */
 	inline int GetSize() const{ return pSize; }

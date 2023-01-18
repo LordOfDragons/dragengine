@@ -39,7 +39,7 @@ class deDebugDrawer;
 
 
 /**
- * \brief Debug Drawer Peer.
+ * Debug Drawer Peer.
  */
 class deoglRDebugDrawer : public deObject{
 private:
@@ -71,10 +71,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render debug drawer. */
+	/** Create render debug drawer. */
 	deoglRDebugDrawer( deoglRenderThread &renderThread );
 	
-	/** \brief Cleans up render debug drawer. */
+	/** Cleans up render debug drawer. */
 	virtual ~deoglRDebugDrawer();
 	/*@}*/
 	
@@ -82,65 +82,65 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Parent world or \em NULL if not part of a world. */
+	/** Parent world or \em NULL if not part of a world. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
 	
 	
-	/** \brief Matrix. */
+	/** Matrix. */
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Set matrix. */
+	/** Set matrix. */
 	void SetMatrix( const decDMatrix &matrix );
 	
-	/** \brief Debug drawer is visible. */
+	/** Debug drawer is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set if debug drawer is visible. */
+	/** Set if debug drawer is visible. */
 	void SetVisible( bool visible );
 	
-	/** \brief Debug drawer is rendered in x-ray mode. */
+	/** Debug drawer is rendered in x-ray mode. */
 	inline bool GetXRay() const{ return pXRay; }
 	
-	/** \brief Set debug drawer is rendered in x-ray mode. */
+	/** Set debug drawer is rendered in x-ray mode. */
 	void SetXRay( bool xray );
 	
 	
 	
-	/** \brief Update shapes. */
+	/** Update shapes. */
 	void UpdateShapes( const deDebugDrawer &debugDrawer );
 	
-	/** \brief Determines if the debug drawer has shapes. */
+	/** Determines if the debug drawer has shapes. */
 	inline bool GetHasShapes() const{ return pHasShapes; }
 	
-	/** \brief Determines if the debug drawer has faces. */
+	/** Determines if the debug drawer has faces. */
 	inline bool GetHasFaces() const{ return pHasFaces; }
 	
-	/** \brief Number of shapes. */
+	/** Number of shapes. */
 	inline int GetShapeCount() const{ return pShapeCount; }
 	
-	/** \brief Retrieves a shape. */
+	/** Retrieves a shape. */
 	deoglDebugDrawerShape &GetShapeAt( int index ) const;
 	
 	
 	
-	/** \brief Update the VBO if required and contains faces. */
+	/** Update the VBO if required and contains faces. */
 	void UpdateVBO();
 	
-	/** \brief Retrieves the vao or NULL if there are no shapes with faces. */
+	/** Retrieves the vao or NULL if there are no shapes with faces. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
 	
 	
-	/** \brief Prepare for quick disposal of debug drawer. */
+	/** Prepare for quick disposal of debug drawer. */
 	void PrepareQuickDispose();
 	/*@}*/
 	
@@ -149,13 +149,13 @@ public:
 	/** \name Render world usage */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );

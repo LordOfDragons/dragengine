@@ -39,7 +39,7 @@ private:
 	int pOcclusionMeshSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion mesh list. */
 	deoglOcclusionMeshList();
@@ -47,7 +47,7 @@ public:
 	~deoglOcclusionMeshList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of occlusion meshes. */
 	inline int GetCount() const{ return pOcclusionMeshCount; }

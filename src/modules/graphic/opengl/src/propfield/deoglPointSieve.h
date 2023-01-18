@@ -50,7 +50,7 @@ private:
 	int pBucketCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sieve. */
 	deoglPointSieve( int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ );
@@ -58,7 +58,7 @@ public:
 	~deoglPointSieve();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the sieve size in x direction. */
 	inline float GetSieveSizeX() const{ return pSieveSizeX; }
