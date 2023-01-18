@@ -69,6 +69,22 @@ const float epsilon = 1e-6;
 const ivec2 tcQuadrant[4] = ivec2[4]( ivec2( 0 ), ivec2( 8, 0 ), ivec2( 0, 8 ), ivec2( 8 ) );
 
 
+struct sRayData{
+	vec4 position;
+	
+	vec3 normal;
+	bool rayMisses;
+	
+	vec3 rayDirection;
+	bool frontFacing;
+	
+	vec3 light;
+	float rayProbeDistance;
+};
+
+shared sRayData vRayData[ 64 ];  // 4096 bytes
+
+
 void main( void ){
 	// parameters shared across all invocations in the same work group
 	int updateIndex = int( gl_WorkGroupID.x );
@@ -121,166 +137,138 @@ void main( void ){
 // 	int rayFrontCount = 0;
 // 	int rayMissCount = 0;
 	
-	#define rayDirection pGIRayDirection[ i ]
-	
 	// all invocations in the work group have to sample all traced probe rays. to spead this
-	// up the reading of the samples is done using cooperative reading. since we use the full
-	// probe size (including border) as work group size the available invocations running in
-	// parallel is 100 for irradiance and 324 for distance.
+	// up the reading of the samples is done using cooperative reading. since we use work
+	// group size of 8x8 the available invocations running in parallel is 64.
 	// 
-	// NOTE: ray counts per probe can be 16, 32, 64, 128 and 256 . Only the last 3 are
-	//       multiples of 64. this is a problem for the code below and requires limiting
-	//       the count of threads assisting in the cooperative reading
-	//       
-	// TODO: implement this
-	// 
-	// struct sRayData{
-	//    vec4 position;
-	//    
-	//    vec3 normal;
-	//    bool rayMisses;
-	//    
-	//    vec3 rayDirection;
-	//    bool frontFacing;
-	//    
-	//    #ifdef MAP_IRRADIANCE
-	//       vec3 light;
-	//    #else
-	//       float rayProbeDistance;
-	//    #endif
-	// };
-	// 
-	// shared sRayData vRayData[ 64 ];  // 4096 bytes
-	// 
-	// UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / 64 + 1;
-	// int rg;
-	// for( rg=0; rg<rayGroupCount; rg++ ){
-	//    int rayFirst = rayGroupCount * rg;
-	//    
-	//    // cooperative processing
-	//    int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
-	//    if( rayIndex < pGIRaysPerProbe ){
-	//       ivec2 rayTC = rayOffset + ivec2( gl_LocalInvocationIndex, 0 );
-	//       vRayData[ gl_LocalInvocationIndex ].position = imageLoad( texPosition, rayTC );
-	//       vRayData[ gl_LocalInvocationIndex ].normal = vec3( imageLoad( texNormal, rayTC ) );
-	//       vRayData[ gl_LocalInvocationIndex ].rayMisses =
-	//          vRayData[ gl_LocalInvocationIndex ].position.w > 9999
-	//       vRayData[ gl_LocalInvocationIndex ].rayDirection = pGIRayDirection[ rayIndex ];
-	//       vRayData[ gl_LocalInvocationIndex ].frontFacing =
-	//          vRayData[ gl_LocalInvocationIndex ].rayMisses
-	//             || dot( vRayData[ gl_LocalInvocationIndex ].normal,
-	//                vRayData[ gl_LocalInvocationIndex ].rayDirection ) < 0;
-	//       #ifdef MAP_IRRADIANCE
-	//          vRayData[ gl_LocalInvocationIndex ].light = vec3( imageLoad( texLight, rayTC ) );
-	//       #else
-	//          vRayData[ gl_LocalInvocationIndex ].rayProbeDistance = min(
-	//             vRayData[ gl_LocalInvocationIndex ].position.w, pGIMaxProbeDistance );
-	//       #endif
-	//    }
-	//    memoryBarrier();
-	//    
-	//    // per invocation processing
-	//    int rayLimit = pGIRaysPerProbe - rayFirst;
-	//    for( i=0; i<rayLimit; i++ ){
-	//       ...
-	//    }
-	// }
-	// 
+	// ray counts per probe can be 16, 32, 64, 128 and 256 . Only the last 3 are multiples
+	// of 64. this requires limiting the count of threads assisting in the cooperative reading
 	
-	for( i=0; i<pGIRaysPerProbe; i++ ){
-		ivec2 rayTC = rayOffset + ivec2( i, 0 );
-		vec4 rayPosition = imageLoad( texPosition, rayTC ); // position, distance
-		vec3 rayNormal = vec3( imageLoad( texNormal, rayTC ) );
+	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / 64 + 1;
+	int rg;
+	
+	for( rg=0; rg<rayGroupCount; rg++ ){
+		int rayFirst = 64 * rg;
 		
-		/*
-		bool rayMisses, frontFacing;
+		// cooperative processing
+		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
 		
-		if( rayPosition.w > 9999 ){
-			// ray misses. rayNormal is not valid in this case
-			rayMisses = true;
-			frontFacing = true;
-// 			rayMissCount++;
+		barrier();
+		
+		if( rayIndex < pGIRaysPerProbe ){
+			ivec2 rayTC = rayOffset + ivec2( rayIndex, 0 );
 			
-		}else if( dot( rayNormal, rayDirection ) < 0 ){
-			// ray hits front facing geometry
-			rayMisses = false;
-			frontFacing = true;
-// 			rayFrontCount++;
+			vRayData[ gl_LocalInvocationIndex ].position = imageLoad( texPosition, rayTC );
+			vRayData[ gl_LocalInvocationIndex ].normal = vec3( imageLoad( texNormal, rayTC ) );
+			vRayData[ gl_LocalInvocationIndex ].rayDirection = pGIRayDirection[ rayIndex ];
 			
-		}else{
-			// ray hits back facing geometry
-			rayMisses = false;
-			frontFacing = false;
-			rayBackCount += 1;
-		}
-		*/
-		
-		// optimized version of the above commented out code block. the ray misses check
-		// has been moved inside the optimized block to save more time
-		bool rayMisses = rayPosition.w > 9999;
-		
-		#ifdef MAP_DISTANCE
-			// here we deviate from the paper. ignoring misses to influence the result
-			// removes the most glaring light leaks
-			if( rayMisses ){
-				continue;
-			}
-		#endif
-		
-		bool frontFacing = rayMisses || dot( rayNormal, rayDirection ) < 0;
-		rayBackCount += frontFacing ? 0 : 1;
-		// end of optimized block
-		
-// 		tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
-		
-		// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
-		//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
-		weight = max( dot( texelDirection, rayDirection ), 0 );
-		#ifdef MAP_DISTANCE
-			weight = pow( weight, pGIDepthSharpness );
-		#endif
-		
-		if( weight < epsilon ){
-			continue;
+			vRayData[ gl_LocalInvocationIndex ].rayMisses = vRayData[ gl_LocalInvocationIndex ].position.w > 9999;
+			
+			vRayData[ gl_LocalInvocationIndex ].frontFacing = vRayData[ gl_LocalInvocationIndex ].rayMisses
+				|| dot( vRayData[ gl_LocalInvocationIndex ].normal, vRayData[ gl_LocalInvocationIndex ].rayDirection ) < 0;
+			
+			#ifdef MAP_IRRADIANCE
+				vRayData[ gl_LocalInvocationIndex ].light = vec3( imageLoad( texLight, rayTC ) );
+			#else
+				vRayData[ gl_LocalInvocationIndex ].rayProbeDistance = min(
+					vRayData[ gl_LocalInvocationIndex ].position.w, pGIMaxProbeDistance );
+			#endif
 		}
 		
-		/*
-		#ifdef MAP_DISTANCE
-			// here we deviate from the paper. ignoring misses to influence the result
-			// removes the most glaring light leaks
-			if( rayMisses ){
-				continue;
-			}
-		#endif
-		*/
+		barrier();
 		
-		sumWeight += weight;
 		
-		#ifdef MAP_IRRADIANCE
-			if( frontFacing ){
-				// ray misses or hits front facing geometry. ray misses are handled
-				// the same since sky lighting is applied to missing rays too
-				newProbeState += vec3( imageLoad( texLight, rayTC ) ) * weight;
-			}
+		// per invocation processing
+		int rayLimit = min( 64, pGIRaysPerProbe - rayFirst );
+		
+		for( i=0; i<rayLimit; i++ ){
+			/*
+			bool rayMisses, frontFacing;
 			
-		#else
-			// ray misses do not end up here due to the check above
-			
-			// according to source code distance distance hits and misses should be clamped
-			// to a maximum value to not blow out variance. furthermore back face hits
-			// should be shortened
-			
-			if( frontFacing ){
-				// if ray misses hit distance is set to 10000. in this case max probe distance
-				// has to be used. this works with the min code below so no extra code required
-// 				float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance ) * ( frontFacing ? 1 : 0.2 );
-				float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
+			if( rayPosition.w > 9999 ){
+				// ray misses. rayNormal is not valid in this case
+				rayMisses = true;
+				frontFacing = true;
+// 				rayMissCount++;
 				
-				newProbeState.x += rayProbeDistance * weight;
-				newProbeState.y += rayProbeDistance * rayProbeDistance * weight;
+			}else if( dot( rayNormal, rayDirection ) < 0 ){
+				// ray hits front facing geometry
+				rayMisses = false;
+				frontFacing = true;
+// 				rayFrontCount++;
+				
+			}else{
+				// ray hits back facing geometry
+				rayMisses = false;
+				frontFacing = false;
+				rayBackCount += 1;
 			}
-		#endif
+			*/
+			
+			// optimized version of the above commented out code block. the ray misses check
+			// has been moved inside the optimized block to save more time
+			#ifdef MAP_DISTANCE
+				// here we deviate from the paper. ignoring misses to influence the result
+				// removes the most glaring light leaks
+				if( vRayData[ i ].rayMisses ){
+					continue;
+				}
+			#endif
+			
+			rayBackCount += vRayData[ i ].frontFacing ? 0 : 1;
+			// end of optimized block
+			
+// 			tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
+			
+			// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
+			//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
+			weight = max( dot( texelDirection, vRayData[ i ].rayDirection ), 0 );
+			#ifdef MAP_DISTANCE
+				weight = pow( weight, pGIDepthSharpness );
+			#endif
+			
+			if( weight < epsilon ){
+				continue;
+			}
+			
+			/*
+			#ifdef MAP_DISTANCE
+				// here we deviate from the paper. ignoring misses to influence the result
+				// removes the most glaring light leaks
+				if( vRayData[ i ].rayMisses ){
+					continue;
+				}
+			#endif
+			*/
+			
+			sumWeight += weight;
+			
+			#ifdef MAP_IRRADIANCE
+				if( vRayData[ i ].frontFacing ){
+					// ray misses or hits front facing geometry. ray misses are handled
+					// the same since sky lighting is applied to missing rays too
+					newProbeState += vRayData[ i ].light * weight;
+				}
+				
+			#else
+				// ray misses do not end up here due to the check above
+				
+				// according to source code distance distance hits and misses should be clamped
+				// to a maximum value to not blow out variance. furthermore back face hits
+				// should be shortened
+				
+				if( vRayData[ i ].frontFacing ){
+					// if ray misses hit distance is set to 10000. in this case max probe distance
+					// has to be used. this works with the min code below so no extra code required
+// 					float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance ) * ( frontFacing ? 1 : 0.2 );
+					
+					newProbeState.x += vRayData[ i ].rayProbeDistance * weight;
+					newProbeState.y += vRayData[ i ].rayProbeDistance * vRayData[ i ].rayProbeDistance * weight;
+				}
+			#endif
+		}
 	}
+	
 	
 	// determine if the probe is enabled
 	bool enableProbe = sumWeight > epsilon;
