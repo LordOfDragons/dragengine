@@ -152,8 +152,9 @@ deoglLightShaderConfig &baseShaderConfig ){
 	pSetBaseSolid2Transp2( shaconf );
 	pSetPoint( shaconf );
 	
-	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid2Transp2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+	// TODO too many texture targets
+// 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
+// 		etSolid2Transp2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
 }
 
 void deoglLightPipelinesPoint::pPrepareLumSolid1( deoglPipelineConfiguration &basePipelineConfig,
