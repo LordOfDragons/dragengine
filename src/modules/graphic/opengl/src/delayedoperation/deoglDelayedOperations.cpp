@@ -477,12 +477,12 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 				continue;
 			}
 			
-			deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
+			const deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
 			if( ! pixelBufferMipMap ){
 				continue;
 			}
 			
-			deoglPixelBuffer &basePixelBuffer = *pixelBufferMipMap->GetPixelBuffer( 0 );
+			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffer( 0 );
 			const int pixelBufferCount = pixelBufferMipMap->GetPixelBufferCount();
 			deoglArrayTexture * const arrayTexture = skinChannel->GetArrayTexture();
 			deoglCubeMap * const cubemap = skinChannel->GetCubeMap();

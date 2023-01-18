@@ -1240,35 +1240,26 @@ void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture 
 			DETHROW( deeInvalidParam );
 		}
 		
-		deoglPixelBuffer &basePixelBuffer = *pbMipMapSource->GetPixelBuffer( 0 );
-		deoglPixelBufferMipMap *pbMipMapCompressed = NULL;
+		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffer( 0 );
+		const deoglPixelBufferMipMap::Ref pbMipMapCompressed( deoglPixelBufferMipMap::Ref::New(
+			new deoglPixelBufferMipMap( pbformat,
+				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
+				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1 ) ) );
 		
-		try{
-			pbMipMapCompressed = new deoglPixelBufferMipMap( pbformat,
-				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1 );
-			
-			textureCompression.SetDecompressedDataMipMap( pbMipMapSource );
-			textureCompression.SetCompressedDataMipMap( pbMipMapCompressed );
-			//decTimer timer;
-			textureCompression.CompressMipMap();
-			/*float elapsed = timer.GetElapsedTime();
-			pRenderThread.GetOgl().LogInfoFormat( "CompressTextures: skin='%s' texture='%s' channel=%i"
-				" pbformat=%x width=%i height=%i mipmaps=%i elapsed=%iys",
-				skin.GetSkin()->GetFilename(), texture.GetName(), i,
-				compressedPixelBufferMipMap->GetPixelBuffer( 0 )->GetFormat(),
-				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				compressedPixelBufferMipMap->GetPixelBufferCount(),
-				( int )( elapsed * 1e6f ) );*/
-			
-			pChannels[ i ]->SetPixelBufferMipMap( pbMipMapCompressed );
-			
-		}catch( const deException & ){
-			if( pbMipMapCompressed ){
-				delete pbMipMapCompressed;
-			}
-			throw;
-		}
+		textureCompression.SetDecompressedDataMipMap( pbMipMapSource );
+		textureCompression.SetCompressedDataMipMap( pbMipMapCompressed );
+		//decTimer timer;
+		textureCompression.CompressMipMap();
+		/*float elapsed = timer.GetElapsedTime();
+		pRenderThread.GetOgl().LogInfoFormat( "CompressTextures: skin='%s' texture='%s' channel=%i"
+			" pbformat=%x width=%i height=%i mipmaps=%i elapsed=%iys",
+			skin.GetSkin()->GetFilename(), texture.GetName(), i,
+			compressedPixelBufferMipMap->GetPixelBuffer( 0 )->GetFormat(),
+			basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
+			compressedPixelBufferMipMap->GetPixelBufferCount(),
+			( int )( elapsed * 1e6f ) );*/
+		
+		pChannels[ i ]->SetPixelBufferMipMap( pbMipMapCompressed );
 	}
 }
 
@@ -1333,7 +1324,7 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 				const int pixBufCount = pixelBufferMipMap->GetPixelBufferCount();
 				int j;
 				
-				const deoglPixelBuffer &pixelBufferBase = *pixelBufferMipMap->GetPixelBuffer( 0 );
+				const deoglPixelBuffer &pixelBufferBase = pixelBufferMipMap->GetPixelBuffer( 0 );
 				writer->WriteByte( ( unsigned char )pixBufCount );
 				writer->WriteShort( ( short )pixelBufferBase.GetWidth() );
 				writer->WriteShort( ( short )pixelBufferBase.GetHeight() );
@@ -1341,7 +1332,7 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 				writer->WriteByte( ( unsigned char )pixelBufferBase.GetFormat() );
 				
 				for( j=0; j<pixBufCount; j++ ){
-					const deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( j );
+					const deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( j );
 					writer->Write( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
 				}
 				

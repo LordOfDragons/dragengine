@@ -24,6 +24,7 @@
 
 #include "../deoglSkinPropertyMap.h"
 #include "../../texture/deoglRImage.h"
+#include "../../texture/pixelbuffer/deoglPixelBufferMipMap.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -33,7 +34,6 @@ class deoglCombinedTexture;
 class deoglCubeMap;
 class deoglImage;
 class deoglPixelBuffer;
-class deoglPixelBufferMipMap;
 class deoglRenderThread;
 class deoglRSkin;
 class deoglSkinTexture;
@@ -155,7 +155,7 @@ private:
 	deoglCubeMap *pCubeMap;
 	deoglArrayTexture *pArrayTexture;
 	deoglCombinedTexture *pCombinedTexture;
-	deoglPixelBufferMipMap *pPixelBufferMipMap;
+	deoglPixelBufferMipMap::Ref pPixelBufferMipMap;
 	
 	decString pCacheID;
 	bool pIsCached;
@@ -258,7 +258,7 @@ public:
 	
 	
 	/** Pixel buffer mip map or nullptr if not existing. */
-	inline deoglPixelBufferMipMap *GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
+	inline const deoglPixelBufferMipMap::Ref &GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
 	
 	/** Set pixel buffer mip map or nullptr if not existing. */
 	void SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap );

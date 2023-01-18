@@ -563,7 +563,7 @@ bool deoglSCBuildConstructed::pInitPixelBuffer( sTarget &target ){
 		return false;
 	}
 	
-	const deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( 0 );
 	
 	switch( pixelBuffer.GetFormat() ){
 	case deoglPixelBuffer::epfByte1:

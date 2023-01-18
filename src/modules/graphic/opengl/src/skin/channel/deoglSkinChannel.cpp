@@ -37,7 +37,6 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../texture/pixelbuffer/deoglPixelBufferMipMap.h"
 #include "../../texture/deoglImage.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
@@ -88,8 +87,6 @@ pCubeMap( NULL ),
 pArrayTexture( NULL ),
 pCombinedTexture( NULL ),
 
-pPixelBufferMipMap( NULL ),
-
 pIsCached( false ),
 pCanBeCached( false ),
 pCacheVerify( NULL ),
@@ -115,10 +112,6 @@ pSolidityFilterPriority( 0.5f ){
 }
 
 deoglSkinChannel::~deoglSkinChannel(){
-	if( pPixelBufferMipMap ){
-		delete pPixelBufferMipMap;
-	}
-	
 	if( pCombinedTexture ){
 		pCombinedTexture->RemoveUsage();
 	}
@@ -210,14 +203,6 @@ void deoglSkinChannel::SetCombinedTexture( deoglCombinedTexture *combinedTexture
 
 
 void deoglSkinChannel::SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap ){
-	if( pbmipmap == pPixelBufferMipMap ){
-		return;
-	}
-	
-	if( pPixelBufferMipMap ){
-		delete pPixelBufferMipMap;
-	}
-	
 	pPixelBufferMipMap = pbmipmap;
 }
 
@@ -418,7 +403,7 @@ void deoglSkinChannel::GenerateConeMap(){
 	decTimer timer;
 	
 	// see http://http.developer.nvidia.com/GPUGems3/gpugems3_ch18.html
-	deoglPixelBuffer &pixelBufferBase = *pPixelBufferMipMap->GetPixelBuffer( 0 );
+	const deoglPixelBuffer &pixelBufferBase = pPixelBufferMipMap->GetPixelBuffer( 0 );
 	deoglPixelBuffer::sByte2 * const data = pixelBufferBase.GetPointerByte2();
 	const int height = pixelBufferBase.GetHeight();
 	const int width = pixelBufferBase.GetWidth();
@@ -802,7 +787,7 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 	deoglPixelBuffer::ePixelFormats pixelBufferFormat = deoglPixelBuffer::epfByte3;
 	bool mipMapped = false;
 	
-	SetPixelBufferMipMap( NULL );
+	SetPixelBufferMipMap( nullptr );
 	
 	pSize = channelFormat.GetRequiredSize();
 	pComponentCount = channelFormat.GetRequiredComponentCount();
@@ -884,12 +869,12 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 	// create pixel buffer if required and fill it
 	//if( ! pUniform ){
 		if( mipMapped ){
-			pPixelBufferMipMap = new deoglPixelBufferMipMap( pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100 );
+			pPixelBufferMipMap.TakeOver( new deoglPixelBufferMipMap( pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100 ) );
 			
 		}else{
-			pPixelBufferMipMap = new deoglPixelBufferMipMap( pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0 );
+			pPixelBufferMipMap.TakeOver( new deoglPixelBufferMipMap( pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0 ) );
 		}
 	//}
 }
@@ -2096,7 +2081,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	}
 	
 	// copy the pixels to the right place
-	deoglPixelBuffer &pixbuf = *pPixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer( 0 );
 	
 	if( pFloatFormat ){
 		// TODO if srcDataPb32 is not NULL, component count matches and targets[] in range
@@ -2207,7 +2192,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 }
 
 void deoglSkinChannel::pFillWithUniformColor(){
-	deoglPixelBuffer &pixbuf = *pPixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer( 0 );
 	const int pixelCount = pSize.x * pSize.y * pSize.z;
 	int i;
 	
