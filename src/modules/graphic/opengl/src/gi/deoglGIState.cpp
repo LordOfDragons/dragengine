@@ -774,6 +774,15 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 }
 
 void deoglGIState::pPrepareProbeVBO(){
+	// parameter block probe dynamic states
+	pPBProbeDynamicStates.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+	pPBProbeDynamicStates->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	pPBProbeDynamicStates->SetParameterCount( 1 );
+	pPBProbeDynamicStates->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint state
+	pPBProbeDynamicStates->SetElementCount( GI_MAX_PROBE_COUNT );
+	pPBProbeDynamicStates->MapToStd140();
+	pPBProbeDynamicStates->EnsureBuffer();
+	
 	// parameter block probe offset
 	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
 	pPBProbeOffsets->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
@@ -782,7 +791,6 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeOffsets->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint flags
 	pPBProbeOffsets->SetElementCount( GI_MAX_PROBE_COUNT );
 	pPBProbeOffsets->MapToStd140();
-	pPBProbeOffsets->SetBindingPoint( 0 );
 	pPBProbeOffsets->EnsureBuffer();
 	
 	// parameter block probe extends
@@ -793,7 +801,6 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeExtends->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec3 maxExtend
 	pPBProbeExtends->SetElementCount( GI_MAX_PROBE_COUNT );
 	pPBProbeExtends->MapToStd140();
-	pPBProbeExtends->SetBindingPoint( 0 );
 	pPBProbeExtends->EnsureBuffer();
 }
 

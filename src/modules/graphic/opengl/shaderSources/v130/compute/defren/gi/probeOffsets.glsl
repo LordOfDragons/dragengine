@@ -12,11 +12,12 @@ precision highp int;
 #endif
 
 
-layout(binding=0, rgba16f) uniform readonly image2D texPosition;
-layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
 #ifdef WITH_RAY_CACHE
 	layout(binding=2, r16f) uniform readonly image2DArray texCacheDistance;
 	layout(binding=3, rgba8_snorm) uniform readonly image2DArray texCacheNormal;
+#else
+	layout(binding=0, rgba16f) uniform readonly image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
 #endif
 
 
@@ -27,6 +28,10 @@ struct sProbeOffset {
 
 UBOLAYOUT_BIND(0) writeonly buffer ProbeOffset {
 	sProbeOffset pProbeOffset[];
+};
+
+UBOLAYOUT_BIND(0) readonly buffer ProbeDynamicStates {
+	uint pProbeDynamicStates[];
 };
 
 
@@ -61,24 +66,6 @@ void main( void ){
 	ivec2 texCoord = ivec2( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z );
 	
 	
-	// update dynamic state
-	uint dynamicFlags = uint( gipfDynamicDisable );
-	
-	int i;
-	for( i=0; i<pGIRaysPerProbe; i++ ){
-		ivec2 rayTC = rayOffset + ivec2( i, 0 );
-		
-		vec4 rayPosition = imageLoad( texPosition, rayTC ); // position, distance
-		
-		if( all( lessThanEqual( vec3( rayPosition.w ), nearGeometryRange ) )
-		&& dot( imageLoad( texNormal, rayTC ).xyz, rayPosition.xyz - probePosition ) < 0 ){
-			// front face hit inside required range
-			dynamicFlags = uint( 0 );
-			break;
-		}
-	}
-	
-	
 	// calculate probe offset
 	#ifdef WITH_RAY_CACHE
 		rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
@@ -106,6 +93,7 @@ void main( void ){
 	// closest back face and applying the offset only if it is the closest.
 	float closestBackDistance = 10000;
 	vec3 closestBackOffset = vec3( 10000 ); // very large to force disable if no good hit found
+	int i;
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		#ifdef WITH_RAY_CACHE
@@ -269,7 +257,7 @@ void main( void ){
 	
 	// merge dynamic state
 	if( ( probeFlags & ( gipfNearGeometry | gipfDisabled ) ) == uint( 0 ) ){
-		probeFlags |= dynamicFlags;
+		probeFlags |= pProbeDynamicStates[ index ];
 	}
 	
 	// debug

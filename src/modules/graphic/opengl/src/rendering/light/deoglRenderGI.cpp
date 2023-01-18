@@ -248,6 +248,15 @@ deoglRenderLightBase( renderThread )
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
+		// probe dynamic states
+		pipconf.Reset();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Dynamic States" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineProbeDynamicStates = pipelineManager.GetWith( pipconf );
+		
+		
 		// probe offset
 		pipconf.Reset();
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
@@ -890,6 +899,23 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	}
 	
 	
+	// calculate dynamic states. these are stored in a temporary SSBO to keep shaders
+	// smaller and thus faster
+	pPipelineProbeDynamicStates->Activate();
+	
+	pActivateGIUBOs();
+	
+	const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
+	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaRead );
+	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
+	ismgr.DisableStagesAbove( 1 );
+	
+	giState->GetPBProbeDynamicStates()->Activate();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	
+	
 	// calculate new offset and state. it looks strange what two VBO are written to with the
 	// exact same content. this is due to a strange performance observation. if the VBO is
 	// written here and then readback during the next frame update no stalling happens.
@@ -902,26 +928,21 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	
 	pActivateGIUBOs();
 	
-	const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
-	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaRead );
-	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
-	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 		const deoglGIRayCache &rayCache = giState->GetRayCache();
 		ismgr.Enable( 2, rayCache.GetTextureDistance(), 0, deoglImageStageManager::eaRead );
 		ismgr.Enable( 3, rayCache.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
-		ismgr.DisableStagesAbove( 3 );
-		
-	}else{
-		ismgr.DisableStagesAbove( 1 );
 	}
 	
 	giState->GetPBProbeOffsets()->Activate();
+	giState->GetPBProbeDynamicStates()->Activate( 1 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( cascade.GetUpdateProbeCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
+	giState->GetPBProbeDynamicStates()->Deactivate( 1 );
 	giState->GetPBProbeOffsets()->Deactivate();
+	
 	
 	// clean up
 	ismgr.DisableAllStages();

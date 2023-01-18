@@ -100,6 +100,7 @@ private:
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
 	bool pClearMaps;
+	deoglSPBlockSSBO::Ref pPBProbeDynamicStates;
 	deoglSPBlockSSBO::Ref pPBProbeOffsets;
 	bool pProbesHaveMoved;
 	
@@ -245,7 +246,10 @@ public:
 	/** Probe offset fbo. */
 	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
 	
-	/** Probe offset feedback parameter block. */
+	/** Probe dynamic states parameter block. */
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeDynamicStates() const{ return pPBProbeDynamicStates; }
+	
+	/** Probe offset parameter block. */
 	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{ return pPBProbeOffsets; }
 	
 	/** Probe extends feedback parameter block. */
