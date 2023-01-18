@@ -23,12 +23,12 @@
 #define _DEOGLSCBUILDCONSTRUCTED_H_
 
 #include "../../deoglGL.h"
+#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglSkinChannel;
-class deoglPixelBuffer;
 
 class deImage;
 class deSkinPropertyConstructed;
@@ -61,10 +61,9 @@ private:
 		bool tileY;
 		decPoint3 textureSize;
 		
-		deoglPixelBuffer *maskBuffer;
+		deoglPixelBuffer::Ref maskBuffer;
 		
 		sTarget();
-		~sTarget();
 	};
 	
 	/** Context. */

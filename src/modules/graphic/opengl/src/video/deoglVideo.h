@@ -22,12 +22,13 @@
 #ifndef _DEOGLVIDEO_H_
 #define _DEOGLVIDEO_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideo.h>
 #include <dragengine/common/math/decMath.h>
 
 class deGraphicOpenGl;
 class deoglRVideo;
-class deoglPixelBuffer;
 class deoglTexture;
 
 class deVideo;
@@ -97,12 +98,9 @@ public:
 	
 	/**
 	 * Cache frame.
-	 * \details Does not free the old pixel buffer. If a pixel buffer is still set
-	 *          during destruction the pixel buffer is freed. This allows to swap
-	 *          pixel buffer with the decode thread.
-	 * \returns Previously set pixel buffer or \em NULL.
+	 * \returns Previously set pixel buffer or nullptr.
 	 */
-	deoglPixelBuffer *CacheFrame( int frame, deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref CacheFrame( int frame, deoglPixelBuffer *pixelBuffer );
 	
 	/** Cache frame texture or \em NULL if not ready. */
 	deoglTexture *GetCachedFrameTexture( int frame ) const;

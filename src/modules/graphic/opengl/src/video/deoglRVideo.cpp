@@ -27,7 +27,6 @@
 #include "../deoglBasics.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
@@ -52,7 +51,6 @@ pFrames( NULL ),
 pFrameCount( 0 ),
 pFrameCountToCache( -1 ),
 
-pPixelBuffer( NULL ),
 pUpdateFrame( -1 )
 {
 	if( frameCount > 0 ){
@@ -65,10 +63,6 @@ pUpdateFrame( -1 )
 }
 
 deoglRVideo::~deoglRVideo(){
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
-	
 	if( pFrames ){
 		int i;
 		for( i=0; i<pFrameCount; i++ ){
@@ -97,7 +91,7 @@ deoglTexture *deoglRVideo::GetTexture( int frame ) const{
 	return pFrames[ frame ];
 }
 
-deoglPixelBuffer *deoglRVideo::SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer ){
+deoglPixelBuffer::Ref deoglRVideo::SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer ){
 	if( frame < 0 || frame >= pFrameCount ){
 		DETHROW( deeInvalidParam );
 	}
@@ -105,7 +99,7 @@ deoglPixelBuffer *deoglRVideo::SetPixelBuffer( int frame, deoglPixelBuffer *pixe
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglPixelBuffer * const prevPixelBuffer = pPixelBuffer;
+	const deoglPixelBuffer::Ref prevPixelBuffer( pPixelBuffer );
 	
 	pPixelBuffer = pixelBuffer;
 	pUpdateFrame = frame;
@@ -127,7 +121,7 @@ void deoglRVideo::UpdateTexture(){
 	}
 	
 	if( pPixelBuffer ){
-		pFrames[ pUpdateFrame ]->SetPixels( *pPixelBuffer );
+		pFrames[ pUpdateFrame ]->SetPixels( pPixelBuffer );
 	}
 	
 	//pRenderThread.GetLogger().LogInfoFormat( "Video: update texture frame=%i remaining=%i", pUpdateFrame, pFrameCountToCache );

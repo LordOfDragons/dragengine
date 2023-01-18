@@ -24,13 +24,19 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/deObject.h>
 
 
 /**
- * Pixel Buffer.
  * Stores image data. Used to transfer pixels from or to an OpenGL texture.
  */
-class deoglPixelBuffer{
+class deoglPixelBuffer : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglPixelBuffer> Ref;
+	
+	
+	
 public:
 	/** Pixel formats. */
 	enum ePixelFormats{
@@ -187,10 +193,14 @@ public:
 	/** Create copy of pixel buffer. */
 	deoglPixelBuffer( const deoglPixelBuffer &pixelBuffer );
 	
+protected:
 	/** Cleans up the opengl array texture. */
-	~deoglPixelBuffer();
+	virtual ~deoglPixelBuffer();
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */

@@ -22,10 +22,11 @@
 #ifndef _DEOGLRVIDEOPLAYER_H_
 #define _DEOGLRVIDEOPLAYER_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 
 class deoglRVideo;
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglTexture;
 
@@ -46,7 +47,7 @@ private:
 	int pHeight;
 	int pComponentCount;
 	
-	deoglPixelBuffer *pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBuffer;
 	deoglTexture *pTexture;
 	bool pDirtyTexture;
 	
@@ -101,12 +102,9 @@ public:
 	
 	/**
 	 * Set pixel buffer to update texture with.
-	 * \details Sets pixel dirty true. Does not free the old pixel buffer. If a pixel
-	 *          buffer is still set during destruction the pixel buffer is freed. This
-	 *          allows to swap pixel buffer with the decode thread.
 	 * \returns Previously set pixel buffer.
 	 */
-	deoglPixelBuffer *SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
 	
 	/** Texture or \em NULL if not existing. */
 	deoglTexture *GetTexture() const;

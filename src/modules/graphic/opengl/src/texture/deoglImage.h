@@ -23,12 +23,12 @@
 #define _DEOGLIMAGE_H_
 
 #include "deoglRImage.h"
+#include "pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicImage.h>
 #include <dragengine/threading/deMutex.h>
 
-class deoglPixelBuffer;
 class deGraphicOpenGl;
 class deImage;
 
@@ -62,8 +62,8 @@ private:
 	
 	deMutex pMutex;
 	int pPixelBufferUseCount;
-	deoglPixelBuffer *pPixelBuffer;
-	deoglPixelBuffer *pPixelBufferRImageTexture;
+	deoglPixelBuffer::Ref pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBufferRImageTexture;
 	bool pDirtyTexture;
 	
 	decPointerSet pNotifyCanvas;
@@ -127,7 +127,7 @@ public:
 	/**
 	 * Pixel buffer present only if CreatePixelBuffer() has been called.
 	 * */
-	inline deoglPixelBuffer *GetPixelBuffer() const{ return pPixelBuffer; }
+	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }
 	/*@}*/
 	
 	
@@ -149,10 +149,8 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	
-	deoglPixelBuffer *pCreatePixelBuffer();
-	void pCreatePixelBufferSafe( deoglPixelBuffer* &pixelBuffer );
+	deoglPixelBuffer::Ref pCreatePixelBuffer();
+	void pCreatePixelBufferSafe( deoglPixelBuffer::Ref &pixelBuffer );
 	void pRequiresSync();
 };
 

@@ -32,7 +32,7 @@
  */
 class deoglPixelBufferMipMap{
 private:
-	deoglPixelBuffer **pPixelBuffers;
+	deoglPixelBuffer::Ref *pPixelBuffers;
 	int pPixelBufferCount;
 	
 public:
@@ -49,7 +49,7 @@ public:
 	/** Retrieves the number of pixel buffers which is the mip map level count. */
 	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
 	/** Retrieves the pixel buffer for a mip map level. */
-	deoglPixelBuffer *GetPixelBuffer( int level ) const;
+	const deoglPixelBuffer::Ref &GetPixelBuffer( int level ) const;
 	
 	/** Reduce maximum mip map level count. */
 	void ReducePixelBufferCount( int reduceByCount );

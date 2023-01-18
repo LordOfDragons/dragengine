@@ -22,12 +22,12 @@
 #ifndef _DEOGLRIMAGE_H_
 #define _DEOGLRIMAGE_H_
 
+#include "pixelbuffer/deoglPixelBuffer.h"
 #include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglTexture;
 class deoglCubeMap;
@@ -55,7 +55,7 @@ private:
 	const int pComponentCount;
 	const int pBitCount;
 	
-	deoglPixelBuffer *pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBuffer;
 	deoglTexture *pTexture;
 	deoglCubeMap *pCubeMap;
 	deoglArrayTexture *pArrayTexture;

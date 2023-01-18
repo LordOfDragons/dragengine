@@ -22,12 +22,12 @@
 #ifndef _DEOGLVIDEODECODETHREAD_H_
 #define _DEOGLVIDEODECODETHREAD_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/resources/video/deVideoReference.h>
 #include <dragengine/resources/video/deVideoDecoderReference.h>
 #include <dragengine/threading/deThread.h>
 #include <dragengine/threading/deSemaphore.h>
-
-class deoglPixelBuffer;
 
 
 /**
@@ -40,8 +40,8 @@ public:
 	int pFrame;
 	int pNextFrame;
 	
-	deoglPixelBuffer *pPixelBufferDecode;
-	deoglPixelBuffer *pPixelBufferTexture;
+	deoglPixelBuffer::Ref pPixelBufferDecode;
+	deoglPixelBuffer::Ref pPixelBufferTexture;
 	
 	deMutex pMutex;
 	deSemaphore pSemaphoreDecode;
@@ -79,16 +79,15 @@ public:
 	void StartDecode( int frame );
 	
 	/**
-	 * Pixel buffer to upload to the texture.
-	 * 
-	 * Waits for the decoding to finish. If no decoding is in progress \em NULL is returned.
+	 * Pixel buffer to upload to the texture. Waits for the decoding to finish.
+	 * If no decoding is in progress nullptr is returned.
 	 */
-	deoglPixelBuffer *GetTexturePixelBuffer();
+	deoglPixelBuffer::Ref GetTexturePixelBuffer();
 	
 	/**
-	 * Set texture pixel buffer without deleting the old one.
-	 * \details Pixel buffer can be \em NULL in which case a new one is created the next time.
-	 *          Allows swaping pixel buffers with the render video player.
+	 * Set texture pixel buffer without deleting the old one. Pixel buffer can be nullptr
+	 * in which case a new one is created the next time. Allows swaping pixel buffers with
+	 * the render video player.
 	 */
 	void SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffer );
 	

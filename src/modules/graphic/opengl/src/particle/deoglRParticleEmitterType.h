@@ -22,15 +22,15 @@
 #ifndef _DEOGLRPARTICLEEMITTERTYPE_H_
 #define _DEOGLRPARTICLEEMITTERTYPE_H_
 
+#include "../light/pipeline/deoglLightPipelinesParticle.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-#include "../light/pipeline/deoglLightPipelinesParticle.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
-
 class deoglLightShaderConfig;
-class deoglPixelBuffer;
 class deoglRParticleEmitter;
 class deoglRSkin;
 class deoglTexture;
@@ -70,7 +70,7 @@ private:
 	float *pParameterSamples;
 	float pParamFactorMultiply[ ESC_COUNT ];
 	float pParamFactorAdd[ ESC_COUNT ];
-	deoglPixelBuffer *pPixelBufferSamples;
+	deoglPixelBuffer::Ref pPixelBufferSamples;
 	deoglTexture *pTextureSamples;
 	
 	deoglRSkin *pSkin;

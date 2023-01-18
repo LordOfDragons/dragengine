@@ -116,12 +116,13 @@ void deoglDebugSaveTexture::SaveTextureLevelConversion( deoglTexture &texture, i
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat4, width, height, 1 );
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, 1 ) ) );
 		
 		texture.GetPixelsLevel( level, pixbuf );
 		
 		imgdata = new sRGBA8[ width * height ];
-		pConvertDataRGBA( pixbuf.GetPointerFloat4(), imgdata, width, height, false, conversion );
+		pConvertDataRGBA( pixbuf->GetPointerFloat4(), imgdata, width, height, false, conversion );
 		
 		saveImage = new deoglDelayedSaveImage( pathFile, width, height, 1, 4, 8, (char*)imgdata );
 		imgdata = NULL;
@@ -180,8 +181,9 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat1, width, height, 1 );
-		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf.GetPointerFloat1();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, 1 ) ) );
+		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		if( true ){
 			fbo = new deoglFramebuffer( pRenderThread, false );
@@ -478,8 +480,9 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion( deoglCubeMap &cubemap, i
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat4, size, size, 6 );
-		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf.GetPointerFloat4();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, size, size, 6 ) ) );
+		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int faceStride = size * size;
 		
 		imgdata = new sRGBA8[ faceStride * 6 ];
@@ -532,8 +535,9 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel( deoglCubeMap &cubemap, int le
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat1, size, size, 6 );
-		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf.GetPointerFloat1();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, size, size, 6 ) ) );
+		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		const int faceStride = size * size;
 		
 		imgdata = new sRGBA8[ faceStride * 6 ];
@@ -616,8 +620,9 @@ int level, const char *name, eConvertions conversion ){
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat4, width, height, layerCount );
-		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf.GetPointerFloat4();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, layerCount ) ) );
+		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int stride = width * height;
 		
 		texture.GetPixelsLevel( level, pixbuf );
@@ -672,8 +677,9 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel( deoglArrayTexture &array
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat1, width, height, layerCount );
-		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf.GetPointerFloat1();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, layerCount ) ) );
+		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		arrayTexture.GetPixelsLevel( level, pixbuf );
 		

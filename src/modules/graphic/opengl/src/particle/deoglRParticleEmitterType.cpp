@@ -35,7 +35,6 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../skin/deoglRSkin.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
@@ -59,7 +58,6 @@ pEmitter( emitter ),
 
 pParameterSamples( NULL ),
 
-pPixelBufferSamples( NULL ),
 pTextureSamples( NULL ),
 
 pSkin( NULL ),
@@ -74,9 +72,6 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 	
 	if( pParameterSamples ){
 		delete [] pParameterSamples;
-	}
-	if( pPixelBufferSamples ){
-		delete pPixelBufferSamples;
 	}
 	
 	if( pSkin ){
@@ -134,7 +129,7 @@ void deoglRParticleEmitterType::UpdateParameterSamples( const deParticleEmitterT
 	const float * const samplesTranspBeam = pParameterSamples + escTransparencyBeam * 256;
 	const float * const samplesEmissiveBeam = pParameterSamples + escEmissivityBeam * 256;
 	
-	pPixelBufferSamples = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 256, 4, 1 );
+	pPixelBufferSamples.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 256, 4, 1 ) );
 	deoglPixelBuffer::sFloat3 *pbdata = pPixelBufferSamples->GetPointerFloat3();
 	int i;
 	
@@ -260,11 +255,9 @@ float deoglRParticleEmitterType::GetSampledParameter( eSampleCurves curve, float
 void deoglRParticleEmitterType::PrepareForRender(){
 	if( pPixelBufferSamples ){
 		if( pTextureSamples ){
-			pTextureSamples->SetPixels( *pPixelBufferSamples );
+			pTextureSamples->SetPixels( pPixelBufferSamples );
 		}
-		
-		delete pPixelBufferSamples;
-		pPixelBufferSamples = NULL;
+		pPixelBufferSamples = nullptr;
 	}
 }
 

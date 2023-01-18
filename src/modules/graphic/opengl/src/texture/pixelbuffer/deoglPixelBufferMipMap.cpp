@@ -56,10 +56,10 @@ int width, int height, int depth, int maxLevel ){
 	count++; // pixel buffer count is max mip map level + 1
 	
 	try{
-		pPixelBuffers = new deoglPixelBuffer*[ count ];
+		pPixelBuffers = new deoglPixelBuffer::Ref[ count ];
 		
 		for( pPixelBufferCount=0; pPixelBufferCount<count; pPixelBufferCount++ ){
-			pPixelBuffers[ pPixelBufferCount ] = new deoglPixelBuffer( format, levelWidth, levelHeight, depth );
+			pPixelBuffers[ pPixelBufferCount ].TakeOver( new deoglPixelBuffer( format, levelWidth, levelHeight, depth ) );
 			
 			levelWidth >>= 1;
 			if( levelWidth < 1 ){
@@ -87,7 +87,7 @@ deoglPixelBufferMipMap::~deoglPixelBufferMipMap(){
 // Management
 ///////////////
 
-deoglPixelBuffer *deoglPixelBufferMipMap::GetPixelBuffer( int level ) const{
+const deoglPixelBuffer::Ref &deoglPixelBufferMipMap::GetPixelBuffer( int level ) const{
 	if( level < 0 || level >= pPixelBufferCount ){
 		DETHROW( deeInvalidParam );
 	}
@@ -102,7 +102,7 @@ void deoglPixelBufferMipMap::ReducePixelBufferCount( int reduceByCount ){
 	
 	const int targetCount = decMath::max( pPixelBufferCount - reduceByCount, 0 );
 	while( pPixelBufferCount > targetCount ){
-		delete pPixelBuffers[ --pPixelBufferCount ];
+		pPixelBuffers[ --pPixelBufferCount ] = nullptr;
 	}
 }
 
@@ -117,7 +117,7 @@ void deoglPixelBufferMipMap::CreateMipMaps( bool maskRed, bool maskGreen, bool m
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	int sourceOffset1;
 	int sourceOffset2;
@@ -141,8 +141,8 @@ void deoglPixelBufferMipMap::CreateMipMaps( bool maskRed, bool maskGreen, bool m
 	}
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -245,7 +245,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMax( bool maskRed, bool maskGreen, boo
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	int sourceOffset1;
 	int sourceOffset2;
@@ -269,8 +269,8 @@ void deoglPixelBufferMipMap::CreateMipMapsMax( bool maskRed, bool maskGreen, boo
 	}
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -445,7 +445,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMin( bool maskRed, bool maskGreen, boo
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	int sourceOffset1;
 	int sourceOffset2;
@@ -469,8 +469,8 @@ void deoglPixelBufferMipMap::CreateMipMapsMin( bool maskRed, bool maskGreen, boo
 	}
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -641,7 +641,7 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	bool floatData;
 	int i, x, y, z;
@@ -671,8 +671,8 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 	//float dot;
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -965,7 +965,7 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 	}
 	
 	const deoglPixelBuffer &baseNormalPixelBuffer = *normalPixeBufferMipMap.GetPixelBuffer( 0 );
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int normalComponentCount;
 	int componentCount;
 	bool normalFloatData;
@@ -1027,8 +1027,8 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 	// process the roughness mip map levels
 	for( i=1; i<pPixelBufferCount; i++ ){
 		//const deoglPixelBuffer &sourceNormalPixelBuffer = *normalPixeBufferMipMap.GetPixelBuffer( i - 1 );
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -1294,9 +1294,6 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 
 void deoglPixelBufferMipMap::pCleanUp(){
 	if( pPixelBuffers ){
-		while( pPixelBufferCount > 0 ){
-			delete pPixelBuffers[ --pPixelBufferCount ];
-		}
 		delete [] pPixelBuffers;
 	}
 }

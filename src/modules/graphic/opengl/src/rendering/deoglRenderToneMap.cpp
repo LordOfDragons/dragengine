@@ -180,10 +180,11 @@ static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRenderi
 	const int texHeight = texture.GetHeight();
 	const int texWidth = texture.GetWidth();
 	
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 );
+	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
 	
 	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer.GetPointer();
+	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
 	
 	int nanCulprits = 0;
 	int nanCulpritsR = 0;
@@ -250,10 +251,11 @@ static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArra
 	const int texWidth = texture.GetWidth();
 	int totallyBlack = 0;
 	
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 );
+	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
 	
 	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer.GetPointer();
+	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
 	
 	const int count = width * height;
 	float avg = 0.0f;
@@ -782,9 +784,10 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
+		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
 		oglCamera.GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
-		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer.GetPointerFloat4();
+		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer->GetPointerFloat4();
 		renderThread.GetLogger().LogInfoFormat( "tone map params: %g %g %g %g", avgSceneColor.r, avgSceneColor.g, avgSceneColor.b, avgSceneColor.a );
 	}
 }

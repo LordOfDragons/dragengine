@@ -26,7 +26,6 @@
 #include "deoglVideoDecodeThread.h"
 
 #include "../deoglBasics.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -60,10 +59,6 @@ pDecoder( decoder ),
 pVideo( video ),
 pFrame( -1 ),
 pNextFrame( -1 ),
-
-pPixelBufferDecode( NULL ),
-pPixelBufferTexture( NULL ),
-
 pDecoding( false ),
 pHasDecodedFrame( false ),
 pShutDown( false )
@@ -79,13 +74,6 @@ pShutDown( false )
 deoglVideoDecodeThread::~deoglVideoDecodeThread(){
 	//printf( "Shut down decode thread %p\n", this );
 	pSafelyShutDownThread();
-	
-	if( pPixelBufferTexture ){
-		delete pPixelBufferTexture;
-	}
-	if( pPixelBufferDecode ){
-		delete pPixelBufferDecode;
-	}
 }
 
 
@@ -142,7 +130,7 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 	}
 }
 
-deoglPixelBuffer *deoglVideoDecodeThread::GetTexturePixelBuffer(){
+deoglPixelBuffer::Ref deoglVideoDecodeThread::GetTexturePixelBuffer(){
 	if( pDecoding ){
 		DEBUG_SYNC_MT_WAIT("GetTexturePixelBuffer() finished")
 		pSemaphoreFinished.Wait();
@@ -156,7 +144,7 @@ deoglPixelBuffer *deoglVideoDecodeThread::GetTexturePixelBuffer(){
 		
 	}else{
 		//printf( "DecodeThread(%p) GetTexturePixelBuffer not decoding.\n", this );
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -250,25 +238,23 @@ void deoglVideoDecodeThread::PreparePixelBuffers(){
 	// if the pixel buffers do not match the required size free them
 	if( pPixelBufferTexture ){
 		if( pPixelBufferTexture->GetWidth() != width || pPixelBufferTexture->GetHeight() != height ){
-			delete pPixelBufferTexture;
-			pPixelBufferTexture = NULL;
+			pPixelBufferTexture = nullptr;
 		}
 	}
 	
 	if( pPixelBufferDecode ){
 		if( pPixelBufferDecode->GetWidth() != width || pPixelBufferDecode->GetHeight() != height ){
-			delete pPixelBufferDecode;
-			pPixelBufferDecode = NULL;
+			pPixelBufferDecode = nullptr;
 		}
 	}
 	
 	// create pixel buffers if not existing
 	if( ! pPixelBufferDecode ){
-		pPixelBufferDecode = new deoglPixelBuffer( pbFormat, width, height, 1 );
+		pPixelBufferDecode.TakeOver( new deoglPixelBuffer( pbFormat, width, height, 1 ) );
 	}
 	
 	if( ! pPixelBufferTexture ){
-		pPixelBufferTexture = new deoglPixelBuffer( pbFormat, width, height, 1 );
+		pPixelBufferTexture.TakeOver( new deoglPixelBuffer( pbFormat, width, height, 1 ) );
 	}
 }
 

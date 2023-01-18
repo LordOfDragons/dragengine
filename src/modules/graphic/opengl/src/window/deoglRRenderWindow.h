@@ -22,6 +22,8 @@
 #ifndef _DEOGLRRENDERWINDOW_H_
 #define _DEOGLRRENDERWINDOW_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
@@ -51,7 +53,6 @@ class NSView;
 
 class deoglRenderThread;
 class deoglRCanvasView;
-class deoglPixelBuffer;
 
 
 /**
@@ -125,7 +126,7 @@ private:
 	decString pTitle;
 	bool pFullScreen;
 	bool pPaint;
-	deoglPixelBuffer *pIcon;
+	deoglPixelBuffer::Ref pIcon;
 	
 	deoglRCanvasView *pRCanvasView;
 	
@@ -213,7 +214,7 @@ public:
 	void SetPaint( bool paint );
 	
 	/** Icon. */
-	inline deoglPixelBuffer *GetIcon() const{ return pIcon; }
+	inline const deoglPixelBuffer::Ref &GetIcon() const{ return pIcon; }
 	
 	/** Set icon. */
 	void SetIcon( deoglPixelBuffer *icon );

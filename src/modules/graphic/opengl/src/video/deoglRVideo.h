@@ -22,10 +22,11 @@
 #ifndef _DEOGLRVIDEO_H_
 #define _DEOGLRVIDEO_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 
 class deVideo;
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglTexture;
 
@@ -57,7 +58,7 @@ private:
 	int pFrameCount;
 	int pFrameCountToCache;
 	
-	deoglPixelBuffer *pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBuffer;
 	int pUpdateFrame;
 	
 	
@@ -88,12 +89,9 @@ public:
 	
 	/**
 	 * Set pixel buffer to update frame texture with.
-	 * \details Does not free the old pixel buffer. If a pixel buffer is still set
-	 *          during destruction the pixel buffer is freed. This allows to swap
-	 *          pixel buffer with the decode thread.
-	 * \returns Previously set pixel buffer or \em NULL.
+	 * \returns Previously set pixel buffer or nullptr.
 	 */
-	deoglPixelBuffer *SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer );
 	
 	/** Frame to update or -1 if not set to update a frame. */
 	inline int GetUpdateFrame() const{ return pUpdateFrame; }

@@ -22,12 +22,13 @@
 #ifndef _DEOGLLIGHTBOUNDARYMAP_H_
 #define _DEOGLLIGHTBOUNDARYMAP_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglFramebuffer;
 class deoglRenderThread;
 class deoglTexture;
-class deoglPixelBuffer;
 
 
 
@@ -45,8 +46,8 @@ private:
 	deoglTexture *pTextureMax;
 	deoglFramebuffer **pFBOs;
 	
-	deoglPixelBuffer *pPixBufBoundaryMin;
-	deoglPixelBuffer *pPixBufBoundaryMax;
+	const deoglPixelBuffer::Ref pPixBufBoundaryMin;
+	const deoglPixelBuffer::Ref pPixBufBoundaryMax;
 	
 	int pSize;
 	int pLevelCount;

@@ -27,7 +27,6 @@
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -222,7 +221,6 @@ pWidth( 100 ),
 pHeight( 100 ),
 pFullScreen( false ),
 pPaint( true ),
-pIcon( NULL ),
 
 pRCanvasView( NULL ),
 
@@ -237,10 +235,6 @@ deoglRRenderWindow::~deoglRRenderWindow(){
 	
 	DropRCanvasView();
 	pDestroyWindow();
-	
-	if( pIcon ){
-		delete pIcon;
-	}
 }
 
 
@@ -328,10 +322,6 @@ void deoglRRenderWindow::SetPaint( bool paint ){
 void deoglRRenderWindow::SetIcon( deoglPixelBuffer *icon ){
 	if( icon == pIcon ){
 		return;
-	}
-	
-	if( pIcon ){
-		delete pIcon;
 	}
 	
 	pIcon = icon;

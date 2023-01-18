@@ -154,15 +154,7 @@ pixBufHeight( 0 ),
 pixBufDepth( 0 ),
 
 tileX( false ),
-tileY( false ),
-
-maskBuffer( NULL ){
-}
-
-deoglSCBuildConstructed::sTarget::~sTarget(){
-	if( maskBuffer ){
-		delete maskBuffer;
-	}
+tileY( false ){
 }
 
 
@@ -640,7 +632,7 @@ void deoglSCBuildConstructed::pDrawMaskIfPresent( const deSkinPropertyNode &node
 	}
 	
 	const decPoint3 absSize( node.GetSize().Absolute() );
-	target.maskBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, absSize.x, absSize.y, 1 );
+	target.maskBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, absSize.x, absSize.y, 1 ) );
 	target.pixBufWidth = absSize.x;
 	target.pixBufHeight = absSize.y;
 	target.pixBufDepth = 1;
