@@ -74,9 +74,7 @@ class deoglRTChoices;
 class deRenderWindow;
 
 // deprecated
-class deoglEdgeFinder;
 class deoglOptimizerManager;
-class deoglPreloader;
 class deoglQuickSorter;
 
 
@@ -201,8 +199,6 @@ private:
 	
 	// deprecated
 	deoglQuickSorter *pQuickSorter;
-	deoglPreloader *pPreloader;
-	deoglEdgeFinder *pEdgeFinder;
 	deoglOptimizerManager *pOptimizerManager;
 	
 	// thread control
@@ -474,12 +470,6 @@ public:
 	/*@{*/
 	/** Quick sorter. */
 	inline deoglQuickSorter &GetQuickSorter() const{ return *pQuickSorter; }
-	
-	/** Preloader. */
-	inline deoglPreloader &GetPreloader() const{ return *pPreloader; }
-	
-	/** Edge finder. */
-	inline deoglEdgeFinder &GetEdgeFinder() const{ return *pEdgeFinder; }
 	
 	/** Optimizer. */
 	inline deoglOptimizerManager &GetOptimizerManager() const{ return *pOptimizerManager; }

@@ -39,7 +39,6 @@
 #include "deoglRTUniqueKey.h"
 #include "../deGraphicOpenGl.h"
 #include "../deoglBasics.h"
-#include "../deoglPreloader.h"
 #include "../debug/deoglDebugTraceGroup.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
@@ -49,7 +48,6 @@
 #include "../debug/deoglDebugInformation.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
-#include "../edgefinder/deoglEdgeFinder.h"
 #include "../envmap/deoglEnvMapSlotManager.h"
 #include "../extensions/deoglExtensions.h"
 #include "../gi/deoglGI.h"
@@ -152,8 +150,6 @@ pDebugCountThreadWindows( 0 ),
 
 // deprecated
 pQuickSorter( nullptr ),
-pPreloader( nullptr ),
-pEdgeFinder( nullptr ),
 pOptimizerManager( nullptr ),
 
 // thread control parameters
@@ -933,8 +929,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// deprecated
 	pQuickSorter = new deoglQuickSorter;
-	pPreloader = new deoglPreloader( *this );
-	pEdgeFinder = new deoglEdgeFinder;
 	pOptimizerManager = new deoglOptimizerManager;
 	// deprecated
 	
@@ -2131,7 +2125,6 @@ void deoglRenderThread::pBeginFrame(){
 	
 	pDelayedOperations->ProcessInitOperations();
 	
-	pPreloader->PreloadAll(); // DEPRECATED
 	pOptimizerManager->Run( 2000 ); // 4000 // DEPRECATED do this using parallel tasks if required
 	
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
@@ -2547,14 +2540,6 @@ void deoglRenderThread::pCleanUpThread(){
 		}
 		
 		// deprecated
-		if( pEdgeFinder ){
-			delete pEdgeFinder;
-			pEdgeFinder = NULL;
-		}
-		if( pPreloader ){
-			delete pPreloader;
-			pPreloader = NULL;
-		}
 		if( pOptimizerManager ){
 			delete pOptimizerManager;
 			pOptimizerManager = NULL;

@@ -31,7 +31,6 @@
 #include "face/deoglModelFace.h"
 #include "octree/deoglModelOctree.h"
 #include "texture/deoglModelTexture.h"
-#include "../deoglPreloader.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
