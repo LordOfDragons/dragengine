@@ -42,7 +42,6 @@
 
 deoglRCanvasImage::deoglRCanvasImage( deoglRenderThread &renderThread ) :
 deoglRCanvas( renderThread ),
-pImage( NULL ),
 pTCClampMin( 0.0f, 0.0f ),
 pTCClampMax( 1.0f, 1.0f ){
 	LEAK_CHECK_CREATE( renderThread, CanvasImage );
@@ -50,7 +49,6 @@ pTCClampMax( 1.0f, 1.0f ){
 
 deoglRCanvasImage::~deoglRCanvasImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), CanvasImage );
-	SetImage( NULL );
 }
 
 
@@ -59,17 +57,7 @@ deoglRCanvasImage::~deoglRCanvasImage(){
 ///////////////
 
 void deoglRCanvasImage::SetImage( deoglRImage *image ){
-	if( image == pImage ){
-		return;
-	}
-	
-	if( pImage ){
-		pImage->FreeReference();
-	}
 	pImage = image;
-	if( image ){
-		image->AddReference();
-	}
 }
 
 void deoglRCanvasImage::SetTCTransform( const decTexMatrix2 &transform ){

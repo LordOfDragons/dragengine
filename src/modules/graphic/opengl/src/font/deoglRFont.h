@@ -22,13 +22,14 @@
 #ifndef _DEOGLRFONT_H_
 #define _DEOGLRFONT_H_
 
+#include "../texture/deoglRImage.h"
+
 #include <dragengine/deObject.h>
 
 class deoglImage;
 class deoglRenderThread;
 class deFont;
 class deFontGlyph;
-class deoglRImage;
 
 
 
@@ -56,7 +57,7 @@ private:
 	int pLineHeight;
 	bool pIsColorFont;
 	
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	deoglImage *pDelayedImage;
 	
 public:
@@ -95,8 +96,8 @@ public:
 	/** Font is a colorable font. */
 	inline bool GetIsColorFont() const{ return pIsColorFont; }
 	
-	/** Render image or \em NULL if not existing. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	/** Render image or nullptr if not existing. */
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	/*@}*/
 	
 private:

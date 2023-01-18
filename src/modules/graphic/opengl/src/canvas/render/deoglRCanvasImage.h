@@ -23,8 +23,7 @@
 #define _DEOGLRCANVASIMAGE_H_
 
 #include "deoglRCanvas.h"
-
-class deoglRImage;
+#include "../../texture/deoglRImage.h"
 
 
 /**
@@ -32,7 +31,7 @@ class deoglRImage;
  */
 class deoglRCanvasImage : public deoglRCanvas{
 private:
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
@@ -51,10 +50,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Image or \em NULL if not set. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	/** Image or nullptr if not set. */
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
-	/** Set image or \em NULL if not set. */
+	/** Set image or nullptr if not set. */
 	void SetImage( deoglRImage *image );
 	
 	/** Texture coordinate transformation matrix. */

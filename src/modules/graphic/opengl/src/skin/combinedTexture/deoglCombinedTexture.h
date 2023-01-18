@@ -22,11 +22,12 @@
 #ifndef _DEOGLCOMBINEDTEXTURE_H_
 #define _DEOGLCOMBINEDTEXTURE_H_
 
+#include "../../texture/deoglRImage.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglPixelBuffer;
 class deoglRenderThread;
-class deoglRImage;
 class deoglTexture;
 
 
@@ -41,7 +42,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	decColor pColor;
-	deoglRImage *pImages[ 4 ];
+	deoglRImage::Ref pImages[ 4 ];
 	
 	deoglTexture *pTexture;
 	
@@ -72,15 +73,15 @@ public:
 	/** Static color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** Image for component or \em NULL to use the static color component. */
-	deoglRImage *GetImageAt( int component ) const;
+	/** Image for component or nullptr to use the static color component. */
+	const deoglRImage::Ref &GetImageAt( int component ) const;
 	
 	
 	
-	/** Texture or \em NULL if not existing. */
+	/** Texture or nullptr if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** Set texture or \em NULL if not existing. */
+	/** Set texture or nullptr if not existing. */
 	void SetTexture( deoglTexture *texture );
 	
 	
@@ -115,7 +116,7 @@ public:
 	void CalcHashCode();
 	
 	/** Calculate hash code for combination. */
-	static unsigned int CalcHashCodeFor( const decColor &color, deoglRImage *images[ 4 ] );
+	static unsigned int CalcHashCodeFor( const decColor &color, const deoglRImage::Ref *images );
 	
 	
 	

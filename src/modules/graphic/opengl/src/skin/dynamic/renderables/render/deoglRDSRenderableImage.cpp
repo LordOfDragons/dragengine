@@ -26,7 +26,6 @@
 #include "deoglRDSRenderableImage.h"
 #include "../../deoglRDynamicSkin.h"
 #include "../../../../renderthread/deoglRenderThread.h"
-#include "../../../../texture/deoglRImage.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,15 +38,13 @@
 ////////////////////////////
 
 deoglRDSRenderableImage::deoglRDSRenderableImage( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
-pImage( NULL )
+deoglRDSRenderable( dynamicSkin )
 {
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableImage );
 }
 
 deoglRDSRenderableImage::~deoglRDSRenderableImage(){
 	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableImage );
-	pCleanUp();
 }
 
 
@@ -56,19 +53,7 @@ deoglRDSRenderableImage::~deoglRDSRenderableImage(){
 ///////////////
 
 void deoglRDSRenderableImage::SetImage( deoglRImage *image ){
-	if( image == pImage ){
-		return;
-	}
-	
-	if( pImage ){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if( image ){
-		image->AddReference();
-	}
 }
 
 void deoglRDSRenderableImage::PrepareForRender( const deoglRenderPlanMasked * ){
@@ -78,17 +63,5 @@ void deoglRDSRenderableImage::PrepareForRender( const deoglRenderPlanMasked * ){
 }
 
 deoglTexture *deoglRDSRenderableImage::GetRenderTexture(){
-	if( ! pImage ){
-		return NULL;
-	}
-	return pImage->GetTexture();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglRDSRenderableImage::pCleanUp(){
-	SetImage( NULL );
+	return pImage ? pImage->GetTexture() : nullptr;
 }

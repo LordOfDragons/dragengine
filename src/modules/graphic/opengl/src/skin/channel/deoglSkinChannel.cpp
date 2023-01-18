@@ -39,7 +39,6 @@
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../../texture/pixelbuffer/deoglPixelBufferMipMap.h"
 #include "../../texture/deoglImage.h"
-#include "../../texture/deoglRImage.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -99,16 +98,13 @@ pCacheConstrDefSource2( NULL ),
 pCacheConstrVerifySource1( NULL ),
 pCacheConstrVerifySource2( NULL ),
 
-pCombinedImage1( NULL ),
-pCombinedImage2( NULL ),
 pDelayedCombineImage1( NULL ),
 pDelayedCombineImage2( NULL ),
 
 pUniform( true ),
 pDynamic( false ),
 
-pImage( NULL ),
-pImageHeld( false ),
+pImage( nullptr ),
 
 pVideo( NULL ),
 pVideoPlayer( -1 ),
@@ -125,17 +121,6 @@ deoglSkinChannel::~deoglSkinChannel(){
 	
 	if( pCombinedTexture ){
 		pCombinedTexture->RemoveUsage();
-	}
-	
-	if( pCombinedImage1 ){
-		pCombinedImage1->FreeReference();
-	}
-	if( pCombinedImage2 ){
-		pCombinedImage2->FreeReference();
-	}
-	
-	if( pImage && pImageHeld ){
-		pImage->FreeReference();
 	}
 	
 	if( pArrayTexture ){
@@ -174,21 +159,16 @@ deoglSkinChannel::~deoglSkinChannel(){
 void deoglSkinChannel::FinalizeAsyncResLoading(){
 	// called synchronously on main thread
 	
-	if( pImage && ! pImageHeld ){
-		pImage->AddReference();
-		pImageHeld = true;
-	}
+	pHoldImage = pImage; // claim reference in main thread
 	
 	if( pDelayedCombineImage1 ){
 		pCombinedImage1 = pDelayedCombineImage1->GetRImage();
-		pCombinedImage1->AddReference();
-		pDelayedCombineImage1 = NULL;
+		pDelayedCombineImage1 = nullptr;
 	}
 	
 	if( pDelayedCombineImage2 ){
 		pCombinedImage2 = pDelayedCombineImage2->GetRImage();
-		pCombinedImage2->AddReference();
-		pDelayedCombineImage2 = NULL;
+		pDelayedCombineImage2 = nullptr;
 	}
 }
 
@@ -298,22 +278,6 @@ void deoglSkinChannel::SetDynamic( bool dynamic ){
 	pDynamic = dynamic;
 }
 
-// void deoglSkinChannel::SetImage( deoglRImage* image ){
-// 	if( image == pImage ){
-// 		return;
-// 	}
-// 	
-// 	if( pImage ){
-// 		pImage->FreeReference();
-// 	}
-// 	
-// 	pImage = image;
-// 	
-// 	if( image ){
-// 		image->AddReference();
-// 	}
-// }
-
 void deoglSkinChannel::SetVideo( deVideo *video ){
 	pVideo = video;
 }
@@ -340,7 +304,6 @@ const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFor
 		// if shared image exists store it and claim reference during main thread time.
 		// this is done always no matter if the image is build or just used
 		pImage = channelFormat.GetSharedImage();
-		pImageHeld = false;
 	}
 	
 	pInitUniformColor();
@@ -414,9 +377,7 @@ void deoglSkinChannel::ClearCacheData(){
 void deoglSkinChannel::UseSharedImage(){
 	// called in render thread. deleting opengl objects here is fine but using
 	// deoglDelayedOperations results in dead-locking
-	if( ! pImage ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pImage )
 	
 	if( pTexture ){
 		if( pImage->GetSkinUse() ){

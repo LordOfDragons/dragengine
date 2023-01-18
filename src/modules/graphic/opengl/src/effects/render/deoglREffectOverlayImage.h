@@ -24,10 +24,9 @@
 
 #include "deoglREffect.h"
 #include "../../pipeline/deoglPipeline.h"
+#include "../../texture/deoglRImage.h"
 
 #include <dragengine/common/math/decMath.h>
-
-class deoglRImage;
 
 
 /**
@@ -36,7 +35,7 @@ class deoglRImage;
 class deoglREffectOverlayImage : public deoglREffect{
 private:
 	float pTransparency;
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	
 	const deoglPipeline *pPipeline;
 	const deoglPipeline *pPipelineStereo;
@@ -61,10 +60,10 @@ public:
 	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** Image or \em NULL to render nothing. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	/** Image or nullptr to render nothing. */
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
-	/** Set image or \em NULL to render nothing. */
+	/** Set image or nullptr to render nothing. */
 	void SetImage( deoglRImage *image );
 	
 	

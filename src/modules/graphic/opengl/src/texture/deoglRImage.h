@@ -40,6 +40,11 @@ class deImage;
  * Render image.
  */
 class deoglRImage : public deObject{
+public:
+	typedef deTObjectReference<deoglRImage> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -69,12 +74,14 @@ public:
 	/** Create render image. */
 	deoglRImage( deoglRenderThread &renderThread, const deImage &image );
 	
+protected:
 	/** Clean up render image. */
 	virtual ~deoglRImage();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Filename of engine image resource or empty string if manually created. */
@@ -98,28 +105,28 @@ public:
 	
 	
 	/**
-	 * Set pixel or \em NULL if not set.
+	 * Set pixel or nullptr if not set.
 	 * \warning Called during synchronization from main thread only.
 	 */
 	void SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
 	
 	
 	
-	/** Texture or \em NULL. */
+	/** Texture or nullptr. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** Cubemap or \em NULL. */
+	/** Cubemap or nullptr. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
-	/** Array texture or \em NULL if not created yet. */
+	/** Array texture or nullptr if not created yet. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/**
-	 * Set texture or \em NULL.
+	 * Set texture or nullptr.
 	 * 
 	 * For use by skin channel building. Once the texture has been set it should not be
 	 * replaced by a new texture object or texture unit configurations of existing
-	 * skin channels will break. If texture is not NULL the texture parameters have to
+	 * skin channels will break. If texture is not nullptr the texture parameters have to
 	 * be changed instead.
 	 * 
 	 * \warning Has to be called from render thread only.
@@ -127,11 +134,11 @@ public:
 	void SetTexture( deoglTexture *texture );
 	
 	/**
-	 * Set cubemap or \em NULL.
+	 * Set cubemap or nullptr.
 	 * 
 	 * For use by skin channel building. Once the texture has been set it should not be
 	 * replaced by a new texture object or texture unit configurations of existing
-	 * skin channels will break. If texture is not NULL the texture parameters have to
+	 * skin channels will break. If texture is not nullptr the texture parameters have to
 	 * be changed instead.
 	 * 
 	 * \warning Has to be called from render thread only.
@@ -139,11 +146,11 @@ public:
 	void SetCubeMap( deoglCubeMap *cubemap );
 	
 	/**
-	 * Array texture or \em NULL if not created yet.
+	 * Array texture or nullptr if not created yet.
 	 * 
 	 * For use by skin channel building. Once the texture has been set it should not be
 	 * replaced by a new texture object or texture unit configurations of existing
-	 * skin channels will break. If texture is not NULL the texture parameters have to
+	 * skin channels will break. If texture is not nullptr the texture parameters have to
 	 * be changed instead.
 	 * 
 	 * \warning Has to be called from render thread only.
@@ -168,6 +175,8 @@ public:
 	 */
 	void PrepareForRender();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

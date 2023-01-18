@@ -23,6 +23,7 @@
 #define _DEOGLSKINCHANNEL_H_
 
 #include "../deoglSkinPropertyMap.h"
+#include "../../texture/deoglRImage.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -34,7 +35,6 @@ class deoglImage;
 class deoglPixelBuffer;
 class deoglPixelBufferMipMap;
 class deoglRenderThread;
-class deoglRImage;
 class deoglRSkin;
 class deoglSkinTexture;
 class deoglTexture;
@@ -170,8 +170,8 @@ private:
 	
 	decColor pUniformColor;
 	bool pUniformColorMask[ 4 ];
-	deoglRImage *pCombinedImage1;
-	deoglRImage *pCombinedImage2;
+	deoglRImage::Ref pCombinedImage1;
+	deoglRImage::Ref pCombinedImage2;
 	deoglImage *pDelayedCombineImage1;
 	deoglImage *pDelayedCombineImage2;
 	
@@ -179,7 +179,7 @@ private:
 	bool pDynamic;
 	
 	deoglRImage *pImage;
-	bool pImageHeld;
+	deoglRImage::Ref pHoldImage;
 	
 	deVideo *pVideo;
 	int pVideoPlayer;
@@ -240,27 +240,27 @@ public:
 	/** Set texture scaling factor in v direction. */
 	void SetFactorV( float factor );
 	
-	/** Texture or \em NULL if this is not used. */
+	/** Texture or nullptr if this is not used. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** Cube map or \em NULL if this is not used. */
+	/** Cube map or nullptr if this is not used. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
-	/** Array texture or \em NULL if this is not used. */
+	/** Array texture or nullptr if this is not used. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
-	/** Combined texture or \em NULL if not used. */
+	/** Combined texture or nullptr if not used. */
 	inline deoglCombinedTexture *GetCombinedTexture() const{ return pCombinedTexture; }
 	
-	/** Set combined texture or \em NULL if not used. */
+	/** Set combined texture or nullptr if not used. */
 	void SetCombinedTexture( deoglCombinedTexture *combinedTexture );
 	
 	
 	
-	/** Pixel buffer mip map or \em NULL if not existing. */
+	/** Pixel buffer mip map or nullptr if not existing. */
 	inline deoglPixelBufferMipMap *GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
 	
-	/** Set pixel buffer mip map or \em NULL if not existing. */
+	/** Set pixel buffer mip map or nullptr if not existing. */
 	void SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap );
 	
 	/** Texture data is cached. */
@@ -281,7 +281,7 @@ public:
 	/** Set cache identifier. */
 	void SetCacheID( const char *cacheID );
 	
-	/** Cache verify data or \em NULL if absent. */
+	/** Cache verify data or nullptr if absent. */
 	inline const decMemoryFile *GetCacheVerify() const{ return pCacheVerify; }
 	
 	
@@ -304,16 +304,16 @@ public:
 	/** All color components are not static. */
 	bool AllComponentsNotStatic() const;
 	
-	/** First combined image or \em NULL if not existing. */
-	inline deoglRImage *GetCombinedImage1() const{ return pCombinedImage1; }
+	/** First combined image or nullptr if not existing. */
+	inline const deoglRImage::Ref &GetCombinedImage1() const{ return pCombinedImage1; }
 	
-	/** Second combined image or \em NULL if not existing. */
-	inline deoglRImage *GetCombinedImage2() const{ return pCombinedImage2; }
+	/** Second combined image or nullptr if not existing. */
+	inline const deoglRImage::Ref &GetCombinedImage2() const{ return pCombinedImage2; }
 	
-	/** First delayed combined image or \em NULL if not existing. */
+	/** First delayed combined image or nullptr if not existing. */
 	inline deoglImage *GetDelayedCombinedImage1() const{ return pDelayedCombineImage1; }
 	
-	/** Second delayed combined image or \em NULL if not existing. */
+	/** Second delayed combined image or nullptr if not existing. */
 	inline deoglImage *GetDelayedCombinedImage2() const{ return pDelayedCombineImage2; }
 	
 	
@@ -332,21 +332,18 @@ public:
 	
 	
 	
-	/** Image or \em NULL to use the texture stored locally. */
+	/** Image or nullptr to use the texture stored locally. */
 	inline deoglRImage *GetImage() const{ return pImage; }
 	
-	/** Set image or \em NULL to use the texture stored locally. */
-// 	void SetImage( deoglRImage *image );
-	
 	/**
-	 * Video or \em NULL to use the texture stored locally.
+	 * Video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */
 	inline deVideo *GetVideo() const{ return pVideo; }
 	
 	/**
-	 * Set video or \em NULL to use the texture stored locally.
+	 * Set video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */

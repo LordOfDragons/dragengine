@@ -226,10 +226,14 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 	while( combinedTexture ){
 		const decColor &color = combinedTexture->GetColor();
 		
-		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n", ( int )( color.r * 255.0 ),
-			( int )( color.g * 255.0 ), ( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
-			combinedTexture->GetImageAt( 0 ), combinedTexture->GetImageAt( 1 ), combinedTexture->GetImageAt( 2 ),
-			combinedTexture->GetImageAt( 3 ), combinedTexture->GetUsageCount() );
+		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n",
+			( int )( color.r * 255.0 ), ( int )( color.g * 255.0 ),
+			( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 1 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 2 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 3 ),
+			combinedTexture->GetUsageCount() );
 		answer.AppendFromUTF8( text.GetString() );
 		
 		combinedTexture = combinedTexture->GetLLNext();

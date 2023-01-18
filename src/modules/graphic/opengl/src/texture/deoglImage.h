@@ -22,12 +22,13 @@
 #ifndef _DEOGLIMAGE_H_
 #define _DEOGLIMAGE_H_
 
+#include "deoglRImage.h"
+
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicImage.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglPixelBuffer;
-class deoglRImage;
 class deGraphicOpenGl;
 class deImage;
 
@@ -57,7 +58,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deImage &pImage;
 	
-	deoglRImage *pRImage;
+	deoglRImage::Ref pRImage;
 	
 	deMutex pMutex;
 	int pPixelBufferUseCount;
@@ -86,8 +87,8 @@ public:
 	/** Image resource. */
 	inline const deImage &GetImage() const{ return pImage; }
 	
-	/** Render image or \em NULL if not created. */
-	inline deoglRImage *GetRImage() const{ return pRImage; }
+	/** Render image or nullptr if not created. */
+	inline const deoglRImage::Ref &GetRImage() const{ return pRImage; }
 	
 	/**
 	 * Update render thread counterpart if required.

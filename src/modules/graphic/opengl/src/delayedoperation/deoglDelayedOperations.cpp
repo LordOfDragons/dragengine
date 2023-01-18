@@ -104,9 +104,7 @@ pHasSynchronizeOperations( false )
 	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_NOTNULL( sources )
 		pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -163,12 +161,9 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 
 
 void deoglDelayedOperations::AddAsyncResInitSkin( deoglRSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( skin )
 	
 	const deMutexGuard guard( pMutexAsyncResInit );
-	
 	pAsyncResInitSkinList.AddIfAbsent( skin );
 	pHasAsyncResInitOperations = true;
 }
@@ -182,12 +177,9 @@ void deoglDelayedOperations::RemoveAsyncResInitSkin( deoglRSkin *skin ){
 
 
 void deoglDelayedOperations::AddAsyncResInitFont( deoglRFont *font ){
-	if( ! font ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( font )
 	
 	const deMutexGuard guard( pMutexAsyncResInit );
-	
 	pAsyncResInitFontList.AddIfAbsent( font );
 	pHasAsyncResInitOperations = true;
 }
@@ -240,31 +232,24 @@ void deoglDelayedOperations::ProcessInitOperations(){
 
 
 void deoglDelayedOperations::AddInitImage( deoglRImage *image ){
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( image )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitImageList.AddIfAbsent( image );
 	pHasInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveInitImage( deoglRImage *image ){
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitImageList.RemoveIfPresent( image );
 }
 
 
 
 void deoglDelayedOperations::AddInitSkin( deoglRSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( skin )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitSkinList.AddIfAbsent( skin );
 	pHasInitOperations = true;
 }
@@ -278,12 +263,9 @@ void deoglDelayedOperations::RemoveInitSkin( deoglRSkin *skin ){
 
 
 void deoglDelayedOperations::AddInitModel( deoglRModel *model ){
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( model )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitModelList.AddIfAbsent( model );
 	pHasInitOperations = true;
 }
@@ -413,23 +395,17 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 
 
 void deoglDelayedOperations::AddFileWrite( deoglDelayedFileWrite *fileWrite ){
-	if( ! fileWrite ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( fileWrite )
 	
 	const deMutexGuard guard( pMutexSynchronize );
-	
 	pFileWriteList.Add( fileWrite );
 	pHasSynchronizeOperations = true;
 }
 
 void deoglDelayedOperations::AddSaveImage( deoglDelayedSaveImage *saveImage ){
-	if( ! saveImage ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( saveImage )
 	
 	const deMutexGuard guard( pMutexSynchronize );
-	
 	pSaveImageList.Add( saveImage );
 	pHasSynchronizeOperations = true;
 }

@@ -65,17 +65,13 @@ enum eSPEffect{
 ////////////////////////////
 
 deoglREffectOverlayImage::deoglREffectOverlayImage( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread ),
-pImage( NULL )
+deoglREffect( renderThread )
 {
 	LEAK_CHECK_CREATE( renderThread, EffectOverlayImage );
 }
 
 deoglREffectOverlayImage::~deoglREffectOverlayImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectOverlayImage );
-	if( pImage ){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -88,19 +84,7 @@ void deoglREffectOverlayImage::SetTransparency( float transparency ){
 }
 
 void deoglREffectOverlayImage::SetImage( deoglRImage *image ){
-	if( image == pImage ){
-		return;
-	}
-	
-	if( pImage ){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if( image ){
-		image->AddReference();
-	}
 }
 
 

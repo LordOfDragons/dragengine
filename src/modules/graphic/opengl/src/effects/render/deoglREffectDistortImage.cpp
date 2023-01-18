@@ -64,16 +64,13 @@ enum eSPEffect{
 ////////////////////////////
 
 deoglREffectDistortImage::deoglREffectDistortImage( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread ),
-pImage( NULL ){
+deoglREffect( renderThread )
+{
 	LEAK_CHECK_CREATE( renderThread, EffectDistortImage );
 }
 
 deoglREffectDistortImage::~deoglREffectDistortImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectDistortImage );
-	if( pImage ){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -86,19 +83,7 @@ void deoglREffectDistortImage::SetStrength( const decVector2 &strength ){
 }
 
 void deoglREffectDistortImage::SetImage( deoglRImage *image ){
-	if( image == pImage ){
-		return;
-	}
-	
-	if( pImage ){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if( image ){
-		image->AddReference();
-	}
 }
 
 

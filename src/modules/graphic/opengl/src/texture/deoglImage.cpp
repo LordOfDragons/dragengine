@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglImage.h"
-#include "deoglRImage.h"
 #include "pixelbuffer/deoglPixelBuffer.h"
 #include "../deoglBasics.h"
 #include "../deGraphicOpenGl.h"
@@ -47,14 +46,13 @@
 deoglImage::deoglImage( deGraphicOpenGl &ogl, deImage &image ) :
 pOgl( ogl ),
 pImage( image ),
-pRImage( NULL ),
+pRImage( deoglRImage::Ref::New( new deoglRImage( ogl.GetRenderThread(), image ) ) ),
 pPixelBufferUseCount( 0 ),
 pPixelBuffer( NULL ),
 pPixelBufferRImageTexture( NULL ),
 pDirtyTexture( true )
 {
 	try{
-		pRImage = new deoglRImage( ogl.GetRenderThread(), image );
 		pPixelBufferRImageTexture = pCreatePixelBuffer();
 		
 	}catch( const deException & ){
@@ -168,11 +166,6 @@ void deoglImage::pCleanUp(){
 	if( pPixelBufferUseCount > 0 ){
 		pOgl.LogErrorFormat( "Image(%s): pPixelBufferUseCount > 0 (%d)",
 			pImage.GetFilename().GetString(), pPixelBufferUseCount );
-	}
-	
-	if( pRImage ){
-		pRImage->FreeReference();
-		pRImage = NULL;
 	}
 	
 	if( pPixelBufferRImageTexture ){
