@@ -815,7 +815,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 4, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
 	
 	// clean up
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );

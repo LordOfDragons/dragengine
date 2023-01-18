@@ -26,7 +26,11 @@ layout(binding=2, rgba16f) uniform readonly image2D texLight;
 #endif
 
 
-layout( local_size_x=8, local_size_y=8 ) in;
+#ifdef MAP_IRRADIANCE
+	layout( local_size_x=8, local_size_y=8 ) in;
+#else
+	layout( local_size_x=16, local_size_y=16 ) in;
+#endif
 
 
 // NOTE findMSB exists since GLSL 4.0
@@ -66,7 +70,7 @@ const float epsilon = 1e-6;
 // for distance map the probe size is 16x16 instead of 8x8 as with irradiance. to allow using
 // 8x8 work group size also for distance map 4 work groups are used one operating on each
 // quadrant of the full probe. this constant allows for easy tc shifting for each quadrant
-const ivec2 tcQuadrant[4] = ivec2[4]( ivec2( 0 ), ivec2( 8, 0 ), ivec2( 0, 8 ), ivec2( 8 ) );
+//const ivec2 tcQuadrant[4] = ivec2[4]( ivec2( 0 ), ivec2( 8, 0 ), ivec2( 0, 8 ), ivec2( 8 ) );
 
 
 struct sRayData{
@@ -82,7 +86,12 @@ struct sRayData{
 	float rayProbeDistance;
 };
 
-shared sRayData vRayData[ 64 ];  // 4096 bytes
+#ifdef MAP_IRRADIANCE
+	#define RAY_COUNT 64
+#else
+	#define RAY_COUNT 256
+#endif
+shared sRayData vRayData[ RAY_COUNT ];  // 4096 / 16384 bytes
 
 
 void main( void ){
@@ -115,7 +124,7 @@ void main( void ){
 	// tcLocal is the coordinate inside the probe excluding the border
 	
 	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * ( mapProbeSize + 2 ) + ivec2( 2 );
-	ivec2 tcLocal = ivec2( gl_LocalInvocationID ) + tcQuadrant[ gl_WorkGroupID.y ];
+	ivec2 tcLocal = ivec2( gl_LocalInvocationID ); // + tcQuadrant[ gl_WorkGroupID.y ];
 	ivec3 tcSample = ivec3( tcProbe + tcLocal, pGICascade );
 	
 	
@@ -144,11 +153,11 @@ void main( void ){
 	// ray counts per probe can be 16, 32, 64, 128 and 256 . Only the last 3 are multiples
 	// of 64. this requires limiting the count of threads assisting in the cooperative reading
 	
-	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / 64 + 1;
+	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / RAY_COUNT + 1;
 	int rg;
 	
 	for( rg=0; rg<rayGroupCount; rg++ ){
-		int rayFirst = 64 * rg;
+		int rayFirst = RAY_COUNT * rg;
 		
 		// cooperative processing
 		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
@@ -179,7 +188,7 @@ void main( void ){
 		
 		
 		// per invocation processing
-		int rayLimit = min( 64, pGIRaysPerProbe - rayFirst );
+		int rayLimit = min( RAY_COUNT, pGIRaysPerProbe - rayFirst );
 		
 		for( i=0; i<rayLimit; i++ ){
 			/*
