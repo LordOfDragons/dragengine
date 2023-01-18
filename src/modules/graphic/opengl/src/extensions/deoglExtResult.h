@@ -23,7 +23,7 @@
 #define _DEOGLEXTRESULT_H_
 
 /**
- * @brief OpenGL Extensions Result.
+ * OpenGL Extensions Result.
  *
  * Header file containing the result of the opengl extensions. This
  * file has to be included in any source file requiring opengl

@@ -31,7 +31,7 @@ class deoglModelLOD;
 
 
 /**
- * @brief Model LOD Visitor.
+ * Model LOD Visitor.
  * Model visitor calculating the minimum distance of a vertex faces in a model. Only faces
  * inside a small box around the vertex are tested for speed reasons.
  */

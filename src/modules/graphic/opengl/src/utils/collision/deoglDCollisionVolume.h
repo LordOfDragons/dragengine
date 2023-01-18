@@ -35,7 +35,7 @@ class deoglDCollisionVolumeVisitor;
 
 
 /**
- * @brief Base class for collision volumes.
+ * Base class for collision volumes.
  *
  * The collision detection system uses a double dispatch system
  * to determine collisions between various volumes. The first

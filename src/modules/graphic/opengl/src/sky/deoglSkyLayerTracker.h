@@ -29,7 +29,7 @@ class deSkyLayer;
 
 
 /**
- * @brief Sky Layer Tracker.
+ * Sky Layer Tracker.
  * Helper class tracking the state changes of a sky layer using thresholds.
  * The setter methods of this class return true if a new value is more than
  * the matching treshold value apart. The new value is only set in this case.

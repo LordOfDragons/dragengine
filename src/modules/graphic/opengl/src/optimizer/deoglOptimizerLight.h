@@ -41,7 +41,7 @@ class decConvexVolume;
 
 
 /**
- * @brief Light Optimizer.
+ * Light Optimizer.
  * Optimizer for Scene Light objects. The Light Optimizer is able to
  * refine the light volume as well as narrowing down the list of
  * shadow casting faces.

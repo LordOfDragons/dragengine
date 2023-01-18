@@ -31,7 +31,7 @@ class decUnicodeString;
 
 
 /**
- * @brief OpenGL Developer Mode Stats.
+ * OpenGL Developer Mode Stats.
  */
 class deoglDeveloperModeStats{
 private:

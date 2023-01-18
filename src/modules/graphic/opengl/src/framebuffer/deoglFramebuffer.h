@@ -38,7 +38,7 @@ class deErrorTracePoint;
 
 
 /**
- * @brief Framebuffer Object.
+ * Framebuffer Object.
  */
 class deoglFramebuffer{
 private:

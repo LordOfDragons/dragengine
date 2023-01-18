@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Cylinder Shape.
+ * Cylinder Shape.
  */
 class deoglShapeCylinder : public deoglShape{
 public:

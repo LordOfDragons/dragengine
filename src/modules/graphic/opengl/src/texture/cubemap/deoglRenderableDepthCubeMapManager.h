@@ -30,7 +30,7 @@ class deoglRenderableDepthCubeMap;
 
 
 /**
- * @brief Renderable CubeMap Manager.
+ * Renderable CubeMap Manager.
  *
  * Manages renderable cubemaps. Maintains a list of renderable cubemaps build
  * upon demand. Renderable cubemaps once created stay around and can be reused.

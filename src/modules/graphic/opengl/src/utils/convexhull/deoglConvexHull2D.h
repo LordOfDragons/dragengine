@@ -26,7 +26,7 @@
 
 
 /**
- * @brief Clockwise oriented 2D Convex Hull calculator for small numbers of points using gift wrap algorithm.
+ * Clockwise oriented 2D Convex Hull calculator for small numbers of points using gift wrap algorithm.
  */
 class deoglConvexHull2D{
 private:

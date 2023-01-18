@@ -30,7 +30,7 @@ class deoglTexture;
 
 
 /**
- * @brief Debug Font.
+ * Debug Font.
  * OpenGL internal font for debuging purpose. Does not use engine resources except loading an image
  * from file for the time being.
  */

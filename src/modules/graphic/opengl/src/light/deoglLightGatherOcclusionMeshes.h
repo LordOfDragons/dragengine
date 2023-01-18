@@ -31,7 +31,7 @@ class deoglRComponent;
 
 
 /**
- * @brief Light Gather Occlusion Meshes Visitor.
+ * Light Gather Occlusion Meshes Visitor.
  * Visits components in the world containing occlusion meshes adding them to a triangle sorter
  * for later cropping light volumes with it.
  */

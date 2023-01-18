@@ -39,7 +39,7 @@ class deoglVAO;
 
 
 /**
- * @brief OpenGL Deferred Rendering.
+ * OpenGL Deferred Rendering.
  * Manages the framebuffers and render buffers required for deferred rendering.
  */
 class deoglDeferredRendering{

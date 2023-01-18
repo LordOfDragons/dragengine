@@ -37,7 +37,7 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Reflection Renderer.
+ * Reflection Renderer.
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:

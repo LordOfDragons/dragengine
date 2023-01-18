@@ -28,7 +28,6 @@
 
 class deoglCollideList;
 class deoglComponentLOD;
-class deoglDepthTriangleList;
 class deoglFramebuffer;
 class deoglPersistentRenderTask;
 class deoglRComponent;

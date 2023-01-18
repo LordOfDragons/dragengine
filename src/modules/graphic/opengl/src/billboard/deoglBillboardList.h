@@ -27,7 +27,7 @@ class deoglRBillboard;
 
 
 /**
- * @brief Billboard List.
+ * Billboard List.
  * List of pointers to billboards. The ordering of the billboards in the list is
  * not defined and can change when billboards are removed. This allows to
  * remove elements with constant time requirements.

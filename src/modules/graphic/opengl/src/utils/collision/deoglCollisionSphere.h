@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Sphere collision volume.
+ * Sphere collision volume.
  * Defines a collision volume in the shape of a sphere. The
  * sphere is defined by a center point and a radius. The
  * surface of the sphere is considered to be part of the

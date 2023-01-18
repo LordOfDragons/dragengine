@@ -31,7 +31,7 @@ class deoglRenderPlan;
 
 
 /**
- * @brief Shape.
+ * Shape.
  */
 class deoglShape{
 public:

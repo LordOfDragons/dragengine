@@ -30,7 +30,7 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Imposter Billboard.
+ * Imposter Billboard.
  * Stores the textures and other information required for an imposter billboard.
  * Imposter billboards are typically created from skin shader driven objects but
  * can be possibly created from others. An imposter billboard composes of one or

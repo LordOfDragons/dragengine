@@ -28,7 +28,7 @@ class deoglRTLogger;
 
 
 /**
- * @brief Render Task Particles.
+ * Render Task Particles.
  */
 class deoglRenderTaskParticles{
 private:

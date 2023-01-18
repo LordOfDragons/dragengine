@@ -32,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief Retrieves render shapes from dragengine shapes visitor.
+ * Retrieves render shapes from dragengine shapes visitor.
  */
 class deoglVolumeShape : public decShapeVisitor{
 private:

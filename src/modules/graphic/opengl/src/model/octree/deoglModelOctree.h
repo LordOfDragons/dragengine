@@ -32,7 +32,7 @@ class deoglCollisionVolume;
 
 
 /**
- * @brief Model Octree.
+ * Model Octree.
  */
 class deoglModelOctree : public deoglOctree{
 private:

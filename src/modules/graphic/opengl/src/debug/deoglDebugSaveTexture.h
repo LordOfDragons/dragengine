@@ -35,7 +35,7 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Debug Save Texture.
+ * Debug Save Texture.
  * Helper class saving textures of various kinds to files for debugging purpose.
  * All images are stored in the format /&lt;base-path&gt;/&lt;name&gt;_&lt;timestamp&gt;.xxx
  * where xxx is a file extension depending on the texture to be saved. Time-stamp is

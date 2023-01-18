@@ -27,7 +27,7 @@ class deoglOcclusionMesh;
 
 
 /**
- * @brief Occlusion Mesh List.
+ * Occlusion Mesh List.
  * List of pointers to occlusion meshes. The ordering of the occlusion meshes
  * in the list is not defined and can change when occlusion meshes are removed.
  * This allows to remove elements with constant time requirements.

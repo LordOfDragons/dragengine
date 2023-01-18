@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Triangle collision volume.
+ * Triangle collision volume.
  *
  * Defines a collision volume in the shape of a triangle. The
  * triangle is defined by the three corner points. The points

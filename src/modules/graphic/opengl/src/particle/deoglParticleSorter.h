@@ -28,7 +28,7 @@ class deoglRParticleEmitterInstance;
 
 
 /**
- * @brief Particle Sorter.
+ * Particle Sorter.
  */
 class deoglParticleSorter{
 public:

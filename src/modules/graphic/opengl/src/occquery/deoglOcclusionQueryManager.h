@@ -30,7 +30,7 @@ class deoglOcclusionQuery;
 
 
 /**
- * @brief Occlusion Query Manager.
+ * Occlusion Query Manager.
  *
  * Manages occlusion queries. Queries are stored in a greedy fashion
  * therefore not freed once no more used. Upon requesting a new query

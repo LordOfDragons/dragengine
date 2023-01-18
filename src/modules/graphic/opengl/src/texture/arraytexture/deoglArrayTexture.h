@@ -37,7 +37,7 @@ class deoglTexture;
 
 
 /**
- * @brief OpenGL Array Texture.
+ * OpenGL Array Texture.
  * Manages an OpenGL array texture. The texture is resizable and can be created
  * once required. By default the texture is not created. After changing
  * the size the texture is destroyed too. The property flags like mipmapped

@@ -32,7 +32,7 @@ class deoglRComponent;
 
 
 /**
- * @brief Visibility Collect Occlusion Meshes Visitor.
+ * Visibility Collect Occlusion Meshes Visitor.
  * Visits components in the world containing occlusion meshes adding them to a triangle sorter
  * for later cropping convex volume lists with it.
  */

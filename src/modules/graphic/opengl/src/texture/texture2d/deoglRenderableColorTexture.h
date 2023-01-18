@@ -28,7 +28,7 @@ class deoglTexture;
 
 
 /**
- * @brief Renderable Color Texture.
+ * Renderable Color Texture.
  * Stores a renderable texture of any kind. Renderable textures can not be
  * used by more than one entity at the same time. They can also not change
  * the size of format once created. They can though be reused if the entity

@@ -27,7 +27,7 @@ class deoglDOctree;
 
 
 /**
- * @brief Generic Octree Node Visitor.
+ * Generic Octree Node Visitor.
  *
  */
 class deoglDOctreeVisitor{

@@ -37,7 +37,7 @@ class deoglTexUnitsConfig;
 class deoglVAO;
 
 /**
- * @brief Render Task Particles Step.
+ * Render Task Particles Step.
  */
 class deoglRenderTaskParticlesStep{
 public:

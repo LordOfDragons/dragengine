@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Frustum collision volume.
+ * Frustum collision volume.
  *
  * Defines a collision volume in the shape of a view frustum.
  * A view frustum is a pyramid with capped top. Such frustums

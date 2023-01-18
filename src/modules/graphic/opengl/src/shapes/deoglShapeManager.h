@@ -27,7 +27,7 @@ class deoglShape;
 
 
 /**
- * @brief Shape Manager.
+ * Shape Manager.
  */
 class deoglShapeManager{
 private:

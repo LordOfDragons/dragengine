@@ -42,7 +42,7 @@ class deoglShaderParameterBlock;
 
 
 /**
- * @brief Skin Shader.
+ * Skin Shader.
  */
 class deoglSkinShader : public deObject{
 public:

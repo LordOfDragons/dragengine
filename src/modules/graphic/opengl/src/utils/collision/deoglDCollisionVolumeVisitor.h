@@ -34,7 +34,7 @@ class deoglDCollisionFrustum;
 
 
 /**
- * @brief Visitor for collision volumes.
+ * Visitor for collision volumes.
  *
  * This class is provided mainly for easily identifying collision volumes
  * and carrying out actions depending on their type. The collision volume

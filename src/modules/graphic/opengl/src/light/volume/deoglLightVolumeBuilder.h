@@ -31,7 +31,7 @@ class deoglROcclusionMesh;
 
 
 /**
- * @brief Light Volume Builder.
+ * Light Volume Builder.
  */
 class deoglLightVolumeBuilder{
 public:

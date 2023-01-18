@@ -28,7 +28,7 @@ class deoglPixelBufferMipMap;
 
 
 /**
- * @brief Texture Compression.
+ * Texture Compression.
  * Provides support to compress and decompress texture data in pixel buffers.
  */
 class deoglTextureCompression{

@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Prop Field Cluster Generator.
+ * Prop Field Cluster Generator.
  * Generates clusters out of a list of points using a Kd-Tree type data structure.
  */
 class deoglPFClusterGenerator{

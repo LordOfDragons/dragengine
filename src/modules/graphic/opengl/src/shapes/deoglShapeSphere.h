@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Sphere Shape.
+ * Sphere Shape.
  */
 class deoglShapeSphere : public deoglShape{
 public:

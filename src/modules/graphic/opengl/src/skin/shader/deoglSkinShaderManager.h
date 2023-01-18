@@ -33,7 +33,7 @@ class deoglShaderUnitSourceCode;
 
 
 /**
- * @brief Skin Shader Manager.
+ * Skin Shader Manager.
  */
 class deoglSkinShaderManager{
 public:

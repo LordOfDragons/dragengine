@@ -29,7 +29,7 @@ struct oglModelVertex;
 
 
 /**
- * @brief Model LOD mesh texture coordinate set.
+ * Model LOD mesh texture coordinate set.
  */
 class deoglModelLODTexCoordSet{
 public:

@@ -66,7 +66,7 @@ struct oglModelVertex{
 
 
 /**
- * @brief Model LOD Mesh.
+ * Model LOD Mesh.
  */
 class deoglModelLOD{
 public:

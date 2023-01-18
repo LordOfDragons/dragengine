@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Vertex Cache Simulator.
+ * Vertex Cache Simulator.
  * Simulates a FIFO type cache of fixed size.
  */
 class deoglVCSimulator{

@@ -31,7 +31,7 @@ class deoglPointSieveBucket;
 
 
 /**
- * @brief Point Sieve.
+ * Point Sieve.
  *
  * A simple sieve to sort points into a regular grid.
  */

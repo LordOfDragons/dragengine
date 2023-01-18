@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Model Face.
+ * Model Face.
  */
 class deoglModelFace{
 private:

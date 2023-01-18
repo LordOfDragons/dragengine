@@ -26,7 +26,7 @@
 
 
 /**
- * @brief Optimizer.
+ * Optimizer.
  * Optimizers are able to optimize progessively an engine object over time.
  */
 class deoglOptimizer{

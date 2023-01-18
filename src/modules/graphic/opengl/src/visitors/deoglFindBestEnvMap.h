@@ -32,7 +32,7 @@ class deoglEnvironmentMapList;
 
 
 /**
- * @brief Find best environment map world octree visitor.
+ * Find best environment map world octree visitor.
  * Uses as input the position to search the best environment map for. The environment map with the
  * smallest distance to the target position is considered the best. After visiting the found
  * environment map with stored or NULL otherwise if no result has been found.

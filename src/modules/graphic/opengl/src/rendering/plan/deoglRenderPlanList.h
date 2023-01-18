@@ -27,7 +27,7 @@ class deoglRenderPlan;
 
 
 /**
- * @brief Render Plan List.
+ * Render Plan List.
  * List of pointers to render plans. The ordering of the render plans in the list is not defined and can
  * change when render plans are removed. This allows to remove render plans with constant time requirements.
  */

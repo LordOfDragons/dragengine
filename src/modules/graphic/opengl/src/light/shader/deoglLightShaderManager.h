@@ -32,7 +32,7 @@ class deoglShaderUnitSourceCode;
 
 
 /**
- * @brief Light Shader Manager.
+ * Light Shader Manager.
  */
 class deoglLightShaderManager{
 public:

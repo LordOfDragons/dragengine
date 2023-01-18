@@ -29,7 +29,7 @@
 
 
 /**
- * @brief OpenGL Space Partition Tree Node.
+ * OpenGL Space Partition Tree Node.
  * Node of a space partition tree. A node is a k-Tree like data structure
  * hosting up to 2 child nodes. The node can be split along any of the
  * three major axes in half. Nodes can be either in a split or unsplit

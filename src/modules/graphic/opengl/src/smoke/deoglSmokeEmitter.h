@@ -38,7 +38,7 @@ class deSmokeEmitter;
 
 
 /**
- * @brief Smoke Emitter Peer.
+ * Smoke Emitter Peer.
  *
  * Peer for the smoke emitter resource.
  */

@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Pixel Buffer.
+ * Pixel Buffer.
  * Stores image data. Used to transfer pixels from or to an OpenGL texture.
  */
 class deoglPixelBuffer{

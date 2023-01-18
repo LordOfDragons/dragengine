@@ -30,7 +30,7 @@ class deoglDCollisionVolume;
 
 
 /**
- * @brief Collide List Element Visitor.
+ * Collide List Element Visitor.
  * Visits scene elements colliding with a given volume and adds them to the given
  * collide list.
  */

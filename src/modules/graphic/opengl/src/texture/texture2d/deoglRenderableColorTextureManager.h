@@ -28,7 +28,7 @@ class deoglRenderableColorTexture;
 
 
 /**
- * @brief Renderable Color Texture Manager.
+ * Renderable Color Texture Manager.
  * Manages renderable textures. Maintains a list of renderable textures build
  * upon demand. Renderable textures once created stay around and can be reused.
  * A renderable texture is only handed out if the format matches and it is not

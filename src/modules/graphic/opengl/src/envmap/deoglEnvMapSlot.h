@@ -27,7 +27,7 @@ class deoglEnvironmentMap;
 
 
 /**
- * @brief Environment Map Slot.
+ * Environment Map Slot.
  */
 class deoglEnvMapSlot{
 private:

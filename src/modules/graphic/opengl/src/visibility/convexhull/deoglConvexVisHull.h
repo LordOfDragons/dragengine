@@ -33,7 +33,7 @@ class decConvexVolumeList;
 
 
 /**
- * @brief Convex Visibility Hull.
+ * Convex Visibility Hull.
  * Convex hull enclosing a visible area as seen from a point in space. The hull is guaranteed to be not
  * smaller than the visible concave area seen from a point in space. Most of the time the hull is though
  * larger especially if a tight fitting hull would be concave. The hull can be constructed from a convex

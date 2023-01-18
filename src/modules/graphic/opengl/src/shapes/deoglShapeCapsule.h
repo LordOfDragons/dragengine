@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Capsule Shape.
+ * Capsule Shape.
  */
 class deoglShapeCapsule : public deoglShape{
 public:

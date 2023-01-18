@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Box Collision Volume.
+ * Box Collision Volume.
  * 
  * Defines a collision volume in the shape of a box. The box is defined
  * by a position, the length of the extends in each direction ( half-size )

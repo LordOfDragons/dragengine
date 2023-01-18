@@ -29,7 +29,7 @@ class deoglOptimizer;
 
 
 /**
- * @brief Optimizer Manager.
+ * Optimizer Manager.
  * Manages optmimizers. Each optimizer is able to optimize progessively
  * an engine object over time. The Optimizer Manager stores a list of
  * optimizers for different priorities. Every frame the optimizer can

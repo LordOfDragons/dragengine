@@ -32,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief Compiled Shader Program.
+ * Compiled Shader Program.
  * A compiled shader program. Shader programs are compiled from a base code loaded
  * from disk using defines to produce a specialized program.
  */

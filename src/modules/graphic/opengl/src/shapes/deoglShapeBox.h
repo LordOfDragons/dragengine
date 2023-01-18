@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Box Shape.
+ * Box Shape.
  */
 class deoglShapeBox : public deoglShape{
 public:

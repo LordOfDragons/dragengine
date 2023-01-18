@@ -31,7 +31,7 @@ class deoglROcclusionMesh;
 
 
 /**
- * @brief Convex Visibility Hull Builder.
+ * Convex Visibility Hull Builder.
  */
 class deoglConvexVisHullBuilder{
 public:

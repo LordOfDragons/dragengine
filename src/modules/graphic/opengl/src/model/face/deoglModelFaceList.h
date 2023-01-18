@@ -27,7 +27,7 @@ class deoglModelFace;
 
 
 /**
- * @brief Model Face List.
+ * Model Face List.
  * List of pointers to model faces. The ordering of the faces in the
  * list is not defined and can change when faces are removed. This
  * allows to remove faces with constant time requirements. This list

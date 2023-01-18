@@ -28,7 +28,7 @@
 
 
 /**
- * @brief Collection of collision detection routines.
+ * Collection of collision detection routines.
  *
  * Contains a set of collision detection routines used often
  * in a game engine or similar 3D project. Some collision

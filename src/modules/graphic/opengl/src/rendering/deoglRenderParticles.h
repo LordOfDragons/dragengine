@@ -30,7 +30,7 @@ class deoglRenderTaskParticles;
 
 
 /**
- * @brief Render Particles.
+ * Render Particles.
  *
  * Provides support for rendering particles.
  */

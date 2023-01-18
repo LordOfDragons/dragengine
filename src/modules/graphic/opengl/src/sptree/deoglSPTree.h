@@ -32,7 +32,7 @@ class deoglSPTreeNode;
 
 
 /**
- * @brief OpenGL Space Partition Tree.
+ * OpenGL Space Partition Tree.
  * Provides a data structure to partition space into cubes of variable
  * size including connectivity data. For speed and memory reasons the
  * space partition tree is organized in a grid fashion on the base

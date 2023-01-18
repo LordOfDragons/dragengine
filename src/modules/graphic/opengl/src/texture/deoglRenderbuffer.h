@@ -31,7 +31,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * @brief OpenGL Renderbuffer
+ * OpenGL Renderbuffer
  * Manages an opengl renderbuffer
  */
 class deoglRenderbuffer{

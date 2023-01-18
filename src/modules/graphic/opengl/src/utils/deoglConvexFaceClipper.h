@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Convex Face Clipper.
+ * Convex Face Clipper.
  *
  * Stores a convex face and allows to clip it with various planes.
  */

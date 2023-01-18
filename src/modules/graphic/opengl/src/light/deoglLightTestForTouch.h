@@ -32,7 +32,7 @@ class deoglRLight;
 
 
 /**
- * @brief Light Test for touch Visitor
+ * Light Test for touch Visitor
  *
  * Checks for world elements touching a light source.
  */

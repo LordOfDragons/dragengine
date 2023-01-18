@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief Preload OpenGL objects.
+ * Preload OpenGL objects.
  * This class supports preloading various objects so they can be used for rendering. This includes
  * objects which have to be prepared before the first rendering takes place to avoid stalling the
  * gpu driver. This is different from rendering specific preparation routines which can be done

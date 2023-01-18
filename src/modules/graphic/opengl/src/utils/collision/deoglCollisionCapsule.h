@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Capsule collision volume.
+ * Capsule collision volume.
  * Defines a collision volume in the shape of a capsule.
  * The capsule is defined by a half height and two radi
  * one for the top sphere and one for the bottom sphere.

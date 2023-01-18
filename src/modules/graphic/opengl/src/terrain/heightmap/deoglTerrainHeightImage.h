@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Height Image Wrapper.
+ * Height Image Wrapper.
  *
  * Wraps a height image delivering the height value without having to worry about
  * the underlaying bit count of the height image. The image is not held so you

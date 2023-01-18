@@ -30,7 +30,7 @@ class deoglFramebuffer;
 
 
 /**
- * @brief Framebuffer manager.
+ * Framebuffer manager.
  * Manages framebuffers. Hands out framebuffers of a given size creating
  * or reusing framebuffers to keep one framebuffer for each resolution
  * asked for. This avoids slowdown due to changing the resolution of

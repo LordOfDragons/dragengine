@@ -29,7 +29,7 @@ class decBaseFileReader;
 
 
 /**
- * @brief Shader Unit Source Code.
+ * Shader Unit Source Code.
  *
  * Stores the source code of a shader unit program. The shader unit
  * source code can be compiled into a specialized shader unit program

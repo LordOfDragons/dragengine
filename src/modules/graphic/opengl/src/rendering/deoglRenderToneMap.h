@@ -33,7 +33,7 @@ class deoglTexture;
 
 
 /**
- * @brief OpenGL ToneMap Renderer.
+ * OpenGL ToneMap Renderer.
  * Renderer for tone mapping related passes.
  */
 class deoglRenderToneMap : public deoglRenderBase{

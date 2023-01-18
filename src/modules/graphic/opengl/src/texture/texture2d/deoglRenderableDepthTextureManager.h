@@ -30,7 +30,7 @@ class deoglRenderableDepthTexture;
 
 
 /**
- * @brief Renderable Texture Manager.
+ * Renderable Texture Manager.
  *
  * Manages renderable textures. Maintains a list of renderable textures build
  * upon demand. Renderable textures once created stay around and can be reused.

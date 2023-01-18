@@ -34,7 +34,7 @@ class deoglSPBlockUBO;
 
 
 /**
- * @brief Render Particle Lights.
+ * Render Particle Lights.
  * Renders small lights around emissive particles. Particle lights do not cast
  * shadows nor do they affect transparent materials. This way the emissive
  * light of particles is visible without reducing performance too much.

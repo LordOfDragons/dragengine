@@ -30,7 +30,7 @@ class deoglRenderableColorCubeMap;
 
 
 /**
- * @brief Renderable Color Cube Manager.
+ * Renderable Color Cube Manager.
  *
  * Manages renderable cubemaps. Maintains a list of renderable cubemaps build
  * upon demand. Renderable cubemaps once created stay around and can be reused.

@@ -32,7 +32,7 @@ class deoglPixelBuffer;
 
 
 /**
- * @brief Light Boundary Map.
+ * Light Boundary Map.
  * Boundary map used for light boundary box calculation from a shadow map. The boundary map
  * stores a Z-Pyramid of the minimum and maximum boundary of a shadow map. For each lod level
  * in the boundary map an own framebuffer is used.

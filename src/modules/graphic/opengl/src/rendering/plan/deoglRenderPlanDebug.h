@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Render Plan Debug.
+ * Render Plan Debug.
  * Stores debug information for a render plan.
  */
 class deoglRenderPlanDebug{

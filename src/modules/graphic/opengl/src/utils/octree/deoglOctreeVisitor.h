@@ -27,7 +27,7 @@ class deoglOctree;
 
 
 /**
- * @brief Generic Octree Node Visitor.
+ * Generic Octree Node Visitor.
  */
 class deoglOctreeVisitor{
 public:

@@ -36,7 +36,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * @brief Cube Map.
+ * Cube Map.
  */
 class deoglCubeMap{
 public:

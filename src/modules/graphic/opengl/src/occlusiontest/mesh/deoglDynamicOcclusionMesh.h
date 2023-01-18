@@ -38,7 +38,7 @@ class deComponent;
 
 
 /**
- * @brief Occlusion Dynamic Mesh.
+ * Occlusion Dynamic Mesh.
  */
 class deoglDynamicOcclusionMesh{
 public:

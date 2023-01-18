@@ -33,7 +33,7 @@ class deoglSPBlockUBO;
 
 
 /**
- * @brief Developer Mode Tests.
+ * Developer Mode Tests.
  */
 class deoglDeveloperModeTests{
 private:

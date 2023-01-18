@@ -28,7 +28,7 @@ class deoglEnvironmentMap;
 
 
 /**
- * @brief Environment Map Fader
+ * Environment Map Fader
  * Provides support to fade between environment maps while they change. Two environment maps are
  * stored at most each time. The first environment map is the active one. If a different environment
  * map is set it is taken as the fading one. The fading is done over time. Once the fading

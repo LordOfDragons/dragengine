@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief OpenGL Extensions.
+ * OpenGL Extensions.
  * Manages everything related to opengl extensions. Determines which
  * extensions exist on the system as well as fetching functions.
  */

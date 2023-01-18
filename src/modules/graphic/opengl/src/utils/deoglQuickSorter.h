@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Quick Sorter.
+ * Quick Sorter.
  */
 class deoglQuickSorter{
 private:

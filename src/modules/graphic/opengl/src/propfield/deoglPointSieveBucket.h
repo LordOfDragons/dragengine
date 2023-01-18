@@ -30,7 +30,7 @@
 
 
 /**
- * @brief Point Sieve Bucket.
+ * Point Sieve Bucket.
  *
  * Bucket in a point sieve storing indices of objects dropped into it.
  */

@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Cylinder Collision Volume.
+ * Cylinder Collision Volume.
  *
  * Defines a collision volumed in the shape of a cylinder.
  * The cylinder is defined by a half height and two radi

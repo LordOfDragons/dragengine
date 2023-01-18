@@ -40,7 +40,7 @@ class deoglPipeline;
 
 
 /**
- * @brief Occlusion Renderer.
+ * Occlusion Renderer.
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
