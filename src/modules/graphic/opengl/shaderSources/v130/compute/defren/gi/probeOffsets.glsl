@@ -166,7 +166,7 @@ void main( void ){
 				// we can not use continue here to skip the loop run
 				
 				#ifdef WITH_RAY_CACHE
-					vec3 rayDirection = pGIRayDirection[ gl_LocalInvocationIndex ] * rayDistance;
+					vec3 rayDirection = pGIRayDirection[ rayIndex ] * rayDistance;
 					vec3 hitNormal = vec3( imageLoad( texCacheNormal, rayTC ) );
 				#else
 					vec3 rayDirection = vec3( rayPosition ) - probePosition;
