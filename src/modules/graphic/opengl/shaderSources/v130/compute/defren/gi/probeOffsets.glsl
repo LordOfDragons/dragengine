@@ -1,7 +1,6 @@
 precision highp float;
 precision highp int;
 
-#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/probe_flags.glsl"
@@ -64,19 +63,6 @@ shared sRayData vRayData[ 64 ];
 #define frontfaceCount counts.y
 #define backfaceCount counts.z
 
-
-// 0: [0]+=[1],  [2]+=[3],   ...,        [62]+=[63]
-// 1: [0]+=[2],  [4]+=[6],   ...,        [60]+=[62]
-// 2: [0]+=[4],  [8]+=[12],  ...,        [56]+=[60]
-// 3: [0]+=[8],  [16]+=[24], [32]+=[40], [48]+=[56]
-// 4: [0]+=[16], [32]+=[48]
-// 5: [0]+=[32]
-
-const uvec3 combineParamsMul[5] = uvec3[5](
-	uvec3( 0, 1, 1 ), uvec3( 0, 4, 4 ), uvec3( 0, 8, 8 ), uvec3( 0, 16, 16 ), uvec3( 0, 32, 32 ) );
-
-const uvec3 combineParamsAdd[5] = uvec3[5](
-	uvec3( 32, 0, 1 ), uvec3( 16, 0, 2 ), uvec3( 8, 0, 4 ), uvec3( 4, 0, 8 ), uvec3( 2, 0, 16 ) );
 
 void combineRays( in uvec3 params ){
 	if( gl_LocalInvocationIndex < params.x ){
@@ -231,13 +217,11 @@ void main( void ){
 		
 		
 		// per invocation processing. combine all results
-		for( i=0; i<5; i++ ){
-			combineRays( combineParamsMul[ i ] * uvec3( gl_LocalInvocationIndex ) + combineParamsAdd[ i ] );
+		for( i=0; i<combineParams64Count; i++ ){
+			combineRays( combineParams64Mul[ i ] * uvec3( gl_LocalInvocationIndex ) + combineParams64Add[ i ] );
 			barrier();
 		}
-		
-		// [0]+=[32]
-		combineRays( uvec3( 1, 0, 32 ) );
+		combineRays( combineParams64Last );
 		
 		// apply. this does not require invocation masking since we use only invoc[0] in the end
 		counts += vRayData[ 0 ].counts;

@@ -1,7 +1,6 @@
 precision highp float;
 precision highp int;
 
-#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/probe_flags.glsl"
@@ -33,7 +32,7 @@ void main( void ){
 	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2;
 	ivec2 rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
 	
-	vec3 probePosition = pGIProbePosition[ index ].xyz;
+	vec3 probePosition = vec3( pGIProbePosition[ index ] );
 	
 	// determine if front face hit
 	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / 64 + 1;
