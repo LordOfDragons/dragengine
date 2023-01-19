@@ -99,9 +99,6 @@ pCameraForceToneMapAdaptionCount( 0 ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
-pFBOProbeIrradiance( renderThread, false ),
-pFBOProbeDistance( renderThread, false ),
-pFBOProbeOffset( renderThread, false ),
 pClearMaps( true ),
 pProbesHaveMoved( false ),
 
@@ -701,76 +698,50 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		return;
 	}
 	
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	
 	if( ! pTexProbeIrradiance.GetTexture() ){
-		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
-		
 		pTexProbeIrradiance.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
-		pTexProbeIrradiance.SetSize( width, height, pCascadeCount );
+		pTexProbeIrradiance.SetSize( ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2,
+			( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2, pCascadeCount );
 		pTexProbeIrradiance.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeIrradiance );
-		pFBOProbeIrradiance.DetachAllImages();
-		pFBOProbeIrradiance.AttachColorArrayTexture( 0, &pTexProbeIrradiance );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeIrradiance.Verify();
 	}
 	
 	if( ! pTexProbeDistance.GetTexture() ){
-		const int width = ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
-		const int height = ( pSizeTexDistance + 2 ) * pProbeCount.z + 2;
-		
 		pTexProbeDistance.SetFBOFormat( 2, true );
-		pTexProbeDistance.SetSize( width, height, pCascadeCount );
+		pTexProbeDistance.SetSize( ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2,
+			( pSizeTexDistance + 2 ) * pProbeCount.z + 2, pCascadeCount );
 		pTexProbeDistance.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
-		pFBOProbeDistance.DetachAllImages();
-		pFBOProbeDistance.AttachColorArrayTexture( 0, &pTexProbeDistance );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeDistance.Verify();
 	}
 	
 	if( ! pTexProbeOffset.GetTexture() ){
-		const int width = pProbeCount.x * pProbeCount.y;
-		const int height = pProbeCount.z;
-		
 		pTexProbeOffset.SetFBOFormat( 4, true );
-		pTexProbeOffset.SetSize( width, height, pCascadeCount );
+		pTexProbeOffset.SetSize( pProbeCount.x * pProbeCount.y, pProbeCount.z, pCascadeCount );
 		pTexProbeOffset.CreateTexture();
-		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
-		pFBOProbeOffset.DetachAllImages();
-		pFBOProbeOffset.AttachColorArrayTexture( 0, &pTexProbeOffset );
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		pFBOProbeOffset.Verify();
 	}
 	
 	if( pClearMaps ){
-		pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
+		deoglPixelBuffer::Ref pixbuf;
+		pClearMaps = false;
 		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeIrradiance );
-		const GLfloat clearIrradiance[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearIrradiance[ 0 ] ) );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
+			pTexProbeIrradiance.GetWidth(), pTexProbeIrradiance.GetHeight(),
+			pTexProbeIrradiance.GetLayerCount() ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTexProbeIrradiance.SetPixels( pixbuf );
 		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat2,
+			pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
+			pTexProbeDistance.GetLayerCount() ) );
 		const GLfloat maxProbeDistance = pCascades[ pCascadeCount - 1]->GetMaxProbeDistance();
-		const GLfloat clearDistance[ 4 ] = { maxProbeDistance, maxProbeDistance,
-			maxProbeDistance, maxProbeDistance * maxProbeDistance };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
+		pixbuf->SetToFloatColor( maxProbeDistance, maxProbeDistance,
+			maxProbeDistance, maxProbeDistance * maxProbeDistance );
+		pTexProbeDistance.SetPixels( pixbuf );
 		
-		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
-		const GLfloat clearOffset[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearOffset[ 0 ] ) );
+		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
+			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(),
+			pTexProbeOffset.GetLayerCount() ) );
+		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
+		pTexProbeOffset.SetPixels( pixbuf );
 	}
-	
-	pClearMaps = false;
 }
 
 void deoglGIState::pPrepareProbeVBO(){

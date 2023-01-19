@@ -96,9 +96,6 @@ private:
 	deoglArrayTexture pTexProbeIrradiance;
 	deoglArrayTexture pTexProbeDistance;
 	deoglArrayTexture pTexProbeOffset;
-	deoglFramebuffer pFBOProbeIrradiance;
-	deoglFramebuffer pFBOProbeDistance;
-	deoglFramebuffer pFBOProbeOffset;
 	bool pClearMaps;
 	deoglSPBlockSSBO::Ref pPBProbeDynamicStates;
 	deoglSPBlockSSBO::Ref pPBProbeOffsets;
@@ -236,15 +233,6 @@ public:
 	/** Probe offset texture. */
 	inline deoglArrayTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
 	inline const deoglArrayTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
-	
-	/** Probe fbo irradiance. */
-	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
-	
-	/** Probe fbo distance. */
-	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
-	
-	/** Probe offset fbo. */
-	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
 	
 	/** Probe dynamic states parameter block. */
 	inline const deoglSPBlockSSBO::Ref &GetPBProbeDynamicStates() const{ return pPBProbeDynamicStates; }

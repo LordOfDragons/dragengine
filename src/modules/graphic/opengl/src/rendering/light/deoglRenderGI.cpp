@@ -400,9 +400,7 @@ deoglRenderGI::~deoglRenderGI(){
 
 void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if( ! giState ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( giState )
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.TraceRays" );
@@ -718,9 +716,7 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 
 void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if( ! giState  ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( giState  )
 	
 	deoglGICascade &cascade = giState->GetActiveCascade();
 	if( ! cascade.HasClearProbes() ){
