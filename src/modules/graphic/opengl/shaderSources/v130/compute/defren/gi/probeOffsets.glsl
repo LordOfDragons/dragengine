@@ -48,29 +48,46 @@ ivec3 giGridLocalToShift( in ivec3 local ){
 }
 
 
-void main( void ){
-	int index = int( gl_GlobalInvocationID.x );
+struct sRayData{
+	#ifdef WITH_RAY_CACHE
+		vec3 rayDirection;
+		float rayDistance;
+	#else
+		vec4 rayPosition; // position, distance
+		
+		vec3 rayDirection;
+	#endif
 	
-	if( index >= pGIProbeCount ){
-		return;
-	}
+	vec3 hitNormal;
+	float distToSurface;
+	
+	vec3 moveProbe1;
+	vec3 moveProbe2;
+	vec3 moveProbe3;
+};
+
+shared sRayData vRayData[ 64 ];  // 5120, 6144
+
+
+void main( void ){
+	int index = int( gl_WorkGroupID.x );
 	
 	
 	// parameters
 	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2;
-	ivec2 rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
 	
 	vec3 probePosition = pGIProbePosition[ index ].xyz;
 	
 	ivec3 probeCoord = probeIndexToGridCoord( giTraceProbeProbeIndex( index ) );
-	ivec2 texCoord = ivec2( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z );
+	
+	#ifdef WITH_RAY_CACHE
+		ivec2 rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
+	#else
+		ivec2 rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
+	#endif
 	
 	
 	// calculate probe offset
-	#ifdef WITH_RAY_CACHE
-		rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
-	#endif
-	
 	float closestFrontfaceDistance = 10000;
 	float frontfaceCount = 0;
 	float backfaceCount = 0;
@@ -93,82 +110,111 @@ void main( void ){
 	// closest back face and applying the offset only if it is the closest.
 	float closestBackDistance = 10000;
 	vec3 closestBackOffset = vec3( 10000 ); // very large to force disable if no good hit found
-	int i;
 	
-	for( i=0; i<pGIRaysPerProbe; i++ ){
-		#ifdef WITH_RAY_CACHE
-			ivec3 rayTC = ivec3( rayOffset + ivec2( i, 0 ), pGICascade );
-		#else
-			ivec2 rayTC = rayOffset + ivec2( i, 0 );
-		#endif
+	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / 64 + 1;
+	int rg, i;
+	
+	for( rg=0; rg<rayGroupCount; rg++ ){
+		int rayFirst = 64 * rg;
 		
-		#ifdef WITH_RAY_CACHE
-			float rayDistance = imageLoad( texCacheDistance, rayTC ).r;
-		#else
-			vec4 rayPosition = imageLoad( texPosition, rayTC ); // position, distance
-			#define rayDistance rayPosition.w
-		#endif
+		// cooperative processing
+		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
 		
-		if( rayDistance >= 9999 ){
-			continue; // ray misses. do not move
+		barrier();
+		
+		if( rayIndex < pGIRaysPerProbe ){
+			#ifdef WITH_RAY_CACHE
+				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
+				vRayData[ gl_LocalInvocationIndex ].rayDistance = imageLoad( texCacheDistance, rayTC ).r;
+				vRayData[ gl_LocalInvocationIndex ].hitNormal = imageLoad( texCacheNormal, rayTC ).xyz;
+				
+				vRayData[ gl_LocalInvocationIndex ].rayDirection = pGIRayDirection[ gl_LocalInvocationIndex ]
+					* vRayData[ gl_LocalInvocationIndex ].rayDistance;
+				
+				#define RAY_DISTANCE vRayData[ gl_LocalInvocationIndex ].rayDistance
+				
+			#else
+				ivec2 rayTC = rayOffset + ivec2( rayIndex, 0 );
+				vRayData[ gl_LocalInvocationIndex ].rayPosition = imageLoad( texPosition, rayTC ); // position, distance
+				vRayData[ gl_LocalInvocationIndex ].hitNormal = imageLoad( texNormal, rayTC ).xyz;
+				
+				vRayData[ gl_LocalInvocationIndex ].rayDirection =
+					vRayData[ gl_LocalInvocationIndex ].rayPosition.xyz - probePosition;
+				
+				#define RAY_DISTANCE vRayData[ gl_LocalInvocationIndex ].rayPosition.w
+			#endif
+			
+			vRayData[ gl_LocalInvocationIndex ].distToSurface = dot( vRayData[ gl_LocalInvocationIndex ].hitNormal,
+				vRayData[ gl_LocalInvocationIndex ].rayDirection );
+			
+			vRayData[ gl_LocalInvocationIndex ].moveProbe1 =
+				vRayData[ gl_LocalInvocationIndex ].hitNormal * pGIMoveMinDistToSurface;
+			
+			vRayData[ gl_LocalInvocationIndex ].moveProbe2 = vRayData[ gl_LocalInvocationIndex ].rayDirection
+				* ( 1.0 - pGIMoveMinDistToSurface / RAY_DISTANCE );
+			
+			vRayData[ gl_LocalInvocationIndex ].moveProbe3 = vRayData[ gl_LocalInvocationIndex ].rayDirection
+				+ vRayData[ gl_LocalInvocationIndex ].hitNormal * 0.05; //0.01;
 		}
 		
-		#ifdef WITH_RAY_CACHE
-			vec3 rayDirection = pGIRayDirection[ i ] * rayDistance;
-			vec3 hitNormal = imageLoad( texCacheNormal, rayTC ).xyz;
-		#else
-			vec3 rayDirection = rayPosition.xyz - probePosition;
-			vec3 hitNormal = imageLoad( texNormal, rayTC ).xyz;
-		#endif
+		barrier();
 		
-		float distToSurface = dot( hitNormal, rayDirection );
 		
-		if( distToSurface < 0 ){
-			frontfaceCount += 1;
-			closestFrontfaceDistance = min( closestFrontfaceDistance, rayDistance );
+		// per invocation processing
+		int rayLimit = min( 64, pGIRaysPerProbe - rayFirst );
+		
+		for( i=0; i<rayLimit; i++ ){
+			if( RAY_DISTANCE >= 9999 ){
+				continue; // ray misses. do not move
+			}
 			
-			if( rayDistance >= pGIMoveMinDistToSurface ){
-				continue; // far enough to have no influence
+			if( vRayData[ i ].distToSurface < 0 ){
+				frontfaceCount += 1;
+				closestFrontfaceDistance = min( closestFrontfaceDistance, RAY_DISTANCE );
 				
-			}else if( rayDistance < 0.001 ){
-				// at surface. move along normal
-				probeOffset += hitNormal * pGIMoveMinDistToSurface;
+				if( RAY_DISTANCE >= pGIMoveMinDistToSurface ){
+					continue; // far enough to have no influence
+					
+				}else if( RAY_DISTANCE < 0.001 ){
+					// at surface. move along normal
+					probeOffset += vRayData[ i ].moveProbe1;
+					
+				}else{
+					// move back on ray until pGIMoveMinDistToSurface distance
+					// offset = rayDirection - normalize(rayDirection) * pGIMoveMinDistToSurface
+					// offset = normalize(rayDirection) * (rayLength - pGIMoveMinDistToSurface)
+					// offset = rayDirection / rayLength * (rayLength - pGIMoveMinDistToSurface)
+					// offset = rayDirection * ((rayLength - pGIMoveMinDistToSurface) / rayLength)
+					probeOffset += vRayData[ i ].moveProbe2;
+				}
 				
 			}else{
-				// move back on ray until pGIMoveMinDistToSurface distance
-				// offset = rayDirection - normalize(rayDirection) * pGIMoveMinDistToSurface
-				// offset = normalize(rayDirection) * (rayLength - pGIMoveMinDistToSurface)
-				// offset = rayDirection / rayLength * (rayLength - pGIMoveMinDistToSurface)
-				// offset = rayDirection * ((rayLength - pGIMoveMinDistToSurface) / rayLength)
-				probeOffset += rayDirection * ( 1 - pGIMoveMinDistToSurface / rayDistance );
-			}
-			
-		}else{
-			backfaceCount += 1;
-			
-			if( rayDistance < closestBackDistance ){
-				// the first version moves quite a distance to the other side of the face.
-				// especially with highest cascades this can result in probes not moving
-				// to the front side because they end up outside the allowed range. by using
-				// a small distance in front of the face allows these probes to move.
-				// the next update step will push the probe as far away as possible.
-				// 
-				// an alternative approach would be to calculate the amount of distance the
-				// probe can move to the front side to stay inside the allowed range and then
-				// to use the smaller value of this distance and pGIMoveMinDistToSurface
-				//vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
-				vec3 direction = rayDirection + hitNormal * 0.05; //0.01;
+				backfaceCount += 1;
 				
-				if( length( ( prevOffset + direction ) * moveMaxOffsetFactor ) < 1 ){
-					// consider backface ray only if not leaving allowed area
-					closestBackOffset = direction;
-					closestBackDistance = rayDistance;
+				if( RAY_DISTANCE < closestBackDistance ){
+					// the first version moves quite a distance to the other side of the face.
+					// especially with highest cascades this can result in probes not moving
+					// to the front side because they end up outside the allowed range. by using
+					// a small distance in front of the face allows these probes to move.
+					// the next update step will push the probe as far away as possible.
+					// 
+					// an alternative approach would be to calculate the amount of distance the
+					// probe can move to the front side to stay inside the allowed range and then
+					// to use the smaller value of this distance and pGIMoveMinDistToSurface
+					//vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
+					
+					if( length( ( prevOffset + vRayData[ i ].moveProbe3 ) * moveMaxOffsetFactor ) < 1 ){
+						// consider backface ray only if not leaving allowed area
+						closestBackOffset = vRayData[ i ].moveProbe3;
+						closestBackDistance = RAY_DISTANCE;
+					}
 				}
 			}
+			
+			countOffsets += 1;
 		}
-		
-		countOffsets += 1;
 	}
+	
 	
 	bool assumeInGeometry = backfaceCount / float( pGIRaysPerProbe ) > 0.25;
 	
@@ -264,6 +310,9 @@ void main( void ){
 // 	probeOffset = vec3( 0 );
 // 	probeFlags = uint( pGIProbePosition[ index ].w );
 	
-	pProbeOffset[ index ].offset = probeOffset;
-	pProbeOffset[ index ].flags = probeFlags;
+	// write probe parameters. this has to be done only one invocation
+	if( gl_LocalInvocationIndex == 0 ){
+		pProbeOffset[ index ].offset = probeOffset;
+		pProbeOffset[ index ].flags = probeFlags;
+	}
 }

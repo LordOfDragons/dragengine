@@ -899,8 +899,7 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	}
 	
 	
-	// calculate dynamic states. these are stored in a temporary SSBO to keep shaders
-	// smaller and thus faster
+	// calculate dynamic states into temporary SSBO to reduce shared memory usage
 	pPipelineProbeDynamicStates->Activate();
 	
 	pActivateGIUBOs();
@@ -916,14 +915,7 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	
-	// calculate new offset and state. it looks strange what two VBO are written to with the
-	// exact same content. this is due to a strange performance observation. if the VBO is
-	// written here and then readback during the next frame update no stalling happens.
-	// if the same VBO is used for input to the move probe shader later on (a read-only use)
-	// then the readback stalls horribly again although only an additional read happened in
-	// a shader. by using two VBO written with the same result one is left untouched for the
-	// next frame update read back to avoid stalling while the other is used to move the
-	// probes later on where it does not hurt the read back. GPU performance can be funny
+	// calculate new offset and state
 	pPipelineProbeOffset->Activate();
 	
 	pActivateGIUBOs();
@@ -937,7 +929,7 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	giState->GetPBProbeOffsets()->Activate();
 	giState->GetPBProbeDynamicStates()->Activate( 1 );
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( cascade.GetUpdateProbeCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	giState->GetPBProbeDynamicStates()->Deactivate( 1 );
