@@ -19,6 +19,8 @@ precision highp int;
 	layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
 #endif
 
+layout(binding=4, rgba16f) uniform writeonly image2DArray texProbeOffsets;
+
 
 struct sProbeOffset {
 	vec3 offset;
@@ -328,7 +330,12 @@ void main( void ){
 	
 	// write probe parameters. this has to be done by exactly one invocation
 	if( gl_LocalInvocationIndex == 0 ){
+		// store probe offset and flags for reading back by the CPU
 		pProbeOffset[ index ].offset = probeOffset;
 		pProbeOffset[ index ].flags = probeFlags;
+		
+		// store probe offset and flags for rendering use
+		imageStore( texProbeOffsets, ivec3( pGIGridProbeCount.x * probeCoord.y + probeCoord.x,
+			probeCoord.z, pGICascade ), vec4( probeOffset, probeFlags ) );
 	}
 }

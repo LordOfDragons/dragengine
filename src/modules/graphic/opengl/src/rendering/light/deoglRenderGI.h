@@ -46,7 +46,6 @@ private:
 	const deoglPipeline *pPipelineUpdateProbeDistance;
 	const deoglPipeline *pPipelineClearProbeIrradiance;
 	const deoglPipeline *pPipelineClearProbeDistance;
-	const deoglPipeline *pPipelineMoveProbes;
 	const deoglPipeline *pPipelineProbeDynamicStates;
 	const deoglPipeline *pPipelineProbeOffset;
 	const deoglPipeline *pPipelineProbeExtends;
@@ -116,9 +115,6 @@ public:
 	
 	/** Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );
-	
-	/** Move probes. */
-	void MoveProbes( deoglRenderPlan &plan );
 	
 	/** Probe offset. */
 	void ProbeOffset( deoglRenderPlan &plan );

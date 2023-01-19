@@ -235,19 +235,6 @@ deoglRenderLightBase( renderThread )
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		
-		// move probes
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Move Probes" );
-		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-			defines.SetDefines( "WITH_RAY_CACHE" );
-		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineMoveProbes = pipelineManager.GetWith( pipconf );
-		defines.RemoveDefine( "WITH_RAY_CACHE" );
-		
-		
 		// probe dynamic states
 		pipconf.Reset();
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
@@ -836,48 +823,6 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	}
 }
 
-void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
-	deoglGIState * const giState = plan.GetUpdateGIState();
-	if( ! giState ){
-		return;
-	}
-	
-	const deoglGICascade &cascade = giState->GetActiveCascade();
-	if( cascade.GetUpdateProbeCount() == 0 ){
-		return;
-	}
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const deoglDebugTraceGroup debugTrace( renderThread, "GI.MoveProbes" );
-	
-	if( pDebugInfoGI->GetVisible() ){
-		DebugTimer1Reset( plan, true );
-	}
-	
-	// update offset texture with calculated offset and state
-	pPipelineMoveProbes->Activate();
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	SetViewport( giState->GetTextureProbeOffset().GetSize() );
-	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
-	
-	pActivateGIUBOs();
-	giState->GetPBProbeOffsets()->ActivateUBO( 5 );
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
-	
-	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
-	
-	// clean up
-	defren.ActivatePostProcessFBO( true );
-	
-	if( pDebugInfoGI->GetVisible() ){
-		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
-	}
-}
-
 void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
 	if( ! giState ){
@@ -926,6 +871,8 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 		ismgr.Enable( 3, rayCache.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
 	}
 	
+	ismgr.Enable( 4, giState->GetTextureProbeOffset(), 0, deoglImageStageManager::eaWrite );
+	
 	giState->GetPBProbeOffsets()->Activate();
 	giState->GetPBProbeDynamicStates()->Activate( 1 );
 	
@@ -934,6 +881,8 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	
 	giState->GetPBProbeDynamicStates()->Deactivate( 1 );
 	giState->GetPBProbeOffsets()->Deactivate();
+	
+	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
 	
 	
 	// clean up
