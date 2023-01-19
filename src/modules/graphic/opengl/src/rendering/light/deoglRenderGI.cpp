@@ -205,7 +205,7 @@ deoglRenderLightBase( renderThread )
 		
 		// clear probes
 		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
 		defines.SetDefines( "MAP_IRRADIANCE" );
@@ -729,42 +729,38 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.ClearProbes" );
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
 	}
 	
-	pPipelineClearProbeIrradiance->Activate();
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	
 	giState->PrepareUBOClearProbes();
 	
 	// clear probes: irradiance map
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
+	pPipelineClearProbeIrradiance->Activate();
 	
-	SetViewport( giState->GetTextureProbeIrradiance().GetSize() );
+	ismgr.DisableAllStages();
+	ismgr.Enable( 0, giState->GetTextureProbeIrradiance(), 0, deoglImageStageManager::eaWrite );
 	
 	pActivateGIUBOs();
 	giState->GetUBOClearProbes().Activate();
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( giState->GetRealProbeCount(), 1, 1 ) );
 	
 	// clear probes: distance map
 	pPipelineClearProbeDistance->Activate();
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeDistance() );
 	
-	SetViewport( giState->GetTextureProbeDistance().GetSize() );
+	ismgr.Enable( 0, giState->GetTextureProbeDistance(), 0, deoglImageStageManager::eaWrite );
 	
 	pActivateGIUBOs();
 	giState->GetUBOClearProbes().Activate();
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( giState->GetRealProbeCount(), 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );
 	
 	// clean up
 	cascade.ClearClearProbes();
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Sample( plan, *pDebugInfoGIClearProbes, true );
@@ -812,9 +808,9 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
 	
 	// clean up
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
 	
 	ismgr.DisableAllStages();
 	
