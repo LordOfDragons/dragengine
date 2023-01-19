@@ -71,20 +71,22 @@ void main( void ){
 		if( gl_LocalInvocationIndex < 8 ){
 			vFrontFaceCount[ offset1.x ] += vFrontFaceCount[ offset2.x ];
 		}
+		barrier();
 		
 		// [0]+=[2], [4]+=[6], [8]+=[10], [12]+=[14]
 		if( gl_LocalInvocationIndex < 4 ){
 			vFrontFaceCount[ offset1.y ] += vFrontFaceCount[ offset2.y ];
 		}
+		barrier();
 		
 		// [0]+=[4], [8]+=[12]
 		if( gl_LocalInvocationIndex < 2 ){
 			vFrontFaceCount[ offset1.z ] += vFrontFaceCount[ offset2.z ];
 		}
+		barrier();
 		
 		// [0]+=[8] and update frontFaceCount. we have to make sure all invocations exit
 		// the shader but only 1 updates the buffer
-		barrier();
 		
 		if( any( notEqual( vFrontFaceCount[ 0 ] + vFrontFaceCount[ 8 ], uvec4( 0 ) ) ) ){
 			// front face hit inside required range
