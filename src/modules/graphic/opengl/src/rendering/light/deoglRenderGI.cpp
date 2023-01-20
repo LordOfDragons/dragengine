@@ -172,6 +172,12 @@ deoglRenderLightBase( renderThread )
 		pPipelineResizeMaterials = pipelineManager.GetWith( pipconf );
 		
 		
+		// clear trace rays
+		pipconf.Reset();
+		pipconf.SetType( deoglPipelineConfiguration::etCompute );
+		pipconf.SetShader( renderThread, shaderManager.GetSourcesNamed( "DefRen GI Clear Trace Rays" ), defines );
+		pPipelineClearTraceRays = pipelineManager.GetWith( pipconf );
+		
 		// trace rays
 		pipconf.Reset();
 		pipconf.SetMasks( true, true, true, true, false );
@@ -436,9 +442,11 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		}
 		
 		deoglDebugTraceGroup debugTraceCacheTrace( renderThread, "GI.TraceRays.CacheTraceRays" );
+		deoglGIRayCache &rayCache = giState->GetRayCache();
+		pClearTraceRays( plan.GetUpdateGIState()->GetSampleImageSize() );
+		
 		pPipelineTraceRaysCache->Activate();
 		pSharedTraceRays( plan );
-		pClearTraceRays();
 		pActivateGIUBOs();
 		pInitTraceTextures( bvh );
 		
@@ -446,7 +454,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		// copy traced rays to cache
 		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
-		deoglGIRayCache &rayCache = giState->GetRayCache();
 		pPipelineCopyRayCache->Activate();
 		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
 		
@@ -489,7 +496,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	RenderMaterials( plan, bvh.GetRenderTaskMaterial() );
 	pSharedTraceRays( plan );
-	pClearTraceRays();
+	pClearTraceRays( plan.GetUpdateGIState()->GetSampleImageSize() );
 	
 	#ifdef GI_USE_RAY_CACHE
 		deoglDebugTraceGroup debugTrace3( renderThread, "GI.TraceRays.RestoreCache" );
@@ -516,9 +523,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.EnableArrayTexture( 12, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
 	#endif
 	
-	#ifdef GI_RENDERDOC_DEBUG
-		SetViewport( 512, 256 );
-	#endif
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	// clean up
@@ -1233,24 +1237,32 @@ void deoglRenderGI::pSharedTraceRays( deoglRenderPlan &plan ){
 	SetViewport( plan.GetUpdateGIState()->GetSampleImageSize() );
 }
 
-void deoglRenderGI::pClearTraceRays(){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
+void deoglRenderGI::pClearTraceRays( const decPoint &size ){
+	// opengl guarantees a minimum of 1024 local invocation size across supported GPUs.
+	// deoglGITraceRays::pCreateFBORay calculates the texture size like this:
+	// - width = pProbesPerLine * pRaysPerProbe = 8 * (16 or more) = 128
+	// - height = GI_MAX_PROBE_COUNT / pProbesPerLine = 2048 / 8 = 256
+	// we use here a size of 128*8 to get the most out of it
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
+	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 	
-	const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 10000.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
+	pPipelineClearTraceRays->Activate();
 	
-	const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 1.0f, 0.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 1, &clearNormal[ 0 ] ) );
+	ismgr.DisableAllStages();
+	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 	
-	const GLfloat clearDiffuse[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 2, &clearDiffuse[ 0 ] ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( size.x - 1 ) / 128 + 1, ( size.y - 1 ) / 8 + 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_IMAGE_ACCESS_BARRIER_BIT ) );
 	
-	const GLfloat clearReflectivity[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 3, &clearReflectivity[ 0 ] ) );
-	
-	const GLfloat clearLight[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 4, &clearLight[ 0 ] ) );
+	ismgr.DisableAllStages();
 }
+
+
 
 void deoglRenderGI::pInitTraceTextures( deoglGIBVH &bvh ){
 	deoglRenderThread &renderThread = GetRenderThread();

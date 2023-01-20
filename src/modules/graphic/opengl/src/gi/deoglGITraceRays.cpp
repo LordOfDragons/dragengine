@@ -160,7 +160,7 @@ void deoglGITraceRays::pCreateFBORay(){
 	pTexNormal.SetSize( width, height );
 	pTexNormal.CreateTexture();
 	
-	pTexDiffuse.SetFBOFormat( 3, false );
+	pTexDiffuse.SetFBOFormat( 4, false ); // image load/store supports only 1, 2 and 4 not 3
 	pTexDiffuse.SetSize( width, height );
 	pTexDiffuse.CreateTexture();
 	

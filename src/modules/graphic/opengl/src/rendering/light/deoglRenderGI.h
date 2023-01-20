@@ -38,6 +38,7 @@ class deoglTexture;
 class deoglRenderGI : public deoglRenderLightBase{
 private:
 	const deoglPipeline *pPipelineResizeMaterials;
+	const deoglPipeline *pPipelineClearTraceRays;
 	const deoglPipeline *pPipelineTraceRays;
 	const deoglPipeline *pPipelineTraceRaysCache;
 	const deoglPipeline *pPipelineCopyRayCache;
@@ -149,7 +150,7 @@ private:
 	void pCleanUp();
 	void pCreateUBORenderLight();
 	void pSharedTraceRays( deoglRenderPlan &plan );
-	void pClearTraceRays();
+	void pClearTraceRays( const decPoint &size );
 	void pInitTraceTextures( deoglGIBVH &bvh);
 	void pActivateGIUBOs();
 };
