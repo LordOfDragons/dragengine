@@ -206,7 +206,9 @@ precision highp int;
 ////////////
 
 out vec4 outColor;
-out float outLuminance;
+#ifndef GI_RAY
+	out float outLuminance;
+#endif
 #ifdef WITH_SUBSURFACE
 	out vec4 outSubSurface;
 #endif
@@ -655,7 +657,9 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 
 void outputUnlit(){
 	outColor = vec4( 0 );
-	outLuminance = 0;
+	#ifndef GI_RAY
+		outLuminance = 0;
+	#endif
 	#ifdef WITH_SUBSURFACE
 		outSubSurface = vec4( 0 );
 	#endif
@@ -695,7 +699,7 @@ void main( void ){
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT
 				vec3 lightColor = pLightColor * pLightGIAmbientRatio;
-				outLuminance = dot( lightColor, lumiFactors );
+				//outLuminance = dot( lightColor, lumiFactors );
 				outColor = vec4( lightColor * diffuse.rgb, diffuse.a );
 			#else
 				outputUnlit();
@@ -1316,7 +1320,9 @@ void main( void ){
 		//#endif
 	#endif
 	
-	outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );
+	#ifndef GI_RAY
+		outLuminance = dot( finalColorSubSurface + finalColorSurface, lumiFactors );
+	#endif
 	
 	#ifdef WITH_SUBSURFACE
 		outColor = vec4( finalColorSurface, diffuse.a );

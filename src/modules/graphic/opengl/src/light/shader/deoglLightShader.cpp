@@ -866,7 +866,9 @@ void deoglLightShader::InitShaderParameters(){
 	
 	// outputs
 	outputList.Add( "outColor", 0 );
-	outputList.Add( "outLuminance", 1 );
+	if( ! pConfig.GetGIRay() ){
+		outputList.Add( "outLuminance", 1 );
+	}
 	if( pConfig.GetSubSurface() ){
 		outputList.Add( "outSubSurface", 2 );
 	}
