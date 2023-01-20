@@ -162,7 +162,7 @@ void deoglGIRayCache::pCreateFBO(){
 		pTexNormal.CreateTexture();
 		
 		if( ! pTexDiffuse.GetTexture() ){
-			pTexDiffuse.SetFBOFormat( 3, false );
+			pTexDiffuse.SetFBOFormat( 4, false ); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexDiffuse.SetSize( width, height, pLayerCount );
 		pTexDiffuse.CreateTexture();
@@ -174,7 +174,7 @@ void deoglGIRayCache::pCreateFBO(){
 		pTexReflectivity.CreateTexture();
 		
 		if( ! pTexLight.GetTexture() ){
-			pTexLight.SetFBOFormat( 3, true );
+			pTexLight.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
 		}
 		pTexLight.SetSize( width, height, pLayerCount );
 		pTexLight.CreateTexture();

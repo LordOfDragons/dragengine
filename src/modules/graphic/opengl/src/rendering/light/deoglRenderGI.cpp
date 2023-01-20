@@ -410,9 +410,10 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "GI.TraceRays" );
+	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 	const deoglGICascade &cascade = giState->GetActiveCascade();
-	deoglGI &gi = renderThread.GetGI();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -446,14 +447,24 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		pClearTraceRays( plan.GetUpdateGIState()->GetSampleImageSize() );
 		
 		pPipelineTraceRaysCache->Activate();
-		pSharedTraceRays( plan );
 		pActivateGIUBOs();
 		pInitTraceTextures( bvh );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+		
+		OGL_CHECK( renderThread, pglDispatchCompute( plan.GetUpdateGIState()->GetSampleImageSize().x / 64,
+			plan.GetUpdateGIState()->GetSampleImageSize().y, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+		
+		ismgr.DisableAllStages();
 		
 		// copy traced rays to cache
 		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
+		pSharedTraceRays( plan );
 		pPipelineCopyRayCache->Activate();
 		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
 		
@@ -461,7 +472,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		pActivateGIUBOs();
 		
-		deoglGITraceRays &traceRays = gi.GetTraceRays();
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 2, traceRays.GetTextureDiffuse(), GetSamplerClampNearest() );
@@ -523,7 +533,17 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.EnableArrayTexture( 12, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
 	#endif
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( plan.GetUpdateGIState()->GetSampleImageSize().x / 64,
+		plan.GetUpdateGIState()->GetSampleImageSize().y, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	
+	ismgr.DisableAllStages();
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
