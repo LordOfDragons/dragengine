@@ -167,28 +167,17 @@ deoglRenderLightBase( renderThread )
 		pipconf.SetMasks( true, true, true, true, false );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Resize Materials" );
-		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetShader( renderThread, "DefRen GI Resize Materials", defines );
 		pPipelineResizeMaterials = pipelineManager.GetWith( pipconf );
 		
 		
 		// clear trace rays
 		pipconf.Reset();
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		pipconf.SetShader( renderThread, shaderManager.GetSourcesNamed( "DefRen GI Clear Trace Rays" ), defines );
+		pipconf.SetShader( renderThread, "DefRen GI Clear Trace Rays", defines );
 		pPipelineClearTraceRays = pipelineManager.GetWith( pipconf );
 		
 		// trace rays
-		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		pipconf.SetEnableScissorTest( true );
-		
-		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
-		
-		#ifdef GI_RENDERDOC_DEBUG
-		defines.SetDefines( "GI_RENDERDOC_DEBUG" );
-		#endif
-		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		#ifdef GI_USE_RAY_CACHE
 			defines.SetDefines( "GI_USE_RAY_CACHE" );
@@ -200,20 +189,17 @@ deoglRenderLightBase( renderThread )
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineTraceRaysCache = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Ray Cache" );
-		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetShader( renderThread, "DefRen GI Copy Ray Cache", defines );
 		pPipelineCopyRayCache = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Init From Ray Cache" );
-		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetShader( renderThread, "DefRen GI Init From Ray Cache", defines );
 		pPipelineInitFromRayCache = pipelineManager.GetWith( pipconf );
 		
 		
 		// clear probes
-		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
+		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
+		
 		defines.SetDefines( "MAP_IRRADIANCE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineClearProbeIrradiance = pipelineManager.GetWith( pipconf );
@@ -224,12 +210,12 @@ deoglRenderLightBase( renderThread )
 		pPipelineClearProbeDistance = pipelineManager.GetWith( pipconf );
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
+		defines.RemoveDefine( "GI_CLEAR_PROBES_COUNT" );
+		
 		
 		// update probes
-		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
+		
 		defines.SetDefines( "MAP_IRRADIANCE" );
 		pipconf.SetShader( renderThread, sources, defines );
 		pPipelineUpdateProbeIrradiance = pipelineManager.GetWith( pipconf );
@@ -242,36 +228,24 @@ deoglRenderLightBase( renderThread )
 		
 		
 		// probe dynamic states
-		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Dynamic States" );
-		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetShader( renderThread, "DefRen GI Probe Dynamic States", defines );
 		pPipelineProbeDynamicStates = pipelineManager.GetWith( pipconf );
 		
 		
 		// probe offset
-		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Offset" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.SetDefines( "WITH_RAY_CACHE" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetShader( renderThread, "DefRen GI Probe Offset", defines );
 		pPipelineProbeOffset = pipelineManager.GetWith( pipconf );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
 		// probe extends
-		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.SetDefines( "WITH_RAY_CACHE" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
+		pipconf.SetShader( renderThread, "DefRen GI Probe Extends", defines );
 		pPipelineProbeExtends = pipelineManager.GetWith( pipconf );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
@@ -414,6 +388,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 	const deoglGICascade &cascade = giState->GetActiveCascade();
+	const decPoint &size = giState->GetSampleImageSize();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -444,7 +419,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		deoglDebugTraceGroup debugTraceCacheTrace( renderThread, "GI.TraceRays.CacheTraceRays" );
 		deoglGIRayCache &rayCache = giState->GetRayCache();
-		pClearTraceRays( plan.GetUpdateGIState()->GetSampleImageSize() );
+		pClearTraceRays( size );
 		
 		pPipelineTraceRaysCache->Activate();
 		pActivateGIUBOs();
@@ -456,20 +431,12 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 		
-		OGL_CHECK( renderThread, pglDispatchCompute( plan.GetUpdateGIState()->GetSampleImageSize().x / 64,
-			plan.GetUpdateGIState()->GetSampleImageSize().y, 1 ) );
+		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
-		
-		ismgr.DisableAllStages();
 		
 		// copy traced rays to cache
 		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
-		pSharedTraceRays( plan );
 		pPipelineCopyRayCache->Activate();
-		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
-		
-		SetViewport( rayCache.GetTextureDistance().GetSize() );
-		
 		pActivateGIUBOs();
 		
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
@@ -479,7 +446,16 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.EnableTexture( 4, traceRays.GetTextureLight(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 4 );
 		
-		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetRayCacheProbeCount() ) );
+		ismgr.Enable( 0, rayCache.GetTextureDistance(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 1, rayCache.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 2, rayCache.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 3, rayCache.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 4, rayCache.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+		
+		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+		
+		ismgr.DisableAllStages();
 		
 		giState->ValidatedRayCaches(); // comment out for performance test
 	}
@@ -505,8 +481,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	giState->PrepareUBOState(); // has to be done here since it is shared
 	
 	RenderMaterials( plan, bvh.GetRenderTaskMaterial() );
-	pSharedTraceRays( plan );
-	pClearTraceRays( plan.GetUpdateGIState()->GetSampleImageSize() );
+	pClearTraceRays( size );
 	
 	#ifdef GI_USE_RAY_CACHE
 		deoglDebugTraceGroup debugTrace3( renderThread, "GI.TraceRays.RestoreCache" );
@@ -521,7 +496,15 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.EnableArrayTexture( 4, rayCache.GetTextureLight(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 4 );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
+		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+		
+		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+		
 		debugTrace3.Close();
 	#endif
 	
@@ -539,14 +522,12 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( plan.GetUpdateGIState()->GetSampleImageSize().x / 64,
-		plan.GetUpdateGIState()->GetSampleImageSize().y, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	ismgr.DisableAllStages();
 	
 	// clean up
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableAllStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
@@ -1240,21 +1221,6 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 1 );
-}
-
-void deoglRenderGI::pSharedTraceRays( deoglRenderPlan &plan ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	OGL_CHECK( renderThread, pglBindVertexArray(
-		renderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
-	
-	// BVH node count can be 0. in this case pBVHInstanceRootNode is set to -1 instead
-	// of the index of the root node. the scripts can deal with this. it is required
-	// for the scripts to run even if the BVH is empty since the ray result pixels
-	// have to be correctly initialized with the ray direction otherwise the probe
-	// update shader fails to work correctly
-	renderThread.GetFramebuffer().Activate( &renderThread.GetGI().GetTraceRays().GetFBOResult() );
-	
-	SetViewport( plan.GetUpdateGIState()->GetSampleImageSize() );
 }
 
 void deoglRenderGI::pClearTraceRays( const decPoint &size ){

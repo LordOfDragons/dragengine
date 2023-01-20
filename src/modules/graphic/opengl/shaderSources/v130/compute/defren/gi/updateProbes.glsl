@@ -104,7 +104,7 @@ void main( void ){
 	
 	float blendFactor = ( probeFlags & 1 ) == 1 ? pGIBlendUpdateProbe : 1;
 	
-	int probeIndex = pGIProbeIndex[ updateIndex >> 2 ][ updateIndex & 3 ]; // 4 IDs per array entry
+	int probeIndex = giTraceProbeProbeIndex( updateIndex );
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
 	
 	// map layout: (probeCount.x * probeCount.y) x pGIGridProbeCount.z

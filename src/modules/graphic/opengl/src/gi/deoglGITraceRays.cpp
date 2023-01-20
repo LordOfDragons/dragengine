@@ -50,8 +50,6 @@ pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
 pTexReflectivity( renderThread ),
 pTexLight( renderThread ),
-pFBOResult( renderThread, false ),
-pFBODistance( renderThread, false ),
 pFBOLight( renderThread, false )
 {
 	try{
@@ -171,24 +169,6 @@ void deoglGITraceRays::pCreateFBORay(){
 	pTexLight.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
 	pTexLight.SetSize( width, height );
 	pTexLight.CreateTexture();
-	
-	pRenderThread.GetFramebuffer().Activate( &pFBOResult );
-	pFBOResult.DetachAllImages();
-	pFBOResult.AttachColorTexture( 0, &pTexPosition );
-	pFBOResult.AttachColorTexture( 1, &pTexNormal );
-	pFBOResult.AttachColorTexture( 2, &pTexDiffuse );
-	pFBOResult.AttachColorTexture( 3, &pTexReflectivity );
-	pFBOResult.AttachColorTexture( 4, &pTexLight );
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 5, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	pFBOResult.Verify();
-	
-	pRenderThread.GetFramebuffer().Activate( &pFBODistance );
-	pFBODistance.DetachAllImages();
-	pFBODistance.AttachColorTexture( 0, &pTexPosition );
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	pFBODistance.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOLight );
 	pFBOLight.DetachAllImages();

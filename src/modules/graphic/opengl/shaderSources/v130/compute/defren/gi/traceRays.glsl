@@ -38,15 +38,15 @@ const float STEP_BACK_DISTANCE = 0.01;
 void main( void ){
 	ivec2 tc = ivec2( gl_GlobalInvocationID );
 	
-	int probeIndex = pGIProbesPerLine * tc.y + tc.x / pGIRaysPerProbe;
-	if( probeIndex >= pGIProbeCount ){
+	int updateIndex = pGIProbesPerLine * tc.y + tc.x / pGIRaysPerProbe;
+	if( updateIndex >= pGIProbeCount ){
 		return;
 	}
 	
 	int rayIndex = tc.x % pGIRaysPerProbe;
 	GIRayCastResult result;
 	
-	vec3 position = vec3( pGIProbePosition[ probeIndex ] );
+	vec3 position = vec3( pGIProbePosition[ updateIndex ] );
 	vec3 direction = pGIRayDirection[ rayIndex ];
 	
 	#ifdef GI_RAYCAST_DISTANCE_ONLY
@@ -60,7 +60,7 @@ void main( void ){
 		
 	#else
 		#ifdef GI_USE_RAY_CACHE
-			float distLimit = giRayCastCacheDistance( probeIndex, rayIndex, pGICascade );
+			float distLimit = giRayCastCacheDistance( updateIndex, rayIndex, pGICascade );
 		#else
 			float distLimit = giRayCastNoHitDistance;
 		#endif

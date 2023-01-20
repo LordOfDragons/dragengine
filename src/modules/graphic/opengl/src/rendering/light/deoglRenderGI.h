@@ -149,7 +149,6 @@ public:
 private:
 	void pCleanUp();
 	void pCreateUBORenderLight();
-	void pSharedTraceRays( deoglRenderPlan &plan );
 	void pClearTraceRays( const decPoint &size );
 	void pInitTraceTextures( deoglGIBVH &bvh);
 	void pActivateGIUBOs();
