@@ -46,6 +46,7 @@ deoglSPBlockSSBO::deoglSPBlockSSBO( deoglRenderThread &renderThread ) :
 deoglShaderParameterBlock( renderThread ),
 pSSBO( 0 ),
 pBindingPoint( 0 ),
+pCompact( true ),
 pAllocateBuffer( true ),
 pWriteBuffer( NULL ),
 pWriteBufferCapacity( 0 ),
@@ -62,6 +63,7 @@ deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock ) :
 deoglShaderParameterBlock( paramBlock ),
 pSSBO( 0 ),
 pBindingPoint( paramBlock.pBindingPoint ),
+pCompact( paramBlock.pCompact ),
 pAllocateBuffer( true ),
 pWriteBuffer( NULL ),
 pWriteBufferCapacity( 0 ),
@@ -86,6 +88,12 @@ deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 
 void deoglSPBlockSSBO::SetBindingPoint( int bindingPoint ){
 	pBindingPoint = bindingPoint;
+}
+
+void deoglSPBlockSSBO::SetCompact( bool compact ){
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	pCompact = compact;
 }
 
 void deoglSPBlockSSBO::Activate() const{
@@ -228,21 +236,24 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 			pAllocateBuffer = true;
 		}
 		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pSSBO ) );
-		
-		if( pAllocateBuffer ){
-			OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER,
-				GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
-			pAllocateBuffer = false;
-		}
-		
 		const int stride = GetElementStride();
 		const int lower = pGetElementLower();
 		const int upper = pGetElementUpper();
 		
-		OGL_CHECK( renderThread, pglBufferSubData( GL_SHADER_STORAGE_BUFFER,
-			stride * lower, stride * ( upper - lower + 1 ), pWriteBuffer ) );
+		const int offset = stride * lower;
+		const int size = stride * ( upper - lower + 1 );
 		
+		if( pAllocateBuffer ){
+			OGL_CHECK( renderThread, pglBindBuffer( GL_SHADER_STORAGE_BUFFER, pSSBO ) );
+			OGL_CHECK( renderThread, pglBufferData( GL_SHADER_STORAGE_BUFFER,
+				GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
+			pAllocateBuffer = false;
+			
+		}else{
+			OGL_CHECK( renderThread, pglBindBufferRange( GL_SHADER_STORAGE_BUFFER, 0, pSSBO, offset, size ) );
+		}
+		
+		OGL_CHECK( renderThread, pglBufferSubData( GL_SHADER_STORAGE_BUFFER, offset, size, pWriteBuffer ) );
 		pWriteBufferUsed = false;
 		
 	}else{
@@ -251,12 +262,11 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
-	
 	pClearMapped();
 }
 
 int deoglSPBlockSSBO::GetAlignmentRequirements() const{
-	return GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
+	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
 void deoglSPBlockSSBO::MapToStd430(){
