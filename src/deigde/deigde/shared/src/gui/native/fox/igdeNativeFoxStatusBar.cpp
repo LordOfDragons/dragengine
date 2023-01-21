@@ -60,16 +60,16 @@ FXIMPLEMENT( igdeNativeFoxStatusBar, FXStatusBar,
 
 igdeNativeFoxStatusBar::igdeNativeFoxStatusBar(){ }
 
-igdeNativeFoxStatusBar::igdeNativeFoxStatusBar( igdeStatusBar &owner, FXComposite *parent,
+igdeNativeFoxStatusBar::igdeNativeFoxStatusBar( igdeStatusBar &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXStatusBar( parent, layoutFlags.flags | StatusBarFlags( owner ) ),
-pOwner( &owner )
+FXStatusBar( pparent, layoutFlags.flags | StatusBarFlags( powner ) ),
+pOwner( &powner )
 {
 	if( ! pOwner->GetVisible() ){
 		hide();
 	}
 	
-	getStatusLine()->setFont( ( FXFont* )StatusBarFont( owner, guitheme )->GetNativeFont() );
+	getStatusLine()->setFont( ( FXFont* )StatusBarFont( powner, guitheme )->GetNativeFont() );
 	
 	UpdateText();
 }
@@ -77,23 +77,23 @@ pOwner( &owner )
 igdeNativeFoxStatusBar::~igdeNativeFoxStatusBar(){
 }
 
-igdeNativeFoxStatusBar *igdeNativeFoxStatusBar::CreateNativeWidget( igdeStatusBar &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxStatusBar *igdeNativeFoxStatusBar::CreateNativeWidget( igdeStatusBar &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxStatusBar( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxStatusBar( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxStatusBar::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -118,9 +118,9 @@ int igdeNativeFoxStatusBar::StatusBarFlags( const igdeStatusBar & ){
 	return 0;
 }
 
-igdeFont *igdeNativeFoxStatusBar::StatusBarFont( const igdeStatusBar &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxStatusBar::StatusBarFont( const igdeStatusBar &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -139,7 +139,7 @@ igdeFont *igdeNativeFoxStatusBar::StatusBarFont( const igdeStatusBar &owner, con
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 
@@ -152,8 +152,8 @@ long igdeNativeFoxStatusBar::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxStatusBar::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxStatusBar::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }

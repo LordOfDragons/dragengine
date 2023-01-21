@@ -29,16 +29,16 @@ class deoglWorldOctree;
 
 
 /**
- * \brief World octree visitor.
+ * World octree visitor.
  */
 class deoglWorldOctreeVisitor : public deoglDOctreeVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world octree visitor. */
+	/** Create world octree visitor. */
 	deoglWorldOctreeVisitor();
 	
-	/** \brief Clean up world octree visitor. */
+	/** Clean up world octree visitor. */
 	virtual ~deoglWorldOctreeVisitor();
 	/*@}*/
 	
@@ -46,7 +46,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit octree node. */
+	/** Visit octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );
 	/*@}*/
 };

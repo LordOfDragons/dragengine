@@ -37,6 +37,7 @@ class deoglCubeMap;
 class deoglHTViewSector;
 class deoglParticleEmitterInstanceList;
 class deoglModelLOD;
+class deoglPipeline;
 class deoglRBillboard;
 class deoglRComponent;
 class deoglRComponentLOD;
@@ -49,12 +50,9 @@ class deoglRenderTaskConfig;
 class deoglRenderTaskStep;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedVAO;
 class deoglRenderThread;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
-class deoglSkinShader;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
@@ -72,15 +70,18 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglRenderTask &pRenderTask;
-	deoglSkinTexture::eShaderTypes pSkinShaderType;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeRibbon;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeBeam;
+	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
 	bool pSolid;
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
 	bool pOutline;
+	bool pForceDoubleSided;
+	
+	bool pFilterXRay;
+	bool pXRay;
 	
 	bool pFilterHoles;
 	bool pWithHoles;
@@ -95,8 +96,6 @@ private:
 	int pFiltersMasked;
 	
 	bool pUseSpecialParamBlock;
-	
-	deoglRenderTaskSharedShader *pEnforceShader;
 	
 	
 	
@@ -117,23 +116,17 @@ public:
 	/** Render task. */
 	inline deoglRenderTask &GetRenderTask() const{ return pRenderTask; }
 	
-	/** Shader type to be used for skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
+	/** Pipeline type. */
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
-	/** Set shader type to be used for skin shaders. */
-	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline type. */
+	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
-	/** Shader type to be used for ribbon skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeRibbon() const{ return pSkinShaderTypeRibbon; }
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
 	
-	/** Set shader type to be used for ribbon skin shaders. */
-	void SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/** Shader type to be used for beam skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeBeam() const{ return pSkinShaderTypeBeam; }
-	
-	/** Set shader type to be used for beam skin shaders. */
-	void SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
 	
 	
 	
@@ -166,6 +159,26 @@ public:
 	
 	/** Set if outline transparent texture are added. */
 	void SetOutline( bool outline );
+	
+	/** Force double sided. */
+	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
+	
+	/** Set to force double sided. */
+	void SetForceDoubleSided( bool forceDoubleSided );
+	
+	
+	
+	/** Filtering for XRay is enabled. */
+	inline bool GetFilterXRay() const{ return pFilterXRay; }
+	
+	/** Set if filtering for XRay is enabled. */
+	void SetFilterXRay( bool filterXRay );
+	
+	/** XRay textures are added. */
+	inline bool GetXRay() const{ return pXRay; }
+	
+	/** Set if XRay texture are added. */
+	void SetXRay( bool xray );
 	
 	
 	
@@ -210,14 +223,6 @@ public:
 	
 	/** Set if special shader parameter blocks are used. */
 	void SetUseSpecialParamBlock( bool use );
-	
-	
-	
-	/** Shader to enforce or NULL if free. */
-	inline deoglRenderTaskSharedShader *GetEnforcedShader() const{ return pEnforceShader; }
-	
-	/** Set shader to enforce or NULL if free. */
-	void SetEnforceShader( deoglRenderTaskSharedShader *shader );
 	
 	
 	
@@ -275,7 +280,7 @@ public:
 	
 	
 	/** Add all clusters of height terrain sector texture. */
-	void AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture );
+	void AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture, bool firstMask );
 	
 	/** Add a height terrain sector. */
 	void AddHeightTerrainSector( const deoglCollideListHTSector &clhtsector, bool firstMask );
@@ -287,21 +292,18 @@ public:
 	
 	/** Add an occlusion mesh from a component. */
 	void AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
-		deoglRenderTaskTexture *taskTexture );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
-	void AddOcclusionMesh( deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
-	
-	/** Add occlusion meshes for all components in a collide list. */
-	void AddOcclusionMeshes( const deoglCollideList &clist );
+	void AddOcclusionMesh( deoglRComponent &component,
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add occlusion meshes for all components in a collide list. */
-	void AddOcclusionMeshes( const deoglCollideList &clist, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMeshes( const deoglCollideList &clist,
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes( const deoglComponentList &list );
-	
-	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes( const deoglComponentList &list, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMeshes( const deoglComponentList &list,
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,
@@ -335,8 +337,11 @@ private:
 	bool pFilterReject( const deoglSkinTexture &skinTexture ) const;
 	bool pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const;
 	
-	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
+	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
+		deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
 		const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;
+	
+	deoglRenderTaskTexture *pGetEmptyTexture( const deoglPipeline *pipeline ) const;
 };
 
 #endif

@@ -196,6 +196,7 @@ void dedsLocomotion::SetTurnAdjustLookHorizontal( bool turnAdjust ){
 
 void dedsLocomotion::SetAnalogMovingVertical( float value ){
 	pAnalogMovingVertical = decMath::clamp( value, -90.0f, 90.0f );
+// 	pAnalogMovingVertical = decMath::clamp( value, pLimitLookLeft, pLimitLookRight );
 }
 
 void dedsLocomotion::SetTurnHorizontal( float value ){
@@ -851,11 +852,11 @@ void dedsLocomotion::CheckLookingRangeViolation( float &adjustOrientation ){
 	// if we can turn the body keep the looking always inside the limits.
 	// if leaving adjust the adjustOrientation to satisfy the limits again.
 	if( pCanTurn ){
-		if( pLookHorizontal.GetGoal() - adjustOrientation > 90.0f ){
-			adjustOrientation = pLookHorizontal.GetGoal() - 90.0f;
+		if( pLookHorizontal.GetGoal() - adjustOrientation > pLimitLookRight ){
+			adjustOrientation = pLookHorizontal.GetGoal() - pLimitLookRight;
 			
-		}else if( pLookHorizontal.GetGoal() - adjustOrientation < -90.0f ){
-			adjustOrientation = pLookHorizontal.GetGoal() + 90.0f;
+		}else if( pLookHorizontal.GetGoal() - adjustOrientation < pLimitLookLeft ){
+			adjustOrientation = pLookHorizontal.GetGoal() - pLimitLookLeft;
 		}
 		
 	// if we can not turn clamp the looking to the limits

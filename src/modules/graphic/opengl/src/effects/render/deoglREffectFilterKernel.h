@@ -23,12 +23,11 @@
 #define _DEOGLREFFECTFILTERKERNEL_H_
 
 #include "deoglREffect.h"
-
-class deoglShaderProgram;
+#include "../../pipeline/deoglPipeline.h"
 
 
 /**
- * \brief Render effect filter kernel.
+ * Render effect filter kernel.
  */
 class deoglREffectFilterKernel : public deoglREffect{
 private:
@@ -37,16 +36,18 @@ private:
 	int pKernelCols;
 	float pScale;
 	
-	deoglShaderProgram *pShader;
-	deoglShaderProgram *pShaderDownsample;
+	const deoglPipeline *pPipeline;
+	const deoglPipeline *pPipelineStereo;
+	const deoglPipeline *pPipelineDownsample;
+	const deoglPipeline *pPipelineDownsampleStereo;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffectFilterKernel( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffectFilterKernel();
 	/*@}*/
 	
@@ -54,36 +55,38 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of kernel rows. */
+	/** Number of kernel rows. */
 	inline int GetKernelRows() const{ return pKernelRows; }
 	
-	/** \brief Number of kernel cols. */
+	/** Number of kernel cols. */
 	inline int GetKernelCols() const{ return pKernelCols; }
 	
-	/** \brief Set kernel size. */
+	/** Set kernel size. */
 	void SetKernelSize( int rows, int cols );
 	
-	/** \brief Kernel value. */
+	/** Kernel value. */
 	float GetKernelValueAt( int row, int col ) const;
 	
-	/** \brief Set kernel value. */
+	/** Set kernel value. */
 	void SetKernelValueAt( int row, int col, float value );
 	
-	/** \brief Kernel scale. */
+	/** Kernel scale. */
 	inline float GetScale() const{ return pScale; }
 	
-	/** \brief Set kernel scale. */
+	/** Set kernel scale. */
 	void SetScale( float scale );
 	
 	
 	
-	/** \brief Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline *GetPipeline();
+	const deoglPipeline *GetPipelineStereo();
 	
-	/** \brief Get downsample shader creating it if required. */
-	deoglShaderProgram *GetShaderDownsample();
+	/** Get downsample pipeline creating it if required. */
+	const deoglPipeline *GetPipelineDownsample();
+	const deoglPipeline *GetPipelineDownsampleStereo();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );
 };
 

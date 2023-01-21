@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Height Image Wrapper.
+ * Height Image Wrapper.
  *
  * Wraps a height image delivering the height value without having to worry about
  * the underlaying bit count of the height image. The image is not held so you
@@ -45,7 +45,7 @@ private:
 	sGrayscale32 *pData32;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new terrain height image wrapper. */
 	deoglTerrainHeightImage( deImage &image );
@@ -53,7 +53,7 @@ public:
 	~deoglTerrainHeightImage();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
 	inline int GetWidth() const{ return pWidth; }

@@ -383,6 +383,12 @@ public:
 	void ComboBox( igdeContainer &form, const char *label, bool editable, const char *description,
 		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
 	
+	void ComboBox( igdeContainer &form, const char *label, int columns, bool editable,
+		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+	
+	void ComboBox( igdeContainer &form, const char *label, int columns, int rows, bool editable,
+		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+	
 	/**
 	 * \brief Add combo box.
 	 * 
@@ -415,6 +421,12 @@ public:
 	
 	void ComboBoxFilter( igdeContainer &form, const char *label, bool editable, const char *description,
 		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+	
+	void ComboBoxFilter( igdeContainer &form, const char *label, int columns, bool editable,
+		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+	
+	void ComboBoxFilter( igdeContainer &form, const char *label, int columns, int rows, bool editable,
+		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
 	
 	/**
 	 * \brief Add combo box filter.

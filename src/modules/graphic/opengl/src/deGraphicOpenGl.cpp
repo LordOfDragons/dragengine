@@ -61,6 +61,7 @@
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
+#include "parameters/debug/deoglPDebugNoMessages.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
 #include "parameters/debug/deoglPQuickDebug.h"
@@ -68,9 +69,7 @@
 #include "parameters/debug/deoglPOcclusionReduction.h"
 #include "parameters/debug/deoglPOccTestMode.h"
 #include "parameters/debug/deoglPWireframeMode.h"
-#include "parameters/defren/deoglPDefRenEncDepth.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
-#include "parameters/defren/deoglPDefRenUsePOTs.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
 #include "parameters/defren/deoglPRenderDownScale.h"
 #include "parameters/defren/deoglPTranspLayerLimit.h"
@@ -235,6 +234,13 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 		LogInfo( "Init" );
 	}
 	
+	#ifdef OGL_THREAD_CHECK
+	LogWarn( "OpenGL calls only in render thread check enabled. Disable for production builds." );
+	#endif
+	#ifdef OGL_CHECKCOMMANDS
+	LogWarn( "OpenGL command failure check enabled. Disable for production builds." );
+	#endif
+	
 	try{
 		pCaches = new deoglCaches( *this );
 		
@@ -277,7 +283,7 @@ void deGraphicOpenGl::InputOverlayCanvasChanged(){
 }
 
 #ifdef ANDROID
-/** \brief Application window has been created. */
+/** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
 		LogInfo( "InitAppWindow" );
@@ -287,7 +293,7 @@ void deGraphicOpenGl::InitAppWindow(){
 	}
 }
 
-/** \brief Application window has been closed. */
+/** Application window has been closed. */
 void deGraphicOpenGl::TerminateAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
 		LogInfo( "TerminateAppWindow" );
@@ -344,9 +350,9 @@ void deGraphicOpenGl::RenderWindows(){
 	// synchronize overlay canvas view if present
 	deCanvasView * const inputOverlayCanvas = GetGameEngine()->GetGraphicSystem()->GetInputOverlayCanvas();
 	if( inputOverlayCanvas ){
-		deoglCanvas &oglCanvas = *( ( deoglCanvas* )inputOverlayCanvas->GetPeerGraphic() );
+		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )inputOverlayCanvas->GetPeerGraphic() );
 		oglCanvas.SyncToRender();
-		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvas() );
+		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvasView() );
 	}
 	
 	pDebugOverlay.PrepareOverlay( *GetGameEngine()->GetGraphicSystem()->GetDebugOverlayCanvas() );
@@ -673,8 +679,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
 	
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
-	pParameters.AddParameter( new deoglPDefRenEncDepth( *this ) );
-	pParameters.AddParameter( new deoglPDefRenUsePOTs( *this ) );
 	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
 	
@@ -683,6 +687,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 #ifdef WITH_DEBUG
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
+	pParameters.AddParameter( new deoglPDebugNoMessages( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );

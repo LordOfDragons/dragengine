@@ -55,7 +55,7 @@ class Speaker
 	end
 	
 	/** \brief Set type. */
-	public func void setType( SpeakerType type )
+	public func void setType(SpeakerType type)
 	end
 	
 	/** \brief Sound or \em null if not set. */
@@ -64,7 +64,7 @@ class Speaker
 	end
 	
 	/** \brief Set sound or \em null to not set. */
-	public func void setSound( Sound sound )
+	public func void setSound(Sound sound)
 	end
 	
 	/** \brief Synthesizer or \em null if not set. */
@@ -73,7 +73,7 @@ class Speaker
 	end
 	
 	/** \brief Set synthesizer or \em null to not set. */
-	public func void setSynthesizer( SynthesizerInstance synthesizer )
+	public func void setSynthesizer(SynthesizerInstance synthesizer)
 	end
 	
 	/** \brief Video player or \em null if not set. */
@@ -82,7 +82,7 @@ class Speaker
 	end
 	
 	/** \brief Set video player or \em null to not set. */
-	public func void setVideoPlayer( VideoPlayer videoPlayer )
+	public func void setVideoPlayer(VideoPlayer videoPlayer)
 	end
 	
 	/** \brief Position. */
@@ -91,7 +91,7 @@ class Speaker
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	public func void setPosition(DVector position)
 	end
 	
 	/** \brief Orientation. */
@@ -100,7 +100,7 @@ class Speaker
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	public func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Velocity in m/s. */
@@ -109,7 +109,7 @@ class Speaker
 	end
 	
 	/** \brief Set velocity in m/s. */
-	public func void setVelocity( Vector velocity )
+	public func void setVelocity(Vector velocity)
 	end
 	
 	
@@ -120,7 +120,7 @@ class Speaker
 	end
 	
 	/** \brief Set if speaker is muted. */
-	public func void setMuted( bool muted )
+	public func void setMuted(bool muted)
 	end
 	
 	/** \brief Sound is looping. */
@@ -129,7 +129,7 @@ class Speaker
 	end
 	
 	/** \brief Set if sound is looping. */
-	public func void setLooping( bool looping )
+	public func void setLooping(bool looping)
 	end
 	
 	/** \brief Play speed. */
@@ -138,7 +138,7 @@ class Speaker
 	end
 	
 	/** \brief Set play speed. */
-	public func void setPlaySpeed( float playSpeed )
+	public func void setPlaySpeed(float playSpeed)
 	end
 	
 	/** \brief Volume. */
@@ -147,7 +147,7 @@ class Speaker
 	end
 	
 	/** \brief Set volume. */
-	public func void setVolume( float volume )
+	public func void setVolume(float volume)
 	end
 	
 	
@@ -158,7 +158,7 @@ class Speaker
 	end
 	
 	/** \brief Set range in meters beyond which the sound is inaudible. */
-	public func void setRange( float range )
+	public func void setRange(float range)
 	end
 	
 	/**
@@ -177,7 +177,30 @@ class Speaker
 	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
 	 * apply weaker attenuation.
 	 */
-	public func void setRollOff( float rollOff )
+	public func void setRollOff(float rollOff)
+	end
+	
+	/**
+	 * \brief Distance offset for attenuation calculation.
+	 * \version 1.12
+	 * 
+	 * For use by distance sounds. Offsets the true distance to the sound source for attenuation
+	 * calculation to make the sound appear coming from far away. Requires increasing the volume
+	 * to compensate for the distance increased attenuation.
+	 */
+	public func float getDistanceOffset()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set distance offset for attenuation calculation.
+	 * \version 1.12
+	 * 
+	 * For use by distance sounds. Offsets the true distance to the sound source for attenuation
+	 * calculation to make the sound appear coming from far away. Requires increasing the volume
+	 * to compensate for the distance increased attenuation.
+	 */
+	public func void setDistanceOffset(float distanceOffset)
 	end
 	
 	/** \brief Sound generation shape. */
@@ -186,7 +209,7 @@ class Speaker
 	end
 	
 	/** \brief Set sound generation shape. */
-	public func void setShape( ShapeList shape )
+	public func void setShape(ShapeList shape)
 	end
 	
 	/** \brief Layer mask for visibility masking. */
@@ -195,7 +218,7 @@ class Speaker
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
-	public func void setLayerMask( LayerMask layerMask )
+	public func void setLayerMask(LayerMask layerMask)
 	end
 	
 	
@@ -206,7 +229,7 @@ class Speaker
 	end
 	
 	/** \brief Set object owning the speaker for use with SoundLevelMeter or \em null if not used. */
-	public func void setOwner( Object owner )
+	public func void setOwner(Object owner)
 	end
 	/*@}*/
 	
@@ -225,7 +248,7 @@ class Speaker
 	end
 	
 	/** \brief Set play position in samples. */
-	public func void setPlayPosition( int playFrom, int playTo )
+	public func void setPlayPosition(int playFrom, int playTo)
 	end
 	
 	

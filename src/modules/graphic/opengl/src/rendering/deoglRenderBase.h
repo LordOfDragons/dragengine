@@ -23,11 +23,14 @@
 #define _DEOGLRENDERBASE_H_
 
 #include "../deoglBasics.h"
+#include "../debug/deoglDebugInformation.h"
+#include "../pipeline/deoglPipeline.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
-class deoglDebugInformation;
 class deoglCollideList;
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -60,8 +63,10 @@ public:
 	
 	
 	
-private:
+protected:
 	deoglRenderThread &pRenderThread;
+	
+	const deoglPipeline *pPipelineClearBuffers;
 	
 	decTimer pDebugTimer[ 4 ];
 	
@@ -83,6 +88,9 @@ public:
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Clear buffers pipeline. */
+	inline const deoglPipeline *GetPipelineClearBuffers() const{ return pPipelineClearBuffers; }
 	
 	
 	
@@ -123,9 +131,35 @@ public:
 	deoglTexSamplerConfig &GetSamplerShadowClampLinearInverse() const;
 	
 	
+	/** Set viewport and scissor to render plan size. */
+	void SetViewport( const deoglRenderPlan &plan ) const;
 	
-	/** Set cull mode. */
-	void SetCullMode( bool renderBackFaces );
+	/** Set viewport and scissor size. */
+	void SetViewport( int width, int height ) const;
+	void SetViewport( const decPoint &point ) const;
+	void SetViewport( const decPoint3 &point ) const;
+	void SetViewport( int x, int y, int width, int height ) const;
+	void SetViewport( const decPoint &offset, const decPoint &size ) const;
+	
+	/** Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to be active. */
+	void RenderFullScreenQuad() const;
+	
+	/**
+	 * Render full screen quad without changing VAO. Requires GetVAOFullScreenQuad() to
+	 * be active. If stereo rendering is active and specific hardware support is present
+	 * renders two quads using multi-draw instead of one.
+	 */
+	void RenderFullScreenQuad( const deoglRenderPlan &plan ) const;
+	
+	/** Render full screen quad with changing VAO. */
+	void RenderFullScreenQuadVAO() const;
+	
+	/**
+	 * Render full screen quad with changing VAO. If stereo rendering is active and specific
+	 * hardware support is present renders two quads using multi-draw instead of one.
+	 */
+	void RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const;
+	void RenderFullScreenQuadVAO( bool useStereo ) const;
 	/*@}*/
 	
 	

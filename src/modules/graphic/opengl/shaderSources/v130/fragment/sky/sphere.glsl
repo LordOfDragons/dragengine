@@ -1,17 +1,24 @@
 precision highp float;
 precision highp int;
 
-uniform mat3 pMatrixCamera;
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
+
 uniform mat3 pMatrixLayer;
 uniform vec3 pLayerPosition;
 uniform vec4 pLayerColor;
-uniform vec4 pParams; // x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
 uniform vec4 pMaterialGamma;
 uniform vec4 pSkyBgColor;
 
 uniform mediump sampler2D texSky;
 
 in vec2 vTexCoord;
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec4 outColor;
 
@@ -21,8 +28,11 @@ const float INV_HALF_PI = 1.0 / ( PI * 0.5 );
 const float INV_PI = 1.0 / PI;
 
 void main( void ){
-	//vec3 position = pMatrixLayer * normalize( vec3( vTexCoord, 1.0 ) * pParams );
-	//vec3 position = normalize( pMatrixLayer * vec4( vec3( vTexCoord, 1.0 ) * pParams, 1.0 ) );
+	// x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
+	vec4 params = vec4( pDepthToPosition[ vLayer ].zw, pDepthToPosition2[ vLayer ] );
+	
+	//vec3 position = pMatrixLayer * normalize( vec3( vTexCoord, 1.0 ) * params );
+	//vec3 position = normalize( pMatrixLayer * vec4( vec3( vTexCoord, 1.0 ) * params, 1.0 ) );
 	float p, q, D, l;
 	vec3 normal;
 	vec2 tc;
@@ -48,25 +58,25 @@ void main( void ){
 	// so position.z = 1000 or position.z = 1 is the same for this calculation
 	
 	// vTexCoord = {-1..1}
-	// pParams = {tanf(fov / 2) * znear, tanf(fov * fovRatio / 2) * znear / aspectRatio, znear}
+	// params = {tanf(fov / 2) * znear, tanf(fov * fovRatio / 2) * znear / aspectRatio, znear}
 	//         = {znear / projMat.a11, znear / projMat.a22, znear}
-	// pMatrixCamera = rot(inv(camMatrix))
-	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams )
+	// pMatrixVn[ vLayer ] = rot(inv(camMatrix))
+	normal = pMatrixVn[ vLayer ] * normalize( vec3( vTexCoord, 1.0 ) * params )
 	
-	// aligning the two normals (without pMatrixCamera) yields
-	normalize( vec3(vTexCoord, 1) * pParams ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
+	// aligning the two normals (without pMatrixVn[ vLayer ]) yields
+	normalize( vec3(vTexCoord, 1) * params ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
 	
-	// where pParams' = pParams / znear = {1 / projMat.a11, 1 / projMat.a22, 1}
-	normalize( vTexCoord * pParams'.xy, 1 ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
+	// where params' = params / znear = {1 / projMat.a11, 1 / projMat.a22, 1}
+	normalize( vTexCoord * params'.xy, 1 ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
 	
-	// which means 1=1 and pParams'.xy = pPosTransform.zw . leaves us with aligning
+	// which means 1=1 and params'.xy = pPosTransform.zw . leaves us with aligning
 	vTexCoord = vScreenCoord + pPosTransform2
 	
 	// hence we can simply add pPosTransform2 and get the right result
 	*/
 	
-// 	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams );
-	normal = pMatrixCamera * normalize( vec3( ( vTexCoord + pParams.zw ) * pParams.xy, 1.0 ) );
+// 	normal = pMatrixVn[ vLayer ] * normalize( vec3( vTexCoord, 1.0 ) * params );
+	normal = pMatrixVn[ vLayer ] * normalize( vec3( ( vTexCoord + params.zw ) * params.xy, 1.0 ) );
 	
 	p = 2.0 * dot( pLayerPosition, normal );
 	q = dot( pLayerPosition, pLayerPosition ) - 1.0;

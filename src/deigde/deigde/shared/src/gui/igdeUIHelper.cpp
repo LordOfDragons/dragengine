@@ -144,10 +144,10 @@
 // struct igdeUIHelper::sColumnHeader
 ///////////////////////////////////////
 
-igdeUIHelper::sColumnHeader::sColumnHeader( const char *title, igdeIcon *icon, int size ) :
-title( title ),
-icon( icon ),
-size( size ){
+igdeUIHelper::sColumnHeader::sColumnHeader( const char *ptitle, igdeIcon *picon, int psize ) :
+title( ptitle ),
+icon( picon ),
+size( psize ){
 }
 
 
@@ -524,6 +524,18 @@ const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *
 	FormLine( form, label, description, comboBox );
 }
 
+void igdeUIHelper::ComboBox( igdeContainer &form, const char *label, int columns, bool editable,
+const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener ){
+	ComboBox( columns, 10, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
+void igdeUIHelper::ComboBox( igdeContainer &form, const char *label, int columns, int rows,
+bool editable, const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener ){
+	ComboBox( columns, rows, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
 void igdeUIHelper::ComboBox( igdeContainer &parent, const char *description,
 igdeComboBoxReference &comboBox, igdeComboBoxListener *listener ){
 	ComboBox( parent, 15, 10, false, description, comboBox, listener );
@@ -564,6 +576,19 @@ const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxList
 void igdeUIHelper::ComboBoxFilter( igdeContainer &form, const char *label, bool editable,
 const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener ){
 	ComboBoxFilter( 15, 10, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
+void igdeUIHelper::ComboBoxFilter( igdeContainer &form, const char *label, int columns, bool editable,
+const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener ){
+	ComboBoxFilter( columns, 10, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
+void igdeUIHelper::ComboBoxFilter( igdeContainer &form, const char *label, int columns, int rows,
+bool editable, const char *description, igdeComboBoxFilterReference &comboBox,
+igdeComboBoxListener *listener ){
+	ComboBoxFilter( columns, rows, editable, description, comboBox, listener );
 	FormLine( form, label, description, comboBox );
 }
 

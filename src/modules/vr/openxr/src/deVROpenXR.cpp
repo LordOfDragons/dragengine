@@ -46,6 +46,7 @@
 #include "device/profile/deoxrDPHUAWEIControllerInteraction.h"
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
 #include "device/profile/deoxrDPNoControllerHands.h"
+#include "device/profile/deoxrDPEyeGazeInteraction.h"
 #include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
@@ -150,6 +151,7 @@ void deVROpenXR::WaitUntilReadyExit(){
 				LogInfo( "WaitUntilReadyExit: Session State Changed: idle" );
 				if( pSession ){
 					pInstance->xrRequestExitSession( pSession->GetSession() );
+					pPassthrough = nullptr;
 					pSession = nullptr;
 					pDeviceProfiles.CheckAllAttached();
 				}
@@ -279,6 +281,7 @@ void deVROpenXR::CleanUp(){
 	// thread. this will cause memory leaks but better leak than crash if the runtime
 	// is buggy or not very resiliant (like SteamVR for example)
 	pPreventDeletion = true;
+	pPassthrough = nullptr;
 	pSession = nullptr;
 	
 	// everything below here should be safe
@@ -355,6 +358,22 @@ void deVROpenXR::SetCamera( deCamera *camera ){
 	}
 }
 
+bool deVROpenXR::SupportsPassthrough(){
+	return pPassthrough;
+}
+
+void deVROpenXR::SetEnablePassthrough( bool enable ){
+	if( pPassthrough ){
+		pPassthrough->SetEnabled( enable );
+	}
+}
+
+void deVROpenXR::SetPassthroughTransparency( float transparency ){
+	if( pPassthrough ){
+		pPassthrough->SetTransparency( transparency );
+	}
+}
+
 
 
 // Devices
@@ -424,6 +443,14 @@ void deVROpenXR::GetDeviceBonePose( int device, int bone, bool withController, d
 	if( handTracker ){
 		pose = handTracker->GetPoseBoneAt( bone );
 	}
+}
+
+float deVROpenXR::GetDeviceFaceExpression( int device, int expression ){
+	deoxrFaceTracker * const faceTracker = pDevices.GetAt( device )->GetFaceTracker();
+	if( faceTracker ){
+		return faceTracker->GetFaceExpressionAt( expression );
+	}
+	return 0.0f;
 }
 
 
@@ -755,6 +782,7 @@ void deVROpenXR::BeginFrame(){
 	if( pSession && pRestartSession ){
 		LogInfo( "Restarting session (somebody requested this)" );
 		pDeviceProfiles.ClearActions();
+		pPassthrough = nullptr;
 		pSession = nullptr;
 		pDestroyActionSet();
 		
@@ -780,12 +808,17 @@ void deVROpenXR::BeginFrame(){
 			
 			pSession->AttachActionSet( pActionSet );
 			
+			if( pSystem->GetSupportsPassthrough() ){
+				pPassthrough.TakeOver( new deoxrPassthrough( pSession ) );
+			}
+			
 		}catch( const deException &e ){
 			LogException( e );
 			
 			LogError( "Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue." );
 			pDeviceProfiles.ClearActions();
 			pDestroyActionSet();
+			pPassthrough = nullptr;
 			pSession = nullptr;
 			
 			pRealShutdown();
@@ -845,6 +878,7 @@ void deVROpenXR::pRealShutdown(){
 	
 	pDeviceProfiles.ClearActions();
 	
+	pPassthrough = nullptr;
 	pSession = nullptr;
 	pSystem = nullptr;
 	pDestroyActionSet();
@@ -933,6 +967,7 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );
 	
 	// has to come last since it adds a device only if no other controller provides hand tracking
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPNoControllerHands( pInstance ) ) );
@@ -954,25 +989,4 @@ void deVROpenXR::pSuggestBindings(){
 				"Ignoring device profile", profile.GetPath().GetName().GetString() );
 		}
 	}
-	
-	/*
-	if( pInstance->SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
-		pSuggestBindingsEyeGazeInput();
-	}
-	*/
 }
-
-#if 0
-
-void deVROpenXR::pSuggestBindingsEyeGazeInput(){
-	// Extension: XR_EXT_eye_gaze_interaction
-	// Path: /interaction_profiles/ext/eye_gaze_interaction
-	// 
-	// Valid for user path:
-	// - /user/eyes_ext
-	// 
-	// Supported component paths:
-	// - /input/gaze_ext/pose
-}
-
-#endif

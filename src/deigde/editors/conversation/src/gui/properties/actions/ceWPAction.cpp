@@ -251,3 +251,6 @@ void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList( igdeComboBox &combobox )
 void ceWPAction::UpdateActorIDLists(){
 	// empty on purpose since we do not use the common properties of the base class
 }
+
+void ceWPAction::OnConversationPathChanged(){
+}

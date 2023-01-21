@@ -43,7 +43,6 @@ dearBoneState::dearBoneState(){
 	pRigBoneName = NULL;
 	pIndex = 0;
 	pRigIndex = -1;
-	pAnimBone = -1;
 	pParentState = NULL;
 	pChildStates = NULL;
 	pChildStateCount = 0;
@@ -87,14 +86,6 @@ void dearBoneState::SetIndex( int index ){
 
 void dearBoneState::SetRigIndex( int index ){
 	pRigIndex = index;
-}
-
-void dearBoneState::SetAnimationBone( int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pAnimBone = index;
 }
 
 void dearBoneState::SetPosition( const decVector &position ){

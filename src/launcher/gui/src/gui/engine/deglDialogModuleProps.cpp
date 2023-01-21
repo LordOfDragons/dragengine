@@ -57,8 +57,8 @@ FXIMPLEMENT( deglDialogModuleProps, FXDialogBox, deglDialogModulePropsMap, ARRAY
 
 deglDialogModuleProps::deglDialogModuleProps(){ }
 
-deglDialogModuleProps::deglDialogModuleProps( deglWindowMain *windowMain, delEngineModule *module, FXWindow *owner ) :
-FXDialogBox( owner, "Module Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+deglDialogModuleProps::deglDialogModuleProps( deglWindowMain *windowMain, delEngineModule *module, FXWindow *powner ) :
+FXDialogBox( powner, "Module Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 0, 0, 0, 0, 10, 10, 10, 5 ),
 pWindowMain( windowMain ),
 pModule( module )

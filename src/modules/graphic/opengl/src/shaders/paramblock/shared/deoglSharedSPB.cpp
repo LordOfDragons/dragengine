@@ -38,30 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPB::deoglSharedSPB( deoglShaderParameterBlock *parameterBlock ) :
-pParameterBlock( NULL ),
+deoglSharedSPB::deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock ) :
+pParameterBlock( parameterBlock ),
 pElements( NULL ),
-pSize( 0 ),
+pSize( parameterBlock->GetElementCount() ),
 pCount( 0 )
 {
-	if( ! parameterBlock || parameterBlock->GetElementCount() < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( parameterBlock->GetElementCount() >= 1 )
 	
-	pSize = parameterBlock->GetElementCount();
 	pElements = new deoglSharedSPBElement*[ pSize ];
 	memset( pElements, '\0', sizeof( deoglSharedSPB* ) * pSize );
-	
-	pParameterBlock = parameterBlock;
-	parameterBlock->AddReference();
 }
 
 deoglSharedSPB::~deoglSharedSPB(){
 	if( pElements ){
 		delete [] pElements;
-	}
-	if( pParameterBlock ){
-		pParameterBlock->FreeReference();
 	}
 }
 

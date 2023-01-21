@@ -98,6 +98,8 @@ class CommandsBAAInteract
 		
 		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
 		super( tracker, name, "Primary action" )
+			setTranslateDescription("UI.Command.PrimaryAction.Description")
+			setTranslateDisplayName("UI.Command.PrimaryAction.DisplayName")
 		end
 		
 		public func void start( BAAInteract action )
@@ -116,6 +118,8 @@ class CommandsBAAInteract
 		
 		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
 		super( tracker, name, "Secondary action" )
+			setTranslateDescription("UI.Command.SecondaryAction.Description")
+			setTranslateDisplayName("UI.Command.SecondaryAction.DisplayName")
 		end
 		
 		public func void start( BAAInteract action )

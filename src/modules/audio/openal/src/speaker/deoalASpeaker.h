@@ -45,7 +45,7 @@ class deoalSpeaker;
 
 
 /**
- * \brief Speaker peer.
+ * Speaker peer.
  */
 class deoalASpeaker : public deObject{
 private:
@@ -112,7 +112,9 @@ private:
 	float pVolume;
 	float pAttenuationRefDist;
 	float pAttenuationRolloff;
+	float pAttenuationDistanceOffset;
 	
+	float pFinalGain;
 	float pAttenuatedGain;
 	deoalEnvironment *pEnvironment;
 	
@@ -128,11 +130,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create speaker peer. */
+	/** Create speaker peer. */
 	deoalASpeaker( deoalAudioThread &audioThread );
 	
 protected:
-	/** \brief Clean up speaker peer. */
+	/** Clean up speaker peer. */
 	virtual ~deoalASpeaker();
 	/*@}*/
 	
@@ -141,147 +143,147 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenAL module. */
+	/** OpenAL module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
-	/** \brief Back link for use with sound level meter only. */
+	/** Back link for use with sound level meter only. */
 	inline deoalSpeaker *GetBackLink() const{ return pBackLink; }
 	
-	/** \brief Back link for use with sound level meter only. */
+	/** Back link for use with sound level meter only. */
 	void SetBackLink( deoalSpeaker *speaker );
 	
 	
 	
-	/** \brief Sound object or \em NULL. */
+	/** Sound object or \em NULL. */
 	inline deoalASound *GetSound() const{ return pSound; }
 	
-	/** \brief Synthesizer instance object or \em NULL. */
+	/** Synthesizer instance object or \em NULL. */
 	inline deoalASynthesizerInstance *GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Video player object or \em NULL. */
+	/** Video player object or \em NULL. */
 	inline deoalAVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/**
-	 * \brief Set source.
+	 * Set source.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetSource( deoalASound *sound, deoalASynthesizerInstance *synthesizer,
 		deoalAVideoPlayer *videoPlayer );
 	
-	/** \brief Sound decoder or NULL. */
+	/** Sound decoder or NULL. */
 	inline deSoundDecoder *GetSoundDecoder() const{ return pSoundDecoder; }
 	
 	/**
-	 * \brief Set sound decoder or NULL.
+	 * Set sound decoder or NULL.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetSoundDecoder( deSoundDecoder *decoder );
 	
 	
 	
-	/** \brief Type. */
+	/** Type. */
 	inline deSpeaker::eSpeakerType GetSpeakerType() const{ return pSpeakerType; }
 	
-	/** \brief Set type. */
+	/** Set type. */
 	void SetSpeakerType( deSpeaker::eSpeakerType type );
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Orientation. */
+	/** Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Set geometry. */
+	/** Set geometry. */
 	void SetGeometry( const decDVector &position, const decQuaternion &orientation );
 	
-	/** \brief Velocity. */
+	/** Velocity. */
 	inline const decVector &GetVelocity() const{ return pVelocity; }
 	
-	/** \brief Set velocity. */
+	/** Set velocity. */
 	void SetVelocity( const decVector &velocity );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
 	
 	
-	/** \brief Source or \em NULL if not bound. */
+	/** Source or \em NULL if not bound. */
 	inline deoalSource *GetSource() const{ return pSource; }
 	
-	/** \brief Enabled. */
+	/** Enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/**
-	 * \brief Set if enabled.
+	 * Set if enabled.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetEnabled( bool enabled );
 	
-	/** \brief Positionless. */
+	/** Positionless. */
 	inline bool GetPositionless() const{ return pPositionless; }
 	
-	/** \brief Set if positionless. */
+	/** Set if positionless. */
 	void SetPositionless( bool positionless );
 	
 	
 	
-	/** \brief Speaker is playing. */
+	/** Speaker is playing. */
 	inline bool GetPlaying() const{ return pPlayState == deSpeaker::epsPlaying; }
 	
-	/** \brief Speaker is paused. */
+	/** Speaker is paused. */
 	inline bool GetPaused() const{ return pPlayState == deSpeaker::epsPaused; }
 	
-	/** \brief Speaker is stopped. */
+	/** Speaker is stopped. */
 	inline bool GetStopped() const{ return pPlayState == deSpeaker::epsStopped; }
 	
-	/** \brief Play state. */
+	/** Play state. */
 	inline deSpeaker::ePlayStates GetPlayState() const{ return pPlayState; }
 	
 	/**
-	 * \brief Set play state.
+	 * Set play state.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetPlayState( deSpeaker::ePlayStates playState );
 	
-	/** \brief Looping. */
+	/** Looping. */
 	inline bool GetLooping() const{ return pLooping; }
 	
-	/** \brief Set looping. */
+	/** Set looping. */
 	void SetLooping( bool looping );
 	
-	/** \brief Muted. */
+	/** Muted. */
 	inline bool GetMuted() const{ return pMuted; }
 	
-	/** \brief Set mutex. */
+	/** Set mutex. */
 	void SetMuted( bool muted );
 	
-	/** \brief Set speaker play range. */
+	/** Set speaker play range. */
 	void SetSpeakerPlayRange( int from, int to );
 	
 	
 	
-	/** \brief Playback finished. */
+	/** Playback finished. */
 	inline bool GetPlayFinished() const{ return pPlayFinished; }
 	
 	
 	
-	/** \brief Flag. */
+	/** Flag. */
 	inline bool GetFlag() const{ return pFlag; }
 	
-	/** \brief Set flag. */
+	/** Set flag. */
 	void SetFlag( bool flag );
 	
-	/** \brief Prepare process audio. */
+	/** Prepare process audio. */
 	void PrepareProcessAudio();
 	
-	/** \brief Process deactivate. */
+	/** Process deactivate. */
 	void ProcessDeactivate();
 	
 	/**
-	 * \brief Update effects if audible.
+	 * Update effects if audible.
 	 * 
 	 * Called only for speakers in the audible range. If effects are enabled updates them.
 	 * Also updates parameters which can not be updated in Update() because they are
@@ -290,94 +292,109 @@ public:
 	void UpdateEffects();
 	
 	/**
-	 * \brief Synchronize streaming.
+	 * Synchronize streaming.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SynchronizeStreaming();
 	
 	/**
-	 * \brief Reset streaming.
+	 * Reset streaming.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void ResetStreaming();
 	
-	/** \brief Quick dispose. */
+	/** Quick dispose. */
 	void PrepareQuickDispose();
 	
 	
 	
-	/** \brief Parent world or \em NULL. */
+	/** Parent world or \em NULL. */
 	inline deoalAWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or \em NULL. */
+	/** Set parent world or \em NULL. */
 	void SetParentWorld( deoalAWorld *world );
 	
-	/** \brief Parent microphone or \em NULL. */
+	/** Parent microphone or \em NULL. */
 	inline deoalAMicrophone *GetParentMicrophone() const{ return pParentMicrophone; }
 	
-	/** \brief Set parent microphone or \em NULL. */
+	/** Set parent microphone or \em NULL. */
 	void SetParentMicrophone( deoalAMicrophone *microphone );
 	
-	/** \brief World octree node or NULL. */
+	/** World octree node or NULL. */
 	inline deoalWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
-	/** \brief Set world octree node or NULL. */
+	/** Set world octree node or NULL. */
 	void SetOctreeNode( deoalWorldOctree *node );
 	
-	/** \brief Update octree node. */
+	/** Update octree node. */
 	void UpdateOctreeNode();
 	
 	
 	
-	/** \brief Play speed. */
+	/** Play speed. */
 	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	
-	/** \brief Set play speed. */
+	/** Set play speed. */
 	void SetPlaySpeed( float speed );
 	
 	
 	
-	/** \brief Range. */
+	/** Range. */
 	inline float GetRange() const{ return pRange; }
 	
-	/** \brief Range squared. */
+	/** Range squared. */
 	inline float GetRangeSquared() const{ return pRangeSquared; }
 	
-	/** \brief Set range. */
+	/** Set range. */
 	void SetRange( float range );
 	
-	/** \brief Volume. */
+	/** Volume. */
 	inline float GetVolume() const{ return pVolume; }
 	
-	/** \brief Set volume. */
+	/** Set volume. */
 	void SetVolume( float volume );
 	
-	/** \brief Attenuation reference distance. */
+	/** Attenuation reference distance. */
 	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
 	
-	/** \brief Attenuation rolloff. */
+	/** Attenuation rolloff. */
 	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
-	/** \brief Set roll-off. */
+	/** Set roll-off. */
 	void SetAttenuationRolloff( float rolloff );
 	
-	/** \brief Calculate gain for distance using attenuation. */
+	/** Attenuation distance offset. */
+	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
+	
+	/** Set attenuation distance offset. */
+	void SetAttenuationDistanceOffset( float distanceOffset );
+	
+	/** Calculate gain for distance using attenuation. */
 	float AttenuatedGain( float distance ) const;
 	
 	
 	
-	/** \brief Environment or \em NULL if not present. */
+	/** Full volume with parent speaker gain applied. */
+	float GetFullVolume() const;
+	
+	/** Final gain of speaker with all effects applied. */
+	inline float GetFinalGain() const{ return pFinalGain; }
+	
+	/** Attenuated gain relative to full volume. */
+	inline float GetAttenuatedGain() const{ return pAttenuatedGain; }
+	
+	/** Environment or \em NULL if not present. */
 	inline deoalEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
 	
 	
-	/** \brief Sound level meters tracking this speaker. */
+	/** Sound level meters tracking this speaker. */
 	inline decPointerSet &GetSoundLevelMeters(){ return pSoundLevelMeters; }
 	inline const decPointerSet &GetSoundLevelMeters() const{ return pSoundLevelMeters; }
 	
 	
 	
-	/** \brief Speaker affects active microphone. */
+	/** Speaker affects active microphone. */
 	bool AffectsActiveMicrophone() const;
 	/*@}*/
 	
@@ -386,39 +403,39 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
-	 * \details For use by deoalAMicrophone only. Non-thread safe.
+	 * Marked for removal.
+	 * For use by deoalAMicrophone only. Non-thread safe.
 	 */
 	inline bool GetMicrophoneMarkedRemove() const{ return pMicrophoneMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
-	 * \details For use by deoalAMicrophone only. Non-thread safe.
+	 * Set marked for removal.
+	 * For use by deoalAMicrophone only. Non-thread safe.
 	 */
 	void SetMicrophoneMarkedRemove( bool marked );
 		
 	/**
-	 * \brief Marked for removal.
-	 * \details For use by deoalAWorld only. Non-thread safe.
+	 * Marked for removal.
+	 * For use by deoalAWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
-	 * \details For use by deoalAWorld only. Non-thread safe.
+	 * Set marked for removal.
+	 * For use by deoalAWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );
 		
-	/** \brief Linked list world previous. */
+	/** Linked list world previous. */
 	inline deoalASpeaker *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
-	/** \brief Set linked list world previous. */
+	/** Set linked list world previous. */
 	void SetLLWorldPrev( deoalASpeaker *speaker );
 	
-	/** \brief Linked list world next. */
+	/** Linked list world next. */
 	inline deoalASpeaker *GetLLWorldNext() const{ return pLLWorldNext; }
 	
-	/** \brief Set linked list world next. */
+	/** Set linked list world next. */
 	void SetLLWorldNext( deoalASpeaker *speaker );
 	/*@}*/
 	
@@ -451,6 +468,9 @@ private:
 	
 	void pRemoveFromSoundLevelMeters();
 	void pDropEnvProbeOctreeNodeAllSLMs();
+	
+	bool pUseCustomGain() const;
+	float pCustomGainMultiplier() const;
 };
 
 #endif

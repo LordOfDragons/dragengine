@@ -4,7 +4,7 @@
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
@@ -39,10 +39,7 @@
 	uniform mediump SAMPLER_2D texRimEmissivity;
 #endif
 #ifdef DEPTH_TEST
-	uniform HIGHP sampler2D texDepthTest;
-#endif
-#ifdef NODE_FRAGMENT_SAMPLERS
-NODE_FRAGMENT_SAMPLERS
+	uniform HIGHP sampler2DArray texDepthTest;
 #endif
 
 
@@ -68,9 +65,6 @@ NODE_FRAGMENT_SAMPLERS
 #ifdef CLIP_PLANE
 	in vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	in float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	in vec3 vPosition;
 #endif
@@ -85,6 +79,8 @@ NODE_FRAGMENT_SAMPLERS
 	#ifdef WITH_BITANGENT
 		in vec3 vBitangent;
 	#endif
+#elif defined DEPTH_OFFSET
+	in vec3 vNormal; // dummy, find a way to remove this later on
 #endif
 #ifdef TEXTURE_RIM_EMISSIVITY
 	in vec3 vReflectDir;
@@ -99,8 +95,10 @@ NODE_FRAGMENT_SAMPLERS
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef GS_RENDER_CASCADED
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 #include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
@@ -119,9 +117,6 @@ NODE_FRAGMENT_SAMPLERS
 #ifdef ENCODE_OUT_DEPTH
 	out vec4 outDepth;
 #endif
-#ifdef NODE_FRAGMENT_OUTPUTS
-NODE_FRAGMENT_OUTPUTS
-#endif
 
 
 
@@ -132,9 +127,6 @@ NODE_FRAGMENT_OUTPUTS
 	const vec3 packShift = vec3( 1.0, 256.0, 65536.0 );
 	const vec3 packMask = vec3( 1.0 / 256.0, 1.0 / 256.0, 0.0 );
 #endif
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
 
 
 
@@ -144,6 +136,8 @@ NODE_FRAGMENT_OUTPUTS
 #if defined REQUIRES_NORMAL && ! defined HAS_TESSELLATION_SHADER
 	#include "v130/shared/defren/skin/relief_mapping.glsl"
 #endif
+
+#include "v130/shared/defren/depth_to_position.glsl"
 
 /*
 #if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
@@ -169,13 +163,11 @@ vec3 finalEmissivityIntensity( in vec3 intensity ){
 void main( void ){
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
-	#ifdef DEPTH_ORTHOGONAL
-		vec2 depthDeriv = vec2( dFdx( vZCoord ), dFdy( vZCoord ) );
-		gl_FragDepth = vZCoord;
-	#endif
 	#ifdef DEPTH_DISTANCE
 		float depth = length( vPosition ) * pDepthTransform.x + pDepthTransform.y;
-		vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+		#ifdef DEPTH_OFFSET
+// 			vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
+		#endif
 		gl_FragDepth = depth;
 	#endif
 	
@@ -186,29 +178,27 @@ void main( void ){
 		}
 	#endif
 	
-	#ifdef DEPTH_OFFSET
+	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL && NEVER_DEFINED
 		/*if( gl_FrontFacing ){
-			gl_FragDepth += length( depthDeriv ) * pDepthOffset.x + pDepthOffset.y;
+			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].x + pDepthOffset[ vLayer ].y;
 			
 		}else{
-			gl_FragDepth += length( depthDeriv ) * pDepthOffset.z + pDepthOffset.w;
+			gl_FragDepth += length( depthDeriv ) * pDepthOffset[ vLayer ].z + pDepthOffset[ vLayer ].w;
 		}*/
-		#ifdef GS_RENDER_CASCADED
-			vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
+		
+		#ifdef GS_RENDER_CUBE
+			vec2 depthOffset = mix( pDepthOffset[ 0 ].zw, pDepthOffset[ 0 ].xy,
 				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
 		#else
-			vec2 depthOffset = mix( pDepthOffset.zw, pDepthOffset.xy, bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+			vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
+				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
 		#endif
 		gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
 	#endif
 	
-	#ifdef NO_ZCLIP
-		gl_FragDepth = max( gl_FragDepth, 0.0 );
-	#endif
-	
 	// discard fragments using the clip plane
 	#ifdef CLIP_PLANE
-		if( dot( vClipCoord, pClipPlane.xyz ) <= pClipPlane.w ) discard;
+		if( dot( vClipCoord, pClipPlane[ vLayer ].xyz ) <= pClipPlane[ vLayer ].w ) discard;
 	#endif
 	
 	
@@ -221,7 +211,7 @@ void main( void ){
 		
 		// relief mapping. definition of macros has to be delied until here since undefine
 		// symbols can lead to tricky situations resulting in compilers failing
-		#ifndef HAS_TESSELLATION_SHADER
+		#if ! defined HAS_TESSELLATION_SHADER && defined REQUIRES_TEX_COLOR
 			vec2 tcReliefMapped = vTCColor;
 			reliefMapping( tcReliefMapped, realNormal );
 			
@@ -342,15 +332,9 @@ void main( void ){
 		#define fragmentDepth gl_FragCoord.z
 	#endif
 	
-	// discard fragments if the depth is larger than the corresponding fragment in the back depth texture
+	// discard against previous depth
 	#ifdef DEPTH_TEST
-		ivec2 tc = ivec2( gl_FragCoord.xy );
-		
-		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot( texelFetch( texDepthTest, tc, 0 ).rgb, unpackDepth );
-		#else
-		float depthTestValue = texelFetch( texDepthTest, tc, 0 ).r;
-		#endif
+		float depthTestValue = sampleDepth( texDepthTest, ivec3( gl_FragCoord.xy, vLayer ) );
 		
 		#ifdef INVERSE_DEPTH
 			#ifdef DEPTH_TEST_LARGER

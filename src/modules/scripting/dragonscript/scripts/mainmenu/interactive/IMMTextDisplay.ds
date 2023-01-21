@@ -57,151 +57,160 @@ class IMMTextDisplay extends Panel
 	
 	
 	
-	/** \brief Interactive main menu. */
 	private var InteractiveMainMenu pMainMenu
-	
-	/** \brief Text to display. */
+	private var TranslationManager pTranslationManager
 	private var String pText
-	
-	/** \brief Real display text required for fading. */
 	private var String pRealText
-	
-	/** \brief Label. */
 	private var Label pLabel
-	
-	/** \brief Fade time. */
 	private var float pFadeTime
-	
-	/** \brief Elapsed fade time. */
 	private var float pElapsedTime
-	
-	/** \brief State. */
 	private var State pState
 	
 	
 	
 	/** \brief Create text display for interactive main menu. */
-	public func new( InteractiveMainMenu mainMenu )
+	public func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMainMenu = mainMenu
-		this.pText = ""
-		this.pRealText = ""
-		this.pFadeTime = 0.3
-		this.pElapsedTime = 0.0
-		this.pState = State.hidden
+		pMainMenu = mainMenu
+		pText = ""
+		pRealText = ""
+		pFadeTime = 0.3
+		pElapsedTime = 0
+		pState = State.hidden
 		
-		this.setDesignerSelector( "Panel.IMMTextDisplay" )
-		this.setLayout( BorderLayout.new() )
+		setDesignerSelector("Panel.IMMTextDisplay")
+		setLayout(BorderLayout.new())
 		
 		var Panel panel = Panel.new()
-		panel.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		panel.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
 		
-		this.pLabel = Label.new( "" )
-		this.pLabel.setDesignerSelector( "Label.IMMTextDisplay" )
-		panel.addWidget( this.pLabel )
-		this.addWidget( panel, BorderLayout.Area.bottom )
-		mainMenu.addWidget( this )
+		pLabel = Label.new("")
+		pLabel.setDesignerSelector("Label.IMMTextDisplay")
+		panel.addWidget(pLabel)
+		addWidget(panel, BorderLayout.Area.bottom)
+		mainMenu.addWidget(this)
 		
-		//this.setVisible( false )
-		this.setTransparency( 0.0 )
+		//setVisible(false)
+		setTransparency(0.0)
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pTranslationManager = app.getTranslationManager()
+		end
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
 		super.dispose()
-		this.pLabel = null
+		pLabel = null
 	end
 	
 	
 	
 	/** \brief Interactive main menu. */
 	public func InteractiveMainMenu getMainMenu()
-		return this.pMainMenu
+		return pMainMenu
 	end
 	
 	/** \brief Text to display. */
 	public func String getText()
-		return this.pText
+		return pText
 	end
 	
 	/** \brief Set text to display. */
-	public func void setText( String text )
-		if text.equals( this.pText )
+	public func void setText(String text)
+		if text.equals(pText)
 			return
 		end
 		
-		this.pText = text
+		pText = text
 		
 		if not text.empty()
-			this.pRealText = text  // avoid empty text while fading
+			pRealText = text  // avoid empty text while fading
 		end
 		
-		this.onTextChanged()
+		onTextChanged()
 	end
 	
 	/** \brief Clear text to display. */
 	public func void clearText()
-		this.setText( "" )
+		setText("")
 	end
 	
 	/** \brief Fade time. */
 	public func float getFadeTime()
-		return this.pFadeTime
+		return pFadeTime
 	end
 	
 	/** \brief Set fade time. */
-	public func void setFadeTime( float time )
-		this.pFadeTime = DEMath.max( time, 0.0 )
+	public func void setFadeTime(float time)
+		pFadeTime = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Elapsed fade time. */
 	public func float getElapsedTime()
-		return this.pElapsedTime
+		return pElapsedTime
 	end
 	
 	/** \brief Set elapsed fade time. */
-	protected func void setElapsedTime( float time )
-		this.pElapsedTime = time
+	protected func void setElapsedTime(float time)
+		pElapsedTime = time
 	end
 	
 	/** \brief State. */
 	public func State getState()
-		return this.pState
+		return pState
 	end
 	
 	/** \brief Set state. */
-	protected func void setState( State state )
-		this.pState = state
+	protected func void setState(State state)
+		pState = state
 	end
 	
 	/** \brief Reset. */
 	public func void reset()
-		this.pText = ""
-		this.pRealText = ""
-		this.pElapsedTime = 0
-		this.pState = State.hidden
+		pText = ""
+		pRealText = ""
+		pElapsedTime = 0
+		pState = State.hidden
+	end
+	
+	/**
+	 * \brief Translation manager or null.
+	 * \version 1.16
+	 */
+	public func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+	
+	/**
+	 * \brief Set translation manager or null.
+	 * \version 1.16
+	 */
+	public func void setTranslationManager(TranslationManager translationManager)
+		pTranslationManager = translationManager
 	end
 	
 	
 	
 	/** \brief Update camera. */
-	public func void update( float elapsed )
-		select this.pState
+	public func void update(float elapsed)
+		select pState
 		case State.fadeIn
-			this.pElapsedTime += elapsed
-			this.updateFading()
-			if this.pElapsedTime >= this.pFadeTime
-				this.pState = State.shown
+			pElapsedTime += elapsed
+			updateFading()
+			if pElapsedTime >= pFadeTime
+				pState = State.shown
 			end
 			
 		case State.fadeOut
-			this.pElapsedTime += elapsed
-			this.updateFading()
-			if this.pElapsedTime >= this.pFadeTime
-				this.pState = State.hidden
+			pElapsedTime += elapsed
+			updateFading()
+			if pElapsedTime >= pFadeTime
+				pState = State.hidden
 			end
 		end
 	end
@@ -210,42 +219,42 @@ class IMMTextDisplay extends Panel
 	
 	/** \brief Text changed. */
 	protected func void onTextChanged()
-		this.pLabel.setText( this.pRealText )
+		pLabel.setText(pRealText)
 		
-		if this.pText.empty()
-			select this.pState
+		if pText.empty()
+			select pState
 			case State.shown
-				this.pState = State.fadeOut
-				this.pElapsedTime = 0
+				pState = State.fadeOut
+				pElapsedTime = 0
 				
 			case State.fadeIn
-				this.pState = State.fadeOut
-				this.pElapsedTime = this.pFadeTime - this.pElapsedTime
+				pState = State.fadeOut
+				pElapsedTime = pFadeTime - pElapsedTime
 			end
 			
 		else
-			select this.pState
+			select pState
 			case State.hidden
-				this.pState = State.fadeIn
-				this.pElapsedTime = 0
+				pState = State.fadeIn
+				pElapsedTime = 0
 				
 			case State.fadeOut
-				this.pState = State.fadeIn
-				this.pElapsedTime = this.pFadeTime - this.pElapsedTime
+				pState = State.fadeIn
+				pElapsedTime = pFadeTime - pElapsedTime
 			end
 		end
 		
-		//this.setVisible( not this.pText.empty() )
+		//setVisible(not pText.empty())
 	end
 	
 	/** \brief Update fading. */
 	protected func void updateFading()
-		select this.pState
+		select pState
 		case State.fadeIn
-			this.setTransparency( DEMath.linearStep( this.pElapsedTime, 0.0, this.pFadeTime, 0.0, 1.0 ) )
+			setTransparency(DEMath.linearStep(pElapsedTime, 0.0, pFadeTime, 0.0, 1.0))
 			
 		case State.fadeOut
-			this.setTransparency( DEMath.linearStep( this.pElapsedTime, 0.0, this.pFadeTime, 1.0, 0.0 ) )
+			setTransparency(DEMath.linearStep(pElapsedTime, 0.0, pFadeTime, 1.0, 0.0))
 		end
 	end
 	
@@ -253,6 +262,6 @@ class IMMTextDisplay extends Panel
 	
 	/** \brief Label. */
 	public func Label getLabel()
-		return this.pLabel
+		return pLabel
 	end
 end

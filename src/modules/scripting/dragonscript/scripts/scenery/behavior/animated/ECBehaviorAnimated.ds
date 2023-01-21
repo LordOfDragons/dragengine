@@ -262,7 +262,16 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pTargetPlaying.setName(pECBehavior.getTargetPlaying().getValue(stub))
 			end
 			
-			setRequiresThink(pPlayback.getPlaying())
+			if pPlayback.getPlaying()
+				setRequiresThink(true)
+				
+				if pPlayback.getController() == null
+					pPlayback.apply() // apply once since no update happens later
+				end
+				
+			else
+				pPlayback.apply() // apply once since no update happens later
+			end
 			
 			pECBehavior.createListeners(this)
 		end
@@ -483,7 +492,14 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			select reader.readByte() // version
 			case 0
 				pPlayback.readFromFile(env, reader)
-				setRequiresThink(pPlayback.getPlaying())
+				
+				if pPlayback.getPlaying()
+					setRequiresThink(true)
+					
+				else
+					// apply animator at least once
+					pPlayback.apply()
+				end
 				
 			else
 				throw EInvalidParam.new("unsupported version")

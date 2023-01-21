@@ -32,7 +32,7 @@ class deoglRComponent;
 
 
 /**
- * @brief Visibility Collect Occlusion Meshes Visitor.
+ * Visibility Collect Occlusion Meshes Visitor.
  * Visits components in the world containing occlusion meshes adding them to a triangle sorter
  * for later cropping convex volume lists with it.
  */
@@ -44,7 +44,7 @@ private:
 	deoglTriangleSorter *pTriangleSorter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglVisCollectOccMeshes();
@@ -52,7 +52,7 @@ public:
 	virtual ~deoglVisCollectOccMeshes();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Retrieves the minimum extend of the box used to visit the occlusion meshes. */
 	inline const decDVector &GetVisitMinExtend() const{ return pVisitMinExtend; }

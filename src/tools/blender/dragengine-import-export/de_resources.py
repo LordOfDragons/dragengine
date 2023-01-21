@@ -119,6 +119,14 @@ class Armature:
 			self.scaling = vector_by_matrix(scalePosition, scale)
 			self.scaling = Vector([math.fabs(self.scaling.x), math.fabs(self.scaling.y), math.fabs(self.scaling.z)])
 	
+	class ConstraintAxis:
+		def __init__(self):
+			self.limitLower = 0
+			self.limitUpper = 0
+			self.staticFriction = 0
+			self.dynamicFriction = 0
+			self.springStiffness = 0
+	
 	# constructor
 	def __init__(self, object):
 		self.object = object
@@ -126,6 +134,7 @@ class Armature:
 		self.bones = []
 		self.mapBones = {}
 		self.ignoreBones = [re.compile(f.name) for f in object.data.dragengine_bonefilters]
+		self.restPose = object.data.pose_position == 'REST'
 		
 		self.thresholdPosition = object.data.dragengine_thresholdpos
 		self.thresholdRotation = object.data.dragengine_thresholdrot
@@ -526,6 +535,20 @@ class Mesh:
 			self.multiFoldMesh = True
 			self.mesh.edges[edge].select = True
 		self.faces[fi].edges[c1] = edge
+	
+	# apply auto smoothing
+	def applyAutoSmooth(self):
+		if not self.mesh.use_auto_smooth:
+			return
+		angle = self.mesh.auto_smooth_angle
+		
+		for edge in self.edges:
+			if edge.faces[0] != -1 and edge.faces[1] != -1:
+				f1 = self.faces[edge.faces[0]]
+				f2 = self.faces[edge.faces[1]]
+				if f1.face.normal.angle(f2.face.normal, 0) > angle:
+					edge.sharp = True
+					edge.hard = True
 	
 	# calculate corner normals
 	def initCalcCornerNormals(self):

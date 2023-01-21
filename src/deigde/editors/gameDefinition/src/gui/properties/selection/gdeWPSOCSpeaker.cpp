@@ -35,6 +35,7 @@
 #include "../../../gamedef/property/gdeProperty.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetBoneName.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetRollOff.h"
+#include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetDistanceOffset.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetPlaySpeed.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetPathSound.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetRange.h"
@@ -292,6 +293,20 @@ public:
 	}
 };
 
+class cTextDistanceOffset : public cBaseTextFieldListener{
+public:
+	cTextDistanceOffset( gdeWPSOCSpeaker &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCSpeaker *speaker ){
+		const float value = textField.GetFloat();
+		if( fabsf( speaker->GetDistanceOffset() - value ) < FLOAT_SAFE_EPSILON ){
+			return NULL;
+		}
+		return new gdeUOCSpeakerSetDistanceOffset( objectClass, speaker, value );
+	}
+};
+
 class cTextPlaySpeed : public cBaseTextFieldListener{
 public:
 	cTextPlaySpeed( gdeWPSOCSpeaker &panel ) : cBaseTextFieldListener( panel ){ }
@@ -421,6 +436,8 @@ pGameDefinition( NULL )
 		pEditRange, new cTextRange( *this ) );
 	helper.EditFloat( groupBox, "Roll-Off:", "Roll off factor",
 		pEditRollOff, new cTextRollOff( *this ) );
+	helper.EditFloat( groupBox, "Distance Offset:", "Distance offset",
+		pEditDistanceOffset, new cTextDistanceOffset( *this ) );
 	helper.EditFloat( groupBox, "Play Speed:", "Play Speed",
 		pEditPlaySpeed, new cTextPlaySpeed( *this ) );
 	helper.CheckBox( groupBox, pChkLooping, new cActionLooping( *this ), true );
@@ -434,6 +451,7 @@ pGameDefinition( NULL )
 	pCBPropertyNames->AddItem( "Volume", NULL, ( void* )( intptr_t )gdeOCSpeaker::epVolume );
 	pCBPropertyNames->AddItem( "Range", NULL, ( void* )( intptr_t )gdeOCSpeaker::epRange );
 	pCBPropertyNames->AddItem( "Roll off factor", NULL, ( void* )( intptr_t )gdeOCSpeaker::epRollOff );
+	pCBPropertyNames->AddItem( "Distance offset", NULL, ( void* )( intptr_t )gdeOCSpeaker::epDistanceOffset );
 	pCBPropertyNames->AddItem( "Play speed", NULL, ( void* )( intptr_t )gdeOCSpeaker::epPlaySpeed );
 	pCBPropertyNames->AddItem( "Playing", NULL, ( void* )( intptr_t )gdeOCSpeaker::epPlaying );
 	pCBPropertyNames->AddItem( "Looping", NULL, ( void* )( intptr_t )gdeOCSpeaker::epLooping );
@@ -555,6 +573,7 @@ void gdeWPSOCSpeaker::UpdateSpeaker(){
 		pEditVolume->SetFloat( speaker->GetVolume() );
 		pEditRange->SetFloat( speaker->GetRange() );
 		pEditRollOff->SetFloat( speaker->GetRollOff() );
+		pEditDistanceOffset->SetFloat( speaker->GetDistanceOffset() );
 		pEditPlaySpeed->SetFloat( speaker->GetPlaySpeed() );
 		
 	}else{
@@ -567,6 +586,7 @@ void gdeWPSOCSpeaker::UpdateSpeaker(){
 		pEditVolume->ClearText();
 		pEditRange->ClearText();
 		pEditRollOff->ClearText();
+		pEditDistanceOffset->ClearText();
 		pEditPlaySpeed->ClearText();
 	}
 	
@@ -580,6 +600,7 @@ void gdeWPSOCSpeaker::UpdateSpeaker(){
 	pEditVolume->SetEnabled( enabled );
 	pEditRange->SetEnabled( enabled );
 	pEditRollOff->SetEnabled( enabled );
+	pEditDistanceOffset->SetEnabled( enabled );
 	pEditPlaySpeed->SetEnabled( enabled );
 	
 	UpdatePropertyName();

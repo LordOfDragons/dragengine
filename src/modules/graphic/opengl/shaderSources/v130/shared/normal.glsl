@@ -16,6 +16,10 @@ vec3 normalLoadDirect( in sampler2D sampler, in vec2 texCoord ){
 	return vec3( texture( sampler, texCoord, 0 ) );
 }
 
+vec3 normalLoadDirect( in sampler2DArray sampler, in vec3 texCoord ){
+	return vec3( texture( sampler, texCoord, 0 ) );
+}
+
 
 // decode normal using shifted floating point method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.
@@ -37,6 +41,10 @@ vec3 normalLoadShiftedFloat( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadShiftedFloat( in sampler2D sampler, in vec2 texCoord ){
+	return normalDecodeShiftedFloat( vec3( texture( sampler, texCoord, 0 ) ) );
+}
+
+vec3 normalLoadShiftedFloat( in sampler2DArray sampler, in vec3 texCoord ){
 	return normalDecodeShiftedFloat( vec3( texture( sampler, texCoord, 0 ) ) );
 }
 
@@ -69,6 +77,10 @@ vec3 normalLoadShiftedInt( in sampler2D sampler, in vec2 texCoord ){
 	return normalDecodeShiftedInt( vec3( texture( sampler, texCoord, 0 ) ) );
 }
 
+vec3 normalLoadShiftedInt( in sampler2DArray sampler, in vec3 texCoord ){
+	return normalDecodeShiftedInt( vec3( texture( sampler, texCoord, 0 ) ) );
+}
+
 // encode normal using shifted integer method.
 // use this method for RGB8 or RGB16 textures. normal has to be normalized.
 vec3 normalEncodeShiftedInt( in vec3 normal ){
@@ -98,6 +110,10 @@ vec3 normalLoadSphereMap( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadSphereMap( in sampler2D sampler, in vec2 texCoord ){
+	return normalDecodeSphereMap( vec2( texture( sampler, texCoord, 0 ) ) );
+}
+
+vec3 normalLoadSphereMap( in sampler2DArray sampler, in vec3 texCoord ){
 	return normalDecodeSphereMap( vec2( texture( sampler, texCoord, 0 ) ) );
 }
 
@@ -145,6 +161,21 @@ vec3 normalLoadMaterial( in sampler2DArray sampler, in ivec3 texCoord ){
 }
 
 vec3 normalLoadMaterial( in sampler2D sampler, in vec2 texCoord ){
+	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
+	return normalLoadShiftedFloat( sampler, texCoord );
+	
+	#elif defined MATERIAL_NORMAL_DEC_INTBASIC
+	return normalLoadShiftedInt( sampler, texCoord );
+	
+	#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
+	return normalLoadSphereMap( sampler, texCoord );
+	
+	#else
+	return normalLoadDirect( sampler, texCoord );
+	#endif
+}
+
+vec3 normalLoadMaterial( in sampler2DArray sampler, in vec3 texCoord ){
 	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	

@@ -147,13 +147,13 @@ void decrbPanelConsole::ClearConsole(){
 // Events
 ///////////
 
-long decrbPanelConsole::onCBModuleChanged( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelConsole::onCBModuleChanged( FXObject*, FXSelector, void* ){
 	pEditCommand->setFocus();
 	
 	return 1;
 }
 
-long decrbPanelConsole::onEditSendCommand( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelConsole::onEditSendCommand( FXObject*, FXSelector, void* ){
 	int selection = pCBModule->getCurrentItem();
 	deLoadableModule *loadableModule;
 	decUnicodeString command, answer;

@@ -36,9 +36,9 @@
 // class deoxrInstance
 ////////////////////////
 
-void deoxrInstance::sSuggestBinding::Set( deoxrAction *action, const deoxrPath &binding ){
-	this->action = action;
-	this->binding = binding;
+void deoxrInstance::sSuggestBinding::Set( deoxrAction *paction, const deoxrPath &pbinding ){
+	action = paction;
+	binding = pbinding;
 }
 
 deoxrInstance::deoxrInstance( deVROpenXR &oxr, bool enableDebug ) :
@@ -84,7 +84,7 @@ pInstance( XR_NULL_HANDLE )
 	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
-// 	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandJointsMotionRange ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandTracking ].enableIfSupported = true;
 // 	pSupportsExtension[ extEXTPerformanceSettings ].enableIfSupported = true;
@@ -97,12 +97,12 @@ pInstance( XR_NULL_HANDLE )
 // 	pSupportsExtension[ extFBHandTrackingCapsules ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBHandTrackingMesh ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBKeyboardTracking ].enableIfSupported = true;
-// 	pSupportsExtension[ extFBPassthrough ].enableIfSupported = true;
+	pSupportsExtension[ extFBPassthrough ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBPassthroughKeyboardHands ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBRenderModel ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBSpaceWarp ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBTriangleMesh ].enableIfSupported = true;
-// 	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported = true;
+	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported = true;
 	pSupportsExtension[ extHTCXViveTrackerInteraction ].enableIfSupported = true;
 // 	extMNDHeadless: do not enable. this causes HMD to not work anymore
 	pSupportsExtension[ extEXTDebugUtils ].enableIfSupported = true;
@@ -180,16 +180,8 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		return;
 	}
 	
-	int i;
-	
-// 	pOxr.LogInfoFormat( "SuggestBindings: profile %s", profile.GetName().GetString() );
-// 	for( i=0; i<count; i++ ){
-// 		pOxr.LogInfoFormat( "- %s => %s",
-// 			bindings[ i ].action->GetName().GetString(),
-// 			bindings[ i ].binding.GetName().GetString() );
-// 	}
-	
 	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
+	int i;
 	
 	try{
 		for( i=0; i<count; i++ ){
@@ -211,6 +203,14 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		if( xrbindings ){
 			delete [] xrbindings;
 		}
+		
+		pOxr.LogErrorFormat( "SuggestBindings failed for profile '%s' (action -> binding)",
+			profile.GetName().GetString() );
+		for( i=0; i<count; i++ ){
+			pOxr.LogErrorFormat( "- '%s' -> '%s'", bindings[ i ].action->GetName().GetString(),
+				bindings[ i ].binding.GetName().GetString() );
+		}
+		
 		throw;
 	}
 }

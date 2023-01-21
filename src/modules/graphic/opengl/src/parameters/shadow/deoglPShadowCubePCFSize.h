@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Shadow Cube PCF Size Parameter.
+ * Shadow Cube PCF Size Parameter.
  */
 class deoglPShadowCubePCFSize : public deoglParameterFloat{
 public:

@@ -59,8 +59,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleLimit::dearRuleLimit( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleLimit &rule ) :
-dearRule( instance, firstLink, rule ),
+dearRuleLimit::dearRuleLimit( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleLimit &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 pLimit( rule ),
 
 pEnablePositionXMin( rule.GetEnablePositionXMin() ),
@@ -279,9 +280,6 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// step through all bones and apply limitation
-		const int boneCount = GetBoneMappingCount();
-		int i;
-		
 		for( i=0; i<boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone == -1 ){

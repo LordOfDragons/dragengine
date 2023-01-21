@@ -34,7 +34,7 @@ class deoglCollisionFrustum;
 
 
 /**
- * @brief Visitor for collision volumes.
+ * Visitor for collision volumes.
  *
  * This class is provided mainly for easily identifying collision volumes
  * and carrying out actions depending on their type. The collision volume
@@ -44,7 +44,7 @@ class deoglCollisionFrustum;
  */
 class deoglCollisionVolumeVisitor{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision volume visitor. */
 	deoglCollisionVolumeVisitor();
@@ -52,7 +52,7 @@ public:
 	virtual ~deoglCollisionVolumeVisitor();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Visits a collision sphere. */
 	virtual void VisitSphere( deoglCollisionSphere *sphere );

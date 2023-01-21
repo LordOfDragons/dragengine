@@ -25,7 +25,7 @@
 
 #include "deoglAddToRenderTaskGIMaterial.h"
 #include "deoglRenderTask.h"
-#include "deoglRenderTaskShader.h"
+#include "deoglRenderTaskPipeline.h"
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
 #include "deoglRenderTaskInstance.h"
@@ -85,12 +85,12 @@ deoglAddToRenderTaskGIMaterial::~deoglAddToRenderTaskGIMaterial(){
 // Management
 ///////////////
 
-void deoglAddToRenderTaskGIMaterial::SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	pSkinShaderType = shaderType;
+void deoglAddToRenderTaskGIMaterial::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+	pSkinPipelineType = type;
 }
 
 void deoglAddToRenderTaskGIMaterial::Reset(){
-	pSkinShaderType = deoglSkinTexture::estComponentGIMaterial;
+	pSkinPipelineType = deoglSkinTexturePipelines::etGIMaterial;
 }
 
 deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deoglRComponentLOD &lod, int texture ){
@@ -112,7 +112,7 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deo
 	}
 	
 	// obtain render task texture
-	return pGetTaskTexture( skinTexture, componentTexture.GetTUCForShaderType( pSkinShaderType ) );
+	return pGetTaskTexture( skinTexture, componentTexture.GetTUCForPipelineType( pSkinPipelineType ) );
 }
 
 
@@ -133,26 +133,22 @@ bool deoglAddToRenderTaskGIMaterial::pFilterReject( const deoglSkinTexture *skin
 deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::pGetTaskTexture(
 deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 	// retrieve the shader and texture units configuration to use
-	deoglShaderProgram *shader = NULL;
+	const deoglPipeline *pipeline = nullptr;
 	
-	if( ! shader ){
-		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( pSkinShaderType );
-		if( skinShader ){
-			shader = skinShader->GetShader();
-		}
+	if( ! pipeline ){
+		pipeline = skinTexture->GetPipelines().GetAt( deoglSkinTexturePipelinesList::eptComponent ).
+			GetWithRef( pSkinPipelineType ).GetPipeline();
 	}
 	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pipeline )
 	
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
 	// obtain render task texture
-	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
-	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( tuc->GetRTSTexture() );
+	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
+	deoglRenderTaskTexture &rttexture = *rtpipeline.AddTexture( tuc->GetRTSTexture() );
 	
 	if( tuc->GetMaterialIndex() == -1 ){
 		pRenderThread.GetGI().GetMaterials().AddTUC( tuc );

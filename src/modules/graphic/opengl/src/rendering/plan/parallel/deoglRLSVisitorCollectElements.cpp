@@ -421,12 +421,12 @@ void deoglRLSVisitorCollectElements::VisitHTView( const deoglHTView &htview ){
 		const decDVector offset( htsector.CalcWorldPosition( pReferencePosition ) );
 		const deoglHTSCluster *cluster = htsector.GetClusters();
 		const int count = htsector.GetClusterCount();
-		decPoint i;
+		decPoint si;
 		
 		deoglCollideListHTSector *clsector = NULL;
 		
-		for( i.y=0; i.y<count; i.y++ ){
-			for( i.x=0; i.x<count; i.x++, cluster++ ){
+		for( si.y=0; si.y<count; si.y++ ){
+			for( si.x=0; si.x<count; si.x++, cluster++ ){
 				const decDVector realOffset( offset + decDVector( cluster->GetCenter() ) );
 				const decDVector realHalfExtend( cluster->GetHalfExtends() );
 				if( ! TestAxisAlignedBox( realOffset - realHalfExtend, realOffset + realHalfExtend, cascadeMask ) ){
@@ -436,7 +436,7 @@ void deoglRLSVisitorCollectElements::VisitHTView( const deoglHTView &htview ){
 				if( ! clsector ){
 					clsector = pCollideList.AddHTSector( &sector );
 				}
-				clsector->AddCluster( i )->SetCascadeMask( cascadeMask );
+				clsector->AddCluster( si )->SetCascadeMask( cascadeMask );
 			}
 		}
 		

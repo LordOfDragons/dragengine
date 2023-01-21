@@ -32,7 +32,7 @@ class deoglSharedVBOBlock;
 
 
 /**
- * \brief Canvas paint VBO Writer.
+ * Canvas paint VBO Writer.
  * 
  * Helper class writing data to esvbolCanvasPaint formatted VBO blocks. Keeps track of the
  * data pointer adding one entry after the other. Call Reset with a vbo block data pointer
@@ -49,10 +49,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create vbo writer. */
+	/** Create vbo writer. */
 	deoglVBOWriterCanvasPaint( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up vbo writer. */
+	/** Clean up vbo writer. */
 	~deoglVBOWriterCanvasPaint();
 	/*@}*/
 	
@@ -60,10 +60,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set data pointer to start. */
+	/** Set data pointer to start. */
 	void Reset( deoglSharedVBOBlock *vboBlock );
 	
-	/** \brief Write point and advance pointer for the next write. */
+	/** Write point and advance pointer for the next write. */
 	void WritePoint( const decVector2 &position );
 	/*@}*/
 };

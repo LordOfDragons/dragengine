@@ -35,7 +35,9 @@ pin Dragengine.Utils.StyledText.Definition
  * Supports tool tips of type String and StyledTextDocument
  */
 class ToolTipManager
-	/** \brief Mouse pointer listener. */
+	/**
+	 * \deprecated Since 1.14 .
+	 */
 	class ListenMousePointer extends DefaultMousePointerListener
 		private var ToolTipManager pManager
 		
@@ -69,7 +71,6 @@ class ToolTipManager
 	private var Desktop pDesktop
 	private var WindowToolTip pPopup
 	private var Object pToolTip
-	private var ListenMousePointer pListenMousePointer
 	
 	
 	
@@ -86,21 +87,14 @@ class ToolTipManager
 		
 		pPopup = WindowToolTip.new()
 		desktop.addWindow(pPopup)
-		
-		pListenMousePointer = ListenMousePointer.new(this)
-		desktop.addMousePointerListener(pListenMousePointer)
 	end
 	
 	/** \brief Dispose of tool tip manager. */
 	public func void dispose()
-		if pListenMousePointer != null and pDesktop != null
-			pDesktop.removeMousePointerListener(pListenMousePointer)
-		end
-		pListenMousePointer = null
-		pDesktop = null
-		
 		setPopup(null)
 		pToolTip = null
+		
+		pDesktop = null
 	end
 	
 	
@@ -150,14 +144,18 @@ class ToolTipManager
 		
 		pToolTip = toolTip
 		
-		updatePopup()
-		
-		if toolTip != null
-			pPopup.popup(calculateToolTipPosition())
+		if pPopup != null
+			updatePopup()
 			
-		else
-			pPopup.popdown()
+			if toolTip != null
+				pPopup.popup(calculateToolTipPosition())
+				
+			else
+				pPopup.popdown()
+			end
 		end
+		
+		onToolTipChanged()
 	end
 	
 	
@@ -174,7 +172,7 @@ class ToolTipManager
 		
 		setToolTip(toolTip)
 		
-		if pPopup.getVisible()
+		if pPopup != null and pPopup.getVisible()
 			pPopup.setPosition(calculateToolTipPosition())
 		end
 	end
@@ -244,6 +242,13 @@ class ToolTipManager
 		end
 		
 		pPopup.fitToContent()
+	end
+	
+	/**
+	 * \brief Tool tip changed.
+	 * \version 1.14
+	 */
+	public func void onToolTipChanged()
 	end
 end
 

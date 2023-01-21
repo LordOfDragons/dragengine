@@ -410,6 +410,7 @@ void deoglComponent::DynamicSkinRequiresSync(){
 }
 
 void deoglComponent::TextureDynamicSkinRenderableChanged(){
+	// called by deoglComponentTexture upon receiving changed notification from dynamic skin
 	pTextureDynamicSkinRenderablesChanged = true;
 	pTextureDynamicSkinRequiresSync = true;
 	pDirtyRenderableMapping = true;
@@ -434,6 +435,13 @@ void deoglComponent::DirtyRenderableMapping(){
 void deoglComponent::DirtyTextureUseSkin(){
 	pDirtyTextureUseSkin = true;
 	pRequiresSync();
+}
+
+void deoglComponent::DirtyAllTexturesUpdateRenderableMappings(){
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ]->DirtyRenderableMapping();
+	}
 }
 
 void deoglComponent::DecalRequiresSync(){
@@ -569,6 +577,7 @@ void deoglComponent::SkinChanged(){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	DirtyAllTexturesUpdateRenderableMappings();
 	
 	pRequiresSync();
 }
@@ -599,6 +608,7 @@ void deoglComponent::ModelAndSkinChanged(){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	DirtyAllTexturesUpdateRenderableMappings();
 	
 	pRequiresSync();
 }
@@ -723,6 +733,7 @@ void deoglComponent::DynamicSkinChanged(){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	DirtyAllTexturesUpdateRenderableMappings();
 	
 	pRequiresSync();
 }
@@ -1151,16 +1162,17 @@ void deoglComponent::pCheckRequiresUpdateEverySync(){
 	// this time runs only while Update() is called
 	pRequiresUpdateEverySync = ! pRComponent->GetRenderStatic();
 	
-	pRequiresUpdateEverySync |= pSkinStateController->RequiresSyncEveryFrameUpdate();
-	if( pRequiresUpdateEverySync ){
-		return;
+	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+		pRequiresUpdateEverySync = true;
+		pSkinStatePrepareRenderables |= pSkinStateController->RequiresPrepareRenderables();
 	}
 	
 	int i;
 	for( i=0; i<pTextureCount; i++ ){
-		if( pTextures[ i ]->GetSkinStateController()->RequiresSyncEveryFrameUpdate() ){
+		deoglSkinStateController &ssc = *pTextures[ i ]->GetSkinStateController();
+		if( ssc.RequiresSyncEveryFrameUpdate() ){
 			pRequiresUpdateEverySync = true;
-			return;
+			pSkinStatePrepareRenderables |= ssc.RequiresPrepareRenderables();
 		}
 	}
 }

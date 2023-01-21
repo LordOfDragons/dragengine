@@ -27,10 +27,11 @@
 class deoglRenderThread;
 class deoglSharedVBOBlock;
 class deoglVAO;
+class deoglRenderPlan;
 
 
 /**
- * @brief Shape.
+ * Shape.
  */
 class deoglShape{
 public:
@@ -59,7 +60,7 @@ private:
 	int pPointCountLines;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
 	deoglShape( deoglRenderThread &renderThread );
@@ -67,9 +68,9 @@ public:
 	virtual ~deoglShape();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the VBO block. */
@@ -100,10 +101,18 @@ public:
 	deoglVAO *GetVAO();
 	/** Activates the VAO from the vbo block. */
 	void ActivateVAO();
+	
 	/** Render lines. */
 	void RenderLines();
+	
+	/** Render lines. */
+	void RenderLines( const deoglRenderPlan &plan );
+	
 	/** Render faces. */
 	void RenderFaces();
+	
+	/** Render faces. */
+	void RenderFaces( const deoglRenderPlan &plan );
 	/*@}*/
 };
 

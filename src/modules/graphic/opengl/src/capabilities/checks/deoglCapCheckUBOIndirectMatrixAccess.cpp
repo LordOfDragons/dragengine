@@ -37,6 +37,7 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -151,9 +152,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 	const deoglCapsTextureFormat &texformat = *pCapabilities.GetFormats()
 		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfRGBA8 );
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglSPBlockUBO *spb = NULL;
-	deoglShaderProgram *shader = NULL;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	decMatrix matrix1, matrix2;
 	GLubyte result[ 3 ];
@@ -165,10 +164,10 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// generate shader parameter block
-		spb = new deoglSPBlockUBO( renderThread );
+		const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 		spb->SetParameterCount( 2 );
 		spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 		spb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
@@ -185,22 +184,15 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		matrix2.a31 = 0.0f; matrix2.a32 = 0.0f; matrix2.a33 = 0.0f; matrix2.a34 = 0.0f;
 		matrix2.a41 = 0.0f; matrix2.a42 = 0.0f; matrix2.a43 = 0.0f; matrix2.a44 = 0.0f;
 		
-		spb->MapBuffer();
-		try{
+		{
+			const deoglSPBMapBuffer mapped( spb );
 			spb->SetParameterDataMat4x3( 0, matrix1 );
 			spb->SetParameterDataMat3x3( 1, matrix2 );
-			
-		}catch( const deException & ){
-			spb->UnmapBuffer();
-			throw;
 		}
-		spb->UnmapBuffer();
 		
 		// generate test texture
 		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-		if( ! texture ){
-			DETHROW( deeOutOfMemory );
-		}
+		DEASSERT_NOTNULL( texture )
 		
 		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
 		OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
@@ -265,22 +257,10 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
 		texture = 0;
 		
-		spb->FreeReference();
-		spb = NULL;
-		
-		shader->RemoveUsage();
-		
 	}catch( const deException & ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			glDeleteTextures( 1, &texture );
 		}
-		if( spb ){
-			spb->FreeReference();
-		}
-		
 		throw;
 	}
 	

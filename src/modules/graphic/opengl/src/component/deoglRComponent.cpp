@@ -60,6 +60,7 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinRenderable.h"
@@ -131,6 +132,7 @@ pSkinRendered( renderThread, *this ),
 pDirtyTextureTUCs( true ),
 pDirtyTextureParamBlocks( true ),
 pDirtyDecals( true ),
+pDirtyDecalsRenderRenderables( true ),
 
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
@@ -149,6 +151,7 @@ pLLPrepareForRenderWorld( this )
 	
 	pSkinState = NULL;
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	
 	pFirstRender = true;
 	pRenderStatic = true;
@@ -163,6 +166,7 @@ pLLPrepareForRenderWorld( this )
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pXRaySolid = true;
 	pDirtySolid = true;
 	
 	pMarked = false;
@@ -572,6 +576,7 @@ void deoglRComponent::UpdateSkinStateCalculatedProperties(){
 
 void deoglRComponent::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1163,6 +1168,11 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 // 	if(pModel) printf("RComponent.PrepareForRender %s %dys\n", pModel->GetFilename().GetString(), (int)(timer.GetElapsedTime()*1e6f));
 }
 
+void deoglRComponent::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	pRenderSkinStateRenderables( mask );
+	pPrepareDecalsRenderRenderables( plan, mask );
+}
+
 
 
 void deoglRComponent::PrepareQuickDispose(){
@@ -1354,29 +1364,14 @@ void deoglRComponent::UpdateRenderableMapping(){
 		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
 	}
 	
-	// update mappings of dynamic skins of component textures if existing
-	const int textureCount = pTextures.GetCount();
-	int i;
+	// update mappings of dynamic skins of component textures is done in the texture
+	// SyncToRender call since otherwise the mapping is updated before the skin and
+	// dynamic skin in the texture have been potentially updated
 	
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		deoglSkinState * const skinState = texture.GetSkinState();
-		if( ! skinState ){
-			continue;
-		}
-		
-		skinState->RemoveAllRenderables();
-		
-		deoglRDynamicSkin * const dynamicSkin = texture.GetDynamicSkin() ? texture.GetDynamicSkin() : pDynamicSkin;
-		if( texture.GetSkin() && dynamicSkin ){
-			skinState->AddRenderables( *texture.GetSkin(), *dynamicSkin );
-		}
-	}
-	
+	// setting skin rendered dirty here is fine
 	pSkinRendered.SetDirty();
 	
-	MarkAllTexturesParamBlocksDirty();
-	MarkAllTexturesTUCsDirty();
+	// textures will mark their param blocks and tucs dirty if they need to update renderable mappings
 }
 
 void deoglRComponent::UpdateTexturesUseSkin(){
@@ -1461,6 +1456,7 @@ void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
 
 void deoglRComponent::DecalRequiresPrepareForRender(){
 	pDirtyDecals = true;
+	pDirtyDecalsRenderRenderables = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1901,6 +1897,7 @@ void deoglRComponent::pPrepareSolidity(){
 	
 	pSolid = true;
 	pOutlineSolid = true;
+	pXRaySolid = true;
 	
 	if( ! pModel ){
 		return;
@@ -1935,6 +1932,7 @@ void deoglRComponent::pPrepareSolidity(){
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt( textureNumber );
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
+			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
 		}
 		
 	}else{
@@ -1950,6 +1948,7 @@ void deoglRComponent::pPrepareSolidity(){
 			const deoglSkinTexture &skinTexture = skin->GetTextureAt( 0 );
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
+			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
 		}
 	}
 }
@@ -2074,6 +2073,7 @@ void deoglRComponent::pPrepareSkinStateRenderables( const deoglRenderPlanMasked 
 		return;
 	}
 	pDirtyPrepareSkinStateRenderables = false;
+	pDirtyRenderSkinStateRenderables = true;
 	
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, plan );
@@ -2083,6 +2083,23 @@ void deoglRComponent::pPrepareSkinStateRenderables( const deoglRenderPlanMasked 
 	int i;
 	for( i=0; i<textureCount; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables( plan );
+	}
+}
+
+void deoglRComponent::pRenderSkinStateRenderables( const deoglRenderPlanMasked *plan ){
+	if( ! pDirtyRenderSkinStateRenderables ){
+		return;
+	}
+	pDirtyRenderSkinStateRenderables = false;
+	
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, plan );
+	}
+	
+	const int textureCount = pTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->RenderSkinStateRenderables( plan );
 	}
 }
 
@@ -2150,16 +2167,8 @@ void deoglRComponent::pPrepareParamBlocks(){
 	
 	if( pDirtyOccMeshSharedSPBElement ){
 		if( pOccMeshSharedSPBElement ){
-			deoglShaderParameterBlock &paramBlock = pOccMeshSharedSPBElement->MapBuffer();
-			try{
-				UpdateOccmeshInstanceParamBlock( paramBlock, pOccMeshSharedSPBElement->GetIndex() );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
+			UpdateOccmeshInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pOccMeshSharedSPBElement ),
+				pOccMeshSharedSPBElement->GetIndex() );
 		}
 		
 		pDirtyOccMeshSharedSPBElement = false;
@@ -2185,11 +2194,25 @@ void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPl
 		return;
 	}
 	pDirtyDecals = false;
+	pDirtyDecalsRenderRenderables = true;
 	
 	const int count = pDecals.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan, mask );
+	}
+}
+
+void deoglRComponent::pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( ! pDirtyDecalsRenderRenderables ){
+		return;
+	}
+	pDirtyDecalsRenderRenderables = false;
+	
+	const int count = pDecals.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRenderRender( plan, mask );
 	}
 }
 
@@ -2214,7 +2237,6 @@ void deoglRComponent::pPrepareOccMeshRTSInstances(){
 			rtsi.SetFirstPoint( pointOffset );
 			rtsi.SetFirstIndex( block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
 			rtsi.SetIndexCount( pOcclusionMesh->GetDoubleSidedFaceCount() * 3 );
-			rtsi.SetDoubleSided( true );
 		}
 		
 		if( pOccMeshSharedSPBSingleSided ){
@@ -2222,7 +2244,6 @@ void deoglRComponent::pPrepareOccMeshRTSInstances(){
 			rtsi.SetFirstPoint( pointOffset );
 			rtsi.SetFirstIndex( block.GetIndexOffset() );
 			rtsi.SetIndexCount( pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
-			rtsi.SetDoubleSided( false );
 		}
 	}
 }

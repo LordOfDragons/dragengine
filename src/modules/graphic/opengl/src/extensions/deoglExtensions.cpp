@@ -137,6 +137,15 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_program_interface_query",
 	"GL_ARB_shader_image_load_store",
 	"GL_ARB_compute_shader",
+	"GL_ARB_draw_indirect",
+	"GL_ARB_multi_draw_indirect",
+	"GL_ARB_indirect_parameters",
+	"GL_ARB_bindless_texture",
+	"GL_ARB_fragment_layer_viewport",
+	"GL_ARB_shader_draw_parameters",
+	"GL_ARB_shader_viewport_layer_array",
+	"GL_ARB_depth_clamp",
+	"GL_ARB_shading_language_420pack",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -158,6 +167,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_AMD_debug_output",
 	"GL_AMD_performance_monitor",
 	"GL_AMD_seamless_cubemap_per_texture",
+	"GL_AMD_vertex_shader_layer",
 	
 	"GL_ATI_meminfo",
 	"GL_ATI_separate_stencil",
@@ -198,7 +208,8 @@ pHasSeamlessCubeMap( false ),
 pHasCopyImage( false ),
 pSupportsGeometryShader( false ),
 pSupportsGSInstancing( false ),
-pSupportsComputeShader( false )
+pSupportsComputeShader( false ),
+pSupportsVSLayer( false )
 {
 	int i;
 	for( i=0; i<EXT_COUNT; i++ ){
@@ -268,10 +279,19 @@ void deoglExtensions::PrintSummary(){
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No" );
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No" );
 	pRenderThread.GetLogger().LogInfoFormat( "- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No" );
 }
 
 bool deoglExtensions::VerifyPresence(){
 	bool allPresent = pHasRequiredFunctions;
+	
+	allPresent &= pHasExtension[ ext_ARB_depth_clamp ];
+	allPresent &= pHasExtension[ ext_ARB_copy_image ] || pHasExtension[ ext_NV_copy_image ];
+	allPresent &= pHasExtension[ ext_ARB_compute_shader ];
+	allPresent &= pHasExtension[ ext_ARB_shader_storage_buffer_object ];
+	allPresent &= pHasExtension[ ext_ARB_shader_image_load_store ];
+	allPresent &= pHasExtension[ ext_ARB_shading_language_420pack ];
+	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;
 }
@@ -289,11 +309,6 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 	pDisableExtension[ extension ] = true;
 	
 	switch( extension ){
-	case ext_ARB_compute_shader:
-		pglDispatchCompute = NULL;
-		pglDispatchComputeIndirect = NULL;
-		break;
-		
 	case ext_ARB_shader_storage_buffer_object:
 		pglShaderStorageBlockBinding = NULL;
 		break;
@@ -592,6 +607,31 @@ void deoglExtensions::pScanExtensions(){
 		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
 	}
 	
+	// this one is strange. ARB_shader_draw_parameters yields gl_DrawID in vertex shaders.
+	// this extension can be found on <4.6 core GPUs. but without 4.6 core gl_DrawID causes
+	// shader compilation to fail. sometimes OpenGL is a huge mess. why expose the presence
+	// of gl_DrawID using an extension on a lower core version if a higher core version is
+	// mandatory to use it?
+	if( pHasExtension[ ext_ARB_shader_draw_parameters ] && pGLVersion < evgl4p6 ){
+		pRenderThread.GetLogger().LogWarn( "Extension ARB_shader_draw_parameters forcefully"
+			" disabled since OpenGL is less then 4.6 Core" );
+		pHasExtension[ ext_ARB_shader_draw_parameters ] = false;
+	}
+	
+	// the same problem for gl_Layer in vertex shaders. looks like core 4.5 is required
+	// otherwise it fails. maybe later on create a bug-test to figure out if these two
+	// parameters are supported so we do not have to hard-code things here
+	if( pHasExtension[ ext_ARB_shader_viewport_layer_array ] && pGLVersion < evgl4p5 ){
+		pRenderThread.GetLogger().LogWarn( "Extension ARB_shader_viewport_layer_array forcefully"
+			" disabled since OpenGL is less then 4.5 Core" );
+		pHasExtension[ ext_ARB_shader_viewport_layer_array ] = false;
+	}
+	if( pHasExtension[ ext_AMD_vertex_shader_layer ] && pGLVersion < evgl4p5 ){
+		pRenderThread.GetLogger().LogWarn( "Extension AMD_vertex_shader_layer forcefully"
+			" disabled since OpenGL is less then 4.5 Core" );
+		pHasExtension[ ext_AMD_vertex_shader_layer ] = false;
+	}
+	
 	pHasSeamlessCubeMap = pHasExtension[ ext_ARB_seamless_cube_map ]
 		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
 	
@@ -614,6 +654,9 @@ void deoglExtensions::pScanExtensions(){
 	pSupportsComputeShader = pGLVersion >= evgl4p6
 		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_compute_shader ];
+	
+	pSupportsVSLayer = pHasExtension[ ext_ARB_shader_viewport_layer_array ]
+		|| pHasExtension[ ext_AMD_vertex_shader_layer ];
 	
 	#ifdef OS_ANDROID
 	/*
@@ -679,6 +722,9 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	#ifndef ANDROID
 	pGetRequiredFunction( (void**)&pglGetCompressedTexImage, "glGetCompressedTexImage" );
 	#endif
+	
+	// opengl version 1.4
+	pGetRequiredFunction( (void**)&pglBlendFuncSeparate, "glBlendFuncSeparate" );
 	
 	// GL_ARB_vertex_buffer_object . opengl version 1.5
 	pGetRequiredFunction( (void**)&pglBindBuffer, "glBindBuffer" );
@@ -782,6 +828,14 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// GL_EXT_gpu_shader4 : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglBindFragDataLocation, "glBindFragDataLocation" );
+	pGetRequiredFunction( (void**)&pglUniform1ui, "glUniform1ui" );
+	pGetRequiredFunction( (void**)&pglUniform2ui, "glUniform2ui" );
+	pGetRequiredFunction( (void**)&pglUniform3ui, "glUniform3ui" );
+	pGetRequiredFunction( (void**)&pglUniform4ui, "glUniform4ui" );
+	pGetRequiredFunction( (void**)&pglUniform1uiv, "glUniform1uiv" );
+	pGetRequiredFunction( (void**)&pglUniform2uiv, "glUniform2uiv" );
+	pGetRequiredFunction( (void**)&pglUniform3uiv, "glUniform3uiv" );
+	pGetRequiredFunction( (void**)&pglUniform4uiv, "glUniform4uiv" );
 	
 	// GL_EXT_texture_array : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglFramebufferTextureLayer, "glFramebufferTextureLayer" );
@@ -869,6 +923,25 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_EXT_copy_texture : no opengl version
 	
 	// GL_EXT_texture_object : no opengl version
+	
+	// GL_ARB_compute_shader : opengl version 4.3
+	#ifdef ANDROID
+	if( ! pSupportsComputeShader ){
+		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
+	}
+	pglDispatchCompute = eglDispatchCompute;
+	pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+	#else
+	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
+	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
+	#endif
+	
+	// memory barrier required by compute shaders
+	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
+	
+	// no opengl version: 2.0 stuff
+	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
+	pGetRequiredFunction( (void**)&pglMultiDrawElements, "glMultiDrawElements" );
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){
@@ -887,6 +960,8 @@ void deoglExtensions::pFetchOptionalFunctions(){
 			"glDrawRangeElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
 		pGetOptionalFunctionArbExt( (void**)&pglDrawElementsInstancedBaseVertex,
 			"glDrawElementsInstancedBaseVertex", ext_ARB_draw_elements_base_vertex );
+		pGetOptionalFunctionArbExt( (void**)&pglMultiDrawElementsBaseVertex,
+			"glMultiDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
 		pGetOptionalFunctionArbExt( (void**)&pglVertexAttribIPointer,
 			"glVertexAttribIPointer", ext_ARB_draw_elements_base_vertex );
 	}
@@ -983,21 +1058,27 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		#endif
 	}
 	
-	// GL_ARB_compute_shader : opengl version 4.3
-	pHasExtension[ ext_ARB_compute_shader ] &= ! pDisableExtension[ ext_ARB_compute_shader ];
-	if( pHasExtension[ ext_ARB_compute_shader ] ){
-		#ifdef ANDROID
-		pglDispatchCompute = eglDispatchCompute;
-		pglDispatchComputeIndirect = eglDispatchComputeIndirect;
-		#else
-		pGetOptionalFunction( (void**)&pglDispatchCompute, "glDispatchCompute", ext_ARB_compute_shader );
-		pGetOptionalFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect", ext_ARB_compute_shader );
-		#endif
+	// GL_ARB_draw_indirect : opengl version 4.3
+	if( pHasExtension[ ext_ARB_draw_indirect ] ){
+		pGetOptionalFunction( (void**)&pglDrawArraysIndirect, "glDrawArraysIndirect", ext_ARB_draw_indirect );
+		pGetOptionalFunction( (void**)&pglDrawElementsIndirect, "glDrawElementsIndirect", ext_ARB_draw_indirect );
+	}
+	
+	// GL_ARB_multi_draw_indirect : opengl version 4.3
+	if( pHasExtension[ ext_ARB_multi_draw_indirect ] ){
+		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", ext_ARB_multi_draw_indirect );
+		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", ext_ARB_multi_draw_indirect );
 	}
 	
 	// GL_ARB_clip_control : opengl version 4.5
 	if( pHasExtension[ ext_ARB_clip_control ] ){
 		pGetOptionalFunction( (void**)&pglClipControl, "glClipControl", ext_ARB_clip_control );
+	}
+	
+	// GL_ARB_indirect_parameters : opengl version 4.6
+	if( pHasExtension[ ext_ARB_indirect_parameters ] ){
+		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirectCountARB, "glMultiDrawArraysIndirectCountARB", ext_ARB_indirect_parameters );
+		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirectCountARB, "glMultiDrawElementsIndirectCountARB", ext_ARB_indirect_parameters );
 	}
 	
 	// GL_ARB_geometry_shader4 : no opengl version
@@ -1026,6 +1107,9 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageCallback, "glDebugMessageCallback", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglGetDebugMessageLog, "glGetDebugMessageLog", ext_KHR_debug );
+		pGetOptionalFunctionArbExt( (void**)&pglPushDebugGroup, "glPushDebugGroup", ext_KHR_debug );
+		pGetOptionalFunctionArbExt( (void**)&pglPopDebugGroup, "glPopDebugGroup", ext_KHR_debug );
+		pGetOptionalFunctionArbExt( (void**)&pglObjectLabel, "glObjectLabel", ext_KHR_debug );
 		
 	}else if( pHasExtension[ ext_ARB_debug_output ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_ARB_debug_output );
@@ -1099,6 +1183,11 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	#endif
 	
+	// OpenGL 4.2 : no extension (moved to required)
+// 	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
+// 		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
+// 	}
+	
 	// OpenGL 4.3 : no extension
 	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0 ){
 		pGetRequiredFunction( (void**)&pglInvalidateFramebuffer, "glInvalidateFramebuffer" );
@@ -1107,6 +1196,24 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// OpenGL 3.2 : no extension
 	if( pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0 ){
 		pGetRequiredFunction( (void**)&pglGetInteger64v, "glGetInteger64v" );
+	}
+	
+	// GL_ARB_bindless_texture : opengl version 4.6
+	if( pHasExtension[ ext_ARB_bindless_texture ] ){
+		pGetOptionalFunction( (void**)&pglGetTextureHandleARB, "glGetTextureHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetTextureSamplerHandleARB, "glGetTextureSamplerHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeTextureHandleResidentARB, "glMakeTextureHandleResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeTextureHandleNonResidentARB, "glMakeTextureHandleNonResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetImageHandleARB, "glGetImageHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeImageHandleResidentARB, "glMakeImageHandleResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeImageHandleNonResidentARB, "glMakeImageHandleNonResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglUniformHandleui64ARB, "glUniformHandleui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglUniformHandleui64vARB, "glUniformHandleui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglProgramUniformHandleui64ARB, "glProgramUniformHandleui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglProgramUniformHandleui64vARB, "glProgramUniformHandleui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64ARB, "glVertexAttribL1ui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64vARB, "glVertexAttribL1ui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture );
 	}
 }
 

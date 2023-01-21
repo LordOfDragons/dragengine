@@ -44,7 +44,6 @@ private:
 	const char *pRigBoneName;
 	int pIndex;
 	int pRigIndex;
-	int pAnimBone;
 	dearBoneState *pParentState;
 	dearBoneState **pChildStates;
 	int pChildStateCount, pChildStateSize;
@@ -87,10 +86,6 @@ public:
 	inline int GetRigIndex() const{ return pRigIndex; }
 	/** Sets the rig index. */
 	void SetRigIndex( int index );
-	/** Retrieves the animation bone index. */
-	inline int GetAnimationBone() const{ return pAnimBone; }
-	/** Sets the animation bone index. */
-	void SetAnimationBone( int index );
 	/** Retrieves the parent bone state or NULL if not existing. */
 	inline dearBoneState *GetParentState() const{ return pParentState; }
 	/** Sets the parent bone state or NULL if not existing. */

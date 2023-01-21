@@ -56,7 +56,7 @@ ceControllerValue *ceControllerValueList::GetAt( int index ) const{
 	return ( ceControllerValue* )pList.GetAt( index );
 }
 
-ceControllerValue *ceControllerValueList::GetWith( int controller ) const{
+ceControllerValue *ceControllerValueList::GetNamed( const char *controller ) const{
 	const int count = pList.GetCount();
 	ceControllerValue *entry;
 	int i;
@@ -76,7 +76,7 @@ int ceControllerValueList::IndexOf( ceControllerValue *entry ) const{
 	return pList.IndexOf( entry );
 }
 
-int ceControllerValueList::IndexOfWith( int controller ) const{
+int ceControllerValueList::IndexOfNamed( const char *controller ) const{
 	const int count = pList.GetCount();
 	int i;
 	
@@ -93,7 +93,7 @@ bool ceControllerValueList::Has( ceControllerValue *entry ) const{
 	return pList.Has( entry );
 }
 
-bool ceControllerValueList::HasWith( int controller ) const{
+bool ceControllerValueList::HasNamed( const char *controller ) const{
 	const int count = pList.GetCount();
 	int i;
 	
@@ -107,7 +107,7 @@ bool ceControllerValueList::HasWith( int controller ) const{
 }
 
 void ceControllerValueList::Add( ceControllerValue *entry ){
-	if( ! entry || HasWith( entry->GetController() ) ){
+	if( ! entry || HasNamed ( entry->GetController() ) ){
 		DETHROW( deeInvalidParam );
 	}
 	

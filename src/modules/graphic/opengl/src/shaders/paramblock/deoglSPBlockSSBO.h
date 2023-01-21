@@ -30,8 +30,14 @@
  */
 class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
+	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
+	
+	
+	
+private:
 	GLuint pSSBO;
 	int pBindingPoint;
+	bool pCompact;
 	bool pAllocateBuffer;
 	
 	char *pWriteBuffer;
@@ -70,17 +76,29 @@ public:
 	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
+	/** Compact elements. If true mapping individual elements is prohibited. */
+	inline bool GetCompact() const{ return pCompact; }
+	
+	/** Set if elements are compact. If true mapping individual elements is prohibited. */
+	void SetCompact( bool compact );
+	
 	/** Activate buffer. */
 	virtual void Activate() const;
 	
 	/** Activate buffer overriding binding point. */
 	virtual void Activate( int bindingPoint ) const;
 	
+	/** Activate buffer as UBO. */
+	void ActivateUBO( int bindingPoint ) const;
+	
 	/** Deactivate buffer. */
 	virtual void Deactivate() const;
 	
 	/** Deactivate buffer overriding binding point. */
 	virtual void Deactivate( int bindingPoint ) const;
+	
+	/** Deactivate buffer overriding binding point if bound as UBO. */
+	void DeactivateUBO( int bindingPoint ) const;
 	
 	/** Map buffer discarding content. */
 	virtual void MapBuffer();
@@ -101,6 +119,12 @@ public:
 	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
+	
+	/** Read data from SSBO into write buffer. Returns write buffer memory pointer. */
+	char *ReadBuffer();
+	
+	/** Read partial data from SSBO into write buffer. Returns write buffer memory pointer. */
+	char *ReadBuffer( int elementCount );
 	
 	
 	

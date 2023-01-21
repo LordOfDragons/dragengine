@@ -28,7 +28,6 @@
 class deoglRenderThread;
 class deoglFramebuffer;
 class deoglTexture;
-class deoglRenderbuffer;
 
 
 
@@ -90,6 +89,9 @@ public:
 	
 	/** Framebuffer or \em NULL if not existing. */
 	inline deoglFramebuffer *GetFBO() const{ return pFBO; }
+	
+	/** Prepare texture. */
+	void PrepareTexture();
 	
 	/** Prepare framebuffer for rendering. */
 	void PrepareFramebuffer();

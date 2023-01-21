@@ -1,11 +1,12 @@
 precision highp float;
 precision highp int;
 
-uniform vec4 pAvgLogLumTCs; // tc1.s, tc1.t, tc2.s, tc2.t
-uniform vec2 pOptions; // exposure, lwhite
-uniform vec4 pAdaption; // lowestLuminance, highestLuminance, elapsedTime, adaptionTime
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
-uniform mediump sampler2D texAvgLogLum;
+uniform vec4 pAvgLogLumTCs; // tc1.s, tc1.t, tc2.s, tc2.t
+
+uniform mediump sampler2DArray texAvgLogLum;
 uniform mediump sampler2D texLastParams;
 uniform mediump samplerCube texEnvMap;
 
@@ -19,10 +20,18 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 void main( void ){
 	vec4 avgLums;
 	
-	avgLums.x = textureLod( texAvgLogLum, pAvgLogLumTCs.xy, 0.0 ).r; // tc1.s, tc1.t
-	avgLums.y = textureLod( texAvgLogLum, pAvgLogLumTCs.xw, 0.0 ).r; // tc1.s, tc2.t
-	avgLums.z = textureLod( texAvgLogLum, pAvgLogLumTCs.zy, 0.0 ).r; // tc2.s, tc1.t
-	avgLums.w = textureLod( texAvgLogLum, pAvgLogLumTCs.zw, 0.0 ).r; // tc2.s, tc2.t
+	avgLums.x = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 0 ), 0 ).r; // tc1.s, tc1.t
+	avgLums.y = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 0 ), 0 ).r; // tc1.s, tc2.t
+	avgLums.z = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 0 ), 0 ).r; // tc2.s, tc1.t
+	avgLums.w = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 0 ), 0 ).r; // tc2.s, tc2.t
+	
+	#ifdef SAMPLE_STEREO
+	avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0 ).r; // tc1.s, tc1.t
+	avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0 ).r; // tc1.s, tc2.t
+	avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0 ).r; // tc2.s, tc1.t
+	avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0 ).r; // tc2.s, tc2.t
+	avgLums /= vec4( 2 );
+	#endif
 	
 	//vec3 envLight = texture( texEnvMap, vec3( 0.0, 1.0, 0.0 ) ).rgb;
 	//float envLuminance = dot( envLight, lumiFactors );
@@ -30,24 +39,24 @@ void main( void ){
 	float averageLuminance = exp( dot( avgLums, weightAvgLum ) );
 	vec4 lastParams = texelFetch( texLastParams, tcParameters, 0 );
 	
-	float lwhite = 1.0 / ( pOptions.y * pOptions.y );
+	float lwhite = 1.0 / ( pToneMapMaxWhiteLum * pToneMapMaxWhiteLum );
 	
 	float ckey = 0.18; //0.27; // average constant key: ( 0.18 + 0.36 ) / 2
 	
 	// limit the luminance
-	//averageLuminance = clamp( averageLuminance, pAdaption.x, pAdaption.y );
+	//averageLuminance = clamp( averageLuminance, pToneMapLowLuminance, pToneMapHighLuminance );
 	
-//	float avglmin = pAdaption.x * ( 1.03 - 2.0 / ( 2.0 + log( pAdaption.x + 1.0 ) / log( 10.0 ) ) );
-//	float avglmax = pAdaption.y * ( 1.03 - 2.0 / ( 2.0 + log( pAdaption.y + 1.0 ) / log( 10.0 ) ) );
+//	float avglmin = pToneMapLowLuminance * ( 1.03 - 2.0 / ( 2.0 + log( pToneMapLowLuminance + 1.0 ) / log( 10.0 ) ) );
+//	float avglmax = pToneMapHighLuminance * ( 1.03 - 2.0 / ( 2.0 + log( pToneMapHighLuminance + 1.0 ) / log( 10.0 ) ) );
 //	averageLuminance = clamp( averageLuminance, avglmin, avglmax );
 	
-	vec2 avglLimits = pAdaption.xy * vec2( ckey );
+	vec2 avglLimits = vec2( pToneMapLowLuminance, pToneMapHighLuminance ) * vec2( ckey );
 	
 	averageLuminance = clamp( averageLuminance, avglLimits.x, avglLimits.y );
 	lastParams.x = clamp( lastParams.x, avglLimits.x, avglLimits.y ); // avoid long change if limits change
 	
 	// adjust luminance over time
-	float adaptionFactor = pAdaption.z;
+	float adaptionFactor = pToneMapAdaptionTime;
 	if( averageLuminance < lastParams.x ){
 		adaptionFactor * 0.25; // hack: 4 times longer to adapt to darkness than to adapt to lightness
 	}
@@ -57,16 +66,16 @@ void main( void ){
 //	float key = 1.03 - 2.0 / ( 2.0 + log( averageLuminance + 1.0 ) / log( 10.0 ) ); // paper
 	//float key = max( 0.0, 1.5 - 1.5 / ( averageLuminance * 0.1 + 1.0 ) ) + 0.1; // ogre
 	float maxLum = averageLuminance / ckey;
-	float scaleLum = pOptions.y / maxLum;
+	float scaleLum = pToneMapMaxWhiteLum / maxLum;
 	
 	// adjust the image key using the user chosen exposure
-	scaleLum *= pOptions.x;
+	scaleLum *= pToneMapExposure;
 	
 	// calculate the maximum white factor
 	//float lwhite = 1.0 / ( scaleLum * scaleLum ); // = 1.0 / ( ( key / averageLuminance ) ** 2 )
 	//gl_FragColor.b = 1.0 / ( ( 2.0 * scaleLum ) * ( 2.0 * scaleLum ) );
-	//     float lwhite = 1.0 / ( pOptions.y * pOptions.y );
-	//float lwhite = 1.0 / ( pAdaption.y * pAdaption.y * scaleLum * scaleLum );
+	//     float lwhite = 1.0 / ( pToneMapMaxWhiteLum * pToneMapMaxWhiteLum );
+	//float lwhite = 1.0 / ( pToneMapHighLuminance * pToneMapHighLuminance * scaleLum * scaleLum );
 	//float brightPassThreshold = ( 1.0 / scaleLum - 1.0 ) / ( scaleLum * lwhite - 1.0 );
 	
 	// 0.8 results in bright cut-off around 1.47 * camera intensity. this equals roughly averageLuminance in the
@@ -88,7 +97,7 @@ void main( void ){
 	//   lwhite = 1.0 / ( w * w )
 	//float brightPassThreshold = 2.0 / scaleLum; //0.813 / scaleLum;
 	float brightPassThreshold = maxLum * 2.0; // * 1.2;
-	//float brightPassThreshold = 0.542 * pOptions.y / scaleLum; // an option here would be better?
+	//float brightPassThreshold = 0.542 * pToneMapMaxWhiteLum / scaleLum; // an option here would be better?
 	
 	// write parameters
 	outParams = vec4( averageLuminance, scaleLum, lwhite, brightPassThreshold );

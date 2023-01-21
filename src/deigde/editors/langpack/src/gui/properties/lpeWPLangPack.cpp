@@ -28,6 +28,7 @@
 #include "lpeWindowProperties.h"
 #include "../lpeWindowMain.h"
 #include "../../langpack/lpeLangPack.h"
+#include "../../undosys/langpack/lpeULangPackSetIdentifier.h"
 #include "../../undosys/langpack/lpeULangPackSetName.h"
 #include "../../undosys/langpack/lpeULangPackSetDescription.h"
 #include "../../undosys/langpack/lpeULangPackSetMissingText.h"
@@ -108,6 +109,16 @@ public:
 
 
 
+class cTextIdentifier : public cBaseTextFieldListener{
+public:
+	cTextIdentifier( lpeWPLangPack &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, lpeLangPack *langpack ){
+		return textField->GetText() != langpack->GetIdentifier()
+			? new lpeULangPackSetIdentifier( langpack, textField->GetText() ) : nullptr;
+	}
+};
+
 class cTextName : public cBaseTextFieldListener{
 public:
 	cTextName( lpeWPLangPack &panel ) : cBaseTextFieldListener( panel ){ }
@@ -173,9 +184,11 @@ pLangPack( NULL )
 	// language pack
 	helper.GroupBox( content, groupBox, "Language Pack:" );
 	
-	helper.EditString( groupBox, "Name:", "Name of the language pack.",
+	helper.EditString( groupBox, "Identifier:", "Unique identifier of language pack.",
+		pEditIdentifier, new cTextIdentifier( *this ) );
+	helper.EditString( groupBox, "Name:", "Name of language pack.",
 		pEditName, new cTextName( *this ) );
-	helper.EditString( groupBox, "Description:", "Description of the language pack.",
+	helper.EditString( groupBox, "Description:", "Description of language pack.",
 		pEditDescription, 5, new cTextDescription( *this ) );
 	helper.EditString( groupBox, "Missing Text:", "Text to use for missing entries.",
 		pEditMissingText, new cTextMissingText( *this ) );
@@ -218,17 +231,20 @@ void lpeWPLangPack::SetLangPack( lpeLangPack *langpack ){
 
 void lpeWPLangPack::UpdateLangPack(){
 	if( pLangPack ){
+		pEditIdentifier->SetText( pLangPack->GetIdentifier() );
 		pEditName->SetText( pLangPack->GetName().ToUTF8() );
 		pEditDescription->SetText( pLangPack->GetDescription().ToUTF8() );
 		pEditMissingText->SetText( pLangPack->GetMissingText().ToUTF8() );
 		
 	}else{
+		pEditIdentifier->SetText( "" );
 		pEditName->SetText( "" );
 		pEditDescription->SetText( "" );
 		pEditMissingText->SetText( "" );
 	}
 	
-	const bool enabled = pLangPack != NULL;
+	const bool enabled = pLangPack != nullptr;
+	pEditIdentifier->SetEnabled( enabled );
 	pEditName->SetEnabled( enabled );
 	pEditDescription->SetEnabled( enabled );
 	pEditMissingText->SetEnabled( enabled );

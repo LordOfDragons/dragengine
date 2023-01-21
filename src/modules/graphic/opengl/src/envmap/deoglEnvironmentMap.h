@@ -232,7 +232,7 @@ public:
 	inline deoglComponentSet &GetComponentList(){ return pComponentList; }
 	inline const deoglComponentSet &GetComponentList() const{ return pComponentList; }
 	
-	/** \brief Billboard list. */
+	/** Billboard list. */
 	inline deoglBillboardList &GetBillboardList(){ return pBillboardList; }
 	inline const deoglBillboardList &GetBillboardList() const{ return pBillboardList; }
 	
@@ -304,10 +304,10 @@ public:
 	/** Sky changed. */
 	void SkyChanged();
 	
-	/** \brief Light changed. */
+	/** Light changed. */
 	void LightChanged( deoglRLight *light );
 	
-	/** \brief Prepare for quick disposal of environment map. */
+	/** Prepare for quick disposal of environment map. */
 	void PrepareQuickDispose();
 	/*@}*/
 	

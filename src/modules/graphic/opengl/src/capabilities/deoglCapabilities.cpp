@@ -49,6 +49,8 @@ deoglCapabilities::deoglCapabilities( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pFormats( *this ),
 
+pMaxTextureSize( 1024 ),
+pMax3DTextureSize( 1024 ),
 pMaxDrawBuffers( 4 ),
 pUBOMaxSize( 0 ),
 pTBOMaxSize( 0 ),
@@ -56,6 +58,7 @@ pSSBOMaxSize( 0 ),
 pSSBOMaxBlocksVertex( 0 ),
 pSSBOMaxBlocksFragment( 0 ),
 pSSBOMaxBlocksGeometry( 0 ),
+pSSBOMaxBlocksCompute( 0 ),
 pUBOOffsetAlignment( 4 ),
 pGeometryShaderMaxVertices( 0 ),
 pGeometryShaderMaxComponents( 0 ),
@@ -143,6 +146,12 @@ void deoglCapabilities::DetectCapabilities(){
 		pFormats.DetectFormats( fbo );
 		
 		// test important hardware limits
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMaxTextureSize = ( int )resultsInt[ 0 ];
+		
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMax3DTextureSize = ( int )resultsInt[ 0 ];
+		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_DRAW_BUFFERS, &resultsInt[ 0 ] ) );
 		pMaxDrawBuffers = ( int )resultsInt[ 0 ];
 		
@@ -161,8 +170,8 @@ void deoglCapabilities::DetectCapabilities(){
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 			if( pglGetInteger64v ){
 				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
-				if( resultsInt64[ 0 ] > 0xfffffffc ){
-					resultsInt64[ 0 ] = 0xfffffffc;
+				if( resultsInt64[ 0 ] > 0x7fffffff ){
+					resultsInt64[ 0 ] = 0x7fffffff; // max 2GB is enough and does not overflow int32
 				}
 				pSSBOMaxSize = ( int )resultsInt64[ 0 ];
 				
@@ -179,6 +188,11 @@ void deoglCapabilities::DetectCapabilities(){
 			
 			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
 			pSSBOMaxBlocksGeometry = ( int )resultsInt[ 0 ];
+			
+			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader ) ){
+				OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
+				pSSBOMaxBlocksCompute = ( int )resultsInt[ 0 ];
+			}
 		}
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_OUTPUT_VERTICES, &resultsInt[ 0 ] ) );
@@ -190,6 +204,8 @@ void deoglCapabilities::DetectCapabilities(){
 		// report capabilities
 		if( true ){
 			logger.LogInfo( "Capabilities:" );
+			logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
+			logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
 			logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
 			logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
 			logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
@@ -200,6 +216,7 @@ void deoglCapabilities::DetectCapabilities(){
 			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
 			logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
 			logger.LogInfoFormat( "  - Fragment = %d", pSSBOMaxBlocksFragment );
+			logger.LogInfoFormat( "  - Compute = %d", pSSBOMaxBlocksCompute );
 			logger.LogInfo( "- Geometry Shader:" );
 			logger.LogInfoFormat( "  - Max Vertices = %d", pGeometryShaderMaxVertices );
 			logger.LogInfoFormat( "  - Max Components = %d", pGeometryShaderMaxComponents );
@@ -212,9 +229,10 @@ void deoglCapabilities::DetectCapabilities(){
 		}
 		
 		// disable extensions with troubles
-		if( pSSBOMaxBlocksVertex == 0 || pSSBOMaxBlocksGeometry == 0 || pSSBOMaxBlocksFragment == 0 ){
-			logger.LogWarn( "Capabilities: SSBO not supported on all "
-				"required shader stages. Disable SSBO Support." );
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
+		&& ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
+		&& pSSBOMaxBlocksCompute < 4 ){
+			logger.LogWarn( "Capabilities: SSBO does not support at least 4 compute SSBO blocks. Disable SSBO Support." );
 			ext.DisableExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object );
 		}
 		
@@ -377,9 +395,8 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer.GetPointerFloat4();
-	deoglShaderProgram *shader = NULL;
 	deoglTexture *texture = NULL;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{
@@ -388,7 +405,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// create test texture
 		texture = new deoglTexture( pRenderThread );
@@ -427,9 +444,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 		
-		shader->RemoveUsage();
-		shader = NULL;
-		
 		// retrieve the results and clean up
 		framebuffer->DetachAllImages();
 		texture->GetPixels( pixelBuffer );
@@ -438,9 +452,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		texture = NULL;
 		
 	}catch( const deException &e ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			delete texture;
 		}

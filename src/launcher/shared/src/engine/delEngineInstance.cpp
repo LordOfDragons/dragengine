@@ -43,7 +43,8 @@ delEngineInstance::Factory::~Factory(){}
 
 delEngineInstance::delEngineInstance( delLauncher &launcher, const char *logfile ) :
 pLauncher( launcher ),
-pLogFile( logfile ){
+pLogFile( logfile ),
+pUseConsole( false ){
 }
 
 delEngineInstance::~delEngineInstance(){
@@ -53,6 +54,14 @@ delEngineInstance::~delEngineInstance(){
 
 // Management
 ///////////////
+
+void delEngineInstance::SetLogFile( const decString &logFile ){
+	pLogFile = logFile;
+}
+
+void delEngineInstance::SetUseConsole( bool useConsole ){
+	pUseConsole = useConsole;
+}
 
 #ifdef OS_BEOS
 void delEngineInstance::BeosMessageReceived( BMessage *message ){

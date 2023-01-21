@@ -2,14 +2,14 @@
 <shader>
 	<name>ToneMap Luminance Prepare</name>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<version>130</version>
 	
 	<texture name='texColor' target='0'/>
 	
-	<parameter name='pPosTransform'/> <!-- 0 -->
-	<parameter name='pTCTransform'/> <!-- 1 -->
-	
-	<attribute name='inPosition' target='0'/> <!-- 0 -->
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outLuminance' target='0'/>
 	

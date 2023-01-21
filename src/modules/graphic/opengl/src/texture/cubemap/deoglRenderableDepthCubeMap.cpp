@@ -38,8 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableDepthCubeMap::deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size ) :
+deoglRenderableDepthCubeMap::deoglRenderableDepthCubeMap(
+	deoglRenderThread &renderThread, int size, bool useFloat ) :
 pSize( size ),
+pUseFloat( useFloat ),
 pInUse( false ),
 pCubeMap( NULL ),
 pMemoryUsageGPU( 0 )
@@ -51,7 +53,7 @@ pMemoryUsageGPU( 0 )
 	try{
 		pCubeMap = new deoglCubeMap( renderThread );
 		pCubeMap->SetSize( size );
-		pCubeMap->SetDepthFormat();
+		pCubeMap->SetDepthFormat( useFloat );
 		pCubeMap->CreateCubeMap();
 		UpdateMemoryUsage();
 		
@@ -72,8 +74,8 @@ deoglRenderableDepthCubeMap::~deoglRenderableDepthCubeMap(){
 // Management
 ///////////////
 
-bool deoglRenderableDepthCubeMap::Matches( int size ) const{
-	return ( size == pSize );
+bool deoglRenderableDepthCubeMap::Matches( int size, bool useFloat ) const{
+	return size == pSize && useFloat == pUseFloat;
 }
 
 void deoglRenderableDepthCubeMap::SetInUse( bool inUse ){

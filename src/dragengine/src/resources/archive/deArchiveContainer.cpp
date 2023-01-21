@@ -40,6 +40,7 @@
 
 deArchiveContainer::deArchiveContainer( const decPath &rootPath, deArchive *archive,
 const decPath &archivePath ) :
+deVFSContainer( rootPath ),
 pArchivePath( archivePath ),
 pArchive( NULL ),
 pLLManagerPrev( NULL ),

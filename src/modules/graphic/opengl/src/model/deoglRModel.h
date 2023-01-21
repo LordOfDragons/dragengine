@@ -40,7 +40,7 @@ class deModel;
  */
 class deoglRModel : public deObject{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<deoglRModel> Ref;
 	
 	

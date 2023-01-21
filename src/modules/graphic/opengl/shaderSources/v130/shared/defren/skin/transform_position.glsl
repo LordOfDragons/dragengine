@@ -5,7 +5,7 @@
 	const vec3 bbUp = vec3( 0.0, 1.0, 0.0 );
 #endif
 
-#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#define NO_TRANSFORMATION 1
 #endif
 
@@ -45,9 +45,9 @@ void transformPosition( out vec3 position, in int spbIndex )
 			#else
 				#define DISCARD_OP >
 			#endif
-			if( length( pMatrixV * vec4( pMatrixModel * vec4( instance1.xyz, 1.0 ), 1.0 ) ) DISCARD_OP 5.0 ){
-				position = vec3( 0.0, 0.0, 2.0 );
-				gl_Position = vec4( position, 1.0 );
+			if( length( pMatrixV[ inLayer ] * vec4( pMatrixModel * vec4( instance1.xyz, 1 ), 1 ) ) DISCARD_OP 5 ){
+				position = vec3( 0, 0, 2 );
+				gl_Position = vec4( position, 1 );
 				return;
 			}
 		#endif
@@ -62,11 +62,11 @@ void transformPosition( out vec3 position, in int spbIndex )
 		
 		#ifdef BILLBOARD
 			// precalculate some matrices used often
-			mat4x3 matMV = mat4x3( mat4( pMatrixV ) * mat4( pMatrixModel ) );
+			mat4x3 matMV = mat4x3( mat4( pMatrixV[ inLayer ] ) * mat4( pMatrixModel ) );
 			mat4x3 matRSMV = mat4x3( mat4( matMV ) * mat4( pfiRotScale ) );
 			
 			// calculate new instance matrix
-			vec3 bbPos = matMV * vec4( pfiPos, 1.0 );
+			vec3 bbPos = matMV * vec4( pfiPos, 1 );
 			mat3 matBBAxis = transpose( mat3( matRSMV ) );
 			vec3 bbView = normalize( matBBAxis * bbPos ); // used to select the layer
 			//vec3 bbView = normalize( matBBAxis[ 2 ] ); // used to select the layer
@@ -80,24 +80,24 @@ void transformPosition( out vec3 position, in int spbIndex )
 			vec2 bbAxis = normalize( matBBAxis[ 0 ].xz );
 			float bbRot = dot( bendState1.xy, bbAxis );
 			mat2 matBend = mat2( cos( bbRot ), -sin( bbRot ), sin( bbRot ), cos( bbRot ) );
-			position = bbMat * vec3( inPosition.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw, 0.0 );
+			position = bbMat * vec3( inPosition.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw, 0 );
 			
 			transformTransfer.matRSMV = matRSMV;
 			transformTransfer.bbMat = bbMat;
 			
 		#else
 			// create bend matrix
-			vec2 bend = bendState1.xy * vec2( min( pPropFieldParams * length( inPosition ), 1.0 ) );
+			vec2 bend = bendState1.xy * vec2( min( pPropFieldParams * length( inPosition ), 1 ) );
 			vec4 bs = sin( vec4( bend, -bend ) );
 			vec2 bc = cos( bend );
-			mat3 matBend = mat3( bc.y, bs.y, 0.0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );
+			mat3 matBend = mat3( bc.y, bs.y, 0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );
 			
 			// calculate vertex position
 			position = matBend * ( pfiRotScale * inPosition ) + pfiPos;
 		#endif
 		
 	// height maps
-	#elif defined( HEIGHT_MAP )
+	#elif defined HEIGHT_MAP
 		position = vec3( inPosition.x, inHeight, inPosition.y );
 		
 	// everything else
@@ -107,27 +107,31 @@ void transformPosition( out vec3 position, in int spbIndex )
 	
 	#ifdef BILLBOARD
 		#ifdef PROP_FIELD
-			position.xyz = matMV * vec4( pfiRotScale * position.xyz + pfiPos, 1.0 ) - bbPos;
+			position.xyz = matMV * vec4( pfiRotScale * position.xyz + pfiPos, 1 ) - bbPos;
 			position.xy = matBend * position.xy;
 			position.xyz += bbPos;
 			
 		#else
+			// using stereo rendering the left and right view have to use the same billboard
+			// orientation or the rendering breaks. for this reason the left view camera matrix
+			// is used. during geometry shader the position has to be fixed for the right view
+			// otherwise rendering breaks
 			vec2 coord = position.xy * pBillboardPosTransform.xy + pBillboardPosTransform.zw;
-			vec3 refPos = pMatrixV * vec4( pMatrixModel[ 3 ], 1.0 );
+			vec3 refPos = pMatrixV[ inLayer ] * vec4( pMatrixModel[ 3 ], 1 );
 			
 			if( pBillboardParams.z ){ // sizeFixedToScreen
 				coord *= vec2( refPos.z * pBillboardZScale );
 			}
 			
 			if( pBillboardParams.x ){ // locked
-				vec3 up = normalize( mat3( pMatrixV ) * pMatrixModel[ 1 ] );
-				vec3 view = pBillboardParams.y ? normalize( refPos ) : vec3( 0.0, 0.0, 1.0 ); // spherical
+				vec3 up = normalize( mat3( pMatrixV[ inLayer ] ) * pMatrixModel[ 1 ] );
+				vec3 view = pBillboardParams.y ? normalize( refPos ) : vec3( 0, 0, 1 ); // spherical
 				vec3 right = normalize( cross( up, view ) );
 				
 				position = refPos + right * coord.x + up * coord.y;
 				
 			}else{
-				position = refPos + vec3( coord, 0.0 );
+				position = refPos + vec3( coord, 0 );
 			}
 		#endif
 		
@@ -135,21 +139,24 @@ void transformPosition( out vec3 position, in int spbIndex )
 		position = sanitizePosition( position );
 		
 		#ifdef NO_TRANSFORMATION
-			gl_Position = vec4( position, 1.0 );
+			gl_Position = vec4( position, 1 );
 			
 		#else
-			gl_Position = pMatrixP * vec4( position, 1.0 );
+			gl_Position = pMatrixP[ inLayer ] * vec4( position, 1 );
 		#endif
 		
 	#else
-		position = pMatrixModel * vec4( position, 1.0 );
+		position = pMatrixModel * vec4( position, 1 );
 		
 		// outline. done after matrix model to avoid scaling affecting the result
 		#ifdef WITH_OUTLINE
 			float outlineThickness = pOutlineThickness;
 			#ifdef WITH_OUTLINE_THICKNESS_SCREEN
 				// we can use pBillboardZScale since this is tan(camera.fov / 2)
-				outlineThickness *= ( pMatrixV * vec4( position, 1.0 ) ).z * pBillboardZScale;
+				// using the first camera matrix since the stereo camera matrix produces the
+				// same result. even if slightly different both views have to use the same
+				// thickness or it looks wrong
+				outlineThickness *= ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z * pBillboardZScale;
 			#endif
 			position.xyz += normalize( inRealNormal * pMatrixNormal ) * vec3( outlineThickness );
 		#endif
@@ -158,10 +165,10 @@ void transformPosition( out vec3 position, in int spbIndex )
 		position = sanitizePosition( position );
 		
 		#ifdef NO_TRANSFORMATION
-			gl_Position = vec4( position, 1.0 );
+			gl_Position = vec4( position, 1 );
 			
 		#else
-			gl_Position = pMatrixVP * vec4( position, 1.0 );
+			gl_Position = pMatrixVP[ inLayer ] * vec4( position, 1 );
 		#endif
 	#endif
 }

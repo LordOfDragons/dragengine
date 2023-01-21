@@ -28,7 +28,7 @@
 
 
 /**
- * \brief Skin renderable usage information.
+ * Skin renderable usage information.
  */
 class deoglSkinRenderable : public deObject{
 private:
@@ -40,11 +40,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new skin renderable. */
+	/** Creates a new skin renderable. */
 	deoglSkinRenderable( const char *name );
 	
 protected:
-	/** \brief Cleans up the skin renderable. */
+	/** Cleans up the skin renderable. */
 	virtual ~deoglSkinRenderable();
 	/*@}*/
 	
@@ -53,13 +53,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable name. */
+	/** Renderable name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief One or more texture properties using this renderable require a texture. */
+	/** One or more texture properties using this renderable require a texture. */
 	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
 	
-	/** \brief Set if one or more texture properties using this renderable require a texture. */
+	/** Set if one or more texture properties using this renderable require a texture. */
 	void SetRequiresTexture( bool requiresTexture );
 	/*@}*/
 };

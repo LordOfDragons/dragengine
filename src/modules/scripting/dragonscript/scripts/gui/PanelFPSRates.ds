@@ -59,51 +59,51 @@ class PanelFPSRates extends Panel
 		
 		
 		/** \brief Create FPS Rate widgets. */
-		public func new( SysParamWrapper module, String label, String designerPrefix )
-			this.pModule = module
-			this.pLabel = Label.new( label + ":" )
-			this.pRate = Label.new( "" )
-			this.pDesignerPrefix = designerPrefix
+		public func new(SysParamWrapper module, String label, String designerPrefix)
+			pModule = module
+			pLabel = Label.new(label + ":")
+			pRate = Label.new("")
+			pDesignerPrefix = designerPrefix
 		end
 		
 		
 		/** \brief Module wrapper. */
 		public func SysParamWrapper getModule()
-			return this.pModule
+			return pModule
 		end
 		
 		/** \brief Label widget. */
 		public func Label getLabel()
-			return this.pLabel
+			return pLabel
 		end
 		
 		/** \brief Rate widget. */
 		public func Label getRate()
-			return this.pRate
+			return pRate
 		end
 		
 		/** \brief Designer selector prefix. */
 		public func String getDesignerPrefix()
-			return this.pDesignerPrefix
+			return pDesignerPrefix
 		end
 		
 		
 		/** \brief Update widgets. */
 		public func void update()
-			var int rate = this.pModule.getFPSRate()
+			var int rate = pModule.getFPSRate()
 			
 			if rate > 0
-				this.pRate.setText( "" + rate )
+				pRate.setText("" + rate)
 				
 			else
-				this.pRate.setText( "-" )
+				pRate.setText("-")
 			end
 		end
 		
 		/** \brief Update designer selectors. */
-		public func void updateDesignerSelectors( String baseSelector )
-			this.pLabel.setDesignerSelector( "Label." + baseSelector + this.pDesignerPrefix )
-			this.pRate.setDesignerSelector( "Label." + baseSelector + ".Rate" + this.pDesignerPrefix )
+		public func void updateDesignerSelectors(String baseSelector)
+			pLabel.setDesignerSelector("Label." + baseSelector + pDesignerPrefix)
+			pRate.setDesignerSelector("Label." + baseSelector + ".Rate" + pDesignerPrefix)
 		end
 	end
 	
@@ -116,20 +116,20 @@ class PanelFPSRates extends Panel
 	
 	/** \brief Create fps rates panel. */
 	public func new()
-		this.pFPSRates = Array.new()
+		pFPSRates = Array.new()
 		
-		this.runWhileBlockingLayout( block
-			this.createContent()
-			this.setDesignerSelector( "Panel.FPSRates" )
-		end )
+		runWhileBlockingLayout(block
+			createContent()
+			setDesignerSelector("Panel.FPSRates")
+		end)
 		
-		this.startFrameUpdater()
+		startFrameUpdater()
 	end
 	
 	/** \brief Dispose. */
 	public func void dispose()
-		this.stopFrameUpdater()
-		this.pFPSRates = null
+		stopFrameUpdater()
+		pFPSRates = null
 		super.dispose()
 	end
 	
@@ -141,12 +141,12 @@ class PanelFPSRates extends Panel
 	 * Calls updateDesignerSelectors() on each FPSRate using getDesignerSelector() as base selector.
 	 */
 	public func void onDesignerSelectorChanged()
-		this.runWhileBlockingLayout( block
-			var String baseSelector = this.getDesignerSelector()
-			this.pFPSRates.forEach( block FPSRate each
-				each.updateDesignerSelectors( baseSelector )
-			end )
-		end )
+		runWhileBlockingLayout(block
+			var String baseSelector = getDesignerSelector()
+			pFPSRates.forEach(block FPSRate each
+				each.updateDesignerSelectors(baseSelector)
+			end)
+		end)
 	end
 	
 	/**
@@ -154,20 +154,20 @@ class PanelFPSRates extends Panel
 	 * 
 	 * Calls update() on each FPSRate.
 	 */
-	public func void onFrameUpdate( float elapsed )
-		this.runWhileBlockingLayout( block
-			this.pFPSRates.forEach( block FPSRate each
+	public func void onFrameUpdate(float elapsed)
+		runWhileBlockingLayout(block
+			pFPSRates.forEach(block FPSRate each
 				each.update()
-			end )
-		end )
-		this.doLayout()
+			end)
+		end)
+		doLayout()
 	end
 	
 	
 	/** \brief Create content. */
 	protected func void createContent()
-		this.setLayout( FormLayout.new( true, 10, 0 ) )
-		this.addFPSRates()
+		setLayout(FormLayout.new(true, 10, 0))
+		addFPSRates()
 	end
 	
 	/**
@@ -176,31 +176,31 @@ class PanelFPSRates extends Panel
 	 * Adds FPS rates for Script, Graphic, Audio, Physics, Network in this order.
 	 */
 	protected func void addFPSRates()
-		this.addFPSRate( FPSRate.new( ScrSysParamWrapper.new(), "Script", ".Script" ) )
-		this.addFPSRate( FPSRate.new( GraSysParamWrapper.new(), "Graphic", ".Graphic" ) )
-		this.addFPSRate( FPSRate.new( AudSysParamWrapper.new(), "Audio", ".Audio" ) )
-		this.addFPSRate( FPSRate.new( PhySysParamWrapper.new(), "Physics", ".Physics" ) )
-		this.addFPSRate( FPSRate.new( NetSysParamWrapper.new(), "Network", ".Network" ) )
+		addFPSRate(FPSRate.new(ScrSysParamWrapper.new(), "Script", ".Script"))
+		addFPSRate(FPSRate.new(GraSysParamWrapper.new(), "Graphic", ".Graphic"))
+		addFPSRate(FPSRate.new(AudSysParamWrapper.new(), "Audio", ".Audio"))
+		addFPSRate(FPSRate.new(PhySysParamWrapper.new(), "Physics", ".Physics"))
+		addFPSRate(FPSRate.new(NetSysParamWrapper.new(), "Network", ".Network"))
 	end
 	
 	/** \brief Add FPS rate. */
-	protected func void addFPSRate( FPSRate rate )
+	protected func void addFPSRate(FPSRate rate)
 		if rate == null
-			throw ENullPointer.new( "rate" )
+			throw ENullPointer.new("rate")
 		end
 		
-		this.pFPSRates.add( rate )
-		this.addFPSWidgets( rate )
+		pFPSRates.add(rate)
+		addFPSWidgets(rate)
 	end
 	
 	/** \brief Visit FPS rates with block receiving parameter FPSRate. */
-	protected func void forEachFPSRate( Block ablock )
-		this.pFPSRates.forEach( ablock )
+	protected func void forEachFPSRate(Block ablock)
+		pFPSRates.forEach(ablock)
 	end
 	
 	/** \brief Add FPS widgets to panel. */
-	protected func void addFPSWidgets( FPSRate rate )
-		this.addWidget( rate.getLabel() )
-		this.addWidget( rate.getRate() )
+	protected func void addFPSWidgets(FPSRate rate)
+		addWidget(rate.getLabel())
+		addWidget(rate.getRate())
 	end
 end

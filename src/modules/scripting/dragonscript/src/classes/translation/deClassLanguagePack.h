@@ -88,12 +88,14 @@ private:
 	DEF_NATFUNC( nfNew );
 	DEF_NATFUNC( nfDestructor );
 	
+	DEF_NATFUNC( nfGetIdentifier );
 	DEF_NATFUNC( nfGetName );
 	DEF_NATFUNC( nfGetDescription );
 	DEF_NATFUNC( nfGetFilename );
 	
 	DEF_NATFUNC( nfTranslate );
 	DEF_NATFUNC( nfTranslate2 );
+	DEF_NATFUNC( nfGetMissingText );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

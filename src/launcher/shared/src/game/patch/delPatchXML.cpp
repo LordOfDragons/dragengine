@@ -114,6 +114,9 @@ void delPatchXML::pReadPatch( const decXmlElementTag &root, delPatch &patch ){
 		}else if( tagName == "requiredPatch" ){
 			patch.GetRequiredPatches().Add( decUuid( GetCDataString( *tag ), false ) );
 			
+		}else if( tagName == "hiddenPath" ){
+			patch.GetHiddenPath().Add( GetCDataString( *tag ) );
+			
 		}else{
 			ErrorUnknownTag( root, *tag );
 		}

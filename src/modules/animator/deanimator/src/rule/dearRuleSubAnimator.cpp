@@ -30,13 +30,15 @@
 #include "../dearControllerStates.h"
 #include "../dearAnimatorInstance.h"
 #include "../dearLink.h"
+#include "../animation/dearAnimation.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -65,9 +67,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleSubAnimator::dearRuleSubAnimator( dearAnimatorInstance &instance, int firstLink,
-const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping ) :
-dearRule( instance, firstLink, rule ),
+dearRuleSubAnimator::dearRuleSubAnimator( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping ) :
+dearRule( instance, animator, firstLink, rule ),
 pSubAnimator( rule ),
 
 pArSubAnimator( NULL ),
@@ -93,17 +95,18 @@ pEnableSize( rule.GetEnableSize() ),
 // all except the blend factor can be precalculated since they stay the same
 pDirectUseStates(
 	  ( rule.GetBlendMode() == deAnimatorRule::ebmBlend )
-	& ( rule.GetListBones().GetCount() == 0 )
-	& rule.GetEnablePosition() & rule.GetEnableOrientation() & rule.GetEnableSize() ),
+	&& ( rule.GetListBones().GetCount() == 0 )
+	&& rule.GetEnablePosition()
+	&& rule.GetEnableOrientation()
+	&& rule.GetEnableSize() ),
 
-pHasSubAnimator( rule.GetSubAnimator() != NULL )
+pHasSubAnimator( rule.GetSubAnimator() )
 {
-	deAnimator * const animator = rule.GetSubAnimator();
 	try{
 		pStateList = instance.GetBoneStateList().CreateCopy();
 		
-		if( animator ){
-			pArSubAnimator = ( dearAnimator* )animator->GetPeerAnimator();
+		if( pHasSubAnimator ){
+			pArSubAnimator = ( dearAnimator* )rule.GetSubAnimator()->GetPeerAnimator();
 			pSubAnimatorUpdateTracker = pArSubAnimator->GetUpdateTracker();
 			pCreateRules( controllerMapping );
 		}
@@ -234,8 +237,6 @@ DEBUG_PRINT_TIMER( "Apply Temporary State" );
 	// if the animator does not exist or is not valid we apply a reference state instead
 	}else{
 		const int boneCount = GetBoneMappingCount();
-		int i;
-		
 		for( i =0; i <boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone != -1 ){
@@ -325,7 +326,8 @@ void dearRuleSubAnimator::pCreateRules( const decIntList &controllerMapping ){
 	}
 	
 	// create rules
-	dearCreateRuleVisitor visitor( instance, *animator, subControllerMapping, firstLink );
+	dearCreateRuleVisitor visitor( instance, *( dearAnimator* )animator->GetPeerAnimator(),
+		subControllerMapping, firstLink );
 	
 	pRules = new dearRule*[ ruleCount ];
 	

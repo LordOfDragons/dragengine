@@ -29,11 +29,11 @@
 
 
 /**
- * @brief Capsule Shape.
+ * Capsule Shape.
  */
 class deoglShapeCapsule : public deoglShape{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
 	deoglShapeCapsule( deoglRenderThread &renderThread );
@@ -41,7 +41,7 @@ public:
 	virtual ~deoglShapeCapsule();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Calculate matrices for capsule parameters. */
 	void CalcMatrices( decMatrix &matrix1, decMatrix &matrix2, const decVector &position,

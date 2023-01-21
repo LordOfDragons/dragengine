@@ -94,6 +94,8 @@ pNameGestureProgress( "gesture.progress" ),
 pNameGesturePlayback( "gesture.playback" ),
 pNameGestureVariation( "gesture.variation" ),
 pNameGestureBlink( "blinking" ),
+pNameGestureFadeIn( "gesture.fade.in" ),
+pNameGestureFadeOut( "gesture.fade.out" ),
 pActivePose( NULL )
 {
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
@@ -1009,12 +1011,17 @@ void ceConversationActor::pUpdateAnimatorInstance( float elapsed ){
 	}
 	
 	const ceActorControllerList &poseControllers = pActivePose->GetControllers();
-	const int count = decMath::min( poseControllers.GetCount(), pEngAnimatorInstance->GetControllerCount() );
+	const int count = poseControllers.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		deAnimatorController &animatorController = pEngAnimatorInstance->GetControllerAt( i );
 		const ceActorController &poseController = *poseControllers.GetAt( i );
+		const int index = pEngAnimatorInstance->IndexOfControllerNamed( poseController.GetName() );
+		if( index == -1 ){
+			continue;
+		}
+		
+		deAnimatorController &animatorController = pEngAnimatorInstance->GetControllerAt( index );
 		
 		switch( poseController.GetUpdateType() ){
 		case ceActorController::eutConstant:
@@ -1042,12 +1049,12 @@ void ceConversationActor::pUpdateAnimatorInstance( float elapsed ){
 			break;
 			
 		default:
-			animatorController.SetCurrentValue( 0.0f );
+			animatorController.SetCurrentValue( animatorController.GetMinimumValue() );
 		}
 		
 		animatorController.SetVector( poseController.GetVector() );
 		
-		pEngAnimatorInstance->NotifyControllerChangedAt( i );
+		pEngAnimatorInstance->NotifyControllerChangedAt( index );
 	}
 }
 
@@ -1134,6 +1141,8 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 		const int indexControllerProgress = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureProgress );
 		const int indexControllerPlayback = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGesturePlayback );
 		const int indexControllerVariation = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureVariation );
+		const int indexControllerFadeIn = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureFadeIn );
+		const int indexControllerFadeOut = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureFadeOut );
 		
 		if( resetAnimation ){
 			if( indexControllerProgress != -1 ){
@@ -1160,6 +1169,15 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 				pEngGestureAnimatorInstance->GetControllerAt( indexControllerPlayback ).SetCurrentValue( pPlayGestureElapsed - startTime );
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerPlayback );
 			}
+			if( indexControllerFadeIn != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeIn ).SetCurrentValue( pPlayGestureElapsed );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeIn );
+			}
+			if( indexControllerFadeOut != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).SetCurrentValue( pPlayGestureElapsed
+					- ( endTime - pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).GetMaximumValue() ) );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeOut );
+			}
 			
 		}else{
 			if( indexControllerProgress != -1 ){
@@ -1169,6 +1187,15 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 			if( indexControllerPlayback != -1 ){
 				pEngGestureAnimatorInstance->GetControllerAt( indexControllerPlayback ).IncrementCurrentValue( elapsed );
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerPlayback );
+			}
+			if( indexControllerFadeIn != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeIn ).IncrementCurrentValue( elapsed );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeIn );
+			}
+			if( indexControllerFadeOut != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).SetCurrentValue( pPlayGestureElapsed
+					- ( endTime - pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).GetMaximumValue() ) );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeOut );
 			}
 		}
 	}
@@ -1261,10 +1288,18 @@ void ceConversationActor::pUpdatePlayFacePose( float elapsed ){
 		
 		for( i=0; i<entryCount; i++ ){
 			const ceControllerValue &entry = *list.GetAt( i );
-			const int controller = entry.GetController();
 			
-			if( controller >= 0 && controller < controllerCount ){
-				pEngFacePoseAnimatorInstance->GetControllerAt( controller ).SetCurrentValue( entry.GetValue() * blendFactor1 );
+			if( entry.GetControllerIndex() == -1 ){
+				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed( entry.GetController() );
+				if( controller != -1 ){
+					pEngFacePoseAnimatorInstance->GetControllerAt( controller ).SetCurrentValue( entry.GetValue() * blendFactor1 );
+				}
+				
+			}else{
+				const int controller = entry.GetControllerIndex();
+				if( controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllerCount() ){
+					pEngFacePoseAnimatorInstance->GetControllerAt( controller ).SetCurrentValue( entry.GetValue() * blendFactor1 );
+				}
 			}
 		}
 	}
@@ -1275,10 +1310,18 @@ void ceConversationActor::pUpdatePlayFacePose( float elapsed ){
 		
 		for( i=0; i<entryCount; i++ ){
 			const ceControllerValue &entry = *list.GetAt( i );
-			const int controller = entry.GetController();
 			
-			if( controller >= 0 && controller < controllerCount ){
-				pEngFacePoseAnimatorInstance->GetControllerAt( controller ).IncrementCurrentValue( entry.GetValue() * blendFactor2 );
+			if( entry.GetControllerIndex() == -1 ){
+				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed( entry.GetController() );
+				if( controller != -1 ){
+					pEngFacePoseAnimatorInstance->GetControllerAt( controller ).IncrementCurrentValue( entry.GetValue() * blendFactor2 );
+				}
+				
+			}else{
+				const int controller = entry.GetControllerIndex();
+				if( controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllerCount() ){
+					pEngFacePoseAnimatorInstance->GetControllerAt( controller ).IncrementCurrentValue( entry.GetValue() * blendFactor2 );
+				}
 			}
 		}
 	}

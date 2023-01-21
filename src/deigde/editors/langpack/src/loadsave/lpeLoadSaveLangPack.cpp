@@ -125,6 +125,7 @@ void lpeLoadSaveLangPack::LoadLangPack( lpeLangPack *langpack, decBaseFileReader
 		engLangPack = engine->GetLanguagePackManager()->CreateLanguagePack( "", builder );
 		pModule->LoadLanguagePack( *file, *engLangPack );
 		
+		langpack->SetIdentifier( engLangPack->GetIdentifier() );
 		langpack->SetName( engLangPack->GetName() );
 		langpack->SetDescription( engLangPack->GetDescription() );
 		langpack->SetMissingText( engLangPack->GetMissingText() );

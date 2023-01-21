@@ -23,9 +23,9 @@
 
 #include "deoglRenderTaskConfigTexture.h"
 #include "../shared/deoglRenderTaskSharedInstance.h"
-#include "../shared/deoglRenderTaskSharedShader.h"
 #include "../shared/deoglRenderTaskSharedTexture.h"
 #include "../shared/deoglRenderTaskSharedVAO.h"
+#include "../../../pipeline/deoglPipeline.h"
 
 
 // Class deoglRenderTaskConfigTexture
@@ -50,9 +50,9 @@ void deoglRenderTaskConfigTexture::SetRenderTaskFilter( int filter ){
 	pRenderTaskFilter = filter;
 }
 
-void deoglRenderTaskConfigTexture::SetShader( const deoglRenderTaskSharedShader *shader ){
-	pShader = shader;
-	pShaderIndex = shader ? shader->GetIndex() : 0;
+void deoglRenderTaskConfigTexture::SetPipeline( const deoglPipeline *pipeline ){
+	pPipeline = pipeline;
+	pPipelineIndex = pipeline ? pipeline->GetRTSPipelineIndex() : -1;
 }
 
 void deoglRenderTaskConfigTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){
@@ -78,11 +78,11 @@ void deoglRenderTaskConfigTexture::SetGroupIndex( int groupIndex ){
 
 void deoglRenderTaskConfigTexture::Clear(){
 	pRenderTaskFilter = 0;
-	pShader = NULL;
-	pTexture = NULL;
-	pVAO = NULL;
-	pInstance = NULL;
-	pShaderIndex = 0;
+	pPipeline = nullptr;
+	pTexture = nullptr;
+	pVAO = nullptr;
+	pInstance = nullptr;
+	pPipelineIndex = -1;
 	pTextureIndex = 0;
 	pVAOIndex = 0;
 	pInstanceIndex = 0;

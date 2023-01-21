@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>VR Hidden Area Stereo</name>
+	
+	<version>130</version>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/vr/hiddenarea.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/defren/vr/hiddenarea.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/vr/hiddenarea.glsl</sourceCode>
+</shader>

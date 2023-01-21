@@ -25,6 +25,7 @@
 
 #include "deoglRenderTaskParticles.h"
 #include "deoglRenderTaskParticlesStep.h"
+#include "../../pipeline/deoglPipeline.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderUnitSourceCode.h"
@@ -44,7 +45,8 @@
 ////////////////////////////
 
 deoglRenderTaskParticles::deoglRenderTaskParticles(){
-	pRenderParamBlock = NULL;
+	pRenderParamBlock = nullptr;
+	pRenderVSStereo = false;
 	
 	pSteps = NULL;
 	pStepCount = 0;
@@ -69,11 +71,16 @@ deoglRenderTaskParticles::~deoglRenderTaskParticles(){
 
 void deoglRenderTaskParticles::Clear(){
 	RemoveAllSteps();
-	SetRenderParamBlock( NULL );
+	pRenderParamBlock = nullptr;
+	pRenderVSStereo = false;
 }
 
 void deoglRenderTaskParticles::SetRenderParamBlock( deoglSPBlockUBO *paramBlock ){
 	pRenderParamBlock = paramBlock;
+}
+
+void deoglRenderTaskParticles::SetRenderVSStereo( bool renderVSStereo ){
+	pRenderVSStereo = renderVSStereo;
 }
 
 
@@ -120,25 +127,26 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 	
 	rtlogger.LogInfoFormat( "RenderTaskParticle %p: particles=%d", this, pStepCount );
 	
-	const deoglShaderProgram *shader = NULL;
+	const deoglPipeline *pipeline = nullptr;
 	
 	for( i=0; i<pStepCount; i++ ){
 		const deoglRenderTaskParticlesStep &step = *pSteps[ i ];
-		if( step.GetShader() == shader ){
+		if( step.GetPipeline() == pipeline ){
 			continue;
 		}
 		
-		shader = step.GetShader();
+		pipeline = step.GetPipeline();
 		rtlogger.LogInfo( "  - configuration:" );
-		rtlogger.LogInfoFormat( "    - vertex %s", shader->GetVertexSourceCode()
-			? shader->GetVertexSourceCode()->GetFilePath() : "-" );
-		rtlogger.LogInfoFormat( "    - geometry %s", shader->GetGeometrySourceCode()
-			? shader->GetGeometrySourceCode()->GetFilePath() : "-" );
-		rtlogger.LogInfoFormat( "    - fragment %s", shader->GetFragmentSourceCode()
-			? shader->GetFragmentSourceCode()->GetFilePath() : "-" );
+		const deoglShaderProgram &shader = pipeline->GetGlConfiguration().GetShaderRef();
+		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode()
+			? shader.GetVertexSourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode()
+			? shader.GetGeometrySourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode()
+			? shader.GetFragmentSourceCode()->GetFilePath() : "-" );
 		
 		text = "    - defines: ";
-		const deoglShaderDefines &defines = shader->GetDefines();
+		const deoglShaderDefines &defines = shader.GetDefines();
 		const int defineCount = defines.GetDefineCount();
 		for( j=0; j<defineCount; j++ ){
 			const char *defineName = defines.GetDefineNameAt( j );

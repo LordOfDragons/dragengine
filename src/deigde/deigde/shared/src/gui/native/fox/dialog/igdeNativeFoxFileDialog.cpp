@@ -83,22 +83,22 @@ FXIMPLEMENT( igdeNativeFoxFileDialog, FXDialogBox, igdeNativeFoxFileDialogMap, A
 
 igdeNativeFoxFileDialog::igdeNativeFoxFileDialog(){ }
 
-igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &owner, FXComposite *parent,
+igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &powner, FXComposite *pparent,
 const FXString &name, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
-FXDialogBox( parent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+FXDialogBox( pparent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 x, y, w, h, 0, 0, 0, 0, 4, 4 ),
-pOwner( &owner ),
-pVFS( owner.GetEnvironment().GetFileSystemGame() ),
+pOwner( &powner ),
+pVFS( powner.GetEnvironment().GetFileSystemGame() ),
 pFilePatternList( NULL )
 {
 	pCreateDialog();
 }
 
-igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &owner, deVirtualFileSystem *vfs,
-FXComposite *parent, const FXString& name, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
-FXDialogBox( parent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &powner, deVirtualFileSystem *vfs,
+FXComposite *pparent, const FXString& name, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
+FXDialogBox( pparent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 x, y, w, h, 0, 0, 0, 0, 4, 4 ),
-pOwner( &owner ),
+pOwner( &powner ),
 pVFS( vfs ),
 pFilePatternList( NULL )
 {
@@ -221,7 +221,7 @@ void igdeNativeFoxFileDialog::UpdateFileTypeBox(){
 // Callbacks
 //////////////
 
-long igdeNativeFoxFileDialog::onCmdAccept( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxFileDialog::onCmdAccept( FXObject *sender, FXSelector selector, void *pdata ){
 	const FXString filename( pEditFilename->getText() );
 	
 	// only do something if a selection was made
@@ -261,13 +261,13 @@ long igdeNativeFoxFileDialog::onCmdAccept( FXObject *sender, FXSelector selector
 	// if the directory exists this is enough ( for the time being )
 	if( pVFS->ExistsFile( directory ) && pVFS->GetFileType( directory ) == deVFSContainer::eftDirectory ){
 		pSetFilenameAndAppendExtension( path.GetPathUnix() );
-		return FXDialogBox::onCmdAccept( sender, selector, data ); // close dialog
+		return FXDialogBox::onCmdAccept( sender, selector, pdata ); // close dialog
 	}
 	
 	// otherwise if the file exists this is good too ( for the time being )
 	if( pVFS->ExistsFile( path ) ){
 		pSetFilenameAndAppendExtension( path.GetPathUnix() );
-		return FXDialogBox::onCmdAccept( sender, selector, data ); // close dialog
+		return FXDialogBox::onCmdAccept( sender, selector, pdata ); // close dialog
 	}
 	
 	// go the the latest directory still existing

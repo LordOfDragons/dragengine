@@ -117,6 +117,9 @@ private:
 	
 	DEF_NATFUNC( nfGetDefaultEnableGI );
 	DEF_NATFUNC( nfSetDefaultEnableGI );
+	
+	DEF_NATFUNC( nfGetUserLocaleLanguage );
+	DEF_NATFUNC( nfGetUserLocaleTerritory );
 #undef DEF_NATFUNC
 };
 

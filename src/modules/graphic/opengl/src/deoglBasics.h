@@ -88,10 +88,6 @@ struct oglVector2{
 	GLfloat x, y;
 };
 
-struct oglVector{
-	GLfloat x, y, z;
-};
-
 struct oglVector3{
 	GLfloat x, y, z;
 };
@@ -245,7 +241,8 @@ enum eRenderTaskFilters{
 	ertfOutlineSolid = 0x40,
 	ertfHoles = 0x80,
 	ertfDecal = 0x100,
-	ertfDoubleSided = 0200
+	ertfDoubleSided = 0x200,
+	ertfXRay = 0x400
 };
 
 

@@ -37,9 +37,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../texture/pixelbuffer/deoglPixelBufferMipMap.h"
 #include "../../texture/deoglImage.h"
-#include "../../texture/deoglRImage.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -89,8 +87,6 @@ pCubeMap( NULL ),
 pArrayTexture( NULL ),
 pCombinedTexture( NULL ),
 
-pPixelBufferMipMap( NULL ),
-
 pIsCached( false ),
 pCanBeCached( false ),
 pCacheVerify( NULL ),
@@ -99,16 +95,13 @@ pCacheConstrDefSource2( NULL ),
 pCacheConstrVerifySource1( NULL ),
 pCacheConstrVerifySource2( NULL ),
 
-pCombinedImage1( NULL ),
-pCombinedImage2( NULL ),
 pDelayedCombineImage1( NULL ),
 pDelayedCombineImage2( NULL ),
 
 pUniform( true ),
 pDynamic( false ),
 
-pImage( NULL ),
-pImageHeld( false ),
+pImage( nullptr ),
 
 pVideo( NULL ),
 pVideoPlayer( -1 ),
@@ -119,23 +112,8 @@ pSolidityFilterPriority( 0.5f ){
 }
 
 deoglSkinChannel::~deoglSkinChannel(){
-	if( pPixelBufferMipMap ){
-		delete pPixelBufferMipMap;
-	}
-	
 	if( pCombinedTexture ){
 		pCombinedTexture->RemoveUsage();
-	}
-	
-	if( pCombinedImage1 ){
-		pCombinedImage1->FreeReference();
-	}
-	if( pCombinedImage2 ){
-		pCombinedImage2->FreeReference();
-	}
-	
-	if( pImage && pImageHeld ){
-		pImage->FreeReference();
 	}
 	
 	if( pArrayTexture ){
@@ -174,21 +152,16 @@ deoglSkinChannel::~deoglSkinChannel(){
 void deoglSkinChannel::FinalizeAsyncResLoading(){
 	// called synchronously on main thread
 	
-	if( pImage && ! pImageHeld ){
-		pImage->AddReference();
-		pImageHeld = true;
-	}
+	pHoldImage = pImage; // claim reference in main thread
 	
 	if( pDelayedCombineImage1 ){
 		pCombinedImage1 = pDelayedCombineImage1->GetRImage();
-		pCombinedImage1->AddReference();
-		pDelayedCombineImage1 = NULL;
+		pDelayedCombineImage1 = nullptr;
 	}
 	
 	if( pDelayedCombineImage2 ){
 		pCombinedImage2 = pDelayedCombineImage2->GetRImage();
-		pCombinedImage2->AddReference();
-		pDelayedCombineImage2 = NULL;
+		pDelayedCombineImage2 = nullptr;
 	}
 }
 
@@ -230,14 +203,6 @@ void deoglSkinChannel::SetCombinedTexture( deoglCombinedTexture *combinedTexture
 
 
 void deoglSkinChannel::SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap ){
-	if( pbmipmap == pPixelBufferMipMap ){
-		return;
-	}
-	
-	if( pPixelBufferMipMap ){
-		delete pPixelBufferMipMap;
-	}
-	
 	pPixelBufferMipMap = pbmipmap;
 }
 
@@ -298,22 +263,6 @@ void deoglSkinChannel::SetDynamic( bool dynamic ){
 	pDynamic = dynamic;
 }
 
-// void deoglSkinChannel::SetImage( deoglRImage* image ){
-// 	if( image == pImage ){
-// 		return;
-// 	}
-// 	
-// 	if( pImage ){
-// 		pImage->FreeReference();
-// 	}
-// 	
-// 	pImage = image;
-// 	
-// 	if( image ){
-// 		image->AddReference();
-// 	}
-// }
-
 void deoglSkinChannel::SetVideo( deVideo *video ){
 	pVideo = video;
 }
@@ -340,7 +289,6 @@ const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFor
 		// if shared image exists store it and claim reference during main thread time.
 		// this is done always no matter if the image is build or just used
 		pImage = channelFormat.GetSharedImage();
-		pImageHeld = false;
 	}
 	
 	pInitUniformColor();
@@ -414,9 +362,7 @@ void deoglSkinChannel::ClearCacheData(){
 void deoglSkinChannel::UseSharedImage(){
 	// called in render thread. deleting opengl objects here is fine but using
 	// deoglDelayedOperations results in dead-locking
-	if( ! pImage ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pImage )
 	
 	if( pTexture ){
 		if( pImage->GetSkinUse() ){
@@ -457,7 +403,7 @@ void deoglSkinChannel::GenerateConeMap(){
 	decTimer timer;
 	
 	// see http://http.developer.nvidia.com/GPUGems3/gpugems3_ch18.html
-	deoglPixelBuffer &pixelBufferBase = *pPixelBufferMipMap->GetPixelBuffer( 0 );
+	const deoglPixelBuffer &pixelBufferBase = pPixelBufferMipMap->GetPixelBuffer( 0 );
 	deoglPixelBuffer::sByte2 * const data = pixelBufferBase.GetPointerByte2();
 	const int height = pixelBufferBase.GetHeight();
 	const int width = pixelBufferBase.GetWidth();
@@ -841,7 +787,7 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 	deoglPixelBuffer::ePixelFormats pixelBufferFormat = deoglPixelBuffer::epfByte3;
 	bool mipMapped = false;
 	
-	SetPixelBufferMipMap( NULL );
+	SetPixelBufferMipMap( nullptr );
 	
 	pSize = channelFormat.GetRequiredSize();
 	pComponentCount = channelFormat.GetRequiredComponentCount();
@@ -923,12 +869,12 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 	// create pixel buffer if required and fill it
 	//if( ! pUniform ){
 		if( mipMapped ){
-			pPixelBufferMipMap = new deoglPixelBufferMipMap( pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100 );
+			pPixelBufferMipMap.TakeOver( new deoglPixelBufferMipMap( pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100 ) );
 			
 		}else{
-			pPixelBufferMipMap = new deoglPixelBufferMipMap( pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0 );
+			pPixelBufferMipMap.TakeOver( new deoglPixelBufferMipMap( pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0 ) );
 		}
 	//}
 }
@@ -1043,20 +989,24 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//pUniformColor.a = value; // if combined with color
-		pUniformColor.r = value;
-		texture.SetHasTransparency( true );
+		if( value < 0.999f ){
+			pUniformColor.r = value;
+			texture.SetHasTransparency( true );
+		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		pUniformColor.r = value;
-		
-		texture.SetHasSolidity( true );
-		
-		if( texture.GetSolidityMasked() ){
-			texture.SetHasZeroSolidity( value < 0.5f );
+		if( value < 0.999f ){
+			pUniformColor.r = value;
 			
-		}else{
-			texture.SetHasZeroSolidity( value < 0.001f );
+			texture.SetHasSolidity( true );
+			
+			if( texture.GetSolidityMasked() ){
+				texture.SetHasZeroSolidity( value < 0.5f );
+				
+			}else{
+				texture.SetHasZeroSolidity( value < 0.001f );
+			}
 		}
 		break;
 		
@@ -1118,20 +1068,24 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//pUniformColor.a = color.r; // if combined with color
-		pUniformColor.r = color.r;
-		texture.SetHasTransparency( true );
+		if( color.r < 0.999f ){
+			pUniformColor.r = color.r;
+			texture.SetHasTransparency( true );
+		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		pUniformColor.r = color.r;
-		
-		texture.SetHasSolidity( true );
-		
-		if( texture.GetSolidityMasked() ){
-			texture.SetHasZeroSolidity( color.r < 0.5f );
+		if( color.r < 0.999f ){
+			pUniformColor.r = color.r;
 			
-		}else{
-			texture.SetHasZeroSolidity( color.r < 0.001f );
+			texture.SetHasSolidity( true );
+			
+			if( texture.GetSolidityMasked() ){
+				texture.SetHasZeroSolidity( color.r < 0.5f );
+				
+			}else{
+				texture.SetHasZeroSolidity( color.r < 0.001f );
+			}
 		}
 		break;
 		
@@ -2127,7 +2081,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	}
 	
 	// copy the pixels to the right place
-	deoglPixelBuffer &pixbuf = *pPixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer( 0 );
 	
 	if( pFloatFormat ){
 		// TODO if srcDataPb32 is not NULL, component count matches and targets[] in range
@@ -2238,7 +2192,7 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 }
 
 void deoglSkinChannel::pFillWithUniformColor(){
-	deoglPixelBuffer &pixbuf = *pPixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer( 0 );
 	const int pixelCount = pSize.x * pSize.y * pSize.z;
 	int i;
 	

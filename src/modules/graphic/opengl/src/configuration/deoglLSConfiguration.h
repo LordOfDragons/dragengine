@@ -31,7 +31,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Load/Save Configurating from/to XML file.
+ * Load/Save Configurating from/to XML file.
  */
 class deoglLSConfiguration{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create load/save configuration. */
+	/** Create load/save configuration. */
 	deoglLSConfiguration( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up load/save configuration. */
+	/** Clean up load/save configuration. */
 	~deoglLSConfiguration();
 	/*@}*/
 	
@@ -51,10 +51,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Load configuration from XML files. */
+	/** Load configuration from XML files. */
 	void LoadConfig( deoglConfiguration &configuration );
 	
-	/** \brief Save configuration to XML file. */
+	/** Save configuration to XML file. */
 	void SaveConfig( const deoglConfiguration &configuration );
 	/*@}*/
 	

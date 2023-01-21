@@ -26,7 +26,6 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglShaderProgram;
 class deoglRenderPlan;
 class deoglFramebuffer;
 class deoglTexture;
@@ -34,7 +33,7 @@ class deoglTexture;
 
 
 /**
- * @brief OpenGL ToneMap Renderer.
+ * OpenGL ToneMap Renderer.
  * Renderer for tone mapping related passes.
  */
 class deoglRenderToneMap : public deoglRenderBase{
@@ -42,21 +41,29 @@ private:
 	deoglFramebuffer *pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
-	deoglShaderProgram *pShaderColor2LogLum;
-	deoglShaderProgram *pShaderAvgLogLum;
-	deoglShaderProgram *pShaderParameters;
-	deoglShaderProgram *pShaderBrightPass;
-	deoglShaderProgram *pShaderBloomReduce;
-	deoglShaderProgram *pShaderBloomBlur;
-	deoglShaderProgram *pShaderBloomAdd;
-	deoglShaderProgram *pShaderToneMap;
-	deoglShaderProgram *pShaderFinalize;
+	const deoglPipeline *pPipelineColor2LogLum;
+	const deoglPipeline *pPipelineColor2LogLumStereo;
+	const deoglPipeline *pPipelineAvgLogLum;
+	const deoglPipeline *pPipelineAvgLogLumStereo;
+	const deoglPipeline *pPipelineParameters;
+	const deoglPipeline *pPipelineParametersStereo;
+	const deoglPipeline *pPipelineBrightPass;
+	const deoglPipeline *pPipelineBrightPassStereo;
+	const deoglPipeline *pPipelineBloomReduce;
+	const deoglPipeline *pPipelineBloomBlur;
+	const deoglPipeline *pPipelineBloomBlurStereo;
+	const deoglPipeline *pPipelineBloomAdd;
+	const deoglPipeline *pPipelineToneMap;
+	const deoglPipeline *pPipelineToneMapStereo;
+	const deoglPipeline *pPipelineLdr;
+	const deoglPipeline *pPipelineLdrStereo;
 	
-	deoglShaderProgram *pShaderLumPrepare;
+	const deoglPipeline *pPipelineLumPrepare;
+	const deoglPipeline *pPipelineLumPrepareStereo;
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderToneMap( deoglRenderThread &renderThread );
@@ -64,7 +71,7 @@ public:
 	virtual ~deoglRenderToneMap();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Prepare luminance texture from solid color and depth texture. */
 	void LuminancePrepare( deoglRenderPlan &plan );

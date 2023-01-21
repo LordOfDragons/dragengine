@@ -3,10 +3,17 @@ precision mediump int;
 
 uniform int pLevel;
 
-uniform mediump sampler2D texSource;
+uniform mediump sampler2DArray texSource;
+
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy ) * ivec2( 2 );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
+	tc.xy *= ivec2( 2 );
 	
 	vec4 samples;
 	

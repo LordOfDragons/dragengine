@@ -59,6 +59,7 @@ deoalAMicrophone::deoalAMicrophone( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
 pVolume( 1.0f ),
 pMuted( true ),
+pSpeakerGain( 1.0f ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
 pEnvProbeList( NULL ),
@@ -128,6 +129,10 @@ void deoalAMicrophone::SetLayerMask( const decLayerMask &layerMask ){
 	if( pEnvProbeList ){
 		pEnvProbeList->SetLayerMask( layerMask );
 	}
+}
+
+void deoalAMicrophone::SetSpeakerGain( float gain ){
+	pSpeakerGain = gain;
 }
 
 
@@ -427,6 +432,24 @@ void deoalAMicrophone::ProcessAudio(){
 	pProcessEffects();
 }
 
+void deoalAMicrophone::ProcessAudioFast(){
+	if( ! pActive ){
+		return;
+	}
+	
+	pActiveSpeakers.UpdateAll();
+	
+	if( pParentWorld ){
+		pParentWorld->PrepareProcessAudio();
+	}
+	
+	const int count = pSpeakers.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+}
+
 void deoalAMicrophone::ProcessDeactivate(){
 	const int count = pSpeakers.GetCount();
 	int i;
@@ -547,8 +570,8 @@ void deoalAMicrophone::DebugUpdateInfo( deDebugBlockInfo &debugInfo ){
 	debugInfo.UpdateView();
 }
 
-void deoalAMicrophone::DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray ){
-	pDebugCaptureRays( debugDrawer, xray );
+void deoalAMicrophone::DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){
+	pDebugCaptureRays( debugDrawer, xray, volume );
 }
 
 
@@ -692,7 +715,7 @@ void deoalAMicrophone::pProcessEffects(){
 	pActiveSpeakers.UpdateEffectsAll();
 }
 
-void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray ){
+void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){
 	debugDrawer.RemoveAllShapes();
 	
 	deoalEnvProbe * const envProbe = GetEnvProbe();
@@ -720,37 +743,42 @@ void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray 
 			continue;
 		}
 		
-		// colorize rays. HSV to RGB (H=0..360, S=0..1, V=0..1):
-		// c = v * s = 1  // because v=1 and s=1
-		// t = h / 60  // with H=0..1 => t = h * 6
-		// x = c * (1 - abs(mod(t, 2) - 1))
-		//   = 1 - abs(mod(t, 2) - 1)
-		// m = v - c = 0
-		// switch(t):
-		// case 0: rgb = (c+m, x+m, m) = (1, x, 0)
-		// case 1: rgb = (x+m, c+m, m) = (x, 1, 0)
-		// case 2: rgb = (m, c+m, x+m) = (0, 1, x)
-		// case 3: rgb = (m, x+m, c+m) = (0, x, 1)
-		// case 4: rgb = (x+m, m, c+m) = (x, 0, 1)
-		// case 5: rgb = (c+m, m, x+m) = (1, 0, x)
-		const float hsvT = hsvFactor * i;
-		const float hsvX = 1.0f - fabsf( fmodf( hsvT, 2.0f ) - 1.0f );
-		
-		switch( ( int )hsvT ){
-		case 0: color.Set( 1.0f, hsvX, 0.0f, colorA ); break;
-		case 1: color.Set( hsvX, 1.0f, 0.0f, colorA ); break;
-		case 2: color.Set( 0.0f, 1.0f, hsvX, colorA ); break;
-		case 3: color.Set( 0.0f, hsvX, 1.0f, colorA ); break;
-		case 4: color.Set( hsvX, 0.0f, 1.0f, colorA ); break;
-		case 5:
-		default: color.Set( 1.0f, 0.0f, hsvX, colorA );
+		if( volume ){
+			color.Set(1, 0, 0);
+			
+		}else{
+			// colorize rays. HSV to RGB (H=0..360, S=0..1, V=0..1):
+			// c = v * s = 1  // because v=1 and s=1
+			// t = h / 60  // with H=0..1 => t = h * 6
+			// x = c * (1 - abs(mod(t, 2) - 1))
+			//   = 1 - abs(mod(t, 2) - 1)
+			// m = v - c = 0
+			// switch(t):
+			// case 0: rgb = (c+m, x+m, m) = (1, x, 0)
+			// case 1: rgb = (x+m, c+m, m) = (x, 1, 0)
+			// case 2: rgb = (m, c+m, x+m) = (0, 1, x)
+			// case 3: rgb = (m, x+m, c+m) = (0, x, 1)
+			// case 4: rgb = (x+m, m, c+m) = (x, 0, 1)
+			// case 5: rgb = (c+m, m, x+m) = (1, 0, x)
+			const float hsvT = hsvFactor * i;
+			const float hsvX = 1.0f - fabsf( fmodf( hsvT, 2.0f ) - 1.0f );
+			
+			switch( ( int )hsvT ){
+			case 0: color.Set( 1.0f, hsvX, 0.0f, colorA ); break;
+			case 1: color.Set( hsvX, 1.0f, 0.0f, colorA ); break;
+			case 2: color.Set( 0.0f, 1.0f, hsvX, colorA ); break;
+			case 3: color.Set( 0.0f, hsvX, 1.0f, colorA ); break;
+			case 4: color.Set( hsvX, 0.0f, 1.0f, colorA ); break;
+			case 5:
+			default: color.Set( 1.0f, 0.0f, hsvX, colorA );
+			}
 		}
 		
 		deDebugDrawerShape * const shape = new deDebugDrawerShape;
 		shape->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
 		shape->SetEdgeColor( color );
 		
-		pDebugCaptureRays( *shape, srlist, ray );
+		pDebugCaptureRays( *shape, srlist, ray, volume );
 		
 		debugDrawer.AddShape( shape );
 	}
@@ -785,7 +813,7 @@ void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray 
 }
 
 void deoalAMicrophone::pDebugCaptureRays( deDebugDrawerShape &shape,
-const deoalSoundRayList &rayList, const deoalSoundRay &ray ){
+const deoalSoundRayList &rayList, const deoalSoundRay &ray, bool volume ){
 	const int segmentCount = ray.GetSegmentCount();
 	const int firstSegment = ray.GetFirstSegment();
 	int i;
@@ -805,7 +833,7 @@ const deoalSoundRayList &rayList, const deoalSoundRay &ray ){
 	const int firstTransmittedRay = ray.GetFirstTransmittedRay();
 	
 	for( i=0; i<transmittedRayCount; i++ ){
-		pDebugCaptureRays( shape, rayList, rayList.GetTransmittedRayAt( firstTransmittedRay + i ) );
+		pDebugCaptureRays( shape, rayList, rayList.GetTransmittedRayAt( firstTransmittedRay + i ), volume );
 	}
 }
 

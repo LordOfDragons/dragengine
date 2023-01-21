@@ -378,7 +378,8 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 	struct PrintBVH{
 		deoglRTLogger &logger;
 		const sComponent *instances;
-		PrintBVH(deoglRTLogger &logger, const sComponent *instances) : logger(logger), instances(instances){
+		PrintBVH(deoglRTLogger &plogger, const sComponent *pinstances) :
+		logger( plogger ), instances( pinstances ){
 		}
 		void Print(const decString &prefix, const deoglBVH &bvh, const deoglBVHNode &node) const{
 			logger.LogInfoFormat("%sNode: (%g,%g,%g)-(%g,%g,%g)", prefix.GetString(),

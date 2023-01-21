@@ -121,6 +121,9 @@ public:
 	/** \brief Load save system. */
 	inline saeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
+	/** Properties window. */
+	inline saeWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
+	
 	
 	
 	/** \brief Speech animation. */

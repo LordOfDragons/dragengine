@@ -58,8 +58,8 @@ FXIMPLEMENT( deglWindowLogger, FXTopWindow, deglWindowLoggerMap, ARRAYNUMBER( de
 
 deglWindowLogger::deglWindowLogger(){ }
 
-deglWindowLogger::deglWindowLogger( FXApp *app ) :
-FXTopWindow( app, "Logging History", nullptr, nullptr, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0 ),
+deglWindowLogger::deglWindowLogger( FXApp *papp ) :
+FXTopWindow( papp, "Logging History", nullptr, nullptr, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0 ),
 pListener( delLoggerHistoryListener::Ref::New( new deglWindowLoggerListener( *this ) ) ),
 pFontNormal( nullptr ),
 pFontBold( nullptr ),

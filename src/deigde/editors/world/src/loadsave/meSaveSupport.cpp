@@ -31,6 +31,7 @@
 #include "../world/terrain/meHeightTerrainTexture.h"
 #include "../world/terrain/meHeightTerrainNavSpace.h"
 #include "../gui/meWindowMain.h"
+#include "../gui/properties/meWindowProperties.h"
 #include "../utils/meBitArray.h"
 #include "../utils/meByteArray.h"
 #include "../../../deigde/shared/src/environment/igdeEnvironment.h"
@@ -151,6 +152,8 @@ void meSaveSupport::SaveWorld( meWorld *world, bool forceAskForFilename ){
 		}
 	}
 	
+	const decString basePath( world->GetDirectoryPath() );
+	
 	pWindowMain->GetLogger()->LogInfoFormat( LOGSOURCE, "Saving world to %s", filename.GetString() );
 	try{
 		pWindowMain->GetLoadSaveSystem().SaveWorld( world, filename );
@@ -165,6 +168,10 @@ void meSaveSupport::SaveWorld( meWorld *world, bool forceAskForFilename ){
 	world->SetChanged( false );
 	world->SetDepChanged( false );
 	world->CheckDepChanged();
+	
+	if( world->GetDirectoryPath() != basePath ){
+		pWindowMain->GetWindowProperties()->OnWorldPathChanged();
+	}
 	
 	pWindowMain->GetRecentFiles().AddFile( filename );
 }

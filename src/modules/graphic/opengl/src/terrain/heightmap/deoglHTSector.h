@@ -32,7 +32,7 @@ class deHeightTerrainSector;
 
 
 /**
- * \brief Height terrain sector.
+ * Height terrain sector.
  */
 class deoglHTSector{
 private:
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create height terrain sector. */
+	/** Create height terrain sector. */
 	deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
 	
-	/** \brief Clean up height terrain sector. */
+	/** Clean up height terrain sector. */
 	~deoglHTSector();
 	/*@}*/
 	
@@ -61,16 +61,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render height terrain sector. */
+	/** Render height terrain sector. */
 	inline deoglRHTSector *GetRSector() const{ return pRSector; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Sector changed. */
+	/** Sector changed. */
 	void SectorChanged();
 	
-	/** \brief Heights changed. */
+	/** Heights changed. */
 	void HeightChanged( const decPoint &from, const decPoint &to );
 	/*@}*/
 };

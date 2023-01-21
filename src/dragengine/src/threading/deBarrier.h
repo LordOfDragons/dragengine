@@ -66,8 +66,8 @@ private:
 	#endif
 	
 	#ifdef OS_W32
-	HANDLE pEvent;
-	CRITICAL_SECTION pCSWaitCounter;
+	CONDITION_VARIABLE pConditionVariable;
+	CRITICAL_SECTION pCriticalSection;
 	#endif
 	
 	
@@ -91,6 +91,17 @@ public:
 	/*@{*/
 	/** \brief Increment counter and block thread on barrier until threshold is hit. */
 	void Wait();
+	
+	/**
+	 * \brief Increment counter and block thread on barrier until threshold is hit.
+	 * \version 1.16
+	 * 
+	 * If timeout elapses before barrier is opened the counter is decremented returns false.
+	 * If barrier opens before timeout elapses true is returned.
+	 * 
+	 * \param[in] timeout Timeout in milli-seconds.
+	 */
+	bool TryWait( int timeout );
 	
 	/** \brief Forcefully open barrier if counter is not 0. */
 	void Open();

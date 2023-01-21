@@ -119,10 +119,7 @@ private:
 	bool pUseOneFBO;
 	bool pUseEncodeDepth;
 	bool pDisableStencil;
-	bool pStencilOnlyOnRB;
 	
-	bool pDefRenEncDepth;
-	bool pDefRenUsePOTs;
 	int pDefRenSizeLimit;
 	bool pUseHDRR;
 	float pHDRRMaxIntensity;
@@ -173,6 +170,7 @@ private:
 	float pAsyncRenderSkipSyncTimeRatio;
 	
 	bool pDebugContext;
+	bool pDebugNoMessages;
 	bool pAsyncRendering;
 	bool pEnableRetainImageOptimization;
 	
@@ -304,19 +302,7 @@ public:
 	inline bool GetDisableStencil() const{ return pDisableStencil; }
 	/** Sets if stencil buffer is disabled ( broken hardware fix ). */
 	void SetDisableStencil( bool disableStencil );
-	/** Determines if the stencil buffer is only used on renderbuffers ( broken hardware fix ). */
-	inline bool GetStencilOnlyOnRB() const{ return pStencilOnlyOnRB; }
-	/** Sets if stencil buffer is used only on renderbuffers ( broken hardware fix ). */
-	void SetStencilOnlyOnRB( bool stencilOnlyOnRB );
 	
-	/** Determines if depth has to be encoded for deferred rendering. */
-	inline bool GetDefRenEncDepth() const{ return pDefRenEncDepth; }
-	/** Sets if depth has to be encoded for deferred rendering. */
-	void SetDefRenEncDepth( bool useEncDepth );
-	/** Determines if power of two (POT) textures should be used for deferred rendering instead of non-POTs. */
-	inline bool GetDefRenUsePOTs() const{ return pDefRenUsePOTs; }
-	/** Sets if power of two (POT) textures should be used for deferred rendering instead of non-POTs. */
-	void SetDefRenUsePOTs( bool usePOTs );
 	/** Retrieves the size limit for rendering using deferred rendering or 0 for no limit. */
 	inline int GetDefRenSizeLimit() const{ return pDefRenSizeLimit; }
 	/** Sets the size limit for rendering using deferred rendering or 0 for no limit. */
@@ -497,6 +483,12 @@ public:
 	
 	/** Set debug context. */
 	void SetDebugContext( bool debugContext );
+	
+	/** Create debug no messages. */
+	inline bool GetDebugNoMessages() const{ return pDebugNoMessages; }
+	
+	/** Set debug no messages. */
+	void SetDebugNoMessages( bool debugNoMessages );
 	
 	/** Asynchronous rendering. */
 	inline bool GetAsyncRendering() const{ return pAsyncRendering; }

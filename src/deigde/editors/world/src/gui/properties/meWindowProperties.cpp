@@ -103,6 +103,10 @@ void meWindowProperties::SetWorld( meWorld *world ){
 	( ( meWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetWorld( world );
 }
 
+void meWindowProperties::OnWorldPathChanged(){
+	pPropHT->OnWorldPathChanged();
+}
+
 void meWindowProperties::OnGameProjectChanged(){
 	pPropBrowser->OnGameProjectChanged();
 }

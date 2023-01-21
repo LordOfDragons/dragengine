@@ -14,9 +14,10 @@ if envModule['OSBeOS']:
 elif envModule['OSWindows']:
 	libs.append('wsock32')
 	libs.append('iphlpapi')
+	libs.append('ws2_32')
 
 # fetch values in expanded form for later use
-versionString = '1.7'
+versionString = '1.14'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

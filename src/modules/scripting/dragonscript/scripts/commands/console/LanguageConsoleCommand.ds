@@ -35,34 +35,34 @@ class LanguageConsoleCommand extends ConsoleCommand
 	
 	
 	/** \brief Create console command. */
-	public func new( TranslationManager translationManager )
+	public func new(TranslationManager translationManager)
 		if translationManager == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pTranslationManager = translationManager
+		pTranslationManager = translationManager
 		
-		this.setName( "language" )
-		this.setDescription( "Shows languages and set active language." )
-		this.setSyntax( "language { list | active { <name> }\n" + \
+		setName("language")
+		setDescription("Shows languages and set active language.")
+		setSyntax("language { list | active { <id> }\n" + \
 			"   list => display list of all available languages\n" + \
-			"   active => display name of the active language\n" + \
-			"   active <name> => set active language" )
+			"   active => display active language\n" + \
+			"   active <name> => set active language")
 	end
 	
 	
 	
 	/** \brief Translation manager. */
 	public func TranslationManager getTranslationManager()
-		return this.pTranslationManager
+		return pTranslationManager
 	end
 	
 	/** \brief Set translation manager. */
-	public func void setTranslationManager( TranslationManager translationManager )
+	public func void setTranslationManager(TranslationManager translationManager)
 		if translationManager == null
 			throw EInvalidParam.new()
 		end
-		this.pTranslationManager = translationManager
+		pTranslationManager = translationManager
 	end
 	
 	
@@ -72,47 +72,53 @@ class LanguageConsoleCommand extends ConsoleCommand
 	 * \param console Console to send output to.
 	 * \param params List of parameters. Has to match command syntax.
 	 */
-	public func void execute( Console console, Array params )
+	public func void execute(Console console, Array params)
 		if params.getCount() == 0
-			console.addMessage( this.getSyntax() )
+			console.addMessage(getSyntax())
 			return
 		end
 		
 		var LanguagePack languagePack
 		
-		if params.getAt( 0 ).equals( "list" )
-			var Array names = this.pTranslationManager.getNames()
+		if params.getAt(0).equals("list")
+			var Array identifiers = pTranslationManager.getIdentifiers()
 			
-			if names.getCount() > 0
-				console.addMessage( names.sorted().fold( block String a, String b
-					return a + ", " + b
-				end ).toString() )
+			if pTranslationManager.getCount() > 0
+				pTranslationManager.forEach(block LanguagePack each
+					console.addMessage("- {}: {}".format(Array.newWith(\
+						each.getIdentifier(), each.getName())))
+				end)
 				
 			else
-				console.addMessage( "< no languages >" )
+				console.addMessage("< no languages >")
 			end
 			
-		elif params.getAt( 0 ).equals( "active" )
+		elif params.getAt(0).equals("active")
 			if params.getCount() == 1
-				languagePack = this.pTranslationManager.getActive()
-				console.addMessage( languagePack.getName().toString() \
-					+ ": " + languagePack.getDescription() )
+				languagePack = pTranslationManager.getActive()
+				console.addMessage("{}: {}".format(Array.newWith(\
+					languagePack.getIdentifier(), languagePack.getName())))
 				
 			else
-				languagePack = this.pTranslationManager.getNamed( \
-					UnicodeString.newFromUTF8( params.getAt( 1 ).toString() ) )
+				languagePack = pTranslationManager.getWithId(params.getAt(1).toString())
 				
 				if languagePack == null
-					console.addMessage( "Language not found: " + params.getAt( 1 ) )
+					languagePack = pTranslationManager.getNamed(\
+					UnicodeString.newFromUTF8(params.getAt(1).toString()))
+				end
+				
+				if languagePack == null
+					console.addMessage("Language not found: " + params.getAt(1))
 					
 				else
-					this.pTranslationManager.setActive( languagePack )
-					console.addMessage( "Activated language: " + params.getAt( 1 ) )
+					pTranslationManager.setActive(languagePack)
+					console.addMessage("Activated language: {} ({})".format(Array.newWith(\
+						languagePack.getIdentifier(), languagePack.getName())))
 				end
 			end
 			
 		else
-			console.addMessage( "invalid command: " + params.getAt( 0 ) )
+			console.addMessage("invalid command: " + params.getAt(0))
 		end
 	end
 end

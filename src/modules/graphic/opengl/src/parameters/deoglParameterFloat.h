@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Float parameter.
+ * Float parameter.
  * 
  * Base class for all openal parameters. Every parameter stores information about
  * the parameter itself and provides methods to retrieves or alter the current value.
@@ -35,7 +35,7 @@ class deoglParameterFloat : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglParameterFloat( deGraphicOpenGl &oal );
 	/*@}*/
 	
@@ -43,16 +43,16 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual decString GetParameterValue();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterValue( const char *value );
 	
-	/** \brief Current value. */
+	/** Current value. */
 	virtual float GetParameterFloat() = 0;
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterFloat( float value ) = 0;
 	/*@}*/
 };

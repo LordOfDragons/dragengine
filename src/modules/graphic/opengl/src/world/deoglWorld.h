@@ -38,7 +38,7 @@ class deWorld;
 
 
 /**
- * \brief World peer.
+ * World peer.
  */
 class deoglWorld : public deBaseGraphicWorld{
 private:
@@ -73,10 +73,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world peer. */
+	/** Create world peer. */
 	deoglWorld( deGraphicOpenGl &ogl, const deWorld &world );
 	
-	/** \brief Clean up world peer. */
+	/** Clean up world peer. */
 	virtual ~deoglWorld();
 	/*@}*/
 	
@@ -84,47 +84,47 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGl module. */
+	/** OpenGl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Retrieves the engine world resource. */
+	/** Retrieves the engine world resource. */
 	inline const deWorld &GetWorld() const{ return pWorld; }
 	
-	/** \brief Render world. */
+	/** Render world. */
 	inline deoglRWorld *GetRWorld() const{ return pRWorld; }
 	
 	/** \deprecated Height terrain or \em NULL if not set. */
 	inline deoglHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Update dynamic parts of world like the skins. */
+	/** Update dynamic parts of world like the skins. */
 	virtual void Update( float elapsed );
 	
-	/** \brief Shared video player list. */
+	/** Shared video player list. */
 	inline deoglSharedVideoPlayerList &GetSharedVideoPlayerList() const{ return *pSharedVideoPlayerList; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Add component as require sync if not present. */
+	/** Add component as require sync if not present. */
 	void AddSyncComponent( deoglComponent *component );
 	
-	/** \brief Remove component as require sync if present. */
+	/** Remove component as require sync if present. */
 	void RemoveSyncComponent( deoglComponent *component );
 	
-	/** \brief Add billboard as require sync if not present. */
+	/** Add billboard as require sync if not present. */
 	void AddSyncBillboard( deoglBillboard *billboard );
 	
-	/** \brief Remove billboard as require sync if present. */
+	/** Remove billboard as require sync if present. */
 	void RemoveSyncBillboard( deoglBillboard *billboard );
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/** Size changed. */
 	virtual void SizeChanged();

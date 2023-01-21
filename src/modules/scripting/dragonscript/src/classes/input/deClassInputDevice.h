@@ -84,6 +84,7 @@ private:
 		dsClass *clsVoid;
 		dsClass *clsBool;
 		dsClass *clsInteger;
+		dsClass *clsFloat;
 		dsClass *clsString;
 		dsClass *clsObject;
 		
@@ -144,6 +145,8 @@ private:
 	
 	DEF_NATFUNC( nfGetBoneConfiguration );
 	DEF_NATFUNC( nfGetFingerTipOffset );
+	DEF_NATFUNC( nfGetSupportsFaceEyeExpressions );
+	DEF_NATFUNC( nfGetSupportsFaceMouthExpressions );
 	DEF_NATFUNC( nfGetHandRig );
 	DEF_NATFUNC( nfGetVRModel );
 	DEF_NATFUNC( nfGetVRSkin );
@@ -160,6 +163,9 @@ private:
 	DEF_NATFUNC( nfGetDeviceBonePosePosition );
 	DEF_NATFUNC( nfGetDeviceBonePoseOrientation );
 	DEF_NATFUNC( nfGetDeviceBonePoseMatrix );
+	
+	DEF_NATFUNC( nfGetDeviceFaceExpressionCount );
+	DEF_NATFUNC( nfGetDeviceFaceExpressionAt );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

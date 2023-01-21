@@ -37,13 +37,13 @@ pin Dragengine.Utils
  * Using the window the tests can be run.
  */
 class BaseGameAppTesting extends Game
-	private var Console console
-	private var Loaders loaders
-	private var Desktop desktop
-	private var WindowTesting windowTesting
-	private var InputProcessor inputProcessor
+	private var Console pConsole
+	private var Loaders pLoaders
+	private var Desktop pDesktop
+	private var WindowTesting pWindowTesting
+	private var InputProcessor pInputProcessor
 	
-	private static var BaseGameAppTesting app = null
+	private static var BaseGameAppTesting pApp = null
 	
 	
 	
@@ -55,29 +55,29 @@ class BaseGameAppTesting extends Game
 	
 	/** \brief The one and only application object */
 	public static func BaseGameAppTesting getApp()
-		return app
+		return pApp
 	end
 	
 	
 	
 	/** \brief Console object. */
 	public func Console getConsole()
-		return console
+		return pConsole
 	end
 	
 	/** \brief Loaders. */
 	public func Loaders getLoaders()
-		return loaders
+		return pLoaders
 	end
 	
 	/** \brief Desktop widget. */
 	public func Desktop getDesktop()
-		return desktop
+		return pDesktop
 	end
 	
 	/** \brief Testing window. */
 	public func WindowTesting getWindowTesting()
-		return windowTesting
+		return pWindowTesting
 	end
 	
 	
@@ -92,46 +92,54 @@ class BaseGameAppTesting extends Game
 	
 	/** \brief Init application. */
 	public func void initGame()
-		app = this
+		pApp = this
 		
 		InputSystem.setCaptureInputDevices(false)
 		
-		console = Console.new(50)
-		console.addListener(LogConsoleMessages.new())
+		pConsole = Console.new(50)
+		pConsole.addListener(LogConsoleMessages.new())
 		
-		loaders = Loaders.new(console)
+		pLoaders = Loaders.new(pConsole)
 		
-		desktop = Desktop.new(GraphicSystem.getWindowSize())
-		desktop.setGuiTheme(loaders.getGuiTheme().loadFromFile("/shareddata/guithemes/testing.guitheme.xml"))
-		GraphicSystem.getPrimaryCanvas().addCanvas(desktop.getCanvasWidget())
+		pDesktop = createDesktop()
+		if pDesktop != null
+			pDesktop.setGuiTheme(pLoaders.getGuiTheme().loadFromFile("/shareddata/guithemes/testing.guitheme.xml"))
+			GraphicSystem.getPrimaryCanvas().addCanvas(pDesktop.getCanvasWidget())
+			
+			pWindowTesting = createWindowTesting()
+		end
 		
-		windowTesting = WindowTesting.new(console, desktop)
 		addTestSuites()
 		
-		inputProcessor = WidgetInputProcessor.new(desktop)
+		if pDesktop != null
+			pInputProcessor = WidgetInputProcessor.new(pDesktop)
+			
+		else
+			pInputProcessor = DefaultInputProcessor.new()
+		end
 	end
 	
 	/** \brief Clean up application. */
 	public func void cleanUp()
-		if windowTesting != null
-			windowTesting.close()
-			windowTesting = null
+		if pWindowTesting != null
+			pWindowTesting.close()
+			pWindowTesting = null
 		end
 		
-		if desktop != null
-			GraphicSystem.getPrimaryCanvas().removeCanvas(desktop.getCanvasWidget())
-			desktop.dispose()
-			desktop = null
+		if pDesktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas(pDesktop.getCanvasWidget())
+			pDesktop.dispose()
+			pDesktop = null
 		end
 		
-		inputProcessor = null
+		pInputProcessor = null
 		
-		app = null
+		pApp = null
 	end
 	
 	/** \brief Process input event. */
 	public func void inputEvent(InputEvent event)
-		inputProcessor.inputEvent(event)
+		pInputProcessor.inputEvent(event)
 	end
 	
 	/** \brief User requested window to be closed. */
@@ -147,6 +155,30 @@ class BaseGameAppTesting extends Game
 	
 	/** \brief Render window size changed. */
 	public func void onResizeRenderWindow()
-		desktop.setSize(GraphicSystem.getWindowSize())
+		if pDesktop != null
+			pDesktop.setSize(GraphicSystem.getWindowSize())
+		end
+	end
+	
+	/**
+	 * \brief Create desktop.
+	 * \version 1.13
+	 * 
+	 * Default implementation creates instance of Desktop. Return null
+	 * to not create a desktop for example for CI use.
+	 */
+	protected func Desktop createDesktop()
+		return Desktop.new(GraphicSystem.getWindowSize())
+	end
+	
+	/**
+	 * \brief Create testing window.
+	 * \version 1.13
+	 * 
+	 * Default implementation creates instance of WindowTesting.
+	 * Return null to use your own window or none at all for example for CI use.
+	 */
+	protected func WindowTesting createWindowTesting()
+		return WindowTesting.new(pConsole, pDesktop)
 	end
 end

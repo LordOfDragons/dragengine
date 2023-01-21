@@ -128,24 +128,24 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onMap( FXObject *sender, FXSelector selector, void *data );
-	long onUnmap( FXObject *sender, FXSelector selector, void *data );
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
+	long onResize( FXObject*, FXSelector, void* );
+	long onMap( FXObject*, FXSelector, void* );
+	long onUnmap( FXObject*, FXSelector, void* );
+	long onPaint( FXObject*, FXSelector, void* );
 	
-	long onKeyPress( FXObject *sender, FXSelector selector, void *data );
-	long onKeyRelease( FXObject *sender, FXSelector selector, void *data );
-	long onLeftMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onLeftMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onRightMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onRightMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onMiddleMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onMiddleMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onMouseMove( FXObject *sender, FXSelector selector, void *data );
-	long onMouseWheel( FXObject *sender, FXSelector selector, void *data );
-	long onDoubleClicked( FXObject *sender, FXSelector selector, void *data );
+	long onKeyPress( FXObject*, FXSelector, void* );
+	long onKeyRelease( FXObject*, FXSelector, void* );
+	long onLeftMouseDown( FXObject*, FXSelector, void* );
+	long onLeftMouseUp( FXObject*, FXSelector, void* );
+	long onRightMouseDown( FXObject*, FXSelector, void* );
+	long onRightMouseUp( FXObject*, FXSelector, void* );
+	long onMiddleMouseDown( FXObject*, FXSelector, void* );
+	long onMiddleMouseUp( FXObject*, FXSelector, void* );
+	long onMouseMove( FXObject*, FXSelector, void* );
+	long onMouseWheel( FXObject*, FXSelector, void* );
+	long onDoubleClicked( FXObject*, FXSelector, void* );
 	
-	long onTimeoutRetryMap( FXObject *sender, FXSelector selector, void *data );
+	long onTimeoutRetryMap( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 	

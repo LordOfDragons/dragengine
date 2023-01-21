@@ -147,6 +147,19 @@ void debpColliderBone::RemoveAllConstraints(){
 
 
 
+bool debpColliderBone::RequiresAutoDirty() const{
+	const int count = pConstraints.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		if( ( ( debpColliderConstraint* )pConstraints.GetAt( i ) )->RequiresAutoDirty() ){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
 // helper functions
 /////////////////////
 

@@ -89,6 +89,21 @@ class Microphone
 	/** \brief Set layer mask for visibility masking. */
 	public func void setLayerMask( LayerMask layerMask )
 	end
+	
+	/**
+	 * \brief Gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	public func float getSpeakerGain()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	public func void setSpeakerGain(float gain)
+	end
 	/*@}*/
 	
 	

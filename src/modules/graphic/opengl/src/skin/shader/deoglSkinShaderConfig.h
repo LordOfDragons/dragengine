@@ -138,7 +138,6 @@ public:
 	bool pInverseDepth;
 	bool pMaskedSolidity;
 	bool pClipPlane;
-	bool pNoZClip;
 	bool pOutputConstant;
 	bool pOutputColor;
 	bool pAmbientLightProbe;
@@ -149,6 +148,8 @@ public:
 	bool pUseNormalRoughnessCorrection;
 	bool pGSRenderCube;
 	bool pGSRenderCascaded;
+	bool pGSRenderStereo;
+	bool pVSRenderStereo;
 	bool pSharedSPB;
 	bool pOutline;
 	bool pOutlineThicknessScreen;
@@ -221,6 +222,9 @@ public:
 	/*@{*/
 	/** Create skin shader configuration. */
 	deoglSkinShaderConfig();
+	
+	/** Create copy of skin shader configuration. */
+	deoglSkinShaderConfig( const deoglSkinShaderConfig &copy );
 	
 	/** Clean up skin shader configuration. */
 	~deoglSkinShaderConfig();
@@ -317,12 +321,6 @@ public:
 	/** Set if fragments are clipped against a clipping plane. */
 	void SetClipPlane( bool clipPlane );
 	
-	/** No z coordinate clipping has to be done. */
-	inline bool GetNoZClip() const{ return pNoZClip; }
-	
-	/** Set if no z coordinate clipping has to be done. */
-	void SetNoZClip( bool noZClip );
-	
 	/** Constant value is required as output (not set in the shader). */
 	inline bool GetOutputConstant() const{ return pOutputConstant; }
 	
@@ -382,6 +380,18 @@ public:
 	
 	/** Set render to cascaded using geometry shader. */
 	void SetGSRenderCascaded( bool gsRenderCascaded );
+	
+	/** Render dual view using geometry shader. */
+	inline bool GetGSRenderStereo() const{ return pGSRenderStereo; }
+	
+	/** Set render dual view using geometry shader. */
+	void SetGSRenderStereo( bool gsRenderStereo );
+	
+	/** Render dual view using vertex shader. */
+	inline bool GetVSRenderStereo() const{ return pVSRenderStereo; }
+	
+	/** Set render dual view using vertex shader. */
+	void SetVSRenderStereo( bool vsRenderStereo );
 	
 	/** Use shared SPB. */
 	inline bool GetSharedSPB() const{ return pSharedSPB; }

@@ -30,6 +30,8 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -38,7 +40,6 @@ class deoglGICascade;
 class deoglRenderThread;
 class deoglRComponent;
 class deoglRWorld;
-class deoglSPBlockUBO;
 class deoglDCollisionFrustum;
 
 
@@ -90,26 +91,17 @@ private:
 	
 	decPoint pSampleImageSize;
 	
-	deObjectReference pUBOClearProbes;
+	deoglSPBlockUBO::Ref pUBOClearProbes;
 	
 	deoglArrayTexture pTexProbeIrradiance;
 	deoglArrayTexture pTexProbeDistance;
 	deoglArrayTexture pTexProbeOffset;
-	deoglTexture pTexProbeState;
-	deoglTexture pTexCopyProbeIrradiance;
-	deoglFramebuffer pFBOProbeIrradiance;
-	deoglFramebuffer pFBOProbeDistance;
-	deoglFramebuffer pFBOProbeOffset;
-	deoglFramebuffer pFBOProbeState;
-	deoglFramebuffer pFBOCopyProbeIrradiance;
 	bool pClearMaps;
-	GLuint pVBOProbeOffsets;
-	GLuint pVBOProbeOffsetsTransition;
-	GLfloat *pVBOProbeOffsetsData;
+	deoglSPBlockSSBO::Ref pPBProbeDynamicStates;
+	deoglSPBlockSSBO::Ref pPBProbeOffsets;
 	bool pProbesHaveMoved;
 	
-	GLuint pVBOProbeExtends;
-	GLfloat *pVBOProbeExtendsData;
+	deoglSPBlockSSBO::Ref pPBProbeExtends;
 	bool pProbesExtendsChanged;
 	
 	deoglGIInstances pInstances;
@@ -223,7 +215,7 @@ public:
 	
 	
 	/** Clear probes UBO. */
-	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOClearProbes; }
+	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return pUBOClearProbes; }
 	
 	/** Prepare clear probes UBO. */
 	void PrepareUBOClearProbes() const;
@@ -242,37 +234,14 @@ public:
 	inline deoglArrayTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
 	inline const deoglArrayTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
-	/** Probe state texture. */
-	inline deoglTexture &GetTextureProbeState(){ return pTexProbeState; }
-	inline const deoglTexture &GetTextureProbeState() const{ return pTexProbeState; }
+	/** Probe dynamic states parameter block. */
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeDynamicStates() const{ return pPBProbeDynamicStates; }
 	
-	/** Copy irradiance probe texture. */
-	inline deoglTexture &GetTextureCopyProbeIrradiance(){ return pTexCopyProbeIrradiance; }
-	inline const deoglTexture &GetTextureCopyProbeIrradiance() const{ return pTexCopyProbeIrradiance; }
+	/** Probe offset parameter block. */
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeOffsets() const{ return pPBProbeOffsets; }
 	
-	/** Probe fbo irradiance. */
-	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
-	
-	/** Probe fbo distance. */
-	inline deoglFramebuffer &GetFBOProbeDistance(){ return pFBOProbeDistance; }
-	
-	/** Probe offset fbo. */
-	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
-	
-	/** Probe state fbo. */
-	inline deoglFramebuffer &GetFBOProbeState(){ return pFBOProbeState; }
-	
-	/** Copy probe fbo irradiance. */
-	inline deoglFramebuffer &GetFBOCopyProbeIrradiance(){ return pFBOCopyProbeIrradiance; }
-	
-	/** Probe offset feedback VBO. */
-	inline GLuint GetVBOProbeOffsets() const{ return pVBOProbeOffsets; }
-	
-	/** Transition probe offset feedback VBO. */
-	inline GLuint GetVBOProbeOffsetsTransition() const{ return pVBOProbeOffsetsTransition; }
-	
-	/** Probe extends feedback VBO. */
-	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
+	/** Probe extends feedback parameter block. */
+	inline const deoglSPBlockSSBO::Ref &GetPBProbeExtends() const{ return pPBProbeExtends; }
 	
 	/** Activate next cascade to use for upcoming Update() call. */
 	void ActivateNextCascade();

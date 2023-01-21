@@ -27,12 +27,12 @@
 #include "deoglLightBoundaryMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/deoglTextureStageManager.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -52,8 +52,8 @@ pTextureMin( NULL ),
 pTextureMax( NULL ),
 pFBOs( NULL ),
 
-pPixBufBoundaryMin( NULL ),
-pPixBufBoundaryMax( NULL ),
+pPixBufBoundaryMin( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 ) ) ),
+pPixBufBoundaryMax( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 ) ) ),
 
 pSize( size ),
 pLevelCount( 1 )
@@ -65,9 +65,6 @@ pLevelCount( 1 )
 	try{
 		pCreateTextures();
 		pCreateFBOs();
-		
-		pPixBufBoundaryMin = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 );
-		pPixBufBoundaryMax = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -109,8 +106,8 @@ deoglFramebuffer *deoglLightBoundaryMap::GetFBOAt( int level ){
 
 
 void deoglLightBoundaryMap::GetResult( decVector &boundaryMin, decVector &boundaryMax ){
-	pTextureMin->GetPixelsLevel( pLevelCount - 1, *pPixBufBoundaryMin );
-	pTextureMax->GetPixelsLevel( pLevelCount - 1, *pPixBufBoundaryMax );
+	pTextureMin->GetPixelsLevel( pLevelCount - 1, pPixBufBoundaryMin );
+	pTextureMax->GetPixelsLevel( pLevelCount - 1, pPixBufBoundaryMax );
 	
 	const deoglPixelBuffer::sFloat3 &resultMin = *pPixBufBoundaryMin->GetPointerFloat3();
 	const deoglPixelBuffer::sFloat3 &resultMax = *pPixBufBoundaryMax->GetPointerFloat3();
@@ -148,13 +145,6 @@ void deoglLightBoundaryMap::pCleanUp(){
 	if( pTextureMin ){
 		delete pTextureMin;
 	}
-	
-	if( pPixBufBoundaryMax ){
-		delete pPixBufBoundaryMax;
-	}
-	if( pPixBufBoundaryMin ){
-		delete pPixBufBoundaryMin;
-	}
 }
 
 void deoglLightBoundaryMap::pCreateTextures(){
@@ -176,6 +166,7 @@ void deoglLightBoundaryMap::pCreateTextures(){
 }
 
 void deoglLightBoundaryMap::pCreateFBOs(){
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	int i;
 	

@@ -237,7 +237,8 @@ pRenderThread( renderThread ),
 pDebugSaveTexture( NULL ),
 pDeveloperMode( NULL ),
 pEnableHwDebugOutput( true ),
-pDebugMemoryConsumption( renderThread )
+pDebugMemoryConsumption( renderThread ),
+pEnableDebugTrace( false )
 {
 	try{
 		if( renderThread.GetConfiguration().GetDebugContext() ){
@@ -247,85 +248,86 @@ pDebugMemoryConsumption( renderThread )
 				pglDebugMessageCallback( fDebugOutput, &renderThread );
 				
 				glEnable( GL_DEBUG_OUTPUT );
-				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
 				
-				pglDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE );
-				
-				
-				// disable message not interesting for us but flodding the logs
-				GLuint disableMessages[ 20 ];
-				int disableMessagesCount = 0;
-				
-				
-				// nVidia:
-				//   Source(API) Type(Other) ID(20084): Texture state usage warning:
-				//     The texture object (0) bound to texture image unit 0 does not
-				//     have a defined base level and cannot be used for texture mapping.
-				disableMessages[ disableMessagesCount++ ] = 0x20084;
-				
-				// nVidia:
-				//   Source(API) Type(Other) ID(20061): Framebuffer detailed info:
-				//     The driver allocated storage for renderbuffer 0.
-				disableMessages[ disableMessagesCount++ ] = 0x20061;
-				
-				// nVidia:
-				//   Source(API) Type(Other) ID(0x20060): Framebuffer info: The drawbuffer
-				//     supplied (34854) is currently bound to NONE, no clear will take place.
-				disableMessages[ disableMessagesCount++ ] = 0x20060;
-				
-				// nVidia:
-				//   Source(API) Type(Other) ID(0x20081): Texture state detailed info:
-				//     GL_TEXTURE_BUFFER_EXT texture 349 was (re)sized to store 145 elements.
-				disableMessages[ disableMessagesCount++ ] = 0x20081;
-				
-				if( disableMessagesCount > 0 ){
-					pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_OTHER_ARB,
-						GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
-				}
-				
-				
-				disableMessagesCount = 0;
-				
-				// nVidia:
-				//   Source(API) Type(Performance) ID(0x20072): Buffer performance warning:
-				//     Buffer object 34 (bound to GL_TRANSFORM_FEEDBACK_BUFFER_NV (0),
-				//     GL_ARRAY_BUFFER_ARB, and GL_TRANSFORM_FEEDBACK_BUFFER_NV, usage hint 
-				//     is GL_STREAM_READ) is being copied/moved from VIDEO memory to HOST memory.
-				disableMessages[ disableMessagesCount++ ] = 0x20072;
-				
-				// nVidia:
-				//   Source(API) Type(Performance) ID(0x20092): Program/shader state performance
-				//     warning: Vertex shader in program 15 is being recompiled based on GL state.
-				disableMessages[ disableMessagesCount++ ] = 0x20092;
-				
-				if( disableMessagesCount > 0 ){
-					pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB,
-						GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
-				}
-				
-				
-				disableMessagesCount = 0;
-				
-				// nVidia:
-				//   Source(API) Type(Undefined Behavior) ID(0x20096): Program undefined
-				//     behavior warning: The current GL state uses a sampler (1) that has
-				//     depth comparisons disabled, with a texture object (355) with a depth
-				//     format, by a shader that samples it with a shadow sampler.
-				//     Using this state to sample would result in undefined behavior.
-				disableMessages[ disableMessagesCount++ ] = 0x20096;
-				
-				if( disableMessagesCount > 0 ){
-					pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB,
-						GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
-				}
-				
-				
-				// done
-				if( renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_KHR_debug ) ){
-					renderThread.GetLogger().LogInfo( "Debugging callback using KHR_debug activated" );
+				if( renderThread.GetConfiguration().GetDebugNoMessages() ){
+					renderThread.GetLogger().LogInfo( "Suppress hardware debug messages" );
+					pglDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE );
 					
 				}else{
-					renderThread.GetLogger().LogInfo( "Debugging callback using ARB_debug_output activated" );
+// 					glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
+					
+					pglDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE );
+					
+					
+					// disable message not interesting for us but flodding the logs
+					GLuint disableMessages[ 20 ];
+					int disableMessagesCount = 0;
+					
+					
+					// nVidia:
+					//   Source(API) Type(Other) ID(20084): Texture state usage warning:
+					//     The texture object (0) bound to texture image unit 0 does not
+					//     have a defined base level and cannot be used for texture mapping.
+					disableMessages[ disableMessagesCount++ ] = 0x20084;
+					
+					// nVidia:
+					//   Source(API) Type(Other) ID(0x20060): Framebuffer info: The drawbuffer
+					//     supplied (34854) is currently bound to NONE, no clear will take place.
+					disableMessages[ disableMessagesCount++ ] = 0x20060;
+					
+					// nVidia:
+					//   Source(API) Type(Other) ID(0x20081): Texture state detailed info:
+					//     GL_TEXTURE_BUFFER_EXT texture 349 was (re)sized to store 145 elements.
+					disableMessages[ disableMessagesCount++ ] = 0x20081;
+					
+					if( disableMessagesCount > 0 ){
+						pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_OTHER_ARB,
+							GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
+					}
+					
+					
+					disableMessagesCount = 0;
+					
+					// nVidia:
+					//   Source(API) Type(Performance) ID(0x20072): Buffer performance warning:
+					//     Buffer object 34 (bound to GL_TRANSFORM_FEEDBACK_BUFFER_NV (0),
+					//     GL_ARRAY_BUFFER_ARB, and GL_TRANSFORM_FEEDBACK_BUFFER_NV, usage hint 
+					//     is GL_STREAM_READ) is being copied/moved from VIDEO memory to HOST memory.
+					disableMessages[ disableMessagesCount++ ] = 0x20072;
+					
+					// nVidia:
+					//   Source(API) Type(Performance) ID(0x20092): Program/shader state performance
+					//     warning: Vertex shader in program 15 is being recompiled based on GL state.
+					disableMessages[ disableMessagesCount++ ] = 0x20092;
+					
+					if( disableMessagesCount > 0 ){
+						pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB,
+							GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
+					}
+					
+					
+					disableMessagesCount = 0;
+					
+					// nVidia:
+					//   Source(API) Type(Undefined Behavior) ID(0x20096): Program undefined
+					//     behavior warning: The current GL state uses a sampler (1) that has
+					//     depth comparisons disabled, with a texture object (355) with a depth
+					//     format, by a shader that samples it with a shadow sampler.
+					//     Using this state to sample would result in undefined behavior.
+					disableMessages[ disableMessagesCount++ ] = 0x20096;
+					
+					if( disableMessagesCount > 0 ){
+						pglDebugMessageControl( GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB,
+							GL_DONT_CARE, disableMessagesCount, &disableMessages[ 0 ], GL_FALSE );
+					}
+					
+					// done
+					if( renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_KHR_debug ) ){
+						renderThread.GetLogger().LogInfo( "Debugging callback using KHR_debug activated" );
+						
+					}else{
+						renderThread.GetLogger().LogInfo( "Debugging callback using ARB_debug_output activated" );
+					}
 				}
 				
 			}else if( renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_AMD_debug_output ) ){
@@ -333,6 +335,9 @@ pDebugMemoryConsumption( renderThread )
 				pglDebugMessageEnableAMD( 0, 0, 0, NULL, GL_TRUE );
 				renderThread.GetLogger().LogInfo( "Debugging callback using AMD_debug_output activated" );
 			}
+			
+			// enable debug trace grouping
+			pEnableDebugTrace = renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_KHR_debug );
 		}
 		
 		pDebugSaveTexture = new deoglDebugSaveTexture( renderThread );
@@ -376,6 +381,24 @@ void deoglRTDebug::SetEnableHwDebugOutput( bool enable ){
 	pEnableHwDebugOutput = enable;
 }
 
+void deoglRTDebug::BeginDebugGroup( const char *name, int id ){
+	if( pEnableDebugTrace ){
+		pglPushDebugGroup( GL_DEBUG_SOURCE_APPLICATION, id, strlen( name ), name );
+	}
+}
+
+void deoglRTDebug::EndDebugGroup(){
+	if( pEnableDebugTrace ){
+		pglPopDebugGroup();
+	}
+}
+
+void deoglRTDebug::SetDebugObjectLabel( GLenum type, GLuint object, const char *name ){
+	if( pEnableDebugTrace ){
+		pglObjectLabel( type, object, strlen( name ), name );
+	}
+}
+
 
 
 // Private Functions
@@ -396,4 +419,3 @@ void deoglRTDebug::pCleanUp(){
 		pglDebugMessageCallbackAMD( NULL, NULL );
 	}
 }
-

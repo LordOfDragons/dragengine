@@ -4,15 +4,17 @@
 	
 	<version>130</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<texture name='texColor' target='0'/>
 	<texture name='texTransparency' target='1'/>
 	
-	<parameter name='pMatrixMVP'/>
-	<parameter name='pScalePosition'/>
+	<parameter name='pMatrixBody'/>
 	<parameter name='pColor'/>
 	<parameter name='pMaterialGamma'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	

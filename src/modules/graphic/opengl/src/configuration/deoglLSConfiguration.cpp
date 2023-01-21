@@ -233,20 +233,11 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "disableStencil" ) == 0 ){
 					configuration.SetDisableStencil( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
-				}else if( strcmp( name, "stencilOnlyOnRenderbuffer" ) == 0 ){
-					configuration.SetStencilOnlyOnRB( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "lightCutOffIntensity" ) == 0 ){
 					configuration.SetLightCutOffIntensity( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
 				}else if( strcmp( name, "useTextureCompression" ) == 0 ){
 					configuration.SetUseTextureCompression( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenEncDepth" ) == 0 ){
-					configuration.SetDefRenEncDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenUsePOTs" ) == 0 ){
-					configuration.SetDefRenUsePOTs( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
 				}else if( strcmp( name, "defRenSizeLimit" ) == 0 ){
 					configuration.SetDefRenSizeLimit( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );

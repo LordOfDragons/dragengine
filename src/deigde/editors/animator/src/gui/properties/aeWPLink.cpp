@@ -30,6 +30,7 @@
 #include "../../animator/aeAnimator.h"
 #include "../../animator/controller/aeController.h"
 #include "../../animator/link/aeLink.h"
+#include "../../clipboard/aeClipboardDataLink.h"
 #include "../../undosys/link/aeULinkSetName.h"
 #include "../../undosys/link/aeULinkSetController.h"
 #include "../../undosys/link/aeULinkSetCurve.h"
@@ -41,7 +42,9 @@
 #include "../../undosys/link/aeULinkSetBoneMinimum.h"
 #include "../../undosys/link/aeULinkSetBoneMaximum.h"
 #include "../../undosys/link/aeULinkToggleWrapY.h"
+#include "../../undosys/link/aeULinkPaste.h"
 
+#include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -124,6 +127,64 @@ public:
 };
 
 
+class cActionCopy : public cBaseAction{
+public:
+	cActionCopy( aeWPLink &panel ) : cBaseAction( panel, "Copy",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+		"Copy link to clipboard" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
+		igdeClipboardDataReference cdata;
+		cdata.TakeOver( new aeClipboardDataLink( link ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		return nullptr;
+	}
+};
+
+class cActionCut : public cBaseAction{
+public:
+	cActionCut( aeWPLink &panel ) : cBaseAction( panel, "Cut",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
+		"Cut link into clipboard" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
+		igdeClipboardDataReference cdata;
+		cdata.TakeOver( new aeClipboardDataLink( link ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		return new aeULinkRemove( link );
+	}
+};
+
+class cActionPaste : public igdeAction{
+	aeWPLink &pPanel;
+	
+public:
+	cActionPaste( aeWPLink &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+		"Paste link from clipboard" ), pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		if( ! animator ){
+			return;
+		}
+		
+		aeClipboardDataLink * const cdata = ( aeClipboardDataLink* )pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataLink::TYPE_NAME );
+		if( ! cdata ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeULinkPaste( animator, cdata->GetLinks() ) );
+		animator->GetUndoSystem()->Add( undo );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
+			.GetWithTypeName( aeClipboardDataLink::TYPE_NAME ) && pPanel.GetAnimator() );
+	}
+};
 
 class cListLinks : public igdeListBoxListener{
 	aeWPLink &pPanel;
@@ -146,6 +207,11 @@ public:
 		helper.MenuCommand( menu, windowMain.GetActionLinkDuplicate() );
 		helper.MenuCommand( menu, windowMain.GetActionLinkRemove() );
 		helper.MenuCommand( menu, windowMain.GetActionLinkRemoveUnused() );
+		
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionCopy( pPanel ), true );
+		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPaste( pPanel ), true );
 	}
 };
 

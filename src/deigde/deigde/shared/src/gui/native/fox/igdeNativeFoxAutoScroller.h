@@ -90,7 +90,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onChildMouseMoved( FXObject *sender, FXSelector selector, void *data );
+	long onChildMouseMoved( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

@@ -1,44 +1,35 @@
 precision highp float;
 precision highp int;
 
-
-
-// Uniforms
-/////////////
-
 #include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 
-UBOLAYOUT uniform RenderParameters{
-	mat3 pMatrixEnvMap;
-	vec4 pQuadTCTransform;
-	vec4 pPosTransform;
-	vec2 pPosTransform2;
+UBOLAYOUT uniform EnvMapParameters{
 	vec2 pBlendFactors; // x=multiply, y=add
-	float pEnvMapLodLevel;
-	int pLayerCount;
-	vec4 pEnvMapPosLayer[ 100 ]; // xyz=position, w=layer
+	float pReflEnvMapLodLevel;
+	int pReflLayerCount;
+	vec4 pReflEnvMapPosLayer[ 100 ]; // xyz=position, w=layer
 };
 
 
-
-// Samplers
-/////////////
-
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+uniform HIGHP sampler2DArray texDepth;
+uniform lowp sampler2DArray texDiffuse;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texReflectivity;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
 uniform mediump sampler2DArray texEnvMapArray;
 uniform mediump sampler2D texEnvMapSky;
 
 
+in vec2 vTexCoord;
+in vec2 vScreenCoord;
 
-// Input / Output
-///////////////////
-
-in vec4 vScreenCoord;
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec4 outColor;
 
@@ -47,19 +38,16 @@ out vec4 outColor;
 // Constants
 //////////////
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
-
 #ifdef ENVMAP_EQUI
 	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 #endif
 
 #include "v130/shared/normal.glsl"
+#include "v130/shared/defren/depth_to_position.glsl"
 
 
 /** Calculate the reflections parameters. */
-void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 normal,
+void calculateReflectionParameters( in ivec3 tc, in vec3 position, out vec3 normal,
 out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	// fetch reflectivity
 	reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
@@ -124,8 +112,8 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 		//while( true ){
 			bestLayer = -1;
 			
-			for( j=0; j<pLayerCount; j++ ){
-				envMapDir = position - pEnvMapPosLayer[ j ].xyz;
+			for( j=0; j<pReflLayerCount; j++ ){
+				envMapDir = position - pReflEnvMapPosLayer[ j ].xyz;
 				curSquareDist = dot( envMapDir, envMapDir );
 				
 				if( curSquareDist < bestSquareDist && curSquareDist > lowDistLimit ){
@@ -144,7 +132,7 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 			
 			// test if the environment map is occluded. if not break the loop
 			// if( ! occluded ){
-				envMapLayers[ i ] = pEnvMapPosLayer[ bestLayer ].w;
+				envMapLayers[ i ] = pReflEnvMapPosLayer[ bestLayer ].w;
 				//break;
 			// }
 		//}
@@ -153,7 +141,7 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 	}
 	
 	// tap the environment maps and blend the colors
-	float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );
+	float envMapLodLevel = log2( 1.0 + pReflEnvMapLodLevel * roughness );
 	envMapDir = pMatrixEnvMap * reflectDir;
 	
 	#ifdef ENVMAP_EQUI
@@ -205,12 +193,12 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 
 #if 0
 void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivity, in float roughness, out vec3 color ){
-	float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );
+	float envMapLodLevel = log2( 1.0 + pReflEnvMapLodLevel * roughness );
 	vec3 envMapDir = pMatrixEnvMap * reflectDir;
 	
 	envMapDir = normalize( envMapDir );
 	
-	if( pLayerCount < 2 ){
+	if( pReflLayerCount < 2 ){
 		vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
 		color = textureLod( texEnvMapSky, tcEnvMap, envMapLodLevel ).rgb;
 		
@@ -236,7 +224,7 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	if( texelFetch( texDiffuse, tc, 0 ).a == 0.0 ){
@@ -244,13 +232,7 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	
 	// calculate the reflection parameters. these are the same no matter which solution is used later on
 	// to obtain the reflected color from
@@ -274,18 +256,18 @@ void main( void ){
 	vec3 envMapDir;
 	
 	
-	vec3 envMapDir = position - pEnvMapPosLayer[ 0 ].xyz;
+	vec3 envMapDir = position - pReflEnvMapPosLayer[ 0 ].xyz;
 	float bestSquareDist = dot( envMapDir, envMapDir );
-	float bestLayer = pEnvMapPosLayer[ 0 ].w;
+	float bestLayer = pReflEnvMapPosLayer[ 0 ].w;
 	float curSquareDist;
 	int i;
 	
-	for( i=1; i<pLayerCount; i++ ){
-		envMapDir = position - pEnvMapPosLayer[ i ].xyz;
+	for( i=1; i<pReflLayerCount; i++ ){
+		envMapDir = position - pReflEnvMapPosLayer[ i ].xyz;
 		curSquareDist = dot( envMapDir, envMapDir );
 		if( curSquareDist < bestSquareDist ){
 			bestSquareDist = curSquareDist;
-			bestLayer = pEnvMapPosLayer[ i ].w;
+			bestLayer = pReflEnvMapPosLayer[ i ].w;
 		}
 	}
 	
@@ -293,14 +275,14 @@ void main( void ){
 	*/
 	
 	/*
-	vec3 envMapDir = position - pEnvMapPosLayer[ 0 ].xyz;
-	vec2 bestEnvMap = vec2( dot( envMapDir, envMapDir ), pEnvMapPosLayer[ 0 ].w );
+	vec3 envMapDir = position - pReflEnvMapPosLayer[ 0 ].xyz;
+	vec2 bestEnvMap = vec2( dot( envMapDir, envMapDir ), pReflEnvMapPosLayer[ 0 ].w );
 	vec2 curEnvMap;
 	int i;
 	
-	for( i=1; i<pLayerCount; i++ ){
-		envMapDir = position - pEnvMapPosLayer[ i ].xyz;
-		curEnvMap = vec2( dot( envMapDir, envMapDir ), pEnvMapPosLayer[ i ].w );
+	for( i=1; i<pReflLayerCount; i++ ){
+		envMapDir = position - pReflEnvMapPosLayer[ i ].xyz;
+		curEnvMap = vec2( dot( envMapDir, envMapDir ), pReflEnvMapPosLayer[ i ].w );
 		bestEnvMap = mix( bestEnvMap, curEnvMap, curEnvMap.x < bestEnvMap.x );
 	}
 	
@@ -308,14 +290,17 @@ void main( void ){
 	*/
 	
 #if 0
+	// OLD CODE using "vec4 vTexCoord" with
+	//   vTexCoord.xy = inPosition.xy * pQuadTCTransform.xy + pQuadTCTransform.zw;
+	
 	// get indices and discard if this envmap is not matched
-	ivec2 indices = texture( texIndices, vScreenCoord.xy ).rg;
+	ivec2 indices = texture( texIndices, vTexCoord.xy ).rg;
 	if( all( notEqual( indices, ivec2( pEnvMapIndex ) ) ) ) discard;
 	
 	// get distances and calculate the blend weight according to them
 	vec2 distances;
-	distances.x = texture( texDistance1, vScreenCoord.xy ).r;
-	distances.y = texture( texDistance2, vScreenCoord.xy ).r;
+	distances.x = texture( texDistance1, vTexCoord.xy ).r;
+	distances.y = texture( texDistance2, vTexCoord.xy ).r;
 	distances *= vec2( pScaleDistance );
 	
 	float weight = clamp( ( distances.y - distances.x ) * pBlendFactors.x + pBlendFactors.y, 0.0, 1.0 );
@@ -325,18 +310,12 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
-	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );
-	#else
-		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
-	#endif
-	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
-		position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
 	#else
-		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
+	vec3 position = depthToPositionVolume( texDepth, tc, vVolumePos, vLayer );
 	#endif
 	
 	// fetch reflectivity
@@ -377,7 +356,7 @@ void main( void ){
 	reflectivity *= vec3( solidity );
 	
 	// calculate the reflected color
-	float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );
+	float envMapLodLevel = log2( 1.0 + pReflEnvMapLodLevel * roughness );
 	vec3 reflectedColor = textureLod( texEnvMap, envMapDir, envMapLodLevel ).rgb;
 	
 	// this should simulate to some degree a prefiltered environment map (cosine filter, phong lobe).

@@ -1,19 +1,20 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>DefRen Finalize</name>
 	
 	<version>130</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<texture name='texColor' target='0'/>
 	
-	<parameter name='pPosTransform'/>
 	<parameter name='pTCTransform'/>
 	<parameter name='pGamma'/>
 	<parameter name='pBrightness'/>
 	<parameter name='pContrast'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outColor' target='0'/>
 	

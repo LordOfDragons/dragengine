@@ -49,9 +49,9 @@
 // Class deoxrDPHtcViveTracker::Tracker
 /////////////////////////////////////////
 
-deoxrDPHtcViveTracker::Tracker::Tracker( const deoxrPath &path, int number ) :
-path( path ),
-number( number ){
+deoxrDPHtcViveTracker::Tracker::Tracker( const deoxrPath &ppath, int pnumber ) :
+path( ppath ),
+number( pnumber ){
 }
 
 deoxrDPHtcViveTracker::Tracker::~Tracker(){
@@ -62,9 +62,9 @@ deoxrDPHtcViveTracker::Tracker::~Tracker(){
 // Class deoxrDPHtcViveTracker::RoleAction
 ////////////////////////////////////////////
 
-deoxrDPHtcViveTracker::RoleAction::RoleAction( const deoxrPath &path, const deoxrAction::Ref &action ) :
-path( path ),
-action( action ){
+deoxrDPHtcViveTracker::RoleAction::RoleAction( const deoxrPath &ppath, const deoxrAction::Ref &paction ) :
+path( ppath ),
+action( paction ){
 }
 
 deoxrDPHtcViveTracker::RoleAction::~RoleAction(){
@@ -752,12 +752,12 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device->SetType( deInputDevice::edtVRTracker );
 	tracker.device->SetName( pNameForTracker( tracker ) );
 	tracker.device->SetActionPose( tracker.action );
+	tracker.device->SetSubactionPath( tracker.pathRole );
 	tracker.device->SetID( id );
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-// 		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(), tracker.action ) ) );
+		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
+// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
+// 		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( tracker.device );
 	pAddAxisTrigger( tracker.device, trigger );

@@ -153,6 +153,9 @@ void deoglRPropField::PrepareForRender(){
 	}
 }
 
+void deoglRPropField::PrepareForRenderRender(){
+}
+
 void deoglRPropField::PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix ){
 	// NOTE this could be optimized since the instances and their bend state are different
 	// data objects. if the instances change their base matrix can be calculated and stored

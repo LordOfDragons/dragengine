@@ -71,6 +71,10 @@ class deLogger;
  */
 class aeAnimator : public igdeEditableEntity{
 public:
+	typedef deTObjectReference<aeAnimator> Ref;
+	
+	
+public:
 	/** Collision Layers. */
 	enum eCollisionLayers{
 		/** Non-AI Elements blocked by walls. */

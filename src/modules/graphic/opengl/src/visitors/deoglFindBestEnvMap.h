@@ -32,7 +32,7 @@ class deoglEnvironmentMapList;
 
 
 /**
- * @brief Find best environment map world octree visitor.
+ * Find best environment map world octree visitor.
  * Uses as input the position to search the best environment map for. The environment map with the
  * smallest distance to the target position is considered the best. After visiting the found
  * environment map with stored or NULL otherwise if no result has been found.
@@ -44,7 +44,7 @@ private:
 	double pDistance;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglFindBestEnvMap();
@@ -52,7 +52,7 @@ public:
 	virtual ~deoglFindBestEnvMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the target position. */
 	inline const decDVector &GetPosition() const{
@@ -74,7 +74,7 @@ public:
 	void Reset();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );

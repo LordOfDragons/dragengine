@@ -57,6 +57,8 @@ private:
 	
 	deoglCapsFmtSupport pFormats;
 	
+	int pMaxTextureSize;
+	int pMax3DTextureSize;
 	int pMaxDrawBuffers;
 	int pUBOMaxSize;
 	int pTBOMaxSize;
@@ -64,6 +66,7 @@ private:
 	int pSSBOMaxBlocksVertex;
 	int pSSBOMaxBlocksFragment;
 	int pSSBOMaxBlocksGeometry;
+	int pSSBOMaxBlocksCompute;
 	int pUBOOffsetAlignment;
 	int pGeometryShaderMaxVertices;
 	int pGeometryShaderMaxComponents;
@@ -101,6 +104,12 @@ public:
 	
 	
 	
+	/** Maximum texture size. */
+	inline int GetMaxTextureSize() const{ return pMaxTextureSize; }
+	
+	/** Maximum 3D texture size. */
+	inline int GetMax3DTextureSize() const{ return pMax3DTextureSize; }
+	
 	/**
 	 * Maximum number of draw buffers available by the hardware.
 	 * 
@@ -126,6 +135,9 @@ public:
 	
 	/** Maximum number of supported SSBO per geometry shader. */
 	inline int GetSSBOMaxBlocksGeometry() const{ return pSSBOMaxBlocksGeometry; }
+	
+	/** Maximum number of supported SSBO per geometry shader. */
+	inline int GetSSBOMaxBlocksCompute() const{ return pSSBOMaxBlocksCompute; }
 	
 	/** Uniform buffer offset alignment. */
 	inline int GetUBOOffsetAlignment() const{ return pUBOOffsetAlignment; }

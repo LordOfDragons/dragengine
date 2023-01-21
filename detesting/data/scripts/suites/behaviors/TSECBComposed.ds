@@ -1,0 +1,280 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorComposed.
+ */
+class TSECBComposed extends TestSuite
+	/** Child element class. */
+	class ChildElementClass extends BehaviorElementClass
+		public func new(String name) super(name)
+			addProperty(ECPInteger.new("childProperty", 0))
+		end
+		
+		public func ElementClass duplicateNamed(String classname)
+			return ChildElementClass.new(classname)
+		end
+		
+		static public func BehaviorElement childWith(GameWorld gameWorld, String name, int property)
+			return gameWorld.findElement(block Element element
+				return element.getClass().getClassname().equals(name) \
+					and element.getStub().getPropertyIntFor("childProperty", 0) == property
+			end) cast BehaviorElement
+		end
+	end
+	
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorComposed behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorComposed.new(ec, ElementClassList.new(), MutableID.new(10))
+			assertEquals(ECBehaviorComposed.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorComposed.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorComposed.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertNotNull(behavior.getChildren())
+			assertEquals(behavior.getChildren().getAllowedElementClasses().getCount(), 0)
+			
+			assertHasProperty("composed.children")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorComposed.Instance composed = behavior.instance(e)
+			assertNotNull(composed)
+			assertEquals(composed.getECBehavior(), behavior)
+			
+			assertEquals(ECBehaviorComposed.getInstanceIn(e), composed)
+			
+			return false
+		end
+	end
+	
+	/** Composed basic use. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorComposed behavior
+		
+		protected func void addBehaviors()
+			var ElementClassList eclist = ElementClassList.new()
+			eclist.add(ChildElementClass.new("ChildClass1"))
+			eclist.add(ChildElementClass.new("ChildClass2"))
+			eclist.add(ChildElementClass.new("ChildClassNotAllowed"))
+			
+			behavior = ECBehaviorComposed.new(getElementClass(), eclist, MutableID.new(10))
+			
+			behavior.getChildren().getAllowedElementClasses().add(eclist.getNamed("ChildClass1"))
+			behavior.getChildren().getAllowedElementClasses().add(eclist.getNamed("ChildClass2"))
+			
+			var Array children = Array.new()
+			var Dictionary child, properties
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass1")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "8")
+			child.setAt("properties", properties)
+			children.add(child)
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass2")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "6")
+			child.setAt("properties", properties)
+			children.add(child)
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass2")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "4")
+			child.setAt("properties", properties)
+			children.add(child)
+			
+			behavior.getChildren().setValue(children)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorComposed.Instance composed = behavior.instance(getElement())
+			assertTrue(composed.getChildrenCreated())
+			assertNotNull(ChildElementClass.childWith(getGameWorld(), "ChildClass1", 8))
+			assertNotNull(ChildElementClass.childWith(getGameWorld(), "ChildClass2", 6))
+			assertNotNull(ChildElementClass.childWith(getGameWorld(), "ChildClass2", 4))
+			
+			return false
+		end
+	end
+	
+	/** Composed not allowed use. */
+	class NotAllowed extends TestCaseECBehavior
+		public func new() super("notAllowed", UnicodeString.newFromUTF8("NotAllowed"))
+			setPreloadShouldFail(true)
+		end
+		
+		private var ECBehaviorComposed behavior
+		
+		protected func void addBehaviors()
+			var ElementClassList eclist = ElementClassList.new()
+			eclist.add(ChildElementClass.new("ChildClass1"))
+			eclist.add(ChildElementClass.new("ChildClass2"))
+			eclist.add(ChildElementClass.new("ChildClassNotAllowed"))
+			
+			behavior = ECBehaviorComposed.new(getElementClass(), eclist, MutableID.new(10))
+			
+			behavior.getChildren().getAllowedElementClasses().add(eclist.getNamed("ChildClass1"))
+			behavior.getChildren().getAllowedElementClasses().add(eclist.getNamed("ChildClass2"))
+			
+			var Array children = Array.new()
+			var Dictionary child, properties
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass1")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "8")
+			child.setAt("properties", properties)
+			children.add(child)
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClassNotAllowed")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "6")
+			child.setAt("properties", properties)
+			children.add(child)
+			
+			behavior.getChildren().setValue(children)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorComposed behavior
+		private var ECBehaviorComposed behavior2
+		private var ECBehaviorComposed behavior3
+		
+		protected func void addBehaviors()
+			var ElementClassList eclist = ElementClassList.new()
+			eclist.add(ChildElementClass.new("ChildClass1"))
+			eclist.add(ChildElementClass.new("ChildClass2"))
+			eclist.add(ChildElementClass.new("ChildClassNotAllowed"))
+			
+			var MutableID idGenerator = MutableID.new(100)
+			
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorComposed.new(ec, eclist, idGenerator)
+			behavior2 = ECBehaviorComposed.new(ec, eclist, idGenerator, "sub1")
+			behavior3 = ECBehaviorComposed.new(ec, eclist, idGenerator, "sub2")
+			assertEquals(ECBehaviorComposed.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorComposed.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorComposed.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorComposed.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorComposed.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+			
+			var Dictionary child, properties
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass1")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "8")
+			child.setAt("properties", properties)
+			behavior.getChildren().setValue(Array.newWith(child))
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass2")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "6")
+			child.setAt("properties", properties)
+			behavior2.getChildren().setValue(Array.newWith(child))
+			
+			child = Dictionary.new()
+			child.setAt("class", "ChildClass2")
+			properties = Dictionary.new()
+			properties.setAt("childProperty", "4")
+			child.setAt("properties", properties)
+			behavior3.getChildren().setValue(Array.newWith(child))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorComposed.Instance composed = behavior.instance(e)
+			var ECBehaviorComposed.Instance composed2 = behavior2.instance(e)
+			var ECBehaviorComposed.Instance composed3 = behavior3.instance(e)
+			assertNotNull(composed)
+			assertNotNull(composed2)
+			assertNotNull(composed3)
+			assertEquals(composed.getECBehavior(), behavior)
+			assertEquals(composed2.getECBehavior(), behavior2)
+			assertEquals(composed3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorComposed.getInstanceIn(e), composed)
+			assertEquals(ECBehaviorComposed.getInstanceIn(e, "sub1"), composed2)
+			assertEquals(ECBehaviorComposed.getInstanceIn(e, "sub2"), composed3)
+			
+			assertNull(ECBehaviorComposed.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorComposed.getAllInstancesIn(e), Array.newWith(composed, composed2, composed3))
+			
+			assertTrue(composed.getChildrenCreated())
+			assertTrue(composed2.getChildrenCreated())
+			assertTrue(composed3.getChildrenCreated())
+			
+			assertNotNull(ChildElementClass.childWith(getGameWorld(), "ChildClass1", 8))
+			assertNotNull(ChildElementClass.childWith(getGameWorld(), "ChildClass2", 6))
+			assertNotNull(ChildElementClass.childWith(getGameWorld(), "ChildClass2", 4))
+			
+			return false
+		end
+	end
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorComposed", UnicodeString.newFromUTF8("ECBehaviorComposed"))
+		addTestCase(Empty.new())
+		addTestCase(Basic.new())
+		addTestCase(NotAllowed.new())
+		addTestCase(Multiple.new())
+	end
+end

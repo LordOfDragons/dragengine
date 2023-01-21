@@ -25,6 +25,7 @@
 #include "deoxrDPHMD.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
+#include "../../deoxrFaceTracker.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -85,6 +86,14 @@ void deoxrDPHMD::pAddDevice(){
 	decString id;
 	id.Format( "%shmd", OXR_DEVID_PREFIX );
 	pDevice->SetID( id );
+	
+	if( GetInstance().SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
+		deoxrSession &session = oxr.GetSession();
+		if( session.GetSystem().GetSupportsFaceEyeTracking()
+		|| session.GetSystem().GetSupportsFaceLipTracking() ){
+			pDevice->SetFaceTracker( deoxrFaceTracker::Ref::New( new deoxrFaceTracker( session ) ) );
+		}
+	}
 	
 	oxr.GetDevices().Add( pDevice );
 }

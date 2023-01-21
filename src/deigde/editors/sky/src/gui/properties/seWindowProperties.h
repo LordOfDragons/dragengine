@@ -67,6 +67,9 @@ public:
 	
 	/** \brief Set sky to monitor. */
 	void SetSky( seSky *sky );
+	
+	/** \brief Sky path changed. */
+	void OnSkyPathChanged();
 	/*@}*/
 };
 

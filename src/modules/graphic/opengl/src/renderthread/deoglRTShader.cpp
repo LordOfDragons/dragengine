@@ -25,6 +25,8 @@
 
 #include "deoglRTShader.h"
 #include "deoglRenderThread.h"
+#include "../capabilities/deoglCapabilities.h"
+#include "../extensions/deoglExtensions.h"
 #include "../light/shader/deoglLightShaderManager.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderManager.h"
@@ -100,10 +102,7 @@ void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	
 	if( shader ){
 		deoglShaderCompiled * const compiled = shader->GetCompiled();
-		if( ! compiled ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_NOTNULL( compiled )
 		compiled->Activate();
 		
 	}else{
@@ -111,6 +110,40 @@ void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	}
 	
 	pCurShaderProg = shader;
+}
+
+void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
+	defines.SetDefine( "HIGH_PRECISION", true );
+	defines.SetDefine( "HIGHP", "highp" ); // if not supported by GPU medp
+	
+	if( pglUniformBlockBinding ){
+		defines.SetDefine( "UBO", true );
+		
+		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
+			defines.SetDefine( "UBO_IDMATACCBUG", true );
+		}
+		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
+			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
+		}
+	}
+	
+	if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
+		defines.SetDefine( "GS_INSTANCING", true );
+	}
+	
+	// OpenGL extensions would define symbols for these extentions which would work in
+	// shaders but our pre-processor does not know about them. so add them manually.
+	// this is mainly required for broken intel and nvidia drivers
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_viewport_layer_array ) ){
+		defines.SetDefine( "EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY", true );
+		
+	}else if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_AMD_vertex_shader_layer ) ){
+		defines.SetDefine( "EXT_AMD_VERTEX_SHADER_LAYER", true );
+	}
+	
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
+		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	}
 }
 
 

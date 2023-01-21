@@ -88,6 +88,8 @@ pRange( 1.0f ),
 pRangeSquared( 1.0f ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 0.0f ),
+pAttenuationDistanceOffset( 0.0f ),
+pValid( false ),
 pGainLow( 1.0f ),
 pGainMedium( 1.0f ),
 pGainHigh( 1.0f ),
@@ -168,12 +170,13 @@ void deoalEnvironment::SetRange( float range ){
 	}
 }
 
-void deoalEnvironment::SetAttenuation( float refDist, float rolloff ){
+void deoalEnvironment::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
+	pAttenuationDistanceOffset = distanceOffset;
 	
 	if( pEnvProbe ){
-		pEnvProbe->SetAttenuation( refDist, rolloff );
+		pEnvProbe->SetAttenuation( refDist, rolloff, distanceOffset );
 		
 		if( pEnvProbe->GetOctreeNode() ){
 			pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
@@ -257,6 +260,8 @@ void deoalEnvironment::Update(){
 	}
 	
 	pCalcEffectParameters();
+	
+	pValid = true;
 	
 	// debug
 // 	if( pAudioThread.GetDebug().GetLogCalcEnvProbe() ){
@@ -382,8 +387,8 @@ void deoalEnvironment::DebugSoundRays( deDebugDrawer &/*debugDrawer*/ ){
 		pDebug = new deoalEnvironmentDebug( *this );
 	}
 	
-// 	const deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeTraceSoundRays(
-// 		pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff, pLayerMask );
+// 	const deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeTraceSoundRays( pPosition,
+// 		pRange, pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset, pLayerMask );
 // 	pDebug->SoundRays( debugDrawer, probe );
 }
 
@@ -497,7 +502,8 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 		
 	#else
 		deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeTraceSoundRays(
-			pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff, microphone.GetLayerMask() );
+			pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff,
+			pAttenuationDistanceOffset, microphone.GetLayerMask() );
 	#endif
 	
 	// indirect path reverbe effect
@@ -709,7 +715,7 @@ void deoalEnvironment::pCalcEffectParameters(){
 	// direct path muffling effect. unfortunately the band-pass filter in OpenAL is bit of a joke.
 	// it is either a low-pass filter or a high-pass filter but no real band-pass filter. we need
 	// to set the gain to the highest attenuation then set the lower and upper gain relative to it
-	pBandPassGain = decMath::max( decMath::max( pGainLow, pGainMedium ), pGainHigh );
+	pBandPassGain = decMath::max( pGainLow, pGainMedium, pGainHigh );
 	
 	if( pBandPassGain > 0.001f ){
 		pBandPassGainLF = pGainLow / pBandPassGain;

@@ -1,0 +1,33 @@
+name: Rebuild MSIX
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: true
+        type: string
+        default: 'master'
+      version:
+        description: 'Version'
+        required: true
+        type: string
+        default: 'X.Y{.Z}'
+
+jobs:
+  build_windows:
+    uses: ./.github/workflows/build_windows.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+  
+  build_msix:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_msix.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+      artifactMsix: msix-windows

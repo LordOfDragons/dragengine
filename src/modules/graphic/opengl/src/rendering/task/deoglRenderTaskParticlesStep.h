@@ -30,14 +30,14 @@
 class deoglCubeMap;
 class deoglRDynamicSkin;
 class deoglShaderParameterBlock;
-class deoglShaderProgram;
+class deoglPipeline;
 class deoglRSkin;
 class deoglTexture;
 class deoglTexUnitsConfig;
 class deoglVAO;
 
 /**
- * @brief Render Task Particles Step.
+ * Render Task Particles Step.
  */
 class deoglRenderTaskParticlesStep{
 public:
@@ -46,7 +46,7 @@ public:
 	};
 	
 private:
-	const deoglShaderProgram *pShader;
+	const deoglPipeline *pPipeline;
 	const deoglShaderParameterBlock *pParamBlockTexture;
 	const deoglShaderParameterBlock *pParamBlockInstance;
 	const deoglTexUnitsConfig *pTUC;
@@ -65,7 +65,7 @@ private:
 	GLenum pPrimitiveType;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task particles step. */
 	deoglRenderTaskParticlesStep();
@@ -73,15 +73,17 @@ public:
 	~deoglRenderTaskParticlesStep();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the step. */
 	void Reset();
 	
-	/** Retrieves the shader. */
-	inline const deoglShaderProgram *GetShader() const{ return pShader; }
-	/** Sets the shader. */
-	void SetShader( const deoglShaderProgram *shader );
+	/** Pipeline. */
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
+	
+	/** Set pipeline. */
+	void SetPipeline( const deoglPipeline *pipeline );
+	
 	/** Retrieves the texture shader parameter block or NULL if not used. */
 	inline const deoglShaderParameterBlock *GetParameterBlockTexture() const{ return pParamBlockTexture; }
 	/** Sets the texture shader parameter block or NULL if not used. */
@@ -128,7 +130,7 @@ public:
 	void SetPrimitiveType( GLenum primitiveType );
 	/*@}*/
 	
-	/** @name Instances */
+	/** \name Instances */
 	/*@{*/
 	/** Retrieves the direct pointer to the instances. */
 	inline sInstance *GetInstances() const{ return pInstances; }

@@ -49,46 +49,68 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	private var int pIconHeight
 	private var WeightLayout.LayoutSettings pLSDisplayName
 	private var WeightLayout.LayoutSettings pLSBindings
+	private var TranslationManager pTranslationManager
 	
 	
 	
 	/** \brief Create element renderer. */
 	public func new()
-		this.pIconHeight = 32
-		this.pLSBindings = WeightLayout.LayoutSettings.new( 1 )
-		this.setDesignerSelector( "EditBindingsEntry" )
-		this.setWidthDisplayName( 200 )
+		pTranslationManager = TranslationManager.get()
+		pIconHeight = 32
+		pLSBindings = WeightLayout.LayoutSettings.new(1)
+		setDesignerSelector("EditBindingsEntry")
+		setWidthDisplayName(200)
 	end
 	
 	
 	
 	/** \brief Width of display name in pixels. */
 	public func int getWidthDisplayName()
-		return this.pWidthDisplayName
+		return pWidthDisplayName
 	end
 	
 	/** \brief Set width of display name in pixels. */
-	public func void setWidthDisplayName( int width )
+	public func void setWidthDisplayName(int width)
 		if width < 1
 			throw EInvalidParam.new()
 		end
 		
-		if width == this.pWidthDisplayName
+		if width == pWidthDisplayName
 			return
 		end
 		
-		this.pWidthDisplayName = width
-		this.pLSDisplayName = WeightLayout.LayoutSettings.new( 0, width )
+		pWidthDisplayName = width
+		pLSDisplayName = WeightLayout.LayoutSettings.new(0, width)
 	end
 	
 	/** \brief Icon height. */
 	public func int getIconHeight()
-		return this.pIconHeight
+		return pIconHeight
 	end
 	
 	/** \brief Set icon height. */
-	public func void setIconHeight( int height )
-		this.pIconHeight = height
+	public func void setIconHeight(int height)
+		pIconHeight = height
+	end
+	
+	/**
+	 * \brief Translation manager for command display name and description.
+	 * \version 1.16
+	 * 
+	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
+	 */
+	public func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+	
+	/**
+	 * \brief Set translation manager for command display name and description.
+	 * \version 1.16
+	 * 
+	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
+	 */
+	public func void setTranslationManager(TranslationManager translationManager)
+		pTranslationManager = translationManager
 	end
 	
 	
@@ -99,58 +121,58 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * Renderer is a Panel containing as first element a command Label and as second element
 	 * a Panel with all bindings. Bindings are Label widgets with a border.
 	 */
-	public func Widget createRenderer( ListBox listBox )
-		return Panel.new( WeightLayout.new( LayoutAxis.x, 5 ), block Panel panel
-			panel.addWidget( Label.new( " " ), this.pLSDisplayName )
-			panel.addWidget( Panel.new( FlowLayout.new( \
-				LayoutAxis.x, 2, FlowLayout.Stretch.none ) ), this.pLSBindings )
-		end )
+	public func Widget createRenderer(ListBox listBox)
+		return Panel.new(WeightLayout.new(LayoutAxis.x, 5), block Panel panel
+			panel.addWidget(Label.new(" "), pLSDisplayName)
+			panel.addWidget(Panel.new(FlowLayout.new(\
+				LayoutAxis.x, 2, FlowLayout.Stretch.none)), pLSBindings)
+		end)
 	end
 	
 	/** \brief Update renderer with object state. */
-	public func void updateRenderer( ListBox listBox, Widget renderer, Object element, \
-	bool selected, bool focused )
+	public func void updateRenderer(ListBox listBox, Widget renderer, Object element, \
+	bool selected, bool focused)
 		var EditBindingsListModelEntry entry = element cast EditBindingsListModelEntry
 		var EditBindingsListModel model = listBox.getModel() cast EditBindingsListModel
-		var String designerSelector = this.getDesignerSelector()
+		var String designerSelector = getDesignerSelector()
 		var Panel panel = renderer cast Panel
-		var Label labelName = panel.getWidget( 0 ) cast Label
-		var Panel bindingPanel = panel.getWidget( 1 ) cast Panel
+		var Label labelName = panel.getWidget(0) cast Label
+		var Panel bindingPanel = panel.getWidget(1) cast Panel
 		
-		panel.runWhileBlockingLayout( block
+		panel.runWhileBlockingLayout(block
 			if selected
-				panel.setDesignerSelector( "Panel." + designerSelector + ".Selected" )
-				labelName.setDesignerSelector( "Label." + designerSelector + ".Name.Selected" )
+				panel.setDesignerSelector("Panel." + designerSelector + ".Selected")
+				labelName.setDesignerSelector("Label." + designerSelector + ".Name.Selected")
 				
 			else
-				panel.setDesignerSelector( "Panel." + designerSelector )
-				labelName.setDesignerSelector( "Label." + designerSelector + ".Name" )
+				panel.setDesignerSelector("Panel." + designerSelector)
+				labelName.setDesignerSelector("Label." + designerSelector + ".Name")
 			end
 			
 			if entry == null
 				bindingPanel.removeAllWidgets()
-				bindingPanel.addWidget( this.createBindingWidget( model, entry, selected, \
-					null, EditBindingsListModelEntry.InputSource.button ) )
+				bindingPanel.addWidget(createBindingWidget(model, entry, selected, \
+					null, EditBindingsListModelEntry.InputSource.button))
 				return null
 			end
 			
-			labelName.setText( entry.getCommand().getName() )
+			labelName.setText(entry.getCommand().translateDisplayName(pTranslationManager))
 			
-			bindingPanel.runWhileBlockingLayout( block
+			bindingPanel.runWhileBlockingLayout(block
 				bindingPanel.removeAllWidgets()
 				
-				entry.forEachAxisBinding( block Binding each
-					bindingPanel.addWidget( this.createBindingWidget( model, entry, selected, \
-						each, EditBindingsListModelEntry.InputSource.axis ) )
-				end )
-				entry.forEachButtonBinding( block Binding each
-					bindingPanel.addWidget( this.createBindingWidget( model, entry, selected, \
-						each, EditBindingsListModelEntry.InputSource.button ) )
-				end )
-			end )
+				entry.forEachAxisBinding(block Binding each
+					bindingPanel.addWidget(createBindingWidget(model, entry, selected, \
+						each, EditBindingsListModelEntry.InputSource.axis))
+				end)
+				entry.forEachButtonBinding(block Binding each
+					bindingPanel.addWidget(createBindingWidget(model, entry, selected, \
+						each, EditBindingsListModelEntry.InputSource.button))
+				end)
+			end)
 			
 			bindingPanel.doLayoutIfBlocked()
-		end )
+		end)
 	end
 	
 	
@@ -169,41 +191,41 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * \param binding Binding to create widget for.
 	 * \param inputSource Input source
 	 */
-	protected func Widget createBindingWidget( EditBindingsListModel model, \
+	protected func Widget createBindingWidget(EditBindingsListModel model, \
 	EditBindingsListModelEntry entry, bool selected, Binding binding, \
-	EditBindingsListModelEntry.InputSource inputSource )
+	EditBindingsListModelEntry.InputSource inputSource)
 		var BindingManager bindingManager = model.getBindingManager()
-		var String designerSelector = this.getDesignerSelector()
+		var String designerSelector = getDesignerSelector()
 		var DisplayInputSource dpi
 		
 		if binding == null
-			dpi = DisplayInputSource.new( this.pIconHeight )
+			dpi = DisplayInputSource.new(pIconHeight)
 			
 		else
 			select inputSource
 			case EditBindingsListModelEntry.InputSource.axis
 				var InputDeviceAxis axis = binding.getInputDeviceAxis()
 				if axis != null
-					dpi = DisplayInputSource.new( this.pIconHeight, null, axis )
+					dpi = DisplayInputSource.new(pIconHeight, null, axis)
 				end
 				
 			case EditBindingsListModelEntry.InputSource.button
 				var InputDeviceButton button = binding.getInputDeviceButton()
 				if button != null
-					dpi = DisplayInputSource.new( this.pIconHeight, null, button )
+					dpi = DisplayInputSource.new(pIconHeight, null, button)
 				end
 			end
 		end
 		
 		if dpi == null
-			return this.createBindingWidgetFallback( model, entry, selected, binding, inputSource )
+			return createBindingWidgetFallback(model, entry, selected, binding, inputSource)
 		end
 		
 		if selected
-			dpi.setDesignerSelector( "DisplayInputSource." + designerSelector + ".Binding.Selected" )
+			dpi.setDesignerSelector("DisplayInputSource." + designerSelector + ".Binding.Selected")
 			
 		else
-			dpi.setDesignerSelector( "DisplayInputSource." + designerSelector + ".Binding" )
+			dpi.setDesignerSelector("DisplayInputSource." + designerSelector + ".Binding")
 		end
 		
 		return dpi
@@ -221,11 +243,11 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 	 * \param binding Binding to create widget for.
 	 * \param inputSource Input source
 	 */
-	protected func Widget createBindingWidgetFallback( EditBindingsListModel model, \
+	protected func Widget createBindingWidgetFallback(EditBindingsListModel model, \
 	EditBindingsListModelEntry entry, bool selected, Binding binding, \
-	EditBindingsListModelEntry.InputSource inputSource )
+	EditBindingsListModelEntry.InputSource inputSource)
 		var BindingManager bindingManager = model.getBindingManager()
-		var String designerSelector = this.getDesignerSelector()
+		var String designerSelector = getDesignerSelector()
 		var String deviceID = "??"
 		var String sourceID = "??"
 		var String inverseAxis = ""
@@ -253,14 +275,14 @@ class EditBindingsListRenderer extends DefaultListElementRenderer
 			inverseAxis = "-"
 		end
 		
-		var Label label = Label.new( deviceID + ": " + sourceID + inverseAxis, \
-			Label.middleCenter )
+		var Label label = Label.new(deviceID + ": " + sourceID + inverseAxis, \
+			Label.middleCenter)
 		
 		if selected
-			label.setDesignerSelector( "Label." + designerSelector + ".Binding.Selected" )
+			label.setDesignerSelector("Label." + designerSelector + ".Binding.Selected")
 			
 		else
-			label.setDesignerSelector( "Label." + designerSelector + ".Binding" )
+			label.setDesignerSelector("Label." + designerSelector + ".Binding")
 		end
 		
 		return label

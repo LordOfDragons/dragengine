@@ -70,8 +70,8 @@
 /////////////////////////////////
 
 dearRuleAnimationDifference::dearRuleAnimationDifference( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimationDifference &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimationDifference &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pAnimationDifference( rule ),
 
@@ -140,10 +140,8 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
-		const int animationBone = boneState.GetAnimationBone();
-		
 		// if there is no valid bone index there is no difference
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		if( animationBone == -1 ){
 			continue;
 		}
@@ -191,6 +189,8 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// blend difference with current state
+		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
+		
 		if( newBlendMode ){
 			rposition = boneState.GetPosition() + ( lposition - rposition );
 			rorientation = ( lorientation * rorientation.Conjugate() ) * boneState.GetOrientation();
@@ -227,6 +227,7 @@ void dearRuleAnimationDifference::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMove();
+	pMapAnimationBones.Init( *this );
 }
 
 
@@ -244,7 +245,7 @@ void dearRuleAnimationDifference::pUpdateMove(){
 		pMove2 = NULL;
 	}
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( animation ){
 		pMove1 = animation->GetMoveNamed( pAnimationDifference.GetLeadingMoveName() );
 		if( pMove1 ){

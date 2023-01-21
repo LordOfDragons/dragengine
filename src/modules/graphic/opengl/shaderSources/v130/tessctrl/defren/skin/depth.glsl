@@ -11,17 +11,8 @@ layout( vertices=3 ) out;
 #ifdef REQUIRES_TEX_COLOR
 	in vec2 vTCSTCColor[];
 #endif
-#ifdef CLIP_PLANE
-	in vec3 vTCSClipCoord[];
-#endif
-#ifdef DEPTH_DISTANCE
-	in vec3 vTCSPosition[];
-#endif
 #ifdef HEIGHT_MAP
 	in float vTCSHTMask[];
-#endif
-#ifdef PROP_FIELD
-	in float vTCSRenderCondition[];
 #endif
 #ifdef REQUIRES_NORMAL
 	in vec3 vTCSNormal[];
@@ -41,17 +32,8 @@ layout( vertices=3 ) out;
 #ifdef REQUIRES_TEX_COLOR
 	out vec2 vTESTCColor[];
 #endif
-#ifdef CLIP_PLANE
-	out vec3 vTESClipCoord[];
-#endif
-#ifdef DEPTH_DISTANCE
-	out vec3 vTESPosition[];
-#endif
 #ifdef HEIGHT_MAP
 	out float vTESHTMask[];
-#endif
-#ifdef PROP_FIELD
-	out float vTESRenderCondition[];
 #endif
 #ifdef REQUIRES_NORMAL
 	out vec3 vTESNormal[];
@@ -65,10 +47,6 @@ layout( vertices=3 ) out;
 
 
 
-
-// Main Function
-//////////////////
-
 void main(void){
 	if( gl_InvocationID == 0 ){
 		vec3 edgeLen;
@@ -76,7 +54,7 @@ void main(void){
 		edgeLen.y = length( gl_in[ 1 ].gl_Position.xyz - gl_in[ 2 ].gl_Position.xyz );
 		edgeLen.z = length( gl_in[ 2 ].gl_Position.xyz - gl_in[ 0 ].gl_Position.xyz );
 		
-		vec3 splits = clamp( floor( edgeLen / vec3( 0.01 ) ), vec3( 1.0 ), vec3( 32.0 ) );
+		vec3 splits = clamp( floor( edgeLen / vec3( 0.01 ) ), vec3( 1 ), vec3( 32 ) );
 		
 		gl_TessLevelOuter[ 0 ] = splits.x;
 		gl_TessLevelOuter[ 1 ] = splits.y;
@@ -90,17 +68,8 @@ void main(void){
 	#ifdef REQUIRES_TEX_COLOR
 		vTESTCColor[ gl_InvocationID ] = vTCSTCColor[ gl_InvocationID ];
 	#endif
-	#ifdef CLIP_PLANE
-		vTESClipCoord[ gl_InvocationID ] = vTCSClipCoord[ gl_InvocationID ];
-	#endif
-	#ifdef DEPTH_DISTANCE
-		vTESPosition[ gl_InvocationID ] = vTCSPosition[ gl_InvocationID ];
-	#endif
 	#ifdef HEIGHT_MAP
 		vTESHTMask[ gl_InvocationID ] = vTCCSHTMask[ gl_InvocationID ];
-	#endif
-	#ifdef PROP_FIELD
-		vTESRenderCondition[ gl_InvocationID ] = vTCSRenderCondition[ gl_InvocationID ];
 	#endif
 	#ifdef REQUIRES_NORMAL
 		vTESNormal[ gl_InvocationID ] = vTCSNormal[ gl_InvocationID ];

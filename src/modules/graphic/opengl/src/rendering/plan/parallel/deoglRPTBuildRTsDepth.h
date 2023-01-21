@@ -74,8 +74,8 @@ public:
 	
 	
 private:
-	void pSolid();
-	void pSolidOutline();
+	void pSolid( bool xray );
+	void pSolidOutline( bool xray );
 };
 
 #endif

@@ -1,0 +1,92 @@
+name: Build Linux
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      buildVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      artifactInstaller:
+        required: true
+        type: string
+      artifactTools:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: 'recursive'
+          ref: ${{ inputs.branch }}
+      
+      - name: Install required packages
+        run: |
+          sudo apt -y install build-essential scons cmake autoconf libtool nasm \
+            patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+            libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
+            flex bison gettext
+      
+      - name: Init custom.py
+        run: |
+          cp ${{ github.workspace }}/.github/workflows/custom_linux.py custom.py
+          sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
+          sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
+      
+      - name: Build
+        # certain CMake based projects are problem children that like to get stuck
+        # in CMake on Ubuntu. build them first to avoid it loking up things
+        run: |
+          scons -j 1 lib_openxr
+          scons -j 1 lib_openvr
+          scons -j 1 lib_libjpeg
+          scons -j 14 archive installer
+      
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        
+      - name: Store Archives
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactArchive }}
+          path: |
+            archive/build/dragengine-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/dragengine-dev-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/deigde-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/deigde-dev-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/despecial-${{ inputs.releaseVersion }}-linux64.tar.bz2
+          if-no-files-found: error
+        
+      - name: Store Installers
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactInstaller }}
+          path: |
+            installer/build/install-dragengine-${{ inputs.releaseVersion }}-linux64.sh
+            installer/build/install-dragengine-dev-${{ inputs.releaseVersion }}-linux64.sh
+            installer/build/install-deigde-${{ inputs.releaseVersion }}-linux64.sh
+            installer/build/install-deigde-dev-${{ inputs.releaseVersion }}-linux64.sh
+          if-no-files-found: error
+        
+      - name: Store Tools
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactTools }}
+          path: |
+            src/tools/blender/build/blender-addon-dragengine-${{ inputs.buildVersion }}.zip
+          if-no-files-found: error

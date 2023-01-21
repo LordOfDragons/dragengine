@@ -361,7 +361,8 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 				pEngineInstance->VFSAddDiskDir( "/", pathDataDir.GetPathNative(), true );
 				
 			}else{
-				pEngineInstance->VFSAddDelgaFile( patch.GetDelgaFile(), patch.GetDataDirectory() );
+				pEngineInstance->VFSAddDelgaFile( patch.GetDelgaFile(),
+					patch.GetDataDirectory(), patch.GetHiddenPath() );
 			}
 		}
 		
@@ -397,7 +398,7 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 		pEngineInstance->CreateRenderWindow( runParams.GetWidth(), runParams.GetHeight(),
 			runParams.GetFullScreen(), pTitle.ToUTF8(), icon ? icon->GetPath() : "" );
 		
-		// store information for handling parameter cchanges during runtime
+		// store information for handling parameter changes during runtime
 		pCollectChangedParams.RemoveAll();
 		pCollectChangedParamsProfile.TakeOver( pLauncher.CreateGameProfile( runParams.GetGameProfile() ) );
 		
@@ -558,7 +559,9 @@ delGameProfile *delGame::GetProfileToUse() const{
 }
 
 void delGame::FindPatches( delPatchList &list ) const{
-	const delPatchList &patches = pLauncher.GetPatchManager().GetPatches();
+	delPatchList patches( pLauncher.GetPatchManager().GetPatches() );
+	patches.AddAll( pLocalPatches );
+	
 	const int count = patches.GetCount();
 	int i;
 	
@@ -614,6 +617,9 @@ void delGame::pStoreCustomConfig(){
 	if( pCollectChangedParams.GetCount() == 0 || ! pCollectChangedParamsProfile ){
 		return;
 	}
+	
+	deLogger &logger = *pLauncher.GetLogger();
+	logger.LogInfo( pLauncher.GetLogSource(), "Engine module parameters changed. Store custom profile" );
 	
 	// ensure custom profile exists and is initialized with profile used to run the game
 	// unless this had been already the custom profile

@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License
+ // * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -30,6 +30,7 @@
 #include "task/deoglRenderTaskParticles.h"
 #include "task/deoglRenderTaskParticlesStep.h"
 #include "../collidelist/deoglCollideList.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -101,6 +102,7 @@ deoglRenderParticles::~deoglRenderParticles(){
 void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const bool renderVSStereo = renderTask.GetRenderVSStereo();
 	const int stepCount = renderTask.GetStepCount();
 	const deoglVAO *curVAO = NULL;
 	int i;
@@ -109,12 +111,7 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		return;
 	}
 	
-	// conventional particles work with culling enabled. beams and ribbons though are tricky
-	// to calculate so they easily end up backfacing. for these culling has to be disabled
-	// to get them working. since conventional particles work with culling disabled too
-	// culling is disabled for all particles to avoid any problems
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-// 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
 	
 	for( i=0; i<stepCount; i++ ){
 		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( i );
@@ -124,8 +121,7 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 			continue;
 		}
 		
-		// activate shader
-		renderThread.GetShader().ActivateShader( renderTaskStep.GetShader() );
+		renderTaskStep.GetPipeline()->Activate();
 		
 		if( renderParamBlock ){
 			renderParamBlock->Activate();
@@ -163,9 +159,18 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		//GetOgl().LogInfoFormat( "RenderTaskParticles: s=%i sha=%p tuc=%p vao=%i ic=%i",
 		//	s, renderTaskStep.GetShader(), renderTaskStep.GetTUC(), vao->GetVAO(),
 		//	renderTaskStep.GetIndexCount() );
-		OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
-			renderTaskStep.GetIndexCount(), indexGLType,
-			( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+		if( renderVSStereo ){
+			const GLsizei count[ 2 ] = { renderTaskStep.GetIndexCount(), renderTaskStep.GetIndexCount() };
+			const void * const indices[ 2 ] = {
+				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ),
+				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) };
+			OGL_CHECK( renderThread, pglMultiDrawElements( renderTaskStep.GetPrimitiveType(), count, indexGLType, indices, 2 ) );
+			
+		}else{
+			OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
+				renderTaskStep.GetIndexCount(), indexGLType,
+				( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+		}
 	}
 	
 	pglBindVertexArray( 0 );

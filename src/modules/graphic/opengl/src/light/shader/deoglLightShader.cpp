@@ -37,9 +37,9 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
+#include "../../texture/deoglTextureStageManager.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Definitions
@@ -82,7 +82,7 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	
 	"pLightPosition", // eiutLightPosition
 	"pLightView", // eiutLightView
-	"pDepthCompare", // eiutDepthCompare
+	"pLightParams", // eiutLightParams
 	
 	"pShadowMatrix", // eiutShadowMatrix
 	"pShadowMatrix2", // eiutShadowMatrix2
@@ -124,54 +124,55 @@ struct sSPBParameterDefinition{
 	deoglSPBParameter::eValueTypes dataType;
 	int componentCount;
 	int vectorCount;
+	int arrayCount;
 };
 
 static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EIUT_COUNT ] = {
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pMatrixMVP ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 3 }, // pMatrixMV ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pMatrixMVP ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pMatrixMV ( mat4x3[2] )
 	
-	{ deoglSPBParameter::evtFloat, 4, 1 }, // pSamplesParams ( vec4 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pBurstFactor ( float )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pSamplesParams ( vec4 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pBurstFactor ( float )
 	
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightPosition ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightView ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pDepthCompare ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightPosition ( vec3[2] )
+	{ deoglSPBParameter::evtFloat, 3, 1, 2 }, // pLightView ( vec3[2] )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pLightParams ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix2 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix3 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix4 ( mat4 )
-	{ deoglSPBParameter::evtFloat, 4, 1 }, // pLayerBorder ( vec4 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix2 ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix3 ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 4, 2 }, // pShadowMatrix4 ( mat4[2] )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pLayerBorder ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 3 }, // pLightImageOmniMatrix ( mat4x3 )
+	{ deoglSPBParameter::evtFloat, 4, 3, 2 }, // pLightImageOmniMatrix ( mat4x3[2] )
 	
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Solid ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow1Transparent ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow2Solid ( vec3 )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pShadow2Transparent ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow1Solid ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow1Transparent ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow2Solid ( vec3 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pShadow2Transparent ( vec3 )
 	
-	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform ( vec2 )
-	{ deoglSPBParameter::evtFloat, 2, 1 }, // pShadowDepthTransform2 ( vec2 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pShadowDepthTransform ( vec4 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // pShadowDepthTransform2 ( vec4 )
 	
-	{ deoglSPBParameter::evtFloat, 4, 4 }, // pGIShadowMatrix ( mat4 )
-	{ deoglSPBParameter::evtFloat, 3, 1 } // pGIShadowParams ( vec3 )
+	{ deoglSPBParameter::evtFloat, 4, 4, 1 }, // pGIShadowMatrix ( mat4 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 } // pGIShadowParams ( vec3 )
 };
 
 static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_COUNT ] = {
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightColor ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightRange ( float )
-	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightColorAmbient ( vec3 )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightAmbientRatio ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightGIAmbientRatio ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pLightColor ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightRange ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // pLightColorAmbient ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightAmbientRatio ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightGIAmbientRatio ( float )
 	
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightAttenuationCoefficient ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightDampingCoefficient ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightDampingThreshold ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightImageGamma ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightAttenuationCoefficient ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightDampingCoefficient ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightDampingThreshold ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightImageGamma ( float )
 	
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightSpotFactor ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1 }, // pLightSpotBase ( vec2 )
-	{ deoglSPBParameter::evtFloat, 1, 1 } // pLightSpotExponent ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightSpotFactor ( float )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // pLightSpotBase ( vec2 )
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 } // pLightSpotExponent ( float )
 };
 
 
@@ -183,12 +184,10 @@ static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_
 ////////////////////////////
 
 deoglLightShader::deoglLightShader( deoglRenderThread &renderThread, const deoglLightShaderConfig &config ) :
-pRenderThread( renderThread )
+pRenderThread( renderThread ),
+pConfig( config )
 {
 	int i;
-	
-	pConfig = config;
-	
 	for( i=0; i<ETT_COUNT; i++ ){
 		pTextureTargets[ i ] = -1;
 	}
@@ -202,18 +201,9 @@ pRenderThread( renderThread )
 		pLightUniformTargets[ i ] = -1;
 	}
 	pUsedLightUniformTargetCount = 0;
-	
-	pSources = NULL;
-	pShader = NULL;
 }
 
 deoglLightShader::~deoglLightShader(){
-	if( pShader ){
-		delete pShader;
-	}
-	if( pSources ){
-		delete pSources;
-	}
 }
 
 
@@ -226,16 +216,12 @@ int deoglLightShader::GetTextureTarget( eTextureTargets target ) const{
 }
 
 void deoglLightShader::SetTextureTarget( eTextureTargets target, int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= -1 )
 	pTextureTargets[ target ] = index;
 }
 
 void deoglLightShader::SetUsedTextureTargetCount( int usedTextureTargetCount ){
-	if( usedTextureTargetCount < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( usedTextureTargetCount >= 0 )
 	pUsedTextureTargetCount = usedTextureTargetCount;
 }
 
@@ -246,9 +232,7 @@ int deoglLightShader::GetInstanceUniformTarget( eInstanceUniformTargets target )
 }
 
 void deoglLightShader::SetInstanceUniformTarget( eInstanceUniformTargets target, int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= -1 )
 	pInstanceUniformTargets[ target ] = index;
 }
 
@@ -257,9 +241,7 @@ int deoglLightShader::GetLightUniformTarget( eLightUniformTargets target ) const
 }
 
 void deoglLightShader::SetLightUniformTarget( eLightUniformTargets target, int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= -1 )
 	pLightUniformTargets[ target ] = index;
 }
 
@@ -278,121 +260,57 @@ deoglShaderProgram *deoglLightShader::GetShader(){
 
 
 
-deoglSPBlockUBO *deoglLightShader::CreateSPBRender( deoglRenderThread &renderThread ){
-	// this shader parameter block will not be optimzed. the layout is always the same
-	// no matter what configuration is used for skins. this is also why this method is
-	// a static method not an regular method
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
+deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
+	// this shader parameter block will be optimized. the layout is adapted to
+	// the configuration used for this light shader
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
 	
-	deoglSPBlockUBO *spb = NULL;
-	
-	try{
-		spb = new deoglSPBlockUBO( renderThread );
-		spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( ERUT_COUNT );
-		
-		spb->GetParameterAt( erutPosTransform ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-		spb->GetParameterAt( erutPosTransform2 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutDepthSampleOffset ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutAOSelfShadow ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		spb->GetParameterAt( erutLumFragCoordScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-		
-		// gloal illumination ray
-		spb->GetParameterAt( erutGIRayMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
-		spb->GetParameterAt( erutGIRayMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
-		spb->GetParameterAt( erutGICameraProjection ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 1 ); // mat4
-		
-		// gloal illumination
-		spb->GetParameterAt( erutGIHighestCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglLightShader::eubRenderParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
+	int i;
+	for( i=0; i<EIUT_COUNT; i++ ){
+		const int target = pInstanceUniformTargets[ i ];
+		if( target != -1 ){
+			spb->GetParameterAt( target ).SetAll(
+				vInstanceSPBParamDefs[ i ].dataType, vInstanceSPBParamDefs[ i ].componentCount,
+				vInstanceSPBParamDefs[ i ].vectorCount, vInstanceSPBParamDefs[ i ].arrayCount );
 		}
-		throw;
 	}
 	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglLightShader::eubInstanceParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglLightShader::CreateSPBInstParam() const{
+deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( pUsedLightUniformTargetCount );
+	
+	int i;
+	for( i=0; i<ELUT_COUNT; i++ ){
+		const int target = pLightUniformTargets[ i ];
+		if( target != -1 ){
+			spb->GetParameterAt( target ).SetAll(
+				vLightSPBParamDefs[ i ].dataType, vLightSPBParamDefs[ i ].componentCount,
+				vLightSPBParamDefs[ i ].vectorCount, vLightSPBParamDefs[ i ].arrayCount );
+		}
 	}
 	
-	deoglSPBlockUBO *spb = NULL;
-	int i, target;
-	
-	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( pUsedInstanceUniformTargetCount );
-		
-		for( i=0; i<EIUT_COUNT; i++ ){
-			target = pInstanceUniformTargets[ i ];
-			
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vInstanceSPBParamDefs[ i ].dataType,
-					vInstanceSPBParamDefs[ i ].componentCount,
-					vInstanceSPBParamDefs[ i ].vectorCount, 1 );
-			}
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglLightShader::eubInstanceParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
-	
+	spb->MapToStd140();
+	spb->SetBindingPoint( deoglLightShader::eubLightParameters );
 	return spb;
 }
 
-deoglSPBlockUBO *deoglLightShader::CreateSPBLightParam() const{
-	// this shader parameter block will be optimized. the layout is adapted to
-	// the configuration used for this light shader
-	if( ! pglUniformBlockBinding ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglSPBlockUBO *spb = NULL;
-	int i, target;
-	
-	try{
-		spb = new deoglSPBlockUBO( pRenderThread );
-		spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-		spb->SetParameterCount( pUsedLightUniformTargetCount );
-		
-		for( i=0; i<ELUT_COUNT; i++ ){
-			target = pLightUniformTargets[ i ];
-			
-			if( target != -1 ){
-				spb->GetParameterAt( target ).SetAll( vLightSPBParamDefs[ i ].dataType,
-					vLightSPBParamDefs[ i ].componentCount,
-					vLightSPBParamDefs[ i ].vectorCount, 1 );
-			}
-		}
-		
-		spb->MapToStd140();
-		spb->SetBindingPoint( deoglLightShader::eubLightParameters );
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		throw;
-	}
-	
+deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam( deoglRenderThread &renderThread ){
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetParameterCount( 1 );
+	spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 );
+	spb->MapToStd140();
+	spb->SetBindingPoint( 2 ); // see occmap.shader.xml
 	return spb;
 }
 
@@ -405,17 +323,11 @@ void deoglLightShader::GenerateShader(){
 	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
-	if( pShader ){
-		delete pShader;
-		pShader = NULL;
-	}
-	if( pSources ){
-		delete pSources;
-		pSources = NULL;
-	}
+	pShader = nullptr;
+	pSources = nullptr;
 	
 	try{
-		pSources = new deoglShaderSources;
+		pSources.TakeOver( new deoglShaderSources );
 		
 		pSources->SetVersion( "150" );
 		
@@ -430,7 +342,7 @@ void deoglLightShader::GenerateShader(){
 		InitShaderParameters();
 		
 		// create shader
-		pShader = new deoglShaderProgram( pRenderThread, pSources, defines );
+		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
 		
 		// add unit source codes from source files
 		if( ! pSources->GetPathVertexSourceCode().IsEmpty() ){
@@ -484,47 +396,35 @@ void deoglLightShader::GenerateShader(){
 }
 
 void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
-	defines.AddDefine( "HIGH_PRECISION", true );
-	defines.AddDefine( "HIGHP", "highp" ); // if not supported by GPU medp
-	
-	if( pglUniformBlockBinding ){
-		defines.AddDefine( "UBO", true );
-		
-		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-			defines.AddDefine( "UBO_IDMATACCBUG", true );
-		}
-		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
-		}
-	}
+	pRenderThread.GetShader().SetCommonDefines( defines );
 	
 	switch( pConfig.GetLightMode() ){
 	case deoglLightShaderConfig::elmPoint:
-		defines.AddDefine( "POINT_LIGHT", true );
+		defines.SetDefines( "POINT_LIGHT" );
 		break;
 		
 	case deoglLightShaderConfig::elmSpot:
-		defines.AddDefine( "SPOT_LIGHT", true );
+		defines.SetDefines( "SPOT_LIGHT" );
 		break;
 		
 	case deoglLightShaderConfig::elmProjector:
-		defines.AddDefine( "PROJECTOR_LIGHT", true );
+		defines.SetDefines( "PROJECTOR_LIGHT" );
 		break;
 		
 	case deoglLightShaderConfig::elmSky:
-		defines.AddDefine( "SKY_LIGHT", true );
+		defines.SetDefines( "SKY_LIGHT" );
 		break;
 		
 	case deoglLightShaderConfig::elmParticle:
-		defines.AddDefine( "PARTICLE_LIGHT", true );
+		defines.SetDefines( "PARTICLE_LIGHT" );
 		
 		switch( pConfig.GetParticleMode() ){
 		case deoglLightShaderConfig::epmRibbon:
-			defines.AddDefine( "PARTICLE_RIBBON", true );
+			defines.SetDefines( "PARTICLE_RIBBON" );
 			break;
 			
 		case deoglLightShaderConfig::epmBeam:
-			defines.AddDefine( "PARTICLE_BEAM", true );
+			defines.SetDefines( "PARTICLE_BEAM" );
 			break;
 			
 		case deoglLightShaderConfig::epmParticle:
@@ -535,15 +435,15 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeDec() ){
 	case deoglLightShaderConfig::emnmIntBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
+		defines.SetDefines( "MATERIAL_NORMAL_DEC_INTBASIC" );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloatBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_FLOATBASIC", true );
+		defines.SetDefines( "MATERIAL_NORMAL_DEC_FLOATBASIC" );
 		break;
 		
 	case deoglLightShaderConfig::emnmSpheremap:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", true );
+		defines.SetDefines( "MATERIAL_NORMAL_DEC_SPHEREMAP" );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloat:
@@ -552,15 +452,15 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeEnc() ){
 	case deoglLightShaderConfig::emnmIntBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_INTBASIC", true );
+		defines.SetDefines( "MATERIAL_NORMAL_ENC_INTBASIC" );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloatBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_FLOATBASIC", true );
+		defines.SetDefines( "MATERIAL_NORMAL_ENC_FLOATBASIC" );
 		break;
 		
 	case deoglLightShaderConfig::emnmSpheremap:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", true );
+		defines.SetDefines( "MATERIAL_NORMAL_ENC_SPHEREMAP" );
 		break;
 		
 	case deoglLightShaderConfig::emnmFloat:
@@ -568,83 +468,89 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetHWDepthCompare() ){
-		defines.AddDefine( "HW_DEPTH_COMPARE", true );
+		defines.SetDefines( "HW_DEPTH_COMPARE" );
 	}
 	
 	if( pConfig.GetTextureNoise() ){
-		defines.AddDefine( "TEXTURE_NOISE", true );
+		defines.SetDefines( "TEXTURE_NOISE" );
 	}
 	if( pConfig.GetTextureColor() ){
-		defines.AddDefine( "TEXTURE_COLOR", true );
+		defines.SetDefines( "TEXTURE_COLOR" );
 	}
 	if( pConfig.GetTextureColorOmnidirCube() ){
-		defines.AddDefine( "TEXTURE_COLOR_CUBEMAP", true );
+		defines.SetDefines( "TEXTURE_COLOR_CUBEMAP" );
 	}
 	if( pConfig.GetTextureColorOmnidirEquirect() ){
-		defines.AddDefine( "TEXTURE_COLOR_EQUIRECT", true );
+		defines.SetDefines( "TEXTURE_COLOR_EQUIRECT" );
 	}
 	
 	if( pConfig.GetTextureShadow1Solid() ){
-		defines.AddDefine( "TEXTURE_SHADOW1_SOLID", true );
+		defines.SetDefines( "TEXTURE_SHADOW1_SOLID" );
 	}
 	if( pConfig.GetTextureShadow1Transparent() ){
-		defines.AddDefine( "TEXTURE_SHADOW1_TRANSPARENT", true );
+		defines.SetDefines( "TEXTURE_SHADOW1_TRANSPARENT" );
 	}
 	if( pConfig.GetTextureShadow2Solid() ){
-		defines.AddDefine( "TEXTURE_SHADOW2_SOLID", true );
+		defines.SetDefines( "TEXTURE_SHADOW2_SOLID" );
 	}
 	if( pConfig.GetTextureShadow2Transparent() ){
-		defines.AddDefine( "TEXTURE_SHADOW2_TRANSPARENT", true );
+		defines.SetDefines( "TEXTURE_SHADOW2_TRANSPARENT" );
 	}
 	if( pConfig.GetTextureShadow1Ambient() ){
-		defines.AddDefine( "TEXTURE_SHADOW1_AMBIENT", true );
+		defines.SetDefines( "TEXTURE_SHADOW1_AMBIENT" );
 	}
 	if( pConfig.GetTextureShadow2Ambient() ){
-		defines.AddDefine( "TEXTURE_SHADOW2_AMBIENT", true );
+		defines.SetDefines( "TEXTURE_SHADOW2_AMBIENT" );
 	}
 	
 	if( pConfig.GetDecodeInDepth() ){
-		defines.AddDefine( "DECODE_IN_DEPTH", true );
+		defines.SetDefines( "DECODE_IN_DEPTH" );
 	}
 	if( pConfig.GetDecodeInShadow() ){
-		defines.AddDefine( "DECODE_IN_SHADOW", true );
+		defines.SetDefines( "DECODE_IN_SHADOW" );
 	}
 	if( pConfig.GetEncodeOutDepth() ){
-		defines.AddDefine( "ENCODE_OUT_DEPTH", true );
+		defines.SetDefines( "ENCODE_OUT_DEPTH" );
 	}
 	if( pConfig.GetShadowMatrix2EqualsMatrix1() ){
-		defines.AddDefine( "SHAMAT2_EQUALS_SHAMAT1", true );
+		defines.SetDefines( "SHAMAT2_EQUALS_SHAMAT1" );
 	}
 	if( pConfig.GetShadowInverseDepth() ){
-		defines.AddDefine( "SHADOW_INVERSE_DEPTH", true );
+		defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
 	}
 	if( pConfig.GetAmbientLighting() ){
-		defines.AddDefine( "AMBIENT_LIGHTING", true );
+		defines.SetDefines( "AMBIENT_LIGHTING" );
 	}
 	if( pConfig.GetFullScreenQuad() ){
-		defines.AddDefine( "FULLSCREENQUAD", true );
+		defines.SetDefines( "FULLSCREENQUAD" );
 	}
 	if( pConfig.GetSubSurface() ){
-		defines.AddDefine( "WITH_SUBSURFACE", true );
+		defines.SetDefines( "WITH_SUBSURFACE" );
 	}
 	if( pConfig.GetLuminanceOnly() ){
-		defines.AddDefine( "LUMINANCE_ONLY", true );
+		defines.SetDefines( "LUMINANCE_ONLY" );
 	}
 	if( pConfig.GetGIRay() ){
-		defines.AddDefine( "GI_RAY", true );
+		defines.SetDefines( "GI_RAY" );
+	}
+	if( pConfig.GetGSRenderStereo() ){
+		defines.SetDefines( "GS_RENDER_STEREO" );
+	}
+	if( pConfig.GetVSRenderStereo() ){
+		defines.SetDefines( "VS_RENDER_STEREO" );
 	}
 	
 	switch( pConfig.GetShadowTapMode() ){
 	case deoglLightShaderConfig::estmPcf4:
-		defines.AddDefine( "PCF_4TAP", true );
+		defines.SetDefines( "PCF_4TAP" );
 		break;
 		
 	case deoglLightShaderConfig::estmPcf9:
-		defines.AddDefine( "PCF_9TAP", true );
+		defines.SetDefines( "PCF_9TAP" );
 		break;
 		
 	case deoglLightShaderConfig::estmPcfVariableTap:
-		defines.AddDefine( "PCF_VARTAP", true );
+		defines.SetDefines( "PCF_VARTAP" );
 		break;
 		
 	case deoglLightShaderConfig::estmSingle:
@@ -652,13 +558,13 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetTextureNoise() ){
-		defines.AddDefine( "NOISE_TAP", true );
+		defines.SetDefines( "NOISE_TAP" );
 	}
 	
 	// this symbol activates an optimization for shadow casting lights. if set fragments facing
 	// away from the light source are not send through shadow taping and are simply considered
 	// fully in shadow. if no ambient lighting is used this ends up in a quick discard statement
-	//defines.AddDefine( "OPTIMIZE_SHADOW_BACKFACE", true );
+	//defines.SetDefine( "OPTIMIZE_SHADOW_BACKFACE", true );
 	
 	// Definition of shadow mapping algorithm to use (* = 1 or 2):
 	// SMA*_2D: Use 2D texture mapping with sampler2D{Shadow}
@@ -667,43 +573,43 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	// SMA*_PYRAMID: Use pyramid shadow mapping using sampler2D{Shadow}
 	switch( pConfig.GetShadowMappingAlgorithm1() ){
 	case deoglLightShaderConfig::esma2D:
-		defines.AddDefine( "SMA1_2D", true );
+		defines.SetDefines( "SMA1_2D" );
 		break;
 		
 	case deoglLightShaderConfig::esmaCube:
-		defines.AddDefine( "SMA1_CUBE", true );
+		defines.SetDefines( "SMA1_CUBE" );
 		break;
 		
 	case deoglLightShaderConfig::esmaDualParaboloid:
-		defines.AddDefine( "SMA1_DUALPARA", true );
+		defines.SetDefines( "SMA1_DUALPARA" );
 		break;
 		
 	case deoglLightShaderConfig::esmaPyramid:
-		defines.AddDefine( "SMA1_PYRAMID", true );
+		defines.SetDefines( "SMA1_PYRAMID" );
 		break;
 	}
 	
 	switch( pConfig.GetShadowMappingAlgorithm2() ){
 	case deoglLightShaderConfig::esma2D:
-		defines.AddDefine( "SMA2_2D", true );
+		defines.SetDefines( "SMA2_2D" );
 		break;
 		
 	case deoglLightShaderConfig::esmaCube:
-		defines.AddDefine( "SMA2_CUBE", true );
+		defines.SetDefines( "SMA2_CUBE" );
 		break;
 		
 	case deoglLightShaderConfig::esmaDualParaboloid:
-		defines.AddDefine( "SMA2_DUALPARA", true );
+		defines.SetDefines( "SMA2_DUALPARA" );
 		break;
 		
 	case deoglLightShaderConfig::esmaPyramid:
-		defines.AddDefine( "SMA2_PYRAMID", true );
+		defines.SetDefines( "SMA2_PYRAMID" );
 		break;
 	}
 	
 	// occlusion tracing
 	#ifdef ENABLE_OCCTRACING
-	defines.AddDefine( "ENABLE_OCCTRACING", true );
+	defines.SetDefines( "ENABLE_OCCTRACING" );
 	#endif
 }
 
@@ -717,16 +623,18 @@ void deoglLightShader::GenerateVertexSC(){
 		unitSourceCodePath = deoglLightShaderManager::euscpVertexLight;
 	}
 	
-	pSources->SetPathVertexSourceCode( pRenderThread.GetShader().GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
+	pSources->SetPathVertexSourceCode( pRenderThread.GetShader().
+		GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
 }
 
 void deoglLightShader::GenerateGeometrySC(){
 	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmParticle ){
-		int unitSourceCodePath;
+		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().
+			GetUnitSourceCodePath( deoglLightShaderManager::euscpGeometryParticle ) );
 		
-		unitSourceCodePath = deoglLightShaderManager::euscpGeometryParticle;
-		
-		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
+	}else if( pConfig.GetGSRenderStereo() ){
+		pSources->SetPathGeometrySourceCode( pRenderThread.GetShader().GetLightShaderManager().
+			GetUnitSourceCodePath( deoglLightShaderManager::euscpGeometryStereo ) );
 	}
 }
 
@@ -735,7 +643,8 @@ void deoglLightShader::GenerateFragmentSC(){
 	
 	unitSourceCodePath = deoglLightShaderManager::euscpFragmentLight;
 	
-	pSources->SetPathFragmentSourceCode( pRenderThread.GetShader().GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
+	pSources->SetPathFragmentSourceCode( pRenderThread.GetShader().
+		GetLightShaderManager().GetUnitSourceCodePath( unitSourceCodePath ) );
 }
 
 void deoglLightShader::UpdateTextureTargets(){
@@ -817,6 +726,14 @@ void deoglLightShader::UpdateTextureTargets(){
 	}
 	
 	pUsedTextureTargetCount = textureUnitNumber;
+	
+	if( pUsedTextureTargetCount > OGL_MAX_TEXTURE_STAGES ){
+		decString string;
+		pConfig.DebugGetConfigString( string );
+		pRenderThread.GetLogger().LogErrorFormat( "Too many texture targets: %d", pUsedTextureTargetCount );
+		pRenderThread.GetLogger().LogError( string );
+		// DETHROW_INFO( deeInvalidAction, "Too many texture targets" );
+	}
 }
 
 void deoglLightShader::UpdateUniformTargets(){
@@ -848,11 +765,10 @@ void deoglLightShader::UpdateUniformTargets(){
 	}else{
 		pInstanceUniformTargets[ eiutLightPosition ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutLightView ] = pUsedInstanceUniformTargetCount++;
-		pInstanceUniformTargets[ eiutDepthCompare ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutLightParams ] = pUsedInstanceUniformTargetCount++;
 		
 		pInstanceUniformTargets[ eiutShadowMatrix1 ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutShadowMatrix2 ] = pUsedInstanceUniformTargetCount++;
-		
 		if( modeSky ){
 			pInstanceUniformTargets[ eiutShadowMatrix3 ] = pUsedInstanceUniformTargetCount++;
 			pInstanceUniformTargets[ eiutShadowMatrix4 ] = pUsedInstanceUniformTargetCount++;
@@ -869,7 +785,6 @@ void deoglLightShader::UpdateUniformTargets(){
 		pInstanceUniformTargets[ eiutShadow2Transparent ] = pUsedInstanceUniformTargetCount++;
 		
 		pInstanceUniformTargets[ eiutShadowDepthTransform ] = pUsedInstanceUniformTargetCount++;
-		
 		if( modeSky ){
 			pInstanceUniformTargets[ eiutShadowDepthTransform2 ] = pUsedInstanceUniformTargetCount++;
 		}
@@ -921,9 +836,6 @@ void deoglLightShader::InitShaderParameters(){
 	}
 	
 	// uniforms
-	parameterList.Add( "pPosTransform" ); // erutPosTransform
-	parameterList.Add( "pPosTransform2" ); // erutPosTransform2
-	
 	for( i=0; i<EIUT_COUNT; i++ ){
 		if( pInstanceUniformTargets[ i ] != -1 ){
 			parameterList.Add( vInstanceUniformTargetNames[ i ] );
@@ -954,7 +866,9 @@ void deoglLightShader::InitShaderParameters(){
 	
 	// outputs
 	outputList.Add( "outColor", 0 );
-	outputList.Add( "outLuminance", 1 );
+	if( ! pConfig.GetGIRay() ){
+		outputList.Add( "outLuminance", 1 );
+	}
 	if( pConfig.GetSubSurface() ){
 		outputList.Add( "outSubSurface", 2 );
 	}

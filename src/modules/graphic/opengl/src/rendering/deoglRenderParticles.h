@@ -30,13 +30,13 @@ class deoglRenderTaskParticles;
 
 
 /**
- * @brief Render Particles.
+ * Render Particles.
  *
  * Provides support for rendering particles.
  */
 class deoglRenderParticles : public deoglRenderBase{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderParticles( deoglRenderThread &renderThread );
@@ -44,7 +44,7 @@ public:
 	virtual ~deoglRenderParticles();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Render a render task particles. */
 	void RenderTaskParticles( const deoglRenderTaskParticles &renderTask );

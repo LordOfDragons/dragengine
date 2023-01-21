@@ -226,7 +226,6 @@ const gdeGameDefinition &gameDefinition, const gdeObjectClass &objectClass ){
 		writer.WriteAttributeString( "name", "textureReplacements" );
 		writer.WriteOpeningTagEnd();
 		
-		int i;
 		for( i=0; i<textureCount; i++ ){
 			pWritePropertyTextureReplacement( writer, objectClass, *textures.GetAt( i ) );
 		}
@@ -255,10 +254,10 @@ const gdeObjectClass &objectClass, gdeOCComponentTextureList &list ){
 	const int componentCount = components.GetCount();
 	
 	for( i=0; i<componentCount; i++ ){
-		const gdeOCComponentTextureList &textures = components.GetAt( i )->GetTextures();
-		const int textureCount = textures.GetCount();
-		for( i=0; i<textureCount; i++ ){
-			gdeOCComponentTexture * const texture = textures.GetAt( i );
+		const gdeOCComponentTextureList &textures2 = components.GetAt( i )->GetTextures();
+		const int textureCount2 = textures2.GetCount();
+		for( i=0; i<textureCount2; i++ ){
+			gdeOCComponentTexture * const texture = textures2.GetAt( i );
 			if( ! list.HasNamed( texture->GetName() ) ){
 				list.Add( texture );
 			}

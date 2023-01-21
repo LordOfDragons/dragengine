@@ -48,7 +48,8 @@ public:
 	
 	
 private:
-	decBaseFileWriter *pWriter;
+	decBaseFileWriter::Ref pWriter;
+	const bool pPureMode;
 	
 	void *pZStream;
 	
@@ -129,6 +130,9 @@ public:
 	 * \throws deeInvalidParam Error compressing data.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	
 	/**
 	 * \brief End writing flushing remaining data and closing the z-stream.

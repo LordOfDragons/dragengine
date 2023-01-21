@@ -113,16 +113,16 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onExpanded( FXObject *sender, FXSelector selector, void *data );
-	long onCollapsed( FXObject *sender, FXSelector selector, void *data );
+	long onExpanded( FXObject*, FXSelector, void* );
+	long onCollapsed( FXObject*, FXSelector, void* );
 	
-	long onListCommand( FXObject *sender, FXSelector selector, void *data );
-	long onListChanged( FXObject *sender, FXSelector selector, void *data );
-	long onListRightMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onListRightMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onListDoubleClicked( FXObject *sender, FXSelector selector, void *data );
+	long onListCommand( FXObject*, FXSelector, void* );
+	long onListChanged( FXObject*, FXSelector, void* );
+	long onListRightMouseDown( FXObject*, FXSelector, void* );
+	long onListRightMouseUp( FXObject*, FXSelector, void* );
+	long onListDoubleClicked( FXObject*, FXSelector, void* );
 	
-	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
+	long onResizerDrag( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 	

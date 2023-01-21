@@ -97,8 +97,8 @@ FXIMPLEMENT( deglDialogGameProperties, FXDialogBox,
 
 deglDialogGameProperties::deglDialogGameProperties(){ }
 
-deglDialogGameProperties::deglDialogGameProperties( deglWindowMain *windowMain, delGame *game, FXWindow *owner ) :
-FXDialogBox( owner, "Game Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+deglDialogGameProperties::deglDialogGameProperties( deglWindowMain *windowMain, delGame *game, FXWindow *powner ) :
+FXDialogBox( powner, "Game Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 0, 0, 600, 400, 10, 10, 10, 5 ),
 pWindowMain( windowMain ),
 pGame( game ),
@@ -244,10 +244,10 @@ pCalcSizePending( true )
 	pLabProblemScriptModule->setBackColor( configuration.GetBackColorProblem() );
 	pLabProblemScriptModule->setTextColor( configuration.GetTextColorProblem() );
 	
-	const deglGameIcon * const icon = ( deglGameIcon* )game->GetIcons().GetLargest( 128 );
+	const deglGameIcon * const iicon = ( deglGameIcon* )game->GetIcons().GetLargest( 128 );
 	pLabIcon = guiBuilder.CreateLabel( block, "", "Game Icon", 0 );
-	if( icon && icon->GetFoxIcon() ){
-		pIconBig = icon->GetFoxIcon();
+	if( iicon && iicon->GetFoxIcon() ){
+		pIconBig = iicon->GetFoxIcon();
 		pLabIcon->setIcon( pIconBig->GetIcon() );
 	}
 	
@@ -592,7 +592,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 	delEngineModule *module = nullptr;
 	deModuleSystem::eModuleTypes formatType;
 	FXString text;
-	FXIcon *icon;
+	FXIcon *iicon;
 	
 	pListFileFormats->clearItems();
 	
@@ -677,19 +677,19 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 		if( matchingModule ){
 			if( module->GetStatus() == delEngineModule::emsReady ){
 				text.append( "OK" );
-				icon = pWindowMain->GetIconValidSmall();
+				iicon = pWindowMain->GetIconValidSmall();
 				
 			}else{
 				text.append( "Broken" );
-				icon = pWindowMain->GetIconInvalidSmall();
+				iicon = pWindowMain->GetIconInvalidSmall();
 			}
 			
 		}else{
 			text.append( "Missing" );
-			icon = pWindowMain->GetIconInvalidSmall();
+			iicon = pWindowMain->GetIconInvalidSmall();
 		}
 		
-		pListFileFormats->appendItem( text, icon, icon, nullptr );
+		pListFileFormats->appendItem( text, iicon, iicon, nullptr );
 	}
 }
 
@@ -759,7 +759,7 @@ void deglDialogGameProperties::UpdateCacheList(){
 	const int count = moduleList.GetCount();
 	FXString text;
 	decPath path;
-	FXIcon *icon;
+	FXIcon *iicon;
 	
 	pListCaches->clearItems();
 	pDeleteCaches();
@@ -779,11 +779,11 @@ void deglDialogGameProperties::UpdateCacheList(){
 		pCaches[ pCacheCount ].limit = 1000000000;
 		pCaches[ pCacheCount ].fillLevel = 0.0f;
 		
-		icon = nullptr;
+		iicon = nullptr;
 		text = module.GetName().GetString();
 		text.append( "\tCalculating...\t-\t-" );
 		
-		pListCaches->appendItem( text, icon, icon, pCaches + pCacheCount );
+		pListCaches->appendItem( text, iicon, iicon, pCaches + pCacheCount );
 		
 		try{
 			path.SetFromNative( engine.GetPathCache() );

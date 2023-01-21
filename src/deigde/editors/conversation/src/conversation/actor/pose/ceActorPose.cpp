@@ -66,7 +66,8 @@ ceActorPose::ceActorPose( const ceActorPose &pose ) :
 pEnvironment( pose.pEnvironment ),
 pEngAnimator( NULL ),
 pName( pose.pName ),
-pPathAnimator( pose.pPathAnimator )
+pPathAnimator( pose.pPathAnimator ),
+pControllerNames( pose.pControllerNames )
 {
 	// clone gestures
 	const int gestureCount = pose.pGestures.GetCount();
@@ -144,6 +145,8 @@ void ceActorPose::SetPathAnimator( const char *path ){
 //////////////////////
 
 void ceActorPose::pLoadAnimator(){
+	pControllerNames.RemoveAll();
+	
 	if( pPathAnimator.IsEmpty() ){
 		return;
 	}
@@ -171,38 +174,16 @@ void ceActorPose::pLoadAnimator(){
 			animator->FreeReference();
 		}
 		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-		throw;
+		
+		// ignore missing or broken animators. this can easily happen during development
+		return;
 	}
 	
-	// update controller list. we try to take over as much information from the previous
-	// list as possible
-	ceActorControllerList controllers( pControllers );
-	const int oldCount = controllers.GetCount();
+	// update controller name list
 	const int count = animator->GetControllerCount();
 	int i;
 	
-	pControllers.RemoveAll();
-	
 	for( i=0; i<count; i++ ){
-		const deAnimatorController &engController = *animator->GetControllerAt( i );
-		
-		if( i < oldCount ){
-			pControllers.Add( controllers.GetAt( i ) );
-			( ( ceActorController* )pControllers.GetAt( i ) )->SetName( engController.GetName() );
-			
-		}else{
-			ceActorController * const controller = new ceActorController;
-			try{
-				controller->SetName( engController.GetName() );
-				controller->SetValue( engController.GetCurrentValue() );
-				controller->SetVector( engController.GetVector() );
-				pControllers.Add( controller );
-				controller->FreeReference();
-				
-			}catch( const deException & ){
-				controller->FreeReference();
-				throw;
-			}
-		}
+		pControllerNames.Add( animator->GetControllerAt( i )->GetName() );
 	}
 }

@@ -59,7 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleForeignState( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleForeignState &rule );
+	dearRuleForeignState( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleForeignState &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleForeignState();

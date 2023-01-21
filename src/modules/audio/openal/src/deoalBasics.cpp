@@ -3,40 +3,6 @@
 #include "audiothread/deoalAudioThread.h"
 #include "audiothread/deoalATLogger.h"
 
-
-
-#if defined OAL_THREAD_CHECK || defined OAL_CHECKCOMMANDS
-#include <dragengine/logger/deLoggerConsoleColor.h>
-struct sDebugHacksEnabled{
-	sDebugHacksEnabled(){
-		deLoggerConsoleColor *logger = NULL;
-		
-		try{
-			logger = new deLoggerConsoleColor;
-			#ifdef OAL_THREAD_CHECK
-			logger->LogWarn( "OpenAL", "OpenAL calls only in audio thread check enabled."
-				" Disable for production builds." );
-			#endif
-			#ifdef OAL_CHECKCOMMANDS
-			logger->LogWarn( "OpenAL", "OpenAL command failure check enabled."
-				" Disable for production builds." );
-			#endif
-			
-			logger->FreeReference();
-			
-		}catch( ... ){
-			if( logger ){
-				logger->FreeReference();
-			}
-		}
-	}
-};
-
-static sDebugHacksEnabled debugHacksEnabled;
-#endif
-
-
-
 #ifdef OAL_THREAD_CHECK
 #include <dragengine/common/exceptions.h>
 

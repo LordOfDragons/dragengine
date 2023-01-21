@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderTranspCounting.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 
 class deoglRenderPlan;
@@ -33,35 +32,22 @@ class deoglOcclusionQuery;
 
 
 /**
- * \brief World renderer.
+ * World renderer.
  */
 class deoglRenderDepthPass : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderCopyDepth;
-	deoglShaderProgramUsage pShaderCopyDepthColor;
-	deoglShaderProgramUsage pShaderDepthDownsample;
-	
-	deoglShaderProgramUsage pShaderDepthSolid;
-	deoglShaderProgramUsage pShaderDepthClipSolid;
-	
-	deoglShaderProgramUsage pShaderParticleDepthSolid;
-	deoglShaderProgramUsage pShaderParticleDepthSolidCD;
-	deoglShaderProgramUsage pShaderParticleDepthHoles;
-	deoglShaderProgramUsage pShaderParticleDepthHolesCD;
-	deoglShaderProgramUsage pShaderParticleDepthClipSolid;
-	deoglShaderProgramUsage pShaderParticleDepthClipSolidCD;
-	deoglShaderProgramUsage pShaderParticleDepthClipHoles;
-	deoglShaderProgramUsage pShaderParticleDepthClipHolesCD;
+	const deoglPipeline *pPipelineDepthDownsample;
+	const deoglPipeline *pPipelineDepthDownsampleStereo;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderDepthPass( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderDepthPass();
 	/*@}*/
 	
@@ -70,7 +56,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Render solid depth pass.
+	 * Render solid depth pass.
 	 * 
 	 * Using FBO Def-Ren Depth. Clears depth.
 	 * - RenderDepth
@@ -78,32 +64,32 @@ public:
 	 * - count transparency
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
 	
 	
 	/**
-	 * \brief Render depth.
+	 * Render depth.
 	 * 
 	 * Using FBO Def-Ren Depth. No clearing.
 	 * - render geometry
 	 * Invalidates no attachments.
 	 */
 	void RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
-		bool solid, bool maskedOnly, bool reverseDepthTest );
+		bool solid, bool maskedOnly, bool reverseDepthTest, bool xray );
 	
 	
 	
 	/**
-	 * \brief Downsample depth texture.
+	 * Downsample depth texture.
 	 * 
 	 * Using FBO Def-Ren Depth-MipMap. Renders from one mip map level to the next one.
 	 * Clears each level. Invalidates no buffers.
 	 */
-	void DownsampleDepth();
+	void DownsampleDepth( deoglRenderPlan &plan );
 	
 	/**
-	 * \brief Render occlusion query pass.
+	 * Render occlusion query pass.
 	 * 
 	 * Using FBO Def-Ren Depth set by RenderSolidGeometryPass. No clearing.
 	 * Invalidates no attachments.

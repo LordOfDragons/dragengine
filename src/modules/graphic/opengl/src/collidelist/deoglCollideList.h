@@ -47,7 +47,7 @@ class deoglWorldOctree;
 
 
 /**
- * \brief Collide List.
+ * Collide List.
  */
 class deoglCollideList{
 private:

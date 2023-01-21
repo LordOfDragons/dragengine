@@ -25,6 +25,8 @@
 
 #include "deoalSource.h"
 #include "../audiothread/deoalAudioThread.h"
+#include "../effect/deoalEffectSlot.h"
+#include "../effect/deoalEffectSlotManager.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
@@ -46,11 +48,10 @@ pBuffers( NULL ),
 pBufferCount( 0 ),
 
 pOwner( NULL ),
-pImportance( 1.0f ),
+pImportance( 1000.0f ),
 
 pFilter( 0 ),
-pSendSlot( 0 ),
-pSendEffect( 0 )
+pEffectSlot( nullptr )
 {
 	try{
 		// create sound source and set some default parameters. throws an exception
@@ -60,11 +61,15 @@ pSendEffect( 0 )
 		if( alGetError() != AL_NO_ERROR ){
 			DETHROW( deeOutOfMemory );
 		}
-		//OAL_CHECK( pAudioThread, alGenSources( 1, &pSource ) );
+		//OAL_CHECK( audioThread, alGenSources( 1, &pSource ) );
 		
-		OAL_CHECK( pAudioThread, alSourcef( pSource, AL_PITCH, 1.0f ) );
+		OAL_CHECK( audioThread, alSourcef( pSource, AL_PITCH, 1.0f ) );
 		const ALfloat parameters[ 3 ] = { 0.0f, 0.0f, 0.0f };
-		OAL_CHECK( pAudioThread, alSourcefv( pSource, AL_DIRECTION, &parameters[ 0 ] ) );
+		OAL_CHECK( audioThread, alSourcefv( pSource, AL_DIRECTION, &parameters[ 0 ] ) );
+		
+		// prevent reverb effects apply distance based statistics model
+		OAL_CHECK( audioThread, alSourcei( pSource, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL_FALSE ) );
+		OAL_CHECK( audioThread, alSourcei( pSource, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL_FALSE ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -120,7 +125,15 @@ void deoalSource::SetOwner( void *owner ){
 }
 
 void deoalSource::SetImportance( float importance ){
+	if( fabsf( importance - pImportance ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
 	pImportance = importance;
+	
+	if( pEffectSlot && pEffectSlot->GetOwner() == this ){
+		pEffectSlot->SetImportance( importance );
+	}
 }
 
 
@@ -195,45 +208,38 @@ void deoalSource::ClearFilter(){
 
 
 
-ALuint deoalSource::GetSendSlot( int index ){
-	if( ! pSendSlot ){
-		OAL_CHECK( pAudioThread, palGenAuxiliaryEffectSlots( 1, &pSendSlot ) );
-		
-		// prevent reverb effects apply distance based statistics model
-		OAL_CHECK( pAudioThread, alSourcei( pSource, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL_FALSE ) );
-		OAL_CHECK( pAudioThread, alSourcei( pSource, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL_FALSE ) );
+deoalEffectSlot *deoalSource::GetEffectSlot(){
+	// check if we lost the effect slot to somebody else
+	if( pEffectSlot && pEffectSlot->GetOwner() != this ){
+		DropEffectSlot();
 	}
 	
-	return pSendSlot;
-}
-
-ALuint deoalSource::GetSendEffect( int index ){
-	if( ! pSendEffect ){
-		OAL_CHECK( pAudioThread, palGenEffects( 1, &pSendEffect ) );
-	}
-	return pSendEffect;
-}
-
-void deoalSource::AssignSendEffect( int index ){
-	if( pSendEffect ){
-		const ALuint slot = GetSendSlot( index );
-		OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( slot, AL_EFFECTSLOT_EFFECT, pSendEffect ) );
-		OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
-			slot, 0/*index*/, AL_FILTER_NULL ) );
+	// try to obtain effect slot if we have none so far
+	if( ! pEffectSlot ){
+		pEffectSlot = pAudioThread.GetEffectSlotManager().Bind( this, pImportance );
 		
-	}else{
-		ClearSendEffect( index );
+		if( pEffectSlot ){
+			OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
+				pEffectSlot->GetSlot(), 0, AL_FILTER_NULL ) );
+		}
 	}
+	
+	return pEffectSlot;
 }
 
-void deoalSource::ClearSendEffect( int index ){
+void deoalSource::DropEffectSlot(){
+	if( ! pEffectSlot ){
+		return;
+	}
+	
 	OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
-		AL_EFFECTSLOT_NULL, 0/*index*/, AL_FILTER_NULL ) );
-}
-
-void deoalSource::ClearAllSendEffects(){
-	OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
-		AL_EFFECTSLOT_NULL, 0/*index*/, AL_FILTER_NULL ) );
+		AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	
+	if( pEffectSlot->GetOwner() == this ){
+		pAudioThread.GetEffectSlotManager().Unbind( pEffectSlot );
+	}
+	
+	pEffectSlot = nullptr;
 }
 
 
@@ -242,15 +248,7 @@ void deoalSource::ClearAllSendEffects(){
 //////////////////////
 
 void deoalSource::pCleanUp(){
-	ClearSendEffect( 0 );
-	if( pSendSlot ){
-		palDeleteAuxiliaryEffectSlots( 1, &pSendSlot );
-		pSendSlot = 0;
-	}
-	if( pSendEffect ){
-		palDeleteEffects( 1, &pSendEffect );
-		pSendEffect = 0;
-	}
+	DropEffectSlot();
 	
 	ClearFilter();
 	if( pFilter ){

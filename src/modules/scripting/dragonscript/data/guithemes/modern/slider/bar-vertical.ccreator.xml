@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator type='ImageBorder'>
+	<image parameter='center'>bar/vertical.png</image>
+	<image parameter='sideTop'>bar/top.png</image>
+	<image parameter='sideBottom'>bar/bottom.png</image>
+</canvasCreator>

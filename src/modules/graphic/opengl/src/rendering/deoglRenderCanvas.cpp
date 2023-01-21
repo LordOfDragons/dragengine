@@ -37,6 +37,7 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../font/deoglRFont.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../rendering/deoglRenderWorld.h"
@@ -113,20 +114,6 @@ pVBOShapes( 0 ),
 pVAOShapes( 0 ),
 pActiveVAO( 0 ),
 
-pShaderCanvasColor( NULL ),
-pShaderCanvasColorMask( NULL ),
-pShaderCanvasImage( NULL ),
-pShaderCanvasImageMask( NULL ),
-
-pDebugInfoCanvas( NULL ),
-pDebugInfoCanvasView( NULL ),
-pDebugInfoCanvasImage( NULL ),
-pDebugInfoCanvasPaint( NULL ),
-pDebugInfoCanvasRenderWorld( NULL ),
-pDebugInfoCanvasText( NULL ),
-pDebugInfoCanvasVideoPlayer( NULL ),
-pDebugInfoCanvasCanvasView( NULL ),
-
 pDebugTimeCanvasView( 0.0f ),
 pDebugCountCanvasView( 0 ),
 pDebugTimeCanvasImage( 0.0f ),
@@ -140,45 +127,48 @@ pDebugCountCanvasText( 0 ),
 pDebugTimeCanvasVideoPlayer( 0.0f ),
 pDebugCountCanvasVideoPlayer( 0 ),
 pDebugTimeCanvasCanvasView( 0.0f ),
-pDebugCountCanvasCanvasView( 0 ),
-
-pDebugInfoPlanPrepare( NULL ),
-pDebugInfoPlanPrepareEarlyWorld( NULL ),
-pDebugInfoPlanPrepareFindContent( NULL ),
-pDebugInfoPlanPrepareSkyLightFindContent( NULL ),
-pDebugInfoPlanPrepareSkyLightBuildRT( NULL ),
-pDebugInfoPlanPrepareSkyLightGIFindContent( NULL ),
-pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( NULL ),
-pDebugInfoPlanPrepareWorld( NULL ),
-pDebugInfoPlanPrepareGIUpdate( NULL ),
-pDebugInfoPlanPrepareCulling( NULL ),
-pDebugInfoPlanPrepareEnvMaps( NULL ),
-pDebugInfoPlanPreparePrepareContent( NULL ),
-pDebugInfoPlanPrepareHTViewVBOs( NULL ),
-pDebugInfoPlanPrepareBuildPlan( NULL ),
-pDebugInfoPlanPrepareLights( NULL ),
-pDebugInfoPlanPrepareFinish( NULL )
+pDebugCountCanvasCanvasView( 0 )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
+	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
+	const deoglShaderSources *sources;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
 		pCreateShapesVAO();
 		
+		pipconf.Reset();
+		pipconf.SetEnableScissorTest( true );
+		pipconf.EnableBlendBlend();  // this can be dynamic
+		
+		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Canvas" );
-		pShaderCanvasColor = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pCreatePipelines( pPipelineCanvasColor, pipconf );
 		
-		defines.AddDefine( "WITH_TEXTURE", "1" );
-		pShaderCanvasImage = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		defines.SetDefines( "WITH_TEXTURE" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pCreatePipelines( pPipelineCanvasImage, pipconf );
 		
-		defines.AddDefine( "WITH_MASK", "1" );
-		pShaderCanvasColorMask = shaderManager.GetProgramWith( sources, defines );
+		defines = commonDefines;
+		defines.SetDefines( "WITH_MASK" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pCreatePipelines( pPipelineCanvasColorMask, pipconf );
 		
-		defines.AddDefine( "WITH_TEXTURE", "1" );
-		pShaderCanvasImageMask = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		defines.SetDefines( "WITH_TEXTURE" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pCreatePipelines( pPipelineCanvasImageMask, pipconf );
+		
+		defines = commonDefines;
+		defines.SetDefines( "WITH_RENDER_WORLD" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pCreatePipelines( pPipelineCanvasRenderWorld, pipconf );
+		
+		defines.SetDefines( "WITH_MASK" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pCreatePipelines( pPipelineCanvasRenderWorldMask, pipconf );
 		
 		
 		
@@ -191,79 +181,79 @@ pDebugInfoPlanPrepareFinish( NULL )
 		const decColor colorBgParallel2( 0.025f, 0.05f, 0.05f, 0.75f );
 		const decColor colorBgParallel3( 0.05f, 0.05f, 0.025f, 0.75f );
 		
-		pDebugInfoCanvas = new deoglDebugInformation( "Canvas", colorText, colorBg );
+		pDebugInfoCanvas.TakeOver( new deoglDebugInformation( "Canvas", colorText, colorBg ) );
 		
-		pDebugInfoCanvasView = new deoglDebugInformation( "View", colorText, colorBgSub );
+		pDebugInfoCanvasView.TakeOver( new deoglDebugInformation( "View", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasView );
 		
-		pDebugInfoCanvasImage = new deoglDebugInformation( "Image", colorText, colorBgSub );
+		pDebugInfoCanvasImage.TakeOver( new deoglDebugInformation( "Image", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasImage );
 		
-		pDebugInfoCanvasPaint = new deoglDebugInformation( "Paint", colorText, colorBgSub );
+		pDebugInfoCanvasPaint.TakeOver( new deoglDebugInformation( "Paint", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasPaint );
 		
-		pDebugInfoCanvasRenderWorld = new deoglDebugInformation( "Render World", colorText, colorBgSub );
+		pDebugInfoCanvasRenderWorld.TakeOver( new deoglDebugInformation( "Render World", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasRenderWorld );
 		
-		pDebugInfoCanvasText = new deoglDebugInformation( "Text", colorText, colorBgSub );
+		pDebugInfoCanvasText.TakeOver( new deoglDebugInformation( "Text", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasText );
 		
-		pDebugInfoCanvasVideoPlayer = new deoglDebugInformation( "Video Player", colorText, colorBgSub );
+		pDebugInfoCanvasVideoPlayer.TakeOver( new deoglDebugInformation( "Video Player", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasVideoPlayer );
 		
-		pDebugInfoCanvasCanvasView = new deoglDebugInformation( "Canvas View", colorText, colorBgSub );
+		pDebugInfoCanvasCanvasView.TakeOver( new deoglDebugInformation( "Canvas View", colorText, colorBgSub ) );
 		pDebugInfoCanvas->GetChildren().Add( pDebugInfoCanvasCanvasView );
 		
 		
 		
-		pDebugInfoPlanPrepare = new deoglDebugInformation( "Plan Prepare", colorText, colorBg );
+		pDebugInfoPlanPrepare.TakeOver( new deoglDebugInformation( "Plan Prepare", colorText, colorBg ) );
 		
-		pDebugInfoPlanPrepareEarlyWorld = new deoglDebugInformation( "Early World", colorText, colorBgSub );
+		pDebugInfoPlanPrepareEarlyWorld.TakeOver( new deoglDebugInformation( "Early World", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareEarlyWorld );
 		
-		pDebugInfoPlanPrepareFindContent = new deoglDebugInformation( "Find Content", colorText, colorBgParallel1 );
+		pDebugInfoPlanPrepareFindContent.TakeOver( new deoglDebugInformation( "Find Content", colorText, colorBgParallel1 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFindContent );
 		
-		pDebugInfoPlanPrepareBuildRTs = new deoglDebugInformation( "Build RTs", colorText, colorBgParallel3 );
+		pDebugInfoPlanPrepareBuildRTs.TakeOver( new deoglDebugInformation( "Build RTs", colorText, colorBgParallel3 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareBuildRTs );
 		
-		pDebugInfoPlanPrepareSkyLightFindContent = new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel2 );
+		pDebugInfoPlanPrepareSkyLightFindContent.TakeOver( new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel2 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightFindContent );
 		
-		pDebugInfoPlanPrepareSkyLightBuildRT = new deoglDebugInformation( "SL Build RT", colorText, colorBgParallel3 );
+		pDebugInfoPlanPrepareSkyLightBuildRT.TakeOver( new deoglDebugInformation( "SL Build RT", colorText, colorBgParallel3 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightBuildRT );
 		
-		pDebugInfoPlanPrepareSkyLightGIFindContent = new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel2 );
+		pDebugInfoPlanPrepareSkyLightGIFindContent.TakeOver( new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel2 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIFindContent );
 		
-		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask = new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallel3 );
+		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask.TakeOver( new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallel3 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask );
 		
-		pDebugInfoPlanPrepareWorld = new deoglDebugInformation( "World", colorText, colorBgParallel1 );
+		pDebugInfoPlanPrepareWorld.TakeOver( new deoglDebugInformation( "World", colorText, colorBgParallel1 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareWorld );
 		
-		pDebugInfoPlanPrepareGIUpdate = new deoglDebugInformation( "GI Update", colorText, colorBgParallel1 );
+		pDebugInfoPlanPrepareGIUpdate.TakeOver( new deoglDebugInformation( "GI Update", colorText, colorBgParallel1 ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareGIUpdate );
 		
-		pDebugInfoPlanPrepareCulling = new deoglDebugInformation( "Culling", colorText, colorBgSub );
+		pDebugInfoPlanPrepareCulling.TakeOver( new deoglDebugInformation( "Culling", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareCulling );
 		
-		pDebugInfoPlanPrepareEnvMaps = new deoglDebugInformation( "Env-Maps", colorText, colorBgSub );
+		pDebugInfoPlanPrepareEnvMaps.TakeOver( new deoglDebugInformation( "Env-Maps", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareEnvMaps );
 		
-		pDebugInfoPlanPreparePrepareContent = new deoglDebugInformation( "Prepare Content", colorText, colorBgSub );
+		pDebugInfoPlanPreparePrepareContent.TakeOver( new deoglDebugInformation( "Prepare Content", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPreparePrepareContent );
 			
-			pDebugInfoPlanPrepareHTViewVBOs = new deoglDebugInformation( "HT-View VBOs", colorText, colorBgSub2 );
+			pDebugInfoPlanPrepareHTViewVBOs.TakeOver( new deoglDebugInformation( "HT-View VBOs", colorText, colorBgSub2 ) );
 			pDebugInfoPlanPreparePrepareContent->GetChildren().Add( pDebugInfoPlanPrepareHTViewVBOs );
 		
-		pDebugInfoPlanPrepareBuildPlan = new deoglDebugInformation( "Build Plan", colorText, colorBgSub );
+		pDebugInfoPlanPrepareBuildPlan.TakeOver( new deoglDebugInformation( "Build Plan", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareBuildPlan );
 		
-		pDebugInfoPlanPrepareLights = new deoglDebugInformation( "Lights", colorText, colorBgSub );
+		pDebugInfoPlanPrepareLights.TakeOver( new deoglDebugInformation( "Lights", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareLights );
 		
-		pDebugInfoPlanPrepareFinish = new deoglDebugInformation( "Finish", colorText, colorBgSub );
+		pDebugInfoPlanPrepareFinish.TakeOver( new deoglDebugInformation( "Finish", colorText, colorBgSub ) );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFinish );
 		
 	}catch( const deException & ){
@@ -284,38 +274,12 @@ deoglRenderCanvas::~deoglRenderCanvas(){
 void deoglRenderCanvas::Prepare( const deoglRenderCanvasContext &context ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	
-	renderThread.GetBufferObject().GetSharedVBOListForType(
-		deoglRTBufferObject::esvbolCanvasPaint ).PrepareVBOs();
+	renderThread.GetBufferObject().GetSharedVBOListForType( deoglRTBufferObject::esvbolCanvasPaint ).PrepareVBOs();
 	
-	// disable all textures to start with a fresh slate
 	renderThread.GetTexture().GetStages().DisableAllStages();
 	
-	// set viewport and scissor box
-	const decPoint &viewportOffset = context.GetViewportOffset();
-	const decPoint &viewportSize = context.GetViewportSize();
+	SetViewport( context.GetViewportOffset(), context.GetViewportSize() );
 	
-	OGL_CHECK( renderThread, glViewport( viewportOffset.x, viewportOffset.y, viewportSize.x, viewportSize.y ) );
-	
-	OGL_CHECK( renderThread, glScissor( viewportOffset.x, viewportOffset.y, viewportSize.x, viewportSize.y ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
-	// disable depth test. render order takes care of overlap
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	// disable culling. allows flipped canvas without extra work
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// enable blending with basic src-alpha blend function
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	pBlendSrc = GL_SRC_ALPHA;
-	pBlendDest = GL_ONE_MINUS_SRC_ALPHA;
-	
-	// enable color writing to all channels
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	
-	// enable the shapes vao
 	OGL_CHECK( renderThread, pglBindVertexArray( pVAOShapes ) );
 	pActiveVAO = pVAOShapes;
 }
@@ -340,15 +304,16 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 	const float transparency = context.GetTransparency();
 	const float thickness = decMath::max( 0.0f, canvas.GetThickness() );
 	
-	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
+	const deoglPipeline &pipeline = context.GetMask()
+		? *pPipelineCanvasColorMask[ canvas.GetBlendMode() ]
+		: *pPipelineCanvasColor[ canvas.GetBlendMode() ];
+	pipeline.Activate();
 	
 	if( context.GetMask() ){
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasColorMask : pShaderCanvasColor;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled &shader = *program->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	shader.SetParameterFloat( spcClipRect,
 		( context.GetClipMin().x + 1.0f ) * context.GetClipFactor().x,
@@ -413,7 +378,11 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	pActivateVAOShapes();
-	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
+	
+	const deoglPipeline &pipeline = context.GetMask()
+		? *pPipelineCanvasImageMask[ canvas.GetBlendMode() ]
+		: *pPipelineCanvasImage[ canvas.GetBlendMode() ];
+	pipeline.Activate();
 	
 	tsmgr.EnableTexture( 0, *image->GetTexture(), GetSamplerRepeatLinear() );
 	if( context.GetMask() ){
@@ -426,9 +395,7 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled &shader = *program->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -475,7 +442,11 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	pActivateVAOShapes();
-	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
+	
+	const deoglPipeline &pipeline = context.GetMask()
+		? *pPipelineCanvasImageMask[ canvas.GetBlendMode() ]
+		: *pPipelineCanvasImage[ canvas.GetBlendMode() ];
+	pipeline.Activate();
 	
 	tsmgr.EnableTexture( 0, *renderTarget->GetTexture(), GetSamplerRepeatLinear() );
 	if( context.GetMask() ){
@@ -487,9 +458,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled &shader = *program->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -531,7 +500,11 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	pActivateVAOShapes();
-	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
+	
+	const deoglPipeline &pipeline = context.GetMask()
+		? *pPipelineCanvasImageMask[ canvas.GetBlendMode() ]
+		: *pPipelineCanvasImage[ canvas.GetBlendMode() ];
+	pipeline.Activate();
 	
 	tsmgr.EnableTexture( 0, *videoPlayer->GetTexture(), GetSamplerRepeatLinear() );
 	if( context.GetMask() ){
@@ -543,9 +516,7 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled &shader = *program->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -597,7 +568,11 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	const float offsetV = config.GetTextOffsetV() * factorV;
 	
 	pActivateVAOShapes();
-	pSetBlendMode( canvas.GetBlendSrc(), canvas.GetBlendDest() );
+	
+	const deoglPipeline &pipeline = context.GetMask()
+		? *pPipelineCanvasImageMask[ canvas.GetBlendMode() ]
+		: *pPipelineCanvasImage[ canvas.GetBlendMode() ];
+	pipeline.Activate();
 	
 	// set texture
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -607,9 +582,7 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	}
 	
 	// set shader
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled &shader = *program->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	// set color
 	const float transparency = context.GetTransparency();
@@ -710,8 +683,10 @@ const deoglRCanvasRenderWorld &canvas ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Canvas.DrawCanvasRenderWorld" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const decVector2 &size = canvas.GetSize();
 	deoglVR * const vr = camera->GetVR();
 	
@@ -732,6 +707,8 @@ const deoglRCanvasRenderWorld &canvas ){
 			return;
 		}
 		
+// #define ENABLE_STEREO_RENDER_TEST 1
+		
 		// render using render plan
 		deoglRenderPlan &plan = camera->GetPlan();
 		
@@ -740,6 +717,13 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetUpscaleSize( intSize.x, intSize.y );
 		plan.SetUseUpscaling( rwidth != intSize.x || rheight != intSize.y );
 		plan.SetUpsideDown( false );
+		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
+		plan.SetLodLevelOffset( 0 );
+		plan.SetRenderStereo( false );
+#ifdef ENABLE_STEREO_RENDER_TEST
+		plan.SetRenderStereo( true );
+		plan.SetCameraStereoMatrix( decDMatrix::CreateTranslation( -0.1, 0, 0 ) );
+#endif
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
@@ -747,12 +731,24 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.PrepareRender( context.GetRenderPlanMask() );
 		
 		defren.Resize( rwidth, rheight );
+#ifdef ENABLE_STEREO_RENDER_TEST
+		defren.Resize( rwidth, rheight, 2 );
+#endif
 		plan.Render();
 	}
 	
 	// revert back to 2d rendering
 	// TODO time finalize pass too
 	renderThread.GetFramebuffer().Activate( context.GetFBO() );
+	
+	const deoglPipeline &pipeline = context.GetMask()
+		? ( vr
+			? *pPipelineCanvasImageMask[ canvas.GetBlendMode() ]
+			: *pPipelineCanvasRenderWorldMask[ canvas.GetBlendMode() ] )
+		: ( vr
+			? *pPipelineCanvasImage[ canvas.GetBlendMode() ]
+			: *pPipelineCanvasRenderWorld[ canvas.GetBlendMode() ] );
+	pipeline.Activate();
 	
 	Prepare( context );
 	
@@ -761,7 +757,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		tsmgr.EnableTexture( 0, *vr->GetLeftEye().GetRenderTarget()->GetTexture(), GetSamplerClampLinear() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
 	}
 	
 	if( context.GetMask() ){
@@ -771,9 +767,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( size ) );
 	const float transparency = context.GetTransparency();
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled &shader = *program->GetCompiled();
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	
@@ -791,7 +785,6 @@ const deoglRCanvasRenderWorld &canvas ){
 	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	
 	// color correction from configuration applied over canvas color transformation
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
 	decColorMatrix colorTransform;
 	
@@ -824,7 +817,6 @@ const deoglRCanvasRenderWorld &canvas ){
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
 	// render finalize of world into canvas
-	pSetBlendModeForce( canvas.GetBlendSrc(), canvas.GetBlendDest() );
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT ) );
 	
 	// clean up
@@ -1068,102 +1060,13 @@ void deoglRenderCanvas::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderCanvas::pCleanUp(){
-	if( pShaderCanvasImage ){
-		pShaderCanvasImage->RemoveUsage();
-	}
-	if( pShaderCanvasImageMask ){
-		pShaderCanvasImageMask->RemoveUsage();
-	}
-	if( pShaderCanvasColor ){
-		pShaderCanvasColor->RemoveUsage();
-	}
-	if( pShaderCanvasColorMask ){
-		pShaderCanvasColorMask->RemoveUsage();
-	}
-	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLVertexArray( pVAOShapes );
 	dops.DeleteOpenGLBuffer( pVBOShapes );
 	
-	if( pDebugInfoCanvas ){
-		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoCanvas );
-		pDebugInfoCanvas->FreeReference();
-	}
-	
-	if( pDebugInfoCanvasView ){
-		pDebugInfoCanvasView->FreeReference();
-	}
-	if( pDebugInfoCanvasImage ){
-		pDebugInfoCanvasImage->FreeReference();
-	}
-	if( pDebugInfoCanvasPaint ){
-		pDebugInfoCanvasPaint->FreeReference();
-	}
-	if( pDebugInfoCanvasRenderWorld ){
-		pDebugInfoCanvasRenderWorld->FreeReference();
-	}
-	if( pDebugInfoCanvasText ){
-		pDebugInfoCanvasText->FreeReference();
-	}
-	if( pDebugInfoCanvasVideoPlayer ){
-		pDebugInfoCanvasVideoPlayer->FreeReference();
-	}
-	if( pDebugInfoCanvasCanvasView ){
-		pDebugInfoCanvasCanvasView->FreeReference();
-	}
-	
-	if( pDebugInfoPlanPrepare ){
-		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoPlanPrepare );
-		pDebugInfoPlanPrepare->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareEarlyWorld ){
-		pDebugInfoPlanPrepareEarlyWorld->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareFindContent ){
-		pDebugInfoPlanPrepareFindContent->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareBuildRTs ){
-		pDebugInfoPlanPrepareBuildRTs->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareSkyLightFindContent ){
-		pDebugInfoPlanPrepareSkyLightFindContent->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareSkyLightBuildRT ){
-		pDebugInfoPlanPrepareSkyLightBuildRT->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareSkyLightGIFindContent ){
-		pDebugInfoPlanPrepareSkyLightGIFindContent->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask ){
-		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareWorld ){
-		pDebugInfoPlanPrepareWorld->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareGIUpdate ){
-		pDebugInfoPlanPrepareGIUpdate->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareCulling ){
-		pDebugInfoPlanPrepareCulling->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareEnvMaps ){
-		pDebugInfoPlanPrepareEnvMaps->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareHTViewVBOs ){
-		pDebugInfoPlanPrepareHTViewVBOs->FreeReference();
-	}
-	if( pDebugInfoPlanPreparePrepareContent ){
-		pDebugInfoPlanPreparePrepareContent->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareBuildPlan ){
-		pDebugInfoPlanPrepareBuildPlan->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareLights ){
-		pDebugInfoPlanPrepareLights->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareFinish ){
-		pDebugInfoPlanPrepareFinish->FreeReference();
-	}
+	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
+	dilist.RemoveIfPresent( pDebugInfoCanvas );
+	dilist.RemoveIfPresent( pDebugInfoPlanPrepare );
 }
 
 void deoglRenderCanvas::pCreateShapesVAO(){
@@ -1250,18 +1153,6 @@ void deoglRenderCanvas::pWorldRenderSize( int &width, int &height ) const{
 	}
 }
 
-void deoglRenderCanvas::pSetBlendMode( GLenum blendSrc, GLenum blendDest ){
-	if( blendSrc != pBlendSrc || blendDest != pBlendDest ){
-		pSetBlendModeForce( blendSrc, blendDest );
-	}
-}
-
-void deoglRenderCanvas::pSetBlendModeForce( GLenum blendSrc, GLenum blendDest ){
-	OGL_CHECK( GetRenderThread(), glBlendFunc( blendSrc, blendDest ) );
-	pBlendSrc = blendSrc;
-	pBlendDest = blendDest;
-}
-
 void deoglRenderCanvas::pActivateVAOShapes(){
 	if( pActiveVAO == pVAOShapes ){
 		return;
@@ -1269,4 +1160,15 @@ void deoglRenderCanvas::pActivateVAOShapes(){
 	
 	OGL_CHECK( GetRenderThread(), pglBindVertexArray( pVAOShapes ) );
 	pActiveVAO = pVAOShapes;
+}
+
+void deoglRenderCanvas::pCreatePipelines( const deoglPipeline* (&pipelines)[ deoglRCanvas::BlendModeCount ],
+deoglPipelineConfiguration &config ){
+	deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+	
+	config.EnableBlend( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	pipelines[ deCanvas::ebmBlend ] = pipelineManager.GetWith( config );
+	
+	config.EnableBlend( GL_SRC_ALPHA , GL_ONE );
+	pipelines[ deCanvas::ebmAdd ] = pipelineManager.GetWith( config );
 }

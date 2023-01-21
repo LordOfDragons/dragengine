@@ -1,16 +1,17 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>DefRen Shape</name>
 	
 	<version>130</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<texture name='texDepth' target='0'/>
 	
-	<parameter name='pMatrixMVP'/> <!-- 0 -->
-	<parameter name='pColor'/> <!-- 1 -->
-	<parameter name='pSCToDTC'/> <!-- 2 -->
-	<parameter name='pMatrixMVP2'/> <!-- 3 -->
+	<parameter name='pMatrixModel'/>
+	<parameter name='pColor'/>
+	<parameter name='pMatrixModel2'/>
+	<parameter name='pDrawIDOffset'/>
 	
 	<attribute name='inPosition' target='0'/>
 	<attribute name='inSelector' target='1'/>

@@ -28,7 +28,6 @@
 #include "../deoglBasics.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
@@ -53,7 +52,6 @@ pWidth( 1 ),
 pHeight( 1 ),
 pComponentCount( 3 ),
 
-pPixelBuffer( NULL ),
 pTexture( NULL ),
 pDirtyTexture( false )
 {
@@ -62,9 +60,6 @@ pDirtyTexture( false )
 deoglRVideoPlayer::~deoglRVideoPlayer(){
 	SetVideo( NULL );
 	
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
 	if( pTexture ){
 		delete pTexture;
 	}
@@ -121,10 +116,7 @@ void deoglRVideoPlayer::SetVideoSize( int width, int height, int componentCount 
 	pHeight = height;
 	pComponentCount = componentCount;
 	
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-		pPixelBuffer = NULL;
-	}
+	pPixelBuffer = nullptr;
 	
 	if( pTexture ){
 		delete pTexture;
@@ -137,8 +129,8 @@ void deoglRVideoPlayer::SetVideoSize( int width, int height, int componentCount 
 	pDirtyTexture = true;
 }
 
-deoglPixelBuffer *deoglRVideoPlayer::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
-	deoglPixelBuffer * const prevPixelBuffer = pPixelBuffer;
+deoglPixelBuffer::Ref deoglRVideoPlayer::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
+	const deoglPixelBuffer::Ref prevPixelBuffer( pPixelBuffer );
 	
 	pPixelBuffer = pixelBuffer;
 	pDirtyTexture  = true;
@@ -174,7 +166,7 @@ void deoglRVideoPlayer::UpdateTexture(){
 		}
 		
 		if( pPixelBuffer ){
-			pTexture->SetPixels( *pPixelBuffer );
+			pTexture->SetPixels( pPixelBuffer );
 		}
 	}
 	

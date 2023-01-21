@@ -22,17 +22,18 @@
 #ifndef _DEOGLRPROPFIELDTYPE_H_
 #define _DEOGLRPROPFIELDTYPE_H_
 
+#include "../skin/deoglSkinTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/deObject.h>
-#include "../skin/deoglSkinTexture.h"
 
 class deoglPFClusterGenerator;
 class deoglPropFieldCluster;
 class deoglRModel;
 class deoglRPropField;
 class deoglRSkin;
-class deoglSPBlockUBO;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
@@ -59,7 +60,7 @@ private:
 	decVector pMaxExtend;
 	float pBendFactor;
 	
-	deoglSPBlockUBO *pParamBlock;
+	deoglSPBlockUBO::Ref pParamBlock;
 	
 	bool pValidParamBlock;
 	bool pDirtyParamBlock;
@@ -172,7 +173,7 @@ public:
 	
 	
 	/** Parameter block or NULL if there is no valid skin texture. */
-	inline deoglSPBlockUBO *GetParamBlock() const{ return pParamBlock; }
+	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{ return pParamBlock; }
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();

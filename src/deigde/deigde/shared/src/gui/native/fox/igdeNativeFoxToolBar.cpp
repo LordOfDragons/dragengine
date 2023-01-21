@@ -55,11 +55,11 @@ FXIMPLEMENT( igdeNativeFoxToolBar, FXToolBar, igdeNativeFoxToolBarMap, ARRAYNUMB
 
 igdeNativeFoxToolBar::igdeNativeFoxToolBar(){ }
 
-igdeNativeFoxToolBar::igdeNativeFoxToolBar( igdeToolBar &owner, FXComposite *parent,
+igdeNativeFoxToolBar::igdeNativeFoxToolBar( igdeToolBar &powner, FXComposite *pparent,
 	FXComposite *windowParent, int layoutFlags ) :
-FXToolBar( parent, new FXToolBarShell( windowParent, FRAME_RAISED ),
+FXToolBar( pparent, new FXToolBarShell( windowParent, FRAME_RAISED ),
 	FRAME_RAISED | /* LAYOUT_DOCK_NEXT | */ layoutFlags ),
-pOwner( &owner ),
+pOwner( &powner ),
 pWetDock( ( FXToolBarShell* )getWetDock() )
 {
 	new FXToolBarGrip( this, this, FXToolBar::ID_TOOLBARGRIP, TOOLBARGRIP_DOUBLE );
@@ -68,23 +68,23 @@ pWetDock( ( FXToolBarShell* )getWetDock() )
 igdeNativeFoxToolBar::~igdeNativeFoxToolBar(){
 }
 
-igdeNativeFoxToolBar *igdeNativeFoxToolBar::CreateNativeWidget( igdeToolBar &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxToolBar *igdeNativeFoxToolBar::CreateNativeWidget( igdeToolBar &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxToolBar( owner, parent, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxToolBar( powner, pparent, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxToolBar::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( ! parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( ! pparent.id() ){
 		return;
 	}
 	

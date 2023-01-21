@@ -43,7 +43,7 @@
 ////////////////////////////
 
 aeController::aeController( const char *name ) :
-pAnimator( NULL ),
+pAnimator( nullptr ),
 pEngControllerIndex( -1 ),
 pName( name ),
 pMinValue( 0.0f ),
@@ -53,6 +53,19 @@ pClamp( true ),
 pFrozen( false ),
 pLocoAttr( aeAnimatorLocomotion::eaNone ),
 pLocoLeg( 0 ){
+}
+
+aeController::aeController( const aeController &copy ) :
+pAnimator( nullptr ),
+pEngControllerIndex( -1 ),
+pName( copy.pName ),
+pMinValue( copy.pMinValue ),
+pMaxValue( copy.pMaxValue ),
+pCurValue( copy.pCurValue ),
+pClamp( copy.pClamp ),
+pFrozen( copy.pFrozen ),
+pLocoAttr( copy.pLocoAttr ),
+pLocoLeg( copy.pLocoLeg ){
 }
 
 aeController::~aeController(){

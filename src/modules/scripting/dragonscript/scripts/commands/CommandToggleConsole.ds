@@ -44,32 +44,34 @@ class CommandToggleConsole extends Command
 	
 	
 	/** \brief Create command. */
-	public func new( WindowConsole window )
+	public func new(WindowConsole window)
 		if window == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pWindow = window
+		pWindow = window
 		
-		this.setName( "toggleConsole" )
-		this.setDescription( "Toggle console" )
+		setName("toggleConsole")
+		setDescription("Toggle console")
+		setTranslateDescription("UI.Command.ToggleConsole.Description")
+		setTranslateDisplayName("UI.Command.ToggleConsole.DisplayName")
 		
-		window.setCommandCloseConsole( this )
+		window.setCommandCloseConsole(this)
 	end
 	
 	
 	
 	/** \brief Console window to show and hide. */
 	public func WindowConsole getWindow()
-		return this.pWindow
+		return pWindow
 	end
 	
 	/** \brief Set console window to show and hide. */
-	public func void setWindow( WindowConsole window )
+	public func void setWindow(WindowConsole window)
 		if window == null
 			throw EInvalidParam.new()
 		end
-		this.pWindow = window
+		pWindow = window
 	end
 	
 	
@@ -82,12 +84,12 @@ class CommandToggleConsole extends Command
 	 * unwanted typing in the input field.
 	 */
 	public func void stop()
-		if this.pWindow.getVisible()
-			this.pWindow.setVisible( false )
+		if pWindow.getVisible()
+			pWindow.setVisible(false)
 			BaseGameApp.getApp().setInputProcessorBindings()
 			
 		else
-			this.pWindow.setVisible( true )
+			pWindow.setVisible(true)
 			BaseGameApp.getApp().setInputProcessorDesktop()
 		end
 	end

@@ -501,6 +501,8 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			blf.draw( 0, move.name )"""
 			#Blender.Window.DrawProgressBar( 0.2 + progressCounter * 0.8 / countMoves, "Writing Move %s..." % move.name )
 			playtime = 0
+			firstFrame = 1
+			lastFrame = 1
 			moveBones = []
 			agroups = move.action.groups
 			
@@ -516,7 +518,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			for bone in self.armature.bones:
 				moveBone = Armature.MoveBone( bone )
-				moveBone.times.append( 0 )
+				moveBone.times.append( 1 )
 				if bone.name in agroups:
 					boneAGroup = agroups[ bone.name ]
 					moveBone.used = True
@@ -524,20 +526,19 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 						dpParams = fcurve.data_path.rsplit( ".", 1 )
 						if len( dpParams ) == 2 and dpParams[ 1 ] in validDPParams:
 							self.buildTimeList( fcurve, moveBone.times )
+				
 				timeCount = len( moveBone.times )
 				if timeCount > 0:
-					bonePlayTime = moveBone.times[ -1 ]
-					if bonePlayTime > playtime:
-						playtime = bonePlayTime
+					firstFrame = min(firstFrame, moveBone.times[0])
+					lastFrame = max(lastFrame, moveBone.times[-1])
 				moveBones.append( moveBone )
 			
 			# determine the frames to export. this can be altered by properties
 			if move.automaticRange:
-				move.firstFrame = 0
-				move.lastFrame = playtime
-				
-			else:
-				playtime = move.lastFrame - move.firstFrame
+				move.firstFrame = firstFrame
+				move.lastFrame = lastFrame
+			
+			playtime = move.lastFrame - move.firstFrame
 			
 			# write move informations
 			f.write( struct.pack( "<B", len( move.name ) ) ) # length name

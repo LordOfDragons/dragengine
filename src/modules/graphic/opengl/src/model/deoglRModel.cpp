@@ -405,8 +405,8 @@ void deoglRModel::pInitExtends( const deModel &engModel ){
 			const decVector &position = positions[ i ].position;
 			
 			int dominatingBone = -1;
-			if( positions[ i ].weight != -1 ){
-				dominatingBone = dominatingBones[ positions[ i ].weight ];
+			if( positions[ i ].weights != -1 ){
+				dominatingBone = dominatingBones[ positions[ i ].weights ];
 			}
 			
 			if( dominatingBone != -1 ){
@@ -582,7 +582,6 @@ void deoglRModel::pSaveCached(){
 		writer->WriteVector( pWeightlessExtends.minimum );
 		writer->WriteVector( pWeightlessExtends.maximum );
 		writer->WriteByte( pHasWeightlessExtends ? 1 : 0 );
-		int i;
 		for( i=0; i<pBoneCount; i++ ){
 			writer->WriteVector( pBoneExtends[ i ].minimum );
 			writer->WriteVector( pBoneExtends[ i ].maximum );

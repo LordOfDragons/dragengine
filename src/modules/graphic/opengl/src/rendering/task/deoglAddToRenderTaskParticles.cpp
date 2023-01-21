@@ -28,7 +28,6 @@
 #include "deoglRenderTaskParticlesStep.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../task/shared/deoglRenderTaskSharedInstance.h"
-#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../task/shared/deoglRenderTaskSharedTexture.h"
 #include "../task/shared/deoglRenderTaskSharedVAO.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -76,9 +75,8 @@ deoglAddToRenderTaskParticles::deoglAddToRenderTaskParticles(
 deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask ) :
 pRenderThread( renderThread ),
 pRenderTask( renderTask ),
-pSkinShaderType( deoglSkinTexture::estParticleGeometry ),
-pSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry ),
-pSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry ){
+pSkinPipelineType( deoglSkinTexturePipelines::etGeometry ),
+pSkinPipelineModifier( 0 ){
 }
 
 deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
@@ -89,31 +87,12 @@ deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
 // Management
 ///////////////
 
-void deoglAddToRenderTaskParticles::SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleGeometry
-	|| shaderType > deoglSkinTexture::estParticleShadowDistance ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pSkinShaderType = shaderType;
+void deoglAddToRenderTaskParticles::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+	pSkinPipelineType = type;
 }
 
-void deoglAddToRenderTaskParticles::SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleRibbonGeometry
-	|| shaderType > deoglSkinTexture::estParticleRibbonGeometryDepthTest ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pSkinShaderTypeRibbon = shaderType;
-}
-
-void deoglAddToRenderTaskParticles::SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleBeamGeometry
-	|| shaderType > deoglSkinTexture::estParticleBeamGeometryDepthTest ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pSkinShaderTypeBeam = shaderType;
+void deoglAddToRenderTaskParticles::SetSkinPipelineModifier( int modifier ){
+	pSkinPipelineModifier = modifier;
 }
 
 
@@ -156,52 +135,34 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 		return;
 	}
 	
-	// determine the skin shader type to use
-	deoglSkinTexture::eShaderTypes skinShaderType = pSkinShaderType;
-	
-	if( simulationRibbon ){
-		skinShaderType = pSkinShaderTypeRibbon;
-		
-	}else if( simulationBeam ){
-		skinShaderType = pSkinShaderTypeBeam;
-	}
-	
 	// retrieve the shader and texture units configuration to use
-	const deoglShaderProgram *shader = NULL;
+	const deoglSkinTexturePipeline &pipeline = itype.GetUseSkinPipelines().
+		GetWithRef( pSkinPipelineType, pSkinPipelineModifier );
 	
-	deoglSkinShader * const skinShader = skinTexture->GetShaderFor( skinShaderType );
-	if( skinShader ){
-		shader = skinShader->GetShader();
-	}
-	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const deoglTexUnitsConfig *tuc = itype.GetTUCForShaderType( skinShaderType );
+	const deoglTexUnitsConfig *tuc = itype.GetTUCForPipelineType ( pSkinPipelineType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
 	// determine if the last step has the same texture
 	const deoglVAO * const vao = emitterInstance.GetVAO();
-	deoglRenderTaskParticlesStep *rtps = NULL;
+	deoglRenderTaskParticlesStep *rtps = nullptr;
 	
 	if( pRenderTask->GetStepCount() > 0 ){
 		rtps = pRenderTask->GetStepAt( pRenderTask->GetStepCount() - 1 );
 		
 		if( rtps->GetVAO() != vao
-		|| rtps->GetShader() != shader
+		|| rtps->GetPipeline() != pipeline.GetPipeline()
 		|| rtps->GetSkin() != skin
 		|| rtps->GetDynamicSkin() != dynamicSkin ){
-			rtps = NULL;
+			rtps = nullptr;
 		}
 	}
 	
 	// if there exists no matching step create a new one
 	if( ! rtps ){
 		rtps = pRenderTask->AddStep();
-		rtps->SetShader( shader );
+		rtps->SetPipeline( pipeline.GetPipeline() );
 		rtps->SetTUC( tuc );
 		rtps->SetVAO( vao );
 		rtps->SetSkin( skin );

@@ -22,6 +22,8 @@
 #ifndef _DEOGLRRENDERWINDOW_H_
 #define _DEOGLRRENDERWINDOW_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
@@ -51,11 +53,10 @@ class NSView;
 
 class deoglRenderThread;
 class deoglRCanvasView;
-class deoglPixelBuffer;
 
 
 /**
- * \brief Render window target.
+ * Render window target.
  */
 class deoglRRenderWindow : public deObject{
 private:
@@ -125,7 +126,7 @@ private:
 	decString pTitle;
 	bool pFullScreen;
 	bool pPaint;
-	deoglPixelBuffer *pIcon;
+	deoglPixelBuffer::Ref pIcon;
 	
 	deoglRCanvasView *pRCanvasView;
 	
@@ -137,10 +138,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render render target. */
+	/** Create render render target. */
 	deoglRRenderWindow( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render render target. */
+	/** Clean up render render target. */
 	virtual ~deoglRRenderWindow();
 	/*@}*/
 	
@@ -148,10 +149,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief OS specific. */
+	/** OS specific. */
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	inline Window GetWindow() const{ return pWindow; }
@@ -185,74 +186,74 @@ public:
 	inline NSView *GetView() const{ return pView; }
 	#endif
 	
-	/** \brief Width of the window. */
+	/** Width of the window. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height of the window. */
+	/** Height of the window. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Set window size. */
+	/** Set window size. */
 	void SetSize( int width, int height );
 	
-	/** \brief Window title. */
+	/** Window title. */
 	inline const decString &GetTitle() const{ return pTitle; }
 	
-	/** \brief Set window title. */
+	/** Set window title. */
 	void SetTitle( const char *title );
 	
-	/** \brief Full screen mode enabled. */
+	/** Full screen mode enabled. */
 	inline bool GetFullScreen() const{ return pFullScreen; }
 	
-	/** \brief Set if full screen mode is enabled. */
+	/** Set if full screen mode is enabled. */
 	void SetFullScreen( bool fullScreen );
 	
-	/** \brief Painting enabled. */
+	/** Painting enabled. */
 	inline bool GetPaint() const{ return pPaint; }
 	
-	/** \brief Set painting enabled. */
+	/** Set painting enabled. */
 	void SetPaint( bool paint );
 	
-	/** \brief Icon. */
-	inline deoglPixelBuffer *GetIcon() const{ return pIcon; }
+	/** Icon. */
+	inline const deoglPixelBuffer::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon. */
+	/** Set icon. */
 	void SetIcon( deoglPixelBuffer *icon );
 	
 	
 	
-	/** \brief Render canvas view or \em NULL if not set. */
+	/** Render canvas view or \em NULL if not set. */
 	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
-	/** \brief Set render canvas view or \em NULL if not set. */
+	/** Set render canvas view or \em NULL if not set. */
 	void SetRCanvasView( deoglRCanvasView *rcanvasView );
 	
-	/** \brief Drop render canvas view if not \em NULL. */
+	/** Drop render canvas view if not \em NULL. */
 	void DropRCanvasView();
 	
 	
 	
-	/** \brief Create render window. */
+	/** Create render window. */
 	void CreateWindow();
 	
-	/** \brief Swap buffers. Called from render thread. */
+	/** Swap buffers. Called from render thread. */
 	void SwapBuffers();
 	
-	/** \brief Render window if visible. Called from render thread. */
+	/** Render window if visible. Called from render thread. */
 	void Render();
 	
-	/** \brief Capture content by capture canvas if any matching one is pending. */
+	/** Capture content by capture canvas if any matching one is pending. */
 	void Capture();
 	
-	/** \brief Center window on screen. */
+	/** Center window on screen. */
 	void CenterOnScreen();
 	
-	/** \brief Windows resized (render thread event loop). */
+	/** Windows resized (render thread event loop). */
 	void OnResize( int width, int height );
 	
 	
 	
 	/**
-	 * \brief Notify scripting module size changed due to OS event.
+	 * Notify scripting module size changed due to OS event.
 	 * \note Clears flag before returning if set.
 	 */
 	bool GetNotifySizeChanged();

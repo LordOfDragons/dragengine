@@ -27,7 +27,7 @@ class deoglOcclusionMesh;
 
 
 /**
- * @brief Occlusion Mesh List.
+ * Occlusion Mesh List.
  * List of pointers to occlusion meshes. The ordering of the occlusion meshes
  * in the list is not defined and can change when occlusion meshes are removed.
  * This allows to remove elements with constant time requirements.
@@ -39,7 +39,7 @@ private:
 	int pOcclusionMeshSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion mesh list. */
 	deoglOcclusionMeshList();
@@ -47,7 +47,7 @@ public:
 	~deoglOcclusionMeshList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of occlusion meshes. */
 	inline int GetCount() const{ return pOcclusionMeshCount; }

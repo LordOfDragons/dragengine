@@ -34,10 +34,10 @@ class deoglRImage;
 class deoglRModel;
 class deoglRenderThread;
 class deoglRSkin;
-class deoglShaderProgram;
 class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
+class deoglShaderProgram;
 
 
 
@@ -60,7 +60,6 @@ public:
 		eoglotFramebuffer,
 		eoglotQuery,
 		eoglotSampler,
-		eoglotRenderBuffer,
 		eoglotProgram,
 		eoglotShader
 	};
@@ -72,9 +71,9 @@ private:
 		eOpenGLObjectType type;
 		GLuint name;
 		
-		inline void Set( eOpenGLObjectType type, GLuint name ){
-			this->type = type;
-			this->name = name;
+		inline void Set( eOpenGLObjectType ptype, GLuint pname ){
+			type = ptype;
+			name = pname;
 		}
 	};
 	
@@ -99,13 +98,16 @@ private:
 	deMutex pMutexCameras;
 	decObjectOrderedSet pCleanUpCameraList;
 	
+	deMutex pMutexReleaseObjects;
+	decObjectOrderedSet pReleaseObjects;
+	
 	deMutex pMutexSynchronize;
 	bool pHasSynchronizeOperations;
 	decPointerOrderedSet pFileWriteList;
 	decPointerOrderedSet pSaveImageList;
 	
-	deoglShaderProgram *pShaderGenConeMap;
-	deoglShaderProgram *pShaderGenConeMapLayer;
+	const deoglShaderProgram *pShaderGenConeMap;
+	const deoglShaderProgram *pShaderGenConeMapLayer;
 	
 	
 	
@@ -234,7 +236,6 @@ public:
 	inline void DeleteOpenGLFramebuffer( GLuint name ){ DeleteOpenGLObject( eoglotFramebuffer, name ); }
 	inline void DeleteOpenGLQuery( GLuint name ){ DeleteOpenGLObject( eoglotQuery, name ); }
 	inline void DeleteOpenGLSampler( GLuint name ){ DeleteOpenGLObject( eoglotSampler, name ); }
-	inline void DeleteOpenGLRenderBuffer( GLuint name ){ DeleteOpenGLObject( eoglotRenderBuffer, name ); }
 	inline void DeleteOpenGLProgram( GLuint name ){ DeleteOpenGLObject( eoglotProgram, name ); }
 	inline void DeleteOpenGLShader( GLuint name ){ DeleteOpenGLObject( eoglotShader, name ); }
 	/*@}*/
@@ -275,6 +276,14 @@ public:
 	
 	/** Add clean up camera (thread-safe). */
 	void AddCleanUpCamera( deoglRCamera *camera );
+	
+	
+	
+	/** Release objects list (not thread-safe). */
+	inline const decObjectOrderedSet &GetReleaseObjects() const{ return pReleaseObjects; }
+	
+	/** Add release object (thread-safe). */
+	void AddReleaseObject( deObject *object );
 	
 	
 	

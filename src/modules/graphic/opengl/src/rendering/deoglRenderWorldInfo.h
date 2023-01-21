@@ -29,57 +29,57 @@ class deoglDebugInformation;
 
 
 /**
- * \brief World renderer information for debugging purpose.
+ * World renderer information for debugging purpose.
  */
 class deoglRenderWorldInfo : public deoglRenderBase{
 public:
-	deoglDebugInformation *infoWorld;
-	deoglDebugInformation *infoPassMasked;
-	deoglDebugInformation *infoGITraceRays;
-	deoglDebugInformation *infoSolidGeometry;
-	deoglDebugInformation *infoReflection;
-	deoglDebugInformation *infoSSR;
-	deoglDebugInformation *infoLuminancePrepare;
-	deoglDebugInformation *infoSolidGeometryLights;
-	deoglDebugInformation *infoTransparent;
-	deoglDebugInformation *infoToneMapping;
-	deoglDebugInformation *infoDebugDrawers;
-	deoglDebugInformation *infoPostProcessing;
-	deoglDebugInformation *infoDeveloperMode;
-	deoglDebugInformation *infoDeveloperModeTemp;
+	deoglDebugInformation::Ref infoWorld;
+	deoglDebugInformation::Ref infoPassMasked;
+	deoglDebugInformation::Ref infoGITraceRays;
+	deoglDebugInformation::Ref infoSolidGeometry;
+	deoglDebugInformation::Ref infoReflection;
+	deoglDebugInformation::Ref infoSSR;
+	deoglDebugInformation::Ref infoLuminancePrepare;
+	deoglDebugInformation::Ref infoSolidGeometryLights;
+	deoglDebugInformation::Ref infoTransparent;
+	deoglDebugInformation::Ref infoToneMapping;
+	deoglDebugInformation::Ref infoDebugDrawers;
+	deoglDebugInformation::Ref infoPostProcessing;
+	deoglDebugInformation::Ref infoDeveloperMode;
+	deoglDebugInformation::Ref infoDeveloperModeTemp;
 	
-	deoglDebugInformation *infoSolidGeometryDetails;
-	deoglDebugInformation *infoSolidGeometryDepthTask;
-	deoglDebugInformation *infoSolidGeometryDepthRender;
-	deoglDebugInformation *infoSolidGeometryOcclusion;
-	deoglDebugInformation *infoSolidGeometryTranspCounter;
-	deoglDebugInformation *infoSolidGeometrySky;
-	deoglDebugInformation *infoSolidGeometryTask;
-	deoglDebugInformation *infoSolidGeometryRender;
-	deoglDebugInformation *infoSolidGeometryDecals;
-	deoglDebugInformation *infoSolidGeometryDownsampleDepth;
-	deoglDebugInformation *infoSolidGeometrySSAO;
+	deoglDebugInformation::Ref infoSolidGeometryDetails;
+	deoglDebugInformation::Ref infoSolidGeometryDepthTask;
+	deoglDebugInformation::Ref infoSolidGeometryDepthRender;
+	deoglDebugInformation::Ref infoSolidGeometryOcclusion;
+	deoglDebugInformation::Ref infoSolidGeometryTranspCounter;
+	deoglDebugInformation::Ref infoSolidGeometrySky;
+	deoglDebugInformation::Ref infoSolidGeometryTask;
+	deoglDebugInformation::Ref infoSolidGeometryRender;
+	deoglDebugInformation::Ref infoSolidGeometryDecals;
+	deoglDebugInformation::Ref infoSolidGeometryDownsampleDepth;
+	deoglDebugInformation::Ref infoSolidGeometrySSAO;
 	
-	deoglDebugInformation *infoTransparentDetails;
-	deoglDebugInformation *infoTransparentClear;
-	deoglDebugInformation *infoTransparentDepthTask;
-	deoglDebugInformation *infoTransparentDepthRender;
-	deoglDebugInformation *infoTransparentCopyDepth;
-	deoglDebugInformation *infoTransparentTask;
-	deoglDebugInformation *infoTransparentRender;
-	deoglDebugInformation *infoTransparentSSR;
-	deoglDebugInformation *infoTransparentLights;
-	deoglDebugInformation *infoTransparentVolumetric;
+	deoglDebugInformation::Ref infoTransparentDetails;
+	deoglDebugInformation::Ref infoTransparentClear;
+	deoglDebugInformation::Ref infoTransparentDepthTask;
+	deoglDebugInformation::Ref infoTransparentDepthRender;
+	deoglDebugInformation::Ref infoTransparentCopyDepth;
+	deoglDebugInformation::Ref infoTransparentTask;
+	deoglDebugInformation::Ref infoTransparentRender;
+	deoglDebugInformation::Ref infoTransparentSSR;
+	deoglDebugInformation::Ref infoTransparentLights;
+	deoglDebugInformation::Ref infoTransparentVolumetric;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create info. */
+	/** Create info. */
 	deoglRenderWorldInfo( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up info. */
+	/** Clean up info. */
 	virtual ~deoglRenderWorldInfo();
 	/*@}*/
 	
@@ -87,13 +87,13 @@ public:
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Clear all. */
+	/** Clear all. */
 	void ClearAll();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

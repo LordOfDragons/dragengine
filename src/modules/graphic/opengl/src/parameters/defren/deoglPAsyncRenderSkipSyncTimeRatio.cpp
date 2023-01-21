@@ -42,10 +42,8 @@ deoglParameterFloat( ogl )
 {
 	SetName( "asyncRenderSkipSyncTimeRatio" );
 	SetDescription( "Ratio between game time and render time required to skip synchronization."
-		" Used to judge if estimated render time is long enough to do another game frame update"
-		" before rendering again. Decouples render frame rate from game frame rate."
-		" Lower values make judging bias towards doing more game frame updates per render frames."
-		" Using lower values can improve the game responsiveness while reducing render frame rate."
+		" Lower values favors doing more game frame updates per render frames."
+		" Can improve game responsiveness while reducing render frame rate."
 	);
 	SetType( deModuleParameter::eptRanged );
 	SetMinimumValue( 0.0f );

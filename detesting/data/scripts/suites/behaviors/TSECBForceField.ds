@@ -1,0 +1,261 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorForceField.
+ */
+class TSECBForceField extends TestSuite
+	static fixed public var CollisionFilter collisionFilter = createCollisionFilter()
+	
+	static private func CollisionFilter createCollisionFilter()
+		var LayerMask category = LayerMask.newWith(BaseGameApp.CollisionFilterBit.forceField)
+		
+		var LayerMask filter = LayerMask.new()
+		filter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		filter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		filter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		filter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
+		filter.setBit(BaseGameApp.CollisionFilterBit.particle)
+		
+		return CollisionFilter.new(category, filter)
+	end
+	
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorForceField behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorForceField.new(ec, null)
+			assertEquals(ECBehaviorForceField.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorForceField.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorForceField.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertNotNull(behavior.getForceField())
+			assertNull(behavior.getCollider())
+			
+			assertEquals(behavior.getForceField().getPrefix(), "forceField.")
+			
+			assertTrue(behavior.getForceField().getInfluenceArea().getShapeList().empty())
+			assertFloatProperty(behavior.getForceField().getRadius(), 0, 1)
+			assertFloatProperty(behavior.getForceField().getExponent(), 0, 1)
+			assertEnumProperty(behavior.getForceField().getFieldType(), ForceFieldType.radial, ForceFieldType.all())
+			assertEnumProperty(behavior.getForceField().getApplicationType(), ForceFieldApplication.direct, ForceFieldApplication.all())
+			assertEquals(behavior.getForceField().getDirection().getVector(), Vector.new())
+			assertFloatProperty(behavior.getForceField().getForce(), 0, 1)
+			assertFloatProperty(behavior.getForceField().getFluctuationDirection(), 0)
+			assertFloatProperty(behavior.getForceField().getFluctuationForce(), 0)
+			assertTrue(behavior.getForceField().getEnabled().getValue())
+			assertTrue(behavior.getForceField().getShape().getShapeList().empty())
+			assertEquals(behavior.getForceField().getCollisionFilter(), TSECBForceField.collisionFilter)
+			
+			assertEquals(behavior.getAttach().getPrefix(), "forceField.")
+			assertEquals(behavior.getAttach().getPosition().getVector(), Vector.new())
+			assertEquals(behavior.getAttach().getOrientation().getVector(), Vector.new())
+			assertEquals(behavior.getAttach().getBone().getValue(), "")
+			
+			assertHasProperty("forceField.influenceArea")
+			assertHasProperty("forceField.radius")
+			assertHasProperty("forceField.exponent")
+			assertHasProperty("forceField.fieldType")
+			assertHasProperty("forceField.applicationType")
+			assertHasProperty("forceField.direction")
+			assertHasProperty("forceField.force")
+			assertHasProperty("forceField.fluctuationDirection")
+			assertHasProperty("forceField.fluctuationForce")
+			assertHasProperty("forceField.enabled")
+			assertHasProperty("forceField.shape")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorForceField.Instance forceField = behavior.instance(e)
+			assertNotNull(forceField)
+			assertEquals(forceField.getECBehavior(), behavior)
+			
+			var ForceField ff = forceField.getForceField()
+			assertNotNull(ff)
+			assertEquals(ff.getCollisionFilter(), TSECBForceField.collisionFilter)
+			assertEquals(ff.getRadius(), 0)
+			assertEquals(ff.getExponent(), 0)
+			assertEquals(ff.getFieldType(), ForceFieldType.radial)
+			assertEquals(ff.getApplicationType(), ForceFieldApplication.direct)
+			assertEquals(ff.getForce(), 0)
+			assertEquals(ff.getFluctuationDirection(), 0)
+			assertEquals(ff.getFluctuationForce(), 0)
+			assertTrue(ff.getEnabled())
+			
+			assertEquals(ECBehaviorForceField.getInstanceIn(e), forceField)
+			
+			assertEquals(ECBehaviorForceField.getAllInstancesIn(e), Array.newWith(forceField))
+			
+			return false
+		end
+	end
+	
+	/** ForceField with model, skin and rig resource set. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorForceField behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass eclass = getElementClass()
+			var ECBehaviorCollider collider = ECBehaviorCollider.new(eclass, null)
+			collider.setGhost()
+			
+			behavior = ECBehaviorForceField.new(eclass, collider)
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPosition(DVector.new(2, 1, 3))
+			s.setRotation(Vector.new(20, 10, 30))
+			s.setPropertyValueFor("forceField.position", "0.2 0.5 0.7")
+			s.setPropertyValueFor("forceField.orientation", "10 25 8")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			getGameWorld().update(0.01) // required to make physics update attachments
+			
+			var BehaviorElement element = getElement()
+			var DMatrix matrix = DMatrix.newRT(DVector.new(10, 25, 8), DVector.new(0.2, 0.5, 0.7))\
+				* DMatrix.newRT(DVector.new(20, 10, 30), DVector.new(2, 1, 3))
+			
+			var ECBehaviorForceField.Instance forceField = behavior.instance(getElement())
+			var ForceField probe = forceField.getForceField()
+			assertNotNull(probe)
+			assertDVector(probe.getPosition(), matrix.getPosition())
+			assertQuaternion(probe.getOrientation(), matrix.toQuaternion())
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorForceField behavior
+		private var ECBehaviorForceField behavior2
+		private var ECBehaviorForceField behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorForceField.new(ec, null)
+			behavior2 = ECBehaviorForceField.new(ec, null, "sub1")
+			behavior3 = ECBehaviorForceField.new(ec, null, "sub2")
+			assertEquals(ECBehaviorForceField.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorForceField.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorForceField.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorForceField.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorForceField.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorForceField.Instance forceField = behavior.instance(e)
+			var ECBehaviorForceField.Instance forceField2 = behavior2.instance(e)
+			var ECBehaviorForceField.Instance forceField3 = behavior3.instance(e)
+			assertNotNull(forceField)
+			assertNotNull(forceField2)
+			assertNotNull(forceField3)
+			assertEquals(forceField.getECBehavior(), behavior)
+			assertEquals(forceField2.getECBehavior(), behavior2)
+			assertEquals(forceField3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorForceField.getInstanceIn(e), forceField)
+			assertEquals(ECBehaviorForceField.getInstanceIn(e, "sub1"), forceField2)
+			assertEquals(ECBehaviorForceField.getInstanceIn(e, "sub2"), forceField3)
+			
+			assertNull(ECBehaviorForceField.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorForceField.getAllInstancesIn(e), Array.newWith(forceField, forceField2, forceField3))
+			
+			assertEquals(behavior.getForceField().getPrefix(), "forceField.")
+			assertEquals(behavior2.getForceField().getPrefix(), "forceField(sub1).")
+			assertEquals(behavior3.getForceField().getPrefix(), "forceField(sub2).")
+			
+			assertHasProperty("forceField.influenceArea")
+			assertHasProperty("forceField.radius")
+			assertHasProperty("forceField.exponent")
+			assertHasProperty("forceField.fieldType")
+			assertHasProperty("forceField.applicationType")
+			assertHasProperty("forceField.direction")
+			assertHasProperty("forceField.force")
+			assertHasProperty("forceField.fluctuationDirection")
+			assertHasProperty("forceField.fluctuationForce")
+			assertHasProperty("forceField.enabled")
+			assertHasProperty("forceField.shape")
+			
+			assertHasProperty("forceField(sub1).influenceArea")
+			assertHasProperty("forceField(sub1).radius")
+			assertHasProperty("forceField(sub1).exponent")
+			assertHasProperty("forceField(sub1).fieldType")
+			assertHasProperty("forceField(sub1).applicationType")
+			assertHasProperty("forceField(sub1).direction")
+			assertHasProperty("forceField(sub1).force")
+			assertHasProperty("forceField(sub1).fluctuationDirection")
+			assertHasProperty("forceField(sub1).fluctuationForce")
+			assertHasProperty("forceField(sub1).enabled")
+			assertHasProperty("forceField(sub1).shape")
+			
+			assertHasProperty("forceField(sub2).influenceArea")
+			assertHasProperty("forceField(sub2).radius")
+			assertHasProperty("forceField(sub2).exponent")
+			assertHasProperty("forceField(sub2).fieldType")
+			assertHasProperty("forceField(sub2).applicationType")
+			assertHasProperty("forceField(sub2).direction")
+			assertHasProperty("forceField(sub2).force")
+			assertHasProperty("forceField(sub2).fluctuationDirection")
+			assertHasProperty("forceField(sub2).fluctuationForce")
+			assertHasProperty("forceField(sub2).enabled")
+			assertHasProperty("forceField(sub2).shape")
+			
+			return false
+		end
+	end
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorForceField", UnicodeString.newFromUTF8("ECBehaviorForceField"))
+		addTestCase(Empty.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+	end
+end

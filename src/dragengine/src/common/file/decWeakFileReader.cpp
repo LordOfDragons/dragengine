@@ -35,9 +35,7 @@
 decWeakFileReader::decWeakFileReader( decBaseFileReader *reader ) :
 pReader( reader )
 {
-	if( ! reader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( reader );
 }
 
 decWeakFileReader::~decWeakFileReader(){
@@ -50,11 +48,11 @@ decWeakFileReader::~decWeakFileReader(){
 ///////////////
 
 bool decWeakFileReader::IsValid() const{
-	return pReader.operator bool();
+	return pReader;
 }
 
 void decWeakFileReader::DropReader(){
-	pReader = NULL;
+	pReader = nullptr;
 }
 
 
@@ -89,4 +87,8 @@ void decWeakFileReader::SetPositionEnd( int position ){
 
 void decWeakFileReader::Read( void *buffer, int size ){
 	pReader->Read( buffer, size );
+}
+
+decBaseFileReader::Ref decWeakFileReader::Duplicate(){
+	return decBaseFileReader::Ref::New( new decWeakFileReader( pReader ) );
 }

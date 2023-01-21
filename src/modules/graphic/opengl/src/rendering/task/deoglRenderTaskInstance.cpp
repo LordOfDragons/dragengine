@@ -47,7 +47,9 @@ pSubInstanceCount( 0 ),
 pSubInstanceSize( 0 ),
 
 pSIIndexInstanceSPB( NULL ),
-pSIIndexInstanceFirst( 0 ){
+pSIIndexInstanceFirst( 0 ),
+pDrawIndirectIndex( 0 ),
+pDrawIndirectCount( 0 ){
 }
 
 deoglRenderTaskInstance::~deoglRenderTaskInstance(){
@@ -153,6 +155,14 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
 	}
 }
 
+void deoglRenderTaskInstance::SetDrawIndirectIndex( int index ){
+	pDrawIndirectIndex = index;
+}
+
+void deoglRenderTaskInstance::SetDrawIndirectCount( int count ){
+	pDrawIndirectCount = count;
+}
+
 
 
 void deoglRenderTaskInstance::Reset(){
@@ -160,4 +170,6 @@ void deoglRenderTaskInstance::Reset(){
 	pSubInstanceCount = 0;
 	pSIIndexInstanceSPB = NULL;
 	pSIIndexInstanceFirst = 0;
+	pDrawIndirectIndex = 0;
+	pDrawIndirectCount = 0;
 }

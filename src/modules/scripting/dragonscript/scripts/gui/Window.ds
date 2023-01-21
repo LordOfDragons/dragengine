@@ -53,7 +53,6 @@ class Window extends Container
 	
 	
 	
-	private var String pTitle
 	private var Decoration pDecoration
 	private var WindowState pWindowState
 	private var Widget pActiveWidget
@@ -64,6 +63,7 @@ class Window extends Container
 	private var bool pCanClose
 	private var bool pCanMaximize
 	private var bool pCanMinimize
+	private var bool pAlwaysOnTop
 	private var bool pActivated
 	private var Array pWindowListeners
 	private var WindowModal pBlockingWindow
@@ -84,7 +84,6 @@ class Window extends Container
 	
 	/** \brief Create window with the given geometry. */
 	public func new( Point position, Point size ) super( position, size )
-		this.pTitle = ""
 		this.pWindowState = WindowState.normal
 		this.pCanReorder = true
 		this.pCanMove = true
@@ -93,6 +92,7 @@ class Window extends Container
 		this.pCanClose = true
 		this.pCanMaximize = true
 		this.pCanMinimize = true
+		pAlwaysOnTop = false
 		this.pActivated = false
 		this.pModalDarkenColor = Color.new( 0.65, 0.65, 0.65 )
 		
@@ -134,21 +134,14 @@ class Window extends Container
 	
 	
 	
-	/** \brief Window title. */
-	public func String getTitle()
-		return this.pTitle
-	end
-	
 	/** \brief Set window title. */
-	public func void setTitle( String title )
-		if title.equals( this.pTitle )
-			return
-		end
+	public func void setTitle(String title)
+		var bool titleChanged = not title.equals(getTitle())
 		
-		this.pTitle = title
+		super.setTitle(title)
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if titleChanged and pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 	end
 	
@@ -362,6 +355,22 @@ class Window extends Container
 		// onStateChanged() ???
 	end
 	
+	/**
+	 * \brief Window is always on top of all others.
+	 * \version 1.15
+	 */
+	public func bool getAlwaysOnTop()
+		return pAlwaysOnTop
+	end
+	
+	/**
+	 * \brief Set if window is always on top of all others.
+	 * \version 1.15
+	 */
+	public func void setAlwaysOnTop(bool alwaysOnTop)
+		pAlwaysOnTop = alwaysOnTop
+	end
+	
 	
 	
 	/** \brief Window is activated. */
@@ -466,7 +475,7 @@ class Window extends Container
 	 * 
 	 * Used to set the initial active widget for a window.
 	 */
-	protected func void setActiveWidget( Widget widget )
+	public func void setActiveWidget( Widget widget )
 		this.pActiveWidget = widget
 	end
 	
@@ -623,6 +632,13 @@ class Window extends Container
 		
 		if this.pBlockingWindow != null
 			this.pBlockingWindow.moveAboveBlockWindow()
+		end
+		
+		if not pAlwaysOnTop
+			var Desktop desktop = getDesktop()
+			if desktop != null
+				desktop.raiseWindowsAlwaysOnTop()
+			end
 		end
 	end
 	

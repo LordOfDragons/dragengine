@@ -26,7 +26,6 @@
 #include "deoglVideo.h"
 #include "deoglRVideo.h"
 #include "../deGraphicOpenGl.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/video/deVideo.h>
@@ -83,18 +82,13 @@ bool deoglVideo::CanCacheFrame( int frame ) const{
 	return pRVideo->GetTexture( frame ) == NULL;
 }
 
-deoglPixelBuffer *deoglVideo::CacheFrame( int frame, deoglPixelBuffer *pixelBuffer ){
-	if( ! pCacheFrames ){
-		DETHROW( deeInvalidParam );
-	}
+deoglPixelBuffer::Ref deoglVideo::CacheFrame( int frame, deoglPixelBuffer *pixelBuffer ){
+	DEASSERT_NOTNULL( pCacheFrames )
 	return pRVideo->SetPixelBuffer( frame, pixelBuffer );
 }
 
 deoglTexture *deoglVideo::GetCachedFrameTexture( int frame ) const{
-	if( ! pCacheFrames ){
-		return NULL;
-	}
-	return pRVideo->GetTexture( frame );
+	return pCacheFrames ? pRVideo->GetTexture( frame ) : nullptr;
 }
 
 

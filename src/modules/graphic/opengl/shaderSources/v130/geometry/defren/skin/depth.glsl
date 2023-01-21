@@ -1,4 +1,4 @@
-#if defined GS_RENDER_CUBE_INSTANCING || defined GS_RENDER_CASCADED_INSTANCING
+#ifdef GS_INSTANCING
 	#extension GL_ARB_gpu_shader5 : require
 #endif
 
@@ -6,7 +6,7 @@
 
 // layout definitions
 #ifdef GS_RENDER_CUBE
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 		layout( triangles, invocations=6 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
 	#else
@@ -15,12 +15,21 @@
 	#endif
 	
 #elif defined GS_RENDER_CASCADED
-	#ifdef GS_RENDER_CASCADED_INSTANCING
+	#ifdef GS_INSTANCING
 		layout( triangles, invocations=4 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
 	#else
 		layout( triangles ) in;
 		layout( triangle_strip, max_vertices=12 ) out;
+	#endif
+	
+#elif defined GS_RENDER_STEREO
+	#ifdef GS_INSTANCING
+		layout( triangles, invocations=2 ) in;
+		layout( triangle_strip, max_vertices=3 ) out;
+	#else
+		layout( triangles ) in;
+		layout( triangle_strip, max_vertices=6 ) out;
 	#endif
 #endif
 
@@ -28,24 +37,20 @@
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
-#ifdef SHARED_SPB
-	#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
-#endif
+#include "v130/shared/defren/ubo_render_parameters.glsl"
+#include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 
 
 
 // Inputs
 ///////////
 
+#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
+	#define REQUIRES_NORMAL
+#endif
+
 #ifdef REQUIRES_TEX_COLOR
 	in vec2 vGSTCColor[ 3 ];
-#endif
-#ifdef CLIP_PLANE
-	in vec3 vGSClipCoord[ 3 ];
-#endif
-#ifdef DEPTH_DISTANCE
-	in vec3 vGSPosition[ 3 ];
 #endif
 #ifdef HEIGHT_MAP
 	in float vGSHTMask[ 3 ];
@@ -83,9 +88,6 @@
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	out float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -100,6 +102,9 @@
 	#ifdef WITH_BITANGENT
 		out vec3 vBitangent;
 	#endif
+#endif
+#ifdef WITH_REFLECT_DIR
+	out vec3 vReflectDir;
 #endif
 #ifdef FADEOUT_RANGE
 	out float vFadeZ;
@@ -116,7 +121,11 @@ flat out int vLayer;
 // Layered rendering
 //////////////////////
 
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+
+#if defined DEPTH_OFFSET
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
 
 void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
 	gl_Position = preTransformedPosition;
@@ -129,35 +138,6 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		vTCColor = vGSTCColor[ corner ];
 	#endif
 	
-	#ifdef CLIP_PLANE
-		#ifdef BILLBOARD
-			vClipCoord = vGSClipCoord[ corner ];
-		#else
-			vClipCoord = pMatrixV[ layer ] * vec4( vGSClipCoord[ corner ], 1.0 );
-		#endif
-	#endif
-	
-	#ifdef DEPTH_ORTHOGONAL
-		#ifdef NO_ZCLIP
-			vZCoord = preTransformedPosition.z * 0.5 + 0.5; // we have to do the normalization ourself
-			gl_Position.z = 0.0;
-		#else
-			vZCoord = preTransformedPosition.z;
-		#endif
-	#endif
-	
-	#ifdef DEPTH_DISTANCE
-		#ifdef BILLBOARD
-			vPosition = position;
-		#else
-			vPosition = pMatrixV[ layer ] * position;
-		#endif
-	#endif
-	
-	#ifdef HEIGHT_MAP
-		vHTMask = vGSHTMask[ corner ];
-	#endif
-	
 	#ifdef REQUIRES_NORMAL
 		vNormal = normalize( vGSNormal[ corner ] * pMatrixVn[ layer ] );
 		#ifdef WITH_TANGENT
@@ -168,11 +148,48 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#endif
 	#endif
 	
+	#ifdef WITH_REFLECT_DIR
+		#ifdef BILLBOARD
+			vReflectDir = vec3( position );
+		#else
+			vReflectDir = pMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
+	#ifdef DEPTH_DISTANCE
+		#ifdef BILLBOARD
+			vPosition = vec3( position );
+		#else
+			vPosition = pMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
+	#ifdef CLIP_PLANE
+		#ifdef BILLBOARD
+			vClipCoord = vec3( position );
+		#else
+			vClipCoord = pMatrixV[ layer ] * position;
+		#endif
+	#endif
+	
 	#ifdef FADEOUT_RANGE
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = ( pMatrixV[ layer ] * position.z;
+			vFadeZ = ( pMatrixV[ layer ] * position ).z;
+		#endif
+	#endif
+	
+	#ifdef HEIGHT_MAP
+		vHTMask = vGSHTMask[ corner ];
+	#endif
+	
+	// depth offset
+	#if defined DEPTH_OFFSET
+		#ifdef GS_RENDER_CUBE
+			applyDepthOffset( 0, vNormal, pDoubleSided );
+		#else
+			applyDepthOffset( layer, vNormal, pDoubleSided );
 		#endif
 	#endif
 	
@@ -188,7 +205,18 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 	vec4 preTransformedPosition;
 	
 	#ifdef BILLBOARD
-		preTransformedPosition = pMatrixP * position;
+		#ifdef GS_RENDER_STEREO
+			// during vertex shader the left view position has been used.
+			// if this is the right view correct the transform
+			if( layer == 1 ){
+				preTransformedPosition = pMatrixP[ layer ] * vec4( pCameraStereoTransform * position, 1 );
+				
+			}else{
+				preTransformedPosition = pMatrixP[ layer ] * position;
+			}
+		#else
+			preTransformedPosition = pMatrixP[ layer ] * position;
+		#endif
 	#else
 		preTransformedPosition = pMatrixVP[ layer ] * position;
 	#endif
@@ -212,7 +240,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 void main( void ){
 	int face;
 	
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 	face = gl_InvocationID;
 	#else
 	for( face=0; face<6; face++ ){
@@ -270,7 +298,7 @@ void main( void ){
 		}
 		#endif
 		
-	#ifndef GS_RENDER_CUBE_INSTANCING
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }
@@ -287,7 +315,7 @@ void main( void ){
 void main( void ){
 	int cascade;
 	
-	#ifdef GS_RENDER_CASCADED_INSTANCING
+	#ifdef GS_INSTANCING
 	cascade = gl_InvocationID;
 	#else
 	for( cascade=0; cascade<4; cascade++ ){
@@ -359,9 +387,39 @@ void main( void ){
 		}
 		
 		
-	#ifndef GS_RENDER_CASCADED_INSTANCING
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }
 
 #endif // GS_RENDER_CASCADED
+
+
+
+// Dual Viewport Rendering
+////////////////////////////
+
+#ifdef GS_RENDER_STEREO
+
+void main( void ){
+	int eye;
+	
+	#ifdef GS_INSTANCING
+	eye = gl_InvocationID;
+	#else
+	for( eye=0; eye<2; eye++ ){
+	#endif
+		
+		// emit triangle
+		int i;
+		for( i=0; i<3; i++ ){
+			emitCorner( eye, i, gl_in[ i ].gl_Position );
+		}
+		EndPrimitive();
+		
+	#ifndef GS_INSTANCING
+	}
+	#endif
+}
+
+#endif // GS_RENDER_STEREO

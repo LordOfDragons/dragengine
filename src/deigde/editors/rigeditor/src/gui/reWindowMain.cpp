@@ -1205,10 +1205,10 @@ public:
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			reRigBone * const bone = selection.GetBoneAt( i );
-			if( bone->GetShapeCount() > 0 ){
-				oldMass += bone->GetMass();
-				list.Add( bone );
+			reRigBone * const bone2 = selection.GetBoneAt( i );
+			if( bone2->GetShapeCount() > 0 ){
+				oldMass += bone2->GetMass();
+				list.Add( bone2 );
 			}
 		}
 		

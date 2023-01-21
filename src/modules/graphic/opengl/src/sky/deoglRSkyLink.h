@@ -31,7 +31,7 @@ class deSkyLink;
 
 
 /**
- * \brief Render sky link.
+ * Render sky link.
  */
 class deoglRSkyLink{
 private:
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky link. */
+	/** Create sky link. */
 	deoglRSkyLink( const deSkyLink &link );
 	
-	/** \brief Clean up sky link. */
+	/** Clean up sky link. */
 	~deoglRSkyLink();
 	/*@}*/
 	
@@ -61,10 +61,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Controller is disabled. */
+	/** Controller is disabled. */
 	inline bool IsDisabled() const{ return pDisabled; }
 	
-	/** \brief Get value of link. */
+	/** Get value of link. */
 	float GetValue( const deoglRSkyInstance &instance ) const;
 	/*@}*/
 	

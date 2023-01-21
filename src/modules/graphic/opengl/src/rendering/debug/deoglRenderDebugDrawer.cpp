@@ -24,20 +24,26 @@
 #include <string.h>
 
 #include "deoglRenderDebugDrawer.h"
+#include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../debugdrawer/deoglDebugDrawerShape.h"
 #include "../../debugdrawer/deoglRDebugDrawer.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTChoices.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../pipeline/deoglPipelineManager.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shapes/deoglShape.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
@@ -51,19 +57,15 @@
 #include <dragengine/common/shape/decShape.h>
 
 
-
 // Definitions
 ////////////////
 
 enum eSPRender{
-	sprMatrixMVP,
+	sprMatrixModel,
 	sprColor,
-	sprSCToDTC,
-	// only for shaders with selector
-	sprMatrixMVP2
+	sprMatrixModel2,
+	sprDrawIDOffset
 };
-
-
 
 
 // Class deoglRenderDebugDrawer
@@ -72,45 +74,99 @@ enum eSPRender{
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread ) :
+deoglRenderBase( renderThread )
+{
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	const bool renderStereoVRLayer = renderThread.GetChoices().GetRenderStereoVSLayer();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	deoglPipelineConfiguration pipconf;
+	deoglShaderDefines commonDefines;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderShapeXRay = NULL;
-	pShaderShapeSolid = NULL;
-	pShaderMeshXRay = NULL;
-	pShaderMeshSolid = NULL;
-	
 	try{
+		GetRenderThread().GetShader().SetCommonDefines( commonDefines );
+		
+		
+		
+		pipconf.Reset();
+		pipconf.SetDepthMask( false );
+		pipconf.EnableBlendBlend();
+		
+		
+		
+		// shape x-ray
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
-		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
+		defines = commonDefines;
+		defines.SetDefines( "WITH_SELECTOR" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineShapeXRay = pipelineManager.GetWith( pipconf );
+		
+		// shape x-ray stereo
+		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderStereoVRLayer ){
+			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
 		}
-		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineShapeXRayStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		
+		// shape solid
+		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
+		defines = commonDefines;
+		defines.SetDefines( "WITH_DEPTH", "WITH_SELECTOR" );
+		if( useInverseDepth ){
+			defines.SetDefines( "INVERSE_DEPTH" );
 		}
-		pShaderShapeXRay = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineShapeSolid = pipelineManager.GetWith( pipconf );
 		
-		defines.AddDefine( "WITH_DEPTH", "1" );
-		pShaderShapeSolid = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		
-		
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
+		// shape solid stereo
+		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderStereoVRLayer ){
+			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
 		}
-		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
-		}
-		pShaderMeshXRay = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineShapeSolidStereo = pipelineManager.GetWith( pipconf );
 		
-		defines.AddDefine( "WITH_DEPTH", "1" );
-		pShaderMeshSolid = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		
+		
+		// mesh x-ray
+		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
+		defines = commonDefines;
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineMeshXRay = pipelineManager.GetWith( pipconf );
+		
+		// mesh x-ray stereo
+		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderStereoVRLayer ){
+			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineMeshXRayStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		
+		// mesh solid
+		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
+		defines = commonDefines;
+		defines.SetDefines( "WITH_DEPTH" );
+		if( useInverseDepth ){
+			defines.SetDefines( "INVERSE_DEPTH" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineMeshSolid = pipelineManager.GetWith( pipconf );
+		
+		// mesh solid stereo
+		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderStereoVRLayer ){
+			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineMeshSolidStereo = pipelineManager.GetWith( pipconf );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -129,38 +185,16 @@ deoglRenderDebugDrawer::~deoglRenderDebugDrawer(){
 
 void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-// 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
-	const deoglRWorld &world = *plan.GetWorld();
-	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered
-	// geometry. doing this by default is okay since debug drawers are supposed to be rendered
-	// after world geometry and thus winning over world geometry feels logic.
-	// pglPolygonOffset can not be used since depth has to be compared in the fragment shader. this
-	// is the case since the depth comes from a texture due to the depth buffer being undefined.
-	// to solve this problem the shift is placed into the camera-projection matrix after the
-	// projection. the z value has to be shifted slightly into the negative direction. the shift
-	// has to be some depth units which is 1/(1<<precision) where precision is depth-buffer-buts
-	// minus some bits to counter rounding errors. shifting by 1 or 2 depth bits should help.
-	// too much and geometry pops up behind geometry
-	const double depthScale = 1.0 - 1.0 / ( double )( 1 << 22 ); // 24bits minus 2 bits
-	const double depthShift = -1.0f / ( double )( 1 << 21 ); // 24bits minus 3 bits
+	const deoglDebugTraceGroup debugTrace( renderThread, "DebugDrawer.RenderDebugDrawers" );
 	
 	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	// render debug drawers
-	const decDMatrix matrixCP( plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() )
-		* decDMatrix::CreateST( decDVector( 1.0, 1.0, depthScale ), decDVector( 0.0, 0.0, depthShift ) ) );
-	
+	const deoglRWorld &world = *plan.GetWorld();
+	const decDVector &referencePosition = world.GetReferencePosition();
 	const int count = world.GetDebugDrawerCount();
 	int i;
 	
@@ -179,16 +213,19 @@ void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 			continue;
 		}
 		
-		const decDMatrix matrixDDCP( debugDrawer.GetMatrix() * matrixCP );
+		decDMatrix matrixModel( debugDrawer.GetMatrix() );
+		matrixModel.a14 -= referencePosition.x;
+		matrixModel.a24 -= referencePosition.y;
+		matrixModel.a34 -= referencePosition.z;
 		
 		// render shapes if there are any
 		if( hasShapes ){
-			pRenderDDSShapes( matrixDDCP, debugDrawer );
+			pRenderDDSShapes( plan, matrixModel, debugDrawer );
 		}
 		
 		// render faces if existing
 		if( hasFaces ){
-			pRenderDDSFaces( matrixDDCP, debugDrawer );
+			pRenderDDSFaces( plan, matrixModel, debugDrawer );
 		}
 	}
 	
@@ -203,39 +240,26 @@ void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderDebugDrawer::pCleanUp(){
-	if( pShaderMeshXRay ){
-		pShaderMeshXRay->RemoveUsage();
-	}
-	if( pShaderMeshSolid ){
-		pShaderMeshSolid->RemoveUsage();
-	}
-	if( pShaderShapeXRay ){
-		pShaderShapeXRay->RemoveUsage();
-	}
-	if( pShaderShapeSolid ){
-		pShaderShapeSolid->RemoveUsage();
-	}
 }
 
 
 
-void deoglRenderDebugDrawer::pRenderDDSShapes( const decDMatrix &matrixCP, deoglRDebugDrawer &debugDrawer ){
+void deoglRenderDebugDrawer::pRenderDDSShapes( const deoglRenderPlan &plan,
+const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 	const int shapeCount = debugDrawer.GetShapeCount();
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglVolumeShape visitor( renderThread );
-	deoglShaderCompiled *shader;
 	int i, j;
 	
-	if( debugDrawer.GetXRay() ){
-		renderThread.GetShader().ActivateShader( pShaderShapeXRay );
-		shader = pShaderShapeXRay->GetCompiled();
-		
-	}else{
-		renderThread.GetShader().ActivateShader( pShaderShapeSolid );
-		shader = pShaderShapeSolid->GetCompiled();
-		shader->SetParameterFloat( sprSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-	}
+	const deoglPipeline &pipeline = debugDrawer.GetXRay()
+		? ( plan.GetRenderStereo() ? *pPipelineShapeXRayStereo : *pPipelineShapeXRay )
+		: ( plan.GetRenderStereo() ? *pPipelineShapeSolidStereo : *pPipelineShapeSolid );
+	pipeline.Activate();
+	
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	shader.SetParameterInt( sprDrawIDOffset, 0 );
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	for( i=0; i<shapeCount; i++ ){
 		const deoglDebugDrawerShape &ddshape = debugDrawer.GetShapeAt( i );
@@ -266,56 +290,55 @@ void deoglRenderDebugDrawer::pRenderDDSShapes( const decDMatrix &matrixCP, deogl
 		}
 		
 		// determine the matrix
-		const decDMatrix matrixMVP( decDMatrix( ddshape.GetMatrix() ) * matrixCP );
+		const decDMatrix matrixModelShape( decDMatrix( ddshape.GetMatrix() ) * matrixModel );
 		
 		// render shapes if existing
 		for( j=0; j<shapeShapeCount; j++ ){
 			shapeList.GetAt( j )->Visit( visitor );
 			
 			// set matrix
-			shader->SetParameterDMatrix4x4( sprMatrixMVP, decDMatrix( visitor.GetMatrix1() ) * matrixMVP );
-			shader->SetParameterDMatrix4x4( sprMatrixMVP2, decDMatrix( visitor.GetMatrix2() ) * matrixMVP );
+			shader.SetParameterDMatrix4x3( sprMatrixModel, decDMatrix( visitor.GetMatrix1() ) * matrixModelShape );
+			shader.SetParameterDMatrix4x3( sprMatrixModel2, decDMatrix( visitor.GetMatrix2() ) * matrixModelShape );
 			
 			if( visitor.GetShape() && ( fillVisible || lineVisible ) ){
 				visitor.GetShape()->ActivateVAO();
 				
 				if( fillVisible ){
-					shader->SetParameterColor4( sprColor, fillColor );
-					visitor.GetShape()->RenderFaces();
+					shader.SetParameterColor4( sprColor, fillColor );
+					visitor.GetShape()->RenderFaces( plan );
 				}
 				
 				if( lineVisible ){
-					shader->SetParameterColor4( sprColor, edgeColor );
-					visitor.GetShape()->RenderLines();
+					shader.SetParameterColor4( sprColor, edgeColor );
+					visitor.GetShape()->RenderLines( plan );
 				}
 			}
 		}
 	}
 }
 
-void deoglRenderDebugDrawer::pRenderDDSFaces( const decDMatrix &matrixCP, deoglRDebugDrawer &debugDrawer ){
-	const int shapeCount = debugDrawer.GetShapeCount();
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+void deoglRenderDebugDrawer::pRenderDDSFaces( const deoglRenderPlan &plan,
+const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 	deoglVAO * const vao = debugDrawer.GetVAO();
-	deoglShaderCompiled *shader;
-	int i;
-	
 	if( ! vao ){
 		return;
 	}
 	
+	deoglRenderThread &renderThread = GetRenderThread();
+	const int shapeCount = debugDrawer.GetShapeCount();
+	int i;
+	
 	OGL_CHECK( renderThread, pglBindVertexArray( vao->GetVAO() ) );
 	
-	if( debugDrawer.GetXRay() ){
-		renderThread.GetShader().ActivateShader( pShaderMeshXRay );
-		shader = pShaderMeshXRay->GetCompiled();
-		
-	}else{
-		renderThread.GetShader().ActivateShader( pShaderMeshSolid );
-		shader = pShaderMeshSolid->GetCompiled();
-		shader->SetParameterFloat( sprSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-	}
+	const deoglPipeline &pipeline = debugDrawer.GetXRay()
+		? ( plan.GetRenderStereo() ? *pPipelineMeshXRayStereo : *pPipelineMeshXRay )
+		: ( plan.GetRenderStereo() ? *pPipelineMeshSolidStereo : *pPipelineMeshSolid );
+	pipeline.Activate();
+	
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	shader.SetParameterInt( sprDrawIDOffset, 0 );
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	for( i=0; i<shapeCount; i++ ){
 		const deoglDebugDrawerShape &ddshape = debugDrawer.GetShapeAt( i );
@@ -340,22 +363,35 @@ void deoglRenderDebugDrawer::pRenderDDSFaces( const decDMatrix &matrixCP, deoglR
 			continue;
 		}
 		
-		// determine the matrix
-		const decDMatrix matrixMVP( decDMatrix( ddshape.GetMatrix() ) * matrixCP );
-		
 		// set matrix
-		shader->SetParameterDMatrix4x4( sprMatrixMVP, matrixMVP );
+		shader.SetParameterDMatrix4x3( sprMatrixModel, decDMatrix( ddshape.GetMatrix() ) * matrixModel );
 		
 		// render fill
 		if( fillVisible && ddshape.GetFillPointCount() > 0 ){
-			shader->SetParameterColor4( sprColor, fillColor );
-			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, ddshape.GetFillFirstPoint(), ddshape.GetFillPointCount() ) );
+			shader.SetParameterColor4( sprColor, fillColor );
+			
+			if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+				const GLint first[ 2 ] = { ddshape.GetFillFirstPoint(), ddshape.GetFillFirstPoint() };
+				const GLsizei count[ 2 ] = { ddshape.GetFillPointCount(), ddshape.GetFillPointCount() };
+				OGL_CHECK( renderThread, pglMultiDrawArrays( GL_TRIANGLES, first, count, 2 ) );
+				
+			}else{
+				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, ddshape.GetFillFirstPoint(), ddshape.GetFillPointCount() ) );
+			}
 		}
 		
 		// render wires
 		if( lineVisible && ddshape.GetLinePointCount() > 0 ){
-			shader->SetParameterColor4( sprColor, edgeColor );
-			OGL_CHECK( renderThread, glDrawArrays( GL_LINES, ddshape.GetLineFirstPoint(), ddshape.GetLinePointCount() ) );
+			shader.SetParameterColor4( sprColor, edgeColor );
+			
+			if( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() ){
+				const GLint first[ 2 ] = { ddshape.GetLineFirstPoint(), ddshape.GetLineFirstPoint() };
+				const GLsizei count[ 2 ] = { ddshape.GetLinePointCount(), ddshape.GetLinePointCount() };
+				OGL_CHECK( renderThread, pglMultiDrawArrays( GL_LINES, first, count, 2 ) );
+				
+			}else{
+				OGL_CHECK( renderThread, glDrawArrays( GL_LINES, ddshape.GetLineFirstPoint(), ddshape.GetLinePointCount() ) );
+			}
 		}
 	}
 }

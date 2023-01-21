@@ -98,9 +98,9 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
-	long onClicked( FXObject *sender, FXSelector selector, void *data );
-	long onRClicked( FXObject *sender, FXSelector selector, void *data );
+	long onPaint( FXObject*, FXSelector, void* );
+	long onClicked( FXObject*, FXSelector, void* );
+	long onRClicked( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

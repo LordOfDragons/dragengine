@@ -28,7 +28,6 @@ class deoglArrayTexture;
 class deoglDebugFont;
 class deoglRComponent;
 class deoglRenderPlan;
-class deoglShaderProgram;
 class deoglTexture;
 class deoglDebugFont;
 class deoglDynamicTBOFloat32;
@@ -47,17 +46,13 @@ private:
 		decColor color;
 	};
 	
-	deoglShaderProgram *pShaderXRay;
-	deoglShaderProgram *pShaderSolid;
+	const deoglPipeline *pPipelineXRay;
 	
-	deoglShaderProgram *pShaderSphere;
+	const deoglPipeline *pPipelineOutTexLayer;
+	const deoglPipeline *pPipelineOutArrTex;
 	
-	deoglShaderProgram *pShaderOutTex;
-	deoglShaderProgram *pShaderOutTexLayer;
-	deoglShaderProgram *pShaderOutArrTex;
-	
-	deoglShaderProgram *pShaderRenderText;
-	deoglShaderProgram *pShaderRectangle;
+	const deoglPipeline *pPipelineRenderText;
+	const deoglPipeline *pPipelineRectangle;
 	
 	deoglDebugFont *pDebugFont;
 	
@@ -96,6 +91,9 @@ public:
 	
 	/** Display array texture layer. */
 	void DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect );
+	
+	/** Display array texture layer. */
+	void DisplayArrayTextureLayerLevel( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, int level, bool gammaCorrect );
 	
 	
 	

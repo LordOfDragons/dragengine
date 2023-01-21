@@ -51,30 +51,30 @@ FXIMPLEMENT( igdeNativeFoxToolBarSeparator, FXSeparator,
 igdeNativeFoxToolBarSeparator::igdeNativeFoxToolBarSeparator(){ }
 
 igdeNativeFoxToolBarSeparator::igdeNativeFoxToolBarSeparator(
-	igdeToolBarSeparator &owner, FXComposite *parent, int layoutFlags ) :
-FXSeparator( parent, layoutFlags | SEPARATOR_GROOVE ),
-pOwner( &owner ){
+	igdeToolBarSeparator &powner, FXComposite *pparent, int layoutFlags ) :
+FXSeparator( pparent, layoutFlags | SEPARATOR_GROOVE ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxToolBarSeparator::~igdeNativeFoxToolBarSeparator(){
 }
 
-igdeNativeFoxToolBarSeparator *igdeNativeFoxToolBarSeparator::CreateNativeWidget( igdeToolBarSeparator &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxToolBarSeparator *igdeNativeFoxToolBarSeparator::CreateNativeWidget( igdeToolBarSeparator &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxToolBarSeparator( owner, parent, 0 );
+	return new igdeNativeFoxToolBarSeparator( powner, pparent, 0 );
 }
 
 void igdeNativeFoxToolBarSeparator::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }

@@ -28,7 +28,7 @@ class deoglRTLogger;
 
 
 /**
- * @brief Render Task Particles.
+ * Render Task Particles.
  */
 class deoglRenderTaskParticles{
 private:
@@ -37,9 +37,10 @@ private:
 	deoglRenderTaskParticlesStep **pSteps;
 	int pStepCount;
 	int pStepSize;
+	bool pRenderVSStereo;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task. */
 	deoglRenderTaskParticles();
@@ -47,7 +48,7 @@ public:
 	~deoglRenderTaskParticles();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Clear the render task preparing it for a new task. */
 	void Clear();
@@ -56,6 +57,12 @@ public:
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	/** Sets the render parameter shader parameter block or NULL to use none. */
 	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
+	
+	/** Use vertex shader stereo rendering. */
+	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
+	
+	/** Set use vertex shader stereo rendering. */
+	void SetRenderVSStereo( bool renderVSStereo );
 	
 	/** Retrieves the number of steps. */
 	inline int GetStepCount() const{ return pStepCount; }
@@ -66,7 +73,7 @@ public:
 	/** Removes all steps. */
 	void RemoveAllSteps();
 	
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
 	/*@}*/
 };

@@ -36,7 +36,7 @@ class deDynamicSkin;
 
 
 /**
- * \brief Dynamic skin peer.
+ * Dynamic skin peer.
  */
 class deoglDynamicSkin : public deBaseGraphicDynamicSkin{
 public:
@@ -55,10 +55,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglDynamicSkin( deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDynamicSkin();
 	/*@}*/
 	
@@ -66,24 +66,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Dynamic skin resources. */
+	/** Dynamic skin resources. */
 	inline const deDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Render dynamic skin. */
+	/** Render dynamic skin. */
 	inline deoglRDynamicSkin *GetRDynamicSkin() const{ return pRDynamicSkin; }
 	
 	
 	
 	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	int GetRenderableCount() const;
 	
-	/** \brief Renderable at index. */
+	/** Renderable at index. */
 	deoglDSRenderable *GetRenderableAt( int index ) const;
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -114,16 +114,16 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Renderable added. */
+	/** Renderable added. */
 	virtual void RenderableAdded( int index, deDSRenderable *renderable );
 	
-	/** \brief Renderable changed. */
+	/** Renderable changed. */
 	virtual void RenderableChanged( int index, deDSRenderable *renderable );
 	
-	/** \brief Renderable removed. */
+	/** Renderable removed. */
 	virtual void RenderableRemoved( int index, deDSRenderable *renderable );
 	
-	/** \brief All renderables removed. */
+	/** All renderables removed. */
 	virtual void AllRenderablesRemoved();
 	/*@}*/
 	

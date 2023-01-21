@@ -22,6 +22,21 @@
 #ifndef _DEBPCOMMON_H_
 #define _DEBPCOMMON_H_
 
+
+
+#ifdef WITH_DEBUG
+	#define BP_DEBUG_LOG(bullet,message) bullet.GetLogger().LogInfoFormat("%s:%d: %s", __FILE__, __LINE__, message);
+	#define BP_DEBUG_LOG_F(bullet,fmt,...) bullet.GetLogger().LogInfoFormat("%s:%d: " fmt, __FILE__, __LINE__, __VA_ARGS__);
+	#define BP_DEBUG_IF(cmd) cmd;
+	
+#else
+	#define BP_DEBUG_LOG(bullet,message)
+	#define BP_DEBUG_LOG_F(bullet,fmt,...)
+	#define BP_DEBUG_IF(cmd)
+#endif
+
+
+
 #include "LinearMath/btScalar.h"
 
 

@@ -49,6 +49,7 @@ private:
 	deoglTexture *pShadowMapInverseDepth;
 	deoglTexture *pShadowMapColor;
 	deoglCubeMap *pShadowCube;
+	deoglCubeMap *pShadowCubeInverseDepth;
 	deoglCubeMap *pShadowCubeColor;
 	
 	deoglTexture *pWeights;
@@ -125,6 +126,9 @@ public:
 	
 	/** Default shadow cube. */
 	inline deoglCubeMap *GetShadowCube() const{ return pShadowCube; }
+	
+	/** Default shadow cube inverse depth. */
+	inline deoglCubeMap *GetShadowCubeInverseDepth() const{ return pShadowCubeInverseDepth; }
 	
 	/** Default shadow cube color. */
 	inline deoglCubeMap *GetShadowCubeColor() const{ return pShadowCubeColor; }

@@ -447,6 +447,11 @@ DEBUG_RESET_TIMERS;
 // 			pColliderComponent.GetComponent()->PrepareBones();  // TODO IS THIS REQUIRED?!
 // 		}
 		
+		// this is dirty but i've got no better idea right now
+		if( GetConstraintCount() > 0 ){
+			pBones->SetAllBonesDirty();
+		}
+		
 		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
 DEBUG_PRINT_TIMER( "Update bone phy bodies" );
@@ -476,7 +481,6 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 		return;
 	}
 	
-	dePhysicsBullet &bullet = *GetBullet();
 	debpWorld &world = *GetParentWorld();
 	debpCollisionWorld &dynamicsWorld = *world.GetDynamicsWorld();
 	debpClosestConvexResultCallback colliderMoveHits;
@@ -488,7 +492,7 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 	
 	int cspmax = 20;
 	int cheapStuckPrevention = 0;
-	float csphist[ cspmax + 1 ];
+	BP_DEBUG_IF( float csphist[ cspmax + 1 ] )
 	
 	// hack, apply rotation before moving. has to be done correctly later on
 	PredictRotation( elapsed );
@@ -621,19 +625,18 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 		
 		localElapsed -= localElapsed * colinfo->GetDistance();
 		
-		csphist[ cheapStuckPrevention ] = colinfo->GetDistance();
+		BP_DEBUG_IF( csphist[ cheapStuckPrevention ] = colinfo->GetDistance() )
 		cheapStuckPrevention++;
 		
 		if( cheapStuckPrevention == cspmax ){
+			#ifdef WITH_DEBUG
+			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderComponent.GetPosition();
 			const decVector rotation( decMatrix::CreateFromQuaternion(
 				pColliderComponent.GetOrientation() ).GetEulerAngles() / DEG2RAD );
 			const decVector &lvelo = pColliderComponent.GetLinearVelocity();
 			const decVector avelo( pColliderComponent.GetAngularVelocity() / DEG2RAD );
 			int i;
-			
-			pColliderComponent.SetLinearVelocity( decVector() );
-			pColliderComponent.SetAngularVelocity( decVector() );
 			
 			bullet.LogWarnFormat( "STUCK! collider=%p responseType=%i",
 				&pColliderComponent, pColliderComponent.GetResponseType() );
@@ -649,6 +652,10 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 			}
 			text.Append( "]" );
 			bullet.LogWarn( text );
+			#endif
+			
+			pColliderComponent.SetLinearVelocity( decVector() );
+			pColliderComponent.SetAngularVelocity( decVector() );
 			break;
 		}
 	}
@@ -1258,6 +1265,9 @@ void debpColliderComponent::PositionChanged(){
 			}
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1298,6 +1308,9 @@ void debpColliderComponent::OrientationChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1382,6 +1395,9 @@ void debpColliderComponent::GeometryChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( pResetKinematicInterpolation );
+			}
 			DirtyBones();
 		}
 	}
@@ -1616,6 +1632,13 @@ void debpColliderComponent::ComponentChanged(){
 void debpColliderComponent::AttachmentAdded( int index, deColliderAttachment *attachment ){
 	debpCollider::AttachmentAdded( index, attachment );
 	DirtyAttachments();
+	pApplyAccumRelMoveMatrices();
+	
+	// the pApplyAccumRelMoveMatrices affects also the added attachment which is wrong.
+	// we can though not call pApplyAccumRelMoveMatrices before super calling since then
+	// the wrong attachment count is used. we can do this even if the type does not match
+	// since resetting the matrix is not wrong in these situations
+	GetAttachmentAt( index )->SetAccumRelMoveMatrix( decDMatrix() );
 }
 
 void debpColliderComponent::AttachmentChanged( int index, deColliderAttachment *attachment ){
@@ -2766,14 +2789,15 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 				
 			case deColliderAttachment::eatRelativeMovement:{
 				if( pDirtyRelMoveMatrix ){
-					pRelMoveMatrix =
-						decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition )
+					pRelMoveMatrix = decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition )
 						.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) );
 					pRelMoveMatrixRot = pRelMoveMatrix.ToQuaternion();
 					pDirtyRelMoveMatrix = false;
 				}
 				
-				bpAttachment.Transform( pRelMoveMatrix, ! pPreventAttNotify );
+				bpAttachment.Transform( bpAttachment.GetAccumRelMoveMatrix()
+					.QuickMultiply( pRelMoveMatrix ), ! pPreventAttNotify );
+				bpAttachment.SetAccumRelMoveMatrix( decDMatrix() );
 				}break;
 			}
 			
@@ -2795,6 +2819,30 @@ void debpColliderComponent::pUpdateAttachments( bool force ){
 // 	const int consumed = ( int )( timer.GetElapsedTime() * 1e6f );
 // 	debugDepth = debugDepth.GetMiddle( 0, -2 );
 // 	if( consumed > 10000 ) printf( "%sUpdateAttachments(%p: %d) %dys\n", debugDepth.GetString(), this, GetAttachmentCount(), consumed );
+}
+
+void debpColliderComponent::pApplyAccumRelMoveMatrices(){
+	if( ! pDirtyAttachments || ! pDirtyRelMoveMatrix ){
+		return;
+	}
+	
+	const int count = pColliderComponent.GetAttachmentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		debpColliderAttachment &bpAttachment = *GetAttachmentAt( i );
+		const deColliderAttachment &attachment = *bpAttachment.GetAttachment();
+		
+		if( attachment.GetAttachType() == deColliderAttachment::eatRelativeMovement ){
+			bpAttachment.Transform( bpAttachment.GetAccumRelMoveMatrix()
+				.QuickMultiply( decDMatrix::CreateTranslation( decDVector( pRelMoveDisplacement ) - pPosition ) )
+				.QuickMultiply( decDMatrix::CreateWorld( pPosition, pRelMoveRotation ) ), ! pPreventAttNotify );
+			bpAttachment.SetAccumRelMoveMatrix( decDMatrix() );
+		}
+	}
+	
+	pRelMoveDisplacement.SetZero();
+	pRelMoveRotation.SetZero();
+	pDirtyRelMoveMatrix = true;
 }
 
 void debpColliderComponent::pUpdateIsMoving(){

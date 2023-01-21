@@ -143,6 +143,9 @@ private:
 	DEF_NATFUNC( nfGetLightColorMatrix );
 	DEF_NATFUNC( nfSetLightColorMatrix );
 	
+	DEF_NATFUNC( nfGetSpeakerGain );
+	DEF_NATFUNC( nfSetSpeakerGain);
+	
 	DEF_NATFUNC( nfGetHeightTerrain );
 	DEF_NATFUNC( nfSetHeightTerrain );
 	

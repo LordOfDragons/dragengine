@@ -13,37 +13,6 @@
 #include <dragengine/common/string/decString.h>
 
 
-
-#if defined OGL_THREAD_CHECK || defined OGL_CHECKCOMMANDS
-#include <dragengine/logger/deLoggerConsoleColor.h>
-struct sDebugHacksEnabled{
-	sDebugHacksEnabled(){
-		deLoggerConsoleColor *logger = NULL;
-		
-		try{
-			logger = new deLoggerConsoleColor;
-			#ifdef OGL_THREAD_CHECK
-			logger->LogWarn( "OpenGL", "OpenGL calls only in render thread check enabled. Disable for production builds." );
-			#endif
-			#ifdef OGL_CHECKCOMMANDS
-			logger->LogWarn( "OpenGL", "OpenGL command failure check enabled. Disable for production builds." );
-			#endif
-			
-			logger->FreeReference();
-			
-		}catch( ... ){
-			if( logger ){
-				logger->FreeReference();
-			}
-		}
-	}
-};
-
-static sDebugHacksEnabled debugHacksEnabled;
-#endif
-
-
-
 #ifdef OGL_THREAD_CHECK
 #include <dragengine/common/exceptions.h>
 
@@ -161,7 +130,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	const deoglMemoryConsumptionTexture &conTexArrRen = consumption.textureArrayRenderable;
 	const deoglMemoryConsumptionTexture &conTexCube = consumption.textureCube;
 	const deoglMemoryConsumptionTexture &conTexCubeRen = consumption.textureCubeRenderable;
-	const deoglMemoryConsumptionRenderBuffer &conRenBuf = consumption.renderbuffer;
 	const deoglMemoryConsumptionBufferObject &conBO = consumption.bufferObject;
 	
 	renderThread.GetLogger().LogWarnFormat(
@@ -172,7 +140,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		" tex3D(%d,%dM|%d,%dM)"
 		" texArr(%d,%dM|%d,%dM)"
 		" texCube(%d,%dM|%d,%dM)"
-		" renBuf(%d,%dM)"
 		" vbo(%d,%dM|%d,%dM)"
 		" ibo(%d,%dM|%d,%dM)"
 		" ubo(%d,%dM)"
@@ -183,8 +150,8 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		+ conTex2DRen.all.GetConsumption() + conTex3D.all.GetConsumption()
 		+ conTex3DRen.all.GetConsumption() + conTexArr.all.GetConsumption()
 		+ conTexArrRen.all.GetConsumption() + conTexCube.all.GetConsumption()
-		+ conTexCubeRen.all.GetConsumption() + conRenBuf.all.GetConsumption()
-		+ conBO.vbo.GetConsumption() + conBO.ibo.GetConsumption() + conBO.ubo.GetConsumption()
+		+ conTexCubeRen.all.GetConsumption() + conBO.vbo.GetConsumption()
+		+ conBO.ibo.GetConsumption() + conBO.ubo.GetConsumption()
 		+ conBO.tbo.GetConsumption() + conBO.ssbo.GetConsumption() ) / 1000000ull,
 		
 		conSkin.all.GetCount(), conSkin.all.GetConsumptionMB(),
@@ -198,7 +165,6 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 		conTexArrRen.all.GetCount(), conTexArrRen.all.GetConsumptionMB(),
 		conTexCube.all.GetCount(), conTexCube.all.GetConsumptionMB(),
 		conTexCubeRen.all.GetCount(), conTexCubeRen.all.GetConsumptionMB(),
-		conRenBuf.all.GetCount(), conRenBuf.all.GetConsumptionMB(),
 		conBO.vbo.GetCount(), conBO.vbo.GetConsumptionMB(),
 		conBO.vboShared.GetCount(), conBO.vboShared.GetConsumptionMB(),
 		conBO.ibo.GetCount(), conBO.ibo.GetConsumptionMB(),

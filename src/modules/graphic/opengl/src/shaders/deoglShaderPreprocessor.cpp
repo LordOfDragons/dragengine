@@ -1550,6 +1550,8 @@ void deoglShaderPreprocessor::pResolveString( const char *text, int length ){
 		}
 	};
 	
+	pResolveBuffer[ pResolveBufferLen ] = '\0';
+	
 	if( last != codeBegin ){
 		pResolveBufferAppend( codeBegin, ( int )( last - codeBegin ) );
 	}

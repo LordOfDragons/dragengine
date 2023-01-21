@@ -46,9 +46,10 @@
 ////////////////////////////
 
 decZFileReader::decZFileReader( decBaseFileReader *reader ) :
-pReader( NULL ),
 pFilePosition( 0 ),
 pFileLength( 0 ),
+pPureMode( false ),
+pPureLength( 0 ),
 
 pZStream( NULL ),
 
@@ -68,9 +69,10 @@ pContentPosition( 0 )
 }
 
 decZFileReader::decZFileReader( decBaseFileReader *reader, bool pureMode, int pureLength ) :
-pReader( NULL ),
 pFilePosition( 0 ),
 pFileLength( 0 ),
+pPureMode( pureMode ),
+pPureLength( pureLength ),
 
 pZStream( NULL ),
 
@@ -95,9 +97,7 @@ decZFileReader::~decZFileReader(){
 		delete ( z_stream* )pZStream;
 	}
 	
-	if( pReader ){
-		pReader->FreeReference();
-	}
+	pReader = nullptr;
 	if( pContent ){
 		free( pContent );
 	}
@@ -168,6 +168,13 @@ void decZFileReader::Read( void *buffer, int size ){
 	}
 }
 
+decBaseFileReader::Ref decZFileReader::Duplicate(){
+	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
+		new decZFileReader( pReader, pPureMode, pPureLength ) ) );
+	reader->SetPosition( GetPosition() );
+	return reader;
+}
+
 
 
 // Private Functions
@@ -206,7 +213,6 @@ void decZFileReader::pInit( decBaseFileReader *reader, bool pureMode, int pureLe
 	pZStream = zstream;
 	
 	pReader = reader;
-	pReader->AddReference();
 	
 	if( pureMode ){
 		pFileLength = pureLength;

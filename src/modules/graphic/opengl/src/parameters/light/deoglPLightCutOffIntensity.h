@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Light Cut Off Intensity Parameter.
+ * Light Cut Off Intensity Parameter.
  */
 class deoglPLightCutOffIntensity : public deoglParameterFloat{
 public:

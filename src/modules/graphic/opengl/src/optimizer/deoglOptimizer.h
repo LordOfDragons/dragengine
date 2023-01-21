@@ -26,7 +26,7 @@
 
 
 /**
- * @brief Optimizer.
+ * Optimizer.
  * Optimizers are able to optimize progessively an engine object over time.
  */
 class deoglOptimizer{
@@ -45,7 +45,7 @@ private:
 	int pPriority;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new optimizer. */
 	deoglOptimizer();
@@ -53,7 +53,7 @@ public:
 	virtual ~deoglOptimizer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the remaining time for this optimizer in micro-seconds. */
 	inline int GetRemainingTime() const{ return pRemainingTime; }

@@ -29,7 +29,7 @@ class deoglRComponent;
 
 
 /**
- * \brief Render component test for touch visitor.
+ * Render component test for touch visitor.
  */
 class deoglComponentTestForTouch : public deoglWorldOctreeVisitor{
 private:
@@ -38,10 +38,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglComponentTestForTouch( deoglRComponent *component );
 	
-	/** \brief Clean up visitor. */
+	/** Clean up visitor. */
 	virtual ~deoglComponentTestForTouch();
 	/*@}*/
 	
@@ -49,7 +49,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit ocree node. */
+	/** Visit ocree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );
 	/*@}*/
 };

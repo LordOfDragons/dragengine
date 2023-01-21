@@ -26,6 +26,8 @@
 #include "deoglSharedVBO.h"
 #include "deoglSharedVBOList.h"
 #include "deoglSharedVBOBlock.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
+#include "../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -70,6 +72,27 @@ deoglSharedVBOBlock::~deoglSharedVBOBlock(){
 
 void deoglSharedVBOBlock::DropVBO(){
 	pVBO = NULL;
+}
+
+void deoglSharedVBOBlock::DelayedRemove(){
+	class cDelayedRemove : public deObject{
+	private:
+		deoglSharedVBOBlock * const pVBOBlock;
+		
+	public:
+		cDelayedRemove( deoglSharedVBOBlock *vboBlock ) : pVBOBlock( vboBlock ){
+			vboBlock->AddReference();
+		}
+		
+	protected:
+		~cDelayedRemove(){
+			pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+			pVBOBlock->FreeReference();
+		}
+	};
+	
+	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().AddReleaseObject(
+		deObject::Ref::New( new cDelayedRemove( this ) ) );
 }
 
 void deoglSharedVBOBlock::SetSize( int size ){

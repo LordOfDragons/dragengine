@@ -32,56 +32,51 @@ class deoglEnvironmentMap;
 class deoglFramebuffer;
 class deoglRenderPlan;
 class deoglRenderTask;
-class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglTexture;
 class deoglArrayTexture;
 
 
 /**
- * @brief Reflection Renderer.
+ * Reflection Renderer.
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderCopyColor;
-	deoglShaderProgram *pShaderCopyColorMipMap;
-	deoglShaderProgram *pShaderMinMaxMipMapMin;
-	deoglShaderProgram *pShaderMinMaxMipMapMax;
-	deoglShaderProgram *pShaderMinMaxMipMapInitial;
-	deoglShaderProgram *pShaderMinMaxMipMapDownsample;
-	deoglShaderProgram *pShaderScreenSpace;
-	deoglShaderProgram *pShaderApplyReflections;
+	const deoglPipeline *pPipelineCopyColor;
+	const deoglPipeline *pPipelineCopyColorMipMap;
+	const deoglPipeline *pPipelineCopyColorStereo;
+	const deoglPipeline *pPipelineCopyColorMipMapStereo;
+	const deoglPipeline *pPipelineMinMaxMipMapMin;
+	const deoglPipeline *pPipelineMinMaxMipMapMax;
+	const deoglPipeline *pPipelineMinMaxMipMapInitial;
+	const deoglPipeline *pPipelineMinMaxMipMapDownsample;
+	const deoglPipeline *pPipelineScreenSpace;
+	const deoglPipeline *pPipelineScreenSpaceStereo;
+	const deoglPipeline *pPipelineApplyReflections;
+	const deoglPipeline *pPipelineApplyReflectionsStereo;
 	
-	deoglShaderProgram *pShaderCopyMaterial;
-	deoglShaderProgram *pShaderEnvMapLightGI;
-	deoglShaderProgram *pShaderEnvMapCopy;
-	deoglShaderProgram *pShaderReflection;
-	deoglShaderProgram *pShaderCubeMap2EquiMap;
-	deoglShaderProgram *pShaderBuildEnvMap;
-	deoglShaderProgram *pShaderEnvMapMask;
+	const deoglPipeline *pPipelineCopyMaterial;
+	const deoglPipeline *pPipelineEnvMapLightGI;
+	const deoglPipeline *pPipelineEnvMapCopy;
+	const deoglPipeline *pPipelineReflection;
+	const deoglPipeline *pPipelineReflectionStereo;
+	const deoglPipeline *pPipelineCubeMap2EquiMap;
+	const deoglPipeline *pPipelineBuildEnvMap;
+	const deoglPipeline *pPipelineEnvMapMask;
 	
-	deoglSPBlockUBO *pRenderParamBlock;
+	deoglSPBlockUBO::Ref pRenderParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
 	bool pUseEquiEnvMap;
 	deoglCubeMap *pEnvMap;
 	deoglTexture *pEnvMapEqui;
-	deoglSPBlockUBO *pEnvMapsParamBlock;
-	
-	int pIndexTextureWidth;
-	int pIndexTextureHeight;
-	deoglTexture *pTextureIndices;
-	deoglTexture *pTextureDistance1;
-	deoglTexture *pTextureDistance2;
-	deoglFramebuffer *pFBOIndexPass1;
-	deoglFramebuffer *pFBOIndexPass2;
+	deoglSPBlockUBO::Ref pEnvMapsParamBlock;
 	
 	deoglEnvironmentMap *pDirectEnvMapActive; ///< weak reference
 	deoglEnvironmentMap *pDirectEnvMapFading; ///< weak reference
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderReflection( deoglRenderThread &renderThread );
@@ -89,7 +84,7 @@ public:
 	virtual ~deoglRenderReflection();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Determines if equirectangular environment maps are used. */
 	inline bool GetUseEquiEnvMap() const{ return pUseEquiEnvMap; }

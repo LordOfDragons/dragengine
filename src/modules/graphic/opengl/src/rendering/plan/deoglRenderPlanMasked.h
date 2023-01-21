@@ -19,22 +19,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEOGLRENDERPLANMASKED_H_
 #define _DEOGLRENDERPLANMASKED_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class deoglRenderPlan;
 class deoglRComponent;
 
-
-
 /**
- * @brief Render Plan Masked.
- *
  * Stores a masked render plan. A masked render plan is used to render
  * views into an world render call using a mask to limit the touched
  * pixels. A render plan masked consists of a render plan itself as
@@ -50,57 +43,85 @@ private:
 	bool pUseClipPlane;
 	decVector pClipNormal;
 	float pClipDistance;
+	decVector pClipNormalStereo;
+	float pClipDistanceStereo;
 	
 	int pStencilMask;
 	int pParentStencilMask;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new masked render plan. */
+	/** Create masked render plan. */
 	deoglRenderPlanMasked();
 	
-	/** Cleans up the masked render plan. */
+	/** Clean up masked render plan. */
 	~deoglRenderPlanMasked();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the render plan. */
+	/** Render plan. */
 	inline deoglRenderPlan *GetPlan() const{ return pPlan; }
-	/** Sets the render plan. */
+	
+	/** Set render plan. */
 	void SetPlan( deoglRenderPlan *plan );
 	
-	/** Retrieves the component or NULL. */
+	/** Component or nuullptr. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
-	/** Retrieves the component texture. */
+	
+	/** Component texture. */
 	inline int GetComponentTexture() const{ return pComponentTexture; }
-	/** Sets the component and texture or NULL if unused. */
+	
+	/** Set component and texture or nullptr if unused. */
 	void SetComponent( deoglRComponent *component, int texture );
 	
-	/** Determines if the clip plane is used. */
+	/** Clip plane is used. */
 	inline bool GetUseClipPlane() const{ return pUseClipPlane; }
-	/** Sets if the clip plane is used. */
+	
+	/** Set if clip plane is used. */
 	void SetUseClipPlane( bool useClipPlane );
-	/** Retrieves the clipping plane normal. */
+	
+	/** Clipping plane normal. */
 	inline const decVector &GetClipNormal() const{ return pClipNormal; }
-	/** Sets the clipping plane normal. */
+	
+	/** Set clipping plane normal. */
 	void SetClipNormal( const decVector &normal );
-	/** Retrieves the clipping plane distance. */
+	
+	/** Clipping plane distance. */
 	inline float GetClipDistance() const{ return pClipDistance; }
-	/** Sets the clipping plane distance. */
+	
+	/** Set clipping plane distance. */
 	void SetClipDistance( float distance );
 	
-	/** Retrieves the stencil mask. */
+	/** Stereo clipping plane normal. */
+	inline const decVector &GetClipNormalStereo() const{ return pClipNormalStereo; }
+	
+	/** Set stereo clipping plane normal. */
+	void SetClipNormalStereo( const decVector &normal );
+	
+	/** Stereo clipping plane distance. */
+	inline float GetClipDistanceStereo() const{ return pClipDistanceStereo; }
+	
+	/** Set stereo clipping plane distance. */
+	void SetClipDistanceStereo( float distance );
+	
+	/** Stencil mask. */
 	inline int GetStencilMask() const{ return pStencilMask; }
-	/** Sets the stencil mask. */
+	
+	/** Set stencil mask. */
 	void SetStencilMask( int mask );
-	/** Retrieves the parent stencil mask. */
+	
+	/** Parent stencil mask. */
 	inline int GetParentStencilMask() const{ return pParentStencilMask; }
-	/** Sets the parent stencil mask. */
+	
+	/** Set parent stencil mask. */
 	void SetParentStencilMask( int mask );
 	/*@}*/
 };
 
-// end of include only once
 #endif

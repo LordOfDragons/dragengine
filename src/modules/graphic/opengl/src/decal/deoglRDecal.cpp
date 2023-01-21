@@ -48,6 +48,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -113,6 +114,7 @@ pListenerIndex( 0 )
 	pUseSkinState = NULL;
 	
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 	
 	pVBOBlock = NULL;
@@ -149,7 +151,7 @@ deoglRDecal::~deoglRDecal(){
 	}
 	
 	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
 	if( pTUCGeometry ){
@@ -341,6 +343,7 @@ void deoglRDecal::UpdateSkinState(){
 
 void deoglRDecal::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pDirtyUseTexture = true;
 	
 	pRequiresPrepareForRender();
@@ -374,12 +377,12 @@ void deoglRDecal::SetComponentMarkedRemove( bool marked ){
 
 
 
-deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estDecalGeometry:
+deoglTexUnitsConfig *deoglRDecal::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estDecalEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
 	default:
@@ -387,7 +390,7 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShader
 	}
 }
 
-deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
@@ -400,7 +403,8 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes 
 		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
 	}
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptDecal ).GetWithRef( type ).GetShader();
 	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
@@ -442,6 +446,10 @@ void deoglRDecal::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMaske
 	pPrepareParamBlocks();
 	pPrepareTUCs();
 	pPrepareSkinStateRenderables( mask );
+}
+
+void deoglRDecal::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	pRenderSkinStateRenderables( mask );
 }
 
 void deoglRDecal::PrepareQuickDispose(){
@@ -863,14 +871,14 @@ void deoglRDecal::pPrepareTUCs(){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estDecalGeometry );
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 	
 	// shadow
 	if( pTUCShadow ){
 		pTUCShadow->RemoveUsage();
 		pTUCShadow = NULL;
 	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
+	pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
 	
 	// envmap
 	if( pTUCEnvMap ){
@@ -882,18 +890,22 @@ void deoglRDecal::pPrepareTUCs(){
 		deoglTexUnitConfig unit[ 8 ];
 		
 		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetColorArray() );
+			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetColorArray() );
 			
-			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivityArray() );
+			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetEmissivityArray() );
 			
 		}else{
-			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetColor() );
+			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetColor() );
 			
-			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-				NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivity() );
+			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, NULL, NULL,
+				pRenderThread.GetDefaultTextures().GetEmissivity() );
 		}
 		
 		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
@@ -927,19 +939,13 @@ void deoglRDecal::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estComponentGeometry );
+			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptDecal ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-			try{
-				pUpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			paramBlock.UnmapBuffer();
+			pUpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
+				pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		pDirtySharedSPBElement = false;
@@ -950,11 +956,22 @@ void deoglRDecal::pPrepareSkinStateRenderables( const deoglRenderPlanMasked *ren
 	if( ! pDirtyPrepareSkinStateRenderables ){
 		return;
 	}
-	
 	pDirtyPrepareSkinStateRenderables = false;
+	pDirtyRenderSkinStateRenderables = true;
 	
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRDecal::pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( ! pDirtyRenderSkinStateRenderables ){
+		return;
+	}
+	pDirtyRenderSkinStateRenderables = false;
+	
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
@@ -965,7 +982,6 @@ void deoglRDecal::pUpdateRTSInstance(){
 	
 	pRTSInstance->SetFirstPoint( pVBOBlock->GetOffset() );
 	pRTSInstance->SetPointCount( pPointCount );
-	pRTSInstance->SetDoubleSided( true );
 	
 }
 

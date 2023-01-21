@@ -27,14 +27,14 @@
 
 
 /**
- * \brief Cube calculation helpers.
+ * Cube calculation helpers.
  */
 class deoglCubeHelper{
 public:
 	/** \name Helpers */
 	/*@{*/
 	/**
-	 * \brief Calculate cube face visibility.
+	 * Calculate cube face visibility.
 	 * 
 	 * Calculates for each face of a cube map if the object is potentially visible.
 	 * Used to optimize rendering cube maps with geometry shaders by not rendering

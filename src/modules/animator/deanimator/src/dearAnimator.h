@@ -24,28 +24,31 @@
 
 #include <dragengine/systems/modules/animator/deBaseAnimatorAnimator.h>
 
+class dearAnimation;
 class deDEAnimator;
 class deAnimator;
 
 
 
 /**
- * \brief DEAnimator Animator Module Class.
+ * DEAnimator Animator Module Class.
  * Animator module.
  */
 class dearAnimator : public deBaseAnimatorAnimator{
 private:
 	deDEAnimator &pModule;
 	deAnimator &pAnimator;
+	dearAnimation *pAnimation;
 	unsigned int pUpdateTracker;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create animator peer. */
+	/** Create animator peer. */
 	dearAnimator( deDEAnimator &module, deAnimator &animator );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearAnimator();
 	/*@}*/
 	
@@ -53,36 +56,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deDEAnimator &GetModule(){ return pModule; }
 	inline const deDEAnimator &GetModule() const{ return pModule; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline deAnimator &GetAnimator(){ return pAnimator; }
 	inline const deAnimator &GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Current update tracker state. */
+	/** Current update tracker state. */
 	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
+	
+	/** Animation or nullptr. */
+	inline dearAnimation *GetAnimation() const{ return pAnimation; }
 	/*@}*/
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Rig changed. */
+	/** Rig changed. */
 	virtual void RigChanged();
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged();
 	
-	/** \brief List of bones changed. */
+	/** List of bones changed. */
 	virtual void BonesChanged();
 	
-	/** \brief Controllers added or removed. */
+	/** Controllers added or removed. */
 	virtual void ControllerCountChanged();
 	
-	/** \brief Links added, removed or changed. */
+	/** Links added, removed or changed. */
 	virtual void LinksChanged();
 	
-	/** \brief Rules added, removed or changed. */
+	/** Rules added, removed or changed. */
 	virtual void RulesChanged();
 	/*@}*/
 	

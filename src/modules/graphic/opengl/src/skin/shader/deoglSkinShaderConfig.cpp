@@ -39,6 +39,11 @@ deoglSkinShaderConfig::deoglSkinShaderConfig(){
 	Reset();
 }
 
+deoglSkinShaderConfig::deoglSkinShaderConfig( const deoglSkinShaderConfig &copy ){
+	Reset();
+	*this = copy;
+}
+
 deoglSkinShaderConfig::~deoglSkinShaderConfig(){
 }
 
@@ -62,7 +67,6 @@ void deoglSkinShaderConfig::Reset(){
 	pInverseDepth = false;
 	pMaskedSolidity = false;
 	pClipPlane = false;
-	pNoZClip = false;
 	pOutputConstant = false;
 	pOutputColor = false;
 	pAmbientLightProbe = false;
@@ -73,6 +77,8 @@ void deoglSkinShaderConfig::Reset(){
 	pUseNormalRoughnessCorrection = true;
 	pGSRenderCube = false;
 	pGSRenderCascaded = false;
+	pGSRenderStereo = false;
+	pVSRenderStereo = false;
 	pSharedSPB = false;
 	pOutline = false;
 	pOutlineThicknessScreen = false;
@@ -193,10 +199,6 @@ void deoglSkinShaderConfig::SetClipPlane( bool clipPlane ){
 	pClipPlane = clipPlane;
 }
 
-void deoglSkinShaderConfig::SetNoZClip( bool noZClip ){
-	pNoZClip = noZClip;
-}
-
 void deoglSkinShaderConfig::SetOutputConstant( bool outputConstant ){
 	pOutputConstant = outputConstant;
 }
@@ -235,6 +237,14 @@ void deoglSkinShaderConfig::SetGSRenderCube( bool gsRenderCube ){
 
 void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
 	pGSRenderCascaded = gsRenderCascaded;
+}
+
+void deoglSkinShaderConfig::SetGSRenderStereo( bool gsRenderStereo ){
+	pGSRenderStereo = gsRenderStereo;
+}
+
+void deoglSkinShaderConfig::SetVSRenderStereo( bool vsRenderStereo ){
+	pVSRenderStereo = vsRenderStereo;
 }
 
 void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
@@ -562,9 +572,6 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pClipPlane ){
 		string.Append( " clipPlane" );
 	}
-	if( pNoZClip ){
-		string.Append( " noZClip" );
-	}
 	if( pOutputConstant ){
 		string.Append( " outputConstant" );
 	}
@@ -594,6 +601,12 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pGSRenderCascaded ){
 		string.Append( " gsRenderCascaded" );
+	}
+	if( pGSRenderStereo ){
+		string.Append( " gsRenderStereo" );
+	}
+	if( pVSRenderStereo ){
+		string.Append( " vsRenderStereo" );
 	}
 	if( pSharedSPB ){
 		string.Append( " sharedSPB" );
@@ -802,7 +815,6 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pInverseDepth = config.pInverseDepth;
 	pMaskedSolidity = config.pMaskedSolidity;
 	pClipPlane = config.pClipPlane;
-	pNoZClip = config.pNoZClip;
 	pOutputConstant = config.pOutputConstant;
 	pOutputColor = config.pOutputColor;
 	pAmbientLightProbe = config.pAmbientLightProbe;
@@ -813,6 +825,8 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pUseNormalRoughnessCorrection = config.pUseNormalRoughnessCorrection;
 	pGSRenderCube = config.pGSRenderCube;
 	pGSRenderCascaded = config.pGSRenderCascaded;
+	pGSRenderStereo = config.pGSRenderStereo;
+	pVSRenderStereo = config.pVSRenderStereo;
 	pSharedSPB = config.pSharedSPB;
 	pOutline = config.pOutline;
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
@@ -894,7 +908,6 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pInverseDepth == config.pInverseDepth
 		&& pMaskedSolidity == config.pMaskedSolidity
 		&& pClipPlane == config.pClipPlane
-		&& pNoZClip == config.pNoZClip
 		&& pOutputConstant == config.pOutputConstant
 		&& pOutputColor == config.pOutputColor
 		&& pAmbientLightProbe == config.pAmbientLightProbe
@@ -905,6 +918,8 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pUseNormalRoughnessCorrection == config.pUseNormalRoughnessCorrection
 		&& pGSRenderCube == config.pGSRenderCube
 		&& pGSRenderCascaded == config.pGSRenderCascaded
+		&& pGSRenderStereo == config.pGSRenderStereo
+		&& pVSRenderStereo == config.pVSRenderStereo
 		&& pSharedSPB == config.pSharedSPB
 		&& pOutline == config.pOutline
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen

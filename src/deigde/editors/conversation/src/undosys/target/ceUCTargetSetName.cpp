@@ -189,10 +189,10 @@ void ceUCTargetSetName::pAddActions( ceConversationTopic *topic, const ceConvers
 			}else if( action->GetType() == ceConversationAction::eatIfElse ){
 				const ceCAIfElse &ifElse = *( ( ceCAIfElse* )action );
 				const ceCAIfElseCaseList &caseList = ifElse.GetCases();
-				const int count = caseList.GetCount();
+				const int caseCount = caseList.GetCount();
 				int j;
 				
-				for( j=0; j<count; j++ ){
+				for( j=0; j<caseCount; j++ ){
 					pAddActions( topic, caseList.GetAt( j )->GetActions() );
 				}
 				pAddActions( topic, ifElse.GetElseActions() );
@@ -200,10 +200,10 @@ void ceUCTargetSetName::pAddActions( ceConversationTopic *topic, const ceConvers
 			}else if( action->GetType() == ceConversationAction::eatPlayerChoice ){
 				const ceCAPlayerChoice &playerChoice = *( ( ceCAPlayerChoice* )action );
 				const ceCAPlayerChoiceOptionList &optionList = playerChoice.GetOptions();
-				const int count = optionList.GetCount();
+				const int optionCount = optionList.GetCount();
 				int j;
 				
-				for( j=0; j<count; j++ ){
+				for( j=0; j<optionCount; j++ ){
 					pAddActions( topic, optionList.GetAt( j )->GetActions() );
 				}
 				

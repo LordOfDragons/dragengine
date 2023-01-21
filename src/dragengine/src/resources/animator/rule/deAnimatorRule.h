@@ -77,6 +77,7 @@ private:
 	decStringSet pListBones;
 	eBlendModes pBlendMode;
 	float pBlendFactor;
+	bool pInvertBlendFactor;
 	bool pEnabled;
 	
 	deAnimatorControllerTarget pTargetBlendFactor;
@@ -130,6 +131,18 @@ public:
 	
 	/** \brief Set source blend factor. */
 	void SetBlendFactor( float factor );
+	
+	/**
+	 * \brief Invert blend factor (1 - factor).
+	 * \version 1.13
+	 */
+	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
+	
+	/**
+	 * \brief Set to invert blend factor (1 - factor).
+	 * \version 1.13
+	 */
+	void SetInvertBlendFactor( bool invert );
 	
 	/** \brief List of bones. */
 	inline decStringSet &GetListBones(){ return pListBones; }

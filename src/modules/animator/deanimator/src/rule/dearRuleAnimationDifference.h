@@ -23,6 +23,7 @@
 #define _DEARRULEANIMATIONDIFFERENCE_H_
 
 #include "dearRule.h"
+#include "../dearMapAnimationBones.h"
 
 class dearAnimationMove;
 class dearAnimationState;
@@ -36,6 +37,7 @@ class deAnimatorRuleAnimationDifference;
 class dearRuleAnimationDifference : public dearRule{
 private:
 	const deAnimatorRuleAnimationDifference &pAnimationDifference;
+	dearMapAnimationBones pMapAnimationBones;
 	
 	dearAnimationMove *pMove1;
 	dearAnimationMove *pMove2;
@@ -54,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleAnimationDifference( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleAnimationDifference &rule );
+	dearRuleAnimationDifference( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimationDifference &rule );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleAnimationDifference();

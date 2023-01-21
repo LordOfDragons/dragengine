@@ -33,9 +33,15 @@
  * data block.
  */
 class deoglSPBlockUBO : public deoglShaderParameterBlock{
+public:
+	typedef deTObjectReference<deoglSPBlockUBO> Ref;
+	
+	
+	
 private:
 	GLuint pUBO;
 	int pBindingPoint;
+	bool pCompact;
 	bool pAllocateBuffer;
 	
 	char *pWriteBuffer;
@@ -71,6 +77,12 @@ public:
 	
 	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
+	
+	/** Compact elements. If true mapping individual elements is prohibited. */
+	inline bool GetCompact() const{ return pCompact; }
+	
+	/** Set if elements are compact. If true mapping individual elements is prohibited. */
+	void SetCompact( bool compact );
 	
 	/** Activate buffer. */
 	virtual void Activate() const;

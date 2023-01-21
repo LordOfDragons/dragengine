@@ -32,7 +32,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Effect.
+ * Effect.
  */
 class deoglEffect : public deBaseGraphicEffect{
 private:
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create effect peer. */
+	/** Create effect peer. */
 	deoglEffect( deGraphicOpenGl &ogl, const deEffect &effect );
 	
-	/** \brief Clean up effect. */
+	/** Clean up effect. */
 	virtual ~deoglEffect();
 	/*@}*/
 	
@@ -57,26 +57,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Effect engine resource. */
+	/** Effect engine resource. */
 	inline const deEffect &GetEffect() const{ return pEffect; }
 	
 	
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	inline deoglREffect *GetREffect() const{ return pREffect; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Enabled state changed. */
+	/** Enabled state changed. */
 	virtual void EnabledChanged();
 	/*@}*/
 	

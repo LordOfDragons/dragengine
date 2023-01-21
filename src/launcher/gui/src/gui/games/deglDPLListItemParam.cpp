@@ -74,7 +74,7 @@ void deglDPLListItemParam::SetFont( FXFont *font ){
 	pFont = font;
 }
 
-void deglDPLListItemParam::draw( const FXList *list, FXDC &dc, FXint x, FXint y, FXint w, FXint h ) const {
+void deglDPLListItemParam::draw( const FXList *list, FXDC &dc, FXint xx, FXint yy, FXint w, FXint h ) const {
 	FXint ih = 0;
 	FXint th = 0;
 	
@@ -91,16 +91,16 @@ void deglDPLListItemParam::draw( const FXList *list, FXDC &dc, FXint x, FXint y,
 	}else{
 		dc.setForeground( list->getBackColor() );
 	}
-	dc.fillRectangle( x, y, w, h );
+	dc.fillRectangle( xx, yy, w, h );
 	
 	if( hasFocus() ){
-		dc.drawFocusRectangle( x + 1, y + 1, w - 2, h - 2 );
+		dc.drawFocusRectangle( xx + 1, yy + 1, w - 2, h - 2 );
 	}
-	x += SIDE_SPACING / 2;
+	xx += SIDE_SPACING / 2;
 	
 	if( icon ){
-		dc.drawIcon( icon, x, y + ( h - ih ) / 2 );
-		x += ICON_SPACING + icon->getWidth();
+		dc.drawIcon( icon, xx, yy + ( h - ih ) / 2 );
+		xx += ICON_SPACING + icon->getWidth();
 	}
 	
 	if( ! label.empty() ){
@@ -116,6 +116,6 @@ void deglDPLListItemParam::draw( const FXList *list, FXDC &dc, FXint x, FXint y,
 			dc.setForeground( list->getTextColor() );
 		}
 		
-		dc.drawText( x, y + ( h - th ) / 2 + pFont->getFontAscent(), label );
+		dc.drawText( xx, yy + ( h - th ) / 2 + pFont->getFontAscent(), label );
 	}
 }

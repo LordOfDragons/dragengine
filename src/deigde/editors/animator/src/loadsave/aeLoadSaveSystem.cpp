@@ -92,13 +92,11 @@ aeLoadSaveSystem::~aeLoadSaveSystem(){
 ///////////////
 
 aeAnimator *aeLoadSaveSystem::LoadAnimator( const char* filename ){
-	decBaseFileReaderReference fileReader;
-	fileReader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()
-		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	const decBaseFileReader::Ref fileReader( decBaseFileReader::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()
+			->OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) );
 	
-	deObjectReference refAnimator;
-	refAnimator.TakeOver( new aeAnimator( *pWndMain ) );
-	aeAnimator * const animator = ( aeAnimator* )( deObject* )refAnimator;
+	const aeAnimator::Ref animator( aeAnimator::Ref::New( new aeAnimator( *pWndMain ) ) );
 	
 	animator->SetFilePath( filename );  // required for relative loading
 	
@@ -106,7 +104,7 @@ aeAnimator *aeLoadSaveSystem::LoadAnimator( const char* filename ){
 	animator->SetChanged( false );
 	animator->SetSaved( true );
 	
-	refAnimator->AddReference(); // required to hand over reference to caller
+	animator->AddReference(); // required to hand over reference to caller
 	return animator;
 }
 

@@ -77,7 +77,8 @@ public:
 	enum eRenderVR{
 		ervrNone,
 		ervrLeftEye,
-		ervrRightEye
+		ervrRightEye,
+		ervrStereo
 	};
 	
 	
@@ -95,10 +96,13 @@ private:
 	decDMatrix pCameraInverseMatrix;
 	decDMatrix pCameraMatrixNonMirrored;
 	decDMatrix pProjectionMatrix;
+	decDMatrix pProjectionMatrixStereo;
 	decDMatrix pFrustumMatrix;
+	decDMatrix pFrustumMatrixStereo;
 	decDMatrix pRefPosCameraMatrix;
 	decDMatrix pRefPosCameraMatrixNonMirrored;
-	decDMatrix pCameraCorrectionMatrix;
+	decMatrix pCameraStereoMatrix;
+	decMatrix pCameraStereoInverseMatrix;
 	float pCameraFov;
 	float pCameraFovRatio;
 	float pCameraImageDistance;
@@ -106,6 +110,8 @@ private:
 	float pCameraAdaptedIntensity;
 	decVector4 pDepthToPosition;
 	decVector2 pDepthToPosition2;
+	decVector4 pDepthToPositionStereo;
+	decVector2 pDepthToPositionStereo2;
 	decVector2 pDepthSampleOffset;
 	int pViewportX;
 	int pViewportY;
@@ -122,6 +128,7 @@ private:
 	bool pNoReflections;
 	bool pNoAmbientLight;
 	bool pUseGIState;
+	bool pRenderStereo;
 	deoglGIState *pUseConstGIState;
 	eRenderVR pRenderVR;
 	
@@ -176,6 +183,7 @@ private:
 	bool pEmptyPass;
 	bool pSkyVisible;
 	bool pHasTransparency;
+	bool pHasXRayTransparency;
 	bool pClearStencilPassBits;
 	bool pClearColor;
 	
@@ -186,10 +194,14 @@ private:
 	int pStencilPrevRefValue;
 	int pStencilWriteMask;
 	
+	int pLodMaxPixelError;
+	int pLodLevelOffset;
+	
 	deoglOcclusionMap *pOcclusionMap;
 	deoglOcclusionTest *pOcclusionTest;
 	int pOcclusionMapBaseLevel;
 	decMatrix pOcclusionTestMatrix;
+	decMatrix pOcclusionTestMatrixStereo;
 	deoglGIState *pGIState;
 	
 	deoglRenderPlanTasks pTasks;
@@ -309,9 +321,11 @@ public:
 	
 	/** Projection matrix. */
 	inline const decDMatrix &GetProjectionMatrix() const{ return pProjectionMatrix; }
+	inline const decDMatrix &GetProjectionMatrixStereo() const{ return pProjectionMatrixStereo; }
 	
 	/** Frustum matrix. */
 	inline const decDMatrix &GetFrustumMatrix() const{ return pFrustumMatrix; }
+	inline const decDMatrix &GetFrustumMatrixStereo() const{ return pFrustumMatrixStereo; }
 	
 	/** Reference position camera matrix. */
 	inline const decDMatrix &GetRefPosCameraMatrix() const{ return pRefPosCameraMatrix; }
@@ -319,11 +333,14 @@ public:
 	/** Reference position camera matrix mirror free. */
 	inline const decDMatrix &GetRefPosCameraMatrixNonMirrored() const{ return pRefPosCameraMatrixNonMirrored; }
 	
-	/** Camera correction matrix. */
-	inline const decDMatrix &GetCameraCorrectionMatrix() const{ return pCameraCorrectionMatrix; }
+	/** Camera stereo matrix. Transforms from left eye camera matrix to right eye camera matrix. */
+	inline const decMatrix &GetCameraStereoMatrix() const{ return pCameraStereoMatrix; }
 	
-	/** Set camera correction matrix. */
-	void SetCameraCorrectionMatrix( const decDMatrix &matrix );
+	/** Set camera stereo matrix. Transforms from left eye camera matrix to right eye camera matrix. */
+	void SetCameraStereoMatrix( const decMatrix &matrix );
+	
+	/** Inverse camera stereo matrix. Transforms from right eye camera matrix to left eye camera matrix. */
+	inline const decMatrix &GetCameraStereoInverseMatrix() const{ return pCameraStereoInverseMatrix; }
 	
 	/** Camera position in world space. */
 	inline const decDVector &GetCameraPosition() const{ return pCameraPosition; }
@@ -360,6 +377,9 @@ public:
 	/** Depth to position transformation factors. */
 	inline const decVector4 &GetDepthToPosition() const{ return pDepthToPosition; }
 	inline const decVector2 &GetDepthToPosition2() const{ return pDepthToPosition2; }
+	
+	inline const decVector4 &GetDepthToPositionStereo() const{ return pDepthToPositionStereo; }
+	inline const decVector2 &GetDepthToPositionStereo2() const{ return pDepthToPositionStereo2; }
 	
 	/** Depth sample offset. */
 	inline const decVector2 &GetDepthSampleOffset() const{ return pDepthSampleOffset; }
@@ -463,6 +483,12 @@ public:
 	/** Set use const GI state. */
 	void SetUseConstGIState( deoglGIState *giState );
 	
+	/** Use stereo rendering. */
+	inline bool GetRenderStereo() const{ return pRenderStereo; }
+	
+	/** Set use stereo rendering. */
+	void SetRenderStereo ( bool stereoRender );
+	
 	/** Render VR. */
 	inline eRenderVR GetRenderVR() const{ return pRenderVR; }
 	
@@ -546,6 +572,9 @@ public:
 	/** There are transparent objects. */
 	inline bool GetHasTransparency() const{ return pHasTransparency; }
 	
+	/** There are transparent XRay objects. */
+	inline bool GetHasXRayTransparency() const{ return pHasXRayTransparency; }
+	
 	/** Stencil pass bits have to be cleared. */
 	inline bool GetClearStencilPassBits() const{ return pClearStencilPassBits; }
 	
@@ -598,6 +627,14 @@ public:
 	
 	
 	
+	inline int GetLodMaxPixelError() const{ return pLodMaxPixelError; }
+	void SetLodMaxPixelError( int error );
+	
+	inline int GetLodLevelOffset() const{ return pLodLevelOffset; }
+	void SetLodLevelOffset( int offset );
+	
+	
+	
 	/** Occlusion map. */
 	inline deoglOcclusionMap *GetOcclusionMap() const{ return pOcclusionMap; }
 	
@@ -621,6 +658,12 @@ public:
 	
 	/** Set occlusion test matrix. */
 	void SetOcclusionTestMatrix( const decMatrix &matrix );
+	
+	/** Occlusion test matrix stereo. */
+	inline const decMatrix &GetOcclusionTestMatrixStereo() const{ return pOcclusionTestMatrixStereo; }
+	
+	/** Set occlusion test matrix. */
+	void SetOcclusionTestMatrixStereo( const decMatrix &matrix );
 	
 	
 	

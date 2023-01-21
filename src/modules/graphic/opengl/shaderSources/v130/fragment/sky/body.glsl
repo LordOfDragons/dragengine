@@ -9,6 +9,12 @@ uniform lowp sampler2D texTransparency;
 
 in vec2 vTexCoord;
 
+#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
+
 out vec4 outColor;
 
 void main( void ){

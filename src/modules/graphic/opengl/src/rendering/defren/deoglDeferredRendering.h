@@ -29,17 +29,16 @@
 
 class deoglRenderThread;
 class deoglFramebuffer;
-class deoglRenderbuffer;
 class deoglDRDepthMinMax;
 class deoglShaderCompiled;
 class deoglSPBlockUBO;
-class deoglTexture;
+class deoglArrayTexture;
 class deoglVAO;
 
 
 
 /**
- * @brief OpenGL Deferred Rendering.
+ * OpenGL Deferred Rendering.
  * Manages the framebuffers and render buffers required for deferred rendering.
  */
 class deoglDeferredRendering{
@@ -48,8 +47,10 @@ private:
 	
 	int pWidth;
 	int pHeight;
+	int pLayerCount;
 	int pRealWidth;
 	int pRealHeight;
+	int pRealLayerCount;
 	float pScalingU;
 	float pScalingV;
 	float pPixelSizeU;
@@ -59,32 +60,25 @@ private:
 	float pClampU;
 	float pClampV;
 	
-	bool pUseEncodedDepth;
 	bool pUseFadeOutRange;
 	
-	bool pUseInverseDepth;
-	GLenum pDepthCompareFuncRegular;
-	GLenum pDepthCompareFuncReversed;
-	GLfloat pClearDepthValueRegular;
-	GLfloat pClearDepthValueReversed;
+	deoglArrayTexture *pTextureDepth1;
+	deoglArrayTexture *pTextureDepth2;
+	deoglArrayTexture *pTextureDepth3;
+	deoglArrayTexture *pTextureDepthXRay;
+	deoglArrayTexture *pTextureDiffuse;
+	deoglArrayTexture *pTextureNormal;
+	deoglArrayTexture *pTextureReflectivity;
+	deoglArrayTexture *pTextureRoughness;
+	deoglArrayTexture *pTextureAOSolidity;
+	deoglArrayTexture *pTextureSubSurface;
+	deoglArrayTexture *pTextureColor;
+	deoglArrayTexture *pTextureLuminance;
+	deoglArrayTexture *pTextureTemporary1;
+	deoglArrayTexture *pTextureTemporary2;
+	deoglArrayTexture *pTextureTemporary3;
 	
-	deoglRenderbuffer *pRenderbuffer;
-	deoglTexture *pTextureDepth1;
-	deoglTexture *pTextureDepth2;
-	deoglTexture *pTextureDepth3;
-	deoglTexture *pTextureDiffuse;
-	deoglTexture *pTextureNormal;
-	deoglTexture *pTextureReflectivity;
-	deoglTexture *pTextureRoughness;
-	deoglTexture *pTextureAOSolidity;
-	deoglTexture *pTextureSubSurface;
-	deoglTexture *pTextureColor;
-	deoglTexture *pTextureLuminance;
-	deoglTexture *pTextureTemporary1;
-	deoglTexture *pTextureTemporary2;
-	deoglTexture *pTextureTemporary3;
-	
-	deoglFramebuffer *pFBOs[ 37 ];
+	deoglFramebuffer *pFBOs[ 38 ];
 	deoglFramebuffer **pFBOMipMapDepth1;
 	deoglFramebuffer **pFBOMipMapDepth2;
 	deoglFramebuffer **pFBOMipMapTemporary1;
@@ -94,11 +88,13 @@ private:
 	bool pModeDepth;
 	bool pModePostProcess;
 	
+	deoglFramebuffer *pFBOCopyDepth[ 8 ];
+	
 	deoglDRDepthMinMax *pDepthMinMax;
 	
-// 	deoglTexture *pTextureLuminance;
-// 	deoglTexture *pTextureLuminanceNormal;
-// 	deoglTexture *pTextureLuminanceDepth;
+// 	deoglArrayTexture *pTextureLuminance;
+// 	deoglArrayTexture *pTextureLuminanceNormal;
+// 	deoglArrayTexture *pTextureLuminanceDepth;
 // 	deoglFramebuffer *pFBOLuminance;
 // 	deoglFramebuffer *pFBOLuminanceNormal;
 	
@@ -110,7 +106,7 @@ private:
 	deoglVAO *pVAOBillboard;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl deferred rendering object. */
 	deoglDeferredRendering( deoglRenderThread &renderThread );
@@ -118,16 +114,26 @@ public:
 	~deoglDeferredRendering();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the width of the buffers. */
+	/** Width of buffers. */
 	inline int GetWidth() const{ return pWidth; }
-	/** Retrieves the height of the buffers. */
+	
+	/** Height of buffers. */
 	inline int GetHeight() const{ return pHeight; }
-	/** Retrieves the real width of the buffers. */
+	
+	/** Buffer layer count. */
+	inline int GetLayerCount() const{ return pLayerCount; }
+	
+	/** Real width of buffers. */
 	inline int GetRealWidth() const{ return pRealWidth; }
-	/** Retrieves the real height of the buffers. */
+	
+	/** Real height of buffers. */
 	inline int GetRealHeight() const{ return pRealHeight; }
+	
+	/** Real buffer layer count. */
+	inline int GetRealLayerCount() const{ return pRealLayerCount; }
+	
 	/** Retrieves the scaling factor in u direction. */
 	inline float GetScalingU() const{ return pScalingU; }
 	/** Retrieves the scaling factor in v direction. */
@@ -137,46 +143,24 @@ public:
 	/** Retrieves the texture coordinate displacement in v direction for 1 pixel. */
 	inline float GetPixelSizeV() const{ return pPixelSizeV; }
 	/** Resizes the buffers. */
-	void Resize( int width, int height );
-	/** Force resize of textures. */
-	void ForceResize();
+	void Resize( int width, int height, int layerCount = 1 );
 	
 	
 	
-	/** Determines if encoded depth is used. */
-	inline bool GetUseEncodedDepth() const{ return pUseEncodedDepth; }
-	/** Sets if encoded depth is used. */
-	void SetUseEncodedDepth( bool useEncodedDepth );
-	
-	/** \brief Fade out near render range. */
+	/** Fade out near render range. */
 	inline bool GetUseFadeOutRange() const{ return pUseFadeOutRange; }
 	
 	
 	
-	/** \brief Enable inverse depth using floating point depth buffer if supported. */
-	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
-	
-	/** \brief Regular depth compare function. */
-	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
-	
-	/** \brief Reversed depth compare function. */
-	inline GLenum GetDepthCompareFuncReversed() const{ return pDepthCompareFuncReversed; }
-	
-	/** \brief Regular clear depth value. */
-	inline GLfloat GetClearDepthValueRegular() const{ return pClearDepthValueRegular; }
-	
-	/** \brief Reversed clear depth value. */
-	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
-	
 	/**
-	 * \brief Create projection matrix matching depth usage mode.
+	 * Create projection matrix matching depth usage mode.
 	 * \details Depending on the inverse depth mode used the projection matrix is either
 	 *          infinite or non-infinite.
 	 */
 	decDMatrix CreateProjectionDMatrix( int width, int height, float fov, float fovRatio, float znear, float zfar ) const;
 	
 	/**
-	 * \brief Create frustum matrix.
+	 * Create frustum matrix.
 	 * \details This is the same as CreateProjectionDMatrix but always creates a
 	 *          non-infinite projection matrix.
 	 */
@@ -184,75 +168,84 @@ public:
 	
 	
 	
-	/** \brief Render buffer. */
-	inline deoglRenderbuffer *GetRenderbuffer() const{ return pRenderbuffer; }
+	/** First depth texture. */
+	deoglArrayTexture *GetDepthTexture1() const;
 	
-	/** \brief First depth texture. */
-	deoglTexture *GetDepthTexture1() const;
+	/** Second depth texture. */
+	deoglArrayTexture *GetDepthTexture2() const;
 	
-	/** \brief Second depth texture. */
-	deoglTexture *GetDepthTexture2() const;
+	/** Third depth texture. */
+	inline deoglArrayTexture *GetDepthTexture3() const{ return pTextureDepth3; }
 	
-	/** \brief Third depth texture. */
-	inline deoglTexture *GetDepthTexture3() const{ return pTextureDepth3; }
+	/** XRay depth texture. */
+	inline deoglArrayTexture *GetDepthTextureXRay() const{ return pTextureDepthXRay; }
 	
-	/** \brief Swap first depth texture to second. */
+	/** Swap first depth texture to second. */
 	void SwapDepthTextures();
 	
 	/**
-	 * \brief Copy first depth texture to second using framebuffer blitting.
+	 * Copy first depth texture to second using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
 	void CopyFirstDepthToSecond( bool copyDepth, bool copyStencil );
 	
 	/**
-	 * \brief Copy first depth texture to third depth using framebuffer blitting.
+	 * Copy first depth texture to third depth using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
 	void CopyFirstDepthToThirdDepth( bool copyDepth, bool copyStencil );
 	
+	/**
+	 * Copy first depth texture to XRay depth using framebuffer blitting.
+	 * \details After call returns active framebuffer is undefined.
+	 */
+	void CopyFirstDepthToXRayDepth( bool copyDepth, bool copyStencil );
+	
 	/** Retrieves the diffuse texture. */
-	inline deoglTexture *GetTextureDiffuse() const{ return pTextureDiffuse; }
+	inline deoglArrayTexture *GetTextureDiffuse() const{ return pTextureDiffuse; }
 	/** Retrieves the normal texture. */
-	inline deoglTexture *GetTextureNormal() const{ return pTextureNormal; }
+	inline deoglArrayTexture *GetTextureNormal() const{ return pTextureNormal; }
 	/** Retrieves the reflectivity texture. */
-	inline deoglTexture *GetTextureReflectivity() const{ return pTextureReflectivity; }
+	inline deoglArrayTexture *GetTextureReflectivity() const{ return pTextureReflectivity; }
 	/** Retrieves the roughness texture. */
-	inline deoglTexture *GetTextureRoughness() const{ return pTextureRoughness; }
+	inline deoglArrayTexture *GetTextureRoughness() const{ return pTextureRoughness; }
 	/** Retrieves the ao and solidity texture. */
-	inline deoglTexture *GetTextureAOSolidity() const{ return pTextureAOSolidity; }
+	inline deoglArrayTexture *GetTextureAOSolidity() const{ return pTextureAOSolidity; }
 	/** Retrieves the sub-surface texture. */
-	inline deoglTexture *GetTextureSubSurface() const{ return pTextureSubSurface; }
+	inline deoglArrayTexture *GetTextureSubSurface() const{ return pTextureSubSurface; }
 	/** Retrieves the color texture. */
-	inline deoglTexture *GetTextureColor() const{ return pTextureColor; }
+	inline deoglArrayTexture *GetTextureColor() const{ return pTextureColor; }
 	
 	/** Luminance texture. */
-	inline deoglTexture *GetTextureLuminance() const{ return pTextureLuminance; }
+	inline deoglArrayTexture *GetTextureLuminance() const{ return pTextureLuminance; }
 	
 	/** Retrieves the first temporary texture. */
-	inline deoglTexture *GetTextureTemporary1() const{ return pTextureTemporary1; }
+	inline deoglArrayTexture *GetTextureTemporary1() const{ return pTextureTemporary1; }
 	/** Retrieves the second temporary texture. */
-	inline deoglTexture *GetTextureTemporary2() const{ return pTextureTemporary2; }
+	inline deoglArrayTexture *GetTextureTemporary2() const{ return pTextureTemporary2; }
 	/** Retrieves the third temporary texture. */
-	inline deoglTexture *GetTextureTemporary3() const{ return pTextureTemporary3; }
+	inline deoglArrayTexture *GetTextureTemporary3() const{ return pTextureTemporary3; }
 	
 	/** Sets the normal as the current post processing target. */
 	void InitPostProcessTarget();
 	/** Swaps the diffuse and normal as current post process target. */
 	void SwapPostProcessTarget();
 	/** Retrieves the diffuse or normal texture depending which fbo is the current post process fbo. */
-	deoglTexture *GetPostProcessTexture() const;
+	deoglArrayTexture *GetPostProcessTexture() const;
 	
 	
 	
-	/** \brief Activate fbo for rendering to first depth texture. */
+	/** Activate fbo for rendering to first depth texture. */
 	void ActivateFBODepth();
 	
-	/** \brief Activate fbo for rendering to mip-map level of current depth texture. */
+	/** Activate fbo for rendering to mip-map level of current depth texture. */
 	void ActivateFBODepthLevel( int level );
 	
-	/** \brief Activate fbo for rendering to third depth texture. */
+	/** Activate fbo for rendering to third depth texture. */
 	void ActivateFBODepth3();
+	
+	/** Activate fbo for rendering to XRay depth texture. */
+	void ActivateFBODepthXRay();
 	
 	/** Activates the current post process fbo with or without depth enabled. */
 	void ActivatePostProcessFBO( bool withDepth );
@@ -276,12 +269,6 @@ public:
 	void ActivateFBOTemporary3();
 	/** Activates the color fbo with or without depth. */
 	void ActivateFBOColor( bool withDepth, bool withLuminance );
-	/** Activates the depth and diffuse fbo with depth. */
-	void ActivateFBODepthDiffuse();
-	/** Activates the depth and first temporary fbo with depth. */
-	void ActivateFBODepthTemp1();
-	/** Activates the color fbo with depth. */
-	void ActivateFBOColorDepth();
 	/** Activates the color and temporary2 fbo with depth. */
 	void ActivateFBOColorTemp2( bool withDepth, bool withLuminance );
 	/** Activates the diffuse, normal, reflectivity, roughness and color fbo with depth. */
@@ -293,13 +280,13 @@ public:
 	inline deoglDRDepthMinMax &GetDepthMinMax() const{ return *pDepthMinMax; }
 	
 	/** Luminance texture. */
-// 	inline deoglTexture *GetTextureLuminance() const{ return pTextureLuminance; }
+// 	inline deoglArrayTexture *GetTextureLuminance() const{ return pTextureLuminance; }
 	
 	/** Luminance normal texture. */
-// 	inline deoglTexture *GetTextureLuminanceNormal() const{ return pTextureLuminanceNormal; }
+// 	inline deoglArrayTexture *GetTextureLuminanceNormal() const{ return pTextureLuminanceNormal; }
 	
 	/** Luminance depth texture. */
-// 	inline deoglTexture *GetTextureLuminanceDepth() const{ return pTextureLuminanceDepth; }
+// 	inline deoglArrayTexture *GetTextureLuminanceDepth() const{ return pTextureLuminanceDepth; }
 	
 	/** Activate luminance fbo. */
 // 	void ActivateFBOLuminance();
@@ -316,11 +303,8 @@ public:
 	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{ return pMemUse; }
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
-	/** Renders a full screen quad using VAO. */
-	void RenderFSQuadVAO();
-	
 	/**
 	 * Fills the viewport parameters into the given shader parameter. The first parameter is
 	 * set to the left boundary, the second to the top boundary, the third to the right
@@ -365,14 +349,13 @@ private:
 	void pCreateTextures();
 	void pUpdateMemoryUsage();
 	void pCreateFBOs();
-	void pCreateFBOTex( int index, deoglTexture *texture1, deoglTexture *texture2, deoglTexture *texture3,
-		deoglTexture *texture4, deoglTexture *texture5, deoglTexture *texture6, deoglTexture *texture7,
-		deoglTexture *depth );
-	void pCreateFBORenBuf( int index, deoglTexture *texture1, deoglTexture *texture2, deoglTexture *texture3,
-		deoglTexture *texture4, deoglTexture *texture5, deoglTexture *texture6, deoglTexture *texture7,
-		bool depth );
-	void pFBOAttachColors( int index, deoglTexture *texture1, deoglTexture *texture2, deoglTexture *texture3,
-		deoglTexture *texture4, deoglTexture *texture5, deoglTexture *texture6, deoglTexture *texture7 );
+	void pCreateFBOTex( int index, const char *debugName, deoglArrayTexture *texture1,
+		deoglArrayTexture *texture2, deoglArrayTexture *texture3, deoglArrayTexture *texture4,
+		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7,
+		deoglArrayTexture *depth );
+	void pFBOAttachColors( int index, const char *debugName, deoglArrayTexture *texture1,
+		deoglArrayTexture *texture2, deoglArrayTexture *texture3, deoglArrayTexture *texture4,
+		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7 );
 	void pDestroyFBOs();
 };
 

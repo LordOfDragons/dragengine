@@ -30,7 +30,7 @@ class deoglModelLOD;
 
 
 /**
- * \brief Model octree visitor retrieving the closest face to a point.
+ * Model octree visitor retrieving the closest face to a point.
  * 
  * Visits the octree with a box enclosing a maximum search radius. The result
  * is the index of the face or -1 if no face could be found with a distance
@@ -54,34 +54,34 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new model octree visitor. */
+	/** Creates a new model octree visitor. */
 	deoglMOVClosestFace( const deoglModelLOD &modelLOD );
-	/** \brief Cleans up the model octree visitor. */
+	/** Cleans up the model octree visitor. */
 	virtual ~deoglMOVClosestFace();
 	/*@}*/
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Retrieves the test point. */
+	/** Retrieves the test point. */
 	inline const decVector &GetTestPoint() const{ return pTestPoint; }
-	/** \brief Retrieves the maximum search distance. */
+	/** Retrieves the maximum search distance. */
 	inline float GetMaxRadius() const{ return pMaxRadius; }
-	/** \brief Sets the test point and maximum search radius. */
+	/** Sets the test point and maximum search radius. */
 	void SetTestPoint( const decVector &testPoint, float maxRadius );
 	
 	/**
-	 * \brief Resets the visitor.
+	 * Resets the visitor.
 	 * \details Sets the found face index to -1.
 	 */
 	void Reset();
 	
-	/** \brief Retrieves the face index or -1 if not found. */
+	/** Retrieves the face index or -1 if not found. */
 	inline int GetFaceIndex() const{ return pFaceIndex; }
 	
-	/** \brief Convenience method to visit stored model lod returning the found face or -1 if not found. */
+	/** Convenience method to visit stored model lod returning the found face or -1 if not found. */
 	int FindClosestFace( const decVector &testPoint, float maxRadius );
 	
-	/** \brief Visits an octree node. */
+	/** Visits an octree node. */
 	virtual void VisitNode( deoglOctree *node, int intersection );
 	/*@}*/
 };

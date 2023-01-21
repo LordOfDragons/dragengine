@@ -233,10 +233,17 @@ void aeWindowMain::SaveAnimator( const char *filename ){
 		return;
 	}
 	
+	const decString basePath( pAnimator->GetDirectoryPath() );
+	
 	pLoadSaveSystem->SaveAnimator( pAnimator, filename );
 	pAnimator->SetFilePath( filename );
 	pAnimator->SetChanged( false );
 	pAnimator->SetSaved( true );
+	
+	if( pAnimator->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnAnimatorPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -345,9 +352,7 @@ void aeWindowMain::LoadDocument( const char *filename ){
 		}
 	}
 	
-	deObjectReference animator;
-	animator.TakeOver( pLoadSaveSystem->LoadAnimator( filename ) );
-	SetAnimator( ( aeAnimator* )( deObject* )animator );
+	SetAnimator( aeAnimator::Ref::New( pLoadSaveSystem->LoadAnimator( filename ) ) );
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -532,9 +537,7 @@ public:
 			return;
 		}
 		
-		deObjectReference animator;
-		animator.TakeOver( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) );
-		pWindow.SetAnimator( ( aeAnimator* )( deObject* )animator );
+		pWindow.SetAnimator( aeAnimator::Ref::New( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) ) );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
@@ -700,28 +703,6 @@ public:
 };
 
 
-class cActionControllerAdd : public cActionBase{
-public:
-	cActionControllerAdd( aeWindowMain &window ) : cActionBase( window, "Add...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add a controller", deInputEvent::ekcA ){}
-	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		decString name( "Controller" );
-		if( ! igdeCommonDialogs::GetString( &pWindow, "Add Controller", "Name:", name ) ){
-			return NULL;
-		}
-		if( animator->GetControllers().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
-			return NULL;
-		}
-		
-		deObjectReference controller;
-		controller.TakeOver( new aeController( name ) );
-		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
-	}
-};
-
 class cActionBaseController : public cActionBase{
 public:
 	cActionBaseController( aeWindowMain &window, const char *text, igdeIcon *icon,
@@ -754,6 +735,51 @@ public:
 	virtual void UpdateController( const aeAnimator &, const aeController & ){
 		SetEnabled( true );
 		SetSelected( false );
+	}
+};
+
+class cActionControllerAdd : public cActionBase{
+public:
+	cActionControllerAdd( aeWindowMain &window ) : cActionBase( window, "Add...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
+		"Add a controller", deInputEvent::ekcA ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator ){
+		decString name( "Controller" );
+		if( ! igdeCommonDialogs::GetString( &pWindow, "Add Controller", "Name:", name ) ){
+			return NULL;
+		}
+		if( animator->GetControllers().HasNamed( name ) ){
+			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
+			return NULL;
+		}
+		
+		deObjectReference controller;
+		controller.TakeOver( new aeController( name ) );
+		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
+	}
+};
+
+class cActionControllerDuplicate : public cActionBaseController{
+public:
+	cActionControllerDuplicate( aeWindowMain &window ) : cActionBaseController( window, "Duplicate",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
+		"Duplicate controller", deInputEvent::ekcD ){}
+	
+	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ){
+		decString name( controller->GetName() + " Copy" );
+		if( ! igdeCommonDialogs::GetString( &pWindow, "Duplicate Controller", "Name:", name ) ){
+			return nullptr;
+		}
+		
+		if( animator->GetControllers().HasNamed( name ) ){
+			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
+			return nullptr;
+		}
+		
+		const aeController::Ref duplicate( aeController::Ref::New( new aeController( *controller ) ) );
+		duplicate->SetName( name );
+		return new aeUAddController( animator, duplicate );
 	}
 };
 
@@ -883,7 +909,7 @@ class cActionLinkDuplicate : public cActionBaseLink{
 public:
 	cActionLinkDuplicate( aeWindowMain &window ) : cActionBaseLink( window, "Duplicate",
 		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Duplicate link", deInputEvent::ekcR ){}
+		"Duplicate link", deInputEvent::ekcD ){}
 	
 	virtual igdeUndo *OnActionLink( aeAnimator *animator, aeLink *link ){
 		decString name( link->GetName() + " Copy" );
@@ -1127,6 +1153,7 @@ void aeWindowMain::pCreateActions(){
 	pActionEditDDBoneSize.TakeOver( new cActionEditDDBoneSize( *this ) );
 	
 	pActionControllerAdd.TakeOver( new cActionControllerAdd( *this ) );
+	pActionControllerDuplicate.TakeOver( new cActionControllerDuplicate( *this ) );
 	pActionControllerRemove.TakeOver( new cActionControllerRemove( *this ) );
 	pActionControllerUp.TakeOver( new cActionControllerUp( *this ) );
 	pActionControllerDown.TakeOver( new cActionControllerDown( *this ) );
@@ -1240,6 +1267,7 @@ void aeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditDDBoneSize );
 	
 	AddUpdateAction( pActionControllerAdd );
+	AddUpdateAction( pActionControllerDuplicate );
 	AddUpdateAction( pActionControllerRemove );
 	AddUpdateAction( pActionControllerUp );
 	AddUpdateAction( pActionControllerDown );
@@ -1384,6 +1412,7 @@ void aeWindowMain::pCreateMenuController( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand( menu, pActionControllerAdd );
+	helper.MenuCommand( menu, pActionControllerDuplicate );
 	helper.MenuCommand( menu, pActionControllerRemove );
 	helper.MenuCommand( menu, pActionControllerUp );
 	helper.MenuCommand( menu, pActionControllerDown );

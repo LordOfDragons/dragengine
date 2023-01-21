@@ -28,7 +28,7 @@ class deColliderAttachment;
 
 
 /**
- * \brief Collider attachment working object.
+ * Collider attachment working object.
  */
 class debpColliderAttachment{
 private:
@@ -42,58 +42,66 @@ private:
 	bool pDirtyLocalMatrix;
 	bool pHasLocalMatrix;
 	
+	decDMatrix pAccumRelMoveMatrix;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a collider attachment. */
+	/** Create a collider attachment. */
 	debpColliderAttachment( deColliderAttachment *attachment );
 	
-	/** \brief Clean up the collider attachment. */
+	/** Clean up the collider attachment. */
 	~debpColliderAttachment();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the collider attachment. */
+	/** Retrieve the collider attachment. */
 	inline deColliderAttachment *GetAttachment() const{ return pAttachment; }
 	
-	/** \brief Track bone index. */
+	/** Track bone index. */
 	inline int GetTrackBone() const{ return pTrackBone; }
 	
-	/** \brief Set the track bone index. */
+	/** Set the track bone index. */
 	void SetTrackBone( int boneIndex );
 	
-	/** \brief Set the number of bone mappings. */
+	/** Set the number of bone mappings. */
 	void SetBoneMappingCount( int count );
 	
-	/** \brief Bone mapping by index. */
+	/** Bone mapping by index. */
 	int GetBoneMappingAt( int index ) const;
 	
-	/** \brief Set bone mapping by index. */
+	/** Set bone mapping by index. */
 	void SetBoneMappingAt( int index, int boneIndex );
 	
-	/** \brief Determine if mapping is dirty. */
+	/** Determine if mapping is dirty. */
 	inline bool GetDirtyMappings() const{ return pDirtyMappings; }
 	
-	/** \brief Set if mapping is dirty. */
+	/** Set if mapping is dirty. */
 	void SetDirtyMappings( bool dirtyMappings );
 	
+	/** Relative movement accumulation. */
+	inline const decDMatrix &GetAccumRelMoveMatrix() const{ return pAccumRelMoveMatrix; }
+	
+	/** Set relative movement accumulation. */
+	void SetAccumRelMoveMatrix( const decDMatrix &matrix );
 	
 	
-	/** \brief Attachment changed. */
+	
+	/** Attachment changed. */
 	void AttachmentChanged();
 	
 	
 	
 	/**
-	 * \brief Reposition attached resource using a matrix modified by the local matrix.
+	 * Reposition attached resource using a matrix modified by the local matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
 	void Reposition( const decDMatrix &matrix, bool changeNotify );
 	
 	/**
-	 * \brief Reposition attached resource using a matrix modified by the local matrix.
+	 * Reposition attached resource using a matrix modified by the local matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
@@ -101,7 +109,7 @@ public:
 		const decDVector &scaling, bool changeNotify );
 	
 	/**
-	 * \brief Transform attached resource using a relative matrix.
+	 * Transform attached resource using a relative matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */

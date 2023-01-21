@@ -159,7 +159,7 @@ void igdeLoadAnimator::pReadAnimator( const decXmlElementTag &root, const char *
 					animator.SetRig( rig );
 					rig->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( rig ){
 						rig->FreeReference();
 					}
@@ -176,7 +176,7 @@ void igdeLoadAnimator::pReadAnimator( const decXmlElementTag &root, const char *
 					animator.SetAnimation( animation );
 					animation->FreeReference();
 					
-				}catch( const deException &e ){
+				}catch( const deException & ){
 					if( animation ){
 						animation->FreeReference();
 					}
@@ -1203,8 +1203,8 @@ const char *basePath, deAnimator &animator ){
 					Load( realPath.GetPathUnix(), subAnimator, reader );
 					rule->SetSubAnimator( subAnimator );
 					
-				}catch( const deException &e ){
-					LogWarnExceptionTag( *tag, e );
+				}catch( const deException &e2 ){
+					LogWarnExceptionTag( *tag, e2 );
 					LogWarnGenericProblemTag( root, tag->GetName(), "Failed loading animator" );
 				}
 				
@@ -1533,6 +1533,10 @@ bool igdeLoadAnimator::pReadRuleCommon( const decXmlElementTag &root, deAnimator
 		
 	}else if( strcmp( root.GetName(), "blendFactor" ) == 0 ){
 		rule.SetBlendFactor( GetCDataFloat( root ) );
+		return true;
+		
+	}else if( root.GetName() == "invertBlendFactor" ){
+		rule.SetInvertBlendFactor( GetCDataBool( root ) );
 		return true;
 		
 	}else if( strcmp( root.GetName(), "bone" ) == 0 ){

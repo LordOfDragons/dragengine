@@ -32,7 +32,7 @@ class deoglCanvasViewListener;
 
 
 /**
- * \brief Canvas peer.
+ * Canvas peer.
  */
 class deoglCanvasView : public deoglCanvas{
 private:
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCanvasView( deGraphicOpenGl &ogl, deCanvasView &canvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCanvasView();
 	/*@}*/
 	
@@ -61,26 +61,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render canvas view or \em NULL if not existing. */
+	/** Render canvas view or \em NULL if not existing. */
 	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
-	/** \brief Drop render canvas if not \em NULL. */
+	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
 	
-	/** \brief Order of a child changed. */
+	/** Order of a child changed. */
 	void ChildOrderChanged();
 	
-	/** \brief Paint dirty. */
+	/** Paint dirty. */
 	inline bool GetDirtyPaint() const{ return pDirtyPaint; }
 	
-	/** \brief Set paint dirty. */
+	/** Set paint dirty. */
 	void SetDirtyPaint();
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	
 	/**
-	 * \brief Prepare content for render thread counterpart.
+	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
@@ -107,38 +107,38 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Size changed. */
+	/** Size changed. */
 	virtual void SizeChanged();
 	
-	/** \brief Transform changed. */
+	/** Transform changed. */
 	virtual void TransformChanged();
 	
-	/** \brief Color transform changed. */
+	/** Color transform changed. */
 	virtual void ColorTransformChanged();
 	
-	/** \brief Visible changed. */
+	/** Visible changed. */
 	virtual void VisibleChanged();
 	
-	/** \brief Render order changed. */
+	/** Render order changed. */
 	virtual void OrderChanged();
 	
-	/** \brief Transparency changed. */
+	/** Transparency changed. */
 	virtual void TransparencyChanged();
 	
-	/** \brief Blend mode changed. */
+	/** Blend mode changed. */
 	virtual void BlendModeChanged();
 	
-	/** \brief Content changed. */
+	/** Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
 	
 	
 	
 protected:
-	/** \brief Create render canvas. Subclass responsibility. */
+	/** Create render canvas. Subclass responsibility. */
 	virtual deoglRCanvas *CreateRCanvas();
 	
 	

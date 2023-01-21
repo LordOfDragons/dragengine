@@ -399,11 +399,21 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			if pConversationActor != null and pConversationActor.getPlayback() != null
-				pConversationActor.getPlayback().removeActor(pConversationActor)
+			if pConversationActor != null
+				if pConversationActor.getPlayback() != null
+					pConversationActor.getPlayback().removeActor(pConversationActor)
+				end
+				
+				// just in case somebody uses playback subclass with strong references
+				pConversationActor.setEyesLookAtPlayback(null)
+				pConversationActor.setFacePosePlayback(null)
+				pConversationActor.setGesturePlayback(null)
+				pConversationActor.setHeadLookAtPlayback(null)
+				pConversationActor.setSpeechAnimationPlayback(null)
+				
+				pConversationActor = null
 			end
 			
-			pConversationActor = null
 			pParameterTable = null
 			pComponent = null
 			pActorAnimated = null
@@ -494,6 +504,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				// the camera is located by default
 				var ConversationHeadLookAtPlayback hlap = ConversationHeadLookAtPlayback.new()
 				hlap.setLocomotion(locomotion)
+				hlap.setBoneRotator(pECBehavior.getHeadRotatorBone().getValueOrNull(stub))
 				hlap.setRotatorMatrix(rotatorMatrix)
 				pConversationActor.setHeadLookAtPlayback(hlap)
 			end
@@ -789,12 +800,12 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Actor is in a conversation. */
 		public func bool isInConversation()
-			return pConversationActor.getPlayback() != null
+			return pConversationActor != null and pConversationActor.getPlayback() != null
 		end
 		
 		/** \brief Actor is not in a conversation. */
 		public func bool isNotInConversation()
-			return pConversationActor.getPlayback() == null
+			return pConversationActor == null or pConversationActor.getPlayback() == null
 		end
 		
 		
@@ -974,7 +985,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				textUtf8 = null
 			end
 			
-			var SubTitleBoxTextBorder stbt = SubTitleBoxTextBorder.new(textUtf8, nameUtf8, \
+			var SubTitleBoxTextBorder stbt = createBareSubTitleTextBorder(textUtf8, nameUtf8, \
 				styledText, styledName, portraitImage, portraitVideo, SubTitleBoxTextBorder.Placement.above)
 			
 			stbt.setDesignerSelector("SubTitleBoxText" + selector)
@@ -986,6 +997,19 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end
 			
 			return stbt
+		end
+		
+		/**
+		 * \brief Create bare sub title border.
+		 * \version 1.16
+		 * 
+		 * For subclass use to replace widget without rewriting entire createSubTitleTextWidget().
+		 */
+		protected func SubTitleBoxTextBorder createBareSubTitleTextBorder(String textUtf8,\
+		String nameUtf8, StyledTextDefinition styledText, StyledTextDefinition styledName,\
+		Image portraitImage, Video portraitVideo, SubTitleBoxTextBorder.Placement placement)
+			return SubTitleBoxTextBorder.new(textUtf8, nameUtf8, styledText, styledName,\
+				portraitImage, portraitVideo, placement)
 		end
 		
 		
@@ -1062,6 +1086,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	private var ECPStringID pAliasId
 	private var ECPUnicodeString pName
 	private var ECPString pSubtitleSelectorId
+	private var ECPString pHeadRotatorBone
 	private var ECPVector pHeadRotatorOffset
 	private var ECPBoolean pRegisterConversationActor
 	private var ECBehaviorActorAnimated pActorAnimated
@@ -1101,6 +1126,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		pSubtitleSelectorId = ECPString.new(prefix + "subtitleSelector", "")
 		eclass.addProperty(pSubtitleSelectorId)
+		
+		pHeadRotatorBone = ECPString.new(prefix + "headRotatorBone", "")
+		eclass.addProperty(pHeadRotatorBone)
 		
 		pHeadRotatorOffset = ECPVector.new(prefix + "headRotatorOffset", Vector.new(0, -1.65, 0))
 		eclass.addProperty(pHeadRotatorOffset)
@@ -1142,6 +1170,11 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief SUb title style selector ID. */
 	public func ECPString getSubtitleSelectorId()
 		return pSubtitleSelectorId
+	end
+	
+	/** \brief Head rotator bone or empty string to not use. */
+	public func ECPString getHeadRotatorBone()
+		return pHeadRotatorBone
 	end
 	
 	/** \brief Head rotator offset used for Head-Look-At handling. */

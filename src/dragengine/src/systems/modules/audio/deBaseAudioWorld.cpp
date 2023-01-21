@@ -37,18 +37,21 @@ deBaseAudioWorld::~deBaseAudioWorld(){
 // Notifications
 //////////////////
 
-void deBaseAudioWorld::Update( float elapsed ){
+void deBaseAudioWorld::Update( float ){
 }
 
 void deBaseAudioWorld::SizeChanged(){
 }
 
-
-
-void deBaseAudioWorld::SpeakerAdded( deSpeaker *speaker ){
+void deBaseAudioWorld::AudioChanged(){
 }
 
-void deBaseAudioWorld::SpeakerRemoved( deSpeaker *speaker ){
+
+
+void deBaseAudioWorld::SpeakerAdded( deSpeaker* ){
+}
+
+void deBaseAudioWorld::SpeakerRemoved( deSpeaker* ){
 }
 
 void deBaseAudioWorld::AllSpeakersRemoved(){
@@ -56,10 +59,10 @@ void deBaseAudioWorld::AllSpeakersRemoved(){
 
 
 
-void deBaseAudioWorld::MicrophoneAdded( deMicrophone *microphone ){
+void deBaseAudioWorld::MicrophoneAdded( deMicrophone* ){
 }
 
-void deBaseAudioWorld::MicrophoneRemoved( deMicrophone *microphone ){
+void deBaseAudioWorld::MicrophoneRemoved( deMicrophone* ){
 }
 
 void deBaseAudioWorld::AllMicrophonesRemoved(){
@@ -67,10 +70,10 @@ void deBaseAudioWorld::AllMicrophonesRemoved(){
 
 
 
-void deBaseAudioWorld::ComponentAdded( deComponent *component ){
+void deBaseAudioWorld::ComponentAdded( deComponent* ){
 }
 
-void deBaseAudioWorld::ComponentRemoved( deComponent *component ){
+void deBaseAudioWorld::ComponentRemoved( deComponent* ){
 }
 
 void deBaseAudioWorld::AllComponentsRemoved(){
@@ -78,10 +81,10 @@ void deBaseAudioWorld::AllComponentsRemoved(){
 
 
 
-void deBaseAudioWorld::SoundLevelMeterAdded( deSoundLevelMeter *soundLevelMeter ){
+void deBaseAudioWorld::SoundLevelMeterAdded( deSoundLevelMeter* ){
 }
 
-void deBaseAudioWorld::SoundLevelMeterRemoved( deSoundLevelMeter *soundLevelMeter ){
+void deBaseAudioWorld::SoundLevelMeterRemoved( deSoundLevelMeter* ){
 }
 
 void deBaseAudioWorld::AllSoundLevelMetersRemoved(){

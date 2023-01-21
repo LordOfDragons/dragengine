@@ -261,6 +261,20 @@ public:
 	}
 	
 	virtual igdeUndo *OnAction( seSky *sky ) = 0;
+	
+	virtual void Update(){
+		seSky * const sky = pPanel.GetSky();
+		if( sky ){
+			UpdateSky( *sky );
+			
+		}else{
+			SetEnabled( false );
+		}
+	}
+	
+	virtual void UpdateSky( const seSky & ){
+		SetEnabled( true );
+	}
 };
 
 class cBaseActionLayer : public cBaseAction{
@@ -285,6 +299,20 @@ public:
 	}
 	
 	virtual igdeUndo *OnActionLayer( seSky *sky, seLayer *layer ) = 0;
+	
+	virtual void UpdateSky ( const seSky &sky ){
+		seLayer * const layer = pPanel.GetLayer();
+		if( layer ){
+			UpdateLayer( sky, *layer );
+			
+		}else{
+			SetEnabled( false );
+		}
+	}
+	
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
+		SetEnabled( true );
+	}
 };
 
 
@@ -336,10 +364,6 @@ public:
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
 		return new seULayerRemove( layer );
 	}
-	
-	virtual void Update(){
-		SetEnabled( pPanel.GetLayer() != NULL );
-	}
 };
 
 class cActionLayerUp : public cBaseActionLayer{
@@ -354,7 +378,7 @@ public:
 		return new seULayerMoveUp( layer );
 	}
 	
-	virtual void Update(){
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pListBox.GetSelection() > 0 );
 	}
 };
@@ -371,7 +395,7 @@ public:
 		return new seULayerMoveDown( layer );
 	}
 	
-	virtual void Update(){
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1 );
 	}
 };
@@ -627,8 +651,8 @@ public:
 		return new seUBodyRemove( body );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetBody() != NULL );
+	void UpdateLayer( const seSky &, const seLayer & ){
+		SetEnabled( pPanel.GetBody() );
 	}
 };
 
@@ -650,7 +674,7 @@ public:
 		return new seUBodyMoveUp( body );
 	}
 	
-	virtual void Update(){
+	void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pSpinTextField.GetValue() > pSpinTextField.GetLower() );
 	}
 };
@@ -673,7 +697,7 @@ public:
 		return new seUBodyMoveDown( body );
 	}
 	
-	virtual void Update(){
+	void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pSpinTextField.GetValue() < pSpinTextField.GetUpper() );
 	}
 };
@@ -778,8 +802,8 @@ public:
 		return new seUTargetAddLink( layer, target, link );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetLayer() && pComboLinks.GetSelectedItem() );
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
+		SetEnabled( pComboLinks.GetSelectedItem() );
 	}
 };
 
@@ -806,8 +830,8 @@ public:
 		return new seUTargetRemoveLink( layer, target, link );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetLayer() && pPanel.GetLayer()->GetBodies().GetCount() > 0 );
+	virtual void UpdateLayer( const seSky &, const seLayer &layer ){
+		SetEnabled( layer.GetTarget( layer.GetActiveTarget() ).GetLinks().GetCount() > 0 );
 	}
 };
 
@@ -976,6 +1000,18 @@ void seWPLayer::SetSky( seSky *sky ){
 	
 	UpdateLayerList();
 	UpdateLinkList();
+	OnSkyPathChanged();
+}
+
+void seWPLayer::OnSkyPathChanged(){
+	if( pSky ){
+		pEditSkin->SetBasePath( pSky->GetDirectoryPath() );
+		pEditBodySkin->SetBasePath( pSky->GetDirectoryPath() );
+		
+	}else{
+		pEditSkin->SetBasePath( "" );
+		pEditBodySkin->SetBasePath( "" );
+	}
 }
 
 seLayer *seWPLayer::GetLayer() const{

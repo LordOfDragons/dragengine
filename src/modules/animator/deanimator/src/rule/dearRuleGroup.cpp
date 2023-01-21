@@ -60,10 +60,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleGroup::dearRuleGroup( dearAnimatorInstance &instance, int firstLink,
-const deAnimatorRuleGroup &rule, const deAnimator &animator,
-const decIntList &controllerMapping ) :
-dearRule( instance, firstLink, rule ),
+dearRuleGroup::dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pGroup( rule ),
 pStateList( NULL ),
@@ -81,7 +80,7 @@ pEnableOrientation( rule.GetEnableOrientation() ),
 pEnableSize( rule.GetEnableSize() )
 {
 	try{
-		pCreateRules( firstLink, animator, controllerMapping );
+		pCreateRules( firstLink, controllerMapping );
 		RuleChanged();
 		
 	}catch( const deException & ){
@@ -336,13 +335,13 @@ void dearRuleGroup::pCleanUp(){
 	}
 }
 
-void dearRuleGroup::pCreateRules( int firstLink, const deAnimator &animator, const decIntList &controllerMapping ){
+void dearRuleGroup::pCreateRules( int firstLink, const decIntList &controllerMapping ){
 	const int ruleCount = pGroup.GetRuleCount();
 	if( ruleCount == 0 ){
 		return;
 	}
 	
-	dearCreateRuleVisitor visitor( GetInstance(), animator, controllerMapping, firstLink );
+	dearCreateRuleVisitor visitor( GetInstance(), GetAnimator(), controllerMapping, firstLink );
 	int i;
 	
 	pRules = new dearRule*[ ruleCount ];

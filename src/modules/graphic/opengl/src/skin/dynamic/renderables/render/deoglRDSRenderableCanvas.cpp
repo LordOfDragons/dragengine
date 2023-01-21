@@ -92,6 +92,12 @@ void deoglRDSRenderableCanvas::PrepareForRender( const deoglRenderPlanMasked *re
 	}
 }
 
+void deoglRDSRenderableCanvas::Render( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pCanvas ){
+		pCanvas->RenderRenderTarget( renderPlanMask );
+	}
+}
+
 deoglTexture *deoglRDSRenderableCanvas::GetRenderTexture(){
 	if( ! pCanvas ){
 		return NULL;

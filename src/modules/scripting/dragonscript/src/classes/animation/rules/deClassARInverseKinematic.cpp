@@ -141,6 +141,10 @@ void deClassARInverseKinematic::nfTargetAddLink::RunFunction( dsRunTime *rt, dsV
 		nd.rule->GetTargetLocalPosition().AddLink( link );
 		break;
 		
+	case deClassARInverseKinematic::etLocalOrientation:
+		nd.rule->GetTargetLocalOrientation().AddLink( link );
+		break;
+		
 	case deClassARInverseKinematic::etReachCenter:
 		nd.rule->GetTargetReachCenter().AddLink( link );
 		break;

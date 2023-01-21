@@ -226,10 +226,14 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 	while( combinedTexture ){
 		const decColor &color = combinedTexture->GetColor();
 		
-		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n", ( int )( color.r * 255.0 ),
-			( int )( color.g * 255.0 ), ( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
-			combinedTexture->GetImageAt( 0 ), combinedTexture->GetImageAt( 1 ), combinedTexture->GetImageAt( 2 ),
-			combinedTexture->GetImageAt( 3 ), combinedTexture->GetUsageCount() );
+		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n",
+			( int )( color.r * 255.0 ), ( int )( color.g * 255.0 ),
+			( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 1 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 2 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 3 ),
+			combinedTexture->GetUsageCount() );
 		answer.AppendFromUTF8( text.GetString() );
 		
 		combinedTexture = combinedTexture->GetLLNext();
@@ -288,17 +292,16 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	const char *defineName, *defineValue;
-	deoglShaderProgram *program;
 	int p, programCount;
 	int d, defineCount;
 	decString text;
 	
 	programCount = shaderManager.GetProgramCount();
 	for( p=0; p<programCount; p++ ){
-		program = shaderManager.GetProgramAt( p );
-		const deoglShaderDefines &defines = program->GetDefines();
+		const deoglShaderProgram &program = *shaderManager.GetProgramAt( p );
+		const deoglShaderDefines &defines = program.GetDefines();
 		
-		text.Format( "- Shader '%s' Defines(", program->GetSources()->GetName().GetString() );
+		text.Format( "- Shader '%s' Defines(", program.GetSources()->GetName().GetString() );
 		
 		defineCount = defines.GetDefineCount();
 		for( d=0; d<defineCount; d++ ){
@@ -327,7 +330,7 @@ void deoglDeveloperModeStats::SkinShaders( const decUnicodeArgumentList &command
 	answer.AppendFromUTF8( text.GetString() );
 	
 	for( i=0; i<shaderCount; i++ ){
-		const deoglSkinShader &shader = *manager.GetShaderAt( i );
+		const deoglSkinShader &shader = manager.GetShaderAt( i );
 		
 		shader.GetConfig().DebugGetConfigString( configString );
 		

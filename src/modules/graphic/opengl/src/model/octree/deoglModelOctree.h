@@ -32,14 +32,14 @@ class deoglCollisionVolume;
 
 
 /**
- * @brief Model Octree.
+ * Model Octree.
  */
 class deoglModelOctree : public deoglOctree{
 private:
 	deoglModelFaceList pFaces;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new octree. */
 	deoglModelOctree( const decVector &center, const decVector &halfExtend );
@@ -47,7 +47,7 @@ public:
 	virtual ~deoglModelOctree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Creates new octree for the specified octant. Implement this function

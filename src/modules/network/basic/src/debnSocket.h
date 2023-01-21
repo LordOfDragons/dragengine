@@ -22,21 +22,28 @@
 #ifndef _DEBNSOCKET_H_
 #define _DEBNSOCKET_H_
 
-#include "dragengine/deObject.h"
+#include <stdint.h>
 
-class debnAddress;
+#include "debnAddress.h"
+
+#ifdef OS_W32
+#	include <iphlpapi.h>
+#endif
+
+#include <dragengine/deObject.h>
+
 class deNetworkBasic;
 class deNetworkMessage;
 
 
 
 /**
- * \brief Socket class.
+ * Socket class.
  */
 class debnSocket : public deObject{
 private:
-	deNetworkBasic *pNetBasic;
-	debnAddress *pAddress;
+	deNetworkBasic &pNetBasic;
+	debnAddress pAddress;
 	
 	int pSocket;
 	
@@ -49,10 +56,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create socket. */
-	debnSocket( deNetworkBasic *netBasic );
+	/** Create socket. */
+	debnSocket( deNetworkBasic &netBasic );
 	
-	/** \brief Clean up socket object. */
+	/** Clean up socket object. */
 	virtual ~debnSocket();
 	/*@}*/
 	
@@ -60,44 +67,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Address. */
-	inline debnAddress *GetAddress() const{ return pAddress; }
+	/** Address. */
+	inline debnAddress &GetAddress(){ return pAddress; }
+	inline const debnAddress &GetAddress() const{ return pAddress; }
 	
-	/** \brief Bind socket to stored address. */
+	/** Bind socket to stored address. */
 	void Bind();
 	
 	/**
-	 * \brief Receive datagram from socket.
+	 * Receive datagram from socket.
 	 * \returns true if a message has been receives or false otherwise.
 	 */
-	bool ReceiveDatagram( deNetworkMessage *stream, debnAddress *address );
+	bool ReceiveDatagram( deNetworkMessage &stream, debnAddress &address );
 	
 	/**
-	 * \brief Send datagram.
+	 * Send datagram.
 	 */
-	void SendDatagram( const deNetworkMessage *stream, const debnAddress *address );
+	void SendDatagram( const deNetworkMessage &stream, const debnAddress &address );
+	
+	/** Throw socket error. */
+	static void ThrowSocketError( const char *message );
+	
+	/** Find public addresses. */
+	static void FindAddresses( decStringList &list, bool onlyPublic );
 	/*@}*/
 	
 	
 	
 	/** \name Linked List */
 	/*@{*/
-	/** \brief Previous socket. */
+	/** Previous socket. */
 	inline debnSocket *GetPreviousSocket() const{ return pPreviousSocket; }
 	
-	/** \brief Set previous socket. */
+	/** Set previous socket. */
 	void SetPreviousSocket( debnSocket *bnSocket );
 	
-	/** \brief Next socket. */
+	/** Next socket. */
 	inline debnSocket *GetNextSocket() const{ return pNextSocket; }
 	
 	/** \breif Set next socket. */
 	void SetNextSocket( debnSocket *bnSocket );
 	
-	/** \brief Connection is registered. */
+	/** Connection is registered. */
 	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
-	/** \brief Set if connection is registered. */
+	/** Set if connection is registered. */
 	void SetIsRegistered( bool isRegistered );
 	/*@}*/
 	
@@ -105,6 +119,7 @@ public:
 	
 private:
 	void pCleanUp();
+	static uint32_t pScopeIdFor( const sockaddr_in6 &address );
 };
 
 #endif

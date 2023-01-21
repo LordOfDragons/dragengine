@@ -40,6 +40,7 @@ class ceWPAActorSpeak : public ceWPAction{
 private:
 	igdeComboBoxReference pCBActorID;
 	igdeTextFieldReference pEditTextBoxText;
+	igdeTextFieldReference pEditTextBoxTextTranslate;
 	igdeButtonReference pBtnTextBoxText;
 	igdeTextFieldReference pEditTextBoxTextStyle;
 	igdeTextFieldReference pEditMovement;
@@ -73,6 +74,9 @@ public:
 	
 	/** \brief Update actor id lists. */
 	virtual void UpdateActorIDLists();
+	
+	/** \brief Conversation path changed. */
+	virtual void OnConversationPathChanged();
 	/*@}*/
 };
 

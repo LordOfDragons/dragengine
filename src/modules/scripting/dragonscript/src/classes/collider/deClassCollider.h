@@ -30,6 +30,7 @@ class deResource;
 class deCollider;
 class deCollisionInfo;
 class deScriptingDragonScript;
+class deColliderConstraint;
 
 
 
@@ -139,6 +140,9 @@ public:
 	
 	/** \brief Attach resource using deColliderAttachment::eatRelativeMovement mode. */
 	void AttachRelativeMovement( deCollider &collider, deResource *resource ) const;
+	
+	/** \brief Index of matching constraint (same target collider and bone). */
+	deColliderConstraint *FindConstraint( deCollider &collider, const deColliderConstraint &constraint ) const;
 	/*@}*/
 	
 	
@@ -230,7 +234,11 @@ private:
 	
 	DEF_NATFUNC( nfGetConstraintCount );
 	DEF_NATFUNC( nfAddConstraint );
+	DEF_NATFUNC( nfHasConstraint );
+	DEF_NATFUNC( nfIndexOfConstraint );
+	DEF_NATFUNC( nfGetConstraintAt );
 	DEF_NATFUNC( nfSetConstraintAt );
+	DEF_NATFUNC( nfRemoveConstraint );
 	DEF_NATFUNC( nfRemoveConstraintFrom );
 	DEF_NATFUNC( nfRemoveAllConstraints );
 	

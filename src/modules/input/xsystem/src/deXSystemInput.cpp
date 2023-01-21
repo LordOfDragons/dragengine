@@ -354,30 +354,19 @@ void deXSystemInput::EventLoop( XEvent &event ){
 		}
 		pKeyStates[ keyCode ] = true;
 		
-		const int button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( keyCode );
-		if( button == -1 ){
+		sKey key;
+		if( ! pLookUpKey( event.xkey, key ) ){
 			break;
-		}
-		
-		const int virtualKeyCode = XLookupKeysym( &event.xkey, 0 );
-		if( virtualKeyCode == NoSymbol ){
-			break;
-		}
-		
-		KeySym keySym = 0;
-		unsigned char character = 0;
-		if( ! XLookupString( &event.xkey, ( char* )&character, 1, &keySym, NULL ) ){
-			character = 0;
 		}
 		
 		timeval eventTime;
 		eventTime.tv_sec = ( time_t )( event.xkey.time / 1000 );
 		eventTime.tv_usec = ( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( button );
+		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( key.button );
 		deviceButton.SetPressed( true );
 		
-		pAddKeyPress( pDevices->GetPrimaryKeyboard()->GetIndex(), button, character,
+		pAddKeyPress( pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
 			deviceButton.GetKeyCode(), pModifiersFromXState( event.xkey.state ), eventTime );
 		}break;
 		
@@ -391,30 +380,19 @@ void deXSystemInput::EventLoop( XEvent &event ){
 		}
 		pKeyStates[ keyCode ] = false;
 		
-		const int button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( keyCode );
-		if( button == -1 ){
+		sKey key;
+		if( ! pLookUpKey( event.xkey, key ) ){
 			break;
-		}
-		
-		const int virtualKeyCode = XLookupKeysym( &event.xkey, 0 );
-		if( virtualKeyCode == NoSymbol ){
-			break;
-		}
-		
-		KeySym keySym = 0;
-		unsigned char character = 0;
-		if( ! XLookupString( &event.xkey, ( char* )&character, 1, &keySym, NULL ) ){
-			character = 0;
 		}
 		
 		timeval eventTime;
 		eventTime.tv_sec = ( time_t )( event.xkey.time / 1000 );
 		eventTime.tv_usec = ( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( button );
+		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( key.button );
 		deviceButton.SetPressed( false );
 		
-		pAddKeyRelease( pDevices->GetPrimaryKeyboard()->GetIndex(), button, character,
+		pAddKeyRelease( pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
 			deviceButton.GetKeyCode(), pModifiersFromXState( event.xkey.state ), eventTime );
 		}break;
 		
@@ -781,6 +759,65 @@ int deXSystemInput::pModifiersFromXState( int xstate ) const{
 	*/
 	
 	return modifiers;
+}
+
+bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ){
+	key.button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( event.keycode );
+	if( key.button == -1 ){
+		return false;
+	}
+	
+	key.virtualKeyCode = XLookupKeysym( &event, 0 );
+	if( key.virtualKeyCode == NoSymbol ){
+		return false;
+	}
+	
+	key.keySym = 0;
+	key.character = 0;
+	
+	char utf8[ 4 ];
+	const int count = XLookupString( &event, ( char* )&utf8, 4, &key.keySym, nullptr );
+// 	LogInfoFormat("lookUpKey: %d %d %d %d %d\n", count, utf8[0], utf8[1], utf8[2], utf8[3]);
+	
+	switch( count ){
+	case 1:
+		// this is a huge hack here. on some systems XLookupString returns for characters
+		// larger than 127 a UTF-8 character composed of 2 bytes. on other systems
+		// XLookupString returns an ASCII-8 character composed of 1 byte. for the UTF-8
+		// case we would have to do "utf8[ 0 ] & 0x7f" to get a correctly encoded character.
+		// for other systems returning a single ASCII-8 this would break. if we do not
+		// apply the mask and simply use the byte as-is we can get both systems working.
+		// the conversation to unsigned char is required or it breaks.
+		// 
+		// the reason for this problem is that XLookupString uses the user locale to
+		// return the character. modern systems should use an utf8 based locale in which
+		// case the handling is easy. in the case an older system is used without utf8
+		// the returned value should be latin-1 but you can not bet on it. the correct
+		// solution would be using Xutf8LookupString but this requires using XI which
+		// causes various changes to this input module. something for a rainy day.
+// 		key.character = utf8[ 0 ] & 0x7f;
+		key.character = ( unsigned char )utf8[ 0 ];
+		break;
+		
+	case 2:
+		key.character = ( ( utf8[ 0 ] & 0x1f ) << 6 ) + ( utf8[ 1 ] & 0x3f );
+		break;
+		
+	case 3:
+		key.character = ( ( utf8[ 0 ] & 0xf ) << 12 ) + ( ( utf8[ 1 ] & 0x3f ) << 6 )
+			+ ( utf8[ 2 ] & 0x3f );
+		break;
+		
+	case 4:
+		key.character = ( ( utf8[ 0 ] & 0x7 ) << 18 ) + ( ( utf8[ 1 ] & 0x3f ) << 12 )
+			+ ( ( utf8[ 2 ] & 0x3f ) << 6 ) + ( utf8[ 3 ] & 0x3f );
+		break;
+		
+	default:
+		key.character = 0;
+	}
+	
+	return true;
 }
 
 void deXSystemInput::pUpdateAutoRepeat(){

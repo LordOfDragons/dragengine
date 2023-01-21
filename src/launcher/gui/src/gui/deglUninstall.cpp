@@ -91,11 +91,11 @@ bool deglUninstall::UninstallGame( delGame &game ){
 			continue;
 		}
 		
-		const delGame * const game = gameList.GetWithID( checkPatch.GetGameID() );
+		const delGame * const pgame = gameList.GetWithID( checkPatch.GetGameID() );
 		text.AppendFormat( "Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString( false ).GetString(),
-			game ? game->GetTitle().ToUTF8().GetString() : "?" );
+			pgame ? pgame->GetTitle().ToUTF8().GetString() : "?" );
 	}
 	
 	if( ! text.IsEmpty() ){

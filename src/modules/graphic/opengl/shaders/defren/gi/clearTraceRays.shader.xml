@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Clear Trace Rays</name>
+	
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
+	<texture name='texDiffuse' target='2'/>
+	<texture name='texReflectivity' target='3'/>
+	<texture name='texLight' target='4'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/gi/clearTraceRays.glsl</sourceCode>
+</shader>

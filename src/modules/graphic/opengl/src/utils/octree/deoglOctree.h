@@ -30,7 +30,7 @@ class deoglCollisionVolume;
 
 
 /**
- * @brief Generic Octree Class.
+ * Generic Octree Class.
  * Provides the generic implementation of an octree algorithm. For real usage subclass
  * this class and implement the required functions. Every Octree object is the root of
  * an octree. The top most octree object with no parent is the real octree root and
@@ -100,7 +100,7 @@ private:
 	deoglOctree *pParent;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
 	deoglOctree( const decVector &center, const decVector &halfSize );
@@ -108,7 +108,7 @@ public:
 	virtual ~deoglOctree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
 	inline deoglOctree *GetParent() const{ return pParent; }

@@ -67,8 +67,11 @@ void deoglRPTBuildRTsDepth::Run(){
 	
 	decTimer timer;
 	try{
-		pSolid();
-		pSolidOutline();
+		pSolid( false );
+		pSolidOutline( false );
+		
+		pSolid( true );
+		pSolidOutline( true );
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
@@ -92,88 +95,62 @@ decString deoglRPTBuildRTsDepth::GetDebugName() const{
 
 // Private Functions
 //////////////////////
-
-void deoglRPTBuildRTsDepth::pSolid(){
+ 
+void deoglRPTBuildRTsDepth::pSolid( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidDepthXRayTask() : pPlan.GetSolidDepthTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidDepthTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	
-	// components
 	if( pMask && pMask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepthClipPlane );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepthClipPlane );
 		
 	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepth );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepth );
 	}
+	
+	int pipelineModifier = 0;
+	if( pPlan.GetPlan().GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( pPlan.GetPlan().GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
+	
 	addToRenderTask.AddComponents( collideList );
 	
-	// billboards
-	if( pMask && pMask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepthClipPlane );
-		
-	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardDepth );
-	}
 	addToRenderTask.AddBillboards( collideList );
 	
-	// prop fields
-	deoglSkinTexture::eShaderTypes propFieldShaderType1, propFieldShaderType2;
-	
-	if( pMask && pMask->GetUseClipPlane() ){
-		propFieldShaderType1 = deoglSkinTexture::estPropFieldDepthClipPlane;
-		propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepthClipPlane;
-		
-	}else{
-		propFieldShaderType1 = deoglSkinTexture::estPropFieldDepth;
-		propFieldShaderType2 = deoglSkinTexture::estPropFieldImposterDepth;
-	}
-	
-	addToRenderTask.SetSkinShaderType( propFieldShaderType1 );
 	addToRenderTask.AddPropFields( collideList, false );
-	
-	addToRenderTask.SetSkinShaderType( propFieldShaderType2 );
 	addToRenderTask.AddPropFields( collideList, true );
 	
-	// height terrains
-	if( pMask && pMask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepthClipPlane );
-		
-	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapDepth );
-	}
 	addToRenderTask.AddHeightTerrains( collideList, true );
 	
-	// particles
 	if( pPlan.GetPlan().GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-		if( pMask && pMask->GetUseClipPlane() ){
-			addToRenderTask.SetSkinShaderType(
-				deoglSkinTexture::estParticleDepthClipPlane );
-			addToRenderTask.SetSkinShaderTypeRibbon(
-				deoglSkinTexture::estParticleRibbonDepthClipPlane );
-			addToRenderTask.SetSkinShaderTypeBeam(
-				deoglSkinTexture::estParticleBeamDepthClipPlane );
-			
-		}else{
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleDepth );
-			addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonDepth );
-			addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamDepth );
-		}
 		addToRenderTask.AddParticles( collideList );
 	}
 }
 
-void deoglRPTBuildRTsDepth::pSolidOutline(){
+void deoglRPTBuildRTsDepth::pSolidOutline( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidDepthOutlineXRayTask() : pPlan.GetSolidDepthOutlineTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidDepthOutlineTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetOutline( true );
 	addToRenderTask.SetFilterDecal( true );
@@ -181,12 +158,33 @@ void deoglRPTBuildRTsDepth::pSolidOutline(){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
+	if( xray ){
+		addToRenderTask.SetFilterXRay( true );
+		addToRenderTask.SetXRay( true );
+	}
 	
 	if( pMask && pMask->GetUseClipPlane() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepthClipPlane );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepthClipPlane );
 		
 	}else{
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineDepth );
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepth );
 	}
+	
+	int pipelineModifier = 0;
+	if( pPlan.GetPlan().GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( pPlan.GetPlan().GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
+	
+	if( pMask && pMask->GetUseClipPlane() ){
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepthClipPlane );
+		
+	}else{
+		addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etDepth );
+	}
+	
 	addToRenderTask.AddComponents( collideList );
 }

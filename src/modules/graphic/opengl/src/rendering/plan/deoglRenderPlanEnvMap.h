@@ -29,7 +29,7 @@ class deoglEnvironmentMap;
 
 
 /**
- * @brief Render Plan Environment Map.
+ * Render Plan Environment Map.
  * An environment map used in a render plan to render reflections with. The environment map
  * can be NULL since the render plan uses a fixed size list of environment maps. Additional
  * parameters are stored to allow fading in and out environment maps over time to easy the
@@ -44,7 +44,7 @@ private:
 	float pFadeTime;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render plan env map. */
 	deoglRenderPlanEnvMap();
@@ -52,7 +52,7 @@ public:
 	~deoglRenderPlanEnvMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the environment map or NULL if not set. */
 	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }

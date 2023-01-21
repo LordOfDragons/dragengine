@@ -23,30 +23,30 @@
 #define _DEOGLREFFECTOVERLAYIMAGE_H_
 
 #include "deoglREffect.h"
+#include "../../pipeline/deoglPipeline.h"
+#include "../../texture/deoglRImage.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRImage;
-class deoglShaderProgram;
-
 
 /**
- * \brief Render effect overlay image.
+ * Render effect overlay image.
  */
 class deoglREffectOverlayImage : public deoglREffect{
 private:
 	float pTransparency;
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	
-	deoglShaderProgram *pShader;
+	const deoglPipeline *pPipeline;
+	const deoglPipeline *pPipelineStereo;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffectOverlayImage( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffectOverlayImage();
 	/*@}*/
 	
@@ -54,27 +54,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency. */
+	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** \brief Image or \em NULL to render nothing. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	/** Image or nullptr to render nothing. */
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or \em NULL to render nothing. */
+	/** Set image or nullptr to render nothing. */
 	void SetImage( deoglRImage *image );
 	
 	
 	
-	/** \brief Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline *GetPipeline();
+	const deoglPipeline *GetPipelineStereo();
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );
 };
 

@@ -48,7 +48,9 @@
 
 decXmlVisitorWriter::decXmlVisitorWriter() :
 pCompact( false ),
-pWriter( NULL ){
+pWriter( NULL ),
+pTagIndent( false ),
+pTagNewline( false ){
 }
 
 decXmlVisitorWriter::~decXmlVisitorWriter(){
@@ -70,6 +72,9 @@ void decXmlVisitorWriter::WriteDocument( decBaseFileWriter *file, decXmlDocument
 	if( pWriter ){
 		DETHROW( deeInvalidAction );
 	}
+	
+	pTagIndent = true;
+	pTagNewline = true;
 	
 	try{
 		pWriter = new decXmlWriter( file );
@@ -99,7 +104,7 @@ void decXmlVisitorWriter::WriteDocument( decBaseFileWriter *file, decXmlDocument
 /////////////
 
 void decXmlVisitorWriter::VisitComment( decXmlComment &comment ){
-	pWriter->WriteComment( comment.GetComment(), ! pCompact, ! pCompact );
+	pWriter->WriteComment( comment.GetComment(), ! pCompact && pTagIndent, ! pCompact && pTagNewline );
 }
 
 void decXmlVisitorWriter::VisitPI( decXmlPI &pi ){
@@ -108,12 +113,16 @@ void decXmlVisitorWriter::VisitPI( decXmlPI &pi ){
 
 void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 	const int elementCount = tag.GetElementCount();
+	const bool tagNewline = pTagNewline;
+	const bool tagIndent = pTagIndent;
 	int i;
 	
 	// check if the tag has children
 	bool firstChildIsTag = false;
 	bool lastChildCData = true;
 	bool emptyTag = true;
+	bool hasTags = false;
+	bool hasCData = false;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElement &child = *tag.GetElementAt( i );
@@ -127,16 +136,18 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 				firstChildIsTag = true;
 			}
 			lastChildCData = false;
+			hasTags = true;
 			
 		}else if( child.CanCastToCharacterData() || child.CanCastToCDSect() ){
 			lastChildCData = true;
+			hasCData = true;
 		}
 		
 		emptyTag = false;
 	}
 	
 	// write opening tag
-	pWriter->WriteOpeningTagStart( tag.GetName(), ! pCompact );
+	pWriter->WriteOpeningTagStart( tag.GetName(), ! pCompact && tagIndent );
 	
 	for( i=0; i<elementCount; i++ ){
 		decXmlElement &child = *tag.GetElementAt( i );
@@ -146,10 +157,12 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 		}
 	}
 	
-	pWriter->WriteOpeningTagEnd( emptyTag, ( emptyTag || firstChildIsTag ) && ! pCompact );
+	pWriter->WriteOpeningTagEnd( emptyTag, ( ( emptyTag && tagNewline ) || firstChildIsTag ) && ! pCompact );
 	
 	// write tag content if present
 	if( ! emptyTag ){
+		pTagNewline = pTagIndent = hasTags && ! hasCData;
+		
 		for( i=0; i<elementCount; i++ ){
 			decXmlElement &child = *tag.GetElementAt( i );
 			if( ! child.CanCastToAttValue() ){
@@ -158,8 +171,11 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 		}
 		
 		// write end tag
-		pWriter->WriteClosingTag( tag.GetName(), ! lastChildCData && ! pCompact, ! pCompact );
+		pWriter->WriteClosingTag( tag.GetName(), ! lastChildCData && ! pCompact, ! pCompact && tagNewline );
 	}
+	
+	pTagIndent = tagIndent;
+	pTagNewline = tagNewline;
 }
 
 void decXmlVisitorWriter::VisitCharacterData( decXmlCharacterData &data ){

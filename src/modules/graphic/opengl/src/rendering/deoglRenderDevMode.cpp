@@ -56,6 +56,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
@@ -80,6 +81,7 @@
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../debug/deoglDebugTraceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 #include "../utils/collision/deoglDCollisionBox.h"
@@ -129,37 +131,40 @@ enum eSPShape{
 ////////////////////////////
 
 deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	pVBOShapes = 0;
 	pVAOShapes = 0;
 	
-	pShaderSolidColor2D = NULL;
-	pShaderSolidColor3D = NULL;
-	pShaderShape = NULL;
-	
 	try{
 		pCreateShapesVAO();
 		
-		sources = shaderManager.GetSourcesNamed( "2D Solid Color" );
-		pShaderSolidColor2D = shaderManager.GetProgramWith( sources, defines );
+		pipconf.Reset();
+		pipconf.SetDepthMask( false );
+		pipconf.EnableBlendBlend();
 		
-		sources = shaderManager.GetSourcesNamed( "3D Solid Color" );
-		pShaderSolidColor3D = shaderManager.GetProgramWith( sources, defines );
+		// 2d solid color
+		pipconf.SetShader( renderThread, "2D Solid Color", defines );
+		pPipelineSolidColor2D = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
-		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
+		// 3d solid color
+		pipconf.SetShader( renderThread, "3D Solid Color", defines );
+		pPipelineSolidColor3D = pipelineManager.GetWith( pipconf );
+		
+		// shape
+		defines.SetDefines( "WITH_SELECTOR" );
+		if( renderThread.GetChoices().GetUseInverseDepth() ){
+			defines.SetDefines( "INVERSE_DEPTH" );
 		}
-		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
-		}
-		//defines.AddDefine( "WITH_DEPTH", "1" );
-		pShaderShape = shaderManager.GetProgramWith( sources, defines );
+		//defines.SetDefines( "WITH_DEPTH" );
+		pipconf.SetShader( renderThread, "DefRen Shape", defines );
+		pPipelineShape = pipelineManager.GetWith( pipconf );
+		
+		// shape line
+		pipconf.SetPolygonMode( GL_LINE );
+		pPipelineShapeLine = pipelineManager.GetWith( pipconf );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -178,13 +183,8 @@ deoglRenderDevMode::~deoglRenderDevMode(){
 
 void deoglRenderDevMode::RenderDevMode( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "DevMode.RenderDevMode" );
 	deoglDeveloperMode &devMode = renderThread.GetDebug().GetDeveloperMode();
-	
-	// prepare common states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	
 	// 3d information
 	if( devMode.GetShowHeightTerrain() ){
@@ -236,11 +236,8 @@ void deoglRenderDevMode::RenderVisComponent( deoglRenderPlan &plan ){
 	deoglDCollisionBox box;
 	int c;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -278,11 +275,8 @@ void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
 	deoglDCollisionBox box;
 	int l;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -323,11 +317,8 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 	deoglDCollisionBox box;
 	int c;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -371,11 +362,8 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects( deoglRenderPlan &pla
 	deoglDCollisionBox box;
 	int c;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -420,8 +408,8 @@ void deoglRenderDevMode::RenderHeightTerrainBoxes( deoglRenderPlan &plan ){
 	const decColor colorWire( 0.75f, 0.75f, 0.0f, 1.0 );
 	int s, c;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -462,11 +450,8 @@ void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
 	deoglDCollisionBox box;
 	int i, j, k;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled *shader = pShaderSolidColor3D->GetCompiled();
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -543,11 +528,8 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	deoglDCollisionBox box;
 	int l;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-	deoglShaderCompiled *shader = pShaderSolidColor3D->GetCompiled();
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	pPipelineSolidColor3D->Activate();
+	deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetGlShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -591,10 +573,10 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		}
 	}
 	
-	renderThread.GetShader().ActivateShader( pShaderShape );
-	shader = pShaderShape->GetCompiled();
-	
 	if( devMode.GetShowLightVolume() ){
+		// face
+		pPipelineShape->Activate();
+		shader = &pPipelineShape->GetGlShader();
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
@@ -608,26 +590,41 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 			
 			if( cllight.GetCameraInside() ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.01f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 				
 			}else{
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.01f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+		}
+		
+		// line
+		pPipelineShapeLine->Activate();
+		shader = &pPipelineShapeLine->GetGlShader();
+		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		
+		for( l=0; l<lightCount; l++ ){
+			const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+			const deoglRLight &light = *cllight.GetLight();
+			const deoglLightVolume &lightVolume = *light.GetLightVolume();
+			
+			pglBindVertexArray( lightVolume.GetVAO() );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP, light.GetMatrix() * matrixVP );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP2, light.GetMatrix() * matrixVP );
+			
+			if( cllight.GetCameraInside() ){
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+				
+			}else{
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
 		}
 	}
 	
 	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
+		pPipelineShape->Activate();
+		shader = &pPipelineShape->GetGlShader();
+		
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
 		const deoglCollideListLight &cllight = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
 		const deoglRLight &light = *cllight.GetLight();
@@ -751,9 +748,6 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 	deoglShapeBox &shapeBox = *( ( deoglShapeBox* )shapeManager.GetShapeAt( deoglRTBufferObject::esBox ) );
 	int i;
 	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
 	if( devMode.GetShowEnvMaps() ){
 		const float alphaSolid = 0.1f;
 		const float alphaWire = 1.0f;
@@ -763,8 +757,8 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 		const decColor colorMask( 0.0f, 0.0f, 1.0f );
 		deoglDCollisionBox box;
 		
-		renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
-		deoglShaderCompiled *shader = pShaderSolidColor3D->GetCompiled();
+		pPipelineSolidColor3D->Activate();
+		deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetGlShader();
 		
 		shapeBox.ActivateVAO();
 		
@@ -826,13 +820,8 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 	
 	// hull
 	if( devMode.GetShowEnvMapHull() ){
-		renderThread.GetShader().ActivateShader( pShaderShape );
-		deoglShaderCompiled *shader = pShaderShape->GetCompiled();
-		
 		double closestDist = 0.0;
 		int closestEnvMap = -1;
-		
-		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( i=0; i<envmapCount; i++ ){
 			deoglEnvironmentMap &envmap = *list.GetAt( i );
@@ -848,6 +837,11 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 			}
 		}
 		
+		// fill
+		pPipelineShape->Activate();
+		deoglShaderCompiled *shader = &pPipelineShape->GetGlShader();
+		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		
 		for( i=0; i<envmapCount; i++ ){
 			deoglEnvironmentMap &envmap = *list.GetAt( i );
 			const deoglLightVolume &lightVolume = *envmap.GetLightVolume();
@@ -859,22 +853,34 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 			
 			if( i == closestEnvMap ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.05f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 				
 			}else{
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 0.05f ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				
-				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ) );
-				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
-				OGL_CHECK( renderThread, glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
+		}
+		
+		// line
+		pPipelineShapeLine->Activate();
+		shader = &pPipelineShapeLine->GetGlShader();
+		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		
+		for( i=0; i<envmapCount; i++ ){
+			deoglEnvironmentMap &envmap = *list.GetAt( i );
+			const deoglLightVolume &lightVolume = *envmap.GetLightVolume();
+			const decDMatrix matrix = decDMatrix::CreateTranslation( envmap.GetPosition() ) * matrixVP;
+			
+			pglBindVertexArray( lightVolume.GetVAO() );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP, matrix );
+			shader->SetParameterDMatrix4x4( spsMatrixMVP2, matrix );
+			
+			if( i == closestEnvMap ){
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
+				
+			}else{
+				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+			}
+			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
 		}
 	}
 	
@@ -919,11 +925,6 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	}
 	
 	// overwise prepare for rendering the overlay information
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
 	OGL_CHECK( renderThread, pglBindVertexArray( pVAOShapes ) );
 	
 	pScalePosition.x = 2.0f / ( float )plan.GetViewportWidth();
@@ -988,14 +989,14 @@ void deoglRenderDevMode::RenderOccMapLevel( deoglRenderPlan &plan ){
 		occMapLevel = occMapMaxLevel;
 	}
 	
-	GetRenderThread().GetRenderers().GetDebug().DisplayTextureLevel( plan, occmap.GetTexture(), occMapLevel, false );
+	GetRenderThread().GetRenderers().GetDebug().DisplayArrayTextureLayerLevel( plan, occmap.GetTexture(), 0, occMapLevel, false );
 }
 
 void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
 	deoglHTView *htview = plan.GetHeightTerrainView();
 	if( ! htview ) return;
 	
-	deoglRenderThread &renderThread = GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
 	const deoglRHeightTerrain &heightTerrain = htview->GetHeightTerrain();
 	const int sectorCount = heightTerrain.GetSectorCount();
 	const decDVector &campos = plan.GetCameraPosition();
@@ -1017,8 +1018,8 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 	toSector.y = 0;
 	
 	// shader
-	renderThread.GetShader().ActivateShader( pShaderSolidColor2D );
-	deoglShaderCompiled &shader = *pShaderSolidColor2D->GetCompiled();
+	pPipelineSolidColor2D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetGlShader();
 	
 	// render sectors falling into the range
 	for( s=0; s<sectorCount; s++ ){
@@ -1108,7 +1109,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 }
 
 void deoglRenderDevMode::RenderTraspLevelCount( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
-	deoglRenderThread &renderThread = GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
 	const int transpLevelCount = plan.GetTransparencyLayerCount();
 	const decColor clrBorder( 0.0f, 0.0f, 0.0f );
 	const decColor clrDotOn( 1.0f, 0.0f, 0.0f );
@@ -1119,8 +1120,8 @@ void deoglRenderDevMode::RenderTraspLevelCount( deoglRenderPlan &plan, const dec
 	int x1, x2, y1, y2;
 	int p;
 	
-	renderThread.GetShader().ActivateShader( pShaderSolidColor2D );
-	deoglShaderCompiled &shader = *pShaderSolidColor2D->GetCompiled();
+	pPipelineSolidColor2D->Activate();
+	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetGlShader();
 	
 	for( p=0; p<100; p++ ){
 		x1 = position.x + dotWidth * p;
@@ -1277,11 +1278,10 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	const char * const fmtTex2D  = "Tex2D (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
 	const char * const fmtTexArr = "TexArr(%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
 	const char * const fmtCube   = "Cube  (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
-	const char * const fmtRenBuf = "RenBuf(%4d): %4" OGLPFLLU "M                 | C(%4d) %4" OGLPFLLU "M                 | D(%3d) %3" OGLPFLLU "M";
 	const char * const fmtSkin   = "Skins (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M";
 	const char * const fmtRender = "Renderables :  2D-C(%2d) %3" OGLPFLLU "M | 2D-D(%2d) %3" OGLPFLLU "M | Arr-C(%2d) %3" OGLPFLLU "M | Arr-D(%2d) %3" OGLPFLLU "M";
 	const char * const fmtVBO    = "VBO   (%4d): %4uM | S(%4d) %4uM | I(%4d) %4uM | S(%4d) %4uM | T(%4d) %4uM";
-	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
+	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM";
 	
 	// textures 2d
 	const deoglMemoryConsumptionTexture &consumptionTexture2D = consumption.texture2D;
@@ -1438,25 +1438,6 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	size.y += fontHeight;
 	y += fontHeight;
 	
-	// renderbuffer
-	const deoglMemoryConsumptionRenderBuffer &consumptionRenderbuffer = consumption.renderbuffer;
-	const int renderbufferCount = consumptionRenderbuffer.all.GetCount();
-	const int renderbufferColorCount = consumptionRenderbuffer.color.GetCount();
-	const int renderbufferDepthCount = consumptionRenderbuffer.depth.GetCount();
-	unsigned long long renderbufferGPU = consumptionRenderbuffer.all.GetConsumption();
-	unsigned long long renderbufferColorGPU = consumptionRenderbuffer.color.GetConsumption();
-	unsigned long long renderbufferDepthGPU = consumptionRenderbuffer.depth.GetConsumption();
-	
-	renderbufferGPU /= 1000000ull;
-	renderbufferColorGPU /= 1000000ull;
-	renderbufferDepthGPU /= 1000000ull;
-	
-	text.Format( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
-		renderbufferDepthCount, renderbufferDepthGPU );
-	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
-	size.y += fontHeight;
-	y += fontHeight;
-	
 	// skin memory consumption
 	const deoglMemoryConsumptionSkin &consumptionSkin = consumption.skin;
 	const int skinCount = consumptionSkin.all.GetCount();
@@ -1526,9 +1507,8 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	const deoglMemoryConsumptionDeferredRendering &consumptionDefren = consumption.deferredRendering;
 	unsigned int defrenGPU = consumptionDefren.target.GetConsumptionMB();
 	unsigned int defrenGPUTexture = consumptionDefren.texture.GetConsumptionMB();
-	unsigned int defrenGPURenBuf = consumptionDefren.renderBuffer.GetConsumptionMB();
 	
-	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
+	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
@@ -1539,7 +1519,6 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	totalGPU = consumptionTexture2D.all.GetConsumption();
 	totalGPU += consumptionTextureArray.all.GetConsumption();
 	totalGPU += consumptionTextureCube.all.GetConsumption();
-	totalGPU += consumptionRenderbuffer.all.GetConsumption();
 	totalGPU += consumptionBO.vbo.GetConsumption();
 	totalGPU += consumptionBO.ibo.GetConsumption();
 	totalGPU += consumptionBO.ubo.GetConsumption();
@@ -1824,16 +1803,6 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 //////////////////////
 
 void deoglRenderDevMode::pCleanUp(){
-	if( pShaderSolidColor2D ){
-		pShaderSolidColor2D->RemoveUsage();
-	}
-	if( pShaderSolidColor3D ){
-		pShaderSolidColor3D->RemoveUsage();
-	}
-	if( pShaderShape ){
-		pShaderShape->RemoveUsage();
-	}
-	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLVertexArray( pVAOShapes );
 	dops.DeleteOpenGLBuffer( pVBOShapes );

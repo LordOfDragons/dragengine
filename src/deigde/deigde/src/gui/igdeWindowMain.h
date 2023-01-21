@@ -26,6 +26,7 @@
 #include "../configuration/igdeConfigurationLocal.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeMainWindow.h>
 #include <deigde/gui/igdeSwitcherReference.h>
 #include <deigde/gui/igdeProgressBarReference.h>
@@ -46,6 +47,7 @@
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/logger/deLoggerReference.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/resources/rig/deRigReference.h>
@@ -62,7 +64,6 @@ class igdeTemplateList;
 class igdeTexturePropertyList;
 class igdeSharedFontList;
 class igdeUIHelper;
-class igdeLoggerHistory;
 
 class deException;
 class decTimer;
@@ -84,7 +85,7 @@ private:
 	igdeLoadSaveSystem *pLoadSaveSystem;
 	igdeGDPreviewManager *pGDPreviewManager;
 	igdeTexturePropertyList *pTexturePropertyList;
-	deLoggerReference pLoggerHistory;
+	igdeLoggerHistory::Ref pLoggerHistory;
 	igdeWindowLoggerReference pWindowLogger;
 	deVirtualFileSystemReference pVFS;
 	igdeTemplateList *pTemplates;
@@ -163,6 +164,8 @@ private:
 	
 	igdeTaskSyncGameDefinition *pTaskSyncGameDefinition;
 	
+	decUnicodeStringList pAfterLoadArguments;
+	
 	
 	
 public:
@@ -199,7 +202,7 @@ public:
 	/** Retrieves the texture property list. */
 	inline igdeTexturePropertyList *GetTexturePropertyList() const{ return pTexturePropertyList; }
 	/** Retrieves the history logger. */
-	igdeLoggerHistory *GetLoggerHistory() const;
+	inline igdeLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
 	
 	/** \brief Virtual file system. */
 	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
@@ -282,6 +285,9 @@ public:
 	
 	/** \brief Active module shared toolbars changed. */
 	void ActiveModuleSharedToolBarsChanged();
+	
+	/** \brief Activate editor and bring it to the front. */
+	void ActivateEditor( igdeEditorModule *editor );
 	
 	/** Rebuilds the menu using the given game definition. */
 	void RebuildMenu();

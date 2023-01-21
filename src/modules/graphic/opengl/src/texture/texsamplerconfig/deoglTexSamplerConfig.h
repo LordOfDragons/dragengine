@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief OpenGL texture sampler configuration.
+ * OpenGL texture sampler configuration.
  */
 class deoglTexSamplerConfig{
 private:
@@ -49,10 +49,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create opengl texture sampler configuration. */
+	/** Create opengl texture sampler configuration. */
 	deoglTexSamplerConfig( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up opengl texture sampler configuration. */
+	/** Clean up opengl texture sampler configuration. */
 	~deoglTexSamplerConfig();
 	/*@}*/
 	
@@ -60,45 +60,45 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Sampler object handle. */
+	/** Sampler object handle. */
 	inline GLuint GetSamplerObject() const{ return pSamplerObject; }
 	
 	
 	
-	/** \brief Minimum lod level. */
+	/** Minimum lod level. */
 	inline int GetMinLodLevel() const{ return pMinLodLevel; }
 	
-	/** \brief Set minimum lod level. */
+	/** Set minimum lod level. */
 	void SetMinLodLevel( int level );
 	
-	/** \brief Maximum lod level. */
+	/** Maximum lod level. */
 	inline int GetMaxLodLevel() const{ return pMaxLodLevel; }
 	
-	/** \brief Set maximum lod level. */
+	/** Set maximum lod level. */
 	void SetMaxLodLevel( int level );
 	
-	/** \brief Filter mode. */
+	/** Filter mode. */
 	inline deoglTextureStageManager::eTextureFiltering GetFilterMode() const{ return pFilterMode; }
 	
-	/** \brief Set filter mode. */
+	/** Set filter mode. */
 	void SetFilterMode( deoglTextureStageManager::eTextureFiltering filterMode );
 	
-	/** \brief Wrapping mode. */
+	/** Wrapping mode. */
 	inline GLenum GetWrapMode() const{ return pWrapMode; }
 	
-	/** \brief Set wrapping mode. */
+	/** Set wrapping mode. */
 	void SetWrapMode( GLenum wrapMode );
 	
-	/** \brief Texture uses depth compare mode. */
+	/** Texture uses depth compare mode. */
 	inline bool GetDepthCompareMode() const{ return pDepthCompareMode; }
 	
-	/** \brief Set if texture uses depth compare mode. */
+	/** Set if texture uses depth compare mode. */
 	void SetDepthCompareMode( bool depthCompareMode );
 	
-	/** \brief Depth compare function. */
+	/** Depth compare function. */
 	inline GLenum GetDepthCompareFunc() const{ return pDepthCompareFunc; }
 	
-	/** \brief Set depth compare function. */
+	/** Set depth compare function. */
 	void SetDepthCompareFunc( GLenum func );
 	/*@}*/
 };

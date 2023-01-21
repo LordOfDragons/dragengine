@@ -22,12 +22,10 @@
 #ifndef _DEOGLRRDSRENDERABLEIMAGE_H_
 #define _DEOGLRRDSRENDERABLEIMAGE_H_
 
-#include <dragengine/deObject.h>
-
 #include "deoglRDSRenderable.h"
+#include "../../../../texture/deoglRImage.h"
 
-class deoglRImage;
-
+#include <dragengine/deObject.h>
 
 
 /**
@@ -35,7 +33,7 @@ class deoglRImage;
  */
 class deoglRDSRenderableImage : public deoglRDSRenderable{
 private:
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -52,7 +50,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image. */
 	void SetImage( deoglRImage *image );
@@ -66,9 +64,6 @@ public:
 	 */
 	virtual deoglTexture *GetRenderTexture();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

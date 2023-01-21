@@ -68,10 +68,17 @@ void deoglRPTBuildRTsGeometry::Run(){
 	
 	decTimer timer;
 	try{
-		pSolid();
-		pSolidTerrain();
-		pSolidOutline();
-		pSolidDecals();
+		pInitPipelineModifier();
+		
+		pSolid( false );
+		pSolidTerrain( false );
+		pSolidOutline( false );
+		pSolidDecals( false );
+		
+		pSolid( true );
+		pSolidTerrain( true );
+		pSolidOutline( true );
+		pSolidDecals( true );
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
@@ -96,83 +103,102 @@ decString deoglRPTBuildRTsGeometry::GetDebugName() const{
 // Private Functions
 //////////////////////
 
-void deoglRPTBuildRTsGeometry::pSolid(){
+void deoglRPTBuildRTsGeometry::pInitPipelineModifier(){
+	pPipelineModifier = 0;
+	if( pPlan.GetPlan().GetFlipCulling() ){
+		pPipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( pPlan.GetPlan().GetRenderStereo() ){
+		pPipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+}
+
+void deoglRPTBuildRTsGeometry::pSolid( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidGeometryXRayTask() : pPlan.GetSolidGeometryTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidGeometryTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
 	// components without decals
 	addToRenderTask.SetFilterDecal( true );
 	addToRenderTask.SetDecal( false );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );
 	addToRenderTask.SetFilterDecal( false );
 	
-	// billboards
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estBillboardGeometry );
 	addToRenderTask.AddBillboards( collideList );
 	
-	// prop fields
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldGeometry );
 	addToRenderTask.AddPropFields( collideList, false );
-	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldImposterGeometry );
 	addToRenderTask.AddPropFields( collideList, true );
 	
-	// particles
 	if( pPlan.GetPlan().GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estParticleGeometry );
-		addToRenderTask.SetSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry );
-		addToRenderTask.SetSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry );
 		addToRenderTask.AddParticles( collideList );
 	}
 }
 
-void deoglRPTBuildRTsGeometry::pSolidTerrain(){
+void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
 	if( collideList.GetHTSectorCount() == 0 ){
 		return;
 	}
 	
 	{ // pass 1
-	deoglRenderTask &renderTask = pPlan.GetSolidGeometryHeight1Task();
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidGeometryHeight1XRayTask() : pPlan.GetSolidGeometryHeight1Task();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
+	
 	addToRenderTask.AddHeightTerrains( collideList, true );
 	}
 	
 	{ // pass 2
-	deoglRenderTask &renderTask = pPlan.GetSolidGeometryHeight2Task();
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidGeometryHeight2XRayTask() : pPlan.GetSolidGeometryHeight2Task();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
+	
 	addToRenderTask.AddHeightTerrains( collideList, false );
 	}
 }
 
-void deoglRPTBuildRTsGeometry::pSolidOutline(){
+void deoglRPTBuildRTsGeometry::pSolidOutline( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidGeometryOutlineXRayTask() : pPlan.GetSolidGeometryOutlineTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidGeometryOutlineTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetOutline( true );
 	addToRenderTask.SetFilterDecal( true );
@@ -180,21 +206,29 @@ void deoglRPTBuildRTsGeometry::pSolidOutline(){
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 }
 
-void deoglRPTBuildRTsGeometry::pSolidDecals(){
+void deoglRPTBuildRTsGeometry::pSolidDecals( bool xray ){
+	deoglRenderTask &renderTask = xray ? pPlan.GetSolidDecalsXRayTask() : pPlan.GetSolidDecalsTask();
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglRenderTask &renderTask = pPlan.GetSolidDecalsTask();
 	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
 	renderTask.Clear();
+	renderTask.SetRenderVSStereo( pPlan.GetPlan().GetRenderStereo()
+		&& pPlan.GetPlan().GetRenderThread().GetChoices().GetRenderStereoVSLayer() );
 	
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estDecalGeometry );
+	addToRenderTask.SetFilterXRay( true );
+	addToRenderTask.SetXRay( xray );
+	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
+	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
 	// component model decals
 	addToRenderTask.SetFilterDecal( true );

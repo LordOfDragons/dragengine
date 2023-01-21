@@ -26,7 +26,7 @@
 #include "deoglRRenderWindow.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../rendering/deoglRenderCanvasContext.h"
 #include "../rendering/deoglRenderCanvas.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -221,7 +221,6 @@ pWidth( 100 ),
 pHeight( 100 ),
 pFullScreen( false ),
 pPaint( true ),
-pIcon( NULL ),
 
 pRCanvasView( NULL ),
 
@@ -236,10 +235,6 @@ deoglRRenderWindow::~deoglRRenderWindow(){
 	
 	DropRCanvasView();
 	pDestroyWindow();
-	
-	if( pIcon ){
-		delete pIcon;
-	}
 }
 
 
@@ -327,10 +322,6 @@ void deoglRRenderWindow::SetPaint( bool paint ){
 void deoglRRenderWindow::SetIcon( deoglPixelBuffer *icon ){
 	if( icon == pIcon ){
 		return;
-	}
-	
-	if( pIcon ){
-		delete pIcon;
 	}
 	
 	pIcon = icon;
@@ -559,6 +550,8 @@ void deoglRRenderWindow::SwapBuffers(){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
+	
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
 	// 155=GLX, 11=glXSwapBuffers
@@ -615,6 +608,8 @@ void deoglRRenderWindow::Render(){
 	}
 	#endif
 	
+	deoglDebugTraceGroup debugTrace( GetRenderThread(), "Window.Render" );
+	
 	// make window current in the render context
 	pRenderThread.GetContext().ActivateRRenderWindow( this );
 	
@@ -626,13 +621,16 @@ void deoglRRenderWindow::Render(){
 	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
-	pRCanvasView->PrepareForRender( NULL );
+	pRCanvasView->PrepareForRender( nullptr );
+	pRCanvasView->PrepareForRenderRender( nullptr );
 	if( isMainWindow ){
 		if( inputOverlayCanvas ){
-			inputOverlayCanvas->PrepareForRender( NULL );
+			inputOverlayCanvas->PrepareForRender( nullptr );
+			inputOverlayCanvas->PrepareForRenderRender( nullptr );
 		}
 		if( debugOverlayCanvas ){
-			debugOverlayCanvas->PrepareForRender( NULL );
+			debugOverlayCanvas->PrepareForRender( nullptr );
+			debugOverlayCanvas->PrepareForRenderRender( nullptr );
 		}
 	}
 	
@@ -656,6 +654,8 @@ void deoglRRenderWindow::Render(){
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
+	
+	debugTrace.Close();
 	
 	// capture if any capture canvas are pending
 	Capture();

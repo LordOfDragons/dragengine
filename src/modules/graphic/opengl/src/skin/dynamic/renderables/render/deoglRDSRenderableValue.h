@@ -29,7 +29,7 @@
 
 
 /**
- * \brief Render dynamic skin value renderable.
+ * Render dynamic skin value renderable.
  */
 class deoglRDSRenderableValue : public deoglRDSRenderable{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin value renderable. */
+	/** Create render dynamic skin value renderable. */
 	deoglRDSRenderableValue( deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Clean up render dynamic skin value renderable. */
+	/** Clean up render dynamic skin value renderable. */
 	virtual ~deoglRDSRenderableValue();
 	/*@}*/
 	
@@ -51,26 +51,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set value. */
+	/** Set value. */
 	void SetValue( float value );
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
-	 * \brief Get value if support or default value.
+	 * Get value if support or default value.
 	 * \details Default implementation returns default value.
 	 */
 	virtual float GetRenderValue( float defaultValue );
 	
 	/**
-	 * \brief Get color if support or default color.
+	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
 	virtual decColor GetRenderColor( const decColor &defaultColor );
 	
 	/**
-	 * \brief Get texture to use for rendering or \em NULL if not applicable.
+	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglTexture *GetRenderTexture();

@@ -35,7 +35,7 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Debug Save Texture.
+ * Debug Save Texture.
  * Helper class saving textures of various kinds to files for debugging purpose.
  * All images are stored in the format /&lt;base-path&gt;/&lt;name&gt;_&lt;timestamp&gt;.xxx
  * where xxx is a file extension depending on the texture to be saved. Time-stamp is
@@ -57,7 +57,7 @@ public:
 		/** Conversion suitable for depth buffer values. */
 		ecDepthBuffer,
 		
-		/** \brief Conversion suitable for inverse depth buffer values. */
+		/** Conversion suitable for inverse depth buffer values. */
 		ecDepthBufferInverse,
 		
 		/** Conversion of normals into encoded normals. */
@@ -70,18 +70,18 @@ public:
 		EC_COUNT
 	};
 	
-	/** \brief Depth types. */
+	/** Depth types. */
 	enum eDepthTypes{
-		/** \brief Linear. */
+		/** Linear. */
 		edtLinear,
 		
-		/** \brief Depth. */
+		/** Depth. */
 		edtDepth,
 		
-		/** \brief Linear inverse. */
+		/** Linear inverse. */
 		edtLinearInverse,
 		
-		/** \brief Depth inverse. */
+		/** Depth inverse. */
 		edtDepthInverse
 	};
 	
@@ -90,7 +90,7 @@ private:
 	decString pBasePath;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new debug save texture object. */
 	deoglDebugSaveTexture( deoglRenderThread &renderThread );
@@ -98,7 +98,7 @@ public:
 	~deoglDebugSaveTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the base path where images are stored under. */
 	inline const decString &GetBasePath() const{ return pBasePath; }
@@ -119,6 +119,8 @@ public:
 	void SaveDepthTextureLevel( deoglTexture &texture, int level, const char *name, eDepthTypes type );
 	/** Saves a stencil texture to file. */
 	void SaveStencilTexture( deoglTexture &texture, const char *name );
+	/** Saves a stencil texture to file. */
+	void SaveStencilArrayTexture( deoglArrayTexture &texture, const char *name );
 	
 	/** Saves a cube map to file. */
 	void SaveCubeMap( deoglCubeMap &cubemap, const char *name, bool upsideDown );
@@ -143,14 +145,16 @@ public:
 	void SaveArrayTextureLevelConversion( deoglArrayTexture &texture, int level, const char *name, eConvertions conversion );
 	/** Saves an array texture to file. */
 	void SaveDepthArrayTexture( deoglArrayTexture &texture, const char *name, bool linearDepth );
+	/** Saves an array texture to file. */
+	void SaveDepthArrayTextureLevel( deoglArrayTexture &texture, int level, const char *name, bool linearDepth );
 	
 	/** Retrieves the pixel buffer type opengl pixel format and type. */
 	deoglPixelBuffer::ePixelFormats GetPixelBufferType( GLenum &pixelFormat, GLenum &pixelType ) const;
 	/** Retrieves the stride for a pixel buffer format. */
 	int GetStride( int width, int pixelBufferType ) const;
-	/** \brief Component count for pixel buffer type. */
+	/** Component count for pixel buffer type. */
 	int GetComponentCount( int pixelBufferType );
-	/** \brief Bit count for pixel buffer type. */
+	/** Bit count for pixel buffer type. */
 	int GetBitCount( int pixelBufferType );
 	/*@}*/
 	

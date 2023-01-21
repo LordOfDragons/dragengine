@@ -28,6 +28,7 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
 #include "../rendering/deoglRenderWorld.h"
@@ -38,12 +39,39 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../world/deoglRCamera.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deVRSystem.h>
+
+
+
+// #define DO_TIMING
+
+#ifdef DO_TIMING
+#include <dragengine/common/utils/decTimer.h>
+static decTimer dtimer;
+static decTimer dtimerTotal;
+
+#define DEBUG_RESET_TIMER dtimer.Reset(); dtimerTotal.Reset();
+#define DEBUG_PRINT_TIMER(what) \
+	renderThread.GetLogger().LogInfoFormat( "VREye(%s) %s = %iys",\
+		pEye == deBaseVRModule::evreRight ? "R" : "L", \
+		what, ( int )( dtimer.GetElapsedTime() * 1000000.0 ) );\
+	dtimer.Reset();
+#define DEBUG_PRINT_TIMER_TOTAL(what) \
+	renderThread.GetLogger().LogInfoFormat( "VREye(%s) %s = %iys",\
+		pEye == deBaseVRModule::evreRight ? "R" : "L", \
+		what, ( int )( dtimerTotal.GetElapsedTime() * 1000000.0 ) );\
+	dtimerTotal.Reset();
+#else
+#define DEBUG_RESET_TIMER
+#define DEBUG_PRINT_TIMER(what)
+#define DEBUG_PRINT_TIMER_TOTAL(what)
+#endif
 
 
 // Class deoglVREye
@@ -108,7 +136,7 @@ decDMatrix deoglVREye::CreateProjectionDMatrix( float znear, float zfar ) const{
 	m.a31 = 0.0;
 	m.a32 = 0.0;
 	
-	if( pVR.GetCamera().GetRenderThread().GetDeferredRendering().GetUseInverseDepth() ){
+	if( pVR.GetCamera().GetRenderThread().GetChoices().GetUseInverseDepth() ){
 		// due to inverse depth changing z-clamping
 		m.a33 = 0.0;
 		m.a34 = znear;
@@ -169,6 +197,8 @@ void deoglVREye::BeginFrame( deBaseVRModule &vrmodule ){
 		pLogParameters( renderThread );
 		
 		// examples on the internet use RGBA8
+		pVR.DropFBOStereo();
+		
 		if( pRenderTarget ){
 			pRenderTarget->SetSize( pTargetSize );
 			
@@ -192,6 +222,9 @@ void deoglVREye::Render(){
 	plan.SetUpscaleSize( pTargetSize.x, pTargetSize.y );
 	plan.SetUseUpscaling( pRenderSize != pTargetSize );
 	plan.SetUpsideDown( true );
+	plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
+	plan.SetLodLevelOffset( 0 );
+	plan.SetRenderStereo( false );
 	
 	try{
 		pRender( renderThread );
@@ -360,7 +393,7 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 		return;
 	}
 	
-	deoglFramebuffer * const oldFbo = renderThread.GetFramebuffer().GetActive();
+	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
 	pVRViewImages = new sViewImage[ count ];
 	
@@ -379,8 +412,6 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 		
 		viewImage.fbo->Verify();
 	}
-	
-	renderThread.GetFramebuffer().Activate( oldFbo );
 	
 	renderThread.GetLogger().LogInfoFormat( "%s: view images %d", LogPrefix(), pVRViewImageCount );
 }
@@ -403,6 +434,7 @@ void deoglVREye::pDestroyEyeViews(){
 }
 
 void deoglVREye::pRender( deoglRenderThread &renderThread ){
+	DEBUG_RESET_TIMER
 	// prepare render target and fbo
 	pRenderTarget->PrepareFramebuffer();
 	
@@ -416,8 +448,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 		
 	case deBaseVRModule::evreRight:
 		plan.SetRenderVR( deoglRenderPlan::ervrRightEye );
-		plan.SetCameraCorrectionMatrix( pMatrixViewToEye.QuickInvert().QuickMultiply(
-			pVR.GetLeftEye().GetMatrixViewToEye() ) );
+		plan.SetCameraStereoMatrix( pVR.GetLeftEye().pMatrixViewToEye.QuickInvert().QuickMultiply( pMatrixViewToEye ) );
 		break;
 	}
 	
@@ -426,8 +457,10 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );
+	DEBUG_PRINT_TIMER( "Prepare" )
 	
 	plan.PrepareRender( nullptr );
+	DEBUG_PRINT_TIMER( "RenderPlan Prepare" )
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	defren.Resize( pRenderSize.x, pRenderSize.y );
@@ -435,6 +468,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, pUseGammaCorrection );
+	DEBUG_PRINT_TIMER( "RenderWorld" )
 	// set render target dirty?
 }
 

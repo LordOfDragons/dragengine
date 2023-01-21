@@ -391,10 +391,10 @@ pVAPreview( NULL )
 	
 	panel4.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaY ) );
 	for( i=0; i<pLanes.GetCount(); i++ ){
-		const ceWDSLane &lane = *( ( ceWDSLane* )pLanes.GetAt( i ) );
+		const ceWDSLane &lane2 = *( ( ceWDSLane* )pLanes.GetAt( i ) );
 		panel5.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 		helper.Spacer( panel5, decPoint( 10, 2 ) );
-		helper.Label( panel5, lane.GetLabel(), lane.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
+		helper.Label( panel5, lane2.GetLabel(), lane2.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
 		helper.Spacer( panel5, decPoint( 10, 2 ) );
 		panel4->AddChild( panel5 );
 	}
@@ -521,14 +521,11 @@ void ceWindowDopeSheet::SetZoomTime( float zoom ){
 	text.Format( "%d", ( int )( zoom * 100.0f + 0.5f ) );
 	pCBTimeScale->SetText( text );
 	
-	pRebuildTimeLinesAndLabels();
+	pUpdateScrollbars();
+	OnTimeChanged();
 	if( pVAPreview ){
 		pVAPreview->InvalidatePreview();
 	}
-	
-	pUpdateScrollbars();
-	
-	OnTimeChanged();
 }
 
 float ceWindowDopeSheet::GetMaximumLinesTime() const{
@@ -595,12 +592,11 @@ void ceWindowDopeSheet::OnActionChanged(){
 		( ( ceWDSLane* )pLanes.GetAt( i ) )->OnActionChanged();
 	}
 	
+	pUpdateScrollbars();
 	pRebuildTimeLinesAndLabels();
 	if( pVAPreview ){
 		pVAPreview->OnActionChanged();
 	}
-	
-	pUpdateScrollbars();
 	pUpdateActions();
 }
 
@@ -693,10 +689,9 @@ void ceWindowDopeSheet::ResizeDopeSheetCanvas(){
 		( ( ceWDSLane* )pLanes.GetAt( i ) )->RebuildCanvas();
 	}
 	
+	pUpdateScrollbars();
 	pRebuildTimeLinesAndLabels();
 	pUpdateCanvasVAPreviewTime();
-	
-	pUpdateScrollbars();
 }
 
 void ceWindowDopeSheet::OnTimeChanged(){
@@ -772,9 +767,6 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 	ceCAActorSpeak * const action = GetActionASpeak();
 	if( action && action->GetEngineSound() ){
 		playtime = action->GetEngineSound()->GetPlayTime();
-		
-	}else{
-		playtime = 2.0f;
 	}
 	
 	// maximum length of all lines
@@ -788,8 +780,9 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 	
 	// update the scrollbars
 	if( pSBTime ){
-		const int page = GetSizeDopeSheet().x / 2;
-		pSBTime->SetUpper( ( int )( playtime * pPixelPerSecond ) - page );
+		const int range = decMath::max( ( int )( playtime * pPixelPerSecond ) - GetSizeDopeSheet().x, 0 );
+		const int page = decMath::max( GetSizeDopeSheet().x / 2, 1 );
+		pSBTime->SetUpper( range + page );
 		pSBTime->SetPageSize( page );
 	}
 }

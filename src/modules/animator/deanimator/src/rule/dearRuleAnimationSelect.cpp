@@ -70,8 +70,8 @@
 /////////////////////////////////
 
 dearRuleAnimationSelect::dearRuleAnimationSelect( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimationSelect &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimationSelect &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pAnimationSelect( rule ),
 
@@ -139,7 +139,7 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// determine animation state
-		const int animationBone = boneState.GetAnimationBone();
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		if( animationBone == -1  ){
 			boneState.BlendWithDefault( blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 			continue;
@@ -182,6 +182,7 @@ void dearRuleAnimationSelect::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMoves();
+	pMapAnimationBones.Init( *this );
 }
 
 
@@ -192,7 +193,7 @@ void dearRuleAnimationSelect::RuleChanged(){
 void dearRuleAnimationSelect::pUpdateMoves(){
 	pMoves.RemoveAll();
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( ! animation ){
 		return;
 	}

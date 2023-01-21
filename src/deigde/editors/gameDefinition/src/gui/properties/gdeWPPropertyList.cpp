@@ -946,8 +946,8 @@ void gdeWPPropertyList::UpdateList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			gdeProperty * const property = pPropertyList->GetAt( i );
-			pCBProperties->AddItem( property->GetName(), NULL, property );
+			gdeProperty * const property2 = pPropertyList->GetAt( i );
+			pCBProperties->AddItem( property2->GetName(), NULL, property2 );
 		}
 		
 		pCBProperties->SortItems();

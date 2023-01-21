@@ -47,6 +47,7 @@ private:
 	
 	decString pActor;
 	decUnicodeString pTextBoxText;
+	decString pTextBoxTextTranslate;
 	decString pTextBoxTextStyle;
 	decString pPathSound;
 	ceStripList pWords;
@@ -82,10 +83,19 @@ public:
 	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
 	void SetActor( const char *id );
+	
 	/** Retrieves the text box text. */
 	inline const decUnicodeString &GetTextBoxText() const{ return pTextBoxText; }
+	
 	/** Sets the text box text. */
 	void SetTextBoxText( const decUnicodeString &text );
+	
+	/** Translated text box text. */
+	inline const decString &GetTextBoxTextTranslate() const{ return pTextBoxTextTranslate; }
+	
+	/** Set translated text box text. */
+	void SetTextBoxTextTranslate( const char *text );
+	
 	/** \brief Retrieves the text box text style. */
 	inline const decString &GetTextBoxTextStyle() const{ return pTextBoxTextStyle; }
 	/** \brief Sets the text box text style. */

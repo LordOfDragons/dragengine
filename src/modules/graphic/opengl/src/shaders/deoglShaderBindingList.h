@@ -25,11 +25,11 @@
 
 
 /**
- * \brief Shader Shader Binding List.
+ * Shader Shader Binding List.
  */
 class deoglShaderBindingList{
 private:
-	/** \brief Bindings. */
+	/** Bindings. */
 	struct sBinding{
 		char *name;
 		int target;
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create binding list. */
+	/** Create binding list. */
 	deoglShaderBindingList();
 	
-	/** \brief Clean up binding list. */
+	/** Clean up binding list. */
 	~deoglShaderBindingList();
 	/*@}*/
 	
@@ -57,25 +57,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of bindings. */
+	/** Number of bindings. */
 	inline int GetCount() const{ return pCount; }
 	
-	/** \brief Named binding is present. */
+	/** Named binding is present. */
 	bool HasNamed( const char *name );
 	
-	/** \brief Index of named binding or -1 if absent. */
+	/** Index of named binding or -1 if absent. */
 	int IndexOfNamed( const char *name ) const;
 	
-	/** \brief Binding name at index. */
+	/** Binding name at index. */
 	const char *GetNameAt( int index ) const;
 	
-	/** \brief Binding target at index. */
+	/** Binding target at index. */
 	int GetTargetAt( int index ) const;
 	
-	/** \brief Add binding. */
+	/** Add binding. */
 	void Add( const char *name, int target );
 	
-	/** \brief Remove all bindings. */
+	/** Remove all bindings. */
 	void RemoveAll();
 	/*@}*/
 };

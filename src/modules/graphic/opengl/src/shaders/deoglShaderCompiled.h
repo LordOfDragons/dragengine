@@ -32,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief Compiled Shader Program.
+ * Compiled Shader Program.
  * A compiled shader program. Shader programs are compiled from a base code loaded
  * from disk using defines to produce a specialized program.
  */
@@ -52,7 +52,7 @@ private:
 	int pParameterCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader compiled object. */
 	deoglShaderCompiled( deoglRenderThread &renderThread );
@@ -60,7 +60,7 @@ public:
 	~deoglShaderCompiled();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
@@ -104,7 +104,7 @@ public:
 	bool GetHasTessellation() const;
 	/*@}*/
 	
-	/** @name Parameters */
+	/** \name Parameters */
 	/*@{*/
 	/** Sets the number of parameters. */
 	void SetParameterCount( int count );
@@ -118,10 +118,16 @@ public:
 	void SetParameterFloat( int index, float p1, float p2 ) const;
 	void SetParameterFloat( int index, float p1, float p2, float p3 ) const;
 	void SetParameterFloat( int index, float p1, float p2, float p3, float p4 ) const;
+	
 	void SetParameterInt( int index, int p1 ) const;
 	void SetParameterInt( int index, int p1, int p2 ) const;
 	void SetParameterInt( int index, int p1, int p2, int p3 ) const;
 	void SetParameterInt( int index, int p1, int p2, int p3, int p4 ) const;
+	
+	void SetParameterUInt( int index, unsigned int p1 ) const;
+	void SetParameterUInt( int index, unsigned int p1, unsigned int p2 ) const;
+	void SetParameterUInt( int index, unsigned int p1, unsigned int p2, unsigned int p3 ) const;
+	void SetParameterUInt( int index, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4 ) const;
 	
 	void SetParameterPoint2( int index, const decPoint &point ) const;
 	void SetParameterPoint3( int index, const decPoint3 &point ) const;

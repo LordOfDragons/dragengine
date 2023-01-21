@@ -41,33 +41,31 @@ class IMMMenuFader
 	
 	
 	/** \brief Create widget fader for interactive main menu. */
-	public func new( InteractiveMainMenu mainMenu )
+	public func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("mainMenu")
 		end
 		
-		this.pMainMenu = mainMenu
-		this.pCurTransparency = 1.0
-		this.pTargetTransparency = 1.0
-		this.pFadeTime = 0.0
-		this.pElapsed = 0.0
+		pMainMenu = mainMenu
+		pCurTransparency = 1
+		pTargetTransparency = 1
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		this.pMainMenu = null
+		pMainMenu = null
 	end
 	
 	
 	
 	/** \brief Interactive main menu. */
 	public func InteractiveMainMenu getMainMenu()
-		return this.pMainMenu
+		return pMainMenu
 	end
 	
 	/** \brief Current transparency. */
 	public func float getCurTransparency()
-		return this.pCurTransparency
+		return pCurTransparency
 	end
 	
 	/**
@@ -75,35 +73,35 @@ class IMMMenuFader
 	 * 
 	 * Stops fading if running.
 	 */
-	public func void setCurTransparency( float transparency )
-		this.pCurTransparency = transparency
-		this.pTargetTransparency = transparency
-		this.pFadeTime = 0.0
-		this.pElapsed = 0.0
+	public func void setCurTransparency(float transparency)
+		pCurTransparency = transparency
+		pTargetTransparency = transparency
+		pFadeTime = 0
+		pElapsed = 0
 		
-		this.updateMenuFade()
+		updateMenuFade()
 	end
 	
 	/** \brief Camera transparency to fade to or null. */
 	public func float getTargetTransparency()
-		return this.pTargetTransparency
+		return pTargetTransparency
 	end
 	
 	/** \brief Fade time. */
 	public func float getFadeTime()
-		return this.pFadeTime
+		return pFadeTime
 	end
 	
 	/** \brief Elapsed fade time. */
 	public func float getElapsed()
-		return this.pElapsed
+		return pElapsed
 	end
 	
 	
 	
 	/** \brief Widget is fading. */
 	public func bool isFading()
-		return this.pFadeTime > 0.0
+		return pFadeTime > 0
 	end
 	
 	/**
@@ -111,32 +109,32 @@ class IMMMenuFader
 	 * 
 	 * Starts fading.
 	 */
-	public func void fadeTo( float transparency, float fadeTime )
-		fadeTime = DEMath.max( fadeTime, 0.0 )
+	public func void fadeTo(float transparency, float fadeTime)
+		fadeTime = DEMath.max(fadeTime, 0.0)
 		if fadeTime < 0.01
-			this.setCurTransparency( transparency )
+			setCurTransparency(transparency)
 			return
 		end
 		
-		this.pTargetTransparency = transparency
-		this.pFadeTime = fadeTime
-		this.pElapsed = 0.0
+		pTargetTransparency = transparency
+		pFadeTime = fadeTime
+		pElapsed = 0
 	end
 	
 	/** \brief Update fading.
 	 */
-	public func void update( float elapsed )
-		if this.pFadeTime == 0.0
+	public func void update(float elapsed)
+		if pFadeTime == 0
 			return
 		end
 		
 		// fade
-		this.pElapsed += elapsed
-		if this.pElapsed < this.pFadeTime
-			this.updateMenuFade()
+		pElapsed += elapsed
+		if pElapsed < pFadeTime
+			updateMenuFade()
 			
 		else
-			this.setCurTransparency( this.pTargetTransparency )
+			setCurTransparency(pTargetTransparency)
 		end
 	end
 	
@@ -144,24 +142,23 @@ class IMMMenuFader
 	
 	/** \brief Update menu fade. */
 	protected func void updateMenuFade()
-		var float transparency = DEMath.smoothStep( this.pElapsed, \
-			0.0, this.pFadeTime, this.pCurTransparency, this.pTargetTransparency )
+		var float transparency = DEMath.smoothStep(pElapsed, 0, pFadeTime, pCurTransparency, pTargetTransparency)
 		
-		this.pMainMenu.getWorldRenderer().setTransparency( transparency )
-		this.pMainMenu.getMicrophone().setVolume( transparency )
-		this.setMousePointerFade( transparency )
+		pMainMenu.getWorldRenderer().setTransparency(transparency)
+		pMainMenu.getMicrophone().setVolume(transparency)
+		setMousePointerFade(transparency)
 	end
 	
 	/** \brief Set mouse pointer fade if possible. */
-	protected func void setMousePointerFade( float transparency )
-		var Desktop desktop = this.pMainMenu.getDesktop()
+	protected func void setMousePointerFade(float transparency)
+		var Desktop desktop = pMainMenu.getDesktop()
 		if desktop == null
 			return  // in case this update is triggered during construction time
 		end
 		
-		var MousePointer mousePointer = this.pMainMenu.getDesktop().getMousePointerInstance()
+		var MousePointer mousePointer = desktop.getMousePointerInstance()
 		if mousePointer != null
-			mousePointer.getCanvas().setTransparency( transparency )
+			mousePointer.getCanvas().setTransparency(transparency)
 		end
 	end
 end

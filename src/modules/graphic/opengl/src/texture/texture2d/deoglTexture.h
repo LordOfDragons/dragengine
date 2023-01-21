@@ -27,6 +27,7 @@
 #include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoglRenderThread;
 class deoglPixelBuffer;
@@ -58,6 +59,7 @@ public:
 	bool pMipMapped;
 	
 	deoglMemoryConsumptionTextureUse pMemUse;
+	decString pDebugObjectLabel;
 	
 	
 	
@@ -195,7 +197,13 @@ public:
 	
 	/** Set depth texture format suitable for attaching as FBO render target. */
 	void SetDepthFormat( bool packedStencil, bool useFloat );
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
+	
+private:
+	void pUpdateDebugObjectLabel();
 };
 
 #endif

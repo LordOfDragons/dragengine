@@ -730,6 +730,7 @@ void aeWPView::SetAnimator( aeAnimator *animator ){
 	UpdateEnvObject();
 	UpdatePlayback();
 	UpdateAttachmentList();
+	OnAnimatorPathChanged();
 }
 
 aeAttachment *aeWPView::GetAttachment() const{
@@ -896,4 +897,17 @@ void aeWPView::UpdateAttachment(){
 	pEditAttName->SetEnabled( enabled );
 	pCBAttAttachType->SetEnabled( enabled );
 	pCBAttBoneName->SetEnabled( enabled );
+}
+
+void aeWPView::OnAnimatorPathChanged(){
+	if( pAnimator ){
+		pEditDisplayModelPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		pEditDisplaySkinPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		pEditDisplayRigPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		
+	}else{
+		pEditDisplayModelPath->SetBasePath( "" );
+		pEditDisplaySkinPath->SetBasePath( "" );
+		pEditDisplayRigPath->SetBasePath( "" );
+	}
 }

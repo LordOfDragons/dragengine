@@ -199,12 +199,21 @@ void saeWindowMain::CreateNewSAnimation(){
 }
 
 void saeWindowMain::SaveSAnimation( const char *filename ){
-	GetEditorModule().LogInfoFormat( "Saving Speech Animation %s", filename );
-	pLoadSaveSystem->SaveSAnimation( pSAnimation, filename );
+	if( ! pSAnimation ){
+		return;
+	}
 	
+	const decString basePath( pSAnimation->GetDirectoryPath() );
+	
+	pLoadSaveSystem->SaveSAnimation( pSAnimation, filename );
 	pSAnimation->SetFilePath( filename );
 	pSAnimation->SetChanged( false );
 	pSAnimation->SetSaved( true );
+	
+	if( pSAnimation->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnSAnimationPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -255,16 +264,10 @@ void saeWindowMain::GetChangedDocuments( decStringList &list ){
 }
 
 void saeWindowMain::LoadDocument( const char *filename ){
-	deObjectReference refSAnimation;
-	refSAnimation.TakeOver( pLoadSaveSystem->LoadSAnimation( filename ) );
-	saeSAnimation * const sanimation = ( saeSAnimation* )( deObject* )refSAnimation;
-	
-	sanimation->SetFilePath( filename );
-	sanimation->SetChanged( false );
-	sanimation->SetSaved( true );
-	
-	SetSAnimation( sanimation );
+	SetSAnimation( saeSAnimation::Ref::New( pLoadSaveSystem->LoadSAnimation( filename ) ) );
 	GetRecentFiles().AddFile( filename );
+	
+	pWindowProperties->OnSAnimationPathChanged();
 }
 
 bool saeWindowMain::SaveDocument( const char *filename ){
@@ -377,17 +380,7 @@ public:
 			return;
 		}
 		
-		pWindow.GetEditorModule().LogInfoFormat( "Loading Speech Animation %s", filename.GetString() );
-		
-		deObjectReference refSAnimation;
-		refSAnimation.TakeOver( pWindow.GetLoadSaveSystem().LoadSAnimation( filename ) );
-		saeSAnimation * const sanimation = ( saeSAnimation* )refSAnimation.operator->();
-		
-		sanimation->SetFilePath( filename );
-		sanimation->SetChanged( false );
-		sanimation->SetSaved( true );
-		
-		pWindow.SetSAnimation( sanimation );
+		pWindow.SetSAnimation( saeSAnimation::Ref::New( pWindow.GetLoadSaveSystem().LoadSAnimation( filename ) ) );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };

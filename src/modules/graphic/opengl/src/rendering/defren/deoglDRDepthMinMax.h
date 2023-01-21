@@ -23,13 +23,13 @@
 #define _DEOGLRWDEPTHMINMAX_H_
 
 class deoglRenderThread;
-class deoglTexture;
+class deoglArrayTexture;
 class deoglFramebuffer;
 
 
 
 /**
- * @brief Deferred Rendering Depth Min-Max.
+ * Deferred Rendering Depth Min-Max.
  * Stores a mip-mapped view of the minimum and maximum depth values inside a depth texture.
  * The maximum number of mipmap levels is limited. For each lod level an own framebuffer
  * is used.
@@ -41,50 +41,59 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexture *pTexture;
+	deoglArrayTexture *pTexture;
 	deoglFramebuffer **pFBOs;
 	
-	deoglTexture *pTextureMin;
+	deoglArrayTexture *pTextureMin;
 	deoglFramebuffer **pFBOMin;
-	deoglTexture *pTextureMax;
+	deoglArrayTexture *pTextureMax;
 	deoglFramebuffer **pFBOMax;
 	
 	int pWidth;
 	int pHeight;
+	int pLayerCount;
 	int pLevelCount;
 	int pMaxLevelCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new depth min-max. */
-	deoglDRDepthMinMax( deoglRenderThread &renderThread, int width, int height, int maxLevelCount );
-	/** Cleans up the depth min-max. */
+	/** Create depth min-max. */
+	deoglDRDepthMinMax( deoglRenderThread &renderThread,
+		int width, int height, int layerCount, int maxLevelCount );
+	
+	/** Clean up depth min-max. */
 	~deoglDRDepthMinMax();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the width of the base level. */
+	/** Width of base level. */
 	inline int GetWidth() const{ return pWidth; }
-	/** Retrieves the height of the base level. */
+	
+	/** Height of base level. */
 	inline int GetHeight() const{ return pHeight; }
-	/** Retrieves the level count. */
+	
+	/** Layer count. */
+	inline int GetLayerCount() const{ return pLayerCount; }
+	
+	/** Level count. */
 	inline int GetLevelCount() const{ return pLevelCount; }
-	/** Retrieves the maximum level count. */
+	
+	/** Maximum level count. */
 	inline int GetMaxLevelCount() const{ return pMaxLevelCount; }
 	
 	/** Retrieves the texture. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
 	/** Retrieves the fbo for a level. */
 	deoglFramebuffer *GetFBOAt( int level );
 	
 	/** Retrieves the min texture. */
-	inline deoglTexture *GetTextureMin() const{ return pTextureMin; }
+	inline deoglArrayTexture *GetTextureMin() const{ return pTextureMin; }
 	/** Retrieves the fbo for a level of the min texture. */
 	deoglFramebuffer *GetFBOMinAt( int level );
 	/** Retrieves the max texture. */
-	inline deoglTexture *GetTextureMax() const{ return pTextureMax; }
+	inline deoglArrayTexture *GetTextureMax() const{ return pTextureMax; }
 	/** Retrieves the fbo for a level of the max texture. */
 	deoglFramebuffer *GetFBOMaxAt( int level );
 	/*@}*/

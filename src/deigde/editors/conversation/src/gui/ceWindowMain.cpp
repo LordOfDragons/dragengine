@@ -226,10 +226,17 @@ void ceWindowMain::SaveConversation( const char *filename ){
 		return;
 	}
 	
+	const decString basePath( pConversation->GetDirectoryPath() );
+	
 	pLoadSaveSystem->SaveConversation( pConversation, filename );
 	pConversation->SetFilePath( filename );
 	pConversation->SetChanged( false );
 	pConversation->SetSaved( true );
+	
+	if( pConversation->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnConversationPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 

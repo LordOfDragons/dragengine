@@ -39,6 +39,7 @@ class igdeTexturePropertyList;
 class igdeToolBarDock;
 class igdeUIHelper;
 class igdeResourceLoaderListener;
+class igdeEditorModule;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -301,6 +302,9 @@ public:
 	/** \brief Active module shared toolbars changed. */
 	virtual void ActiveModuleSharedToolBarsChanged() = 0;
 	
+	/** \brief Activate editor and bring it to the front. */
+	virtual void ActivateEditor( igdeEditorModule *editor ) = 0;
+	
 	
 	
 	/**
@@ -416,6 +420,9 @@ public:
 	 * \brief Add a file to the recent editor files list.
 	 */
 	virtual void AddRecentEditorFile( const char *filename ) = 0;
+	
+	/** \brief Close application. */
+	virtual void CloseApplication() = 0;
 	/*@}*/
 };
 

@@ -1,0 +1,265 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for FileReader and FileWriter.
+ */
+class TSFileReader extends TestSuite
+	abstract class Basic extends TestCase
+		protected static fixed var String pathFile = "/temporary/filewriter"
+		protected static fixed var String pathFileNested = "/temporary/filewriterNested"
+		
+		protected func new(String id, UnicodeString name) super(id, name)
+		end
+		
+		protected func void testWrite(FileWriter writer, byte firstByte)
+			writer.writeByte(firstByte)
+			writer.writeByte(235)
+			
+			writer.writeChar(-110)
+			writer.writeChar(121)
+			
+			writer.writeShort(91)
+			writer.writeShort(30840)
+			writer.writeShort(-350)
+			writer.writeShort(-29710)
+			
+			writer.writeUShort(26)
+			writer.writeUShort(62340)
+			
+			writer.writeInt(934)
+			writer.writeInt(1277654)
+			writer.writeInt(-293)
+			writer.writeInt(-3324566)
+			
+			writer.writeUInt(762)
+			writer.writeUInt(2716475)
+			
+			writer.writeFloat(450.86)
+			writer.writeFloat(0.00324)
+			writer.writeFloat(280.0)
+			
+			writer.writeString("1234567890")
+			
+			writer.writeString8("short test string")
+			writer.writeString8("")
+			
+			writer.writeString16("long test string")
+			writer.writeString16("")
+		end
+		
+		protected func void testRead(FileReader reader, byte firstByte)
+			assertEquals(reader.readByte(), firstByte)
+			assertEquals(reader.readByte(), 235)
+			
+			assertEquals(reader.readChar(), -110)
+			assertEquals(reader.readChar(), 121)
+			
+			assertEquals(reader.readShort(), 91)
+			assertEquals(reader.readShort(), 30840)
+			assertEquals(reader.readShort(), -350)
+			assertEquals(reader.readShort(), -29710)
+			
+			assertEquals(reader.readUShort(), 26)
+			assertEquals(reader.readUShort(), 62340)
+			
+			assertEquals(reader.readInt(), 934)
+			assertEquals(reader.readInt(), 1277654)
+			assertEquals(reader.readInt(), -293)
+			assertEquals(reader.readInt(), -3324566)
+			
+			assertEquals(reader.readUInt(), 762)
+			assertEquals(reader.readUInt(), 2716475)
+			
+			assertEquals(reader.readFloat(), 450.86)
+			assertEquals(reader.readFloat(), 0.00324)
+			assertEquals(reader.readFloat(), 280.0)
+			
+			assertEquals(reader.readString(10), "1234567890")
+			
+			assertEquals(reader.readString8(), "short test string")
+			assertEquals(reader.readString8(), "")
+			
+			assertEquals(reader.readString16(), "long test string")
+			assertEquals(reader.readString16(), "")
+		end
+		
+		public func void tearDown()
+			if FileSystem.existsFile(pathFileNested)
+				FileSystem.deleteFile(pathFileNested)
+			end
+			if FileSystem.existsFile(pathFile)
+				FileSystem.deleteFile(pathFile)
+			end
+		end
+	end
+	
+	class BasicFile extends Basic
+		public func new() super("basicFile", UnicodeString.newFromUTF8("Basic File"))
+		end
+		
+		public func bool run(TestSuite testSuite)
+			testWrite(FileWriter.new(pathFile), 8)
+			testRead(FileReader.new(pathFile), 8)
+			return false
+		end
+	end
+	
+	class BasicMemory extends Basic
+		public func new() super("basicMemory", UnicodeString.newFromUTF8("Basic Memory"))
+		end
+		
+		public func bool run(TestSuite testSuite)
+			var MemoryFile file = MemoryFile.new("testfile")
+			testWrite(file.getWriter(false), 8)
+			testWrite(file.getWriter(true), 9)
+			testWrite(file.getWriter(true), 10)
+			
+			var FileReader reader = file.getReader()
+			testRead(reader, 8)
+			testRead(reader, 9)
+			testRead(reader, 10)
+			reader = null
+			
+			testWrite(file.getWriter(false), 11)
+			testRead(file.getReader(), 11)
+			return false
+		end
+	end
+	
+	class ZCompressedFile extends Basic
+		public func new() super("zcompressedFile", UnicodeString.newFromUTF8("Z-Compressed File"))
+		end
+		
+		public func bool run(TestSuite testSuite)
+			testWrite(FileWriter.newZCompressed(pathFile), 8)
+			
+			assertDiffers(FileReader.new(pathFile).readByte(), 8)
+			
+			testRead(FileReader.newZCompressed(pathFile), 8)
+			return false
+		end
+	end
+	
+	class ZCompressedMemory extends Basic
+		public func new() super("zcompressedMemory", UnicodeString.newFromUTF8("Z-Compressed Memory"))
+		end
+		
+		public func bool run(TestSuite testSuite)
+			var MemoryFile file = MemoryFile.new("testfile")
+			testWrite(file.getWriterZCompressed(), 8)
+			
+			assertDiffers(file.getReader().readByte(), 8)
+			
+			testRead(file.getReaderZCompressed(), 8)
+			return false
+		end
+	end
+	
+	class NestedFile extends Basic
+		public func new() super("nestedFile", UnicodeString.newFromUTF8("Nested File"))
+		end
+		
+		public func bool run(TestSuite testSuite)
+			testWrite(FileWriter.new(pathFileNested), 7)
+			
+			var FileWriter writer = FileWriter.new(pathFile)
+			testWrite(writer, 8)
+			writer.writeData(FileReader.new(pathFileNested), 4)
+			writer.writeData(FileReader.new(pathFileNested))
+			testWrite(writer, 9)
+			writer = null
+			
+			var FileReader reader = FileReader.new(pathFile)
+			
+			testRead(reader, 8)
+			
+			// 4 bytes of nested data
+			assertEquals(reader.readByte(), 7)
+			assertEquals(reader.readByte(), 235)
+			assertEquals(reader.readChar(), -110)
+			assertEquals(reader.readChar(), 121)
+			
+			// nested data
+			testRead(reader, 7)
+			
+			// beyond nested data
+			testRead(reader, 9)
+			
+			return false
+		end
+	end
+	
+	class NestedMemory extends Basic
+		public func new() super("nestedMemory", UnicodeString.newFromUTF8("Nested Memory"))
+		end
+		
+		public func bool run(TestSuite testSuite)
+			var MemoryFile fileNested = MemoryFile.new("testfileNested")
+			testWrite(fileNested.getWriter(false), 7)
+			
+			var MemoryFile file = MemoryFile.new("testfile")
+			testWrite(file.getWriter(false), 8)
+			file.getWriter(true).writeData(fileNested.getReader(), 4)
+			file.getWriter(true).writeData(fileNested.getReader())
+			testWrite(file.getWriter(true), 9)
+			
+			var FileReader reader = file.getReader()
+			
+			testRead(reader, 8)
+			
+			// 4 bytes of nested data
+			assertEquals(reader.readByte(), 7)
+			assertEquals(reader.readByte(), 235)
+			assertEquals(reader.readChar(), -110)
+			assertEquals(reader.readChar(), 121)
+			
+			// nested data
+			testRead(reader, 7)
+			
+			// beyond nested data
+			testRead(reader, 9)
+			
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("fileReader", UnicodeString.newFromUTF8("FileReader"))
+		addTestCase(BasicFile.new())
+		addTestCase(BasicMemory.new())
+		addTestCase(ZCompressedFile.new())
+		addTestCase(ZCompressedMemory.new())
+		addTestCase(NestedFile.new())
+		addTestCase(NestedMemory.new())
+	end
+end

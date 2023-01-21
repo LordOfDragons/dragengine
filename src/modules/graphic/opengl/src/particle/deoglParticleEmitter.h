@@ -34,7 +34,7 @@ class deParticleEmitterParameter;
 
 
 /**
- * \brief Particle emitter peer.
+ * Particle emitter peer.
  */
 class deoglParticleEmitter : public deBaseGraphicParticleEmitter{
 private:
@@ -51,10 +51,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglParticleEmitter( deGraphicOpenGl &ogl, const deParticleEmitter &emitter );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglParticleEmitter();
 	/*@}*/
 	
@@ -62,26 +62,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Particle emitter. */
+	/** Particle emitter. */
 	inline const deParticleEmitter &GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	
 	
-	/** \brief Render particle emitter. */
+	/** Render particle emitter. */
 	inline deoglRParticleEmitter *GetREmitter() const{ return pREmitter; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Number of types. */
+	/** Number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	
-	/** \brief Type at index. */
+	/** Type at index. */
 	deoglParticleEmitterType &GetTypeAt( int index ) const;
 	
 	/** Update parameter samples if required. */
@@ -92,16 +92,16 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Controller count changed. */
+	/** Controller count changed. */
 	virtual void ControllerCountChanged();
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int controller );
 	
-	/** \brief Type count changed. */
+	/** Type count changed. */
 	virtual void TypeCountChanged();
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	virtual void TypeChanged( int type );
 	/*@}*/
 	

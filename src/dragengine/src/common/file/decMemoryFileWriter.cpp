@@ -56,6 +56,14 @@ pPosition( 0 )
 	memoryFile->AddReference();
 }
 
+decMemoryFileWriter::decMemoryFileWriter( const decMemoryFileWriter &writer ) :
+pFile( writer.pFile ),
+pPosition( writer.pPosition )
+{
+	pFile->Touch();
+	pFile->AddReference();
+}
+
 decMemoryFileWriter::~decMemoryFileWriter(){
 	if( pFile ){
 		pFile->Touch();
@@ -117,4 +125,8 @@ void decMemoryFileWriter::Write( const void *buffer, int size ){
 	}
 	memcpy( pFile->GetPointer() + pPosition, buffer, size );
 	pPosition += size;
+}
+
+decBaseFileWriter::Ref decMemoryFileWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new decMemoryFileWriter( *this ) );
 }

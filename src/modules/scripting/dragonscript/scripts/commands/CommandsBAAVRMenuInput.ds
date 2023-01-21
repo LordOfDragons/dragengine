@@ -113,8 +113,17 @@ class CommandsBAAVRMenuInput
 	 * - menuLeft: Left hand menu
 	 */
 	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
-		commands.add(MenuAction.new(tracker, "menuRight", "Menu Right Hand", true))
-		commands.add(MenuAction.new(tracker, "menuLeft", "Menu Left Hand", false))
+		var MenuAction menuAction
+		
+		menuAction = MenuAction.new(tracker, "menuRight", "Menu Right Hand", true)
+		menuAction.setTranslateDescription("UI.Command.MenuRight.Description")
+		menuAction.setTranslateDisplayName("UI.Command.MenuRight.DisplayName")
+		commands.add(menuAction)
+		
+		menuAction = MenuAction.new(tracker, "menuLeft", "Menu Left Hand", false)
+		menuAction.setTranslateDescription("UI.Command.MenuLeft.Description")
+		menuAction.setTranslateDisplayName("UI.Command.MenuLeft.DisplayName")
+		commands.add(menuAction)
 	end
 	
 	

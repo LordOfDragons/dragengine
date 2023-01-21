@@ -27,16 +27,16 @@
 
 
 /**
- * \brief Debug context parameter.
+ * Debug context parameter.
  */
 class deoglPDebugContext : public deoglParameterBool{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglPDebugContext( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deoglPDebugContext();
 	/*@}*/
 	
@@ -44,10 +44,10 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual bool GetParameterBool();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterBool( bool value );
 	/*@}*/
 };

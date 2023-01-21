@@ -29,7 +29,7 @@ class decBaseFileReader;
 
 
 /**
- * @brief Shader Unit Source Code.
+ * Shader Unit Source Code.
  *
  * Stores the source code of a shader unit program. The shader unit
  * source code can be compiled into a specialized shader unit program
@@ -42,7 +42,7 @@ private:
 	char *pSourceCode;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new source code object reading source code from a file. */
 	deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader );
@@ -50,7 +50,7 @@ public:
 	~deoglShaderUnitSourceCode();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the file path. */
 	inline const char *GetFilePath() const{ return ( const char * )pFilePath; }

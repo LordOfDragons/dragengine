@@ -1,0 +1,83 @@
+name: Build Windows Installer
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      artifactInstaller:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: 'recursive'
+          ref: ${{ inputs.branch }}
+      
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifactArchive }}
+      
+      - name: Update ISS files
+        run: |
+          cd ${{ github.workspace }}/installer/windows
+          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" dragengine64.iss.in >dragengine64.iss
+          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
+          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" deigde64.iss.in >deigde64.iss
+          sed -e "s/%VERSION%/${{ inputs.releaseVersion }}/g" deigde64-sdk.iss.in >deigde64-sdk.iss
+      
+      - name: Unpack Windows Archives
+        run: |
+          sudo apt install -y unzip
+          unzip dragengine-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
+          unzip dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
+          unzip deigde-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
+          unzip deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
+          chmod -R g=u,o=u installer/windows/unpacked
+          mkdir installer/windows/build
+          chmod 777 installer/windows/build
+          
+      - name: Build Installers
+        uses: addnab/docker-run-action@v3
+        with:
+          image: amake/innosetup:latest
+          options: -v ${{ github.workspace }}/installer/windows:/work
+          run: |
+            iscc dragengine64.iss
+            iscc dragengine64-sdk.iss
+            iscc deigde64.iss
+            iscc deigde64-sdk.iss
+        
+      - name: Rename installers
+        run: |
+          cd ${{ github.workspace }}/installer/windows/build
+          mv install-dragengine-windows64.exe install-dragengine-${{ inputs.releaseVersion }}-windows64.exe
+          mv install-dragengine-sdk-windows64.exe install-dragengine-sdk-${{ inputs.releaseVersion }}-windows64.exe
+          mv install-deigde-windows64.exe install-deigde-${{ inputs.releaseVersion }}-windows64.exe
+          mv install-deigde-sdk-windows64.exe install-deigde-sdk-${{ inputs.releaseVersion }}-windows64.exe
+        
+      - name: Store Installers
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactInstaller }}
+          path: |
+            installer/windows/build/install-dragengine-${{ inputs.releaseVersion }}-windows64.exe
+            installer/windows/build/install-dragengine-sdk-${{ inputs.releaseVersion }}-windows64.exe
+            installer/windows/build/install-deigde-${{ inputs.releaseVersion }}-windows64.exe
+            installer/windows/build/install-deigde-sdk-${{ inputs.releaseVersion }}-windows64.exe
+          if-no-files-found: error

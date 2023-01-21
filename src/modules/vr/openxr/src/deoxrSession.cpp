@@ -405,7 +405,7 @@ void deoxrSession::EndFrame(){
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
 	
-	// end frame. views have to be submitted even if not rendered too otherwise runtimes
+	// end frame. views have to be submitted even if not rendered to otherwise runtimes
 	// like SteamVR can crash entire OpenGL
 	XrFrameEndInfo endInfo;
 	memset( &endInfo, 0, sizeof( endInfo ) );
@@ -435,20 +435,25 @@ void deoxrSession::EndFrame(){
 	views[ 1 ].pose = pRightEyePose;
 	views[ 1 ].fov = pRightEyeFov;
 	
+	const XrCompositionLayerBaseHeader *layers[ 2 ];
+	int layerCount = 0;
+	
+	const deoxrPassthrough * const passthrough = instance.GetOxr().GetPassthrough();
+	if( passthrough && passthrough->GetEnabled() && passthrough->GetTransparency() > 0.001f ){
+		layers[ layerCount++ ] = ( const XrCompositionLayerBaseHeader* )&passthrough->GetCompositeLayer();
+	}
+	
 	XrCompositionLayerProjection layerProjection;
 	memset( &layerProjection, 0, sizeof( layerProjection ) );
 	
 	layerProjection.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION;
 // 	layerProjection.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
-	layerProjection.layerFlags = 0;
 	layerProjection.space = pSpaceStage->GetSpace();
 	layerProjection.viewCount = 2;
 	layerProjection.views = views;
+	layers[ layerCount++ ] = ( const XrCompositionLayerBaseHeader* )&layerProjection;
 	
-	XrCompositionLayerBaseHeader *layers[ 1 ];
-	layers[ 0 ] = ( XrCompositionLayerBaseHeader* )&layerProjection;
-	
-	endInfo.layerCount = 1;
+	endInfo.layerCount = layerCount;
 	endInfo.layers = layers;
 	
 	OXR_CHECK( instance.xrEndFrame( pSession, &endInfo ) );

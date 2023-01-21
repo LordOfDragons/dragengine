@@ -23,7 +23,6 @@
 #define _DEOGLGITRACERAYS_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../texture/deoglRenderbuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 class deoglRenderThread;
@@ -51,8 +50,6 @@ private:
 	deoglTexture pTexDiffuse;
 	deoglTexture pTexReflectivity;
 	deoglTexture pTexLight;
-	deoglFramebuffer pFBOResult;
-	deoglFramebuffer pFBODistance;
 	deoglFramebuffer pFBOLight;
 	
 	
@@ -113,12 +110,6 @@ public:
 	/** Light texture. */
 	inline deoglTexture &GetTextureLight(){ return pTexLight; }
 	inline const deoglTexture &GetTextureLight() const{ return pTexLight; }
-	
-	/** Result FBO. */
-	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
-	
-	/** Distance FBO. */
-	inline deoglFramebuffer &GetFBODistance(){ return pFBODistance; }
 	
 	/** Light FBO. */
 	inline deoglFramebuffer &GetFBOLight(){ return pFBOLight; }

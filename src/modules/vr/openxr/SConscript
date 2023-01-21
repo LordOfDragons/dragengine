@@ -8,14 +8,20 @@ envModule = parent_env.Clone()
 
 useInternalLoader = False
 
+buildModule = envModule['build_vr_openxr' ] != TernaryVariableNo
+parent_report['build OpenXR VR Module' ] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
 if envModule['OSBeOS']:
 	Return()
 
 if envModule['OSWindows']:
-	useInternalLoader = True
+	pass #useInternalLoader = True
 
 # fetch values in expanded form for later use
-versionString = '1.10'
+versionString = '1.13'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

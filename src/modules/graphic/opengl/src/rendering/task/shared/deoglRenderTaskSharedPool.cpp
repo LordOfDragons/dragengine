@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglRenderTaskSharedPool.h"
-#include "deoglRenderTaskSharedShader.h"
 #include "deoglRenderTaskSharedTexture.h"
 #include "deoglRenderTaskSharedVAO.h"
 #include "deoglRenderTaskSharedInstance.h"
@@ -43,7 +42,6 @@
 
 deoglRenderTaskSharedPool::deoglRenderTaskSharedPool( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pNextIndexShader( 0 ),
 pNextIndexTexture( 0 ),
 pNextIndexVAO( 0 ),
 pNextIndexInstance( 0 ){
@@ -64,36 +62,12 @@ deoglRenderTaskSharedPool::~deoglRenderTaskSharedPool(){
 	for( i=0; i<count; i++ ){
 		delete ( deoglRenderTaskSharedTexture* )pTextures.GetAt( i );
 	}
-	
-	count = pShaders.GetCount();
-	for( i=0; i<count; i++ ){
-		delete ( deoglRenderTaskSharedShader* )pShaders.GetAt( i );
-	}
 }
 
 
 
 // Management
 ///////////////
-
-deoglRenderTaskSharedShader *deoglRenderTaskSharedPool::GetShader(){
-	deoglRenderTaskSharedShader *shader;
-	
-	const int index = pShaders.GetCount() - 1;
-	if( index > -1 ){
-		shader = ( deoglRenderTaskSharedShader* )pShaders.GetAt( index );
-		pShaders.RemoveFrom( index );
-		
-	}else{
-		shader = new deoglRenderTaskSharedShader( *this, pNextIndexShader++ );
-		
-		if( pNextIndexShader % 100 == 0 ){
-			pRenderThread.GetLogger().LogInfoFormat( "RenderTaskSharedPool: Reached %d Shaders", pNextIndexShader );
-		}
-	}
-	
-	return shader;
-}
 
 deoglRenderTaskSharedTexture *deoglRenderTaskSharedPool::GetTexture(){
 	deoglRenderTaskSharedTexture *texture;
@@ -154,37 +128,22 @@ deoglRenderTaskSharedInstance *deoglRenderTaskSharedPool::GetInstance(){
 
 
 
-void deoglRenderTaskSharedPool::ReturnShader( deoglRenderTaskSharedShader *shader ){
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	shader->Clear();
-	pShaders.Add( shader );
-}
-
 void deoglRenderTaskSharedPool::ReturnTexture( deoglRenderTaskSharedTexture *texture ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( texture )
 	
 	texture->Clear();
 	pTextures.Add( texture );
 }
 
 void deoglRenderTaskSharedPool::ReturnVAO( deoglRenderTaskSharedVAO *vao ){
-	if( ! vao ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( vao )
 	
 	vao->Clear();
 	pVAOs.Add( vao );
 }
 
 void deoglRenderTaskSharedPool::ReturnInstance( deoglRenderTaskSharedInstance *instance ){
-	if( ! instance ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( instance )
 	
 	instance->Clear();
 	pInstances.Add( instance );

@@ -95,8 +95,8 @@ void deglWindowMain::create(){
 	pPanelEngine->UpdateModuleList();
 }
 
-deglWindowMain::deglWindowMain( FXApp *app, int argc, char **argv ) :
-FXMainWindow( app, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50, 800, 400 ){
+deglWindowMain::deglWindowMain( FXApp *papp, int argc, char **argv ) :
+FXMainWindow( papp, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50, 800, 400 ){
 	pLauncher = nullptr;
 	pPanelGames = nullptr;
 	pGuiBuilder = nullptr;
@@ -108,10 +108,10 @@ FXMainWindow( app, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50,
 	pIconButtonInfo = nullptr;
 	
 	// load icons
-	pIconApp = new FXPNGIcon( app, icon_delauncher_gui );
-	pIconValidSmall = new FXPNGIcon( app, icon_icon_valid_small );
-	pIconInvalidSmall = new FXPNGIcon( app, icon_icon_invalid_small );
-	pIconButtonInfo = new FXPNGIcon( app, icon_button_info );
+	pIconApp = new FXPNGIcon( papp, icon_delauncher_gui );
+	pIconValidSmall = new FXPNGIcon( papp, icon_icon_valid_small );
+	pIconInvalidSmall = new FXPNGIcon( papp, icon_icon_invalid_small );
+	pIconButtonInfo = new FXPNGIcon( papp, icon_button_info );
 	
 	setIcon( pIconApp );
 	
@@ -174,7 +174,7 @@ FXMainWindow( app, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50,
 	pPanelEngine = new deglPanelEngine( this, pSwitcherPanels );
 	
 	// tool tips
-	pToolTip = new FXToolTip( app, 0 );
+	pToolTip = new FXToolTip( papp, 0 );
 }
 
 deglWindowMain::~deglWindowMain(){
@@ -234,21 +234,21 @@ void deglWindowMain::DisplayException( const deException &exception ){
 	pLauncher->GetLogger()->LogException( "Application Error", exception );
 	
 	decUnicodeString caption;
-	decUnicodeString message;
+	decUnicodeString mmessage;
 	decString foxCaption;
 	decString foxMessage;
 	
 	caption.SetFromUTF8( "Application Error" );
 	foxCaption = caption.ToUTF8();
 	
-	message.SetFromUTF8( "An exception occurred. File='" );
-	message.AppendFromUTF8( exception.GetFile() );
-	message.AppendFromUTF8( "', Line='" );
-	message.AppendValue( exception.GetLine() );
-	message.AppendFromUTF8( "', Reason='" );
-	message.AppendFromUTF8( exception.GetDescription() );
-	message.AppendFromUTF8( "'." );
-	foxMessage = message.ToUTF8();
+	mmessage.SetFromUTF8( "An exception occurred. File='" );
+	mmessage.AppendFromUTF8( exception.GetFile() );
+	mmessage.AppendFromUTF8( "', Line='" );
+	mmessage.AppendValue( exception.GetLine() );
+	mmessage.AppendFromUTF8( "', Reason='" );
+	mmessage.AppendFromUTF8( exception.GetDescription() );
+	mmessage.AppendFromUTF8( "'." );
+	foxMessage = mmessage.ToUTF8();
 	
 	if( isMinimized() || pLauncher->HasCommandLineRunGame() ){
 		FXMessageBox::error( getApp(), FX::MBOX_OK, foxCaption.GetString(), "%s", foxMessage.GetString() );

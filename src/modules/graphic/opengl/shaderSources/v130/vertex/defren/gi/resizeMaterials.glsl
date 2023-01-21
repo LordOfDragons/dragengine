@@ -3,7 +3,7 @@ precision highp int;
 
 uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, from.rowsPerImage
 
-in vec3 inPosition;
+in vec2 inPosition;
 
 out vec2 vTexCoord;
 

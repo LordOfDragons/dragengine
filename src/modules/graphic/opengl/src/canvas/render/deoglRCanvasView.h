@@ -87,10 +87,16 @@ public:
 	void PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
 		int componentCount, int bitCount );
 	
+	/** Render render target if dirty. */
+	void RenderRenderTarget( const deoglRenderPlanMasked *renderPlanMask );
+	
 	
 	
 	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Prepare for rendering render. */
+	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * Render.

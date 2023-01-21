@@ -167,7 +167,7 @@ struct BroadphaseSweepTester : public btDbvt::ICollide{
 		const int childIndex = leaf->dataAsInt;
 		
 		const btTransform &colObjWorldTransform = m_colObjWrap->getWorldTransform();
-		const btTransform childTransform = colObjWorldTransform * m_compoundShape.getChildTransform( childIndex );
+		const btTransform childTransform( colObjWorldTransform * m_compoundShape.getChildTransform( childIndex ) );
 		const btCollisionObjectWrapper childWrap( m_colObjWrap, m_compoundShape.getChildShape( childIndex ),
 			m_colObjWrap->getCollisionObject(), childTransform, -1, childIndex );
 		
@@ -192,7 +192,26 @@ btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetrat
 	// more than 1 child shape. with 1 shape the compound aabb is the same as the child aabb
 	const btDbvt * const tree = compoundShape.getDynamicAabbTree();
 	if( tree && count > 1 ){
-		// calculate the cast shape aabb relative to the tree
+		// see btCollisionWorld.cpp:951
+		#if 0
+		const btTransform &colObjWorldTransform = colObjWrap->getWorldTransform();
+		
+		btVector3 fromLocalAabbMin, fromLocalAabbMax;
+		btVector3 toLocalAabbMin, toLocalAabbMax;
+		
+		castShape->getAabb( colObjWorldTransform.inverse() * castFromTrans, fromLocalAabbMin, fromLocalAabbMax);
+		castShape->getAabb(colObjWorldTransform.inverse() * castToTrans, toLocalAabbMin, toLocalAabbMax);
+		
+		fromLocalAabbMin.setMin(toLocalAabbMin);
+		fromLocalAabbMax.setMax(toLocalAabbMax);
+		
+		BroadphaseSweepTester callback( castShape, colObjWrap, compoundShape, castFromTrans,
+			castToTrans, *this, resultCallback, allowedPenetration );
+		
+		const ATTRIBUTE_ALIGNED16( btDbvtVolume ) bounds( btDbvtVolume::FromMM( fromLocalAabbMin, fromLocalAabbMax ) );
+		tree->collideTV( tree->m_root, bounds, callback );
+		
+		#else
 		const btTransform compoundInverseTrans( colObjWrap->getWorldTransform().inverse() );
 		const btTransform localCastFromTrans( compoundInverseTrans * castFromTrans );
 		const btTransform localCastToTrans( compoundInverseTrans * castToTrans );
@@ -222,6 +241,7 @@ btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetrat
 		
 		tree->rayTestInternal( tree->m_root, localCastFromTrans.getOrigin(), localCastToTrans.getOrigin(),
 			rayDirectionInverse, signs, lambdaMax, castShapeAabbMin, castShapeAabbMax, pRayTestStacks, convexCaster );
+		#endif
 		
 	// otherwise iterate over all children and test them
 	}else{
@@ -229,7 +249,7 @@ btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetrat
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			const btTransform childTransform = colObjWorldTransform * compoundShape.getChildTransform( i );
+			const btTransform childTransform( colObjWorldTransform * compoundShape.getChildTransform( i ) );
 			const btCollisionObjectWrapper childWrap( colObjWrap, compoundShape.getChildShape( i ),
 				colObjWrap->getCollisionObject(), childTransform, -1, i );
 			LocalInfoAdder cbAdder( i, &resultCallback );

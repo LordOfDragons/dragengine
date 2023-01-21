@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 #include <X11/Xproto.h>
 #include <X11/extensions/Xrandr.h>
@@ -278,6 +279,9 @@ pDisplayResolutionCount( 0 )
 		pScreen = XDefaultScreen( pDisplay );
 		pGetDisplayInformation();
 		
+		// init locale
+		setlocale( LC_ALL, "" );
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -504,6 +508,42 @@ void deOSUnix::ProcessEventLoop( bool sendToInputModule ){
 			inputModule.EventLoop( event );
 		}
 	}
+}
+
+decString deOSUnix::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSUnix::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
 }
 
 

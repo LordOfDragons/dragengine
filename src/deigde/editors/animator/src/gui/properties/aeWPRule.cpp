@@ -448,6 +448,7 @@ void aeWPRule::SetAnimator( aeAnimator *animator ){
 	
 	if( pActivePanel ){
 		pActivePanel->OnAnimatorChanged();
+		pActivePanel->OnAnimatorPathChanged();
 	}
 	
 	UpdateRuleTree();
@@ -547,7 +548,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 		}
 		
 		for( i=0; i<count; i++ ){
-			aeRule * const rule = list.GetAt( i );
+			aeRule * const rule2 = list.GetAt( i );
 			
 			if( ! nextItem ){
 				igdeTreeItemReference newItem;
@@ -556,7 +557,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 				nextItem = newItem;
 			}
 			
-			UpdateRuleTreeItem( nextItem, rule );
+			UpdateRuleTreeItem( nextItem, rule2 );
 			
 			nextItem = nextItem->GetNext();
 		}
@@ -669,5 +670,11 @@ void aeWPRule::UpdateRuleBoneList(){
 void aeWPRule::UpdateRuleMoveList(){
 	if( pActivePanel ){
 		pActivePanel->UpdateAnimMoveList();
+	}
+}
+
+void aeWPRule::OnAnimatorPathChanged(){
+	if( pActivePanel ){
+		pActivePanel->OnAnimatorPathChanged();
 	}
 }

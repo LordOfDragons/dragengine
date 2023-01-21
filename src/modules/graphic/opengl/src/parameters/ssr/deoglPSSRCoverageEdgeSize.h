@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Reflection Coverage Edge Size.
+ * Module Parameter Screen Space Reflection Coverage Edge Size.
  */
 class deoglPSSRCoverageEdgeSize : public deoglParameterFloat{
 public:

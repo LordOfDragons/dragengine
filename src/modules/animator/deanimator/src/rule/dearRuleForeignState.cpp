@@ -58,8 +58,8 @@
 /////////////////////////////////
 
 dearRuleForeignState::dearRuleForeignState( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleForeignState &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleForeignState &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pForeignState( rule ),
 pForeignBone( -1 ),

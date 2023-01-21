@@ -45,6 +45,12 @@ class saeSAnimationListener;
  */
 class saeSAnimation : public igdeEditableEntity{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saeSAnimation> Ref;
+	
+	
+	
+public:
 	/** Display modes. */
 	enum eDisplayModes{
 		/** Display active phoneme. */

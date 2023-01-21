@@ -1,0 +1,211 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for Color conversions.
+ */
+class TSColorConversion extends TestSuite
+	abstract class Base extends TestCase
+		class ConvertedValues
+			public var float a, b, c, d
+			
+			public func new(float a, float b, float c)
+				this.a = a
+				this.b = b
+				this.c = c
+				d = -1
+			end
+			
+			public func new(float a, float b, float c, float d)
+				this.a = a
+				this.b = b
+				this.c = c
+				this.d = d
+			end
+			
+			public func new(Array values)
+				a = values.getAt(0) cast float
+				b = values.getAt(1) cast float
+				c = values.getAt(2) cast float
+				if values.getCount() > 3
+					d = values.getAt(3) cast float
+				else
+					d = -1
+				end
+			end
+			
+			public func bool equals(Object other)
+				var ConvertedValues o = other cast ConvertedValues
+				return DEMath.fabs(o.a - a) < 0.002 and DEMath.fabs(o.b - b) < 0.002 \
+					and DEMath.fabs(o.c - c) < 0.002 and DEMath.fabs(o.d - d) < 0.002
+			end
+			
+			public func String toString()
+				return "({} {} {} {})".format(Array.newWith(a, b, c, d))
+			end
+		end
+		
+		
+		protected var Array reference
+		protected var Array converted
+		
+		
+		protected func new(String id, UnicodeString name) super(id, name)
+			reference = Array.new()
+			reference.add(Color.newRGB(0, 0, 0)) // black
+			reference.add(Color.newRGB(255, 255, 255)) // white
+			reference.add(Color.newRGB(255, 0, 0)) // red
+			reference.add(Color.newRGB(0, 255, 0)) // lime
+			reference.add(Color.newRGB(0, 0, 255)) // blue
+			reference.add(Color.newRGB(255, 255, 0)) // yellow
+			reference.add(Color.newRGB(0, 255, 255)) // cyan
+			reference.add(Color.newRGB(255, 0, 255)) // magenta
+			reference.add(Color.newRGB(191, 191, 191)) // silver
+			reference.add(Color.newRGB(128, 128, 128)) // gray
+			reference.add(Color.newRGB(128, 0, 0)) // maroon
+			reference.add(Color.newRGB(128, 128, 0)) // olive
+			reference.add(Color.newRGB(0, 128, 0)) // green
+			reference.add(Color.newRGB(128, 0, 128)) // purple
+			reference.add(Color.newRGB(0, 128, 128)) // teal
+			reference.add(Color.newRGB(0, 0, 128)) // navy
+			
+			converted = Array.new()
+		end
+		
+		public func bool run(TestSuite testSuite)
+			var int i, count = reference.getCount()
+			for i = 0 to count
+				assertColor(convertFrom(converted.getAt(i) cast ConvertedValues), reference.getAt(i) cast Color, 0.002)
+				assertEquals(convertTo(reference.getAt(i) cast Color), converted.getAt(i))
+			end
+			
+			return false
+		end
+		
+		abstract protected func Color convertFrom(ConvertedValues values)
+		abstract protected func ConvertedValues convertTo(Color color)
+	end
+	
+	class Hsv extends Base
+		public func new() super("hsv", UnicodeString.newFromUTF8("HSV"))
+			converted.add(ConvertedValues.new(0, 0, 0)) // black
+			converted.add(ConvertedValues.new(0, 0, 1)) // white
+			converted.add(ConvertedValues.new(0, 1, 1)) // red
+			converted.add(ConvertedValues.new(2.0 / 6.0, 1, 1)) // lime
+			converted.add(ConvertedValues.new(4.0 / 6.0, 1, 1)) // blue
+			converted.add(ConvertedValues.new(1.0 / 6.0, 1, 1)) // yellow
+			converted.add(ConvertedValues.new(3.0 / 6.0, 1, 1)) // cyan
+			converted.add(ConvertedValues.new(5.0 / 6.0, 1, 1)) // magenta
+			converted.add(ConvertedValues.new(0, 0, 0.75)) // silver
+			converted.add(ConvertedValues.new(0, 0, 0.5)) // gray
+			converted.add(ConvertedValues.new(0, 1, 0.5)) // maroon
+			converted.add(ConvertedValues.new(1.0 / 6.0, 1, 0.5)) // olive
+			converted.add(ConvertedValues.new(2.0 / 6.0, 1, 0.5)) // green
+			converted.add(ConvertedValues.new(5.0 / 6.0, 1, 0.5)) // purple
+			converted.add(ConvertedValues.new(3.0 / 6.0, 1, 0.5)) // teal
+			converted.add(ConvertedValues.new(4.0 / 6.0, 1, 0.5)) // navy
+		end
+		
+		protected func Color convertFrom(ConvertedValues values)
+			return Color.newHSV(values.a, values.b, values.c)
+		end
+		
+		protected func ConvertedValues convertTo(Color color)
+			return ConvertedValues.new(color.toHSV())
+		end
+	end
+	
+	class Hsl extends Base
+		public func new() super("hsl", UnicodeString.newFromUTF8("HSL"))
+			converted.add(ConvertedValues.new(0, 0, 0)) // black
+			converted.add(ConvertedValues.new(0, 0, 1)) // white
+			converted.add(ConvertedValues.new(0, 1, 0.5)) // red
+			converted.add(ConvertedValues.new(2.0 / 6.0, 1, 0.5)) // lime
+			converted.add(ConvertedValues.new(4.0 / 6.0, 1, 0.5)) // blue
+			converted.add(ConvertedValues.new(1.0 / 6.0, 1, 0.5)) // yellow
+			converted.add(ConvertedValues.new(3.0 / 6.0, 1, 0.5)) // cyan
+			converted.add(ConvertedValues.new(5.0 / 6.0, 1, 0.5)) // magenta
+			converted.add(ConvertedValues.new(0, 0, 0.75)) // silver
+			converted.add(ConvertedValues.new(0, 0, 0.5)) // gray
+			converted.add(ConvertedValues.new(0, 1, 0.25)) // maroon
+			converted.add(ConvertedValues.new(1.0 / 6.0, 1, 0.25)) // olive
+			converted.add(ConvertedValues.new(2.0 / 6.0, 1, 0.25)) // green
+			converted.add(ConvertedValues.new(5.0 / 6.0, 1, 0.25)) // purple
+			converted.add(ConvertedValues.new(3.0 / 6.0, 1, 0.25)) // teal
+			converted.add(ConvertedValues.new(4.0 / 6.0, 1, 0.25)) // navy
+		end
+		
+		protected func Color convertFrom(ConvertedValues values)
+			return Color.newHSL(values.a, values.b, values.c)
+		end
+		
+		protected func ConvertedValues convertTo(Color color)
+			return ConvertedValues.new(color.toHSL())
+		end
+	end
+	
+	class Cmyk extends Base
+		public func new() super("cmyk", UnicodeString.newFromUTF8("CMYK"))
+			converted.add(ConvertedValues.new(0, 0, 0, 1)) // black
+			converted.add(ConvertedValues.new(0, 0, 0, 0)) // white
+			converted.add(ConvertedValues.new(0, 1, 1, 0)) // red
+			converted.add(ConvertedValues.new(1, 0, 1, 0)) // lime
+			converted.add(ConvertedValues.new(1, 1, 0, 0)) // blue
+			converted.add(ConvertedValues.new(0, 0, 1, 0)) // yellow
+			converted.add(ConvertedValues.new(1, 0, 0, 0)) // cyan
+			converted.add(ConvertedValues.new(0, 1, 0, 0)) // magenta
+			converted.add(ConvertedValues.new(0, 0, 0, 0.25)) // silver
+			converted.add(ConvertedValues.new(0, 0, 0, 0.5)) // gray
+			converted.add(ConvertedValues.new(0, 1, 1, 0.5)) // maroon
+			converted.add(ConvertedValues.new(0, 0, 1, 0.5)) // olive
+			converted.add(ConvertedValues.new(1, 0, 1, 0.5)) // green
+			converted.add(ConvertedValues.new(0, 1, 0, 0.5)) // purple
+			converted.add(ConvertedValues.new(1, 0, 0, 0.5)) // teal
+			converted.add(ConvertedValues.new(1, 1, 0, 0.5)) // navy
+		end
+		
+		protected func Color convertFrom(ConvertedValues values)
+			return Color.newCMYK(values.a, values.b, values.c, values.d)
+		end
+		
+		protected func ConvertedValues convertTo(Color color)
+			return ConvertedValues.new(color.toCMYK())
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("colorConversion", UnicodeString.newFromUTF8("ColorConversion"))
+		addTestCase(Hsv.new())
+		addTestCase(Hsl.new())
+		addTestCase(Cmyk.new())
+	end
+end

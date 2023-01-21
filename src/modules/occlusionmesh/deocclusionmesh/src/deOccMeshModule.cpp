@@ -243,15 +243,15 @@ void deOccMeshModule::pLoadWeights( decBaseFileReader &reader, deOcclusionMesh &
 		meshWeightGroups[ i ] = 0;
 		
 		for( j=0; j<weightSetCount; j++ ){
-			deoccmWeightSet &weightSet = *infos.weightSetList->GetAt( j );
+			deoccmWeightSet &weightSet2 = *infos.weightSetList->GetAt( j );
 			
-			if( weightSet.GetCount() == tempCount ){
+			if( weightSet2.GetCount() == tempCount ){
 				for( k=0; k<tempCount; k++ ){
-					meshWeights[ weightCount + k ].SetBone( weightSet.GetBoneAt( k ) );
-					meshWeights[ weightCount + k ].SetWeight( weightSet.GetWeightAt( k ) );
+					meshWeights[ weightCount + k ].SetBone( weightSet2.GetBoneAt( k ) );
+					meshWeights[ weightCount + k ].SetWeight( weightSet2.GetWeightAt( k ) );
 				}
 				
-				weightSet.SetGroupedIndex( weightSetIndex );
+				weightSet2.SetGroupedIndex( weightSetIndex );
 				
 				weightSetIndex++;
 				weightCount += tempCount;

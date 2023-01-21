@@ -82,6 +82,9 @@ public:
 	/** \brief Update animator. */
 	void UpdateAnimator();
 	
+	/** \brief Animator path changed. */
+	void OnAnimatorPathChanged();
+	
 	/** \brief Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	

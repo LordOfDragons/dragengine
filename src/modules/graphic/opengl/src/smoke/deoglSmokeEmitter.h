@@ -38,7 +38,7 @@ class deSmokeEmitter;
 
 
 /**
- * @brief Smoke Emitter Peer.
+ * Smoke Emitter Peer.
  *
  * Peer for the smoke emitter resource.
  */
@@ -53,7 +53,7 @@ private:
 	bool pDirtyExtends;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
 	deoglSmokeEmitter( deGraphicOpenGl *ogl, deSmokeEmitter *smokeEmitter );
@@ -61,7 +61,7 @@ public:
 	virtual ~deoglSmokeEmitter();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the opengl object. */
 	inline deGraphicOpenGl *GetOpenGL() const{ return pOgl; }
@@ -84,7 +84,7 @@ public:
 	void PrepareForRender();
 	/*@}*/
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
 	/** Volume position changed. */
 	virtual void VolumePositionChanged();

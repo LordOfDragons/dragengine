@@ -42,10 +42,10 @@ deoglPVRRenderScale::deoglPVRRenderScale( deGraphicOpenGl &ogl ) :
 deoglParameter( ogl )
 {
 	SetName( "vrRenderScale" );
-	SetDescription( "Percentage scale of VR Rendering relative to size requested by VR System. "
-		"Down scaling improves performance at the cost of quality. "
-		"Typically you can adjust the scaling in the VR System (like SteamVR). "
-		"This parameter allows to dynamically adjust the render scale.");
+	SetDescription( "Percentage scale of VR Rendering relative to size requested by VR System."
+		" Down scaling improves performance at the cost of quality."
+		" You can adjust scaling in VR Systems (like SteamVR)."
+		" This parameter allows to dynamically adjust render scale.");
 	SetType( eptRanged );
 	SetCategory( ecBasic );
 	SetDisplayName( "VR Render Scale" );

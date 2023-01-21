@@ -113,7 +113,8 @@ pEngineRunning( false ),
 pStopProcess( true ),
 pRunGame( nullptr ),
 
-pLogSource( logSource )
+pLogSource( logSource ),
+pUseConsole( false )
 {
 	pCreateLogger( logfile );
 }
@@ -126,6 +127,10 @@ delEngineProcess::~delEngineProcess(){
 
 // Management
 ///////////////
+
+void delEngineProcess::SetUseConsole( bool useConsole ){
+	pUseConsole = useConsole;
+}
 
 void delEngineProcess::Run(){
 	try{
@@ -148,27 +153,32 @@ void delEngineProcess::StartEngine(){
 	}
 	
 	deOS *os = nullptr;
-	bool useConsole = false;
 	
 	try{
 		// create os
-		if( useConsole ){
+		if( pUseConsole ){
 			#ifdef OS_UNIX
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows (console requested)" );
 			os = new deOSWindows();
 			#endif
 			
 		}else{
 			#ifdef OS_BEOS
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Unix" );
 				os = new deOSUnix();
 				#else
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console" );
 				os = new deOSConsole();
 				#endif
 			#elif defined OS_W32
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows" );
 			os = new deOSWindows();
 			os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
 			#endif
@@ -362,16 +372,16 @@ void delEngineProcess::WriteUCharToPipe( int value ){
 	if( value < 0 || value > 0xff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint8_t uchar = ( uint8_t )value;
-	WriteToPipe( &uchar, sizeof( uint8_t ) );
+	const uint8_t wpuchar = ( uint8_t )value;
+	WriteToPipe( &wpuchar, sizeof( uint8_t ) );
 }
 
 void delEngineProcess::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t wpushort = ( uint16_t )value;
+	WriteToPipe( &wpushort, sizeof( uint16_t ) );
 }
 
 void delEngineProcess::WriteIntToPipe( int value ){
@@ -410,15 +420,15 @@ void delEngineProcess::WriteToPipe( const void *data, int length ){
 
 
 int delEngineProcess::ReadUCharFromPipe(){
-	uint8_t uchar;
-	ReadFromPipe( &uchar, sizeof( uint8_t ) );
-	return uchar;
+	uint8_t value;
+	ReadFromPipe( &value, sizeof( uint8_t ) );
+	return value;
 }
 
 int delEngineProcess::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t value;
+	ReadFromPipe( &value, sizeof( uint16_t ) );
+	return value;
 }
 
 int delEngineProcess::ReadFloatFromPipe(){
@@ -930,8 +940,19 @@ void delEngineProcess::CommandVFSAddDiskDir(){
 		pathRoot.SetFromUnix( root.GetString() );
 		pathDisk.SetFromNative( disk.GetString() );
 		
-		pEngine->GetVirtualFileSystem()->AddContainer( deVFSDiskDirectory::Ref::New(
+		const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
 			new deVFSDiskDirectory( pathRoot, pathDisk, readOnly ) ) );
+		
+		const int hiddenPathCount = ReadUShortFromPipe();
+		decString hiddenPath;
+		int i;
+		
+		for( i=0; i<hiddenPathCount; i++ ){
+			ReadString16FromPipe( hiddenPath );
+			container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath ) );
+		}
+		
+		pEngine->GetVirtualFileSystem()->AddContainer( container );
 		
 		WriteUCharToPipe( ercSuccess );
 		return;
@@ -989,10 +1010,21 @@ void delEngineProcess::CommandVFSAddDelgaFile(){
 		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
 		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
-		vfs.AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer(
+		const deArchiveContainer::Ref container( deArchiveContainer::Ref::New( amgr.CreateContainer(
 			decPath::CreatePathUnix( "/" ),
 			deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ),
 			decPath::CreatePathUnix( archivePath ) ) ) );
+		
+		const int hiddenPathCount = ReadUShortFromPipe();
+		decString hiddenPath;
+		int i;
+		
+		for( i=0; i<hiddenPathCount; i++ ){
+			ReadString16FromPipe( hiddenPath );
+			container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath ) );
+		}
+		
+		vfs.AddContainer( container );
 		
 		WriteUCharToPipe( ercSuccess );
 		return;
@@ -1137,7 +1169,7 @@ void delEngineProcess::CommandStartGame(){
 	deModuleParameter moduleParameter;
 	int i, j;
 	
-	for( i=0; i<10; i++ ){
+	for( i=0; i<11; i++ ){
 		if( moduleState[ i ].module ){
 			const int count = moduleState[ i ].module->GetParameterCount();
 			for( j=0; j<count; j++ ){
@@ -1180,7 +1212,7 @@ void delEngineProcess::CommandStartGame(){
 	pLogger->LogInfo( pLogSource, "EngineProcess.CommandStartGame sending module parameter changes" );
 	WriteUCharToPipe( ercGameExited );
 	
-	for( i=0; i<10; i++ ){
+	for( i=0; i<11; i++ ){
 		if( moduleState[ i ].module ){
 			const decStringList keys( moduleState[ i ].parameters.GetKeys() );
 			const int count = keys.GetCount();
@@ -1366,7 +1398,7 @@ void delEngineProcess::CommandDelgaReadPatchDefs(){
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		
@@ -1438,7 +1470,7 @@ void delEngineProcess::CommandDelgaReadFiles(){
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		

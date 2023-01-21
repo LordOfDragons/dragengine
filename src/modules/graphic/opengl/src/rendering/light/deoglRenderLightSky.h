@@ -31,7 +31,6 @@ class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
@@ -44,31 +43,31 @@ class deoglSkyLayerGICascade;
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
-	deoglShaderProgram *pShaderAO;
-	deoglShaderProgram *pShaderClearDepth;
-	deoglShaderProgram *pShaderOccMesh;
+	const deoglPipeline *pPipelineAO;
+	const deoglPipeline *pPipelineClearDepth;
+	const deoglPipeline *pPipelineOccMesh;
 	
 	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusion;
-	deoglDebugInformation *pDebugInfoSolidShadowSplit;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitContent;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitLODLevels;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitClear;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitTask;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitRender;
-	deoglDebugInformation *pDebugInfoSolidShadowGI;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowOcclusion;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplit;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitContent;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitLODLevels;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowGI;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	
@@ -87,16 +86,16 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Occlusion mesh shader. */
-	inline deoglShaderProgram *GetShaderOccMesh() const{ return pShaderOccMesh; }
+	inline const deoglPipeline *GetPipelineOccMesh() const{ return pPipelineOccMesh; }
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
 	
 	/** Render sky light. */
-	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/** Render shadows maps. */
 	void RenderShadows( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
@@ -112,11 +111,11 @@ public:
 		int shadowMapSize, bool clearBackFaceFragments );
 	
 	/** Update light shader parameter block. */
-	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+	void UpdateLightParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanSkyLight &plan );
 	
 	/** Updates instance shader parameter block. */
-	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+	void UpdateInstanceParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount );
 	
 	

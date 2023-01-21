@@ -23,6 +23,7 @@
 #define _DEARRULEANIMATION_H_
 
 #include "dearRule.h"
+#include "../dearMapAnimationBones.h"
 
 class dearAnimationMove;
 class deAnimatorRuleAnimation;
@@ -36,6 +37,7 @@ class dearRuleAnimation : public dearRule{
 private:
 	const deAnimatorRuleAnimation &pAnimation;
 	dearAnimationMove *pMove;
+	dearMapAnimationBones pMapAnimationBones;
 	
 	dearControllerTarget pTargetMoveTime;
 	
@@ -47,7 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleAnimation( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleAnimation &rule );
+	dearRuleAnimation( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimation &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleAnimation();

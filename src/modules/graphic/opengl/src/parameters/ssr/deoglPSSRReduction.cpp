@@ -41,12 +41,12 @@ deoglPSSRReduction::deoglPSSRReduction( deGraphicOpenGl &ogl ) :
 deoglParameterInt( ogl )
 {
 	SetName( "ssrReduction" );
-	SetDescription( "Sets the screen space reflection (SSR) reduction."
-		" SSR is costly to calculated especially when done at full resolution."
-		" Rendering SSR at lower resolution then up-scaling improves render speed"
-		" especially on fillrate limited GPUs or high screen solutions the result." );
+	SetDescription( "Set Screen Space Reflection (SSR) reduction."
+		" SSR is expensive especially on larger resolutions."
+		" Rendering SSR at lower resolution then up-scaling improves performance." );
 	SetType( deModuleParameter::eptSelection );
 	SetDisplayName( "SSR Reduction" );
+	SetCategory( ecAdvanced );
 	
 	const deModuleParameter::SelectionEntry entries[ 4 ] = {
 		{ "1", "1x", "Render SSR at full resolution. For strong graphic cards." },

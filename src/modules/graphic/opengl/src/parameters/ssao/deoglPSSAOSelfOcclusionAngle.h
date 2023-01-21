@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter screen space ambient occlusion self occlusion angle.
+ * Module parameter screen space ambient occlusion self occlusion angle.
  */
 class deoglPSSAOSelfOcclusionAngle : public deoglParameterFloat{
 public:

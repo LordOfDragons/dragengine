@@ -39,24 +39,6 @@
 
 
 
-// #define DO_TIMING 1
-
-#ifdef DO_TIMING
-#include "dragengine/common/utils/decTimer.h"
-static decTimer timerTotal;
-static decTimer timer;
-
-#define DEBUG_RESET_TIMERS					timer.Reset(); timerTotal.Reset()
-#define DEBUG_PRINT_TIMER(ogl,what)			(ogl).LogInfoFormat( "RCanvasRenderWorld Timer: %s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
-#define DEBUG_PRINT_TIMER_TOTAL(ogl,what)	(ogl).LogInfoFormat( "RCanvasRenderWorld Timer-Total %s = %iys", what, ( int )( timerTotal.GetElapsedTime() * 1000000.0 ) )
-#else
-#define DEBUG_RESET_TIMERS
-#define DEBUG_PRINT_TIMER(ogl,what)
-#define DEBUG_PRINT_TIMER_TOTAL(ogl,what)
-#endif
-
-
-
 // Class deoglRCanvasRenderWorld
 //////////////////////////////////
 

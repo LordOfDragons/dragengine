@@ -29,6 +29,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -577,6 +578,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	int renderTime[ 8 ] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 	decTimer timer;
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "EnvironmentMap.RenderEnvCubeMap" );
 	deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	// dont do this. active framebuffer could be an env-map one and vanish while rendering
 	// takes place resulting in segfaults
@@ -599,6 +601,9 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	
 	plan.SetUseLayerMask( true );
 	plan.SetLayerMask( pLayerMask );
+	
+	plan.SetLodMaxPixelError( 2 );
+	plan.SetLodLevelOffset( 1 );
 	
 	// use the parent plan gi state but without modifying it. allows to use GI with
 	// no extra cost and witout messing up parent GI state
@@ -647,19 +652,20 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		// environment map has finished rendering. but for the time being this init
 		// is done. cleared to black for the time being. would be better to clear to
 		// the average ambient lighting at the envmap location once known
-		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		
 		// we can not use a shared framebuffer here from GetManager().GetFBOWithResolution()
 		// because various rendering parts use shared framebuffer too. if the same framebuffer
 		// is selected it is used at the same time by the environment map rendering and other
 		// rendering. this can lead to problems
-		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
-		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
 		
+		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
 		pRenderThread.GetFramebuffer().Activate( &fbo );
 		fbo.DetachAllImages();
 		fbo.AttachColorArrayTexture( 0, pEnvMapEmissive );
 		fbo.Verify();
+		
+		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
 		deoglFramebuffer &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();

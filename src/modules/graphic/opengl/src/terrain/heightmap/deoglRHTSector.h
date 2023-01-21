@@ -23,6 +23,7 @@
 #define _DEOGLRHTSECTOR_H_
 
 #include "../../deoglBasics.h"
+#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -31,7 +32,6 @@
 
 class deoglHTSCluster;
 class deoglHTSTexture;
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglRHeightTerrain;
 class deoglTexture;
@@ -58,7 +58,7 @@ private:
 	bool pTexturesRequirePrepareForRender;
 	
 	deoglTexture *pMasks[ OGLHTS_MAX_MASK_TEXTURES ];
-	deoglPixelBuffer *pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
+	deoglPixelBuffer::Ref pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
 	
 	float *pHeights;
 	

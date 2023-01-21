@@ -37,7 +37,7 @@ class decConvexVolume;
 
 
 /**
- * \brief OpenGL Decal Mesh Builder.
+ * OpenGL Decal Mesh Builder.
  * 
  * Helper class to build a decal mesh. The mesh is constructed using a convex volume list.
  * The starting volume is the cube formed by the decal projected along the view direction.
@@ -69,10 +69,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create decal mesh builder. */
+	/** Create decal mesh builder. */
 	deoglDecalMeshBuilder( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up decal mesh builder. */
+	/** Clean up decal mesh builder. */
 	~deoglDecalMeshBuilder();
 	/*@}*/
 	
@@ -80,49 +80,49 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Initializes the builder. */
+	/** Initializes the builder. */
 	void Init( const deoglRDecal &decals, float distance );
 	
-	/** \brief Cut using the given face. */
+	/** Cut using the given face. */
 	void CutTriangle( const decVector &v1, const decVector &v2, const decVector &v3 );
 	
-	/** \brief Build mesh for component. */
+	/** Build mesh for component. */
 	void BuildMeshForComponent( const deoglRComponent &oglComponent );
 	void BuildMeshForComponent( const deoglRComponentLOD &lod );
 	
-	/** \brief Debug. */
+	/** Debug. */
 	void Debug();
 	
 	
 	
-	/** \brief Number of points. */
+	/** Number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	
-	/** \brief Point at index. */
+	/** Point at index. */
 	const decVector &GetPointAt( int index ) const;
 	
 	/**
-	 * \brief Add point and return index.
+	 * Add point and return index.
 	 * 
 	 * If the point already exists only the index is returned.
 	 */
 	int AddPoint( const decVector &point );
 	
-	/** \brief Remove all points. */
+	/** Remove all points. */
 	void RemoveAllPoints();
 	
 	
 	
-	/** \brief Number of faces. */
+	/** Number of faces. */
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
-	/** \brief Face at index. */
+	/** Face at index. */
 	deoglDecalMeshBuilderFace *GetFaceAt( int index ) const;
 	
-	/** \brief Add face. */
+	/** Add face. */
 	deoglDecalMeshBuilderFace *AddFace();
 	
-	/** \brief Remove all faces. */
+	/** Remove all faces. */
 	void RemoveAllFaces();
 	/*@}*/
 	

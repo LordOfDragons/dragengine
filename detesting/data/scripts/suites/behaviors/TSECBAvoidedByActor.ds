@@ -1,0 +1,196 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorAvoidedByActor.
+ */
+class TSECBAvoidedByActor extends TestSuite
+	/** Initial state without any resources set. */
+	class InitialState extends TestCaseECBehavior
+		public func new() super("initialState", UnicodeString.newFromUTF8("InitialState"))
+		end
+		
+		private var ECBehaviorAvoidedByActor behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorAvoidedByActor.new(ec)
+			assertEquals(ECBehaviorAvoidedByActor.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorAvoidedByActor.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorAvoidedByActor.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			
+			assertEquals(behavior.getOrigin().getVector(), Vector.new())
+			assertEquals(behavior.getSize().getVector2(), Vector2.new())
+			assertFloatProperty(behavior.getOrientation(), 0)
+			assertFloatProperty(behavior.getRadius(), 0, 0)
+			
+			assertHasProperty("avoidedByActor.origin")
+			assertHasProperty("avoidedByActor.size")
+			assertHasProperty("avoidedByActor.orientation")
+			assertHasProperty("avoidedByActor.radius")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorAvoidedByActor.Instance instance = behavior.instance(e)
+			assertEquals(instance.getECBehavior(), behavior)
+			
+			assertEquals(instance.getOrigin(), Vector.new())
+			assertEquals(instance.getSize(), Vector2.new())
+			assertEquals(instance.getOrientation(), 0)
+			assertEquals(instance.getRadius(), 0)
+			assertTrue(instance.getEnabled())
+			assertFalse(instance.hasShape())
+			assertFalse(instance.shouldBeAvoided())
+			
+			assertEquals(ECBehaviorAvoidedByActor.getInstanceIn(e), instance)
+			
+			assertEquals(ECBehaviorAvoidedByActor.getAllInstancesIn(e), Array.newWith(instance))
+			
+			return false
+		end
+	end
+	
+	/** AvoidedByActor with resource set. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorAvoidedByActor behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorAvoidedByActor.new(getElementClass())
+		end
+		
+		protected func void setStubProperties()
+			var StubElement stub = getStubElement()
+			stub.setPropertyValueFor("avoidedByActor.origin", "0.1 0.3 0.2")
+			stub.setPropertyValueFor("avoidedByActor.size", "0.5 0.4")
+			stub.setPropertyValueFor("avoidedByActor.orientation", "30")
+			stub.setPropertyValueFor("avoidedByActor.radius", "0.15")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorAvoidedByActor.Instance instance = behavior.instance(getElement())
+			
+			assertEquals(instance.getOrigin(), Vector.new(0.1, 0.3, 0.2))
+			assertEquals(instance.getSize(), Vector2.new(0.5, 0.4))
+			assertEquals(instance.getOrientation(), 30)
+			assertEquals(instance.getRadius(), 0.15)
+			assertTrue(instance.getEnabled())
+			assertTrue(instance.hasShape())
+			assertTrue(instance.shouldBeAvoided())
+			
+			// disable
+			instance.setEnabled(false)
+			
+			assertFalse(instance.getEnabled())
+			assertTrue(instance.hasShape())
+			assertFalse(instance.shouldBeAvoided())
+			
+			// enable
+			instance.setEnabled(true)
+			
+			assertTrue(instance.getEnabled())
+			assertTrue(instance.hasShape())
+			assertTrue(instance.shouldBeAvoided())
+			
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorAvoidedByActor behavior
+		private var ECBehaviorAvoidedByActor behavior2
+		private var ECBehaviorAvoidedByActor behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorAvoidedByActor.new(ec)
+			behavior2 = ECBehaviorAvoidedByActor.new(ec, "sub1")
+			behavior3 = ECBehaviorAvoidedByActor.new(ec, "sub2")
+			assertEquals(ECBehaviorAvoidedByActor.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorAvoidedByActor.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorAvoidedByActor.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorAvoidedByActor.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorAvoidedByActor.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorAvoidedByActor.Instance component = behavior.instance(e)
+			var ECBehaviorAvoidedByActor.Instance component2 = behavior2.instance(e)
+			var ECBehaviorAvoidedByActor.Instance component3 = behavior3.instance(e)
+			
+			assertEquals(ECBehaviorAvoidedByActor.getInstanceIn(e), component)
+			assertEquals(ECBehaviorAvoidedByActor.getInstanceIn(e, "sub1"), component2)
+			assertEquals(ECBehaviorAvoidedByActor.getInstanceIn(e, "sub2"), component3)
+			
+			assertNull(ECBehaviorAvoidedByActor.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorAvoidedByActor.getAllInstancesIn(e), Array.newWith(component, component2, component3))
+			
+			assertHasProperty("avoidedByActor.origin")
+			assertHasProperty("avoidedByActor.size")
+			assertHasProperty("avoidedByActor.orientation")
+			assertHasProperty("avoidedByActor.radius")
+			
+			assertHasProperty("avoidedByActor(sub1).origin")
+			assertHasProperty("avoidedByActor(sub1).size")
+			assertHasProperty("avoidedByActor(sub1).orientation")
+			assertHasProperty("avoidedByActor(sub1).radius")
+			
+			assertHasProperty("avoidedByActor(sub2).origin")
+			assertHasProperty("avoidedByActor(sub2).size")
+			assertHasProperty("avoidedByActor(sub2).orientation")
+			assertHasProperty("avoidedByActor(sub2).radius")
+			
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorAvoidedByActor", UnicodeString.newFromUTF8("ECBehaviorAvoidedByActor"))
+		addTestCase(InitialState.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+	end
+end

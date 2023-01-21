@@ -356,7 +356,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		/** \brief Update collider enabled state. */
 		protected func void updateTouchColliderEnabled()
 			var BehaviorElement element = getElement()
-			pTouchCollider.setEnabled(pEnabled and element.getVisible() and element.getTouchable())
+			pTouchCollider.setEnabled(pEnabled and element.getTouchable())
 		end
 		
 		

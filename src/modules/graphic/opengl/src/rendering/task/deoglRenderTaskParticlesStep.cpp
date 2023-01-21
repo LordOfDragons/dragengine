@@ -35,11 +35,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep(){
-	pInstances = NULL;
-	pInstanceCount = 0;
-	pInstanceSize = 0;
-	
+deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep() :
+pInstances( nullptr ),
+pInstanceCount( 0 ),
+pInstanceSize( 0 )
+{
 	Reset();
 }
 
@@ -55,13 +55,13 @@ deoglRenderTaskParticlesStep::~deoglRenderTaskParticlesStep(){
 ///////////////
 
 void deoglRenderTaskParticlesStep::Reset(){
-	pShader = NULL;
-	pParamBlockTexture = NULL;
-	pParamBlockInstance = NULL;
-	pTUC = NULL;
+	pPipeline = nullptr;
+	pParamBlockTexture = nullptr;
+	pParamBlockInstance = nullptr;
+	pTUC = nullptr;
 	
-	pSkin = NULL;
-	pDynamicSkin = NULL;
+	pSkin = nullptr;
+	pDynamicSkin = nullptr;
 	pTexture = 0;
 	
 	pFirstIndex = 0;
@@ -73,8 +73,8 @@ void deoglRenderTaskParticlesStep::Reset(){
 
 
 
-void deoglRenderTaskParticlesStep::SetShader( const deoglShaderProgram *shader ){
-	pShader = shader;
+void deoglRenderTaskParticlesStep::SetPipeline( const deoglPipeline *pipeline ){
+	pPipeline = pipeline;
 }
 
 void deoglRenderTaskParticlesStep::SetParameterBlockTexture( const deoglShaderParameterBlock *block ){

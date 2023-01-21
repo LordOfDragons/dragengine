@@ -312,6 +312,16 @@ void seWPAPanelSourceChain::UpdateSynthesizer(){
 	UpdateSoundInfo();
 }
 
+void seWPAPanelSourceChain::OnSynthesizerPathChanged(){
+	seSynthesizer * const synthesizer = GetSynthesizer();
+	if( synthesizer ){
+		pEditPathSound->SetBasePath( synthesizer->GetDirectoryPath() );
+		
+	}else{
+		pEditPathSound->SetBasePath( "" );
+	}
+}
+
 void seWPAPanelSourceChain::UpdateSource(){
 	seWPAPanelSource::UpdateSource();
 	

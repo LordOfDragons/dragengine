@@ -41,7 +41,7 @@ class decConvexVolume;
 
 
 /**
- * @brief Light Optimizer.
+ * Light Optimizer.
  * Optimizer for Scene Light objects. The Light Optimizer is able to
  * refine the light volume as well as narrowing down the list of
  * shadow casting faces.
@@ -75,7 +75,7 @@ private:
 	int pCasterStage;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new optimizer. */
 	deoglOptimizerLight( deoglRLight *light, deoglWorld *world );
@@ -83,7 +83,7 @@ public:
 	virtual ~deoglOptimizerLight();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the light to optimize. */
 	inline deoglRLight *GetLight() const{ return pLight; }

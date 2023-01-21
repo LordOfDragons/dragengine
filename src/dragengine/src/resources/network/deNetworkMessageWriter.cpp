@@ -42,10 +42,14 @@ pPosition( 0 )
 	if( ! message ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	if( ! append ){
 		message->Clear();
 	}
+}
+
+deNetworkMessageWriter::deNetworkMessageWriter( const deNetworkMessageWriter &writer ) :
+pMessage( writer.pMessage ),
+pPosition( writer.pPosition ){
 }
 
 deNetworkMessageWriter::~deNetworkMessageWriter(){
@@ -105,4 +109,8 @@ void deNetworkMessageWriter::Write( const void *buffer, int size ){
 	}
 	memcpy( pMessage->GetBuffer() + pPosition, buffer, size );
 	pPosition += size;
+}
+
+decBaseFileWriter::Ref deNetworkMessageWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new deNetworkMessageWriter( *this ) );
 }

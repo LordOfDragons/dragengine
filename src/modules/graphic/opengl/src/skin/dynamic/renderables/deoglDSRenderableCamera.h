@@ -31,7 +31,7 @@ class deDSRenderableCamera;
 
 
 /**
- * \brief Dynamic skin camera renderable.
+ * Dynamic skin camera renderable.
  */
 class deoglDSRenderableCamera : public deoglDSRenderable{
 public:
@@ -45,10 +45,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable. */
+	/** Create renderable. */
 	deoglDSRenderableCamera( deoglDynamicSkin &dynamicSkin, const deDSRenderableCamera &renderable );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDSRenderableCamera();
 	/*@}*/
 	
@@ -56,22 +56,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Renderable. */
+	/** Renderable. */
 	inline const deDSRenderableCamera &GetRenderableCamera() const{ return pRenderableCamera; }
 	
-	/** \brief Render renderable. */
+	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;
 	
-	/** \brief Renderable changed. */
+	/** Renderable changed. */
 	virtual void RenderableChanged();
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	
-	/** \brief Camera requires sync. */
+	/** Camera requires sync. */
 	void CameraRequiresSync();
 	
-	/** \brief Drop camera. */
+	/** Drop camera. */
 	void DropCamera();
 	/*@}*/
 	

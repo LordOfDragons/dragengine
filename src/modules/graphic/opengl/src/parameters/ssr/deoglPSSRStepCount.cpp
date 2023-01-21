@@ -39,10 +39,11 @@
 
 deoglPSSRStepCount::deoglPSSRStepCount( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
 	SetName( "ssrStepCount" );
-	SetDescription( "Count of steps used in SSR to resolve reflection rays. "
+	SetDescription( "Count of steps used in SSR calculation. "
 		" Influences the overall SSR quality versus render performance." );
 	SetType( deModuleParameter::eptSelection );
 	SetDisplayName( "SSR Step Count" );
+	SetCategory( ecBasic );
 	
 	const deModuleParameter::SelectionEntry entries[ 5 ] = {
 		{ "veryLow", "Very Low", "Very low step count." },

@@ -1,0 +1,158 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Canvas creator creating a combined canvas.
+ * \version 1.13
+ * 
+ * Combining canvas creators allows to create complex nested canvas out of existing canvas
+ * creators. The combined canvas creator creates a CanvasView canvas with up to two child
+ * canvas. An outer and inner canvas creator can be defined. The outer canvas creator can
+ * be null. The inner canvas creator size is shrinked by a padding value. Using a null
+ * outer canvas creator allows to create padding around an inner canvas creator. If not
+ * null the padding allows to nest the inner canvas creator.
+ */
+class CombinedCanvasCreator extends DefaultCanvasCreator
+	private var CanvasCreator pOuterCanvas
+	private var CanvasCreator pInnerCanvas
+	private var BorderSize pPadding
+	
+	
+	
+	/** \brief Create canvas creator. */
+	public func new()
+		pPadding = BorderSize.new()
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func new(CombinedCanvasCreator creator) super(creator)
+		if creator.pOuterCanvas != null
+			pOuterCanvas = creator.pOuterCanvas.copyCanvasCreator()
+		end
+		if creator.pInnerCanvas != null
+			pInnerCanvas = creator.pInnerCanvas.copyCanvasCreator()
+		end
+		pPadding = creator.pPadding
+	end
+	
+	
+	
+	/** \brief Outer canvas creator or null. */
+	public func CanvasCreator getOuterCanvas()
+		return pOuterCanvas
+	end
+	
+	/** \brief Set outer canvas creator or null. */
+	public func void setOuterCanvas(CanvasCreator creator)
+		pOuterCanvas = creator
+	end
+	
+	/** \brief Inner canvas creator or null. */
+	public func CanvasCreator getInnerCanvas()
+		return pInnerCanvas
+	end
+	
+	/** \brief Set inner canvas creator or null. */
+	public func void setInnerCanvas(CanvasCreator creator)
+		pInnerCanvas = creator
+	end
+	
+	/** \brief Padding of inner canvas creator. */
+	public func BorderSize getPadding()
+		return pPadding
+	end
+	
+	/** \brief Set padding of inner canvas creator. */
+	public func void setPadding(BorderSize padding)
+		if padding == null
+			throw ENullPointer.new("padding")
+		end
+		pPadding = padding
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | outerCanvas | CanvasCreator | setOuterCanvas |
+	 * | innerCanvas | CanvasCreator | setInnerCanvas |
+	 * | padding | BorderSize | setPadding |
+	 */
+	public func void setParameter(String name, Object value)
+		if name.equals("outerCanvas")
+			setOuterCanvas(value cast CanvasCreator)
+			
+		elif name.equals("innerCanvas")
+			setInnerCanvas(value cast CanvasCreator)
+			
+		elif name.equals("padding")
+			setPadding(value cast BorderSize)
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func CanvasCreator copyCanvasCreator()
+		return CombinedCanvasCreator.new(this)
+	end
+	
+	
+	
+	/** \brief Create canvas for a specific widget size. */
+	public func Canvas createCanvas(Point size)
+		var CanvasView canvas = CanvasView.new()
+		canvas.setSize(size)
+		
+		if pOuterCanvas != null
+			var Canvas outer = pOuterCanvas.createCanvas(size)
+			if outer != null
+				outer.setOrder(canvas.getCanvasCount())
+				canvas.addCanvas(outer)
+			end
+		end
+		
+		if pInnerCanvas != null
+			var Point childSize = size - pPadding.getSize()
+			if childSize > Point.new()
+				var Canvas inner = pInnerCanvas.createCanvas(childSize)
+				if inner != null
+					inner.setPosition(Point.new(pPadding.getLeft(), pPadding.getTop()))
+					inner.setOrder(canvas.getCanvasCount())
+					canvas.addCanvas(inner)
+				end
+			end
+		end
+		
+		return canvas
+	end
+end

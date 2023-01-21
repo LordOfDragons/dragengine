@@ -97,6 +97,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				with open(self.filepath, "wb") as f:
 					self.safeExport(context, f)
 		finally:
+			self.restoreStates(context)
 			self.progress.hide()
 	
 	def initFindMeshArmRef(self, context):
@@ -119,13 +120,16 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			testmesh = self.mesh
 			prevLodLevelHasLodError = False
 			predLodError = 0
-			while testmesh and testmesh.object and testmesh.object.dragengine_lodmesh in bpy.data.objects:
+			while testmesh\
+					and testmesh.object\
+					and testmesh.object.dragengine_lodmesh\
+					and testmesh.object.dragengine_lodmesh.name in bpy.data.objects:
 				if testmesh.object.dragengine_lodmesh in loopProtection:
 					self.report({ 'INFO', 'ERROR' }, "Loop in LOD meshes!")
 					return False
-				loopProtection.append(testmesh.object.dragengine_lodmesh)
+				loopProtection.append(testmesh.object.dragengine_lodmesh.name)
 				
-				testmesh.lodMesh = Mesh(bpy.data.objects[testmesh.object.dragengine_lodmesh])
+				testmesh.lodMesh = Mesh(testmesh.object.dragengine_lodmesh)
 				
 				if testmesh.lodMesh.object.dragengine_hasloderror:
 					testmesh.lodMesh.lodError = testmesh.lodMesh.object.dragengine_loderror
@@ -162,6 +166,15 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				self.timer = timer
 		timer = Timer()
 		
+		# since we apply modifiers we run into a problem if armature modifiers are used.
+		# in this case the model is not exported in the rest post but in some arbitrary
+		# animation pose which breaks the export. to solve this set the armature to
+		# 'rest pose' while exporting then switch it back to the original value
+		if self.armature is not None and not self.armature.restPose:
+			self.armature.armature.pose_position = 'REST'
+		
+		self.depsgraph = context.evaluated_depsgraph_get()
+		
 		if self.armature:
 			self.armature.ignoreBones = self.ignoreBones
 			self.armature.initAddBones()
@@ -170,6 +183,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		
 		mesh = self.mesh
 		while mesh:
+			# get object with modifiers applied. original object can be found at mesh.object.original
+			mesh.object = mesh.object.evaluated_get(self.depsgraph)
+			mesh.mesh = mesh.object.data
+			
 			self.lodMeshCount = self.lodMeshCount + 1
 			
 			mesh.initAddTextures()
@@ -191,6 +208,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			mesh.initAddFaces()
 			timer.logTime('mesh.initAddFaces')
 			self.progress.advance("Prepare faces")
+			
+			mesh.applyAutoSmooth()
+			timer.logTime('mesh.applyAutoSmooth')
+			self.progress.advance("Apply auto-smoothing")
 			
 			mesh.initCalcCornerNormals()
 			timer.logTime('mesh.initCalcCornerNormals')
@@ -214,30 +235,23 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		pm = 3  # bones, textures, tex-coord-sets
 		mesh = self.mesh
 		while mesh:
-			pm = pm + 11  # weights, vertices, faces, prepare(8)
+			pm = pm + 12  # weights, vertices, faces, prepare(9)
 			mesh = mesh.lodMesh
 		self.progress = ProgressDisplay(pm, self)
 		self.progress.show()
 	
 	def initChecksEarly(self, context):
-		modifiers = [['MIRROR', 'Mirror'], ['SUBSURF', 'Subdivision']]
-		
-		for m in modifiers:
-			if any(x.type == m[0] for x in self.mesh.object.modifiers):
-				self.report({'INFO', 'ERROR'}, ("{} modifier found on object '{}'."
-					+ " Apply modifier before export otherwise only one half is exported.").format(\
-						m[1], self.mesh.object.name))
-				return False
+		if self.mesh.mesh.use_auto_smooth and any(x.type == 'EDGE_SPLIT' for x in self.mesh.object.modifiers):
+			self.report({'INFO', 'ERROR'}, ("Edge Split modifier found on object '{}'"
+				+ " while Auto-Smooth is enabled.".format(self.mesh.object.name)))
+			return False
 		
 		lodMesh = self.mesh.lodMesh
 		while lodMesh:
-			for m in modifiers:
-				if any(x.type == m[0] for x in lodMesh.object.modifiers):
-					self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': {} modifier."
-						+ " Apply modifier before export otherwise only one half is exported.").format(\
-							lodMesh.object.name, m[1]))
-					return False
-			
+			if lodMesh.mesh.use_auto_smooth and any(x.type == 'EDGE_SPLIT' for x in lodMesh.object.modifiers):
+				self.report({'INFO', 'ERROR'}, ("Edge Split modifier found on object '{}'"
+					+ " while Auto-Smooth is enabled.".format(lodMesh.object.name)))
+				return False
 			lodMesh = lodMesh.lodMesh
 		
 		return True
@@ -558,5 +572,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		f.write(struct.pack(fmt, face.tangents[i4], face.tangents[i3], face.tangents[i2], face.tangents[i1]))
 		for tcs in face.texCoordSets:
 			f.write(struct.pack(fmt, tcs[i4].index, tcs[i3].index, tcs[i2].index, tcs[i1].index))
+	
+	def restoreStates(self, context):
+		# restore rig pose position if changed
+		if self.armature is not None and not self.armature.restPose:
+			self.armature.armature.pose_position = 'POSE'
 	
 registerClass(OBJECT_OT_ExportModel)

@@ -23,75 +23,83 @@
 #ifndef _DEBNMESSAGE_H_
 #define _DEBNMESSAGE_H_
 
-// predefintions
+#include <dragengine/resources/network/deNetworkMessage.h>
+
 class debnMessage;
 class debnSocket;
 class debnAddress;
-class deNetworkMessage;
-
 
 
 /**
- * @brief Message class.
  * Manages a package to be send or received.
  */
 class debnMessage{
 public:
-	/** Message states. */
 	enum eMessageStates{
-		/** Message is pending to be send. */
 		emsPending,
-		/** Message has been send awaiting ack. */
 		emsSend,
-		/** Message is done. */
 		emsDone
 	};
 	
 private:
-	deNetworkMessage *pMessage;
+	const deNetworkMessage::Ref pMessage;
 	int pNumber;
-	int pState;
+	eMessageStates pState;
 	int pType;
-	float pSecSinceSend;
+	float pResendElapsed;
+	float pTimeoutElapsed;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new message object. */
 	debnMessage();
+	
 	/** Creates a new message object. */
 	debnMessage( deNetworkMessage *message );
-	/** Cleans up the package object. */
-	~debnMessage();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the network package. */
 	inline deNetworkMessage *GetMessage() const{ return pMessage; }
+	
 	/** Retrieves the number. */
 	inline int GetNumber() const{ return pNumber; }
+	
 	/** Sets the number. */
 	void SetNumber( int number );
+	
 	/** Retrieves the message state. */
-	inline int GetState() const{ return pState; }
+	inline eMessageStates GetState() const{ return pState; }
+	
 	/** Sets the message state. */
-	void SetState( int state );
+	void SetState( eMessageStates state );
+	
 	/** Retrieves the message type. */
 	inline int GetType() const{ return pType; }
+	
 	/** Sets the message type. */
 	void SetType( int type );
-	/** Retrieves the seconds since send. */
-	inline float GetSecondsSinceSend() const{ return pSecSinceSend; }
-	/** Sets the seconds since send. */
-	void SetSecondsSinceSend( float seconds );
-	/** Adds to seconds since send. */
-	void IncreaseSecondsSinceSend( float seconds );
-	/*@}*/
 	
-private:
-	void pCleanUp();
+	/** Resend elapsed time. */
+	inline float GetResendElapsed() const{ return pResendElapsed; }
+	
+	/** Set resend elapsed time. */
+	void SetResendElapsed( float elapsed );
+	
+	/** Timeout elapsed time. */
+	inline float GetTimeoutElapsed() const{ return pTimeoutElapsed; }
+	
+	/** Set timeout elapsed time. */
+	void SetTimeoutElapsed( float elapsed );
+	
+	/** Increment elapsed times. */
+	void IncrementElapsed( float elapsed );
+	
+	/** Reset elapsed times. */
+	void ResetElapsed();
+	/*@}*/
 };
 
-// end of include only once
 #endif

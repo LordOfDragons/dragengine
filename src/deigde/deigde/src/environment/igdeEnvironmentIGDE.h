@@ -156,6 +156,9 @@ public:
 	/** \brief Active module shared toolbars changed. */
 	virtual void ActiveModuleSharedToolBarsChanged();
 	
+	/** \brief Activate editor and bring it to the front. */
+	virtual void ActivateEditor( igdeEditorModule *editor );
+	
 	
 	
 	/**
@@ -267,6 +270,9 @@ public:
 	 * \brief Add a file to the recent editor files list.
 	 */
 	virtual void AddRecentEditorFile( const char *filename );
+	
+	/** \brief Close application. */
+	virtual void CloseApplication();
 	/*@}*/
 };
 

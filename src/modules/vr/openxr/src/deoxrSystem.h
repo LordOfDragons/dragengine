@@ -71,6 +71,10 @@ private:
 	decPoint pRenderSize;
 	
 	bool pSupportsHandTracking;
+	bool pSupportsEyeGazeTracking;
+	bool pSupportsFaceEyeTracking;
+	bool pSupportsFaceLipTracking;
+	bool pSupportsPassthrough;
 	
 	
 	
@@ -131,6 +135,18 @@ public:
 	
 	/** Supports hand tracking. */
 	inline bool GetSupportsHandTracking() const{ return pSupportsHandTracking; }
+	
+	/** Supports eye gaze tracking. */
+	inline bool GetSupportsEyeGazeTracking() const{ return pSupportsEyeGazeTracking; }
+	
+	/** Supports face eye tracking. */
+	inline bool GetSupportsFaceEyeTracking() const{ return pSupportsFaceEyeTracking; }
+	
+	/** Supports face mouth tracking. */
+	inline bool GetSupportsFaceLipTracking() const{ return pSupportsFaceLipTracking; }
+	
+	/** Supports passthrough. */
+	inline bool GetSupportsPassthrough() const{ return pSupportsPassthrough; }
 	/*@}*/
 	
 	

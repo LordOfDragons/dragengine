@@ -36,6 +36,7 @@ class deoglCollideListComponent;
 class deoglLODCalculator{
 private:
 	int pMaxPixelError;
+	int pLodOffset;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -48,26 +49,32 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Sets the maximum pixel error on screen. */
+	/** Set the maximum pixel error on screen. */
 	void SetMaxPixelError( int maxPixelError );
 	
+	/** Set lod offset. */
+	void SetLodOffset( int offset );
+	
 	/** Set lod level of all components to 0. */
-	void SetComponentLOD0( deoglCollideList &collideList );
+	void SetComponentLOD0( const deoglCollideList &collideList );
 	
 	/** Set lod level of all components to highest. */
-	void SetComponentLODMax( deoglCollideList &collideList );
+	void SetComponentLODMax( const deoglCollideList &collideList );
 	
-	/** Calculates projective lod levels for all components. */
-	void SetComponentLODProjection( deoglCollideList &collideList, const decDVector &position,
+	/** Calculate projective lod levels for all components. */
+	void SetComponentLODProjection( const deoglCollideList &collideList, const decDVector &position,
 		const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight );
 	
-	/** Calculates orthographic lod levels for all components. */
-	void SetComponentLODOrtho( deoglCollideList &collideList, float boxWidth, float boxHeight,
+	/** Calculate orthographic lod levels for all components. */
+	void SetComponentLODOrtho( const deoglCollideList &collideList, float boxWidth, float boxHeight,
 		int screenWidth, int screenHeight );
 	
-	/** Calculates orthographic lod levels for all components. */
+	/** Calculate orthographic lod levels for all components. */
 	void SetComponentLODOrtho( deoglCollideListComponent &clistComponent, float boxWidth,
 		float boxHeight, int screenWidth, int screenHeight );
+	
+	/** Calculate omnidirection lod levels for all components. */
+	void SetComponentLODOmniDir( const deoglCollideList &collideList, const decDVector &position, int size );
 	/*@}*/
 };
 

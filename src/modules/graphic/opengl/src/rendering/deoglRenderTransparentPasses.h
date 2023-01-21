@@ -23,30 +23,32 @@
 #define _DEOGLRENDERTRANSPARENTPASSES_H_
 
 #include "deoglRenderBase.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
 
 
 /**
- * \brief Transparent passes renderer.
+ * Transparent passes renderer.
  */
 class deoglRenderTransparentPasses : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderCopyDepthLimit;
-	deoglShaderProgramUsage pShaderCopyDepthColor;
-	deoglShaderProgramUsage pShaderCopyColor;
+	const deoglPipeline *pPipelineCopyDepthLimit;
+	const deoglPipeline *pPipelineCopyDepthLimitStereo;
+	const deoglPipeline *pPipelineCopyDepthColor;
+	const deoglPipeline *pPipelineCopyDepthColorStereo;
+	const deoglPipeline *pPipelineCopyColor;
+	const deoglPipeline *pPipelineCopyColorStereo;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderTransparentPasses( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderTransparentPasses();
 	/*@}*/
 	
@@ -54,20 +56,20 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Render Transparent Passes. */
-	void RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	/** Render Transparent Passes. */
+	void RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
-	/** \brief Render transparent geometry pass. */
-	void RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	/** Render transparent geometry pass. */
+	void RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
-	/** \brief Render transparent depth limite pass. */
-	void RenderTransparentLimitDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	/** Render transparent depth limite pass. */
+	void RenderTransparentLimitDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
 	
-	/** \brief Render volumetric pass. */
+	/** Render volumetric pass. */
 	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
 	
-	/** \brief Copy color texture to temporary texture. */
-	void CopyColorToTemporary();
+	/** Copy color texture to temporary texture. */
+	void CopyColorToTemporary( deoglRenderPlan &plan );
 	/*@}*/
 };
 

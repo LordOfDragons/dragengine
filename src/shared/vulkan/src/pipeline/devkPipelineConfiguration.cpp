@@ -60,7 +60,9 @@ pStencilTest( false ),
 pBindingCount( 0 ),
 pBindings( nullptr ),
 pAttributeCount( 0 ),
-pAttributes( nullptr )
+pAttributes( nullptr ),
+pDynamicDepthBias( false ),
+pDynamicStencil( false )
 {
 	pColorWriteMask[ 0 ] = true;
 	pColorWriteMask[ 1 ] = true;
@@ -96,7 +98,9 @@ pStencilTest( false ),
 pBindingCount( 0 ),
 pBindings( nullptr ),
 pAttributeCount( 0 ),
-pAttributes( nullptr )
+pAttributes( nullptr ),
+pDynamicDepthBias( false ),
+pDynamicStencil( false )
 {
 	pColorWriteMask[ 0 ] = true;
 	pColorWriteMask[ 1 ] = true;
@@ -432,6 +436,16 @@ eAttributeFormat format, int offset ){
 
 
 
+void devkPipelineConfiguration::SetDynamicDepthBias( bool dynamic ){
+	pDynamicDepthBias = dynamic;
+}
+
+void devkPipelineConfiguration::SetDynamicStencil( bool dynamic ){
+	pDynamicStencil = dynamic;
+}
+
+
+
 // Operators
 //////////////
 
@@ -453,35 +467,37 @@ bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &con
 	}
 	
 	return pType == configuration.pType
-	&& pDescriptorSetLayout == configuration.pDescriptorSetLayout
-	&& pRenderPass == configuration.pRenderPass
-	&& pShaderVertex == configuration.pShaderVertex
-	&& pShaderTessellationControl == configuration.pShaderTessellationControl
-	&& pShaderTessellationEvaluation == configuration.pShaderTessellationEvaluation
-	&& pShaderGeometry == configuration.pShaderGeometry
-	&& pShaderFragment == configuration.pShaderFragment
-	&& pShaderCompute == configuration.pShaderCompute
-	&& pShaderRayGen == configuration.pShaderRayGen
-	&& pShaderAnyHit == configuration.pShaderAnyHit
-	&& pShaderClosestHit == configuration.pShaderClosestHit
-	&& pShaderMiss == configuration.pShaderMiss
-	&& pShaderIntersection == configuration.pShaderIntersection
-	&& pShaderCallable == configuration.pShaderCallable
-	&& pShaderTask == configuration.pShaderTask
-	&& pShaderMesh == configuration.pShaderMesh
-	&& pSpecialization == configuration.pSpecialization
-	&& pTopology == configuration.pTopology
-	&& pCulling == configuration.pCulling
-	&& pBlendColor == configuration.pBlendColor
-	&& pBlendAlpha == configuration.pBlendAlpha
-	&& pColorWriteMask[ 0 ] == configuration.pColorWriteMask[ 0 ]
-	&& pColorWriteMask[ 1 ] == configuration.pColorWriteMask[ 1 ]
-	&& pColorWriteMask[ 2 ] == configuration.pColorWriteMask[ 2 ]
-	&& pColorWriteMask[ 3 ] == configuration.pColorWriteMask[ 3 ]
-	&& pDepthWriteMask == configuration.pDepthWriteMask
-	&& pDepthFunction == configuration.pDepthFunction
-	&& pDepthTest == configuration.pDepthTest
-	&& pStencilTest == configuration.pStencilTest;
+		&& pDescriptorSetLayout == configuration.pDescriptorSetLayout
+		&& pRenderPass == configuration.pRenderPass
+		&& pShaderVertex == configuration.pShaderVertex
+		&& pShaderTessellationControl == configuration.pShaderTessellationControl
+		&& pShaderTessellationEvaluation == configuration.pShaderTessellationEvaluation
+		&& pShaderGeometry == configuration.pShaderGeometry
+		&& pShaderFragment == configuration.pShaderFragment
+		&& pShaderCompute == configuration.pShaderCompute
+		&& pShaderRayGen == configuration.pShaderRayGen
+		&& pShaderAnyHit == configuration.pShaderAnyHit
+		&& pShaderClosestHit == configuration.pShaderClosestHit
+		&& pShaderMiss == configuration.pShaderMiss
+		&& pShaderIntersection == configuration.pShaderIntersection
+		&& pShaderCallable == configuration.pShaderCallable
+		&& pShaderTask == configuration.pShaderTask
+		&& pShaderMesh == configuration.pShaderMesh
+		&& pSpecialization == configuration.pSpecialization
+		&& pTopology == configuration.pTopology
+		&& pCulling == configuration.pCulling
+		&& pBlendColor == configuration.pBlendColor
+		&& pBlendAlpha == configuration.pBlendAlpha
+		&& pColorWriteMask[ 0 ] == configuration.pColorWriteMask[ 0 ]
+		&& pColorWriteMask[ 1 ] == configuration.pColorWriteMask[ 1 ]
+		&& pColorWriteMask[ 2 ] == configuration.pColorWriteMask[ 2 ]
+		&& pColorWriteMask[ 3 ] == configuration.pColorWriteMask[ 3 ]
+		&& pDepthWriteMask == configuration.pDepthWriteMask
+		&& pDepthFunction == configuration.pDepthFunction
+		&& pDepthTest == configuration.pDepthTest
+		&& pStencilTest == configuration.pStencilTest
+		&& pDynamicDepthBias == configuration.pDynamicDepthBias
+		&& pDynamicStencil == configuration.pDynamicStencil;
 }
 
 devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipelineConfiguration &configuration ){
@@ -515,6 +531,8 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pDepthFunction = configuration.pDepthFunction;
 	pDepthTest = configuration.pDepthTest;
 	pStencilTest = configuration.pStencilTest;
+	pDynamicDepthBias = configuration.pDynamicDepthBias;
+	pDynamicStencil = configuration.pDynamicStencil;
 	
 	SetBindingCount( configuration.pBindingCount );
 	if( pBindingCount > 0 ){

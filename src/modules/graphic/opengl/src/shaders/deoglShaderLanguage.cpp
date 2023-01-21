@@ -292,6 +292,12 @@ pPreprocessor( renderThread )
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
 			pGLSLExtensions.Add( "GL_ARB_shader_image_load_store" );
 		}
+		
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shading_language_420pack )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
+			pGLSLExtensions.Add( "GL_ARB_shading_language_420pack" );
+		}
 	}
 }
 
@@ -305,6 +311,7 @@ deoglShaderLanguage::~deoglShaderLanguage(){
 ///////////////
 
 deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &program ){
+	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	const deoglShaderSources &sources = *program.GetSources();
 	deoglShaderUnitSourceCode * const scCompute = program.GetComputeSourceCode();
 	deoglShaderUnitSourceCode * const scTessellationControl = program.GetTessellationControlSourceCode();
@@ -382,17 +389,18 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			
 			pPreparePreprocessor( program.GetDefines() );
 			
-			if( scCompute ){
-				pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
+			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
+			&& ext.GetGLVersion() < deoglExtensions::evgl4p3 ){
+				pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
 			}
+			
+			pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
 			
 			if( ! pCompileObject( handleC ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
 				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
 				
-				if( scCompute ){
-					pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
-				}
+				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
 				
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
@@ -698,35 +706,21 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			if( scCompute ){
 				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
 			}
-			
 			if( scTessellationControl ){
 				pRenderThread.GetLogger().LogErrorFormat( "  tessellation control unit source code file = %s", scTessellationControl->GetFilePath() );
 			}
 			if( scTessellationEvaluation ){
 				pRenderThread.GetLogger().LogErrorFormat( "  tessellation evaluation unit source code file = %s", scTessellationEvaluation->GetFilePath() );
 			}
-			
 			if( scGeometry ){
 				pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s", scGeometry->GetFilePath() );
-				
-			}else{
-				pRenderThread.GetLogger().LogErrorFormat( "  inline geometry unit source code." );
 			}
-			
 			if( scVertex ){
 				pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s", scVertex->GetFilePath() );
-				
-			}else{
-				pRenderThread.GetLogger().LogErrorFormat( "  inline vertex unit source code." );
 			}
-			
 			if( scFragment ){
 				pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s", scFragment->GetFilePath() );
-				
-			}else{
-				pRenderThread.GetLogger().LogError( "  inline fragment unit source code." );
 			}
-			
 			if( pErrorLog ){
 				pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 			}

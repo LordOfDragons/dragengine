@@ -48,7 +48,8 @@ deoalEnvProbeList::deoalEnvProbeList( deoalAWorld &world, double reuseDistance, 
 pWorld( world ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 1.0f ),
-    pRTWorldBVH( NULL ),
+pAttenuationDistanceOffset( 0.0f ),
+pRTWorldBVH( NULL ),
 pRTConfig( NULL ),
 pReuseDistance( reuseDistance ),
 pReuseDistanceSquared( reuseDistance * reuseDistance ),
@@ -77,11 +78,12 @@ void deoalEnvProbeList::SetRange( float range ){
 	pRange = range;
 }
 
-void deoalEnvProbeList::SetAttenuation( float refDist, float rolloff ){
+void deoalEnvProbeList::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
 	InvalidateAllProbes();
 	
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
+	pAttenuationDistanceOffset = distanceOffset;
 }
 
 void deoalEnvProbeList::SetLayerMask( const decLayerMask &layerMask ){
@@ -246,7 +248,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 			// we need to re-add it to the octree because tracing sound rays changes extends
 			bestProbe->GetOctreeNode()->RemoveEnvProbe( bestProbe );
 			bestProbe->Invalidate();
-			bestProbe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff );
+			bestProbe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
 			bestProbe->SetLayerMask( pLayerMask );
 			bestProbe->SetRTConfig( pRTConfig );
 			bestProbe->SetLastUsed( pLastUsedCounter );
@@ -301,7 +303,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 		probe = new deoalEnvProbe( pWorld.GetAudioThread() );
 		probe->SetPosition( position );
 		probe->SetRange( pRange );
-		probe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff );
+		probe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
 		probe->SetLayerMask( pLayerMask );
 		probe->SetRTConfig( pRTConfig );
 		probe->SetLastUsed( pLastUsedCounter );

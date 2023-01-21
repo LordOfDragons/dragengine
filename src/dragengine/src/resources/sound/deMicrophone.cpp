@@ -47,6 +47,7 @@ pType( emtPoint ),
 
 pMuted( false ),
 pVolume( 1.0f ),
+pSpeakerGain( 1.0f ),
 
 pSpeakerRoot( NULL ),
 pSpeakerTail( NULL ),
@@ -165,6 +166,19 @@ void deMicrophone::SetLayerMask( const decLayerMask &layerMask ){
 	
 	if( pPeerAudio ){
 		pPeerAudio->LayerMaskChanged();
+	}
+}
+
+void deMicrophone::SetSpeakerGain( float gain ){
+	gain = decMath::max( gain, 0.0f );
+	if( fabsf( gain - pSpeakerGain ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pSpeakerGain = gain;
+	
+	if( pPeerAudio ){
+		pPeerAudio->SpeakerGainChanged();
 	}
 }
 

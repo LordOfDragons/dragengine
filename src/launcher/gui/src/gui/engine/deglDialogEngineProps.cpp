@@ -57,8 +57,8 @@ FXIMPLEMENT( deglDialogEngineProps, FXDialogBox, deglDialogEnginePropsMap, ARRAY
 
 deglDialogEngineProps::deglDialogEngineProps(){ }
 
-deglDialogEngineProps::deglDialogEngineProps( deglWindowMain *windowMain, FXWindow *owner ) :
-FXDialogBox( owner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+deglDialogEngineProps::deglDialogEngineProps( deglWindowMain *windowMain, FXWindow *powner ) :
+FXDialogBox( powner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 0, 0, 600, 300, 10, 10, 10, 5 )
 {
 	const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();

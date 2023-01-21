@@ -97,19 +97,21 @@ pRenderCounter( 0 )
 	// create the engine and initialize as far as possible
 	try{
 		// create os
-#if defined( OS_UNIX ) && defined( HAS_LIB_X11 )
+#if defined OS_UNIX && defined HAS_LIB_X11
 		logger->LogInfo( LOGSOURCE, "Creating OS Unix." );
 		os = new deOSUnix();
-#elif defined( OS_W32 )
+#elif defined OS_W32
 		logger->LogInfo( LOGSOURCE, "Creating OS Windows." );
 		os = new deOSWindows();
+#else
+		logger->LogInfo( LOGSOURCE, "Creating OS Console." );
+		os = new deOSConsole();
 #endif
 		if( ! os ) DETHROW( deeOutOfMemory );
 		
 		// create game engine
 		logger->LogInfo( LOGSOURCE, "Creating Game Engine." );
 		pEngine = new deEngine( os );
-		if( ! pEngine ) DETHROW( deeOutOfMemory );
 		os = NULL;
 		
 		pEngine->SetLogger( logger );
@@ -434,8 +436,12 @@ deRenderWindow *igdeEngineController::CreateRenderWindow( igdeWidget &hostWindow
 		DETHROW( deeNullPointer );
 	}
 	
+	#ifdef IGDE_TOOLKIT_NULL
+	return pEngine->GetRenderWindowManager()->CreateRenderWindow();
+	#else
 	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
 		igdeNativeWidget::NativeWidgetParentID( hostWindow ) );
+	#endif
 }
 
 void igdeEngineController::UnparentMainRenderWindow(){
@@ -447,7 +453,7 @@ void igdeEngineController::UnparentMainRenderWindow(){
 	// we have to make sure the window still exists according to the graphic module. if it did
 	// already destroy it we do not attempt to modify the window. detach above works no matter
 	// if the window is still existing or not but not these calls here
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && defined HAS_LIB_X11
 	if( pMainRenderWindow->GetWindow() && pMainWindow.GetNativeWidget() ){
 		Display * const display = igdeNativeWidget::GetDisplayConnection();
 		Window window = pMainRenderWindow->GetWindow();
@@ -558,7 +564,12 @@ void igdeEngineController::pConfigModules(){
 	pMainWindow.GetLogger()->LogInfo( LOGSOURCE, "Loading Modules." );
 	pEngine->LoadModules();
 	
+	#ifdef IGDE_TOOLKIT_NULL
+	pEngine->GetGraphicSystem()->SetActiveModule( pEngine->GetModuleSystem()->GetModuleNamed( "NullGraphic" ) );
+	#else
 	pEngine->GetGraphicSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtGraphic ) );
+	#endif
+	
 	pEngine->GetAudioSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAudio ) );
 	pEngine->GetPhysicsSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtPhysics ) );
 	pEngine->GetAnimatorSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAnimator ) );
@@ -566,7 +577,12 @@ void igdeEngineController::pConfigModules(){
 	pEngine->GetSynthesizerSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtSynthesizer ) );
 	pEngine->GetCrashRecoverySystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtCrashRecovery ) );
 	pEngine->GetNetworkSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtNetwork ) );
+	
+	#ifdef IGDE_TOOLKIT_NULL
+	pEngine->GetVRSystem()->SetActiveModule( pEngine->GetModuleSystem()->GetModuleNamed( "NullVR" ) );
+	#else
 	pEngine->GetVRSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtVR ) );
+	#endif
 }
 
 void igdeEngineController::pCreateMainRenderWindow(){
@@ -574,12 +590,16 @@ void igdeEngineController::pCreateMainRenderWindow(){
 		return;
 	}
 	
-	if( ! igdeNativeWidget::HasNativeParent( pMainWindow ) ){
-		DETHROW( deeNullPointer );
-	}
-	
-	pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-		igdeNativeWidget::NativeWidgetID( pMainWindow ) );
+	#ifdef IGDE_TOOLKIT_NULL
+		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindow();
+	#else
+		if( ! igdeNativeWidget::HasNativeParent( pMainWindow ) ){
+			DETHROW( deeNullPointer );
+		}
+		
+		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
+			igdeNativeWidget::NativeWidgetID( pMainWindow ) );
+	#endif
 	
 	pMainRenderWindow->SetSize( 0, 0 );
 	pMainRenderWindow->SetPaint( false ); // disable painting since this is only a dummy window

@@ -24,10 +24,11 @@
 
 #include "../deoalBasics.h"
 
+class deoalEffectSlot;
 
 
 /**
- * \brief OpenAL source object.
+ * OpenAL source object.
  * 
  * Keeps track of an openal source object. Sources are limited resources on the hardware and
  * have to be reused as much as possible to avoid running out of openal memory. A source
@@ -42,7 +43,7 @@
  */
 class deoalSource{
 public:
-	/** \brief Play state. */
+	/** Play state. */
 	enum eState {
 		epsPlaying,
 		epsPaused,
@@ -65,18 +66,17 @@ private:
 	float pImportance;
 	
 	ALuint pFilter;
-	ALuint pSendSlot;
-	ALuint pSendEffect;
+	deoalEffectSlot *pEffectSlot;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create openal buffer. */
+	/** Create openal buffer. */
 	deoalSource( deoalAudioThread &audioThread );
 	
-	/** \brief Clean up openal buffer. */
+	/** Clean up openal buffer. */
 	~deoalSource();
 	/*@}*/
 	
@@ -84,94 +84,81 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenAL module. */
+	/** OpenAL module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
-	/** \brief Source. */
+	/** Source. */
 	inline ALuint GetSource() const{ return pSource; }
 	
 	
 	
-	/** \brief Number of streaming buffers. */
+	/** Number of streaming buffers. */
 	inline int GetBufferCount() const{ return pBufferCount; }
 	
-	/** \brief Set number of streaming buffers. */
+	/** Set number of streaming buffers. */
 	void SetBufferCount( int count );
 	
-	/** \brief Buffer. */
+	/** Buffer. */
 	ALuint GetBufferAt( int position ) const;
 	
 	
 	
-	/** \brief Owner or \em NULL if not bound. */
+	/** Owner or \em NULL if not bound. */
 	inline void *GetOwner() const{ return pOwner; }
 	
-	/** \brief \brief Set owner or \em NULL if not bound. */
+	/** Set owner or \em NULL if not bound. */
 	void SetOwner( void *owner );
 	
-	/** \brief Importance. */
+	/** Importance. */
 	inline float GetImportance() const{ return pImportance; }
 	
-	/** \brief Set importance. */
+	/** Set importance. */
 	void SetImportance( float importance );
 	
 	
 	
-	/** \brief Source is bound. */
+	/** Source is bound. */
 	bool IsBound() const;
 	
-	/** \brief Source is not bound. */
+	/** Source is not bound. */
 	bool IsUnbound() const;
 	
 	
 	
-	/** \brief Play state. */
+	/** Play state. */
 	inline eState GetState() const{ return pState; }
 	
-	/** \brief Start playing back. */
+	/** Start playing back. */
 	void Play();
 	
-	/** \brief Pause playing back. */
+	/** Pause playing back. */
 	void Pause();
 	
-	/** \brief Stop playing back. */
+	/** Stop playing back. */
 	void Stop();
 	
 	
 	
-	/** \brief Filter creating it if not present. */
+	/** Filter creating it if not present. */
 	ALuint GetFilter();
 	
 	/**
-	 * \brief Assign source filter if present.
+	 * Assign source filter if present.
 	 * 
 	 * Call this whenever filter changed.
 	 */
 	void AssignFilter();
 	
-	/** \brief Remove filter from source but keep filter object alive. */
+	/** Remove filter from source but keep filter object alive. */
 	void ClearFilter();
 	
 	
 	
-	/** \brief Send slot creating it if not present. */
-	ALuint GetSendSlot( int index );
+	/** Effect slot or nullptr. */
+	deoalEffectSlot *GetEffectSlot();
 	
-	/** \brief Send effect creating it if not present. */
-	ALuint GetSendEffect( int index );
-	
-	/**
-	 * \brief Assign source send effect if present.
-	 * 
-	 * Call this whenever send effect changed.
-	 */
-	void AssignSendEffect( int index );
-	
-	/** \brief Remove send effect from source but keep effect object alive. */
-	void ClearSendEffect( int index );
-	
-	/** \brief Clear all send effects. */
-	void ClearAllSendEffects();
+	/** Drop effect slot. */
+	void DropEffectSlot();
 	/*@}*/
 	
 	

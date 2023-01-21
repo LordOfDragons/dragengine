@@ -127,6 +127,7 @@ public:
 	bool pMarked;
 	
 	bool pSolid;
+	bool pXRaySolid;
 	bool pOutlineSolid;
 	bool pDirtySolid;
 	
@@ -136,6 +137,7 @@ public:
 	deoglSkinState *pSkinState;
 	deoglSkinRendered pSkinRendered;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	decObjectList pTextures;
 	bool pDirtyTextureTUCs;
@@ -143,6 +145,7 @@ public:
 	
 	decObjectList pDecals;
 	bool pDirtyDecals;
+	bool pDirtyDecalsRenderRenderables;
 	
 	decDMatrix pMatrix;
 	decDMatrix pInverseMatrix;
@@ -424,6 +427,9 @@ public:
 	/** Component has no transparent faces. */
 	inline bool GetSolid() const{ return pSolid; }
 	
+	/** Component has no transparent XRay faces. */
+	inline bool GetXRaySolid() const{ return pXRaySolid; }
+	
 	/** Component has no transparent outline. */
 	inline bool GetOutlineSolid() const{ return pOutlineSolid; }
 	
@@ -490,6 +496,9 @@ public:
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for render render. Called by deoglRWorld if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
@@ -716,10 +725,12 @@ private:
 	void pPrepareLODRenderTaskConfigs();
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
+	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
 	void pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	void pPrepareOccMeshVBO();
 	void pPrepareOccMeshRTSInstances();
 	void pPrepareDynOccMesh();

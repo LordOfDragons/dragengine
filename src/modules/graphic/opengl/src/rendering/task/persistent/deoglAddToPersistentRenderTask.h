@@ -38,7 +38,6 @@ class deoglPersistentRenderTaskVAO;
 class deoglPersistentRenderTaskOwner;
 class deoglRenderThread;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglTexUnitsConfig;
 class deoglVAO;
 
@@ -51,13 +50,17 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglPersistentRenderTask &pRenderTask;
-	deoglSkinTexture::eShaderTypes pSkinShaderType;
+	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
 	bool pSolid;
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
 	bool pOutline;
+	
+	bool pFilterXRay;
+	bool pXRay;
 	
 	bool pFilterHoles;
 	bool pWithHoles;
@@ -73,7 +76,7 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	const deoglShaderProgram *pEnforceShader;
+	const deoglPipeline *pEnforcePipeline;
 	const deoglSPBlockUBO *pEnforceParamBlock;
 	
 	
@@ -92,11 +95,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Shader type to be used for skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
+	/** Pipeline type. */
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
-	/** Set shader type to be used for skin shaders. */
-	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline type. */
+	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
+	
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
+	
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
 	
 	
 	
@@ -129,6 +138,20 @@ public:
 	
 	/** Set if outline transparent texture are added. */
 	void SetOutline( bool outline );
+	
+	
+	
+	/** Filtering for XRay is enabled. */
+	inline bool GetFilterXRay() const{ return pFilterXRay; }
+	
+	/** Set if filtering for XRay is enabled. */
+	void SetFilterXRay( bool filterXRay );
+	
+	/** XRay textures are added. */
+	inline bool GetXRay() const{ return pXRay; }
+	
+	/** Set if xray texture are added. */
+	void SetXRay( bool xray );
 	
 	
 	
@@ -196,11 +219,11 @@ public:
 	
 	
 	
-	/** Shader to enforce or \em NULL if free. */
-	inline const deoglShaderProgram *GetEnforcedShader() const{ return pEnforceShader; }
+	/** Pipeline to enforce or \em NULL if free. */
+	inline const deoglPipeline *GetEnforcedPipeline() const{ return pEnforcePipeline; }
 	
-	/** Set shader to enforce or \em NULL if free. */
-	void SetEnforceShader( const deoglShaderProgram *shader );
+	/** Set pipeline to enforce or \em NULL if free. */
+	void SetEnforcePipeline( const deoglPipeline *pipeline );
 	
 	/** Shader parameter block to enforce or \em NULL if free. */
 	inline const deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
@@ -235,8 +258,11 @@ private:
 	bool pFilterReject( const deoglSkinTexture *skinTexture ) const;
 	bool pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const;
 	
-	deoglPersistentRenderTaskVAO *pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
-		const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const;
+	deoglPersistentRenderTaskVAO *pGetTaskVAO(
+		deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
+		deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
+		const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc,
+		const deoglVAO *vao ) const;
 };
 
 #endif

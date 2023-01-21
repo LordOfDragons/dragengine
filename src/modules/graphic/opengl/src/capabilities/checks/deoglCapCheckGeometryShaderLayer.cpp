@@ -107,8 +107,7 @@ void deoglCapCheckGeometryShaderLayer::Check( GLuint fbo ){
 		.GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfR8 );
 	GLubyte pixels[ 6 ] = { 0, 0, 0, 0, 0, 0 };
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderProgram *shader = NULL;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	GLuint cubemap = 0;
 	int i;
@@ -119,7 +118,7 @@ void deoglCapCheckGeometryShaderLayer::Check( GLuint fbo ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// generate test cube map
 		OGL_CHECK( renderThread, glGenTextures( 1, &cubemap ) );
@@ -189,16 +188,10 @@ void deoglCapCheckGeometryShaderLayer::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glDeleteTextures( 1, &cubemap ) );
 		cubemap = 0;
 		
-		shader->RemoveUsage();
-		
 	}catch( const deException & ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( cubemap ){
 			glDeleteTextures( 1, &cubemap );
 		}
-		
 		throw;
 	}
 	

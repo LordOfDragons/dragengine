@@ -55,7 +55,7 @@ pin Dragengine.Utils
  * If used this renderable is set up to contain a CanvasCanvasView using the regular
  * renderable CanvasView as input using a ColorMatrix to convert the transparency
  * to a grayscale image. This can then be used to create transparent HUD displays
- * or holographic displays with fully or partiall transparent content.
+ * or holographic displays with fully or partial transparent content.
  * 
  * Multiple ECBehaviorRenderableDesktop instances can be added to affect individual
  * dynamic skin textures. The example below uses one component with one dynamic skin to two

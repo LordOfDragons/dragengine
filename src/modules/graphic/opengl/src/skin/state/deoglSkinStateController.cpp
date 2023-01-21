@@ -142,6 +142,10 @@ bool deoglSkinStateController::RequiresSyncEveryFrameUpdate() const{
 	return pVideoPlayers.GetCount() > 0 || pHasCalculatedProperties;
 }
 
+bool deoglSkinStateController::RequiresPrepareRenderables() const{
+	return pVideoPlayers.GetCount() > 0;
+}
+
 void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world ){
 	if( ! skin || ! world ){
 		skinState.SetVideoPlayerCount( 0 );

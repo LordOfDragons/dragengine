@@ -111,7 +111,7 @@ void deoxrDPHTCViveFocus3ControllerInteraction::pSuggestBindings(){
 		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
 		pAdd( b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch" );
 		
-		pAdd( b, deVROpenXR::eiaThumbrestTouch, basePath + "/input/thumbrest/touch" );
+		pAdd( b, deVROpenXR::eiaThumbrestTouch, basePath + "/input/thumbrest/touch" ); // steam complains: spec violation
 		
 		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
 	}

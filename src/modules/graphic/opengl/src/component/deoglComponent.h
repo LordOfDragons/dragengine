@@ -169,6 +169,8 @@ public:
 	void DirtyRenderableMapping();
 	void DirtyTextureUseSkin();
 	
+	void DirtyAllTexturesUpdateRenderableMappings();
+	
 	/** Decal needs sync. */
 	void DecalRequiresSync();
 	/*@}*/

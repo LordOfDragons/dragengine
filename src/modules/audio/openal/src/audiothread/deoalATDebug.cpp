@@ -103,6 +103,8 @@ void deoalATDebug::Synchronize(){
 			debugInfo.HideDISpeakerAtPosition();
 		}
 		
+		debugInfo.VisAudSpeakers( devmode->GetVisualizeAudibleSpeakers() );
+		
 		debugInfo.PrepareDIClosestSpeakers( devmode->GetShowSpeakerEnvInfoClosest() );
 		
 	}else if( pEnabled ){

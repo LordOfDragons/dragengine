@@ -143,28 +143,28 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onCmdAccept( FXObject *sender, FXSelector selector, void *data );
+	long onCmdAccept( FXObject*, FXSelector, void* );
 	
-	long onBtnUpDir( FXObject *sender, FXSelector selector, void *data );
-	long onBtnGoRoot( FXObject *sender, FXSelector selector, void *data );
-	long onBtnMkDir( FXObject *sender, FXSelector selector, void *data );
-	long onBtnListMode( FXObject *sender, FXSelector selector, void *data );
-	long onBtnIconMode( FXObject *sender, FXSelector selector, void *data );
-	long onBtnDetailMode( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnUpDir( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnGoRoot( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnMkDir( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnListMode( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnIconMode( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnDetailMode( FXObject *sender, FXSelector selector, void *data );
+	long onBtnUpDir( FXObject*, FXSelector, void* );
+	long onBtnGoRoot( FXObject*, FXSelector, void* );
+	long onBtnMkDir( FXObject*, FXSelector, void* );
+	long onBtnListMode( FXObject*, FXSelector, void* );
+	long onBtnIconMode( FXObject*, FXSelector, void* );
+	long onBtnDetailMode( FXObject*, FXSelector, void* );
+	long updateBtnUpDir( FXObject*, FXSelector, void* );
+	long updateBtnGoRoot( FXObject*, FXSelector, void* );
+	long updateBtnMkDir( FXObject*, FXSelector, void* );
+	long updateBtnListMode( FXObject*, FXSelector, void* );
+	long updateBtnIconMode( FXObject*, FXSelector, void* );
+	long updateBtnDetailMode( FXObject*, FXSelector, void* );
 	
-	long onCBDirectoryChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBFilterChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBDirectoryChanged( FXObject*, FXSelector, void* );
+	long onCBFilterChanged( FXObject*, FXSelector, void* );
 	
-	long onFLItemDoubleClicked( FXObject *sender, FXSelector selector, void *data );
-	long onFLRightMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onFLItemSelected( FXObject *sender, FXSelector selector, void *data );
-	long onFLItemDeselected( FXObject *sender, FXSelector selector, void *data );
+	long onFLItemDoubleClicked( FXObject*, FXSelector, void* );
+	long onFLRightMouseUp( FXObject*, FXSelector, void* );
+	long onFLItemSelected( FXObject*, FXSelector, void* );
+	long onFLItemDeselected( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 private:

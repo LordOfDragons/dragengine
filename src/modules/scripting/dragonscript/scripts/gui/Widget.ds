@@ -88,6 +88,7 @@ class Widget
 	private var Color pTextColor
 	private var float pTransparency
 	private var Font pFont
+	private var String pTitle
 	
 	private var TexMatrix2 pTransformation
 	
@@ -158,6 +159,7 @@ class Widget
 		pEnabled = true
 		pHasFocus = false
 		pCanFocus = false
+		pTitle = ""
 		
 		pTransparency = 1.0
 		pIsDesignerSet = false
@@ -606,6 +608,33 @@ class Widget
 	/** \brief Set color transformation. */
 	public func void setColorTransformation(ColorMatrix transformation)
 		pCanvasWidget.setColorTransform(transformation)
+	end
+	
+	
+	
+	/**
+	 * \brief Widget title.
+	 * \version 1.13
+	 * 
+	 * For use by borders and decorators to provide a title to a widget.
+	 */
+	public func String getTitle()
+		return pTitle
+	end
+	
+	/**
+	 * \brief Set widget title.
+	 * \version 1.13
+	 * 
+	 * For use by borders and decorators to provide a title to a widget.
+	 */
+	public func void setTitle(String title)
+		if title.equals(pTitle)
+			return
+		end
+		
+		pTitle = title
+		notifyBorderParametersChanged()
 	end
 	
 	
@@ -2110,7 +2139,7 @@ class Widget
 		var Desktop desktop = getDesktop()
 		if desktop != null
 			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
-			if vk != null
+			if vk != null and vk.getInputWidget() != this
 				vk.popup(this)
 			end
 		end
@@ -2124,7 +2153,7 @@ class Widget
 		var Desktop desktop = getDesktop()
 		if desktop != null
 			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
-			if vk != null
+			if vk != null and vk.getInputWidget() == this
 				vk.popdown()
 			end
 		end

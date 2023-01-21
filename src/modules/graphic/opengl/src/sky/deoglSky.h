@@ -33,7 +33,7 @@ class deSky;
 
 
 /**
- * \brief Sky peer.
+ * Sky peer.
  */
 class deoglSky : public deBaseGraphicSky{
 private:
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky. */
+	/** Create sky. */
 	deoglSky( deGraphicOpenGl &ogl, const deSky &sky );
 	
-	/** \brief Clean up sky. */
+	/** Clean up sky. */
 	virtual ~deoglSky();
 	/*@}*/
 	
@@ -61,19 +61,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Sky. */
+	/** Sky. */
 	inline const deSky &GetSky() const{ return pSky; }
 	
-	/** \brief Render sky. */
+	/** Render sky. */
 	inline deoglRSky *GetRSky() const{ return pRSky; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Update tracker state. */
+	/** Update tracker state. */
 	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
 	/*@}*/
 	
@@ -81,7 +81,7 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Parameters changed. */
+	/** Parameters changed. */
 	virtual void ParametersChanged();
 	/*@}*/
 };

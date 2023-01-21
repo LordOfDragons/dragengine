@@ -61,9 +61,7 @@ delPatch *delPatchList::GetAt( int index ) const{
 }
 
 delPatch *delPatchList::GetWithID( const decUuid &id ) const{
-	if( ! id ){
-		DETHROW_INFO( deeInvalidAction, "id is 0 uuid" );
-	}
+	DEASSERT_TRUE( id )
 	
 	const int count = pPatches.GetCount();
 	int i;
@@ -83,9 +81,7 @@ bool delPatchList::Has( delPatch *patch ) const{
 }
 
 bool delPatchList::HasWithID( const decUuid &id ) const{
-	if( ! id ){
-		DETHROW_INFO( deeInvalidParam, "id is 0 uuid" );
-	}
+	DEASSERT_TRUE( id )
 	
 	const int count = pPatches.GetCount();
 	int i;
@@ -105,9 +101,7 @@ int delPatchList::IndexOf( delPatch *patch ) const{
 }
 
 int delPatchList::IndexOfWithID( const decUuid &id ) const{
-	if( ! id ){
-		DETHROW_INFO( deeInvalidParam, "id is 0 uuid" );
-	}
+	DEASSERT_TRUE( id )
 	
 	const int count = pPatches.GetCount();
 	int i;
@@ -123,23 +117,26 @@ int delPatchList::IndexOfWithID( const decUuid &id ) const{
 }
 
 void delPatchList::Add( delPatch *patch ){
-	if( ! patch ){
-		DETHROW_INFO( deeNullPointer, "patch" );
-	}
-	if( HasWithID( patch->GetIdentifier() ) ){
-		DETHROW_INFO( deeInvalidParam, "path is present" );
-	}
+	DEASSERT_NOTNULL( patch )
+	DEASSERT_FALSE( HasWithID( patch->GetIdentifier() ) )
 	
 	pPatches.Add( patch );
 }
 
-void delPatchList::Remove( delPatch *patch ){
-	const int index = IndexOf( patch );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "path is absent" );
-	}
+void delPatchList::AddAll( const delPatchList &list ){
+	const int count = list.GetCount();
+	int i;
 	
-	pPatches.RemoveFrom( index );
+	for( i=0; i<count; i++ ){
+		delPatch * const patch = ( delPatch* )list.GetAt( i );
+		if( ! HasWithID( patch->GetIdentifier() ) ){
+			pPatches.Add( patch );
+		}
+	}
+}
+
+void delPatchList::Remove( delPatch *patch ){
+	pPatches.RemoveFrom( pPatches.IndexOf( patch ) );
 }
 
 void delPatchList::RemoveAll(){

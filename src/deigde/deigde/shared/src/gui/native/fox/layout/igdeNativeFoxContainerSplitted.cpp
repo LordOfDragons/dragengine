@@ -52,9 +52,9 @@ FXIMPLEMENT( igdeNativeFoxContainerSplitted, FXSplitter,
 igdeNativeFoxContainerSplitted::igdeNativeFoxContainerSplitted(){ }
 
 igdeNativeFoxContainerSplitted::igdeNativeFoxContainerSplitted(
-	igdeContainerSplitted &owner, FXComposite *parent, int layoutFlags ) :
-FXSplitter( parent, SplitterFlags( owner ) | layoutFlags ),
-pOwner( &owner ),
+	igdeContainerSplitted &powner, FXComposite *pparent, int layoutFlags ) :
+FXSplitter( pparent, SplitterFlags( powner ) | layoutFlags ),
+pOwner( &powner ),
 pNoUpdate( false )
 {
 	/*
@@ -72,23 +72,23 @@ pNoUpdate( false )
 igdeNativeFoxContainerSplitted::~igdeNativeFoxContainerSplitted(){
 }
 
-igdeNativeFoxContainerSplitted *igdeNativeFoxContainerSplitted::CreateNativeWidget( igdeContainerSplitted &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxContainerSplitted *igdeNativeFoxContainerSplitted::CreateNativeWidget( igdeContainerSplitted &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxContainerSplitted( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxContainerSplitted( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxContainerSplitted::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -152,31 +152,31 @@ void igdeNativeFoxContainerSplitted::UpdateSplitValue(){
 	}
 }
 
-int igdeNativeFoxContainerSplitted::SplitterFlags( const igdeContainerSplitted &owner ){
-	int flags = 0;
+int igdeNativeFoxContainerSplitted::SplitterFlags( const igdeContainerSplitted &powner ){
+	int fflags = 0;
 	
-	switch( owner.GetSidePlacement() ){
+	switch( powner.GetSidePlacement() ){
 	case igdeContainerSplitted::espTop:
-		flags |= SPLITTER_VERTICAL | SPLITTER_TRACKING;
+		fflags |= SPLITTER_VERTICAL | SPLITTER_TRACKING;
 		break;
 		
 	case igdeContainerSplitted::espBottom:
-		flags |= SPLITTER_VERTICAL | SPLITTER_REVERSED | SPLITTER_TRACKING;
+		fflags |= SPLITTER_VERTICAL | SPLITTER_REVERSED | SPLITTER_TRACKING;
 		break;
 		
 	case igdeContainerSplitted::espLeft:
-		flags |= SPLITTER_HORIZONTAL | SPLITTER_TRACKING;
+		fflags |= SPLITTER_HORIZONTAL | SPLITTER_TRACKING;
 		break;
 		
 	case igdeContainerSplitted::espRight:
-		flags |= SPLITTER_HORIZONTAL | SPLITTER_REVERSED | SPLITTER_TRACKING;
+		fflags |= SPLITTER_HORIZONTAL | SPLITTER_REVERSED | SPLITTER_TRACKING;
 		break;
 		
 	default:
 		break;
 	}
 	
-	return flags;
+	return fflags;
 }
 
 
@@ -195,28 +195,28 @@ long igdeNativeFoxContainerSplitted::onCommand( FXObject*, FXSelector, void* ){
 		return 0;
 	}
 	
-	int split = 0;
+	int ssplit = 0;
 	int size = 1;
 	
 	switch( pOwner->GetSidePlacement() ){
 	case igdeContainerSplitted::espTop:
 		size = decMath::max( getHeight(), 1 );
-		split = getSplit( 0 );
+		ssplit = getSplit( 0 );
 		break;
 		
 	case igdeContainerSplitted::espBottom:
 		size = decMath::max( getHeight(), 1 );
-		split = getSplit( 1 );
+		ssplit = getSplit( 1 );
 		break;
 		
 	case igdeContainerSplitted::espLeft:
 		size = decMath::max( getWidth(), 1 );
-		split = getSplit( 0 );
+		ssplit = getSplit( 0 );
 		break;
 		
 	case igdeContainerSplitted::espRight:
 		size = decMath::max( getWidth(), 1 );
-		split = getSplit( 1 );
+		ssplit = getSplit( 1 );
 		break;
 		
 	default:
@@ -226,18 +226,18 @@ long igdeNativeFoxContainerSplitted::onCommand( FXObject*, FXSelector, void* ){
 	pNoUpdate = true;
 	
 	if( pOwner->GetSplitPosition() >= 0 ){
-		pOwner->SetSplitPosition( split );
+		pOwner->SetSplitPosition( ssplit );
 		
 	}else{
-		pOwner->SetSplitPositionRelative( ( float )split / ( float )size );
+		pOwner->SetSplitPositionRelative( ( float ) ssplit / ( float )size );
 	}
 	
 	pNoUpdate = false;
 	return 1;
 }
 
-long igdeNativeFoxContainerSplitted::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerSplitted::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	
 	if( pOwner->GetWidgetIn( igdeContainerSplitted::eaSide ) == clflags.widget ){
 		switch( pOwner->GetSidePlacement() ){

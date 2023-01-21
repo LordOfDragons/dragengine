@@ -97,9 +97,9 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onChanged( FXObject *sender, FXSelector selector, void *data );
-	long onKeyPress( FXObject *sender, FXSelector selector, void *data );
+	long onCommand( FXObject*, FXSelector, void* );
+	long onChanged( FXObject*, FXSelector, void* );
+	long onKeyPress( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

@@ -39,6 +39,7 @@
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -51,7 +52,13 @@
 ////////////////////////////
 
 deoglRenderBase::deoglRenderBase( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread )
+{
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
+	
+	pipconf.SetMasks( true, true, true, true, true );
+	pPipelineClearBuffers = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderBase::~deoglRenderBase(){
@@ -64,11 +71,11 @@ deoglRenderBase::~deoglRenderBase(){
 
 void deoglRenderBase::AddBasicDefines( deoglShaderDefines &defines ){
 	if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-		defines.AddDefine( "UBO_IDMATACCBUG", "1" );
+		defines.SetDefines( "UBO_IDMATACCBUG" );
 	}
 	
 	if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-		defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+		defines.SetDefines( "BUG_UBO_DIRECT_LINK_DEAD_LOOP" );
 	}
 }
 
@@ -77,32 +84,32 @@ void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
 	decString value;
 	
-	defines.AddDefine( "SHARED_SPB", "1" );
+	defines.SetDefines( "SHARED_SPB" );
 	
 	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
+		defines.SetDefines( "SHARED_SPB_USE_SSBO" );
 		
 		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", value );
 		}
 		
 	}else{
 		// NOTE UBO requires array size to be constant, SSBO does not
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
-			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
+			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", value );
 		}
 		
 		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
 			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+			defines.SetDefine( "SHARED_SPB_PADDING", value );
 		}
 	}
 	
 	if( bo.GetInstanceArraySizeUBO() > 0 ){
 		value.SetValue( bo.GetInstanceArraySizeUBO() );
-		defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
+		defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
 	}
 }
 
@@ -143,7 +150,7 @@ deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinear() const{
 }
 
 deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinearInverse() const{
-	if( pRenderThread.GetDeferredRendering().GetUseInverseDepth() ){
+	if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 		return *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscShadowClampLinearInverse );
 		
 	}else{
@@ -153,13 +160,69 @@ deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinearInverse() con
 
 
 
-void deoglRenderBase::SetCullMode( bool renderBackFaces ){
-	if( renderBackFaces ){
-		OGL_CHECK( GetRenderThread(), glCullFace( GL_FRONT ) );
+void deoglRenderBase::SetViewport( const deoglRenderPlan &plan ) const{
+	SetViewport( plan.GetViewportWidth(), plan.GetViewportHeight() );
+}
+
+void deoglRenderBase::SetViewport( int width, int height ) const{
+	SetViewport( 0, 0, width, height );
+}
+
+void deoglRenderBase::SetViewport( const decPoint &point ) const{
+	SetViewport( point.x, point.y );
+}
+
+void deoglRenderBase::SetViewport( const decPoint3 &point ) const{
+	SetViewport( point.x, point.y );
+}
+
+void deoglRenderBase::SetViewport( int x, int y, int width, int height ) const{
+	OGL_CHECK( pRenderThread, glViewport( x, y, width, height ) );
+	OGL_CHECK( pRenderThread, glScissor( x, y, width, height ) );
+}
+
+void deoglRenderBase::SetViewport( const decPoint &offset, const decPoint &size ) const{
+	SetViewport( offset.x, offset.y, size.x, size.y );
+}
+
+
+
+void deoglRenderBase::RenderFullScreenQuad() const{
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+}
+
+void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ) const{
+	if( plan.GetRenderStereo() ){
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 		
 	}else{
-		OGL_CHECK( GetRenderThread(), glCullFace( GL_BACK ) );
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO() const{
+	OGL_CHECK( pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const{
+	RenderFullScreenQuadVAO( plan.GetRenderStereo() );
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO( bool useStereo ) const{
+	OGL_CHECK( pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	if( useStereo ){
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
+		
+	}else{
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 }
 
 

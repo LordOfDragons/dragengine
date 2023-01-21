@@ -22,16 +22,16 @@
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
+#include "../light/pipeline/deoglLightPipelinesSky.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-#include "../light/shader/deoglLightShader.h"
-
 class deoglLightShaderConfig;
 class deoglRenderThread;
 class deoglRSkyInstance;
-class deoglSPBlockUBO;
 class deoglSkyLayerTracker;
 class deoglShadowCaster;
 class deoglSkyLayerGICascade;
@@ -45,33 +45,6 @@ class deoglRComponent;
  * Render sky Layer.
  */
 class deoglRSkyInstanceLayer{
-public:
-	/** Shader Types. */
-	enum eShaderTypes{
-		/** No shadow casting. */
-		estNoShadow,
-		
-		/** Ambient light only. */
-		estAmbient,
-		
-		/** Solid shadow. */
-		estSolid,
-		
-		/** No shadow casting. */
-		estGIRayNoShadow,
-		
-		/** Solid shadow using one texture. */
-		estGIRaySolid1,
-		
-		/** Solid shadow using two textures. */
-		estGIRaySolid2,
-		
-		/** Number of shaders. */
-		EST_COUNT
-	};
-	
-	
-	
 private:
 	deoglRSkyInstance &pInstance;
 	int pIndex;
@@ -93,9 +66,9 @@ private:
 	deoglSkyLayerTracker *pTrackerEnvMap;
 	bool pSkyNeedsUpdate;
 	
-	deoglLightShader::Ref pShaders[ EST_COUNT ];
-	deoglSPBlockUBO *pParamBlockLight;
-	deoglSPBlockUBO *pParamBlockInstance;
+	deoglLightPipelines::Ref pPipelines;
+	deoglSPBlockUBO::Ref pParamBlockLight;
+	deoglSPBlockUBO::Ref pParamBlockInstance;
 	
 	deoglShadowCaster *pShadowCaster;
 	
@@ -173,17 +146,14 @@ public:
 	
 	
 	
-	/** Shader for shader type. */
-	deoglLightShader *GetShaderFor( int shaderType );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
 	
-	/** Shader configuration for shader type. */
-	bool GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config );
-	
-	/** Light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
+	// /** Light parameter block. */
+	const deoglSPBlockUBO::Ref &GetLightParameterBlock();
 	
 	/** Instance parameter block. */
-	deoglSPBlockUBO *GetInstanceParameterBlock();
+	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
 	
 	/** Shadow caster. */
 	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }

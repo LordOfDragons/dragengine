@@ -63,6 +63,9 @@ void deBaseAudioMicrophone::VolumeChanged(){
 void deBaseAudioMicrophone::LayerMaskChanged(){
 }
 
+void deBaseAudioMicrophone::SpeakerGainChanged(){
+}
+
 
 
 void deBaseAudioMicrophone::SpeakerAdded( deSpeaker *speaker ){

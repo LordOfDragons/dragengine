@@ -417,10 +417,17 @@ void seWPSource::SetSynthesizer( seSynthesizer *synthesizer ){
 	UpdateSource();
 	UpdateLinkList();
 	UpdateControllerList();
+	OnSynthesizerPathChanged();
 }
 
 seSource *seWPSource::GetSource() const{
 	return pSynthesizer ? pSynthesizer->GetActiveSource() : NULL;
+}
+
+void seWPSource::OnSynthesizerPathChanged(){
+	pPanelChain->OnSynthesizerPathChanged();
+	pPanelSound->OnSynthesizerPathChanged();
+	pPanelSynthesizer->OnSynthesizerPathChanged();
 }
 
 
@@ -513,7 +520,7 @@ void seWPSource::UpdateSourceTreeItem( igdeTreeItem *item, seSource *source ){
 		}
 		
 		for( i=0; i<sourceCount; i++ ){
-			seSource * const source = sourceGroup.GetSources().GetAt( i );
+			seSource * const source2 = sourceGroup.GetSources().GetAt( i );
 			
 			if( ! nextItem ){
 				igdeTreeItemReference child;
@@ -522,7 +529,7 @@ void seWPSource::UpdateSourceTreeItem( igdeTreeItem *item, seSource *source ){
 				nextItem = child;
 			}
 			
-			UpdateSourceTreeItem( nextItem, source );
+			UpdateSourceTreeItem( nextItem, source2 );
 			
 			nextItem = nextItem->GetNext();
 		}

@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Shader parameter block based on client memory.
+ * Shader parameter block based on client memory.
  * 
  * Stores the data for a shader parameter block in main memory. Allows to read back the
  * data in contrary to deoglSPBlockUBO and deoglSPBlockSSBO which are write-only. Upon
@@ -43,14 +43,14 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader parameter block. */
+	/** Create shader parameter block. */
 	deoglSPBlockMemory( deoglRenderThread &renderThread );
 	
-	/** \brief Create copy of shader storage buffer object. */
+	/** Create copy of shader storage buffer object. */
 	deoglSPBlockMemory( const deoglSPBlockMemory &paramBlock );
 	
 protected:
-	/** \brief Clean up shader parameter block. */
+	/** Clean up shader parameter block. */
 	virtual ~deoglSPBlockMemory();
 	/*@}*/
 	
@@ -59,33 +59,33 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Memory buffer. */
+	/** Memory buffer. */
 	inline char *GetBuffer() const{ return pBuffer; }
 	
-	/** \brief Always throws an exception. */
+	/** Always throws an exception. */
 	virtual void Activate() const;
 	
-	/** \brief Activate buffer overriding binding point. */
+	/** Activate buffer overriding binding point. */
 	virtual void Activate( int bindingPoint ) const;
 	
-	/** \brief Always throws an exception. */
+	/** Always throws an exception. */
 	virtual void Deactivate() const;
 	
-	/** \brief Deactivate buffer overriding binding point. */
+	/** Deactivate buffer overriding binding point. */
 	virtual void Deactivate( int bindingPoint ) const;
 	
-	/** \brief Map buffer discarding content. */
+	/** Map buffer discarding content. */
 	virtual void MapBuffer();
 	
 	/**
-	 * \brief Map buffer for specific element discarding content.
+	 * Map buffer for specific element discarding content.
 	 * 
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
 	virtual void MapBuffer( int element );
 	
-	/** \brief Has no effect. */
+	/** Has no effect. */
 	virtual void UnmapBuffer();
 	/*@}*/
 	

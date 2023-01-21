@@ -28,7 +28,7 @@
 
 
 /**
- * \brief GLSL shader source location to help debugging.
+ * GLSL shader source location to help debugging.
  */
 class deoglShaderSourceLocation : public deObject{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader source location. */
+	/** Create shader source location. */
 	deoglShaderSourceLocation( const char *inputFile, int inputLine, int outputLine );
 	
-	/** \brief Clean up shader source location. */
+	/** Clean up shader source location. */
 	virtual ~deoglShaderSourceLocation();
 	/*@}*/
 	
@@ -52,13 +52,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Input file. */
+	/** Input file. */
 	inline const decString &GetInputFile() const{ return pInputFile; }
 	
-	/** \brief Input line. */
+	/** Input line. */
 	inline int GetInputLine() const{ return pInputLine; }
 	
-	/** \brief Output line. */
+	/** Output line. */
 	inline int GetOutputLine() const{ return pOutputLine; }
 	/*@}*/
 };

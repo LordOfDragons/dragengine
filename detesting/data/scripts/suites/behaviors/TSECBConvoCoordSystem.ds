@@ -1,0 +1,200 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorConvoCoordSystem.
+ */
+class TSECBConvoCoordSystem extends TestSuite
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorConvoCoordSystem behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorConvoCoordSystem.new(ec)
+			assertEquals(ECBehaviorConvoCoordSystem.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorConvoCoordSystem.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorConvoCoordSystem.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			
+			assertNull(behavior.getName().getValue())
+			assertEquals(behavior.getPosition().getVector(), Vector.new())
+			assertEquals(behavior.getOrientation().getVector(), Vector.new())
+			
+			assertHasProperty("convoCoordSystem.name")
+			assertHasProperty("convoCoordSystem.position")
+			assertHasProperty("convoCoordSystem.orientation")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorConvoCoordSystem.Instance convoCoordSystem = behavior.instance(e)
+			assertNotNull(convoCoordSystem)
+			assertEquals(convoCoordSystem.getECBehavior(), behavior)
+			
+			assertNull(convoCoordSystem.getConvoCoordSystem())
+			
+			assertEquals(ECBehaviorConvoCoordSystem.getInstanceIn(e), convoCoordSystem)
+			
+			assertEquals(ECBehaviorConvoCoordSystem.getAllInstancesIn(e), Array.newWith(convoCoordSystem))
+			
+			return false
+		end
+	end
+	
+	/** ConvoCoordSystem basic. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorConvoCoordSystem behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorConvoCoordSystem.new(getElementClass())
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPosition(DVector.new(2, 1, 3))
+			s.setRotation(Vector.new(20, 10, 30))
+			s.setPropertyValueFor("convoCoordSystem.name", "coordSys1")
+			s.setPropertyValueFor("convoCoordSystem.position", "0.2 0.5 0.7")
+			s.setPropertyValueFor("convoCoordSystem.orientation", "10 25 8")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var BehaviorElement element = getElement()
+			var DMatrix localMatrix = DMatrix.newRT(DVector.new(10, 25, 8), DVector.new(0.2, 0.5, 0.7))
+			var DMatrix matrix = localMatrix * DMatrix.newRT(DVector.new(20, 10, 30), DVector.new(2, 1, 3))
+			
+			var ECBehaviorConvoCoordSystem.Instance convoCoordSystem = behavior.instance(element)
+			var ElementConvoCoordSystem c = convoCoordSystem.getConvoCoordSystem() cast ElementConvoCoordSystem
+			assertNotNull(c)
+			assertTrue(c.getElement() == element)
+			assertEquals(c.getID(), "coordSys1")
+			assertNull(c.getAliasID())
+			assertDVector(c.getLocalMatrix().getPosition(), localMatrix.getPosition())
+			assertQuaternion(c.getLocalMatrix().toQuaternion(), localMatrix.toQuaternion())
+			assertDVector(c.getMatrix().getPosition(), matrix.getPosition())
+			assertQuaternion(c.getMatrix().toQuaternion(), matrix.toQuaternion())
+			
+			assertTrue(getGameWorld().getConvoCoordSystemList().getAt(StringID.new("coordSys1")) == c)
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorConvoCoordSystem behavior
+		private var ECBehaviorConvoCoordSystem behavior2
+		private var ECBehaviorConvoCoordSystem behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorConvoCoordSystem.new(ec)
+			behavior2 = ECBehaviorConvoCoordSystem.new(ec, "sub1")
+			behavior3 = ECBehaviorConvoCoordSystem.new(ec, "sub2")
+			assertEquals(ECBehaviorConvoCoordSystem.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorConvoCoordSystem.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorConvoCoordSystem.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorConvoCoordSystem.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorConvoCoordSystem.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPropertyValueFor("convoCoordSystem.name", "coordSys1")
+			s.setPropertyValueFor("convoCoordSystem(sub1).name", "coordSys2")
+			s.setPropertyValueFor("convoCoordSystem(sub2).name", "coordSys3")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorConvoCoordSystem.Instance convoCoordSystem = behavior.instance(e)
+			var ECBehaviorConvoCoordSystem.Instance convoCoordSystem2 = behavior2.instance(e)
+			var ECBehaviorConvoCoordSystem.Instance convoCoordSystem3 = behavior3.instance(e)
+			assertNotNull(convoCoordSystem)
+			assertNotNull(convoCoordSystem2)
+			assertNotNull(convoCoordSystem3)
+			assertEquals(convoCoordSystem.getECBehavior(), behavior)
+			assertEquals(convoCoordSystem2.getECBehavior(), behavior2)
+			assertEquals(convoCoordSystem3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorConvoCoordSystem.getInstanceIn(e), convoCoordSystem)
+			assertEquals(ECBehaviorConvoCoordSystem.getInstanceIn(e, "sub1"), convoCoordSystem2)
+			assertEquals(ECBehaviorConvoCoordSystem.getInstanceIn(e, "sub2"), convoCoordSystem3)
+			
+			assertNull(ECBehaviorConvoCoordSystem.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorConvoCoordSystem.getAllInstancesIn(e), Array.newWith(convoCoordSystem, convoCoordSystem2, convoCoordSystem3))
+			
+			assertHasProperty("convoCoordSystem.name")
+			assertHasProperty("convoCoordSystem.position")
+			assertHasProperty("convoCoordSystem.orientation")
+			
+			assertHasProperty("convoCoordSystem(sub1).name")
+			assertHasProperty("convoCoordSystem(sub1).position")
+			assertHasProperty("convoCoordSystem(sub1).orientation")
+			
+			assertHasProperty("convoCoordSystem(sub2).name")
+			assertHasProperty("convoCoordSystem(sub2).position")
+			assertHasProperty("convoCoordSystem(sub2).orientation")
+			
+			assertNotNull(convoCoordSystem.getConvoCoordSystem())
+			assertNotNull(convoCoordSystem2.getConvoCoordSystem())
+			assertNotNull(convoCoordSystem3.getConvoCoordSystem())
+			
+			assertTrue(getGameWorld().getConvoCoordSystemList().getAt(StringID.new("coordSys1")) == convoCoordSystem.getConvoCoordSystem())
+			assertTrue(getGameWorld().getConvoCoordSystemList().getAt(StringID.new("coordSys2")) == convoCoordSystem2.getConvoCoordSystem())
+			assertTrue(getGameWorld().getConvoCoordSystemList().getAt(StringID.new("coordSys3")) == convoCoordSystem3.getConvoCoordSystem())
+			
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorConvoCoordSystem", UnicodeString.newFromUTF8("ECBehaviorConvoCoordSystem"))
+		addTestCase(Empty.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+	end
+end

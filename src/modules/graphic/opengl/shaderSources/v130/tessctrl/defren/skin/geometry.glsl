@@ -33,15 +33,11 @@ in vec3 vTCSNormal[];
 	in vec3 vTCSBitangent[];
 #endif
 
-#ifdef WITH_REFLECT_DIR
-	in vec3 vTCSReflectDir[];
-#endif
-
 #ifdef HEIGHT_MAP
 	in float vTCSHTMask[];
 #endif
 
-in float vTCSRenderCondition[];
+// in float vTCSRenderCondition[];
 
 
 
@@ -73,16 +69,12 @@ out vec3 vTESNormal[];
 	out vec3 vTESBitangent[];
 #endif
 
-#ifdef WITH_REFLECT_DIR
-	out vec3 vTESReflectDir[];
-#endif
-
 #ifdef HEIGHT_MAP
 	out float vTESHTMask[];
 #endif
 
 #ifdef PROP_FIELD
-	out float vTESRenderCondition[];
+// 	out float vTESRenderCondition[];
 #endif
 
 
@@ -125,7 +117,7 @@ void main(void){
 	#ifdef TEXTURE_AO
 		vTESTCAO[ gl_InvocationID ] = vTCSTCAO[ gl_InvocationID ];
 	#endif
-
+	
 	vTESNormal[ gl_InvocationID ] = vTCSNormal[ gl_InvocationID ];
 	#ifdef WITH_TANGENT
 		vTESTangent[ gl_InvocationID ] = vTCSTangent[ gl_InvocationID ];
@@ -133,16 +125,12 @@ void main(void){
 	#ifdef WITH_BITANGENT
 		vTESBitangent[ gl_InvocationID ] = vTCSBitangent[ gl_InvocationID ];
 	#endif
-
-	#ifdef WITH_REFLECT_DIR
-		vTESReflectDir[ gl_InvocationID ] = vTCSReflectDir[ gl_InvocationID ];
-	#endif
-
+	
 	#ifdef HEIGHT_MAP
 		vTESHTMask[ gl_InvocationID ] = vTCSHTMask[ gl_InvocationID ];
 	#endif
-
+	
 	#ifdef PROP_FIELD
-		vTESRenderCondition[ gl_InvocationID ] = vTCSRenderCondition[ gl_InvocationID ];
+// 		vTESRenderCondition[ gl_InvocationID ] = vTCSRenderCondition[ gl_InvocationID ];
 	#endif
 }

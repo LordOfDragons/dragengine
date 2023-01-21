@@ -32,7 +32,7 @@ class deoglSPTreeNode;
 
 
 /**
- * @brief OpenGL Space Partition Tree.
+ * OpenGL Space Partition Tree.
  * Provides a data structure to partition space into cubes of variable
  * size including connectivity data. For speed and memory reasons the
  * space partition tree is organized in a grid fashion on the base
@@ -55,7 +55,7 @@ private:
 	int pStride;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new space partition tree. */
 	deoglSPTree( const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount );
@@ -63,7 +63,7 @@ public:
 	~deoglSPTree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the minimum extend of the boundary box. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }

@@ -70,13 +70,13 @@
 #include "../../undosys/facePose/ceUCFacePoseSetName.h"
 #include "../../undosys/facePose/controller/ceUCFPControllerAdd.h"
 #include "../../undosys/facePose/controller/ceUCFPControllerRemove.h"
-#include "../../undosys/facePose/controller/ceUCFPControllerSetController.h"
 #include "../../undosys/facePose/controller/ceUCFPControllerSetValue.h"
 #include "../../undosys/gesture/ceUCGestureAdd.h"
 #include "../../undosys/gesture/ceUCGestureRemove.h"
 #include "../../undosys/gesture/ceUCGestureSetName.h"
 #include "../../undosys/gesture/ceUCGestureSetAnimator.h"
 #include "../../undosys/gesture/ceUCGestureToggleHold.h"
+#include "../../undosys/gesture/ceUCGestureSetDuration.h"
 #include "../../undosys/target/ceUCTargetAdd.h"
 #include "../../undosys/target/ceUCTargetRemove.h"
 #include "../../undosys/target/ceUCTargetSetName.h"
@@ -1082,6 +1082,18 @@ public:
 	}
 };
 
+class cTextGestureDuration : public cBaseTextFieldListener{
+public:
+	cTextGestureDuration( ceWPConversation &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, ceConversation* ){
+		ceGesture * const gesture = pPanel.GetGesture();
+		const float value = textField.GetFloat();
+		return gesture && fabsf( value - gesture->GetDuration() ) > FLOAT_SAFE_EPSILON
+			? new ceUCGestureSetDuration( gesture, value ) : nullptr;
+	}
+};
+
 
 
 class cComboFacePose : public cBaseComboBoxListener{
@@ -1195,19 +1207,20 @@ public:
 			return NULL;
 		}
 		
-		int selection = 0;
-		if( ! igdeCommonDialogs::SelectString( &pPanel, "Add Face Pose Controller",
-		"Select controller to add", conversation->GetFacePoseControllerNameList(), selection ) ){
+		decStringList names( conversation->GetFacePoseControllerNameList() );
+		names.SortAscending();
+		decString name;
+		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Face Pose Controller", "Controller to add", name, names ) ){
 			return NULL;
 		}
 		
-		if( facePose->GetControllerList().HasWith( selection ) ){
+		if( facePose->GetControllerList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pPanel, "Add Face Pose Controller", "Duplicate controller" );
 			return NULL;
 		}
 		
 		deObjectReference controller;
-		controller.TakeOver( new ceControllerValue( selection, 0.0f ) );
+		controller.TakeOver( new ceControllerValue( name, 1.0f ) );
 		igdeUndoReference undo;
 		undo.TakeOver( new ceUCFPControllerAdd( facePose, ( ceControllerValue* )( deObject* )controller ) );
 		conversation->GetUndoSystem()->Add( undo );
@@ -1420,6 +1433,10 @@ pConversation( NULL )
 	
 	helper.EditString( groupBox, "Animator:", "Name of the animator to use for this gesture",
 		pEditGestureAnimator, new cTextGestureAnimator( *this ) );
+	
+	helper.EditFloat( groupBox, "Duration:", "Duration of gesture. Used as default value in strips",
+		pEditGestureDuration, new cTextGestureDuration ( *this ) );
+	
 	helper.CheckBox( groupBox, pChkGestureHold, new cActionGestureHold( *this ), true );
 	
 	
@@ -1492,6 +1509,7 @@ void ceWPConversation::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseList();
 	
 	UpdateActorIDLists();
+	OnConversationPathChanged();
 }
 
 
@@ -1500,6 +1518,14 @@ void ceWPConversation::UpdateConversation(){
 	UpdateImportConvoPathList();
 }
 
+void ceWPConversation::OnConversationPathChanged(){
+	if( pConversation ){
+		pPathImportConvo->SetBasePath( pConversation->GetDirectoryPath() );
+		
+	}else{
+		pPathImportConvo->SetBasePath( "" );
+	}
+}
 
 
 void ceWPConversation::UpdateImportConvoPathList(){
@@ -1579,6 +1605,7 @@ void ceWPConversation::UpdateGesture(){
 	ceGesture * const gesture = GetGesture();
 	if( gesture ){
 		pEditGestureAnimator->SetText( gesture->GetAnimator() );
+		pEditGestureDuration->SetFloat( gesture->GetDuration() );
 	}
 	
 	pChkGestureHold->GetAction()->Update();
@@ -1652,13 +1679,17 @@ void ceWPConversation::UpdateFPControllerList(){
 		
 		for( i=0; i<count; i++ ){
 			ceControllerValue * const entry = list.GetAt( i );
-			const int controller = entry->GetController();
 			
-			if( controller >= 0 && controller < controllerNames.GetCount() ){
-				text.Format( "%i: %s", controller, controllerNames.GetAt( controller ).GetString() );
+			if( entry->GetControllerIndex() == -1 ){
+				if( controllerNames.Has( entry->GetController() ) ){
+					text = entry->GetController();
+					
+				}else{
+					text.Format( "%s (missing)", entry->GetController().GetString() );
+				}
 				
-			}else{
-				text.Format( "%i: -", controller );
+			}else{ // deprecated
+				text.Format( "%d (deprecated)", entry->GetControllerIndex() );
 			}
 			
 			pCBFPController->AddItem( text, NULL, entry );

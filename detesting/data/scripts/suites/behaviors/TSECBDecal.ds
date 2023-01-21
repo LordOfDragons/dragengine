@@ -1,0 +1,201 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorDecal.
+ */
+class TSECBDecal extends TestSuite
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorComponent behaviorComponent
+		private var ECBehaviorDecal behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behaviorComponent = ECBehaviorComponent.new(ec, null)
+			behaviorComponent.setCommonPath("/content/model/box", "box.demodel", "box.deskin", "box.derig")
+			
+			behavior = ECBehaviorDecal.new(ec, behaviorComponent)
+			assertEquals(ECBehaviorDecal.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorDecal.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorDecal.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior.getComponent(), behaviorComponent)
+			
+			assertEquals(behavior.getPosition().getVector(), Vector.new())
+			assertEquals(behavior.getOrientation().getVector(), Vector.new())
+			assertEquals(behavior.getSize().getVector(), Vector.new(0.1, 0.1, 0.1))
+			assertNull(behavior.getSkin().getPath())
+			
+			assertHasProperty("decal.position")
+			assertHasProperty("decal.orientation")
+			assertHasProperty("decal.size")
+			assertHasProperty("decal.skin")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorDecal.Instance decal = behavior.instance(e)
+			assertNotNull(decal)
+			assertEquals(decal.getECBehavior(), behavior)
+			
+			var Decal c = decal.getDecal()
+			assertNotNull(c)
+			assertNull(c.getSkin())
+			assertEquals(c.getPosition(), Vector.new())
+			assertEquals(c.getOrientation(), Quaternion.new())
+			assertEquals(c.getSize(), Vector.new(0.1, 0.1, 0.1))
+			assertTrue(c.getVisible())
+			assertEquals(c.getParentComponent(), behaviorComponent.getInstanceIn(getElement()).getComponent())
+			assertEquals(c.getTexture(), 0)
+			assertNull(c.getDynamicSkin())
+			
+			assertEquals(ECBehaviorDecal.getInstanceIn(e), decal)
+			
+			assertEquals(ECBehaviorDecal.getAllInstancesIn(e), Array.newWith(decal))
+			
+			return false
+		end
+	end
+	
+	/** Decal with skin and resource set. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorComponent behaviorComponent
+		private var ECBehaviorDecal behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behaviorComponent = ECBehaviorComponent.new(ec, null)
+			behaviorComponent.setCommonPath("/content/model/box", "box.demodel", "box.deskin", "box.derig")
+			
+			behavior = ECBehaviorDecal.new(getElementClass(), behaviorComponent)
+			
+			var String pathSkin = "/content/model/box/box.deskin"
+			
+			behavior.getSkin().setPath(pathSkin)
+			assertEquals(behavior.getSkin().getPath(), pathSkin)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorDecal.Instance decal = behavior.instance(getElement())
+			var Decal c = decal.getDecal()
+			assertNotNull(c)
+			assertNotNull(c.getSkin())
+			
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorComponent behaviorComponent
+		private var ECBehaviorDecal behavior
+		private var ECBehaviorDecal behavior2
+		private var ECBehaviorDecal behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behaviorComponent = ECBehaviorComponent.new(ec, null)
+			behaviorComponent.setCommonPath("/content/model/box", "box.demodel", "box.deskin", "box.derig")
+			
+			behavior = ECBehaviorDecal.new(ec, behaviorComponent)
+			behavior2 = ECBehaviorDecal.new(ec, behaviorComponent, "sub1")
+			behavior3 = ECBehaviorDecal.new(ec, behaviorComponent, "sub2")
+			assertEquals(ECBehaviorDecal.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorDecal.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorDecal.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorDecal.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorDecal.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorDecal.Instance decal = behavior.instance(e)
+			var ECBehaviorDecal.Instance decal2 = behavior2.instance(e)
+			var ECBehaviorDecal.Instance decal3 = behavior3.instance(e)
+			assertNotNull(decal)
+			assertNotNull(decal2)
+			assertNotNull(decal3)
+			assertEquals(decal.getECBehavior(), behavior)
+			assertEquals(decal2.getECBehavior(), behavior2)
+			assertEquals(decal3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorDecal.getInstanceIn(e), decal)
+			assertEquals(ECBehaviorDecal.getInstanceIn(e, "sub1"), decal2)
+			assertEquals(ECBehaviorDecal.getInstanceIn(e, "sub2"), decal3)
+			
+			assertNull(ECBehaviorDecal.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorDecal.getAllInstancesIn(e), Array.newWith(decal, decal2, decal3))
+			
+			assertEquals(behavior.getComponent(), behaviorComponent)
+			assertEquals(behavior2.getComponent(), behaviorComponent)
+			assertEquals(behavior3.getComponent(), behaviorComponent)
+			
+			assertHasProperty("decal.position")
+			assertHasProperty("decal.orientation")
+			assertHasProperty("decal.size")
+			assertHasProperty("decal.skin")
+			
+			assertHasProperty("decal(sub1).position")
+			assertHasProperty("decal(sub1).orientation")
+			assertHasProperty("decal(sub1).size")
+			assertHasProperty("decal(sub1).skin")
+			
+			assertHasProperty("decal(sub2).position")
+			assertHasProperty("decal(sub2).orientation")
+			assertHasProperty("decal(sub2).size")
+			
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorDecal", UnicodeString.newFromUTF8("ECBehaviorDecal"))
+		addTestCase(Empty.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+	end
+end

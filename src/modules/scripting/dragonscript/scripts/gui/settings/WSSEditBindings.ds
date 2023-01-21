@@ -29,10 +29,7 @@ pin Dragengine.Utils
  * \brief WindowSettingsSheet editing input bindings.
  */
 class WSSEditBindings extends DefaultWindowSettingsSheet
-	/** \brief Binding manager to use. */
 	private var BindingManager pBindingManager
-	
-	/** \brief Command manager to use. */
 	private var CommandManager pCommandManager
 	
 	
@@ -54,7 +51,8 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	 * \brief Create window settings sheet.
 	 */
 	public func new(BindingManager bindingManager, CommandManager commandManager) \
-	this(bindingManager, commandManager, "bindings", "Input Bindings")
+	this(bindingManager, commandManager, "bindings",\
+	EngineTranslations.get().translate("UI.Settings.Bindings").toUTF8())
 	end
 	
 	public func new(BindingManager bindingManager, CommandManager commandManager, \

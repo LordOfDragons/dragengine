@@ -42,6 +42,7 @@
 #include "../../../undosys/rule/aeURuleTargetRemoveAllLinks.h"
 #include "../../../undosys/rule/aeUSetRuleAddBone.h"
 #include "../../../undosys/rule/aeUSetRuleBlendFactor.h"
+#include "../../../undosys/rule/aeUToggleRuleInvertBlendFactor.h"
 #include "../../../undosys/rule/aeUSetRuleBlendMode.h"
 #include "../../../undosys/rule/aeUSetRuleEnabled.h"
 #include "../../../undosys/rule/aeUSetRuleName.h"
@@ -61,6 +62,7 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -214,6 +216,21 @@ public:
 	}
 };
 
+class cActionInvertBlendFactor : public cBaseAction{
+public:
+	cActionInvertBlendFactor( aeWPAPanelRule &panel ) : cBaseAction( panel,
+		"Invert Blend Factor", nullptr, "Use '1 - blendFactor' instead of 'blendFactor'" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		return new aeUToggleRuleInvertBlendFactor( rule );
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetInvertBlendFactor() );
+	}
+};
+
 class cActionEnabled : public cBaseAction{
 public:
 	cActionEnabled( aeWPAPanelRule &panel ) : cBaseAction( panel, "Enable Rule", NULL,
@@ -352,6 +369,63 @@ public:
 	}
 };
 
+class cActionExportBones : public cBaseAction{
+public:
+	cActionExportBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Export To Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		const decStringSet bones = rule->GetListBones();
+		const int count = bones.GetCount();
+		decString text;
+		int i;
+		for( i=0; i<count; i++ ){
+			if( i > 0 ){
+				text.AppendCharacter( '\n' );
+			}
+			text.Append( bones.GetAt( i ) );
+		}
+		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Bones", text );
+		return nullptr;
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( rule.GetListBones().GetCount() > 0 );
+	}
+};
+
+class cActionImportBones : public cBaseAction{
+public:
+	cActionImportBones( aeWPAPanelRule &panel ) : cBaseAction( panel, "Import From Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		decString text;
+		while( true ){
+			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Import From Text", "Bones. One bone per line.", text ) ){
+				return nullptr;
+			}
+			break;
+		}
+		
+		const decStringList lines( text.Split( '\n' ) );
+		const int count = lines.GetCount();
+		decStringSet bones;
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			if( ! lines.GetAt( i ).IsEmpty() ){
+				bones.Add( lines.GetAt( i ) );
+			}
+		}
+		
+		aeUSetRuleBones * const undo = new aeUSetRuleBones( rule, rule->GetListBones() + bones );
+		undo->SetShortInfo( "Rule import bones" );
+		return undo;
+	}
+};
+
 
 class cListBones : public igdeListBoxListener{
 	aeWPAPanelRule &pPanel;
@@ -379,6 +453,9 @@ public:
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, new cActionCopyBones( pPanel ), true );
 		helper.MenuCommand( menu, new cActionPasteBones( pPanel ), true );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionExportBones( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportBones( pPanel ), true );
 	}
 };
 
@@ -518,7 +595,7 @@ pTarget( NULL )
 	
 	helper.EditFloat( groupBox, "Blend Factor:", "Sets the blend factor",
 		pEditBlendFactor, new cTextBlendFactor( *this ) );
-	
+	helper.CheckBox( groupBox, pChkInvertBlendFactor, new cActionInvertBlendFactor( *this ), true );
 	helper.CheckBox( groupBox, pChkEnabled, new cActionEnabled( *this ), true );
 	
 	
@@ -595,6 +672,8 @@ void aeWPAPanelRule::OnActivated(){
 	UpdateTargetList();
 	UpdateControllerList();
 	
+	OnAnimatorPathChanged();
+	
 	if( pCBTarget->GetItemCount() > 0 ){
 		pCBTarget->SetSelection( 0 );
 	}
@@ -602,6 +681,10 @@ void aeWPAPanelRule::OnActivated(){
 
 void aeWPAPanelRule::OnAnimatorChanged(){
 	SetTarget( NULL );
+	OnAnimatorPathChanged();
+}
+
+void aeWPAPanelRule::OnAnimatorPathChanged(){
 }
 
 
@@ -688,6 +771,7 @@ void aeWPAPanelRule::UpdateRule(){
 	pEditBlendFactor->SetEnabled( enabled );
 	pListBones->SetEnabled( enabled );
 	
+	pChkInvertBlendFactor->GetAction()->Update();
 	pChkEnabled->GetAction()->Update();
 	pBtnBoneAdd->GetAction()->Update();
 	pBtnBoneDel->GetAction()->Update();

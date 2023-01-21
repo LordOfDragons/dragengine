@@ -56,30 +56,30 @@ FXIMPLEMENT( igdeNativeFoxSwitcher, FXSwitcher, igdeNativeFoxSwitcherMap, ARRAYN
 
 igdeNativeFoxSwitcher::igdeNativeFoxSwitcher(){ }
 
-igdeNativeFoxSwitcher::igdeNativeFoxSwitcher( igdeSwitcher &owner, FXComposite *parent, int layoutFlags ) :
-FXSwitcher( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ){
+igdeNativeFoxSwitcher::igdeNativeFoxSwitcher( igdeSwitcher &powner, FXComposite *pparent, int layoutFlags ) :
+FXSwitcher( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxSwitcher::~igdeNativeFoxSwitcher(){
 }
 
-igdeNativeFoxSwitcher *igdeNativeFoxSwitcher::CreateNativeWidget( igdeSwitcher &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxSwitcher *igdeNativeFoxSwitcher::CreateNativeWidget( igdeSwitcher &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxSwitcher( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxSwitcher( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxSwitcher::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }

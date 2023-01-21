@@ -63,7 +63,7 @@ dearAnimatorInstance::dearAnimatorInstance( deDEAnimator &module, deAnimatorInst
 pModule( module ),
 pAnimatorInstance( instance ),
 
-pAnimator( NULL ),
+pAnimator( nullptr ),
 
 pDirtyMappings( true ),
 pDirtyAnimator( true ),
@@ -75,8 +75,8 @@ pUseAllBones( true ),
 
 pAnimatorUpdateTracker( 0 ),
 
-pAnimation( NULL ),
-pComponent( NULL ),
+pAnimation( nullptr ),
+pComponent( nullptr ),
 
 pRules( NULL ),
 pRuleCount( 0 ),
@@ -421,16 +421,9 @@ void dearAnimatorInstance::BlendFactorChanged(){
 
 void dearAnimatorInstance::AnimationChanged(){
 	// this is safe with parallel tasks since animation is only accessed during prepare
-	deAnimation *animation = pAnimatorInstance.GetAnimation();
-	if( ! animation && pAnimator ){
-		animation = pAnimator->GetAnimator().GetAnimation();
-	}
-	
-	if( animation ){
-		pAnimation = ( dearAnimation* )animation->GetPeerAnimator();
-		
-	}else{
-		pAnimation = NULL;
+	pAnimation = nullptr;
+	if( pAnimatorInstance.GetAnimation() ){
+		pAnimation = ( dearAnimation* )pAnimatorInstance.GetAnimation()->GetPeerAnimator();
 	}
 	
 	pDirtyRuleParams = true;
@@ -702,7 +695,7 @@ void dearAnimatorInstance::pUpdateRules(){
 				controllerMapping.Add( i );
 			}
 			
-			dearCreateRuleVisitor visitor( *this, animator, controllerMapping, 0 );
+			dearCreateRuleVisitor visitor( *this, *pAnimator, controllerMapping, 0 );
 			
 			pRules = new dearRule*[ ruleCount ];
 			

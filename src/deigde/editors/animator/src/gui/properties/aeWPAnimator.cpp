@@ -29,12 +29,16 @@
 #include "aeWindowProperties.h"
 #include "../aeWindowMain.h"
 #include "../../animator/aeAnimator.h"
+#include "../../clipboard/aeClipboardDataBones.h"
 #include "../../undosys/animator/aeUAnimatorAddBone.h"
 #include "../../undosys/animator/aeUAnimatorRemoveBone.h"
 #include "../../undosys/animator/aeUAnimatorMirrorBones.h"
+#include "../../undosys/animator/aeUAnimatorSetBones.h"
 #include "../../undosys/animator/aeUAnimatorSetAnimationPath.h"
 #include "../../undosys/animator/aeUAnimatorSetRigPath.h"
 
+#include <deigde/clipboard/igdeClipboard.h>
+#include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -42,6 +46,7 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -199,7 +204,99 @@ public:
 	}
 };
 
+class cActionCopyRigBones : public cBaseAction{
+public:
+	cActionCopyRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Copy",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator ){
+		igdeClipboardDataReference clip;
+		clip.TakeOver( new aeClipboardDataBones( animator->GetListBones() ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
+		return nullptr;
+	}
+};
 
+class cActionPasteRigBones : public cBaseAction{
+public:
+	cActionPasteRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator ){
+		aeClipboardDataBones * const clip = ( aeClipboardDataBones* )pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataBones::TYPE_NAME  );
+		if( ! clip ){
+			return nullptr;
+		}
+		
+		aeUAnimatorSetBones * const undo = new aeUAnimatorSetBones(
+			animator, animator->GetListBones() + clip->GetBones() );
+		undo->SetShortInfo( "Animator paste bones" );
+		return undo;
+	}
+	
+	virtual void Update(const aeAnimator & ){
+		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			HasWithTypeName( aeClipboardDataBones::TYPE_NAME ) );
+	}
+};
+
+class cActionExportRigBones : public cBaseAction{
+public:
+	cActionExportRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Export To Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator ){
+		const decStringSet bones = animator->GetListBones();
+		const int count = bones.GetCount();
+		decString text;
+		int i;
+		for( i=0; i<count; i++ ){
+			if( i > 0 ){
+				text.AppendCharacter( '\n' );
+			}
+			text.Append( bones.GetAt( i ) );
+		}
+		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Bones", text );
+		return nullptr;
+	}
+	
+	virtual void Update(const aeAnimator &animator ){
+		SetEnabled( animator.GetListBones().GetCount() > 0 );
+	}
+};
+
+class cActionImportRigBones : public cBaseAction{
+public:
+	cActionImportRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Import From Text",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import bones" ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator ){
+		decString text;
+		while( true ){
+			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Import From Text", "Bones. One bone per line.", text ) ){
+				return nullptr;
+			}
+			break;
+		}
+		
+		const decStringList lines( text.Split( '\n' ) );
+		const int count = lines.GetCount();
+		decStringSet bones;
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			if( ! lines.GetAt( i ).IsEmpty() ){
+				bones.Add( lines.GetAt( i ) );
+			}
+		}
+		
+		aeUAnimatorSetBones * const undo = new aeUAnimatorSetBones( animator, animator->GetListBones() + bones );
+		undo->SetShortInfo( "Animator import bones" );
+		return undo;
+	}
+};
 
 class cListRigBones : public igdeListBoxListener{
 protected:
@@ -224,6 +321,12 @@ public:
 		helper.MenuCommand( menu, new cActionRigBoneAdd( pPanel ), true );
 		helper.MenuCommand( menu, new cActionRigBoneRemove( pPanel ), true );
 		helper.MenuCommand( menu, new cActionMirrorRigBones( pPanel ), true );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionCopyRigBones( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPasteRigBones( pPanel ), true );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionExportRigBones( pPanel ), true );
+		helper.MenuCommand( menu, new cActionImportRigBones( pPanel ), true );
 	}
 };
 
@@ -307,6 +410,7 @@ void aeWPAnimator::SetAnimator( aeAnimator *animator ){
 	
 	UpdateRigBoneList();
 	UpdateAnimator();
+	OnAnimatorPathChanged();
 }
 
 void aeWPAnimator::UpdateAnimator(){
@@ -345,6 +449,17 @@ void aeWPAnimator::UpdateAnimator(){
 	
 	pBtnBoneAdd->GetAction()->Update();
 	pBtnBoneDel->GetAction()->Update();
+}
+
+void aeWPAnimator::OnAnimatorPathChanged(){
+	if( pAnimator ){
+		pEditRigPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		pEditAnimPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		
+	}else{
+		pEditRigPath->SetBasePath( "" );
+		pEditAnimPath->SetBasePath( "" );
+	}
 }
 
 void aeWPAnimator::UpdateRigBoneList(){

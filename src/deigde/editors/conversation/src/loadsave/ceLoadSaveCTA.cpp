@@ -251,7 +251,7 @@ void ceLoadSaveCTA::pWritePose( decXmlWriter &writer, const ceActorPose &pose ){
 	int i;
 	
 	for( i=0; i<controllerCount; i++ ){
-		pWriteController( writer, *controllers.GetAt( i ), i );
+		pWriteController( writer, *controllers.GetAt( i ) );
 	}
 	
 	// gestures
@@ -271,10 +271,9 @@ void ceLoadSaveCTA::pWritePose( decXmlWriter &writer, const ceActorPose &pose ){
 	writer.WriteClosingTag( "pose" );
 }
 
-void ceLoadSaveCTA::pWriteController( decXmlWriter &writer,
-const ceActorController &controller, int index ){
+void ceLoadSaveCTA::pWriteController( decXmlWriter &writer, const ceActorController &controller ){
 	writer.WriteOpeningTagStart( "controller" );
-	writer.WriteAttributeInt( "index", index );
+	writer.WriteAttributeString( "name", controller.GetName() );
 	writer.WriteOpeningTagEnd();
 	
 	switch( controller.GetUpdateType() ){
@@ -340,13 +339,17 @@ void ceLoadSaveCTA::pReadPose( const decXmlElementTag &root, ceConversationActor
 				pose->SetPathAnimator( GetCDataString( *tag ) );
 				
 			}else if( tagName == "controller" ){
-				const int index = GetAttributeInt( *tag, "index" );
-				if( index < 0 || index >= pose->GetControllers().GetCount() ){
-					LogWarnGenericProblem( *tag, "Index out of boundary." );
-					continue;
+				const ceActorController::Ref controller( ceActorController::Ref::New( new ceActorController ) );
+				
+				if( HasAttribute( *tag, "index" ) ){ // deprecated
+					controller->SetName( GetAttributeString( *tag, "index" ) );
+					
+				}else{
+					controller->SetName( GetAttributeString( *tag, "name" ) );
 				}
 				
-				pReadController( *tag, *pose->GetControllers().GetAt( index ) );
+				pReadController( *tag, controller );
+				pose->GetControllers().Add( controller );
 				
 			}else if( tagName == "gesture" ){
 				ceActorGesture *gesture = NULL;

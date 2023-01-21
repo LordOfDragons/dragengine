@@ -59,8 +59,8 @@ pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
 pOcclusionReduction( 1 ),
 
-pDistShadowScale( 1.0f ),
-pDistShadowBias( 0.001f ), //4.0f ), // 24-bit: 1 step is 1.192093e-7
+pDistShadowScale( 0.05f ), // old: 1
+pDistShadowBias( 0.01f ), // old: 0.001
 
 pTextOffsetU( 0.0f ),
 pTextOffsetV( 0.0f ),
@@ -72,10 +72,7 @@ pTranspLayerLimit( 4 ),
 pUseOneFBO( false ),
 pUseEncodeDepth( false ),
 pDisableStencil( false ),
-pStencilOnlyOnRB( false ),
 
-pDefRenEncDepth( false ),
-pDefRenUsePOTs( false ),
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
 pHDRRMaxIntensity( 1.5f ),
@@ -126,6 +123,7 @@ pFrameRateLimit( 0 ), // 0 means use display refresh rate
 pAsyncRenderSkipSyncTimeRatio( 0.5 ),
 
 pDebugContext( false ),
+pDebugNoMessages( false ),
 pAsyncRendering( true ),
 pEnableRetainImageOptimization( true ),
 
@@ -197,10 +195,17 @@ pVRForceFrameRate( 0 )
 	
 	// debug
 	pDebugContext = true;
+	pDebugNoMessages = false;
 	pLogLevel = ellDebug;
 	
 	// disable asynchronous rendering for debug purpose
 	//pAsyncRendering = false;
+	#endif
+	
+	// rendeerdoc
+	#if 0
+	pDebugContext = true;
+	pDebugNoMessages = true;
 	#endif
 }
 
@@ -432,28 +437,7 @@ void deoglConfiguration::SetDisableStencil( bool disableStencil ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
-	if( stencilOnlyOnRB == pStencilOnlyOnRB ){
-		return;
-	}
-	pStencilOnlyOnRB = stencilOnlyOnRB;
-	pDirty = true;
-}
 
-
-
-void deoglConfiguration::SetDefRenEncDepth( bool useEncDepth ){
-	//pDefRenEncDepth = useEncDepth;
-	//pDirty = true;
-}
-
-void deoglConfiguration::SetDefRenUsePOTs( bool usePOTs ){
-	if( usePOTs == pDefRenUsePOTs ){
-		return;
-	}
-	pDefRenUsePOTs = usePOTs;
-	pDirty = true;
-}
 
 void deoglConfiguration::SetDefRenSizeLimit( int size ){
 	size = decMath::max( size, 0 );
@@ -819,6 +803,14 @@ void deoglConfiguration::SetDebugContext( bool debugContext ){
 		return;
 	}
 	pDebugContext = debugContext;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetDebugNoMessages( bool debugNoMessages ){
+	if( debugNoMessages == pDebugNoMessages ){
+		return;
+	}
+	pDebugNoMessages = debugNoMessages;
 	pDirty = true;
 }
 

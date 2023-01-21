@@ -31,11 +31,11 @@ class deoglROcclusionMesh;
 
 
 /**
- * @brief Light Volume Builder.
+ * Light Volume Builder.
  */
 class deoglLightVolumeBuilder{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new light volume builder. */
 	deoglLightVolumeBuilder();
@@ -43,17 +43,17 @@ public:
 	~deoglLightVolumeBuilder();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Build sphere volume. */
+	/** Build sphere volume. */
 	void BuildSphere( decConvexVolumeList &volumeList, const decVector &position,
 		float radius ) const;
 	
-	/** \brief Build cone volume. */
+	/** Build cone volume. */
 	void BuildCone( decConvexVolumeList &volumeList, const decMatrix &matrix,
 		float distance, float angleX, float angleY, int resolution ) const;
 	
-	/** \brief Build frustum volume. */
+	/** Build frustum volume. */
 	void BuildFrustum( decConvexVolumeList &volumeList, const decMatrix &matrix,
 		float farDistance, float angleX, float angleY ) const;
 	

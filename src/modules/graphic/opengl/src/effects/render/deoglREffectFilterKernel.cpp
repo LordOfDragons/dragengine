@@ -25,16 +25,22 @@
 #include <string.h>
 
 #include "deoglREffectFilterKernel.h"
+#include "../../debug/deoglDebugTraceGroup.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
@@ -46,15 +52,15 @@
 ////////////////
 
 enum eSPEffect{
-	speQuadParams,
+	speTCTransform,
 	speOptions,
 	speKernel1,
 	speKernel2,
 	speKernel3
 };
 
-enum eSPEffectDownSample{
-	spedsQuadParams,
+enum eSPEffectDownsample{
+	spedsTCTransform,
 	spedsTCClamp
 };
 
@@ -69,9 +75,7 @@ deoglREffect( renderThread ),
 pKernel( NULL ),
 pKernelRows( 0 ),
 pKernelCols( 0 ),
-pScale( 1.0f ),
-pShader( NULL ),
-pShaderDownsample( NULL )
+pScale( 1.0f )
 {
 	LEAK_CHECK_CREATE( renderThread, EffectFilterKernel );
 }
@@ -80,12 +84,6 @@ deoglREffectFilterKernel::~deoglREffectFilterKernel(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectFilterKernel );
 	if( pKernel ){
 		delete [] pKernel;
-	}
-	if( pShaderDownsample ){
-		pShaderDownsample->RemoveUsage();
-	}
-	if( pShader ){
-		pShader->RemoveUsage();
 	}
 }
 
@@ -136,38 +134,104 @@ void deoglREffectFilterKernel::SetScale( float scale ){
 
 
 
-deoglShaderProgram *deoglREffectFilterKernel::GetShader(){
-	if( ! pShader ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline *deoglREffectFilterKernel::GetPipeline(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
 		
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel", defines );
+		pPipeline = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShader;
+	return pPipeline;
 }
 
-deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsample(){
-	if( ! pShaderDownsample ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline *deoglREffectFilterKernel::GetPipelineStereo(){
+	if( ! pPipelineStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
 		
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel", defines );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel Stereo", defines );
 		}
 		
-		pShaderDownsample = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		pPipelineStereo = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShaderDownsample;
+	return pPipelineStereo;
+}
+
+const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsample(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample", defines );
+		pPipelineDownsample = pipelineManager.GetWith( pipconf );
+	}
+	
+	return pPipelineDownsample;
+}
+
+const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsampleStereo(){
+	if( ! pPipelineDownsampleStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample", defines );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample Stereo", defines );
+		}
+		
+		pPipelineDownsampleStereo = pipelineManager.GetWith( pipconf );
+	}
+	
+	return pPipelineDownsampleStereo;
 }
 
 void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectFilterKernel.Render" );
+	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
@@ -176,19 +240,9 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	// opengl parameters
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
 	// source texture in case downsampling is required
 	defren.SwapPostProcessTarget();
-	deoglTexture *sourceTexture = defren.GetPostProcessTexture();
+	deoglArrayTexture *sourceTexture = defren.GetPostProcessTexture();
 	
 	// down sample if required
 	int height = defren.GetHeight();
@@ -203,14 +257,14 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	if( downsampleCount > 0 ){
 		int i;
 		
-		deoglShaderProgram * const shaderProgramDownsample = GetShaderDownsample();
-		rtshader.ActivateShader( shaderProgramDownsample );
-		deoglShaderCompiled &shaderDownsample = *shaderProgramDownsample->GetCompiled();
+		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineDownsampleStereo() : *GetPipelineDownsample();
+		renderWorld.GetRenderPB()->Activate();
 		
-		defren.SetShaderParamFSQuad( shaderDownsample, spedsQuadParams );
+		deoglShaderCompiled &shaderDownsample = pipeline.GetGlShader();
+		defren.SetShaderParamFSQuad( shaderDownsample, spedsTCTransform );
 		
 		for( i=0; i<downsampleCount; i++ ){
-			tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+			tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 			
 			if( ( i % 2 ) == 0 ){
 				defren.ActivateFBOReflectivity( false );
@@ -243,30 +297,31 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 				height = 1;
 			}
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-			
-			defren.RenderFSQuadVAO();
+			renderWorld.SetViewport( width, height );
+			renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+				&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 		}
-		
-		OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 	}
 	
-	// set shader program
-	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
+	pipeline.Activate();
 	
-	// set program
-	deoglShaderProgram * const shaderProgram = GetShader();
-	rtshader.ActivateShader( shaderProgram );
-	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
+	renderWorld.SetViewport( plan );
+	
+	defren.ActivatePostProcessFBO( false );
+	tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	renderWorld.GetRenderPB()->Activate();
 	
 	//defren.SetShaderParamFSQuad( shader, speQuadParams );
-	defren.SetShaderParamFSQuad( shader, speQuadParams, width, height );
+	defren.SetShaderParamFSQuad( shader, speTCTransform, width, height );
 	shader.SetParameterFloat( speOptions, ( float )pKernelRows, ( float )pKernelCols,
 		defren.GetPixelSizeU() * downsampleSize/*pScale*/, defren.GetPixelSizeV() * downsampleSize/*pScale*/ );
 	shader.SetParameterFloat( speKernel1, GetKernelValueAt( 0, 0 ), GetKernelValueAt( 0, 1 ), GetKernelValueAt( 0, 2 ) );
 	shader.SetParameterFloat( speKernel2, GetKernelValueAt( 1, 0 ), GetKernelValueAt( 1, 1 ), GetKernelValueAt( 1, 2 ) );
 	shader.SetParameterFloat( speKernel3, GetKernelValueAt( 2, 0 ), GetKernelValueAt( 2, 1 ), GetKernelValueAt( 2, 2 ) );
 	
-	defren.RenderFSQuadVAO();
+	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 }

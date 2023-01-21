@@ -25,7 +25,9 @@
 #include "deoglRTLeakTracker.h"
 #include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
+#include "../pipeline/deoglPipelineManager.h"
 
 #include <deSharedVulkan.h>
 #include <devkDevice.h>
@@ -41,7 +43,6 @@
 class deGraphicOpenGl;
 class deoglCapabilities;
 class deoglConfiguration;
-class deoglDebugInformation;
 class deoglDeferredRendering;
 class deoglDelayedOperations;
 class deoglEnvMapSlotManager;
@@ -49,7 +50,7 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglRCanvas;
+class deoglRCanvasView;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
@@ -73,9 +74,7 @@ class deoglRTChoices;
 class deRenderWindow;
 
 // deprecated
-class deoglEdgeFinder;
 class deoglOptimizerManager;
-class deoglPreloader;
 class deoglQuickSorter;
 
 
@@ -112,8 +111,8 @@ private:
 	deoglMemoryManager pMemoryManager;
 	decObjectOrderedSet pRRenderWindowList;
 	decObjectOrderedSet pRCaptureCanvasList;
-	deoglRCanvas *pCanvasInputOverlay;
-	deoglRCanvas *pCanvasDebugOverlay;
+	deoglRCanvasView *pCanvasInputOverlay;
+	deoglRCanvasView *pCanvasDebugOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -125,6 +124,7 @@ private:
 	deoglRTRenderers *pRenderers;
 	deoglRTShader *pShader;
 	deoglRTTexture *pTexture;
+	deoglPipelineManager::Ref pPipelineManager;
 	
 	deoglCapabilities *pCapabilities;
 	deoglDeferredRendering *pDeferredRendering;
@@ -157,26 +157,26 @@ private:
 	int pFPSRate;
 	
 	// debug information
-	deoglDebugInformation *pDebugInfoModule;
+	deoglDebugInformation::Ref pDebugInfoModule;
 	
-	deoglDebugInformation *pDebugInfoThreadMain;
-	deoglDebugInformation *pDebugInfoThreadMainWaitFinish;
-	deoglDebugInformation *pDebugInfoThreadMainSynchronize;
+	deoglDebugInformation::Ref pDebugInfoThreadMain;
+	deoglDebugInformation::Ref pDebugInfoThreadMainWaitFinish;
+	deoglDebugInformation::Ref pDebugInfoThreadMainSynchronize;
 	
-	deoglDebugInformation *pDebugInfoThreadRender;
-	deoglDebugInformation *pDebugInfoThreadRenderSwap;
-	deoglDebugInformation *pDebugInfoThreadRenderBegin;
-	deoglDebugInformation *pDebugInfoThreadRenderWindows;
-	deoglDebugInformation *pDebugInfoThreadRenderWindowsPrepare;
-	deoglDebugInformation *pDebugInfoThreadRenderWindowsRender;
-	deoglDebugInformation *pDebugInfoThreadRenderCapture;
-	deoglDebugInformation *pDebugInfoThreadRenderEnd;
+	deoglDebugInformation::Ref pDebugInfoThreadRender;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderBegin;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderWindows;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsPrepare;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsRender;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderCapture;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderEnd;
 	
-	deoglDebugInformation *pDebugInfoFrameLimiter;
-	deoglDebugInformation *pDebugInfoFLEstimMain;
-	deoglDebugInformation *pDebugInfoFLEstimRender;
-	deoglDebugInformation *pDebugInfoFLFrameRateMain;
-	deoglDebugInformation *pDebugInfoFLFrameRateRender;
+	deoglDebugInformation::Ref pDebugInfoFrameLimiter;
+	deoglDebugInformation::Ref pDebugInfoFLEstimMain;
+	deoglDebugInformation::Ref pDebugInfoFLEstimRender;
+	deoglDebugInformation::Ref pDebugInfoFLFrameRateMain;
+	deoglDebugInformation::Ref pDebugInfoFLFrameRateRender;
 	
 	decTimer pDebugTimerMainThread1;
 	decTimer pDebugTimerMainThread2;
@@ -199,8 +199,6 @@ private:
 	
 	// deprecated
 	deoglQuickSorter *pQuickSorter;
-	deoglPreloader *pPreloader;
-	deoglEdgeFinder *pEdgeFinder;
 	deoglOptimizerManager *pOptimizerManager;
 	
 	// thread control
@@ -257,16 +255,16 @@ public:
 	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
 	/** Input overlay canvas view or \em NULL if not present. */
-	inline deoglRCanvas *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
+	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or \em NULL if not present. */
-	void SetCanvasInputOverlay( deoglRCanvas *canvas );
+	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
 	
 	/** Debug overlay canvas view or \em NULL if not present. */
-	inline deoglRCanvas *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
+	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or \em NULL if not present. */
-	void SetCanvasDebugOverlay( deoglRCanvas *canvas );
+	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
 	
 	
 	
@@ -302,6 +300,9 @@ public:
 	
 	/** Texture related. */
 	inline deoglRTTexture &GetTexture() const{ return *pTexture; }
+	
+	/** Pipeline manager. */
+	inline deoglPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
 	
 	
 	
@@ -356,7 +357,7 @@ public:
 	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
 	
 	/** Vulkan device if present. */
-	inline devkDevice *GetVulkanDevice() const{ return pVulkanDevice; }
+	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }
 	
 	
 	
@@ -469,12 +470,6 @@ public:
 	/*@{*/
 	/** Quick sorter. */
 	inline deoglQuickSorter &GetQuickSorter() const{ return *pQuickSorter; }
-	
-	/** Preloader. */
-	inline deoglPreloader &GetPreloader() const{ return *pPreloader; }
-	
-	/** Edge finder. */
-	inline deoglEdgeFinder &GetEdgeFinder() const{ return *pEdgeFinder; }
 	
 	/** Optimizer. */
 	inline deoglOptimizerManager &GetOptimizerManager() const{ return *pOptimizerManager; }

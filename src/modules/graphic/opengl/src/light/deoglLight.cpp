@@ -174,7 +174,7 @@ void deoglLight::SyncToRender(){
 	
 	if( pDirtyType ){
 		pRLight->SetLightType( pLight.GetType() );
-		pRLight->DropShaders();
+		pRLight->DropPipelines();
 		
 		pDirtyType = false;
 		if( pLight.GetHintMovement() != deLight::emhDynamic ){
@@ -650,7 +650,7 @@ void deoglLight::pSyncSource(){
 	}
 	
 	// common
-	pRLight->DropShaders();
+	pRLight->DropPipelines();
 	
 	pDirtySource = false;
 	
@@ -660,7 +660,12 @@ void deoglLight::pSyncSource(){
 }
 
 void deoglLight::pCheckRequiresUpdateEverySync(){
-	pRequiresUpdateEverySync |= pSkinStateController->RequiresSyncEveryFrameUpdate();
+	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+		pRequiresUpdateEverySync = true;
+		if( pSkinStateController->RequiresPrepareRenderables() ){
+			pRLight->DirtyPrepareSkinStateRenderables();
+		}
+	}
 }
 
 void deoglLight::pRequiresSync(){

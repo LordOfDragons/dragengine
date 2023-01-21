@@ -97,7 +97,11 @@ public:
 	void EnableRule( int rule, bool enable );
 	
 	/** Set component and animation. */
+	void SetComponent( deComponent *component );
+	
+	/** Set component and animation. */
 	void SetComponentAndAnimation( deComponent *component, deAnimation *animation );
+	
 	/** Apply controllers from another animator instance. */
 	void CopyControllers( deAnimatorInstance &instance );
 	/** Apply. */

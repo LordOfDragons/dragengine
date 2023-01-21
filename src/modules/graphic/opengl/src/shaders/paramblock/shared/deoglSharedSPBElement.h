@@ -30,7 +30,7 @@ class deoglShaderParameterBlock;
 
 
 /**
- * \brief OpenGL shared shader parameter block element.
+ * OpenGL shared shader parameter block element.
  */
 class deoglSharedSPBElement : public deObject{
 public:
@@ -42,10 +42,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared shader parameter block element. */
+	/** Create shared shader parameter block element. */
 	deoglSharedSPBElement( deoglSharedSPB &spb, int index );
 	
-	/** \brief Clean up shared shader parameter block element. */
+	/** Clean up shared shader parameter block element. */
 	virtual ~deoglSharedSPBElement();
 	/*@}*/
 	
@@ -53,14 +53,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Shader parameter block this element belongs to. */
+	/** Shader parameter block this element belongs to. */
 	inline deoglSharedSPB &GetSPB() const{ return pSPB; }
 	
-	/** \brief Element index in the shader parameter block. */
+	/** Element index in the shader parameter block. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/**
-	 * \brief Map buffer for element.
+	 * Map buffer for element.
 	 * 
 	 * Call UnmapBuffer() on the shader parameter block once finished. You can call
 	 * all methods without explicit element index to write into the mapped element

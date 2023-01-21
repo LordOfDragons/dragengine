@@ -24,6 +24,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 
 #include "deOSConsole.h"
@@ -40,6 +41,9 @@
 deOSConsole::deOSConsole(){
 	pScreenWidth = 80; // ncurses?
 	pScreenHeight = 60; // ncurses?
+	
+	// init locale
+	setlocale( LC_ALL, "" );
 }
 
 deOSConsole::~deOSConsole(){
@@ -111,6 +115,42 @@ void deOSConsole::ProcessEventLoop( bool sendToInputModule ){
 	/*
 	see console input module
 	*/
+}
+
+decString deOSConsole::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSConsole::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
 }
 
 

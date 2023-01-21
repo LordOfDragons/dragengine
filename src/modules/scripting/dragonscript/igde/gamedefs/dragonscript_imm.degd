@@ -197,6 +197,10 @@
 			<description>Display text to tell the player what this hotspot is going to do if used.</description>
 			<type>string</type>
 		</property>
+		<property name='displayTextTranslate'>
+			<description>Similar to "displayText" but using TranslationManager to get translation matching name. If used "displayText" is ignored.</description>
+			<type>string</type>
+		</property>
 		<property name='targetHotSpotActive'>
 			<description>Name of trigger to fire if hot-spot is activate and reset if deactive.</description>
 			<type>triggerTarget</type>

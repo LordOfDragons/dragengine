@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief OpenGL Extensions.
+ * OpenGL Extensions.
  * Manages everything related to opengl extensions. Determines which
  * extensions exist on the system as well as fetching functions.
  */
@@ -230,6 +230,8 @@ public:
 		 * Version 4.3 .
 		 * <li>ARB_shader_storage_buffer_object</li>
 		 * <li>ARB_program_interface_query</li>
+		 * <li>ARB_draw_indirect</li>
+		 * <li>ARB_multi_draw_indirect</li>
 		 */
 		evgl4p3,
 		
@@ -248,6 +250,8 @@ public:
 		 * Version 4.6 .
 		 * <ul>
 		 * <li>GL_ARB_shader_image_load_store</li>
+		 * <li>ARB_indirect_parameters</li>
+		 * <li>ARB_shader_draw_parameters</li>
 		 * </ul>
 		 */
 		evgl4p6,
@@ -259,21 +263,21 @@ public:
 		EVGL_COUNT
 	};
 	
-	/** \brief OpenGL ES versions. */
+	/** OpenGL ES versions. */
 	enum eESVersions {
-		/** \brief OpenGL ES 2.x or earlier */
+		/** OpenGL ES 2.x or earlier */
 		evglesUnsupported,
 		
-		/** \brief OpenGL ES 3.0 */
+		/** OpenGL ES 3.0 */
 		evgles3p0,
 		
-		/** \brief OpenGL ES 3.1 */
+		/** OpenGL ES 3.1 */
 		evgles3p1,
 		
-		/** \brief OpenGL ES 3.2 */
+		/** OpenGL ES 3.2 */
 		evgles3p2,
 		
-		/** \brief Unknown. */
+		/** Unknown. */
 		evglesUnknown
 	};
 	
@@ -318,6 +322,15 @@ public:
 		ext_ARB_program_interface_query,
 		ext_ARB_shader_image_load_store,
 		ext_ARB_compute_shader,
+		ext_ARB_draw_indirect,
+		ext_ARB_multi_draw_indirect,
+		ext_ARB_indirect_parameters,
+		ext_ARB_bindless_texture,
+		ext_ARB_fragment_layer_viewport,
+		ext_ARB_shader_draw_parameters,
+		ext_ARB_shader_viewport_layer_array,
+		ext_ARB_depth_clamp,
+		ext_ARB_shading_language_420pack,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,
@@ -339,6 +352,7 @@ public:
 		ext_AMD_debug_output,
 		ext_AMD_performance_monitor,
 		ext_AMD_seamless_cubemap_per_texture,
+		ext_AMD_vertex_shader_layer,
 		
 		ext_ATI_meminfo,
 		ext_ATI_separate_stencil,
@@ -382,11 +396,12 @@ private:
 	bool pSupportsGeometryShader;
 	bool pSupportsGSInstancing;
 	bool pSupportsComputeShader;
+	bool pSupportsVSLayer;
 	
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new object. */
 	deoglExtensions( deoglRenderThread &renderThread );
@@ -394,7 +409,7 @@ public:
 	~deoglExtensions();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Initializes the extensions. Determines existing extensions and
@@ -416,16 +431,16 @@ public:
 	/** Retrieves the vendor. */
 	inline int GetVendor() const{ return pVendor; }
 	
-	/** \brief OpenGL major version. */
+	/** OpenGL major version. */
 	inline int GetGLVersionMajor() const{ return pGLVersionMajor; }
 	
-	/** \brief OpenGL minor version. */
+	/** OpenGL minor version. */
 	inline int GetGLVersionMinor() const{ return pGLVersionMinor; }
 	
-	/** \brief OpenGL version. */
+	/** OpenGL version. */
 	inline eVersions GetGLVersion() const{ return pGLVersion; }
 	
-	/** \brief OpenGL ES version. */
+	/** OpenGL ES version. */
 	inline eESVersions GetGLESVersion() const{ return pGLESVersion; }
 	
 	/** Determines if extensions exist. */
@@ -433,7 +448,7 @@ public:
 	/** Retrieves the name of an extension. */
 	const char *GetExtensionName( eExtensions extension ) const;
 	
-	/** \brief Disable extension. */
+	/** Disable extension. */
 	void DisableExtension( eExtensions extension );
 	
 	/** Determines if seamless cube maps are supported. */
@@ -443,14 +458,17 @@ public:
 	/** Determines if copy image is supported. */
 	inline bool GetHasCopyImage() const{ return pHasCopyImage; }
 	
-	/** \brief Geometry shader is supported. */
-	inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
+	/** Geometry shader is supported. Required so always true. */
+	// inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
 	
-	/** \brief Geometry shader instancing is supported. */
+	/** Geometry shader instancing is supported. */
 	inline bool SupportsGSInstancing() const{ return pSupportsGSInstancing; }
 	
-	/** \brief Compute shader is supported. */
-	inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
+	/** Compute shader is supported. Required so always true. */
+	// inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
+	
+	/** Layer ID output is supported in vertex shaders. */
+	inline bool SupportsVSLayer() const{ return pSupportsVSLayer; }
 	/*@}*/
 	
 private:

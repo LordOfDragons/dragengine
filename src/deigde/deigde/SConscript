@@ -18,6 +18,7 @@ def buildWriteConfig(source, target, env):
 	configFileDefines = {}
 	configFileDefines['OS_UNIX'] = env['OSPosix']
 	configFileDefines['OS_W32'] = env['OSWindows']
+	configFileDefines['IGDE_NULL_TOOLKIT'] = env['igde_toolkit'] == 'null'
 	
 	if WriteConfigFile(configFilePath, configFileDefines, env):
 		Exit('Writing configuration file failed')
@@ -205,15 +206,15 @@ targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRu
 targetInstallLib = envIGDELib.Alias('deigde_shared', [targetInstallLibRuntime, targetInstallLibDevelop])
 
 cpppath = [envIGDELib.Dir('include')]
-cpppath.extend(parent_targets['dragengine']['cpppath'])
+cpppath.extend(parent_targets['delauncher']['cpppath'])
 #cpppath.extend(parent_targets['lib_fox']['cpppath'])
 
 libpath = [buildLibrary[0].get_dir()]
-libpath.extend(parent_targets['dragengine']['libpath'])
+libpath.extend(parent_targets['delauncher']['libpath'])
 #libpath.extend(parent_targets['lib_fox']['libpath'])
 
 linklibs = ['deigdeshared']
-linklibs.extend(parent_targets['dragengine']['libs'])
+linklibs.extend(parent_targets['delauncher']['libs'])
 #if not envIGDELib['OSWindows']:
 #	linklibs.extend(parent_targets['lib_fox']['libs'])
 

@@ -24,53 +24,59 @@ namespace Dragengine.Gui.Borders
 
 
 /**
- * Base class for titled borders drawn using a highlight and a shadow color which
- * can be raised or lowered.
+ * \brief Base class for titled borders.
+ * 
+ * Drawn using a highlight and a shadow color which can be raised or lowered.
  */
 class TitledTwoColorBorder extends TwoColorBorder
-	/** Text. */
 	private var String pText
+	private var Font pFont
+	private var Color pTextColor
 	
 	
 	
-	/** Creates a new titled border. */
+	/** \brief Create titled two color border. */
 	public func new()
-		this.pText = ""
+		pText = ""
 	end
 	
-	/** Creates a new titled border. */
-	public func new( String text )
-		if text == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pText = text
+	public func new(String text)
+		pText = text
 	end
 	
 	
 	
-	/** Retrieves the text. */
+	/** \brief Text or widget title if not set. */
 	public func String getText()
-		return this.pText
-	end
-	
-	/** Sets the text. */
-	public func void setText( String text )
-		if text.equals( this.pText )
-			return
+		if pText != null
+			return pText
 		end
 		
-		this.pText = text
+		var Widget widget = getWidget()
 		
-		this.layoutContainer()
-		this.updateCanvas()
+		if widget != null
+			return widget.getTitle()
+			
+		else
+			return ""
+		end
 	end
 	
+	/** \brief Set text. */
+	public func void setText(String text)
+		pText = text
+		
+		layoutContainer()
+		updateCanvas()
+	end
 	
-	
-	/** Font. */
+	/** \brief Font or widget font if not set. */
 	public func Font getFont()
-		var Widget widget = this.getWidget()
+		if pFont != null
+			return pFont
+		end
+		
+		var Widget widget = getWidget()
 		
 		if widget != null
 			return widget.getFont()
@@ -80,9 +86,27 @@ class TitledTwoColorBorder extends TwoColorBorder
 		end
 	end
 	
-	/** Font color. */
-	public func Color getFontColor()
-		var Widget widget = this.getWidget()
+	/**
+	 * \brief Set font or null to use widget font.
+	 * \version 1.13
+	 */
+	public func void setFont(Font font)
+		pFont = font
+		
+		layoutContainer()
+		updateCanvas()
+	end
+	
+	/**
+	 * \brief Text color or widget text color if not set.
+	 * \version 1.13
+	 */
+	public func Color getTextColor()
+		if pTextColor != null
+			return pTextColor
+		end
+		
+		var Widget widget = getWidget()
 		
 		if widget != null
 			return widget.getTextColor()
@@ -92,15 +116,33 @@ class TitledTwoColorBorder extends TwoColorBorder
 		end
 	end
 	
-	/** Text size. */
+	/**
+	 * \brief Set text color or null to use widget text color.
+	 * \version 1.13
+	 */
+	public func void setTextColor(Color color)
+		pTextColor = color
+		
+		layoutContainer()
+		updateCanvas()
+	end
+	
+	/** \brief Text size. */
 	public func Point getTextSize()
-		var Font font = this.getFont()
+		var Font font = getFont()
 		
 		if font != null
-			return font.getTextSize( this.pText )
+			return font.getTextSize(getText())
 			
 		else
 			return Point.new()
 		end
+	end
+	
+	
+	
+	/** \deprecated Use getTextColor(). */
+	public func Color getFontColor()
+		return getTextColor()
 	end
 end

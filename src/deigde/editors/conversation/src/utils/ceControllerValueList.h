@@ -51,15 +51,15 @@ public:
 	/** Retrieves the entry at the given position. */
 	ceControllerValue *GetAt( int index ) const;
 	/** Retrieves the entry with the given controller or -1 if not found. */
-	ceControllerValue *GetWith( int controller ) const;
+	ceControllerValue *GetNamed( const char *controller ) const;
 	/** Retrieves the index of the entry or -1 if not found. */
 	int IndexOf( ceControllerValue *entry ) const;
 	/** Retrieves the index of the entry with the given controller or -1 if not found. */
-	int IndexOfWith( int controller ) const;
+	int IndexOfNamed( const char *controller ) const;
 	/** Determines if an entry exists. */
 	bool Has( ceControllerValue *entry ) const;
 	/** Determines if an entry with the given controller exists. */
-	bool HasWith( int controller ) const;
+	bool HasNamed( const char *controller ) const;
 	/** Adds an entry. */
 	void Add( ceControllerValue *entry );
 	/** Removes an entry. */

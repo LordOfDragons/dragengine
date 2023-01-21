@@ -31,11 +31,12 @@
 #include "../resourceloader/dedsResourceLoader.h"
 #include "../deClassPathes.h"
 
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deScriptingSystem.h"
-#include "dragengine/errortracing/deErrorTrace.h"
-#include "dragengine/errortracing/deErrorTracePoint.h"
-#include "dragengine/errortracing/deErrorTraceValue.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/errortracing/deErrorTrace.h>
+#include <dragengine/errortracing/deErrorTracePoint.h>
+#include <dragengine/errortracing/deErrorTraceValue.h>
+#include <dragengine/app/deOS.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/dsMemoryManager.h>
@@ -361,6 +362,28 @@ void deClassEngine::nfSetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* )
 
 
 
+// static public func String getUserLocaleLanguage()
+deClassEngine::nfGetUserLocaleLanguage::nfGetUserLocaleLanguage( const sInitData &init ) :
+dsFunction( init.clsEngine, "getUserLocaleLanguage", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetUserLocaleLanguage::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetGameEngine()->GetOS()->GetUserLocaleLanguage() );
+}
+
+// static public func String getUserLocaleTerritory()
+deClassEngine::nfGetUserLocaleTerritory::nfGetUserLocaleTerritory( const sInitData &init ) :
+dsFunction( init.clsEngine, "getUserLocaleTerritory", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetGameEngine()->GetOS()->GetUserLocaleTerritory() );
+}
+
+
+
 // Class deClassEngine
 ////////////////////////
 
@@ -427,6 +450,9 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );
+	
+	AddFunction( new nfGetUserLocaleLanguage( init ) );
+	AddFunction( new nfGetUserLocaleTerritory( init ) );
 
 	// calculate member offsets
 	CalcMemberOffsets();

@@ -310,6 +310,10 @@ void igdeEnvironmentIGDE::ActiveModuleSharedToolBarsChanged(){
 	pWindowMain->ActiveModuleSharedToolBarsChanged();
 }
 
+void igdeEnvironmentIGDE::ActivateEditor( igdeEditorModule *editor ){
+	pWindowMain->ActivateEditor( editor );
+}
+
 
 
 void igdeEnvironmentIGDE::SetColliderDelegee( deCollider *collider,
@@ -420,4 +424,11 @@ void igdeEnvironmentIGDE::AddRecentEditorFile( const char *filename ){
 		configuration.SaveConfiguration();
 	}
 }
+
+void igdeEnvironmentIGDE::CloseApplication(){
+	if( pWindowMain->CloseWindow() ){
+		pWindowMain->Close();
+	}
+}
+
 /*@}*/

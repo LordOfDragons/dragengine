@@ -58,46 +58,46 @@ FXIMPLEMENT( igdeNativeFoxCheckBox, FXCheckButton, igdeNativeFoxCheckBoxMap, ARR
 
 igdeNativeFoxCheckBox::igdeNativeFoxCheckBox(){ }
 
-igdeNativeFoxCheckBox::igdeNativeFoxCheckBox( igdeCheckBox &owner, FXComposite *parent,
+igdeNativeFoxCheckBox::igdeNativeFoxCheckBox( igdeCheckBox &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXCheckButton( parent, CheckBoxText( owner ), this, ID_SELF, layoutFlags | CheckBoxFlags( owner ),
+FXCheckButton( pparent, CheckBoxText( powner ), this, ID_SELF, layoutFlags | CheckBoxFlags( powner ),
 	0, 0, 0, 0,
 	CheckBoxPadLeft( guitheme ), CheckBoxPadRight( guitheme ),
 	CheckBoxPadTop( guitheme ), CheckBoxPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( CheckBoxFont( owner, guitheme ) )
+pOwner( &powner ),
+pFont( CheckBoxFont( powner, guitheme ) )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
-	setCheck( owner.GetChecked() );
-	setIcon( CheckBoxIcon( owner ) );
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setCheck( powner.GetChecked() );
+	setIcon( CheckBoxIcon( powner ) );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 }
 
 igdeNativeFoxCheckBox::~igdeNativeFoxCheckBox(){
 }
 
-igdeNativeFoxCheckBox *igdeNativeFoxCheckBox::CreateNativeWidget( igdeCheckBox &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxCheckBox *igdeNativeFoxCheckBox::CreateNativeWidget( igdeCheckBox &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxCheckBox( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxCheckBox( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxCheckBox::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -157,21 +157,21 @@ void igdeNativeFoxCheckBox::UpdateEnabled(){
 
 
 
-const char *igdeNativeFoxCheckBox::CheckBoxText( const igdeCheckBox &owner ){
-	return owner.GetText();
+const char *igdeNativeFoxCheckBox::CheckBoxText( const igdeCheckBox &powner ){
+	return powner.GetText();
 }
 
-FXIcon *igdeNativeFoxCheckBox::CheckBoxIcon( const igdeCheckBox &owner ){
-	if( owner.GetIcon() ){
-		return ( FXIcon* )owner.GetIcon()->GetNativeIcon();
+FXIcon *igdeNativeFoxCheckBox::CheckBoxIcon( const igdeCheckBox &powner ){
+	if( powner.GetIcon() ){
+		return ( FXIcon* ) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
 		return NULL;
 	}
 }
 
-int igdeNativeFoxCheckBox::CheckBoxFlags( const igdeCheckBox &owner ){
-	if( owner.GetStyle() == igdeCheckBox::ebsToolBar ){
+int igdeNativeFoxCheckBox::CheckBoxFlags( const igdeCheckBox &powner ){
+	if( powner.GetStyle() == igdeCheckBox::ebsToolBar ){
 		return JUSTIFY_LEFT | ICON_BEFORE_TEXT | FRAME_RAISED;
 		
 	}else{
@@ -179,9 +179,9 @@ int igdeNativeFoxCheckBox::CheckBoxFlags( const igdeCheckBox &owner ){
 	}
 }
 
-igdeFont *igdeNativeFoxCheckBox::CheckBoxFont( const igdeCheckBox &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxCheckBox::CheckBoxFont( const igdeCheckBox &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::checkBoxFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -200,7 +200,7 @@ igdeFont *igdeNativeFoxCheckBox::CheckBoxFont( const igdeCheckBox &owner, const 
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxCheckBox::CheckBoxPadLeft( const igdeGuiTheme &guitheme ){
@@ -224,7 +224,7 @@ int igdeNativeFoxCheckBox::CheckBoxPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxCheckBox::onCommand( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxCheckBox::onCommand( FXObject*, FXSelector, void* ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}
@@ -243,7 +243,7 @@ long igdeNativeFoxCheckBox::onCommand( FXObject *sender, FXSelector selector, vo
 	return 1;
 }
 
-long igdeNativeFoxCheckBox::onUpdate( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxCheckBox::onUpdate( FXObject*, FXSelector, void* ){
 	igdeAction * const action = pOwner->GetAction();
 	if( ! action ){
 		return 0;

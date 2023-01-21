@@ -33,6 +33,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTDebug.h"
 
 #ifdef ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -220,6 +221,7 @@ void deoglArrayTexture::CreateTexture(){
 	tsmgr.DisableStage( 0 );
 	
 	UpdateMemoryUsage();
+	pUpdateDebugObjectLabel();
 }
 
 void deoglArrayTexture::DestroyTexture(){
@@ -494,6 +496,10 @@ void deoglArrayTexture::CreateMipMaps(){
 }
 
 
+
+void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps ){
+	CopyFrom( texture, withMipMaps, 0, 0, pSize.x, pSize.y, pSize.z, 0, 0, 0, 0 );
+}
 
 void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer ){
 	CopyFrom( texture, withMipMaps, srcLayer, destLayer, pSize.x, pSize.y, 1, 0, 0, 0, 0 );
@@ -962,4 +968,15 @@ void deoglArrayTexture::SetDepthFormat( bool packedStencil, bool useFloat ){
 			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
 		}
 	}
+}
+
+void deoglArrayTexture::SetDebugObjectLabel( const char *name ){
+	pDebugObjectLabel.Format( "ArrT: %s", name );
+	if( pTexture ){
+		pUpdateDebugObjectLabel();
+	}
+}
+
+void deoglArrayTexture::pUpdateDebugObjectLabel(){
+	pRenderThread.GetDebug().SetDebugObjectLabel( GL_TEXTURE, pTexture, pDebugObjectLabel );
 }

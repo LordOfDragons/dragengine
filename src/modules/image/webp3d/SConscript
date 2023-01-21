@@ -1,0 +1,93 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envModule = parent_env.Clone()
+
+buildModule = envModule['build_image_webp'] != TernaryVariableNo
+parent_report['build WebP-3D Image Module'] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
+libs = []
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['lib_libwebp'], libs)
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# fetch values in expanded form for later use
+versionString = '1.16'
+if envModule['force_version']:
+	versionString = envModule['force_version']
+
+pathConfig = '{}/modules/image/webp3d/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/image/webp3d/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+
+# determine the source files
+sources = []
+headers = []
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'src', '*.h', headers)
+
+# setup the builders
+objects = [envModule.SharedObject(s) for s in sources]
+
+library = envModule.LoadableModule(target='imgwebp3d', source=objects, LIBS=libs)
+targetBuild = parent_env.Alias('img_webp3d_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'imgwebp3d.pdb'))
+	archive['{}/imgwebp3d.pdb'.format(pathPdb)] = envModule.File('imgwebp3d.pdb')
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+for l in reversed(parent_targets['lib_libwebp']['runtimelibs']):
+	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+	install.append(envModule.Install(pathModule, l))
+	archive[os.path.join(pathModule, l.name)] = l
+
+manifest = envModule.File('src/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+Depends(updateManifest, 'SConscript')
+Depends(updateManifest, parent_targets['lib_libwebp']['runtimelibs'])
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = parent_env.Alias('img_webp3d', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envModule.Alias('img_webp3d_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['img_webp3d'] = {
+	'name' : 'WebP-3D Image Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

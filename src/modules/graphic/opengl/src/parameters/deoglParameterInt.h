@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Int parameter.
+ * Int parameter.
  * 
  * Base class for all openal parameters. Every parameter stores information about
  * the parameter itself and provides methods to retrieves or alter the current value.
@@ -35,7 +35,7 @@ class deoglParameterInt : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglParameterInt( deGraphicOpenGl &oal );
 	/*@}*/
 	
@@ -43,16 +43,16 @@ public:
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual decString GetParameterValue();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterValue( const char *value );
 	
-	/** \brief Current value. */
+	/** Current value. */
 	virtual int GetParameterInt() = 0;
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterInt( int value ) = 0;
 	/*@}*/
 };

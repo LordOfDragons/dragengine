@@ -24,9 +24,11 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			gl_Position = gl_in[ i ].gl_Position;
+			
+			vLayer = face;
+			
 			gl_Layer = face;
 			gl_PrimitiveID = gl_PrimitiveIDIn;
-			vLayer = face;
 			EmitVertex();
 		}
 		EndPrimitive();

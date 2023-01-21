@@ -42,7 +42,7 @@ class deLight;
 
 
 /**
- * \brief Light Resource Peer.
+ * Light Resource Peer.
  */
 class deoglLight : public deBaseGraphicLight, deoglDynamicSkinListener, deoglCanvasViewListener{
 public:
@@ -95,10 +95,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create light peer. */
+	/** Create light peer. */
 	deoglLight( deGraphicOpenGl &ogl, const deLight &light );
 	
-	/** \brief Clean up light peer. */
+	/** Clean up light peer. */
 	virtual ~deoglLight();
 	/*@}*/
 	
@@ -106,29 +106,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Light resource. */
+	/** Light resource. */
 	inline const deLight &GetLight() const{ return pLight; }
 	
 	
 	
-	/** \brief Parent world or \em NULL if not in a world. */
+	/** Parent world or \em NULL if not in a world. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
-	 * \brief Set parent world or \em NULL if not in a world.
+	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
 	void SetParentWorld( deoglWorld *world );
 	
 	
 	
-	/** \brief Render light. */
+	/** Render light. */
 	inline deoglRLight *GetRLight() const{ return pRLight; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
@@ -159,17 +159,17 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Light type changed. */
+	/** Light type changed. */
 	virtual void TypeChanged();
 	
-	/** \brief Geomtry parameter changed. */
+	/** Geomtry parameter changed. */
 	virtual void GeometryParameterChanged();
 	
-	/** \brief Attenuation changed. */
+	/** Attenuation changed. */
 	virtual void AttenuationChanged();
 	
 	/**
-	 * \brief Light parameter changed.
+	 * Light parameter changed.
 	 * 
 	 * - Color
 	 * - Intensity
@@ -179,37 +179,37 @@ public:
 	 */
 	virtual void LightParameterChanged();
 	
-	/** \brief Shadow parameter changed. */
+	/** Shadow parameter changed. */
 	virtual void ShadowParameterChanged();
 	
-	/** \brief Light shape changed. */
+	/** Light shape changed. */
 	virtual void ShapeChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
-	/** \brief Shadow layer mask changed. */
+	/** Shadow layer mask changed. */
 	virtual void ShadowLayerMaskChanged();
 	
-	/** \brief Shadow ignore components changed. */
+	/** Shadow ignore components changed. */
 	virtual void ShadowIgnoreComponentsChanged();
 	
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Image, video or canvas view changed. */
+	/** Image, video or canvas view changed. */
 	virtual void SourceChanged();
 	
-	/** \brief Transform changed. */
+	/** Transform changed. */
 	virtual void TransformChanged();
 	
-	/** \brief Activated changed. */
+	/** Activated changed. */
 	virtual void ActivatedChanged();
 	
-	/** \brief Hint changed. */
+	/** Hint changed. */
 	virtual void HintChanged();
 	
 	

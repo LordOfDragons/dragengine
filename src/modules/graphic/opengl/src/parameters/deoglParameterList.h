@@ -29,7 +29,7 @@ class deoglParameter;
 
 
 /**
- * \brief Parameter list.
+ * Parameter list.
  */
 class deoglParameterList{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter list. */
+	/** Create parameter list. */
 	deoglParameterList();
 	
-	/** \brief Clean up parameter list. */
+	/** Clean up parameter list. */
 	~deoglParameterList();
 	/*@}*/
 	
@@ -51,22 +51,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of parameters. */
+	/** Number of parameters. */
 	int GetParameterCount() const;
 	
-	/** \brief Index of named parameter or -1 if absent. */
+	/** Index of named parameter or -1 if absent. */
 	int IndexOfParameterNamed( const char *name ) const;
 	
-	/** \brief Parameter at index. */
+	/** Parameter at index. */
 	deoglParameter &GetParameterAt( int index ) const;
 	
-	/** \brief Named parameter. */
+	/** Named parameter. */
 	deoglParameter &GetParameterNamed( const char *name ) const;
 	
-	/** \brief Add parameter. */
+	/** Add parameter. */
 	void AddParameter( deoglParameter *parameter );
 	
-	/** \brief Remove all parameters. */
+	/** Remove all parameters. */
 	void RemoveAllParameters();
 	/*@}*/
 };

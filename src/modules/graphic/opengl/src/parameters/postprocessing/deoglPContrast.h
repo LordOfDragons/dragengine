@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Contrast Parameter.
+ * Contrast Parameter.
  */
 class deoglPContrast : public deoglParameterFloat{
 public:

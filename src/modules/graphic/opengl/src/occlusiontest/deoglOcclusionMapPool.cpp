@@ -48,8 +48,8 @@ deoglOcclusionMapPool::~deoglOcclusionMapPool(){
 // Management
 ///////////////
 
-deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height ){
-	if( width < 1 || height < 1 ){
+deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height, int layerCount ){
+	if( width < 1 || height < 1 || layerCount < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -58,13 +58,15 @@ deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height ){
 	
 	for( i=count-1; i>=0; i-- ){
 		deoglOcclusionMap * const occlusionMap = ( deoglOcclusionMap* )pOcclusionMaps.GetAt( i );
-		if( occlusionMap->GetWidth() == width && occlusionMap->GetHeight() == height ){
+		if( occlusionMap->GetWidth() == width
+		&& occlusionMap->GetHeight() == height
+		&& occlusionMap->GetLayerCount() == layerCount ){
 			pOcclusionMaps.RemoveFrom( i );
 			return occlusionMap;
 		}
 	}
 	
-	return new deoglOcclusionMap( pRenderThread, width, height );
+	return new deoglOcclusionMap( pRenderThread, width, height, layerCount );
 }
 
 void deoglOcclusionMapPool::Return( deoglOcclusionMap *occlusionMap ){

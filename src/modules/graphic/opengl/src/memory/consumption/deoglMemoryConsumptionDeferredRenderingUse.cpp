@@ -33,8 +33,7 @@
 
 deoglMemoryConsumptionDeferredRenderingUse::deoglMemoryConsumptionDeferredRenderingUse(
 	deoglMemoryConsumptionDeferredRendering &tracker ) :
-texture( tracker.texture ),
-renderBuffer( tracker.renderBuffer ){
+texture( tracker.texture ){
 }
 
 deoglMemoryConsumptionDeferredRenderingUse::~deoglMemoryConsumptionDeferredRenderingUse(){
@@ -46,7 +45,7 @@ deoglMemoryConsumptionDeferredRenderingUse::~deoglMemoryConsumptionDeferredRende
 ///////////////
 
 unsigned long long deoglMemoryConsumptionDeferredRenderingUse::Total() const{
-	return texture.GetConsumption() + renderBuffer.GetConsumption();
+	return texture.GetConsumption();
 }
 
 unsigned int deoglMemoryConsumptionDeferredRenderingUse::TotalMB() const{
@@ -55,5 +54,4 @@ unsigned int deoglMemoryConsumptionDeferredRenderingUse::TotalMB() const{
 
 void deoglMemoryConsumptionDeferredRenderingUse::Clear(){
 	texture = 0;
-	renderBuffer = 0;
 }

@@ -39,16 +39,74 @@ pin Dragengine.Scenery
  * 
  * Supports adding ActionListener instances. If InputEventKey.enter is pressed or focus is
  * lost after typing in the widget action listeners are called.
+ * 
+ * \par Context Menu
+ * 
+ * Since version 1.16 showContextMenu() and createContextMenu() is present. If present the
+ * BaseGameApp translation manager is used. To translate the menu entries add these entries:
+ * - "UI.Menu.Cut": Cut text menu item
+ * - "UI.Menu.Copy": Copy text menu item
+ * - "UI.Menu.Paste": Paste text menu item
+ * - "UI.Menu.SelectAll": Select all text menu item
+ * - "UI.Menu.Deselect": Deselect text menu item
  */
 class TextField extends TextWidget
+	/**
+	 * \brief Action listener calling setSelection(null).
+	 * \version 1.16
+	 */
+	class ActionDeselect implements ActionListener
+		protected var TextField pWidget
+		
+		/** \brief Create action. */
+		public func new(TextField widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.setSelection(null)
+		end
+	end
+	
+	/**
+	 * \brief Action listener calling setSelectionAll().
+	 * \version 1.16
+	 */
+	class ActionSelectAll implements ActionListener
+		protected var TextField pWidget
+		
+		/** \brief Create action. */
+		public func new(TextField widget)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			pWidget = widget
+		end
+		
+		/** \brief Action fired. */
+		public func void onAction(ActionEvent event)
+			pWidget.setSelectionAll()
+		end
+	end
+	
+	
+	
 	/** \brief Use no password character constant */
 	public fixed var int noPasswordChar = 0
 	
-	private var int pCursorPos
-	private var int pFirstChar
+	private var UTF8Navigator pCursorPos
+	private var UTF8Navigator pFirstChar
 	private var int pDispCharCount
 	private var int pPasswordChar
 	private var bool pNeedsUpdate
+	private var UTF8Navigator pSelectionStart
+	private var UTF8Navigator pSelectionEnd
+	private var UTF8Navigator pOldCursorPos
+	private var Point pSelXOffsets
 	
 	
 	
@@ -66,8 +124,8 @@ class TextField extends TextWidget
 	
 	/** \brief Create Text Field. */
 	public func new(TextModel model, bool readOnly) super(model, readOnly)
-		pCursorPos = 0
-		pFirstChar = 0
+		pCursorPos = UTF8Navigator.new(model.getText())
+		pFirstChar = UTF8Navigator.new(pCursorPos)
 		pDispCharCount = 10
 		pPasswordChar = noPasswordChar
 		pNeedsUpdate = true
@@ -92,33 +150,98 @@ class TextField extends TextWidget
 	
 	
 	
-	/** \brief Current position of the cursor. */
+	/** \brief Current position of the cursor in bytes. */
 	public func int getCursorPosition()
-		return pCursorPos
+		return pCursorPos.getPosition()
 	end
 	
 	/**
-	 * \brief Set current cursor position.
+	 * \brief Set current cursor position in bytes.
 	 * 
 	 * If the cursor is outside the visible area the text is shifted to make the cursor visible
 	 */
 	public func void setCursorPosition(int position)
-		if position < 0 or position > getModel().getText().getLength()
+		if position < 0 or position > getText().getLength()
 			throw EInvalidParam.new()
 		end
 		
-		if position == pCursorPos
+		var int p = pCursorPos.getPosition()
+		pCursorPos.setPosition(position)
+		
+		if pCursorPos.getPosition() == p
 			return
 		end
 		
-		pCursorPos = position
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
 	
-	/** \brief Index of the first character visible. */
+	/**
+	 * \brief Set cursor position to start of text.
+	 * \version 1.16
+	 */
+	public func void setCursorPositionStart()
+		setCursorPosition(0)
+	end
+	
+	/**
+	 * \brief Set cursor position to end of text.
+	 * \version 1.16
+	 */
+	public func void setCursorPositionEnd()
+		setCursorPosition(getText().getLength())
+	end
+	
+	/**
+	 * \brief Set cursor position closest to position relative to widget.
+	 * \version 1.16
+	 */
+	public func void setCursorPositionNear(Point position)
+		pCursorPos = bestCharNear(position.getX() - getPadding().getLeft())
+		pSelectionEnd = pSelectionStart = null
+		pSelXOffsets = null
+		updateCanvasText()
+	end
+	
+	/**
+	 * \brief Selection if present.
+	 * \version 1.16
+	 */
+	public func Point getSelection()
+		if pSelectionStart != null
+			return Point.new(pSelectionStart.getPosition(), pSelectionEnd.getPosition())
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Set selection or clears it.
+	 * \version 1.16
+	 */
+	public func void setSelection(Point selection)
+		if selection != null
+			var String text = getText()
+			pSelectionStart = UTF8Navigator.new(text, selection.getX())
+			pSelectionEnd = UTF8Navigator.new(text, selection.getY())
+			sanitizeSelection()
+			
+		else
+			pSelectionEnd = pSelectionStart = null
+		end
+		
+		pSelXOffsets = null
+		pNeedsUpdate = true
+		updateCanvasText()
+	end
+	
+	/** Sets the selection to the entire text. */
+	public func void setSelectionAll()
+		setSelection(Point.new(0, getText().getLength()))
+	end
+	
+	/** \brief Index in bytes of the first visible character. */
 	public func int getFirstCharacter()
-		return pFirstChar
+		return pFirstChar.getPosition()
 	end
 	
 	/** \brief Count of characters the edit field has to be able to display. */
@@ -128,12 +251,12 @@ class TextField extends TextWidget
 	
 	/** \brief Set count of characters the edit field has to be able to display. */
 	public func void setDisplayCharCount(int count)
-		if count < 1
-			throw EInvalidParam.new()
-		end
-		
 		if count == pDispCharCount
 			return
+		end
+		
+		if count < 1
+			throw EInvalidParam.new()
 		end
 		
 		pDispCharCount = count
@@ -163,54 +286,99 @@ class TextField extends TextWidget
 	
 	
 	
+	/**
+	 * \brief Delete selected text if present.
+	 * \version 1.16
+	 */
+	public func void deleteSelectedText()
+		if getReadOnly() or pSelectionStart == null
+			return
+		end
+		
+		var String curText = getText()
+		var String newText = ""
+		
+		if not pSelectionStart.isAtStart()
+			newText = newText + curText.substring(0, pSelectionStart.getPosition())
+		end
+		if not pSelectionEnd.isAtEnd()
+			newText = newText + curText.substring(pSelectionEnd.getPosition())
+		end
+		
+		if getValidator() == null or getValidator().validates(newText)
+			pCursorPos = pSelectionStart
+			pSelectionEnd = pSelectionStart = null
+			setHasTyped(true)
+			setText(newText)
+		end
+	end
+	
+	
+	
 	/** \brief Ensure cursor is visible by scrolling the text if necessary. */
 	public func void ensureCursorVisible()
-		var Font font = getFont()
 		var int width = getWidth() - getPadding().getWidth()
 		var float limit = (width - 2) cast float
-		var float textLen = 0.0
+		var Font font = getFont()
+		var float textLen
 		var String text
 		var int i
 		
 		// check for password
 		if pPasswordChar == noPasswordChar
-			text = getModel().getText()
+			text = getText()
+			
 		else
-			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
+			text = String.new(pPasswordChar cast byte, getText().getLength())
 		end
 		
 		// check if the cursor is outside the left boundary
-		if pCursorPos < pFirstChar
-			pFirstChar = pCursorPos
+		if pCursorPos.getPosition() < pFirstChar.getPosition()
+			pFirstChar.setFrom(pCursorPos)
 			updateCanvasText()
-		else
-			// check if the cursor is outside the right boundary
-			for i = pCursorPos - 1 downto pFirstChar
-				textLen += font.getCharAdvance(text.getAt(i))
+			return
+		end
+		
+		// check if the cursor is outside the right boundary
+		var UTF8Navigator nav = UTF8Navigator.new(text, pCursorPos.getPosition())
+		while nav.getPosition() > pFirstChar.getPosition()
+			nav.backward()
+			textLen += font.getCharAdvance(nav.decodeCharacter())
+			if textLen >= limit
+				nav.forward()
+				pFirstChar.setFrom(nav)
+				updateCanvasText()
+				break
+			end
+		end
+		
+		// check if there is still space to fill up on the right side
+		nav = UTF8Navigator.new(text, pCursorPos.getPosition())
+		while not nav.isAtEnd()
+			textLen += font.getCharAdvance(nav.decodeCharacter())
+			if textLen >= limit
+				break
+			end
+			nav.forward()
+		end
+		
+		if textLen < limit
+			var bool requiresUpdate
+			
+			nav = UTF8Navigator.new(text, pFirstChar.getPosition())
+			while not nav.isAtStart()
+				nav.backward()
+				textLen += font.getCharAdvance(nav.decodeCharacter())
 				if textLen >= limit
-					pFirstChar = i + 1
-					updateCanvasText()
+					nav.forward()
 					break
 				end
+				requiresUpdate = true
 			end
 			
-			// check if there is still space to fill up on the right side
-			for i = pCursorPos to text.getLength()
-				textLen += font.getCharAdvance(text.getAt(i))
-				if textLen >= limit
-					break
-				end
-			end
-			
-			if textLen < limit
-				for i = pFirstChar - 1 downto 0
-					textLen += font.getCharAdvance(text.getAt(i))
-					if textLen >= limit
-						break
-					end
-					pFirstChar = i
-					updateCanvasText()
-				end
+			pFirstChar.setPosition(nav.getPosition())
+			if requiresUpdate
+				updateCanvasText()
 			end
 		end
 	end
@@ -220,12 +388,17 @@ class TextField extends TextWidget
 	/** \brief Size changed. */
 	public func void onResize(WidgetEvent event)
 		super.onResize(event)
+		
+		pSelXOffsets = null
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
 	
 	/** \brief Widget font changed. */
 	public func void onSetFont()
+		super.onSetFont()
+		
+		pSelXOffsets = null
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
@@ -265,54 +438,252 @@ class TextField extends TextWidget
 	
 	
 	
+	/**
+	 * \brief Navigator of best character on line in respect to reference x position.
+	 * \version 1.16
+	 */
+	protected func UTF8Navigator bestCharNear(int refXPos)
+		var UTF8Navigator nav = UTF8Navigator.new(pFirstChar)
+		var float floatRefXPos = (refXPos cast float) + 0.1
+		var bool decodeCharacter = pPasswordChar == noPasswordChar
+		var int i, character = pPasswordChar
+		var Font font = getFont()
+		var float x
+		
+		while not nav.isAtEnd()
+			if decodeCharacter
+				character = nav.decodeCharacter()
+			end
+			if character != -1
+				x += font.getCharAdvance(character)
+			end
+			if x > floatRefXPos
+				break
+			end
+			nav.forward()
+		end
+		
+		return nav
+	end
+	
+	/**
+	 * \brief Show context menu at position relative to widget.
+	 * \version 1.16
+	 */
+	public func void showContextMenu(Point position)
+		var Desktop desktop = getDesktop()
+		if desktop == null
+			return
+		end
+		
+		var TranslationManager translationManager
+		if BaseGameApp.getApp() != null
+			translationManager = BaseGameApp.getApp().getTranslationManager()
+		end
+		
+		var MenuPopup menu = createContextMenu(position, translationManager)
+		if menu.getWidgetCount() == 0
+			menu.safeDispose()
+			return
+		end
+		
+		desktop.addWindow(menu)
+		menu.popup(getDesktopPosition() + position)
+		menu.setGuiTheme(getGuiTheme())
+	end
+	
+	/**
+	 * \brief Create context menu at position relative to widget.
+	 * \version 1.16
+	 * \param position Position relative to text are the context menu has to be created for.
+	 * \param translationManager Translation manager to use or null.
+	 */
+	protected func MenuPopup createContextMenu(Point position, TranslationManager translationManager)
+		var bool hasSelection = pSelectionStart != null
+		var bool hasClipboard = getClipboard() != null
+		var bool hasClip = hasClipboard and getClipboard().hasClip()
+		var bool writeable = not getReadOnly()
+		var MenuPopup menu = MenuPopup.new()
+		
+		menu.addItemCommand(menu, "UI.Menu.Cut", "Cut", null, writeable and hasSelection and hasClipboard, ActionCut.new(this))
+		menu.addItemCommand(menu, "UI.Menu.Copy", "Copy", null, hasSelection and hasClipboard, ActionCopy.new(this))
+		menu.addItemCommand(menu, "UI.Menu.Paste", "Paste", null, writeable and hasClip, ActionPaste.new(this))
+		
+		menu.addWidget(MenuItemSeparator.new())
+		menu.addItemCommand(menu, "UI.Menu.SelectAll", "Select All", null, true, ActionSelectAll.new(this))
+		menu.addItemCommand(menu, "UI.Menu.Deselect", "Deselect", null, hasSelection, ActionDeselect.new(this))
+		
+		return menu
+	end
+	
+	
+	
 	/** \brief Key pressed event. */
 	public func void onKeyPress(KeyEvent event)
+		var bool shift = (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
+		var bool update
+		
 		select event.getKeyCode()
 		case InputEventKey.arrowLeft
-			// move cursor left
-			if pCursorPos > 0
-				pCursorPos--
-				pNeedsUpdate = true
-				updateCanvasText()
+			if shift
+				if pCursorPos.isAtStart()
+					break
+				end
+				extendSelectionLeft(pCursorPos - 1)
+				
+			else
+				if pSelectionStart == null and pCursorPos.isAtStart()
+					break
+				end
+				pSelectionEnd = pSelectionStart = null
 			end
+			
+			pCursorPos.backward()
+			update = true
 			
 		case InputEventKey.arrowRight
-			// move cursor right
-			if pCursorPos < getModel().getText().getLength()
-				pCursorPos++
-				pNeedsUpdate = true
-				updateCanvasText()
+			if shift
+				if pCursorPos.isAtEnd()
+					break
+				end
+				extendSelectionRight(pCursorPos + 1)
+				
+			else
+				if pSelectionStart == null and pCursorPos.isAtEnd()
+					break
+				end
+				pSelectionEnd = pSelectionStart = null
 			end
 			
+			pCursorPos.forward()
+			update = true
+			
 		case InputEventKey.home
-			// move to the beginning of the line
-			pCursorPos = 0
-			pNeedsUpdate = true
-			updateCanvasText()
+			if shift
+				if pCursorPos.isAtStart()
+					break
+				end
+				extendSelectionLeft(pCursorPos.atStart())
+				
+			else
+				if pSelectionStart == null and pCursorPos.isAtStart()
+					break
+				end
+				pSelectionEnd = pSelectionStart = null
+			end
+			
+			pCursorPos.setPositionBegin()
+			update = true
 			
 		case InputEventKey.last
-			// move to the end of the line
-			pCursorPos = getModel().getText().getLength()
-			pNeedsUpdate = true
-			updateCanvasText()
+			if shift
+				if pCursorPos.isAtEnd()
+					break
+				end
+				extendSelectionRight(pCursorPos.atEnd())
+				
+			else
+				if pSelectionStart == null and pCursorPos.isAtEnd()
+					break
+				end
+				pSelectionEnd = pSelectionStart = null
+			end
+			
+			pCursorPos.setPositionEnd()
+			update = true
 			
 		else
 			super.onKeyPress(event)
+		end
+		
+		if update
+			pSelXOffsets = null
+			ensureCursorVisible()
+			updateCanvasText()
 		end
 	end
 	
 	
 	
-	/** \brief Check cursor is inside the text boundaries and adjust it if necessary. */
+	/** Notification that a mouse button has been pressed. */
+	public func void onButtonPress(MouseEvent event)
+		super.onButtonPress(event)
+		
+		select event.getButton()
+		case InputEventMouseButton.left
+			setCursorPositionNear(event.getPosition())
+			pOldCursorPos = UTF8Navigator.new(pCursorPos)
+			captureMouse()
+			
+		case InputEventMouseButton.right
+			if pSelectionStart == null
+				setCursorPositionNear(event.getPosition())
+			end
+			showContextMenu(event.getPosition())
+		end
+	end
+	
+	/** Notification that a mouse button has been released. */
+	public func void onButtonRelease(MouseEvent event)
+		super.onButtonRelease(event)
+		
+		if event.getButton() == InputEventMouseButton.left
+			if pOldCursorPos != null
+				pOldCursorPos = null
+				releaseMouse()
+			end
+		end
+	end
+	
+	/** Notification that the mouse has moved. */
+	public func void onMouseMove(MouseEvent event)
+		super.onMouseMove(event)
+		
+		if pOldCursorPos != null
+			pCursorPos = bestCharNear(event.getPosition().getX() - getPadding().getLeft())
+			
+			if pCursorPos.getPosition() == pOldCursorPos.getPosition()
+				pSelectionEnd = pSelectionStart = null
+				
+			elif pCursorPos.getPosition() < pOldCursorPos.getPosition()
+				pSelectionStart = UTF8Navigator.new(pCursorPos)
+				pSelectionEnd = UTF8Navigator.new(pOldCursorPos)
+				
+			else
+				pSelectionStart = UTF8Navigator.new(pOldCursorPos)
+				pSelectionEnd = UTF8Navigator.new(pCursorPos)
+			end
+			
+			pSelXOffsets = null
+			updateCanvasText()
+		end
+	end
+	
+	/**
+	 * \brief Selection X offsets.
+	 * \version 1.16
+	 */
+	protected func Point getSelectionXOffsets()
+		if pSelXOffsets == null and pSelectionStart != null
+			var Font font = getFont()
+			var int first = pFirstChar.getPosition()
+			
+			var float startOffset = measureAdvance(first, pSelectionStart.getPosition(), font)
+			var float endOffset = measureAdvance(first, pSelectionEnd.getPosition(), font)
+			
+			pSelXOffsets = Point.new(startOffset cast int, endOffset cast int)
+		end
+		
+		return pSelXOffsets
+	end
+	
+	
+	
+	/**
+	 * \brief Check cursor is inside the text boundaries and adjust it if necessary.
+	 * \deprecated Using UTF8Navigator this call is not required anymore and is empty now.
+	 */
 	protected func void checkCursor()
-		var String text = getModel().getText()
-		var int textLen = text.getLength()
-		
-		pCursorPos = DEMath.clamp(pCursorPos, 0, textLen)
-		pFirstChar = DEMath.clamp(pFirstChar, 0, textLen)
-		
-		pNeedsUpdate = true
-		updateCanvasText()
 	end
 	
 	
@@ -324,44 +695,52 @@ class TextField extends TextWidget
 	 */
 	public func void onKeyType(KeyEvent event)
 		var String curText, newText = ""
-		var Font font = getFont()
-		var int textLen
 		
 		select event.getKeyCode()
 		case InputEventKey.backspace
-			// delete character to the left of the cursor
-			if pCursorPos > 0
-				curText = getModel().getText()
-				textLen = curText.getLength()
-				if pCursorPos - 1 > 0
-					newText = newText + curText.substring(0, pCursorPos - 1)
+			// delete character left of cursor
+			if pSelectionStart != null
+				deleteSelectedText()
+				
+			elif not pCursorPos.isAtStart()
+				var UTF8Navigator nav = pCursorPos - 1
+				
+				curText = getText()
+				
+				if not nav.isAtStart()
+					newText = newText + curText.substring(0, nav.getPosition())
 				end
-				if textLen - pCursorPos > 0
-					newText = newText + curText.substring(pCursorPos)
+				if not pCursorPos.isAtEnd()
+					newText = newText + curText.substring(pCursorPos.getPosition())
 				end
+				
 // 				if getValidator() == null or getValidator().validates(newText)
-					pCursorPos--
+					pCursorPos = nav // for delete doing this before setText() is fine
 					setHasTyped(true)
-					getModel().setText(newText)
-					updateCanvasText()
+					setText(newText)
 // 				end
 			end
-		
+			
 		case InputEventKey.delete
 			// delete character to the right of the cursor
-			curText = getModel().getText()
-			textLen = curText.getLength()
-			
-			if pCursorPos < textLen
-				if pCursorPos > 0
-					newText = newText + curText.substring(0, pCursorPos)
+			if pSelectionStart != null
+				deleteSelectedText()
+				
+			elif not pCursorPos.isAtEnd()
+				curText = getText()
+				
+				var UTF8Navigator nav = pCursorPos + 1
+				
+				if not pCursorPos.isAtStart()
+					newText = newText + curText.substring(0, pCursorPos.getPosition())
 				end
-				if textLen - pCursorPos > 1
-					newText = newText + curText.substring(pCursorPos + 1)
+				if not nav.isAtEnd()
+					newText = newText + curText.substring(nav.getPosition())
 				end
+				
 // 				if getValidator() == null or getValidator().validates(newText)
 					setHasTyped(true)
-					getModel().setText(newText)
+					setText(newText)
 // 				end
 			end
 			
@@ -369,46 +748,33 @@ class TextField extends TextWidget
 			// ignore new-line, tab since this is a single line text field
 			
 		else
-			// TEMPORARY HACK UNTIL WIDGET CAN HANDLE UTF8
-			if event.getKeyChar() > 127
-				break
-			end
-			
-			if event.getKeyChar() == 0
+			var int character = event.getKeyChar()
+			if character == 0
 				break  // no printable character
 			end
 			
-			// add character to the right of the cursor
-			// 
-			// WARNING
-			// 
-			// this fails if keyChar is larger than 127, for example non-latin characters.
-			// the only safe solution is to convert TextModel from String to UnicodeString
-			// 
-			if font.getCharAdvance(event.getKeyChar()) <= 0.5
+			if not getFont().hasGlyph(character) or getFont().getCharAdvance(character) <= 0.5
 				break
 			end
 			
-			curText = getModel().getText()
-			textLen = curText.getLength()
-			if pCursorPos > 0
-				newText = newText + curText.substring(0, pCursorPos)
-			end
-			newText = newText + event.getKeyChar() cast byte
-			if textLen - pCursorPos > 0
-				newText = newText + curText.substring(pCursorPos)
-			end
-			if getValidator() == null or getValidator().validates(newText)
-				pCursorPos++
-				setHasTyped(true)
-				getModel().setText(newText)
-				updateCanvasText()
-			end
+			insertText(UnicodeString.new(character).toUTF8())
 		end
+	end
+	
+	/** \brief GUI theme changed. */
+	public func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		
+		pSelXOffsets = null
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
 	/** \brief Padding changed. */
 	public func void onPaddingChanged()
+		super.onPaddingChanged()
+		
+		pSelXOffsets = null
 		pNeedsUpdate = true
 		updateCanvasText()
 	end
@@ -420,7 +786,21 @@ class TextField extends TextWidget
 	
 	/** \brief Model text changed. */
 	public func void textChanged(TextModel textModel)
-		checkCursor()
+		var UTF8Navigator base = UTF8Navigator.new(textModel.getText())
+		pCursorPos = base + pCursorPos.countCharacters()
+		pFirstChar = base + pFirstChar.countCharacters()
+		
+		if pOldCursorPos != null
+			pOldCursorPos = base + pOldCursorPos.countCharacters()
+		end
+		
+		if pSelectionStart != null
+			pSelectionStart = base + pSelectionStart.countCharacters()
+			pSelectionEnd = base + pSelectionEnd.countCharacters()
+			sanitizeSelection()
+		end
+		
+		pSelXOffsets = null
 		updateCanvasText()
 	end
 	
@@ -454,42 +834,53 @@ class TextField extends TextWidget
 		
 		// check for update
 		if pNeedsUpdate
-			ensureCursorVisible()
 			pNeedsUpdate = false
+			ensureCursorVisible()
 		end
 		
 		// password check
 		if pPasswordChar == noPasswordChar
-			text = getModel().getText()
+			text = getText()
 			
 		else
-			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
+			text = String.new(pPasswordChar cast byte, getText().getLength())
 		end
 		
 		// center vertically
 		var int x = 0
 		var int y = (height - realHeight) / 2
 		
-		// text starting at given position
+		// selection
+		var int firstChar = pFirstChar.getPosition()
+		var String subString
+		
 		if not text.empty()
-			var String subString = text.substring(pFirstChar)
-			
-			// WARNING! right now the model text is not UTF8 anymore if characters are typed
-			//          actually the entire widget has to be modified to properly handle utf8
-			//          by updating pCursorPos with unicode character width (1-4) instead of
-			//          ascii character wide (1). to handle this for the time being the text
-			//          is considered ASCII-8 and being converted into UTF8 for the layout
-			// Too many problems. >127 characters disabled altogether until the widget is fully reworked
-			/*
-			var UnicodeString usstring = UnicodeString.new()
-			var int i, len = subString.getLength()
-			for i = 0 to len
-				usstring = usstring + subString.getAt(i)
+			subString = text.substring(firstChar)
+			if subString.empty()
+				subString = null
 			end
-			subString = usstring.toUTF8()
-			*/
-			// END WARNING
+		end
+		
+		if subString != null and pSelectionStart != null
+			var Point selXOffsets = getSelectionXOffsets()
+			var int selFrom = pSelectionStart.getPosition()
+			var int selTo = pSelectionEnd.getPosition()
 			
+			var int soff = selXOffsets.getX()
+			var int eoff = selXOffsets.getY()
+			
+			var CanvasPaint canvasSelect = CanvasPaint.new()
+			canvasSelect.setShapeType(CanvasPaintShape.rectangle)
+			canvasSelect.setFillColor(Color.lightGray)
+			canvasSelect.setThickness(0)
+			canvasSelect.setPosition(Point.new(x + getPadding().getLeft() + soff, y + getPadding().getTop()))
+			canvasSelect.setSize(Point.new(eoff - soff, charHeight))
+			canvasSelect.setOrder(canvas.getCanvasCount() cast float)
+			canvas.addCanvas(canvasSelect)
+		end
+		
+		// text starting at given position
+		if subString != null
 			var CanvasText textCanvas = CanvasText.new()
 			textCanvas.setFont(font)
 			textCanvas.setColor(color)
@@ -503,15 +894,7 @@ class TextField extends TextWidget
 		
 		// caret
 		if getHasFocus()
-			var float fcx = x cast float
-			var int i
-			
-			for i = pFirstChar to pCursorPos
-				fcx += font.getCharAdvance(text.getAt(i))
-			end
-			
-			var int cx = fcx cast int
-			
+			var int cx = x + (measureAdvance(pFirstChar.getPosition(), pCursorPos.getPosition(), font) cast int)
 			if cx >= 0 and cx <= width
 				var CanvasPaint canvasCaret = CanvasPaint.new()
 				canvasCaret.setShapeType(CanvasPaintShape.lines)
@@ -527,5 +910,191 @@ class TextField extends TextWidget
 				canvas.addCanvas(canvasCaret)
 			end
 		end
+	end
+	
+	
+	
+	/**
+	 * \brief Insert text at cursor deleting selected text if present.
+	 * \version 1.16
+	 */
+	public func void insertText(String text)
+		if text == null
+			throw ENullPointer.new("text")
+		end
+		
+		deleteSelectedText()
+		
+		var String curText = getText()
+		var String newText = ""
+		
+		if not pCursorPos.isAtStart()
+			newText = newText + curText.substring(0, pCursorPos.getPosition())
+		end
+		
+		newText = newText + text
+		
+		if not pCursorPos.isAtEnd()
+			newText = newText + curText.substring(pCursorPos.getPosition())
+		end
+		
+// 		if getValidator() != null and not getValidator().validates(newText)
+// 			return
+// 		end
+		
+		setHasTyped(true)
+		setText(newText)
+		
+		// has to come after setText()
+		pCursorPos.setPosition(pCursorPos.getPosition() + text.getLength())
+		ensureCursorVisible()
+		
+		updateCanvasText()
+	end
+	
+	/**
+	 * \brief Copy to clipboard requested.
+	 * \version 1.16
+	 */
+	public func void onClipboardCopy()
+		var Clipboard clipboard = getClipboard()
+		if clipboard != null and pSelectionStart != null
+			clipboard.setClipWith(getText().substring(\
+				pSelectionStart.getPosition(), pSelectionEnd.getPosition()))
+		end
+	end
+	
+	/**
+	 * \brief Cut to clipboard requested.
+	 * \version 1.16
+	 */
+	public func void onClipboardCut()
+		var Clipboard clipboard = getClipboard()
+		if clipboard != null and pSelectionStart != null
+			onClipboardCopy()
+			deleteSelectedText()
+		end
+	end
+	
+	/**
+	 * \brief Paste from clipboard requested.
+	 * \version 1.16
+	 */
+	public func void onClipboardPaste()
+		var Clipboard clipboard = getClipboard()
+		if clipboard == null or clipboard.isEmpty()
+			return
+		end
+		
+		var ClipboardClip clip = clipboard.getClip()
+		if clip.getCount() == 0
+			return
+		end
+		
+		if clip.findCastable(block String data
+			insertText(data)
+			return true
+		end) != null
+			return
+		end
+		
+		if clip.findCastable(block UnicodeString data
+			insertText(data.toUTF8())
+			return true
+		end) != null
+			return
+		end
+		
+		insertText(clip.getAt(0).toString())
+	end
+	
+	
+	
+	/**
+	 * \brief Sanitize selection.
+	 * \version 1.16
+	 * 
+	 * If selection start equals end set selection to null. If selection end is before
+	 * selection start swap selection end with start.
+	 */
+	protected func void sanitizeSelection()
+		if pSelectionStart != null
+			if pSelectionStart.getPosition() == pSelectionEnd.getPosition()
+				pSelectionEnd = pSelectionStart = null
+				
+			elif pSelectionStart.getPosition() > pSelectionEnd.getPosition()
+				var UTF8Navigator s = pSelectionStart
+				pSelectionStart = pSelectionEnd
+				pSelectionEnd = s
+			end
+		end
+	end
+	
+	/**
+	 * \brief Extend selection to the left.
+	 * \version 1.16
+	 */
+	protected func void extendSelectionLeft(UTF8Navigator position)
+		if pSelectionStart == null
+			pSelectionStart = position
+			pSelectionEnd = UTF8Navigator.new(pCursorPos)
+			
+		elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
+			pSelectionEnd = position
+			
+		elif pSelectionStart.getPosition() == pCursorPos.getPosition()
+			pSelectionStart = position
+			
+		else
+			pSelectionStart = position
+			pSelectionEnd = UTF8Navigator.new(pCursorPos)
+		end
+		sanitizeSelection()
+	end
+	
+	/**
+	 * \brief Extend selection to the right.
+	 * \version 1.16
+	 */
+	protected func void extendSelectionRight(UTF8Navigator position)
+		if pSelectionStart == null
+			pSelectionStart = UTF8Navigator.new(pCursorPos)
+			pSelectionEnd = position
+			
+		elif pSelectionEnd.getPosition() == pCursorPos.getPosition()
+			pSelectionEnd = position
+			
+		elif pSelectionStart.getPosition() == pCursorPos.getPosition()
+			pSelectionStart = position
+			
+		else
+			pSelectionStart = UTF8Navigator.new(pCursorPos)
+			pSelectionEnd = position
+		end
+		sanitizeSelection()
+	end
+	
+	/**
+	 * \brief Measure advance starting from navigator position.
+	 * \version 1.16
+	 * \param fromPosition Byte position to start measure from.
+	 * \param toPosition End position to measure to. Character at end position is not included.
+	 * \param font Font to use for measuring.
+	 * \throws EInvalidParam toPosition is less than fromPosition
+	 */
+	public func float measureAdvance(int fromPosition, int toPosition, Font font)
+		if pPasswordChar == noPasswordChar
+			return super.measureAdvance(fromPosition, toPosition, font)
+		end
+		
+		var UTF8Navigator nav = UTF8Navigator.new(getText(), fromPosition)
+		var int count
+		
+		while nav.getPosition() < toPosition
+			count++
+			nav.forward()
+		end
+		
+		return font.getCharAdvance(pPasswordChar) * count
 	end
 end

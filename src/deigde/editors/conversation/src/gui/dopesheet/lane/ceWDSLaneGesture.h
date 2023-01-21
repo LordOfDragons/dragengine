@@ -52,6 +52,9 @@ public:
 	/** \brief Fill ID list. */
 	virtual void FillIDList( decStringList &list );
 	
+	/** Default duration. */
+	virtual float DefaultDuration( const decString &id );
+	
 	/** \brief Create add strip undo action. */
 	virtual igdeUndo *UndoStripAdd( ceStrip *strip, int index );
 	

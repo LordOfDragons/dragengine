@@ -43,6 +43,7 @@ public:
 	
 	
 private:
+	decString pIdentifier;
 	decUnicodeString pName;
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
@@ -76,6 +77,12 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Unique identifier. */
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
+	
+	/** \brief Set unique identifier. */
+	void SetIdentifier( const decString &identifier );
+	
 	/** \brief Name in native language. */
 	inline const decUnicodeString &GetName() const{ return pName; }
 	
@@ -118,6 +125,14 @@ public:
 	
 	/** \brief Translation for entry name or default value if absent. */
 	const decUnicodeString &Translate( const char *name, const decUnicodeString &defaultValue ) const;
+	
+	/**
+	 * \brief Translation for entry name.
+	 * 
+	 * If translation entry is present text is set pointing to the translated text and
+	 * true is returned. Otherwise false is returned and text is unchanged.
+	 */
+	bool Translate( const char *name, const decUnicodeString **text ) const;
 	
 	
 	

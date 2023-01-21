@@ -100,6 +100,9 @@ public:
 	
 	
 	
+	/** \brief Synthesizer path changed. */
+	void OnSynthesizerPathChanged();
+	
 	/** \brief Update synthesizer. */
 	void UpdateSynthesizer();
 	

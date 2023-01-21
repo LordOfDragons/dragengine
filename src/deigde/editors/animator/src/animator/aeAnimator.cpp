@@ -1428,18 +1428,15 @@ void aeAnimator::pUpdateComponent(){
 	// try to load the model, skin and rig if possible
 	try{
 		if( ! pDisplayModelPath.IsEmpty() ){
-			displayModel = engine->GetModelManager()->LoadModel(
-				pDisplayModelPath.GetString(), GetDirectoryPath() );
+			displayModel = engine->GetModelManager()->LoadModel( pDisplayModelPath, GetDirectoryPath() );
 		}
 		
 		if( ! pDisplaySkinPath.IsEmpty() ){
-			displaySkin = engine->GetSkinManager()->LoadSkin(
-				pDisplaySkinPath.GetString(), GetDirectoryPath() );
+			displaySkin = engine->GetSkinManager()->LoadSkin( pDisplaySkinPath, GetDirectoryPath() );
 		}
 		
 		if( ! pDisplayRigPath.IsEmpty() ){
-			displayRig = engine->GetRigManager()->LoadRig(
-				pDisplayRigPath.GetString(), GetDirectoryPath() );
+			displayRig = engine->GetRigManager()->LoadRig( pDisplayRigPath, GetDirectoryPath() );
 		}
 		
 		if( pRigPath.IsEmpty() ){
@@ -1541,37 +1538,24 @@ void aeAnimator::pUpdateComponent(){
 }
 
 void aeAnimator::pUpdateAnimator(){
-	deAnimation *animation = NULL;
+	deAnimation::Ref animation;
 	
-	// try to load the animation if possible
 	try{
 		if( ! pAnimationPath.IsEmpty() ){
-			animation = GetEngine()->GetAnimationManager()->LoadAnimation(
-				pAnimationPath.GetString(), GetDirectoryPath() );
+			animation.TakeOver( GetEngine()->GetAnimationManager()->
+				LoadAnimation( pAnimationPath, GetDirectoryPath() ) );
 		}
 		
 	}catch( const deException &e ){
 		GetLogger()->LogException( LOGSOURCE, e );
 	}
 	
-	// protect the loaded parts
-	try{
-		// set animation
-		pEngAnimator->SetAnimation( animation );
-		
-		// free the reference we hold
-		if( animation ) animation->FreeReference();
-		
-		// update sub animators
-		pSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
-		pTestingSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
-		
-	}catch( const deException & ){
-		if( animation ) animation->FreeReference();
-		throw;
-	}
+	pEngAnimator->SetAnimation( animation );
 	
-	// notify rules
+	pSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
+// 	pTestingSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
+	pTestingSubAnimator->SetComponent( pEngComponent );
+	
 	pAnimCompChanged();
 }
 

@@ -35,9 +35,7 @@
 decWeakFileWriter::decWeakFileWriter( decBaseFileWriter *writer ) :
 pWriter( writer )
 {
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( writer );
 }
 
 decWeakFileWriter::~decWeakFileWriter(){
@@ -50,11 +48,11 @@ decWeakFileWriter::~decWeakFileWriter(){
 ///////////////
 
 bool decWeakFileWriter::IsValid() const{
-	return pWriter.operator bool();
+	return pWriter;
 }
 
 void decWeakFileWriter::DropWriter(){
-	pWriter = NULL;
+	pWriter = nullptr;
 }
 
 
@@ -63,6 +61,26 @@ const char *decWeakFileWriter::GetFilename(){
 	return pWriter->GetFilename();
 }
 
+int decWeakFileWriter::GetPosition(){
+	return pWriter->GetPosition();
+}
+
+void decWeakFileWriter::SetPosition( int position ){
+	return pWriter->SetPosition( position );
+}
+
+void decWeakFileWriter::MovePosition( int offset ){
+	pWriter->MovePosition( offset );
+}
+
+void decWeakFileWriter::SetPositionEnd( int position ){
+	pWriter->SetPositionEnd( position );
+}
+
 void decWeakFileWriter::Write( const void *buffer, int size ){
 	pWriter->Write( buffer, size );
+}
+
+decBaseFileWriter::Ref decWeakFileWriter::Duplicate(){
+	return decBaseFileWriter::Ref::New( new decWeakFileWriter( pWriter ) );
 }

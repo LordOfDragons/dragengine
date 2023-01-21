@@ -193,6 +193,36 @@ public:
 	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
 	 */
 	decPath RelativePath( const decPath &baseDirectory, bool onlyBelow = false ) const;
+	
+	/**
+	 * \brief Path is direct or indirect parent of another path.
+	 * \version 1.13
+	 */
+	bool IsParentOf( const decPath &path ) const;
+	
+	/**
+	 * \brief Path is equal to or direct or indirect parent of another path.
+	 * \version 1.13
+	 */
+	bool IsEqualOrParentOf( const decPath &path ) const;
+	
+	/**
+	 * \brief Path is direct parent of another path.
+	 * \version 1.13
+	 */
+	bool IsDirectParentOf( const decPath &path ) const;
+	
+	/**
+	 * \brief Path is equal to or direct parent of another path.
+	 * \version 1.13
+	 */
+	bool IsEqualOrDirectParentOf( const decPath &path ) const;
+	
+	/**
+	 * \brief Get parent path.
+	 * \version 1.13
+	 */
+	decPath GetParent() const;
 	/*@}*/
 	
 	

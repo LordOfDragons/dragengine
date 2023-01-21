@@ -24,7 +24,7 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
-#include "../shaders/deoglShaderProgramUsage.h"
+#include "../pipeline/deoglPipeline.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;
@@ -32,7 +32,6 @@ class deoglParticleSorter;
 class deoglRenderTask;
 class deoglRenderPlanMasked;
 class deoglRenderTaskParticles;
-class deoglSPBlockUBO;
 
 
 
@@ -41,16 +40,18 @@ class deoglSPBlockUBO;
  */
 class deoglRenderWorld : public deoglRenderBase{
 private:
-	deoglSPBlockUBO *pRenderPB;
-	deoglSPBlockUBO *pRenderLuminancePB;
-	deoglSPBlockUBO *pRenderCubePB;
+	deoglSPBlockUBO::Ref pRenderPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
 	deoglRenderTaskParticles *pRenderTaskParticles;
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
-	deoglShaderProgramUsage pShaderFinalize;
+	const deoglPipeline *pPipelineFinalize;
+	const deoglPipeline *pPipelineFinalizeStereo;
+	const deoglPipeline *pPipelineFinalizeBlend;
+	const deoglPipeline *pPipelineFinalizeBlendStereo;
+	const deoglPipeline *pPipelineFinalizeSplit;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	
@@ -74,13 +75,7 @@ public:
 	inline deoglRenderWorldInfo &GetDebugInfo(){ return pDebugInfo; }
 	
 	/** Render parameter block. */
-	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
-	
-	/** Render luminance parameter block. */
-	inline deoglSPBlockUBO *GetRenderLuminancePB() const{ return pRenderLuminancePB; }
-	
-	/** Render parameter block cube map. */
-	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }
+	inline const deoglSPBlockUBO::Ref &GetRenderPB() const{ return pRenderPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }

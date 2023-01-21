@@ -107,11 +107,11 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onHeaderCommand( FXObject *sender, FXSelector selector, void *data );
-	long onHeaderUpdate( FXObject *sender, FXSelector selector, void *data );
-	long onHeaderMouseWheel( FXObject *sender, FXSelector selector, void *data );
-	long onHeaderMouseMoved( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onHeaderCommand( FXObject*, FXSelector, void* );
+	long onHeaderUpdate( FXObject*, FXSelector, void* );
+	long onHeaderMouseWheel( FXObject*, FXSelector, void* );
+	long onHeaderMouseMoved( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

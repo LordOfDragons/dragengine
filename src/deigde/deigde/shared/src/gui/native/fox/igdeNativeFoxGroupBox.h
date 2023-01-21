@@ -94,8 +94,8 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onLeftMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onLeftMouseDown( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

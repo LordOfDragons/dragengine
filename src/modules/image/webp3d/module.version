@@ -1,0 +1,4 @@
+IMGWEBP3D {
+  global: WEBP3DCreateModule;
+  local: *;
+};

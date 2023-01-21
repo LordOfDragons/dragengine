@@ -43,6 +43,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinRenderable.h"
@@ -94,6 +95,7 @@ pSkyShadowSplitMask( 0 ),
 pSortDistance( 0.0f ),
 pOccluded( false ),
 pDirtyPrepareSkinStateRenderables( true ),
+pDirtyRenderSkinStateRenderables( true ),
 
 pRenderEnvMap( NULL ),
 pRenderEnvMapFade( NULL ),
@@ -301,6 +303,7 @@ void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
 
 void deoglRBillboard::DirtyPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
 	pRequiresPrepareForRender();
 }
 
@@ -326,6 +329,12 @@ void deoglRBillboard::DynamicSkinRenderablesChanged(){
 void deoglRBillboard::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
 		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRBillboard::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
@@ -362,23 +371,23 @@ void deoglRBillboard::UpdateExtends( const deBillboard &billboard ){
 
 
 
-deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estBillboardGeometry:
-	case deoglSkinTexture::estDecalGeometry:
+deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estBillboardDepth:
-	case deoglSkinTexture::estBillboardDepthClipPlane:
-	case deoglSkinTexture::estBillboardDepthReversed:
-	case deoglSkinTexture::estBillboardDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCDepth();
 		
-	case deoglSkinTexture::estBillboardCounter:
-	case deoglSkinTexture::estBillboardCounterClipPlane:
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
 		return GetTUCCounter();
 		
-	case deoglSkinTexture::estBillboardEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
 	default:
@@ -386,12 +395,13 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eSh
 	}
 }
 
-deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptBillboard ).GetWithRef( type ).GetShader();
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
@@ -816,10 +826,18 @@ void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanM
 	if( pDirtyPrepareSkinStateRenderables ){
 		PrepareSkinStateRenderables( mask );
 		pDirtyPrepareSkinStateRenderables = false;
+		pDirtyRenderSkinStateRenderables = true;
 	}
 	
 	pPrepareTUCs();
 	pPrepareParamBlocks();
+}
+
+void deoglRBillboard::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( pDirtyRenderSkinStateRenderables ){
+		RenderSkinStateRenderables( mask );
+		pDirtyRenderSkinStateRenderables = false;
+	}
 }
 
 void deoglRBillboard::PrepareQuickDispose(){
@@ -891,21 +909,21 @@ void deoglRBillboard::pPrepareTUCs(){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estBillboardDepth );
+	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
 	
 	// geometry
 	if( pTUCGeometry ){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estBillboardGeometry );
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 	
 	// counter
 	if( pTUCCounter ){
 		pTUCCounter->RemoveUsage();
 		pTUCCounter = NULL;
 	}
-	pTUCCounter = BareGetTUCFor( deoglSkinTexture::estBillboardCounter );
+	pTUCCounter = BareGetTUCFor( deoglSkinTexturePipelines::etCounter );
 	
 	// envmap
 	if( pTUCEnvMap ){
@@ -965,19 +983,13 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry );
+			deoglSkinShader &skinShader = pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptBillboard ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
+			UpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
+				pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		pDirtySharedSPBElement = false;
@@ -996,7 +1008,6 @@ void deoglRBillboard::pPrepareParamBlocks(){
 			rtsi.SetFirstPoint( 0 );
 			rtsi.SetFirstIndex( 0 );
 			rtsi.SetPointCount( 4 );
-			rtsi.SetDoubleSided( true );
 			rtsi.SetPrimitiveType( GL_TRIANGLE_FAN );
 		}
 	}

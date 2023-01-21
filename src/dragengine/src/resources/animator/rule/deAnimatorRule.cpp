@@ -38,11 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorRule::deAnimatorRule(){
-	pAnimator = NULL;
-	pEnabled = true;
-	pBlendMode = ebmBlend;
-	pBlendFactor = 1.0f;
+deAnimatorRule::deAnimatorRule() :
+pAnimator( nullptr ),
+pBlendMode( ebmBlend ),
+pBlendFactor( 1.0f ),
+pInvertBlendFactor( false ),
+pEnabled( true ){
 }
 
 deAnimatorRule::~deAnimatorRule(){
@@ -62,14 +63,15 @@ void deAnimatorRule::SetEnabled( bool enabled ){
 }
 
 void deAnimatorRule::SetBlendMode( eBlendModes mode ){
-	if( mode < ebmBlend || mode > ebmOverlay ){
-		DETHROW( deeInvalidParam );
-	}
 	pBlendMode = mode;
 }
 
 void deAnimatorRule::SetBlendFactor( float factor ){
 	pBlendFactor = factor;
+}
+
+void deAnimatorRule::SetInvertBlendFactor( bool invert ){
+	pInvertBlendFactor = invert;
 }
 
 

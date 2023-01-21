@@ -76,8 +76,8 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onMenuAction( FXObject *sender, FXSelector selector, void *data );
-	long updateMenuAction( FXObject *sender, FXSelector selector, void *data );
+	long onMenuAction( FXObject*, FXSelector, void* );
+	long updateMenuAction( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

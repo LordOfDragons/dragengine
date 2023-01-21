@@ -46,7 +46,7 @@ class dearLink;
 
 
 /**
- * \brief Animator instance peer.
+ * Animator instance peer.
  */
 class dearAnimatorInstance : public deBaseAnimatorAnimatorInstance{
 private:
@@ -89,10 +89,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	dearAnimatorInstance( deDEAnimator &module, deAnimatorInstance &instance );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~dearAnimatorInstance();
 	/*@}*/
 	
@@ -100,42 +100,42 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator module. */
+	/** Animator module. */
 	inline deDEAnimator &GetModule(){ return pModule; }
 	
 	
 	
-	/** \brief Animation or \em NULL if not set. */
+	/** Animation or nullptr if not set. */
 	inline dearAnimation *GetAnimation() const{ return pAnimation; }
 	
-	/** \brief Component or \em NULL if not set. */
+	/** Component or nullptr if not set. */
 	inline dearComponent *GetComponent() const{ return pComponent; }
 	
-	/** \brief Bone state list. */
+	/** Bone state list. */
 	inline dearBoneStateList &GetBoneStateList(){ return pBoneStateList; }
 	inline const dearBoneStateList &GetBoneStateList() const{ return pBoneStateList; }
 	
-	/** \brief Controller states. */
+	/** Controller states. */
 	inline const dearControllerStates &GetControllerStates() const{ return pControllerStates; }
 	
-	/** \brief Set capture current component state to true. */
+	/** Set capture current component state to true. */
 	void SetCaptureComponentState();
 	
 	
 	
-	/** \brief Number of links. */
+	/** Number of links. */
 	int GetLinkCount() const;
 	
-	/** \brief Link at index. */
+	/** Link at index. */
 	dearLink *GetLinkAt( int index ) const;
 	
-	/** \brief Add link. */
+	/** Add link. */
 	void AddLink( dearLink *link );
 	
 	
 	
 	/**
-	 * \brief Apply rules to animator instance state.
+	 * Apply rules to animator instance state.
 	 * \details This call is thread-safe. It can be used parallel or synchronous.
 	 *          The resulting bone state is not applied to anything. Call the
 	 *          appropriate ApplyStateTo* calls for this.
@@ -143,13 +143,13 @@ public:
 	void ApplyRules();
 	
 	/**
-	 * \brief Apply bone states to the bound animator module component if existing.
+	 * Apply bone states to the bound animator module component if existing.
 	 * \details This call is asynchronous. It is used by task Run() call.
 	 */
 	void ApplyStateToArComponent() const;
 	
 	/**
-	 * \brief Stop task running apply rules in parallel.
+	 * Stop task running apply rules in parallel.
 	 * \details Called by dearTaskApplyRules.Finished() only.
 	 */
 	void StopTaskApplyRules();
@@ -158,7 +158,7 @@ public:
 	
 	
 	/**
-	 * \brief Apply state of animator to the component if existing.
+	 * Apply state of animator to the component if existing.
 	 * \details Animator modules can decide to calculate this in parallel. If
 	 *          \em direct is \em true the application is always done
 	 *          synchronously and is done after the call returns. If \em direct
@@ -169,14 +169,14 @@ public:
 	virtual void Apply( bool direct );
 	
 	/**
-	 * \brief Capture current state of component into rules matching identifier.
+	 * Capture current state of component into rules matching identifier.
 	 */
 	virtual void CaptureStateInto( int identifier );
 	
 	/**
-	 * \brief Store animation frame from animation into rules matching identifier.
+	 * Store animation frame from animation into rules matching identifier.
 	 * \details If \em moveName does not exist in the animation a default state is captured.
-	 * \throws deeInvalidParam \em moveName is \em NULL.
+	 * \throws deeInvalidParam \em moveName is nullptr.
 	 */
 	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
 	/*@}*/
@@ -185,25 +185,25 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Animator changed. */
+	/** Animator changed. */
 	virtual void AnimatorChanged();
 	
-	/** \brief Component changed. */
+	/** Component changed. */
 	virtual void ComponentChanged();
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged();
 	
-	/** \brief Blend factor changed. */
+	/** Blend factor changed. */
 	virtual void BlendFactorChanged();
 	
-	/** \brief Enable retargeting changed. */
+	/** Enable retargeting changed. */
 	virtual void EnableRetargetingChanged();
 	
-	/** \brief Protect dynamic bones changed. */
+	/** Protect dynamic bones changed. */
 	virtual void ProtectDynamicBonesChanged();
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int index );
 	/*@}*/
 	
@@ -228,25 +228,25 @@ private:
 	
 	
 	
-	/** \brief Update controller states. */
+	/** Update controller states. */
 	void pUpdateControllerStates();
 	
 	/**
-	 * \brief Apply bone states to the bound engine component if existing.
+	 * Apply bone states to the bound engine component if existing.
 	 * \details This call is synchronous. It is used by synchronous calls or
 	 *          by the task Finished() call.
 	 */
 	void pApplyStateToComponent() const;
 	
 	/**
-	 * \brief Run task to apply rules.
+	 * Run task to apply rules.
 	 * 
 	 * If running in parallel is disabled this calls ApplyRules() instead.
 	 */
 	void pStartTaskApplyRules();
 	
 	/**
-	 * \brief Cancel task to apply rules if existing.
+	 * Cancel task to apply rules if existing.
 	 * \details Forces parallel tasks to finish to ensure the tasks is finished.
 	 */
 	void pCancelTaskApplyRules();

@@ -30,7 +30,7 @@
 
 
 /**
- * @brief Point Sieve Bucket.
+ * Point Sieve Bucket.
  *
  * Bucket in a point sieve storing indices of objects dropped into it.
  */
@@ -41,7 +41,7 @@ private:
 	int pIndexSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bucket. */
 	deoglPointSieveBucket();
@@ -49,7 +49,7 @@ public:
 	~deoglPointSieveBucket();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of indices. */
 	inline int GetIndexCount() const{ return pIndexCount; }

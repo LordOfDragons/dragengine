@@ -45,6 +45,9 @@
  * need to add and remove debug information all time.
  */
 class deoglDebugInformation : public deObject{
+public:
+	typedef deTObjectReference<deoglDebugInformation> Ref;
+	
 private:
 	decString pName;
 	decColor pColorText;

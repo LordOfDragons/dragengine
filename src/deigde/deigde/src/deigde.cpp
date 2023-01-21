@@ -40,7 +40,8 @@ int main( int argCount, char **args ){
 		igdeRealApplication().Run( argCount, args );
 		
 	}catch( const deException &e ){
-		return -1;
+		e.PrintError();
+		return 1;
 	}
 	return 0;
 }
@@ -53,11 +54,14 @@ int main( int argCount, char **args ){
 
 #ifdef OS_W32
 static int WINAPI RealWinMain(){
+	(void)SetProcessDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
+	
 	try{
 		igdeRealApplication().Run();
 		
 	}catch( const deException &e ){
-		return -1;
+		e.PrintError();
+		return 1;
 	}
 	return 0;
 }

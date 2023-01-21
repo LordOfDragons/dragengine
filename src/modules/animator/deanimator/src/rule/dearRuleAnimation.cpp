@@ -68,8 +68,8 @@
 /////////////////////////////////
 
 dearRuleAnimation::dearRuleAnimation( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimation &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimation &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 pAnimation( rule ),
 
 pMove( NULL ),
@@ -122,10 +122,9 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
-		
 		// determine animation state
-		const int animationBone = boneState.GetAnimationBone();
+		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		
 		if( animationBone == -1 ){
 			boneState.BlendWithDefault( blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
@@ -169,6 +168,7 @@ void dearRuleAnimation::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMove();
+	pMapAnimationBones.Init( *this );
 }
 
 
@@ -182,7 +182,7 @@ void dearRuleAnimation::pUpdateMove(){
 		pMove = NULL;
 	}
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( animation ){
 		pMove = animation->GetMoveNamed( pAnimation.GetMoveName() );
 		if( pMove ){

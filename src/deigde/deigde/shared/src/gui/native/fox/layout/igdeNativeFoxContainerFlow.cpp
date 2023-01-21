@@ -40,13 +40,13 @@ private:
 	FXVerticalFrame *pContainer;
 	
 public:
-	igdeNativeFoxContainerFlowY( igdeContainerFlow &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerFlowY( igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags );
 	virtual ~igdeNativeFoxContainerFlowY();
 	
 	inline FXVerticalFrame *GetContainer() const{ return pContainer; }
 	
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onResize( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 };
 
 
@@ -60,18 +60,18 @@ FXIMPLEMENT( igdeNativeFoxContainerFlowY, FXVerticalFrame,
 
 igdeNativeFoxContainerFlowY::igdeNativeFoxContainerFlowY(){ }
 
-igdeNativeFoxContainerFlowY::igdeNativeFoxContainerFlowY( igdeContainerFlow &owner, FXComposite *parent, int layoutFlags ) :
-FXVerticalFrame( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() ),
-pOwner( &owner ),
+igdeNativeFoxContainerFlowY::igdeNativeFoxContainerFlowY( igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags ) :
+FXVerticalFrame( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() ),
+pOwner( &powner ),
 pContainer( this )
 {
-	switch( owner.GetAxis() ){
+	switch( powner.GetAxis() ){
 	case igdeContainerFlow::eaYReverse:
 		setHSpacing( 0 );
 		setVSpacing( 0 );
 		new FXVerticalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 		pContainer = new FXVerticalFrame( this, LAYOUT_FILL_X,
-			0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() );
+			0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() );
 		break;
 		
 	case igdeContainerFlow::eaYCenter:
@@ -79,7 +79,7 @@ pContainer( this )
 		setVSpacing( 0 );
 		new FXVerticalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 		pContainer = new FXVerticalFrame( this, LAYOUT_FILL_X,
-			0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() );
+			0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() );
 		new FXVerticalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 		break;
 		
@@ -91,13 +91,13 @@ pContainer( this )
 igdeNativeFoxContainerFlowY::~igdeNativeFoxContainerFlowY(){
 }
 
-long igdeNativeFoxContainerFlowY::onResize( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxContainerFlowY::onResize( FXObject*, FXSelector, void* ){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerFlowY::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerFlowY::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X;
 	
 	const int index = pOwner->IndexOfChild( clflags.widget );
@@ -144,13 +144,13 @@ private:
 	FXHorizontalFrame *pContainer;
 	
 public:
-	igdeNativeFoxContainerFlowX( igdeContainerFlow &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerFlowX( igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags );
 	virtual ~igdeNativeFoxContainerFlowX();
 	
 	inline FXHorizontalFrame *GetContainer() const{ return pContainer; }
 	
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onResize( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 };
 
 
@@ -164,18 +164,18 @@ FXIMPLEMENT( igdeNativeFoxContainerFlowX, FXHorizontalFrame,
 
 igdeNativeFoxContainerFlowX::igdeNativeFoxContainerFlowX(){ }
 
-igdeNativeFoxContainerFlowX::igdeNativeFoxContainerFlowX( igdeContainerFlow &owner, FXComposite *parent, int layoutFlags ) :
-FXHorizontalFrame( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() ),
-pOwner( &owner ),
+igdeNativeFoxContainerFlowX::igdeNativeFoxContainerFlowX( igdeContainerFlow &powner, FXComposite *pparent, int layoutFlags ) :
+FXHorizontalFrame( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() ),
+pOwner( &powner ),
 pContainer( this )
 {
-	switch( owner.GetAxis() ){
+	switch( powner.GetAxis() ){
 	case igdeContainerFlow::eaYReverse:
 		setHSpacing( 0 );
 		setVSpacing( 0 );
 		new FXHorizontalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 		pContainer = new FXHorizontalFrame( this, LAYOUT_FILL_Y,
-			0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() );
+			0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() );
 		break;
 		
 	case igdeContainerFlow::eaYCenter:
@@ -183,7 +183,7 @@ pContainer( this )
 		setVSpacing( 0 );
 		new FXHorizontalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 		pContainer = new FXHorizontalFrame( this, LAYOUT_FILL_Y,
-			0, 0, 0, 0, 0, 0, 0, 0, owner.GetSpacing(), owner.GetSpacing() );
+			0, 0, 0, 0, 0, 0, 0, 0, powner.GetSpacing(), powner.GetSpacing() );
 		new FXHorizontalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 		break;
 		
@@ -200,8 +200,8 @@ long igdeNativeFoxContainerFlowX::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxContainerFlowX::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerFlowX::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_Y;
 	
 	const int index = pOwner->IndexOfChild( clflags.widget );
@@ -242,56 +242,56 @@ long igdeNativeFoxContainerFlowX::onChildLayoutFlags( FXObject*, FXSelector, voi
 // Class igdeNativeFoxContainerFlow
 ////////////////////////////////////
 
-void *igdeNativeFoxContainerFlow::CreateNativeWidget( igdeContainerFlow &owner ){
-	if( ! owner.GetParent() ){
+void *igdeNativeFoxContainerFlow::CreateNativeWidget( igdeContainerFlow &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &owner );
+	const int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( &powner );
 	
-	switch( owner.GetAxis() ){
+	switch( powner.GetAxis() ){
 	case igdeContainerFlow::eaX:
 	case igdeContainerFlow::eaXReverse:
 	case igdeContainerFlow::eaXCenter:
-		return new igdeNativeFoxContainerFlowX( owner, parent, layoutFlags );
+		return new igdeNativeFoxContainerFlowX( powner, pparent, layoutFlags );
 		
 	case igdeContainerFlow::eaY:
 	case igdeContainerFlow::eaYReverse:
 	case igdeContainerFlow::eaYCenter:
-		return new igdeNativeFoxContainerFlowY( owner, parent, layoutFlags );
+		return new igdeNativeFoxContainerFlowY( powner, pparent, layoutFlags );
 		
 	default:
 		DETHROW( deeInvalidParam );
 	}
 }
 
-void igdeNativeFoxContainerFlow::PostCreateNativeWidget( igdeContainerFlow &owner, void *native ){
-	FXComposite &parent = *( ( FXComposite* )owner.GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+void igdeNativeFoxContainerFlow::PostCreateNativeWidget( igdeContainerFlow &powner, void *native ){
+	FXComposite &pparent = *( ( FXComposite* ) powner.GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		( ( FXPacker* )native )->create();
 	}
 }
 
-void igdeNativeFoxContainerFlow::DestroyNativeWidget( igdeContainerFlow &owner, void *native ){
+void igdeNativeFoxContainerFlow::DestroyNativeWidget( igdeContainerFlow&, void *native ){
 	delete ( FXPacker* )native;
 }
 
-void igdeNativeFoxContainerFlow::ChildRemoved( igdeContainerFlow &owner, void *native ){
-	if( owner.GetNativeContainer()
-	&& owner.GetStretching() == igdeContainerFlow::esLast
-	&& owner.GetChildCount() > 0 ){
-		igdeUIFoxHelper::UpdateLayoutFlags( owner.GetChildAt( owner.GetChildCount() - 1 ) );
+void igdeNativeFoxContainerFlow::ChildRemoved( igdeContainerFlow &powner, void *native ){
+	if( powner.GetNativeContainer()
+	&& powner.GetStretching() == igdeContainerFlow::esLast
+	&& powner.GetChildCount() > 0 ){
+		igdeUIFoxHelper::UpdateLayoutFlags( powner.GetChildAt( powner.GetChildCount() - 1 ) );
 		( ( FXPacker* )native )->recalc();
 	}
 }
 
-void *igdeNativeFoxContainerFlow::GetNativeContainer( const igdeContainerFlow &owner, void *native ){
-	switch( owner.GetAxis() ){
+void *igdeNativeFoxContainerFlow::GetNativeContainer( const igdeContainerFlow &powner, void *native ){
+	switch( powner.GetAxis() ){
 	case igdeContainerFlow::eaX:
 	case igdeContainerFlow::eaXReverse:
 	case igdeContainerFlow::eaXCenter:

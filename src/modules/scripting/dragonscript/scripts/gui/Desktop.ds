@@ -154,6 +154,7 @@ class Desktop extends Container
 			if pHoverWidget.getParent() == null /* removed or disposed while active */ \
 			or not pHoverWidget.getVisible()
 				pHoverWidget = null
+				hoverWidgetChanged()
 			end
 		end
 		
@@ -173,6 +174,7 @@ class Desktop extends Container
 		var Widget leaveWidget = hoverWidget
 		
 		pHoverWidget = widget
+		hoverWidgetChanged()
 		
 		if leaveWidget != null
 			// runWhileBlockingLayout added to deal with problem of layoutParent calling updateHoverWidget
@@ -424,7 +426,7 @@ class Desktop extends Container
 		end
 		
 		onMousePointerChanged(MousePointerEvent.new(this,\
-			MousePointerEvent.idMousePointerMoved, pMousePointerInstance))
+			MousePointerEvent.idMousePointerChanged, pMousePointerInstance))
 	end
 	
 	/** \brief Mouse pointer instance or null. */
@@ -578,9 +580,6 @@ class Desktop extends Container
 		end
 		clearHoverWidget()
 		
-		if pHoverWidget != null
-			throw EInvalidParam.new()
-		end
 		super.removeWidget(widget)
 		
 		if getFocusWidget() == null
@@ -828,7 +827,7 @@ class Desktop extends Container
 				updateHoverWidget()
 				eventWidget = getHoverWidget()
 			end
-			if eventWidget != null
+			if eventWidget != null and eventWidget.isFullEnabled()
 				var MouseEvent mevent = event cast MouseEvent
 				eventToSend = MouseEvent.new(eventWidget, ident, mevent.getButton(), \
 					mevent.getModifiers(), mevent.getPosition(), mevent.getSystem(), mevent.getDevice())
@@ -852,6 +851,7 @@ class Desktop extends Container
 			end
 			// store widget where the mouse is above at the moment
 			pHoverWidget = eventWidget
+			hoverWidgetChanged()
 			*/
 		else
 			sendEvent(event)
@@ -893,6 +893,24 @@ class Desktop extends Container
 		
 		// check if hover widget changed
 		updateHoverWidget()
+	end
+	
+	
+	
+	/**
+	 * \brief Raise windows with getAlwaysOnTop() set.
+	 * \versoin 1.15.
+	 */
+	public func void raiseWindowsAlwaysOnTop()
+		var Array list = Array.new()
+		forEachWidget(block Window each
+			if each.getAlwaysOnTop()
+				list.add(each)
+			end
+		end)
+		list.forEach(block Window each
+			each.moveToTop()
+		end)
 	end
 	
 	
@@ -1234,6 +1252,7 @@ class Desktop extends Container
 			
 		elif pCaptureWidget != null
 			//pHoverWidget = pCaptureWidget // mouse move should do this already
+			//hoverWidgetChanged()
 			
 			if pCaptureWidget != this
 				pCaptureWidget.sendEvent(MouseEvent.new(pCaptureWidget, \
@@ -1250,6 +1269,7 @@ class Desktop extends Container
 					if widget != null
 						if isWidgetDeepEnabled(widget)
 							//pHoverWidget = widget // mouse move should do this already
+							//hoverWidgetChanged()
 							widget.sendEvent(MouseEvent.new(widget, event.getIdentifier(), \
 								event.getButton(), event.getModifiers(), \
 								pMouseLocation - widget.getScreenPosition(), \
@@ -1572,6 +1592,18 @@ class Desktop extends Container
 		case Window.WindowState.maximized
 			window.setPosition(Point.new())
 			window.setSize(getSize())
+		end
+	end
+	
+	/**
+	 * \brief Hover widget changed.
+	 * \version 1.14
+	 * 
+	 * Calls update() on tool tip manager if not null.
+	 */
+	public func void hoverWidgetChanged()
+		if pToolTipManager != null
+			pToolTipManager.update()
 		end
 	end
 end

@@ -1,10 +1,20 @@
+#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
+	#extension GL_ARB_shader_viewport_layer_array : require
+#endif
+#ifdef EXT_AMD_VERTEX_SHADER_LAYER
+	#extension GL_AMD_vertex_shader_layer : require
+#endif
+#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
+	#extension GL_ARB_shader_draw_parameters : require
+#endif
+
 #include "v130/shared/defren/skin/macros_geometry.glsl"
 
 // Uniform Parameters
 ///////////////////////
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+#include "v130/shared/defren/ubo_render_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_texture_parameters.glsl"
 #ifdef SHARED_SPB
@@ -44,34 +54,24 @@
 	in vec2 inTexCoord;
 #endif
 
-#ifdef NODE_VERTEX_INPUTS
-NODE_VERTEX_INPUTS
-#endif
-
 
 
 // Outputs
 ////////////
 
+#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
+	#define REQUIRES_NORMAL
+#endif
+
 #ifdef HAS_TESSELLATION_SHADER
+	#define PASS_ON_NEXT_STAGE 1
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vTCSTCColor;
 		#define vTCColor vTCSTCColor
 	#endif
-	#ifdef CLIP_PLANE
-		out vec3 vTCSClipCoord;
-		#define vClipCoord vTCSClipCoord
-	#endif
-	#ifdef DEPTH_DISTANCE
-		out vec3 vTCSPosition;
-		#define vPosition vTCSPosition
-	#endif
 	#ifdef HEIGHT_MAP
 		out float vTCSHTMask;
 		#define vHTMask vTCSHTMask
-	#endif
-	#ifdef PROP_FIELD
-		out float vTCSRenderCondition;
 	#endif
 	#ifdef REQUIRES_NORMAL
 		out vec3 vTCSNormal;
@@ -85,23 +85,12 @@ NODE_VERTEX_INPUTS
 			#define vBitangent vTCSBitangent
 		#endif
 	#endif
-	#ifdef WITH_REFLECT_DIR
-		out vec3 vTCSReflectDir;
-		#define vReflectDir vTCSReflectDir
-	#endif
 	
-#elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
+	#define PASS_ON_NEXT_STAGE 1
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vGSTCColor;
 		#define vTCColor vGSTCColor
-	#endif
-	#ifdef CLIP_PLANE
-		out vec3 vGSClipCoord;
-		#define vClipCoord vGSClipCoord
-	#endif
-	#ifdef DEPTH_DISTANCE
-		out vec3 vGSPosition;
-		#define vPosition vGSPosition
 	#endif
 	#ifdef HEIGHT_MAP
 		out float vGSHTMask;
@@ -119,10 +108,6 @@ NODE_VERTEX_INPUTS
 			#define vBitangent vGSBitangent
 		#endif
 	#endif
-	#ifdef WITH_REFLECT_DIR
-		out vec3 vGSReflectDir;
-		#define vReflectDir vGSReflectDir
-	#endif
 	
 	#ifdef SHARED_SPB
 		flat out int vGSSPBIndex;
@@ -139,9 +124,6 @@ NODE_VERTEX_INPUTS
 	#endif
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
-	#endif
-	#ifdef DEPTH_ORTHOGONAL
-		out float vZCoord;
 	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
@@ -170,14 +152,13 @@ NODE_VERTEX_INPUTS
 	#endif
 #endif
 
-#ifdef NODE_VERTEX_OUTPUTS
-NODE_VERTEX_OUTPUTS
+#ifdef VS_RENDER_STEREO
+	uniform int pDrawIDOffset;
+	#define inLayer (gl_DrawID + pDrawIDOffset)
+	flat out int vLayer;
+#else
+	const int inLayer = 0;
 #endif
-
-
-
-// Constants
-//////////////
 
 
 
@@ -190,15 +171,19 @@ NODE_VERTEX_OUTPUTS
 	#include "v130/shared/defren/skin/transform_normal.glsl"
 #endif
 
+#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
+
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
 	// transform the texture coordinates
 	#ifdef REQUIRES_TEX_COLOR
 		#ifdef HEIGHT_MAP
-			vec2 tc = pMatrixTexCoord * vec3( inPosition, 1.0 );
+			vec2 tc = pMatrixTexCoord * vec3( inPosition, 1 );
 		#else
-			vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1.0 );
+			vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1 );
 		#endif
 		vTCColor = tc; // * pTCTransformColor.xy + pTCTransformColor.zw;
 	#endif
@@ -221,64 +206,46 @@ void main( void ){
 		#endif
 	#endif
 	
-	// reflection directory for environment map reflections
-	#ifdef WITH_REFLECT_DIR
-		#ifdef HAS_TESSELLATION_SHADER
-			vReflectDir = position;
-		#else
+	#ifndef PASS_ON_NEXT_STAGE
+		// reflection direction
+		#ifdef WITH_REFLECT_DIR
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				#ifdef GS_RENDER_CUBE
-					vReflectDir = pMatrixV[ 0 ] * vec4( position, 1.0 );
-				#else
-					vReflectDir = pMatrixV * vec4( position, 1.0 );
-				#endif
+				vReflectDir = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
 		#endif
-	#endif
-	
-	// non-perspective depth values if required
-	#if ! defined HAS_TESSELLATION_SHADER && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED
-		#ifdef DEPTH_ORTHOGONAL
-			#ifdef NO_ZCLIP
-				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-				gl_Position.z = 0.0;
-			#else
-				vZCoord = gl_Position.z;
-			#endif
-		#endif
-	#endif
-	#ifdef DEPTH_DISTANCE
-		#ifdef HAS_TESSELLATION_SHADER
-			vPosition = position;
-		#else
+		
+		// depth distance
+		#ifdef DEPTH_DISTANCE
 			#ifdef BILLBOARD
 				vPosition = position;
 			#else
-				#ifdef GS_RENDER_CUBE
-					vPosition = pMatrixV[ 0 ] * vec4( position, 1.0 );
-				#else
-					vPosition = pMatrixV * vec4( position, 1.0 );
-				#endif
+				vPosition = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
 		#endif
-	#endif
-	
-	// clip coordinates for use with the clip plane. for the clip plane we need camera space coordinates
-	#ifdef CLIP_PLANE
-		#ifdef HAS_TESSELLATION_SHADER
-			vClipCoord = position;
-		#else
+		
+		// clip coordinates for use with the clip plane. for the clip plane we need camera space coordinates
+		#ifdef CLIP_PLANE
 			#ifdef BILLBOARD
 				vClipCoord = position;
 			#else
-				#ifdef GS_RENDER_CUBE
-					vClipCoord = pMatrixV[ 0 ] * vec4( position, 1.0 );
-				#else
-					vClipCoord = pMatrixV * vec4( position, 1.0 );
-				#endif
+				vClipCoord = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
+		#endif
+		
+		// fade range requires non-perspective z. and when we are at it already spare some calculations
+		#ifdef FADEOUT_RANGE
+			#ifdef BILLBOARD
+				vFadeZ = position.z;
+			#else
+				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z;
+			#endif
+		#endif
+		
+		// depth offset
+		#ifdef DEPTH_OFFSET
+			applyDepthOffset( inLayer, vNormal, pDoubleSided );
 		#endif
 	#endif
 	
@@ -288,19 +255,6 @@ void main( void ){
 		vHTMask = texture( texHeightMapMask, inPosition * pHeightTerrainMaskTCTransform + vec2( 0.5 ) )[ pHeightTerrainMaskSelector.y ];
 	#endif
 	
-	// fade range requires non-perspective z. and when we are at it already spare some calculations
-	#ifdef FADEOUT_RANGE
-		#ifdef BILLBOARD
-			vFadeZ = position.z;
-		#else
-			#ifdef GS_RENDER_CUBE
-				vFadeZ = ( pMatrixV[ 0 ] * vec4( position, 1.0 ) ).z;
-			#else
-				vFadeZ = ( pMatrixV * vec4( position, 1.0 ) ).z;
-			#endif
-		#endif
-	#endif
-	
 	#ifdef SHARED_SPB
 		vSPBIndex = spbIndex;
 		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
@@ -308,7 +262,8 @@ void main( void ){
 		#endif
 	#endif
 	
-	#ifdef NODE_VERTEX_MAIN
-	NODE_VERTEX_MAIN
+	#ifdef VS_RENDER_STEREO
+		gl_Layer = inLayer;
+		vLayer = inLayer;
 	#endif
 }

@@ -30,7 +30,7 @@ class deoglRFont;
 
 
 /**
- * \brief Render canvas text.
+ * Render canvas text.
  */
 class deoglRCanvasText : public deoglRCanvas{
 private:
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasText( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasText();
 	/*@}*/
 	
@@ -53,34 +53,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Font or \em NULL if not set. */
+	/** Font or \em NULL if not set. */
 	inline deoglRFont *GetFont() const{ return pFont; }
 	
-	/** \brief Set font or \em NULL to unset. */
+	/** Set font or \em NULL to unset. */
 	void SetFont( deoglRFont *font );
 	
-	/** \brief Font size in canvas units. */
+	/** Font size in canvas units. */
 	inline float GetFontSize() const{ return pFontSize; }
 	
-	/** \brief Set font size in canvas units. */
+	/** Set font size in canvas units. */
 	void SetFontSize( float size );
 	
-	/** \brief Text. */
+	/** Text. */
 	inline const decString &GetText() const{ return pText; }
 	
-	/** \brief Set text. */
+	/** Set text. */
 	void SetText( const char *text );
 	
-	/** \brief Text color. */
+	/** Text color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Set text color. */
+	/** Set text color. */
 	void SetColor( const decColor &color );
 	/*@}*/
 	
 	
 	
-	/** \brief Render. */
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/
 };

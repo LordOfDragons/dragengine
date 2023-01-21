@@ -6,6 +6,12 @@ Import('parent_env parent_targets parent_report')
 # setup the environment matching the OS
 envModule = parent_env.Clone()
 
+buildModule = envModule['build_vr_openvr' ] != TernaryVariableNo
+parent_report['build OpenVR VR Module' ] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
 if envModule['OSBeOS']:
 	Return()
 

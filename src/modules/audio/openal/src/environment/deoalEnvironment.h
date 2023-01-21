@@ -61,7 +61,9 @@ private:
 	float pRangeSquared;
 	float pAttenuationRefDist;
 	float pAttenuationRolloff;
+	float pAttenuationDistanceOffset;
 	decLayerMask pLayerMask;
+	bool pValid;
 	
 	float pGainLow;
 	float pGainMedium;
@@ -138,14 +140,20 @@ public:
 	/** \brief Attenuation rolloff. */
 	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
+	/** \brief Attenuation distance offset. */
+	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
+	
 	/** \brief Set attenuation parameters. */
-	void SetAttenuation( float refDist, float rolloff );
+	void SetAttenuation( float refDist, float rolloff, float distanceOffset );
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
+	
+	/** \brief Environment data are valid. */
+	inline bool GetValid() const{ return pValid; }
 	
 	
 	

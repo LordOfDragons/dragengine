@@ -48,7 +48,7 @@ class deDebugDrawerShape;
 
 
 /**
- * \brief Audio microphone.
+ * Audio microphone.
  */
 class deoalAMicrophone : public deObject{
 private:
@@ -60,6 +60,7 @@ private:
 	float pVolume;
 	bool pMuted;
 	decLayerMask pLayerMask;
+	float pSpeakerGain;
 	
 	decObjectList pSpeakers;
 	deoalSpeakerList pActiveSpeakers;
@@ -87,11 +88,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create microphone. */
+	/** Create microphone. */
 	deoalAMicrophone( deoalAudioThread &audioThread );
 	
 protected:
-	/** \brief Clean up microphone. */
+	/** Clean up microphone. */
 	virtual ~deoalAMicrophone();
 	/*@}*/
 	
@@ -100,95 +101,101 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
 	
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Orientation. */
+	/** Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Set geometry. */
+	/** Set geometry. */
 	void SetGeometry( const decDVector &position, const decQuaternion &orientation );
 	
-	/** \brief Velocity. */
+	/** Velocity. */
 	inline const decVector &GetVelocity() const{ return pVelocity; }
 	
-	/** \brief Set velocity. */
+	/** Set velocity. */
 	void SetVelocity( const decVector &velocity );
 	
-	/** \brief Volume. */
+	/** Volume. */
 	inline float GetVolume() const{ return pVolume; }
 	
-	/** \brief Set volume. */
+	/** Set volume. */
 	void SetVolume( float volume );
 	
-	/** \brief Muted. */
+	/** Muted. */
 	inline bool GetMuted() const{ return pMuted; }
 	
-	/** \brief Set muted. */
+	/** Set muted. */
 	void SetMuted( bool mnuted );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
+	/** Gain to multiply all speakers with. */
+	inline float GetSpeakerGain() const{ return pSpeakerGain; }
+	
+	/** Set gain to multiply all speakers with. */
+	void SetSpeakerGain( float gain );
 	
 	
-	/** \brief Microphone is active. */
+	
+	/** Microphone is active. */
 	inline bool GetActive() const{ return pActive; }
 	
 	/**
-	 * \brief Set if mocrophone is active.
+	 * Set if mocrophone is active.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetActive( bool active );
 	
 	
 	
-	/** \brief Number of speakers. */
+	/** Number of speakers. */
 	int GetSpeakerCount() const;
 	
-	/** \brief Speaker at index. */
+	/** Speaker at index. */
 	deoalASpeaker *GetSpeakerAt( int index ) const;
 	
 	/**
-	 * \brief Add speaker.
+	 * Add speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void AddSpeaker( deoalASpeaker *speaker );
 	
 	/**
-	 * \brief Remove speaker.
+	 * Remove speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveSpeaker( deoalASpeaker *speaker );
 	
 	/**
-	 * \brief Remove all speakers.
+	 * Remove all speakers.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveAllSpeakers();
 	
 	/**
-	 * \brief Remove speakers marked for removal.
+	 * Remove speakers marked for removal.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void RemoveRemovalMarkedSpeakers();
 	
 	
 	
-	/** \brief Active speaker list. */
+	/** Active speaker list. */
 	inline deoalSpeakerList &GetActiveSpeakers(){ return pActiveSpeakers; }
 	inline const deoalSpeakerList &GetActiveSpeakers() const{ return pActiveSpeakers; }
 	
 	/**
-	 * \brief Find active speakers.
+	 * Find active speakers.
 	 * 
 	 * Finds all speakers inside speaker range. Disables speakers leaving the speaker range
 	 * and enables speakers entering the speaker range.
@@ -199,52 +206,55 @@ public:
 	
 	
 	
-	/** \brief Parent world or NULL. */
+	/** Parent world or NULL. */
 	inline deoalAWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
-	 * \brief Set parent world or NULL.
+	 * Set parent world or NULL.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void SetParentWorld( deoalAWorld *world );
 	
-	/** \brief World octree node or NULL. */
+	/** World octree node or NULL. */
 	inline deoalWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
-	/** \brief Set world octree node or NULL. */
+	/** Set world octree node or NULL. */
 	void SetOctreeNode( deoalWorldOctree *node );
 	
-	/** \brief Update octree node. */
+	/** Update octree node. */
 	void UpdateOctreeNode();
 	
-	/** \brief Quick dispose. */
+	/** Quick dispose. */
 	void PrepareQuickDispose();
 	
 	
 	
-	/** \brief Environment probe or NULL if not present. */
+	/** Environment probe or NULL if not present. */
 	deoalEnvProbe *GetEnvProbe();
 	
-	/** \brief Ray-trace world bvh. */
+	/** Ray-trace world bvh. */
 	inline deoalRTWorldBVH &GetRTWorldBVH(){ return pRTWorldBVH; }
 	
 	
 	
-	/** \brief Process audio. */
+	/** Process audio. */
 	void ProcessAudio();
 	
-	/** \brief Process deactivate. */
+	/** Process audio fast. */
+	void ProcessAudioFast();
+	
+	/** Process deactivate. */
 	void ProcessDeactivate();
 	
-	/** \brief Invalidates speaker. */
+	/** Invalidates speaker. */
 	void InvalidateSpeaker( deoalASpeaker *speaker );
 	
 	/**
-	 * \brief Update debug information.
+	 * Update debug information.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void DebugUpdateInfo( deDebugBlockInfo &debugInfo );
-	void DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray );
+	void DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume );
 	/*@}*/
 	
 	
@@ -252,27 +262,27 @@ public:
 	/** \name Render world usage */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );
 		
-	/** \brief Linked list world previous. */
+	/** Linked list world previous. */
 	inline deoalAMicrophone *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
-	/** \brief Set linked list world previous. */
+	/** Set linked list world previous. */
 	void SetLLWorldPrev( deoalAMicrophone *microphone );
 	
-	/** \brief Linked list world next. */
+	/** Linked list world next. */
 	inline deoalAMicrophone *GetLLWorldNext() const{ return pLLWorldNext; }
 	
-	/** \brief Set linked list world next. */
+	/** Set linked list world next. */
 	void SetLLWorldNext( deoalAMicrophone *microphone );
 	/*@}*/
 	
@@ -286,9 +296,9 @@ private:
 	
 	void pProcessEffects();
 	
-	void pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray );
-	void pDebugCaptureRays( deDebugDrawerShape &shape,
-		const deoalSoundRayList &rayList, const deoalSoundRay &ray );
+	void pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume );
+	void pDebugCaptureRays( deDebugDrawerShape &shape, const deoalSoundRayList &rayList,
+		const deoalSoundRay &ray, bool volume );
 	
 	float pMaxActiveSpeakerRange() const;
 };

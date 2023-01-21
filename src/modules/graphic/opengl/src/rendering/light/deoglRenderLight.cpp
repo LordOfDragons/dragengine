@@ -38,6 +38,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugSaveTexture.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../gi/deoglGIState.h"
@@ -50,6 +51,8 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
@@ -69,20 +72,7 @@
 // Definitions
 ////////////////
 
-enum pSPAOLocal{
-	spaolQuadParams,
-	spaolPosTransform,
-	spaolPosTransform2,
-	spaolTCTransform,
-	spaolTCClamp,
-	spaolRadiusFactor,
-	spaolParamSSAO,
-	spaolParamTap,
-	spaolMipMapParams
-};
-
 enum eSPAOBlur{
-	spaobQuadParams,
 	spaobOffsets1,
 	spaobOffsets2,
 	spaobOffsets3,
@@ -93,7 +83,7 @@ enum eSPAOBlur{
 	spaobWeights1,
 	spaobWeights2,
 	spaobClamp,
-	spaobDepthTransform
+	spaobDepthDifferenceThreshold
 };
 
 enum pSPDebugAO{
@@ -105,18 +95,8 @@ enum pSPDebugAO{
 	spdaoLayer
 };
 
-enum pSPSSSSS{
-	spsssssQuadParams,
-	spsssssPosTransform,
-	spsssssPosTransform2,
-	spsssssTCTransform,
-	spsssssTCClamp,
-	spsssssDropSubSurfaceThreshold,
-	spsssssTapCount,
-	spsssssAngleConstant,
-	spsssssTapRadiusFactor,
-	spsssssTapRadiusLimit,
-	spsssssTapDropRadiusThreshold
+enum eSPCopyDepth{
+	spcdQuadParams
 };
 
 
@@ -131,151 +111,199 @@ deoglRenderLight::deoglRenderLight( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
 deoglRenderLightBase( renderThread ),
 
-pShaderCopyDepth( NULL ),
-
-pShaderAOLocal( NULL ),
-pShaderAOBlur1( NULL ),
-pShaderAOBlur2( NULL ),
-pShaderDebugAO( NULL ),
-
-pShaderSSSSS( NULL ),
-
 pRenderLightSpot( NULL ),
 pRenderLightSky( NULL ),
 pRenderLightPoint( NULL ),
 pRenderLightParticles( NULL ),
 pRenderGI( NULL ),
 
-pLightPB( NULL ),
-pShadowPB( NULL ),
-pShadowCascadedPB( NULL ),
-pShadowCubePB( NULL ),
-pOccMapPB( NULL ),
 pRenderTask( NULL ),
-pAddToRenderTask( NULL ),
-
-pDebugInfoSolid( NULL ),
-pDebugInfoSolidCopyDepth( NULL ),
-pDebugInfoSolidParticle( NULL ),
-pDebugInfoSolidSSSSS( NULL ),
-
-pDebugInfoTransparent( NULL ),
-pDebugInfoTransparentCopyDepth( NULL ),
-pDebugInfoTransparentSSSSS( NULL )
+pAddToRenderTask( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
+	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
+	const deoglShaderSources *sources;
 	
-	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
-		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
-		
-		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
-		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
-		pShadowCascadedPB = deoglSkinShader::CreateSPBRender( renderThread, false, true );
-		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
-		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
-		
-		pRenderTask = new deoglRenderTask( renderThread );
-		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
-		
-		pRenderLightSky = new deoglRenderLightSky( renderThread );
-		pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
-		pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
-		pRenderLightParticles = new deoglRenderLightParticles( renderThread );
-		pRenderGI = new deoglRenderGI( renderThread );
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
-		pShaderSSSSS = shaderManager.GetProgramWith( sources, defines );
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
-		defines.AddDefine( "SSAO_RESOLUTION_COUNT", "1" ); // 1-4
-		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
-		defines.AddDefine( "TAP_COUNT", "9" );
-		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", "1" );
-		defines.AddDefine( "OUT_DATA_SIZE", "1" );
-		defines.AddDefine( "TEX_DATA_SIZE", "1" );
-		defines.AddDefine( "TEX_DATA_SWIZZLE", "g" );
-		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		defines.AddDefine( "TAP_COUNT", "9" );
-		defines.AddDefine( "DEPTH_DIFFERENCE_WEIGHTING", "1" );
-		defines.AddDefine( "OUT_DATA_SIZE", "3" );
-		defines.AddDefine( "OUT_DATA_SWIZZLE", "g" );
-		defines.AddDefine( "TEX_DATA_SIZE", "1" );
-		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-		defines.AddDefine( "TEXTURELEVEL", "1" );
-		defines.AddDefine( "OUT_COLOR_SIZE", "3" );
-		defines.AddDefine( "TEX_DATA_SWIZZLE", "ggg" );
-		pShaderDebugAO = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		
-		
-		// debug information
-		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
-		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
-		
-		pDebugInfoSolid = new deoglDebugInformation( "Lights Solid", colorText, colorBg );
-		
-		pDebugInfoSolidCopyDepth = new deoglDebugInformation( "Copy Depth", colorText, colorBgSub );
-		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidCopyDepth );
-		
-		pDebugInfoSolid->GetChildren().Add( pRenderLightSky->GetDebugInfoSolid() );
-		pDebugInfoSolid->GetChildren().Add( pRenderLightPoint->GetDebugInfoSolid() );
-		pDebugInfoSolid->GetChildren().Add( pRenderLightSpot->GetDebugInfoSolid() );
-		
-		pDebugInfoSolidParticle = new deoglDebugInformation( "Particle", colorText, colorBgSub );
-		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidParticle );
-		
-		pDebugInfoSolidSSSSS = new deoglDebugInformation( "SSSSS", colorText, colorBgSub );
-		pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidSSSSS );
-		
-		
-		
-		pDebugInfoTransparent = new deoglDebugInformation( "Lights Transp", colorText, colorBg );
-		
-		pDebugInfoTransparentCopyDepth = new deoglDebugInformation( "Copy Depth", colorText, colorBgSub );
-		pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentCopyDepth );
-		
-		pDebugInfoTransparent->GetChildren().Add( pRenderLightSky->GetDebugInfoTransparent() );
-		pDebugInfoTransparent->GetChildren().Add( pRenderLightPoint->GetDebugInfoTransparent() );
-		pDebugInfoTransparent->GetChildren().Add( pRenderLightSpot->GetDebugInfoTransparent() );
-		
-		pDebugInfoTransparentSSSSS = new deoglDebugInformation( "SSSSS", colorText, colorBgSub );
-		pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentSSSSS );
-		
-		
-		
-		DevModeDebugInfoChanged();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	renderThread.GetShader().SetCommonDefines( commonDefines );
+	
+	pShadowPB.TakeOver( deoglSkinShader::CreateSPBRender( renderThread ) );
+	pOccMapPB.TakeOver( deoglSkinShader::CreateSPBOccMap( renderThread ) );
+	
+	pRenderTask = new deoglRenderTask( renderThread );
+	pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
+	
+	pRenderLightSky = new deoglRenderLightSky( renderThread );
+	pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
+	pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
+	pRenderLightParticles = new deoglRenderLightParticles( renderThread );
+	pRenderGI = new deoglRenderGI( renderThread );
+	
+	
+	
+	// sssss
+	pipconf.Reset();
+	pipconf.SetMasks( true, true, true, false, false );
+	pipconf.EnableBlendAdd();
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
+	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSSSS = pipelineManager.GetWith( pipconf );
+	
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
 	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSSSSSStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// ambient occlusion
+	pipconf.Reset();
+	pipconf.SetMasks( false, true, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
+	defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
+	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOLocal = pipelineManager.GetWith( pipconf );
+	
+	// ambient occlusion stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOLocalStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// ambient occlusion blur phase 1
+	pipconf.SetMasks( true, false, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
+	defines.SetDefine( "TAP_COUNT", 9 );
+	defines.SetDefine( "OUT_DATA_SIZE", 1 );
+	defines.SetDefine( "TEX_DATA_SIZE", 1 );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
+	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+	defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur1 = pipelineManager.GetWith( pipconf );
+	
+	// ambient occlusion blur phase 1 stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur1Stereo = pipelineManager.GetWith( pipconf );
+	
+	
+	// ambient occlusion blur phase 2
+	pipconf.SetMasks( false, true, false, false, false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
+	defines.SetDefine( "TAP_COUNT", 9 );
+	defines.SetDefine( "OUT_DATA_SIZE", 3 );
+	defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
+	defines.SetDefine( "TEX_DATA_SIZE", 1 );
+	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
+	defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur2 = pipelineManager.GetWith( pipconf );
+	
+	// ambient occlusion blur phase 2 stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineAOBlur2Stereo = pipelineManager.GetWith( pipconf );
+	
+	
+	// ambient occlusion debug
+	pipconf.SetMasks( true, true, true, false, false );
+	pipconf.SetEnableBlend( false );
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
+	defines.SetDefine( "TEXTURELEVEL", 1 );
+	defines.SetDefine( "OUT_COLOR_SIZE", 3 );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineDebugAO = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// copy depth
+	pipconf.Reset();
+	pipconf.SetMasks( false, false, false, false, true );
+	pipconf.EnableDepthTestAlways();
+	
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
+	
+	// copy depth stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// debug information
+	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
+	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
+	
+	pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Lights Solid", colorText, colorBg ) );
+	
+	pDebugInfoSolidCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
+	pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidCopyDepth );
+	
+	pDebugInfoSolid->GetChildren().Add( pRenderLightSky->GetDebugInfoSolid() );
+	pDebugInfoSolid->GetChildren().Add( pRenderLightPoint->GetDebugInfoSolid() );
+	pDebugInfoSolid->GetChildren().Add( pRenderLightSpot->GetDebugInfoSolid() );
+	
+	pDebugInfoSolidParticle.TakeOver( new deoglDebugInformation( "Particle", colorText, colorBgSub ) );
+	pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidParticle );
+	
+	pDebugInfoSolidSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
+	pDebugInfoSolid->GetChildren().Add( pDebugInfoSolidSSSSS );
+	
+	
+	
+	pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Lights Transp", colorText, colorBg ) );
+	
+	pDebugInfoTransparentCopyDepth.TakeOver( new deoglDebugInformation( "Copy Depth", colorText, colorBgSub ) );
+	pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentCopyDepth );
+	
+	pDebugInfoTransparent->GetChildren().Add( pRenderLightSky->GetDebugInfoTransparent() );
+	pDebugInfoTransparent->GetChildren().Add( pRenderLightPoint->GetDebugInfoTransparent() );
+	pDebugInfoTransparent->GetChildren().Add( pRenderLightSpot->GetDebugInfoTransparent() );
+	
+	pDebugInfoTransparentSSSSS.TakeOver( new deoglDebugInformation( "SSSSS", colorText, colorBgSub ) );
+	pDebugInfoTransparent->GetChildren().Add( pDebugInfoTransparentSSSSS );
+	
+	
+	
+	DevModeDebugInfoChanged();
 }
 
 deoglRenderLight::~deoglRenderLight(){
-	pCleanUp();
 }
 
 
@@ -283,8 +311,11 @@ deoglRenderLight::~deoglRenderLight(){
 // Rendering
 //////////////
 
-void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
+void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, solid
+		? ( mask ? "Light.RenderLights(Solid,Masked)" : "Light.RenderLights(Solid)" )
+		: ( mask ? "Light.RenderLights(Transparent,Masked)" : "Light.RenderLights(Transparent)" ) );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();
 	
@@ -295,6 +326,7 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	DebugTimersReset( plan, false );
 	
 	// copy the depth. this is only required if we are not using encoded depth
+	/*
 	if( renderThread.GetDebug().GetDeveloperMode().GetDebugEnableLightDepthStencil() ){
 		renderThread.GetDeferredRendering().CopyFirstDepthToSecond( true, true );
 		
@@ -304,33 +336,36 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		}else{
 			DebugTimer2Sample( plan, *pDebugInfoTransparentCopyDepth, true );
 		}
+	}*/
+	
+	// renderThread.GetDeferredRendering().CopyFirstDepthToSecond( true, false );
+	CopyDepth1ToDepth3( plan );
+	
+	if( solid ){
+		DebugTimer2Sample( plan, *pDebugInfoSolidCopyDepth, true );
+		
+	}else{
+		DebugTimer2Sample( plan, *pDebugInfoTransparentCopyDepth, true );
 	}
 	
 	// render lights
 	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
 	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
 	
-	if( solid && ! mask && hasGIStateUpdate ){
+	if( solid && ! mask && ! xray && hasGIStateUpdate ){
 		pRenderGI->ClearProbes( plan );
 	}
 	
 	RestoreFBO( plan );
 	
 	if( sssssEnable ){
-		deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+		pPipelineClearBuffers->Activate();
+		renderThread.GetDeferredRendering().ActivateFBOTemporary2( false );
+		
 		GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		
-		defren.ActivateFBOTemporary2( false );
-		
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-		
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-		
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	}
 	
-	PrepareRenderParamBlockLight( plan );
 	if( hasGIStateRender ){
 		pRenderGI->PrepareUBORenderLight( plan );
 	}
@@ -342,15 +377,16 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	// fast as possible the render task building is done using parallel tasks. by rendering
 	// sky light as last light type before GI reduces the time waiting for the parallel
 	// tasks to finish
-	pRenderLightSky->RenderLights( plan, solid, mask );
+	pRenderLightSky->RenderLights( plan, solid, mask, xray );
 	
 	if( solid && ! mask && hasGIStateUpdate ){
 		if( hasGIStateRender ){
 			pRenderGI->RenderLightGIRay( plan );
 		}
 		pRenderGI->UpdateProbes( plan );
-		pRenderGI->MoveProbes( plan );
+		SetViewport( plan );
 	}
+	
 	if( hasGIStateRender ){
 		pRenderGI->RenderLight( plan, solid );
 	}
@@ -393,9 +429,10 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 
 void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, solid ? "Light.RenderAO(Solid)" : "Light.RenderAO(Transparent)" );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
-	if( ! config.GetSSAOEnable() ){
+	if( ! config.GetSSAOEnable() || plan.GetDisableLights() ){
 		return;
 	}
 	
@@ -411,69 +448,26 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	
 	// render SSAO into green channel
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
-	//OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-	//OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	//OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	//OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
-	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineAOLocalStereo : pPipelineAOLocal;
+	pipeline->Activate();
 	
 	defren.ActivateFBOAOSolidity( false );
+	SetViewport( plan );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_TRUE, GL_FALSE, GL_FALSE ) );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	renderThread.GetShader().ActivateShader( pShaderAOLocal );
-	shader = pShaderAOLocal->GetCompiled();
-	
-	defren.SetShaderParamFSQuad( *shader, spaolQuadParams );
-	shader->SetParameterVector4( spaolPosTransform, plan.GetDepthToPosition() );
-	shader->SetParameterVector2( spaolPosTransform2, plan.GetDepthToPosition2() );
-	shader->SetParameterFloat( spaolTCTransform,
-		2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
-	defren.SetShaderViewport( *shader, spaolTCClamp, true );
-	shader->SetParameterFloat( spaolRadiusFactor, plan.GetProjectionMatrix().a11 * 0.5f );
-	
-	const float ssaoRandomAngleConstant = 6.2831853 * config.GetSSAOTurnCount(); // 2 * pi * turns
-	const float ssaoSelfOcclusion = 1.0f - cosf( config.GetSSAOSelfOcclusionAngle() * DEG2RAD );
-	const float ssaoEpsilon = 1e-5f;
-	const float ssaoScale = 2.0f; // sigma * 2.0
-	const float ssaoTapCount = ( float )config.GetSSAOTapCount();
-	const float ssaoRadius = config.GetSSAORadius();
-	const float ssaoInfluenceRadius = config.GetSSAORadius();
-	const float ssaoRadiusLimit = config.GetSSAORadiusLimit();
-	
-	shader->SetParameterFloat( spaolParamSSAO,
-		ssaoSelfOcclusion, ssaoEpsilon, ssaoScale, ssaoRandomAngleConstant );
-	shader->SetParameterFloat( spaolParamTap,
-		ssaoTapCount, ssaoRadius, ssaoInfluenceRadius, ssaoRadiusLimit );
-	
-	const int maxSize = ( width > height ) ? width : height;
-	const float mipMapMaxLevel = floorf( log2f( ( float )maxSize ) - 3.0f );
-	const float mipMapBase = log2f( config.GetSSAOMipMapBase() );
-	
-	shader->SetParameterFloat( spaolMipMapParams,
-		( float )width, ( float )height, mipMapBase, mipMapMaxLevel );
-	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureAOSolidity(), "ao_local" );
 	}
-	
 	
 	
 	// gaussian blur with 9 taps (17 pixels size): pass 1
@@ -481,28 +475,25 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const float blurWeights[ 4 ] = { 2.967529e-1f, 9.442139e-2f, 1.037598e-2f, 2.593994e-4f };
 	const float edgeBlurThreshold = config.GetSSAOEdgeBlurThreshold();
 	
-	defren.ActivateFBOTemporary3();
+	pipeline = plan.GetRenderStereo() ? pPipelineAOBlur1Stereo : pPipelineAOBlur1;
+	pipeline->Activate();
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	defren.ActivateFBOTemporary3();
+	SetViewport( plan );
+	
 	const GLfloat clearColor[ 4 ] = { 1.0f, 1.0f, 1.0f, 0.0f };
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
-	renderThread.GetShader().ActivateShader( pShaderAOBlur1 );
-	shader = pShaderAOBlur1->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
-	
-	defren.SetShaderParamFSQuad( *shader, spaobQuadParams );
 	shader->SetParameterFloat( spaobClamp,
 		pixelSizeU * ( ( float )width - 0.5f ), pixelSizeV * ( ( float )height - 0.5f ) );
-	shader->SetParameterFloat( spaobDepthTransform,
-		plan.GetDepthToPosition().x, plan.GetDepthToPosition().y, edgeBlurThreshold );
+	shader->SetParameterFloat( spaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
 	shader->SetParameterFloat( spaobWeights1,
 		0.1963806f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
@@ -517,31 +508,31 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spaobOffsets4,
 		blurOffsets[ 3 ] * pixelSizeU, 0.0f, -blurOffsets[ 3 ] * pixelSizeU, 0.0f );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureTemporary3(), "ao_local_blur1" );
 	}
 	
 	
 	
 	// gaussian blur with 9 taps (17 pixels size): pass 2
+	pipeline = plan.GetRenderStereo() ? pPipelineAOBlur2Stereo : pPipelineAOBlur2;
+	pipeline->Activate();
+	
 	defren.ActivateFBOAOSolidity( false );
+	SetViewport( plan );
 	
-	renderThread.GetShader().ActivateShader( pShaderAOBlur2 );
-	shader = pShaderAOBlur2->GetCompiled();
+	shader = &pipeline->GetGlShader();
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
 	
-	defren.SetShaderParamFSQuad( *shader, spaobQuadParams );
 	shader->SetParameterFloat( spaobClamp,
 		pixelSizeU * ( ( float )width - 0.5f ), pixelSizeV * ( ( float )height - 0.5f ) );
-	shader->SetParameterFloat( spaobDepthTransform,
-		plan.GetDepthToPosition().x, plan.GetDepthToPosition().y, edgeBlurThreshold );
+	shader->SetParameterFloat( spaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
 	shader->SetParameterFloat( spaobWeights1,
 		0.1963806f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
@@ -556,30 +547,18 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spaobOffsets4,
 		0.0f, blurOffsets[ 3 ] * pixelSizeV, 0.0f, -blurOffsets[ 3 ] * pixelSizeV );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_TRUE, GL_FALSE, GL_FALSE ) );
-	
-	//OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	//OGL_CHECK( renderThread, pglBlendEquation( GL_MIN ) );
-	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	
-	//OGL_CHECK( renderThread, pglBlendEquation( GL_FUNC_ADD ) );
-	//OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	RenderFullScreenQuad( plan );
 	
 	// debug output
 	if( devmode.GetShowSSAO() ){
+		pPipelineDebugAO->Activate();
+		
 		renderThread.GetFramebuffer().Activate( devmode.GetFBODebugImageWith( width, height ) );
+		SetViewport( plan );
 		
-		renderThread.GetShader().ActivateShader( pShaderDebugAO );
-		shader = pShaderDebugAO->GetCompiled();
+		shader = &pPipelineDebugAO->GetGlShader();
 		
-		tsmgr.EnableTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
-		
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-		
-		OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-		OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 		shader->SetParameterFloat( spdaoPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
 		defren.SetShaderParamFSQuad( *shader, spdaoTCTransform );
@@ -592,7 +571,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureAOSolidity(), "ao_local_blur2" );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
@@ -602,114 +581,57 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 
 void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	
-	//OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-	//OGL_CHECK( renderThread, glStencilMask( 0 ) );
-	//OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	//OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, plan.GetStencilRefValue(), ~0 ) );
-	
+	const deoglDebugTraceGroup debugTrace( renderThread, solid ? "Light.RenderSSSSS(Solid)" : "Light.RenderSSSSS(Transparent)" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineSSSSSStereo : *pPipelineSSSSS;
+	pipeline.Activate();
+	
 	defren.ActivateFBOColor( false, false );
+	SetViewport( plan );
 	
-	renderThread.GetShader().ActivateShader( pShaderSSSSS );
-	deoglShaderCompiled * const shader = pShaderSSSSS->GetCompiled();
-	
-	defren.SetShaderParamFSQuad( *shader, spsssssQuadParams );
-	shader->SetParameterVector4( spsssssPosTransform, plan.GetDepthToPosition() );
-	shader->SetParameterVector2( spsssssPosTransform2, plan.GetDepthToPosition2() );
-	shader->SetParameterFloat( spsssssTCTransform, 2.0f / defren.GetScalingU(),
-		2.0f / defren.GetScalingV(), -1.0f, -1.0f );
-	defren.SetShaderViewport( *shader, spsssssTCClamp, true );
-	
-	const float largestPixelSize = decMath::max( defren.GetPixelSizeU(), defren.GetPixelSizeV() );
-	const float dropSubSurfaceThreshold = 0.001f; // config
-	const int tapCount = 18; //9; //18; // config: 9-18
-	const int turnCount = 7; //5; //7; // config
-	const float angleConstant = 6.2831853f * float( turnCount ); // pi * 2.0
-	const float tapRadiusLimit = 0.5f; // 50% of screen size
-	const float tapDropRadiusThreshold = 1.5f; // 1 pixel radius (1.44 at square boundary)
-	
-	shader->SetParameterFloat( spsssssDropSubSurfaceThreshold, dropSubSurfaceThreshold );
-	
-	shader->SetParameterInt( spsssssTapCount, tapCount );
-	shader->SetParameterFloat( spsssssAngleConstant, angleConstant );
-	shader->SetParameterFloat( spsssssTapRadiusFactor, plan.GetProjectionMatrix().a11 * 0.5f );
-	shader->SetParameterFloat( spsssssTapRadiusLimit, tapRadiusLimit );
-	shader->SetParameterFloat( spsssssTapDropRadiusThreshold, tapDropRadiusThreshold * largestPixelSize );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 1122 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureDiffuse(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
 			"sssss_texture1", deoglDebugSaveTexture::ecColorLinear2sRGB );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureSubSurface(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureSubSurface(),
 			"sssss_subsurface", deoglDebugSaveTexture::ecNoConversion );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureTemporary2(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureTemporary2(),
 			"sssss_temporary2", deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 	
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuadVAO( plan );
 }
 
 
 
-void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
+void deoglRenderLight::CopyDepth1ToDepth3( deoglRenderPlan &plan ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Light.CopyDepth1ToDepth3" );
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
-	pLightPB->MapBuffer();
-	try{
-		pLightPB->SetParameterDataVec4( deoglLightShader::erutPosTransform, plan.GetDepthToPosition() );
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutPosTransform2, plan.GetDepthToPosition2() );
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
-		
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
-			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
-			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
-		
-		pLightPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
-			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
-			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
-		
-		// global illumination
-		const deoglGIState * const giState = plan.GetRenderGIState();
-		if( giState ){
-			// ray
-			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
-				* plan.GetCameraMatrix() );
-			
-			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
-			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
-				matrix.GetRotationMatrix().QuickInvert() );
-			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
-				plan.GetProjectionMatrix() );
-			
-			// general
-			pLightPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
-		}
-		
-	}catch( const deException & ){
-		pLightPB->UnmapBuffer();
-		throw;
-	}
-	pLightPB->UnmapBuffer();
+	defren.GetDepthTexture3()->CopyFrom( *defren.GetDepthTexture1(), false );
+	
+	/*
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineCopyDepthStereo : *pPipelineCopyDepth;
+	pipeline.Activate();
+	defren.ActivateFBODepth3();
+	
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	
+	renderThread.GetTexture().GetStages().EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	
+	defren.SetShaderParamFSQuad( shader, spcdQuadParams );
+	RenderFullScreenQuadVAO( plan );
+	*/
 }
 
 
@@ -787,64 +709,8 @@ void deoglRenderLight::pCleanUp(){
 	if( pRenderTask ){
 		delete pRenderTask;
 	}
-	if( pOccMapPB ){
-		pOccMapPB->FreeReference();
-	}
-	if( pShadowCubePB ){
-		pShadowCubePB->FreeReference();
-	}
-	if( pShadowCascadedPB ){
-		pShadowCascadedPB->FreeReference();
-	}
-	if( pShadowPB ){
-		pShadowPB->FreeReference();
-	}
-	if( pLightPB ){
-		pLightPB->FreeReference();
-	}
 	
-	if( pShaderSSSSS ){
-		pShaderSSSSS->RemoveUsage();
-	}
-	
-	if( pShaderDebugAO ){
-		pShaderDebugAO->RemoveUsage();
-	}
-	if( pShaderAOBlur2 ){
-		pShaderAOBlur2->RemoveUsage();
-	}
-	if( pShaderAOBlur1 ){
-		pShaderAOBlur1->RemoveUsage();
-	}
-	if( pShaderAOLocal ){
-		pShaderAOLocal->RemoveUsage();
-	}
-	if( pShaderCopyDepth ){
-		pShaderCopyDepth->RemoveUsage();
-	}
-	
-	if( pDebugInfoSolid ){
-		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoSolid );
-		pDebugInfoSolid->FreeReference();
-	}
-	if( pDebugInfoSolidCopyDepth ){
-		pDebugInfoSolidCopyDepth->FreeReference();
-	}
-	if( pDebugInfoSolidParticle ){
-		pDebugInfoSolidParticle->FreeReference();
-	}
-	if( pDebugInfoSolidSSSSS ){
-		pDebugInfoSolidSSSSS->FreeReference();
-	}
-	
-	if( pDebugInfoTransparent ){
-		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoTransparent );
-		pDebugInfoTransparent->FreeReference();
-	}
-	if( pDebugInfoTransparentCopyDepth ){
-		pDebugInfoTransparentCopyDepth->FreeReference();
-	}
-	if( pDebugInfoTransparentSSSSS ){
-		pDebugInfoTransparentSSSSS->FreeReference();
-	}
+	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
+	dilist.RemoveIfPresent( pDebugInfoSolid );
+	dilist.RemoveIfPresent( pDebugInfoTransparent );
 }

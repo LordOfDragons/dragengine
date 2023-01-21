@@ -72,6 +72,17 @@
 
 namespace {
 
+class cListenerResetDuration : public ceDialogEditStrip::Listener{
+	ceWDSLane &pLane;
+	
+public:
+	cListenerResetDuration( ceWDSLane &lane ) : pLane( lane ){}
+	
+	virtual float DefaultDuration ( const decString &id ){
+		return pLane.DefaultDuration( id );
+	}
+};
+
 class cActionStripAdd : public igdeAction{
 	ceWDSLane &pLane;
 	const int pIndex;
@@ -96,10 +107,11 @@ public:
 		decStringList idList;
 		pLane.FillIDList( idList );
 		dialog.SetIDList( idList );
+		dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
+		dialog.ResetDuration();
+		dialog.SetAutoResetDuration( true );
 		
-		dialog.SetDuration( 0.5f );
-		
-		if( ! dialog.Run( &pLane.GetWindow() ) ){
+		if( ! dialog.Run( &pLane.GetWindow().GetWindowMain() ) ){
 			return;
 		}
 		
@@ -869,10 +881,12 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 	decStringList idList;
 	FillIDList( idList );
 	dialog.SetIDList( idList );
+	dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( *this ) ) );
+	dialog.SetAutoResetDuration( false );
 	
 	dialog.SetFromStrip( *strip );
 	
-	if( ! dialog.Run( &pWindow ) ){
+	if( ! dialog.Run( &pWindow.GetWindowMain() ) ){
 		return;
 	}
 	
@@ -885,6 +899,10 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 	igdeUndoReference undo;
 	undo.TakeOver( UndoStripReplace( strip, ( ceStrip* )( deObject* )newStrip ) );
 	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
+}
+
+float ceWDSLane::DefaultDuration( const decString & ) {
+	return 0.5f;
 }
 
 

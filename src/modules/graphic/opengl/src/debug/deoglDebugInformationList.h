@@ -29,7 +29,7 @@ class deoglDebugInformation;
 
 
 /**
- * \brief List of debug information for performance profiling.
+ * List of debug information for performance profiling.
  */
 class deoglDebugInformationList{
 private:
@@ -40,10 +40,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create debug information list. */
+	/** Create debug information list. */
 	deoglDebugInformationList();
 	
-	/** \brief Clean up debug information list. */
+	/** Clean up debug information list. */
 	virtual ~deoglDebugInformationList();
 	/*@}*/
 	
@@ -51,22 +51,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of children. */
+	/** Number of children. */
 	int GetCount() const;
 	
-	/** \brief Child at index. */
+	/** Child at index. */
 	deoglDebugInformation *GetAt( int index ) const;
 	
-	/** \brief Add child. */
+	/** Add child. */
 	void Add( deoglDebugInformation *child );
 	
-	/** \brief Remove child. */
+	/** Remove child. */
 	void Remove( deoglDebugInformation *child );
 	
-	/** \brief Remove child if present. */
+	/** Remove child if present. */
 	void RemoveIfPresent( deoglDebugInformation *child );
 	
-	/** \brief Remove all children. */
+	/** Remove all children. */
 	void RemoveAll();
 	/*@}*/
 };

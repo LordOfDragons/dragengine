@@ -1,17 +1,18 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>ToneMap Average LogLum</name>
 	
 	<version>130</version>
 	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
 	<texture name='texValues' target='0'/>
 	
-	<parameter name='pPosTransform'/> <!-- 0 -->
-	<parameter name='pTCTransform'/> <!-- 1 -->
-	<parameter name='pOffsets'/> <!-- 2 -->
+	<parameter name='pTCTransform'/>
+	<parameter name='pOffsets'/>
 	
 	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
 	
 	<output name='outValue' target='0'/>
 	

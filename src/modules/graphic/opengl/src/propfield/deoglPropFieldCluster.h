@@ -145,7 +145,7 @@ public:
 	void PrepareBendStateData( const dePropFieldType &type );
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -182,7 +182,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/** Mark texture units configurations dirty. */
 	void MarkTUCsDirty();

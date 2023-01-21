@@ -86,7 +86,7 @@ public:
 	
 private:
 	void pWritePose( decXmlWriter &writer, const ceActorPose &pose );
-	void pWriteController( decXmlWriter &writer, const ceActorController &controller, int index );
+	void pWriteController( decXmlWriter &writer, const ceActorController &controller );
 	
 	void pReadPose( const decXmlElementTag &root, ceConversationActor &actor );
 	void pReadController( const decXmlElementTag &root, ceActorController &controller );

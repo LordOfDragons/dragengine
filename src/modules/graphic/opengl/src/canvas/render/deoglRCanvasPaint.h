@@ -30,7 +30,7 @@ class deoglSharedVBOBlock;
 
 
 /**
- * \brief Render canvas paint.
+ * Render canvas paint.
  */
 class deoglRCanvasPaint : public deoglRCanvas{
 private:
@@ -64,10 +64,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasPaint( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasPaint();
 	/*@}*/
 	
@@ -75,44 +75,44 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set size. */
+	/** Set size. */
 	virtual void SetSize( const decVector2 &size );
 	
-	/** \brief Shape type. */
+	/** Shape type. */
 	inline deCanvasPaint::eShapeTypes GetShapeType() const{ return pShapeType; }
 	
 	/**
-	 * \brief Set shape type.
+	 * Set shape type.
 	 * \throws deeInvalidParam \em shapeType is not a member of deCanvasPaint::eShapeTypes.
 	 */
 	void SetShapeType( deCanvasPaint::eShapeTypes shapeType );
 	
-	/** \brief Line color. */
+	/** Line color. */
 	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
-	/** \brief Set line color. */
+	/** Set line color. */
 	void SetLineColor( const decColor &color );
 	
-	/** \brief Fill color. */
+	/** Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
-	/** \brief Set fill color. */
+	/** Set fill color. */
 	void SetFillColor( const decColor &color );
 	
-	/** \brief Line thickness in units. */
+	/** Line thickness in units. */
 	inline float GetThickness() const{ return pThickness; }
 	
 	/**
-	 * \brief Line thickness in units.
+	 * Line thickness in units.
 	 * \details \em thickness is clamped to 0 or larger.
 	 */
 	void SetThickness( float thickness );
 	
-	/** \brief Requires thick rendering. */
+	/** Requires thick rendering. */
 	inline bool IsThick() const{ return pIsThick; }
 	
 	/**
-	 * \brief Round corner in X direction as percentage.
+	 * Round corner in X direction as percentage.
 	 * 
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
@@ -120,7 +120,7 @@ public:
 	inline float GetRoundCornerX() const{ return pRoundCornerX; }
 	
 	/**
-	 * \brief Set round corner in X direction as percentage.
+	 * Set round corner in X direction as percentage.
 	 * 
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
@@ -128,7 +128,7 @@ public:
 	void SetRoundCornerX( float roundCorner );
 	
 	/**
-	 * \brief Round corner in Y direction as percentage.
+	 * Round corner in Y direction as percentage.
 	 * 
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
@@ -136,7 +136,7 @@ public:
 	inline float GetRoundCornerY() const{ return pRoundCornerY; }
 	
 	/**
-	 * \brief Set round corner in Y direction as percentage.
+	 * Set round corner in Y direction as percentage.
 	 * 
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
@@ -144,28 +144,28 @@ public:
 	void SetRoundCornerY( float roundCorner );
 	
 	/**
-	 * \brief Start angle in degrees from 0 to 360.
+	 * Start angle in degrees from 0 to 360.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
 	inline float GetStartAngle() const{ return pStartAngle; }
 	
 	/**
-	 * \brief Set start angle in degrees from 0 to 360.
+	 * Set start angle in degrees from 0 to 360.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
 	void SetStartAngle( float angle );
 	
 	/**
-	 * \brief End angle in degrees from 0 to 360.
+	 * End angle in degrees from 0 to 360.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
 	inline float GetEndAngle() const{ return pEndAngle; }
 	
 	/**
-	 * \brief Set end angle in degrees from 0 to 360.
+	 * Set end angle in degrees from 0 to 360.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
@@ -175,52 +175,52 @@ public:
 	
 	/** \name Points */
 	/*@{*/
-	/** \brief Number of points. */
+	/** Number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	
 	/**
-	 * \brief Set number of points.
+	 * Set number of points.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
 	void SetPointCount( int count );
 	
-	/** \brief Points. */
+	/** Points. */
 	inline decVector2 *GetPoints() const{ return pPoints; }
 	
 	
 	
-	/** \brief VBO block. */
+	/** VBO block. */
 	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
 	
 	
 	
-	/** \brief Fill draw mode. */
+	/** Fill draw mode. */
 	inline GLenum GetDrawModeFill() const{ return pDrawModeFill; }
 	
-	/** \brief VBO fill offset. */
+	/** VBO fill offset. */
 	inline int GetDrawOffsetFill() const{ return pDrawOffsetFill; }
 	
-	/** \brief VBO fill count. */
+	/** VBO fill count. */
 	inline int GetDrawCountFill() const{ return pDrawCountFill; }
 	
 	
 	
-	/** \brief Line draw mode. */
+	/** Line draw mode. */
 	inline GLenum GetDrawModeLine() const{ return pDrawModeLine; }
 	
-	/** \brief VBO line offset. */
+	/** VBO line offset. */
 	inline int GetDrawOffsetLine() const{ return pDrawOffsetLine; }
 	
-	/** \brief VBO line count. */
+	/** VBO line count. */
 	inline int GetDrawCountLine() const{ return pDrawCountLine; }
 	/*@}*/
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Render. */
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/
 	

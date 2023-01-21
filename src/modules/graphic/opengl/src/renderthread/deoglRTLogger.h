@@ -30,7 +30,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render thread logging.
+ * Render thread logging.
  */
 class deoglRTLogger{
 private:
@@ -39,10 +39,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread logger. */
+	/** Create render thread logger. */
 	deoglRTLogger( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread renderers. */
+	/** Clean up render thread renderers. */
 	~deoglRTLogger();
 	/*@}*/
 	
@@ -51,56 +51,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Logger.
+	 * Logger.
 	 * \details For asynchronous rendering returns the buffered logger. For synchronous
 	 *          rendering returns the game engine logger. */
 	deLogger &GetLogger();
 	
-	/** \brief Synchronize logging. */
+	/** Synchronize logging. */
 	void Synchronize();
 	
 	
 	
-	/** \brief Outputs an information message on the console. */
+	/** Outputs an information message on the console. */
 	void LogInfo( const char *message );
 	
-	/** \brief Outputs a formated information message on the console. */
+	/** Outputs a formated information message on the console. */
 	void LogInfoFormat( const char *message, ... )
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
-	/** \brief Outputs a formated information message on the console. */
+	/** Outputs a formated information message on the console. */
 	void LogInfoFormatUsing( const char *message, va_list args );
 	
-	/** \brief Outputs a warning message on the console. */
+	/** Outputs a warning message on the console. */
 	void LogWarn( const char *message );
 	
-	/** \brief Outputs a formated warning message on the console. */
+	/** Outputs a formated warning message on the console. */
 	void LogWarnFormat( const char *message, ... )
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
-	/** \brief Outputs a formated warning message on the console. */
+	/** Outputs a formated warning message on the console. */
 	void LogWarnFormatUsing( const char *message, va_list args );
 	
-	/** \brief Outputs an error message on the console. */
+	/** Outputs an error message on the console. */
 	void LogError( const char *message );
 	
-	/** \brief Outputs a formated error message on the console. */
+	/** Outputs a formated error message on the console. */
 	void LogErrorFormat( const char *message, ... )
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
-	/** \brief Outputs a formated error message on the console. */
+	/** Outputs a formated error message on the console. */
 	void LogErrorFormatUsing( const char *message, va_list args );
 	
-	/** \brief Outputs an exception as error message on the console. */
+	/** Outputs an exception as error message on the console. */
 	void LogException( const deException &exception );
 	/*@}*/
 };

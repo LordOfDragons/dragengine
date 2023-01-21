@@ -495,6 +495,26 @@ void deClassInputDevice::nfGetHandRig::RunFunction( dsRunTime *rt, dsValue *myse
 	ds.GetClassRig()->PushRig( rt, device.GetDevice()->GetHandRig() );
 }
 
+// public func bool getSupportsFaceEyeExpressions()
+deClassInputDevice::nfGetSupportsFaceEyeExpressions::nfGetSupportsFaceEyeExpressions( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getSupportsFaceEyeExpressions", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassInputDevice::nfGetSupportsFaceEyeExpressions::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	rt->PushBool( device.GetDevice()->GetSupportsFaceEyeExpressions() );
+}
+
+// public func bool getSupportsFaceMouthExpressions()
+deClassInputDevice::nfGetSupportsFaceMouthExpressions::nfGetSupportsFaceMouthExpressions( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getSupportsFaceMouthExpressions", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassInputDevice::nfGetSupportsFaceMouthExpressions::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	rt->PushBool( device.GetDevice()->GetSupportsFaceMouthExpressions() );
+}
+
 // public func Model getVRModel()
 deClassInputDevice::nfGetVRModel::nfGetVRModel( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "getVRModel", DSFT_FUNCTION,
@@ -661,6 +681,31 @@ void deClassInputDevice::nfGetDeviceBonePoseMatrix::RunFunction( dsRunTime *rt, 
 
 
 
+// public static func int getDeviceFaceExpressionCount()
+deClassInputDevice::nfGetDeviceFaceExpressionCount::nfGetDeviceFaceExpressionCount( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getDeviceFaceExpressionCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+}
+void deClassInputDevice::nfGetDeviceFaceExpressionCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	
+	rt->PushInt( device.GetFaceExpressionCount() );
+}
+
+// public static func float getDeviceFaceExpressionAt(int index)
+deClassInputDevice::nfGetDeviceFaceExpressionAt::nfGetDeviceFaceExpressionAt( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getDeviceFaceExpressionAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+	p_AddParameter( init.clsInteger ); // index
+}
+void deClassInputDevice::nfGetDeviceFaceExpressionAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	
+	rt->PushFloat( device.GetFaceExpressionAt( rt->GetValue( 0 )->GetInt() ) );
+}
+
+
+
 // public func int hashCode()
 deClassInputDevice::nfHashCode::nfHashCode( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
@@ -727,6 +772,7 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsInputDevice = this;
 	init.clsVoid = engine->GetClassVoid();
 	init.clsInteger = engine->GetClassInt();
+	init.clsFloat = engine->GetClassFloat();
 	init.clsString = engine->GetClassString();
 	init.clsBool = engine->GetClassBool();
 	init.clsObject = engine->GetClassObject();
@@ -782,6 +828,8 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetBoneConfiguration( init ) );
 	AddFunction( new nfGetFingerTipOffset( init ) );
 	AddFunction( new nfGetHandRig( init ) );
+	AddFunction( new nfGetSupportsFaceEyeExpressions( init ) );
+	AddFunction( new nfGetSupportsFaceMouthExpressions( init ) );
 	AddFunction( new nfGetVRModel( init ) );
 	AddFunction( new nfGetVRSkin( init ) );
 	
@@ -797,6 +845,9 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetDeviceBonePosePosition( init ) );
 	AddFunction( new nfGetDeviceBonePoseOrientation( init ) );
 	AddFunction( new nfGetDeviceBonePoseMatrix( init ) );
+	
+	AddFunction( new nfGetDeviceFaceExpressionCount( init ) );
+	AddFunction( new nfGetDeviceFaceExpressionAt( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

@@ -62,8 +62,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleTrackTo::dearRuleTrackTo( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleTrackTo &rule ) :
-dearRule( instance, firstLink, rule ),
+dearRuleTrackTo::dearRuleTrackTo( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleTrackTo &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 pTrackTo( rule ),
 
 pTrackBone( -1 ),

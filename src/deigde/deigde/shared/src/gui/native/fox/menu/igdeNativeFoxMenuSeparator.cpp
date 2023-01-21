@@ -47,30 +47,30 @@ FXIMPLEMENT( igdeNativeFoxMenuSeparator, FXMenuSeparator,
 
 igdeNativeFoxMenuSeparator::igdeNativeFoxMenuSeparator(){ }
 
-igdeNativeFoxMenuSeparator::igdeNativeFoxMenuSeparator( igdeMenuSeparator &owner, FXComposite *parent ) :
-FXMenuSeparator( parent ),
-pOwner( &owner ){
+igdeNativeFoxMenuSeparator::igdeNativeFoxMenuSeparator( igdeMenuSeparator &powner, FXComposite *pparent ) :
+FXMenuSeparator( pparent ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxMenuSeparator::~igdeNativeFoxMenuSeparator(){
 }
 
-igdeNativeFoxMenuSeparator *igdeNativeFoxMenuSeparator::CreateNativeWidget( igdeMenuSeparator &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxMenuSeparator *igdeNativeFoxMenuSeparator::CreateNativeWidget( igdeMenuSeparator &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxMenuSeparator( owner, parent );
+	return new igdeNativeFoxMenuSeparator( powner, pparent );
 }
 
 void igdeNativeFoxMenuSeparator::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }

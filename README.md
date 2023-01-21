@@ -11,6 +11,8 @@
 Example projects can be found on Development Wiki or in this repository:
 - Example Projects Repository: https://github.com/LordOfDragons/deexamples
 
+[![Nightly](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly.yml/badge.svg)](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly.yml)
+
 # License Information
 
 The Drag\[en\]gine Game Engine is dual licensed under [L-GPL](https://www.gnu.org/licenses/lgpl-3.0.html)

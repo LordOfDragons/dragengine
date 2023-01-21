@@ -224,6 +224,18 @@ bool delEngineInstanceThreaded::StartEngine(){
 				DETHROW_INFO( deeInvalidAction, "send log file name too short" );
 			}
 			
+			uint8_t flags = 0;
+			if( GetUseConsole() ){
+				flags |= 0x1;
+			}
+			
+			if( ! WriteFile( pipesInWrite, &flags, 1, &bytesWritten, NULL ) ){
+				DETHROW_INFO( deeInvalidAction, "send flags failed" );
+			}
+			if( bytesWritten < 1 ){
+				DETHROW_INFO( deeInvalidAction, "send flags too short" );
+			}
+			
 			// read sync
 //			printf( "reading sync\n" );
 			if( ! ReadFile( pipesOutRead, &sync, 1, &bytesRead, NULL ) ){
@@ -322,6 +334,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 			close( pipesOut[ 0 ] );
 			
 			delEngineProcess process( pipesIn[ 0 ], pipesOut[ 1 ], logFile.GetPathNative() );
+			process.SetUseConsole( GetUseConsole() );
 			
 			process.Run();
 			exit( 0 );
@@ -464,16 +477,16 @@ void delEngineInstanceThreaded::WriteUCharToPipe( int value ){
 	if( value < 0 || value > 0xff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint8_t uchar = ( uint8_t )value;
-	WriteToPipe( &uchar, sizeof( uint8_t ) );
+	const uint8_t value2 = ( uint8_t )value;
+	WriteToPipe( &value2, sizeof( uint8_t ) );
 }
 
 void delEngineInstanceThreaded::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t value2 = ( uint16_t )value;
+	WriteToPipe( &value2, sizeof( uint16_t ) );
 }
 
 void delEngineInstanceThreaded::WriteFloatToPipe( float value ){
@@ -508,15 +521,15 @@ void delEngineInstanceThreaded::WriteToPipe( const void *data, int length ){
 
 
 int delEngineInstanceThreaded::ReadUCharFromPipe(){
-	uint8_t uchar;
-	ReadFromPipe( &uchar, sizeof( uint8_t ) );
-	return uchar;
+	uint8_t value;
+	ReadFromPipe( &value, sizeof( uint8_t ) );
+	return value;
 }
 
 int delEngineInstanceThreaded::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t value;
+	ReadFromPipe( &value, sizeof( uint16_t ) );
+	return value;
 }
 
 int delEngineInstanceThreaded::ReadIntFromPipe(){
@@ -883,21 +896,31 @@ void delEngineInstanceThreaded::SetPathConfig( const char* path ){
 }
 
 void delEngineInstanceThreaded::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ){
-	if( ! vfsRoot ){
-		DETHROW_INFO( deeNullPointer, "vfsRoot" );
-	}
-	if( ! nativeDirectory ){
-		DETHROW_INFO( deeNullPointer, "nativeDirectory" );
-	}
+	VFSAddDiskDir( vfsRoot, nativeDirectory, readOnly, decStringSet() );
+}
+
+void delEngineInstanceThreaded::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
+bool readOnly, const decStringSet &hiddenPath ){
+	DEASSERT_NOTNULL( vfsRoot )
+	DEASSERT_NOTNULL( nativeDirectory )
+	
+	const int hiddenPathCount = hiddenPath.GetCount();
+	DEASSERT_TRUE( hiddenPathCount <= 0xffff )
 	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Sending eccVFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c) to process %i",
-		vfsRoot, nativeDirectory, readOnly?'y':'n', ( int )pProcessID );
+		"Sending eccVFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c,hiddenPath=%d) to process %i",
+		vfsRoot, nativeDirectory, readOnly?'y':'n', hiddenPathCount, ( int )pProcessID );
 	
 	WriteUCharToPipe( delEngineProcess::eccVFSAddDiskDir );
 	WriteString16ToPipe( vfsRoot );
 	WriteString16ToPipe( nativeDirectory );
 	WriteUCharToPipe( readOnly ? 1 : 0 );
+	
+	WriteUShortToPipe( ( unsigned short )hiddenPathCount );
+	int i;
+	for( i=0; i<hiddenPathCount; i++ ){
+		WriteString16ToPipe( hiddenPath.GetAt( i ) );
+	}
 	
 	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
 		DETHROW( deeInvalidAction );
@@ -916,16 +939,29 @@ void delEngineInstanceThreaded::VFSAddScriptSharedDataDir(){
 }
 
 void delEngineInstanceThreaded::VFSAddDelgaFile( const char *delgaFile, const char *archivePath ){
-	if( ! delgaFile ){
-		DETHROW_INFO( deeNullPointer, "delgaFile" );
-	}
+	VFSAddDelgaFile( delgaFile, archivePath, decStringSet() );
+}
+
+void delEngineInstanceThreaded::VFSAddDelgaFile( const char *delgaFile,
+const char *archivePath, const decStringSet &hiddenPath ){
+	DEASSERT_NOTNULL( delgaFile )
+	
+	const int hiddenPathCount = hiddenPath.GetCount();
+	DEASSERT_TRUE( hiddenPathCount <= 0xffff )
+	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Sending eccVFSAddDelga(delgaFile='%s', archivePath=%s) to process %i",
-		delgaFile, archivePath, ( int )pProcessID );
+		"Sending eccVFSAddDelga(delgaFile='%s', archivePath=%s, hiddenPath=%d) to process %i",
+		delgaFile, archivePath, hiddenPathCount, ( int )pProcessID );
 	
 	WriteUCharToPipe( delEngineProcess::eccVFSAddDelgaFile );
 	WriteString16ToPipe( delgaFile );
 	WriteString16ToPipe( archivePath );
+	
+	WriteUShortToPipe( ( unsigned short )hiddenPathCount );
+	int i;
+	for( i=0; i<hiddenPathCount; i++ ){
+		WriteString16ToPipe( hiddenPath.GetAt( i ) );
+	}
 	
 	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
 		DETHROW( deeInvalidAction );

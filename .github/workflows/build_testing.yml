@@ -1,0 +1,51 @@
+name: Build Testing
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      artifactInstallerCI:
+        required: true
+        type: string
+      artifactTesting:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: recursive
+          ref: ${{ inputs.branch }}
+      
+      - name: Get Linux CI Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifactInstallerCI }}
+        
+      - name: Install IGDE-CI
+        run: |
+          chmod 755 install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh
+          chmod 755 install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh
+          sudo ./install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
+          sudo ./install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
+        
+      - name: Distribute
+        run: deigde detesting/detesting.degp --project.profile.distribute TestingCI
+        
+      - name: Store DELGA
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactTesting }}
+          path: detesting/distribute/DETestingCI.delga
+          if-no-files-found: error

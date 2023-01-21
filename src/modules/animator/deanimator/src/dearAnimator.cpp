@@ -24,10 +24,12 @@
 
 #include "dearAnimator.h"
 #include "deDEAnimator.h"
+#include "animation/dearAnimation.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animation/deAnimation.h>
 
 
 
@@ -40,7 +42,12 @@
 dearAnimator::dearAnimator( deDEAnimator &module, deAnimator &animator ) :
 pModule( module ),
 pAnimator( animator ),
-pUpdateTracker( 0 ){
+pAnimation( nullptr ),
+pUpdateTracker( 0 )
+{
+	if( animator.GetAnimation() ){
+		pAnimation = ( dearAnimation* )animator.GetAnimation()->GetPeerAnimator();
+	}
 }
 
 dearAnimator::~dearAnimator(){
@@ -63,6 +70,11 @@ void dearAnimator::RigChanged(){
 
 void dearAnimator::AnimationChanged(){
 	pUpdateTracker++;
+	
+	pAnimation = nullptr;
+	if( pAnimator.GetAnimation() ){
+		pAnimation = ( dearAnimation* )pAnimator.GetAnimation()->GetPeerAnimator();
+	}
 }
 
 void dearAnimator::BonesChanged(){

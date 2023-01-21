@@ -23,11 +23,13 @@
 #include <stdlib.h>
 
 #include "deoglRenderToneMap.h"
+#include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
 #include "plan/deoglRenderPlan.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -37,14 +39,18 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/deoglTextureStageManager.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../vao/deoglVAO.h"
 #include "../world/deoglRCamera.h"
@@ -116,27 +122,17 @@ normal: bloom texture ( blocked after the bloom pass )
 ////////////////
 
 enum eSPColor2LogLum{
-	spc2llPosTransform,
-	spc2llTCTransform,
 	spc2llParam1,
 	spc2llParam2
 };
 
 enum eSPAverageLogLum{
-	spallPosTransform,
 	spallTCTransform,
 	spallOffsets
 };
 
 enum eSPParameters{
-	sppAvgLogLumTCs,
-	sppOptions,
-	sppAdaption
-};
-
-enum eSPBrightPass{
-	spbpPosToTC,
-	spbpOptions
+	sppAvgLogLumTCs
 };
 
 enum eSPBloomReduce{
@@ -145,7 +141,6 @@ enum eSPBloomReduce{
 };
 
 enum eSPBloomBlur{
-	spbbPosTransform,
 	spbbTCTransform,
 	spbbOffsets1,
 	spbbOffsets2,
@@ -162,22 +157,15 @@ enum eSPBloomAdd{
 };
 
 enum eSPToneMap{
-	sptmPosToBloom,
-	sptmOptions,
+	sptmTCBloomTransform,
 	sptmTCBloomClamp
 };
 
 enum eSPFinalize{
-	spfinPosTransform,
 	spfinTCTransform,
 	spfinGamma,
 	spfinBrightness,
 	spfinContrast
-};
-
-enum eSPLumPrepare{
-	splpPosTransform,
-	splpTCTransform
 };
 
 
@@ -185,16 +173,18 @@ enum eSPLumPrepare{
 // Debug Checks
 /////////////////
 
-static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRendering &defren, const deoglTexture &texture ){
+static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRendering &defren, const deoglArrayTexture &texture ){
 	const int defrenHeight = defren.GetHeight();
 	const int defrenWidth = defren.GetWidth();
+	const int defrenLayers = defren.GetLayerCount();
 	const int texHeight = texture.GetHeight();
 	const int texWidth = texture.GetWidth();
 	
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 );
+	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
 	
 	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer.GetPointer();
+	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
 	
 	int nanCulprits = 0;
 	int nanCulpritsR = 0;
@@ -206,43 +196,45 @@ static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRenderi
 	int infCulpritsG = 0;
 	int infCulpritsB = 0;
 	int infCulpritsA = 0;
-	int x, y;
+	int x, y, l;
 	
-	for( y=0; y<defrenHeight; y++ ){
-		for( x=0; x<defrenWidth; x++ ){
-			const int i = ( texHeight - 1 - y ) * texWidth + x;
-			
-			if( isnan( dummy[i].r ) ){
-				nanCulpritsR++;
-			}
-			if( isnan( dummy[i].g ) ){
-				nanCulpritsG++;
-			}
-			if( isnan( dummy[i].b ) ){
-				nanCulpritsB++;
-			}
-			if( isnan( dummy[i].a ) ){
-				nanCulpritsA++;
-			}
-			
-			if( isinf( dummy[i].r ) ){
-				infCulpritsR++;
-			}
-			if( isinf( dummy[i].g ) ){
-				infCulpritsG++;
-			}
-			if( isinf( dummy[i].b ) ){
-				infCulpritsB++;
-			}
-			if( isinf( dummy[i].a ) ){
-				infCulpritsA++;
-			}
-			
-			if( isnan( dummy[i].r ) || isnan( dummy[i].g ) || isnan( dummy[i].b ) || isnan( dummy[i].a ) ){
-				nanCulprits++;
-			}
-			if( isinf( dummy[i].r ) || isinf( dummy[i].g ) || isinf( dummy[i].b ) || isinf( dummy[i].a ) ){
-				infCulprits++;
+	for( l=0; l<defrenLayers; l++ ){
+		for( y=0; y<defrenHeight; y++ ){
+			for( x=0; x<defrenWidth; x++ ){
+				const int i = ( texWidth * texHeight ) * l + ( texHeight - 1 - y ) * texWidth + x;
+				
+				if( isnan( dummy[i].r ) ){
+					nanCulpritsR++;
+				}
+				if( isnan( dummy[i].g ) ){
+					nanCulpritsG++;
+				}
+				if( isnan( dummy[i].b ) ){
+					nanCulpritsB++;
+				}
+				if( isnan( dummy[i].a ) ){
+					nanCulpritsA++;
+				}
+				
+				if( isinf( dummy[i].r ) ){
+					infCulpritsR++;
+				}
+				if( isinf( dummy[i].g ) ){
+					infCulpritsG++;
+				}
+				if( isinf( dummy[i].b ) ){
+					infCulpritsB++;
+				}
+				if( isinf( dummy[i].a ) ){
+					infCulpritsA++;
+				}
+				
+				if( isnan( dummy[i].r ) || isnan( dummy[i].g ) || isnan( dummy[i].b ) || isnan( dummy[i].a ) ){
+					nanCulprits++;
+				}
+				if( isinf( dummy[i].r ) || isinf( dummy[i].g ) || isinf( dummy[i].b ) || isinf( dummy[i].a ) ){
+					infCulprits++;
+				}
 			}
 		}
 	}
@@ -254,15 +246,16 @@ static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRenderi
 	delete [] dummy;
 }
 
-static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglTexture &texture, int width, int height ){
+static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArrayTexture &texture, int width, int height ){
 	const int texHeight = texture.GetHeight();
 	const int texWidth = texture.GetWidth();
 	int totallyBlack = 0;
 	
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 );
+	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
 	
 	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer.GetPointer();
+	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
 	
 	const int count = width * height;
 	float avg = 0.0f;
@@ -297,55 +290,169 @@ static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglText
 ////////////////////////////
 
 deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglShaderDefines defines, commonDefines;
+	deoglPipelineConfiguration pipconf;
+	const deoglShaderSources *sources;
 	
 	pFBOToneMapParams = NULL;
 	pTextureToneMapParams = NULL;
 	
-	pShaderColor2LogLum = NULL;
-	pShaderAvgLogLum = NULL;
-	pShaderParameters = NULL;
-	pShaderBrightPass = NULL;
-	pShaderBloomReduce = NULL;
-	pShaderBloomBlur = NULL;
-	pShaderBloomAdd = NULL;
-	pShaderToneMap = NULL;
-	pShaderFinalize = NULL;
-	
-	pShaderLumPrepare = NULL;
-	
 	try{
+		renderThread.GetShader().SetCommonDefines( commonDefines );
+		
+		
+		pipconf.Reset();
+		pipconf.SetMasks( true, false, false, false, false );
+		pipconf.SetEnableScissorTest( true );
+		
+		// color to loglum
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
-		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineColor2LogLum = pipelineManager.GetWith( pipconf );
 		
+		// color to loglum stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineColor2LogLumStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		// average loglum
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
-		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineAvgLogLum = pipelineManager.GetWith( pipconf );
 		
+		// average loglum stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineAvgLogLumStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		// parameters
+		pipconf.SetColorMask( true, true, true, true );
+		
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
-		pShaderParameters = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineParameters = pipelineManager.GetWith( pipconf );
 		
+		defines.SetDefines( "SAMPLE_STEREO" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineParametersStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		// bright pass
+		pipconf.SetColorMask( true, true, true, false );
+		pipconf.SetEnableBlend( false );
+		
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
-		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBrightPass = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Reduce" );
-		pShaderBloomReduce = shaderManager.GetProgramWith( sources, defines );
 		
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBrightPassStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		// bloom reduce/add
+		// defines = commonDefines;
+		// pipconf2.SetShader( renderThread, "ToneMap Bloom Reduce", defines );
+		// pPipelineBloomReduce = pipelineManager.GetWith( pipconf2 ); // not used
+		//
+		// pipconf2.SetShader( renderThread, "ToneMap Bloom Add", defines );
+		// pPipelineBloomAdd = pipelineManager.GetWith( pipconf2 ); // not used
+		
+		
+		// bloom blur
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur" );
-		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBloomBlur = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add" );
-		pShaderBloomAdd = shaderManager.GetProgramWith( sources, defines );
+		// bloom blur stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBloomBlurStereo = pipelineManager.GetWith( pipconf );
 		
+		
+		// tone map
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
-		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineToneMap = pipelineManager.GetWith( pipconf );
 		
+		// tone map stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineToneMapStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		// ldr
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
-		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLdr = pipelineManager.GetWith( pipconf );
 		
+		// ldr stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLdrStereo = pipelineManager.GetWith( pipconf );
+		
+		
+		// lum prepare
+		pipconf.Reset();
+		pipconf.SetMasks( true, false, false, false, false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines = commonDefines;
+		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
-		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLumPrepare = pipelineManager.GetWith( pipconf );
+		
+		// lum prepare stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
+			sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
+		}
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLumPrepareStereo = pipelineManager.GetWith( pipconf );
+		
 		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );
 		
@@ -372,50 +479,29 @@ deoglRenderToneMap::~deoglRenderToneMap(){
 void deoglRenderToneMap::LuminancePrepare( deoglRenderPlan &plan ){
 DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.LuminancePrepare" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int height = defren.GetHeight();
-	const int width = defren.GetWidth();
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	defren.ActivateFBOLuminance();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	SetViewport( plan );
+	renderThread.GetTexture().GetStages().EnableArrayTexture(
+		0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderLumPrepare );
-	deoglShaderCompiled &shader = *pShaderLumPrepare->GetCompiled();
+	( plan.GetRenderStereo() ? pPipelineLumPrepareStereo : pPipelineLumPrepare )->Activate();
 	
-	shader.SetParameterFloat( splpPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	defren.SetShaderParamFSQuad( shader, splpTCTransform );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	RenderFullScreenQuadVAO( plan );
 DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
 }
 
 void deoglRenderToneMap::ToneMap( deoglRenderPlan &plan ){
 DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.ToneMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -441,6 +527,7 @@ DEBUG_PRINT_TIMER_TOTAL( "Tone-Mapping" );
 
 void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.CalculateSceneKey" );
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -454,8 +541,8 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	}
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-// 		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureColor(), "tonemap_input_color" );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
+// 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureColor(), "tonemap_input_color" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
 	}
 	
 	// convert color to log luminance. to allow for proper averaging the output image is reduced
@@ -497,38 +584,40 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	clampU = pixelSizeU * ( ( float )realWidth - 0.5f );
 	clampV = pixelSizeV * ( ( float )realHeight - 0.5f );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	
 	defren.ActivateFBOTemporary1( false );
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
 // 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderColor2LogLum );
-	shader = pShaderColor2LogLum->GetCompiled();
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineColor2LogLumStereo : pPipelineColor2LogLum;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
 	
-	shader->SetParameterFloat( spc2llPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	defren.SetShaderParamFSQuad( *shader, spc2llTCTransform, 0.0f, 0.0f, ( float )realWidth, ( float )realHeight );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	shader->SetParameterFloat( spc2llParam1, tcOffsetU, 0.0f, 0.0f, tcOffsetV );
 	shader->SetParameterFloat( spc2llParam2, tcOffsetU, tcOffsetV, clampU, clampV );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
 			0, "tonemap_loglum", deoglDebugSaveTexture::ecLogIntensity );
 	}
 DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	
 	// average the log luminances
-	renderThread.GetShader().ActivateShader( pShaderAvgLogLum );
-	shader = pShaderAvgLogLum->GetCompiled();
+	pipeline = plan.GetRenderStereo() ? pPipelineAvgLogLumStereo : pPipelineAvgLogLum;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	modeTarget = false;
 	
 	if( useTextureBarrier ){
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	}
 	
 	int round = 0;
@@ -570,29 +659,28 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 		}else{
 			if( modeTarget ){
 				defren.ActivateFBOTemporary1( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 				
 			}else{
 				defren.ActivateFBOTemporary2( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 			}
 		}
 		
-		shader->SetParameterFloat( spallPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
 		defren.SetShaderParamFSQuad( *shader, spallTCTransform, ( float )tcPingPongOffset, 0.0f,
 			( float )( tcPingPongOffset + lastWidth ), ( float )lastHeight );
 		shader->SetParameterFloat( spallOffsets, -tcOffsetU, tcOffsetU, -tcOffsetV, tcOffsetV );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
 			text.Format( "tonemap_avg_lumlog_%i_%ix%i_to_%ix%i", round++, lastWidth, lastHeight, curWidth, curHeight );
 			if( modeTarget || useTextureBarrier ){
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(),
+				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
 					0, text.GetString(), deoglDebugSaveTexture::ecLogIntensity );
 			}else{
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary2(),
+				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary2(),
 					0, text.GetString(), deoglDebugSaveTexture::ecLogIntensity );
 			}
 		}
@@ -621,24 +709,20 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	deoglRCamera &oglCamera = *plan.GetCamera();
 	deoglTexture * const lastParams = oglCamera.GetToneMapParamsTexture();
-	float adaptationTime = oglCamera.GetAdaptionTime(); // 0.1 for good lighting condition ( 0.4 for very bad )
-	
-	if( adaptationTime < 0.001f || oglCamera.GetForceToneMapAdaption() ){
-		//adaptationTime = 4.0; //1.0f; // required for the time being for the longer darkness adjust hack
-		adaptationTime = 100.0f; // hack for the time being. shader does clamp(value*0.25,0,1) in the worst case
-		
-	}else{
-		adaptationTime = 1.0f - expf( -oglCamera.GetElapsedToneMapAdaption() / adaptationTime );
-		//adaptationTime = oglCamera->GetElapsedToneMapAdaption() * adaptationTime;
-	}
-	
-	// const float fTau = 0.5f;
-	// float fAdaptedLum = fLastLum + (fCurrentLum - fLastLum) * (1 - exp(-g_fDT * fTau));
 	
 	oglCamera.SetForceToneMapAdaption( false );
 	
-	renderThread.GetShader().ActivateShader( pShaderParameters );
-	shader = pShaderParameters->GetCompiled();
+	pipeline = plan.GetRenderStereo() ? pPipelineParametersStereo : pPipelineParameters;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
+	
+	// WARNING we have to use the non-stereo version always even if we sample stereo. the reason
+	//         is that to use the stereo render param block we have to use the GS_RENDER_STEREO
+	//         shader define to get the right block layout. this in turn though would cause
+	//         the vertex shader to use a geometry shader which this shader is not using.
+	//         to avoid problems the GS_RENDER_STEREO is not used, which requires us to always
+	//         use the non-stereo block. instead a special define SAMPLE_STEREO is used
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	if( modeTarget ){
 		viewportPingPongOffset = 0;
@@ -667,9 +751,6 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	}
 	
 	shader->SetParameterFloat( sppAvgLogLumTCs, pixelSizeU * ( ( float )tcPingPongOffset + 1.0f ), pixelSizeV, tcOffsetU, tcOffsetV );
-	shader->SetParameterFloat( sppOptions, oglCamera.GetExposure(), config.GetHDRRMaximumIntensity() );
-	shader->SetParameterFloat( sppAdaption, oglCamera.GetLowestIntensity(),
-		oglCamera.GetHighestIntensity(), adaptationTime, 0.0f );
 	
 	oglCamera.ResetElapsedToneMapAdaption();
 	
@@ -682,13 +763,12 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, 1, 1 ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, 1, 1 ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	
 	if( modeTarget && ! useTextureBarrier ){
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	}
 	tsmgr.EnableTexture( 1, *lastParams, GetSamplerClampNearest() );
 	if( plan.GetWorld()->GetSkyEnvironmentMap() && plan.GetWorld()->GetSkyEnvironmentMap()->GetEnvironmentMap() ){
@@ -697,22 +777,24 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 		tsmgr.EnableCubeMap( 2, *renderThread.GetDefaultTextures().GetEnvMap(), GetSamplerClampLinear() );
 	}
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad();
 	
 	oglCamera.SetToneMapParamsTexture( pTextureToneMapParams );
 	pTextureToneMapParams = lastParams;
 DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
+		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
 		oglCamera.GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
-		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer.GetPointerFloat4();
+		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer->GetPointerFloat4();
 		renderThread.GetLogger().LogInfoFormat( "tone map params: %g %g %g %g", avgSceneColor.r, avgSceneColor.g, avgSceneColor.b, avgSceneColor.a );
 	}
 }
 
 void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth, int &bloomHeight ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderBloomPass" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
@@ -737,10 +819,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	//float g = 1.0f / sqrtf( 2.0f * D3DX_PI * rho * rho ); // rho = 1.0
 	//g *= expf( -(x*x + y*y)/(2*rho*rho) );
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	
 	// convert color to bright values. to allow for proper bluring the output image is reduced
 	// to the largest power of two size fitting inside
 	for( curWidth=1; (curWidth<<1)<realWidth; curWidth<<= 1 );
@@ -757,22 +835,22 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	bloomWidth = curWidth;
 	bloomHeight = curHeight;
 	
-	renderThread.GetShader().ActivateShader( pShaderBrightPass );
-	shader = pShaderBrightPass->GetCompiled();
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineBrightPassStereo : pPipelineBrightPass;
+	pipeline->Activate();
 	
-	defren.SetShaderParamFSQuad( *shader, spbpPosToTC );
-	shader->SetParameterFloat( spbpOptions, 2.5f, 1.0f ); // m$: 5, 10 // ogre: 2.5, 1
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	defren.ActivateFBOTemporary1( false );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	
+	RenderFullScreenQuad( plan );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary1(), "tonemap_bright" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "tonemap_bright" );
 	}
 	
 	// determine the number of blur passes. depends right now on the size of the bright image.
@@ -799,18 +877,20 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	lastHeight = curHeight;
 	
 	// apply a blur filter according to 'tonemapping' in the 'doc' directory
-	const float blurTCOffsets[] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
-	const float blurWeights[] = { 1.232953f, 3.278228e-1f, 8.461847e-2f, 1.874333e-2f, 3.136081e-3f };
+	const float blurTCOffsets[ 5 ] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
+	const float blurWeights[ 6 ] = { 2.050781e-1f, 1.171875e-1f, 4.394531e-2f, 9.765625e-3f, 9.765625e-4f };
 	
-	renderThread.GetShader().ActivateShader( pShaderBloomBlur );
-	shader = pShaderBloomBlur->GetCompiled();
+	pipeline = plan.GetRenderStereo() ? pPipelineBloomBlurStereo : pPipelineBloomBlur;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
 	
-	shader->SetParameterFloat( spbbPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	defren.SetShaderParamFSQuad( *shader, spbbTCTransform, 0.0f, 0.0f, ( float )lastWidth, ( float )lastHeight );
 	shader->SetParameterFloat( spbbClamp, pixelSizeU * ( ( float )lastWidth - 0.5f ), pixelSizeV * ( ( float )lastHeight - 0.5f ) );
 	
-	shader->SetParameterFloat( spbbWeights1, 1.0f, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ] );
-	shader->SetParameterFloat( spbbWeights2, blurWeights[ 3 ], blurWeights[ 4 ], 0.0f, 0.0f );
+	shader->SetParameterFloat( spbbWeights1, blurWeights[ 0 ], blurWeights[ 1 ], blurWeights[ 2 ], blurWeights[ 3 ] );
+	shader->SetParameterFloat( spbbWeights2, blurWeights[ 4 ], blurWeights[ 5 ], 0.0f, 0.0f );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
@@ -818,7 +898,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	for( i=0; i<blurPassCount; i++ ){
 		// blur in x direction
 		defren.ActivateFBOTemporary2( false );
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 		
 		shader->SetParameterFloat( spbbOffsets1, blurTCOffsets[ 0 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 0 ] * pixelSizeU, 0.0f );
 		shader->SetParameterFloat( spbbOffsets2, blurTCOffsets[ 1 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 1 ] * pixelSizeU, 0.0f );
@@ -826,17 +906,17 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets4, blurTCOffsets[ 3 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 3 ] * pixelSizeU, 0.0f );
 		shader->SetParameterFloat( spbbOffsets5, blurTCOffsets[ 4 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 4 ] * pixelSizeU, 0.0f );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
 			text.Format( "tonemap_bloom_%i_blur_x", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary2(), text.GetString() ); // temporary2
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary2(), text.GetString() ); // temporary2
 		}
 		
 		// blur in y direction
 		defren.ActivateFBOTemporary1( false );
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 		
 		shader->SetParameterFloat( spbbOffsets1, 0.0f, blurTCOffsets[ 0 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 0 ] * pixelSizeV );
 		shader->SetParameterFloat( spbbOffsets2, 0.0f, blurTCOffsets[ 1 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 1 ] * pixelSizeV );
@@ -844,12 +924,12 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		shader->SetParameterFloat( spbbOffsets4, 0.0f, blurTCOffsets[ 3 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 3 ] * pixelSizeV );
 		shader->SetParameterFloat( spbbOffsets5, 0.0f, blurTCOffsets[ 4 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 4 ] * pixelSizeV );
 		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+		RenderFullScreenQuad( plan );
 		
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
 			text.Format( "tonemap_bloom_%i_blur_y", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary1(), text.GetString() );
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), text.GetString() );
 		}
 	}
 	
@@ -882,8 +962,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 				tcOffsetT = 1;
 			}
 			
-			renderThread.GetShader().ActivateShader( pShaderBloomReduce );
-			shader = pShaderBloomReduce->GetCompiled();
+			renderThread.GetShader().ActivateShader( pPipelineBloomReduce );
+			shader = &pPipelineBloomReduce;
 			shader->SetParameterInt( spbrParam1, tcScaleS, tcScaleT, tcOffsetS, 0 );
 			shader->SetParameterInt( spbrParam2, 0, tcOffsetT, tcOffsetS, tcOffsetT );
 			
@@ -913,8 +993,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		}
 		
 		// blur filter in x direction
-		renderThread.GetShader().ActivateShader( pShaderBloomBlur );
-		shader = pShaderBloomBlur->GetCompiled();
+		renderThread.GetShader().ActivateShader( pPipelineBloomBlur );
+		shader = &pPipelineBloomBlur;
 		
 		defren.SetShaderParamFSQuad( *shader, spbbPosToTC, curWidth, curHeight );
 		shader->SetParameterFloat( spbbOffsets, offsetS, 0.0f, -offsetS, 0.0f );
@@ -969,8 +1049,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		}
 		
 		// add to bloom texture
-		renderThread.GetShader().ActivateShader( pShaderBloomAdd );
-		shader = pShaderBloomAdd->GetCompiled();
+		renderThread.GetShader().ActivateShader( pPipelineBloomAdd );
+		shader = &pPipelineBloomAdd;
 		defren.SetShaderParamFSQuad( *shader, spbaPosToTC, curWidth, curHeight );
 		
 		defren.ActivateFBOTemporary( false );
@@ -1001,14 +1081,13 @@ DEBUG_PRINT_TIMER( "ToneMap: Blooming" );
 
 void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloomWidth, int bloomHeight ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderToneMappingPass" );
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRCamera *oglCamera = plan.GetCamera();
 	float clampBloomU, clampBloomV;
 	deoglShaderCompiled *shader;
-	
-	bool bloomStrength = 1.0f;
 	
 	clampBloomU = defren.GetPixelSizeU() * ( ( float )bloomWidth - 0.5f );
 	clampBloomV = defren.GetPixelSizeV() * ( ( float )bloomHeight - 0.5f );
@@ -1019,21 +1098,25 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	renderThread.GetShader().ActivateShader( pShaderToneMap );
-	shader = pShaderToneMap->GetCompiled();
-	defren.SetShaderParamFSQuad( *shader, sptmPosToBloom, bloomWidth, bloomHeight );
-	shader->SetParameterFloat( sptmOptions, bloomStrength, 0.0f, 0.0f, 0.0f );
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap;
+	pipeline.Activate();
+	shader = &pipeline.GetGlShader();
+	
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
+	defren.SetShaderParamFSQuad( *shader, sptmTCBloomTransform, bloomWidth, bloomHeight );
 	shader->SetParameterFloat( sptmTCBloomClamp, clampBloomU, clampBloomV );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 }
 
 void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.RenderLDR" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderCompiled *shader;
@@ -1043,18 +1126,20 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( pShaderFinalize );
-	shader = pShaderFinalize->GetCompiled();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr;
+	pipeline.Activate();
+	shader = &pipeline.GetGlShader();
 	
-	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	
 	defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 	shader->SetParameterFloat( spfinGamma, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, 1.0f );
 	shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
 	shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
 	
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	RenderFullScreenQuad( plan );
 }
 
 
@@ -1063,37 +1148,6 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderToneMap::pCleanUp(){
-	if( pShaderColor2LogLum ){
-		pShaderColor2LogLum->RemoveUsage();
-	}
-	if( pShaderAvgLogLum ){
-		pShaderAvgLogLum->RemoveUsage();
-	}
-	if( pShaderParameters ){
-		pShaderParameters->RemoveUsage();
-	}
-	if( pShaderBrightPass ){
-		pShaderBrightPass->RemoveUsage();
-	}
-	if( pShaderBloomReduce ){
-		pShaderBloomReduce->RemoveUsage();
-	}
-	if( pShaderBloomBlur ){
-		pShaderBloomBlur->RemoveUsage();
-	}
-	if( pShaderBloomAdd ){
-		pShaderBloomAdd->RemoveUsage();
-	}
-	if( pShaderToneMap ){
-		pShaderToneMap->RemoveUsage();
-	}
-	if( pShaderFinalize ){
-		pShaderFinalize->RemoveUsage();
-	}
-	if( pShaderLumPrepare ){
-		pShaderLumPrepare->RemoveUsage();
-	}
-	
 	if( pTextureToneMapParams ){
 		delete pTextureToneMapParams;
 	}

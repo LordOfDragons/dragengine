@@ -28,250 +28,255 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a foreign state animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of foreign state animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleForeignState extends ADRule
-	/** Position scale factor. */
 	private var float pScalePos
-	
-	/** Orientation scale factor. */
 	private var float pScaleOrient
-	
-	/** Size scale factor. */
 	private var float pScaleSize
-	
-	/** Name of the foreign bone. */
 	private var String pForeignBone
-	
-	/** Source coordinate frame. */
 	private var ARForeignStateCFrame pSrcCoordFrame
-	
-	/** Destination coordinate frame. */
 	private var ARForeignStateCFrame pDestCoordFrame
-	
-	/** Modify X component. */
 	private var bool pModifyX
-	
-	/** Modify Y component. */
 	private var bool pModifyY
-	
-	/** Modify Z component. */
 	private var bool pModifyZ
-	
-	/** Enables position manipulation. */
 	private var bool pEnablePosition
-	
-	/** Enables orientation manipulation. */
 	private var bool pEnableOrientation
-	
-	/** Enables size manipulation. */
 	private var bool pEnableSize
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pScalePos = 1.0
-		this.pScaleOrient = 1.0
-		this.pScaleSize = 1.0
-		this.pForeignBone = "bone"
-		this.pSrcCoordFrame = ARForeignStateCFrame.local
-		this.pDestCoordFrame = ARForeignStateCFrame.local
-		this.pModifyX = true
-		this.pModifyY = true
-		this.pModifyZ = true
-		this.pEnablePosition = true
-		this.pEnableOrientation = true
-		this.pEnableSize = false
-	end
-	
-	
-	
-	/** Retrieves the position scale factor. */
-	public func float getScalePosition()
-		return this.pScalePos
-	end
-	
-	/** Sets the position scale factor. */
-	public func void setScalePosition( float scaleFactor )
-		this.pScalePos = scaleFactor
-	end
-	
-	/** Retrieves the orientation scale factor. */
-	public func float getScaleOrientation()
-		return this.pScaleOrient
-	end
-	
-	/** Sets the orientation scale factor. */
-	public func void setScaleOrientation( float scaleFactor )
-		this.pScaleOrient = scaleFactor
-	end
-	
-	/** Retrieves the size scale factor. */
-	public func float getScaleSize()
-		return this.pScaleSize
-	end
-	
-	/** Sets the size scale factor. */
-	public func void setScaleSize( float scaleFactor )
-		this.pScaleSize = scaleFactor
-	end
-	
-	/** Retrieves the foreign bone name. */
-	public func String getForeignBone()
-		return this.pForeignBone
-	end
-	
-	/** Sets the foreign bone name. */
-	public func void setForeignBone( String bone )
-		if bone == null
-			throw EInvalidParam.new()
-		end
-		
-		this.pForeignBone = bone
-	end
-	
-	/** Retrieves the source coordinate frame. */
-	public func ARForeignStateCFrame getSourceCoordinateFrame()
-		return this.pSrcCoordFrame
-	end
-	
-	/** Sets if the source coordinate frame. */
-	public func void setSourceCoordinateFrame( ARForeignStateCFrame coordFrame )
-		this.pSrcCoordFrame = coordFrame
-	end
-	
-	/** Retrieves the destination coordinate frame. */
-	public func ARForeignStateCFrame getDestinationCoordinateFrame()
-		return this.pDestCoordFrame
-	end
-	
-	/** Sets if the destination coordinate frame. */
-	public func void setDestinationCoordinateFrame( ARForeignStateCFrame coordFrame )
-		this.pDestCoordFrame = coordFrame
+		pScalePos = 1
+		pScaleOrient = 1
+		pScaleSize = 1
+		pForeignBone = "bone"
+		pSrcCoordFrame = ARForeignStateCFrame.local
+		pDestCoordFrame = ARForeignStateCFrame.local
+		pModifyX = true
+		pModifyY = true
+		pModifyZ = true
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = false
 	end
 	
 	/**
-	 * \brief Determines if X component is modified.
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleForeignState rule) super(fromDef, toDef, rule)
+		pScalePos = rule.pScalePos
+		pScaleOrient = rule.pScaleOrient
+		pScaleSize = rule.pScaleSize
+		pForeignBone = rule.pForeignBone
+		pSrcCoordFrame = rule.pSrcCoordFrame
+		pDestCoordFrame = rule.pDestCoordFrame
+		pModifyX = rule.pModifyX
+		pModifyY = rule.pModifyY
+		pModifyZ = rule.pModifyZ
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
+	end
+	
+	
+	
+	/** \brief Pposition scale factor. */
+	public func float getScalePosition()
+		return pScalePos
+	end
+	
+	/** \brief Set position scale factor. */
+	public func void setScalePosition(float scaleFactor)
+		pScalePos = scaleFactor
+	end
+	
+	/** \brief Orientation scale factor. */
+	public func float getScaleOrientation()
+		return pScaleOrient
+	end
+	
+	/** \brief Set orientation scale factor. */
+	public func void setScaleOrientation(float scaleFactor)
+		pScaleOrient = scaleFactor
+	end
+	
+	/** \brief Size scale factor. */
+	public func float getScaleSize()
+		return pScaleSize
+	end
+	
+	/** \brief Set size scale factor. */
+	public func void setScaleSize(float scaleFactor)
+		pScaleSize = scaleFactor
+	end
+	
+	/** \brief Foreign bone name. */
+	public func String getForeignBone()
+		return pForeignBone
+	end
+	
+	/** \brief Set foreign bone name. */
+	public func void setForeignBone(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pForeignBone = bone
+	end
+	
+	/** \brief Source coordinate frame. */
+	public func ARForeignStateCFrame getSourceCoordinateFrame()
+		return pSrcCoordFrame
+	end
+	
+	/** \brief Set if source coordinate frame. */
+	public func void setSourceCoordinateFrame(ARForeignStateCFrame coordFrame)
+		pSrcCoordFrame = coordFrame
+	end
+	
+	/** \brief Destination coordinate frame. */
+	public func ARForeignStateCFrame getDestinationCoordinateFrame()
+		return pDestCoordFrame
+	end
+	
+	/** \brief Set if destination coordinate frame. */
+	public func void setDestinationCoordinateFrame(ARForeignStateCFrame coordFrame)
+		pDestCoordFrame = coordFrame
+	end
+	
+	/**
+	 * \brief X component is modified.
 	 * \version 1.6
 	 */
 	public func bool getModifyX()
-		return this.pModifyX
+		return pModifyX
 	end
 	
 	/**
 	 * \brief Set if X component is modified.
 	 * \version 1.6
 	 */
-	public func void setModifyX( bool modify )
-		this.pModifyX = modify
+	public func void setModifyX(bool modify)
+		pModifyX = modify
 	end
 	
 	/**
-	 * \brief Determines if Y component is modified.
+	 * \brief Y component is modified.
 	 * \version 1.6
 	 */
 	public func bool getModifyY()
-		return this.pModifyY
+		return pModifyY
 	end
 	
 	/**
 	 * \brief Set if Y component is modified.
 	 * \version 1.6
 	 */
-	public func void setModifyY( bool modify )
-		this.pModifyY = modify
+	public func void setModifyY(bool modify)
+		pModifyY = modify
 	end
 	
 	/**
-	 * \brief Determines if Z component is modified.
+	 * \brief Z component is modified.
 	 * \version 1.6
 	 */
 	public func bool getModifyZ()
-		return this.pModifyZ
+		return pModifyZ
 	end
 	
 	/**
 	 * \brief Set if z component is modified.
 	 * \version 1.6
 	 */
-	public func void setModifyZ( bool modify )
-		this.pModifyZ = modify
+	public func void setModifyZ(bool modify)
+		pModifyZ = modify
 	end
 	
-	/** Determines if the position manipulation is enabled. */
+	/** \brief Position manipulation is enabled. */
 	public func bool getEnablePosition()
-		return this.pEnablePosition
+		return pEnablePosition
 	end
 	
-	/** Sets if the position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
+	/** \brief Set if position manipulation is enabled. */
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
 	end
 	
-	/** Determines if the orientation manipulation is enabled. */
+	/** \brief Orientation manipulation is enabled. */
 	public func bool getEnableOrientation()
-		return this.pEnableOrientation
+		return pEnableOrientation
 	end
 	
-	/** Sets if the orientation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
+	/** \brief Set if orientation manipulation is enabled. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
 	end
 	
-	/** Determines if the size manipulation is enabled. */
+	/** \brief Size manipulation is enabled. */
 	public func bool getEnableSize()
-		return this.pEnableSize
+		return pEnableSize
 	end
 	
-	/** Sets if the size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
+	/** \brief Set if size manipulation is enabled. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
 	end
 	
 	
 	
-	/**
-	 * Build engine animator rule using the stored definition.
-	 */
-	public func AnimatorRule buildRule( Animator animator )
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARForeignState rule = ARForeignState.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARForeignStateTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARForeignStateTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setScalePosition( this.pScalePos )
-		rule.setScaleOrientation( this.pScaleOrient )
-		rule.setScaleSize( this.pScaleSize )
-		rule.setForeignBone( this.pForeignBone )
-		rule.setSourceCoordinateFrame( this.pSrcCoordFrame )
-		rule.setDestinationCoordinateFrame( this.pDestCoordFrame )
-		rule.setModifyX( this.pModifyX )
-		rule.setModifyY( this.pModifyY )
-		rule.setModifyZ( this.pModifyZ )
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setScalePosition(pScalePos)
+		rule.setScaleOrientation(pScaleOrient)
+		rule.setScaleSize(pScaleSize)
+		rule.setForeignBone(pForeignBone)
+		rule.setSourceCoordinateFrame(pSrcCoordFrame)
+		rule.setDestinationCoordinateFrame(pDestCoordFrame)
+		rule.setModifyX(pModifyX)
+		rule.setModifyY(pModifyY)
+		rule.setModifyZ(pModifyZ)
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Foreign State" ) + \
-			" spos=" + this.pScalePos + \
-			" sorient=" + this.pScaleOrient + \
-			" ssize=" + this.pScaleSize + \
-			" modx=" + this.pModifyX + \
-			" mody=" + this.pModifyY + \
-			" modz=" + this.pModifyZ + \
-			" epos=" + this.pEnablePosition + \
-			" eorient=" + this.pEnableOrientation + \
-			" esize=" + this.pEnableSize + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Foreign State") + \
+			" spos=" + pScalePos + \
+			" sorient=" + pScaleOrient + \
+			" ssize=" + pScaleSize + \
+			" modx=" + pModifyX + \
+			" mody=" + pModifyY + \
+			" modz=" + pModifyZ + \
+			" epos=" + pEnablePosition + \
+			" eorient=" + pEnableOrientation + \
+			" esize=" + pEnableSize + ")")
 	end
 end

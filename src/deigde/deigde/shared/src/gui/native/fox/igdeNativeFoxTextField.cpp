@@ -59,14 +59,14 @@ FXIMPLEMENT( igdeNativeFoxTextField, FXTextField, igdeNativeFoxTextFieldMap, ARR
 
 igdeNativeFoxTextField::igdeNativeFoxTextField(){ }
 
-igdeNativeFoxTextField::igdeNativeFoxTextField( igdeTextField &owner, FXComposite *parent,
+igdeNativeFoxTextField::igdeNativeFoxTextField( igdeTextField &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXTextField( parent, owner.GetColumns(), this, ID_SELF, layoutFlags | TextFieldFlags( owner ),
+FXTextField( pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | TextFieldFlags( powner ),
 	0, 0, 0, 0,
 	TextFieldPadLeft( guitheme ), TextFieldPadRight( guitheme ),
 	TextFieldPadTop( guitheme ), TextFieldPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( TextFieldFont( owner, guitheme ) ),
+pOwner( &powner ),
+pFont( TextFieldFont( powner, guitheme ) ),
 pOrgBackColor( getBackColor() ),
 pInvalidBackColor( igdeUIFoxHelper::BlendColor( pOrgBackColor, FXRGB( 255, 0, 0 ), 0.25f ) ),
 pPreventKeyPressHook( false )
@@ -82,23 +82,23 @@ pPreventKeyPressHook( false )
 igdeNativeFoxTextField::~igdeNativeFoxTextField(){
 }
 
-igdeNativeFoxTextField *igdeNativeFoxTextField::CreateNativeWidget( igdeTextField &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxTextField *igdeNativeFoxTextField::CreateNativeWidget( igdeTextField &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxTextField( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxTextField( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxTextField::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -158,9 +158,9 @@ int igdeNativeFoxTextField::TextFieldFlags( const igdeTextField & ){
 	return FRAME_SUNKEN;
 }
 
-igdeFont *igdeNativeFoxTextField::TextFieldFont( const igdeTextField &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxTextField::TextFieldFont( const igdeTextField &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -179,7 +179,7 @@ igdeFont *igdeNativeFoxTextField::TextFieldFont( const igdeTextField &owner, con
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxTextField::TextFieldPadLeft( const igdeGuiTheme &guitheme ){
@@ -237,13 +237,13 @@ long igdeNativeFoxTextField::onChanged( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxTextField::onKeyPress( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxTextField::onKeyPress( FXObject *sender, FXSelector selector, void *pdata ){
 	// returning 1 from this function stops FXTextField from processing
 	if( ! pOwner->GetEnabled() || pPreventKeyPressHook ){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	if( event.code != KEY_Return && event.code != KEY_KP_Enter ){
 		return 0;
 	}
@@ -252,7 +252,7 @@ long igdeNativeFoxTextField::onKeyPress( FXObject *sender, FXSelector selector, 
 	// implementation to call SEL_COMMAND before we send our NotifyEnterKey. do avoid a
 	// dead-loop in this case pPreventKeyPressHook is used.
 	pPreventKeyPressHook = true;
-	const int result = onKeyPress( sender, selector, data );
+	const int result = onKeyPress( sender, selector, pdata );
 	pPreventKeyPressHook = false;
 	
 	try{

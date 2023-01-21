@@ -39,6 +39,7 @@ public:
 	class Factory : public delEngineInstance::Factory{
 	private:
 		deLogger::Ref pEngineLogger;
+		bool pUseConsole;
 		
 	public:
 		/** \brief Type holding strong reference. */
@@ -58,6 +59,12 @@ public:
 		/** \brief Set logger to use for new engine instance or nullptr. */
 		void SetEngineLogger( deLogger *logger );
 		
+		/** \brief Use console. */
+		inline bool GetUseConsole() const{ return pUseConsole; }
+		
+		/** \brief Set use console. */
+		void SetUseConsole( bool useConsole );
+		
 		/** \brief Create engine instance. */
 		virtual delEngineInstance *CreateEngineInstance( delLauncher &launcher, const char *logFile );
 	};
@@ -67,6 +74,7 @@ public:
 private:
 	deEngine *pEngine;
 	bool pEngineRunning;
+	bool pGameRunning;
 	deLogger::Ref pLogger;
 	deLogger::Ref pEngineLogger;
 	
@@ -166,6 +174,13 @@ public:
 	/** \brief Add disk directory to virtual file system. */
 	virtual void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly );
 	
+	/**
+	 * \brief Add disk directory to virtual file system hidding a set of path.
+	 * \version 1.13
+	 */
+	virtual void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
+		bool readOnly, const decStringSet &hiddenPath );
+	
 	/** \brief Add virtual file system container for module shared data. */
 	virtual void VFSAddScriptSharedDataDir();
 	
@@ -175,6 +190,15 @@ public:
 	 * Container maps the content of \em archivePath into the virtual file system.
 	 */
 	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath );
+	
+	/**
+	 * \brief Add DELGA file to virtual file system as root container.
+	 * \version 1.13
+	 * 
+	 * Container maps the content of \em archivePath into the virtual file system.
+	 */
+	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath,
+		const decStringSet &hiddenPath );
 	
 	/** \brief Set command line arguments. */
 	virtual void SetCmdLineArgs( const char *arguments );

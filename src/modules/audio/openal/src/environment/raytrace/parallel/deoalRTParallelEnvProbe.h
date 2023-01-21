@@ -156,8 +156,8 @@ public:
 	/** \brief Trace sound rays. */
 	void TraceSoundRays( sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
 		const decDVector &position, float range, float refDist, float rollOff,
-		deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask,
-		const deoalATRayTracing::sConfigSoundTracing &config );
+		float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
 	
 // 	void TraceSoundRays( sRoomParameters &roomParameters, deoalSoundRayList &soundRayList,
 // 		const decDVector &position, float range, deoalAWorld &world,
@@ -242,7 +242,7 @@ public:
 private:
 	void pRunTraceSoundRaysUsingTasks( sRoomParameters &roomParameters,
 		deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
-		float rollOff, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+		float rollOff, float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
 		const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config );
 	
 	void pRunListenUsingTasks( const deoalEnvProbe &sourceProbe, const deoalEnvProbe *listenProbe,

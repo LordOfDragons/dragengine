@@ -32,8 +32,6 @@ class deoglRenderLightSpot;
 class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
-class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
 
@@ -43,14 +41,19 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgram *pShaderCopyDepth;
+	const deoglPipeline *pPipelineAOLocal;
+	const deoglPipeline *pPipelineAOLocalStereo;
+	const deoglPipeline *pPipelineAOBlur1;
+	const deoglPipeline *pPipelineAOBlur1Stereo;
+	const deoglPipeline *pPipelineAOBlur2;
+	const deoglPipeline *pPipelineAOBlur2Stereo;
+	const deoglPipeline *pPipelineDebugAO;
 	
-	deoglShaderProgram *pShaderAOLocal;
-	deoglShaderProgram *pShaderAOBlur1;
-	deoglShaderProgram *pShaderAOBlur2;
-	deoglShaderProgram *pShaderDebugAO;
+	const deoglPipeline *pPipelineSSSSS;
+	const deoglPipeline *pPipelineSSSSSStereo;
 	
-	deoglShaderProgram *pShaderSSSSS;
+	const deoglPipeline *pPipelineCopyDepth;
+	const deoglPipeline *pPipelineCopyDepthStereo;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;
@@ -58,22 +61,19 @@ private:
 	deoglRenderLightParticles *pRenderLightParticles;
 	deoglRenderGI *pRenderGI;
 	
-	deoglSPBlockUBO *pLightPB;
-	deoglSPBlockUBO *pShadowPB;
-	deoglSPBlockUBO *pShadowCascadedPB;
-	deoglSPBlockUBO *pShadowCubePB;
-	deoglSPBlockUBO *pOccMapPB;
+	deoglSPBlockUBO::Ref pShadowPB;
+	deoglSPBlockUBO::Ref pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoSolidCopyDepth;
-	deoglDebugInformation *pDebugInfoSolidParticle;
-	deoglDebugInformation *pDebugInfoSolidSSSSS;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoSolidCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoSolidParticle;
+	deoglDebugInformation::Ref pDebugInfoSolidSSSSS;
 	
-	deoglDebugInformation *pDebugInfoTransparent;
-	deoglDebugInformation *pDebugInfoTransparentCopyDepth;
-	deoglDebugInformation *pDebugInfoTransparentSSSSS;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoTransparentCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoTransparentSSSSS;
 	
 	
 	
@@ -108,20 +108,11 @@ public:
 	
 	
 	
-	/** Light render parameter block. */
-	inline deoglSPBlockUBO *GetLightPB() const{ return pLightPB; }
-	
 	/** Shadow render parameter block. */
-	inline deoglSPBlockUBO *GetShadowPB() const{ return pShadowPB; }
-	
-	/** Shadow render parameter block. */
-	inline deoglSPBlockUBO *GetShadowCascadedPB() const{ return pShadowCascadedPB; }
-	
-	/** Shadow render parameter block cubemap. */
-	inline deoglSPBlockUBO *GetShadowCubePB() const{ return pShadowCubePB; }
+	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{ return pShadowPB; }
 	
 	/** Occmap render parameter block. */
-	inline deoglSPBlockUBO *GetOccMapPB() const{ return pOccMapPB; }
+	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{ return pOccMapPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
@@ -132,7 +123,7 @@ public:
 	
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
 	
 	/**
 	 * Render ambient occlusion.
@@ -164,8 +155,8 @@ public:
 	/** Render screen space sub surface scattering. */
 	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
 	
-	/** Prepare light render parameter shader parameter block. */
-	void PrepareRenderParamBlockLight( deoglRenderPlan &plan );
+	/** Copy first depth to third depth. */
+	void CopyDepth1ToDepth3( deoglRenderPlan &plan );
 	
 	
 	

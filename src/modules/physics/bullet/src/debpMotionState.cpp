@@ -19,7 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
 #include <stdio.h>
 #include <stdlib.h>
 #include "debpMotionState.h"
@@ -59,7 +58,6 @@ void debpMotionState::SetOrientation( const decQuaternion &orientation ){
 
 
 
-
 // bullet management
 //////////////////////
 
@@ -73,7 +71,7 @@ void debpMotionState::getWorldTransform( btTransform &centerOfMassWorldTrans ) c
 
 void debpMotionState::setWorldTransform( const btTransform &centerOfMassWorldTrans ){
 	const btVector3 &position = centerOfMassWorldTrans.getOrigin();
-	btQuaternion rotation = centerOfMassWorldTrans.getRotation();
+	const btQuaternion rotation( centerOfMassWorldTrans.getRotation() );
 	
 	pPosition.Set( position.getX(), position.getY(), position.getZ() );
 	pOrientation.Set( rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW() );

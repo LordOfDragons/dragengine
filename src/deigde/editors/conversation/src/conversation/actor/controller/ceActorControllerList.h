@@ -29,7 +29,7 @@ class ceActorController;
 
 
 /**
- * \brief Actor controller list.
+ * Actor controller list.
  */
 class ceActorControllerList{
 private:
@@ -40,13 +40,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create controller list. */
+	/** Create controller list. */
 	ceActorControllerList();
 	
-	/** \brief Create copy of controller list. */
+	/** Create copy of controller list. */
 	ceActorControllerList( const ceActorControllerList &list );
 	
-	/** \brief Clean up controller list. */
+	/** Clean up controller list. */
 	~ceActorControllerList();
 	/*@}*/
 	
@@ -54,28 +54,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of controllers. */
+	/** Number of controllers. */
 	int GetCount() const;
 	
-	/** \brief Controller at index. */
+	/** Controller at index. */
 	ceActorController *GetAt( int index ) const;
 	
-	/** \brief Index of controller or -1 if absent. */
+	/** Named controller or nullptr. */
+	ceActorController *GetNamed( const char *name ) const;
+	
+	/** Index of controller or -1 if absent. */
 	int IndexOf( ceActorController *controller ) const;
 	
-	/** \brief Controller is present. */
+	/** Controller is present. */
 	bool Has( ceActorController *controller ) const;
 	
-	/** \brief Add controller. */
+	/** Named controller is present. */
+	bool HasNamed( const char *name ) const;
+	
+	/** Add controller. */
 	void Add( ceActorController *controller );
 	
-	/** \brief Remove controller. */
+	/** Remove controller. */
 	void Remove( ceActorController *controller );
 	
-	/** \brief Remove all controller. */
+	/** Remove all controller. */
 	void RemoveAll();
 	
-	/** \brief Set from another list. */
+	/** Set from another list. */
 	ceActorControllerList &operator=( const ceActorControllerList &list );
 	/*@}*/
 };

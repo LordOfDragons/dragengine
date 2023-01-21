@@ -54,8 +54,8 @@ igdeNativeFoxAutoScroller::igdeNativeFoxAutoScroller(){
 	flags |= FLAG_SHOWN;
 }
 
-igdeNativeFoxAutoScroller::igdeNativeFoxAutoScroller( FXComposite *parent, int opts ) :
-FXComposite( parent, opts, 0, 0, 0, 0 ),
+igdeNativeFoxAutoScroller::igdeNativeFoxAutoScroller( FXComposite *pparent, int opts ) :
+FXComposite( pparent, opts, 0, 0, 0, 0 ),
 pScrollPosition( 0 )
 {
 	flags |= FLAG_SHOWN;
@@ -211,7 +211,7 @@ void igdeNativeFoxAutoScroller::MoveContent( int x ){
 // Events
 ///////////
 
-long igdeNativeFoxAutoScroller::onChildMouseMoved( FXObject *sender, FXSelector, void *data ){
+long igdeNativeFoxAutoScroller::onChildMouseMoved( FXObject *sender, FXSelector, void *pdata ){
 	const int viewWidth = getWidth();
 	const int childWidth = GetContentSize().x;
 	if( viewWidth < 1 || childWidth <= viewWidth ){
@@ -219,7 +219,7 @@ long igdeNativeFoxAutoScroller::onChildMouseMoved( FXObject *sender, FXSelector,
 		return 0; // return 0 to let original implementation run. 1 would stop
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	FXint x, y;
 	translateCoordinatesFrom( x, y, ( FXWindow* )sender, event.win_x, event.win_y );
 	

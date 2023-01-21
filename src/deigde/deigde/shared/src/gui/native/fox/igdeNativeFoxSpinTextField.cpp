@@ -57,47 +57,47 @@ FXIMPLEMENT( igdeNativeFoxSpinTextField, FXSpinner, igdeNativeFoxSpinTextFieldMa
 
 igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField(){ }
 
-igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField( igdeSpinTextField &owner, FXComposite *parent,
+igdeNativeFoxSpinTextField::igdeNativeFoxSpinTextField( igdeSpinTextField &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXSpinner( parent, owner.GetColumns(), this, ID_SELF, layoutFlags | SpinTextFieldFlags( owner ),
+FXSpinner( pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | SpinTextFieldFlags( powner ),
 	0, 0, 0, 0,
 	SpinTextFieldPadLeft( guitheme ), SpinTextFieldPadRight( guitheme ),
 	SpinTextFieldPadTop( guitheme ), SpinTextFieldPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( SpinTextFieldFont( owner, guitheme ) )
+pOwner( &powner ),
+pFont( SpinTextFieldFont( powner, guitheme ) )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
 	
-	setRange( owner.GetLower(), owner.GetUpper() );
-	setValue( owner.GetValue() );
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setRange( powner.GetLower(), powner.GetUpper() );
+	setValue( powner.GetValue() );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 }
 
 igdeNativeFoxSpinTextField::~igdeNativeFoxSpinTextField(){
 }
 
-igdeNativeFoxSpinTextField *igdeNativeFoxSpinTextField::CreateNativeWidget( igdeSpinTextField &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxSpinTextField *igdeNativeFoxSpinTextField::CreateNativeWidget( igdeSpinTextField &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxSpinTextField( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxSpinTextField( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxSpinTextField::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -141,13 +141,13 @@ void igdeNativeFoxSpinTextField::UpdateDescription(){
 
 
 
-int igdeNativeFoxSpinTextField::SpinTextFieldFlags( const igdeSpinTextField &owner ){
+int igdeNativeFoxSpinTextField::SpinTextFieldFlags( const igdeSpinTextField& ){
 	return FRAME_SUNKEN;
 }
 
-igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont( const igdeSpinTextField &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont( const igdeSpinTextField &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -166,7 +166,7 @@ igdeFont *igdeNativeFoxSpinTextField::SpinTextFieldFont( const igdeSpinTextField
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxSpinTextField::SpinTextFieldPadLeft( const igdeGuiTheme &guitheme ){
@@ -190,7 +190,7 @@ int igdeNativeFoxSpinTextField::SpinTextFieldPadBottom( const igdeGuiTheme &guit
 // Events
 ///////////
 
-long igdeNativeFoxSpinTextField::onCommand( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxSpinTextField::onCommand( FXObject*, FXSelector, void* ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}

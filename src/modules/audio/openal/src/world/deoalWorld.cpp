@@ -60,7 +60,8 @@ pDirtyComponents( false ),
 pDirtySpeakers( false ),
 pDirtyMicrophones( false ),
 pDirtySoundLevelMeters( false ),
-pDirtyAllMicLayerMask( true )
+pDirtyAllMicLayerMask( true ),
+pDirtyAudioParameters( true )
 {
 	try{
 		pAWorld = new deoalAWorld( oal.GetAudioThread(), world.GetSize() * 0.5 );
@@ -110,6 +111,7 @@ bool deoalWorld::IsAudible() const{
 
 void deoalWorld::Synchronize(){
 	pSyncAllMicLayerMask();
+	pSyncAudioParameters();
 	
 	pSyncComponents();
 	pSyncSpeakers();
@@ -231,6 +233,10 @@ void deoalWorld::Update( float ){
 
 
 void deoalWorld::SizeChanged(){
+}
+
+void deoalWorld::AudioChanged(){
+	pDirtyAudioParameters = true;
 }
 
 void deoalWorld::SpeakerAdded( deSpeaker *speaker ){
@@ -548,4 +554,14 @@ void deoalWorld::pSyncAllMicLayerMask(){
 	}
 	
 	pDirtyAllMicLayerMask = false;
+}
+
+void deoalWorld::pSyncAudioParameters(){
+	if( ! pDirtyAudioParameters ){
+		return;
+	}
+	
+	pDirtyAudioParameters = false;
+	
+	pAWorld->SetSpeakerGain( pWorld.GetSpeakerGain() );
 }

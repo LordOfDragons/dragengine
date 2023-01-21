@@ -27,7 +27,7 @@ class deoglRBillboard;
 
 
 /**
- * @brief Billboard List.
+ * Billboard List.
  * List of pointers to billboards. The ordering of the billboards in the list is
  * not defined and can change when billboards are removed. This allows to
  * remove elements with constant time requirements.
@@ -39,7 +39,7 @@ private:
 	int pBillboardSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new billboard list. */
 	deoglBillboardList();
@@ -47,7 +47,7 @@ public:
 	~deoglBillboardList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of billboards. */
 	inline int GetCount() const{ return pBillboardCount; }

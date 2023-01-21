@@ -23,6 +23,7 @@
 #define _DEOGLRENDERCANVAS_H_
 
 #include "deoglRenderBase.h"
+#include "../canvas/render/deoglRCanvas.h"
 
 class deoglRenderCanvasContext;
 class deoglRCanvasText;
@@ -31,7 +32,6 @@ class deoglRCanvasRenderWorld;
 class deoglRCanvasCanvasView;
 class deoglRCanvasImage;
 class deoglRCanvasPaint;
-class deoglShaderProgram;
 class deoglRenderTarget;
 
 
@@ -45,22 +45,21 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	deoglShaderProgram *pShaderCanvasColor;
-	deoglShaderProgram *pShaderCanvasColorMask;
-	deoglShaderProgram *pShaderCanvasImage;
-	deoglShaderProgram *pShaderCanvasImageMask;
+	const deoglPipeline *pPipelineCanvasColor[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasColorMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasImage[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasImageMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasRenderWorld[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasRenderWorldMask[ deoglRCanvas::BlendModeCount ];
 	
-	GLenum pBlendSrc;
-	GLenum pBlendDest;
-	
-	deoglDebugInformation *pDebugInfoCanvas;
-	deoglDebugInformation *pDebugInfoCanvasView;
-	deoglDebugInformation *pDebugInfoCanvasImage;
-	deoglDebugInformation *pDebugInfoCanvasPaint;
-	deoglDebugInformation *pDebugInfoCanvasRenderWorld;
-	deoglDebugInformation *pDebugInfoCanvasText;
-	deoglDebugInformation *pDebugInfoCanvasVideoPlayer;
-	deoglDebugInformation *pDebugInfoCanvasCanvasView;
+	deoglDebugInformation::Ref pDebugInfoCanvas;
+	deoglDebugInformation::Ref pDebugInfoCanvasView;
+	deoglDebugInformation::Ref pDebugInfoCanvasImage;
+	deoglDebugInformation::Ref pDebugInfoCanvasPaint;
+	deoglDebugInformation::Ref pDebugInfoCanvasRenderWorld;
+	deoglDebugInformation::Ref pDebugInfoCanvasText;
+	deoglDebugInformation::Ref pDebugInfoCanvasVideoPlayer;
+	deoglDebugInformation::Ref pDebugInfoCanvasCanvasView;
 	
 	float pDebugTimeCanvasView;
 	int pDebugCountCanvasView;
@@ -77,23 +76,23 @@ private:
 	float pDebugTimeCanvasCanvasView;
 	int pDebugCountCanvasCanvasView;
 	
-	deoglDebugInformation *pDebugInfoPlanPrepare;
-	deoglDebugInformation *pDebugInfoPlanPrepareEarlyWorld;
-	deoglDebugInformation *pDebugInfoPlanPrepareFindContent;
-	deoglDebugInformation *pDebugInfoPlanPrepareBuildRTs;
-	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightFindContent;
-	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightBuildRT;
-	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIFindContent;
-	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
-	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
-	deoglDebugInformation *pDebugInfoPlanPrepareGIUpdate;
-	deoglDebugInformation *pDebugInfoPlanPrepareCulling;
-	deoglDebugInformation *pDebugInfoPlanPrepareEnvMaps;
-	deoglDebugInformation *pDebugInfoPlanPreparePrepareContent;
-	deoglDebugInformation *pDebugInfoPlanPrepareHTViewVBOs;
-	deoglDebugInformation *pDebugInfoPlanPrepareBuildPlan;
-	deoglDebugInformation *pDebugInfoPlanPrepareLights;
-	deoglDebugInformation *pDebugInfoPlanPrepareFinish;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepare;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareEarlyWorld;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareFindContent;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareBuildRTs;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareSkyLightFindContent;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareSkyLightBuildRT;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareSkyLightGIFindContent;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareWorld;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareGIUpdate;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareCulling;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareEnvMaps;
+	deoglDebugInformation::Ref pDebugInfoPlanPreparePrepareContent;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareHTViewVBOs;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareBuildPlan;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareLights;
+	deoglDebugInformation::Ref pDebugInfoPlanPrepareFinish;
 	
 	
 	
@@ -181,9 +180,9 @@ private:
 	void pCleanUp();
 	void pCreateShapesVAO();
 	void pWorldRenderSize( int &width, int &height ) const;
-	void pSetBlendMode( GLenum blendSrc, GLenum blendDest );
-	void pSetBlendModeForce( GLenum blendSrc, GLenum blendDest );
 	void pActivateVAOShapes();
+	void pCreatePipelines( const deoglPipeline* (&pipelines)[ deoglRCanvas::BlendModeCount ],
+		deoglPipelineConfiguration &config );
 };
 
 #endif

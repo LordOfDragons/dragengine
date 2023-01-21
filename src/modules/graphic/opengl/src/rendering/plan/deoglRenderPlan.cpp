@@ -44,6 +44,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -114,9 +115,12 @@ pIsRendering( false ),
 pLevel( 0 ),
 
 pUseGIState( false ),
+pRenderStereo( false ),
 pUseConstGIState( NULL ),
 pRenderVR( ervrNone ),
 pSkyLightCount( 0 ),
+pLodMaxPixelError( 0 ),
+pLodLevelOffset( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
@@ -236,7 +240,6 @@ deoglRenderPlan::~deoglRenderPlan(){
 	pDirectEnvMapFader.DropAll();
 	
 	if( pEnvMaps ){
-		int i;
 		for( i=0; i<pEnvMapCount; i++ ){
 			if( pEnvMaps[ i ].GetEnvMap() ){
 				pEnvMaps[ i ].GetEnvMap()->RemovePlanUsage();
@@ -293,6 +296,7 @@ void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
 		return; // re-entrant rendering causes exceptions. ignore rendering in this case
 	}
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.PrepareRender" );
 	pIsRendering = true;
 	
 	try{
@@ -419,8 +423,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// NOTE these calls indirectly access projection matrix. this requires per-eye updating
 	const int componentCount = pCollideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
-		deoglRComponent &oglComponent = *pCollideList.GetComponentAt( i )->GetComponent();
-		oglComponent.AddSkinStateRenderPlans( *this );
+		pCollideList.GetComponentAt( i )->GetComponent()->AddSkinStateRenderPlans( *this );
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();
@@ -521,7 +524,7 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pFrustumMatrix = defren.CreateFrustumDMatrix( pViewportWidth, pViewportHeight,
 			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
 		
-		if( defren.GetUseInverseDepth() ){
+		if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 			pDepthToPosition.x = -pCameraImageDistance;
 			pDepthToPosition.y = 0.0f;
 			
@@ -545,23 +548,37 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pDepthToPosition.y = q;
 		*/
 		
+		pProjectionMatrixStereo = pProjectionMatrix;
+		pFrustumMatrixStereo = pFrustumMatrix;
+		pDepthToPositionStereo = pDepthToPosition;
+		pDepthToPositionStereo2 = pDepthToPosition2;
+		
 		pDirtyProjMat = false;
 	}
 	
 	// VR modifies the matrices
 	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
 		const deoglVR &vr = *pCamera->GetVR();
-		const deoglVREye &vreye = pRenderVR == ervrLeftEye ? vr.GetLeftEye() : vr.GetRightEye();
+		const deoglVREye &vreye = pRenderVR == ervrRightEye ? vr.GetRightEye() : vr.GetLeftEye();
 		
 		pCameraFov = vr.GetCameraFov();
 		pCameraFovRatio = vr.GetCameraFovRatio();
 		
+		// left eye
 		pProjectionMatrix = vreye.CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrix = vreye.CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
 		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
 		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
 		pDepthToPosition2.Set( -pProjectionMatrix.a13, -pProjectionMatrix.a23 );
+		
+		// right eye
+		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
+		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
+		
+		pDepthToPositionStereo.z = 1.0f / pProjectionMatrixStereo.a11;
+		pDepthToPositionStereo.w = 1.0f / pProjectionMatrixStereo.a22;
+		pDepthToPositionStereo2.Set( -pProjectionMatrixStereo.a13, -pProjectionMatrixStereo.a23 );
 	}
 	
 	// determine frustum to use
@@ -761,7 +778,7 @@ void deoglRenderPlan::pStartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) ); // 512
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
@@ -786,7 +803,7 @@ void deoglRenderPlan::pWaitFinishedFindContent(){
 }
 
 void deoglRenderPlan::pPlanGI(){
-	if( pUseConstGIState || ! pUseGIState
+	if( pUseConstGIState || ! pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
 		return;
 	}
@@ -836,9 +853,9 @@ void deoglRenderPlan::pPlanLODLevels(){
 		pHTView->UpdateLODLevels( pCameraPosition.ToVector() );
 	}
 	
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	deoglLODCalculator lodCalculator;
-	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
+	lodCalculator.SetMaxPixelError( pLodMaxPixelError );
+	lodCalculator.SetLodOffset( pLodLevelOffset );
 	
 	lodCalculator.SetComponentLODProjection( pCollideList, pCameraPosition,
 		pCameraInverseMatrix.TransformView(), pCameraFov, pCameraFov * pCameraFovRatio,
@@ -1203,7 +1220,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 		// pFinishOcclusionTests to avoid stalling
 		if( pOcclusionTest->GetInputDataCount() > 0
 		&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-			pOcclusionTest->UpdateVBO();
+			pOcclusionTest->UpdateSSBO();
 			if( pDebug ){
 				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
 			}
@@ -1390,6 +1407,7 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 }
 
 void deoglRenderPlan::Render(){
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.Render" );
 	if( pIsRendering ){
 		// re-entrant rendering causes exceptions. render instead a black screen and do not clean up
 		pRenderThread.GetRenderers().GetWorld().RenderBlackScreen( *this );
@@ -1463,15 +1481,17 @@ void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 		pCameraPosition = pCameraInverseMatrix.GetPosition();
 //	}
 	
-	pCameraCorrectionMatrix.SetIdentity();
+	pCameraStereoMatrix.SetIdentity();
+	pCameraStereoInverseMatrix.SetIdentity();
 }
 
 void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
 	pCameraMatrixNonMirrored = matrix;
 }
 
-void deoglRenderPlan::SetCameraCorrectionMatrix( const decDMatrix &matrix ){
-	pCameraCorrectionMatrix = matrix;
+void deoglRenderPlan::SetCameraStereoMatrix( const decMatrix &matrix ){
+	pCameraStereoMatrix = matrix;
+	pCameraStereoInverseMatrix = matrix.QuickInvert();
 }
 
 void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){
@@ -1511,9 +1531,13 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 	pCameraAdaptedIntensity = plan.pCameraAdaptedIntensity;
 	
 	pProjectionMatrix = plan.pProjectionMatrix;
+	pProjectionMatrixStereo = plan.pProjectionMatrixStereo;
 	pFrustumMatrix = plan.pFrustumMatrix;
+	pFrustumMatrixStereo = plan.pFrustumMatrixStereo;
 	pDepthToPosition = plan.pDepthToPosition;
 	pDepthToPosition2 = plan.pDepthToPosition2;
+	pDepthToPositionStereo = plan.pDepthToPositionStereo;
+	pDepthToPositionStereo2 = plan.pDepthToPositionStereo2;
 	pDepthSampleOffset = plan.pDepthSampleOffset;
 	
 	pDirtyProjMat = false;
@@ -1624,6 +1648,10 @@ void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
 	pUseConstGIState = giState;
 }
 
+void deoglRenderPlan::SetRenderStereo ( bool stereoRender ){
+	pRenderStereo = stereoRender;
+}
+
 void deoglRenderPlan::SetRenderVR( eRenderVR renderVR ){
 	pRenderVR = renderVR;
 }
@@ -1731,6 +1759,14 @@ void deoglRenderPlan::SetStencilWriteMask( int writeMask ){
 	pStencilWriteMask = writeMask;
 }
 
+void deoglRenderPlan::SetLodMaxPixelError( int error ){
+	pLodMaxPixelError = decMath::max( error, 0 );
+}
+
+void deoglRenderPlan::SetLodLevelOffset( int offset ){
+	pLodLevelOffset = offset;
+}
+
 void deoglRenderPlan::SetOcclusionMap( deoglOcclusionMap *occlusionMap ){
 	if( occlusionMap == pOcclusionMap ){
 		return;
@@ -1763,10 +1799,14 @@ void deoglRenderPlan::SetOcclusionTestMatrix( const decMatrix &matrix ){
 	pOcclusionTestMatrix = matrix;
 }
 
+void deoglRenderPlan::SetOcclusionTestMatrixStereo( const decMatrix &matrix ){
+	pOcclusionTestMatrixStereo = matrix;
+}
+
 
 
 deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
-	if( pUseGIState && ! pUseConstGIState
+	if( pUseGIState && ! pUseConstGIState && ! pDisableLights
 	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff
 	&& pRenderVR != ervrRightEye ){
 		return pGIState;
@@ -1775,7 +1815,7 @@ deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 }
 
 deoglGIState *deoglRenderPlan::GetRenderGIState() const{
-	if( ! pUseGIState
+	if( ! pUseGIState || pDisableLights
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
 		return NULL;
 		
@@ -1995,6 +2035,7 @@ int deoglRenderPlan::pIndexOfLightWith( deoglCollideListLight *light ) const{
 
 void deoglRenderPlan::pCheckTransparency(){
 	pHasTransparency = false;
+	pHasXRayTransparency = false;
 	
 	// components
 	const int componentCount = pCollideList.GetComponentCount();
@@ -2003,18 +2044,30 @@ void deoglRenderPlan::pCheckTransparency(){
 		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
 		if( ! component.GetSolid() || ! component.GetOutlineSolid() ){
 			pHasTransparency = true;
-			return;
 		}
+		if( ! component.GetXRaySolid() ){
+			pHasXRayTransparency = true;
+		}
+	}
+	if( pHasTransparency && pHasXRayTransparency ){
+		return;
 	}
 	
 	// billboards
 	const int billboardCount = pCollideList.GetBillboardCount();
 	for( i=0; i<billboardCount; i++ ){
 		const deoglRBillboard &billboard = *pCollideList.GetBillboardAt( i );
-		if( billboard.GetUseSkinTexture() && ! billboard.GetUseSkinTexture()->GetSolid() ){
-			pHasTransparency = true;
-			return;
+		if( billboard.GetUseSkinTexture() ){
+			if( ! billboard.GetUseSkinTexture()->GetSolid() ){
+				pHasTransparency = true;
+				if( billboard.GetUseSkinTexture()->GetXRay() ){
+					pHasXRayTransparency = true;
+				}
+			}
 		}
+	}
+	if( pHasTransparency && pHasXRayTransparency ){
+		return;
 	}
 	
 	// particles
@@ -2032,9 +2085,13 @@ void deoglRenderPlan::pCheckTransparency(){
 			const int typeCount = instance.GetTypeCount();
 			for( j=0; j<typeCount; j++ ){
 				const deoglRSkin * const skin = instance.GetTypeAt( j ).GetUseSkin();
-				if( skin && ! skin->GetIsSolid() ){
-					pHasTransparency = true;
-					return;
+				if( skin ){
+					if( ! skin->GetIsSolid() ){
+						pHasTransparency = true;
+						if( skin->GetHasXRay() ){
+							pHasXRayTransparency = true;
+						}
+					}
 				}
 				/*
 				if( instance.GetEmitter()->GetTypeAt( j ).GetHasTransparency() ){
@@ -2062,9 +2119,13 @@ void deoglRenderPlan::pCheckTransparency(){
 			const int typeCount = instance.GetTypeCount();
 			for( j=0; j<typeCount; j++ ){
 				const deoglRSkin * const skin = instance.GetTypeAt( j ).GetUseSkin();
-				if( skin && ! skin->GetIsSolid() ){
-					pHasTransparency = true;
-					return;
+				if( skin ){
+					if( ! skin->GetIsSolid() ){
+						pHasTransparency = true;
+						if( skin->GetHasXRay() ){
+							pHasXRayTransparency = true;
+						}
+					}
 				}
 			}
 		}

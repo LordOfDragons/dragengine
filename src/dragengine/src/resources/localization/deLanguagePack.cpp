@@ -58,6 +58,10 @@ deLanguagePack::~deLanguagePack(){
 // Management
 ///////////////
 
+void deLanguagePack::SetIdentifier( const decString &identifier ){
+	pIdentifier = identifier;
+}
+
 void deLanguagePack::SetName( const decUnicodeString &name ){
 	pName = name;
 }
@@ -130,6 +134,19 @@ const decUnicodeString &defaultValue ) const{
 		
 	}else{
 		return defaultValue;
+	}
+}
+
+bool deLanguagePack::Translate( const char *name, const decUnicodeString **text ) const {
+	DEASSERT_NOTNULL( text );
+	
+	void *pointer;
+	if( pLookupTable.GetAt( name, &pointer ) ){
+		*text = &( ( const deLanguagePackEntry* )pointer )->GetText();
+		return true;
+		
+	}else{
+		return false;
 	}
 }
 

@@ -34,8 +34,6 @@
 #include "../plan/deoglRenderPlanSkyLight.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglAddToRenderTask.h"
-#include "../task/deoglRenderTaskShader.h"
-#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../lod/deoglLODCalculator.h"
 #include "../deoglRenderOcclusion.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -54,6 +52,7 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../debug/deoglDebugSnapshot.h"
 #include "../../debug/debugSnapshot.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../gi/deoglGI.h"
@@ -73,12 +72,14 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../shadow/deoglSCSolid.h"
 #include "../../shadow/deoglSCTransparent.h"
 #include "../../shadow/deoglShadowCaster.h"
@@ -157,53 +158,40 @@ deoglRenderLightSky::deoglRenderLightSky( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread ),
 
 pColList2( NULL ),
-pShaderAO( NULL ),
-pShaderClearDepth( NULL ),
-pShaderOccMesh( nullptr ),
 
-pSolidShadowMap( NULL ),
-
-pDebugInfoSolid( NULL ),
-pDebugInfoTransparent( NULL ),
-
-pDebugInfoSolidDetail( NULL ),
-pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowOcclusion( NULL ),
-pDebugInfoSolidShadowSplit( NULL ),
-pDebugInfoSolidShadowSplitContent( NULL ),
-pDebugInfoSolidShadowSplitLODLevels( NULL ),
-pDebugInfoSolidShadowSplitClear( NULL ),
-pDebugInfoSolidShadowSplitTask( NULL ),
-pDebugInfoSolidShadowSplitRender( NULL ),
-pDebugInfoSolidShadowGI( NULL ),
-pDebugInfoSolidLight( NULL ),
-
-pDebugInfoTransparentDetail( NULL ),
-pDebugInfoTransparentLight( NULL )
+pSolidShadowMap( NULL )
 {
-// 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-// 	bool useEncodeDepth = config.GetUseEncodeDepth();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-// 		sources = shaderManager.GetSourcesNamed( "DefRen AO Sky" );
-// 		if( useEncodeDepth ){
-// 			defines.AddDefine( "GEOM_ENCODED_DEPTH", "1" );
-// 		}
-// 		pShaderAO = shaderManager.GetProgramWith( sources, defines );
-// 		defines.RemoveAllDefines();
+		// clear depth
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTestLessEqual();
+		pipconf.EnableCulling( false );
+		pipconf.SetStencil( GL_NOTEQUAL, 0, 0xff, 0xff );
+		pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		pipconf.SetEnableStencilTest( true );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Clear Depth" );
-		pShaderClearDepth = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, "DefRen Clear Depth", defines );
+		pPipelineClearDepth = pipelineManager.GetWith( pipconf );
 		
-		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
+		
+		// occlusion mesh
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, true );
+		pipconf.EnableDepthTestLessEqual();
+		pipconf.SetDepthClamp( true );
+		
 		AddSharedSPBDefines( defines );
-		defines.AddDefine( "WITH_SHADOWMAP", true );
-		pShaderOccMesh = shaderManager.GetProgramWith( sources, defines );
-		pShaderOccMesh->EnsureRTSShader();
-		pShaderOccMesh->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		defines.SetDefines( "WITH_SHADOWMAP" );
+		defines.SetDefines( "DEPTH_ORTHOGONAL" );
+		defines.SetDefines( "DEPTH_OFFSET" );
+		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
+		pipconf.SetSPBInstanceIndexBase( 0 );
+		pPipelineOccMesh = pipelineManager.GetWith( pipconf, true );
 		defines.RemoveAllDefines();
 		
 		
@@ -220,48 +208,48 @@ pDebugInfoTransparentLight( NULL )
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 		const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
 		
-		pDebugInfoSolid = new deoglDebugInformation( "Sky", colorText, colorBgUp );
-		pDebugInfoTransparent = new deoglDebugInformation( "Sky", colorText, colorBgUp );
+		pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Sky", colorText, colorBgUp ) );
+		pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Sky", colorText, colorBgUp ) );
 		
 		
 		
-		pDebugInfoSolidDetail = new deoglDebugInformation( "Light Sky Solid", colorText, colorBg );
+		pDebugInfoSolidDetail.TakeOver( new deoglDebugInformation( "Light Sky Solid", colorText, colorBg ) );
 		
-		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
+		pDebugInfoSolidShadow.TakeOver( new deoglDebugInformation( "Shadow", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
 		
-		pDebugInfoSolidShadowOcclusion = new deoglDebugInformation( "Occlusion", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowOcclusion.TakeOver( new deoglDebugInformation( "Occlusion", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowOcclusion );
 		
-		pDebugInfoSolidShadowSplit = new deoglDebugInformation( "Splits", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowSplit.TakeOver( new deoglDebugInformation( "Splits", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowSplit );
 		
-		pDebugInfoSolidShadowSplitContent = new deoglDebugInformation( "Add Elements", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitContent.TakeOver( new deoglDebugInformation( "Add Elements", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitContent );
 		
-		pDebugInfoSolidShadowSplitLODLevels = new deoglDebugInformation( "LOD Levels", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitLODLevels.TakeOver( new deoglDebugInformation( "LOD Levels", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitLODLevels );
 		
-		pDebugInfoSolidShadowSplitClear = new deoglDebugInformation( "Clear", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitClear );
 		
-		pDebugInfoSolidShadowSplitTask = new deoglDebugInformation( "Task", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitTask );
 		
-		pDebugInfoSolidShadowSplitRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitRender );
 		
-		pDebugInfoSolidShadowGI = new deoglDebugInformation( "Shadow GI", colorText, colorBgSub );
+		pDebugInfoSolidShadowGI.TakeOver( new deoglDebugInformation( "Shadow GI", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadowGI );
 		
-		pDebugInfoSolidLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoSolidLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidLight );
 		
 		
 		
-		pDebugInfoTransparentDetail = new deoglDebugInformation( "Light Sky Transp", colorText, colorBg );
+		pDebugInfoTransparentDetail.TakeOver( new deoglDebugInformation( "Light Sky Transp", colorText, colorBg ) );
 		
-		pDebugInfoTransparentLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoTransparentLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentLight );
 		
 	}catch( const deException & ){
@@ -279,12 +267,12 @@ deoglRenderLightSky::~deoglRenderLightSky(){
 // Rendering
 //////////////
 
-void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
+void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray ){
 // 	if( ! solid ){
 // 		return;
 // 	}
 	
-	if( solid ){
+	if( solid && ! xray ){
 		// this situation is annoying. to build sky shadow render tasks these actions are required:
 		// - find sky light content (parallel task)
 		// - render occlusion tests => requires view occlusion map to be rendered
@@ -312,6 +300,7 @@ void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "LightSky.RenderLights" );
 	DebugTimersReset( plan, false );
 	
 	//RenderAO( plan );
@@ -319,7 +308,7 @@ void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const
 	
 	int i;
 	for( i=0; i<count; i++ ){
-		RenderLight( *plan.GetSkyLightAt( i ), solid, mask );
+		RenderLight( *plan.GetSkyLightAt( i ), solid, mask, xray );
 	}
 	
 	if( solid ){
@@ -363,9 +352,9 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
 	// set shader
-	renderThread.GetShader().ActivateShader( pShaderAO );
+	renderThread.GetShader().ActivateShader( pPipelineAO );
 	
-	pShaderAO->GetCompiled()->SetParameterFloat( 0, defren.GetPixelSizeU(), defren.GetPixelSizeV(), 0.0f, 0.0f );
+	pPipelineAO->GetGlShader().SetParameterFloat( 0, defren.GetPixelSizeU(), defren.GetPixelSizeV(), 0.0f, 0.0f );
 	
 	// mapping (0,1-sv) => (-1,-1) and (su,1) => (1,1)
 	// (x-c)*s = x*s-c*s
@@ -378,10 +367,10 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 	// u=su; su*(2/su) + (-1) = 2-1 = 1 (ok)
 	// v=1-sv; (1-sv)*(2/sv) + (1-2/sv) = 2/sv-2 + 1-2/sv = -1 (ok)
 	// v=1; 1*(2/sv) + (1-2/sv) = 2/sv + 1-2/sv = 1 (ok)
-	pShaderAO->GetCompiled()->SetParameterFloat( 1, scaleU, scaleV, offsetU, offsetV );
+	pPipelineAO->GetGlShader().SetParameterFloat( 1, scaleU, scaleV, offsetU, offsetV );
 	
 	float q = zfar / ( zfar - znear );
-	pShaderAO->GetCompiled()->SetParameterVector4( 2, plan.GetDepthToPosition() );
+	pPipelineAO->GetGlShader().SetParameterVector4( 2, plan.GetDepthToPosition() );
 	
 	// render probes
 //	rengeom.RenderSkyLOProbes( &plan, plan.GetCollideList(), plan.GetCameraMatrix() );
@@ -389,95 +378,82 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 }
 
 void deoglRenderLightSky::RenderLight( deoglRenderPlanSkyLight &plan, bool solid,
-const deoglRenderPlanMasked *mask ){
+const deoglRenderPlanMasked *mask, bool xray ){
 	if( ! plan.GetUseLight() ){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderLight" );
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	//deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglLightShader *lightShader;
+	const deoglLightPipeline *pipeline = nullptr;
 	
 	const bool useShadow = plan.GetUseShadow();
 	int shadowMapSize = plan.GetPlan().GetShadowSkySize();
 	int passCount = 1;
 	
 	// render shadow map
-	if( useShadow && solid ){
-		passCount = plan.GetShadowLayerCount();
+	passCount = plan.GetShadowLayerCount();
+	
+	if( useShadow && solid && ! xray ){
 		RenderShadows( plan, solid, mask );
 		RestoreFBO( plan.GetPlan() );
 		DebugTimer2SampleCount( plan.GetPlan(), *pDebugInfoSolidShadow, 1, true );
 	}
 	
-	// render light
-	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	if( solid ){
-		OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE ) );
+	int pipelineModifiers = 0;
+	if( ! solid ){
+		pipelineModifiers |= deoglLightPipelines::emTransparent;
+	}
+	if( plan.GetPlan().GetRenderStereo() ){
+		pipelineModifiers |= deoglLightPipelines::emStereo;
 	}
 	
-	// set shader
+	// activate pipeline
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	if( useShadow ){
-		lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estSolid );
+		pipeline = &skyLayer.GetPipelines().GetWithRef( deoglLightPipelines::etSolid1, pipelineModifiers );
 		
 	}else{
 		if( skyLayer.GetHasLightDirect() ){
-			lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estNoShadow );
+			pipeline = &skyLayer.GetPipelines().GetWithRef( deoglLightPipelines::etNoShadow, pipelineModifiers );
 			
 		}else{
-			lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estAmbient );
+			pipeline = &skyLayer.GetPipelines().GetWithRef( deoglLightPipelines::etAmbient, pipelineModifiers );
 		}
 	}
 	
-	if( ! lightShader ){
-		DETHROW( deeInvalidParam );
-	}
+	pipeline->GetPipeline()->Activate();
 	
-	renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+	SetViewport( plan.GetPlan() );
 	
 	// set program parameters
-	deoglSPBlockUBO * const spbInstance = skyLayer.GetInstanceParameterBlock();
-	deoglSPBlockUBO * const spbLight = skyLayer.GetLightParameterBlock();
+	deoglSPBlockUBO &spbInstance = skyLayer.GetInstanceParameterBlock();
+	deoglSPBlockUBO &spbLight = skyLayer.GetLightParameterBlock();
 	
-	if( ! spbLight || ! spbInstance ){
-		DETHROW( deeInvalidParam );
-	}
+	const deoglLightShader &lightShader = pipeline->GetShader();
+	UpdateLightParamBlock( lightShader, spbLight, plan );
+	UpdateInstanceParamBlock( lightShader, spbInstance, plan, shadowMapSize, passCount );
 	
-	UpdateLightParamBlock( *lightShader, *spbLight, plan );
-	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, shadowMapSize, passCount );
-	
-	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
-	spbLight->Activate();
-	spbInstance->Activate();
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
+	spbLight.Activate();
+	spbInstance.Activate();
 	
 	// set textures
 	int target;
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+	target = lightShader.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 	if( target != -1 ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerShadowClampLinear() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
+	target = lightShader.GetTextureTarget( deoglLightShader::ettNoise );
 	if( target != -1 ){
 		tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
 	}
 	
-	target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );
+	target = lightShader.GetTextureTarget( deoglLightShader::ettLightDepth1 );
 	if( target != -1 ){
 		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerClampLinear() );
 	}
@@ -486,7 +462,7 @@ const deoglRenderPlanMasked *mask ){
 	//tsmgr.EnableTexture( 5, *defren.GetTemporaryTexture(), deoglTextureStageManager::etfNearest, GL_CLAMP );
 	
 	// render quad
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO( plan.GetPlan() );
 	
 	if( solid ){
 		DebugTimer2SampleCount( plan.GetPlan(), *pDebugInfoSolidLight, 1, true );
@@ -496,7 +472,7 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	// GI rays
-	if( ! mask && solid ){
+	if( ! mask && solid && ! xray ){
 		deoglGIState * const giState = plan.GetPlan().GetUpdateGIState();
 		if( giState ){
 			const deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade( giState->GetSkyShadowCascade() );
@@ -506,7 +482,7 @@ const deoglRenderPlanMasked *mask ){
 			
 			deoglTexture *texture1 = renderThread.GetDefaultTextures().GetShadowMap();
 			deoglTexture *texture2 = texture1;
-			lightShader = NULL;
+			pipeline = nullptr;
 			
 			if( useShadow && scsolid ){
 				if( scsolid->GetStaticMap() ){
@@ -514,48 +490,50 @@ const deoglRenderPlanMasked *mask ){
 					
 					if( scsolid->GetDynamicMap() ){
 						texture2 = scsolid->GetDynamicMap();
-						lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid2 );
+						pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRaySolid2, 0 );
 						
 					}else{
-						lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid1 );
+						pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRaySolid1, 0 );
 					}
 					
 				}else if( scsolid->GetDynamicMap() ){
 					texture1 = scsolid->GetDynamicMap();
-					lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid1 );
+					pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRaySolid1, 0 );
 					
 				}else{
-					lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRayNoShadow );
+					pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRayNoShadow, 0 );
 				}
 				
 			}else if( skyLayer.GetHasLightDirect() ){
-				lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRayNoShadow );
+				pipeline = skyLayer.GetPipelines().GetWith( deoglLightPipelines::etGIRayNoShadow, 0 );
 			}
 			
-			if( lightShader ){
-				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+			if( pipeline ){
+				pipeline->GetPipeline()->Activate();
 				
-				GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
-				spbLight->Activate();
-				spbInstance->Activate();
+				// WARNING always non-stereo!
+				renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 				
-				int target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+				spbLight.Activate();
+				spbInstance.Activate();
+				
+				const deoglLightShader &lightShaderGI = pipeline->GetShader();
+				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *texture1, GetSamplerShadowClampLinear() );
-					
 				}
 				
-				target = lightShader->GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
+				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettShadow2SolidDepth );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *texture2, GetSamplerShadowClampLinear() );
 				}
 				
-				target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
+				target = lightShaderGI.GetTextureTarget( deoglLightShader::ettNoise );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest() );
 				}
 				
-				defren.RenderFSQuadVAO();
+				RenderFullScreenQuadVAO();
 			}
 		}
 	}
@@ -573,9 +551,6 @@ const deoglRenderPlanMasked *mask ){
 	}
 	
 	RenderShadowMap( plan, shadowMapper );
-	
-	// activate stencil as we had to disable it for rendering the shadow maps
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 }
 
 // #define SKY_SHADOW_LAYERED_RENDERING 1
@@ -597,19 +572,19 @@ const deoglRenderPlanMasked *mask ){
 
 void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderShadowMap" );
 	const deoglRWorld &world = *plan.GetPlan().GetWorld();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
-	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowCascadedPB();
 #else
-	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 #endif
 	const bool bugClearEntireArrTex = renderThread.GetCapabilities().GetClearEntireArrayTexture().Broken();
 // 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 // 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	const decDVector &referencePosition = world.GetReferencePosition();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	decMatrix matrixCamera;
 	
@@ -636,31 +611,17 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	const decMatrix matLigInv = matLig.Invert();
 	const decMatrix matCL = matCamInv.GetRotationMatrix().ToMatrix() * matLigInv;
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // lequal, sky light uses linear depth
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( false );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
-	}
-	
 	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0xff ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+		state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+		state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+		state.StencilMask( ~0 );
 		
 	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilMask( 0x0 );
 	}
+	state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 	
 	// get shadow map
 	const int shadowMapSize = plan.GetPlan().GetShadowSkySize();
@@ -681,6 +642,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 #ifdef SKY_SHADOW_LAYERED_RENDERING
 	if( bugClearEntireArrTex ){
+		pPipelineClearBuffers->Activate();
 		for( i=0; i<layerCount; i++ ){
 			shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i, true );
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
@@ -693,6 +655,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	}
 #else
 	if( ! bugClearEntireArrTex ){
+		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
 		if( clearBackFaceFragments ){
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
@@ -761,7 +724,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	
 	
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renderParamBlock );
+	renderTask.SetRenderParamBlock( &renderParamBlock );
 	
 	addToRenderTask.Reset();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
@@ -790,9 +753,10 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 #ifdef SKY_SHADOW_LAYERED_RENDERING
 	// render solid content. two different depth offsets for front and back faces are used. double sided always
 	// counts as front facing. this way all can be rendered in one go
-	renderParamBlock->MapBuffer();
-	try{
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+	{
+		const deoglSPBMapBuffer mapped( renderParamBlock );
+		
+		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
 		
 		for( i=0; i<layerCount; i++ ){
 			deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
@@ -814,24 +778,19 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			matrixCamera = decMatrix::CreateCamera( sl.position, matLig.TransformView(), matLig.TransformUp() )
 				* decMatrix::CreateScale( sl.scale * 2.0f );
 			
-			renderParamBlock->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
-			renderParamBlock->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
-			renderParamBlock->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
+			renderParamBlock.SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, i, matrixCamera );
+			renderParamBlock.SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, i, matrixCamera );
+			renderParamBlock.SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn,
 				i, matrixCamera.GetRotationMatrix().Invert() );
-			renderParamBlock->SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
-				i, sl.zscale, sl.zoffset * sl.scale.z, -sl.zscale, -sl.zoffset * sl.scale.z );
+			renderParamBlock.SetParameterDataArrayVec4( deoglSkinShader::erutDepthOffset,
+				i, sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		}
-		
-	}catch( const deException & ){
-		renderParamBlock->UnmapBuffer();
-		throw;
 	}
-	renderParamBlock->UnmapBuffer();
 			SSDT("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
-	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+	state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+	state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+	state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 	
 	rengeom.RenderTask( renderTask );
 	
@@ -841,14 +800,11 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 	// the sky light right at the near end of the shadow map. by clearing back facing fragments
 	// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 	// issues on front facing fragments but makes underground scenes safe
-	OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-	OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
+	pPipelineClearDepth->Activate();
 	
-	renderThread.GetShader().ActivateShader( pShaderClearDepth );
+	pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
 	
-	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
-	
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 			SSDT("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitRender, true );
@@ -885,15 +841,16 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		// calculate lod levels to use
 #ifdef SKY_SHADOW_FILTERED
+		/* done in parallel task
 		const float lodBoxWidth = sl.maxExtend.x - sl.minExtend.x;
 		const float lodBoxHeight = sl.maxExtend.y - sl.minExtend.y;
 		
 		deoglLODCalculator lodCalculator;
-		
-		lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
+		lodCalculator.SetMaxPixelError( 2 );
 		
 		lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
 		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitLODLevels, false );
+		*/
 #endif
 		
 		// setup matrix
@@ -903,9 +860,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 			* decMatrix::CreateScale( sl.scale * 2.0f );
 		
 		if( clearBackFaceFragments ){
-			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-			OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+			state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+			state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+			state.StencilFunc( GL_ALWAYS, ~0, ~0 );
 		}
 		
 		// activate shadow map. since objects mostly reside in only one shadow texture
@@ -913,6 +870,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		// need for a geometry program to be used.
 		shadowMapper.ActivateSolidArrayTextureLayer( shadowMapSize, layerCount, i, true );
 		if( bugClearEntireArrTex ){
+			pPipelineClearBuffers->Activate();
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
 			DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitClear, true );
 		}
@@ -920,29 +878,24 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		
 		// render solid content. two different depth offsets for front and back faces are used. double sided always
 		// counts as front facing. this way all can be rendered in one go
-		const float depthScale = sl.zscale;
-		const float depthOffset = sl.zoffset * sl.scale.z;
-		
-		renderParamBlock->MapBuffer();
-		try{
-			renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera );
-			renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
-				matrixCamera.GetRotationMatrix().Invert() );
-			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				depthScale, depthOffset, -depthScale, -depthOffset );
+		{
+			const deoglSPBMapBuffer mapped( renderParamBlock );
 			
-		}catch( const deException & ){
-			renderParamBlock->UnmapBuffer();
-			throw;
+			renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixCamera );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixCamera );
+			renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
+				matrixCamera.GetRotationMatrix().Invert() );
+			renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+				sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
+			
+			renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		}
-		renderParamBlock->UnmapBuffer();
 			SSDTPF("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 #ifdef SKY_SHADOW_FILTERED
-		sl.renderTask->SetRenderParamBlock( renderParamBlock );
-		sl.renderTask->SetForceDoubleSided( true );
+		sl.renderTask->SetRenderParamBlock( &renderParamBlock );
+		sl.addToRenderTask->SetForceDoubleSided( true );
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
 			renderThread.GetLogger().LogInfoFormat( "RenderLightSky: shadow split %i", i );
@@ -963,14 +916,9 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 		// issues on front facing fragments but makes underground scenes safe
 		if( clearBackFaceFragments ){
-			OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-			OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
-			
-			renderThread.GetShader().ActivateShader( pShaderClearDepth );
-			
-			pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
-			
-			defren.RenderFSQuadVAO();
+			pPipelineClearDepth->Activate();
+			pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
+			RenderFullScreenQuadVAO();
 		}
 			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
@@ -1108,21 +1056,20 @@ deoglShadowMapper &shadowMapper ){
 	//      fragment shader. not touching gl_FragDepth is faster. using a geometry
 	//      shader does make rendering more expensive but not touching gl_FragDepth
 	//      should allow double-write speed to be used and should compensate
-	const float depthOffset = sl.zoffset * sl.scale.z;
-	const float depthScale = 0.0f; //sl.zscale;
 	
 	// static shadow map
 	const int shadowMapSize = plan.GetGIShadowSize();
 	
 	if( plan.GetGIShadowUpdateStatic() ){
 		// parameter block
-		deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
-		renderParamBlock->MapBuffer();
-		try{
-			renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-			renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
-			renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
+		deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+		{
+			const deoglSPBMapBuffer mapped( renderParamBlock );
+			
+			renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+			renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
+			renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn,
 				matrixGI.GetRotationMatrix().QuickInvert() );
 			
 			// for static shadow maps we use the clear depth trick. depth offsets though
@@ -1139,20 +1086,16 @@ deoglShadowMapper &shadowMapper ){
 			//      up at the edge of geometry because the front face did not cover the
 			//      exact same pixels as it should. this inconsistent behavior causes
 			//      problems. for this reason this trick is disabled until a better idea
-			renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-				depthScale, depthOffset, -depthScale, -depthOffset ); // due to disabled
-//				depthScale, depthOffset, depthScale, depthOffset );
+			renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+				0.0f/*sl.zscale*/, sl.zoffset, 0.0f/*-sl.zscale*/, -sl.zoffset ); // due to disabled
 			
-		}catch( const deException & ){
-			renderParamBlock->UnmapBuffer();
-			throw;
+			renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 		}
-		renderParamBlock->UnmapBuffer();
 				SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 		
 		// render
-		plan.GetGIRenderTaskStatic().SetRenderParamBlock( renderParamBlock );
-		plan.GetGIRenderTaskStatic().SetForceDoubleSided( true );
+		plan.GetGIRenderTaskStatic().SetRenderParamBlock( &renderParamBlock );
+		plan.GetGIRenderTaskAddStatic().SetForceDoubleSided( true );
 		
 		shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize( shadowMapSize, true, false ) );
 		RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskStatic(), shadowMapSize, false /*true*/ );
@@ -1160,31 +1103,29 @@ deoglShadowMapper &shadowMapper ){
 	}
 	
 	// dynamic shadow map. parameter block
-	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
-	renderParamBlock->MapBuffer();
-	try{
+	deoglSPBlockUBO &renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
+	{
+		const deoglSPBMapBuffer mapped( renderParamBlock );
+		
 		// this is the same as above and could be shared
-		renderParamBlock->SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
-		renderParamBlock->SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
-		renderParamBlock->SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixGI.GetRotationMatrix().QuickInvert() );
+		renderParamBlock.SetParameterDataMat4x3( deoglSkinShader::erutMatrixV, matrixGI );
+		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, decMatrix() );
+		renderParamBlock.SetParameterDataMat4x4( deoglSkinShader::erutMatrixVP, matrixGI );
+		renderParamBlock.SetParameterDataMat3x3( deoglSkinShader::erutMatrixVn, matrixGI.GetRotationMatrix().QuickInvert() );
 		
 		// this though is different and requires an own parameter block to be used.
 		// in general only dynamic shadow map is rendered so the situation of this
 		// parameter blockt to be updated twice (and stalling) is little
-		renderParamBlock->SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-			depthScale, depthOffset, -depthScale, -depthOffset );
+		renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+			sl.zscale, sl.zoffset, -sl.zscale, -sl.zoffset );
 		
-	}catch( const deException & ){
-		renderParamBlock->UnmapBuffer();
-		throw;
+		renderParamBlock.SetParameterDataBVec4( deoglSkinShader::erutConditions1, false, false, false, false );
 	}
-	renderParamBlock->UnmapBuffer();
 			SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// render
-	plan.GetGIRenderTaskDynamic().SetRenderParamBlock( renderParamBlock );
-	plan.GetGIRenderTaskDynamic().SetForceDoubleSided( true );
+	plan.GetGIRenderTaskDynamic().SetRenderParamBlock( &renderParamBlock );
+	plan.GetGIRenderTaskAddDynamic().SetForceDoubleSided( true );
 	
 	if( scsolid.GetDynamicMap() && scsolid.GetDynamicMap()->GetWidth() != shadowMapSize ){
 		scsolid.DropDynamic();
@@ -1201,45 +1142,36 @@ deoglShadowMapper &shadowMapper ){
 void deoglRenderLightSky::RenderGIShadowMap( deoglShadowMapper &shadowMapper,
 deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "LightSky.RenderGIShadowMap" );
 	
 			#ifdef SKY_SHADOW_DEBUG_TIME
 			decTimer timer;
 			#endif
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	
-	// opengl states
-	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // lequal, sky light uses linear depth
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glCullFace( GL_BACK ) );
-	
-	if( pglClipControl && defren.GetUseInverseDepth() ){
-		pglClipControl( GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE ); // reset, sky light uses linear depth
-	}
 	
 	// set up stencil mask. this is used to mark back facing fragments (see after rendering)
 	// front faces set 0x0 as stencil value and back faces 0xff
+	/*
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
-		OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0xff ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0xff, 0xff ) );
+		state.StencilOpFront( GL_KEEP, GL_KEEP, GL_ZERO );
+		state.StencilOpBack( GL_KEEP, GL_KEEP, GL_REPLACE );
+		state.StencilMask( ~0 );
 		
 	}else{
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilMask( 0x0 );
 	}
+	state.StencilFunc( GL_ALWAYS, ~0, ~0 );
+	*/
 	
 	// get shadow map
 			SSDTLOG("RenderGIShadowMap Prepare %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// clear shadow map
+	pPipelineClearBuffers->Activate();
 	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
 	
 	if( clearBackFaceFragments ){
-		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, ~0 ) );
 		
 	}else{
 		const GLfloat clearDepth = 1.0f;
@@ -1260,21 +1192,16 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		// the sky light right at the near end of the shadow map. by clearing back facing fragments
 		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 		// issues on front facing fragments but makes underground scenes safe
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilFunc( GL_NOTEQUAL, 0, 0xff ) );
-		
-		renderThread.GetShader().ActivateShader( pShaderClearDepth );
-		
-		pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
-		
-		defren.RenderFSQuadVAO();
+		pPipelineClearDepth->Activate();
+		pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
+		RenderFullScreenQuadVAO();
 				SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	}
 }
 
 
 
-void deoglRenderLightSky::UpdateLightParamBlock( deoglLightShader &lightShader,
+void deoglRenderLightSky::UpdateLightParamBlock( const deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan ){
 	int target;
 	
@@ -1290,94 +1217,110 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan ){
 	lightColor = TransformColor( plan.GetPlan().GetWorld()->GetLightColorMatrix(), lightColor );
 	
 	// set values
-	paramBlock.MapBuffer();
-	try{
-		const bool hasGIState = plan.GetPlan().GetRenderGIState() != NULL;
-		
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
-		if( target != -1 ){
-			if( hasGIState ){
-				paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
-				
-			}else{
-				paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
-				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
-			}
+	const deoglSPBMapBuffer mapped( paramBlock );
+	const bool hasGIState = plan.GetPlan().GetRenderGIState() != NULL;
+	
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColor );
+	if( target != -1 ){
+		if( hasGIState ){
+			paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
+			
+		}else{
+			paramBlock.SetParameterDataVec3( target, lightColor * lightIntensity );
+			// this happens usually only for env-maps. better be dark than wrong lit
+			//paramBlock.SetParameterDataVec3( target, lightColor * ( lightIntensity + ambientIntensity ) );
 		}
-		
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
-		if( target != -1 ){
-			if( hasGIState || plan.GetPlan().GetNoAmbientLight() ){
-				paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
-				
-			}else{
-				paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
-				// this happens usually only for env-maps. better be dark than wrong lit
-				//paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
-			}
-		}
-		
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
-		if( target != -1 ){
-			if( plan.GetPlan().GetNoAmbientLight() ){
-				paramBlock.SetParameterDataFloat( target, 0.0f );
-				
-			}else{
-				paramBlock.SetParameterDataFloat( target,
-					ambientIntensity / decMath::max( lightIntensity + ambientIntensity, 0.1f ) );
-			}
-		}
-		
-		// NOTE sky light is currently using a special handling which has to be replaced with the
-		//      one used by point and spot lights. due to this pLightAmbientRatio can not be
-		//      used in the shader since it is not defined here. to work with the new version the
-		//      following changes have to be done (once the shader is up to it)
-		//      
-		//      - LightColor = lightColor * ( lightIntensity + ambientIntensity )
-		//      - pLightAmbientRatio = ambientIntensity / ( lightIntensity + ambientIntensity )
-		//      - pLightColorAmbient = not used anymore
-		//      
-		//      better would be to change the sky light definition to use ambient-ratio as
-		//      lights do. in this case the solution becomes as simple as in the other lights:
-		//      
-		//      - LightColor = lightColor * lightIntensity
-		//      - pLightAmbientRatio = lightAmbientRatio
-		//      - pLightColorAmbient = not used anymore
-		//      
-		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, 0.0f );
-		}
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightColorAmbient );
+	if( target != -1 ){
+		if( hasGIState || plan.GetPlan().GetNoAmbientLight() ){
+			paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
+			
+		}else{
+			paramBlock.SetParameterDataVec3( target, lightColor * ambientIntensity );
+			// this happens usually only for env-maps. better be dark than wrong lit
+			//paramBlock.SetParameterDataVec3( target, 0.0f, 0.0f, 0.0f );
+		}
+	}
+	
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
+	if( target != -1 ){
+		if( plan.GetPlan().GetNoAmbientLight() ){
+			paramBlock.SetParameterDataFloat( target, 0.0f );
+			
+		}else{
+			paramBlock.SetParameterDataFloat( target,
+				ambientIntensity / decMath::max( lightIntensity + ambientIntensity, 0.1f ) );
+		}
+	}
+	
+	// NOTE sky light is currently using a special handling which has to be replaced with the
+	//      one used by point and spot lights. due to this pLightAmbientRatio can not be
+	//      used in the shader since it is not defined here. to work with the new version the
+	//      following changes have to be done (once the shader is up to it)
+	//      
+	//      - LightColor = lightColor * ( lightIntensity + ambientIntensity )
+	//      - pLightAmbientRatio = ambientIntensity / ( lightIntensity + ambientIntensity )
+	//      - pLightColorAmbient = not used anymore
+	//      
+	//      better would be to change the sky light definition to use ambient-ratio as
+	//      lights do. in this case the solution becomes as simple as in the other lights:
+	//      
+	//      - LightColor = lightColor * lightIntensity
+	//      - pLightAmbientRatio = lightAmbientRatio
+	//      - pLightColorAmbient = not used anymore
+	//      
+	target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, 0.0f );
+	}
 }
 
-void deoglRenderLightSky::UpdateInstanceParamBlock( deoglLightShader &lightShader,
+void deoglRenderLightSky::UpdateInstanceParamBlock( const deoglLightShader &lightShader,
 deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount ){
-	// otherwise set shadow parameters
+	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	const deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
 	float pixelSize, noiseScale;
 	int target;
 	
 	// calculate matrices
-	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
-	
-	// set values
-	decMatrix matrix[ 4 ], giMatrixShadow;
-	deoglGIState * const giState = plan.GetPlan().GetRenderGIState();
+	decMatrix matrixShadow[ 4 ], matrixShadowStereo[ 4 ], giMatrixShadow;
 	float layerBorder[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	float scaleZ[ 4 ] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	
+	const decDMatrix matrixLayer( decMatrix::CreateFromQuaternion(
+		skyLayer.GetLightOrientation() ).QuickMultiply( skyLayer.GetMatrix() ) );
+	const decDMatrix matrixLV( matrixLayer.QuickMultiply( plan.GetPlan().GetRefPosCameraMatrix() ) );
+	
+	// for VR rendering the shadow maps have been calculated against the left eye. when the right
+	// eye is rendered the geometry has to be transformed into the left eye for the shadow maps
+	// to work correctly.
+	decMatrix transformShadow, transformShadowStereo;
+	decDMatrix matrixLVStereo;
+	
+	if( plan.GetPlan().GetRenderStereo() ){
+		// using stereo rendering the camera matrix is the left eye camera matrix. the stereo
+		// matrix has then to transform from the right eye to the left eye. the stored plan
+		// camera stereo matrix transforms from the left eye to the right eye
+		matrixLVStereo = matrixLV.QuickMultiply( plan.GetPlan().GetCameraStereoMatrix() );
+		transformShadowStereo = plan.GetPlan().GetCameraStereoInverseMatrix();
+		
+	}else{
+		// using non-stereo rendering the situation is slightly different. if the left eye is
+		// rendered we are in the correct eye already and do not modify the shadow matrix.
+		// if the right eye is rendered the shadow matrix has to be transformed from right eye
+		// to left eye. in contrary to stereo rendering this modification has to be applied to
+		// the base shadow map not the stereo shadow map
+		transformShadow = plan.GetPlan().GetCameraStereoInverseMatrix();
+	}
 	
 	if( plan.GetUseShadow() ){
 		// planSkyLight is only properly set up if shadow casting is used
 		if( 0 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 0 );
-			matrix[ 0 ] = sl.matrix;
+			matrixShadow[ 0 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 0 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 0 ] = sl.layerBorder;
 			scaleZ[ 0 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1386,7 +1329,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		if( 1 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 1 );
-			matrix[ 1 ] = sl.matrix;
+			matrixShadow[ 1 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 1 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 1 ] = sl.layerBorder;
 			scaleZ[ 1 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1395,7 +1339,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		if( 2 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 2 );
-			matrix[ 2 ] = sl.matrix;
+			matrixShadow[ 2 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 2 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 2 ] = sl.layerBorder;
 			scaleZ[ 2 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1404,7 +1349,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		if( 3 < passCount ){
 			const deoglRenderPlanSkyLight::sShadowLayer &sl = plan.GetShadowLayerAt( 3 );
-			matrix[ 3 ] = sl.matrix;
+			matrixShadow[ 3 ] = transformShadow * sl.matrix;
+			matrixShadowStereo[ 3 ] = transformShadowStereo * sl.matrix;
 			layerBorder[ 3 ] = sl.layerBorder;
 			scaleZ[ 3 ] = sl.scale.z;
 				if( fabsf( sl.scale.z ) < FLOAT_SAFE_EPSILON ){
@@ -1413,92 +1359,86 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		}
 		
 		// only properly set up if plan has GI
-		if( giState ){
+		if( plan.GetPlan().GetRenderGIState() ){
 			giMatrixShadow = plan.GetGIShadowLayer().matrix;
 		}
 	}
 	
-	paramBlock.MapBuffer();
-	try{
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
-		if( target != -1 ){
-			const decMatrix matrixL =
-				decMatrix::CreateFromQuaternion( skyLayer.GetLightOrientation() )
-				* skyLayer.GetMatrix() * plan.GetPlan().GetRefPosCameraMatrix()
-				* plan.GetPlan().GetCameraCorrectionMatrix();
-			
-			paramBlock.SetParameterDataVec3( target, matrixL.TransformView().Normalized() );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 0 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 1 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix3 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 2 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix4 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, matrix[ 3 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, 0.0f );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLayerBorder );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec4( target, layerBorder[ 0 ], layerBorder[ 1 ],
-				layerBorder[ 2 ], layerBorder[ 3 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );
-		if( target != -1 ){
-			pixelSize = 1.0f / ( float )shadowMapSize;
-			noiseScale = config.GetShadowCubePCFSize() / ( float )shadowMapSize;
-			
-			paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec2( target, 1.0f / scaleZ[ 0 ], 1.0f / scaleZ[ 1 ] );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform2 );
-		if( target != -1 ){
-			paramBlock.SetParameterDataVec2( target, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
-		}
-		
-		// global illumination
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowMatrix );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x4( target, giMatrixShadow );
-		}
-		
-		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowParams );
-		if( target != -1 ){
-			const int giShadowMapSize = plan.GetGIShadowSize();
-			pixelSize = 1.0f / ( float )giShadowMapSize;
-			noiseScale = config.GetShadowCubePCFSize() / ( float )giShadowMapSize;
-			
-			paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
-		}
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( paramBlock );
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayVec3( target, 0, matrixLV.TransformView().Normalized() );
+		paramBlock.SetParameterDataArrayVec3( target, 1, matrixLVStereo.TransformView().Normalized() );
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 0 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 0 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix2 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 1 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 1 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix3 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 2 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 2 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix4 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataArrayMat4x4( target, 0, matrixShadow[ 3 ] );
+		paramBlock.SetParameterDataArrayMat4x4( target, 1, matrixShadowStereo[ 3 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightParams );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 0.0f, 0.0f );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLayerBorder );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, layerBorder[ 0 ], layerBorder[ 1 ],
+			layerBorder[ 2 ], layerBorder[ 3 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadow1Solid );
+	if( target != -1 ){
+		pixelSize = 1.0f / ( float )shadowMapSize;
+		noiseScale = config.GetShadowCubePCFSize() / ( float )shadowMapSize;
+		
+		paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 0 ], 1.0f / scaleZ[ 1 ] );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowDepthTransform2 );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 1.0f, 0.0f, 1.0f / scaleZ[ 2 ], 1.0f / scaleZ[ 3 ] );
+	}
+	
+	// global illumination
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowMatrix );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat4x4( target, giMatrixShadow );
+	}
+	
+	target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutGIShadowParams );
+	if( target != -1 ){
+		const int giShadowMapSize = plan.GetGIShadowSize();
+		pixelSize = 1.0f / ( float )giShadowMapSize;
+		noiseScale = config.GetShadowCubePCFSize() / ( float )giShadowMapSize;
+		
+		paramBlock.SetParameterDataVec3( target, pixelSize, pixelSize, noiseScale );
+	}
 }
 
 
@@ -1557,65 +1497,7 @@ void deoglRenderLightSky::pCleanUp(){
 		pSolidShadowMap = NULL;
 	}
 	
-	if( pShaderOccMesh ){
-		pShaderOccMesh->RemoveUsage();
-	}
-	if( pShaderClearDepth ){
-		pShaderClearDepth->RemoveUsage();
-	}
-	if( pShaderAO ){
-		pShaderAO->RemoveUsage();
-	}
-	
 	if( pColList2 ){
 		delete pColList2;
-	}
-	
-	if( pDebugInfoSolid ){
-		pDebugInfoSolid->FreeReference();
-	}
-	if( pDebugInfoTransparent ){
-		pDebugInfoTransparent->FreeReference();
-	}
-	
-	if( pDebugInfoSolidDetail ){
-		pDebugInfoSolidDetail->FreeReference();
-	}
-	if( pDebugInfoSolidShadow ){
-		pDebugInfoSolidShadow->FreeReference();
-	}
-	if( pDebugInfoSolidShadowOcclusion ){
-		pDebugInfoSolidShadowOcclusion->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplit ){
-		pDebugInfoSolidShadowSplit->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitContent ){
-		pDebugInfoSolidShadowSplitContent->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitLODLevels ){
-		pDebugInfoSolidShadowSplitLODLevels->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitClear ){
-		pDebugInfoSolidShadowSplitClear->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitTask ){
-		pDebugInfoSolidShadowSplitTask->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitRender ){
-		pDebugInfoSolidShadowSplitRender->FreeReference();
-	}
-	if( pDebugInfoSolidShadowGI ){
-		pDebugInfoSolidShadowGI->FreeReference();
-	}
-	if( pDebugInfoSolidLight ){
-		pDebugInfoSolidLight->FreeReference();
-	}
-	
-	if( pDebugInfoTransparentDetail ){
-		pDebugInfoTransparentDetail->FreeReference();
-	}
-	if( pDebugInfoTransparentLight ){
-		pDebugInfoTransparentLight->FreeReference();
 	}
 }

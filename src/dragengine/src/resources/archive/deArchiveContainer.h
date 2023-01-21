@@ -57,8 +57,7 @@ public:
 	 * \brief Create archive container.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	deArchiveContainer( const decPath &rootPath, deArchive *archive,
-		const decPath &archivePath );
+	deArchiveContainer( const decPath &rootPath, deArchive *archive, const decPath &archivePath );
 	
 protected:
 	/**

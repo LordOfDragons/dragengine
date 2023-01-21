@@ -14,15 +14,18 @@
 		</mousePointer>
 	</designer>
 	
-	<designer name='Window' type='Window'>
+	<designer name='WindowUndecorated' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Window' extendNamed='WindowUndecorated'>
 		<decoration parameter='decoration' type='Simple'>
 			<font parameter='active.title.font' size='15'>../modern/fonts/sans15.defont</font>
 			<color parameter='active.title.textColor' r='0' g='0' b='0'/>
 			<color parameter='inactive.title.textColor' r='0.25' g='0.25' b='0.25'/>
 		</decoration>
-		<canvasCreator parameter='normal.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
-		</canvasCreator>
 	</designer>
 	
 	<designer name='WindowPopup' type='Window'>
@@ -114,6 +117,16 @@
 		<borderSize parameter='normal.padding' left='0' top='20' right='0' bottom='0'/>
 	</designer>
 	
+	<designer name='Panel.Titled' type='Widget'>
+		<border parameter='normal.border' type='TitledEtched'>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
+			<color parameter='textColor' r='0' g='0' b='0'/>
+			<font parameter='font' size='15'>../modern/fonts/sans15.defont</font>
+		</border>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
 	<designer name='Label' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
@@ -162,6 +175,22 @@
 		<designer parameter='buttonRight' extend='button.wdesigner.xml'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
+	</designer>
+	
+	<designer name='Slider' type='Slider'>
+		<canvasCreator parameter='canvasBarHorizontal' extend='../modern/slider/bar-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasBarVertical' extend='../modern/slider/bar-vertical.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickLargeHorizontal' extend='../modern/slider/tick-large-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickLargeVertical' extend='../modern/slider/tick-large-vertical.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickSmallHorizontal' extend='../modern/slider/tick-small-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickSmallVertical' extend='../modern/slider/tick-small-vertical.ccreator.xml'/>
+		<integer parameter='size'>24</integer>
+		<integer parameter='knobOffset'>12</integer>
+		<integer parameter='tickSize'>2</integer>
+		
+		<image parameter='normal.imageKnob'>../modern/slider/knob/normal.png</image>
+		<image parameter='hover.imageKnob'>../modern/slider/knob/hover.png</image>
+		<image parameter='focused.imageKnob'>../modern/slider/knob/focus.png</image>
 	</designer>
 	
 	<designer name='SpinButton' type='SpinButton'>

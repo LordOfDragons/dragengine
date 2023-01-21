@@ -46,7 +46,9 @@ pFeedbacks( NULL ),
 pFeedbackCount( 0 ),
 pComponents( nullptr ),
 pComponentCount( 0 ),
-pBoneConfiguration( ebcNone ){
+pBoneConfiguration( ebcNone ),
+pSupportsFaceEyeExpressions( false ),
+pSupportsFaceMouthExpressions( false ){
 }
 
 deInputDevice::~deInputDevice(){
@@ -127,6 +129,14 @@ void deInputDevice::SetFingerTipOffset( int index, const decVector &offset ){
 
 void deInputDevice::SetHandRig( deRig *rig ){
 	pHandRig = rig;
+}
+
+void deInputDevice::SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions ){
+	pSupportsFaceEyeExpressions = supportsFaceEyeExpressions;
+}
+
+void deInputDevice::SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions ){
+	pSupportsFaceMouthExpressions = supportsFaceMouthExpressions;
 }
 
 void deInputDevice::SetVRModel( deModel *model ){

@@ -90,6 +90,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 */
 	virtual void Read( void *buffer, int size ) = 0;
+	
+	/** \brief Duplicate file reader. */
+	virtual Ref Duplicate() = 0;
 	/*@}*/
 	
 	

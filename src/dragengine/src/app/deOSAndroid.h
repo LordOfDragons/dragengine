@@ -137,6 +137,18 @@ public:
 	 *                         GetDisplayResolutionCount(display).
 	 */
 	virtual decPoint GetDisplayResolution( int display, int resolution );
+	
+	/**
+	 * \brief Current user locale language (ISO 639 language code) in lower case.
+	 * \version 1.16
+	 */
+	virtual decString GetUserLocaleLanguage();
+	
+	/**
+	 * \brief Current user locale territory (ISO 3166 country code) lower case or empty string.
+	 * \version 1.16
+	 */
+	virtual decString GetUserLocaleTerritory();
 	/*@}*/
 	
 	

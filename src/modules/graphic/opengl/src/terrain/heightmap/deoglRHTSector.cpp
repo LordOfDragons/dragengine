@@ -32,7 +32,6 @@
 #include "../../extensions/deoglExtResult.h"
 #include "../../skin/deoglSkin.h"
 #include "../../skin/deoglSkinTexture.h"
-#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -87,7 +86,6 @@ pValid( false )
 	int i;
 	for( i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++ ){
 		pMasks[ i ] = NULL;
-		pPixBufMasks[ i ] = NULL;
 	}
 	
 	try{
@@ -358,12 +356,8 @@ void deoglRHTSector::pSetTextureCount( int count ){
 
 void deoglRHTSector::pDropMaskPixelBuffers(){
 	int i;
-	
 	for( i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++ ){
-		if( pPixBufMasks[ i ] ){
-			delete pPixBufMasks[ i ];
-			pPixBufMasks[ i ] = NULL;
-		}
+		pPixBufMasks[ i ] = nullptr;
 	}
 }
 
@@ -484,7 +478,7 @@ void deoglRHTSector::pSyncMaskTextures( const deHeightTerrainSector &sector ){
 	
 	const int pixelCount = maskWidth * maskHeight;
 	for( m=0; m<maskCount; m++ ){
-		pPixBufMasks[ m ] = new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, maskWidth, maskHeight, 1 );
+		pPixBufMasks[ m ].TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, maskWidth, maskHeight, 1 ) );
 		deoglPixelBuffer::sFloat4 * const pbdata = pPixBufMasks[ m ]->GetPointerFloat4();
 		
 		for( t=m*4; t<textureCount; t++ ){
@@ -643,7 +637,7 @@ void deoglRHTSector::pUpdateMaskTextures(){
 				pMasks[ i ]->SetFormatMappingByNumber( deoglCapsFmtSupport::eutfRGBA2 ); // GL_RGBA4, GL_RGBA8
 			}
 			
-			pMasks[ i ]->SetPixels( *pPixBufMasks[ i ] );
+			pMasks[ i ]->SetPixels( pPixBufMasks[ i ] );
 			
 		}else{
 			if( pMasks[ i ] ){

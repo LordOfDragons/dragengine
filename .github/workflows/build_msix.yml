@@ -1,0 +1,59 @@
+name: Build Msix
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      artifactMsix:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+        
+      - name: LFS Pull
+        run: git lfs pull --include "installer"
+        
+      - name: Install required packages
+        run: sudo apt -y install scons
+        
+      - name: Get Archives
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifactArchive }}
+          path: installer/artifacts
+      
+      - name: Build MSIX
+        working-directory: installer
+        run: ./build_msix.py ${{ inputs.releaseVersion }}
+        
+      - name: Copy MSXI
+        run: |
+          cp -a installer/build_msix/dragengine-${{ inputs.releaseVersion }}.msix dragengine-${{ inputs.releaseVersion }}.msix
+          cp -a installer/build_msix/deigde-${{ inputs.releaseVersion }}.msix deigde-${{ inputs.releaseVersion }}.msix
+        
+      - name: Store MSIX
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactMsix }}
+          path: |
+            dragengine-${{ inputs.releaseVersion }}.msix
+            deigde-${{ inputs.releaseVersion }}.msix
+            installer/build_msix/msix/dragengine/AppxManifest.xml
+            installer/build_msix/msix/deigde/AppxManifest.xml
+          if-no-files-found: error

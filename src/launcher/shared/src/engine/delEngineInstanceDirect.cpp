@@ -99,7 +99,8 @@
 /////////////////////////////////////////////
 
 delEngineInstanceDirect::Factory::Factory( deLogger *engineLogger ) :
-pEngineLogger( engineLogger ){
+pEngineLogger( engineLogger ),
+pUseConsole( false ){
 }
 
 delEngineInstanceDirect::Factory::~Factory(){
@@ -109,10 +110,15 @@ void delEngineInstanceDirect::Factory::SetEngineLogger( deLogger *logger ){
 	pEngineLogger = logger;
 }
 
+void delEngineInstanceDirect::Factory::SetUseConsole( bool useConsole ){
+	pUseConsole = useConsole;
+}
+
 delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile ){
 	delEngineInstanceDirect * const instance = new delEngineInstanceDirect( launcher, logfile );
 	instance->SetEngineLogger( pEngineLogger );
+	instance->SetUseConsole( pUseConsole );
 	return instance;
 }
 
@@ -128,6 +134,7 @@ delEngineInstanceDirect::delEngineInstanceDirect( delLauncher &launcher, const c
 delEngineInstance( launcher, logfile ),
 pEngine( nullptr ),
 pEngineRunning( false ),
+pGameRunning( false ),
 pLogger( launcher.GetLogger() ){
 }
 
@@ -161,7 +168,6 @@ bool delEngineInstanceDirect::StartEngine(){
 	}
 	
 	deOS *os = nullptr;
-	bool useConsole = false;
 	
 	try{
 		deLogger::Ref engineLogger( pEngineLogger );
@@ -183,23 +189,29 @@ bool delEngineInstanceDirect::StartEngine(){
 		}
 		
 		// create os
-		if( useConsole ){
+		if( GetUseConsole() ){
 			#ifdef OS_UNIX
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Windows (console requested)" );
 			os = new deOSWindows();
 			#endif
 			
 		}else{
 			#ifdef OS_BEOS
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
+				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Unix" );
 				os = new deOSUnix();
 				#else
+				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console" );
 				os = new deOSConsole();
 				#endif
 			#elif defined OS_W32
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Windows" );
 			os = new deOSWindows();
 			os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
 			#endif
@@ -477,17 +489,30 @@ void delEngineInstanceDirect::SetPathConfig( const char* path ){
 }
 
 void delEngineInstanceDirect::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ){
+	VFSAddDiskDir( vfsRoot, nativeDirectory, readOnly, decStringSet() );
+}
+
+void delEngineInstanceDirect::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
+bool readOnly, const decStringSet &hiddenPath ){
 	DEASSERT_NOTNULL( vfsRoot )
 	DEASSERT_NOTNULL( nativeDirectory )
 	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Processing VFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c)",
-		vfsRoot, nativeDirectory, readOnly?'y':'n' );
+		"Processing VFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c,hiddenPath=%d)",
+		vfsRoot, nativeDirectory, readOnly?'y':'n', hiddenPath.GetCount() );
 	DEASSERT_NOTNULL( pEngine )
 	
-	pEngine->GetVirtualFileSystem()->AddContainer( deVFSDiskDirectory::Ref::New(
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
 		new deVFSDiskDirectory( decPath::CreatePathUnix( vfsRoot ),
 			decPath::CreatePathNative( nativeDirectory ), readOnly ) ) );
+	
+	const int count = hiddenPath.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath.GetAt( i ) ) );
+	}
+	
+	pEngine->GetVirtualFileSystem()->AddContainer( container );
 }
 
 void delEngineInstanceDirect::VFSAddScriptSharedDataDir(){
@@ -499,11 +524,16 @@ void delEngineInstanceDirect::VFSAddScriptSharedDataDir(){
 }
 
 void delEngineInstanceDirect::VFSAddDelgaFile( const char *delgaFile, const char *archivePath ){
+	VFSAddDelgaFile( delgaFile, archivePath, decStringSet() );
+}
+
+void delEngineInstanceDirect::VFSAddDelgaFile( const char *delgaFile,
+const char *archivePath, const decStringSet &hiddenPath ){
 	DEASSERT_NOTNULL( delgaFile )
 	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Processing VFSAddDelga(delgaFile='%s', archivePath=%s)",
-		delgaFile, archivePath );
+		"Processing VFSAddDelga(delgaFile='%s', archivePath=%s, hiddenPath=%d)",
+		delgaFile, archivePath, hiddenPath.GetCount() );
 	DEASSERT_NOTNULL( pEngine )
 	
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
@@ -516,10 +546,18 @@ void delEngineInstanceDirect::VFSAddDelgaFile( const char *delgaFile, const char
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	
-	vfs.AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer(
+	const deArchiveContainer::Ref container( deArchiveContainer::Ref::New( amgr.CreateContainer(
 		decPath::CreatePathUnix( "/" ),
 		deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ),
 		decPath::CreatePathUnix( archivePath ) ) ) );
+	
+	const int count = hiddenPath.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath.GetAt( i ) ) );
+	}
+	
+	vfs.AddContainer( container );
 }
 
 void delEngineInstanceDirect::SetCmdLineArgs( const char *arguments ){
@@ -572,6 +610,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 		scriptDirectory, scriptVersion, gameObject );
 	DEASSERT_NOTNULL( pEngine )
 	
+	pGameRunning = true;
 	if( collectChangedParams ){
 		collectChangedParams->RemoveAll();
 	}
@@ -596,7 +635,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	deModuleParameter moduleParameter;
 	int i, j;
 	
-	for( i=0; i<10; i++ ){
+	for( i=0; i<11; i++ ){
 		if( moduleState[ i ].module ){
 			const int count = moduleState[ i ].module->GetParameterCount();
 			for( j=0; j<count; j++ ){
@@ -622,7 +661,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	
 	// compare module parameters against stored ones
 	if( collectChangedParams ){
-		for( i=0; i<10; i++ ){
+		for( i=0; i<11; i++ ){
 			if( ! moduleState[ i ].module ){
 				continue;
 			}
@@ -650,6 +689,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	}
 	
 	// finished
+	pGameRunning = false;
 	DEASSERT_TRUE( success )
 }
 
@@ -662,7 +702,7 @@ void delEngineInstanceDirect::StopGame(){
 }
 
 int delEngineInstanceDirect::IsGameRunning(){
-	return IsEngineRunning() ? 1 : 0;
+	return pGameRunning && IsEngineRunning() ? 1 : 0;
 }
 
 decPoint delEngineInstanceDirect::GetDisplayCurrentResolution( int display ){
@@ -755,7 +795,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs( const char *delgaFile, decStri
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
 	const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+	delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 	
 	const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 	
@@ -805,7 +845,7 @@ const decStringList &filenames, decObjectOrderedSet &filesContent ){
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
 	const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+	delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 	
 	const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 	

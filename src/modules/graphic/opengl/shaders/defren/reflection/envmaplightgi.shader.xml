@@ -1,9 +1,11 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
 <shader>
 	<name>DefRen EnvMap Light GI</name>
 	
 	<version>150</version>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	<uniformBlock name='GIParameters' target='1'/>
 	
 	<texture name='texPosition' target='0'/>
 	<texture name='texDiffuse' target='1'/>
@@ -13,10 +15,6 @@
 	<texture name='texGIIrradiance' target='4'/>
 	<texture name='texGIDistance' target='5'/>
 	<texture name='texGIProbeOffset' target='6'/>
-	
-	<parameter name='pGIHighestCascade'/> <!-- 0 -->
-	
-	<uniformBlock name='GIParameters' target='1'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

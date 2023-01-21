@@ -98,10 +98,10 @@ void ceSpeechAnimationXML::pReadSAnimation( const decXmlElementTag &root, const 
 	const decXmlElementTag *tag;
 	deAnimation *animation = NULL;
 	deRig *rig = NULL;
-	int e;
+	int i;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for( i=0; i <elementCount; i++ ){
+		tag = root.GetElementIfTag( i );
 		
 		if( tag ){
 			if( strcmp( tag->GetName(), "display" ) == 0 ){
@@ -115,7 +115,7 @@ void ceSpeechAnimationXML::pReadSAnimation( const decXmlElementTag &root, const 
 						sanimation.GetEngineAnimator()->SetRig( rig );
 						rig->FreeReference();
 						
-					}catch( const deException &e ){
+					}catch( const deException & ){
 						if( rig ){
 							rig->FreeReference();
 						}
@@ -132,7 +132,7 @@ void ceSpeechAnimationXML::pReadSAnimation( const decXmlElementTag &root, const 
 						sanimation.GetEngineAnimator()->SetAnimation( animation );
 						animation->FreeReference();
 						
-					}catch( const deException &e ){
+					}catch( const deException & ){
 						if( animation ){
 							animation->FreeReference();
 						}

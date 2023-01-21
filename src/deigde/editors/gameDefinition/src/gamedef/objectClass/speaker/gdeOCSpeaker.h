@@ -40,6 +40,7 @@ public:
 		epVolume,
 		epRange,
 		epRollOff,
+		epDistanceOffset,
 		epPlaySpeed,
 		epPlaying,
 		epAttachPosition,
@@ -66,6 +67,7 @@ private:
 	float pVolume;
 	float pRange;
 	float pRollOff;
+	float pDistanceOffset;
 	float pPlaySpeed;
 	
 	decString pPropertyNames[ EP_COUNT ];
@@ -143,6 +145,12 @@ public:
 	
 	/** \brief Set roll off factor. */
 	void SetRollOff( float rollOff );
+	
+	/** \brief Distance offset. */
+	inline float GetDistanceOffset() const{ return pDistanceOffset; }
+	
+	/** \brief Set distance offset. */
+	void SetDistanceOffset( float distanceOffset );
 	
 	/** \brief Play speed. */
 	inline float GetPlaySpeed() const{ return pPlaySpeed; }

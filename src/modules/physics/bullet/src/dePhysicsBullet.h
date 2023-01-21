@@ -22,8 +22,9 @@
 #ifndef _DEPHYSICSBULLETMODULE_H_
 #define _DEPHYSICSBULLETMODULE_H_
 
-#include "devmode/debpDeveloperMode.h"
+#include "debpCommon.h"
 #include "debug/debpDebug.h"
+#include "devmode/debpDeveloperMode.h"
 
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
 

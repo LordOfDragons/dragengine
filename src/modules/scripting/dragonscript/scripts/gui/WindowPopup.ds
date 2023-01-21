@@ -61,6 +61,7 @@ class WindowPopup extends Window
 			setCanClose(false)
 			setCanMaximize(false)
 			setCanMinimize(false)
+			setAlwaysOnTop(true)
 			setLayout(FlowLayout.new(LayoutAxis.y))
 			setDesignerSelector("WindowPopup")
 		end)
@@ -225,7 +226,7 @@ class WindowPopup extends Window
 			end
 		end
 		
-		// otherwise send event to widget under cursor if this is a mouse event
+		// otherwise send event to widget under cursor if this is not a mouse event
 		if not MouseEvent.isMouseEvent(ident)
 			sendEventToListeners(event, false)
 			return
@@ -252,6 +253,13 @@ class WindowPopup extends Window
 				setHoverWidget(widget, mouseEvent)
 				
 				if widget != null
+					select ident
+					case MouseEvent.idMousePressed, MouseEvent.idMouseReleased
+						if not getDesktop().isWidgetDeepEnabled(widget)
+							return
+						end
+					end
+					
 					widget.sendEvent(MouseEvent.new(widget, ident,\
 						mouseEvent.getButton(), mouseEvent.getModifiers(),\
 						mouseEvent.getPosition() - widget.getWindowPosition(),\
