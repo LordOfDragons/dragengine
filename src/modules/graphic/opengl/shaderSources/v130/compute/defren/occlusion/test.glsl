@@ -193,8 +193,6 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap,
 	//}
 }
 
-layout( local_size_x=64 ) in;
-
 const vec2 vScale = vec2( 0.5 );
 const vec2 vOffset = vec2( 0.5 );
 
