@@ -47,6 +47,8 @@ UBOLAYOUT_BIND(1) writeonly buffer ResultData {
 	bvec4 pResultData[];
 };
 
+layout( local_size_x=64 ) in;
+
 const float baselog = log2( 3.0 ); // 1.5849625007211563
 #ifdef ENSURE_MIN_SIZE
 	const vec3 epsilonSize = vec3( 0.005 );
