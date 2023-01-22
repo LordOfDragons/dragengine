@@ -739,13 +739,13 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		mipmapMaxLevel++;
 	}
 	}
-	const float mipMapFactor = plan.GetProjectionMatrix().a11 * 0.5f;
+	const float mipMapFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
 	const float mipMapPixelSizeU = mipMapFactor * defren.GetWidth();
 	const float mipMapPixelSizeV = mipMapFactor * defren.GetHeight();
 	const float mipMapMaxScale = ( float )( 1 << mipmapMaxLevel );
 	
 	// ssao
-	const float ssaoRandomAngleConstant = 6.2831853 * config.GetSSAOTurnCount(); // 2 * pi * turns
+	const float ssaoRandomAngleConstant = 6.2831853f * config.GetSSAOTurnCount(); // 2 * pi * turns
 	const float ssaoSelfOcclusion = 1.0f - cosf( config.GetSSAOSelfOcclusionAngle() * DEG2RAD );
 	const float ssaoEpsilon = 1e-5f;
 	const float ssaoScale = 2.0f; // sigma * 2.0
@@ -753,7 +753,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const float ssaoRadius = config.GetSSAORadius();
 	const float ssaoInfluenceRadius = config.GetSSAORadius();
 	const float ssaoRadiusLimit = config.GetSSAORadiusLimit();
-	const float ssaoRadiusFactor = plan.GetProjectionMatrix().a11 * 0.5f;
+	const float ssaoRadiusFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
 	const int ssaoMaxSize = ( defren.GetWidth() > defren.GetHeight() ) ? defren.GetWidth() : defren.GetHeight();
 	const float ssaoMipMapMaxLevel = floorf( log2f( ( float )ssaoMaxSize ) - 3.0f );
 	const float ssaoMipMapBase = log2f( config.GetSSAOMipMapBase() );
@@ -764,7 +764,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	const int sssssTapCount = 18; //9; //18; // config: 9-18
 	const int sssssTurnCount = 7; //5; //7; // config
 	const float sssssTapRadiusLimit = 0.5f; // 50% of screen size
-	const float sssssTapRadiusFactor = plan.GetProjectionMatrix().a11 * 0.5f;
+	const float sssssTapRadiusFactor = ( float )plan.GetProjectionMatrix().a11 * 0.5f;
 	const float sssssTapDropRadiusThreshold = sssssLargestPixelSize * 1.5f; // 1 pixel radius (1.44 at square boundary)
 	
 	// ssr
@@ -885,9 +885,9 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		spb.SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
 		
-		spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, defren.GetWidth(), defren.GetHeight() );
+		spb.SetParameterDataVec2( deoglSkinShader::erutRenderSize, ( float )defren.GetWidth(), ( float )defren.GetHeight() );
 		
-		spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, mipmapMaxLevel, mipMapMaxScale );
+		spb.SetParameterDataVec4( deoglSkinShader::erutMipMapParams, mipMapPixelSizeU, mipMapPixelSizeV, ( float )mipmapMaxLevel, mipMapMaxScale );
 		
 		spb.SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, particleLight );
 		
@@ -939,7 +939,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 			ssrStepCount, ssrSubStepCount, ssrMaxRayLength, ssrRoughnessTapMax );
 		
 		// lighting
-		spb.SetParameterDataVec2( deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
+		spb.SetParameterDataVec2( deoglSkinShader::erutAOSelfShadow, config.GetAOSelfShadowEnable() ? 0.1f : 1.0f,
 			1.0f / ( DEG2RAD * config.GetAOSelfShadowSmoothAngle() ) );
 		
 		spb.SetParameterDataVec2( deoglSkinShader::erutLumFragCoordScale,

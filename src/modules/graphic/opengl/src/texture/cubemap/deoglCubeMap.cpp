@@ -155,7 +155,7 @@ void deoglCubeMap::CreateCubeMap(){
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( pSize ) ) );
+			count = ( int )( floorf( log2f( ( float )pSize ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){

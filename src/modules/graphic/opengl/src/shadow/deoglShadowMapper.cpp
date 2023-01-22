@@ -1053,7 +1053,7 @@ void deoglShadowMapper::DropForeignAmbientCubeMaps(){
 	DBGCALL3("DropForeignAmbientCubeMaps", pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
-void deoglShadowMapper::ActivateAmbientCubeMap( int size, float useFloatDepth ){
+void deoglShadowMapper::ActivateAmbientCubeMap( int size, bool useFloatDepth ){
 	DBGCALL("ActivateAmbientCubeMap", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
 	if( pForeignCubeMapAmbient ){
@@ -1094,7 +1094,7 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size, float useFloatDepth ){
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 }
 
-void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, float useFloatDepth, int face ){
+void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, bool useFloatDepth, int face ){
 	DBGCALL("ActivateAmbientCubeMapFace", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
 	if( pForeignCubeMapAmbient ){

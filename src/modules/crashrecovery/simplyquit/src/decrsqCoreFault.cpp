@@ -24,6 +24,9 @@
 #include <string.h>
 #include <signal.h>
 #include <inttypes.h>
+
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #include <dbghelp.h>
@@ -154,10 +157,10 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		SymFromAddr( process, ( DWORD64 )stack[ i ], 0, &symbol );
 		
 		if( module ){
-			module->LogErrorFormat( PRId64 "x: %s", symbol.Address, symbol.Name );
+			module->LogErrorFormat( "%" PRId64 "x: %s", symbol.Address, symbol.Name );
 			
 		}else{
-			printf( PRId64 "x: %s\n", symbol.Address, symbol.Name );
+			printf( "%" PRId64 "x: %s\n", symbol.Address, symbol.Name );
 		}
 	}
 	

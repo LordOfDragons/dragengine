@@ -88,7 +88,7 @@ void deoglRenderableDepthArrayTexture::SetInUse( bool inUse ){
 
 void deoglRenderableDepthArrayTexture::UpdateMemoryUsage(){
 	if( pArrayTexture ){
-		pMemoryUsageGPU = pArrayTexture->GetMemoryConsumption().Total();
+		pMemoryUsageGPU = ( int )pArrayTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;

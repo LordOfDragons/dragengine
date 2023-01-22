@@ -791,7 +791,7 @@ void deoglGIState::pPrepareUBORayDirections() const{
 	
 	const float sf_PHI = sqrtf( 5.0f ) * 0.5f + 0.5f;
 	const float sf_n = ( float )raysPerProbe;
-	#define madfrac(A, B) ((A)*(B)-floor((A)*(B)))
+	#define madfrac(A, B) ((A)*(B)-floorf((A)*(B)))
 	
 	int i;
 	for( i=0; i<raysPerProbe; i++ ){

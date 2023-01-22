@@ -109,7 +109,7 @@ void deoglShaderDefines::SetDefine( const char *name, const char *value ){
 	
 	sDefine *define = nullptr;
 	
-	int i;
+	int i, len;
 	for( i=0; i<pDefineCount; i++ ){
 		if( strcmp( name, pDefines[ i ].name ) == 0 ){
 			define = pDefines + i;
@@ -130,20 +130,25 @@ void deoglShaderDefines::SetDefine( const char *name, const char *value ){
 		pDefines = newArray;
 		
 		define = pDefines + pDefineCount;
-		define->name = new char[ strlen( name ) + 1 ];
-		strcpy( define->name, name );
+		len = ( int )strlen( name );
+		define->name = new char[ len + 1 ];
+		strncpy_s( define->name, len, name, len );
+		define->name[ len ] = 0;
+
 		define->value = nullptr;
 		
 		pDefineCount++;
 	}
 	
-	define->value = new char[ strlen( value ) + 1 ];
-	strcpy( define->value, value );
+	len = ( int )strlen( value );
+	define->value = new char[ len + 1 ];
+	strncpy_s( define->value, len, value, len );
+	define->value[ len ] = 0;
 }
 
 void deoglShaderDefines::SetDefine( const char *name, int value ){
 	char buffer[ 16 ];
-	sprintf( &buffer[ 0 ], "%d", value );
+	snprintf( &buffer[ 0 ], 16, "%d", value );
 	SetDefine( name, buffer );
 }
 
@@ -262,11 +267,13 @@ bool deoglShaderDefines::operator==( const deoglShaderDefines &defines ) const{
 
 deoglShaderDefines &deoglShaderDefines::operator=( const deoglShaderDefines &defines ){
 	const int count = defines.pDefineCount;
-	const char *name, *value;
 	
 	RemoveAllDefines();
 	
 	if( count > 0 ){
+		const char *name, *value;
+		int len;
+
 		try{
 			pDefines = new sDefine[ count ];
 			
@@ -274,11 +281,15 @@ deoglShaderDefines &deoglShaderDefines::operator=( const deoglShaderDefines &def
 				name = defines.pDefines[ pDefineCount ].name;
 				value = defines.pDefines[ pDefineCount ].value;
 				
-				pDefines[ pDefineCount ].name = new char[ strlen( name ) + 1 ];
-				strcpy( pDefines[ pDefineCount ].name, name );
+				len = ( int )strlen( name );
+				pDefines[ pDefineCount ].name = new char[ len + 1 ];
+				strncpy_s( pDefines[ pDefineCount ].name, len, name, len );
+				pDefines[ pDefineCount ].name[ len ] = 0;
 				
-				pDefines[ pDefineCount ].value = new char[ strlen( value ) + 1 ];
-				strcpy( pDefines[ pDefineCount ].value, value );
+				len = ( int )strlen( value );
+				pDefines[ pDefineCount ].value = new char[ len + 1 ];
+				strncpy_s( pDefines[ pDefineCount ].value, len, value, len );
+				pDefines[ pDefineCount ].value[ len ] = 0;
 				
 				pDefineCount++;
 			}

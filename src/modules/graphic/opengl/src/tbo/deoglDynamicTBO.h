@@ -22,6 +22,8 @@
 #ifndef _DEOGLDYNAMICTBO_H_
 #define _DEOGLDYNAMICTBO_H_
 
+#include <stdint.h>
+
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 

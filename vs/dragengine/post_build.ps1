@@ -1,11 +1,11 @@
 ﻿param (
-    [Parameter(Mandatory=$true)][string]$solutiondir
+    [Parameter(Mandatory=$true)][string]$SourceDir,
+    [Parameter(Mandatory=$true)][string]$TargetDir
 )
 
-$SourceDir = Join-Path -ChildPath ..\src\dragengine\src -Path $solutiondir -Resolve
-$TargetDir = Join-Path -ChildPath .\include\dragengine -Path $solutiondir
+$SourceDir = Resolve-Path $SourceDir
 
-Write-Host "Drag[en]gine: Copy Headers"
+Write-Host "Drag[en]gine: Copy Headers to '$TargetDir'"
 
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse

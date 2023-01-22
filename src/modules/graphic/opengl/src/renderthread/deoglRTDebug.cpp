@@ -383,7 +383,7 @@ void deoglRTDebug::SetEnableHwDebugOutput( bool enable ){
 
 void deoglRTDebug::BeginDebugGroup( const char *name, int id ){
 	if( pEnableDebugTrace ){
-		pglPushDebugGroup( GL_DEBUG_SOURCE_APPLICATION, id, strlen( name ), name );
+		pglPushDebugGroup( GL_DEBUG_SOURCE_APPLICATION, id, ( GLsizei )strlen( name ), name );
 	}
 }
 
@@ -395,7 +395,7 @@ void deoglRTDebug::EndDebugGroup(){
 
 void deoglRTDebug::SetDebugObjectLabel( GLenum type, GLuint object, const char *name ){
 	if( pEnableDebugTrace ){
-		pglObjectLabel( type, object, strlen( name ), name );
+		pglObjectLabel( type, object, ( GLsizei )strlen( name ), name );
 	}
 }
 

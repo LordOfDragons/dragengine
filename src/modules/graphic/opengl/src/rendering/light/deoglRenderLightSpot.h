@@ -83,8 +83,8 @@ public:
 		 */
 		int lodMaxPixelError;
 		int lodOffset;
-		int lodFovX;
-		int lodFovY;
+		float lodFovX;
+		float lodFovY;
 		
 		sShadowParams();
 	};

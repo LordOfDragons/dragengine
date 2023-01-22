@@ -91,7 +91,7 @@ pValid( false )
 	try{
 		pCreateArrays( sector );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 // 		heightTerrain->GetOpenGL()->SetErrorTrace( e );
 		pCleanUp();
 		throw;

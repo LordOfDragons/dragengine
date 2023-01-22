@@ -190,7 +190,7 @@ void deoglCommandExecuter::pQuickDebug( const decUnicodeArgumentList &command, d
 	deoglConfiguration &config = pOgl.GetConfiguration();
 	
 	if( command.GetArgumentCount() == 2 ){
-		config.SetQuickDebug( command.GetArgumentAt( 1 )->ToFloat() );
+		config.SetQuickDebug( command.GetArgumentAt( 1 )->ToInt() );
 	}
 	
 	answer.SetFromUTF8( "Quick Debug = " );

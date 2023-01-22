@@ -272,10 +272,10 @@ public:
 	void DropForeignAmbientCubeMaps();
 	
 	/** Activate ambient cubemap with size. */
-	void ActivateAmbientCubeMap( int size, float useFloatDepth );
+	void ActivateAmbientCubeMap( int size, bool useFloatDepth );
 	
 	/** Activate ambient cubemap face with size. */
-	void ActivateAmbientCubeMapFace( int size, float useFloatDepth, int face );
+	void ActivateAmbientCubeMapFace( int size, bool useFloatDepth, int face );
 	
 	
 	

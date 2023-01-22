@@ -324,7 +324,7 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 			const decString &attrName = attribute->GetValue();
 			
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			const decString &cdataValue = cdata ? cdata->GetData() : "";
+			const char * const cdataValue = cdata ? cdata->GetData().GetString() : "";
 			
 			if( attrName == "compute" ){
 				SetPathComputeSourceCode( cdataValue );
@@ -360,7 +360,7 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 			const decString &attrName = attribute->GetValue();
 			
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			const decString &cdataValue = cdata ? cdata->GetData() : "";
+			const char * const cdataValue = cdata ? cdata->GetData().GetString() : "";
 			
 			if( attrName == "geometry" ){
 				SetInlineGeometrySourceCode( cdataValue );

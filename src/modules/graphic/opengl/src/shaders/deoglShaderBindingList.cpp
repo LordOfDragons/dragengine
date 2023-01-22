@@ -112,8 +112,11 @@ void deoglShaderBindingList::Add( const char *name, int target ){
 	}
 	pBindings = newArray;
 	
-	pBindings[ pCount ].name = new char[ strlen( name ) + 1 ];
-	strcpy( pBindings[ pCount ].name, name );
+	const int len = ( int )strlen( name );
+	pBindings[ pCount ].name = new char[ len + 1 ];
+	strncpy_s( pBindings[ pCount ].name, len, name, len );
+	pBindings[ pCount ].name[ len ] = 0;
+
 	pBindings[ pCount ].target = target;
 	pCount++;
 }

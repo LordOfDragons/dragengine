@@ -162,7 +162,7 @@ void deoglArrayTexture::CreateTexture(){
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( ( height > width ) ? height : width ) ) );
+			count = ( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){
@@ -528,10 +528,10 @@ int width, int height, int layerCount, int srcX, int srcY, int destX, int destY 
 		int i, mipMapLevelCount;
 		
 		if( destMipMapLevelCount == 0 ){
-			destMipMapLevelCount = ( int )( ceilf( log2f( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) + 1;
+			destMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) ) + 1;
 		}
 		if( srcMipMapLevelCount == 0 ){
-			srcMipMapLevelCount = ( int )( ceilf( log2f( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) + 1;
+			srcMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) ) + 1;
 		}
 		mipMapLevelCount = ( ( srcMipMapLevelCount < destMipMapLevelCount ) ? srcMipMapLevelCount : destMipMapLevelCount );
 		
@@ -605,10 +605,10 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 		int i, mipMapLevelCount;
 		
 		if( destMipMapLevelCount == 0 ){
-			destMipMapLevelCount = ( int )( ceilf( log2f( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) + 1;
+			destMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) ) + 1;
 		}
 		if( srcMipMapLevelCount == 0 ){
-			srcMipMapLevelCount = ( int )( ceilf( log2f( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) + 1;
+			srcMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) ) + 1;
 		}
 		mipMapLevelCount = ( ( srcMipMapLevelCount < destMipMapLevelCount ) ? srcMipMapLevelCount : destMipMapLevelCount );
 		

@@ -1532,7 +1532,7 @@ int deoglRWorld::pCalcOctreeInsertDepth( const decDVector &size ) const{
 	// is increased by one. this can be done using a logarithm calculation. the log2
 	// of 1000 is roughly 9.96 . hence ceil(log2(max(size)))-2 is reasonable but not
 	// less than 4
-	return decMath::max( ( int )ceilf( log2( decMath::max( size.x, size.y, size.z ) ) ) - 2, 4 );
+	return decMath::max( ( int )ceilf( log2f( ( float )decMath::max( size.x, size.y, size.z ) ) ) - 2, 4 );
 }
 
 void deoglRWorld::pReorderSkies(){

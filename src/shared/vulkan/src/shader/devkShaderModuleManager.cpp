@@ -114,7 +114,7 @@ void devkShaderModuleManager::Load( const char *directory ){
 	devkShaderModule::Ref module;
 	
 	const decPath basePath( decPath::CreatePathUnix( directory ) );
-	const int basePathLen = strlen( basePath.GetPathUnix() ) + 1;
+	const int basePathLen = ( int )strlen( basePath.GetPathUnix() ) + 1;
 	
 	deCollectFileSearchVisitor collect( "*.spv", true );
 	vfs.SearchFiles( basePath, collect );

@@ -1408,10 +1408,10 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth1[ i ]->Verify();
-				sprintf( debugName, "DefRen.Depth1.MipMap%d", i );
+				snprintf( debugName, sizeof( debugName ), "DefRen.Depth1.MipMap%d", i );
 				pFBOMipMapDepth1[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapDepth1" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1426,10 +1426,10 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth2[ i ]->Verify();
-				sprintf( debugName, "DefRen.Depth2.MipMap%d", i );
+				snprintf( debugName, sizeof( debugName ), "DefRen.Depth2.MipMap%d", i );
 				pFBOMipMapDepth2[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapDepth2" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1461,10 +1461,10 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary1[ i ]->Verify();
-				sprintf( debugName, "DefRen.Temporary1.MipMap%d", i );
+				snprintf( debugName, sizeof( debugName ), "DefRen.Temporary1.MipMap%d", i );
 				pFBOMipMapTemporary1[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapTemporary1" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1479,10 +1479,10 @@ void deoglDeferredRendering::pCreateFBOs(){
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary2[ i ]->Verify();
-				sprintf( debugName, "DefRen.Temporary2.MipMap%d", i );
+				snprintf( debugName, sizeof( debugName ), "DefRen.Temporary2.MipMap%d", i );
 				pFBOMipMapTemporary2[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapTemporary2" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1503,7 +1503,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffersNone ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 		pFBOCopyDepth[ i ]->Verify();
-		sprintf( debugName, "DefRen.CopyDepth.Layer%d", i );
+		snprintf( debugName, sizeof( debugName ), "DefRen.CopyDepth.Layer%d", i );
 		pFBOCopyDepth[ i ]->SetDebugObjectLabel( debugName );
 	}
 	
@@ -1547,7 +1547,7 @@ deoglArrayTexture *texture7, deoglArrayTexture *depth ){
 		
 		pFBOs[ index ]->Verify();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 // 		deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOTex", __LINE__ );
 // 		tracePoint.AddValueInt( "index", index );
 		throw;

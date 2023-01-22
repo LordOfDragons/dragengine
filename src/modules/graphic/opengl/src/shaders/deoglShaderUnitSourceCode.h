@@ -19,13 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEOGLSHADERUNITSOURCECODE_H_
 #define _DEOGLSHADERUNITSOURCECODE_H_
 
-// predefinitions
-class decBaseFileReader;
+#include <dragengine/common/string/decString.h>
 
+class decBaseFileReader;
 
 
 /**
@@ -38,29 +37,29 @@ class decBaseFileReader;
  */
 class deoglShaderUnitSourceCode{
 private:
-	char *pFilePath;
-	char *pSourceCode;
+	decString pFilePath;
+	decString pSourceCode;
 	
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new source code object reading source code from a file. */
 	deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader );
+
 	/** Cleans up the source code object. */
 	~deoglShaderUnitSourceCode();
 	/*@}*/
 	
+
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the file path. */
-	inline const char *GetFilePath() const{ return ( const char * )pFilePath; }
+	inline const decString &GetFilePath() const{ return pFilePath; }
+
 	/** Retrieves the source code. */
-	inline const char *GetSourceCode() const{ return ( const char * )pSourceCode; }
+	inline const decString &GetSourceCode() const{ return pSourceCode; }
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

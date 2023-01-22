@@ -47,7 +47,7 @@ protected:
 	const devkImageConfiguration pConfiguration;
 	
 	VkImage pImage;
-	VkDeviceSize pImageSize;
+	uint32_t pImageSize;
 	VkDeviceMemory pMemory;
 	
 	VkBuffer pBufferHost;

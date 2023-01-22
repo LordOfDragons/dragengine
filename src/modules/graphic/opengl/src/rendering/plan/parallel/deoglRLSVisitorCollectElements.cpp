@@ -247,7 +247,7 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack ){
 		const decVector2 edge = ( frustumHull.GetHullPointVectorAt( ( i + 1 ) % pEdgeCount ) - edgeStart ).Normalized();
 		
 		pEdgeNormal[ i ].Set( -edge.y, edge.x );
-		pEdgeNormalAbs[ i ].Set( fabs( -edge.y ), fabs( edge.x ) );
+		pEdgeNormalAbs[ i ].Set( fabsf( -edge.y ), fabsf( edge.x ) );
 		pEdgeDistance[ i ] = pEdgeNormal[ i ] * edgeStart;
 	}
 	
@@ -551,7 +551,7 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 	
 	// test if the light space box shaft hits the light space frustum
 	for( i=0; i<pFrustumPlaneCount; i++ ){
-		distance1 = pFrustumPlaneDistance[ i ] - npos * pFrustumPlaneNormal[ i ];
+		distance1 = ( float )pFrustumPlaneDistance[ i ] - npos * pFrustumPlaneNormal[ i ];
 		distance2 = nhe.x * pFrustumPlaneNormalAbs[ i ].x + nhe.y * pFrustumPlaneNormalAbs[ i ].y + nhe.z * pFrustumPlaneNormalAbs[ i ].z;
 		
 		if( distance1 > distance2 ){
@@ -610,7 +610,7 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 	
 	// test if the light space box shaft hits the light space frustum
 	for( i=0; i<pFrustumPlaneCount; i++ ){
-		distance1 = pFrustumPlaneDistance[ i ] - npos * pFrustumPlaneNormal[ i ];
+		distance1 = ( float )pFrustumPlaneDistance[ i ] - npos * pFrustumPlaneNormal[ i ];
 		distance2 = nhe.x * pFrustumPlaneNormalAbs[ i ].x + nhe.y * pFrustumPlaneNormalAbs[ i ].y + nhe.z * pFrustumPlaneNormalAbs[ i ].z;
 		
 		if( distance1 > distance2 ){

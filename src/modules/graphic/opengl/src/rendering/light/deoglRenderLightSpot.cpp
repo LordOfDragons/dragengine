@@ -114,7 +114,7 @@
 // Definitions
 ////////////////
 
-#define OGL_REN_LIG_ZNEAR		0.01
+#define OGL_REN_LIG_ZNEAR		0.01f
 
 enum eSPLight{
 	splMatrixMVP,

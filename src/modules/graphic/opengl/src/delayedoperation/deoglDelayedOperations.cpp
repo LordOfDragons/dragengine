@@ -781,7 +781,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 			//1.0f / ( float )width, 1.0f / ( float )height,
 			//0.5f / ( float )width, 0.5f / ( float )height );
 		shader->SetParameterInt( spgcmStepCount, stepCount );
-		shader->SetParameterFloat( spgcmStepFactor, 1.0 / ( float )stepCount );
+		shader->SetParameterFloat( spgcmStepFactor, 1.0f / ( float )stepCount );
 		
 		if( channelTexture ){
 			tsmgr.EnableTexture( 0, *channelTexture, *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );

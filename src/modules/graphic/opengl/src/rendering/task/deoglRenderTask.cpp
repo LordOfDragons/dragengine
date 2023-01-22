@@ -388,9 +388,9 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 			pipeline.GetTotalInstanceCount(), pipeline.GetTotalSubInstanceCount() );
 		
 		rtlogger.LogInfo( "  - configuration:" );
-		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode() ? shader.GetVertexSourceCode()->GetFilePath() : "-" );
-		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode() ? shader.GetGeometrySourceCode()->GetFilePath() : "-" );
-		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode() ? shader.GetFragmentSourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode() ? shader.GetVertexSourceCode()->GetFilePath().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode() ? shader.GetGeometrySourceCode()->GetFilePath().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode() ? shader.GetFragmentSourceCode()->GetFilePath().GetString() : "-" );
 		
 		text = "    - defines: ";
 		const int defineCount = defines.GetDefineCount();

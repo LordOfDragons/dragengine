@@ -994,7 +994,7 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 			int expectedMaxMipMaxLevel = maxMipMapLevel;
 			if( i == deoglSkinChannel::ectSolidity ){
 				expectedMaxMipMaxLevel = decMath::clamp(
-					( int )( floorf( log2f( ( height > width ) ? height : width ) ) ) - 3, 0, 100 );
+					( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) ) - 3, 0, 100 );
 			}
 			
 			if( maxMipMapLevel < expectedMaxMipMaxLevel ){

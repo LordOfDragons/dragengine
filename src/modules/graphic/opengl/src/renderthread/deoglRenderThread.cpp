@@ -321,7 +321,7 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 			pInitThreadPhase3();
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pLogger->Synchronize(); // send asynchronous logs to game logger
 			throw;
 		}

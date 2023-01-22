@@ -1351,9 +1351,11 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 	}
 }
 
-// fix for gcc bug with -Werror=array-bounds
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Warray-bounds"
+#ifdef OS_UNIX
+	// fix for gcc bug with -Werror=array-bounds
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
 
 void deoglSkinChannel::pClearUniformMasks( int targetRed, int targetGreen,
 int targetBlue, int targetAlpha ){
@@ -1371,7 +1373,9 @@ int targetBlue, int targetAlpha ){
 	}
 }
 
-#pragma GCC diagnostic pop
+#ifdef OS_UNIX
+	#pragma GCC diagnostic pop
+#endif
 
 static uint32_t vCRC32Table[] = { /* CRC polynomial 0xedb88320 */
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,

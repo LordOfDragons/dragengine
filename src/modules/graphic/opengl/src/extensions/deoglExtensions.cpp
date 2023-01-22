@@ -593,7 +593,7 @@ void deoglExtensions::pScanExtensions(){
 			
 			if( tokenLength > 0 ){
 				token.Set( ' ', tokenLength );
-				strncpy( ( char* )token.GetString(), strExtensions, tokenLength );
+				strncpy_s( ( char* )token.GetString(), tokenLength, strExtensions, tokenLength );
 				pStrListExtensions.Add( token );
 			}
 			

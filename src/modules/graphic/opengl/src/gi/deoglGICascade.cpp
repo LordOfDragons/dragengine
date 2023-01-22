@@ -828,8 +828,8 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 	
 	// - invalid probes inside view. expensive updates. at most 50% count
 	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
-	const int maxUpdateCountExpensive = maxUpdateCount * 0.5f; // 50%
-	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive * 0.2f; // 20%
+	const int maxUpdateCountExpensive = ( int )( ( float )maxUpdateCount * 0.5f ); // 50%
+	int maxUpdateCountExpensiveOutside = ( int )( ( float )maxUpdateCountExpensive * 0.2f ); // 20%
 	maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside // 80%
 		- pUpdateProbeCount; // minus already used count
 	
@@ -843,7 +843,7 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 	
 	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
 	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
-	int maxUpdateCountCheapOutside = maxUpdateCountCheap * 0.2f; // 20%
+	int maxUpdateCountCheapOutside = ( int )( ( float )maxUpdateCountCheap * 0.2f ); // 20%
 	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
 	
 	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );

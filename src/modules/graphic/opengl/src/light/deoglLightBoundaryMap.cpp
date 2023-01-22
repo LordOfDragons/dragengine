@@ -148,7 +148,7 @@ void deoglLightBoundaryMap::pCleanUp(){
 }
 
 void deoglLightBoundaryMap::pCreateTextures(){
-	pLevelCount = ( int )( ceilf( log2f( pSize ) ) ) + 1;
+	pLevelCount = ( int )( ceilf( log2f( ( float )pSize ) ) ) + 1;
 	
 	pTextureMin = new deoglTexture( pRenderThread );
 	pTextureMin->SetSize( pSize, pSize );

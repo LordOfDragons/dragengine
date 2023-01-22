@@ -118,8 +118,8 @@
 // Definitions
 ////////////////
 
-#define OGL_REN_LIG_ZNEAR		0.01
-//#define OGL_REN_LIG_ZFAR		2000.0
+#define OGL_REN_LIG_ZNEAR		0.01f
+//#define OGL_REN_LIG_ZFAR		2000.0f
 
 // light model flags ( bits 3-4 )
 // light model default = 0 ( 00|00 )

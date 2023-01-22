@@ -33,7 +33,7 @@
 
 
 // class devkImage
-///////////////////////
+////////////////////
 
 devkImage::devkImage( devkDevice &device, const devkImageConfiguration &configuration ) :
 pDevice( device ),
@@ -76,7 +76,7 @@ pCommand( VK_NULL_HANDLE )
 		
 		VkMemoryRequirements memoryRequirements;
 		pDevice.vkGetImageMemoryRequirements( device.GetDevice(), pImage, &memoryRequirements );
-		pImageSize = memoryRequirements.size;
+		pImageSize = ( uint32_t )memoryRequirements.size;
 		allocInfo.allocationSize = memoryRequirements.size;
 		allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType(
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, memoryRequirements );

@@ -185,7 +185,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	
 	maskedPlan.SetUseClipPlane( true );
 	maskedPlan.SetClipNormal( mirrorMatrix.mirrorNormal.ToVector() );
-	maskedPlan.SetClipDistance( mirrorMatrix.mirrorNormal * mirrorMatrix.mirrorRefPoint );
+	maskedPlan.SetClipDistance( ( float )( mirrorMatrix.mirrorNormal * mirrorMatrix.mirrorRefPoint ) );
 	
 	// stereo rendering
 	if( plan.GetRenderStereo() ){
@@ -210,7 +210,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 		//pFrustumFromTexture( width, height, projX, projY, projNear, projFar, matrixInvCamera, matrixMVP );
 		
 		maskedPlan.SetClipNormalStereo( mirrorMatrixStereo.mirrorNormal.ToVector() );
-		maskedPlan.SetClipDistanceStereo( mirrorMatrixStereo.mirrorNormal * mirrorMatrixStereo.mirrorRefPoint );
+		maskedPlan.SetClipDistanceStereo( ( float )( mirrorMatrixStereo.mirrorNormal * mirrorMatrixStereo.mirrorRefPoint ) );
 		
 	}else{
 		pPlan->SetRenderStereo( false );

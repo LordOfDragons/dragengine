@@ -849,7 +849,7 @@ float deoglCollisionBox::SphereMoveHitsBox( deoglCollisionSphere *sphere, const 
 		if( denom >= 0.0f ){
 			float lambda = -0.5f * p;
 			if( denom > 0.0f ){
-				denom = sqrt( denom );
+				denom = sqrtf( denom );
 				lambda -= denom;
 				if( lambda < 0.0f ) lambda += denom * 2.0f;
 			}
@@ -889,7 +889,7 @@ float deoglCollisionBox::SphereMoveHitsBox( deoglCollisionSphere *sphere, const 
 		if( denom >= 0.0f ){
 			float lambda = -0.5f * p;
 			if( denom > 0.0f ){
-				denom = sqrt( denom );
+				denom = sqrtf( denom );
 				lambda -= denom;
 				if( lambda < 0.0f ) lambda += denom * 2.0f;
 			}
@@ -929,7 +929,7 @@ float deoglCollisionBox::SphereMoveHitsBox( deoglCollisionSphere *sphere, const 
 		if( denom >= 0.0f ){
 			float lambda = -0.5f * p;
 			if( denom > 0.0f ){
-				denom = sqrt( denom );
+				denom = sqrtf( denom );
 				lambda -= denom;
 				if( lambda < 0.0f ) lambda += denom * 2.0f;
 			}
@@ -968,7 +968,7 @@ float deoglCollisionBox::SphereMoveHitsBox( deoglCollisionSphere *sphere, const 
 		if( denom >= 0.0f ){
 			float lambda = -0.5f * p;
 			if( denom > 0.0f ){
-				denom = sqrt( denom );
+				denom = sqrtf( denom );
 				lambda -= denom;
 				if( lambda < 0.0f ) lambda += denom * 2.0f;
 			}

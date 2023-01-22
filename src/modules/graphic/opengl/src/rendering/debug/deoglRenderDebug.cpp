@@ -383,7 +383,7 @@ void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, i
 	
 	decUTF8Decoder utf8Decoder;
 	utf8Decoder.SetString( text );
-	const int len = decMath::min( strlen( text ), utf8Decoder.GetLength() );
+	const int len = decMath::min( ( int )strlen( text ), utf8Decoder.GetLength() );
 	
 	while( utf8Decoder.GetPosition() < len ){
 		const int character = utf8Decoder.DecodeNextCharacter();

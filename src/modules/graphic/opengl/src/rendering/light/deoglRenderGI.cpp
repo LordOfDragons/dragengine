@@ -1100,7 +1100,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shader2a.SetParameterFloat( spdpuPosTransform, scale.x * size.x, scale.y * size.y,
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
 		shader2a.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
-			( float )size.x * 0.5, ( float )size.y * 0.5f );
+			( float )size.x * 0.5f, ( float )size.y * 0.5f );
 		shader2a.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
 		shader2a.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
 		
@@ -1116,10 +1116,10 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		const decDVector &fmove = cascade.GetPosition();
 		
 		const double fdleft = frustum.GetLeftDistance() - fnleft * fmove - fpshift;
-		const float fdtop = frustum.GetTopDistance() - fntop * fmove - fpshift;
-		const float fdright = frustum.GetRightDistance() - fnright * fmove - fpshift;
-		const float fdbottom = frustum.GetBottomDistance() - fnbottom * fmove - fpshift;
-		const float fdnear = frustum.GetNearDistance() - fnnear * fmove - fpshift;
+		const double fdtop = frustum.GetTopDistance() - fntop * fmove - fpshift;
+		const double fdright = frustum.GetRightDistance() - fnright * fmove - fpshift;
+		const double fdbottom = frustum.GetBottomDistance() - fnbottom * fmove - fpshift;
+		const double fdnear = frustum.GetNearDistance() - fnnear * fmove - fpshift;
 		
 		shader2a.SetParameterFloat( spdpuPlaneLeft,
 			( float )fnleft.x, ( float )fnleft.y, ( float )fnleft.z, ( float )fdleft );
@@ -1144,7 +1144,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 			shader2b.SetParameterFloat( spdpuPosTransform, scale.x * 2.0f, scale.y * 2.0f,
 				scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
 			shader2b.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
-				( float )size.x * 0.5, ( float )size.y * 0.5f );
+				( float )size.x * 0.5f, ( float )size.y * 0.5f );
 			shader2b.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
 			shader2b.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
 			

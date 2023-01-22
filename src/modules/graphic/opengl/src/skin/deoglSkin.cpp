@@ -45,7 +45,7 @@ pRSkin( NULL )
 	try{
 		pRSkin = new deoglRSkin( ogl.GetRenderThread(), skin );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}

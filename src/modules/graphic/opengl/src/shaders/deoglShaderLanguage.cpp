@@ -1034,9 +1034,9 @@ void deoglShaderLanguage::pOutputShaderToFile( const char *file ){
 	
 #else
 	char buffer[ 256 ];
-	sprintf( &buffer[ 0 ], "%s_%.3i.shader", file, pShaderFileNumber++ );
-	FILE *handle = fopen( buffer, "w" );
-	if( handle ){
+	snprintf( &buffer[ 0 ], sizeof( buffer ), "%s_%.3i.shader", file, pShaderFileNumber++ );
+	FILE *handle = nullptr;
+	if( fopen_s( &handle, buffer, "w" ) ){
 		// this looks now like useless code but unfortunately it's required. older gcc versions complain about the
 		// return value not being used failing compilation. newer gcc versions on the other hand don't complain about
 		// the unused result but about the dummy variable not being used causing compilation to fail too. only solution

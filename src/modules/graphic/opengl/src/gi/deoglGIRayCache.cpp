@@ -59,7 +59,7 @@ pTexLight( renderThread )
 	try{
 		pCreateFBO();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}

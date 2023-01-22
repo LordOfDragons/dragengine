@@ -397,7 +397,9 @@ void deoglRTDefaultTextures::pCreateTextureMaskOpaque( deoglRenderThread &render
 	pMaskOpaque->SetPixels( pixelBuffer );
 }
 
+#ifdef OS_UNIX
 __attribute__((no_sanitize("signed-integer-overflow", "shift")))
+#endif
 static void deoglRTDefaultTextures_CreateNoiseData( deoglPixelBuffer &pixelBuffer, int size ){
 	// the noise code is moved into an own function so it can be qualified with a no_sanitize.
 	// the problem is that this code uses integer overflow to create random noise data. the gcc

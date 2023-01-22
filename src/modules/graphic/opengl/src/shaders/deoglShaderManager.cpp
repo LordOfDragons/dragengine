@@ -380,7 +380,7 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 	int i;
 	
 	basePath.SetFromUnix( pPathShaderSources.GetString() );
-	const int basePathLen = strlen( basePath.GetPathUnix() ) + 1;
+	const int basePathLen = ( int )strlen( basePath.GetPathUnix() ) + 1;
 	
 	try{
 		deCollectFileSearchVisitor collect( "*.glsl", true );
@@ -425,7 +425,7 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 	
 	// search for shaders in the current directory
 	basePath.SetFromUnix( pPathShaders.GetString() );
-	const int basePathLen = strlen( basePath.GetPathUnix() ) + 1;
+	const int basePathLen = ( int )strlen( basePath.GetPathUnix() ) + 1;
 	
 	try{
 		deCollectFileSearchVisitor collect( "*.shader.xml", true );

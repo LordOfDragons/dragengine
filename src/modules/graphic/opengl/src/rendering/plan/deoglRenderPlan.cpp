@@ -533,8 +533,8 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 			pDepthToPosition.y = 1.0f;
 		}
 		
-		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
-		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
+		pDepthToPosition.z = 1.0f / ( float )pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / ( float )pProjectionMatrix.a22;
 		pDepthToPosition2.Set( 0.0f, 0.0f );
 		
 		// depth sample offset is required to reconstruct depth from nearby depth samples.
@@ -568,17 +568,17 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pProjectionMatrix = vreye.CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrix = vreye.CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
-		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
-		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
-		pDepthToPosition2.Set( -pProjectionMatrix.a13, -pProjectionMatrix.a23 );
+		pDepthToPosition.z = 1.0f / ( float )pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / ( float )pProjectionMatrix.a22;
+		pDepthToPosition2.Set( ( float )-pProjectionMatrix.a13, ( float )-pProjectionMatrix.a23 );
 		
 		// right eye
 		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
-		pDepthToPositionStereo.z = 1.0f / pProjectionMatrixStereo.a11;
-		pDepthToPositionStereo.w = 1.0f / pProjectionMatrixStereo.a22;
-		pDepthToPositionStereo2.Set( -pProjectionMatrixStereo.a13, -pProjectionMatrixStereo.a23 );
+		pDepthToPositionStereo.z = 1.0f / ( float )pProjectionMatrixStereo.a11;
+		pDepthToPositionStereo.w = 1.0f / ( float )pProjectionMatrixStereo.a22;
+		pDepthToPositionStereo2.Set( ( float )-pProjectionMatrixStereo.a13, ( float )-pProjectionMatrixStereo.a23 );
 	}
 	
 	// determine frustum to use

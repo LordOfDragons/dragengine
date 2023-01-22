@@ -231,8 +231,8 @@ void deoglRenderDevMode::RenderVisComponent( deoglRenderPlan &plan ){
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
 	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
 	const int componentCount = collideList.GetComponentCount();
-	const decColor colorWire( 0.0, 0.5, 1.0, 1.0 );
-	const decColor colorSolid( 0.0, 0.5, 1.0, 0.1 );
+	const decColor colorWire( 0.0f, 0.5f, 1.0f, 1.0f );
+	const decColor colorSolid( 0.0f, 0.5f, 1.0f, 0.1f );
 	deoglDCollisionBox box;
 	int c;
 	
@@ -270,8 +270,8 @@ void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
 	const decDMatrix &matrixVP = plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() );
 	const int lightCount = collideList.GetLightCount();
-	const decColor colorWire( 0.0, 0.5, 1.0, 1.0 );
-	const decColor colorSolid( 0.0, 0.5, 1.0, 0.1 );
+	const decColor colorWire( 0.0f, 0.5f, 1.0f, 1.0f );
+	const decColor colorSolid( 0.0f, 0.5f, 1.0f, 0.1f );
 	deoglDCollisionBox box;
 	int l;
 	

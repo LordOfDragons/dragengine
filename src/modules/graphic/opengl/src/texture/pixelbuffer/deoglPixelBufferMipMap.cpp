@@ -49,7 +49,7 @@ int width, int height, int depth, int maxLevel ){
 	pPixelBuffers = NULL;
 	pPixelBufferCount = 0;
 	
-	count = ( int )( floorf( log2f( ( height > width ) ? height : width ) ) );
+	count = ( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) );
 	if( count > maxLevel ){
 		count = maxLevel;
 	}
@@ -993,9 +993,9 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 	const int baseNormalHeight = baseNormalPixelBuffer.GetHeight();
 	const int baseNormalWidth = baseNormalPixelBuffer.GetWidth();
 	const int baseNormalMipMapSize = ( baseNormalWidth > baseNormalHeight ) ? baseNormalWidth : baseNormalHeight;
-	const int baseNormalLevel =  pPixelBufferCount - 1 - ( int )floorf( log2( ( float )baseNormalMipMapSize ) + 0.5f );
+	const int baseNormalLevel =  pPixelBufferCount - 1 - ( int )floorf( log2f( ( float )baseNormalMipMapSize ) + 0.5f );
 	const int normalMaxLevel = normalPixeBufferMipMap.GetPixelBufferCount() - 1;
-	const int byteFactor = 1.0f / 255.0f;
+	const float byteFactor = 1.0f / 255.0f;
 	const GLfloat *normalPointerOrgFloat = NULL;
 	const GLubyte *normalPointerOrgByte = NULL;
 	const GLfloat *normalPointerFloat = NULL;

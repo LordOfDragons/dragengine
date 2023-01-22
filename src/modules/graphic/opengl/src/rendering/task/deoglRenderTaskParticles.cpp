@@ -139,11 +139,11 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 		rtlogger.LogInfo( "  - configuration:" );
 		const deoglShaderProgram &shader = pipeline->GetGlConfiguration().GetShaderRef();
 		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode()
-			? shader.GetVertexSourceCode()->GetFilePath() : "-" );
+			? shader.GetVertexSourceCode()->GetFilePath().GetString() : "-" );
 		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode()
-			? shader.GetGeometrySourceCode()->GetFilePath() : "-" );
+			? shader.GetGeometrySourceCode()->GetFilePath().GetString() : "-" );
 		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode()
-			? shader.GetFragmentSourceCode()->GetFilePath() : "-" );
+			? shader.GetFragmentSourceCode()->GetFilePath().GetString() : "-" );
 		
 		text = "    - defines: ";
 		const deoglShaderDefines &defines = shader.GetDefines();

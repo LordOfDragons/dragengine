@@ -104,7 +104,7 @@ public:
 		pElapsed += pTimer.GetElapsedTime();
 		
 		if( pElapsed >= pThreshold ){
-			pElapsed = fmod( pElapsed, pThreshold );
+			pElapsed = fmodf( pElapsed, pThreshold );
 			return true;
 			
 		}else{

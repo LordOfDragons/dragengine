@@ -78,7 +78,7 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 		return;
 	}
 	
-	const float safetyMargin = 0.01; // 1cm should be enough to be safe
+	const float safetyMargin = 0.01f; // 1cm should be enough to be safe
 	const decDVector &cameraPosition = plan.GetCameraPosition();
 	const decDVector &minExtend = pLight->GetMinimumExtend();
 	const decDVector &maxExtend = pLight->GetMaximumExtend();

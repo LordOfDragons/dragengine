@@ -81,10 +81,10 @@ public:
 	inline unsigned long long GetConsumptionKB() const{ return pConsumption / 1024ull; }
 	
 	/** Consumption in MB. */
-	inline unsigned int GetConsumptionMB() const{ return pConsumption / 1024000ull; }
+	inline unsigned int GetConsumptionMB() const{ return ( unsigned int )( pConsumption / 1024000ull ); }
 	
 	/** Consumption in GB. */
-	inline unsigned int GetConsumptionGB() const{ return pConsumption / 1024000000ull; }
+	inline unsigned int GetConsumptionGB() const{ return ( unsigned int )( pConsumption / 1024000000ull ); }
 	
 	/** Consumption in KB as double. */
 	inline double GetConsumptionKBDouble() const{ return ( double )pConsumption / 1024e0; }
