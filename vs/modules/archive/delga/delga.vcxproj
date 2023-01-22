@@ -28,6 +28,7 @@
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\minizip\unzip.c" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveDirectory.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFile.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFileReader.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadContainer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadContextUnpack.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deArchiveDelga.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\minizip\unzip.h" />
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveDirectory.h" />
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFile.h" />
+    <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFileReader.h" />
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadContainer.h" />
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadContextUnpack.h" />
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deArchiveDelga.h" />

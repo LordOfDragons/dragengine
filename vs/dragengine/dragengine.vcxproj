@@ -216,8 +216,8 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleGroup.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleInverseKinematic.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleLimit.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleMirror.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleRetarget.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateSnapshot.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleSubAnimator.cpp" />
@@ -882,8 +882,8 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleGroup.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleInverseKinematic.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleLimit.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleMirror.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.h" />
-    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleRetarget.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateSnapshot.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleSubAnimator.h" />

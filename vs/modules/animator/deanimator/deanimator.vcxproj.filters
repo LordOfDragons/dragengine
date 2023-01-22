@@ -96,9 +96,6 @@
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleRetarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -115,6 +112,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,9 +203,6 @@
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleRetarget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -219,6 +219,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

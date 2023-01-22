@@ -34,6 +34,7 @@
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerTarget.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearIKWorkState.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearWorkState.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\deDEAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearCreateRuleVisitor.cpp" />
@@ -46,7 +47,7 @@
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleGroup.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleInverseKinematic.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleRetarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateSnapshot.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleSubAnimator.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerTarget.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearIKWorkState.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearWorkState.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\deDEAnimator.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearCreateRuleVisitor.h" />
@@ -82,7 +84,7 @@
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleGroup.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleInverseKinematic.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleRetarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateSnapshot.h" />
     <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleSubAnimator.h" />

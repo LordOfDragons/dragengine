@@ -603,9 +603,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleRetarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1998,6 +1995,9 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleMirror.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h">
@@ -2592,9 +2592,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleRetarget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.h">
@@ -3993,6 +3990,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\dragengine_export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleMirror.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

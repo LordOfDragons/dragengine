@@ -36,6 +36,9 @@
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\minizip\unzip.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFileReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveDirectory.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\minizip\unzip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
