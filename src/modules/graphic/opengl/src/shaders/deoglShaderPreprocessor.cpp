@@ -1470,7 +1470,11 @@ bool deoglShaderPreprocessor::pParseDirectiveAnything( sToken &token ){
 decString deoglShaderPreprocessor::pDirectiveTokenString( const sToken &token ) const{
 	decString string;
 	string.Set( ' ', token.length );
-	strncpy_s( (char*)string.GetString(), token.length, token.begin, token.length );
+	#ifdef OS_W32
+		strncpy_s( (char*)string.GetString(), token.length, token.begin, token.length );
+	#else
+		strncpy( (char*)string.GetString(), token.begin, token.length );
+	#endif
 	return string;
 }
 
@@ -1572,7 +1576,12 @@ void deoglShaderPreprocessor::pResolveBufferAppend( const char *text, int length
 		pResolveBufferSize = newSize;
 	}
 	
-	strncpy_s( pResolveBuffer + pResolveBufferLen, length, text, length );
+	#ifdef OS_W32
+		strncpy_s( pResolveBuffer + pResolveBufferLen, length, text, length );
+	#else
+		strncpy( pResolveBuffer + pResolveBufferLen, text, length );
+	#endif
+	
 	pResolveBufferLen += length;
 	pResolveBuffer[ pResolveBufferLen ] = '\0';
 }
@@ -1588,7 +1597,11 @@ void deoglShaderPreprocessor::pSetResolveSymbolName( const char *name, int lengt
 		pResolveSymbolNameSize = newSize;
 	}
 	
-	strncpy_s( pResolveSymbolName, length, name, length );
+	#ifdef OS_W32
+		strncpy_s( pResolveSymbolName, length, name, length );
+	#else
+		strncpy( pResolveSymbolName, name, length );
+	#endif
 	pResolveSymbolName[ length ] = '\0';
 }
 

@@ -274,7 +274,8 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 		shaderSourcesTextureCount = textureList.GetCount();
 		text.Set( "   - Textures:" );
 		for( sst=0; sst<shaderSourcesTextureCount; sst++ ){
-			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",", textureList.GetNameAt( sst ), textureList.GetTargetAt( sst ) );
+			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",",
+				textureList.GetNameAt( sst ).GetString(), textureList.GetTargetAt( sst ) );
 		}
 		text.Append( "\n" );
 		answer.AppendFromUTF8( text.GetString() );

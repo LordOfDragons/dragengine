@@ -35,9 +35,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderBindingList::deoglShaderBindingList(){
-	pBindings = NULL;
-	pCount = 0;
+deoglShaderBindingList::deoglShaderBindingList() :
+pBindings( nullptr ),
+pCount( 0 ),
+pSize( 0 ){
 }
 
 deoglShaderBindingList::~deoglShaderBindingList(){
@@ -53,14 +54,9 @@ deoglShaderBindingList::~deoglShaderBindingList(){
 ///////////////
 
 bool deoglShaderBindingList::HasNamed( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	int i;
-	
 	for( i=0; i<pCount; i++ ){
-		if( strcmp( name, pBindings[ i ].name ) == 0 ){
+		if( pBindings[ i ].name == name ){
 			return true;
 		}
 	}
@@ -69,14 +65,9 @@ bool deoglShaderBindingList::HasNamed( const char *name ){
 }
 
 int deoglShaderBindingList::IndexOfNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	int i;
-	
 	for( i=0; i<pCount; i++ ){
-		if( strcmp( name, pBindings[ i ].name ) == 0 ){
+		if( pBindings[ i ].name == name ){
 			return i;
 		}
 	}
@@ -84,12 +75,11 @@ int deoglShaderBindingList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-const char *deoglShaderBindingList::GetNameAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
-	}
+const decString &deoglShaderBindingList::GetNameAt( int index ) const{
+	DEASSERT_TRUE( index >= 0  )
+	DEASSERT_TRUE( index < pCount )
 	
-	return ( const char * )pBindings[ index ].name;
+	return pBindings[ index ].name;
 }
 
 int deoglShaderBindingList::GetTargetAt( int index ) const{
@@ -101,34 +91,27 @@ int deoglShaderBindingList::GetTargetAt( int index ) const{
 }
 
 void deoglShaderBindingList::Add( const char *name, int target ){
-	if( HasNamed( name ) ){
-		DETHROW( deeInvalidParam );
+	DEASSERT_FALSE( HasNamed( name ) )
+	
+	if( pCount == pSize ){
+		const int newSize = pSize * 3 / 2 + 1;
+		sBinding * const newArray = new sBinding[ newSize ];
+		if( pBindings ){
+			int i;
+			for( i=0; i<pSize; i++ ){
+				newArray[ i ] = pBindings[ i ];
+			}
+			delete [] pBindings;
+		}
+		pBindings = newArray;
+		pSize = newSize;
 	}
 	
-	sBinding * const newArray = new sBinding[ pCount + 1 ];
-	if( pBindings ){
-		memcpy( newArray, pBindings, sizeof( sBinding ) * pCount );
-		delete [] pBindings;
-	}
-	pBindings = newArray;
-	
-	const int len = ( int )strlen( name );
-	pBindings[ pCount ].name = new char[ len + 1 ];
-	strncpy_s( pBindings[ pCount ].name, len, name, len );
-	pBindings[ pCount ].name[ len ] = 0;
-
+	pBindings[ pCount ].name = name;
 	pBindings[ pCount ].target = target;
 	pCount++;
 }
 
 void deoglShaderBindingList::RemoveAll(){
-	if( pBindings ){
-		while( pCount > 0 ){
-			pCount--;
-			delete [] pBindings[ pCount ].name;
-		}
-		
-		delete [] pBindings;
-		pBindings = NULL;
-	}
+	pCount = 0;
 }

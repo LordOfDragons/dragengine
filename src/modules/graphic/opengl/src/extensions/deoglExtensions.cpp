@@ -530,43 +530,20 @@ void deoglExtensions::pScanVersion(){
 void deoglExtensions::pScanExtensions(){
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	const char *strXExtensions = ( const char * )glXGetClientString( pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS );
-#endif
-
-#ifdef ANDROID
-	const char *strAExtensions = ( const char * )eglQueryString( pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS );
-#endif
-
-#ifdef OS_BEOS
-	//const char *strXExtensions = ( const char * )glXGetClientString( pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS );
-#endif
-
-	const char *strExtensions = ( const char * )glGetString( GL_EXTENSIONS );
-	PFNGLGETSTRINGIPROC pglGetStringi = NULL;
-	int i;
-	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( ! strXExtensions ){
 		strXExtensions = "";
 	}
 #endif
-
+	
 #ifdef ANDROID
+	const char *strAExtensions = ( const char * )eglQueryString( pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS );
 	if( ! strAExtensions ){
 		strAExtensions = "";
 	}
 #endif
 	
-#ifdef OS_BEOS
-	//if( ! strXExtensions ){
-	//	strXExtensions = "";
-	//}
-#endif
-
-	if( ! strExtensions ){
-		strExtensions = "";
-	}
-	
-	pglGetStringi = (PFNGLGETSTRINGIPROC)pRenderThread.GetContext().GetFunctionPointer( "glGetStringi" );
+	PFNGLGETSTRINGIPROC pglGetStringi = ( PFNGLGETSTRINGIPROC )pRenderThread.GetContext().GetFunctionPointer( "glGetStringi" );
+	int i;
 	
 	if( pglGetStringi ){
 		GLint extensionCount = 0;
@@ -577,27 +554,9 @@ void deoglExtensions::pScanExtensions(){
 		}
 		
 	}else{
-		const char *stringEnd = strExtensions + strlen( strExtensions ) + 1;
-		const char *delimiter;
-		decString token;
-		int tokenLength;
-		
-		while( strExtensions != stringEnd ){
-			delimiter = strchr( strExtensions, ' ' );
-			
-			if( ! delimiter ){
-				delimiter = strExtensions + strlen( strExtensions );
-			}
-			
-			tokenLength = ( int )( delimiter - strExtensions );
-			
-			if( tokenLength > 0 ){
-				token.Set( ' ', tokenLength );
-				strncpy_s( ( char* )token.GetString(), tokenLength, strExtensions, tokenLength );
-				pStrListExtensions.Add( token );
-			}
-			
-			strExtensions = delimiter + 1;
+		const char * const strExtensions = ( const char * )glGetString( GL_EXTENSIONS );
+		if( strExtensions ){
+			pStrListExtensions = decString( strExtensions ).Split( ' ' );
 		}
 	}
 	

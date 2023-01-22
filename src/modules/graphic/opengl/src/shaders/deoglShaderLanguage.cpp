@@ -400,7 +400,8 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
 				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
 				
-				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  compute unit source code file = %s", scCompute->GetFilePath().GetString() );
 				
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
@@ -424,15 +425,19 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			pPreparePreprocessor( program.GetDefines() );
 			
 			if( scTessellationControl ){
-				pAppendPreprocessSourcesBuffer( scTessellationControl->GetFilePath(), scTessellationControl->GetSourceCode() );
+				pAppendPreprocessSourcesBuffer( scTessellationControl->GetFilePath(),
+					scTessellationControl->GetSourceCode() );
 			}
 			
 			if( ! pCompileObject( handleTCP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scTessellationControl ){
-					pRenderThread.GetLogger().LogErrorFormat( "  tessellation control unit source code file = %s", scTessellationControl->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat(
+						"  tessellation control unit source code file = %s",
+						scTessellationControl->GetFilePath().GetString() );
 				}
 				
 				if( pErrorLog ){
@@ -457,15 +462,19 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			pPreparePreprocessor( program.GetDefines() );
 			
 			if( scTessellationEvaluation ){
-				pAppendPreprocessSourcesBuffer( scTessellationEvaluation->GetFilePath(), scTessellationEvaluation->GetSourceCode() );
+				pAppendPreprocessSourcesBuffer( scTessellationEvaluation->GetFilePath(),
+					scTessellationEvaluation->GetSourceCode() );
 			}
 			
 			if( ! pCompileObject( handleTEP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scTessellationEvaluation ){
-					pRenderThread.GetLogger().LogErrorFormat( "  tessellation evaluation unit source code file = %s", scTessellationEvaluation->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat(
+						"  tessellation evaluation unit source code file = %s",
+						scTessellationEvaluation->GetFilePath().GetString() );
 				}
 				
 				if( pErrorLog ){
@@ -506,7 +515,8 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scGeometry ){
-					pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s", scGeometry->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s",
+						scGeometry->GetFilePath().GetString() );
 					
 				}else{
 					pRenderThread.GetLogger().LogErrorFormat( "  inline geometry unit source code." );
@@ -552,10 +562,12 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			#endif
 			if( ! pCompileObject( handleVP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scVertex ){
-					pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s", scVertex->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s",
+						scVertex->GetFilePath().GetString() );
 					
 				}else{
 					pRenderThread.GetLogger().LogErrorFormat( "  inline vertex unit source code." );
@@ -618,10 +630,12 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			#endif
 			if( ! pCompileObject( handleFP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scFragment ){
-					pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s", scFragment->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s",
+						scFragment->GetFilePath().GetString() );
 					
 				}else{
 					pRenderThread.GetLogger().LogError( "  inline fragment unit source code." );
@@ -701,25 +715,34 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		}
 		#endif
 		if( ! pLinkShader( handleShader ) ){
-			pRenderThread.GetLogger().LogErrorFormat( "Shader linking failed (%s):", sources.GetFilename().GetString() );
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader linking failed (%s):", sources.GetFilename().GetString() );
 			
 			if( scCompute ){
-				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s", scCompute->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s",
+					scCompute->GetFilePath().GetString() );
 			}
 			if( scTessellationControl ){
-				pRenderThread.GetLogger().LogErrorFormat( "  tessellation control unit source code file = %s", scTessellationControl->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  tessellation control unit source code file = %s",
+					scTessellationControl->GetFilePath().GetString() );
 			}
 			if( scTessellationEvaluation ){
-				pRenderThread.GetLogger().LogErrorFormat( "  tessellation evaluation unit source code file = %s", scTessellationEvaluation->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  tessellation evaluation unit source code file = %s",
+					scTessellationEvaluation->GetFilePath().GetString() );
 			}
 			if( scGeometry ){
-				pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s", scGeometry->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s",
+					scGeometry->GetFilePath().GetString() );
 			}
 			if( scVertex ){
-				pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s", scVertex->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s",
+					scVertex->GetFilePath().GetString() );
 			}
 			if( scFragment ){
-				pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s", scFragment->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s",
+					scFragment->GetFilePath().GetString() );
 			}
 			if( pErrorLog ){
 				pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
@@ -1036,7 +1059,13 @@ void deoglShaderLanguage::pOutputShaderToFile( const char *file ){
 	char buffer[ 256 ];
 	snprintf( &buffer[ 0 ], sizeof( buffer ), "%s_%.3i.shader", file, pShaderFileNumber++ );
 	FILE *handle = nullptr;
-	if( fopen_s( &handle, buffer, "w" ) ){
+	#ifdef OS_W32
+		if( fopen_s( &handle, buffer, "w" ) )
+	#else
+		handle = fopen( buffer, "w" );
+		if( handle )
+	#endif
+	{
 		// this looks now like useless code but unfortunately it's required. older gcc versions complain about the
 		// return value not being used failing compilation. newer gcc versions on the other hand don't complain about
 		// the unused result but about the dummy variable not being used causing compilation to fail too. only solution

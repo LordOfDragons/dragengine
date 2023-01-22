@@ -22,6 +22,7 @@
 #ifndef _DEOSLSHADERBINDINGLIST_H_
 #define _DEOSLSHADERBINDINGLIST_H_
 
+#include <dragengine/common/string/decString.h>
 
 
 /**
@@ -31,7 +32,7 @@ class deoglShaderBindingList{
 private:
 	/** Bindings. */
 	struct sBinding{
-		char *name;
+		decString name;
 		int target;
 	};
 	
@@ -40,6 +41,7 @@ private:
 private:
 	sBinding *pBindings;
 	int pCount;
+	int pSize;
 	
 	
 	
@@ -67,7 +69,7 @@ public:
 	int IndexOfNamed( const char *name ) const;
 	
 	/** Binding name at index. */
-	const char *GetNameAt( int index ) const;
+	const decString &GetNameAt( int index ) const;
 	
 	/** Binding target at index. */
 	int GetTargetAt( int index ) const;
