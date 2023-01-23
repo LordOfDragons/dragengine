@@ -1351,7 +1351,7 @@ deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
 	}
 }
 
-#ifdef OS_UNIX
+#ifdef __GNUG__
 	// fix for gcc bug with -Werror=array-bounds
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Warray-bounds"
@@ -1373,7 +1373,7 @@ int targetBlue, int targetAlpha ){
 	}
 }
 
-#ifdef OS_UNIX
+#ifdef __GNUG__
 	#pragma GCC diagnostic pop
 #endif
 
