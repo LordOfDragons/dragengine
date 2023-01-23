@@ -5,6 +5,9 @@
     [Parameter(Mandatory=$true)][string]$Version
 )
 
+# GitHub bug: Get-FileHash does not exist. We have to fake it
+. .\Get-FileHash.ps1
+
 $ItemLibrary = Get-Item -Path $Library
 $LibrarySize = $ItemLibrary.Length
 $LibraryName = $ItemLibrary.Name
