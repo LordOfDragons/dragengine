@@ -44,6 +44,7 @@
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deArchiveDelga.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\src\modules\archive\delga\SConscript" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -166,6 +167,9 @@
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\archive\delga\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -188,6 +192,9 @@
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\archive\delga\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

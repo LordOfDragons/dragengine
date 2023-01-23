@@ -68,5 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\..\..\..\src\modules\archive\delga\SConscript" />
   </ItemGroup>
 </Project>

@@ -228,4 +228,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\animator\deanimator\SConscript" />
+  </ItemGroup>
 </Project>

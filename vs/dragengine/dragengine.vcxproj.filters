@@ -16,6 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\..\src\dragengine\SConscript" />
+    <None Include="..\..\SConstruct" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp">

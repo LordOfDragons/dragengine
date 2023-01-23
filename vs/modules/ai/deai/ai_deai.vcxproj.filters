@@ -210,4 +210,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\ai\deai\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\ai\deai\src\module.xml">
+      <Filter>Source Files</Filter>
+    </Xml>
+  </ItemGroup>
 </Project>

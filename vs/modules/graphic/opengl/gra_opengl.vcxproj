@@ -626,6 +626,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\src\modules\graphic\opengl\SConscript" />
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\ChangeLog" />
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README" />
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README_DE" />
@@ -1332,6 +1333,9 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\graphic\opengl\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -1354,6 +1358,9 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\graphic\opengl\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

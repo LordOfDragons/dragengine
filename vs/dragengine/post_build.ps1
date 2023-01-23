@@ -1,27 +1,50 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
-    [Parameter(Mandatory=$true)][string]$TargetDir
+    [Parameter(Mandatory=$true)][string]$OutputDir
 )
 
-$SourceDir = Resolve-Path $SourceDir
-
-Write-Host "Drag[en]gine: Copy Headers to '$TargetDir'"
-
+# build
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "include\dragengine"
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
 
-New-Item -ItemType Directory $TargetDir -ErrorAction SilentlyContinue | Out-Null
+Write-Host "Drag[en]gine: Copy Headers to '$TargetDir'"
+& ..\copy_files.ps1 -SourceDir "$SourceDir" -TargetDir "$TargetDir" -Pattern "*.h"
 
-$CutLength = $SourceDir.Length + 1
 
-Get-ChildItem -Path (Join-Path -Path $SourceDir -ChildPath '*.h') -Recurse | ForEach-Object {
-    $RelativePath = $_.FullName.Substring($CutLength)
-    $TargetPath = Join-Path -Path $TargetDir -ChildPath $RelativePath
-    $ParentPath = Split-Path -Path $TargetPath -Parent
-    # Write-Host $RelativePath
-    if (!(Test-Path $ParentPath)) {
-        New-Item -ItemType Directory $ParentPath -ErrorAction SilentlyContinue | Out-Null
-    }
-    Copy-Item -Path $_.FullName -Destination (Join-Path -Path $TargetDir -ChildPath $RelativePath)
+# application
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Application\@System"
+
+Write-Host "Drag[en]gine App: Copy Library to '$TargetDir'"
+
+$FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.dll"
+& ..\install_file.ps1 -Path "$FilePath" -Destination "$TargetDir"
+
+
+# sdk
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\SDK\@ProgramFiles\Dragengine\SDK\include\dragengine"
+if (Test-Path $TargetDir) {
+    Remove-Item $TargetDir -Force -Recurse
 }
+
+Write-Host "Drag[en]gine SDK: Copy Headers to '$TargetDir'"
+& ..\copy_files.ps1 -SourceDir "$SourceDir" -TargetDir "$TargetDir" -Pattern "*.h"
+
+
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\SDK\@ProgramFiles\Dragengine\SDK\lib"
+Write-Host "Drag[en]gine SDK: Copy Libraries to '$TargetDir'"
+
+$FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.lib"
+& ..\install_file.ps1 -Path "$FilePath" -Destination "$TargetDir"
+
+$FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.exp"
+& ..\install_file.ps1 -Path "$FilePath" -Destination "$TargetDir"
+
+
+# debug
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Debug\@ProgramFiles\Dragengine\PDB"
+Write-Host "Drag[en]gine Debug: Copy PDBs to '$TargetDir'"
+
+$FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.pdb"
+& ..\install_file.ps1 -Path "$FilePath" -Destination "$TargetDir"

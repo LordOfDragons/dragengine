@@ -1829,6 +1829,7 @@
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\singlecolourlookup.inl">
       <Filter>contrib\squish</Filter>
     </None>
+    <None Include="..\..\..\..\src\modules\graphic\opengl\SConscript" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\alpha.cpp">
