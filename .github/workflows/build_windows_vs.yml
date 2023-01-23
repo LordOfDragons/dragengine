@@ -64,9 +64,11 @@ jobs:
         
       - name: Restore NuGet packages
         working-directory: vs
+        shell: pwsh
         run: nuget restore vs.sln
       
       - name: Init custom.py
+        shell: pwsh
         run: |
           $Content = Get-Content -Raw -Path "${{ github.workspace }}/.github/workflows/custom_windows.py"
           $Content = $Content -creplace "ReleaseVersion","${{ inputs.releaseVersion }}"
@@ -76,9 +78,11 @@ jobs:
         
       - name: Build
         working-directory: vs
+        shell: pwsh
         run: msbuild /m /p:Configuration=Release vs.sln
       
       - name: Archive
+        shell: pwsh
         run: |
           $DistributeDir = "${{ github.workspace }}/vs/x64/${{ inputs.debugBuild && 'Debug' || 'Release' }}/Distribute"
           Compress-Archive -Path "$DistributeDir/Dragengine/Application/*" -DestinationPath "dragengine-${{ inputs.releaseVersion }}-windows64.zip"
