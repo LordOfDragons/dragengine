@@ -90,10 +90,10 @@ jobs:
         with:
           name: ${{ inputs.artifactArchive }}
           path: |
-            archive/build/dragengine-${{ inputs.releaseVersion }}-windows64.zip
-            archive/build/dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip
-            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-windows64.zip
-            # archive/build/deigde-${{ inputs.releaseVersion }}-windows64.zip
-            # archive/build/deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip
-            # archive/build/despecial-${{ inputs.releaseVersion }}-windows64.zip
+            dragengine-${{ inputs.releaseVersion }}-windows64.zip
+            dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip
+            dragengine-dbg-${{ inputs.releaseVersion }}-windows64.zip
+            # deigde-${{ inputs.releaseVersion }}-windows64.zip
+            # deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip
+            # despecial-${{ inputs.releaseVersion }}-windows64.zip
           if-no-files-found: error
