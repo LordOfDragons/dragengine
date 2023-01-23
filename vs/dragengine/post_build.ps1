@@ -14,7 +14,7 @@ Write-Host "Drag[en]gine: Copy Headers to '$TargetDir'"
 
 
 # application
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Application\@System"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Application\@System"
 
 Write-Host "Drag[en]gine App: Copy Library to '$TargetDir'"
 
@@ -23,7 +23,7 @@ $FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.dll"
 
 
 # sdk
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\SDK\@ProgramFiles\Dragengine\SDK\include\dragengine"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\SDK\@ProgramFiles\Dragengine\SDK\include\dragengine"
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
@@ -32,7 +32,7 @@ Write-Host "Drag[en]gine SDK: Copy Headers to '$TargetDir'"
 & ..\copy_files.ps1 -SourceDir "$SourceDir" -TargetDir "$TargetDir" -Pattern "*.h"
 
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\SDK\@ProgramFiles\Dragengine\SDK\lib"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\SDK\@ProgramFiles\Dragengine\SDK\lib"
 Write-Host "Drag[en]gine SDK: Copy Libraries to '$TargetDir'"
 
 $FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.lib"
@@ -43,7 +43,7 @@ $FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.exp"
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Debug\@ProgramFiles\Dragengine\PDB"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Debug\@ProgramFiles\Dragengine\PDB"
 Write-Host "Drag[en]gine Debug: Copy PDBs to '$TargetDir'"
 
 $FilePath = Join-Path -Path $OutputDir -ChildPath "dragengine.pdb"

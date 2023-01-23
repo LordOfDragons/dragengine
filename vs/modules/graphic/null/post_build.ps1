@@ -7,7 +7,7 @@
 $FilePath = Join-Path -Path $SourceDir -ChildPath "..\SConscript"
 $Version = & ..\..\..\get_version.ps1 -Path "$FilePath"
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Application\@ProgramFiles\Dragengine\Data\modules\graphic\null\$Version"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Application\@ProgramFiles\Dragengine\Data\modules\graphic\null\$Version"
 
 Write-Host "NullGraphic Module: Copy Module to '$TargetDir'"
 
@@ -20,7 +20,7 @@ $ManifestTarget = Join-Path -Path $TargetDir -ChildPath "module.xml"
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Debug\@ProgramFiles\Dragengine\PDB\EngineModules"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Debug\@ProgramFiles\Dragengine\PDB\EngineModules"
 Write-Host "NullGraphic Module: Copy PDBs to '$TargetDir'"
 
 $FilePath = Join-Path -Path $OutputDir -ChildPath "granull.pdb"

@@ -7,7 +7,7 @@
 $FilePath = Join-Path -Path $SourceDir -ChildPath "..\SConscript"
 $Version = & ..\..\..\get_version.ps1 -Path "$FilePath"
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Application\@ProgramFiles\Dragengine\Data\modules\graphic\opengl\$Version"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Application\@ProgramFiles\Dragengine\Data\modules\graphic\opengl\$Version"
 Write-Host "OpenGL Module: Copy Module to '$TargetDir'"
 
 $Library = Join-Path -Path $OutputDir -ChildPath "graopengl.dll"
@@ -18,7 +18,7 @@ $ManifestTarget = Join-Path -Path $TargetDir -ChildPath "module.xml"
 & ..\..\..\copy_manifest.ps1 -Path "$ManifestSource" -Destination "$ManifestTarget" -Library "$Library" -Version "$Version"
 
 
-$DataTargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Application\@ProgramFiles\Dragengine\Share\modules\graphic\opengl\$Version"
+$DataTargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Application\@ProgramFiles\Dragengine\Share\modules\graphic\opengl\$Version"
 Write-Host "OpenGL Module: Copy Data to '$DataTargetDir'"
 
 $DataSourceDir = Join-Path -Path $SourceDir -ChildPath "..\shaders"
@@ -31,7 +31,7 @@ $DataTargetDir2 = Join-Path -Path $DataTargetDir -ChildPath "shaderSources"
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Debug\@ProgramFiles\Dragengine\PDB\EngineModules"
+$TargetDir = Join-Path -Path $OutputDir -ChildPath "Distribute\Dragengine\Debug\@ProgramFiles\Dragengine\PDB\EngineModules"
 Write-Host "OpenGL Module: Copy PDBs to '$TargetDir'"
 
 $FilePath = Join-Path -Path $OutputDir -ChildPath "graopengl.pdb"
