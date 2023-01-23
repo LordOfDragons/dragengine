@@ -3,10 +3,12 @@
     [Parameter(Mandatory=$true)][string]$TargetDir
 )
 
+Import-Module "$PSScriptRoot\..\..\shared.psm1"
+
 Write-Host "Shared Vulkan: Copy Headers to '$TargetDir'"
 
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
 
-& ..\..\copy_files.ps1 -SourceDir "$SourceDir" -TargetDir "$TargetDir" -Pattern "*.h"
+Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
