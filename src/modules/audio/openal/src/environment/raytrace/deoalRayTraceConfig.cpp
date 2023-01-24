@@ -103,9 +103,7 @@ void deoalRayTraceConfig::Rotate( float rx, float ry, float rz ){
 }
 
 void deoalRayTraceConfig::SetRaysEquallySpaced( int rayCount ){
-	if( rayCount < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( rayCount > 0 )
 	
 	if( pRayDirections ){
 		delete [] pRayDirections;
@@ -115,16 +113,16 @@ void deoalRayTraceConfig::SetRaysEquallySpaced( int rayCount ){
 	pRayCount = 0;
 	pRayDirections = new decVector[ rayCount ];
 	
-	const double dLongitude = PI * ( 3.0 - sqrt( 5.0 ) );
-	const double dZ = 2.0 / ( float )rayCount;
-	double longitude = 0.0;
-	double z = 1.0 - dZ * 0.5;
+	const float dLongitude = PI * ( 3.0f - sqrtf( 5.0f ) );
+	const float dZ = 2.0f / ( float )rayCount;
+	float longitude = 0.0f;
+	float z = 1.0f - dZ * 0.5f;
 	
 	for( pRayCount=0; pRayCount<rayCount; pRayCount++ ){
-		const double radius = sqrt( 1.0 - z * z );
-		pRayDirections[ pRayCount ].x = cos( longitude ) * radius;
-		pRayDirections[ pRayCount ].y = sin( longitude ) * radius;
-		pRayDirections[ pRayCount ].z = z;
+		const float radius = sqrtf( 1.0f - z * z );
+		pRayDirections[ pRayCount ].x = cosf( longitude ) * radius;
+		pRayDirections[ pRayCount ].y = sinf( longitude ) * radius;
+		pRayDirections[ pRayCount ].z = ( float )z;
 		z -= dZ;
 		longitude += dLongitude;
 	}
@@ -137,7 +135,12 @@ void deoalRayTraceConfig::SetRaysEquallySpaced( int rayCount ){
 	pRayUnitVolume = pRayUnitSurface / 3.0f;
 	
 	// gauss factor is tan(openingAngle) * 0.466
-	pOpeningAngle = atanf( ( pRayDirections[ 2 ] - pRayDirections[ 1 ] ).Length() ) * 2.0f;
+	if( rayCount > 2 ){
+		pOpeningAngle = atanf( ( pRayDirections[ 2 ] - pRayDirections[ 1 ] ).Length() ) * 2.0f;
+
+	}else{
+		pOpeningAngle = TWO_PI;
+	}
 }
 
 void deoalRayTraceConfig::SetFromIcoSphere( const deoalIcoSphere &icoSphere ){

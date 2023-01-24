@@ -158,10 +158,10 @@ void deoalCollisionCylinder::GetEnclosingSphere( deoalCollisionSphere *sphere ){
 	// the sphere is not fully optial. the real sphere is slightly smaller and has a
 	// different center along the y-axis. the difference is though rather small.
 	if( pTopRadius > pBottomRadius ){
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius ) );
+		sphere->SetAll( pPosition, sqrtf( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius ) );
 		
 	}else{
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius ) );
+		sphere->SetAll( pPosition, sqrtf( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius ) );
 	}
 }
 
@@ -171,10 +171,10 @@ void deoalCollisionCylinder::GetEnclosingBox( deoalCollisionBox *box ){
 	
 	// TODO: better approximation
 	if( pTopRadius > pBottomRadius ){
-		size = sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius );
+		size = sqrtf( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius );
 		
 	}else{
-		size = sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius );
+		size = sqrtf( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius );
 	}
 	
 	box->SetCenter( pPosition );

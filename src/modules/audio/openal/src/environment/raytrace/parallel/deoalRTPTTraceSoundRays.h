@@ -109,8 +109,8 @@ private:
 	float pAddRayMinLength;
 	float pThresholdTransmit;
 	float pThresholdReflect;
-	float pMaxBounceCount;
-	float pMaxTransmitCount;
+	int pMaxBounceCount;
+	int pMaxTransmitCount;
 	float pInitialRayLength;
 	decLayerMask pLayerMask;
 	bool pInverseRayTracing;

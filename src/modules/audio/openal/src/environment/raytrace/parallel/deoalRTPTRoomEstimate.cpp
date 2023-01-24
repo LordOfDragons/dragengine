@@ -158,7 +158,7 @@ void deoalRTPTRoomEstimate::Run(){
 		pRoomVolume += roomFactor * hitResult.distance;
 		
 		#ifdef RTPTRE_ONE_TASK_PER_RAY
-		const float dotOut = -( hitResult.element->GetNormal() * rayDirection );
+		const float dotOut = -( float )( hitResult.element->GetNormal() * rayDirection );
 		#else
 		const float dotOut = -( hitResult.element->GetNormal() * rayDirections[ i ] );
 		#endif

@@ -152,10 +152,10 @@ inline float sample16ToFloat( const Sample16 sample ){ return ( 1.0f / SAMPLE16_
 
 
 /** \brief Sound speed (m/s). */
-#define SOUND_SPEED 343.0
+#define SOUND_SPEED 343.0f
 
 /** \brief Inverse sound speed (s/m). */
-#define INV_SOUND_SPEED ( 1.0 / 343.0 )
+#define INV_SOUND_SPEED ( 1.0f / SOUND_SPEED )
 
 
 #endif

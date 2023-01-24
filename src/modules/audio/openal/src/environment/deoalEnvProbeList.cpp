@@ -192,7 +192,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom( const decDVector &positi
 		probe->EstimateRoomParameters( pWorld, rtconfig );
 		pProbes.Add( probe );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( probe ){
 			delete probe;
 		}
@@ -202,7 +202,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom( const decDVector &positi
 	try{
 		pWorld.GetOctree()->InsertEnvProbeIntoTree( probe, 8 );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pProbes.RemoveFrom( pProbes.GetCount() - 1 );
 		delete probe;
 		throw;
@@ -310,7 +310,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 		probe->TraceSoundRays( pWorld, pRTWorldBVH, rtconfig );
 		pProbes.Add( probe );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( probe ){
 			delete probe;
 		}
@@ -320,7 +320,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 	try{
 		pWorld.GetOctree()->InsertEnvProbeIntoTree( probe, 8 );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pProbes.RemoveFrom( pProbes.GetCount() - 1 );
 		delete probe;
 		throw;

@@ -57,7 +57,7 @@ pEnvProbe( NULL ),
 pProbeConfig( NULL ),
 pFirstRay( 0 ),
 pRayCount( 0 ),
-pBackStepDistance( 1e-4 )
+pBackStepDistance( 1e-4f )
 {
 	(void)pOwner; // silence compiler warning
 	
@@ -115,14 +115,14 @@ decString thanTemp;
 // #define BOUNCE_HACK2 *0.2
 
 // gaussA = 1.0 / sqrt( 2.0 * pi)
-#define RAY_GAUSS_A 0.3989422804014327
+#define RAY_GAUSS_A 0.3989422804014327f
 
 // gaussB = -0.5
-#define RAY_GAUSS_B -0.5
+#define RAY_GAUSS_B -0.5f
 
 // gauss beam width factor
-#define RAY_GAUSS_WIDTH_SIGMA ( 1.0 / 2.35482 )
-#define RAY_GAUSS_WIDTH_INV_SIGMA 2.35482
+#define RAY_GAUSS_WIDTH_SIGMA ( 1.0f / 2.35482f )
+#define RAY_GAUSS_WIDTH_INV_SIGMA 2.35482f
 
 
 void deoalRTPTEnvProbeFull::Run(){
@@ -147,7 +147,7 @@ void deoalRTPTEnvProbeFull::Run(){
 	gain.medium = 1.0f;
 	gain.high = 1.0f;
 	
-	pRayGaussWidthFactor = tan( pProbeConfig->GetOpeningAngle() ) * 2.0;
+	pRayGaussWidthFactor = tanf( pProbeConfig->GetOpeningAngle() ) * 2.0f;
 	
 	for( pRayIndex=0; pRayIndex<pRayCount; pRayIndex++ ){
 		ray.direction = rayDirections[ pRayIndex ];
@@ -236,17 +236,17 @@ void deoalRTPTEnvProbeFull::pTraceRay( const sTraceRay &ray, const sTraceGain &g
 	//   const float angle = 0.085680; // 4.91 deg
 	//   const float tanOpenAngle = 0.173057; // 9.82 deg
 	// 
-	const double beamWidth = pRayGaussWidthFactor * ray.distance;
-	const double beamWidthSquared = beamWidth * beamWidth;
+	const float beamWidth = pRayGaussWidthFactor * ray.distance;
+	const float beamWidthSquared = beamWidth * beamWidth;
 	
-	const double closestOnRayLambda = ray.direction * ( pListenerPosition - ray.position );
-	const double closestOnRayDistance = hitElement ? hitElement->GetDistance() : ray.remainingDistance;
-	if( closestOnRayLambda > 0.0 && closestOnRayLambda < closestOnRayDistance ){
+	const float closestOnRayLambda = ( float )( ray.direction * ( pListenerPosition - ray.position ) );
+	const float closestOnRayDistance = hitElement ? hitElement->GetDistance() : ray.remainingDistance;
+	if( closestOnRayLambda > 0.0f && closestOnRayLambda < closestOnRayDistance ){
 		const decDVector closestOnRay( ray.position + ray.direction * closestOnRayLambda );
-		const double distSquared = ( closestOnRay - pListenerPosition ).LengthSquared();
+		const float distSquared = ( float )( ( closestOnRay - pListenerPosition ).LengthSquared() );
 		if( distSquared < beamWidthSquared ){
-			const double invSigma = RAY_GAUSS_WIDTH_INV_SIGMA / beamWidth;
-			const double factor = ( RAY_GAUSS_A * invSigma ) * exp( ( RAY_GAUSS_B * invSigma * invSigma ) * distSquared );
+			const float invSigma = RAY_GAUSS_WIDTH_INV_SIGMA / beamWidth;
+			const float factor = ( RAY_GAUSS_A * invSigma ) * expf( ( RAY_GAUSS_B * invSigma * invSigma ) * distSquared );
 			pGainLow += gain.low * factor;
 			pGainMedium += gain.medium * factor;
 			pGainHigh += gain.high * factor;

@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\audio\openal\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATContext.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATDelayed.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATLeakTracker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATRayTracing.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalAudioThread.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalDebugInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalDelayedDeletion.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBufferList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capabilities\deoalCapabilities.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalComponentDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalComponentTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\configuration\deoalConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\configuration\deoalLSConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\deAudioOpenAL.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\deoalBasics.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\deoalCaches.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\deoalCommandExecuter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\devmode\deoalDevMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlotManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalFilter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironment.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironmentDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeLevel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeListenerCached.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeListenerSmooth.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalPanningCollector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalEnergyHistogram.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalIcoSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalImpulseResponse.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElementList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceResult.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRay.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteractionList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRaySegment.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTParallelEnvProbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTEnvProbeFull.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTListen.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTListenFinish.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTRoomEstimate.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTRoomEstimateFinish.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTTraceSoundRays.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTTraceSoundRaysFinish.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalMOVRayBlocked.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalMOVRayHitsClosest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalMOVRayHitsFaces.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalRTWOVRayBlocked.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalRTWOVRayHitsClosest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalRTWOVRayHitsElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalWOVCollectElements.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalWOVRayBlocked.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalWOVRayHitsElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\extensions\deoalExtensions.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\extensions\deoalExtResult.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\microphone\deoalAMicrophone.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\microphone\deoalMicrophone.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\deoalAModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\deoalModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\deoalModelFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTBVH.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationQuality.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkinTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalASoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalASoundLevelMeterSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalSoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalWOVSLMFindSpeakers.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\sound\deoalASound.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\sound\deoalDecodeBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\sound\deoalSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSourceManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeakerList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\synthesizer\deoalASynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\synthesizer\deoalSynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCacheOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCacheRay.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCacheRayHit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionFrustum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionTriangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionVolumeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionFrustum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionTriangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionVolumeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\deoalWaitForParallelTasks.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDefaultDOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDefaultOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\video\deoalAVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\video\deoalVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\deoalAWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\deoalWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldBVH.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldBVHVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWorldOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWorldOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVFindSpeakers.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVInvalidateEnvProbes.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVPrepareRayTrace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVRayTrace.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATContext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATDelayed.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATLeakTracker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATLogger.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalATRayTracing.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalAudioThread.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalDebugInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\audiothread\deoalDelayedDeletion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBufferList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capabilities\deoalCapabilities.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentBone.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalComponentDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalComponentTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\configuration\deoalConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\configuration\deoalLSConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\deAudioOpenAL.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\deoalBasics.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\deoalCaches.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\deoalCommandExecuter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\devmode\deoalDevMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalEffectSlotManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\effect\deoalFilter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironment.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvironmentDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbe.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeLevel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeListenerCached.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalEnvProbeListenerSmooth.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\deoalPanningCollector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalEnergyHistogram.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalIcoSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalImpulseResponse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceHitElementList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceResult.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRay.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteractionList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRaySegment.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTParallelEnvProbe.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTEnvProbeFull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTListen.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTListenFinish.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTRoomEstimate.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTRoomEstimateFinish.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTTraceSoundRays.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTTraceSoundRaysFinish.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalMOVRayBlocked.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalMOVRayHitsClosest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalMOVRayHitsFaces.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalRTWOVRayBlocked.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalRTWOVRayHitsClosest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalRTWOVRayHitsElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalWOVCollectElements.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalWOVRayBlocked.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\visitors\deoalWOVRayHitsElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\extensions\al.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\extensions\alc.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\extensions\alext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\extensions\deoalExtensions.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\extensions\deoalExtResult.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\extensions\efx.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\microphone\deoalAMicrophone.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\microphone\deoalMicrophone.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\deoalAModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\deoalModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\deoalModelFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTBVH.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAurealizationQuality.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkinTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalASoundLevelMeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalASoundLevelMeterSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalSoundLevelMeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\soundLevelMeter\deoalWOVSLMFindSpeakers.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\sound\deoalASound.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\sound\deoalDecodeBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\sound\deoalSound.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\source\deoalSourceManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalASpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\speaker\deoalSpeakerList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\synthesizer\deoalASynthesizerInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\synthesizer\deoalSynthesizerInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCache.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCacheOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCacheRay.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\cache\deoalRayCacheRayHit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionFrustum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionTriangle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalCollisionVolumeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionFrustum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionTriangle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\collision\deoalDCollisionVolumeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\deoalWaitForParallelTasks.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDefaultDOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDefaultOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalDOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\utils\octree\deoalOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\video\deoalAVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\video\deoalVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\deoalAWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\deoalWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldBVH.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldBVHVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalRTWorldOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWorldOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWorldOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVFindSpeakers.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVInvalidateEnvProbes.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVPrepareRayTrace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\world\octree\deoalWOVRayTrace.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\audio\openal\src\module.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\openal\extern_openal.vcxproj">
+      <Project>{30422cc1-cee9-4a6b-8539-cb3da7c0ff4b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{c6bdc72f-bc76-4697-9255-fb7fbb6c0713}</ProjectGuid>
+    <RootNamespace>audopenal</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>module audio openal</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>audopenal</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>audopenal</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;AUDOPENAL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;AUDOPENAL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;AUDOPENAL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\audio\openal\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;AUDOPENAL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\audio\openal\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

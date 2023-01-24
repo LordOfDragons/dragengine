@@ -46,7 +46,7 @@ private:
 	decVector pRayDirection;
 	decVector pRayTarget;
 	
-	decDVector pInvRayDirection;
+	decVector pInvRayDirection;
 	bool pCheckAxisX;
 	bool pCheckAxisY;
 	bool pCheckAxisZ;

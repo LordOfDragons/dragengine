@@ -212,7 +212,7 @@ void deoalEnvironment::Update(){
 	// skip if outside range to save processing time
 	const decQuaternion &micOrient = microphone.GetOrientation();
 	const decDVector &micPos = microphone.GetPosition();
-	const float distanceSquared = ( micPos - pPosition ).LengthSquared();
+	const float distanceSquared = ( float )( ( micPos - pPosition ).LengthSquared() );
 	const deoalConfiguration::eAurealizationModes aurealizationMode =
 		pAudioThread.GetConfiguration().GetAurealizationMode();
 	
