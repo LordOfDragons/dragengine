@@ -135,7 +135,7 @@ void deJpegImageInfo::SkipNext( int bytes ){
 	}
 	
 	while( bytes > ( int )pSourceMgr.bytes_in_buffer ){
-		bytes -= pSourceMgr.bytes_in_buffer;
+		bytes -= ( int )pSourceMgr.bytes_in_buffer;
 		ReadNext();
 	}
 	pSourceMgr.next_input_byte += bytes;

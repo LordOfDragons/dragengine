@@ -95,6 +95,32 @@ function Copy-Manifest {
 }
 
 
+# Unpack *.tar.bz2
+####################
+
+function Expand-TarBz2 {
+    param (
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$Destination
+    )
+
+    # we can not use the piping solution since windows sucks so hard at piping
+    # the data gets corrupted along the pipe and tar fails
+    # & $PSScriptRoot\bin\7z.exe x "$Path" -so -tbzip2 | tar -xf - -C "$Destination"
+    $TarBz2File = Split-Path -Path $Path -Leaf
+    $TarFile = $TarBz2File.Substring(0, $TarBz2File.Length - 4)
+    $UnpackDir = $TarFile.Substring(0, $TarFile.Length - 4)
+
+    if (Test-Path $UnpackDir) {
+        Remove-Item $UnpackDir -Force -Recurse
+    }
+
+    & $PSScriptRoot\bin\7z.exe x "$Path" -tbzip2 -y
+    & $PSScriptRoot\bin\7z.exe x "$TarFile" -ttar -y -o"$Destination"
+    Remove-Item -Path $TarFile -Force
+}
+
+
 # Various path constants
 ##########################
 
