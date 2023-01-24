@@ -22,6 +22,8 @@
 #ifndef _DEOGLWORLDOCTREE_H_
 #define _DEOGLWORLDOCTREE_H_
 
+#include <stdint.h>
+
 #include "../billboard/deoglBillboardList.h"
 #include "../envmap/deoglEnvironmentMapList.h"
 #include "../particle/deoglParticleEmitterInstanceList.h"
@@ -41,6 +43,29 @@ class deoglWorldOctreeVisitor;
  * World octree.
  */
 class deoglWorldOctree : public deoglDOctree{
+public:
+	/** Compute shader element types. */
+	enum eCSElementTypes{
+		ecsetStaticComponent = 0,
+		ecsetDynamicComponent = 1,
+		ecsetBillboard = 2,
+		ecsetParticleEmitter = 3,
+		ecsetLight = 4
+	};
+	
+	/** Compute shader data. Aligned to (u)vec4[3]. */
+	struct sCSData{
+		float minExtendX, minExtendY, minExtendZ, reserved1;
+		float maxExtendX, maxExtendY, maxExtendZ, reserved2;
+		uint32_t data1; // firstNode or elementIndex
+		uint32_t data2; // 28-bits(elementCount), 4-bits(childNodeCount)
+		                // or elementType
+		uint32_t layerMaskUpper, layerMaskLower; // 64-bit layer mask
+		
+		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	};
+	
+	
 private:
 	int pInsertDepth;
 	
@@ -51,6 +76,11 @@ private:
 	decPointerList pComponents;
 	decPointerList pLights;
 	decPointerList pLumimeters;
+	
+	int pCSChildCount;
+	int pCSNodeCount;
+	int pCSElementCount;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -117,6 +147,21 @@ public:
 	
 	/** TEMPORARY HACK!. */
 	void VisitNodesCollidingVolume( deoglWorldOctreeVisitor *visitor, deoglDCollisionVolume *volume );
+	
+	
+	
+	/** Compute shader node count. Valid after UpdateCSCounts() has been called. */
+	inline int GetCSNodeCount() const{ return pCSNodeCount; }
+	
+	/** Compute shader element count. Valid after UpdateCSCounts() has been called. */
+	inline int GetCSElementCount() const{ return pCSElementCount; }
+	
+	/** Update compute shader node and element counts. */
+	void UpdateCSCounts();
+	
+	/** Write compute shader data. */
+	void WriteCSData( const decDVector &origin, sCSData *data,
+		int nodeIndex, int &nextData, int &nextElementIndex );
 	/*@}*/
 	
 	

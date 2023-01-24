@@ -126,6 +126,9 @@ public:
 	/** Read partial data from SSBO into write buffer. Returns write buffer memory pointer. */
 	char *ReadBuffer( int elementCount );
 	
+	/** Direct access to write buffer. Use with care. Can be nullptr. */
+	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
+	
 	
 	
 	/** GPU memory consumption for the VBO. */
