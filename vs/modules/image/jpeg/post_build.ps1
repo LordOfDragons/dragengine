@@ -10,7 +10,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscri
 
 $TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\image\jpeg\$Version"
 
-Write-Host "IES Module: Copy Module to '$TargetDir'"
+Write-Host "JPEG Module: Copy Module to '$TargetDir'"
 
 $Library = Join-Path -Path $OutputDir -ChildPath "imgjpeg.dll"
 Install-Files -Path $Library -Destination $TargetDir
@@ -22,6 +22,6 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 
 # debug
 $TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
-Write-Host "IES Module: Copy PDBs to '$TargetDir'"
+Write-Host "JPEG Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "imgjpeg.pdb") -Destination $TargetDir
