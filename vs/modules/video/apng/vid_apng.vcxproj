@@ -22,27 +22,34 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libpng\extern_libpng.vcxproj">
+      <Project>{519a8cf4-1b83-40dd-a625-72bf26f7ee68}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\zlib\extern_zlib.vcxproj">
+      <Project>{b71c1152-6563-4322-b6e0-b5c64feec543}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deIesFormatLm63d1986.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deIesImageInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deIesModule.cpp" />
+    <None Include="..\..\..\..\src\modules\video\apng\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deIesFormatLm63d1986.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deIesImageInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deIesModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngReader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngReader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\video\apng\src\module.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\video\apng\SConscript" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{37bbde6c-502c-408c-9a8a-7546c69d67f3}</ProjectGuid>
+    <ProjectGuid>{DDC363BB-9BA0-442B-BB79-D8FC8ACFE9BC}</ProjectGuid>
     <RootNamespace>apng</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module video apng</ProjectName>
@@ -93,10 +100,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgapng</TargetName>
+    <TargetName>vidapng</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgapng</TargetName>
+    <TargetName>vidapng</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

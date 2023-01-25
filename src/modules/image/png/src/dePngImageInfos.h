@@ -19,16 +19,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEPNGIMAGEINFO_H_
 #define _DEPNGIMAGEINFO_H_
 
-// includes
-#include "dragengine/systems/modules/image/deBaseImageInfo.h"
-#include "dragengine/common/math/decMath.h"
 #include "png.h"
 
-// predefinitions
+#include <dragengine/systems/modules/image/deBaseImageInfo.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/math/decMath.h>
+
 class dePngModule;
 
 
@@ -38,13 +37,13 @@ class dePngImageInfo : public deBaseImageInfo{
 public:
 	struct sFeedback{
 		dePngModule *module;
-		const char *filename;
+		decString filename;
 	};
 	
 public:
 	sFeedback feedback;
 	
-	char *filename;
+	decString filename;
 	png_structp readStruct;
 	png_infop infoStruct;
 	
@@ -65,5 +64,4 @@ public:
 	int GetBitCount();
 };
 
-// end of include only once
 #endif

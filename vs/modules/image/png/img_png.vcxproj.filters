@@ -16,32 +16,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="post_build.ps1" />
-    <None Include="..\..\..\..\src\modules\video\apng\SConscript" />
+    <None Include="..\..\..\..\src\modules\image\png\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngReader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\image\png\src\dePngModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngReader.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\image\png\src\dePngImageInfos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\..\..\..\src\modules\video\apng\src\module.xml">
+    <ClInclude Include="..\..\..\..\src\modules\image\png\src\dePngModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\image\png\src\dePngImageInfos.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\image\png\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>

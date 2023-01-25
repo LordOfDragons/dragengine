@@ -158,6 +158,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl32.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.h" />
@@ -622,6 +623,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRCamera.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.h" />
   </ItemGroup>
@@ -1214,6 +1216,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRCamera.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.cpp" />
   </ItemGroup>

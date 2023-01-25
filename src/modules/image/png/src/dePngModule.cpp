@@ -66,13 +66,13 @@ deBaseModule *PNGCreateModule( deLoadableModule *loadableModule ){
 static void depngRead( png_structp readStruct, png_bytep data, png_size_t length ){
 	decBaseFileReader *reader = ( decBaseFileReader* )png_get_io_ptr( readStruct );
 	
-	reader->Read( data, length );
+	reader->Read( data, ( int )length );
 }
 
 static void depngWrite( png_structp writeStruct, png_bytep data, png_size_t length ){
 	decBaseFileWriter *writer = ( decBaseFileWriter* )png_get_io_ptr( writeStruct );
 	
-	writer->Write( data, length );
+	writer->Write( data, ( int )length );
 }
 
 static void depngWriteStatus( png_structp writeStruct, png_uint_32 row, int pass ){
