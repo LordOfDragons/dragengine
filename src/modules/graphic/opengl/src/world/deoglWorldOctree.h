@@ -36,6 +36,7 @@ class deoglRComponent;
 class deoglRLight;
 class deoglRLumimeter;
 class deoglWorldOctreeVisitor;
+class deoglWorldCSOctree;
 
 
 
@@ -43,29 +44,6 @@ class deoglWorldOctreeVisitor;
  * World octree.
  */
 class deoglWorldOctree : public deoglDOctree{
-public:
-	/** Compute shader element types. */
-	enum eCSElementTypes{
-		ecsetStaticComponent = 0,
-		ecsetDynamicComponent = 1,
-		ecsetBillboard = 2,
-		ecsetParticleEmitter = 3,
-		ecsetLight = 4
-	};
-	
-	/** Compute shader data. Aligned to (u)vec4[3]. */
-	struct sCSData{
-		float minExtendX, minExtendY, minExtendZ, reserved1;
-		float maxExtendX, maxExtendY, maxExtendZ, reserved2;
-		uint32_t data1; // firstNode or elementIndex
-		uint32_t data2; // 28-bits(elementCount), 4-bits(childNodeCount)
-		                // or elementType
-		uint32_t layerMaskUpper, layerMaskLower; // 64-bit layer mask
-		
-		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
-	};
-	
-	
 private:
 	int pInsertDepth;
 	
@@ -160,8 +138,7 @@ public:
 	void UpdateCSCounts();
 	
 	/** Write compute shader data. */
-	void WriteCSData( const decDVector &origin, sCSData *data,
-		int nodeIndex, int &nextData, int &nextElementIndex );
+	void WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex );
 	/*@}*/
 	
 	
