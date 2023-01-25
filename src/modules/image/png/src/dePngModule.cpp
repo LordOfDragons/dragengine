@@ -84,7 +84,7 @@ static void depngFlush( png_structp writeStruct ){
 static void depngError( png_structp errorStruct, png_const_charp message ){
 	const dePngImageInfo::sFeedback &feedback = *( ( dePngImageInfo::sFeedback* )png_get_error_ptr( errorStruct ) );
 	
-	feedback.module->LogErrorFormat( "Error %s: %s", feedback.filename, message );
+	feedback.module->LogErrorFormat( "Error %s: %s", feedback.filename.GetString(), message );
 	
 	DETHROW( deeInvalidAction );
 }
@@ -92,7 +92,7 @@ static void depngError( png_structp errorStruct, png_const_charp message ){
 static void depngWarning( png_structp errorStruct, png_const_charp message ){
 	const dePngImageInfo::sFeedback &feedback = *( ( dePngImageInfo::sFeedback* )png_get_error_ptr( errorStruct ) );
 	
-	feedback.module->LogWarnFormat( "Warning %s: %s", feedback.filename, message );
+	feedback.module->LogWarnFormat( "Warning %s: %s", feedback.filename.GetString(), message );
 }
 
 
