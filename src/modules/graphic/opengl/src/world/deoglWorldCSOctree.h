@@ -68,10 +68,13 @@ public:
 	
 	
 private:
+	deoglRenderThread &pRenderThread;
 	decDVector pReferencePosition;
 	
 	deoglSPBlockSSBO::Ref pSSBOData;
 	sCSData *pPtrData;
+	
+// 	deoglSPBlockSSBO::Ref pSSBOResult;
 	
 	int pNodeCount;
 	int pElementCount;
@@ -88,7 +91,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create octree. */
-	deoglWorldCSOctree();
+	deoglWorldCSOctree( deoglRenderThread &renderThread );
 	
 protected:
 	/** Clean up octree. */

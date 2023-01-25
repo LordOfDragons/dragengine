@@ -25,6 +25,8 @@
 
 #include "deoglWorldOctree.h"
 #include "deoglWorldCSOctree.h"
+#include "../capabilities/deoglCapabilities.h"
+#include "../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -51,7 +53,8 @@ void deoglWorldCSOctree::sCSData::SetLayerMask( const decLayerMask &layerMask ){
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglWorldCSOctree::deoglWorldCSOctree() :
+deoglWorldCSOctree::deoglWorldCSOctree( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ),
 pPtrData( nullptr ),
 pNodeCount( 0 ),
 pElementCount( 0 ),
@@ -102,6 +105,17 @@ void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 	
 	if( nodeCount == 0 && elementCount == 0 ){
 		return;
+	}
+	
+	if( ! pSSBOData ){
+		pSSBOData.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pSSBOData->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		pSSBOData->SetParameterCount( 3 );
+		pSSBOData->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+		pSSBOData->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+		pSSBOData->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+		pSSBOData->MapToStd140();
+		pSSBOData->SetBindingPoint( 0 );
 	}
 	
 	pSSBOData->MapBuffer();
