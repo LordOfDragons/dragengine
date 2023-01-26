@@ -15,226 +15,272 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\buffer\devkBuffer.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\buffer\devkGuardUnmapBuffer.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPool.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolPool.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolSlot.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSet.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayout.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutConfiguration.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutManager.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\deSharedVulkan.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkBasics.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkDebug.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkDevice.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkGlobalFunctions.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkInstance.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkLoader.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebuffer.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebufferConfiguration.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\image\devkImage.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\image\devkImageConfiguration.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\image\devkImageView.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkDynamicState.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipeline.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineCompute.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineConfiguration.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineGraphic.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineManager.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkSpecialization.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\queue\devkCommandBuffer.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\queue\devkCommandPool.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\queue\devkQueue.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPass.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPassConfiguration.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\shader\devkShaderModule.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\shader\devkShaderModuleManager.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\buffer\devkBuffer.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\buffer\devkGuardUnmapBuffer.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPool.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolPool.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolSlot.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSet.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayout.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutConfiguration.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutManager.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\deSharedVulkan.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkBasics.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkDebug.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkDevice.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkFunctionNames.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkGlobalFunctions.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkInstance.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkLoader.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkTPoolReference.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebuffer.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebufferConfiguration.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\image\devkImage.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\image\devkImageConfiguration.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\image\devkImageView.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkDynamicState.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipeline.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineCompute.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineConfiguration.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineGraphic.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineManager.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkSpecialization.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\queue\devkCommandBuffer.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\queue\devkCommandPool.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\queue\devkQueue.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPass.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPassConfiguration.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\shader\devkShaderModule.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\shader\devkShaderModuleManager.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="post_build.ps1" />
+    <None Include="..\..\..\src\launcher\shared\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\delLauncher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\delLauncher.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\deglGameProfile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

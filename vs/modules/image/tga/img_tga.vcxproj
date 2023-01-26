@@ -22,22 +22,18 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\extern\libtga\extern_libtga.vcxproj">
-      <Project>{45273658-2f93-41ba-9add-f9589d47a0da}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\tga\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deJpegEncoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deJpegImageInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deJpegModule.h" />
+    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deTgaImageInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deTgaModule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deJpegEncoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deJpegImageInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deJpegModule.cpp" />
+    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deTgaImageInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deTgaModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\tga\src\module.xml" />
@@ -45,7 +41,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{83393b38-39e7-4656-bba7-2adcbf9b9ace}</ProjectGuid>
+    <ProjectGuid>{0DA9E766-6687-42FC-BED9-FE5937736E2F}</ProjectGuid>
     <RootNamespace>imgtga</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module image tga</ProjectName>

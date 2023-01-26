@@ -24,25 +24,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesFormatLm63d1986.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesImageInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesModule.cpp" />
+    <None Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesFormatLm63d1986.h" />
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesImageInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\module.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\SConscript" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{37bbde6c-502c-408c-9a8a-7546c69d67f3}</ProjectGuid>
+    <ProjectGuid>{1E261F9D-6969-467B-AD6B-0494A1AA1EF0}</ProjectGuid>
     <RootNamespace>deocclusionmesh</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module occlusionmesh deocclusionmesh</ProjectName>
@@ -93,10 +94,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgdeocclusionmesh</TargetName>
+    <TargetName>occmdeocclusionmesh</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgdeocclusionmesh</TargetName>
+    <TargetName>occmdeocclusionmesh</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

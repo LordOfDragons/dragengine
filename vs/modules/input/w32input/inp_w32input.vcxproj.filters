@@ -15,29 +15,63 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="post_build.ps1" />
     <None Include="..\..\..\..\src\modules\input\w32input\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deJpegImageInfos.h">
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceButton.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deJpegModule.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceFeedback.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deJpegEncoder.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceKeyboard.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceMouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deWindowsInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceAxis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deJpegModule.cpp">
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceButton.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deJpegEncoder.cpp">
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceFeedback.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deJpegImageInfos.cpp">
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceKeyboard.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceMouse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiInclude.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deWindowsInput.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDevice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceAxis.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\input\w32input\src\module.xml">

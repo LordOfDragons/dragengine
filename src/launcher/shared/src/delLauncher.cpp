@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -161,8 +163,13 @@ void delLauncher::pCleanUp(){
 }
 
 void delLauncher::pLocatePath(){
-	const char *value;
 	decPath path;
+
+#ifdef OS_W32
+	TCHAR value[ 256 ];
+#else
+	const char *value;
+#endif
 	
 	// the system wide configuration directory is hard coded at compile time.
 	// can be changed at runtime using an environment parameter.
@@ -175,10 +182,17 @@ void delLauncher::pLocatePath(){
 	pPathConfigSystem = pathEngineBase + "\\Launchers\\Config";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DELAUNCHER_SYS_CONFIG", &value[ 0 ], sizeof( value ) ) ){
+		pPathConfigSystem = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DELAUNCHER_SYS_CONFIG" );
 	if( value ){
 		pPathConfigSystem = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathConfigSystem = deOSWindows::ParseNativePath( pPathConfigSystem );
 #endif
@@ -217,10 +231,17 @@ void delLauncher::pLocatePath(){
 	}
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DELAUNCHER_USER_CONFIG", &value[ 0 ], sizeof( value ) ) ){
+		pPathConfigUser = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DELAUNCHER_USER_CONFIG" );
 	if( value ){
 		pPathConfigUser = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathConfigUser = deOSWindows::ParseNativePath( pPathConfigUser );
 #endif
@@ -235,10 +256,17 @@ void delLauncher::pLocatePath(){
 	//	"PathLauncherShares", pPathShares );
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DELAUNCHER_SHARES", &value[ 0 ], sizeof( value ) ) ){
+		pPathShares = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DELAUNCHER_SHARES" );
 	if( value ){
 		pPathShares = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathShares = deOSWindows::ParseNativePath( pPathShares );
 #endif
@@ -251,10 +279,17 @@ void delLauncher::pLocatePath(){
 		"PathLauncherGames", pPathGames );
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DELAUNCHER_GAMES", &value[ 0 ], sizeof( value ) ) ){
+		pPathGames = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DELAUNCHER_GAMES" );
 	if( value ){
 		pPathGames = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathGames = deOSWindows::ParseNativePath( pPathGames );
 #endif
@@ -268,10 +303,17 @@ void delLauncher::pLocatePath(){
 	pPathLogs = "@LocalAppData\\DELaunchers\\Logs";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DELAUNCHER_LOGS", &value[ 0 ], sizeof( value ) ) ){
+		pPathLogs = deOSWindows().WideToUtf8( value );
+	}
+#else
 	value = getenv( "DELAUNCHER_LOGS" );
 	if( value ){
 		pPathLogs = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathLogs = deOSWindows::ParseNativePath( pPathLogs );
 #endif

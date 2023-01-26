@@ -15,24 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\vr\null\src\deIesImageInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\null\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\null\src\deIesFormatLm63d1986.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\vr\null\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\vr\null\src\deIesImageInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\null\src\deIesModule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\null\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\vr\null\src\deVRNull.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,6 +29,8 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\src\modules\vr\null\SConscript" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\null\src\deVRNull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

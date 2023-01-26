@@ -15,24 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\langpack\delangpack\src\deIesImageInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\langpack\delangpack\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\langpack\delangpack\src\deIesFormatLm63d1986.cpp">
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\langpack\delangpack\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\langpack\delangpack\src\deLangPackModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\langpack\delangpack\src\deIesImageInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\langpack\delangpack\src\deIesModule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\langpack\delangpack\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\langpack\delangpack\src\deLangPackModule.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -40,8 +32,5 @@
     <Xml Include="..\..\..\..\src\modules\langpack\delangpack\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\langpack\delangpack\SConscript" />
   </ItemGroup>
 </Project>

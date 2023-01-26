@@ -22,6 +22,8 @@
 #ifndef _DELLOGGERWRITEPIPE_H_
 #define _DELLOGGERWRITEPIPE_H_
 
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #endif

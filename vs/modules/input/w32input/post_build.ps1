@@ -19,6 +19,9 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
     -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
     -Library $Library -Version $Version
 
+Copy-Files -Pattern "*" -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\data")`
+    -TargetDir (Join-Path -Path $OutputDir -ChildPath "$PathDistDESharesModules\input\w32input\$Version")
+
 
 # debug
 $TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules

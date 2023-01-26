@@ -24,7 +24,6 @@
 #include <string.h>
 #include <sys/types.h>
 #ifndef OS_W32
-#include <sys/wait.h>
 #include <signal.h>
 #endif
 

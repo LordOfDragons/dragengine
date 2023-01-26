@@ -130,6 +130,7 @@ New-Variable -Name PathDistDEDataModules -Value "$PathDistDEData\modules" -Scope
 New-Variable -Name PathDistDEShares -Value "$PathDistDE\@ProgramFiles\Dragengine\Share" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESharesModules -Value "$PathDistDEShares\modules" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESystem -Value "$PathDistDE\@System" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDELauncherShares -Value "$PathDistDE\@ProgramFiles\Dragengine\Launchers\Share" -Scope Global -Option ReadOnly -Force
 
 New-Variable -Name PathDistDESdk -Value "Distribute\Dragengine\SDK" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESdkInc -Value "$PathDistDESdk\@ProgramFiles\Dragengine\SDK\include" -Scope Global -Option ReadOnly -Force

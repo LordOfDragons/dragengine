@@ -15,29 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="post_build.ps1" />
     <None Include="..\..\..\..\src\modules\image\tga\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deJpegImageInfos.h">
+    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deTgaModule.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deJpegModule.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deTgaImageInfos.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deJpegEncoder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deJpegModule.cpp">
+    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deTgaModule.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deJpegEncoder.cpp">
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\image\tga\src\deTgaImageInfos.h">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\image\tga\src\deJpegImageInfos.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\tga\src\module.xml">

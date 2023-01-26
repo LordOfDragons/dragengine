@@ -249,34 +249,34 @@ void delGameManager::CreateDefaultProfile(){
 	}
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtGraphic );
-	pDefaultProfile->SetModuleGraphic( module ? module->GetName(): "" );
+	pDefaultProfile->SetModuleGraphic( module ? module->GetName().GetString(): "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtInput );
-	pDefaultProfile->SetModuleInput( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleInput( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtPhysics );
-	pDefaultProfile->SetModulePhysics( module ? module->GetName() : "" );
+	pDefaultProfile->SetModulePhysics( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtAnimator );
-	pDefaultProfile->SetModuleAnimator( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleAnimator( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtAI );
-	pDefaultProfile->SetModuleAI( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleAI( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtCrashRecovery );
-	pDefaultProfile->SetModuleCrashRecovery( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleCrashRecovery( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtAudio );
-	pDefaultProfile->SetModuleAudio( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleAudio( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtSynthesizer );
-	pDefaultProfile->SetModuleSynthesizer( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleSynthesizer( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtNetwork );
-	pDefaultProfile->SetModuleNetwork( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleNetwork( module ? module->GetName().GetString() : "" );
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtVR );
-	pDefaultProfile->SetModuleVR( module ? module->GetName() : "" );
+	pDefaultProfile->SetModuleVR( module ? module->GetName().GetString() : "" );
 	
 	pDefaultProfile->SetFullScreen( true );
 	pDefaultProfile->SetWidth( engine.GetCurrentResolution().x );

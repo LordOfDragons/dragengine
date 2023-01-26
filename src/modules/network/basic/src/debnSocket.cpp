@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "debnSocket.h"
 #include "debnServer.h"
@@ -59,7 +58,11 @@ typedef int socklen_t;
 
 debnSocket::debnSocket( deNetworkBasic &netBasic ) :
 pNetBasic( netBasic ),
-pSocket( -1 ),
+#ifdef OS_W32
+	pSocket( -1 ),
+#else
+	pSocket( -1 ),
+#endif
 pPreviousSocket( nullptr ),
 pNextSocket( nullptr ),
 pIsRegistered( false )
@@ -439,7 +442,11 @@ void debnSocket::pCleanUp(){
 	pNetBasic.UnregisterSocket( this );
 	
 	if( pSocket != -1 ){
-		close( pSocket );
+		#ifdef OS_W32
+			closesocket( pSocket );
+		#else
+			close( pSocket );
+		#endif
 	}
 }
 

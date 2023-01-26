@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "delEngineProcess.h"
 #include "delEngineProcessRunGame.h"
@@ -62,7 +61,7 @@ void delEngineProcessRunGame::Run(){
 		try{
 			command = BlockingReadCommandFromPipe();
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			break;
 		}
 		

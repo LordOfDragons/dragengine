@@ -24,25 +24,28 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deIesFormatLm63d1986.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deIesImageInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deIesModule.cpp" />
+    <None Include="..\..\..\..\src\modules\model\demodel\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deIesFormatLm63d1986.h" />
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deIesImageInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deIesModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\model\demodel\src\module.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\model\demodel\SConscript" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{37bbde6c-502c-408c-9a8a-7546c69d67f3}</ProjectGuid>
+    <ProjectGuid>{C82EDF21-90BC-4436-9590-D3B0A4C8D596}</ProjectGuid>
     <RootNamespace>demodel</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module model demodel</ProjectName>
@@ -93,10 +96,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgdemodel</TargetName>
+    <TargetName>mdldemodel</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgdemodel</TargetName>
+    <TargetName>mdldemodel</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

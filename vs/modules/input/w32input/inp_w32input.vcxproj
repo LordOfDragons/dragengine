@@ -22,22 +22,31 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\extern\libw32input\extern_libw32input.vcxproj">
-      <Project>{45273658-2f93-41ba-9add-f9589d47a0da}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\input\w32input\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deJpegEncoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deJpegImageInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deJpegModule.h" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDevice.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceAxis.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceButton.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceFeedback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceKeyboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceMouse.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deWindowsInput.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deJpegEncoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deJpegImageInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\input\w32input\src\deJpegModule.cpp" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDevice.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceAxis.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceButton.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceFeedback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceKeyboard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiDeviceMouse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\dewiInclude.h" />
+    <ClInclude Include="..\..\..\..\src\modules\input\w32input\src\deWindowsInput.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\input\w32input\src\module.xml" />
@@ -45,7 +54,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{83393b38-39e7-4656-bba7-2adcbf9b9ace}</ProjectGuid>
+    <ProjectGuid>{C4123381-448C-4425-A3B2-A3BA432134B4}</ProjectGuid>
     <RootNamespace>imgw32input</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module input w32input</ProjectName>
@@ -96,10 +105,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgw32input</TargetName>
+    <TargetName>inpw32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgw32input</TargetName>
+    <TargetName>inpw32</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,6 +161,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\input\w32input\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
@@ -178,6 +188,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\input\w32input\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>

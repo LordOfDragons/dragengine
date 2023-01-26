@@ -19,93 +19,109 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\src\launcher\shared\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\delLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngine.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameManager.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\delLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngine.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameManager.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\deglGameProfile.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\buffer\devkBuffer.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\buffer\devkGuardUnmapBuffer.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPool.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolPool.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolSlot.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSet.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayout.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutManager.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\deSharedVulkan.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkBasics.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkDebug.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkDevice.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkGlobalFunctions.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkInstance.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\devkLoader.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebuffer.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebufferConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\image\devkImage.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\image\devkImageConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\image\devkImageView.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkDynamicState.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipeline.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineCompute.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineGraphic.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineManager.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\pipeline\devkSpecialization.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\queue\devkCommandBuffer.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\queue\devkCommandPool.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\queue\devkQueue.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPass.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPassConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\shader\devkShaderModule.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\shader\devkShaderModuleManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\buffer\devkBuffer.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\buffer\devkGuardUnmapBuffer.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPool.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolPool.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorPoolSlot.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSet.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayout.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\descriptor\devkDescriptorSetLayoutManager.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\deSharedVulkan.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkBasics.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkDebug.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkDevice.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkFunctionNames.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkGlobalFunctions.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkInstance.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkLoader.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\devkTPoolReference.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebuffer.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\framebuffer\devkFramebufferConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\image\devkImage.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\image\devkImageConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\image\devkImageView.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkDynamicState.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipeline.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineCompute.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineGraphic.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkPipelineManager.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\pipeline\devkSpecialization.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\queue\devkCommandBuffer.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\queue\devkCommandPool.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\queue\devkQueue.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPass.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\renderpass\devkRenderPassConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\shader\devkShaderModule.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\shader\devkShaderModuleManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="post_build.ps1" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e216d6e2-75aa-4b2f-b712-fcab026eb21b}</ProjectGuid>
+    <ProjectGuid>{C2341C17-6C77-47A7-A40F-9D3FFA5B3860}</ProjectGuid>
     <RootNamespace>launchershared</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>launcher shared</ProjectName>
@@ -125,13 +141,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -156,14 +172,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>launchershared</TargetName>
-    <PublicIncludeDirectories>$(SolutionDir)..\src\launcher\shared\extern\include;$(SolutionDir)$(Platform)\$(Configuration)\include\shared</PublicIncludeDirectories>
+    <TargetName>delauncher</TargetName>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicModuleDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>launchershared</TargetName>
-    <PublicIncludeDirectories>$(SolutionDir)..\src\launcher\shared\extern\include;$(SolutionDir)$(Platform)\$(Configuration)\include\shared</PublicIncludeDirectories>
+    <TargetName>delauncher</TargetName>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicModuleDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -203,12 +223,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;VK_NO_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;VK_NO_PROTOTYPES;LAUNCHER_SHARE_PATH="@ProgramFiles/Dragengine/Launchers/Share";LAUNCHER_GAMES_PATH="@Public/DELaunchers/Games";LAUNCHER_CONFIG_PATH="@RoamingAppData/DELaunchers/Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\launcher\shared\extern\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -216,7 +238,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\launcher\shared\src -TargetDir $(SolutionDir)$(Platform)\$(Configuration)\include\launcher\shared</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\launcher\shared\src -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -225,7 +247,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;VK_NO_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;VK_NO_PROTOTYPES;LAUNCHER_SHARE_PATH="@ProgramFiles/Dragengine/Launchers/Share";LAUNCHER_GAMES_PATH="@Public/DELaunchers/Games";LAUNCHER_CONFIG_PATH="@RoamingAppData/DELaunchers/Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -242,7 +264,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\launcher\shared\src -TargetDir $(SolutionDir)$(Platform)\$(Configuration)\include\launcher\shared</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\launcher\shared\src -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

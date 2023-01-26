@@ -15,24 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deIesImageInfo.cpp">
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\rig\derig\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deIesModule.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deIesFormatLm63d1986.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deRigModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deIesModule.h">
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deRigModule.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -40,8 +44,5 @@
     <Xml Include="..\..\..\..\src\modules\rig\derig\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\rig\derig\SConscript" />
   </ItemGroup>
 </Project>

@@ -22,7 +22,9 @@
 #ifndef _SHA1_H_
 #define _SHA1_H_
 
-class SHA1
+#include "../../dragengine_export.h"
+
+class DE_DLL_EXPORT SHA1
 {
 
     public:

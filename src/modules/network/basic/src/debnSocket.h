@@ -22,6 +22,8 @@
 #ifndef _DEBNSOCKET_H_
 #define _DEBNSOCKET_H_
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdint.h>
 
 #include "debnAddress.h"
@@ -45,8 +47,13 @@ private:
 	deNetworkBasic &pNetBasic;
 	debnAddress pAddress;
 	
-	int pSocket;
-	
+
+	#ifdef OS_W32
+		SOCKET pSocket;
+	#else
+		int pSocket;
+	#endif
+
 	debnSocket *pPreviousSocket;
 	debnSocket *pNextSocket;
 	bool pIsRegistered;

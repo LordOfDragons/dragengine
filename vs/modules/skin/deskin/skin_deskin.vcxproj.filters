@@ -15,24 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\skin\deskin\src\deIesImageInfo.cpp">
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\skin\deskin\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\skin\deskin\src\desmWriteProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\skin\deskin\src\deIesModule.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\skin\deskin\src\desmWritePropertyNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\skin\deskin\src\deIesFormatLm63d1986.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\skin\deskin\src\deSkinModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\skin\deskin\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\skin\deskin\src\desmWriteProperty.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\skin\deskin\src\deIesModule.h">
+    <ClInclude Include="..\..\..\..\src\modules\skin\deskin\src\desmWritePropertyNode.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\skin\deskin\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\skin\deskin\src\deSkinModule.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -40,8 +44,5 @@
     <Xml Include="..\..\..\..\src\modules\skin\deskin\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\skin\deskin\SConscript" />
   </ItemGroup>
 </Project>

@@ -22,7 +22,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "deWindowsInput.h"
 #include "dewiDevice.h"
@@ -344,7 +343,7 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		}
 		
 		const WPARAM wParam = pMapLeftRightKeys( message.wParam, message.lParam );
-		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( wParam );
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( ( int )wParam );
 		if( button == -1 ){
 			break;
 		}
@@ -352,7 +351,7 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
 		const int modifiers = 0; // how to get them?
 		GetKeyboardState( &keyStates[ 0 ] );
-		result = ToAsciiEx( wParam, scanCode, &keyStates[ 0 ],
+		result = ToAsciiEx( ( UINT )wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
 		if( result != 0 ){
@@ -370,7 +369,7 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		
 	case WM_KEYUP:{
 		const WPARAM wParam = pMapLeftRightKeys( message.wParam, message.lParam );
-		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( wParam );
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( ( int )wParam );
 		if( button == -1 ){
 			break;
 		}
@@ -378,7 +377,7 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
 		const int modifiers = 0; // how to get them?
 		GetKeyboardState( &keyStates[ 0 ] );
-		result = ToAsciiEx( wParam, scanCode, &keyStates[ 0 ],
+		result = ToAsciiEx( ( UINT )wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
 		if( result != 0 ){
@@ -393,28 +392,28 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		}break;
 		
 	case WM_LBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 0 )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), 0,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_MBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 2 )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), 2,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_RBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 1 )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), 1,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_XBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		if( GET_XBUTTON_WPARAM( message.wParam ) == XBUTTON1 ){
 			pDevices->GetMouse()->GetButtonAt( 3 )->SetPressed( true );
 			pAddMousePress( pDevices->GetMouse()->GetIndex(), 3,
@@ -428,28 +427,28 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		break;
 		
 	case WM_LBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 0 )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 0,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_MBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 2 )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 2,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_RBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 1 )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 1,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_XBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		if( GET_XBUTTON_WPARAM( message.wParam ) == XBUTTON1 ){
 			pDevices->GetMouse()->GetButtonAt( 3 )->SetPressed( false );
 			pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 3,

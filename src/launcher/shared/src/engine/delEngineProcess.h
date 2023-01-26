@@ -277,7 +277,7 @@ public:
 	int ReadUShortFromPipe();
 	
 	/** \brief Read float from pipe. */
-	int ReadFloatFromPipe();
+	float ReadFloatFromPipe();
 	
 	/** \brief Read string from pipe using uint16_t as length. */
 	void ReadString16FromPipe( decString &string );

@@ -22,7 +22,6 @@
 #ifndef _DELENGINE_H_
 #define _DELENGINE_H_
 
-#include <unistd.h>
 
 #include "modules/delEngineModuleList.h"
 

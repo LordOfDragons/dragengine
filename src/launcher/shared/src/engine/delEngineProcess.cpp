@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 #include <stdint.h>
 
@@ -394,7 +393,7 @@ void delEngineProcess::WriteFloatToPipe( float value ){
 }
 
 void delEngineProcess::WriteString16ToPipe( const char *string ){
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	WriteUShortToPipe( length );
 	if( length > 0 ){
 		WriteToPipe( string, length );
@@ -431,7 +430,7 @@ int delEngineProcess::ReadUShortFromPipe(){
 	return value;
 }
 
-int delEngineProcess::ReadFloatFromPipe(){
+float delEngineProcess::ReadFloatFromPipe(){
 	float value;
 	ReadFromPipe( &value, sizeof( float ) );
 	return value;

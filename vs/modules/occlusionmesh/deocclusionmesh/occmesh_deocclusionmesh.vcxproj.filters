@@ -15,33 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesImageInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesFormatLm63d1986.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesModule.h">
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\SConscript" />
   </ItemGroup>
 </Project>

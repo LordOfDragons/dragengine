@@ -15,33 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deIesImageInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deIesFormatLm63d1986.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\model\demodel\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deIesModule.h">
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\model\demodel\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\model\demodel\SConscript" />
   </ItemGroup>
 </Project>

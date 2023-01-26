@@ -24,25 +24,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deIesFormatLm63d1986.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deIesImageInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deIesModule.cpp" />
+    <None Include="..\..\..\..\src\modules\rig\derig\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deIesFormatLm63d1986.h" />
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deIesImageInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deIesModule.h" />
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\deRigModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\deRigModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermNameList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\rig\derig\src\dermWriteShape.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\rig\derig\src\module.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\rig\derig\SConscript" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{37bbde6c-502c-408c-9a8a-7546c69d67f3}</ProjectGuid>
+    <ProjectGuid>{F5150F97-FB7F-488F-B6B5-5DF0B7DD92F8}</ProjectGuid>
     <RootNamespace>derig</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module rig derig</ProjectName>
@@ -93,10 +94,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgderig</TargetName>
+    <TargetName>rigderig</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgderig</TargetName>
+    <TargetName>rigderig</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
