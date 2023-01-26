@@ -34,7 +34,7 @@ class decBaseFileWriter;
 /**
  * \brief Load Engine Module XML.
  */
-class delEngineModuleXML : public delBaseXML{
+class DE_DLL_EXPORT delEngineModuleXML : public delBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

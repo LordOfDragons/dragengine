@@ -44,7 +44,7 @@ class delGameIcon;
  * 
  * Launchers can subclass to overwrite hooks to customize the launching process.
  */
-class delLauncher{
+class DE_DLL_EXPORT delLauncher{
 private:
 	decString pPathConfigSystem;
 	decString pPathConfigUser;

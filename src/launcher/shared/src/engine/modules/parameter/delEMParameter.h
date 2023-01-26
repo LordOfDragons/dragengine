@@ -32,7 +32,7 @@
 /**
  * \brief Game Engine Module Parameter.
  */
-class delEMParameter : public deObject{
+class DE_DLL_EXPORT delEMParameter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delEMParameter> Ref;

@@ -38,7 +38,7 @@ class delGame;
  * used. In all cases this class provides the actual parameters with which a
  * game is run no matter where they come from.
  */
-class delGameRunParams{
+class DE_DLL_EXPORT delGameRunParams{
 private:
 	delGameProfile::Ref pGameProfile;
 	decString pRunArguments;

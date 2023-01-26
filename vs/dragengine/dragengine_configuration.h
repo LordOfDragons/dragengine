@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef DE_VERSION
+#define DE_VERSION "%BuildVersion%"
+#endif
+
 #ifndef OS_W32
 #define OS_W32 1
 #endif

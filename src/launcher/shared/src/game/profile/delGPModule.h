@@ -36,7 +36,7 @@ class delLauncher;
  * Stores properties for a named module in a game profile. Can be applied to
  * any version of the module.
  */
-class delGPModule : public deObject{
+class DE_DLL_EXPORT delGPModule : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delGPModule> Ref;

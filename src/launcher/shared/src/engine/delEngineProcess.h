@@ -41,7 +41,7 @@ class delEngineProcessRunGame;
  * and methods usable from the main process. This class contains anything usable only from
  * inside the separate process.
  */
-class delEngineProcess{
+class DE_DLL_EXPORT delEngineProcess{
 public:
 	/** \brief Command codes. */
 	enum eCommandCodes{

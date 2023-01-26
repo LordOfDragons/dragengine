@@ -22,10 +22,13 @@
 #ifndef _DELENGINEPROCESSMAIN_H_
 #define _DELENGINEPROCESSMAIN_H_
 
+#include <dragengine/dragengine_export.h>
+
+
 /**
  * \brief Helper class for running game engine process from main().
  */
-class delEngineProcessMain{
+class DE_DLL_EXPORT delEngineProcessMain{
 public:
 	/** \brief Create instance. */
 	delEngineProcessMain();

@@ -33,7 +33,7 @@ class delEngineInstance;
  * 
  * Thread reading logs from an engine instance log pipe sending them to a logger.
  */
-class delEngineInstanceReadLog : public deThread{
+class DE_DLL_EXPORT delEngineInstanceReadLog : public deThread{
 private:
 	delEngineInstance &pEngineInstance;
 	deLogger::Ref pLogger;

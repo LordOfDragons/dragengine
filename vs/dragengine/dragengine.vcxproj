@@ -1470,7 +1470,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_BASE_PATH="C:\\Program Files\\Dragengine\\"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1489,7 +1489,7 @@
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -BuildVersion $(BuildVersion)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -1498,7 +1498,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_BASE_PATH="C:\\Program Files\\Dragengine"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1519,7 +1519,7 @@
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -BuildVersion $(BuildVersion)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

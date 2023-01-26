@@ -33,7 +33,7 @@ class decXmlElementTag;
 /**
  * \brief Basic XML Load/Save Class.
  */
-class delBaseXML{
+class DE_DLL_EXPORT delBaseXML{
 private:
 	deLogger::Ref pLogger;
 	decString pLoggerSource;

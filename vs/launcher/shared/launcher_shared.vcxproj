@@ -223,7 +223,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;VK_NO_PROTOTYPES;LAUNCHER_SHARE_PATH="@ProgramFiles/Dragengine/Launchers/Share";LAUNCHER_GAMES_PATH="@Public/DELaunchers/Games";LAUNCHER_CONFIG_PATH="@RoamingAppData/DELaunchers/Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;VK_NO_PROTOTYPES;DE_COMPILE_DLL;LAUNCHER_SHARE_PATH="@ProgramFiles\\Dragengine\\Launchers\\Share";LAUNCHER_GAMES_PATH="@Public\\DELaunchers\\Games";LAUNCHER_CONFIG_PATH="@RoamingAppData\\DELaunchers\\Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -247,7 +247,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;VK_NO_PROTOTYPES;LAUNCHER_SHARE_PATH="@ProgramFiles/Dragengine/Launchers/Share";LAUNCHER_GAMES_PATH="@Public/DELaunchers/Games";LAUNCHER_CONFIG_PATH="@RoamingAppData/DELaunchers/Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;VK_NO_PROTOTYPES;DE_COMPILE_DLL;LAUNCHER_SHARE_PATH="@ProgramFiles\\Dragengine\\Launchers\\Share";LAUNCHER_GAMES_PATH="@Public\\DELaunchers\\Games";LAUNCHER_CONFIG_PATH="@RoamingAppData\\DELaunchers\\Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

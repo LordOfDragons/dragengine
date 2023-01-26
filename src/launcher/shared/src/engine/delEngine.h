@@ -45,7 +45,7 @@ class delEngineInstance;
  * stores where the game engine configuration files are stored. This is usually under the
  * system configuration path. Module configuration files are located under the config path.
  */
-class delEngine{
+class DE_DLL_EXPORT delEngine{
 private:
 	delLauncher &pLauncher;
 	
