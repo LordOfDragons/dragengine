@@ -19,9 +19,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+
+#ifdef OS_UNIX
+#include <unistd.h>
+#endif
 
 #include "delLoggerWritePipe.h"
 #include "../engine/delEngineProcess.h"

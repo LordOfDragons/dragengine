@@ -37,6 +37,7 @@
 #	include <sys/poll.h>
 #	include <ifaddrs.h>
 #	include <net/if.h>
+#	include <unistd.h>
 #endif
 
 #ifdef OS_BEOS
