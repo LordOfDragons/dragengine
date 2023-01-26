@@ -76,7 +76,11 @@ jobs:
         
       - name: Build
         working-directory: vs
-        run: msbuild /m /p:Configuration=Release vs.sln -maxcpucount
+        run: |
+          msbuild -m -maxcpucount \
+            -p:Configuration=${{ inputs.debugBuild && 'Debug' || 'Release' }} \
+            -p:BuildVersion=${{ inputs.buildVersion }} \
+            vs.sln
       
       - name: Archive
         run: |
