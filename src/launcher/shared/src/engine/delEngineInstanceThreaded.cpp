@@ -30,6 +30,7 @@
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
 #else
+#include <unistd.h>
 #include <sys/wait.h>
 #include <sys/select.h>
 #endif
