@@ -54,16 +54,18 @@ typedef int socklen_t;
 // Class debnSocket
 /////////////////////
 
+#ifdef OS_W32
+	#define DE_NULL_SOCKET INVALID_SOCKET
+#else
+	#define DE_NULL_SOCKET -1
+#endif
+
 // Constructor, destructor
 ////////////////////////////
 
 debnSocket::debnSocket( deNetworkBasic &netBasic ) :
 pNetBasic( netBasic ),
-#ifdef OS_W32
-	pSocket( -1 ),
-#else
-	pSocket( -1 ),
-#endif
+pSocket( DE_NULL_SOCKET ),
 pPreviousSocket( nullptr ),
 pNextSocket( nullptr ),
 pIsRegistered( false )
@@ -81,14 +83,14 @@ debnSocket::~debnSocket(){
 ///////////////
 
 void debnSocket::Bind(){
-	DEASSERT_TRUE( pSocket == -1 )
+	DEASSERT_TRUE( pSocket == DE_NULL_SOCKET )
 	
 	pNetBasic.LogInfoFormat( "Bind socket to '%s'", pAddress.ToString().GetString() );
 	
 	if( pAddress.GetType() == debnAddress::eatIPv6 ){
 		// create socket
 		pSocket = socket( PF_INET6, SOCK_DGRAM, 0 );
-		if( pSocket == -1 ){
+		if( pSocket == DE_NULL_SOCKET ){
 			ThrowSocketError( "socket failed" );
 		}
 		
@@ -114,7 +116,7 @@ void debnSocket::Bind(){
 	}else{
 		// create socket
 		pSocket = socket( PF_INET, SOCK_DGRAM, 0 );
-		if( pSocket == -1 ){
+		if( pSocket == DE_NULL_SOCKET ){
 			ThrowSocketError( "socket failed" );
 		}
 		
@@ -442,7 +444,7 @@ void debnSocket::SetIsRegistered( bool isRegistered ){
 void debnSocket::pCleanUp(){
 	pNetBasic.UnregisterSocket( this );
 	
-	if( pSocket != -1 ){
+	if( pSocket != DE_NULL_SOCKET ){
 		#ifdef OS_W32
 			closesocket( pSocket );
 		#else
