@@ -19,25 +19,45 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRSimplyQuit.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrsqCoreFault.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRSimplyQuit.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrsqCoreFault.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\fox\extern_fox.vcxproj">
+      <Project>{9541cccd-8b54-4632-954d-48531d5935f4}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\foxtoolkit.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\module.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{fb33e806-0f00-4fce-b895-cf37e7ead486}</ProjectGuid>
+    <ProjectGuid>{4A7E5932-905A-4F02-A1F8-B3314655C1E6}</ProjectGuid>
     <RootNamespace>basicrecovery</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module crashrecovery basicrecovery</ProjectName>
@@ -131,7 +151,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -155,7 +175,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -170,6 +190,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\crashrecovery\basicrecovery\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>

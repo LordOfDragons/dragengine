@@ -15,22 +15,67 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\simplyquit\src\deCRSimplyQuit.cpp">
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\simplyquit\src\decrsqCoreFault.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\simplyquit\src\deCRSimplyQuit.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\simplyquit\src\decrsqCoreFault.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\foxtoolkit.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\src\modules\crashrecovery\simplyquit\SConscript" />
+    <Xml Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\module.xml">
+      <Filter>Source Files</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

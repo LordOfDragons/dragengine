@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -143,7 +145,7 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 			module->LogErrorFormat( PRId64 "x: %s", symbol.Address, symbol.Name );
 			
 		}else{
-			printf( PRId64 "x: %s\n", symbol.Address, symbol.Name );
+			printf( "%p: %s\n", ( void* )symbol.Address, ( char* )symbol.Name );
 		}
 	}
 	
