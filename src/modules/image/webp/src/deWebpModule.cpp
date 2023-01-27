@@ -133,7 +133,7 @@ void deWebpModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 			DETHROW( deeWriteFile );
 		}
 		
-		file.Write( output, size );
+		file.Write( output, ( int )size );
 		
 		WebPFree( output );
 		

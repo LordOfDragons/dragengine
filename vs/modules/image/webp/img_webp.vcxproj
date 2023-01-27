@@ -22,22 +22,24 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libsharpyuv\extern_libsharpyuv.vcxproj">
+      <Project>{f27bfd85-f580-4241-bdc5-27befa2d528c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\extern\libwebp\extern_libwebp.vcxproj">
-      <Project>{45273658-2f93-41ba-9add-f9589d47a0da}</Project>
+      <Project>{4d5f6e37-c322-4312-ab53-41b4f743a064}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\webp\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\image\webp\src\deJpegEncoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\webp\src\deJpegImageInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\webp\src\deJpegModule.h" />
+    <ClCompile Include="..\..\..\..\src\modules\image\webp\src\deWebpImageInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\webp\src\deWebpModule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\image\webp\src\deJpegEncoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\webp\src\deJpegImageInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\webp\src\deJpegModule.cpp" />
+    <ClInclude Include="..\..\..\..\src\modules\image\webp\src\deWebpImageInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\webp\src\deWebpModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\webp\src\module.xml" />
@@ -45,7 +47,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{83393b38-39e7-4656-bba7-2adcbf9b9ace}</ProjectGuid>
+    <ProjectGuid>{8F0F743B-AFEF-4D46-B866-2FB27AA55438}</ProjectGuid>
     <RootNamespace>imgwebp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module image webp</ProjectName>
@@ -152,6 +154,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\image\webp\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
@@ -178,6 +181,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\image\webp\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>

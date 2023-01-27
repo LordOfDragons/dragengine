@@ -18,10 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\extern\libwebp\SConscript" />
+    <None Include="build.ps1" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{45273658-2f93-41ba-9add-f9589d47a0da}</ProjectGuid>
+    <ProjectGuid>{4D5F6E37-C322-4312-AB53-41B4F743A064}</ProjectGuid>
     <RootNamespace>externlibwebp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>extern libwebp</ProjectName>
@@ -74,22 +78,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)libwebp-1.2.1-vc64\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)libwebp-1.3.0-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)libwebp-1.2.1-vc64\lib</PublicModuleDirectories>
+    <PublicModuleDirectories>$(ProjectDir)libwebp-1.3.0-vc64\lib</PublicModuleDirectories>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <TargetName>libwebp-static</TargetName>
-    <OutDir>$(ProjectDir)libwebp-1.2.1-vc64\lib\</OutDir>
+    <TargetName>libwebp</TargetName>
+    <OutDir>$(ProjectDir)libwebp-1.3.0-vc64\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)libwebp-1.2.1-vc64\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)libwebp-1.3.0-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)libwebp-1.2.1-vc64\lib</PublicModuleDirectories>
+    <PublicModuleDirectories>$(ProjectDir)libwebp-1.3.0-vc64\lib</PublicModuleDirectories>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <TargetName>libwebp-static</TargetName>
-    <OutDir>$(ProjectDir)libwebp-1.2.1-vc64\lib\</OutDir>
+    <TargetName>libwebp</TargetName>
+    <OutDir>$(ProjectDir)libwebp-1.3.0-vc64\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -135,7 +139,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libwebp" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)libwebp-1.2.1-vc64\lib\libwebp-static.lib</Outputs>
+      <Outputs>$(ProjectDir)libwebp-1.3.0-vc64\lib\libwebp.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -144,6 +148,8 @@
     <Lib>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,7 +172,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libwebp" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)libwebp-1.2.1-vc64\lib\libwebp-static.lib</Outputs>
+      <Outputs>$(ProjectDir)libwebp-1.3.0-vc64\lib\libwebp.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -175,11 +181,10 @@
     <Lib>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="..\..\..\extern\libwebp\SConscript" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
