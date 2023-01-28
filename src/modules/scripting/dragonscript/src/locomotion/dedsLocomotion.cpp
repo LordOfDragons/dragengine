@@ -999,10 +999,10 @@ void dedsLocomotion::UpdateTiltWeightCast( float elapsed ){
 	const float spreadFrontBack = decMath::max( pCCTTiltFrontLeft->GetOrigin().z - pCCTTiltBackLeft->GetOrigin().z, 0.01f );
 	
 	// calculate the tilt values. this is "(v1-v2)*0.5 + (v3-v4)*0.5".
-	const float hdiffHorizontal = ( heightFrontLeft - heightFrontRight ) * 0.5 + ( heightBackLeft - heightBackRight ) * 0.5f;
+	const float hdiffHorizontal = ( heightFrontLeft - heightFrontRight ) * 0.5f + ( heightBackLeft - heightBackRight ) * 0.5f;
 	SetTiltHorizontalGoal( atanf( hdiffHorizontal / spreadHorizontal ) / DEG2RAD );
 	
-	const float hdiffVertical = ( heightFrontLeft - heightBackLeft ) * 0.5 + ( heightFrontRight - heightBackRight ) * 0.5f;
+	const float hdiffVertical = ( heightFrontLeft - heightBackLeft ) * 0.5f + ( heightFrontRight - heightBackRight ) * 0.5f;
 	SetTiltVerticalGoal( atanf( hdiffVertical / spreadFrontBack ) / DEG2RAD );
 	
 	// tilt offset from samples

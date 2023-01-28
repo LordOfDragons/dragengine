@@ -331,9 +331,9 @@ void deClassVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const float unit = rt->GetValue( 0 )->GetFloat();
 	
 	vector /= unit;
-	vector.x = floor( vector.x + 0.5f );
-	vector.y = floor( vector.y + 0.5f );
-	vector.z = floor( vector.z + 0.5f );
+	vector.x = floorf( vector.x + 0.5f );
+	vector.y = floorf( vector.y + 0.5f );
+	vector.z = floorf( vector.z + 0.5f );
 	vector *= unit;
 	clsVector.PushVector( rt, vector );
 }
@@ -648,7 +648,7 @@ void deClassVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *my
 	
 	const unsigned short p = ( unsigned short )precision;
 	char format[ 17 ];
-	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
+	snprintf( format, sizeof( format ), "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
 	
 	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
 	decString string;

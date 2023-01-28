@@ -333,7 +333,7 @@ void deClassSoundLevelMeter::nfHashCode::RunFunction( dsRunTime *rt, dsValue *my
 	const deSoundLevelMeter * const soundLevelMeter = ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )soundLevelMeter );
+	rt->PushInt( ( int )( intptr_t )soundLevelMeter );
 }
 
 // public func bool equals( Object obj )

@@ -207,7 +207,7 @@ dsFunction( init.clsCRenW, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 void deClassCanvasRenderWorld::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCanvasRenderWorld * const canvas = ( ( sCRenWNatDat* )p_GetNativeData( myself ) )->canvas;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )canvas );
+	rt->PushInt( ( int )( intptr_t )canvas );
 }
 
 // public func bool equals( Object obj )

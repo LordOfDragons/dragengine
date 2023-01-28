@@ -414,7 +414,7 @@ dsFunction( init.clsLyM, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 
 void deClassLayerMask::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decLayerMask *layermask = ( ( sCFNatDat* )p_GetNativeData( myself ) )->layerMask;
-	rt->PushInt( ( intptr_t )layermask );
+	rt->PushInt( ( int )( intptr_t )layermask );
 }
 
 // public func bool equals( Object object )

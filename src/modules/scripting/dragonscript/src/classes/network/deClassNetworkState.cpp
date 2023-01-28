@@ -284,7 +284,7 @@ void deClassNetworkState::nfGetValueIntAt::RunFunction( dsRunTime *rt, dsValue *
 		DSTHROW( dueInvalidParam );
 	}
 	
-	rt->PushInt( identify.CastToInteger()->GetInt() );
+	rt->PushInt( ( int )identify.CastToInteger()->GetInt() );
 }
 
 // public func float getValueFloatAt( int index )
@@ -303,7 +303,7 @@ void deClassNetworkState::nfGetValueFloatAt::RunFunction( dsRunTime *rt, dsValue
 		DSTHROW( dueInvalidParam );
 	}
 	
-	rt->PushFloat( identify.CastToFloat()->GetFloat() );
+	rt->PushFloat( ( float )identify.CastToFloat()->GetFloat() );
 }
 
 // public func String getValueStringAt( int index )
@@ -660,16 +660,16 @@ void deClassNetworkState::nfGetValuePrecisionAt::RunFunction( dsRunTime *rt, dsV
 	state.GetValueAt( index )->Visit( identify );
 	
 	if( identify.IsFloat() ){
-		rt->PushFloat( identify.CastToFloat()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToFloat()->GetPrecision() );
 		
 	}else if( identify.IsQuaternion() ){
-		rt->PushFloat( identify.CastToQuaternion()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToQuaternion()->GetPrecision() );
 		
 	}else if( identify.IsVector2() ){
-		rt->PushFloat( identify.CastToVector2()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToVector2()->GetPrecision() );
 		
 	}else if( identify.IsVector3() ){
-		rt->PushFloat( identify.CastToVector3()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToVector3()->GetPrecision() );
 		
 	}else{
 		DSTHROW( dueInvalidParam );
@@ -826,7 +826,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 
 void deClassNetworkState::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNetworkState * const state = ( ( sNSNatDat* )p_GetNativeData( myself ) )->state;
-	rt->PushInt( ( intptr_t )state );
+	rt->PushInt( ( int )( intptr_t )state );
 }
 
 // public func bool equals( Object object )

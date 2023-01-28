@@ -129,7 +129,7 @@ dsFunction( init.clsEffDistImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 void deClassEffectDistortImage::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deEffectDistortImage * const effect = ( ( sEffDistImgMatrixNatDat* )p_GetNativeData( myself ) )->effect;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )effect );
+	rt->PushInt( ( int )( intptr_t )effect );
 }
 
 // public func bool equals( Object obj )

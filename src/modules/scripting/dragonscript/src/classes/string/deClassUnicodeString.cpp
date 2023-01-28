@@ -459,7 +459,9 @@ void deClassUnicodeString::nfOpAddBool::RunFunction( dsRunTime *rt, dsValue *mys
 	decUnicodeString *string = ( ( sUSNatDat* )p_GetNativeData( myself ) )->string;
 	deClassUnicodeString &clsUS = *( ( deClassUnicodeString* )GetOwnerClass() );
 	
-	clsUS.PushUnicodeString( rt, *string + rt->GetValue( 0 )->GetBool() );
+	decUnicodeString unicode( *string );
+	unicode.AppendFromUTF8( rt->GetValue( 0 )->GetBool() ? "true" : "false" );
+	clsUS.PushUnicodeString( rt, unicode );
 }
 
 // public func UnicodeString +( int value )
@@ -471,7 +473,9 @@ void deClassUnicodeString::nfOpAddInt::RunFunction( dsRunTime *rt, dsValue *myse
 	decUnicodeString *string = ( ( sUSNatDat* )p_GetNativeData( myself ) )->string;
 	deClassUnicodeString &clsUS = *( ( deClassUnicodeString* )GetOwnerClass() );
 	
-	clsUS.PushUnicodeString( rt, *string + rt->GetValue( 0 )->GetInt() );
+	decUnicodeString unicode( *string );
+	unicode.AppendValue( rt->GetValue( 0 )->GetInt() );
+	clsUS.PushUnicodeString( rt, unicode );
 }
 
 // public func UnicodeString +( float value )
@@ -483,7 +487,9 @@ void deClassUnicodeString::nfOpAddFloat::RunFunction( dsRunTime *rt, dsValue *my
 	decUnicodeString *string = ( ( sUSNatDat* )p_GetNativeData( myself ) )->string;
 	deClassUnicodeString &clsUS = *( ( deClassUnicodeString* )GetOwnerClass() );
 	
-	clsUS.PushUnicodeString( rt, *string + rt->GetValue( 0 )->GetFloat() );
+	decUnicodeString unicode( *string );
+	unicode.AppendValue( rt->GetValue( 0 )->GetFloat() );
+	clsUS.PushUnicodeString( rt, unicode );
 }
 
 // public func UnicodeString +( Object object )

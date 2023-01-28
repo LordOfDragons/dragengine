@@ -617,7 +617,7 @@ void deClassCamera::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deCamera * const camera = ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )camera );
+	rt->PushInt( ( int )( intptr_t )camera );
 }
 
 // public func bool equals( Object object )

@@ -1193,7 +1193,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 
 void deClassEasyXMLElement::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decXmlElement * const element = ( ( sXMLElNatDat* )p_GetNativeData( myself ) )->element;
-	rt->PushInt( ( intptr_t )element );
+	rt->PushInt( ( int )( intptr_t )element );
 }
 
 // public func bool equals( Object obj )

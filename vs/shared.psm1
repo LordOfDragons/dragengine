@@ -62,7 +62,7 @@ function Copy-Files {
         if (!(Test-Path $ParentPath)) {
             New-Item -ItemType Directory $ParentPath -ErrorAction SilentlyContinue | Out-Null
         }
-        Copy-Item -Path $_.FullName -Destination (Join-Path -Path $TargetDir -ChildPath $RelativePath)
+        Copy-Item -Path $_.FullName -Destination (Join-Path -Path $TargetDir -ChildPath $RelativePath) -Force
     }
 }
 

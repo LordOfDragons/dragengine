@@ -170,7 +170,7 @@ dsFunction( init.clsSvr, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassServer::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deServer *server = ( ( sSvrNatDat* )p_GetNativeData( myself ) )->server;
 	
-	rt->PushInt( ( intptr_t )server );
+	rt->PushInt( ( int )( intptr_t )server );
 }
 
 // public func bool equals( Object object )

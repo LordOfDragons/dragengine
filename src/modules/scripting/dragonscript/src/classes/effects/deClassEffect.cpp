@@ -122,7 +122,7 @@ dsFunction( init.clsEffect, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 void deClassEffect::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deEffect * const effect = ( ( sEffNatDat* )p_GetNativeData( myself ) )->effect;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )effect );
+	rt->PushInt( ( int )( intptr_t )effect );
 }
 
 // public func bool equals( Object obj )

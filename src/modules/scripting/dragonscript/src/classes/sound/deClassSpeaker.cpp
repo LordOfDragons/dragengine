@@ -627,7 +627,7 @@ dsFunction( init.clsSpk, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassSpeaker::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deSpeaker *speaker = ( ( sSpkNatDat* )p_GetNativeData( myself ) )->speaker;
 	
-	rt->PushInt( ( intptr_t )speaker );
+	rt->PushInt( ( int )( intptr_t )speaker );
 }
 
 // public func bool equals( Object object )

@@ -209,7 +209,7 @@ void deClassLanguagePack::nfHashCode::RunFunction( dsRunTime *rt, dsValue *mysel
 	const deLanguagePack * const langPack = ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )langPack );
+	rt->PushInt( ( int )( intptr_t )langPack );
 }
 
 // public func bool equals( Object obj )

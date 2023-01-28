@@ -21,8 +21,6 @@
   <ItemGroup>
     <None Include="..\..\SConstruct" />
     <None Include="..\..\src\dragengine\SConscript" />
-    <None Include="..\Get-FileHash.psm1" />
-    <None Include="..\shared.psm1" />
     <None Include="post_build.ps1" />
     <None Include="pre_build.ps1" />
   </ItemGroup>

@@ -242,7 +242,7 @@ dsFunction( init.clsLM, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassLumimeter::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deLumimeter *lumimeter = ( ( sLumimeterNatDat* )p_GetNativeData( myself ) )->lumimeter;
 	
-	rt->PushInt( ( intptr_t )lumimeter );
+	rt->PushInt( ( int )( intptr_t )lumimeter );
 }
 
 // public func bool equals( Object obj )

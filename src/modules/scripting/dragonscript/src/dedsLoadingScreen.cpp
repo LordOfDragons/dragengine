@@ -97,7 +97,7 @@ void dedsLoadingScreen::pCreateScreen(){
 	pCanvasBackground->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
 	pCanvasBackground->SetShapeType( deCanvasPaint::estRectangle );
 	pCanvasBackground->SetThickness( 0.0f );
-	pCanvasBackground->SetOrder( content->GetCanvasCount() );
+	pCanvasBackground->SetOrder( ( float )content->GetCanvasCount() );
 	content->AddCanvas( pCanvasBackground );
 	
 	const deImage::Ref image( deImage::Ref::New(
@@ -106,7 +106,7 @@ void dedsLoadingScreen::pCreateScreen(){
 	pCanvasImage.TakeOver( canvasManager.CreateCanvasImage() );
 	pCanvasImage->SetImage( image );
 	pCanvasImage->SetSize( decPoint( image->GetWidth(), image->GetHeight() ) );
-	pCanvasImage->SetOrder( content->GetCanvasCount() );
+	pCanvasImage->SetOrder( ( float )content->GetCanvasCount() );
 	pCanvasImage->SetTransparency( 0.5f );
 	content->AddCanvas( pCanvasImage );
 }

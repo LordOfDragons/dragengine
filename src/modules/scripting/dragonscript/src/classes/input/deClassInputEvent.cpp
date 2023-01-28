@@ -200,7 +200,7 @@ dsFunction( init.clsInputEvent, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 void deClassInputEvent::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deInputEvent * const event = ( ( sInpEvNatDat* )p_GetNativeData( myself ) )->event;
 	
-	rt->PushInt( ( intptr_t )event );
+	rt->PushInt( ( int )( intptr_t )event );
 }
 
 // public func bool equals( Object obj )

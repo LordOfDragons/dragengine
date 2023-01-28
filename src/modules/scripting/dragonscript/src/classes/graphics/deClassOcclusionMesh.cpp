@@ -132,7 +132,7 @@ void deClassOcclusionMesh::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myse
 	const deOcclusionMesh * const occlusionMesh = ( ( sOccMNatDat* )p_GetNativeData( myself ) )->occlusionMesh;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )occlusionMesh );
+	rt->PushInt( ( int )( intptr_t )occlusionMesh );
 }
 
 // public func bool equals( Object obj )

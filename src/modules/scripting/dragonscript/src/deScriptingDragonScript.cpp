@@ -278,8 +278,16 @@
 
 #include <libdscript/exceptions.h>
 
+#ifdef OS_W32_VS
+#include <dragengine/app/deOSWindows.h>
+#endif
+
 // definitions
 #define DESM_GAME_PACKAGE		"GamePackage"
+
+#ifndef DS_MODULE_VERSION
+#include "module_version.h"
+#endif
 
 
 // export definition
@@ -568,12 +576,20 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		pathContrib.AddComponent( "dsinstall" );
 		LogInfoFormat( "Set contrib installation path '%s'", pathContrib.GetPathNative().GetString() );
 		
-		#ifdef OS_W32
+		#ifdef OS_W32_VS
+		TCHAR envValBuf[ MAX_PATH ];
+		deOSWindows::Utf8ToWide( pathContrib.GetPathNative(), envValBuf, sizeof( envValBuf ) );
+		if( ! SetEnvironmentVariable( L"DS_PAKAGE_PATH", envValBuf ) ){
+			DSTHROW( dueInvalidAction );
+		}
+
+		#elif defined OS_W32
 		decString pestr;
 		pestr.Format( "DS_PAKAGE_PATH=%s", pathContrib.GetPathNative().GetString() );
 		if( putenv( pestr ) ){
 			DSTHROW( dueInvalidAction );
 		}
+
 		#else
 		if( setenv( "DS_PAKAGE_PATH", pathContrib.GetPathNative(), 1 ) ){
 			DSTHROW( dueInvalidAction );

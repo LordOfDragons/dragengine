@@ -808,7 +808,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 void deClassLight::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deLight * const light = ( ( sLigNatDat* )p_GetNativeData( myself ) )->light;
 	
-	rt->PushInt( ( intptr_t )light );
+	rt->PushInt( ( int )( intptr_t )light );
 }
 
 // public func bool equals( Object obj )

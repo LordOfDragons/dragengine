@@ -1065,7 +1065,7 @@ dsFunction( init.clsCom, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassComponent::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deComponent *component = ( ( sCompNatDat* )p_GetNativeData( myself ) )->component;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )component );
+	rt->PushInt( ( int )( intptr_t )component );
 }
 
 // public func bool equals( Object obj )

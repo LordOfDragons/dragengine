@@ -187,10 +187,10 @@ void deClassInputSystem::nfGetButtonTouched::RunFunction( dsRunTime *rt, dsValue
 	rt->PushBool( module.GetButtonTouched( device, button ) );
 }
 
-// public static func int getAxisValue( int device, int axis )
+// public static func float getAxisValue( int device, int axis )
 deClassInputSystem::nfGetAxisValue::nfGetAxisValue( const sInitData &init ) :
 dsFunction( init.clsInpSys, "getAxisValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat ){
 	p_AddParameter( init.clsInteger ); // device
 	p_AddParameter( init.clsInteger ); // axis
 }
@@ -200,13 +200,13 @@ void deClassInputSystem::nfGetAxisValue::RunFunction( dsRunTime *rt, dsValue* ){
 	
 	const int device = rt->GetValue( 0 )->GetInt();
 	const int axis  = rt->GetValue( 1 )->GetInt();
-	rt->PushInt( module.GetAxisValue( device, axis ) );
+	rt->PushFloat( module.GetAxisValue( device, axis ) );
 }
 
-// public static func int getFeedbackValue( int device, int feedback )
+// public static func float getFeedbackValue( int device, int feedback )
 deClassInputSystem::nfGetFeedbackValue::nfGetFeedbackValue( const sInitData &init ) :
 dsFunction( init.clsInpSys, "getFeedbackValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat ){
 	p_AddParameter( init.clsInteger ); // device
 	p_AddParameter( init.clsInteger ); // feedback
 }
@@ -216,16 +216,16 @@ void deClassInputSystem::nfGetFeedbackValue::RunFunction( dsRunTime *rt, dsValue
 	
 	const int device = rt->GetValue( 0 )->GetInt();
 	const int feedback  = rt->GetValue( 1 )->GetInt();
-	rt->PushInt( module.GetFeedbackValue( device, feedback ) );
+	rt->PushFloat( module.GetFeedbackValue( device, feedback ) );
 }
 
-// public static func void setFeedbackValue( int device, int feedback, int value )
+// public static func void setFeedbackValue( int device, int feedback, float value )
 deClassInputSystem::nfSetFeedbackValue::nfSetFeedbackValue( const sInitData &init ) :
 dsFunction( init.clsInpSys, "setFeedbackValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // device
 	p_AddParameter( init.clsInteger ); // feedback
-	p_AddParameter( init.clsInteger ); // value
+	p_AddParameter( init.clsFloat ); // value
 }
 void deClassInputSystem::nfSetFeedbackValue::RunFunction( dsRunTime *rt, dsValue* ){
 	const deScriptingDragonScript &ds = ( ( deClassInputSystem* )GetOwnerClass() )->GetDS();
@@ -233,7 +233,7 @@ void deClassInputSystem::nfSetFeedbackValue::RunFunction( dsRunTime *rt, dsValue
 	
 	const int device = rt->GetValue( 0 )->GetInt();
 	const int feedback  = rt->GetValue( 1 )->GetInt();
-	const int value  = rt->GetValue( 2 )->GetInt();
+	const float value  = rt->GetValue( 2 )->GetFloat();
 	module.SetFeedbackValue( device, feedback, value );
 }
 

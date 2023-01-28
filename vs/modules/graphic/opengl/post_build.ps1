@@ -23,7 +23,7 @@ $DataTargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDESharesModules
 Write-Host "OpenGL Module: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\shaders")`
-    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "shaders")` -Pattern "*.shader.xml"
+    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "shaders") -Pattern "*.shader.xml"
 
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\shaderSources")`
     -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "shaderSources") -Pattern "*.glsl"

@@ -465,7 +465,7 @@ deClassDynamicSkin::nfHashCode::nfHashCode( const sInitData &init ) : dsFunction
 void deClassDynamicSkin::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deDynamicSkin *dynamicSkin = ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin;
 	
-	rt->PushInt( ( intptr_t )dynamicSkin );
+	rt->PushInt( ( int )( intptr_t )dynamicSkin );
 }
 
 // public func bool equals( Object obj )

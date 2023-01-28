@@ -125,7 +125,7 @@ dsFunction( init.clsEffClrMat, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 void deClassEffectColorMatrix::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deEffectColorMatrix * const effect = ( ( sEffClrMatMatrixNatDat* )p_GetNativeData( myself ) )->effect;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )effect );
+	rt->PushInt( ( int )( intptr_t )effect );
 }
 
 // public func bool equals( Object obj )

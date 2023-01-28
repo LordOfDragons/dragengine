@@ -242,7 +242,7 @@ dsFunction( init.clsCF, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 
 void deClassCollisionFilter::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decCollisionFilter * const collisionFilter = ( ( sCFNatDat* )p_GetNativeData( myself ) )->layerMask;
-	rt->PushInt( ( intptr_t )collisionFilter );
+	rt->PushInt( ( int )( intptr_t )collisionFilter );
 }
 
 // public func bool equals( Object object )

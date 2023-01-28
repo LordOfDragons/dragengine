@@ -18,10 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\extern\dragonscript\SConscript" />
+    <None Include="build.ps1" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{45273658-2f93-41ba-9add-f9589d47a0da}</ProjectGuid>
+    <ProjectGuid>{043EFF15-4B38-4A5B-A20B-9C572699BA59}</ProjectGuid>
     <RootNamespace>externdragonscript</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>extern dragonscript</ProjectName>
@@ -41,13 +45,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -74,22 +78,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.3-vc64\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.4-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)dragonscript-1.3-vc64\lib</PublicModuleDirectories>
+    <PublicModuleDirectories>$(ProjectDir)dragonscript-1.4-vc64\lib</PublicModuleDirectories>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <TargetName>libdscript</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.3-vc64\lib\</OutDir>
+    <OutDir>$(ProjectDir)dragonscript-1.4-vc64\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
-    <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.3-vc64\include</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.4-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)dragonscript-1.3-vc64\lib</PublicModuleDirectories>
+    <PublicModuleDirectories>$(ProjectDir)dragonscript-1.4-vc64\lib</PublicModuleDirectories>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <TargetName>libdscript</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.3-vc64\lib\</OutDir>
+    <OutDir>$(ProjectDir)dragonscript-1.4-vc64\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -135,7 +139,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\dragonscript" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)dragonscript-1.3-vc64\lib\libdscript.lib</Outputs>
+      <Outputs>$(ProjectDir)dragonscript-1.4-vc64\lib\libdscript.dll</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -166,7 +170,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\dragonscript" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)dragonscript-1.3-vc64\lib\libdscript.lib</Outputs>
+      <Outputs>$(ProjectDir)dragonscript-1.4-vc64\lib\libdscript.dll</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -177,9 +181,6 @@
       </IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="..\..\..\extern\dragonscript\SConscript" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

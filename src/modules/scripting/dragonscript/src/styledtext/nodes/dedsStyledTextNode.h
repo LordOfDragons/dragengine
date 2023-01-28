@@ -45,10 +45,13 @@ public:
 	/*@{*/
 	/** Creates a new styled text node. */
 	dedsStyledTextNode();
+
+protected:
 	/** Cleans up the styled text node. */
 	virtual ~dedsStyledTextNode();
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the style or NULL to use the parent node style. */

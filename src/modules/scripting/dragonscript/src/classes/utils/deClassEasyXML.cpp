@@ -273,7 +273,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 
 void deClassEasyXML::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsXmlDocument * const document = ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document;
-	rt->PushInt( ( intptr_t )document );
+	rt->PushInt( ( int )( intptr_t )document );
 }
 
 // public func bool equals( Object obj )

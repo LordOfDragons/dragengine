@@ -402,7 +402,7 @@ deClassCollisionInfo::nfHashCode::nfHashCode( const sInitData &init ) : dsFuncti
 
 void deClassCollisionInfo::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	rt->PushInt( ( intptr_t )info );
+	rt->PushInt( ( int )( intptr_t )info );
 }
 
 

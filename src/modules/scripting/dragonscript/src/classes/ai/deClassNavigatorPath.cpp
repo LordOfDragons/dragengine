@@ -488,7 +488,7 @@ dsFunction( init.clsNavPath, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 void deClassNavigatorPath::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNavigatorPath * const path = ( ( const sNavPathNatDat * )p_GetNativeData( myself ) )->path;
 	
-	rt->PushInt( ( intptr_t )path );
+	rt->PushInt( ( int )( intptr_t )path );
 }
 
 // public func bool equals( Object object )

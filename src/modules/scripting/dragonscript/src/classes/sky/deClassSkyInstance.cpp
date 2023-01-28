@@ -236,7 +236,7 @@ dsFunction( init.clsSkyInst, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 void deClassSkyInstance::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deSkyInstance * const instance = ( ( sSkyInstNatDat* )p_GetNativeData( myself ) )->instance;
 	
-	rt->PushInt( ( intptr_t )instance );
+	rt->PushInt( ( int )( intptr_t )instance );
 }
 
 // public func bool equals( Object obj )

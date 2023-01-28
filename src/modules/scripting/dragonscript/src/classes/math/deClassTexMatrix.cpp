@@ -669,7 +669,7 @@ void deClassTexMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue 
 	
 	const unsigned short p = ( unsigned short )precision;
 	char format[ 53 ];
-	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf],"
+	snprintf( format, sizeof( format ), "[[%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf]]",
 		p, p, p, p, p, p, p, p, p );
