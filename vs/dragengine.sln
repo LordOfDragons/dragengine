@@ -152,6 +152,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extern dragonscript", "exte
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "module scripting dragonscript", "modules\scripting\dragonscript\scr_dragonscript.vcxproj", "{9BA956BA-E62B-4575-97DF-EE0B956AD933}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sound modules", "sound modules", "{6DDE9E4F-9495-48F9-8E41-4BA03B87AE19}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "synthesizer modules", "synthesizer modules", "{1351989C-3078-4C2D-86EA-94429285957B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1136,6 +1140,8 @@ Global
 		{16D911C4-7D6D-4FB8-B658-7D2BA76D7045} = {5FF86D92-1DC6-4CFC-A681-597A53EA54BF}
 		{043EFF15-4B38-4A5B-A20B-9C572699BA59} = {24FEF707-72E9-4A55-B165-280B906B3882}
 		{9BA956BA-E62B-4575-97DF-EE0B956AD933} = {16D911C4-7D6D-4FB8-B658-7D2BA76D7045}
+		{6DDE9E4F-9495-48F9-8E41-4BA03B87AE19} = {5FF86D92-1DC6-4CFC-A681-597A53EA54BF}
+		{1351989C-3078-4C2D-86EA-94429285957B} = {5FF86D92-1DC6-4CFC-A681-597A53EA54BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5EE9E67-AA42-44F8-91C4-8D97F49D0A4F}

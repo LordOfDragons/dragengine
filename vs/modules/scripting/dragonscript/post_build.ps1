@@ -33,7 +33,7 @@ Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\doc\nativeclass
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\data")`
     -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "data") -Pattern "*"
 
-Copy-Files -SourceDir "$RuntimeDir\lib" -Pattern "libdscript.dll" -TargetDir $TargetDir
+Copy-Files -SourceDir "$RuntimeDir\bin" -Pattern "libdscript.dll" -TargetDir $TargetDir
 
 
 $RuntimeTargetDir = Join-Path -Path $DataTargetDir -ChildPath "dsinstall"
@@ -47,3 +47,4 @@ $TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "scrdscript.pdb") -Destination $TargetDir
+Install-Files "$RuntimeDir\pdb" -Destination $TargetDir
