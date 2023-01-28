@@ -999,7 +999,7 @@ void decXmlParser::SetCleanString( int length ){
 		pCleanStringSize = length;
 	}
 	#ifdef OS_W32_VS
-		strncpy_s( pCleanString, length, pToken, length );
+		strncpy_s( pCleanString, length + 1, pToken, length );
 	#else
 		strncpy( pCleanString, pToken, length );
 	#endif
@@ -1047,7 +1047,7 @@ void decXmlParser::pGrowToken(){
 	if( pToken ){
 		if( pTokenLen > 0 ){
 			#ifdef OS_W32_VS
-				strncpy_s( newToken, pTokenLen, pToken, pTokenLen );
+				strncpy_s( newToken, pTokenLen + 1, pToken, pTokenLen );
 			#else
 				strncpy( newToken, pToken, pTokenLen );
 			#endif

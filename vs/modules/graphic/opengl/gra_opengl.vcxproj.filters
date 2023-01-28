@@ -1836,6 +1836,7 @@
       <Filter>contrib\squish</Filter>
     </None>
     <None Include="..\..\..\..\src\modules\graphic\opengl\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\alpha.cpp">

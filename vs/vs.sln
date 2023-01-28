@@ -144,6 +144,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extern libsharpyuv", "exter
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "module image webp3d", "modules\image\webp3d\img_webp3d.vcxproj", "{A7CFF013-B017-4A89-B6A9-A902CB84AAF6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripting modules", "scripting modules", "{16D911C4-7D6D-4FB8-B658-7D2BA76D7045}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1085,6 +1087,7 @@ Global
 		{F3705EE2-B3D1-4EBC-9ADB-4B542A6956E3} = {24FEF707-72E9-4A55-B165-280B906B3882}
 		{F27BFD85-F580-4241-BDC5-27BEFA2D528C} = {F3705EE2-B3D1-4EBC-9ADB-4B542A6956E3}
 		{A7CFF013-B017-4A89-B6A9-A902CB84AAF6} = {4C2B026F-2C68-4BF2-9F20-ED885629D615}
+		{16D911C4-7D6D-4FB8-B658-7D2BA76D7045} = {5FF86D92-1DC6-4CFC-A681-597A53EA54BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5EE9E67-AA42-44F8-91C4-8D97F49D0A4F}

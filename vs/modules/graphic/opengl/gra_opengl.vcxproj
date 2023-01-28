@@ -633,6 +633,7 @@
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README" />
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README_DE" />
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\singlecolourlookup.inl" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\alpha.cpp" />

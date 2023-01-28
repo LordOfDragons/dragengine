@@ -342,7 +342,7 @@ decString decStringList::Join( const char *separator ) const{
 		
 		if( stringLength > 0 ){
 			#ifdef OS_W32_VS
-				strncpy_s( next, stringLength, pStrings[ i ]->GetString(), stringLength );
+				strncpy_s( next, stringLength + 1, pStrings[ i ]->GetString(), stringLength );
 			#else
 				strncpy( next, pStrings[ i ]->GetString(), stringLength );
 			#endif

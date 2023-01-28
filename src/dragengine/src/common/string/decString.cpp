@@ -985,7 +985,7 @@ decString decString::GetMiddle( int start, int end ) const{
 		
 		string.Set( ' ', count );
 		#ifdef OS_W32_VS
-			strncpy_s( string.pString, count + 1, pString + start, count + 1 );
+			strncpy_s( string.pString, count + 2, pString + start, count + 1 );
 		#else
 			strncpy( string.pString, pString + start, count );
 		#endif
