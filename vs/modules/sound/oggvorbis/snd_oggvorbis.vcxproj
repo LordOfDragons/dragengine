@@ -22,27 +22,35 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libogg\extern_libogg.vcxproj">
+      <Project>{ede52225-8029-4c41-8389-c5c5b5ce2498}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libvorbisfile\extern_libvorbisfile.vcxproj">
+      <Project>{02531867-f89d-477c-86aa-c349503da74e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libvorbis\extern_libvorbis.vcxproj">
+      <Project>{2932b931-e0de-45b7-a30c-73a5cd89cbe6}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesFormatLm63d1986.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesImageInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesModule.cpp" />
+    <None Include="..\..\..\..\src\modules\sound\oggvorbis\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesFormatLm63d1986.h" />
-    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesImageInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesModule.h" />
+    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deoggSoundDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deSoundOGG.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deoggSoundDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deSoundOGG.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\sound\oggvorbis\src\module.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\sound\oggvorbis\SConscript" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{37bbde6c-502c-408c-9a8a-7546c69d67f3}</ProjectGuid>
+    <ProjectGuid>{51E35768-DECD-4FFD-9722-7A592A9EB04C}</ProjectGuid>
     <RootNamespace>oggvorbis</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module sound oggvorbis</ProjectName>
@@ -93,10 +101,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgoggvorbis</TargetName>
+    <TargetName>sndoggvorbis</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgoggvorbis</TargetName>
+    <TargetName>sndoggvorbis</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

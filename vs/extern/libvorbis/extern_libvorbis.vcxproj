@@ -18,10 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\extern\libvorbis\SConscript" />
+    <None Include="build.ps1" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{45273658-2f93-41ba-9add-f9589d47a0da}</ProjectGuid>
+    <ProjectGuid>{2932B931-E0DE-45B7-A30C-73A5CD89CBE6}</ProjectGuid>
     <RootNamespace>externlibvorbis</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>extern libvorbis</ProjectName>
@@ -78,7 +82,7 @@
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>$(ProjectDir)libvorbis-1.3.5-vc64\lib</PublicModuleDirectories>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <TargetName>libvorbis-static</TargetName>
+    <TargetName>libvorbis_static</TargetName>
     <OutDir>$(ProjectDir)libvorbis-1.3.5-vc64\lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,7 +92,7 @@
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicModuleDirectories>$(ProjectDir)libvorbis-1.3.5-vc64\lib</PublicModuleDirectories>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <TargetName>libvorbis-static</TargetName>
+    <TargetName>libvorbis_static</TargetName>
     <OutDir>$(ProjectDir)libvorbis-1.3.5-vc64\lib\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -135,7 +139,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libvorbis" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)libvorbis-1.3.5-vc64\lib\libvorbis-static.lib</Outputs>
+      <Outputs>$(ProjectDir)libvorbis-1.3.5-vc64\lib\libvorbis_static.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -166,7 +170,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\libvorbis" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)libvorbis-1.3.5-vc64\lib\libvorbis-static.lib</Outputs>
+      <Outputs>$(ProjectDir)libvorbis-1.3.5-vc64\lib\libvorbis_static.lib</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -177,9 +181,6 @@
       </IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="..\..\..\extern\libvorbis\SConscript" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

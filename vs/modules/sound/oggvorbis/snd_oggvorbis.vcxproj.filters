@@ -15,24 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesImageInfo.cpp">
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\modules\sound\oggvorbis\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deSoundOGG.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesFormatLm63d1986.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\sound\oggvorbis\src\deoggSoundDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deSoundOGG.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesModule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\sound\oggvorbis\src\deoggSoundDecoder.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -40,8 +38,5 @@
     <Xml Include="..\..\..\..\src\modules\sound\oggvorbis\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\sound\oggvorbis\SConscript" />
   </ItemGroup>
 </Project>

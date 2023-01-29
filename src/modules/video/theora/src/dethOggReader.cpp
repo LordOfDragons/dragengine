@@ -208,7 +208,7 @@ bool dethOggReader::ReadPage( ogg_page &page ){
 			totalBytes += readBytes;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		//e.PrintError();
 		throw;
 	}

@@ -15,33 +15,58 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deIesImageInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deIesFormatLm63d1986.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <None Include="..\..\..\extern\libtheora\build.ps1" />
+    <None Include="..\..\..\..\src\modules\video\theora\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deIesModule.h">
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethVideoAudioDecoder.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethVideoDecoder.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deVideoTheora.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethInfos.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethVideoAudioDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethVideoDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deVideoTheora.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethInfos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\video\theora\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\video\theora\SConscript" />
   </ItemGroup>
 </Project>

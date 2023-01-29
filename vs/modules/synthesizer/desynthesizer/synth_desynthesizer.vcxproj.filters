@@ -15,33 +15,193 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deIesImageInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deIesModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deIesFormatLm63d1986.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <None Include="..\..\..\..\src\modules\synthesizer\desynthesizer\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deIesImageInfo.h">
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deDESynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deIesModule.h">
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynBasics.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deIesFormatLm63d1986.h">
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCaches.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCommandExecuter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynConfiguration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBuffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBufferList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerSource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerController.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerCurve.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerInstance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerLink.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffectStretch.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceChain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceGroup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSound.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSynthesizer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceWave.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCaches.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCommandExecuter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBufferList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerLink.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffectStretch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceChain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSynthesizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceWave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deDESynthesizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\module.xml">
       <Filter>Source Files</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\synthesizer\desynthesizer\SConscript" />
   </ItemGroup>
 </Project>

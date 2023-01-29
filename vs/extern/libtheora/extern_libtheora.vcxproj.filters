@@ -15,6 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\extern\libjpeg\SConscript" />
+    <None Include="..\..\modules\video\theora\post_build.ps1" />
+    <None Include="..\..\..\extern\libtheora\SConscript" />
   </ItemGroup>
 </Project>

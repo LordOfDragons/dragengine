@@ -22,27 +22,45 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libogg\extern_libogg.vcxproj">
+      <Project>{ede52225-8029-4c41-8389-c5c5b5ce2498}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libtheora\extern_libtheora.vcxproj">
+      <Project>{7f485e01-8491-4420-afcb-f5e94b775f2a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libvorbis\extern_libvorbis.vcxproj">
+      <Project>{2932b931-e0de-45b7-a30c-73a5cd89cbe6}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deIesFormatLm63d1986.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deIesImageInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deIesModule.cpp" />
+    <None Include="..\..\..\..\src\modules\video\theora\SConscript" />
+    <None Include="..\..\..\extern\libtheora\build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deIesFormatLm63d1986.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deIesImageInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deIesModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethVideoAudioDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethVideoDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\theora\src\deVideoTheora.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggFile.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethStreamReader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethVideoAudioDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\dethVideoDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\theora\src\deVideoTheora.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\video\theora\src\module.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\src\modules\video\theora\SConscript" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{37bbde6c-502c-408c-9a8a-7546c69d67f3}</ProjectGuid>
+    <ProjectGuid>{4269EB0E-6FD2-4634-AC1C-D70EA7C1F316}</ProjectGuid>
     <RootNamespace>theora</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>module video theora</ProjectName>
@@ -93,10 +111,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>imgtheora</TargetName>
+    <TargetName>vidtheora</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>imgtheora</TargetName>
+    <TargetName>vidtheora</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
