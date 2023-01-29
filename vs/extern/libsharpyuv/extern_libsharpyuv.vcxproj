@@ -18,10 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\extern\libwebp\SConscript" />
-    <None Include="build.ps1" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -79,21 +75,23 @@
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)libwebp-1.3.0-vc64\include</PublicIncludeDirectories>
-    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)libwebp-1.3.0-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libsharpyuv</TargetName>
     <OutDir>$(ProjectDir)libwebp-1.3.0-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)libwebp-1.3.0-vc64\include</PublicIncludeDirectories>
-    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)libwebp-1.3.0-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libsharpyuv</TargetName>
     <OutDir>$(ProjectDir)libwebp-1.3.0-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

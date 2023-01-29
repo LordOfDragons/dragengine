@@ -15,14 +15,14 @@ function Install-Files {
     $Path = Resolve-Path $Path
 
     if (!(Test-Path $Destination)) {
-        New-Item -ItemType Directory $Destination -ErrorAction SilentlyContinue | Out-Null
+        New-Item -ItemType Directory $Destination | Out-Null
     }
 
     if (!$Name) {
         $Name = Split-Path -Path $Path -Leaf
     }
 
-    Copy-Item -Path $Path -Destination (Join-Path -Path $Destination -ChildPath $Name)
+    Copy-Item -Path $Path -Destination (Join-Path -Path $Destination -ChildPath $Name) -Force
 }
 
 
@@ -130,6 +130,7 @@ New-Variable -Name PathDistDEDataModules -Value "$PathDistDEData\modules" -Scope
 New-Variable -Name PathDistDEShares -Value "$PathDistDE\@ProgramFiles\Dragengine\Share" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESharesModules -Value "$PathDistDEShares\modules" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESystem -Value "$PathDistDE\@System" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDELauncherBin -Value "$PathDistDE\@ProgramFiles\Dragengine\Launchers\Bin" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDELauncherShares -Value "$PathDistDE\@ProgramFiles\Dragengine\Launchers\Share" -Scope Global -Option ReadOnly -Force
 
 New-Variable -Name PathDistDESdk -Value "Distribute\Dragengine\SDK" -Scope Global -Option ReadOnly -Force

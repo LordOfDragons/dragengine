@@ -80,20 +80,22 @@
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.4-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)dragonscript-1.4-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libdscript</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.4-vc64\bin\</OutDir>
+    <OutDir>$(ProjectDir)dragonscript-1.4-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)dragonscript-1.4-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)dragonscript-1.4-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libdscript</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.4-vc64\bin\</OutDir>
+    <OutDir>$(ProjectDir)dragonscript-1.4-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -139,7 +141,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\dragonscript" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)dragonscript-1.4-vc64\bin\libdscript.dll</Outputs>
+      <Outputs>$(ProjectDir)dragonscript-1.4-vc64\lib\libdscript.dll</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>
@@ -170,7 +172,7 @@
     <CustomBuildStep>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\dragonscript" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
-      <Outputs>$(ProjectDir)dragonscript-1.4-vc64\bin\libdscript.dll</Outputs>
+      <Outputs>$(ProjectDir)dragonscript-1.4-vc64\lib\libdscript.dll</Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
       <Command>

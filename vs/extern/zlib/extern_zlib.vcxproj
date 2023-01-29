@@ -79,20 +79,22 @@
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)zlib-1.2.13-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)zlib-1.2.13-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libz-static</TargetName>
     <OutDir>$(ProjectDir)zlib-1.2.13-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)zlib-1.2.13-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)zlib-1.2.13-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libz-static</TargetName>
     <OutDir>$(ProjectDir)zlib-1.2.13-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -80,8 +80,8 @@
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)libwebp-1.3.0-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)libwebp-1.3.0-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libwebp</TargetName>
     <OutDir>$(ProjectDir)libwebp-1.3.0-vc64\lib\</OutDir>
   </PropertyGroup>
@@ -90,8 +90,8 @@
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)libwebp-1.3.0-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)libwebp-1.3.0-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>libwebp</TargetName>
     <OutDir>$(ProjectDir)libwebp-1.3.0-vc64\lib\</OutDir>
   </PropertyGroup>

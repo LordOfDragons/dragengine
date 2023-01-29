@@ -79,20 +79,22 @@
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)fox-1.7.81-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)fox-1.7.81-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>fox-1.7</TargetName>
     <OutDir>$(ProjectDir)fox-1.7.81-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)fox-1.7.81-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)fox-1.7.81-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>fox-1.7</TargetName>
     <OutDir>$(ProjectDir)fox-1.7.81-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

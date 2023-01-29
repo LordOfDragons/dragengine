@@ -80,20 +80,22 @@
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)soundtouch-2.1.1-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)soundtouch-2.1.1-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>soundtouch-static</TargetName>
     <OutDir>$(ProjectDir)soundtouch-2.1.1-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildBeforeTargets>
     </CustomBuildBeforeTargets>
     <PublicIncludeDirectories>$(ProjectDir)soundtouch-2.1.1-vc64\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <PublicModuleDirectories>$(ProjectDir)soundtouch-2.1.1-vc64\lib</PublicModuleDirectories>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
     <TargetName>soundtouch-static</TargetName>
     <OutDir>$(ProjectDir)soundtouch-2.1.1-vc64\lib\</OutDir>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

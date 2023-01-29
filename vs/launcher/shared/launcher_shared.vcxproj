@@ -175,15 +175,17 @@
     <TargetName>delauncher</TargetName>
     <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <PublicModuleDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicModuleDirectories>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>delauncher</TargetName>
     <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <PublicModuleDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicModuleDirectories>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
+    <AllProjectBMIsArePublic />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

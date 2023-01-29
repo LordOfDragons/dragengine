@@ -1263,7 +1263,7 @@ FXint deglDialogGameProperties::fSortCache( const FXIconItem *item1, const FXIco
 		return 1;
 		
 	}else{
-		return compare( cache1.name, cache2.name );
+		return FXString::compare( cache1.name, cache2.name );
 	}
 }
 

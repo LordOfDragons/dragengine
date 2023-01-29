@@ -15,6 +15,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="build.ps1" />
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\src\launcher\gui\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\gui\src\engine\deglEngineProcessHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -19,6 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -82,8 +84,13 @@ int main( int argc, char **argv ){
 		int i;
 		for( i=0; i<foxArgCount; i++ ){
 			const decString argument( parseArguments.GetArgumentAt( i )->ToUTF8() );
-			foxArgs[ i ] = new char[ argument.GetLength() + 1 ];
-			strcpy( foxArgs[ i ], argument.GetString() );
+			const int size = argument.GetLength();
+			foxArgs[ i ] = new char[ size + 1 ];
+			#ifdef OS_W32_VS
+				strncpy_s( foxArgs[ i ], size + 1, argument.GetString(), size );
+			#else
+				strncpy( foxArgs[ i ], argument.GetString(), size + 1 );
+			#endif
 		}
 		
 		argc = foxArgCount;
@@ -117,3 +124,22 @@ int main( int argc, char **argv ){
 	
 	return returnValue;
 }
+
+
+// visual studio does not support main as entry point
+#ifdef OS_W32_VS
+int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){
+	int nArgs;
+	LPWSTR * const szArglist = CommandLineToArgvW( GetCommandLineW(), &nArgs );
+	if( ! szArglist ){
+		wprintf( L"CommandLineToArgvW failed\n" );
+		return 0;
+	}
+	
+	const int result = main( nArgs, ( char** )szArglist );
+
+	LocalFree( szArglist );
+
+	return result;
+}
+#endif

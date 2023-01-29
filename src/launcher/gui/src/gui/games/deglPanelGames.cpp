@@ -337,7 +337,7 @@ long deglPanelGames::onListGamesDblClick( FXObject *sender, FXSelector selector,
 }
 
 long deglPanelGames::onListGamesHeaderClicked( FXObject*, FXSelector, void *pdata ){
-	const int colon = ( intptr_t )pdata;
+	const int colon = ( int )( intptr_t )pdata;
 	
 	if( colon == 0 ){
 		if( pSortListGames == elgsTitleAsc ){
