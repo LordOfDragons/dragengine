@@ -64,7 +64,7 @@ jobs:
         
       - name: Restore NuGet packages
         working-directory: vs
-        run: nuget restore vs.sln
+        run: nuget restore dragengine.sln
       
       - name: Init custom.py
         run: |
@@ -79,7 +79,7 @@ jobs:
         run: |
           $Config = "${{ inputs.debugBuild && 'Debug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
-          msbuild /m -maxcpucount /p:Configuration=$Config /p:BuildVersion=$BuilVersion vs.sln
+          msbuild /m -maxcpucount /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
       
       - name: Archive
         run: |
