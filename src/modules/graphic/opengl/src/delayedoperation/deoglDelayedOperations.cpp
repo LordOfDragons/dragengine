@@ -98,24 +98,9 @@ pOGLObjectCount( 0 ),
 pOGLObjectSize( 0 ),
 pHasSynchronizeOperations( false )
 {
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglShaderSources *sources;
-	deoglShaderDefines defines;
-	
-	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
-		DEASSERT_NOTNULL( sources )
-		pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		defines.SetDefine( "WITH_LAYER", "1" );
-		pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	// do not create any kind of resources here which access this object to clean up.
+	// this is going to segfault since the object instance has not been assigned yet
+	// in the caller to the globally used variable
 }
 
 deoglDelayedOperations::~deoglDelayedOperations(){
@@ -762,14 +747,32 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		OGL_CHECK( pRenderThread, glViewport( 0, 0, size.x, size.y ) );
 		
 		// set up shader
+		const deoglShaderProgram *program = nullptr;
+
 		if( channelTexture ){
-			pRenderThread.GetShader().ActivateShader( pShaderGenConeMap );
-			shader = pShaderGenConeMap->GetCompiled();
+			if( ! pShaderGenConeMap ){
+				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
+				DEASSERT_NOTNULL( sources )
+				deoglShaderDefines defines;
+				pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
+			}
+			program = pShaderGenConeMap;
 			
 		}else{
-			pRenderThread.GetShader().ActivateShader( pShaderGenConeMapLayer );
-			shader = pShaderGenConeMapLayer->GetCompiled();
+			if( ! pShaderGenConeMapLayer ){
+				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
+				DEASSERT_NOTNULL( sources )
+				deoglShaderDefines defines;
+				defines.SetDefines( "WITH_LAYER" );
+				pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
+			}
+			program = pShaderGenConeMapLayer;
 		}
+
+		pRenderThread.GetShader().ActivateShader( program );
+		shader = program->GetCompiled();
 		
 		shader->SetParameterInt( spgcmWidth, size.x );
 		shader->SetParameterFloat( spgcmSrcTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
