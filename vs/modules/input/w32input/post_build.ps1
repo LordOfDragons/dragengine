@@ -8,7 +8,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\input\w32input\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\input\w32input\$Version"
 
 Write-Host "Windows Input Module: Copy Module to '$TargetDir'"
 
@@ -24,7 +24,7 @@ Copy-Files -Pattern "*" -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\da
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\input\w32input\$Version"
 Write-Host "Windows Input Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "inpw32.pdb") -Destination $TargetDir

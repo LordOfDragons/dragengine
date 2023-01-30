@@ -8,7 +8,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\image\png3d\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\image\png3d\$Version"
 
 Write-Host "PNG3D Module: Copy Module to '$TargetDir'"
 
@@ -21,7 +21,7 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\image\png3d\$Version"
 Write-Host "PNG3D Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "imgpng3d.pdb") -Destination $TargetDir

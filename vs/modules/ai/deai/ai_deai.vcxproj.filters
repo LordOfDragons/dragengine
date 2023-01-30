@@ -212,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\ai\deai\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\ai\deai\src\module.xml">

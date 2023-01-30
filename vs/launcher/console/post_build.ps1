@@ -13,7 +13,7 @@ Install-Files -Path "$OutputDir\delauncher-console.exe" -Destination $TargetDir
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistDEPdb"
+$TargetDir = "$OutputDir\$PathDistDEPdbLauncherBin"
 Write-Host "Console Launcher: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\delauncher-console.pdb" -Destination $TargetDir

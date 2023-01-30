@@ -49,7 +49,7 @@
 
 delLauncher::delLauncher( const char *loggerSource, const char *engineLogFileTitle ) :
 pLoggerHistory( delLoggerHistory::Ref::New( new delLoggerHistory ) ),
-pLogSource ( loggerSource ),
+pLogSource( loggerSource ),
 pEngine( *this, engineLogFileTitle ),
 pGameManager( *this ),
 pPatchManager( *this ),

@@ -86,7 +86,7 @@ decString::decString( const decString &string1, const decString &string2 ){
 	
 	pString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( pString, length1, string1.pString );
+		strcpy_s( pString, length1 + 1, string1.pString );
 		strcpy_s( pString + length1, length2 + 1, string2.pString );
 	#else
 		strcpy( pString, string1.pString );
@@ -104,7 +104,7 @@ decString::decString( const decString &string1, const char *string2 ){
 	
 	pString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( pString, length1, string1.pString );
+		strcpy_s( pString, length1 + 1, string1.pString );
 		strcpy_s( pString + length1, length2 + 1, string2 );
 	#else
 		strcpy( pString, string1.pString );
@@ -376,7 +376,7 @@ void decString::Append( const decString &string ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 		strcpy_s( newString + length1, length2 + 1, string.pString );
 	#else
 		strcpy( newString, pString );
@@ -397,7 +397,7 @@ void decString::Append( const char *string ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 		strcpy_s( newString + length1, length2 + 1, string );
 	#else
 		strcpy( newString, pString );
@@ -413,7 +413,7 @@ void decString::AppendCharacter( char character ){
 	
 	char * const newString = new char[ length + 2 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length, pString );
+		strcpy_s( newString, length + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -445,7 +445,7 @@ void decString::AppendValue( char value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -479,7 +479,7 @@ void decString::AppendValue( unsigned char value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -509,7 +509,7 @@ void decString::AppendValue( short value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -532,7 +532,7 @@ void decString::AppendValue( short unsigned value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -555,7 +555,7 @@ void decString::AppendValue( int value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -578,7 +578,7 @@ void decString::AppendValue( unsigned int value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -601,7 +601,7 @@ void decString::AppendValue( float value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -624,7 +624,7 @@ void decString::AppendValue( double value ){
 	
 	char * const newString = new char[ length1 + length2 + 1 ];
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -660,7 +660,7 @@ void decString::AppendFormatUsing( const char *format, va_list args ){
 	char * const newString = new char[ length1 + length2 + 1 ];
 	
 	#ifdef OS_W32_VS
-		strcpy_s( newString, length1, pString );
+		strcpy_s( newString, length1 + 1, pString );
 	#else
 		strcpy( newString, pString );
 	#endif
@@ -985,7 +985,7 @@ decString decString::GetMiddle( int start, int end ) const{
 		
 		string.Set( ' ', count );
 		#ifdef OS_W32_VS
-			strncpy_s( string.pString, count + 2, pString + start, count + 1 );
+			strncpy_s( string.pString, count + 1, pString + start, count );
 		#else
 			strncpy( string.pString, pString + start, count );
 		#endif

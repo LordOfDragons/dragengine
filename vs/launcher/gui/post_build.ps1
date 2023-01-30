@@ -20,7 +20,7 @@ Copy-Files -SourceDir $FoxDir -TargetDir $TargetDir -Pattern "*.dll"
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistDEPdb"
+$TargetDir = "$OutputDir\$PathDistDEPdbLauncherBin"
 Write-Host "GUI Launcher: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\delauncher-gui.pdb" -Destination $TargetDir

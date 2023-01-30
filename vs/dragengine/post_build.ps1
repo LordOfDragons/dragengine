@@ -6,7 +6,7 @@
 Import-Module "$PSScriptRoot\..\shared.psm1"
 
 # build
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "include\dragengine"
+$TargetDir = "$OutputDir\include\dragengine"
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
@@ -16,7 +16,7 @@ Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 
 
 # application
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDESystem
+$TargetDir = "$OutputDir\$PathDistDESystem"
 
 Write-Host "Drag[en]gine App: Copy Library to '$TargetDir'"
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "dragengine.dll") -Destination $TargetDir
@@ -40,7 +40,7 @@ Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "dragengine.exp") -De
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdb
+$TargetDir = "$OutputDir\$PathDistDEPdbSystem"
 Write-Host "Drag[en]gine Debug: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "dragengine.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\dragengine.pdb" -Destination $TargetDir

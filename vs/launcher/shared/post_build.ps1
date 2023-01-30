@@ -6,7 +6,7 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 # build
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "include\delauncher"
+$TargetDir = "$OutputDir\include\delauncher"
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
@@ -16,7 +16,7 @@ Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 
 
 # application
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDESystem
+$TargetDir = "$OutputDir\$PathDistDESystem"
 
 Write-Host "DELauncherShared App: Copy Library to '$TargetDir'"
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "delauncher.dll") -Destination $TargetDir
@@ -47,7 +47,7 @@ Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "delauncher.exp") -De
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdb
+$TargetDir = "$OutputDir\$PathDistDEPdbSystem"
 Write-Host "DELauncherShared Debug: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "delauncher.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\delauncher.pdb" -Destination $TargetDir

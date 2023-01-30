@@ -8,7 +8,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\graphic\opengl\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\graphic\opengl\$Version"
 Write-Host "OpenGL Module: Copy Module to '$TargetDir'"
 
 $Library = Join-Path -Path $OutputDir -ChildPath "graopengl.dll"
@@ -30,7 +30,7 @@ Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\shaderSources")
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\graphic\opengl\$Version"
 Write-Host "OpenGL Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "graopengl.pdb") -Destination $TargetDir

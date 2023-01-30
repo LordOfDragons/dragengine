@@ -230,5 +230,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\animator\deanimator\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
 </Project>

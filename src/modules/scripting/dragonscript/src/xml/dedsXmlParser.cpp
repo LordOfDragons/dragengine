@@ -55,7 +55,7 @@ dedsXmlParser::~dedsXmlParser(){
 
 void dedsXmlParser::UnexpectedEOF( int line, int pos ){
 	const int newline = pLogLen == 0 ? 0 : 1;
-	char * const newLog = new char[ pLogLen + newline + 28 ];
+	char * const newLog = new char[ pLogLen + newline + 29 ];
 
 	if( pLogLen > 0 ){
 		#ifdef OS_W32_VS
@@ -70,9 +70,9 @@ void dedsXmlParser::UnexpectedEOF( int line, int pos ){
 	const int messageLen = ( int )strlen( message );
 
 	#ifdef OS_W32_VS
-		strncpy_s( newLog + pLogLen + newline, messageLen + 1, message, messageLen );
+		strcpy_s( newLog + pLogLen + newline, messageLen + 1, message );
 	#else
-		strncpy( newLog + pLogLen + newline, message, messageLen + 1 );
+		strcpy( newLog + pLogLen + newline, message );
 	#endif
 
 	delete [] pLog;

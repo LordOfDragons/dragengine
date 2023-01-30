@@ -87,9 +87,9 @@ int main( int argc, char **argv ){
 			const int size = argument.GetLength();
 			foxArgs[ i ] = new char[ size + 1 ];
 			#ifdef OS_W32_VS
-				strncpy_s( foxArgs[ i ], size + 1, argument.GetString(), size );
+				strcpy_s( foxArgs[ i ], size + 1, argument.GetString() );
 			#else
-				strncpy( foxArgs[ i ], argument.GetString(), size + 1 );
+				strcpy( foxArgs[ i ], argument.GetString() );
 			#endif
 		}
 		

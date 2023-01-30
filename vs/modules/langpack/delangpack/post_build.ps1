@@ -8,7 +8,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\langpack\delangpack\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\langpack\delangpack\$Version"
 
 Write-Host "DELangPack Module: Copy Module to '$TargetDir'"
 
@@ -21,7 +21,7 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\langpack\delangpack\$Version"
 Write-Host "DELangPack Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "langdelangpack.pdb") -Destination $TargetDir

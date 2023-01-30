@@ -9,7 +9,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\scripting\dragonscript\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\scripting\dragonscript\$Version"
 
 Write-Host "DragonScript Module: Copy Module to '$TargetDir'"
 
@@ -43,7 +43,7 @@ Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTa
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "scrdscript.pdb") -Destination $TargetDir

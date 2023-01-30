@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\jpeg\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegImageInfos.h">

@@ -49,7 +49,7 @@ function Copy-Files {
     $SourceDir = Resolve-Path $SourceDir
 
     if (!(Test-Path $TargetDir)) {
-        New-Item -ItemType Directory $TargetDir -ErrorAction SilentlyContinue | Out-Null
+        New-Item -ItemType Directory $TargetDir | Out-Null
     }
 
     $CutLength = $SourceDir.Length + 1
@@ -60,7 +60,7 @@ function Copy-Files {
         $ParentPath = Split-Path -Path $TargetPath -Parent
         # Write-Host $RelativePath
         if (!(Test-Path $ParentPath)) {
-            New-Item -ItemType Directory $ParentPath -ErrorAction SilentlyContinue | Out-Null
+            New-Item -ItemType Directory $ParentPath | Out-Null
         }
         Copy-Item -Path $_.FullName -Destination (Join-Path -Path $TargetDir -ChildPath $RelativePath) -Force
     }
@@ -125,18 +125,23 @@ function Expand-TarBz2 {
 ##########################
 
 New-Variable -Name PathDistDE -Value "Distribute\Dragengine\Application" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDEData -Value "$PathDistDE\@ProgramFiles\Dragengine\Data" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEBase -Value "$PathDistDE\@ProgramFiles\Dragengine" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEData -Value "$PathDistDEBase\Data" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEDataModules -Value "$PathDistDEData\modules" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDEShares -Value "$PathDistDE\@ProgramFiles\Dragengine\Share" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEShares -Value "$PathDistDEBase\Share" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESharesModules -Value "$PathDistDEShares\modules" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESystem -Value "$PathDistDE\@System" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDELauncherBin -Value "$PathDistDE\@ProgramFiles\Dragengine\Launchers\Bin" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDELauncherShares -Value "$PathDistDE\@ProgramFiles\Dragengine\Launchers\Share" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDELauncherBin -Value "$PathDistDEBase\Launchers\Bin" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDELauncherShares -Value "$PathDistDEBase\Launchers\Share" -Scope Global -Option ReadOnly -Force
 
 New-Variable -Name PathDistDESdk -Value "Distribute\Dragengine\SDK" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDESdkInc -Value "$PathDistDESdk\@ProgramFiles\Dragengine\SDK\include" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDESdkLib -Value "$PathDistDESdk\@ProgramFiles\Dragengine\SDK\lib" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDESdkBase -Value "$PathDistDESdk\@ProgramFiles\Dragengine\SDK" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDESdkInc -Value "$PathDistDESdkBase\include" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDESdkLib -Value "$PathDistDESdkBase\lib" -Scope Global -Option ReadOnly -Force
 
 New-Variable -Name PathDistDEDebug -Value "Distribute\Dragengine\Debug" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDEPdb -Value "$PathDistDEDebug\@ProgramFiles\Dragengine\PDB" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistDEPdbModules -Value "$PathDistDEPdb\EngineModules" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEPdbBase -Value "$PathDistDEDebug\@ProgramFiles\Dragengine" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEPdbData -Value "$PathDistDEPdbBase\Data" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEPdbDataModules -Value "$PathDistDEPdbData\modules" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEPdbSystem -Value "$PathDistDEDebug\@System" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEPdbLauncherBin -Value "$PathDistDEPdbBase\Launchers\Bin" -Scope Global -Option ReadOnly -Force

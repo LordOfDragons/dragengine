@@ -26,5 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\animation\deanim\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
 </Project>

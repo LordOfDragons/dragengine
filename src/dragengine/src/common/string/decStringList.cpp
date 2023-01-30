@@ -331,7 +331,7 @@ decString decStringList::Join( const char *separator ) const{
 	for( i=0; i<pStringCount; i++ ){
 		if( i > 0 && separatorLength > 0 ){
 			#ifdef OS_W32_VS
-				strcpy_s( next, separatorLength, separator );
+				strcpy_s( next, separatorLength + 1, separator );
 			#else
 				strcpy( next, separator );
 			#endif
@@ -342,9 +342,9 @@ decString decStringList::Join( const char *separator ) const{
 		
 		if( stringLength > 0 ){
 			#ifdef OS_W32_VS
-				strncpy_s( next, stringLength + 1, pStrings[ i ]->GetString(), stringLength );
+				strcpy_s( next, stringLength + 1, pStrings[ i ]->GetString() );
 			#else
-				strncpy( next, pStrings[ i ]->GetString(), stringLength );
+				strcpy( next, pStrings[ i ]->GetString() );
 			#endif
 			next += stringLength;
 		}

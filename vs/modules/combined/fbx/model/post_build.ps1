@@ -8,7 +8,7 @@ Import-Module "$PSScriptRoot\..\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\model\fbxmodel\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\model\fbxmodel\$Version"
 
 Write-Host "FBXModel Module: Copy Module to '$TargetDir'"
 
@@ -21,7 +21,7 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\model\fbxmodel\$Version"
 Write-Host "FBXModel Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "mdlfbx.pdb") -Destination $TargetDir

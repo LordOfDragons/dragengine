@@ -28,8 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\launcher\console\SConscript" />
-    <None Include="..\..\..\src\launcher\console\src\beos_res.rdef" />
-    <None Include="..\..\..\src\launcher\console\src\consolelauncher_macos.mm" />
     <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>

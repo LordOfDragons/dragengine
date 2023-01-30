@@ -8,7 +8,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDEDataModules\crashrecovery\basicrecovery\$Version"
+$TargetDir = "$OutputDir\$PathDistDEDataModules\crashrecovery\basicrecovery\$Version"
 
 Write-Host "CRBasicRecovery Module: Copy Module to '$TargetDir'"
 
@@ -21,7 +21,7 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
+$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\crashrecovery\basicrecovery\$Version"
 Write-Host "CRBasicRecovery Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "crbasicrecovery.pdb") -Destination $TargetDir

@@ -15,8 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\extern\libtheora\build.ps1" />
     <None Include="..\..\..\..\src\modules\video\theora\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethOggReader.h">

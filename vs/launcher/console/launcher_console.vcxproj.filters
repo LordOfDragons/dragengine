@@ -17,12 +17,6 @@
   <ItemGroup>
     <None Include="post_build.ps1" />
     <None Include="..\..\..\src\launcher\console\SConscript" />
-    <None Include="..\..\..\src\launcher\console\src\consolelauncher_macos.mm">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="..\..\..\src\launcher\console\src\beos_res.rdef">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\launcher\console\src\declLauncher.cpp">

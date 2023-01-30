@@ -69,5 +69,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="..\..\..\..\src\modules\archive\delga\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
 </Project>

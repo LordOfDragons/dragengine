@@ -43,5 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\ies\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
 </Project>

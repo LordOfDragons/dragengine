@@ -34,7 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\video\theora\SConscript" />
-    <None Include="..\..\..\extern\libtheora\build.ps1" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\video\theora\src\dethInfos.h" />

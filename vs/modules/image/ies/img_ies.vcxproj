@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\ies\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

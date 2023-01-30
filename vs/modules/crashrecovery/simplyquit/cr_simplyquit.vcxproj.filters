@@ -32,5 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\crashrecovery\simplyquit\SConscript" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
 </Project>

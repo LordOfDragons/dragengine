@@ -46,6 +46,7 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\archive\delga\SConscript" />
     <None Include="packages.config" />
+    <None Include="post_build.ps1" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
