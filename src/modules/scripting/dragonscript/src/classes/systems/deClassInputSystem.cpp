@@ -451,25 +451,26 @@ void deClassInputSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsString = engine->GetClassString();
 	init.clsModPar = pDS.GetClassModuleParameter();
 	init.clsInputDevice = pDS.GetClassInputDevice();
+	init.clsInputEventKeyLocation = pClsInputEventKeyLocation;
 	
 	AddFunction( new nfGetCaptureInputDevices( init ) );
 	AddFunction( new nfSetCaptureInputDevices( init ) );
 	
-	AddFunction( new nfGetDeviceCount( init ) );;
-	AddFunction( new nfGetDeviceAt( init ) );;
-	AddFunction( new nfIndexOfDeviceWithID( init ) );;
-	AddFunction( new nfIndexOfButtonWithID( init ) );;
-	AddFunction( new nfIndexOfAxisWithID( init ) );;
-	AddFunction( new nfIndexOfFeedbackWithID( init ) );;
-	AddFunction( new nfGetButtonPressed( init ) );;
-	AddFunction( new nfGetButtonTouched( init ) );;
-	AddFunction( new nfGetAxisValue( init ) );;
-	AddFunction( new nfGetFeedbackValue( init ) );;
-	AddFunction( new nfSetFeedbackValue( init ) );;
-	AddFunction( new nfButtonMatchingKeyCode( init ) );;
-	AddFunction( new nfButtonMatchingKeyChar( init ) );;
-	AddFunction( new nfButtonMatchingKeyCode2( init ) );;
-	AddFunction( new nfButtonMatchingKeyChar2( init ) );;
+	AddFunction( new nfGetDeviceCount( init ) );
+	AddFunction( new nfGetDeviceAt( init ) );
+	AddFunction( new nfIndexOfDeviceWithID( init ) );
+	AddFunction( new nfIndexOfButtonWithID( init ) );
+	AddFunction( new nfIndexOfAxisWithID( init ) );
+	AddFunction( new nfIndexOfFeedbackWithID( init ) );
+	AddFunction( new nfGetButtonPressed( init ) );
+	AddFunction( new nfGetButtonTouched( init ) );
+	AddFunction( new nfGetAxisValue( init ) );
+	AddFunction( new nfGetFeedbackValue( init ) );
+	AddFunction( new nfSetFeedbackValue( init ) );
+	AddFunction( new nfButtonMatchingKeyCode( init ) );
+	AddFunction( new nfButtonMatchingKeyChar( init ) );
+	AddFunction( new nfButtonMatchingKeyCode2( init ) );
+	AddFunction( new nfButtonMatchingKeyChar2( init ) );
 	
 	AddFunction( new nfGetParameterCount( init ) );
 	AddFunction( new nfGetParameterInfo( init ) );
