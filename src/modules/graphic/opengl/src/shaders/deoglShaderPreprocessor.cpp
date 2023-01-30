@@ -1470,7 +1470,7 @@ bool deoglShaderPreprocessor::pParseDirectiveAnything( sToken &token ){
 decString deoglShaderPreprocessor::pDirectiveTokenString( const sToken &token ) const{
 	decString string;
 	string.Set( ' ', token.length );
-	#ifdef OS_W32
+	#ifdef OS_W32_VS
 		strncpy_s( (char*)string.GetString(), token.length + 1, token.begin, token.length );
 	#else
 		strncpy( (char*)string.GetString(), token.begin, token.length );
@@ -1576,7 +1576,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend( const char *text, int length
 		pResolveBufferSize = newSize;
 	}
 	
-	#ifdef OS_W32
+	#ifdef OS_W32_VS
 		strncpy_s( pResolveBuffer + pResolveBufferLen, length + 1, text, length );
 	#else
 		strncpy( pResolveBuffer + pResolveBufferLen, text, length );
@@ -1597,7 +1597,7 @@ void deoglShaderPreprocessor::pSetResolveSymbolName( const char *name, int lengt
 		pResolveSymbolNameSize = newSize;
 	}
 	
-	#ifdef OS_W32
+	#ifdef OS_W32_VS
 		strncpy_s( pResolveSymbolName, length + 1, name, length );
 	#else
 		strncpy( pResolveSymbolName, name, length );
