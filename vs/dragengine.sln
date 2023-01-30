@@ -127,6 +127,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "launcher shared", "launcher
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB74BE9F-FE59-4B40-B9CE-A2D8D973DF01}"
 	ProjectSection(SolutionItems) = preProject
+		..\.gitattributes = ..\.gitattributes
 		Directory.Build.Props = Directory.Build.Props
 		Get-FileHash.psm1 = Get-FileHash.psm1
 		shared.psm1 = shared.psm1
