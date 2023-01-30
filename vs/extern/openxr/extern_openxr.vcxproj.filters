@@ -15,6 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\extern\libjpeg\SConscript" />
+    <None Include="build.ps1" />
+    <None Include="..\..\..\extern\openxr\SConscript" />
   </ItemGroup>
 </Project>
