@@ -237,6 +237,8 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei ){
 		}
 	}
 	
+	delete [] symbolBuffer;
+	
 	#else
 	void *stack[ 100 ];
 	unsigned short frames;
@@ -245,7 +247,6 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei ){
 	
 	void *hack1 = ( void* )&symbolData;
 	SYMBOL_INFO symbol = *( ( SYMBOL_INFO* )hack1 );
-	const HANDLE process = GetCurrentProcess();
 	
 	symbol.MaxNameLen = 1020;
 	
@@ -262,8 +263,6 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei ){
 		}
 	}
 	#endif
-	
-	delete [] symbolBuffer;
 
 	exit( EXCEPTION_CONTINUE_SEARCH );
 }
