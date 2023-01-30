@@ -67,10 +67,9 @@ void dedsXmlParser::UnexpectedEOF( int line, int pos ){
 	}
 
 	const char * const message = "Unexpected end-of-file found";
-	const int messageLen = ( int )strlen( message );
 
 	#ifdef OS_W32_VS
-		strcpy_s( newLog + pLogLen + newline, messageLen + 1, message );
+		strcpy_s( newLog + pLogLen + newline, strlen( message ) + 1, message );
 	#else
 		strcpy( newLog + pLogLen + newline, message );
 	#endif
