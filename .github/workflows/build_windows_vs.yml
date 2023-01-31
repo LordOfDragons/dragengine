@@ -84,11 +84,8 @@ jobs:
       - name: Git LFS Pull
         if: ${{ inputs.lfscache }}
         run: |
-          git lfs pull 2>&1 | tee lfs.log
-          if grep -q "error:" "lfs.log" ; then
-            git lfs logs last
-            exit 1
-          fi
+          git lfs pull
+          git lfs logs last
       
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v1.1
