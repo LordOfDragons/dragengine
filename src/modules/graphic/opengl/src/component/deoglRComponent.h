@@ -174,6 +174,8 @@ public:
 	
 	deoglEnvironmentMap *pEnvMap;
 	
+	uint32_t pCSOctreeIndex;
+	
 	bool pWorldMarkedRemove;
 	
 	deoglRComponent *pLLWorldPrev;
@@ -453,6 +455,10 @@ public:
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	
 	
 	

@@ -92,6 +92,8 @@ pVAO( NULL ),
 
 pDirtyParticles( true ),
 
+pCSOctreeIndex( 0 ),
+
 pWorldMarkedRemove( false ){
 	LEAK_CHECK_CREATE( renderThread, ParticleEmitterInstance );
 }

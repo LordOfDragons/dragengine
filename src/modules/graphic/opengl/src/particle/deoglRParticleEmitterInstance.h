@@ -101,6 +101,8 @@ private:
 	
 	bool pDirtyParticles;
 	
+	uint32_t pCSOctreeIndex;
+	
 	bool pWorldMarkedRemove;
 	
 public:
@@ -223,6 +225,12 @@ public:
 	
 	/** Prepare for quick disposal of particle emitter instance. */
 	void PrepareQuickDispose();
+	
+	
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	/*@}*/
 	
 	

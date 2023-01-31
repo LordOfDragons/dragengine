@@ -146,6 +146,8 @@ public:
 	deoglSPBlockUBO::Ref pParamBlockInstance;
 	deoglSPBlockUBO::Ref pParamBlockOccQuery;
 	
+	uint32_t pCSOctreeIndex;
+	
 	bool pWorldMarkedRemove;
 	
 	deoglRLight *pLLWorldPrev;
@@ -510,6 +512,10 @@ public:
 	
 	/** Prepare for quick disposal of light. */
 	void PrepareQuickDispose();
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	/*@}*/
 	
 	

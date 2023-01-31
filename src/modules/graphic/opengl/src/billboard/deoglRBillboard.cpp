@@ -121,6 +121,8 @@ pRenderVisible( true ),
 
 pMarked( false ),
 
+pCSOctreeIndex( 0 ),
+
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
 pLLWorldNext( NULL ),

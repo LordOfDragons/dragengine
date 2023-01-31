@@ -113,6 +113,8 @@ public:
 	
 	bool pMarked;
 	
+	uint32_t pCSOctreeIndex;
+	
 	bool pWorldMarkedRemove;
 	
 	deoglRBillboard *pLLWorldPrev;
@@ -411,6 +413,10 @@ public:
 	
 	/** Set sky shadow split mask. */
 	void SetSkyShadowSplitMask( int mask );
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	/*@}*/
 	
 	

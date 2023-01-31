@@ -377,61 +377,68 @@ void deoglWorldOctree::WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex 
 	}
 	
 	const decDVector &refpos = csoctree.GetReferencePosition();
-	int i, nextChildData = csoctree.GetNextData();
+	int i, nextChildNode = csoctree.GetNextNode();
 	
-	deoglWorldCSOctree::sCSData &node = csoctree.GetDataAt( nodeIndex );
+	deoglWorldCSOctree::sCSNode &node = csoctree.GetNodeAt( nodeIndex );
 	node.SetExtends( GetMinimumExtend() - refpos, GetMaximumExtend() - refpos );
-	node.data1 = nextChildData;
-	node.data2 = ( uint32_t )( ( pCSElementCount << 4 ) | ( pCSChildCount & 0xf ) );
+	node.firstNode = nextChildNode;
+	node.childNodeCount = ( uint32_t )pCSChildCount;
+	node.elementCount = ( uint32_t )pCSElementCount;
 	
 	csoctree.AdvanceNextData( pCSChildCount );
 	
 	for( i=0; i<pComponents.GetCount(); i++ ){
-		const deoglRComponent &component = *( const deoglRComponent* )pComponents.GetAt( i );
-		const deoglWorldCSOctree::eCSElementTypes type = component.GetRenderStatic()
-			? deoglWorldCSOctree::ecsetStaticComponent : deoglWorldCSOctree::ecsetDynamicComponent;
+		deoglRComponent &component = *( deoglRComponent* )pComponents.GetAt( i );
+		uint32_t flags = deoglWorldCSOctree::ecsefComponent;
+		if( component.GetRenderStatic() ){
+			flags |= deoglWorldCSOctree::ecsefStatic;
+		}
 		
-		deoglWorldCSOctree::sCSData &node2 = csoctree.NextDataRef();
-		node2.SetExtends( component.GetMinimumExtend() - refpos, component.GetMaximumExtend() - refpos );
-		node2.data1 = ( uint32_t )csoctree.NextElement( type, &component );
-		node2.data2 = ( uint32_t )type;
-		node2.SetLayerMask( component.GetLayerMask() );
+		component.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetComponent, &component ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( component.GetCSOctreeIndex() );
+		element.SetExtends( component.GetMinimumExtend() - refpos, component.GetMaximumExtend() - refpos );
+		element.elementindex = component.GetCSOctreeIndex();
+		element.flags = flags;
+		element.SetLayerMask( component.GetLayerMask() );
 	}
 	
 	for( i=0; i<pBillboards.GetCount(); i++ ){
-		const deoglRBillboard &billboard = *( const deoglRBillboard* )pBillboards.GetAt( i );
+		deoglRBillboard &billboard = *( deoglRBillboard* )pBillboards.GetAt( i );
 		
-		deoglWorldCSOctree::sCSData &node2 = csoctree.NextDataRef();
-		node2.SetExtends( billboard.GetMinimumExtend() - refpos, billboard.GetMaximumExtend() - refpos );
-		node2.data1 = ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetBillboard, &billboard );
-		node2.data2 = ( uint32_t )deoglWorldCSOctree::ecsetBillboard;
-		node2.SetLayerMask( billboard.GetLayerMask() );
+		billboard.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetBillboard, &billboard ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( billboard.GetCSOctreeIndex() );
+		element.SetExtends( billboard.GetMinimumExtend() - refpos, billboard.GetMaximumExtend() - refpos );
+		element.elementindex = billboard.GetCSOctreeIndex();
+		element.flags = ( uint32_t )deoglWorldCSOctree::ecsefBillboard;
+		element.SetLayerMask( billboard.GetLayerMask() );
 	}
 	
 	for( i=0; i<pParticleEmitters.GetCount(); i++ ){
-		const deoglRParticleEmitterInstance &emitter =
-			*( const deoglRParticleEmitterInstance* )pParticleEmitters.GetAt( i );
+		deoglRParticleEmitterInstance &emitter = *( deoglRParticleEmitterInstance* )pParticleEmitters.GetAt( i );
 		
-		deoglWorldCSOctree::sCSData &node2 = csoctree.NextDataRef();
-		node2.SetExtends( emitter.GetMinExtend() - refpos, emitter.GetMaxExtend() - refpos );
-		node2.data1 = ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetParticleEmitter, &emitter );
-		node2.data2 = ( uint32_t )deoglWorldCSOctree::ecsetParticleEmitter;
-		node2.SetLayerMask( emitter.GetLayerMask() );
+		emitter.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetParticleEmitter, &emitter ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( emitter.GetCSOctreeIndex() );
+		element.SetExtends( emitter.GetMinExtend() - refpos, emitter.GetMaxExtend() - refpos );
+		element.elementindex = emitter.GetCSOctreeIndex();
+		element.flags = ( uint32_t )deoglWorldCSOctree::ecsefParticleEmitter;
+		element.SetLayerMask( emitter.GetLayerMask() );
 	}
 	
 	for( i=0; i<pLights.GetCount(); i++ ){
-		const deoglRLight &light = *( const deoglRLight* )pLights.GetAt( i );
+		deoglRLight &light = *( deoglRLight* )pLights.GetAt( i );
 		
-		deoglWorldCSOctree::sCSData &node2 = csoctree.NextDataRef();
-		node2.data1 = ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetLight, &light );
-		node2.data2 = ( uint32_t )deoglWorldCSOctree::ecsetLight;
-		node2.SetLayerMask( light.GetLayerMask() );
+		light.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetLight, &light ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( light.GetCSOctreeIndex() );
+		element.SetExtends( light.GetMinimumExtend() - refpos, light.GetMaximumExtend() - refpos );
+		element.elementindex = light.GetCSOctreeIndex();
+		element.flags = ( uint32_t )deoglWorldCSOctree::ecsefLight;
+		element.SetLayerMask( light.GetLayerMask() );
 	}
 	
 	for( i=0; i<8; i++ ){
-		deoglWorldOctree * const node2 = ( deoglWorldOctree * )GetNodeAt( i );
-		if( node2 && node2->pCSElementCount > 0 ){
-			node2->WriteCSData( csoctree, nextChildData++ );
+		deoglWorldOctree * const element = ( deoglWorldOctree * )GetNodeAt( i );
+		if( element && element->pCSElementCount > 0 ){
+			element->WriteCSData( csoctree, nextChildNode++ );
 		}
 	}
 }

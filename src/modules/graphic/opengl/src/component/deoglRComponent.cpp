@@ -134,6 +134,8 @@ pDirtyTextureParamBlocks( true ),
 pDirtyDecals( true ),
 pDirtyDecalsRenderRenderables( true ),
 
+pCSOctreeIndex( 0 ),
+
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
 pLLWorldNext( NULL ),

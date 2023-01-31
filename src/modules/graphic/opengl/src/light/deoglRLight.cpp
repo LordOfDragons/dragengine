@@ -122,6 +122,8 @@ pDirtyPrepareSkinStateRenderables( true ),
 pDirtyRenderSkinStateRenderables( true ),
 pDirtyPrepareLightCanvas( true ),
 
+pCSOctreeIndex( 0 ),
+
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
 pLLWorldNext( NULL ),

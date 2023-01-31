@@ -38,26 +38,45 @@ class deoglWorldCSOctree : public deObject{
 public:
 	typedef deTObjectReference<deoglWorldCSOctree> Ref;
 	
-	/** Compute shader element types. */
-	enum eCSElementTypes{
-		ecsetStaticComponent = 0,
-		ecsetDynamicComponent = 1,
-		ecsetBillboard = 2,
-		ecsetParticleEmitter = 3,
-		ecsetLight = 4
+	/** Compute shader element flags. */
+	enum eCSElementFlags{
+		ecsefComponent = 0x1,
+		ecsefBillboard = 0x2,
+		ecsefParticleEmitter = 0x4,
+		ecsefLight = 0x8,
+		ecsefStatic = 0x10
 	};
 	
-	/** Compute shader data. Aligned to (u)vec4[3]. */
-	struct sCSData{
+	/** Compute shader node. Aligned to (u)vec4[3]. */
+	struct sCSNode{
 		float minExtendX, minExtendY, minExtendZ, reserved1;
 		float maxExtendX, maxExtendY, maxExtendZ, reserved2;
-		uint32_t data1; // firstNode or elementIndex
-		uint32_t data2; // 28-bits(elementCount), 4-bits(childNodeCount)
-		                // or elementType
+		uint32_t firstNode;
+		uint32_t childNodeCount;
+		uint32_t elementCount;
+		uint32_t reserved3;
+		
+		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	};
+	
+	/** Compute shader element. Aligned to (u)vec4[3]. */
+	struct sCSElement{
+		float minExtendX, minExtendY, minExtendZ, reserved1;
+		float maxExtendX, maxExtendY, maxExtendZ, reserved2;
+		uint32_t elementindex;
+		uint32_t flags;
 		uint32_t layerMaskUpper, layerMaskLower; // 64-bit layer mask
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
 		void SetLayerMask( const decLayerMask &layerMask );
+	};
+	
+	/** Compute shader element types. */
+	enum eCSElementTypes{
+		ecsetComponent = 0,
+		ecsetBillboard = 1,
+		ecsetParticleEmitter = 2,
+		ecsetLight = 3
 	};
 	
 	/** Link. */
@@ -71,15 +90,15 @@ private:
 	deoglRenderThread &pRenderThread;
 	decDVector pReferencePosition;
 	
-	deoglSPBlockSSBO::Ref pSSBOData;
-	sCSData *pPtrData;
-	
-// 	deoglSPBlockSSBO::Ref pSSBOResult;
+	deoglSPBlockSSBO::Ref pSSBONodes;
+	deoglSPBlockSSBO::Ref pSSBOElements;
+	sCSNode *pPtrNode;
+	sCSElement *pPtrElement;
 	
 	int pNodeCount;
 	int pElementCount;
 	
-	int pNextData;
+	int pNextNode;
 	int pNextElement;
 	
 	sElementLink *pElementLinks;
@@ -111,8 +130,11 @@ public:
 	
 	
 	
-	/** SSBO compute shader data. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOData() const{ return pSSBOData; }
+	/** SSBO compute shader nodes. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBONodes() const{ return pSSBONodes; }
+	
+	/** SSBO compute shader elements. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElements() const{ return pSSBOElements; }
 	
 	/** Count of nodes in SSBO data. */
 	inline int GetNodeCount() const{ return pNodeCount; }
@@ -131,29 +153,40 @@ public:
 	
 	
 	
-	/** Pointer to SSBO data write buffer or nullptr. */
-	inline sCSData *GetPtrData() const{ return pPtrData; }
+	/** Pointer to SSBO node write buffer or nullptr. */
+	inline sCSNode *GetPtrNode() const{ return pPtrNode; }
 	
-	/** SSBO data write buffer at index or throws exception if not writing. */
-	sCSData &GetDataAt( int index ) const;
+	/** SSBO node write buffer at index or throws exception if not writing. */
+	sCSNode &GetNodeAt( int index ) const;
 	
-	/** Index of next unused SSBO data. */
-	inline int GetNextData() const{ return pNextData; }
+	/** Index of next unused SSBO node. */
+	inline int GetNextNode() const{ return pNextNode; }
 	
-	/** Index of next unused SSBO data and advances index by one. */
-	int NextData();
+	/** Index of next unused SSBO node and advances index by one. */
+	int NextNode();
 	
-	/** Reference to next unused SSBO data and advances index by one. */
-	sCSData &NextDataRef();
+	/** Reference to next unused SSBO node and advances index by one. */
+	sCSNode &NextNodeRef();
 	
 	/** Advance index of next unused SSBO data. */
 	void AdvanceNextData( int amount );
+	
+	
+	
+	/** Pointer to SSBO element write buffer or nullptr. */
+	inline sCSElement *GetPtrElement() const{ return pPtrElement; }
+	
+	/** SSBO element write buffer at index or throws exception if not writing. */
+	sCSElement &GetElementAt( int index ) const;
 	
 	/** Index of next unused SSBO element. */
 	inline int GetNextElement() const{ return pNextElement; }
 	
 	/** Index of next unused SSBO element and advances index by one. */
 	int NextElement( eCSElementTypes type, const void *link );
+	
+	/** Reference to next unused SSBO element and advances index by one. */
+	sCSElement &NextElementRef( eCSElementTypes type, const void *link );
 	
 	/** Element link at index. */
 	const sElementLink &GetLinkAt( int index ) const;

@@ -36,7 +36,7 @@
 // Class deoglWorldCSOctree
 /////////////////////////////
 
-void deoglWorldCSOctree::sCSData::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoglWorldCSOctree::sCSNode::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
 	minExtendX = ( GLfloat )minExtend.x;
 	minExtendY = ( GLfloat )minExtend.y;
 	minExtendZ = ( GLfloat )minExtend.z;
@@ -45,7 +45,16 @@ void deoglWorldCSOctree::sCSData::SetExtends( const decDVector &minExtend, const
 	maxExtendZ = ( GLfloat )maxExtend.z;
 }
 
-void deoglWorldCSOctree::sCSData::SetLayerMask( const decLayerMask &layerMask ){
+void deoglWorldCSOctree::sCSElement::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+	minExtendX = ( GLfloat )minExtend.x;
+	minExtendY = ( GLfloat )minExtend.y;
+	minExtendZ = ( GLfloat )minExtend.z;
+	maxExtendX = ( GLfloat )maxExtend.x;
+	maxExtendY = ( GLfloat )maxExtend.y;
+	maxExtendZ = ( GLfloat )maxExtend.z;
+}
+
+void deoglWorldCSOctree::sCSElement::SetLayerMask( const decLayerMask &layerMask ){
 	layerMaskUpper = ( uint32_t )( layerMask.GetMask() >> 32 );
 	layerMaskLower = ( uint32_t )layerMask.GetMask();
 }
@@ -55,10 +64,11 @@ void deoglWorldCSOctree::sCSData::SetLayerMask( const decLayerMask &layerMask ){
 
 deoglWorldCSOctree::deoglWorldCSOctree( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pPtrData( nullptr ),
+pPtrNode( nullptr ),
+pPtrElement( nullptr ),
 pNodeCount( 0 ),
 pElementCount( 0 ),
-pNextData( 0 ),
+pNextNode( 0 ),
 pNextElement( 0 ),
 pElementLinks( nullptr ),
 pElementLinkSize( 0 ){
@@ -82,45 +92,56 @@ void deoglWorldCSOctree::SetReferencePosition( const decDVector &position ){
 }
 
 void deoglWorldCSOctree::Clear(){
-	DEASSERT_NULL( pPtrData )
+	DEASSERT_NULL( pPtrNode )
 	
 	pNodeCount = 0;
 	pElementCount = 0;
-	pNextData = 0;
+	pNextNode = 0;
 	pNextElement = 0;
 }
 
 void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 	DEASSERT_TRUE( nodeCount >= 0 )
 	DEASSERT_TRUE( elementCount >= 0 )
-	DEASSERT_NULL( pPtrData )
+	DEASSERT_NULL( pPtrNode )
 	
-	pSSBOData->SetElementCount( nodeCount );
 	pNodeCount = nodeCount;
-	
 	pElementCount = elementCount;
-	
-	pNextData = 0;
+	pNextNode = 0;
 	pNextElement = 0;
 	
 	if( nodeCount == 0 && elementCount == 0 ){
 		return;
 	}
 	
-	if( ! pSSBOData ){
-		pSSBOData.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
-		pSSBOData->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		pSSBOData->SetParameterCount( 3 );
-		pSSBOData->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
-		pSSBOData->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
-		pSSBOData->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
-		pSSBOData->MapToStd140();
-		pSSBOData->SetBindingPoint( 0 );
+	if( ! pSSBONodes ){
+		pSSBONodes.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pSSBONodes->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		pSSBONodes->SetParameterCount( 3 );
+		pSSBONodes->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+		pSSBONodes->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+		pSSBONodes->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+		pSSBONodes->MapToStd140();
+		pSSBONodes->SetBindingPoint( 0 );
 	}
+	pSSBONodes->SetElementCount( nodeCount );
+	pSSBONodes->MapBuffer();
 	
-	pSSBOData->MapBuffer();
+	if( ! pSSBOElements ){
+		pSSBOElements.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pSSBOElements->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		pSSBOElements->SetParameterCount( 3 );
+		pSSBOElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+		pSSBOElements->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
+		pSSBOElements->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+		pSSBOElements->MapToStd140();
+		pSSBOElements->SetBindingPoint( 1 );
+	}
+	pSSBOElements->SetElementCount( elementCount );
+	pSSBOElements->MapBuffer();
 	
-	pPtrData = ( sCSData* )pSSBOData->GetWriteBuffer();
+	pPtrNode = ( sCSNode* )pSSBONodes->GetWriteBuffer();
+	pPtrElement = ( sCSElement* )pSSBOElements->GetWriteBuffer();
 	
 	if( elementCount > pElementLinkSize ){
 		if( pElementLinks ){
@@ -135,38 +156,48 @@ void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 }
 
 void deoglWorldCSOctree::EndWriting(){
-	if( ! pPtrData ){
-		return;
+	if( pPtrElement ){
+		pNextElement = 0;
+		pPtrElement = nullptr;
+		pSSBOElements->UnmapBuffer();
 	}
-	
-	pNextData = 0;
-	pNextElement = 0;
-	pPtrData = nullptr;
-	
-	pSSBOData->UnmapBuffer();
+	if( pPtrNode ){
+		pNextNode = 0;
+		pPtrNode = nullptr;
+		pSSBONodes->UnmapBuffer();
+	}
 }
 
-deoglWorldCSOctree::sCSData &deoglWorldCSOctree::GetDataAt( int index ) const{
+
+
+deoglWorldCSOctree::sCSNode &deoglWorldCSOctree::GetNodeAt( int index ) const{
 	DEASSERT_TRUE( index >= 0 )
 	DEASSERT_TRUE( index < pNodeCount )
-	DEASSERT_NOTNULL( pPtrData )
-	return pPtrData[ index ];
+	DEASSERT_NOTNULL( pPtrNode )
+	return pPtrNode[ index ];
 }
 
-int deoglWorldCSOctree::NextData(){
-	DEASSERT_TRUE( pNextData < pNodeCount )
-	return pNextData++;
+int deoglWorldCSOctree::NextNode(){
+	DEASSERT_TRUE( pNextNode < pNodeCount )
+	return pNextNode++;
 }
 
-deoglWorldCSOctree::sCSData &deoglWorldCSOctree::NextDataRef(){
-	DEASSERT_TRUE( pNextData < pNodeCount )
-	return pPtrData[ pNextData++ ];
+deoglWorldCSOctree::sCSNode &deoglWorldCSOctree::NextNodeRef(){
+	return pPtrNode[ NextNode() ];
 }
 
 void deoglWorldCSOctree::AdvanceNextData( int amount ){
 	DEASSERT_TRUE( amount >= 0 )
-	DEASSERT_TRUE( pNextData + amount <= pNodeCount )
-	pNextData += amount;
+	DEASSERT_TRUE( pNextNode + amount <= pNodeCount )
+	pNextNode += amount;
+}
+
+
+deoglWorldCSOctree::sCSElement &deoglWorldCSOctree::GetElementAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pElementCount )
+	DEASSERT_NOTNULL( pPtrElement )
+	return pPtrElement[ index ];
 }
 
 int deoglWorldCSOctree::NextElement( eCSElementTypes type, const void *link ){
@@ -176,6 +207,10 @@ int deoglWorldCSOctree::NextElement( eCSElementTypes type, const void *link ){
 	pElementLinks[ pNextElement ].type = type;
 	pElementLinks[ pNextElement ].element = link;
 	return pNextElement++;
+}
+
+deoglWorldCSOctree::sCSElement &deoglWorldCSOctree::NextElementRef( eCSElementTypes type, const void *link ){
+	return pPtrElement[ NextElement( type, link ) ];
 }
 
 const deoglWorldCSOctree::sElementLink &deoglWorldCSOctree::GetLinkAt( int index ) const{
