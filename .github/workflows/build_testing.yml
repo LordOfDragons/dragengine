@@ -16,6 +16,10 @@ on:
       artifactTesting:
         required: true
         type: string
+      lfscache:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build:
@@ -24,9 +28,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          lfs: true
+          lfs: ${{ !inputs.lfscache }}
           submodules: recursive
           ref: ${{ inputs.branch }}
+      
+      - name: Create LFS file hash list
+        if: ${{ inputs.lfscache }}
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
+
+      - name: Restore LFS Cache
+        uses: actions/cache@v2
+        id: lfs-cache
+        if: ${{ inputs.lfscache }}
+        with:
+          path: .git/lfs
+          key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
+          restore-keys: lfs-cache-
+
+      - name: Git LFS Pull
+        if: ${{ inputs.lfscache }}
+        run: |
+          git lfs pull 2>&1 | tee lfs.log
+          if grep -q "error:" "lfs.log" ; then
+            git lfs logs last
+            exit 1
+          fi
       
       - name: Get Linux CI Installers
         uses: actions/download-artifact@v3

@@ -16,6 +16,10 @@ on:
       artifactInstaller:
         required: true
         type: string
+      lfscache:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build:
@@ -24,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          lfs: true
+          lfs: ${{ !inputs.lfscache }}
           submodules: 'recursive'
           ref: ${{ inputs.branch }}
       
