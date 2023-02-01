@@ -7,14 +7,12 @@ precision highp int;
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
 
-UBOLAYOUT_BIND(2) writeonly buffer SearchNodes {
+UBOLAYOUT_BIND(3) writeonly buffer SearchNodes {
 	uvec4 pSearchNodes[];
 };
 
 
 layout( local_size_x=64 ) in;
-
-uniform uint pCount;
 
 // the workgroup counts for the next indirect compute shader call is stored next
 // to the total node counter like this:
@@ -28,15 +26,15 @@ uniform uint pCount;
 // are set by the opengl module to 1. the next node index is used to keep track
 // of where to write the next node. glDispatchComputeIndirect does not care
 // about the additional data so combining them in the same buffer is fine
-layout( binding=3, offset=0) uniform atomic_uint pDispatchWorkGroupCount;
-layout( binding=3, offset=12) uniform atomic_uint pNextNodeIndex;
+layout( binding=4, offset=0) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=4, offset=12) uniform atomic_uint pNextNodeIndex;
 
 const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
 	// skip outside of parameter space
-	if( gl_GlobalInvocationID.x >= pCount ){
+	if( gl_GlobalInvocationID.x >= pNodeCount ){
 		return;
 	}
 	

@@ -103,7 +103,8 @@ void deoglWorldCSOctree::Clear(){
 void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 	DEASSERT_TRUE( nodeCount >= 0 )
 	DEASSERT_TRUE( elementCount >= 0 )
-	DEASSERT_NULL( pPtrNode )
+	
+	EndWriting();
 	
 	pNodeCount = nodeCount;
 	pElementCount = elementCount;

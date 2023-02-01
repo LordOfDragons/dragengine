@@ -1,0 +1,81 @@
+/* 
+ * Drag[en]gine OpenGL Graphic Module
+ *
+ * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#ifndef _DEOGLRENDERERPLANCOMPUTE_H_
+#define _DEOGLRENDERERPLANCOMPUTE_H_
+
+#include "../../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../world/deoglWorldCSOctree.h"
+
+class deoglRenderPlan;
+
+
+/**
+ * Render Plan compute.
+ */
+class deoglRenderPlanCompute{
+private:
+	deoglRenderPlan &pPlan;
+	
+	deoglWorldCSOctree::Ref pWorldCSOctree;
+	
+	deoglSPBlockUBO::Ref pFindConfig;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create render plan compute. */
+	deoglRenderPlanCompute( deoglRenderPlan &plan );
+	
+	/** Clean up render plan compute. */
+	~deoglRenderPlanCompute();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** World compute shader octree. */
+	inline const deoglWorldCSOctree::Ref &GetWorldCSOctree() const{ return pWorldCSOctree; }
+	
+	/** Prepare world compute shader octree. */
+	void PrepareWorldCSOctree();
+	
+	
+	
+	/** Prepare find config. */
+	void PrepareFindConfig();
+	
+	/** Find config. */
+	inline const deoglSPBlockUBO::Ref &GetFindConfig() const{ return pFindConfig; }
+	/*@}*/
+	
+	
+	
+protected:
+	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
+	float pCalculateErrorScaling();
+};
+
+#endif

@@ -23,6 +23,7 @@
 #define _DEOGLRENDERERPLAN_H_
 
 #include "deoglRenderPlanTasks.h"
+#include "deoglRenderPlanCompute.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../component/deoglComponentList.h"
 #include "../../envmap/deoglEnvMapFader.h"
@@ -203,6 +204,7 @@ private:
 	decMatrix pOcclusionTestMatrix;
 	decMatrix pOcclusionTestMatrixStereo;
 	deoglGIState *pGIState;
+	deoglRenderPlanCompute pCompute;
 	
 	deoglRenderPlanTasks pTasks;
 	
@@ -678,6 +680,10 @@ public:
 	
 	/** Drop GI state if present. */
 	void DropGIState();
+	
+	/** Compute. */
+	inline deoglRenderPlanCompute &GetCompute(){ return pCompute; }
+	inline const deoglRenderPlanCompute &GetCompute() const{ return pCompute; }
 	
 	
 	

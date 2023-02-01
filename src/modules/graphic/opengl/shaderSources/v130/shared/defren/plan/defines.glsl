@@ -1,4 +1,27 @@
 
+// configuration
+UBOLAYOUT uniform FindConfig{
+	// node culling
+	uint pNodeCount;
+	
+	vec4 pFrustumPlanes[ 6 ]; // xyz=normal, w=distance
+	bvec3 pFrustumSelect[ 6 ]; // greaterThan(pFrustumPlanes[x], vec3(0))
+	
+	vec3 pGIMinExtend;
+	vec3 pGIMaxExtend;
+	
+	// element culling
+	uint pCullFlags;  // deoglRPVisitorFindContent
+	bool pCullLayerMask;  // deoglRPVisitorFindContent
+	uint pLayerMaskLower;  // deoglRPVisitorFindContent
+	uint pLayerMaskUpper;  // deoglRPVisitorFindContent
+	
+	vec3 pCameraPosition;  // pPlan.GetCameraPosition()
+	vec3 pCameraView;  // pPlan.GetInverseCameraMatrix().TransformView()
+	float pErrorScaling;  // deoglRPVisitorFindContent
+};
+
+
 // world octree data flags
 const uint wodfComponent = uint( 0x1 );
 const uint wodfBillboard = uint( 0x2 );
@@ -17,7 +40,7 @@ struct sWorldOctreeNode{
 	uint elementCount;
 };
 
-UBOLAYOUT_BIND(0) readonly buffer WorldOctreeNode {
+UBOLAYOUT_BIND(1) readonly buffer WorldOctreeNode {
 	sWorldOctreeNode pWorldOctreeNode[];
 };
 
@@ -33,6 +56,6 @@ struct sWorldOctreeElement{
 	uvec2 layerMask;
 };
 
-UBOLAYOUT_BIND(1) readonly buffer WorldOctreeElement {
+UBOLAYOUT_BIND(2) readonly buffer WorldOctreeElement {
 	sWorldOctreeElement pWorldOctreeElement[];
 };

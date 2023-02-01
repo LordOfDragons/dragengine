@@ -29,6 +29,7 @@
 #include "deoglRenderPlanMasked.h"
 #include "deoglRenderPlanEnvMap.h"
 #include "parallel/deoglRPTFindContent.h"
+#include "../deoglRenderCompute.h"
 #include "../deoglRenderOcclusion.h"
 #include "../deoglRenderReflection.h"
 #include "../deoglRenderWorld.h"
@@ -88,6 +89,7 @@
 #include "../../vr/deoglVR.h"
 #include "../../world/deoglRCamera.h"
 #include "../../world/deoglRWorld.h"
+#include "../../world/deoglWorldOctree.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -124,6 +126,7 @@ pLodLevelOffset( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
+pCompute( *this ),
 pTasks( *this ),
 pTaskFindContent( NULL )
 {
@@ -777,6 +780,11 @@ void deoglRenderPlan::pStartFindContent(){
 	if( pTaskFindContent ){
 		DETHROW( deeInvalidParam );
 	}
+	
+	pCompute.PrepareWorldCSOctree();
+	pCompute.PrepareFindConfig();
+	
+	pRenderThread.GetRenderers().GetCompute().FindContent( *this );
 	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );

@@ -27,6 +27,7 @@
 #include "../rendering/debug/deoglRenderDebugDrawer.h"
 #include "../rendering/debug/deoglRenderDebug.h"
 #include "../rendering/deoglRenderCanvas.h"
+#include "../rendering/deoglRenderCompute.h"
 #include "../rendering/deoglRenderDepthPass.h"
 #include "../rendering/deoglRenderDevMode.h"
 #include "../rendering/deoglRenderGeometry.h"
@@ -54,6 +55,7 @@
 
 deoglRTRenderers::deoglRTRenderers( deoglRenderThread &renderThread ) :
 pCanvas( nullptr ),
+pCompute( nullptr ),
 pDebugDrawer( nullptr ),
 pDebug( nullptr ),
 pDepthPass( nullptr ),
@@ -73,6 +75,7 @@ pWorld( nullptr )
 {
 	try{
 		pCanvas = new deoglRenderCanvas( renderThread );
+		pCompute = new deoglRenderCompute( renderThread );
 		pWorld = new deoglRenderWorld( renderThread );
 		pDepthPass = new deoglRenderDepthPass( renderThread );
 		pTransparencyCounter = new deoglRenderTranspCounting( renderThread );
@@ -185,6 +188,9 @@ void deoglRTRenderers::pCleanUp(){
 	}
 	if( pSky ){
 		delete pSky;
+	}
+	if( pCompute ){
+		delete pCompute;
 	}
 	if( pCanvas ){
 		delete pCanvas;
