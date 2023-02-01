@@ -91,7 +91,7 @@ void main( void ){
 	}
 	
 	// write probe parameters. this has to be done by exactly one invocation
-	if( gl_LocalInvocationIndex == 0 ){
+	if( gl_LocalInvocationIndex == uint( 0 ) ){
 		pProbeExtends[ index ].minExtend = max( minExtend, -pGIDetectionBox );
 		pProbeExtends[ index ].maxExtend = min( maxExtend, pGIDetectionBox );
 	}

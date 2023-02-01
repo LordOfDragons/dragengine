@@ -24,9 +24,13 @@
 
 #include "deoglRenderPlan.h"
 #include "deoglRenderPlanCompute.h"
+#include "../../capabilities/deoglCapabilities.h"
+#include "../../gi/deoglGICascade.h"
+#include "../../gi/deoglGIState.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../world/deoglRWorld.h"
 #include "../../world/deoglWorldOctree.h"
 
@@ -40,7 +44,50 @@
 ////////////////////////////
 
 deoglRenderPlanCompute::deoglRenderPlanCompute( deoglRenderPlan &plan ) :
-pPlan( plan ){
+pPlan( plan )
+{
+	const bool rowMajor = plan.GetRenderThread().GetCapabilities().GetUBOIndirectMatrixAccess().Working();
+	
+	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
+	pUBOFindConfig->SetRowMajor( rowMajor );
+	pUBOFindConfig->SetParameterCount( 11 );
+	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
+	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
+	pUBOFindConfig->GetParameterAt( efcpGIMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	pUBOFindConfig->GetParameterAt( efcpGIMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	pUBOFindConfig->GetParameterAt( efcpLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // uvec2
+	pUBOFindConfig->GetParameterAt( efcpCullLayerMask ).SetAll( deoglSPBParameter::evtBool, 1, 1, 1 ); // bool
+	pUBOFindConfig->GetParameterAt( efcpCullFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pUBOFindConfig->GetParameterAt( efcpCameraPosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	pUBOFindConfig->GetParameterAt( efcpCameraView ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	pUBOFindConfig->GetParameterAt( efcpErrorScaling ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	pUBOFindConfig->MapToStd140();
+	pUBOFindConfig->SetBindingPoint( 0 );
+	
+	pSSBOSearchNodes.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOSearchNodes->SetRowMajor( rowMajor );
+	pSSBOSearchNodes->SetParameterCount( 1 );
+	pSSBOSearchNodes->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+	pSSBOSearchNodes->MapToStd140();
+	pSSBOSearchNodes->SetBindingPoint( 2 );
+	
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOCounters->SetRowMajor( rowMajor );
+	pSSBOCounters->SetParameterCount( 2 );
+	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
+	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pSSBOCounters->SetElementCount( 2 );
+	pSSBOCounters->MapToStd140();
+	pSSBOCounters->SetBindingPoint( 3 );
+	pSSBOCounters->SetBindingPointAtomic( 0 );
+	
+	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOVisibleElements->SetRowMajor( rowMajor );
+	pSSBOVisibleElements->SetParameterCount( 1 );
+	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+	pSSBOVisibleElements->MapToStd140();
+	pSSBOVisibleElements->SetBindingPoint( 4 );
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -65,16 +112,95 @@ void deoglRenderPlanCompute::PrepareWorldCSOctree(){
 	pWorldCSOctree->EndWriting();
 }
 
-void deoglRenderPlanCompute::PrepareFindConfig(){
-	if( ! pFindConfig ){
-		
-	}
+void deoglRenderPlanCompute::PrepareBuffers(){
+	pPrepareFindConfig();
+	
+	pSSBOSearchNodes->SetElementCount( pWorldCSOctree->GetNodeCount() );
+	pSSBOSearchNodes->EnsureBuffer();
+	
+	pSSBOVisibleElements->SetElementCount( pWorldCSOctree->GetElementCount() );
+	pSSBOVisibleElements->EnsureBuffer();
+	
+	pClearCounters();
 }
 
 
 
 // Protected
 //////////////
+
+void deoglRenderPlanCompute::pPrepareFindConfig(){
+	deoglSPBlockUBO &ubo = pUBOFindConfig;
+	const deoglSPBMapBuffer mapped( ubo );
+	
+	const deoglWorldCSOctree &octree = pWorldCSOctree;
+	const decDVector &refpos = pPlan.GetWorld()->GetReferencePosition();
+	
+	// octree node count
+	ubo.SetParameterDataUInt( efcpNodeCount, octree.GetNodeCount() );
+	
+	// frustum culling
+	const deoglDCollisionFrustum &frustum = *pPlan.GetUseFrustum();
+	pSetFrustumPlane( 0, frustum.GetLeftNormal(), frustum.GetLeftDistance() );
+	pSetFrustumPlane( 1, frustum.GetRightNormal(), frustum.GetRightDistance() );
+	pSetFrustumPlane( 2, frustum.GetTopNormal(), frustum.GetTopDistance() );
+	pSetFrustumPlane( 3, frustum.GetBottomNormal(), frustum.GetBottomDistance() );
+	pSetFrustumPlane( 4, frustum.GetNearNormal(), frustum.GetNearDistance() );
+	pSetFrustumPlane( 5, frustum.GetFarNormal(), frustum.GetFarDistance() );
+	
+	// gi cascase testing. to disable set min and max extends to the same value best far away
+	const deoglGIState * const gistate = pPlan.GetUpdateGIState();
+	if( gistate ){
+		// correctly we would have to use here the cascade position but during this
+		// parallel task run at an unknown time the cascade position is updated.
+		// so instead we use the camera position which is the base for the cascade
+		// position update. this can cause a potential error at the boundary of the
+		// GI cascade but chances for this are slim. if really a problem half the
+		// probe spacing can be added to the extends
+		const deoglGICascade &cascade = gistate->GetActiveCascade();
+		const decDVector position( pPlan.GetCameraPosition() - refpos );
+		const decDVector halfExtend( cascade.GetDetectionBox() );
+		
+		ubo.SetParameterDataVec3( efcpGIMinExtend, position - halfExtend );
+		ubo.SetParameterDataVec3( efcpGIMaxExtend, position + halfExtend );
+	}
+	
+	// layer mask culling
+	ubo.SetParameterDataBool( efcpCullLayerMask, pPlan.GetUseLayerMask() );
+	
+	const uint64_t layerMask = pPlan.GetLayerMask().GetMask();
+	ubo.SetParameterDataUVec2( efcpLayerMask, ( uint32_t )( layerMask >> 32 ), ( uint32_t )layerMask );
+	
+	// cull by flags
+	uint32_t cullFlags = 0;
+	if( pPlan.GetIgnoreDynamicComponents() ){
+		cullFlags |= deoglWorldCSOctree::ecsefComponentDynamic;
+	}
+	ubo.SetParameterDataUInt( efcpCullFlags, cullFlags );
+	
+	// camera parameters
+	ubo.SetParameterDataVec3( efcpCameraPosition, pPlan.GetCameraPosition() - refpos );
+	ubo.SetParameterDataVec3( efcpCameraView, pPlan.GetInverseCameraMatrix().TransformView() );
+	
+	// error scaling
+	ubo.SetParameterDataFloat( efcpErrorScaling, pCalculateErrorScaling() );
+}
+
+void deoglRenderPlanCompute::pClearCounters(){
+	deoglSPBlockSSBO &ssbo = pSSBOCounters;
+	const deoglSPBMapBuffer mapped( ssbo );
+	int i;
+	
+	for( i=0; i<2; i++ ){
+		ssbo.SetParameterDataUVec3( 0, i, 1, 1, 1 ); // work group size
+		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
+	}
+}
+
+void deoglRenderPlanCompute::pSetFrustumPlane( int i, const decDVector& n, double d ){
+	pUBOFindConfig->SetParameterDataVec4( efcpFrustumPlanes, i, n, d );
+	pUBOFindConfig->SetParameterDataBVec3( efcpFrustumSelect, i, n.x > 0.0, n.y > 0.0, n.z > 0.0 );
+}
 
 void deoglRenderPlanCompute::pCalculateFrustumBoundaryBox(
 decDVector &frustumMinExtend, decDVector &frustumMaxExtend ){

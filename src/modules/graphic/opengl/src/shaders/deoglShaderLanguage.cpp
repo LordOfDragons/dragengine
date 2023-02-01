@@ -298,6 +298,11 @@ pPreprocessor( renderThread )
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
 			pGLSLExtensions.Add( "GL_ARB_shading_language_420pack" );
 		}
+		
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_atomic_counters )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+			pGLSLExtensions.Add( "GL_ARB_shader_atomic_counters" );
+		}
 	}
 }
 

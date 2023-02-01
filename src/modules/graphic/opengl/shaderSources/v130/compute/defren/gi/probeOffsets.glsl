@@ -329,7 +329,7 @@ void main( void ){
 // 	probeFlags = uint( pGIProbePosition[ index ].w );
 	
 	// write probe parameters. this has to be done by exactly one invocation
-	if( gl_LocalInvocationIndex == 0 ){
+	if( gl_LocalInvocationIndex == uint( 0 ) ){
 		// store probe offset and flags for reading back by the CPU
 		pProbeOffset[ index ].offset = probeOffset;
 		pProbeOffset[ index ].flags = probeFlags;

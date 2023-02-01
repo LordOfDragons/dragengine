@@ -146,6 +146,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_shader_viewport_layer_array",
 	"GL_ARB_depth_clamp",
 	"GL_ARB_shading_language_420pack",
+	"GL_ARB_shader_atomic_counters",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -291,6 +292,7 @@ bool deoglExtensions::VerifyPresence(){
 	allPresent &= pHasExtension[ ext_ARB_shader_storage_buffer_object ];
 	allPresent &= pHasExtension[ ext_ARB_shader_image_load_store ];
 	allPresent &= pHasExtension[ ext_ARB_shading_language_420pack ];
+	allPresent &= pHasExtension[ ext_ARB_shader_atomic_counters ];
 	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;

@@ -46,6 +46,8 @@ deoglSPBlockSSBO::deoglSPBlockSSBO( deoglRenderThread &renderThread ) :
 deoglShaderParameterBlock( renderThread ),
 pSSBO( 0 ),
 pBindingPoint( 0 ),
+pBindingPointUBO( 0 ),
+pBindingPointAtomic( 0 ),
 pCompact( true ),
 pAllocateBuffer( true ),
 pWriteBuffer( NULL ),
@@ -63,6 +65,8 @@ deoglSPBlockSSBO::deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock ) :
 deoglShaderParameterBlock( paramBlock ),
 pSSBO( 0 ),
 pBindingPoint( paramBlock.pBindingPoint ),
+pBindingPointUBO( paramBlock.pBindingPointUBO ),
+pBindingPointAtomic( paramBlock.pBindingPointAtomic ),
 pCompact( paramBlock.pCompact ),
 pAllocateBuffer( true ),
 pWriteBuffer( NULL ),
@@ -90,6 +94,14 @@ void deoglSPBlockSSBO::SetBindingPoint( int bindingPoint ){
 	pBindingPoint = bindingPoint;
 }
 
+void deoglSPBlockSSBO::SetBindingPointUBO( int bindingPoint ){
+	pBindingPointUBO = bindingPoint;
+}
+
+void deoglSPBlockSSBO::SetBindingPointAtomic( int bindingPoint ){
+	pBindingPointAtomic = bindingPoint;
+}
+
 void deoglSPBlockSSBO::SetCompact( bool compact ){
 	DEASSERT_FALSE( IsBufferMapped() )
 	
@@ -110,13 +122,6 @@ void deoglSPBlockSSBO::Activate( int bindingPoint ) const{
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, pSSBO ) );
 }
 
-void deoglSPBlockSSBO::ActivateUBO( int bindingPoint ) const{
-	DEASSERT_NOTNULL( pSSBO )
-	DEASSERT_FALSE( IsBufferMapped() )
-	
-	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, pSSBO ) );
-}
-
 void deoglSPBlockSSBO::Deactivate() const{
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, pBindingPoint, 0 ) );
 }
@@ -125,8 +130,37 @@ void deoglSPBlockSSBO::Deactivate( int bindingPoint ) const{
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, bindingPoint, 0 ) );
 }
 
-void deoglSPBlockSSBO::DeactivateUBO( int bindingPoint ) const{
-	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, 0 ) );
+void deoglSPBlockSSBO::ActivateUBO() const{
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPointUBO, pSSBO ) );
+}
+
+void deoglSPBlockSSBO::DeactivateUBO() const{
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPointUBO, 0 ) );
+}
+
+void deoglSPBlockSSBO::ActivateAtomic() const{
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_ATOMIC_COUNTER_BUFFER, pBindingPointAtomic, pSSBO ) );
+}
+
+void deoglSPBlockSSBO::DeactivateAtomic() const{
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_ATOMIC_COUNTER_BUFFER, pBindingPointUBO, 0 ) );
+}
+
+void deoglSPBlockSSBO::ActivateDispatchIndirect() const{
+	DEASSERT_NOTNULL( pSSBO )
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_DISPATCH_INDIRECT_BUFFER, pSSBO ) );
+}
+
+void deoglSPBlockSSBO::DeactivateDispatchIndirect() const{
+	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_DISPATCH_INDIRECT_BUFFER, 0 ) );
 }
 
 void deoglSPBlockSSBO::MapBuffer(){

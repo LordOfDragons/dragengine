@@ -37,6 +37,8 @@ public:
 private:
 	GLuint pSSBO;
 	int pBindingPoint;
+	int pBindingPointUBO;
+	int pBindingPointAtomic;
 	bool pCompact;
 	bool pAllocateBuffer;
 	
@@ -76,6 +78,18 @@ public:
 	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
+	/** UBO Binding point. */
+	inline int GetBindingPointUBO() const{ return pBindingPointUBO; }
+	
+	/** Set UBO binding point. */
+	void SetBindingPointUBO( int bindingPoint );
+	
+	/** Atmomic counter binding point. */
+	inline int GetBindingPointAtomic() const{ return pBindingPointAtomic; }
+	
+	/** Set atomic counter binding point. */
+	void SetBindingPointAtomic( int bindingPoint );
+	
 	/** Compact elements. If true mapping individual elements is prohibited. */
 	inline bool GetCompact() const{ return pCompact; }
 	
@@ -88,17 +102,29 @@ public:
 	/** Activate buffer overriding binding point. */
 	virtual void Activate( int bindingPoint ) const;
 	
-	/** Activate buffer as UBO. */
-	void ActivateUBO( int bindingPoint ) const;
-	
 	/** Deactivate buffer. */
 	virtual void Deactivate() const;
 	
 	/** Deactivate buffer overriding binding point. */
 	virtual void Deactivate( int bindingPoint ) const;
 	
-	/** Deactivate buffer overriding binding point if bound as UBO. */
-	void DeactivateUBO( int bindingPoint ) const;
+	/** Activate buffer as UBO. */
+	void ActivateUBO() const;
+	
+	/** Deactivate buffer as UBO. */
+	void DeactivateUBO() const;
+	
+	/** Activate buffer as atomic buffer. */
+	void ActivateAtomic() const;
+	
+	/** Deactivate buffer as atomic buffer. */
+	void DeactivateAtomic() const;
+	
+	/** Activate buffer as dispatch indirect. */
+	void ActivateDispatchIndirect() const;
+	
+	/** Deactivate buffer as dispatch indirect. */
+	void DeactivateDispatchIndirect() const;
 	
 	/** Map buffer discarding content. */
 	virtual void MapBuffer();

@@ -39,7 +39,7 @@ void main( void ){
 	bool frontFaceHit = false;
 	int rg;
 	
-	if( gl_LocalInvocationIndex == 0 ){
+	if( gl_LocalInvocationIndex == uint( 0 ) ){
 		pProbeDynamicStates[ index ] = uint( gipfDynamicDisable );
 	}
 	
@@ -54,7 +54,7 @@ void main( void ){
 			
 			vec4 rayPosition = imageLoad( texPosition, rayTC ); // position, distance
 			
-			vFrontFaceCount[ gl_LocalInvocationIndex / 4 ][ gl_LocalInvocationIndex % 4 ] =
+			vFrontFaceCount[ gl_LocalInvocationIndex / uint( 4 ) ][ gl_LocalInvocationIndex % uint( 4 ) ] =
 				   all( lessThanEqual( vec3( rayPosition.w ), nearGeometryRange ) )
 				&& dot( imageLoad( texNormal, rayTC ).xyz, rayPosition.xyz - probePosition ) < 0
 				? 1 : 0;
@@ -67,19 +67,19 @@ void main( void ){
 		ivec3 offset2 = offset1 + ivec3( 1, 2, 4 );
 		
 		// [0]+=[1], [2]+=[3], [4]+=[5], [6]+=[7], [8]+=[9], [10]+=[11], [12]+=[13], [14]+=[15]
-		if( gl_LocalInvocationIndex < 8 ){
+		if( gl_LocalInvocationIndex < uint( 8 ) ){
 			vFrontFaceCount[ offset1.x ] += vFrontFaceCount[ offset2.x ];
 		}
 		barrier();
 		
 		// [0]+=[2], [4]+=[6], [8]+=[10], [12]+=[14]
-		if( gl_LocalInvocationIndex < 4 ){
+		if( gl_LocalInvocationIndex < uint( 4 ) ){
 			vFrontFaceCount[ offset1.y ] += vFrontFaceCount[ offset2.y ];
 		}
 		barrier();
 		
 		// [0]+=[4], [8]+=[12]
-		if( gl_LocalInvocationIndex < 2 ){
+		if( gl_LocalInvocationIndex < uint( 2 ) ){
 			vFrontFaceCount[ offset1.z ] += vFrontFaceCount[ offset2.z ];
 		}
 		barrier();
@@ -89,7 +89,7 @@ void main( void ){
 		
 		if( any( notEqual( vFrontFaceCount[ 0 ] + vFrontFaceCount[ 8 ], uvec4( 0 ) ) ) ){
 			// front face hit inside required range
-			if( gl_LocalInvocationIndex == 0 ){
+			if( gl_LocalInvocationIndex == uint( 0 ) ){
 				pProbeDynamicStates[ index ] = uint( 0 );
 			}
 			return;

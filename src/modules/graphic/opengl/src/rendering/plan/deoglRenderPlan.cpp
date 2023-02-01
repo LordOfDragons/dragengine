@@ -782,7 +782,7 @@ void deoglRenderPlan::pStartFindContent(){
 	}
 	
 	pCompute.PrepareWorldCSOctree();
-	pCompute.PrepareFindConfig();
+	pCompute.PrepareBuffers();
 	
 	pRenderThread.GetRenderers().GetCompute().FindContent( *this );
 	

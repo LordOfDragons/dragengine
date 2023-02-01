@@ -11,10 +11,9 @@ UBOLAYOUT uniform FindConfig{
 	vec3 pGIMaxExtend;
 	
 	// element culling
-	uint pCullFlags;  // deoglRPVisitorFindContent
-	bool pCullLayerMask;  // deoglRPVisitorFindContent
-	uint pLayerMaskLower;  // deoglRPVisitorFindContent
-	uint pLayerMaskUpper;  // deoglRPVisitorFindContent
+	uvec2 pLayerMask;  // x=higher 32 bits, y=lower 32 bits
+	bool pCullLayerMask;
+	uint pCullFlags;
 	
 	vec3 pCameraPosition;  // pPlan.GetCameraPosition()
 	vec3 pCameraView;  // pPlan.GetInverseCameraMatrix().TransformView()
@@ -24,10 +23,10 @@ UBOLAYOUT uniform FindConfig{
 
 // world octree data flags
 const uint wodfComponent = uint( 0x1 );
-const uint wodfBillboard = uint( 0x2 );
-const uint wodfParticleEmitter = uint( 0x4 );
-const uint wodfLight = uint( 0x8 );
-const uint wodfStatic = uint( 0x10 );
+const uint wodfComponentDynamic = uint( 0x2 );
+const uint wodfBillboard = uint( 0x4 );
+const uint wodfParticleEmitter = uint( 0x8 );
+const uint wodfLight = uint( 0x10 );
 
 
 // compute shader world octree node
@@ -40,7 +39,7 @@ struct sWorldOctreeNode{
 	uint elementCount;
 };
 
-UBOLAYOUT_BIND(1) readonly buffer WorldOctreeNode {
+UBOLAYOUT_BIND(0) readonly buffer WorldOctreeNode {
 	sWorldOctreeNode pWorldOctreeNode[];
 };
 
@@ -56,6 +55,6 @@ struct sWorldOctreeElement{
 	uvec2 layerMask;
 };
 
-UBOLAYOUT_BIND(2) readonly buffer WorldOctreeElement {
+UBOLAYOUT_BIND(1) readonly buffer WorldOctreeElement {
 	sWorldOctreeElement pWorldOctreeElement[];
 };

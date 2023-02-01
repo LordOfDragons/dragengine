@@ -390,8 +390,8 @@ void deoglWorldOctree::WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex 
 	for( i=0; i<pComponents.GetCount(); i++ ){
 		deoglRComponent &component = *( deoglRComponent* )pComponents.GetAt( i );
 		uint32_t flags = deoglWorldCSOctree::ecsefComponent;
-		if( component.GetRenderStatic() ){
-			flags |= deoglWorldCSOctree::ecsefStatic;
+		if( ! component.GetRenderStatic() ){
+			flags |= deoglWorldCSOctree::ecsefComponentDynamic;
 		}
 		
 		component.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetComponent, &component ) );

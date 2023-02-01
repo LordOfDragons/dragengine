@@ -33,12 +33,34 @@ class deoglRenderPlan;
  * Render Plan compute.
  */
 class deoglRenderPlanCompute{
+public:
+	/** Find config parameters. */
+	enum eFindConfigParameters{
+		efcpNodeCount,
+		efcpFrustumPlanes,
+		efcpFrustumSelect,
+		efcpGIMinExtend,
+		efcpGIMaxExtend,
+		efcpLayerMask,
+		efcpCullLayerMask,
+		efcpCullFlags,
+		efcpCameraPosition,
+		efcpCameraView,
+		efcpErrorScaling
+	};
+	
+	
+	
 private:
 	deoglRenderPlan &pPlan;
 	
 	deoglWorldCSOctree::Ref pWorldCSOctree;
 	
-	deoglSPBlockUBO::Ref pFindConfig;
+	deoglSPBlockUBO::Ref pUBOFindConfig;
+	
+	deoglSPBlockSSBO::Ref pSSBOSearchNodes;
+	deoglSPBlockSSBO::Ref pSSBOCounters;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
 	
 	
 	
@@ -62,18 +84,28 @@ public:
 	/** Prepare world compute shader octree. */
 	void PrepareWorldCSOctree();
 	
+	/** Prepare buffers. */
+	void PrepareBuffers();
 	
+	/** UBO Find config. */
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	
-	/** Prepare find config. */
-	void PrepareFindConfig();
+	/** SSBO Search nodes. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOSearchNodes() const{ return pSSBOSearchNodes; }
 	
-	/** Find config. */
-	inline const deoglSPBlockUBO::Ref &GetFindConfig() const{ return pFindConfig; }
+	/** SSBO Search nodes. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
+	
+	/** SSBO Search nodes. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
 	/*@}*/
 	
 	
 	
 protected:
+	void pPrepareFindConfig();
+	void pClearCounters();
+	void pSetFrustumPlane( int index, const decDVector &normal, double distance );
 	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
 	float pCalculateErrorScaling();
 };

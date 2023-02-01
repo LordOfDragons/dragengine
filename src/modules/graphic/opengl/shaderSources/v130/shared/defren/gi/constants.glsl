@@ -14,5 +14,5 @@ const uvec3 combineParams64Mul[5] = uvec3[5](
 const uvec3 combineParams64Add[5] = uvec3[5](
 	uvec3( 32, 0, 1 ), uvec3( 16, 0, 2 ), uvec3( 8, 0, 4 ), uvec3( 4, 0, 8 ), uvec3( 2, 0, 16 ) );
 
-const uint combineParams64Count = 5;
+const int combineParams64Count = 5;
 const uvec3 combineParams64Last = uvec3( 1, 0, 32 );

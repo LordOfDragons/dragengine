@@ -41,10 +41,10 @@ public:
 	/** Compute shader element flags. */
 	enum eCSElementFlags{
 		ecsefComponent = 0x1,
-		ecsefBillboard = 0x2,
-		ecsefParticleEmitter = 0x4,
-		ecsefLight = 0x8,
-		ecsefStatic = 0x10
+		ecsefComponentDynamic = 0x2,
+		ecsefBillboard = 0x4,
+		ecsefParticleEmitter = 0x8,
+		ecsefLight = 0x10
 	};
 	
 	/** Compute shader node. Aligned to (u)vec4[3]. */

@@ -66,8 +66,11 @@ deoglRenderBase( renderThread )
 	// find content
 	defines = commonDefines;
 	
-	pipconf.SetShader( renderThread, "DefRen Plan FindContent", defines );
+	pipconf.SetShader( renderThread, "DefRen Plan FindContent Node", defines );
 	pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
+	
+	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
+	pPipelineFindContentElement = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderCompute::~deoglRenderCompute(){
@@ -82,8 +85,9 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
 	
-	deoglWorldCSOctree &csoctree = plan.GetCompute().GetWorldCSOctree();
-	if( csoctree.GetElementCount() == 0 ){
+	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
+	deoglWorldCSOctree &octree = planCompute.GetWorldCSOctree();
+	if( octree.GetElementCount() == 0 ){
 		return;
 	}
 	
@@ -91,49 +95,30 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	// find nodes
 	pPipelineFindContentNode->Activate();
 	
-	csoctree.GetSSBONodes()->Activate();
-	csoctree.GetSSBOElements()->Activate();
-	// activate result SSBOs
+	planCompute.GetUBOFindConfig()->Activate();
+	octree.GetSSBONodes()->Activate();
+	octree.GetSSBOElements()->Activate();
+	planCompute.GetSSBOSearchNodes()->Activate();
+	planCompute.GetSSBOCounters()->ActivateAtomic();
 	
-	deoglShaderCompiled &programNode = pPipelineFindContentNode->GetGlShader();
-	programNode.SetParameterUInt( 0, csoctree.GetNodeCount() ); // Count
-	
-	decDVector frustumMinExtend, frustumMaxExtend;
-	// pCalculateFrustumBoundaryBox( plan, frustumMinExtend, frustumMaxExtend );
-	
-	// const deoglDCollisionFrustum &frustum = *plan.GetUseFrustum();
-	programNode.SetParameterVector4( 1, decVector4() );
-	
-#if 0
-	programNode.SetParameterFloat( 1, );
-uniform vec4 pFrustumPlanes[ 6 ]; // xyz=normal, w=distance
-uniform bvec3 pFrustumSelect[ 6 ]; // greaterThan(pFrustumPlanes[x], vec3(0))
-	
-	<parameter name='pFrustumPlanes'/>
-	<parameter name='pFrustumSelect'/>
-	<parameter name='pGIMinExtend'/>
-	<parameter name='pGIMaxExtend'/>
+	OGL_CHECK( renderThread, pglDispatchCompute( ( octree.GetNodeCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	
-	transformed.Activate();
-	if( weightMatrices ){
-		weightMatrices->Activate();
-	}
+	pPipelineFindContentElement->Activate();
 	
-	pPipelineApproxTransformVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
+	planCompute.GetUBOFindConfig()->Activate();
+	octree.GetSSBONodes()->Activate();
+	octree.GetSSBOElements()->Activate();
+	planCompute.GetSSBOSearchNodes()->Activate();
+	planCompute.GetSSBOCounters()->Activate();
+	planCompute.GetSSBOVisibleElements()->Activate();
+	planCompute.GetSSBOCounters()->ActivateAtomic();
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
-	
-	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, 0) );
-	transformed.Deactivate();
-	if( weightMatrices ){
-		weightMatrices->Deactivate();
-	}
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( vao ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-#endif
+	planCompute.GetSSBOCounters()->ActivateDispatchIndirect();
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+	planCompute.GetSSBOCounters()->DeactivateDispatchIndirect();
 }
 
 

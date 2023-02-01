@@ -7,7 +7,7 @@ precision highp int;
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
 
-UBOLAYOUT_BIND(3) writeonly buffer SearchNodes {
+UBOLAYOUT_BIND(2) writeonly buffer SearchNodes {
 	uvec4 pSearchNodes[];
 };
 
@@ -26,8 +26,8 @@ layout( local_size_x=64 ) in;
 // are set by the opengl module to 1. the next node index is used to keep track
 // of where to write the next node. glDispatchComputeIndirect does not care
 // about the additional data so combining them in the same buffer is fine
-layout( binding=4, offset=0) uniform atomic_uint pDispatchWorkGroupCount;
-layout( binding=4, offset=12) uniform atomic_uint pNextNodeIndex;
+layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=12 ) uniform atomic_uint pNextNodeIndex;
 
 const uint dispatchWorkGroupSize = uint( 64 );
 
@@ -45,19 +45,18 @@ void main( void ){
 	// if node does not intersect the frustum nor the GI cascade box skip all content
 	// inside. the GI cascade box test can be easily disabled by settings pGIMinExtend
 	// equal to pGIMaxExtend preferably outside the frustum box
-	if( ! notIntersectFrustum( minExtend, maxExtend )
-	&& ! notIntersectGI( minExtend, maxExtend ) ){
+	if( ! notIntersectFrustum( minExtend, maxExtend ) && ! notIntersectGI( minExtend, maxExtend ) ){
 		return;
 	}
 	
 	// add node to list of nodes to process in the next dispatch call
 	uint searchIndex = atomicCounterIncrement( pNextNodeIndex );
-	pSearchNodes[ searchIndex / 4 ][ searchIndex % 4 ] = index;
+	pSearchNodes[ searchIndex / uint( 4 ) ][ searchIndex % uint( 4 ) ] = index;
 	
 	// if the count of nodes to search increases by the dispatch workgroup size
 	// increment also the work group count. this way the upcomding dispatch
 	// indirect call knows the count of workgroups to run
-	if( searchIndex % dispatchWorkGroupSize == 0 ){
+	if( searchIndex % dispatchWorkGroupSize == uint( 0 ) ){
 		atomicCounterIncrement( pDispatchWorkGroupCount );
 	}
 }
