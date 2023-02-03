@@ -319,6 +319,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderBase.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDevMode.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometry.h" />
@@ -343,6 +344,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\lod\deoglLODCalculator.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglPlanVisitorCullElements.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlan.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanCompute.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanEnvMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanLight.h" />
@@ -914,6 +916,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderBase.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDevMode.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometry.cpp" />
@@ -937,6 +940,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightSpot.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\lod\deoglLODCalculator.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlan.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanCompute.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanEnvMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanLight.cpp" />

@@ -22,6 +22,8 @@
 #ifndef _DEOGLWORLDOCSCTREE_H_
 #define _DEOGLWORLDOCSCTREE_H_
 
+#include <stdint.h>
+
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/deObject.h>

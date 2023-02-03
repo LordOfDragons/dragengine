@@ -647,6 +647,9 @@ void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decDVe
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decVector &v, float w ){
 	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
 }
+void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decDVector &v, double w ){
+	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
+}
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decDVector4 &v, double w ){
 	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
 }

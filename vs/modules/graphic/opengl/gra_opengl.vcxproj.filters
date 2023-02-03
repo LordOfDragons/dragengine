@@ -69,6 +69,36 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\squish.h">
       <Filter>contrib\squish</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSCluster.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSector.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListManager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldCluster.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldType.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\commands\deoglCommandExecuter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -741,6 +771,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -811,6 +844,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlan.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanCompute.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.h">
@@ -1791,36 +1827,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormatList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSCluster.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListLight.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldCluster.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldType.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\ChangeLog">
@@ -1865,6 +1871,36 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\squish.cpp">
       <Filter>contrib\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSCluster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldCluster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldType.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\commands\deoglCommandExecuter.cpp">
       <Filter>Source Files</Filter>
@@ -2523,6 +2559,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2590,6 +2629,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanCompute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.cpp">
@@ -3559,36 +3601,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormatList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSCluster.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldCluster.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
