@@ -10,6 +10,9 @@
  * \brief Linear list of objects.
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class Dictionary
 	/** \name Constructors */
@@ -58,6 +61,13 @@ fixed class Dictionary
 	end
 	
 	/**
+	 * \brief Set all values from dictionary.
+	 * \details If keys are missing they are added otherwise the new values set.
+	 */
+	public func void setAll( Dictionary dictionary )
+	end
+	
+	/**
 	 * \brief Remove key.
 	 * \throws EInvalidParam Key is absent.
 	 */
@@ -93,12 +103,35 @@ fixed class Dictionary
 	public func void forEach( Block ablock )
 	end
 	
+	/**
+	 * \brief Apply block to each key value pair castable to block arguments.
+	 * \version 1.3
+	 * 
+	 * Block is called with key as first argument and value as second.
+	 */
+	public func void forEachCastable( Block ablock )
+	end
+	
 	/** \brief Apply block to each key. */
 	public func void forEachKey( Block ablock )
 	end
 	
+	/**
+	 * \brief Apply block to each key castable to block argument.
+	 * \version 1.3
+	 */
+	public func void forEachKeyCastable( Block ablock )
+	end
+	
 	/** \brief Apply block to each value. */
 	public func void forEachValue( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each value castable to block argument.
+	 * \version 1.3
+	 */
+	public func void forEachValueCastable( Block ablock )
 	end
 	
 	/**
@@ -112,12 +145,34 @@ fixed class Dictionary
 	end
 	
 	/**
+	 * \brief Find value castable to block argument for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block is called with key as first argument and value as second. Returns \em null
+	 * if no value matches.
+	 */
+	public func Object findCastable( Block ablock )
+		return null
+	end
+	
+	/**
 	 * \brief Find key for which the block returns true.
 	 * 
 	 * Block is called with key as first argument and value as second. Returns \em null
 	 * if no value matches.
 	 */
 	public func Object findKey( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Find key castable to block arguments for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block is called with key as first argument and value as second. Returns \em null
+	 * if no value matches.
+	 */
+	public func Object findKeyCastable( Block ablock )
 		return null
 	end
 	
@@ -140,10 +195,31 @@ fixed class Dictionary
 	end
 	
 	/**
+	 * \brief Collect all elements castable to block arguments into a new dictionary for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block is called with key as first argument and value as second. New key vaule par added
+	 * to the result dictionary composes of the key send to the block and the block return value.
+	 */
+	public func Dictionary collectCastable( Block ablock )
+		return null
+	end
+	
+	/**
 	 * \brief Number of elements for which the block returns true.
 	 * \details Block is called with key as first argument and value as second.
 	 */
 	public func int count( Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements castable to block arguments for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block is called with key as first argument and value as second.
+	 */
+	public func int countCastable( Block ablock )
 		return 0
 	end
 	
@@ -154,10 +230,68 @@ fixed class Dictionary
 	public func void removeIf( Block ablock )
 	end
 	
+	/**
+	 * \brief Remove elements castable to block arguments for which a block returns true.
+	 * \version 1.3
+	 * 
+	 * Block is called with key as first argument and value as second.
+	 */
+	public func void removeIfCastable( Block ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Fold dictionary values using block and injected value.
+	 * 
+	 * Each key/value pair in turn is send to block using the last result. For the first
+	 * key/value the injected value is used as result. The return value is then send together
+	 * with the next key/value pair to block. The last return value is returned.
+	 * 
+	 * Block receives as first argument Object injectValue, as second argument Object key
+	 * and as third argument Object value.
+	 */
+	public func Object inject( Object injectValue, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold dictionary keys using block and injected value.
+	 * 
+	 * Each key in turn is send to block using the last result. For the first key the injected
+	 * value is used as result. The return value is then send together with the next key to
+	 * block. The last return value is returned.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object key.
+	 */
+	public func Object injectKey( Object injectValue, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold dictionary values using block and injected value.
+	 * 
+	 * Each value in turn is send to block using the last result. For the first value the
+	 * injected value is used as result. The return value is then send together with the next
+	 * value to  block. The last return value is returned.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object value.
+	 */
+	public func Object injectValue( Object injectValue, Block ablock )
+		return null
+	end
+	
 	
 	
 	/** \brief String representation of dictionary. */
 	public func String toString()
+		return null
+	end
+	
+	
+	
+	/** \brief Create dictionary with content of \em dictionary appended to content of this dictionary. */
+	public func Dictionary +( Dictionary dictionary )
 		return null
 	end
 	/*@}*/

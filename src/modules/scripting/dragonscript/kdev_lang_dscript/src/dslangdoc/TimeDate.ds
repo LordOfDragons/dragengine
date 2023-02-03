@@ -1,0 +1,147 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Represents a point in time.
+ * 
+ * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2020
+ */
+fixed class TimeDate
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty array. */
+	/**
+	 * Create time-date object with current time and date.
+	 */
+	public func new()
+	end
+	
+	/**
+	 * Create time-date object.
+	 */
+	public func new( int year, int month, int day )
+	end
+	
+	/**
+	 * Creates time-date object.
+	 */
+	public func new( int yeat, int month, int day, int hours, int minutes, int seconds )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * Year.
+	 */
+	public func int getYear()
+		return 0
+	end
+	
+	/**
+	 * Month starting with 0 for January.
+	 */
+	public func int getMonth()
+		return 0
+	end
+	
+	/**
+	 * Day of month starting with 1 for the first day.
+	 */
+	public func int getDay()
+		return 0
+	end
+	
+	/**
+	 * Day of week starting with 0 for Sunday.
+	 */
+	public func int getDayOfWeek()
+		return 0
+	end
+	
+	/**
+	 * Day of year starting with 0 for the first day.
+	 */
+	public func int getDayOfYear()
+		return 0
+	end
+	
+	/**
+	 * Hours.
+	 */
+	public func int getHours()
+		return 0
+	end
+	
+	/**
+	 * Minutes.
+	 */
+	public func int getMinutes()
+		return 0
+	end
+	
+	/**
+	 * Seconds.
+	 */
+	public func int getSeconds()
+		return 0
+	end
+	
+	/**
+	 * Format according to POSIX strftime implementation.
+	 */
+	public func String format( String format )
+		return null
+	end
+	
+	/**
+	 * Add time creating a new date time object. Values can be negative.
+	 */
+	public func TimeDate add( int days, int hours, int minutes, int seconds )
+		return null
+	end
+	
+	/**
+	 * Seconds since time. Negative if \em timeDate is after this time date.
+	 */
+	public func int secondsSince( TimeDate timeDate )
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief TimeDate is equal to another object.
+	 * \returns \em true if \em other is of type TimeDate and both are equal.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 */
+	public func int hashCode()
+		return 0
+	end
+	
+	/**
+	 * \brief String representation of object.
+	 * 
+	 * Same as calling format("%Y-%m-%d %H:%M:%S").
+	 */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+end

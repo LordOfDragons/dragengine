@@ -12,6 +12,9 @@
  * This class is the root class of all objects.
  * 
  * This is a native class.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 class Object
 	/** \name Constructors */

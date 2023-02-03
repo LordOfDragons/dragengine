@@ -7,6 +7,156 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \brief Primitive float value.
+ * 
+ * Primitive values are constant and stored as value not as reference. Primitive values
+ * act like objects but are not stored as true objects in memory. Primitive values own
+ * special operators not available to script languages:
+ * | Command | Description |
+ * | ------- | ----------- |
+ * | float \b = float | assign float value |
+ * | float \b == float | float values are equal |
+ * | float \b != float | float values are not equal |
+ * | \b not float | true if float value is not 0 |
+ * 
+ * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
+ */
+fixed class float
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create float. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Compare float to another object.
+	 * \throws EInvalidAction \em other is not of type float.
+	 * \retval 0 Both float values are equal.
+	 * \retval <0 This float value is less than the other float value.
+	 * \retval >0 This float value is greater than the other float value.
+	 */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/**
+	 * \brief Integer is equal to another float.
+	 * \returns \em true if \em other is of type float and both are equal.
+	 */
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of float value. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Integer value is less than another float value. */
+	public func bool <( float other )
+		return false
+	end
+	
+	/** \brief Integer value is less than or equal to another float value. */
+	public func bool <=( float other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than another float value. */
+	public func bool >( float other )
+		return false
+	end
+	
+	/** \brief Integer value is greater than or equal to another float value. */
+	public func bool >=( float other )
+		return false
+	end
+	
+	
+	
+	/** \brief Integer plus another float value. */
+	public func float +( float other )
+		return 0.0
+	end
+	
+	/** \brief Integer minus another float value. */
+	public func float -( float other )
+		return 0.0
+	end
+	
+	/** \brief Integer value timer another float value. */
+	public func float *( float other )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Integer value divided by another float value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func float /( float other )
+		return 0.0
+	end
+	
+	/** \brief Set float value to float value plus another float value. */
+	public func float +=( float other )
+		return 0.0
+	end
+	
+	/** \brief Set float value to float value minus another float value. */
+	public func float -=( float other )
+		return 0.0
+	end
+	
+	/** \brief Set float value to float value timer another float value. */
+	public func float *=( float other )
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set float value to float value divided by another float value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func float /=( float other )
+		return 0.0
+	end
+	
+	
+	
+	/** \brief Increment float value by one. */
+	public func float ++()
+		return 0.0
+	end
+	
+	/** \brief Decrement float value by one. */
+	public func float --()
+		return 0.0
+	end
+	
+	/** \brief Negated value. */
+	public func float -()
+		return 0.0
+	end
+end
+
+/**
  * \brief Immutable float object class.
  * 
  * Wraps a primitive int value. Allows float values which can be null.

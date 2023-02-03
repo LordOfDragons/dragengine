@@ -7,13 +7,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 /**
- * \brief Invalid cast exception.
+ * \brief Invalid action exception.
  * 
  * Runtime exceptions can be scripted exceptions or native class exceptions.
  * 
  * This is a native class.
  */
-class EInvalidCast extends Exception
+class EInvalidAction extends Exception
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create empty exception. */

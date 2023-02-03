@@ -23,6 +23,9 @@
  * | bool \b xor bool | logical xor with delayed evaluation if possible |
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class bool
 	/** \name Constructors */

@@ -315,6 +315,7 @@ public:
 	void SetParameterDataVec4( int parameter, int element, const decVector4 &vector );
 	void SetParameterDataVec4( int parameter, int element, const decDVector4 &vector );
 	void SetParameterDataVec4( int parameter, int element, const decVector &vector, float w );
+	void SetParameterDataVec4( int parameter, int element, const decDVector &vector, double w );
 	void SetParameterDataVec4( int parameter, int element, const decDVector4 &vector, double w );
 	void SetParameterDataVec4( int parameter, int element, const oglVector3 &vector, float w );
 	

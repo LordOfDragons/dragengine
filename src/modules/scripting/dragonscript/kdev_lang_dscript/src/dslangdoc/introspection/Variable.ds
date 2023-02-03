@@ -13,7 +13,10 @@ namespace Introspection
  * 
  * Use \code{.ds} requires Introspection \endcode in your script files to load the introspection package.
  * 
- * This is a native class. This class can not be directly instantiated. Use Class to obtain instances.
+ * This is a native class. This class can not be directly instanciated. Use Class to obtain instances.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 class Variable
 	/** \name Management */
