@@ -1,4 +1,0 @@
-This directory contains documentation classes for all native script classes.
-These classes are not installed in the system and contain no code. They
-serve only the purpose to provide the class definition to DoxyGen for native
-script classes for the Script API documentation.
