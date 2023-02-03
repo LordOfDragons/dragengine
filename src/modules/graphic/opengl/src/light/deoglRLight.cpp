@@ -92,6 +92,19 @@ static decTimer timer;
 // Class deoglRLight
 /////////////////////
 
+deoglRLight::WorldComputeElement::WorldComputeElement( deoglRLight &light ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetLight, &light ),
+pLight( light ){
+}
+
+void deoglRLight::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+	data.SetExtends( pLight.GetMinimumExtend() - refpos, pLight.GetMaximumExtend() - refpos );
+	data.SetLayerMask( pLight.GetLayerMask() );
+	data.flags = ( uint32_t )deoglWorldCompute::eefLight;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -100,6 +113,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pActive( false ),
 pLightType( deLight::eltPoint ),

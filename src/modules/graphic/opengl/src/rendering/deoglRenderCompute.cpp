@@ -69,6 +69,7 @@ deoglRenderBase( renderThread )
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Node", defines );
 	pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
 	
+	defines.SetDefines( "DIRECT_ELEMENTS" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
 	pPipelineFindContentElement = pipelineManager.GetWith( pipconf );
 }
@@ -93,6 +94,7 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	
 	
 	// find nodes
+#if 0
 	pPipelineFindContentNode->Activate();
 	
 	planCompute.GetUBOFindConfig()->Activate();
@@ -116,9 +118,22 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	planCompute.GetSSBOCounters()->ActivateAtomic();
 	
 	planCompute.GetSSBOCounters()->ActivateDispatchIndirect();
+	OGL_CHECK( renderThread, pglDispatchComputeIndirect( 0 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	planCompute.GetSSBOCounters()->DeactivateDispatchIndirect();
+#endif
+	
+	pPipelineFindContentElement->Activate();
+	
+	planCompute.GetUBOFindConfig()->Activate();
+	octree.GetSSBOElements()->Activate();
+	planCompute.GetSSBOVisibleElements()->Activate();
+	planCompute.GetSSBOCounters()->ActivateAtomic();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( octree.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
 }
 
 

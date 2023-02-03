@@ -72,6 +72,19 @@
 // Class deoglRBillboard
 //////////////////////////
 
+deoglRBillboard::WorldComputeElement::WorldComputeElement( deoglRBillboard &billboard ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetBillboard, &billboard ),
+pBillboard( billboard ){
+}
+
+void deoglRBillboard::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+	data.SetExtends( pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos );
+	data.SetLayerMask( pBillboard.GetLayerMask() );
+	data.flags = ( uint32_t )deoglWorldCompute::eefBillboard;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -80,6 +93,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pSkin( NULL ),
 pUseSkinTexture( NULL ),

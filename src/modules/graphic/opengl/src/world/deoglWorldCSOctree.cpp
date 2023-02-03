@@ -36,27 +36,27 @@
 // Class deoglWorldCSOctree
 /////////////////////////////
 
-void deoglWorldCSOctree::sCSNode::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
-	minExtendX = ( GLfloat )minExtend.x;
-	minExtendY = ( GLfloat )minExtend.y;
-	minExtendZ = ( GLfloat )minExtend.z;
-	maxExtendX = ( GLfloat )maxExtend.x;
-	maxExtendY = ( GLfloat )maxExtend.y;
-	maxExtendZ = ( GLfloat )maxExtend.z;
+void deoglWorldCSOctree::sCSNode::SetExtends( const decDVector &a, const decDVector &b ){
+	minExtendX = ( GLfloat )a.x;
+	minExtendY = ( GLfloat )a.y;
+	minExtendZ = ( GLfloat )a.z;
+	maxExtendX = ( GLfloat )b.x;
+	maxExtendY = ( GLfloat )b.y;
+	maxExtendZ = ( GLfloat )b.z;
 }
 
-void deoglWorldCSOctree::sCSElement::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
-	minExtendX = ( GLfloat )minExtend.x;
-	minExtendY = ( GLfloat )minExtend.y;
-	minExtendZ = ( GLfloat )minExtend.z;
-	maxExtendX = ( GLfloat )maxExtend.x;
-	maxExtendY = ( GLfloat )maxExtend.y;
-	maxExtendZ = ( GLfloat )maxExtend.z;
+void deoglWorldCSOctree::sCSElement::SetExtends( const decDVector &a, const decDVector &b ){
+	minExtendX = ( GLfloat )a.x;
+	minExtendY = ( GLfloat )a.y;
+	minExtendZ = ( GLfloat )a.z;
+	maxExtendX = ( GLfloat )b.x;
+	maxExtendY = ( GLfloat )b.y;
+	maxExtendZ = ( GLfloat )b.z;
 }
 
-void deoglWorldCSOctree::sCSElement::SetLayerMask( const decLayerMask &layerMask ){
-	layerMaskUpper = ( uint32_t )( layerMask.GetMask() >> 32 );
-	layerMaskLower = ( uint32_t )layerMask.GetMask();
+void deoglWorldCSOctree::sCSElement::SetLayerMask( const decLayerMask &a ){
+	layerMask[ 0 ] = ( uint32_t )( a.GetMask() >> 32 );
+	layerMask[ 1 ] = ( uint32_t )a.GetMask();
 }
 
 // Constructors and Destructors
@@ -71,7 +71,31 @@ pElementCount( 0 ),
 pNextNode( 0 ),
 pNextElement( 0 ),
 pElementLinks( nullptr ),
-pElementLinkSize( 0 ){
+pElementLinkSize( 0 )
+{
+	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
+	
+	pSSBONodes.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBONodes->SetRowMajor( rowMajor );
+	pSSBONodes->SetParameterCount( 5 );
+	pSSBONodes->GetParameterAt( ecsnpMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
+	pSSBONodes->GetParameterAt( ecsnpFirstNode ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBONodes->GetParameterAt( ecsnpMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
+	pSSBONodes->GetParameterAt( ecsnpChildNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBONodes->GetParameterAt( ecsnpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBONodes->MapToStd140();
+	pSSBONodes->SetBindingPoint( 0 );
+	
+	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElements->SetRowMajor( rowMajor );
+	pSSBOElements->SetParameterCount( 5 );
+	pSSBOElements->GetParameterAt( ecsepMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
+	pSSBOElements->GetParameterAt( ecsepElementIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( ecsepMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
+	pSSBOElements->GetParameterAt( ecsepFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( ecsepLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
+	pSSBOElements->MapToStd140();
+	pSSBOElements->SetBindingPoint( 1 );
 }
 
 deoglWorldCSOctree::~deoglWorldCSOctree(){
@@ -115,30 +139,10 @@ void deoglWorldCSOctree::BeginWriting( int nodeCount, int elementCount ){
 		return;
 	}
 	
-	if( ! pSSBONodes ){
-		pSSBONodes.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
-		pSSBONodes->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		pSSBONodes->SetParameterCount( 3 );
-		pSSBONodes->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
-		pSSBONodes->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
-		pSSBONodes->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
-		pSSBONodes->MapToStd140();
-		pSSBONodes->SetBindingPoint( 0 );
-	}
 	pSSBONodes->SetElementCount( nodeCount );
-	pSSBONodes->MapBuffer();
-	
-	if( ! pSSBOElements ){
-		pSSBOElements.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
-		pSSBOElements->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		pSSBOElements->SetParameterCount( 3 );
-		pSSBOElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
-		pSSBOElements->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 );
-		pSSBOElements->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
-		pSSBOElements->MapToStd140();
-		pSSBOElements->SetBindingPoint( 1 );
-	}
 	pSSBOElements->SetElementCount( elementCount );
+	
+	pSSBONodes->MapBuffer();
 	pSSBOElements->MapBuffer();
 	
 	pPtrNode = ( sCSNode* )pSSBONodes->GetWriteBuffer();

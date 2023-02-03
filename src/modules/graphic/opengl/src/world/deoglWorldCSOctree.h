@@ -47,25 +47,49 @@ public:
 		ecsefLight = 0x10
 	};
 	
+	/** Compute shader node parameters. */
+	enum eCSNodeParams{
+		ecsnpMinExtend,
+		ecsnpFirstNode,
+		ecsnpMaxExtend,
+		ecsnpChildNodeCount,
+		ecsnpElementCount
+	};
+	
 	/** Compute shader node. Aligned to (u)vec4[3]. */
 	struct sCSNode{
-		float minExtendX, minExtendY, minExtendZ, reserved1;
-		float maxExtendX, maxExtendY, maxExtendZ, reserved2;
+		float minExtendX, minExtendY, minExtendZ;
 		uint32_t firstNode;
+		
+		float maxExtendX, maxExtendY, maxExtendZ;
 		uint32_t childNodeCount;
+		
+		uint32_t firstElement;
 		uint32_t elementCount;
-		uint32_t reserved3;
+		uint32_t padding[ 2 ];
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
 	};
 	
+	/** Compute shader element parameters. */
+	enum eCSElementParams{
+		ecsepMinExtend,
+		ecsepElementIndex,
+		ecsepMaxExtend,
+		ecsepFlags,
+		ecsepLayerMask
+	};
+	
 	/** Compute shader element. Aligned to (u)vec4[3]. */
 	struct sCSElement{
-		float minExtendX, minExtendY, minExtendZ, reserved1;
-		float maxExtendX, maxExtendY, maxExtendZ, reserved2;
+		float minExtendX, minExtendY, minExtendZ;
 		uint32_t elementindex;
+		
+		float maxExtendX, maxExtendY, maxExtendZ;
 		uint32_t flags;
-		uint32_t layerMaskUpper, layerMaskLower; // 64-bit layer mask
+		
+		uint32_t layerMask[ 2 ]; // 64-bit layer mask
+		uint32_t padding[ 2 ];
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
 		void SetLayerMask( const decLayerMask &layerMask );

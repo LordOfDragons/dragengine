@@ -56,6 +56,7 @@ private:
 	decPointerList pLumimeters;
 	
 	int pCSChildCount;
+	int pCSLocalElementCount;
 	int pCSNodeCount;
 	int pCSElementCount;
 	

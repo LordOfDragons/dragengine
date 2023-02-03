@@ -50,10 +50,11 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 11 );
+	pUBOFindConfig->SetParameterCount( 12 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
-	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4
+	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4
+	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 3, 1, 6 ); // bvec3
 	pUBOFindConfig->GetParameterAt( efcpGIMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	pUBOFindConfig->GetParameterAt( efcpGIMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	pUBOFindConfig->GetParameterAt( efcpLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // uvec2
@@ -99,26 +100,38 @@ deoglRenderPlanCompute::~deoglRenderPlanCompute(){
 ///////////////
 
 void deoglRenderPlanCompute::PrepareWorldCSOctree(){
+	decTimer timer;
+	
+	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
+	compute.Prepare();
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.Prepare: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	
+	
+	
 	deoglWorldOctree &octree = pPlan.GetWorld()->GetOctree();
 	octree.UpdateCSCounts();
 	
 	if( ! pWorldCSOctree ){
 		pWorldCSOctree.TakeOver( new deoglWorldCSOctree( pPlan.GetRenderThread() ) );
 	}
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: update: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
 	pWorldCSOctree->SetReferencePosition( pPlan.GetWorld()->GetReferencePosition() );
 	pWorldCSOctree->BeginWriting( octree.GetCSNodeCount(), octree.GetCSElementCount() );
-	octree.WriteCSData( pWorldCSOctree, 0 );
+	octree.WriteCSData( pWorldCSOctree, pWorldCSOctree->NextNode() );
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: write: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	pWorldCSOctree->EndWriting();
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: upload: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 }
 
 void deoglRenderPlanCompute::PrepareBuffers(){
 	pPrepareFindConfig();
 	
-	pSSBOSearchNodes->SetElementCount( pWorldCSOctree->GetNodeCount() );
+	// pSSBOSearchNodes->SetElementCount( pWorldCSOctree->GetNodeCount() );
+	pSSBOSearchNodes->SetElementCount( ( ( pWorldCSOctree->GetElementCount() - 1 ) / 4 ) + 1 );
 	pSSBOSearchNodes->EnsureBuffer();
 	
-	pSSBOVisibleElements->SetElementCount( pWorldCSOctree->GetElementCount() );
+	pSSBOVisibleElements->SetElementCount( ( ( pWorldCSOctree->GetElementCount() - 1 ) / 4 ) + 1 );
 	pSSBOVisibleElements->EnsureBuffer();
 	
 	pClearCounters();
@@ -136,8 +149,9 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	const deoglWorldCSOctree &octree = pWorldCSOctree;
 	const decDVector &refpos = pPlan.GetWorld()->GetReferencePosition();
 	
-	// octree node count
+	// octree counts
 	ubo.SetParameterDataUInt( efcpNodeCount, octree.GetNodeCount() );
+	ubo.SetParameterDataUInt( efcpElementCount, octree.GetElementCount() );
 	
 	// frustum culling
 	const deoglDCollisionFrustum &frustum = *pPlan.GetUseFrustum();
@@ -198,8 +212,8 @@ void deoglRenderPlanCompute::pClearCounters(){
 }
 
 void deoglRenderPlanCompute::pSetFrustumPlane( int i, const decDVector& n, double d ){
-	pUBOFindConfig->SetParameterDataVec4( efcpFrustumPlanes, i, n, d );
-	pUBOFindConfig->SetParameterDataBVec3( efcpFrustumSelect, i, n.x > 0.0, n.y > 0.0, n.z > 0.0 );
+	pUBOFindConfig->SetParameterDataArrayVec4( efcpFrustumPlanes, i, n, d );
+	pUBOFindConfig->SetParameterDataArrayBVec3( efcpFrustumSelect, i, n.x > 0.0, n.y > 0.0, n.z > 0.0 );
 }
 
 void deoglRenderPlanCompute::pCalculateFrustumBoundaryBox(

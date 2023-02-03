@@ -26,6 +26,7 @@
 #include "../light/deoglLightList.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../world/deoglWorldCompute.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -78,11 +79,23 @@ public:
 		ermDynamic
 	};
 	
-public:
+private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldCompute::Element{
+		deoglRComponent &pComponent;
+	public:
+		WorldComputeElement( deoglRComponent &component );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldCompute::Element::Ref pWorldComputeElement;
+	
 	
 	bool pVisible;
 	deComponent::eMovementHints pMovementHint;

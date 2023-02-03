@@ -36,6 +36,15 @@
 
 deoglSPBMapBuffer::deoglSPBMapBuffer( deoglShaderParameterBlock &block ) :
 pBlock( block ),
+pElement( -1 ),
+pMapped( false )
+{
+	Map();
+}
+
+deoglSPBMapBuffer::deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element ) :
+pBlock( block ),
+pElement( element ),
 pMapped( false )
 {
 	Map();
@@ -55,7 +64,13 @@ void deoglSPBMapBuffer::Map(){
 		return;
 	}
 	
-	pBlock.MapBuffer();
+	if( pElement > -1 ){
+		pBlock.MapBuffer( pElement );
+		
+	}else{
+		pBlock.MapBuffer();
+	}
+	
 	pMapped = true;
 }
 

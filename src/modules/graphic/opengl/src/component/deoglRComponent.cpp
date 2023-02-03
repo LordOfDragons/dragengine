@@ -105,6 +105,23 @@
 // Class deoglRComponent
 /////////////////////////
 
+deoglRComponent::WorldComputeElement::WorldComputeElement( deoglRComponent &component ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetComponent, &component ),
+pComponent( component ){
+}
+
+void deoglRComponent::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
+	data.SetLayerMask( pComponent.GetLayerMask() );
+	
+	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
+	if( ! pComponent.GetRenderStatic() ){
+		data.flags |= deoglWorldCompute::eefComponentDynamic;
+	}
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -113,6 +130,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pVisible( true ),
 pMovementHint( deComponent::emhStationary ),

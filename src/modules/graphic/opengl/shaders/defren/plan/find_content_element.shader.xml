@@ -10,5 +10,5 @@
 	<shaderStorageBlock name='Counters' target='3'/>
 	<shaderStorageBlock name='VisibleElements' target='4'/>
 	
-	<sourceCode unit='compute'>v130/compute/defren/plan/find_content_node.glsl</sourceCode>
+	<sourceCode unit='compute'>v130/compute/defren/plan/find_content_element.glsl</sourceCode>
 </shader>

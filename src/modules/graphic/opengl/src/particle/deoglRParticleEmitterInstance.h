@@ -28,6 +28,7 @@
 #include <dragengine/common/utils/decLayerMask.h>
 
 #include "../deoglBasics.h"
+#include "../world/deoglWorldCompute.h"
 
 class deoglRenderThread;
 class deoglEnvironmentMap;
@@ -61,12 +62,23 @@ public:
 	};
 	
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldCompute::Element{
+		deoglRParticleEmitterInstance &pEmitter;
+	public:
+		WorldComputeElement( deoglRParticleEmitterInstance &emitter );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRParticleEmitter *pEmitter;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldCompute::Element::Ref pWorldComputeElement;
 	
 	float pBurstTime;
 	decDVector pPosition;

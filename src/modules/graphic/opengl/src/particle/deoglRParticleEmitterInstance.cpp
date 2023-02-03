@@ -58,6 +58,19 @@
 // Class deoglRParticleEmitterInstance
 ////////////////////////////////////////
 
+deoglRParticleEmitterInstance::WorldComputeElement::WorldComputeElement( deoglRParticleEmitterInstance &emitter ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetParticleEmitter, &emitter ),
+pEmitter( emitter ){
+}
+
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
+	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
+	data.SetLayerMask( pEmitter.GetLayerMask() );
+	data.flags = ( uint32_t )deoglWorldCompute::eefParticleEmitter;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -66,6 +79,7 @@ pRenderThread( renderThread ),
 pEmitter( NULL ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pBurstTime( 0.0f ),
 

@@ -37,6 +37,7 @@ public:
 	/** Find config parameters. */
 	enum eFindConfigParameters{
 		efcpNodeCount,
+		efcpElementCount,
 		efcpFrustumPlanes,
 		efcpFrustumSelect,
 		efcpGIMinExtend,

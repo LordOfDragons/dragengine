@@ -1,8 +1,8 @@
 
 // configuration
 UBOLAYOUT uniform FindConfig{
-	// node culling
 	uint pNodeCount;
+	uint pElementCount;
 	
 	vec4 pFrustumPlanes[ 6 ]; // xyz=normal, w=distance
 	bvec3 pFrustumSelect[ 6 ]; // greaterThan(pFrustumPlanes[x], vec3(0))
@@ -32,10 +32,12 @@ const uint wodfLight = uint( 0x10 );
 // compute shader world octree node
 struct sWorldOctreeNode{
 	vec3 minExtend;
-	vec3 maxExtend;
-	
 	uint firstNode;
+	
+	vec3 maxExtend;
 	uint childNodeCount;
+	
+	uint firstElement;
 	uint elementCount;
 };
 
@@ -47,8 +49,9 @@ UBOLAYOUT_BIND(0) readonly buffer WorldOctreeNode {
 // compute shader world octree element
 struct sWorldOctreeElement{
 	vec3 minExtend;
-	vec3 maxExtend;
 	uint elementindex;
+	
+	vec3 maxExtend;
 	uint flags;
 	
 	// layer mask split into upper 32 bits (x) and lower 32 bits (y)

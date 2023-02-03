@@ -85,7 +85,8 @@ pEnvMapUpdateCount( 0 ),
 pEnvMapRenderPlan( NULL ),
 pDirtyEnvMapLayout( false ),
 
-pOctree( NULL )
+pOctree( NULL ),
+pCompute( deoglWorldCompute::Ref::New( new deoglWorldCompute( *this ) ) )
 {
 	try{
 		const decDVector octreeSize( pSanitizeOctreeSize( size ) );

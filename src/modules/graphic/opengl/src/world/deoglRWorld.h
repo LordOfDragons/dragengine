@@ -22,6 +22,7 @@
 #ifndef _DEOGLRWORLD_H_
 #define _DEOGLRWORLD_H_
 
+#include "deoglWorldCompute.h"
 #include "../envmap/deoglEnvironmentMapList.h"
 
 #include <dragengine/deObject.h>
@@ -100,6 +101,7 @@ private:
 	decPointerSet pGIStates;
 	
 	deoglWorldOctree *pOctree;
+	deoglWorldCompute::Ref pCompute;
 	
 	decPointerLinkedList pListPrepareForRenderComponents;
 	decPointerLinkedList pListPrepareForRenderBillboards;
@@ -185,6 +187,11 @@ public:
 	/** Visit content of the world using an axis aligned box. */
 	void VisitRegion( const decDVector &boxMinExtend, const decDVector &boxMaxExtend,
 		deoglWorldOctreeVisitor &visitor );
+	
+	
+	
+	/** Compute. */
+	inline deoglWorldCompute &GetCompute() const{ return pCompute; }
 	
 	
 	

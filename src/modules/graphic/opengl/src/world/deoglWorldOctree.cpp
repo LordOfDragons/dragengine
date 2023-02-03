@@ -51,6 +51,7 @@ deoglWorldOctree::deoglWorldOctree( const decDVector &center, const decDVector &
 deoglDOctree( center, halfSize ),
 pInsertDepth( insertDepth ),
 pCSChildCount( 0 ),
+pCSLocalElementCount( 0 ),
 pCSNodeCount( 0 ),
 pCSElementCount( 0 ){
 }
@@ -345,9 +346,11 @@ void deoglWorldOctree::UpdateCSCounts(){
 	int i;
 	
 	pCSChildCount = 0;
-	pCSNodeCount = 0;
-	pCSElementCount = pComponents.GetCount() + pBillboards.GetCount()
+	pCSLocalElementCount = pComponents.GetCount() + pBillboards.GetCount()
 		+ pParticleEmitters.GetCount() + pLights.GetCount();
+	
+	pCSNodeCount = 0;
+	pCSElementCount = pCSLocalElementCount;
 	
 	for( i=0; i<8; i++ ){
 		deoglWorldOctree * const node = ( deoglWorldOctree * )GetNodeAt( i );
@@ -383,7 +386,8 @@ void deoglWorldOctree::WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex 
 	node.SetExtends( GetMinimumExtend() - refpos, GetMaximumExtend() - refpos );
 	node.firstNode = nextChildNode;
 	node.childNodeCount = ( uint32_t )pCSChildCount;
-	node.elementCount = ( uint32_t )pCSElementCount;
+	node.firstElement = ( uint32_t )csoctree.GetNextElement();
+	node.elementCount = ( uint32_t )pCSLocalElementCount;
 	
 	csoctree.AdvanceNextData( pCSChildCount );
 	
@@ -436,9 +440,9 @@ void deoglWorldOctree::WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex 
 	}
 	
 	for( i=0; i<8; i++ ){
-		deoglWorldOctree * const element = ( deoglWorldOctree * )GetNodeAt( i );
-		if( element && element->pCSElementCount > 0 ){
-			element->WriteCSData( csoctree, nextChildNode++ );
+		deoglWorldOctree * const childNode = ( deoglWorldOctree * )GetNodeAt( i );
+		if( childNode && childNode->pCSElementCount > 0 ){
+			childNode->WriteCSData( csoctree, nextChildNode++ );
 		}
 	}
 }

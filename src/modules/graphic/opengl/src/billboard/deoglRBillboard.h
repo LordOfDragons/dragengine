@@ -26,6 +26,7 @@
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../world/deoglWorldCompute.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -55,11 +56,21 @@ class deBillboard;
  * Render billboard.
  */
 class deoglRBillboard : public deObject, public deoglOcclusionTestListener{
-public:
+private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldCompute::Element{
+		deoglRBillboard &pBillboard;
+	public:
+		WorldComputeElement( deoglRBillboard &billboard );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+	};
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldCompute::Element::Ref pWorldComputeElement;
 	
 	deoglRSkin *pSkin;
 	deoglSkinTexture *pUseSkinTexture;
