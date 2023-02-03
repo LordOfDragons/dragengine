@@ -1,0 +1,941 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Linear list of objects.
+ * 
+ * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
+ */
+fixed class Array
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty array. */
+	public func new()
+	end
+	
+	/** \brief Create array with initial capacity but otherwise empty. */
+	public func new( int size )
+	end
+	
+	/** \brief Create array with \em count elements set to \em element. */
+	public func new( int count, Object element )
+	end
+	
+	/** \brief Create copy of another array. */
+	public func new( Array arr )
+	end
+	
+	
+	
+	/** \brief Create array with one object added. */
+	public static func Array newWith( Object obj )
+		return null
+	end
+	
+	/** \brief Create array with two object added. */
+	public static func Array newWith( Object obj1, Object obj2 )
+		return null
+	end
+	
+	/** \brief Create array with three object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3 )
+		return null
+	end
+	
+	/** \brief Create array with four object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4 )
+		return null
+	end
+	
+	/** \brief Create array with five object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5 )
+		return null
+	end
+	
+	/** \brief Create array with six object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6 )
+		return null
+	end
+	
+	/** \brief Create array with seven object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7 )
+		return null
+	end
+	
+	/** \brief Create array with eight object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8 )
+		return null
+	end
+	
+	/** \brief Create array with nine object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8, Object obj9 )
+		return null
+	end
+	
+	/** \brief Create array with ten object added. */
+	public static func Array newWith( Object obj1, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7, Object obj8, Object obj9, Object obj10 )
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Number of elements. */
+	public func int getCount()
+		return 0
+	end
+	
+	/** \brief Capacity of array before growing. */
+	public func int getSize()
+		return 0
+	end
+	
+	/** \brief Set capacity of array. The capacity can not be less than the current count of elements. */
+	public func void setSize( int capacity )
+	end
+	
+	/** \brief Resize array. */
+	public func void resize( int count )
+	end
+	
+	/** \brief Add object. */
+	public func void add( Object obj )
+	end
+	
+	/** \brief Add all objects from array to the end of this array. */
+	public func void addAll( Array array )
+	end
+	
+	/**
+	 * \brief Insert object at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than getCount().
+	 */
+	public func void insert( int index, Object obj )
+	end
+	
+	/**
+	 * \brief Insert all objects from array at index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than getCount().
+	 */
+	public func void insertAll( int index, Array array )
+	end
+	
+	/** \brief Object is present one or more times. */
+	public func bool has( Object obj )
+		return false
+	end
+	
+	/** \brief Index of first appearance of object or -1 if not found. */
+	public func int indexOf( Object obj )
+		return 0
+	end
+	
+	/**
+	 * \brief Remove object.
+	 * \throws EInvalidParam \em object is absent.
+	 */
+	public func void remove( Object obj )
+	end
+	
+	/**
+	 * \brief Remove object from index.
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getCount().
+	 */
+	public func void removeFrom( int index )
+	end
+	
+	/** \brief Remove all objects. */
+	public func void removeAll()
+	end
+	
+	/**
+	 * \brief Object at index.
+	 * \details Negative values count from the end of the array.
+	 * \throws EOutOfBoundary \em index is less than -getCount() or greater than or equal to getCount().
+	 */
+	public func Object getAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Set object at index.
+	 * \details Negative values count from the end of the array.
+	 * \throws EOutOfBoundary \em index is less than -getCount() or greater than or equal to getCount().
+	 */
+	public func void setAt( int index, Object obj )
+	end
+	
+	/**
+	 * \brief Move object from one position to another.
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than to getCount().
+	 */
+	public func void move( int indexFrom, int indexTo )
+	end
+	
+	
+	
+	/**
+	 * \brief Apply block to each element.
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 */
+	public func void forEach( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element in the given range.
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func void forEach( int indexFrom, int indexTo, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element in the given range using a given step.
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func void forEach( int indexFrom, int indexTo, int indexStep, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element in reverse order.
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 */
+	public func void forEachReverse( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element until the blocks returns false for the first time.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func void forEachWhile( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element in the given range until the blocks returns false.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func void forEachWhile( int indexFrom, int indexTo, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element in the given range using a given step time until the blocks returns false.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func void forEachWhile( int indexFrom, int indexTo, int indexStep, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element in reverse until the blocks returns false.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func void forEachWhileReverse( Block ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 */
+	public func void forEachCastable( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter in the given range.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func void forEachCastable( int indexFrom, int indexTo, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter in the given range using a given step.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func void forEachCastable( int indexFrom, int indexTo, int indexStep, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter in reverse order.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature void(Type object) or void(int index, Type object).
+	 */
+	public func void forEachReverseCastable( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter until the blocks returns false for the first time.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func void forEachWhileCastable( Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter in the given range until the blocks returns false.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func void forEachWhileCastable( int indexFrom, int indexTo, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter in the given range using a given step time until the blocks returns false.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func void forEachWhileCastable( int indexFrom, int indexTo, int indexStep, Block ablock )
+	end
+	
+	/**
+	 * \brief Apply block to each element castable to last block parameter in reverse until the blocks returns false.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func void forEachWhileReverseCastable( Block ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Apply block to each element assembling the result of the block into a new array.
+	 * 
+	 * Block has to use signature Type2(Type1 object) or Type2(int index, Type1 object).
+	 */
+	public func Array map( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Apply block to each element in the given range assembling the result of the block into a new array.
+	 * 
+	 * Block has to use signature Type2(Type1 object) or Type2(int index, Type1 object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Array map( int indexFrom, int indexTo, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Apply block to each element in the given range with the given step assembling the result of the block into a new array.
+	 * 
+	 * Block has to use signature Type2(Type1 object) or Type2(int index, Type1 object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Array map( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Apply block to each element in reverse the result of the block into a new array.
+	 * 
+	 * Block has to use signature Type2(Type1 object) or Type2(int index, Type1 object).
+	 */
+	public func Array mapReverse( Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Collect all elements into a new array for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Array collect( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements in the given range into a new array for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Array collect( int indexFrom, int indexTo, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements in the given range with a given step into a new array for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Array collect( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements in reverse into a new array for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Array collectReverse( Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Collect all elements castable to last block parameter into a new array for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Array collectCastable( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements castable to last block parameter in the given range into a new array for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Array collectCastable( int indexFrom, int indexTo, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements castable to last block parameter in the given range with a given step into a new array for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Array collectCastable( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Collect all elements castable to last block parameter in reverse into a new array for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Array collectReverseCastable( Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Fold the array values using block.
+	 * 
+	 * Block has to use signature void(Type last, Type object) or void(Type last, int index, Type object).
+	 * 
+	 * If there is no element in the array null is returned. If there is one element
+	 * in the array this element is returned. Otherwise the first two values are send
+	 * as arguments to the block. The return value is then send together with the next
+	 * value as arguments to the block. The last return value is returned as the
+	 * folded value.
+	 */
+	public func Object fold( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the array values using block.
+	 * 
+	 * Block has to use signature void(Type last, Type object) or void(Type last, int index, Type object).
+	 * 
+	 * If there is no element in the array null is returned. If there is one element
+	 * in the array this element is returned. Otherwise the first two values are send
+	 * as arguments to the block. The return value is then send together with the next
+	 * value as arguments to the block. The last return value is returned as the
+	 * folded value. The first value is the value indicated by indexFrom up to indexTo
+	 * being the last one.
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Object fold( int indexFrom, int indexTo, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the array values using block.
+	 * 
+	 * Block has to use signature void(Type last, Type object) or void(Type last, int index, Type object).
+	 * 
+	 * If there is no element in the array null is returned. If there is one element
+	 * in the array this element is returned. Otherwise the first two values are send
+	 * as arguments to the block. The return value is then send together with the next
+	 * value as arguments to the block. The last return value is returned as the
+	 * folded value. The first value is the value indicated by indexFrom up to indexTo
+	 * being the last one.
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Object fold( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the array values using block.
+	 * 
+	 * Block has to use signature void(Type last, Type object) or void(Type last, int index, Type object).
+	 * 
+	 * If there is no element in the array null is returned. If there is one element
+	 * in the array this element is returned. Otherwise the first two values are send
+	 * as arguments to the block. The return value is then send together with the next
+	 * value as arguments to the block. The last return value is returned as the
+	 * folded value. The first value is the value indicated by indexFrom up to indexTo
+	 * being the last one.
+	 */
+	public func Object foldReverse( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold array values using block and injected value.
+	 * 
+	 * Block has to use signature void(Type inject, Type object) or void(Type inject, int index, Type object).
+	 * 
+	 * Each element in turn is send to block using the last result. For the first element the
+	 * injected value is used as result. The return value is then send together with the next
+	 * value to block. The last return value is returned.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object entry.
+	 */
+	public func Object inject( Object injectValue, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the array values using block and injected value.
+	 * 
+	 * Block has to use signature void(Type inject, Type object) or void(Type inject, int index, Type object).
+	 * 
+	 * Each element in turn is send as argument to the block using the last result.
+	 * For the first element the injected value is used as result. The return value is
+	 * then send together with the next value as arguments to the block. The last return
+	 * value is returned as the injected value. The first value is the value indicated
+	 * by indexFrom up to indexTo being the last one.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object entry.
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Object inject( int indexFrom, int indexTo, Object injectValue, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the array values using block and injected value.
+	 * 
+	 * Block has to use signature void(Type inject, Type object) or void(Type inject, int index, Type object).
+	 * 
+	 * Each element in turn is send as argument to the block using the last result.
+	 * For the first element the injected value is used as result. The return value is
+	 * then send together with the next value as arguments to the block. The last return
+	 * value is returned as the injected value. The first value is the value indicated
+	 * by indexFrom up to indexTo being the last one.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object entry.
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Object inject( int indexFrom, int indexTo, int indexStep, Object injectValue, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief Fold the array values using block and injected value.
+	 * 
+	 * Block has to use signature void(Type inject, Type object) or void(Type inject, int index, Type object).
+	 * 
+	 * Each element in turn is send as argument to the block using the last result.
+	 * For the first element the injected value is used as result. The return value is
+	 * then send together with the next value as arguments to the block. The last return
+	 * value is returned as the injected value. The first value is the value indicated
+	 * by indexFrom up to indexTo being the last one.
+	 * 
+	 * Block receives as first argument Object injectValue and as second argument Object entry.
+	 */
+	public func Object injectReverse( Object injectValue, Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Number of elements for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func int count( Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements in the given range for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func int count( int indexFrom, int indexTo, Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements in the given range for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func int count( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements in the given range for which the block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func int countReverse( Block ablock )
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief Number of elements castable to last block parameter for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func int countCastable( Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements castable to last block parameter in the given range for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func int countCastable( int indexFrom, int indexTo, Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements castable to last block parameter in the given range for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func int countCastable( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return 0
+	end
+	
+	/**
+	 * \brief Number of elements castable to last block parameter in the given range for which the block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func int countReverseCastable( Block ablock )
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief First element for which the block evaluates to true or null otherwise.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Object find( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element for which the block evaluates to true or null otherwise.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Object find( int indexFrom, int indexTo, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element for which the block evaluates to true or null otherwise.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Object find( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element for which the block evaluates to true or null otherwise.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Object findReverse( Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief First element castable to last block parameter for which the block evaluates to true or null otherwise.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Object findCastable( Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element castable to last block parameter for which the block evaluates to true or null otherwise.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 */
+	public func Object findCastable( int indexFrom, int indexTo, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element castable to last block parameter for which the block evaluates to true or null otherwise.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 * 
+	 * \throws EOutOfBoundary \em indexFrom is less than 0 or greater than or equal to getCount().
+	 * \throws EOutOfBoundary \em indexTo is less than 0 or greater than getCount().
+	 * \throws EOutOfBoundary \em indexStep is less than 1.
+	 */
+	public func Object findCastable( int indexFrom, int indexTo, int indexStep, Block ablock )
+		return null
+	end
+	
+	/**
+	 * \brief First element castable to last block parameter for which the block evaluates to true or null otherwise.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func Object findReverseCastable( Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Remove elements for which a block returns true.
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func void removeIf( Block ablock )
+	end
+	
+	/**
+	 * \brief Remove elements castable to last block parameter for which a block returns true.
+	 * \version 1.3
+	 * 
+	 * Block has to use signature bool(Type object) or bool(int index, Type object).
+	 */
+	public func void removeIfCastable( Block ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Array with content from an index to the end.
+	 * 
+	 * If \em indexFrom is negative indexFrom is counted from the end of the array. The final
+	 * starting point is clamped to be inside the array.
+	 */
+	public func Array slice( int indexFrom )
+		return null
+	end
+	
+	/**
+	 * \brief Array with the content from a range.
+	 * 
+	 * If \em indexFrom or \em indexTo are negative they are counted from the end of the array.
+	 * The final start and end point is clamped to be inside the array. If the start point is
+	 * larger than the end point an empty array is returned.
+	 */
+	public func Array slice( int indexFrom, int indexTo )
+		return null
+	end
+	
+	/**
+	 * \brief Array with the content from a range.
+	 * 
+	 * If \em indexFrom or \em indexTo are negative they are counted from the end of the array.
+	 * The final start and end point is clamped to be inside the array. If the start point is
+	 * larger or smaller (depending if indexStep is positive or negative) than the end point
+	 * an empty array is returned.
+	 */
+	public func Array slice( int indexFrom, int indexTo, int indexStep )
+		return null
+	end
+	
+	/** \brief Sort array using the order operators of the stored objects. */
+	public func void sort()
+	end
+	
+	/**
+	 * \brief Sort array using a block.
+	 * 
+	 * Block has to use signature int(Type first, Type second).
+	 * 
+	 * \em ablock takes the two objects to compare as argument and returns an integer.
+	 * If the result indicates the relationship between the objects. If the first object
+	 * is before the second <0 is returned. If they are equal 0 is returned. If the first
+	 * object is after the second >0 is returned.
+	 */
+	public func void sort( Block ablock )
+	end
+	
+	/** \brief Sorted copy of array using the order operators of the stored objects. */
+	public func Array sorted()
+		return null
+	end
+	
+	/**
+	 * \brief Sorted copy of array using a block.
+	 * 
+	 * Block has to use signature int(Type first, Type second).
+	 * 
+	 * \em ablock takes the two objects to compare as argument and returns an integer.
+	 * If the result indicates the relationship between the objects. If the first object
+	 * is before the second <0 is returned. If they are equal 0 is returned. If the first
+	 * object is after the second >0 is returned.
+	 */
+	public func Array sorted( Block ablock )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Random element.
+	 * 
+	 * throws EInvalidParam Array is empty.
+	 */
+	public func Object random()
+		return null
+	end
+	
+	
+	
+	/** \brief String representation of array. */
+	public func String toString()
+		return null
+	end
+	
+	
+	
+	/** \brief Create array with content of \em array appended to content of this array. */
+	public func Array +( Array array )
+		return null
+	end
+	/*@}*/
+end

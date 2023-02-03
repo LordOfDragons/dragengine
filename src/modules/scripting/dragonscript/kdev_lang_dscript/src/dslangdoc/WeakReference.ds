@@ -1,0 +1,81 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Weak object reference.
+ * 
+ * Allows to store a weak reference to an object without actively holding a reference.
+ * This is typically used to avoid reference loops which can cause objects to leak
+ * until garbage collected. Since DragonScript is not using active garbage collecting
+ * this can be very well not before the application stops running. A weak reference
+ * returns \em null if all regular references to the object haved been released.
+ * 
+ * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
+ */
+fixed class WeakReference
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create empty weak reference. */
+	public func new()
+	end
+	
+	/** \brief Create weak reference with weak reference to \em object if not \em null. */
+	public func new( Object object )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Object or \em null if all references to object have been released or \em null has been assigned. */
+	public func Object get()
+		return null
+	end
+	
+	/** \brief Set object or \em null. */
+	public func void set( Object object )
+	end
+	
+	/**
+	 * \brief Run block if get() returns non-null value.
+	 * \version 1.3
+	 * 
+	 * Block receives as only argument the object which is guaranteed to be non-null.
+	 */
+	public func void run( Block ablock )
+	end
+	
+	/**
+	 * \brief Run block if get() returns non-null value and object is castable to block argument.
+	 * \version 1.3
+	 * 
+	 * Block receives as only argument the object which is guaranteed to be non-null.
+	 */
+	public func void runCastable( Block ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Weak reference is equal to another object.
+	 * \returns \em true if \em other is of type WeakReference and both have the same object set.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	/*@}*/
+end

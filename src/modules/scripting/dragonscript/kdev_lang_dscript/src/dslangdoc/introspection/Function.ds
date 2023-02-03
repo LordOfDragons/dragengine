@@ -1,0 +1,104 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Introspection
+
+/**
+ * \brief Introspection function.
+ * 
+ * Use \code{.ds} requires Introspection \endcode in your script files to load the introspection package.
+ * 
+ * This is a native class. This class can not be directly instanciated. Use Class to obtain instances.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
+ */
+class Function
+	/** \name Management */
+	/*@{*/
+	/** \brief Name of the function. */
+	public func String getName()
+		return null
+	end
+	
+	/** \brief Full name of the function. */
+	public func String getFullName()
+		return null
+	end
+	
+	/** \brief Type of the function. */
+	public func Class getType()
+		return null
+	end
+	
+	/** \brief Parent class of the function. */
+	public func Class getParent()
+		return null
+	end
+	
+	/** \brief Signature of function. */
+	public func Array getSignature()
+		return null
+	end
+	
+	/** \brief Function type modifiers. */
+	public func int getTypeModifiers()
+		return 0
+	end
+	
+	
+	
+	/** \brief Check if type modifier flags are set. */
+	public func bool isSet( int flags )
+		return false
+	end
+	
+	
+	
+	/**
+	 * \brief Call explicit function on object.
+	 * \details Calls the explcit function defined in the parent class.
+	 *          If function has void return type \em null is returned.
+	 * \throws EInvalidParam \em arguments do not match function signature.
+	 */
+	public func Object callDirect( Object object, Array arguments )
+		return null
+	end
+	
+	/**
+	 * \brief Call function on object using late binding.
+	 * \details Looks up function in the parent class using regular late binding
+	 *          calling the highest overwritten version. If function has void return
+	 *          type \em null is returned.
+	 * \throws EInvalidParam \em arguments do not match function signature.
+	 */
+	public func Object call( Object object, Array arguments )
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Function is equal to another object.
+	 * \returns \em true if \em other is of type Function and both represent the same function.
+	*/
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of class. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+end

@@ -1,0 +1,105 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Primitive boolean value.
+ * 
+ * Primitive values are constant and stored as value not as reference. Primitive values
+ * act like objects but are not stored as true objects in memory. Primitive values own
+ * special operators not available to script languages:
+ * | Command | Description |
+ * | ------- | ----------- |
+ * | bool \b = bool | assign bool value |
+ * | bool \b == bool | bool values are equal |
+ * | bool \b != bool | bool values are not equal |
+ * | \b not  bool | true if bool value is false |
+ * | bool \b and bool | logical and with delayed evaluation if possible |
+ * | bool \b or bool | logical or with delayed evaluation if possible |
+ * | bool \b xor bool | logical xor with delayed evaluation if possible |
+ * 
+ * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
+ */
+fixed class bool
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create boolean. */
+	public func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Compare boolean to another object.
+	 * \throws EInvalidAction \em other is not of type bool.
+	 * \retval 0 Both boolean values are equal.
+	 * \retval <0 This boolean value is \em false and the other boolean value is \em true.
+	 * \retval >0 This boolean value is \em true and the other boolean value is \em false.
+	 */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/**
+	 * \brief Boolean is equal to another boolean.
+	 * \returns \em true if \em other is of type Boolean and both are equal.
+	 */
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of boolean value. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Logical and between this boolean and another boolean. */
+	public func bool &( bool other )
+		return false
+	end
+	
+	/** \brief Logical or between this boolean and another boolean. */
+	public func bool |( bool other )
+		return false
+	end
+	
+	/** \brief Logical xor between this boolean and another boolean. */
+	public func bool ^( bool other )
+		return false
+	end
+	
+	/** \brief Set boolean value to logical and between this boolean and another boolean and return new value. */
+	public func bool &=( bool other )
+		return false
+	end
+	
+	/** \brief Set boolean value to logical or between this boolean and another boolean and return new value. */
+	public func bool |=( bool other )
+		return false
+	end
+	
+	/** \brief Set boolean value to logical xor between this boolean and another boolean and return new value. */
+	public func bool ^=( bool other )
+		return false
+	end
+end
