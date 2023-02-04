@@ -164,13 +164,14 @@ private:
 	deoglDebugInformation::Ref pDebugInfoThreadMainSynchronize;
 	
 	deoglDebugInformation::Ref pDebugInfoThreadRender;
-	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderSyncGpu;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderBegin;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderWindows;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsPrepare;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsRender;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderCapture;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderEnd;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
 	
 	deoglDebugInformation::Ref pDebugInfoFrameLimiter;
 	deoglDebugInformation::Ref pDebugInfoFLEstimMain;
@@ -189,12 +190,13 @@ private:
 	
 	float pDebugTimeThreadMainWaitFinish;
 	
-	float pDebugTimeThreadRenderSwap;
+	float pDebugTimeThreadRenderSyncGpu;
 	float pDebugTimeThreadRenderBegin;
 	float pDebugTimeThreadRenderWindows;
 	float pDebugTimeThreadRenderWindowsPrepare;
 	float pDebugTimeThreadRenderWindowsRender;
 	float pDebugTimeThreadRenderCapture;
+	float pDebugTimeThreadRenderSwap;
 	int pDebugCountThreadWindows;
 	
 	// deprecated

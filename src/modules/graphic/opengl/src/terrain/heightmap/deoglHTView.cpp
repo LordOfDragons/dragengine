@@ -82,7 +82,7 @@ void deoglHTView::AddSector( deoglHTViewSector *sector ){
 	
 	if( pSectorCount == pSectorSize ){
 		const int newSize = pSectorSize * 3 / 2 + 1;
-		deoglHTViewSector **newArray = new deoglHTViewSector*[ newSize ];
+		deoglHTViewSector ** const newArray = new deoglHTViewSector*[ newSize ];
 		if( pSectors ){
 			memcpy( newArray, pSectors, sizeof( deoglHTViewSector* ) * pSectorSize );
 			delete [] pSectors;

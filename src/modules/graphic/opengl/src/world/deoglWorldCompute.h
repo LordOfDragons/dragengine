@@ -45,7 +45,9 @@ public:
 		eefComponentDynamic = 0x2,
 		eefBillboard = 0x4,
 		eefParticleEmitter = 0x8,
-		eefLight = 0x10
+		eefLight = 0x10,
+		eefPropField = 0x20,
+		eefHTSector = 0x40
 	};
 	
 	/** Shader element parameters. */
@@ -70,14 +72,17 @@ public:
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
 		void SetLayerMask( const decLayerMask &layerMask );
+		void SetEmptyLayerMask();
 	};
 	
 	/** Compute shader element types. */
 	enum eElementTypes{
-		eetComponent = 0,
-		eetBillboard = 1,
-		eetParticleEmitter = 2,
-		eetLight = 3
+		eetComponent,
+		eetBillboard,
+		eetParticleEmitter,
+		eetLight,
+		eetPropField,
+		eetHTSector
 	};
 	
 	/** Element. */

@@ -140,12 +140,13 @@ pMainThreadShowDebugInfoModule( false ),
 
 pDebugTimeThreadMainWaitFinish( 0.0f ),
 
-pDebugTimeThreadRenderSwap( 0.0f ),
+pDebugTimeThreadRenderSyncGpu( 0.0f ),
 pDebugTimeThreadRenderBegin( 0.0f ),
 pDebugTimeThreadRenderWindows( 0.0f ),
 pDebugTimeThreadRenderWindowsPrepare( 0.0f ),
 pDebugTimeThreadRenderWindowsRender( 0.0f ),
 pDebugTimeThreadRenderCapture( 0.0f ),
+pDebugTimeThreadRenderSwap( 0.0f ),
 pDebugCountThreadWindows( 0 ),
 
 // deprecated
@@ -976,8 +977,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pDebugInfoThreadRender.TakeOver( new deoglDebugInformation( "Render Thread", colorText, colorBgSub ) );
 	pDebugInfoModule->GetChildren().Add( pDebugInfoThreadRender );
 		
-		pDebugInfoThreadRenderSwap.TakeOver( new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 ) );
-		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSwap );
+		pDebugInfoThreadRenderSyncGpu.TakeOver( new deoglDebugInformation( "Sync GPU", colorText, colorBgSub2 ) );
+		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSyncGpu );
 		
 		pDebugInfoThreadRenderBegin.TakeOver( new deoglDebugInformation( "Begin", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderBegin );
@@ -996,6 +997,9 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		pDebugInfoThreadRenderEnd.TakeOver( new deoglDebugInformation( "End", colorText, colorBgSub2 ) );
 		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderEnd );
+		
+		pDebugInfoThreadRenderSwap.TakeOver( new deoglDebugInformation( "Swap Buffers", colorText, colorBgSub2 ) );
+		pDebugInfoThreadRender->GetChildren().Add( pDebugInfoThreadRenderSwap );
 	
 	pDebugInfoFrameLimiter.TakeOver( new deoglDebugInformation( "Frame Limiter", colorText, colorBg ) );
 	pDebugInfoFrameLimiter->SetVisible( false );
@@ -1531,6 +1535,17 @@ void deoglRenderThread::pRenderSingleFrame(){
 	decTimer timer;
 #endif
 	
+	// synchronize with GPU. it is annoying this has to be required since it prevents fullly
+	// occupying the GPU. the problem is that swap buller stalls GPU processing and thus
+	// GPU->CPU transfer. by synchronizing with the GPU we can ensure all rendering has
+	// finished so we can use the GPU for pre-render processing. this trades stalling at
+	// an unfortunate time with stalling at a well known time
+	OGL_CHECK( *this, glFinish() );
+	
+	if( showDebugInfoModule ){
+		pDebugTimeThreadRenderSyncGpu = pDebugTimerRenderThread2.GetElapsedTime();
+	}
+	
 	// NOTE if there are multiple windows we can not use delay swap buffers as we
 	//      can using a single window. we have to go through each window individually
 	//      or using a render thread for each of them which would be a problem. this
@@ -1569,10 +1584,10 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pEndFrame();
 		
 	}else{
-		pSwapBuffers();
-		if( showDebugInfoModule ){
-			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
-		}
+		// pSwapBuffers();
+		// if( showDebugInfoModule ){
+		// 	pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
+		// }
 		
 		#ifdef OS_ANDROID
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame ENTER");
@@ -1605,6 +1620,16 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 		pVRSubmit();
 		pEndFrame();
+		
+		// the placement of swaping buffers is a problem. if done right before rendering
+		// the swaping stalls compute shaders using read back. if done here swaping stalls
+		// due to calling glFlush internally. the delay here is though better than the one
+		// at the start of rendering since after this swap buffer call the render thread
+		// waits on a barrier
+		pSwapBuffers();
+		if( showDebugInfoModule ){
+			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
+		}
 	}
 	
 	if( showDebugInfoModule ){
@@ -1612,8 +1637,8 @@ void deoglRenderThread::pRenderSingleFrame(){
 		const float time2 = pDebugTimerRenderThread2.GetElapsedTime();
 		const float time1 = pDebugTimerRenderThread1.GetElapsedTime();
 		
-		pDebugInfoThreadRenderSwap->Clear();
-		pDebugInfoThreadRenderSwap->IncrementElapsedTime( pDebugTimeThreadRenderSwap );
+		pDebugInfoThreadRenderSyncGpu->Clear();
+		pDebugInfoThreadRenderSyncGpu->IncrementElapsedTime( pDebugTimeThreadRenderSyncGpu );
 		
 		pDebugInfoThreadRenderBegin->Clear();
 		pDebugInfoThreadRenderBegin->IncrementElapsedTime( pDebugTimeThreadRenderBegin );
@@ -1634,6 +1659,9 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 		pDebugInfoThreadRenderEnd->Clear();
 		pDebugInfoThreadRenderEnd->IncrementElapsedTime( time2 );
+		
+		pDebugInfoThreadRenderSwap->Clear();
+		pDebugInfoThreadRenderSwap->IncrementElapsedTime( pDebugTimeThreadRenderSwap );
 		
 		pDebugInfoThreadRender->Clear();
 		pDebugInfoThreadRender->IncrementElapsedTime( time1 );
@@ -2459,13 +2487,14 @@ void deoglRenderThread::pCleanUpThread(){
 		pDebugInfoThreadMainWaitFinish = nullptr;
 		pDebugInfoThreadMainSynchronize = nullptr;
 		pDebugInfoThreadRender = nullptr;
-		pDebugInfoThreadRenderSwap = nullptr;
+		pDebugInfoThreadRenderSyncGpu = nullptr;
 		pDebugInfoThreadRenderBegin = nullptr;
 		pDebugInfoThreadRenderWindows = nullptr;
 		pDebugInfoThreadRenderWindowsPrepare = nullptr;
 		pDebugInfoThreadRenderWindowsRender = nullptr;
 		pDebugInfoThreadRenderCapture = nullptr;
 		pDebugInfoThreadRenderEnd = nullptr;
+		pDebugInfoThreadRenderSwap = nullptr;
 		pDebugInfoFrameLimiter = nullptr;
 		pDebugInfoFLEstimMain = nullptr;
 		pDebugInfoFLEstimRender = nullptr;

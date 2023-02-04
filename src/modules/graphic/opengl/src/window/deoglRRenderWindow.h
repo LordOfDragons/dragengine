@@ -23,6 +23,7 @@
 #define _DEOGLRRENDERWINDOW_H_
 
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../target/deoglRenderTarget.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -132,6 +133,8 @@ private:
 	
 	bool pSwapBuffers;
 	bool pNotifySizeChanged;
+	
+	deoglRenderTarget::Ref pRenderTarget;
 	
 	
 	

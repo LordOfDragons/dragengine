@@ -52,11 +52,31 @@
 // Class deoglRHTSector
 /////////////////////////
 
+deoglRHTSector::WorldComputeElement::WorldComputeElement( deoglRHTSector &sector ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetComponent, &sector ),
+pSector( sector ){
+}
+
+void deoglRHTSector::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decVector origin( pSector.CalcWorldPosition( worldCompute.GetWorld().GetReferencePosition() ) );
+	const float size = pSector.GetHeightTerrain().GetSectorSize();
+	const float minHeight = pSector.GetMinHeight(); // origin.y - 10000.0f;
+	const float maxHeight = pSector.GetMaxHeight(); // origin.y + 10000.0f;
+	
+	data.SetExtends( decVector( origin.x, minHeight, origin.z ), decVector( origin.x + size, maxHeight, origin.z + size ) );
+	data.SetEmptyLayerMask();
+	data.flags = ( uint32_t )deoglWorldCompute::eefHTSector;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 deoglRHTSector::deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector ) :
 pHeightTerrain( heightTerrain ),
+pIndex( -1 ),
+
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pBaseHeight( 0.0f ),
 pScaling( 1.0f ),
@@ -68,6 +88,8 @@ pDirtyMaskTextures( true ),
 pTexturesRequirePrepareForRender( true ),
 
 pHeights( NULL ),
+pMinHeight( 0.0f ),
+pMaxHeight( 0.0f ),
 
 pVBODataPoints1( NULL ),
 pVBODataPoints1Count( 0 ),
@@ -109,6 +131,10 @@ deoglRHTSector::~deoglRHTSector(){
 // Management
 ///////////////
 
+void deoglRHTSector::SetIndex( int index ){
+	pIndex = index;
+}
+
 decDMatrix deoglRHTSector::CalcWorldMatrix() const{
 	return CalcWorldMatrix( pHeightTerrain.GetParentWorld()->GetReferencePosition() );
 }
@@ -127,6 +153,20 @@ decDVector deoglRHTSector::CalcWorldPosition() const{
 decDVector deoglRHTSector::CalcWorldPosition( const decDVector &referencePosition ) const{
 	return decDVector( pHeightTerrain.GetSectorSize() * ( double )pCoordinates.x, 0.0,
 		pHeightTerrain.GetSectorSize() * ( double )pCoordinates.y ) - referencePosition;
+}
+
+void deoglRHTSector::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.AddElement( pWorldComputeElement );
+}
+
+void deoglRHTSector::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElement( pWorldComputeElement );
+	}
+}
+
+void deoglRHTSector::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.RemoveElement( pWorldComputeElement );
 }
 
 void deoglRHTSector::PrepareForRender(){
@@ -599,6 +639,11 @@ void deoglRHTSector::pSyncHeightMap( const deHeightTerrainSector &sector, const 
 			}
 		}
 	}
+	
+	// update world compute element
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		pHeightTerrain.GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
+	}
 }
 
 
@@ -849,6 +894,9 @@ void deoglRHTSector::pUpdateHeightMap(){
 	}
 	
 	// update bounding boxes
+	pMinHeight = 0.0f;
+	pMaxHeight = 0.0f;
+	
 	float minHeight, maxHeight;
 	int lastZ, firstX, lastX;
 	
@@ -877,6 +925,15 @@ void deoglRHTSector::pUpdateHeightMap(){
 		}
 		
 		cluster.UpdateHeightExtends( minHeight, maxHeight );
+		
+		if( c == 0 ){
+			pMinHeight = minHeight;
+			pMaxHeight = maxHeight;
+			
+		}else{
+			pMinHeight = decMath::min( pMinHeight, minHeight );
+			pMaxHeight = decMath::max( pMaxHeight, maxHeight );
+		}
 	}
 //DEBUG_PRINT_TIMER( "HTSector: Extends" );
 }

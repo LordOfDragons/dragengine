@@ -105,7 +105,7 @@ void deoglRenderPlanCompute::PrepareWorldCompute(){
 	
 	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
 	compute.Prepare();
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: WorldCompute.Prepare: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: WorldCompute.Prepare: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
 	
 	
@@ -148,19 +148,14 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	}
 	
 	// read counters to get the count of visible elements written
-	decTimer timer;
-		glFinish();
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S0 %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	const sCounters * const counters = ( const sCounters * )pSSBOCounters->ReadBuffer( 1 );
 	const int indexCount = counters[ 0 ].counter;
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S1 %dys [%d]", ( int )( timer.GetElapsedTime() * 1e6f ), indexCount );
 	if( indexCount == 0 ){
 		return;
 	}
 	
 	// read written visible element indices
 	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ( ( indexCount - 1 ) / 4 ) + 1 );
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S2 %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	int ct[ 4 ] = { 0, 0, 0, 0 };
 	int i;
 	
@@ -168,7 +163,6 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
 		ct[ element.GetType() ]++;
 	}
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S3 %dys [%d %d %d %d]", ( int )( timer.GetElapsedTime() * 1e6f ), ct[0], ct[1], ct[2], ct[3] );
 }
 
 
@@ -242,7 +236,7 @@ void deoglRenderPlanCompute::pClearCounters(){
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		ssbo.SetParameterDataUVec3( 0, i, 1, 1, 1 ); // work group size
+		ssbo.SetParameterDataUVec3( 0, i, 0, 1, 1 ); // work group size (x=0)
 		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
 	}
 }

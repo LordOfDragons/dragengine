@@ -53,6 +53,11 @@ void deoglWorldCompute::sDataElement::SetLayerMask( const decLayerMask &a ){
 	layerMask[ 1 ] = ( uint32_t )a.GetMask();
 }
 
+void deoglWorldCompute::sDataElement::SetEmptyLayerMask(){
+	layerMask[ 0 ] = 0;
+	layerMask[ 1 ] = 0;
+}
+
 
 
 // deoglWorldCompute::Element

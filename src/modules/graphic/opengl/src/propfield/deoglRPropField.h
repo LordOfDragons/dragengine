@@ -28,6 +28,7 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 
 #include "../deoglGL.h"
+#include "../world/deoglWorldCompute.h"
 
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -46,8 +47,19 @@ class dePropField;
  */
 class deoglRPropField : public deObject{
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldCompute::Element{
+		deoglRPropField &pPropField;
+	public:
+		WorldComputeElement( deoglRPropField &propField );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
+	deoglWorldCompute::Element::Ref pWorldComputeElement;
 	
 	decDVector pPosition;
 	

@@ -636,11 +636,24 @@ void deoglRRenderWindow::Render(){
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
-	// render canvas
-	pRenderThread.GetFramebuffer().Activate( NULL );
+	// create render taget if required
+	const decPoint size( pWidth, pHeight );
+	/*
+	if( ! pRenderTarget ){
+		pRenderTarget.TakeOver( new deoglRenderTarget( pRenderThread, size, 3, 8 ) );
+		
+	}else if ( pRenderTarget->GetSize() != size ){
+		pRenderTarget->SetSize( size );
+	}
 	
-	const deoglRenderCanvasContext context( *pRCanvasView, NULL,
-		decPoint(), decPoint( pWidth, pHeight ), true, NULL );
+	pRenderTarget->PrepareFramebuffer();
+	*/
+	
+	// render canvas
+	pRenderThread.GetFramebuffer().Activate( nullptr /*pRenderTarget->GetFBO()*/ );
+	
+	const deoglRenderCanvasContext context( *pRCanvasView,
+		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, NULL );
 	pRenderThread.GetRenderers().GetCanvas().Prepare( context );
 	
 	pRCanvasView->Render( context );
@@ -656,6 +669,13 @@ void deoglRRenderWindow::Render(){
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
 	
 	debugTrace.Close();
+	
+	// blit to back buffer
+	/*
+	pRenderThread.GetFramebuffer().Activate( nullptr );
+	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
+	OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_COLOR_BUFFER_BIT, GL_NEAREST ) );
+	*/
 	
 	// capture if any capture canvas are pending
 	Capture();

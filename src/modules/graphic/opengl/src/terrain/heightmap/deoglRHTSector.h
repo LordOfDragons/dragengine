@@ -24,6 +24,7 @@
 
 #include "../../deoglBasics.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../../world/deoglWorldCompute.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -45,7 +46,20 @@ class deHeightTerrainSector;
  */
 class deoglRHTSector : public deObject{
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldCompute::Element{
+		deoglRHTSector &pSector;
+	public:
+		WorldComputeElement( deoglRHTSector &sector );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+	};
+	
+	
+	
 	deoglRHeightTerrain &pHeightTerrain;
+	int pIndex;
+	
+	deoglWorldCompute::Element::Ref pWorldComputeElement;
 	
 	decPoint pCoordinates;
 	float pBaseHeight;
@@ -61,6 +75,8 @@ private:
 	deoglPixelBuffer::Ref pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
 	
 	float *pHeights;
+	float pMinHeight;
+	float pMaxHeight;
 	
 	GLuint *pVBODataPoints1;
 	int pVBODataPoints1Count;
@@ -95,6 +111,12 @@ public:
 	/** Height terrain. */
 	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Set index. */
+	void SetIndex( int index );
+	
 	/** Sector coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
@@ -111,6 +133,15 @@ public:
 	/** Calculate world position. */
 	decDVector CalcWorldPosition() const;
 	decDVector CalcWorldPosition( const decDVector &referencePosition ) const;
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
 	
 	/** Prepare for render. */
 	void PrepareForRender();
@@ -139,6 +170,12 @@ public:
 	
 	/** Heights. */
 	inline float *GetHeights() const{ return pHeights; }
+	
+	/** Minimum height. */
+	inline float GetMinHeight() const{ return pMinHeight; }
+	
+	/** Maximum height. */
+	inline float GetMaxHeight() const{ return pMaxHeight; }
 	
 	/** Height changed. */
 	void HeightChanged( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
