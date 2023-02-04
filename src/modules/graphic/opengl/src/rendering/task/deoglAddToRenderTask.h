@@ -30,8 +30,10 @@
 class deoglCollideList;
 class deoglCollideListComponent;
 class deoglCollideListHTSector;
+class deoglCollideListHTSCluster;
 class deoglCollideListPropField;
 class deoglCollideListPropFieldType;
+class deoglCollideListPropFieldCluster;
 class deoglComponentList;
 class deoglCubeMap;
 class deoglHTViewSector;
@@ -267,6 +269,12 @@ public:
 	
 	
 	
+	/** Add prop field cluster. */
+	void AddPropFieldCluster( const deoglCollideListPropFieldCluster &clPropFieldCluster, bool imposters );
+	
+	/** Add all prop fields of a collide list. */
+	void AddPropFieldClusters( const deoglCollideList &clist, bool imposters );
+	
 	/** Add all clusters of a collide list prop field type. */
 	void AddPropFieldType( const deoglCollideListPropFieldType &clPropFieldType,
 		const deoglRPropFieldType &propFieldType, bool imposters );
@@ -278,6 +286,15 @@ public:
 	void AddPropFields( const deoglCollideList &clist, bool imposters );
 	
 	
+	
+	/** Add all height terrain sector cluster texture. */
+	void AddHeightTerrainSectorCluster( const deoglCollideListHTSCluster &clhtscluster, int texture, bool firstMask );
+	
+	/** Add all clusters of height terrain sector texture. */
+	void AddHeightTerrainSectorCluster( const deoglCollideListHTSCluster &clhtscluster, bool firstMask );
+	
+	/** Add all clusters of height terrain sector texture. */
+	void AddHeightTerrainSectorClusters( const deoglCollideList &clist, bool firstMask );
 	
 	/** Add all clusters of height terrain sector texture. */
 	void AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture, bool firstMask );

@@ -121,7 +121,9 @@ void deoglRPTSkyLightBuildRT::Run(){
 			
 			addToRenderTask.AddComponents( pTempCollideList );
 			addToRenderTask.AddPropFields( pTempCollideList, false );
+			addToRenderTask.AddPropFieldClusters( pTempCollideList, false );
 			addToRenderTask.AddHeightTerrains( pTempCollideList, true );
+			addToRenderTask.AddHeightTerrainSectorClusters( pTempCollideList, true );
 		}
 		
 		pElapsedTime = timer.GetElapsedTime();

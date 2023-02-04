@@ -47,7 +47,7 @@
 /////////////////////////
 
 deoglRPropField::WorldComputeElement::WorldComputeElement( deoglRPropField &propField ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetPropField, &propField ),
+deoglWorldCompute::Element( deoglWorldCompute::eetPropFieldCluster, &propField ),
 pPropField( propField ){
 }
 

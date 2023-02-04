@@ -29,16 +29,20 @@
 
 class deoglCollideListComponent;
 class deoglCollideListHTSector;
+class deoglCollideListHTSCluster;
 class deoglCollideListLight;
 class deoglCollideListPropField;
+class deoglCollideListPropFieldCluster;
 class deoglDCollisionFrustum;
 class deoglDCollisionVolume;
 class deoglHTView;
 class deoglHTViewSector;
+class deoglHTViewSectorCluster;
 class deoglRBillboard;
 class deoglRComponent;
 class deoglRLight;
 class deoglRPropField;
+class deoglPropFieldCluster;
 class deoglRWorld;
 class deoglTMViewFrustum;
 class deoglTransformVolume;
@@ -70,9 +74,17 @@ private:
 	int pHTSectorCount;
 	int pHTSectorSize;
 	
+	deoglCollideListHTSCluster **pHTSClusters;
+	int pHTSClusterCount;
+	int pHTSClusterSize;
+	
 	deoglCollideListPropField **pPropFields;
 	int pPropFieldCount;
 	int pPropFieldSize;
+	
+	deoglCollideListPropFieldCluster **pPropFieldClusters;
+	int pPropFieldClusterCount;
+	int pPropFieldClusterSize;
 	
 	deoglTransformVolume *pTransformVolume;
 	
@@ -264,6 +276,23 @@ public:
 	
 	
 	
+	/** \name Height Terrain Sector Clusters */
+	/*@{*/
+	/** Count of height terrain sector clusters. */
+	inline int GetHTSClusterCount() const{ return pHTSClusterCount; }
+	
+	/** Height terrain sector cluster at index. */
+	deoglCollideListHTSCluster *GetHTSClusterAt( int index ) const;
+	
+	/** Add height terrain sector cluster. */
+	deoglCollideListHTSCluster *AddHTSCluster( deoglHTViewSectorCluster *cluster );
+	
+	/** Remove all height terrain sector clusters. */
+	void RemoveAllHTSClusters();
+	/*@}*/
+	
+	
+	
 	/** \name Prop Fields */
 	/*@{*/
 	/** Count of prop fields. */
@@ -283,6 +312,23 @@ public:
 	
 	/** Adds prop fields colliding with the given volume. */
 	void AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume &volume );
+	/*@}*/
+	
+	
+	
+	/** \name Prop Field Clusters */
+	/*@{*/
+	/** Count of prop field clusters. */
+	inline int GetPropFieldClusterCount() const{ return pPropFieldClusterCount; }
+	
+	/** Prop field cluster at index. */
+	deoglCollideListPropFieldCluster *GetPropFieldClusterAt( int index ) const;
+	
+	/** Add prop field cluster. */
+	deoglCollideListPropFieldCluster *AddPropFieldCluster( deoglPropFieldCluster *cluster );
+	
+	/** Remove all prop field clusters. */
+	void RemoveAllPropFieldClusters();
 	/*@}*/
 	
 private:

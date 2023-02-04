@@ -81,8 +81,8 @@ public:
 		eetBillboard,
 		eetParticleEmitter,
 		eetLight,
-		eetPropField,
-		eetHTSector
+		eetPropFieldCluster,
+		eetHeightTerrainSectorCluster
 	};
 	
 	/** Element. */

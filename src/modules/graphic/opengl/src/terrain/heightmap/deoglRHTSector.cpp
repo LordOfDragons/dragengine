@@ -53,7 +53,7 @@
 /////////////////////////
 
 deoglRHTSector::WorldComputeElement::WorldComputeElement( deoglRHTSector &sector ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetComponent, &sector ),
+deoglWorldCompute::Element( deoglWorldCompute::eetHeightTerrainSectorCluster, &sector ),
 pSector( sector ){
 }
 
@@ -228,7 +228,6 @@ void deoglRHTSector::SectorChanged( const deHeightTerrainSector &sector ){
 
 deoglHTSCluster &deoglRHTSector::GetClusterAt( int x, int z ) const{
 	if( x < 0 || x >= pClusterCount || z < 0 || z >= pClusterCount ){
-		printf("FUCK %d %d %d\n", x, z, pClusterCount);
 		DETHROW( deeInvalidParam );
 	}
 	

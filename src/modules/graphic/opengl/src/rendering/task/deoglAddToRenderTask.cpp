@@ -549,6 +549,87 @@ void deoglAddToRenderTask::AddDecals( const deoglCollideList &clist ){
 
 
 
+void deoglAddToRenderTask::AddPropFieldCluster(
+const deoglCollideListPropFieldCluster &clPropFieldCluster, bool imposters ){
+	const deoglPropFieldCluster &cluster = *clPropFieldCluster.GetCluster();
+	const deoglRPropFieldType &propFieldType = cluster.GetPropFieldType();
+	if( ! propFieldType.GetModel() ){
+		return;
+	}
+	
+	const deoglSkinTexture * const skinTexture = propFieldType.GetUseSkinTexture();
+	if( ! skinTexture || pFilterReject( *skinTexture ) ){
+		return;
+	}
+	if( pNoRendered && skinTexture->GetRendered() ){
+		return; // TODO move to prop field as texture flag
+	}
+	
+	const deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt( 0 );
+	if( ! modelLOD.GetVBOBlock() ){
+		return;
+	}
+	
+	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
+	
+	if( pFilterDecal && pDecal != modelTex.GetDecal() ){
+		return;
+	}
+	
+	int pipelineModifier = pSkinPipelineModifier;
+	if( modelTex.GetDoubleSided() || pForceDoubleSided ){
+		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
+	}
+	
+	const deoglPipeline *pipeline = skinTexture->GetPipelines().
+		GetAt( imposters ? deoglSkinTexturePipelinesList::eptPropFieldImposter
+			: deoglSkinTexturePipelinesList::eptPropField ).
+		GetWithRef( pSkinPipelineType, pipelineModifier ).GetPipeline();
+	
+	DEASSERT_NOTNULL( pipeline )
+	
+	// obtain render task. this is the same for all clusters in the type
+	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
+	const deoglVAO *vao = NULL;
+	
+	if( imposters ){
+		vao = defren.GetVAOBillboard();
+		
+	}else{
+		vao = modelLOD.GetVBOBlock()->GetVBO()->GetVAO();
+	}
+	
+	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
+	
+	// the rest is specific for each cluster except for the vao which is also the same
+	// for all clusters in the type
+	
+	// TODO later on clusters are going to have the ability to share TBOs to reduce the number
+	//      of TBOs and VBOs reducing also the need for switching between clusters of the same
+	//      type. in the current system though for each cluster a new instance is added to the
+	//      render task. this is not wrong but could potentially be made better by grouping
+	//      sub-instances if they fall onto the same VAO.
+	//      for this before adding to a VAO the last instance can be checked if the spbInstance
+	//      is the same. if so the last instance belongs to the same prop field type and thus
+	//      a new sub-instance can be added (if supported)
+	
+	// retrieve the tuc. this is potentially different for clusters as they use shared TBOs
+	const deoglTexUnitsConfig * const tuc = cluster.GetTUCForPipelineType( pSkinPipelineType );
+	DEASSERT_NOTNULL( tuc )
+	
+	rtpipeline.AddTexture( tuc->GetRTSTexture() )->AddVAO( vao->GetRTSVAO() )->AddInstance( cluster.GetRTSInstance() );
+}
+
+void deoglAddToRenderTask::AddPropFieldClusters( const deoglCollideList &clist, bool imposters ){
+	if( imposters ) return; // HACK
+	const int count = clist.GetPropFieldClusterCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		AddPropFieldCluster( *clist.GetPropFieldClusterAt( i ), imposters );
+	}
+}
+
 void deoglAddToRenderTask::AddPropFieldType( const deoglCollideListPropFieldType &clPropFieldType,
 const deoglRPropFieldType &propFieldType, bool imposters ){
 	const int clusterCount = clPropFieldType.GetClusterCount();
@@ -644,6 +725,89 @@ void deoglAddToRenderTask::AddPropFields( const deoglCollideList &clist, bool im
 }
 
 
+
+void deoglAddToRenderTask::AddHeightTerrainSectorCluster(
+const deoglCollideListHTSCluster &clhtscluster, int texture, bool firstMask ){
+	const deoglHTViewSectorCluster &htvscluster = *clhtscluster.GetCluster();
+	if( htvscluster.GetLodLevel() < 0 ){
+		return;
+	}
+	
+	const deoglHTViewSector &htvsector = htvscluster.GetSector();
+	const deoglRHTSector &sector = htvsector.GetSector();
+	if( ! sector.GetValid() || ! sector.GetValidTextures() ){
+		return;
+	}
+	
+	const deoglHTSTexture &httexture = sector.GetTextureAt( texture );
+	const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
+	if( ! skinTexture || pFilterReject( *skinTexture ) ){
+		return;
+	}
+	if( pNoRendered && skinTexture->GetRendered() ){
+		return; // TODO move to height terrain as texture flag
+	}
+	
+	// retrieve the shader and texture units configuration to use
+	const deoglPipeline *pipeline = skinTexture->GetPipelines().
+		GetAt( firstMask ? deoglSkinTexturePipelinesList::eptHeightMap1
+			: deoglSkinTexturePipelinesList::eptHeightMap2 )
+		.GetWithRef( pSkinPipelineType, pSkinPipelineModifier ).GetPipeline();
+	
+	DEASSERT_NOTNULL( pipeline )
+	
+	deoglRenderTaskPipeline &rtpipeline = *pRenderTask.AddPipeline( pipeline );
+	
+	const deoglTexUnitsConfig *tuc = httexture.GetTUCForPipelineType( pSkinPipelineType );
+	if( ! tuc ){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+	}
+	
+	deoglRenderTaskTexture &rttexture = *rtpipeline.AddTexture( tuc->GetRTSTexture() );
+	
+	// the rest is specific for each cluster
+	deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( sector.GetClusters()[ clhtscluster.GetIndex() ].GetVAO()->GetRTSVAO() );
+	
+	rtvao.AddInstance( htvscluster.GetRTSInstanceAt( texture, 0 ) );
+	
+	if( htvscluster.GetLodLevel() > 0 ){
+		int j;
+		for( j=1; j<5; j++ ){
+			rtvao.AddInstance( htvscluster.GetRTSInstanceAt( texture, j ) );
+		}
+	}
+}
+
+void deoglAddToRenderTask::AddHeightTerrainSectorCluster( const deoglCollideListHTSCluster &clhtscluster, bool firstMask ){
+	const deoglHTViewSectorCluster &htvscluster = *clhtscluster.GetCluster();
+	if( htvscluster.GetLodLevel() < 0 ){
+		return;
+	}
+	
+	const int textureCount = htvscluster.GetSector().GetSector().GetTextureCount();
+	if( textureCount == 0 ){
+		return;
+	}
+	
+	if( firstMask ){
+		AddHeightTerrainSectorCluster( clhtscluster, 0, firstMask );
+		
+	}else{
+		int i;
+		for( i=1; i<textureCount; i++ ){
+			AddHeightTerrainSectorCluster( clhtscluster, i, firstMask );
+		}
+	}
+}
+
+void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglCollideList &clist, bool firstMask ){
+	const int count = clist.GetHTSClusterCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		AddHeightTerrainSectorCluster( *clist.GetHTSClusterAt( i ), firstMask );
+	}
+}
 
 void deoglAddToRenderTask::AddHeightTerrainSectorClusters(
 const deoglCollideListHTSector &clhtsector, int texture, bool firstMask ){

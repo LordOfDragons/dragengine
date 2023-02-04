@@ -645,6 +645,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.AddBillboards( collideList );
 	addToRenderTask.AddPropFields( collideList, false );
 	addToRenderTask.AddPropFields( collideList, true );
+	addToRenderTask.AddPropFieldClusters( collideList, false );
+	addToRenderTask.AddPropFieldClusters( collideList, true );
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
 		addToRenderTask.AddParticles( collideList );
 	}

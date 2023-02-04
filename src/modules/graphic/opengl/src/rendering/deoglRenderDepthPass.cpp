@@ -364,9 +364,12 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		// prop fields
 		addToRenderTask.AddPropFields( collideList, false );
 		addToRenderTask.AddPropFields( collideList, true );
+		addToRenderTask.AddPropFieldClusters( collideList, false );
+		addToRenderTask.AddPropFieldClusters( collideList, true );
 		
 		// height terrains
 		addToRenderTask.AddHeightTerrains( collideList, true );
+		addToRenderTask.AddHeightTerrainSectorClusters( collideList, true );
 		
 		// particles
 		if( renderThread.GetChoices().GetRealTransparentParticles() ){

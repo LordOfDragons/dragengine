@@ -25,12 +25,19 @@
 #include "deoglRenderPlan.h"
 #include "deoglRenderPlanCompute.h"
 #include "../../capabilities/deoglCapabilities.h"
+#include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListLight.h"
+#include "../../component/deoglRComponent.h"
 #include "../../gi/deoglGICascade.h"
 #include "../../gi/deoglGIState.h"
+#include "../../propfield/deoglRPropField.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../../terrain/heightmap/deoglHTView.h"
+#include "../../terrain/heightmap/deoglHTViewSector.h"
+#include "../../terrain/heightmap/deoglRHTSector.h"
 #include "../../world/deoglRWorld.h"
 #include "../../world/deoglWorldOctree.h"
 
@@ -155,13 +162,51 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	}
 	
 	// read written visible element indices
+	deoglOcclusionTest &occlusionTest = *pPlan.GetOcclusionTest();
+	const decDVector &cameraPosition = pPlan.GetCameraPosition();
+	deoglComponentList &componentsOccMap = pPlan.GetComponentsOccMap();
+	deoglCollideList &collideList = pPlan.GetCollideList();
+	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
+	deoglHTView * const htview = pPlan.GetHeightTerrainView();
+	
 	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ( ( indexCount - 1 ) / 4 ) + 1 );
-	int ct[ 4 ] = { 0, 0, 0, 0 };
 	int i;
 	
 	for( i=0; i<indexCount; i++ ){
 		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
-		ct[ element.GetType() ]++;
+		continue;
+		
+		switch( element.GetType() ){
+		case deoglWorldCompute::eetComponent:{
+			deoglRComponent * const component = ( deoglRComponent* )element.GetOwner();
+			collideList.AddComponent( component )->StartOcclusionTest( occlusionTest, cameraPosition );
+			if( component->GetOcclusionMesh() ){
+				componentsOccMap.Add( component );
+			}
+			}break;
+			
+		case deoglWorldCompute::eetBillboard:
+			collideList.AddBillboard( ( deoglRBillboard* )element.GetOwner() );
+			break;
+			
+		case deoglWorldCompute::eetParticleEmitter:
+			clistParticleEmitterInstanceList.Add( ( deoglRParticleEmitterInstance* )element.GetOwner() );
+			break;
+			
+		case deoglWorldCompute::eetLight:{
+			deoglCollideListLight &cllight = *collideList.AddLight( ( deoglRLight* )element.GetOwner() );
+			cllight.StartOcclusionTest( occlusionTest, cameraPosition );  // if not culled by frustum
+			//cllight.SetCulled( true );  // if culled by frustum but not by GI cascade box
+			cllight.TestInside( pPlan );
+			}break;
+			
+		case deoglWorldCompute::eetPropFieldCluster:{
+			}break;
+			
+		case deoglWorldCompute::eetHeightTerrainSectorCluster:{
+			(void)htview;
+			}break;
+		}
 	}
 }
 

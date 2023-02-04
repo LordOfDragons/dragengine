@@ -777,9 +777,7 @@ void deoglRenderPlan::pStartFindContent(){
 	}
 	
 	// camera view
-	if( pTaskFindContent ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NULL( pTaskFindContent )
 	
 	pCompute.PrepareWorldCompute();
 	pCompute.PrepareBuffers();

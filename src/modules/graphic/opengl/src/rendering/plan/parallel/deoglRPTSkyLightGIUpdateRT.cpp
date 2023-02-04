@@ -147,6 +147,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
 	
 	// height terrain
 	addToRenderTask.AddHeightTerrains( collideList, true );
+	addToRenderTask.AddHeightTerrainSectorClusters( collideList, true );
 }
 
 void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
@@ -172,6 +173,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	
 	// prop fields
 	addToRenderTask.AddPropFields( collideList, false );
+	addToRenderTask.AddPropFieldClusters( collideList, false );
 }
 
 bool deoglRPTSkyLightGIUpdateRT::pIsComponentStatic( const deoglRComponent& component ) const{

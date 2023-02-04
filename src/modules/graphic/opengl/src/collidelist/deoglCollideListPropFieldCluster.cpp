@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglCollideListPropFieldType.h"
 #include "deoglCollideListPropFieldCluster.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../propfield/deoglPropFieldCluster.h"
@@ -38,13 +37,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster( deoglCollideListPropFieldType &type ) :
-pType( type ),
+deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster() :
 pCluster( NULL ),
 pCulled( false ),
-pCascadeMask( 0 )
-{
-	(void)pType; // silence compiler warning
+pCascadeMask( 0 ){
 }
 
 deoglCollideListPropFieldCluster::~deoglCollideListPropFieldCluster(){
@@ -56,7 +52,7 @@ deoglCollideListPropFieldCluster::~deoglCollideListPropFieldCluster(){
 ///////////////
 
 void deoglCollideListPropFieldCluster::Clear(){
-	pCluster = NULL;
+	pCluster = nullptr;
 	pCulled = false;
 	pCascadeMask = 0;
 }
@@ -73,15 +69,11 @@ void deoglCollideListPropFieldCluster::SetCascadeMask( int mask ){
 	pCascadeMask = mask;
 }
 
-void deoglCollideListPropFieldCluster::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
-const decVector &offset ){
-	if( ! pCluster ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglCollideListPropFieldCluster::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset ){
+	DEASSERT_NOTNULL( pCluster )
 	
 	pCulled = false;
-	occlusionTest.AddInputData( offset - pCluster->GetMinimumExtend(),
-		offset + pCluster->GetMaximumExtend(), this );
+	occlusionTest.AddInputData( offset - pCluster->GetMinimumExtend(), offset + pCluster->GetMaximumExtend(), this );
 	pCulled = false;
 }
 

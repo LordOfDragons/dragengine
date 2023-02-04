@@ -140,6 +140,8 @@ void deoglRPTBuildRTsGeometry::pSolid( bool xray ){
 	
 	addToRenderTask.AddPropFields( collideList, false );
 	addToRenderTask.AddPropFields( collideList, true );
+	addToRenderTask.AddPropFieldClusters( collideList, false );
+	addToRenderTask.AddPropFieldClusters( collideList, true );
 	
 	if( pPlan.GetPlan().GetRenderThread().GetChoices().GetRealTransparentParticles() ){
 		addToRenderTask.AddParticles( collideList );
@@ -169,6 +171,7 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
 	addToRenderTask.AddHeightTerrains( collideList, true );
+	addToRenderTask.AddHeightTerrainSectorClusters( collideList, true );
 	}
 	
 	{ // pass 2
@@ -188,6 +191,7 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	addToRenderTask.SetSkinPipelineModifier( pPipelineModifier );
 	
 	addToRenderTask.AddHeightTerrains( collideList, false );
+	addToRenderTask.AddHeightTerrainSectorClusters( collideList, false );
 	}
 }
 

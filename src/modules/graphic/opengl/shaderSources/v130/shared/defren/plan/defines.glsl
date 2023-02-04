@@ -28,8 +28,8 @@ const uint wodfComponentDynamic = uint( 0x2 );
 const uint wodfBillboard = uint( 0x4 );
 const uint wodfParticleEmitter = uint( 0x8 );
 const uint wodfLight = uint( 0x10 );
-const uint wodfPropField = uint( 0x20 );
-const uint wodfHTSector = uint( 0x40 );
+const uint wodfPropFieldCluster = uint( 0x20 );
+const uint wodfHeightTerrainSectorCluster = uint( 0x40 );
 
 
 // compute shader world octree node

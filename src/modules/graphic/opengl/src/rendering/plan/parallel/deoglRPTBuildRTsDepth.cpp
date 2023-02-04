@@ -135,8 +135,11 @@ void deoglRPTBuildRTsDepth::pSolid( bool xray ){
 	
 	addToRenderTask.AddPropFields( collideList, false );
 	addToRenderTask.AddPropFields( collideList, true );
+	addToRenderTask.AddPropFieldClusters( collideList, false );
+	addToRenderTask.AddPropFieldClusters( collideList, true );
 	
 	addToRenderTask.AddHeightTerrains( collideList, true );
+	addToRenderTask.AddHeightTerrainSectorClusters( collideList, true );
 	
 	if( pPlan.GetPlan().GetRenderThread().GetChoices().GetRealTransparentParticles() ){
 		addToRenderTask.AddParticles( collideList );
