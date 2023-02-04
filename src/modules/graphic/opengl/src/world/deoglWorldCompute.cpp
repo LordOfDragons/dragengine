@@ -27,6 +27,8 @@
 #include "deoglWorldCompute.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTRenderers.h"
+#include "../rendering/deoglRenderCompute.h"
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -47,8 +49,8 @@ void deoglWorldCompute::sDataElement::SetExtends( const decDVector &a, const dec
 }
 
 void deoglWorldCompute::sDataElement::SetLayerMask( const decLayerMask &a ){
-	layerMaskUpper = ( uint32_t )( a.GetMask() >> 32 );
-	layerMaskLower = ( uint32_t )a.GetMask();
+	layerMask[ 0 ] = ( uint32_t )( a.GetMask() >> 32 );
+	layerMask[ 1 ] = ( uint32_t )a.GetMask();
 }
 
 
@@ -96,10 +98,10 @@ pFullUpdateFactor( 0.2f )
 	pSSBOElements->SetRowMajor( rowMajor );
 	pSSBOElements->SetParameterCount( 5 );
 	pSSBOElements->GetParameterAt( espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
-	pSSBOElements->GetParameterAt( espeLayerMaskUpper ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
-	pSSBOElements->GetParameterAt( espeLayerMaskLower ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
-	pSSBOElements->GetParameterAt( espepFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeUpdateIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
 	pSSBOElements->MapToStd140();
 	pSSBOElements->SetBindingPoint( 0 );
 }
@@ -113,7 +115,8 @@ deoglWorldCompute::~deoglWorldCompute(){
 ///////////////
 
 void deoglWorldCompute::Prepare(){
-	if( pUpdateElements.GetCount() < pFullUpdateLimit ){
+	if( pUpdateElements.GetCount() < pFullUpdateLimit
+	&& pElements.GetCount() <= pSSBOElements->GetElementCount() ){
 		pUpdateSSBOElements();
 		
 	}else{
@@ -135,6 +138,7 @@ deoglWorldCompute::Element &deoglWorldCompute::GetElementAt( int index ) const{
 
 void deoglWorldCompute::AddElement( Element *element ){
 	DEASSERT_NOTNULL( element );
+	DEASSERT_TRUE( element->GetIndex() == -1 )
 	
 	const int index = pElements.GetCount();
 	
@@ -149,8 +153,9 @@ void deoglWorldCompute::AddElement( Element *element ){
 
 void deoglWorldCompute::UpdateElement( Element *element ){
 	DEASSERT_NOTNULL( element );
+	DEASSERT_TRUE( element->GetIndex() != -1 )
 	
-	if( element->GetUpdateRequired() ){
+	if( element->GetIndex() == -1 || element->GetUpdateRequired() ){
 		return;
 	}
 	
@@ -165,6 +170,8 @@ void deoglWorldCompute::RemoveElement( Element *element ){
 	DEASSERT_NOTNULL( element );
 	
 	const int index = element->GetIndex();
+	DEASSERT_TRUE( index != -1 )
+	
 	const int last = pElements.GetCount() - 1;
 	
 	element->SetIndex( -1 );
@@ -193,9 +200,26 @@ void deoglWorldCompute::RemoveElement( Element *element ){
 //////////////////////
 
 void deoglWorldCompute::pUpdateSSBOElements(){
-	// TODO update using update compute shader
+	const int count = pUpdateElements.GetCount();
 	
-	pFullUpdateSSBOElements();
+	const deoglRenderCompute &renderCompute = pWorld.GetRenderThread().GetRenderers().GetCompute();
+	deoglSPBlockSSBO &ssbo = renderCompute.GetSSBOUpdateElements();
+	
+	if( count > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( count );
+	}
+	
+	const deoglSPBMapBuffer mapped( ssbo );
+	sDataElement * const data = ( sDataElement* )ssbo.GetWriteBuffer();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		Element &element = *( ( Element* )pUpdateElements.GetAt( i ) );
+		element.UpdateData( *this, data[ i ] );
+		data[ i ].updateIndex = ( uint32_t )element.GetIndex();
+	}
+	
+	pUpdateElementCount = count;
 }
 
 void deoglWorldCompute::pFullUpdateSSBOElements(){
@@ -206,16 +230,20 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	int i;
 	
-	pSSBOElements->SetElementCount( count );
+	if( count > pSSBOElements->GetElementCount() ){
+		pSSBOElements->SetElementCount( count + 100 );
+	}
 	
 	const deoglSPBMapBuffer mapped( pSSBOElements );
 	sDataElement * const data = ( sDataElement* )pSSBOElements->GetWriteBuffer();
 	
 	for( i=0; i<count; i++ ){
 		Element &element = *( ( Element* )pElements.GetAt( i ) );
-		element.UpdateData( *this, data[ element.GetIndex() ] );
+		element.UpdateData( *this, data[ i ] );
 		element.SetUpdateRequired( false );
 	}
+	
+	pUpdateElementCount = 0;
 }
 
 void deoglWorldCompute::pUpdateFullUpdateLimit(){

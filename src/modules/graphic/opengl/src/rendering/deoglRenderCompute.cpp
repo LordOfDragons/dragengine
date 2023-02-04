@@ -53,6 +53,7 @@
 deoglRenderCompute::deoglRenderCompute( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
+	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines, commonDefines;
@@ -63,11 +64,29 @@ deoglRenderBase( renderThread )
 	renderThread.GetShader().SetCommonDefines( commonDefines );
 	
 	
+	// SSBOs
+	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOUpdateElements->SetRowMajor( rowMajor );
+	pSSBOUpdateElements->SetParameterCount( 5 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeUpdateIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
+	pSSBOUpdateElements->MapToStd140();
+	pSSBOUpdateElements->SetBindingPoint( 1 );
+	
+	
+	// update elements
+	pipconf.SetShader( renderThread, "DefRen Plan Update Elements", commonDefines );
+	pPipelineUpdateElements = pipelineManager.GetWith( pipconf );
+	
+	
 	// find content
 	defines = commonDefines;
 	
-	pipconf.SetShader( renderThread, "DefRen Plan FindContent Node", defines );
-	pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
+	// pipconf.SetShader( renderThread, "DefRen Plan FindContent Node", defines );
+	// pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
 	
 	defines.SetDefines( "DIRECT_ELEMENTS" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
@@ -82,15 +101,35 @@ deoglRenderCompute::~deoglRenderCompute(){
 // Rendering
 //////////////
 
+void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.UpdateElements" );
+	
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	if( wcompute.GetUpdateElementCount() == 0 ){
+		return;
+	}
+	
+	pPipelineUpdateElements->Activate();
+	
+	plan.GetCompute().GetUBOFindConfig()->Activate();
+	wcompute.GetSSBOElements()->Activate();
+	pSSBOUpdateElements->Activate();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetUpdateElementCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
+}
+
 void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContent" );
 	
-	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
-	deoglWorldCSOctree &octree = planCompute.GetWorldCSOctree();
-	if( octree.GetElementCount() == 0 ){
+	const deoglWorldCompute &wcompute = plan.GetWorld()->GetCompute();
+	if( wcompute.GetElementCount() == 0 ){
 		return;
 	}
+	
+	const deoglRenderPlanCompute &planCompute = plan.GetCompute();
 	
 	
 	// find nodes
@@ -127,11 +166,11 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	pPipelineFindContentElement->Activate();
 	
 	planCompute.GetUBOFindConfig()->Activate();
-	octree.GetSSBOElements()->Activate();
+	wcompute.GetSSBOElements()->Activate();
 	planCompute.GetSSBOVisibleElements()->Activate();
 	planCompute.GetSSBOCounters()->ActivateAtomic();
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( octree.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
 		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
 }

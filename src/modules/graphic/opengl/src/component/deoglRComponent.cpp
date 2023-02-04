@@ -241,6 +241,10 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	}*/
 	
 	if( pParentWorld ){
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+		}
+		
 		// make sure we are unregistered from the old world. this is required since the
 		// calls above can potentially smuggle in an AddPrepareForRenderComponent() call
 		// along complicated ways. if this happens any further prepare for render is not
@@ -293,6 +297,13 @@ void deoglRComponent::UpdateOctreeNode(){
 	if( pVisible && pModel ){
 		pParentWorld->GetOctree().InsertComponentIntoTree( this );
 		
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+			
+		}else{
+			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+		}
+		
 		// visit the world for touching lights
 // 			decTimer timer;
 		deoglComponentTestForTouch testForTouching( this );
@@ -301,6 +312,9 @@ void deoglRComponent::UpdateOctreeNode(){
 // 			hackCSSpecialTime += timer.GetElapsedTime();
 		
 	}else{
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+		}
 		if( pOctreeNode ){
 			pOctreeNode->RemoveComponent( this );
 		}

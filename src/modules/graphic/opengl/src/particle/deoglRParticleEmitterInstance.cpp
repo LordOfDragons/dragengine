@@ -166,6 +166,9 @@ void deoglRParticleEmitterInstance::SetParentWorld( deoglRWorld *world ){
 		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
+	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+	}
 	if( pOctreeNode ){
 		pOctreeNode->RemoveParticleEmitter( this );
 		pOctreeNode = NULL;
@@ -185,7 +188,17 @@ void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 		//if( pParticleEmitter->GetVisible() ){
 			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
 			
+			if( pWorldComputeElement->GetIndex() != -1 ){
+				pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+				
+			}else{
+				pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+			}
+			
 		/*}else{
+			if( pWorldComputeElement->GetIndex() != -1 ){
+				pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+			}
 			if( pOctreeNode ){
 				pOctreeNode->GetParticleEmittersList().Remove( this );
 				pOctreeNode = NULL;

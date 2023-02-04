@@ -30,8 +30,11 @@
  */
 class deoglRenderCompute : public deoglRenderBase{
 private:
+	const deoglPipeline *pPipelineUpdateElements;
 	const deoglPipeline *pPipelineFindContentNode;
 	const deoglPipeline *pPipelineFindContentElement;
+	
+	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	
 	
 	
@@ -49,6 +52,12 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
+	/** SSBO update elements. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElements() const{ return pSSBOUpdateElements; }
+	
+	/** Update elements. */
+	void UpdateElements( const deoglRenderPlan &plan );
+	
 	/** Find content. */
 	void FindContent( const deoglRenderPlan &plan );
 	/*@}*/

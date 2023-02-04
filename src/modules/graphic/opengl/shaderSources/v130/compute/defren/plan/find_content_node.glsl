@@ -7,6 +7,14 @@ precision highp int;
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
 
+UBOLAYOUT_BIND(0) readonly buffer Element {
+	sElement pElement[];
+};
+
+UBOLAYOUT_BIND(1) readonly buffer WorldOctreeNode {
+	sWorldOctreeNode pWorldOctreeNode[];
+};
+
 UBOLAYOUT_BIND(2) writeonly buffer SearchNodes {
 	uvec4 pSearchNodes[];
 };
@@ -26,8 +34,8 @@ layout( local_size_x=64 ) in;
 // are set by the opengl module to 1. the next node index is used to keep track
 // of where to write the next node. glDispatchComputeIndirect does not care
 // about the additional data so combining them in the same buffer is fine
-layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
-layout( binding=0, offset=12 ) uniform atomic_uint pNextNodeIndex;
+layout( binding=0, offset=16 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=28 ) uniform atomic_uint pNextNodeIndex;
 
 const uint dispatchWorkGroupSize = uint( 64 );
 const uint rangeSize = uint( 8 );

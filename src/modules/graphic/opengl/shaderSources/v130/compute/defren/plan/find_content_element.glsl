@@ -7,6 +7,14 @@ precision highp int;
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
 
+UBOLAYOUT_BIND(0) readonly buffer Element {
+	sElement pElement[];
+};
+
+UBOLAYOUT_BIND(1) writeonly buffer VisibleElement {
+	uvec4 pVisibleElement[];
+};
+
 #ifndef DIRECT_ELEMENTS
 UBOLAYOUT_BIND(2) readonly buffer SearchNodes {
 	uvec4 pSearchNodes[];
@@ -18,10 +26,6 @@ UBOLAYOUT_BIND(3) readonly buffer Counters {
 };
 #endif
 
-UBOLAYOUT_BIND(4) writeonly buffer VisibleElements {
-	uvec4 pVisibleElements[];
-};
-
 
 layout( local_size_x=64 ) in;
 
@@ -31,8 +35,8 @@ layout( local_size_x=64 ) in;
 // offset 16 is added so we can reuse the same binding (binding point 3) for input
 // and output through different variables. we store the work group size too so
 // we can dispatch over the results in later passes
-layout( binding=0, offset=16 ) uniform atomic_uint pDispatchWorkGroupCount;
-layout( binding=0, offset=28 ) uniform atomic_uint pNextVisibleIndex;
+layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=12 ) uniform atomic_uint pNextVisibleIndex;
 
 const uint dispatchWorkGroupSize = uint( 64 );
 
@@ -64,10 +68,10 @@ void main( void ){
 	for( ; index<last; index++ ){
 	#endif
 		
-		vec3 minExtend = pWorldOctreeElement[ index ].minExtend;
-		vec3 maxExtend = pWorldOctreeElement[ index ].maxExtend;
-		uint flags = pWorldOctreeElement[ index ].flags;
-		uvec2 layerMask = pWorldOctreeElement[ index ].layerMask;
+		vec3 minExtend = pElement[ index ].minExtend;
+		vec3 maxExtend = pElement[ index ].maxExtend;
+		uint flags = pElement[ index ].flags;
+		uvec2 layerMask = pElement[ index ].layerMask;
 		bool isLight = ( flags & wodfLight ) != 0;
 		bvec4 cond;
 		
@@ -123,7 +127,7 @@ void main( void ){
 		
 		// add element to found visible elements list
 		uint visibleIndex = atomicCounterIncrement( pNextVisibleIndex );
-		pVisibleElements[ visibleIndex / uint( 4 ) ][ visibleIndex % uint( 4 ) ] = index;
+		pVisibleElement[ visibleIndex / uint( 4 ) ][ visibleIndex % uint( 4 ) ] = index;
 		
 		// if the count of visible elements increases by the dispatch workgroup size
 		// increment also the work group count. this way the upcoming dispatch

@@ -50,9 +50,10 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 12 );
+	pUBOFindConfig->SetParameterCount( 13 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pUBOFindConfig->GetParameterAt( efcpUpdateElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4
 	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 3, 1, 6 ); // bvec3
 	pUBOFindConfig->GetParameterAt( efcpGIMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
@@ -88,7 +89,7 @@ pPlan( plan )
 	pSSBOVisibleElements->SetParameterCount( 1 );
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
-	pSSBOVisibleElements->SetBindingPoint( 4 );
+	pSSBOVisibleElements->SetBindingPoint( 1 );
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -99,42 +100,75 @@ deoglRenderPlanCompute::~deoglRenderPlanCompute(){
 // Management
 ///////////////
 
-void deoglRenderPlanCompute::PrepareWorldCSOctree(){
+void deoglRenderPlanCompute::PrepareWorldCompute(){
 	decTimer timer;
 	
 	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
 	compute.Prepare();
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "WorldCompute.Prepare: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: WorldCompute.Prepare: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
 	
 	
-	deoglWorldOctree &octree = pPlan.GetWorld()->GetOctree();
-	octree.UpdateCSCounts();
+	// deoglWorldOctree &octree = pPlan.GetWorld()->GetOctree();
+	// octree.UpdateCSCounts();
 	
-	if( ! pWorldCSOctree ){
-		pWorldCSOctree.TakeOver( new deoglWorldCSOctree( pPlan.GetRenderThread() ) );
-	}
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: update: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	// if( ! pWorldCSOctree ){
+		// pWorldCSOctree.TakeOver( new deoglWorldCSOctree( pPlan.GetRenderThread() ) );
+	// }
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: update: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
-	pWorldCSOctree->SetReferencePosition( pPlan.GetWorld()->GetReferencePosition() );
-	pWorldCSOctree->BeginWriting( octree.GetCSNodeCount(), octree.GetCSElementCount() );
-	octree.WriteCSData( pWorldCSOctree, pWorldCSOctree->NextNode() );
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: write: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
-	pWorldCSOctree->EndWriting();
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: upload: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	// pWorldCSOctree->SetReferencePosition( pPlan.GetWorld()->GetReferencePosition() );
+	// pWorldCSOctree->BeginWriting( octree.GetCSNodeCount(), octree.GetCSElementCount() );
+	// octree.WriteCSData( pWorldCSOctree, pWorldCSOctree->NextNode() );
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: write: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	// pWorldCSOctree->EndWriting();
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "PrepareWorldCSOctree: upload: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 }
 
 void deoglRenderPlanCompute::PrepareBuffers(){
 	pPrepareFindConfig();
 	
 	// pSSBOSearchNodes->SetElementCount( pWorldCSOctree->GetNodeCount() );
-	pSSBOSearchNodes->SetElementCount( ( ( pWorldCSOctree->GetElementCount() - 1 ) / 4 ) + 1 );
-	pSSBOSearchNodes->EnsureBuffer();
+	// pSSBOSearchNodes->SetElementCount( ( ( pWorldCSOctree->GetElementCount() - 1 ) / 4 ) + 1 );
+	// pSSBOSearchNodes->EnsureBuffer();
 	
-	pSSBOVisibleElements->SetElementCount( ( ( pWorldCSOctree->GetElementCount() - 1 ) / 4 ) + 1 );
+	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
+	if( visElCount > pSSBOVisibleElements->GetElementCount() ){
+		pSSBOVisibleElements->SetElementCount( visElCount );
+	}
 	pSSBOVisibleElements->EnsureBuffer();
 	
 	pClearCounters();
+}
+
+void deoglRenderPlanCompute::ReadVisibleElements(){
+	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
+	if( wcompute.GetElementCount() == 0 ){
+		return;
+	}
+	
+	// read counters to get the count of visible elements written
+	decTimer timer;
+		glFinish();
+		pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S0 %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	const sCounters * const counters = ( const sCounters * )pSSBOCounters->ReadBuffer( 1 );
+	const int indexCount = counters[ 0 ].counter;
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S1 %dys [%d]", ( int )( timer.GetElapsedTime() * 1e6f ), indexCount );
+	if( indexCount == 0 ){
+		return;
+	}
+	
+	// read written visible element indices
+	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ( ( indexCount - 1 ) / 4 ) + 1 );
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S2 %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	int ct[ 4 ] = { 0, 0, 0, 0 };
+	int i;
+	
+	for( i=0; i<indexCount; i++ ){
+		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
+		ct[ element.GetType() ]++;
+	}
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.ReadVisibleElements: S3 %dys [%d %d %d %d]", ( int )( timer.GetElapsedTime() * 1e6f ), ct[0], ct[1], ct[2], ct[3] );
 }
 
 
@@ -146,12 +180,14 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	deoglSPBlockUBO &ubo = pUBOFindConfig;
 	const deoglSPBMapBuffer mapped( ubo );
 	
-	const deoglWorldCSOctree &octree = pWorldCSOctree;
+	// const deoglWorldCSOctree &octree = pWorldCSOctree;
 	const decDVector &refpos = pPlan.GetWorld()->GetReferencePosition();
+	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
 	
 	// octree counts
-	ubo.SetParameterDataUInt( efcpNodeCount, octree.GetNodeCount() );
-	ubo.SetParameterDataUInt( efcpElementCount, octree.GetElementCount() );
+	ubo.SetParameterDataUInt( efcpNodeCount, 0 );//octree.GetNodeCount() );
+	ubo.SetParameterDataUInt( efcpElementCount, wcompute.GetElementCount() );
+	ubo.SetParameterDataUInt( efcpUpdateElementCount, wcompute.GetUpdateElementCount() );
 	
 	// frustum culling
 	const deoglDCollisionFrustum &frustum = *pPlan.GetUseFrustum();

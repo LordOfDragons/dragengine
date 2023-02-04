@@ -84,7 +84,7 @@ pElementLinkSize( 0 )
 	pSSBONodes->GetParameterAt( ecsnpChildNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBONodes->GetParameterAt( ecsnpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBONodes->MapToStd140();
-	pSSBONodes->SetBindingPoint( 0 );
+	pSSBONodes->SetBindingPoint( 1 );
 	
 	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOElements->SetRowMajor( rowMajor );
@@ -95,7 +95,7 @@ pElementLinkSize( 0 )
 	pSSBOElements->GetParameterAt( ecsepFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( ecsepLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
 	pSSBOElements->MapToStd140();
-	pSSBOElements->SetBindingPoint( 1 );
+	pSSBOElements->SetBindingPoint( 0 );
 }
 
 deoglWorldCSOctree::~deoglWorldCSOctree(){

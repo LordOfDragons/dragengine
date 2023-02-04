@@ -171,6 +171,10 @@ void deoglRBillboard::SetParentWorld( deoglRWorld *parentWorld ){
 	InvalidateRenderEnvMap();
 	pSkinRendered.DropDelayedDeletionObjects();
 	
+	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+	}
+	
 	pParentWorld = parentWorld;
 	
 	if( pOctreeNode ){
@@ -195,7 +199,17 @@ void deoglRBillboard::UpdateOctreeNode(){
 	if( pVisible ){
 		pParentWorld->GetOctree().InsertBillboardIntoTree( this );
 		
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+			
+		}else{
+			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+		}
+		
 	}else{
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+		}
 		if( pOctreeNode ){
 			pOctreeNode->RemoveBillboard( this );
 		}

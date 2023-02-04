@@ -3,6 +3,7 @@
 UBOLAYOUT uniform FindConfig{
 	uint pNodeCount;
 	uint pElementCount;
+	uint pUpdateElementCount;
 	
 	vec4 pFrustumPlanes[ 6 ]; // xyz=normal, w=distance
 	bvec3 pFrustumSelect[ 6 ]; // greaterThan(pFrustumPlanes[x], vec3(0))
@@ -30,6 +31,7 @@ const uint wodfLight = uint( 0x10 );
 
 
 // compute shader world octree node
+#if 0
 struct sWorldOctreeNode{
 	vec3 minExtend;
 	uint firstNode;
@@ -40,24 +42,17 @@ struct sWorldOctreeNode{
 	uint firstElement;
 	uint elementCount;
 };
-
-UBOLAYOUT_BIND(0) readonly buffer WorldOctreeNode {
-	sWorldOctreeNode pWorldOctreeNode[];
-};
+#endif
 
 
-// compute shader world octree element
-struct sWorldOctreeElement{
+// compute shader element
+struct sElement{
 	vec3 minExtend;
-	uint elementindex;
+	uint flags;
 	
 	vec3 maxExtend;
-	uint flags;
+	uint updateIndex; // only for use by updating
 	
 	// layer mask split into upper 32 bits (x) and lower 32 bits (y)
 	uvec2 layerMask;
-};
-
-UBOLAYOUT_BIND(1) readonly buffer WorldOctreeElement {
-	sWorldOctreeElement pWorldOctreeElement[];
 };

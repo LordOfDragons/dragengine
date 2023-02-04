@@ -4,11 +4,8 @@
 	
 	<uniformBlock name='PlanConfig' target='0'/>
 	
-	<shaderStorageBlock name='WorldOctreeNode' target='0'/>
-	<shaderStorageBlock name='WorldOctreeElement' target='1'/>
-	<shaderStorageBlock name='SearchNodes' target='2'/>
-	<shaderStorageBlock name='Counters' target='3'/>
-	<shaderStorageBlock name='VisibleElements' target='4'/>
+	<shaderStorageBlock name='Element' target='0'/>
+	<shaderStorageBlock name='VisibleElement' target='1'/>
 	
 	<sourceCode unit='compute'>v130/compute/defren/plan/find_content_element.glsl</sourceCode>
 </shader>

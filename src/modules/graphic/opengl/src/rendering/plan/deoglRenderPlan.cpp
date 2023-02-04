@@ -781,10 +781,16 @@ void deoglRenderPlan::pStartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pCompute.PrepareWorldCSOctree();
+	pCompute.PrepareWorldCompute();
 	pCompute.PrepareBuffers();
 	
+	if( pWorld->GetCompute().GetUpdateElementCount() > 0 ){
+		pRenderThread.GetRenderers().GetCompute().UpdateElements( *this );
+	}
+	
 	pRenderThread.GetRenderers().GetCompute().FindContent( *this );
+	
+	pCompute.ReadVisibleElements();
 	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );

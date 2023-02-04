@@ -194,6 +194,10 @@ void deoglRLight::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
+	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+	}
+	
 	pParentWorld = parentWorld;
 	
 	RemoveAllComponents();
@@ -223,7 +227,17 @@ void deoglRLight::UpdateOctreeNode(){
 		pUpdateExtends(); // required or we might end up in the wrong octree
 		pParentWorld->GetOctree().InsertLightIntoTree( this );
 		
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+			
+		}else{
+			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+		}
+		
 	}else{
+		if( pWorldComputeElement->GetIndex() != -1 ){
+			pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+		}
 		if( pOctreeNode ){
 			pOctreeNode->RemoveLight( this );
 			pOctreeNode = NULL;

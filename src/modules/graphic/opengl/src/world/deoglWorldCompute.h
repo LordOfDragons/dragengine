@@ -51,22 +51,22 @@ public:
 	/** Shader element parameters. */
 	enum eShaderParamsElement{
 		espeMinExtend,
-		espeLayerMaskUpper,
+		espeFlags,
 		espeMaxExtend,
-		espeLayerMaskLower,
-		espepFlags
+		espeUpdateIndex,
+		espeLayerMask,
 	};
 	
 	/** Data element. */
 	struct sDataElement{
 		float minExtendX, minExtendY, minExtendZ;
-		uint32_t layerMaskUpper;
+		uint32_t flags;
 		
 		float maxExtendX, maxExtendY, maxExtendZ;
-		uint32_t layerMaskLower;
+		uint32_t updateIndex; // for use by updating only
 		
-		uint32_t flags;
-		uint32_t padding[ 3 ];
+		uint32_t layerMask[ 2 ]; // 0=upper 32 bits, 1=lower 32 bits
+		uint32_t padding[ 2 ];
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
 		void SetLayerMask( const decLayerMask &layerMask );
@@ -133,6 +133,7 @@ private:
 	decObjectList pUpdateElements;
 	int pFullUpdateLimit;
 	float pFullUpdateFactor;
+	int pUpdateElementCount;
 	
 	
 	
@@ -179,6 +180,9 @@ public:
 	
 	/** Remove element. */
 	void RemoveElement( Element *element );
+	
+	/** Update element count. */
+	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
 	/*@}*/
 	
 	

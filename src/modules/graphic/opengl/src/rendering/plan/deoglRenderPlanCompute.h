@@ -38,6 +38,7 @@ public:
 	enum eFindConfigParameters{
 		efcpNodeCount,
 		efcpElementCount,
+		efcpUpdateElementCount,
 		efcpFrustumPlanes,
 		efcpFrustumSelect,
 		efcpGIMinExtend,
@@ -53,6 +54,14 @@ public:
 	
 	
 private:
+	/** Counters struct. */
+	struct sCounters{
+		uint32_t workGroupSize[ 3 ];
+		uint32_t counter;
+	};
+	
+	
+	
 	deoglRenderPlan &pPlan;
 	
 	deoglWorldCSOctree::Ref pWorldCSOctree;
@@ -83,10 +92,13 @@ public:
 	inline const deoglWorldCSOctree::Ref &GetWorldCSOctree() const{ return pWorldCSOctree; }
 	
 	/** Prepare world compute shader octree. */
-	void PrepareWorldCSOctree();
+	void PrepareWorldCompute();
 	
 	/** Prepare buffers. */
 	void PrepareBuffers();
+	
+	/** Read visible elements and apply them. */
+	void ReadVisibleElements();
 	
 	/** UBO Find config. */
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
