@@ -431,17 +431,28 @@ deoglPropFieldCluster *deoglRPropFieldType::GetClusterAt( int index ) const{
 }
 
 void deoglRPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
-	if( ! cluster ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( cluster )
+	
 	pClusters.Add( cluster );
 	ClusterRequiresPrepareForRender();
+	
+	if( pPropField.GetParentWorld() ){
+		cluster->AddToWorldCompute( pPropField.GetParentWorld()->GetCompute() );
+	}
 }
 
 void deoglRPropFieldType::RemoveAllClusters(){
 	// this is called during synchronization
 	const int clusterCount = pClusters.GetCount();
 	int i;
+	
+	if( pPropField.GetParentWorld() ){
+		deoglWorldCompute &worldCompute = pPropField.GetParentWorld()->GetCompute();
+		for( i=0; i<clusterCount; i++ ){
+			( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+		}
+	}
+	
 	for( i=0; i<clusterCount; i++ ){
 		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
 	}
@@ -593,6 +604,37 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 
 void deoglRPropFieldType::WorldReferencePointChanged(){
 	pDirtyParamBlock = true;
+	
+	if( pPropField.GetParentWorld() ){
+		UpdateWorldCompute( pPropField.GetParentWorld()->GetCompute() );
+	}
+}
+
+
+
+void deoglRPropFieldType::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->AddToWorldCompute( worldCompute );
+	}
+}
+
+void deoglRPropFieldType::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldCompute( worldCompute );
+	}
+}
+
+
+void deoglRPropFieldType::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+	}
 }
 
 

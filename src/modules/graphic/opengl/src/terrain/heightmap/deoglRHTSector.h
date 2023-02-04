@@ -24,7 +24,6 @@
 
 #include "../../deoglBasics.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../world/deoglWorldCompute.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -36,6 +35,7 @@ class deoglHTSTexture;
 class deoglRenderThread;
 class deoglRHeightTerrain;
 class deoglTexture;
+class deoglWorldCompute;
 
 class deHeightTerrainSector;
 
@@ -46,20 +46,8 @@ class deHeightTerrainSector;
  */
 class deoglRHTSector : public deObject{
 private:
-	/** World compute element. */
-	class WorldComputeElement: public deoglWorldCompute::Element{
-		deoglRHTSector &pSector;
-	public:
-		WorldComputeElement( deoglRHTSector &sector );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
-	};
-	
-	
-	
 	deoglRHeightTerrain &pHeightTerrain;
 	int pIndex;
-	
-	deoglWorldCompute::Element::Ref pWorldComputeElement;
 	
 	decPoint pCoordinates;
 	float pBaseHeight;

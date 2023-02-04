@@ -52,31 +52,12 @@
 // Class deoglRHTSector
 /////////////////////////
 
-deoglRHTSector::WorldComputeElement::WorldComputeElement( deoglRHTSector &sector ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetHeightTerrainSectorCluster, &sector ),
-pSector( sector ){
-}
-
-void deoglRHTSector::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
-	const decVector origin( pSector.CalcWorldPosition( worldCompute.GetWorld().GetReferencePosition() ) );
-	const float size = pSector.GetHeightTerrain().GetSectorSize();
-	const float minHeight = pSector.GetMinHeight(); // origin.y - 10000.0f;
-	const float maxHeight = pSector.GetMaxHeight(); // origin.y + 10000.0f;
-	
-	data.SetExtends( decVector( origin.x, minHeight, origin.z ), decVector( origin.x + size, maxHeight, origin.z + size ) );
-	data.SetEmptyLayerMask();
-	data.flags = ( uint32_t )deoglWorldCompute::eefHTSector;
-}
-
 // Constructor, destructor
 ////////////////////////////
 
 deoglRHTSector::deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector ) :
 pHeightTerrain( heightTerrain ),
 pIndex( -1 ),
-
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pBaseHeight( 0.0f ),
 pScaling( 1.0f ),
@@ -144,9 +125,7 @@ decDMatrix deoglRHTSector::CalcWorldMatrix( const decDVector &referencePosition 
 }
 
 decDVector deoglRHTSector::CalcWorldPosition() const{
-	if( ! pHeightTerrain.GetParentWorld() ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pHeightTerrain.GetParentWorld() )
 	return CalcWorldPosition( pHeightTerrain.GetParentWorld()->GetReferencePosition() );
 }
 
@@ -156,17 +135,27 @@ decDVector deoglRHTSector::CalcWorldPosition( const decDVector &referencePositio
 }
 
 void deoglRHTSector::AddToWorldCompute( deoglWorldCompute &worldCompute ){
-	worldCompute.AddElement( pWorldComputeElement );
+	const int count = pClusterCount * pClusterCount;
+	int i;
+	for( i=0; i<count; i++ ){
+		pClusters[ i ].AddToWorldCompute( worldCompute );
+	}
 }
 
 void deoglRHTSector::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		worldCompute.UpdateElement( pWorldComputeElement );
+	const int count = pClusterCount * pClusterCount;
+	int i;
+	for( i=0; i<count; i++ ){
+		pClusters[ i ].UpdateWorldCompute( worldCompute );
 	}
 }
 
 void deoglRHTSector::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
-	worldCompute.RemoveElement( pWorldComputeElement );
+	const int count = pClusterCount * pClusterCount;
+	int i;
+	for( i=0; i<count; i++ ){
+		pClusters[ i ].RemoveFromWorldCompute( worldCompute );
+	}
 }
 
 void deoglRHTSector::PrepareForRender(){
@@ -303,12 +292,13 @@ void deoglRHTSector::pCreateHeightMap( const deHeightTerrainSector &sector ){
 	
 	// create clusters
 	int maxPointsPerCluster = 65;
-	int pcx, pcz, curx, curz;
+	int pcx, pcz, curx, curz, index;
 	
 	pClusterCount = ( ( imageDim - 2 ) / ( maxPointsPerCluster - 1 ) ) + 1;
 	
 	pClusters = new deoglHTSCluster[ pClusterCount * pClusterCount ];
 	
+	index = 0;
 	curz = 0;
 	for( z=0; z<pClusterCount; z++ ){
 		if( z < pClusterCount - 1 ){
@@ -327,8 +317,11 @@ void deoglRHTSector::pCreateHeightMap( const deHeightTerrainSector &sector ){
 				pcx = imageDim - curx;
 			}
 			
-			pClusters[ pClusterCount * z + x ].SetHTSector( this );
-			pClusters[ pClusterCount * z + x ].SetSize( curx, curz, pcx, pcz );
+			deoglHTSCluster &cluster = pClusters[ pClusterCount * z + x ];
+			cluster.SetHTSector( this );
+			cluster.SetCoordinates( decPoint( x, z ) );
+			cluster.SetIndex( index++ );
+			cluster.SetSize( curx, curz, pcx, pcz );
 			
 			curx += maxPointsPerCluster - 1;
 		}
@@ -639,9 +632,8 @@ void deoglRHTSector::pSyncHeightMap( const deHeightTerrainSector &sector, const 
 		}
 	}
 	
-	// update world compute element
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		pHeightTerrain.GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
+	if( pHeightTerrain.GetParentWorld() ){
+		UpdateWorldCompute( pHeightTerrain.GetParentWorld()->GetCompute() );
 	}
 }
 

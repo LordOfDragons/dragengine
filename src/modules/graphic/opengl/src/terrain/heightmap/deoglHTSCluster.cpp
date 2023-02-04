@@ -33,6 +33,7 @@
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglVBOLayout.h"
+#include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
@@ -50,10 +51,29 @@
 // Class deoglHTSCluster
 //////////////////////////
 
+deoglHTSCluster::WorldComputeElement::WorldComputeElement( deoglHTSCluster &cluster ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetHeightTerrainSectorCluster, &cluster ),
+pCluster( cluster ){
+}
+
+void deoglHTSCluster::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decDVector center( decDVector( pCluster.GetCenter() ) - worldCompute.GetWorld().GetReferencePosition() );
+	const decDVector halfSize( pCluster.GetHalfExtends() );
+	
+	data.SetExtends( center - halfSize, center + halfSize );
+	data.SetEmptyLayerMask();
+	data.flags = ( uint32_t )deoglWorldCompute::eefHeightTerrainSectorCluster;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTSCluster::deoglHTSCluster(){
+deoglHTSCluster::deoglHTSCluster() :
+pIndex( -1 ),
+
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) )
+{
 	pHTSector = NULL;
 	
 	pPointCountX = 0;
@@ -104,6 +124,14 @@ deoglHTSCluster::~deoglHTSCluster(){
 
 void deoglHTSCluster::SetHTSector( deoglRHTSector *htsector ){
 	pHTSector = htsector;
+}
+
+void deoglHTSCluster::SetCoordinates( const decPoint &coordinates ){
+	pCoordinates = coordinates;
+}
+
+void deoglHTSCluster::SetIndex( int index ){
+	pIndex = index;
 }
 
 void deoglHTSCluster::SetSize( int firstPointX, int firstPointZ, int pointCountX, int pointCountZ ){
@@ -378,6 +406,24 @@ void deoglHTSCluster::UpdateVAO(){
 			delete pVAO;
 			pVAO = NULL;
 		}
+	}
+}
+
+
+
+void deoglHTSCluster::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.AddElement( pWorldComputeElement );
+}
+
+void deoglHTSCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElement( pWorldComputeElement );
+	}
+}
+
+void deoglHTSCluster::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.RemoveElement( pWorldComputeElement );
 	}
 }
 

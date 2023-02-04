@@ -37,6 +37,7 @@ class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
+class deoglWorldCompute;
 
 class dePropFieldType;
 
@@ -191,6 +192,17 @@ public:
 	
 	/** World reference point changed. */
 	void WorldReferencePointChanged();
+	
+	
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
 	/*@}*/
 	
 	

@@ -23,6 +23,7 @@
 #define _DEOGLHTSCLUSTER_H_
 
 #include "../../deoglBasics.h"
+#include "../../world/deoglWorldCompute.h"
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
@@ -58,7 +59,21 @@ struct deoglHTSClusterLOD{
  */
 class deoglHTSCluster{
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldCompute::Element{
+		deoglHTSCluster &pCluster;
+	public:
+		WorldComputeElement( deoglHTSCluster &cluster );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+	};
+	
+	
+	
 	deoglRHTSector *pHTSector;
+	decPoint pCoordinates;
+	int pIndex;
+	
+	deoglWorldCompute::Element::Ref pWorldComputeElement;
 	
 	int pFirstPointX;
 	int pFirstPointZ;
@@ -102,8 +117,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Height terrain sector. */
+	inline deoglRHTSector *GetHTSector() const{ return pHTSector; }
+	
 	/** Set height terrain sector. */
 	void SetHTSector( deoglRHTSector *htsector );
+	
+	/** Coordinates. */
+	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
+	
+	/** Set coordinates. */
+	void SetCoordinates( const decPoint &coordinates );
+	
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Set index. */
+	void SetIndex( int index );
 	
 	
 	
@@ -208,6 +238,17 @@ public:
 	
 	/** Update data faces vbo. */
 	void UpdateVBODataFaces();
+	
+	
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
 	/*@}*/
 	
 	

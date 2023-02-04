@@ -46,19 +46,6 @@
 // Class deoglRPropField
 /////////////////////////
 
-deoglRPropField::WorldComputeElement::WorldComputeElement( deoglRPropField &propField ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetPropFieldCluster, &propField ),
-pPropField( propField ){
-}
-
-void deoglRPropField::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
-	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
-	data.SetExtends( pPropField.GetMinimumExtend() - refpos, pPropField.GetMaximumExtend() - refpos );
-	data.SetEmptyLayerMask();
-	data.flags = ( uint32_t )deoglWorldCompute::eefPropField;
-}
-
 // Constructor, destructor
 ////////////////////////////
 
@@ -66,7 +53,6 @@ deoglRPropField::deoglRPropField( deoglRenderThread &renderThread) :
 pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pTypesRequirePrepareForRender( true ),
 
@@ -78,6 +64,7 @@ pLLPrepareForRenderWorld( this )
 
 deoglRPropField::~deoglRPropField(){
 	LEAK_CHECK_FREE( pRenderThread, PropField );
+	SetParentWorld( nullptr );
 }
 
 
@@ -90,14 +77,23 @@ void deoglRPropField::SetParentWorld( deoglRWorld *world ){
 		return;
 	}
 	
-	if( pParentWorld && pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+	const int count = pTypes.GetCount();
+	int i;
+	
+	if( pParentWorld ){
+		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+		}
 	}
 	
 	pParentWorld = world;
 	
 	if( world ){
-		pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+		deoglWorldCompute &worldCompute = world->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		}
 	}
 }
 
@@ -159,8 +155,11 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 	pMaxExtend.y = pPosition.y + ( double )maxExtend.y + 0.01;
 	pMaxExtend.z = pPosition.z + ( double )maxExtend.z + 0.01;
 	
-	if( pWorldComputeElement->GetIndex() != -1 ){
-		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+	if( pParentWorld ){
+		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+		for( i=0; i<typeCount; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->UpdateWorldCompute( worldCompute );
+		}
 	}
 	
 	//pOgl->LogInfoFormat( "PropField.pUpdateExtends: p=(%.3f,%.3f,%.3f) e=(%.3f,%.3f,%.3f)->(%.3f,%.3f,%.3f)",

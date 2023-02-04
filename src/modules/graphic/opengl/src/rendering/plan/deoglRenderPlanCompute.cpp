@@ -37,6 +37,8 @@
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../terrain/heightmap/deoglHTView.h"
 #include "../../terrain/heightmap/deoglHTViewSector.h"
+#include "../../terrain/heightmap/deoglHTViewSectorCluster.h"
+#include "../../terrain/heightmap/deoglHTSCluster.h"
 #include "../../terrain/heightmap/deoglRHTSector.h"
 #include "../../world/deoglRWorld.h"
 #include "../../world/deoglWorldOctree.h"
@@ -200,12 +202,17 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 			cllight.TestInside( pPlan );
 			}break;
 			
-		case deoglWorldCompute::eetPropFieldCluster:{
-			}break;
+		case deoglWorldCompute::eetPropFieldCluster:
+			collideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() );
+			break;
 			
-		case deoglWorldCompute::eetHeightTerrainSectorCluster:{
-			(void)htview;
-			}break;
+		case deoglWorldCompute::eetHeightTerrainSectorCluster:
+			if( htview ){
+				const deoglHTSCluster &cluster = *( deoglHTSCluster* )element.GetOwner();
+				collideList.AddHTSCluster( &htview->GetSectorAt(
+					cluster.GetHTSector()->GetIndex() )->GetClusterAt( cluster.GetIndex() ) );
+			}
+			break;
 		}
 	}
 }

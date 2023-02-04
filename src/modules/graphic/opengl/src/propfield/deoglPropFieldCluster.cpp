@@ -70,12 +70,28 @@
 #define CONVERT_FLOAT_TO_HALF convertFloatToHalf
 //#define CONVERT_FLOAT_TO_HALF quickConvertFloatToHalf
 
+deoglPropFieldCluster::WorldComputeElement::WorldComputeElement( deoglPropFieldCluster &cluster ) :
+deoglWorldCompute::Element( deoglWorldCompute::eetPropFieldCluster, &cluster ),
+pCluster( cluster ){
+}
+
+void deoglPropFieldCluster::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition()
+		- worldCompute.GetWorld().GetReferencePosition() );
+	
+	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
+	data.SetEmptyLayerMask();
+	data.flags = ( uint32_t )deoglWorldCompute::eefPropFieldCluster;
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 deoglPropFieldCluster::deoglPropFieldCluster( deoglRPropFieldType &propFieldType ) :
 pPropFieldType( propFieldType ),
 pRenderThread( propFieldType.GetPropField().GetRenderThread() ),
+pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pInstances( NULL ),
 pInstanceCount( 0 ),
@@ -148,8 +164,16 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 ///////////////
 
 void deoglPropFieldCluster::SetExtends( const decVector &minExtend, const decVector &maxExtend ){
+	if( minExtend.IsEqualTo( pMinExtend ) && maxExtend.IsEqualTo( pMaxExtend ) ){
+		return;
+	}
+	
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
+	
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		pPropFieldType.GetPropField().GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
+	}
 }
 
 void deoglPropFieldCluster::SetInstanceCount( int count ){
@@ -309,6 +333,24 @@ void deoglPropFieldCluster::MarkTUCsDirty(){
 
 void deoglPropFieldCluster::DirtyRTSInstance(){
 	pDirtyRTSInstance = true;
+}
+
+
+
+void deoglPropFieldCluster::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.AddElement( pWorldComputeElement );
+}
+
+void deoglPropFieldCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElement( pWorldComputeElement );
+	}
+}
+
+void deoglPropFieldCluster::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.RemoveElement( pWorldComputeElement );
+	}
 }
 
 

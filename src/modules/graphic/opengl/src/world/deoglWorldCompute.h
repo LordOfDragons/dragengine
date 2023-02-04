@@ -46,8 +46,8 @@ public:
 		eefBillboard = 0x4,
 		eefParticleEmitter = 0x8,
 		eefLight = 0x10,
-		eefPropField = 0x20,
-		eefHTSector = 0x40
+		eefPropFieldCluster = 0x20,
+		eefHeightTerrainSectorCluster = 0x40
 	};
 	
 	/** Shader element parameters. */
