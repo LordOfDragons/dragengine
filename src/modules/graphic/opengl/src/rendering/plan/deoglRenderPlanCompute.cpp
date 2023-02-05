@@ -157,7 +157,9 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	}
 	
 	// read counters to get the count of visible elements written
+		// decTimer timer;
 	const sCounters * const counters = ( const sCounters * )pSSBOCounters->ReadBuffer( 1 );
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = counters[ 0 ].counter;
 	if( indexCount == 0 ){
 		return;
@@ -173,10 +175,11 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 	
 	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ( ( indexCount - 1 ) / 4 ) + 1 );
 	int i;
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
 		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
-		continue;
+		// continue;
 		
 		switch( element.GetType() ){
 		case deoglWorldCompute::eetComponent:{
@@ -215,6 +218,7 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 			break;
 		}
 	}
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
 

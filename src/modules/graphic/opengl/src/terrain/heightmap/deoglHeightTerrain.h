@@ -22,10 +22,11 @@
 #ifndef _DEOGLHEIGHTTERRAIN_H_
 #define _DEOGLHEIGHTTERRAIN_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include "deoglRHeightTerrain.h"
 
-class deoglRHeightTerrain;
+#include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
+#include <dragengine/common/collection/decObjectList.h>
+
 class deoglWorld;
 class deoglHTSector;
 class deGraphicOpenGl;
@@ -42,9 +43,9 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deHeightTerrain &pHeightTerrain;
 	
-	deoglRHeightTerrain *pRHeightTerrain;
+	deoglRHeightTerrain::Ref pRHeightTerrain;
 	
-	decPointerList pSectors;
+	decObjectList pSectors;
 	bool pDirtySectors;
 	
 public:
@@ -68,7 +69,7 @@ public:
 	inline const deHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Render height terrain. */
-	inline deoglRHeightTerrain *GetRHeightTerrain() const{ return pRHeightTerrain; }
+	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{ return pRHeightTerrain; }
 	
 	/** Update. */
 	void Update( float elapsed );

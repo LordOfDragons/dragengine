@@ -58,9 +58,10 @@
 deoglRHTSector::deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector ) :
 pHeightTerrain( heightTerrain ),
 pIndex( -1 ),
+pCoordinates( sector.GetSector() ),
 
-pBaseHeight( 0.0f ),
-pScaling( 1.0f ),
+pBaseHeight( sector.GetParentHeightTerrain()->GetBaseHeight() ),
+pScaling( sector.GetParentHeightTerrain()->GetHeightScaling() ),
 
 pTextures( NULL ),
 pTextureCount( 0 ),
@@ -292,13 +293,12 @@ void deoglRHTSector::pCreateHeightMap( const deHeightTerrainSector &sector ){
 	
 	// create clusters
 	int maxPointsPerCluster = 65;
-	int pcx, pcz, curx, curz, index;
+	int pcx, pcz, curx, curz;
 	
 	pClusterCount = ( ( imageDim - 2 ) / ( maxPointsPerCluster - 1 ) ) + 1;
 	
 	pClusters = new deoglHTSCluster[ pClusterCount * pClusterCount ];
 	
-	index = 0;
 	curz = 0;
 	for( z=0; z<pClusterCount; z++ ){
 		if( z < pClusterCount - 1 ){
@@ -317,10 +317,11 @@ void deoglRHTSector::pCreateHeightMap( const deHeightTerrainSector &sector ){
 				pcx = imageDim - curx;
 			}
 			
-			deoglHTSCluster &cluster = pClusters[ pClusterCount * z + x ];
+			const int index = pClusterCount * z + x;
+			deoglHTSCluster &cluster = pClusters[ index ];
 			cluster.SetHTSector( this );
+			cluster.SetIndex( index );
 			cluster.SetCoordinates( decPoint( x, z ) );
-			cluster.SetIndex( index++ );
 			cluster.SetSize( curx, curz, pcx, pcz );
 			
 			curx += maxPointsPerCluster - 1;

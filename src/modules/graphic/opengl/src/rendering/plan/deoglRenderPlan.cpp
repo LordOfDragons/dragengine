@@ -157,8 +157,6 @@ pTaskFindContent( NULL )
 	pFBOTarget = NULL;
 	pFBOMaterial = NULL;
 	
-	pHTView = NULL;
-	
 	pDirtyProjMat = true;
 	
 	pNoRenderedOccMesh = false;
@@ -232,9 +230,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 		delete [] pLights;
 	}
 	
-	if( pHTView ){
-		delete pHTView;
-	}
+	pHTView = nullptr;
 	
 	if( pDebug ){
 		delete pDebug;
@@ -282,10 +278,7 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 		}
 	}
 	
-	if( pHTView ){
-		delete pHTView;
-		pHTView = NULL;
-	}
+	pHTView = nullptr;
 }
 
 void deoglRenderPlan::SetLevel( int level ){
@@ -788,18 +781,17 @@ void deoglRenderPlan::pStartFindContent(){
 	
 	pRenderThread.GetRenderers().GetCompute().FindContent( *this );
 	
-	pCompute.ReadVisibleElements();
-	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
 	
-	pTaskFindContent = new deoglRPTFindContent( *this );
-	pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	// pTaskFindContent = new deoglRPTFindContent( *this );
+	// pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
 }
 
 void deoglRenderPlan::pWaitFinishedFindContent(){
+	/*
 	if( ! pTaskFindContent ){
 		return;
 	}
@@ -812,6 +804,10 @@ void deoglRenderPlan::pWaitFinishedFindContent(){
 	
 	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
+	*/
+	
+	pCompute.ReadVisibleElements();
+	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -1451,7 +1447,7 @@ void deoglRenderPlan::CleanUp(){
 	}
 	
 	pTasks.CleanUp();
-	pWaitFinishedFindContent();
+	// pWaitFinishedFindContent();
 	
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();
@@ -2194,17 +2190,15 @@ void deoglRenderPlan::pBuildLightPlan(){
 
 void deoglRenderPlan::pUpdateHTView(){
 	if( pHTView && pWorld && &pHTView->GetHeightTerrain() == pWorld->GetHeightTerrain() ){
-		pHTView->PrepareForRendering();
+		pHTView->Prepare();
 		return;
 	}
 	
-	if( pHTView ){
-		delete pHTView;
-		pHTView = NULL;
-	}
+	pHTView = nullptr;
 	
 	if( pWorld && pWorld->GetHeightTerrain() ){
-		pHTView = new deoglHTView( pWorld->GetHeightTerrain() );
+		pHTView.TakeOver( new deoglHTView( pWorld->GetHeightTerrain() ) );
+		pHTView->Prepare();
 	}
 }
 

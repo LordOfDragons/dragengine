@@ -22,10 +22,12 @@
 #ifndef _DEOGLHTSECTOR_H_
 #define _DEOGLHTSECTOR_H_
 
+#include "deoglRHTSector.h"
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHeightTerrain;
-class deoglRHTSector;
 
 class deHeightTerrainSector;
 
@@ -34,12 +36,16 @@ class deHeightTerrainSector;
 /**
  * Height terrain sector.
  */
-class deoglHTSector{
+class deoglHTSector : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglHTSector> Ref;
+	
 private:
 	deoglHeightTerrain &pHeightTerrain;
 	const deHeightTerrainSector &pSector;
 	
-	deoglRHTSector *pRSector;
+	deoglRHTSector::Ref pRSector;
 	
 	bool pSectorChanged;
 	
@@ -53,16 +59,18 @@ public:
 	/** Create height terrain sector. */
 	deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
 	
+protected:
 	/** Clean up height terrain sector. */
-	~deoglHTSector();
+	virtual ~deoglHTSector();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render height terrain sector. */
-	inline deoglRHTSector *GetRSector() const{ return pRSector; }
+	inline const deoglRHTSector::Ref &GetRSector() const{ return pRSector; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

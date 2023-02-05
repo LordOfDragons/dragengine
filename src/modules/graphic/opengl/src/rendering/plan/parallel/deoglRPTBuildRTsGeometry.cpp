@@ -150,7 +150,7 @@ void deoglRPTBuildRTsGeometry::pSolid( bool xray ){
 
 void deoglRPTBuildRTsGeometry::pSolidTerrain( bool xray ){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	if( collideList.GetHTSectorCount() == 0 ){
+	if( collideList.GetHTSectorCount() == 0 && collideList.GetHTSClusterCount() == 0 ){
 		return;
 	}
 	

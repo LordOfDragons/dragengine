@@ -185,6 +185,14 @@ void deoglRPTSkyLightBuildRT::pFilter( int layerIndex ){
 		}
 	}
 	
+	const int htsclusterCount = collideList.GetHTSClusterCount();
+	for( i=0; i<htsclusterCount; i++ ){
+		const deoglCollideListHTSCluster &cluster = *collideList.GetHTSClusterAt( i );
+		if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+			pTempCollideList.AddHTSCluster( cluster.GetCluster() );
+		}
+	}
+	
 	// prop fields
 	const int propfieldCount = collideList.GetPropFieldCount();
 	for( i=0; i<propfieldCount; i++ ){
@@ -209,6 +217,14 @@ void deoglRPTSkyLightBuildRT::pFilter( int layerIndex ){
 					addType->AddCluster( cluster.GetCluster() );
 				}
 			}
+		}
+	}
+	
+	const int propfieldClusterCount = collideList.GetPropFieldClusterCount();
+	for( i=0; i<propfieldClusterCount; i++ ){
+		const deoglCollideListPropFieldCluster &cluster = *collideList.GetPropFieldClusterAt( i );
+		if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+			pTempCollideList.AddPropFieldCluster( cluster.GetCluster() );
 		}
 	}
 }

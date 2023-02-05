@@ -41,6 +41,11 @@ class deHeightTerrain;
  * Render height terrain.
  */
 class deoglRHeightTerrain : public deObject{
+public:
+	typedef deTObjectReference<deoglRHeightTerrain> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -63,12 +68,14 @@ public:
 	/** Create render height terrain. */
 	deoglRHeightTerrain( deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain );
 	
+protected:
 	/** Clean up render height terrain. */
 	virtual ~deoglRHeightTerrain();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

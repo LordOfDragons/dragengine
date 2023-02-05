@@ -934,6 +934,13 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &p
 	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareEarlyWorld, false );
 }
 
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareFindContent, false );
+}
+
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed ){
 	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
 		return;

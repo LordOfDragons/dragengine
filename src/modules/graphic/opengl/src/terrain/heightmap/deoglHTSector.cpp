@@ -41,16 +41,11 @@
 deoglHTSector::deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector ) :
 pHeightTerrain( heightTerrain ),
 pSector( sector ),
-pRSector( NULL ),
 pSectorChanged( true ),
-pDirtyHeights( false )
-{
+pDirtyHeights( false ){
 }
 
 deoglHTSector::~deoglHTSector(){
-	if( pRSector ){
-		pRSector->FreeReference();
-	}
 }
 
 
@@ -60,7 +55,7 @@ deoglHTSector::~deoglHTSector(){
 
 void deoglHTSector::SyncToRender(){
 	if( ! pRSector ){
-		pRSector = new deoglRHTSector( *pHeightTerrain.GetRHeightTerrain(), pSector );
+		pRSector.TakeOver( new deoglRHTSector( pHeightTerrain.GetRHeightTerrain(), pSector ) );
 		pSectorChanged = true;
 	}
 	

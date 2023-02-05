@@ -112,6 +112,7 @@ deoglRHTSector &deoglRHeightTerrain::GetSectorAt( int index ) const{
 }
 
 void deoglRHeightTerrain::AddSector( deoglRHTSector *htsector ){
+	htsector->SetIndex( pSectors.GetCount() );
 	pSectors.Add( htsector );
 	if( pParentWorld ){
 		htsector->AddToWorldCompute( pParentWorld->GetCompute() );

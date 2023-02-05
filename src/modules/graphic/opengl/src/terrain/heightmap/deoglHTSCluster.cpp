@@ -219,6 +219,10 @@ const deoglHTSClusterLOD & deoglHTSCluster::GetLODAt( int level ) const{
 void deoglHTSCluster::UpdateHeightExtends( float minHeight, float maxHeight ){
 	pCenter.y = ( minHeight + maxHeight ) * 0.5f;
 	pHalfExtends.y = ( maxHeight - minHeight ) * 0.5f;
+	
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		pHTSector->GetHeightTerrain().GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
+	}
 }
 
 

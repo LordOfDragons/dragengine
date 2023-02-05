@@ -149,6 +149,7 @@ public:
 	
 	void SampleDebugInfoPlanPrepare( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareBuildRTs( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );

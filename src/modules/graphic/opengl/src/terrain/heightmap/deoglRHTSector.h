@@ -45,6 +45,10 @@ class deHeightTerrainSector;
  * Render height terrain sector.
  */
 class deoglRHTSector : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deoglRHTSector> Ref;
+	
 private:
 	deoglRHeightTerrain &pHeightTerrain;
 	int pIndex;
@@ -88,12 +92,14 @@ public:
 	/** Create height terrain sector. */
 	deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
 	
+protected:
 	/** Clean up height terrain sector. */
 	virtual ~deoglRHTSector();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
