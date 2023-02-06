@@ -763,14 +763,6 @@ void deoglRenderPlan::pPlanShadowCasting(){
 
 void deoglRenderPlan::pStartFindContent(){
 	INIT_SPECIAL_TIMING
-	// sky lights
-	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
-	}
-	
-	// camera view
-	DEASSERT_NULL( pTaskFindContent )
 	
 	pCompute.PrepareWorldCompute();
 	pCompute.PrepareBuffers();
@@ -780,6 +772,15 @@ void deoglRenderPlan::pStartFindContent(){
 	}
 	
 	pRenderThread.GetRenderers().GetCompute().FindContent( *this );
+	
+	// sky lights
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
+	}
+	
+	// camera view
+	DEASSERT_NULL( pTaskFindContent )
 	
 	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );

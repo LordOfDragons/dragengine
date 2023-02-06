@@ -24,6 +24,7 @@
 
 #include "deoglRenderCompute.h"
 #include "plan/deoglRenderPlan.h"
+#include "plan/deoglRenderPlanSkyLight.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugTraceGroup.h"
@@ -89,8 +90,26 @@ deoglRenderBase( renderThread )
 	// pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
 	
 	defines.SetDefines( "DIRECT_ELEMENTS" );
+	defines.SetDefines( "CULL_VIEW_FRUSTUM" );
+	defines.SetDefines( "CULL_TOO_SMALL" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
 	pPipelineFindContentElement = pipelineManager.GetWith( pipconf );
+	
+	
+	// find content sky light
+	defines = commonDefines;
+	defines.SetDefines( "DIRECT_ELEMENTS" );
+	defines.SetDefines( "CULL_SKY_LIGHT_FRUSTUM" );
+	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
+	pPipelineFindContentSkyLight = pipelineManager.GetWith( pipconf );
+	
+	
+	// find content sky light GI
+	defines = commonDefines;
+	defines.SetDefines( "DIRECT_ELEMENTS" );
+	defines.SetDefines( "CULL_SKY_LIGHT_GIBOX" );
+	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
+	pPipelineFindContentSkyLightGI = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderCompute::~deoglRenderCompute(){
@@ -163,12 +182,38 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	planCompute.GetSSBOCounters()->DeactivateDispatchIndirect();
 #endif
 	
+	// find content
 	pPipelineFindContentElement->Activate();
 	
 	planCompute.GetUBOFindConfig()->Activate();
 	wcompute.GetSSBOElements()->Activate();
 	planCompute.GetSSBOVisibleElements()->Activate();
+	planCompute.GetSSBOVisibleElementsFlags()->Activate();
 	planCompute.GetSSBOCounters()->ActivateAtomic();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &planLight ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLight" );
+	
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	if( wcompute.GetElementCount() == 0 ){
+		return;
+	}
+	
+	
+	// find content sky light
+	pPipelineFindContentSkyLight->Activate();
+	
+	planLight.GetUBOFindConfig()->Activate();
+	wcompute.GetSSBOElements()->Activate();
+	planLight.GetSSBOVisibleElements()->Activate();
+	planLight.GetSSBOVisibleElementsFlags()->Activate();
+	planLight.GetSSBOCounters()->ActivateAtomic();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT

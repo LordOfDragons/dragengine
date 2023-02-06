@@ -152,6 +152,7 @@ public:
 	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareBuildRTs( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );

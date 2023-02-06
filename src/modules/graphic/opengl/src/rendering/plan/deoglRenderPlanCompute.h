@@ -40,6 +40,7 @@ public:
 		efcpElementCount,
 		efcpUpdateElementCount,
 		efcpFrustumPlanes,
+		efcpFrustumPlanesAbs,
 		efcpFrustumSelect,
 		efcpGIMinExtend,
 		efcpGIMaxExtend,
@@ -48,7 +49,15 @@ public:
 		efcpCullFlags,
 		efcpCameraPosition,
 		efcpCameraView,
-		efcpErrorScaling
+		efcpErrorScaling,
+		efcpHullEdgeNormal,
+		efcpHullEdgeDistance,
+		efcpMatrixLightSpace,
+		efcpShadowAxis,
+		efcpLightShaftFar,
+		efcpSplitMinExtend,
+		efcpSplitMaxExtend,
+		efcpSplitSizeThreshold
 	};
 	
 	
@@ -61,7 +70,6 @@ private:
 	};
 	
 	
-	
 	deoglRenderPlan &pPlan;
 	
 	deoglWorldCSOctree::Ref pWorldCSOctree;
@@ -70,7 +78,9 @@ private:
 	
 	deoglSPBlockSSBO::Ref pSSBOSearchNodes;
 	deoglSPBlockSSBO::Ref pSSBOCounters;
+	
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
+	deoglSPBlockSSBO::Ref pSSBOVisibleElementsFlags;
 	
 	
 	
@@ -97,30 +107,28 @@ public:
 	/** Prepare buffers. */
 	void PrepareBuffers();
 	
-	/** Read visible elements and apply them. */
 	void ReadVisibleElements();
 	
-	/** UBO Find config. */
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	
-	/** SSBO Search nodes. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOSearchNodes() const{ return pSSBOSearchNodes; }
 	
-	/** SSBO Search nodes. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	
-	/** SSBO Search nodes. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsFlags() const{ return pSSBOVisibleElementsFlags; }
 	/*@}*/
 	
 	
 	
 protected:
 	void pPrepareFindConfig();
+	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
 	void pClearCounters();
-	void pSetFrustumPlane( int index, const decDVector &normal, double distance );
+	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
 	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
 	float pCalculateErrorScaling();
+	void pCullLayerMask( deoglSPBlockUBO &ubo );
 };
 
 #endif

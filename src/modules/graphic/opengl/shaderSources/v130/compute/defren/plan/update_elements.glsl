@@ -2,7 +2,8 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/plan/defines.glsl"
+#include "v130/shared/defren/plan/find_config.glsl"
+#include "v130/shared/defren/plan/world_element.glsl"
 
 
 UBOLAYOUT_BIND(0) writeonly buffer Element {

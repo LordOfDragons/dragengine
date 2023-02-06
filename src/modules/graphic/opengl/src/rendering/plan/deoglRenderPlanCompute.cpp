@@ -59,12 +59,13 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 13 );
+	pUBOFindConfig->SetParameterCount( 22 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpUpdateElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4
-	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 3, 1, 6 ); // bvec3
+	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4[6]
+	pUBOFindConfig->GetParameterAt( efcpFrustumPlanesAbs ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 6 ); // vec3[6]
+	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 3, 1, 6 ); // bvec3[6]
 	pUBOFindConfig->GetParameterAt( efcpGIMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	pUBOFindConfig->GetParameterAt( efcpGIMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	pUBOFindConfig->GetParameterAt( efcpLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 ); // uvec2
@@ -73,6 +74,14 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpCameraPosition ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	pUBOFindConfig->GetParameterAt( efcpCameraView ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	pUBOFindConfig->GetParameterAt( efcpErrorScaling ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	pUBOFindConfig->GetParameterAt( efcpHullEdgeNormal ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 5 ); // vec4[5]
+	pUBOFindConfig->GetParameterAt( efcpHullEdgeDistance ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 5 ); // float[5]
+	pUBOFindConfig->GetParameterAt( efcpMatrixLightSpace ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
+	pUBOFindConfig->GetParameterAt( efcpShadowAxis ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 3 ); // vec3[3]
+	pUBOFindConfig->GetParameterAt( efcpLightShaftFar ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	pUBOFindConfig->GetParameterAt( efcpSplitMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 4 ); // vec3[4]
+	pUBOFindConfig->GetParameterAt( efcpSplitMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 4 ); // vec3[4]
+	pUBOFindConfig->GetParameterAt( efcpSplitSizeThreshold ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 4 ); // vec2[4]
 	pUBOFindConfig->MapToStd140();
 	pUBOFindConfig->SetBindingPoint( 0 );
 	
@@ -88,7 +97,7 @@ pPlan( plan )
 	pSSBOCounters->SetParameterCount( 2 );
 	pSSBOCounters->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // uvec3
 	pSSBOCounters->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pSSBOCounters->SetElementCount( 2 );
+	pSSBOCounters->SetElementCount( 1 );
 	pSSBOCounters->MapToStd140();
 	pSSBOCounters->SetBindingPoint( 3 );
 	pSSBOCounters->SetBindingPointAtomic( 0 );
@@ -99,6 +108,13 @@ pPlan( plan )
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
 	pSSBOVisibleElements->SetBindingPoint( 1 );
+	
+	pSSBOVisibleElementsFlags.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
+	pSSBOVisibleElementsFlags->SetRowMajor( rowMajor );
+	pSSBOVisibleElementsFlags->SetParameterCount( 1 );
+	pSSBOVisibleElementsFlags->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+	pSSBOVisibleElementsFlags->MapToStd140();
+	pSSBOVisibleElementsFlags->SetBindingPoint( 2 );
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -142,10 +158,8 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	// pSSBOSearchNodes->EnsureBuffer();
 	
 	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
-	if( visElCount > pSSBOVisibleElements->GetElementCount() ){
-		pSSBOVisibleElements->SetElementCount( visElCount );
-	}
-	pSSBOVisibleElements->EnsureBuffer();
+	pPrepareBuffer( pSSBOVisibleElements, visElCount );
+	pPrepareBuffer( pSSBOVisibleElementsFlags, visElCount );
 	
 	pClearCounters();
 }
@@ -156,11 +170,10 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		return;
 	}
 	
-	// read counters to get the count of visible elements written
 		// decTimer timer;
-	const sCounters * const counters = ( const sCounters * )pSSBOCounters->ReadBuffer( 1 );
+	const sCounters &counters = *( sCounters* )pSSBOCounters->ReadBuffer( 1 );
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
-	const int indexCount = counters[ 0 ].counter;
+	const int indexCount = counters.counter;
 	if( indexCount == 0 ){
 		return;
 	}
@@ -229,24 +242,23 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 void deoglRenderPlanCompute::pPrepareFindConfig(){
 	deoglSPBlockUBO &ubo = pUBOFindConfig;
 	const deoglSPBMapBuffer mapped( ubo );
+	ubo.Clear();
 	
-	// const deoglWorldCSOctree &octree = pWorldCSOctree;
 	const decDVector &refpos = pPlan.GetWorld()->GetReferencePosition();
 	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
 	
-	// octree counts
-	ubo.SetParameterDataUInt( efcpNodeCount, 0 );//octree.GetNodeCount() );
+	ubo.SetParameterDataUInt( efcpNodeCount, 0 );
 	ubo.SetParameterDataUInt( efcpElementCount, wcompute.GetElementCount() );
 	ubo.SetParameterDataUInt( efcpUpdateElementCount, wcompute.GetUpdateElementCount() );
 	
 	// frustum culling
 	const deoglDCollisionFrustum &frustum = *pPlan.GetUseFrustum();
-	pSetFrustumPlane( 0, frustum.GetLeftNormal(), frustum.GetLeftDistance() );
-	pSetFrustumPlane( 1, frustum.GetRightNormal(), frustum.GetRightDistance() );
-	pSetFrustumPlane( 2, frustum.GetTopNormal(), frustum.GetTopDistance() );
-	pSetFrustumPlane( 3, frustum.GetBottomNormal(), frustum.GetBottomDistance() );
-	pSetFrustumPlane( 4, frustum.GetNearNormal(), frustum.GetNearDistance() );
-	pSetFrustumPlane( 5, frustum.GetFarNormal(), frustum.GetFarDistance() );
+	pSetFrustumPlane( ubo, 0, frustum.GetLeftNormal(), frustum.GetLeftDistance() );
+	pSetFrustumPlane( ubo, 1, frustum.GetRightNormal(), frustum.GetRightDistance() );
+	pSetFrustumPlane( ubo, 2, frustum.GetTopNormal(), frustum.GetTopDistance() );
+	pSetFrustumPlane( ubo, 3, frustum.GetBottomNormal(), frustum.GetBottomDistance() );
+	pSetFrustumPlane( ubo, 4, frustum.GetNearNormal(), frustum.GetNearDistance() );
+	pSetFrustumPlane( ubo, 5, frustum.GetFarNormal(), frustum.GetFarDistance() );
 	
 	// gi cascase testing. to disable set min and max extends to the same value best far away
 	const deoglGIState * const gistate = pPlan.GetUpdateGIState();
@@ -265,11 +277,12 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 		ubo.SetParameterDataVec3( efcpGIMaxExtend, position + halfExtend );
 	}
 	
-	// layer mask culling
-	ubo.SetParameterDataBool( efcpCullLayerMask, pPlan.GetUseLayerMask() );
+	ubo.SetParameterDataVec3( efcpCameraPosition, pPlan.GetCameraPosition() - refpos );
+	ubo.SetParameterDataVec3( efcpCameraView, pPlan.GetInverseCameraMatrix().TransformView() );
 	
-	const uint64_t layerMask = pPlan.GetLayerMask().GetMask();
-	ubo.SetParameterDataUVec2( efcpLayerMask, ( uint32_t )( layerMask >> 32 ), ( uint32_t )layerMask );
+	ubo.SetParameterDataFloat( efcpErrorScaling, pCalculateErrorScaling() );
+	
+	pCullLayerMask( ubo );
 	
 	// cull by flags
 	uint32_t cullFlags = 0;
@@ -277,13 +290,13 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 		cullFlags |= deoglWorldCSOctree::ecsefComponentDynamic;
 	}
 	ubo.SetParameterDataUInt( efcpCullFlags, cullFlags );
-	
-	// camera parameters
-	ubo.SetParameterDataVec3( efcpCameraPosition, pPlan.GetCameraPosition() - refpos );
-	ubo.SetParameterDataVec3( efcpCameraView, pPlan.GetInverseCameraMatrix().TransformView() );
-	
-	// error scaling
-	ubo.SetParameterDataFloat( efcpErrorScaling, pCalculateErrorScaling() );
+}
+
+void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){
+	if( count > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( count );
+	}
+	ssbo.EnsureBuffer();
 }
 
 void deoglRenderPlanCompute::pClearCounters(){
@@ -291,15 +304,16 @@ void deoglRenderPlanCompute::pClearCounters(){
 	const deoglSPBMapBuffer mapped( ssbo );
 	int i;
 	
-	for( i=0; i<2; i++ ){
+	for( i=0; i<1; i++ ){
 		ssbo.SetParameterDataUVec3( 0, i, 0, 1, 1 ); // work group size (x=0)
 		ssbo.SetParameterDataUInt( 1, i, 0 ); // count
 	}
 }
 
-void deoglRenderPlanCompute::pSetFrustumPlane( int i, const decDVector& n, double d ){
-	pUBOFindConfig->SetParameterDataArrayVec4( efcpFrustumPlanes, i, n, d );
-	pUBOFindConfig->SetParameterDataArrayBVec3( efcpFrustumSelect, i, n.x > 0.0, n.y > 0.0, n.z > 0.0 );
+void deoglRenderPlanCompute::pSetFrustumPlane( deoglSPBlockUBO &ubo, int i, const decDVector& n, double d ){
+	ubo.SetParameterDataArrayVec4( efcpFrustumPlanes, i, n, d );
+	ubo.SetParameterDataArrayVec3( efcpFrustumPlanesAbs, i, n.Absolute() );
+	ubo.SetParameterDataArrayBVec3( efcpFrustumSelect, i, n.x > 0.0, n.y > 0.0, n.z > 0.0 );
 }
 
 void deoglRenderPlanCompute::pCalculateFrustumBoundaryBox(
@@ -372,4 +386,11 @@ float deoglRenderPlanCompute::pCalculateErrorScaling(){
 	const float dy = tanf( fov * 0.5f * fovRatio ) * ( cullPixelSize / halfWidth ) / aspectRatio;
 	
 	return decMath::min( dx, dy );
+}
+
+void deoglRenderPlanCompute::pCullLayerMask( deoglSPBlockUBO &ubo ){
+	ubo.SetParameterDataBool( efcpCullLayerMask, pPlan.GetUseLayerMask() );
+	
+	const uint64_t layerMask = pPlan.GetLayerMask().GetMask();
+	ubo.SetParameterDataUVec2( efcpLayerMask, ( uint32_t )( layerMask >> 32 ), ( uint32_t )layerMask );
 }

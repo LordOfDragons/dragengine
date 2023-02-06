@@ -294,6 +294,11 @@ void deoglShaderParameterBlock::EnsureBuffer(){
 	UnmapBuffer();
 }
 
+void deoglShaderParameterBlock::Clear(){
+	DEASSERT_TRUE( pMapped )
+	memset( pMapped, 0, pElementStride * ( pElementUpper - pElementLower + 1 ) );
+}
+
 void deoglShaderParameterBlock::SetParameterDataFloat( int p, float v ){
 	SetParameterDataFloat( p, pElementLower, v );
 }

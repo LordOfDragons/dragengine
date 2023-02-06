@@ -110,6 +110,9 @@ public:
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
+	/** Direct access to write buffer. Use with care. Can be nullptr. */
+	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
+	
 	/** Get platform alignment requirements. */
 	virtual int GetAlignmentRequirements() const;
 	

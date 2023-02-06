@@ -162,6 +162,11 @@ public:
 	
 	
 	
+	/** Clear mapped buffer to 0. */
+	void Clear();
+	
+	
+	
 	/** Set data for float type parameter. */
 	void SetParameterDataFloat( int parameter, float value );
 	

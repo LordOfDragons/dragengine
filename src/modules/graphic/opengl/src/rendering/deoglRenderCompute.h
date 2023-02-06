@@ -24,6 +24,8 @@
 
 #include "deoglRenderBase.h"
 
+class deoglRenderPlanSkyLight;
+
 
 /**
  * Compute stuff used by deoglRenderPlan outside of actual rendering.
@@ -33,6 +35,8 @@ private:
 	const deoglPipeline *pPipelineUpdateElements;
 	const deoglPipeline *pPipelineFindContentNode;
 	const deoglPipeline *pPipelineFindContentElement;
+	const deoglPipeline *pPipelineFindContentSkyLight;
+	const deoglPipeline *pPipelineFindContentSkyLightGI;
 	
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	
@@ -60,6 +64,9 @@ public:
 	
 	/** Find content. */
 	void FindContent( const deoglRenderPlan &plan );
+	
+	/** Find content. */
+	void FindContentSkyLight( const deoglRenderPlanSkyLight &planLight );
 	/*@}*/
 	
 	
