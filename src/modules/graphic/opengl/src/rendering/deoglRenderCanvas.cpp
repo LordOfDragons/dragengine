@@ -976,6 +976,13 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPl
 	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightBuildRT, elapsed, 1 );
 }
 
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareSkyLightGIFindContent, false );
+}
+
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed ){
 	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
 		return;

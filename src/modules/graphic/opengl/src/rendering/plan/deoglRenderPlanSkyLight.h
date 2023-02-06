@@ -110,16 +110,13 @@ private:
 	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
 	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
-	
 	deoglSPBlockSSBO::Ref pSSBOCounters;
-	
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElementsFlags;
 	
+	deoglSPBlockUBO::Ref pUBOFindConfigGI;
+	deoglSPBlockSSBO::Ref pSSBOCountersGI;
 	deoglSPBlockSSBO::Ref pSSBOVisibleElementsGI;
-	deoglSPBlockSSBO::Ref pSSBOVisibleElementsFlagsGI;
-	
-	sCounters pCounters[ 2 ];
 	
 	
 	
@@ -232,14 +229,13 @@ public:
 	
 	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
-	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
-	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsFlags() const{ return pSSBOVisibleElementsFlags; }
 	
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfigGI() const{ return pUBOFindConfigGI; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCountersGI() const{ return pSSBOCountersGI; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsGI() const{ return pSSBOVisibleElementsGI; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsFlagsGI() const{ return pSSBOVisibleElementsFlagsGI; }
 	
 	
 	
@@ -279,9 +275,13 @@ public:
 	
 private:
 	void pPrepareFindConfig();
+	void pPrepareFindConfigGI();
 	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
 	void pClearCounters();
+	void pSetWorldComputeParams( deoglSPBlockUBO &ubo );
 	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
+	void pSetLightFrustumPlanes( deoglSPBlockUBO &ubo,
+		const decDMatrix &frustumMatrix, const decDMatrix &matrixLightSpace );
 	void pSetLightFrustumPlane( deoglSPBlockUBO &ubo, const decDMatrix &matrix,
 		int &index, const decDVector &normal, double distance );
 	void pCalcLightFrustum( const decDMatrix &matrix, decDVector (&frustumPoints)[ 5 ] );
@@ -289,6 +289,7 @@ private:
 	void pFrustumHull( deoglSPBlockUBO &ubo, const decDVector (&frustumPoints)[ 5 ] );
 	void pCullLayerMask( deoglSPBlockUBO &ubo );
 	void pSetSplits( deoglSPBlockUBO &ubo, float backtrack );
+	void pSetGISplits( deoglSPBlockUBO &ubo );
 	
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();

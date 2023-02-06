@@ -205,8 +205,6 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 		return;
 	}
 	
-	
-	// find content sky light
 	pPipelineFindContentSkyLight->Activate();
 	
 	planLight.GetUBOFindConfig()->Activate();
@@ -214,6 +212,27 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 	planLight.GetSSBOVisibleElements()->Activate();
 	planLight.GetSSBOVisibleElementsFlags()->Activate();
 	planLight.GetSSBOCounters()->ActivateAtomic();
+	
+	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
+}
+
+void deoglRenderCompute::FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight ){
+	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "Compute.FindContentSkyLightGI" );
+	
+	const deoglWorldCompute &wcompute = planLight.GetPlan().GetWorld()->GetCompute();
+	if( wcompute.GetElementCount() == 0 ){
+		return;
+	}
+	
+	pPipelineFindContentSkyLightGI->Activate();
+	
+	planLight.GetUBOFindConfigGI()->Activate();
+	wcompute.GetSSBOElements()->Activate();
+	planLight.GetSSBOVisibleElementsGI()->Activate();
+	planLight.GetSSBOCountersGI()->ActivateAtomic();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT

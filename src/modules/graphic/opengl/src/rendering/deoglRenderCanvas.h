@@ -155,6 +155,7 @@ public:
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );

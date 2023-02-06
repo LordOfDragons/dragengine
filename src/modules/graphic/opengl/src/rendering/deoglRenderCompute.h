@@ -64,9 +64,8 @@ public:
 	
 	/** Find content. */
 	void FindContent( const deoglRenderPlan &plan );
-	
-	/** Find content. */
 	void FindContentSkyLight( const deoglRenderPlanSkyLight &planLight );
+	void FindContentSkyLightGI( const deoglRenderPlanSkyLight &planLight );
 	/*@}*/
 	
 	

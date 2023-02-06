@@ -8,7 +8,7 @@ precision highp int;
 #include "v130/shared/defren/plan/intersect_frustum.glsl"
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
-#if defined CULL_SKY_LIGHT_FRUSTUM && ! defined CULL_SKY_LIGHT_GI
+#ifdef CULL_SKY_LIGHT_FRUSTUM
 	#include "v130/shared/defren/plan/intersect_hull.glsl"
 	#include "v130/shared/defren/plan/intersect_light_frustum.glsl"
 	#include "v130/shared/defren/plan/split_mask.glsl"
@@ -128,9 +128,10 @@ void main( void ){
 			#endif
 			
 			#ifdef CULL_SKY_LIGHT_GIBOX
-				cond.xy = greaterThan( nhe.xy * vec2( 2 ), pSplitSizeThreshold[ 0 ] );
+				cond.x = notIntersectGI( minExtend, maxExtend );
+				cond.yz = lessThanEqual( nhe.xy * vec2( 2 ), pSplitSizeThreshold[ 0 ] );
 				
-				if( all( cond.xy ) ){
+				if( any( cond.xyz ) ){
 					SKIP_ELEMENT
 				}
 			#endif
@@ -172,9 +173,6 @@ void main( void ){
 		
 		#ifdef CULL_SKY_LIGHT_FRUSTUM
 			pVisibleElementFlags[ visInd1 ][ visInd2 ] = calcSplitMask( npos, nhe );
-		#endif
-		#ifdef CULL_SKY_LIGHT_GIBOX
-			pVisibleElementFlags[ visInd1 ][ visInd2 ] = uint( 1 );
 		#endif
 		
 		// if the count of visible elements increases by the dispatch workgroup size
