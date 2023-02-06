@@ -37,4 +37,5 @@ UBOLAYOUT uniform FindConfig{
 	vec3 pSplitMinExtend[ 4 ];
 	vec3 pSplitMaxExtend[ 4 ];
 	vec2 pSplitSizeThreshold[ 4 ];
+	int pSplitCount;
 };

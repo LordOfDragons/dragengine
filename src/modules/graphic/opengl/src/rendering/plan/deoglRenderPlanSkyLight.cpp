@@ -240,8 +240,8 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 	
 	pOcclusionTest->RemoveAllInputData();
 	
-	pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
-	pp.AddTaskAsync( pTaskFindContent );
+	// pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
+	// pp.AddTaskAsync( pTaskFindContent );
 	
 	if( pPlan.GetUpdateGIState() ){
 		pTaskGIFindContent = new deoglRPTSkyLightGIFindContent( *this );
@@ -385,59 +385,52 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 		return;
 	}
 	
-		decTimer timer;
+		// decTimer timer;
 	memcpy( pCounters, pSSBOCounters->ReadBuffer( 2 ), sizeof( pCounters ) );
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
 	const int indexCount = pCounters[ 0 ].counter;
 	if( indexCount == 0 ){
 		return;
 	}
 	
 	// read written visible element indices
-	deoglOcclusionTest &occlusionTest = *pPlan.GetOcclusionTest();
 	const decDVector &referencePosition = pPlan.GetWorld()->GetReferencePosition();
-	deoglCollideList &collideList = pPlan.GetCollideList();
 	deoglHTView * const htview = pPlan.GetHeightTerrainView();
+	deoglOcclusionTest &occlusionTest = *pOcclusionTest;
 	
 	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
 	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ecount );
 	const uint32_t * const flags = ( const uint32_t * )pSSBOVisibleElementsFlags->ReadBuffer( ecount );
 	int i;
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
-		int cc=0;
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
-		const int index = indices[ i ];
-		const deoglWorldCompute::Element &element = wcompute.GetElementAt( index );
-		const int cascadeMask = flags[ index ] & 0x3f;
+		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
+		const int cascadeMask = flags[ i ] & 0xf;
 		
 		switch( element.GetType() ){
 		case deoglWorldCompute::eetComponent:{
-			cc++; break;
-			deoglCollideListComponent &clcomponent = *collideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
+			deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
 			clcomponent.SetCascadeMask( cascadeMask );
 			clcomponent.SetSpecialFlags( cascadeMask );
 			clcomponent.StartOcclusionTest( occlusionTest, referencePosition );
 			}break;
 			
 		case deoglWorldCompute::eetBillboard:{
-				break;
 			deoglRBillboard * const billboard = ( deoglRBillboard* )element.GetOwner();
 			billboard->SetSkyShadowSplitMask( cascadeMask ); // TODO move this into deoglCollideListBillboard
-			collideList.AddBillboard( billboard );
+			pCollideList.AddBillboard( billboard );
 			}break;
 			
 		case deoglWorldCompute::eetPropFieldCluster:
-				break;
-			collideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() )
+			pCollideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() )
 				->SetCascadeMask( cascadeMask );
 			break;
 			
 		case deoglWorldCompute::eetHeightTerrainSectorCluster:
-				break;
 			if( htview ){
 				const deoglHTSCluster &cluster = *( deoglHTSCluster* )element.GetOwner();
-				collideList.AddHTSCluster( &htview->GetSectorAt( cluster.GetHTSector()->GetIndex() )
+				pCollideList.AddHTSCluster( &htview->GetSectorAt( cluster.GetHTSector()->GetIndex() )
 					->GetClusterAt( cluster.GetIndex() ) )->SetCascadeMask( cascadeMask );
 			}
 			break;
@@ -446,15 +439,14 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 			break;
 		}
 	}
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: check %d %d", cc, pCollideList.GetComponentCount());
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
 void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
 }
 
 void deoglRenderPlanSkyLight::CleanUp(){
-	pWaitFinishedFindContent();
+	// pWaitFinishedFindContent();
 	pWaitFinishedGIFindContent();
 	WaitFinishedGIUpdateRT();
 	WaitFinishedBuildRT1();
@@ -481,12 +473,10 @@ void deoglRenderPlanSkyLight::CleanUp(){
 //////////////////////
 
 void deoglRenderPlanSkyLight::pPrepareFindConfig(){
-	if( pPlan.GetSkyLightCount() < 1 || ! pPlan.GetSkyLightAt( 0 )->GetLayer() ){
+	if( ! pLayer ){
 		return;
 	}
 	
-	deoglRenderPlanSkyLight &planSkyLight = *pPlan.GetSkyLightAt( 0 );
-	const deoglRSkyInstanceLayer &layer = *planSkyLight.GetLayer();
 	deoglSPBlockUBO &ubo = pUBOFindConfig;
 	const deoglSPBMapBuffer mapped( ubo );
 	ubo.Clear();
@@ -507,7 +497,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	
 	// light space
 	const float backtrack = 2000.0f;
-	const decDMatrix matLig( decDMatrix::CreateRotation( 0.0, PI, 0.0 ) * decDMatrix( layer.GetMatrix() ) );
+	const decDMatrix matLig( decDMatrix::CreateRotation( 0.0, PI, 0.0 ) * decDMatrix( pLayer->GetMatrix() ) );
 	const decDMatrix matLigInv( matLig.Invert() );
 	const decDMatrix matCL( matCamInv.GetRotationMatrix() * matLigInv );
 	const decQuaternion quatLig( matLig.ToQuaternion() );
@@ -521,7 +511,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	
 	decDVector frustumBoxMinExtend, frustumBoxMaxExtend;
 	pLightFrustumBox( frustumPoints, frustumBoxMinExtend, frustumBoxMaxExtend );
-	planSkyLight.SetFrustumBoxExtend( frustumBoxMinExtend, frustumBoxMaxExtend );
+	SetFrustumBoxExtend( frustumBoxMinExtend, frustumBoxMaxExtend );
 	
 	frustumBoxMinExtend.z -= backtrack; // to catch shadow casters outside the view
 	
@@ -560,7 +550,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	uint32_t cullFlags = deoglWorldCompute::eefParticleEmitter | deoglWorldCompute::eefLight;
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
 	
-	pSetSplits( ubo, planSkyLight, backtrack );
+	pSetSplits( ubo, backtrack );
 }
 
 void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){
@@ -660,23 +650,22 @@ void deoglRenderPlanSkyLight::pCullLayerMask( deoglSPBlockUBO &ubo ){
 		( uint32_t )( layerMask >> 32 ), ( uint32_t )layerMask );
 }
 
-void deoglRenderPlanSkyLight::pSetSplits( deoglSPBlockUBO &ubo,
-const deoglRenderPlanSkyLight &planSkyLight, float backtrack ){
+void deoglRenderPlanSkyLight::pSetSplits( deoglSPBlockUBO &ubo, float backtrack ){
 	const float splitSizeLimitPixels = 1.0f;
 	const float splitFactor = ( 1.0f / ( float )pPlan.GetShadowSkySize() ) * splitSizeLimitPixels;
-	const int count = planSkyLight.GetShadowLayerCount();
-	int i, index = 0;
+	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
+	ubo.SetParameterDataInt( deoglRenderPlanCompute::efcpSplitCount, pShadowLayerCount );
+	
+	for( i=0; i<pShadowLayerCount; i++ ){
+		const sShadowLayer &sl = pShadowLayers[ i ];
 		
-		ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMinExtend, index,
+		ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMinExtend, i,
 			decVector( sl.minExtend.x, sl.minExtend.y, sl.minExtend.z - backtrack ) );
-		ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMaxExtend, index, sl.maxExtend );
-		ubo.SetParameterDataArrayVec2( deoglRenderPlanCompute::efcpSplitSizeThreshold, index,
+		ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMaxExtend, i, sl.maxExtend );
+		ubo.SetParameterDataArrayVec2( deoglRenderPlanCompute::efcpSplitSizeThreshold, i,
 			( sl.maxExtend.x - sl.minExtend.x ) * splitFactor,
 			( sl.maxExtend.y - sl.minExtend.y ) * splitFactor );
-		index++;
 	}
 }
 
@@ -917,11 +906,10 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
+	/*
 	if( ! pTaskFindContent ){
 		return;
 	}
-	
-	ReadVisibleElements();
 	
 // 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
 	pTaskFindContent->GetSemaphore().Wait();
@@ -931,6 +919,10 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	
 	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
+	*/
+	
+	ReadVisibleElements();
+	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent( pPlan );
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){

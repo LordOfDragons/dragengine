@@ -105,7 +105,7 @@ void main( void ){
 		#endif
 		
 		#if defined CULL_SKY_LIGHT_FRUSTUM || defined CULL_SKY_LIGHT_GIBOX
-			vec3 che = ( maxExtend - minExtend ) * 0.5;
+			vec3 che = ( maxExtend - minExtend ) * vec3( 0.5 );
 			vec3 nhe = vec3( dot( pShadowAxis[ 0 ], che ), dot( pShadowAxis[ 1 ], che ), dot( pShadowAxis[ 2 ], che ) );
 			
 			#ifdef CULL_SKY_LIGHT_FRUSTUM

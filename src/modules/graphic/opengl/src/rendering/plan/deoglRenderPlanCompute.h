@@ -57,7 +57,8 @@ public:
 		efcpLightShaftFar,
 		efcpSplitMinExtend,
 		efcpSplitMaxExtend,
-		efcpSplitSizeThreshold
+		efcpSplitSizeThreshold,
+		efcpSplitCount
 	};
 	
 	

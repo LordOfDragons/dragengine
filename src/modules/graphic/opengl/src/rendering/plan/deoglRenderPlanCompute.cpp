@@ -59,7 +59,7 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 22 );
+	pUBOFindConfig->SetParameterCount( 23 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpUpdateElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
@@ -82,6 +82,7 @@ pPlan( plan )
 	pUBOFindConfig->GetParameterAt( efcpSplitMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 4 ); // vec3[4]
 	pUBOFindConfig->GetParameterAt( efcpSplitMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 4 ); // vec3[4]
 	pUBOFindConfig->GetParameterAt( efcpSplitSizeThreshold ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 4 ); // vec2[4]
+	pUBOFindConfig->GetParameterAt( efcpSplitCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	pUBOFindConfig->MapToStd140();
 	pUBOFindConfig->SetBindingPoint( 0 );
 	

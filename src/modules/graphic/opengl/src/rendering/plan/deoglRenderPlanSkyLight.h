@@ -288,7 +288,7 @@ private:
 	void pLightFrustumBox( const decDVector (&frustumPoints)[ 5 ], decDVector &minExtend, decDVector &maxExtend );
 	void pFrustumHull( deoglSPBlockUBO &ubo, const decDVector (&frustumPoints)[ 5 ] );
 	void pCullLayerMask( deoglSPBlockUBO &ubo );
-	void pSetSplits( deoglSPBlockUBO &ubo, const deoglRenderPlanSkyLight &planSkyLight, float backtrack );
+	void pSetSplits( deoglSPBlockUBO &ubo, float backtrack );
 	
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();
