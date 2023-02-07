@@ -553,7 +553,7 @@ void deoglRenderPlanSkyLight::pPrepareFindConfig(){
 	volumeShadowBox.SetCenter( camPos + matLig * volumeShadowBox.GetCenter() );
 	volumeShadowBox.SetOrientation( quatLig );
 	
-	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLightShaftFar, frustumBoxMaxExtend.z );
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLightShaftFar, ( float )frustumBoxMaxExtend.z );
 	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 0, volumeShadowBox.GetAxisX().Absolute() );
 	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 1, volumeShadowBox.GetAxisY().Absolute() );
 	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 2, volumeShadowBox.GetAxisZ().Absolute() );

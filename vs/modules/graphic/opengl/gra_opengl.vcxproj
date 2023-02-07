@@ -625,6 +625,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRCamera.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCompute.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.h" />
@@ -1221,15 +1222,13 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRCamera.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCompute.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\..\src\modules\graphic\opengl\squish\texture_compression_s3tc.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\..\..\..\src\modules\graphic\opengl\src\module.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

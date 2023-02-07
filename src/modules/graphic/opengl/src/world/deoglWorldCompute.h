@@ -24,6 +24,7 @@
 
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
+#include <stdint.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
