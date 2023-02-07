@@ -874,7 +874,8 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	giState->GetPBProbeDynamicStates()->Activate( 1 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetUpdateProbeCount(), 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	
 	giState->GetPBProbeDynamicStates()->Deactivate( 1 );
 	giState->GetPBProbeOffsets()->Deactivate();
@@ -924,7 +925,8 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	giState->GetPBProbeExtends()->Activate();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( cascade.GetRayCacheProbeCount(), 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_UNIFORM_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	
 	giState->GetPBProbeExtends()->Deactivate();
 }

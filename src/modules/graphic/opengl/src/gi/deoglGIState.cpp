@@ -224,7 +224,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 
 
 
-// #define DO_SPECIAL_TIMING 1
+#define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
@@ -636,9 +636,6 @@ void deoglGIState::pUpdateProbeOffsetFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesHaveMoved = false;
 	
-	// barrier to wait for shader probes update from last frame update
-	OGL_CHECK( pRenderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
-	
 	const char * const dataOffets = pPBProbeOffsets->ReadBuffer( cascade.GetUpdateProbeCount() );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > GetVBOData")
 	
@@ -653,9 +650,6 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	
 	INIT_SPECIAL_TIMING
 	pProbesExtendsChanged = false;
-	
-	// barrier to wait for shader probes update from last frame update
-	OGL_CHECK( pRenderThread, pglMemoryBarrier( GL_BUFFER_UPDATE_BARRIER_BIT ) );
 	
 	const char * const dataExtends = pPBProbeExtends->ReadBuffer( cascade.GetRayCacheProbeCount() );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > GetVBOData")
