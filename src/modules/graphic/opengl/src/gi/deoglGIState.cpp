@@ -224,7 +224,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 
 
 
-#define DO_SPECIAL_TIMING 1
+// #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
@@ -431,7 +431,7 @@ void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){
 }
 
 void deoglGIState::StartReadBack(){
-	const deoglGICascade &cascade = GetLastCascade();
+	const deoglGICascade &cascade = GetActiveCascade();
 	INIT_SPECIAL_TIMING
 	
 	if( pProbesHaveMoved && cascade.GetUpdateProbeCount() > 0 ){
