@@ -633,6 +633,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
 deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
 	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 	ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo->SetCompact( false );
 	ubo->SetParameterCount( vUBOInstParamMapCount );
 	
 	int i;
@@ -649,6 +650,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderTh
 deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread ){
 	const deoglSPBlockSSBO::Ref ssbo( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
 	ssbo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ssbo->SetCompact( false );
 	ssbo->SetParameterCount( vUBOInstParamMapCount );
 	
 	int i;
@@ -665,6 +667,7 @@ deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRender
 deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread ){
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetCompact( false );
 	spb->SetParameterCount( ETUT_COUNT );
 	
 	int i;
@@ -681,6 +684,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThr
 deoglSPBlockSSBO::Ref deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
 	const deoglSPBlockSSBO::Ref spb( deoglSPBlockSSBO::Ref::New( new deoglSPBlockSSBO( renderThread ) ) );
 	spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	spb->SetCompact( false );
 	spb->SetParameterCount( ETUT_COUNT );
 	
 	int i;

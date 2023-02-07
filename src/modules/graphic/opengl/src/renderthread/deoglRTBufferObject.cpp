@@ -211,7 +211,6 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 	pLayoutSkinInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
 		uboMaxSize / pLayoutSkinInstanceUBO->GetElementStride() ) );
 	pLayoutSkinInstanceUBO->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
-	pLayoutSkinInstanceUBO->SetCompact( false );
 // 	pLayoutSkinInstanceUBO->DebugPrintConfig( "pLayoutSkinInstanceUBO" );
 	
 	pRenderThread.GetLogger().LogInfoFormat(
@@ -227,7 +226,6 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 		pLayoutSkinInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
 			ssboMaxSize / pLayoutSkinInstanceSSBO->GetElementStride() ) );
 		pLayoutSkinInstanceSSBO->SetBindingPoint( deoglSkinShader::essboInstanceParameters );
-		pLayoutSkinInstanceSSBO->SetCompact( false );
 		
 		pRenderThread.GetLogger().LogInfoFormat(
 			"pLayoutSkinInstanceSSBO: uboMaxSize=%d elementStride=%d maxCount=%d",
@@ -249,6 +247,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	
 	pLayoutOccMeshInstanceUBO.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
 	pLayoutOccMeshInstanceUBO->SetRowMajor( rowMajor );
+	pLayoutOccMeshInstanceUBO->SetCompact( false );
 	pLayoutOccMeshInstanceUBO->SetParameterCount( 1 );
 	pLayoutOccMeshInstanceUBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 	
@@ -256,7 +255,6 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	pLayoutOccMeshInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
 		uboMaxSize / pLayoutOccMeshInstanceUBO->GetElementStride() ) );
 	pLayoutOccMeshInstanceUBO->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
-	pLayoutOccMeshInstanceUBO->SetCompact( false );
 	
 	pRenderThread.GetLogger().LogInfoFormat(
 		"pLayoutOccMeshInstanceUBO: uboMaxSize=%d elementStride=%d maxCount=%d",
@@ -269,12 +267,12 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 		
 		pLayoutOccMeshInstanceSSBO.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
 		pLayoutOccMeshInstanceSSBO->SetRowMajor( rowMajor );
+		pLayoutOccMeshInstanceSSBO->SetCompact( false );
 		pLayoutOccMeshInstanceSSBO->SetParameterCount( 1 );
 		pLayoutOccMeshInstanceSSBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 		
 		pLayoutOccMeshInstanceSSBO->MapToStd140();
 		pLayoutOccMeshInstanceSSBO->SetBindingPoint( deoglSkinShader::essboInstanceParameters );
-		pLayoutOccMeshInstanceSSBO->SetCompact( false );
 		
 		pLayoutOccMeshInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
 			ssboMaxSize / pLayoutOccMeshInstanceSSBO->GetElementStride() ) );
@@ -299,7 +297,6 @@ void deoglRTBufferObject::pCreateLayoutTextureInstance(){
 	pLayoutSkinTextureUBO->SetElementCount( decMath::min( maxUBOIndexCount,
 		uboMaxSize / pLayoutSkinTextureUBO->GetElementStride() ) );
 	pLayoutSkinTextureUBO->SetBindingPoint( deoglSkinShader::eubTextureParameters );
-	pLayoutSkinTextureUBO->SetCompact( false );
 // 	pLayoutSkinTextureUBO->DebugPrintConfig( "pLayoutSkinInstanceUBO" );
 	
 	pRenderThread.GetLogger().LogInfoFormat(
@@ -315,7 +312,6 @@ void deoglRTBufferObject::pCreateLayoutTextureInstance(){
 		pLayoutSkinTextureSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
 			ssboMaxSize / pLayoutSkinTextureSSBO->GetElementStride() ) );
 		pLayoutSkinTextureSSBO->SetBindingPoint( deoglSkinShader::essboTextureParameters );
-		pLayoutSkinTextureSSBO->SetCompact( false );
 		
 		pRenderThread.GetLogger().LogInfoFormat(
 			"pLayoutSkinTextureSSBO: uboMaxSize=%d elementStride=%d maxCount=%d",

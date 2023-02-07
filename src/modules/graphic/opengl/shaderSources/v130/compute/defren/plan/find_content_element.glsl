@@ -91,7 +91,7 @@ void main( void ){
 		vec3 maxExtend = pElement[ index ].maxExtend;
 		uint flags = pElement[ index ].flags;
 		uvec2 layerMask = pElement[ index ].layerMask;
-		bool isLight = ( flags & efLight ) != 0;
+		bool isLight = ( flags & efLight ) != uint( 0 );
 		bvec4 cond;
 		
 		// if element does not intersect the frustum nor the GI cascade box skip all content
