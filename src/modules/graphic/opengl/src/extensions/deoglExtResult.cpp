@@ -531,6 +531,8 @@ GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding = nullptr;
 // GL_ARB_copy_buffer : no opengl version
 ///////////////////////////////////////////
 
+GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData = nullptr;
+
 
 
 // GL_ARB_texture_multisample : no opengl version

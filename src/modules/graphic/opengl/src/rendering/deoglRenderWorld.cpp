@@ -389,6 +389,9 @@ DEBUG_RESET_TIMER
 			renderGI.ProbeOffset( plan );
 			renderGI.ProbeExtends( plan );
 			SetViewport( plan );
+			
+			// start transfer data to client memory asynchronously for use in the next update
+			plan.GetUpdateGIState()->StartReadBack();
 		}
 	}
 	

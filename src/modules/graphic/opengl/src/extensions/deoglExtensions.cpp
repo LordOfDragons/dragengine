@@ -905,6 +905,9 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// no opengl version: 2.0 stuff
 	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
 	pGetRequiredFunction( (void**)&pglMultiDrawElements, "glMultiDrawElements" );
+	
+	// GL_ARB_copy_buffer : no opengl version
+	pGetRequiredFunction( (void**)&pglCopyBufferSubData, "glCopyBufferSubData" );
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){
@@ -1047,10 +1050,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// GL_ARB_geometry_shader4 : no opengl version
 	if( pHasExtension[ ext_ARB_geometry_shader4 ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglFramebufferTextureFace, "glFramebufferTextureFace", ext_ARB_geometry_shader4 );
-	}
-	
-	// GL_ARB_copy_buffer : no opengl version
-	if( pHasExtension[ ext_ARB_copy_buffer ] ){
 	}
 	
 	// GL_ARB_texture_multisample : no opengl version

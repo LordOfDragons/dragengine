@@ -430,6 +430,21 @@ void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){
 	ComponentEnteredWorld( component );
 }
 
+void deoglGIState::StartReadBack(){
+	const deoglGICascade &cascade = GetLastCascade();
+	INIT_SPECIAL_TIMING
+	
+	if( pProbesHaveMoved && cascade.GetUpdateProbeCount() > 0 ){
+		pReadBackProbeOffsets->TransferFrom( pPBProbeOffsets, cascade.GetUpdateProbeCount() );
+		SPECIAL_TIMER_PRINT("StartReadBack: > ProbeOffsets.TransferFrom")
+	}
+	
+	if( pProbesExtendsChanged && cascade.GetRayCacheProbeCount() > 0 ){
+		pReadBackProbeExtends->TransferFrom( pPBProbeExtends, cascade.GetRayCacheProbeCount() );
+		SPECIAL_TIMER_PRINT("StartReadBack: > ProbeExtends.TransferFrom")
+	}
+}
+
 
 
 // Private Functions
@@ -636,10 +651,10 @@ void deoglGIState::pUpdateProbeOffsetFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesHaveMoved = false;
 	
-	const char * const dataOffets = pPBProbeOffsets->ReadBuffer( cascade.GetUpdateProbeCount() );
-	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > GetVBOData")
+	const deoglSPBMapBuffer mapped( pReadBackProbeOffsets );
+	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > MapPBO")
 	
-	cascade.UpdateProbeOffsetFromShader( dataOffets );
+	cascade.UpdateProbeOffsetFromShader( pReadBackProbeOffsets->GetMappedBuffer() );
 	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > UpdateCascade")
 }
 
@@ -651,10 +666,10 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	INIT_SPECIAL_TIMING
 	pProbesExtendsChanged = false;
 	
-	const char * const dataExtends = pPBProbeExtends->ReadBuffer( cascade.GetRayCacheProbeCount() );
-	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > GetVBOData")
+	const deoglSPBMapBuffer mapped( pReadBackProbeExtends );
+	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > MapPBO")
 	
-	cascade.UpdateProbeExtendsFromShader( dataExtends );
+	cascade.UpdateProbeExtendsFromShader( pReadBackProbeExtends->GetMappedBuffer() );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > UpdateCascade")
 }
 
@@ -758,6 +773,9 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeOffsets->MapToStd140();
 	pPBProbeOffsets->EnsureBuffer();
 	
+	pReadBackProbeOffsets.TakeOver( new deoglSPBlockReadBackSSBO( pPBProbeOffsets ) );
+	pReadBackProbeOffsets->EnsureBuffer();
+	
 	// parameter block probe extends
 	pPBProbeExtends.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
 	pPBProbeExtends->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
@@ -767,6 +785,9 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeExtends->SetElementCount( GI_MAX_PROBE_COUNT );
 	pPBProbeExtends->MapToStd140();
 	pPBProbeExtends->EnsureBuffer();
+	
+	pReadBackProbeExtends.TakeOver( new deoglSPBlockReadBackSSBO( pPBProbeExtends ) );
+	pReadBackProbeExtends->EnsureBuffer();
 }
 
 void deoglGIState::pPrepareUBORayDirections() const{

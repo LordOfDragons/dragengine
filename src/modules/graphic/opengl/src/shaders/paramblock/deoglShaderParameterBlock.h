@@ -158,7 +158,7 @@ public:
 	virtual void UnmapBuffer() = 0;
 	
 	/** Ensure buffer exists. Calls MapBuffer() then UnmapBuffer(). */
-	void EnsureBuffer();
+	virtual void EnsureBuffer();
 	
 	
 	

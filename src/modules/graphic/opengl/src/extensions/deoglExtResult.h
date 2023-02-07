@@ -818,7 +818,7 @@ extern GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding;
 // GL_ARB_copy_buffer : no opengl version
 ///////////////////////////////////////////
 
-// extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
+extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 
 
 
