@@ -68,12 +68,16 @@ deoglRenderBase( renderThread )
 	// SSBOs
 	pSSBOUpdateElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOUpdateElements->SetRowMajor( rowMajor );
-	pSSBOUpdateElements->SetParameterCount( 5 );
+	pSSBOUpdateElements->SetParameterCount( 9 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeUpdateIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeTextureFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeTextureCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOUpdateElements->GetParameterAt( deoglWorldCompute::espeLodCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOUpdateElements->MapToStd140();
 	pSSBOUpdateElements->SetBindingPoint( 1 );
 	

@@ -55,8 +55,7 @@ devkPipeline *devkPipelineManager::GetAt( int index ) const{
 	return ( devkPipeline* )pLayouts.GetAt( index );
 }
 
-devkPipeline *devkPipelineManager::GetWith(
-const devkPipelineConfiguration &configuration ){
+devkPipeline *devkPipelineManager::GetWith( const devkPipelineConfiguration &configuration ){
 	const int count = pLayouts.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){

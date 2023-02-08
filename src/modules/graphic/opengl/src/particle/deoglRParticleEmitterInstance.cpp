@@ -69,6 +69,7 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
 	data.SetLayerMask( pEmitter.GetLayerMask() );
 	data.flags = ( uint32_t )deoglWorldCompute::eefParticleEmitter;
+	data.textureCount = 1;
 }
 
 // Constructor, destructor

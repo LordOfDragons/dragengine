@@ -83,6 +83,7 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 	data.SetExtends( pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pBillboard.GetLayerMask() );
 	data.flags = ( uint32_t )deoglWorldCompute::eefBillboard;
+	data.textureCount = 1;
 }
 
 // Constructor, destructor

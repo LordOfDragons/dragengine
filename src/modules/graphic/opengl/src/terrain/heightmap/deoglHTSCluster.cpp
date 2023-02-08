@@ -64,6 +64,7 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 	data.SetExtends( center - halfSize, center + halfSize );
 	data.SetEmptyLayerMask();
 	data.flags = ( uint32_t )deoglWorldCompute::eefHeightTerrainSectorCluster;
+	data.textureCount = ( uint32_t )pCluster.GetHTSector()->GetTextureCount();
 }
 
 // Constructor, destructor

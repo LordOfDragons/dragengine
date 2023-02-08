@@ -101,12 +101,16 @@ pFullUpdateFactor( 0.2f )
 	
 	pSSBOElements.TakeOver( new deoglSPBlockSSBO( renderThread ) );
 	pSSBOElements->SetRowMajor( rowMajor );
-	pSSBOElements->SetParameterCount( 5 );
+	pSSBOElements->SetParameterCount( 9 );
 	pSSBOElements->GetParameterAt( espeMinExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOElements->GetParameterAt( espeFlags ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeMaxExtend ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 );
 	pSSBOElements->GetParameterAt( espeUpdateIndex ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->GetParameterAt( espeLayerMask ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
+	pSSBOElements->GetParameterAt( espeTextureFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeTextureCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLodFirst ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElements->GetParameterAt( espeLodCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->MapToStd140();
 	pSSBOElements->SetBindingPoint( 0 );
 }
@@ -218,6 +222,8 @@ void deoglWorldCompute::pUpdateSSBOElements(){
 	sDataElement * const data = ( sDataElement* )ssbo.GetWriteBuffer();
 	int i;
 	
+	memset( data, 0, ssbo.GetElementStride() * count );
+	
 	for( i=0; i<count; i++ ){
 		Element &element = *( ( Element* )pUpdateElements.GetAt( i ) );
 		element.UpdateData( *this, data[ i ] );
@@ -241,6 +247,8 @@ void deoglWorldCompute::pFullUpdateSSBOElements(){
 	
 	const deoglSPBMapBuffer mapped( pSSBOElements );
 	sDataElement * const data = ( sDataElement* )pSSBOElements->GetWriteBuffer();
+	
+	memset( data, 0, pSSBOElements->GetElementStride() * count );
 	
 	for( i=0; i<count; i++ ){
 		Element &element = *( ( Element* )pElements.GetAt( i ) );

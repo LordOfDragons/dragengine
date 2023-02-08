@@ -58,6 +58,10 @@ public:
 		espeMaxExtend,
 		espeUpdateIndex,
 		espeLayerMask,
+		espeTextureFirst,
+		espeTextureCount,
+		espeLodFirst,
+		espeLodCount
 	};
 	
 	/** Data element. */
@@ -69,6 +73,11 @@ public:
 		uint32_t updateIndex; // for use by updating only
 		
 		uint32_t layerMask[ 2 ]; // 0=upper 32 bits, 1=lower 32 bits
+		uint32_t textureFirst;
+		uint32_t textureCount;
+		
+		uint32_t lodFirst;
+		uint32_t lodCount;
 		uint32_t padding[ 2 ];
 		
 		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );

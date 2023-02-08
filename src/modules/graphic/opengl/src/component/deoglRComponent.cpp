@@ -115,6 +115,8 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
 	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pComponent.GetLayerMask() );
+	data.textureCount = pComponent.GetTextureCount();
+	data.lodCount = pComponent.GetLODCount();
 	
 	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
 	if( ! pComponent.GetRenderStatic() ){

@@ -31,7 +31,7 @@ class deoglRenderTaskSharedVAO;
 
 
 /**
- * GLobal pool for render task shared resources.
+ * Global pool for render task shared resources.
  */
 class deoglRenderTaskSharedPool{
 private:

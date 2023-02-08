@@ -83,6 +83,7 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
 	data.SetEmptyLayerMask();
 	data.flags = ( uint32_t )deoglWorldCompute::eefPropFieldCluster;
+	data.textureCount = 1;
 }
 
 // Constructor, destructor

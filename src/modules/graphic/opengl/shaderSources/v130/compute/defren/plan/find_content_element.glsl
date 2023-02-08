@@ -4,7 +4,7 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/plan/find_config.glsl"
 #include "v130/shared/defren/plan/world_element.glsl"
-#include "v130/shared/defren/plan/world_element_flags.glsl"
+#include "v130/shared/defren/plan/world_element_constants.glsl"
 #include "v130/shared/defren/plan/intersect_frustum.glsl"
 #include "v130/shared/defren/plan/intersect_gi.glsl"
 
