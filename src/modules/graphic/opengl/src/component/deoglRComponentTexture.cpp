@@ -538,9 +538,7 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup( int lodLevel ) const{
 	deoglSharedSPBRTIGroup * const group = ( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt(
 		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount() ) );
-	if( ! group ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( group )
 	return *group;
 }
 

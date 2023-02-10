@@ -39,6 +39,7 @@
 #include "../devmode/deoglDeveloperMode.h"
 #include "../rendering/deoglRenderReflection.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTDebug.h"
@@ -106,6 +107,7 @@
 
 deoglSkinTexture::deoglSkinTexture( deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture ) :
 pRenderThread( renderThread ),
+pRTSIndex( -1 ),
 pSkin( skin ),
 pName( texture.GetName() ),
 pPipelines( *this ),
@@ -259,6 +261,9 @@ pSharedSPBElement( nullptr )
 	}
 	
 	pUpdateRenderTaskFilters();
+	
+	pRTSIndex = renderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
+	renderThread.GetShader().InvalidateSSBOSkinTextures();
 }
 
 deoglSkinTexture::~deoglSkinTexture(){
@@ -785,6 +790,12 @@ const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int pro
 //////////////////////
 
 void deoglSkinTexture::pCleanUp(){
+	if( pRTSIndex != -1 ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnSkinTexture( pRTSIndex );
+		pRTSIndex = -1;
+		pRenderThread.GetShader().InvalidateSSBOSkinTextures();
+	}
+	
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}

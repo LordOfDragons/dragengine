@@ -113,6 +113,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
+	int pRTSIndex;
 	
 	const deoglRSkin &pSkin;
 	decString pName;
@@ -224,6 +225,8 @@ private:
 	
 	deoglSkinTextureProperty pMaterialProperties[ EMP_COUNT ];
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -242,6 +245,9 @@ public:
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Render task shared index. */
+	inline int GetRTSIndex() const{ return pRTSIndex; }
 	
 	
 	
@@ -763,6 +769,8 @@ public:
 	/** Channel for type is not \em NULL. */
 	bool IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) const;
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

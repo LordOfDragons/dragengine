@@ -71,6 +71,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTShader.h"
 #include "../../shadow/deoglShadowMapper.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../skin/deoglRSkin.h"
@@ -361,6 +362,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	
 	// these calls run in parallel with above started tasks
 	pWorld->PrepareForRender( *this, mask );
+	pRenderThread.GetShader().UpdateSSBOSkinTextures();
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
@@ -1243,6 +1245,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 
 void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
+		pTasks.StartBuildTasks( mask );
 		return;
 	}
 	INIT_SPECIAL_TIMING

@@ -23,6 +23,7 @@
 #define _DEOGLRRTSHADER_H_
 
 #include "../deoglBasics.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 class deoglLightShaderManager;
 class deoglRenderThread;
@@ -96,6 +97,9 @@ private:
 	deoglLightShaderManager *pLightShaderManager;
 	const deoglShaderProgram *pCurShaderProg;
 	
+	deoglSPBlockSSBO::Ref pSSBOSkinTextures;
+	bool pDirtySSBOSkinTextures;
+	
 	
 	
 public:
@@ -135,7 +139,20 @@ public:
 	
 	/** Add common defines. */
 	void SetCommonDefines( deoglShaderDefines &defines ) const;
+	
+	
+	
+	/** SSBO skin textures. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOSkinTextures() const{ return pSSBOSkinTextures; }
+	
+	/** Invalidate SSBO skin textures. */
+	void InvalidateSSBOSkinTextures();
+	
+	/** Update SSBO skin textures if required. */
+	void UpdateSSBOSkinTextures();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

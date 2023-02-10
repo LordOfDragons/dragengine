@@ -22,6 +22,8 @@
 #ifndef _DEOGLRENDERTASKSHAREDVAO_H_
 #define _DEOGLRENDERTASKSHAREDVAO_H_
 
+#include <dragengine/deObject.h>
+
 class deoglVAO;
 class deoglRenderTaskSharedPool;
 
@@ -29,7 +31,12 @@ class deoglRenderTaskSharedPool;
 /**
  * Shared render task shader.
  */
-class deoglRenderTaskSharedVAO{
+class deoglRenderTaskSharedVAO : public deObject{
+public:
+	typedef deTObjectReference<deoglRenderTaskSharedVAO> Ref;
+	
+	
+	
 private:
 	deoglRenderTaskSharedPool &pPool;
 	const int pIndex;
@@ -44,12 +51,14 @@ public:
 	/** Create shared render task shader. */
 	deoglRenderTaskSharedVAO( deoglRenderTaskSharedPool &pool, int index );
 	
+protected:
 	/** Clean up shared render task shader. */
-	~deoglRenderTaskSharedVAO();
+	virtual ~deoglRenderTaskSharedVAO();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */

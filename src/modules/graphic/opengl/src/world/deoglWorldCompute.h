@@ -85,6 +85,18 @@ public:
 		void SetEmptyLayerMask();
 	};
 	
+	/** Data element texture. */
+	struct sDataElementTexture{
+		uint32_t renderFilter;
+		uint32_t skinTexture;
+		uint32_t tucSortOrder[ 2 ];
+		
+		uint32_t pipelineBase;
+		uint32_t sharedInstance;
+		uint32_t spbInstance;
+		uint32_t padding[ 1 ];
+	};
+	
 	/** Compute shader element types. */
 	enum eElementTypes{
 		eetComponent,

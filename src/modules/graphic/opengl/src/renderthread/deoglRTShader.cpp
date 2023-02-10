@@ -28,9 +28,12 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
 #include "../light/shader/deoglLightShaderManager.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../skin/deoglSkinTexture.h"
 #include "../skin/shader/deoglSkinShaderManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texsamplerconfig/deoglTexSamplerConfig.h"
@@ -54,7 +57,8 @@ pTexUnitsConfigList( NULL ),
 pShaderManager( NULL ),
 pSkinShaderManager( NULL ),
 pLightShaderManager( NULL ),
-pCurShaderProg( NULL )
+pCurShaderProg( NULL ),
+pDirtySSBOSkinTextures( true )
 {
 	int i;
 	for( i=0; i<ETSC_COUNT; i++ ){
@@ -71,6 +75,8 @@ pCurShaderProg( NULL )
 		
 		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
 		pLightShaderManager = new deoglLightShaderManager( renderThread );
+		
+		// NOTE we can not create here SSBOs or alike due to the initialization order
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -143,6 +149,65 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 	
 	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
 		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	}
+}
+
+
+
+void deoglRTShader::InvalidateSSBOSkinTextures(){
+	pDirtySSBOSkinTextures = true;
+}
+
+void deoglRTShader::UpdateSSBOSkinTextures(){
+	if( ! pDirtySSBOSkinTextures ){
+		return;
+	}
+	
+	pDirtySSBOSkinTextures = false;
+	
+	if( ! pSSBOSkinTextures ){
+		pSSBOSkinTextures.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pSSBOSkinTextures->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		pSSBOSkinTextures->SetParameterCount( 1 );
+		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+		pSSBOSkinTextures->MapToStd140();
+		pSSBOSkinTextures->SetBindingPoint( 0 );
+		pSSBOSkinTextures->SetElementCount( 1 );
+	}
+	
+	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
+	const int count = pool.GetSkinTextureCount();
+	const int elementCount = ( ( count - 1 ) / 2 ) + 1;
+	deoglSPBlockSSBO &ssbo = pSSBOSkinTextures;
+	int i, index;
+	
+	if( elementCount > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( elementCount ); //+ 100 );
+	}
+	
+	const deoglSPBMapBuffer mapped( ssbo );
+	uint32_t *values = ( uint32_t* )ssbo.GetWriteBuffer();
+	
+	for( i=0; i<count; i++ ){
+		// the sort order of skin textures is the pipeline index of two reference pipeline type:
+		// etGeometry and etDepth. all other types behave similar to one of these two
+		const deoglSkinTexture * const texture = pool.GetSkinTextureAt( i );
+		if( texture ){
+			const deoglSkinTexturePipelines &pipelines =
+				texture->GetPipelines().GetAt( deoglSkinTexturePipelinesList::eptComponent );
+			
+			index = pipelines.GetWith( deoglSkinTexturePipelines::etGeometry, 0 )->GetPipeline()->GetRTSPipelineIndex();
+			DEASSERT_TRUE( index != -1 )
+			*( values++ ) = ( uint32_t )index;
+			
+			index = pipelines.GetWith( deoglSkinTexturePipelines::etDepth, 0 )->GetPipeline()->GetRTSPipelineIndex();
+			DEASSERT_TRUE( index != -1 )
+			*( values++ ) = ( uint32_t )index;
+			
+		}else{
+			*( values++ ) = 0;
+			*( values++ ) = 0;
+		}
 	}
 }
 

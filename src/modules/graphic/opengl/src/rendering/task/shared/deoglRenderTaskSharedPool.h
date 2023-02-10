@@ -23,11 +23,15 @@
 #define _DEOGLRENDERTASKSHAREDPOOL_H_
 
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decIntList.h>
 
 class deoglRenderThread;
 class deoglRenderTaskSharedInstance;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
+class deoglSkinTexture;
+
 
 
 /**
@@ -37,13 +41,15 @@ class deoglRenderTaskSharedPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	int pNextIndexTexture;
-	int pNextIndexVAO;
-	int pNextIndexInstance;
+	decObjectList pTextures;
+	decObjectList pVAOs;
+	decObjectList pInstances;
+	decPointerList pSkinTextures;
 	
-	decPointerList pTextures;
-	decPointerList pVAOs;
-	decPointerList pInstances;
+	decPointerList pFreeTextures;
+	decPointerList pFreeVAOs;
+	decPointerList pFreeInstances;
+	decIntList pFreeSkinTextures;
 	
 	
 	
@@ -70,6 +76,26 @@ public:
 	/** Get instance. */
 	deoglRenderTaskSharedInstance *GetInstance();
 	
+	/** Assign skin texture. */
+	int AssignSkinTexture( deoglSkinTexture *skinTexture );
+	
+	
+	
+	/** Get texture at index. */
+	deoglRenderTaskSharedTexture &GetTextureAt( int index ) const;
+	
+	/** Get VAO at index. */
+	deoglRenderTaskSharedVAO &GetVAOAt( int index ) const;
+	
+	/** Get instance at index. */
+	deoglRenderTaskSharedInstance &GetInstanceAt( int index ) const;
+	
+	/** Get skin texture at index. */
+	deoglSkinTexture *GetSkinTextureAt( int index ) const;
+	
+	/** Get skin texture count. */
+	int GetSkinTextureCount() const;
+	
 	
 	
 	/** Return texture. */
@@ -80,6 +106,9 @@ public:
 	
 	/** Return instance. */
 	void ReturnInstance( deoglRenderTaskSharedInstance *instance );
+	
+	/** Return skin texture. */
+	void ReturnSkinTexture( int slot );
 	/*@}*/
 };
 

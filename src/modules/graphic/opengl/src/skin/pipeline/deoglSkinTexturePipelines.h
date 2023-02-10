@@ -61,6 +61,7 @@ public:
 		etGIMaterial
 	};
 	
+	const static int TypeCount = etGIMaterial + 1;
 	static const deoglDebugNamesEnum DebugNamesTypes;
 	
 	/** Modifier. */
@@ -70,14 +71,12 @@ public:
 		emDoubleSided = 0x4
 	};
 	
+	const static int ModifiersPerType = emDoubleSided << 1;
 	static const deoglDebugNamesEnumSet DebugNamesModifiers;
 	
 	
 	
 protected:
-	const static int TypeCount = etGIMaterial + 1;
-	const static int ModifiersPerType = emDoubleSided << 1;
-	
 	const deoglSkinTexture &pTexture;
 	
 	deoglSkinTexturePipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];

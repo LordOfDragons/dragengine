@@ -269,7 +269,7 @@ const ChannelInfo &cinfo ){
 	pPrepareShadowOrthogonal( pipconf, baseShaderConfig, cinfo );
 	pPrepareShadowOrthogonalCascaded( pipconf, baseShaderConfig, cinfo );
 	
-	pPipelineConfigShadowDistance ( pipconf );
+	pPipelineConfigShadowDistance( pipconf );
 	pPrepareShadowDistance( pipconf, baseShaderConfig, cinfo );
 	pPrepareShadowDistanceCube( pipconf, baseShaderConfig, cinfo );
 }
