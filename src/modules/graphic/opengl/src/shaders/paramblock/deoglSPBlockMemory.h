@@ -85,6 +85,14 @@ public:
 	 */
 	virtual void MapBuffer( int element );
 	
+	/**
+	 * Map buffer for specific elements discarding content.
+	 * 
+	 * Data outside the element range is retained. Any attempt to call SetParameter* with
+	 * an element index other than the one used for mapping throws an exception.
+	 */
+	virtual void MapBuffer( int element, int count );
+	
 	/** Has no effect. */
 	virtual void UnmapBuffer();
 	/*@}*/

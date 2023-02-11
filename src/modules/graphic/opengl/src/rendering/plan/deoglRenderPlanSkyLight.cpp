@@ -111,7 +111,6 @@ pTaskGIUpdateRT( NULL )
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
 	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
 	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
-	pSSBOVisibleElementsFlags.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElementsFlags() ) );
 	
 	pUBOFindConfigGI.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
 	pSSBOCountersGI.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
@@ -375,7 +374,6 @@ void deoglRenderPlanSkyLight::PrepareBuffers(){
 	
 	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
-	pPrepareBuffer( pSSBOVisibleElementsFlags, visElCount );
 	pPrepareBuffer( pSSBOVisibleElementsGI, visElCount );
 	
 	pClearCounters();
@@ -402,13 +400,12 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 	
 	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
 	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ecount );
-	const uint32_t * const flags = ( const uint32_t * )pSSBOVisibleElementsFlags->ReadBuffer( ecount );
 	int i;
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
-		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
-		const int cascadeMask = flags[ i ] & 0xf;
+		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] & 0xffffff );
+		const int cascadeMask = ( indices[ i ] >> 24 ) & 0xf;
 		
 		switch( element.GetType() ){
 		case deoglWorldCompute::eetComponent:{

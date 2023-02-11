@@ -154,6 +154,14 @@ public:
 	 */
 	virtual void MapBuffer( int element ) = 0;
 	
+	/**
+	 * Map buffer for specific elements discarding content.
+	 * 
+	 * Data outside the element range is retained. Any attempt to call SetParameter* with
+	 * an element index other than the one used for mapping throws an exception.
+	 */
+	virtual void MapBuffer( int element, int count ) = 0;
+	
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer() = 0;
 	
@@ -476,6 +484,7 @@ public:
 protected:
 	void pSetMapped( char *data );
 	void pSetMapped( char *data, int element );
+	void pSetMapped( char *data, int element, int count );
 	void pClearMapped();
 	void pSetElementStride( int stride );
 	

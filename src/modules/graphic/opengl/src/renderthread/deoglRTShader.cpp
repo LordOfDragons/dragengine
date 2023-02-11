@@ -171,42 +171,52 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 		pSSBOSkinTextures->SetParameterCount( 1 );
 		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 		pSSBOSkinTextures->MapToStd140();
-		pSSBOSkinTextures->SetBindingPoint( 0 );
+		pSSBOSkinTextures->SetBindingPoint( 2 );
 		pSSBOSkinTextures->SetElementCount( 1 );
 	}
 	
 	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
+	const int pipelinesPerTexture = deoglSkinTexturePipelinesList::PipelineTypesCount
+		* deoglSkinTexturePipelines::TypeCount * deoglSkinTexturePipelines::ModifiersPerType;
 	const int count = pool.GetSkinTextureCount();
-	const int elementCount = ( ( count - 1 ) / 2 ) + 1;
+	const int pipelineCount = count * pipelinesPerTexture;
+	const int pipelinesPerElement = 8;
+	const int elementCount = ( ( pipelineCount - 1 ) / pipelinesPerElement ) + 1;
 	deoglSPBlockSSBO &ssbo = pSSBOSkinTextures;
-	int i, index;
+	int i, j, k, l;
 	
 	if( elementCount > ssbo.GetElementCount() ){
-		ssbo.SetElementCount( elementCount ); //+ 100 );
+		ssbo.SetElementCount( elementCount );
 	}
 	
 	const deoglSPBMapBuffer mapped( ssbo );
-	uint32_t *values = ( uint32_t* )ssbo.GetWriteBuffer();
+	uint16_t *values = ( uint16_t* )ssbo.GetWriteBuffer();
 	
 	for( i=0; i<count; i++ ){
-		// the sort order of skin textures is the pipeline index of two reference pipeline type:
-		// etGeometry and etDepth. all other types behave similar to one of these two
 		const deoglSkinTexture * const texture = pool.GetSkinTextureAt( i );
-		if( texture ){
-			const deoglSkinTexturePipelines &pipelines =
-				texture->GetPipelines().GetAt( deoglSkinTexturePipelinesList::eptComponent );
+		if( ! texture ){
+			for( j=0; j<pipelinesPerTexture; j++ ){
+				*( values++ ) = 0;
+			}
+			continue;
+		}
+		
+		const deoglSkinTexturePipelinesList &stpsl = texture->GetPipelines();
+		for( j=0; j<deoglSkinTexturePipelinesList::PipelineTypesCount; j++ ){
+			const deoglSkinTexturePipelines &stps = stpsl.GetAt( ( deoglSkinTexturePipelinesList::ePipelineTypes )j );
 			
-			index = pipelines.GetWith( deoglSkinTexturePipelines::etGeometry, 0 )->GetPipeline()->GetRTSPipelineIndex();
-			DEASSERT_TRUE( index != -1 )
-			*( values++ ) = ( uint32_t )index;
-			
-			index = pipelines.GetWith( deoglSkinTexturePipelines::etDepth, 0 )->GetPipeline()->GetRTSPipelineIndex();
-			DEASSERT_TRUE( index != -1 )
-			*( values++ ) = ( uint32_t )index;
-			
-		}else{
-			*( values++ ) = 0;
-			*( values++ ) = 0;
+			for( k=0; k<deoglSkinTexturePipelines::TypeCount; k++ ){
+				for( l=0; l<deoglSkinTexturePipelines::ModifiersPerType; l++ ){
+					const deoglSkinTexturePipeline * const stp = stps.GetWith( ( deoglSkinTexturePipelines::eTypes )k, l );
+					
+					if( stp ){
+						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSPipelineIndex(), 0 );
+						
+					}else{
+						*( values++ ) = 0;
+					}
+				}
+			}
 		}
 	}
 }

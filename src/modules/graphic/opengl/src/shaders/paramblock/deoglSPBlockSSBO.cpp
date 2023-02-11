@@ -215,10 +215,15 @@ void deoglSPBlockSSBO::MapBuffer(){
 }
 
 void deoglSPBlockSSBO::MapBuffer( int element ){
+	MapBuffer( element, 1 );
+}
+
+void deoglSPBlockSSBO::MapBuffer( int element, int count ){
 	DEASSERT_FALSE( IsBufferMapped()  )
 	DEASSERT_TRUE( GetBufferSize() > 0 )
 	DEASSERT_TRUE( element >= 0 )
-	DEASSERT_TRUE( element < GetElementCount() )
+	DEASSERT_TRUE( count > 0 )
+	DEASSERT_TRUE( element + count <= GetElementCount() )
 	
 	if( false ){ // use mapped
 		if( ! pSSBO ){
@@ -240,12 +245,12 @@ void deoglSPBlockSSBO::MapBuffer( int element ){
 		try{
 			char *data;
 			OGL_CHECK( GetRenderThread(), data = ( char* )pglMapBufferRange(
-				GL_SHADER_STORAGE_BUFFER, GetElementStride() * element, GetElementStride(),
+				GL_SHADER_STORAGE_BUFFER, GetElementStride() * element, GetElementStride() * count,
 				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT ) );
 			if( ! data ){
 				DETHROW( deeInvalidParam );
 			}
-			pSetMapped( data, element );
+			pSetMapped( data, element, count );
 			
 		}catch( const deException & ){
 			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
@@ -253,9 +258,9 @@ void deoglSPBlockSSBO::MapBuffer( int element ){
 		}
 		
 	}else{
-		pGrowWriteBuffer( GetElementStride() );
+		pGrowWriteBuffer( GetElementStride() * count );
 		pWriteBufferUsed = true;
-		pSetMapped( pWriteBuffer, element );
+		pSetMapped( pWriteBuffer, element, count );
 	}
 }
 

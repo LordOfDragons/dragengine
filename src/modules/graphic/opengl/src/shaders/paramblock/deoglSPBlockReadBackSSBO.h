@@ -92,6 +92,9 @@ public:
 	/** Map buffer for reading specific element. Get buffer pointer with GetMappedBuffer(). */
 	virtual void MapBuffer( int element );
 	
+	/** Map buffer for specific elements discarding content. */
+	virtual void MapBuffer( int element, int count );
+	
 	/** Unmap buffer. */
 	virtual void UnmapBuffer();
 	

@@ -127,7 +127,7 @@ int deoglRenderTaskSharedPool::AssignSkinTexture( deoglSkinTexture *skinTexture 
 		slot = pSkinTextures.GetCount();
 		pSkinTextures.Add( skinTexture );
 		
-		if( pSkinTextures.GetCount() % 200 == 0 ){
+		if( pSkinTextures.GetCount() % 100 == 0 ){
 			pRenderThread.GetLogger().LogInfoFormat(
 				"RenderTaskSharedPool: Reached %d Skin Textures", pSkinTextures.GetCount() );
 		}

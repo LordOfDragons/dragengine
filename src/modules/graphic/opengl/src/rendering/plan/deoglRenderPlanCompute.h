@@ -81,7 +81,6 @@ private:
 	deoglSPBlockSSBO::Ref pSSBOCounters;
 	
 	deoglSPBlockSSBO::Ref pSSBOVisibleElements;
-	deoglSPBlockSSBO::Ref pSSBOVisibleElementsFlags;
 	
 	
 	
@@ -117,7 +116,6 @@ public:
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
 	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElementsFlags() const{ return pSSBOVisibleElementsFlags; }
 	/*@}*/
 	
 	

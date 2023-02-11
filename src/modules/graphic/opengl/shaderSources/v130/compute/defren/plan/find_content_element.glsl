@@ -23,10 +23,6 @@ UBOLAYOUT_BIND(1) writeonly buffer VisibleElement {
 	uvec4 pVisibleElement[];
 };
 
-UBOLAYOUT_BIND(2) writeonly buffer VisibleElementFlags {
-	uvec4 pVisibleElementFlags[];
-};
-
 #ifndef DIRECT_ELEMENTS
 UBOLAYOUT_BIND(2) readonly buffer SearchNodes {
 	uvec4 pSearchNodes[];
@@ -169,11 +165,12 @@ void main( void ){
 		uint visibleIndex = atomicCounterIncrement( pNextVisibleIndex );
 		uint visInd1 = visibleIndex / uint( 4 );
 		uint visInd2 = visibleIndex % uint( 4 );
-		pVisibleElement[ visInd1 ][ visInd2 ] = index;
 		
 		#ifdef CULL_SKY_LIGHT_FRUSTUM
-			pVisibleElementFlags[ visInd1 ][ visInd2 ] = calcSplitMask( npos, nhe );
+		index |= calcSplitMask( npos, nhe ) << uint( 24 );
 		#endif
+		
+		pVisibleElement[ visInd1 ][ visInd2 ] = index;
 		
 		// if the count of visible elements increases by the dispatch workgroup size
 		// increment also the work group count. this way the upcoming dispatch

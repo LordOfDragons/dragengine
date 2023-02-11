@@ -61,3 +61,14 @@ const uint eptGIMaterial = uint( 17 );
 const uint epmStereo = uint( 0x1 );
 const uint epmFlipCullFace = uint( 0x2 );
 const uint epmDoubleSided = uint( 0x4 );
+
+
+// element texture tuc
+const uint ettGeometry = uint( 0 );
+const uint ettDepth = uint( 1 );
+const uint ettCounter = uint( 2 );
+const uint ettShadow = uint( 3 );
+const uint ettShadowCube = uint( 4 );
+const uint ettEnvMap = uint( 5 );
+const uint ettLuminance = uint( 6 );
+const uint ettGIMaterial = uint( 7 );

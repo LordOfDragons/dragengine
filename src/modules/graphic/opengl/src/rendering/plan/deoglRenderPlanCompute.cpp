@@ -109,13 +109,6 @@ pPlan( plan )
 	pSSBOVisibleElements->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
 	pSSBOVisibleElements->MapToStd140();
 	pSSBOVisibleElements->SetBindingPoint( 1 );
-	
-	pSSBOVisibleElementsFlags.TakeOver( new deoglSPBlockSSBO( plan.GetRenderThread() ) );
-	pSSBOVisibleElementsFlags->SetRowMajor( rowMajor );
-	pSSBOVisibleElementsFlags->SetParameterCount( 1 );
-	pSSBOVisibleElementsFlags->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
-	pSSBOVisibleElementsFlags->MapToStd140();
-	pSSBOVisibleElementsFlags->SetBindingPoint( 2 );
 }
 
 deoglRenderPlanCompute::~deoglRenderPlanCompute(){
@@ -160,7 +153,6 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	
 	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
-	pPrepareBuffer( pSSBOVisibleElementsFlags, visElCount );
 	
 	pClearCounters();
 }

@@ -192,7 +192,6 @@ void deoglRenderCompute::FindContent( const deoglRenderPlan &plan ){
 	planCompute.GetUBOFindConfig()->Activate();
 	wcompute.GetSSBOElements()->Activate();
 	planCompute.GetSSBOVisibleElements()->Activate();
-	planCompute.GetSSBOVisibleElementsFlags()->Activate();
 	planCompute.GetSSBOCounters()->ActivateAtomic();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );
@@ -214,7 +213,6 @@ void deoglRenderCompute::FindContentSkyLight( const deoglRenderPlanSkyLight &pla
 	planLight.GetUBOFindConfig()->Activate();
 	wcompute.GetSSBOElements()->Activate();
 	planLight.GetSSBOVisibleElements()->Activate();
-	planLight.GetSSBOVisibleElementsFlags()->Activate();
 	planLight.GetSSBOCounters()->ActivateAtomic();
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( wcompute.GetElementCount() - 1 ) / 64 + 1, 1, 1 ) );

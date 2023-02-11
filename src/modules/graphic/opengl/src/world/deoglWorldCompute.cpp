@@ -113,6 +113,18 @@ pFullUpdateFactor( 0.2f )
 	pSSBOElements->GetParameterAt( espeLodCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pSSBOElements->MapToStd140();
 	pSSBOElements->SetBindingPoint( 0 );
+	
+	pSSBOElementTextures.TakeOver( new deoglSPBlockSSBO( renderThread ) );
+	pSSBOElementTextures->SetRowMajor( rowMajor );
+	pSSBOElementTextures->SetParameterCount( 6 );
+	pSSBOElementTextures->GetParameterAt( espetRenderFilter ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementTextures->GetParameterAt( espetSkinTexture ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementTextures->GetParameterAt( espetPipelineBase ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementTextures->GetParameterAt( espetSPBInstance ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pSSBOElementTextures->GetParameterAt( espetTUCs ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
+	pSSBOElementTextures->GetParameterAt( espetTUCsOutline ).SetAll( deoglSPBParameter::evtInt, 2, 1, 1 );
+	pSSBOElementTextures->MapToStd140();
+	pSSBOElementTextures->SetBindingPoint( 3 );
 }
 
 deoglWorldCompute::~deoglWorldCompute(){

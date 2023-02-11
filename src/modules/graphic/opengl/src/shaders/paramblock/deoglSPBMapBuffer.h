@@ -32,6 +32,7 @@ class deoglSPBMapBuffer{
 private:
 	deoglShaderParameterBlock &pBlock;
 	const int pElement;
+	const int pCount;
 	bool pMapped;
 	
 	
@@ -44,6 +45,9 @@ public:
 	
 	/** Map block. */
 	deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element );
+	
+	/** Map block. */
+	deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element, int count );
 	
 	/** Unmap block if mapped. */
 	~deoglSPBMapBuffer();

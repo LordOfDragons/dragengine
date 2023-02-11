@@ -120,10 +120,15 @@ void deoglSPBlockReadBackSSBO::MapBuffer(){
 }
 
 void deoglSPBlockReadBackSSBO::MapBuffer( int element ){
+	MapBuffer( element, 1 );
+}
+
+void deoglSPBlockReadBackSSBO::MapBuffer( int element, int count ){
 	DEASSERT_FALSE( IsBufferMapped()  )
 	DEASSERT_TRUE( GetBufferSize() > 0 )
 	DEASSERT_TRUE( element >= 0 )
-	DEASSERT_TRUE( element < GetElementCount() )
+	DEASSERT_TRUE( count > 0 )
+	DEASSERT_TRUE( element + count <= GetElementCount() )
 	
 	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
 	const int stride = GetElementStride();
@@ -131,11 +136,11 @@ void deoglSPBlockReadBackSSBO::MapBuffer( int element ){
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, pSSBO ) );
 	OGL_CHECK( renderThread, data = ( char* )pglMapBufferRange(
-		GL_PIXEL_PACK_BUFFER, stride * element, stride, GL_MAP_READ_BIT ) );
+		GL_PIXEL_PACK_BUFFER, stride * element, stride * count, GL_MAP_READ_BIT ) );
 	OGL_CHECK( renderThread, pglBindBuffer( GL_PIXEL_PACK_BUFFER, 0 ) );
 	DEASSERT_NOTNULL( data )
 	
-	pSetMapped( data, element );
+	pSetMapped( data, element, count );
 }
 
 void deoglSPBlockReadBackSSBO::UnmapBuffer(){

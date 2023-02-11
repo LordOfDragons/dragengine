@@ -85,16 +85,27 @@ public:
 		void SetEmptyLayerMask();
 	};
 	
+	/** Shader element texture parameters. */
+	enum eShaderParamsElementTexture{
+		espetRenderFilter,
+		espetSkinTexture,
+		espetPipelineBase,
+		espetSPBInstance,
+		espetTUCs,
+		espetTUCsOutline
+	};
+	
 	/** Data element texture. */
 	struct sDataElementTexture{
 		uint32_t renderFilter;
 		uint32_t skinTexture;
-		uint32_t tucSortOrder[ 2 ];
-		
 		uint32_t pipelineBase;
-		uint32_t sharedInstance;
 		uint32_t spbInstance;
-		uint32_t padding[ 1 ];
+		
+		uint32_t tucs[ 4 ];
+		
+		uint32_t tucsOutline[ 2 ];
+		uint32_t padding[ 2 ];
 	};
 	
 	/** Compute shader element types. */
@@ -162,6 +173,8 @@ private:
 	float pFullUpdateFactor;
 	int pUpdateElementCount;
 	
+	deoglSPBlockSSBO::Ref pSSBOElementTextures;
+	
 	
 	
 public:
@@ -210,6 +223,11 @@ public:
 	
 	/** Update element count. */
 	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
+	
+	
+	
+	/** SSBO element textures. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElementTextures() const{ return pSSBOElementTextures; }
 	/*@}*/
 	
 	

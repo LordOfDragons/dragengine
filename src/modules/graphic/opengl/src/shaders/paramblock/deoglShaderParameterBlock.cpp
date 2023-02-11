@@ -1204,29 +1204,24 @@ void deoglShaderParameterBlock::SetParameterDataArrayBool( int p, int e, bool *v
 ////////////////////////
 
 void deoglShaderParameterBlock::pSetMapped( char *data ){
-	if( pMapped || pBufferSize == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( ! data ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMapped = data;
-	pElementLower = 0;
-	pElementUpper = pElementCount - 1;
+	pSetMapped( data, 0, pElementCount );
 }
 
 void deoglShaderParameterBlock::pSetMapped( char *data, int element ){
+	pSetMapped( data, element, 1 );
+}
+
+void deoglShaderParameterBlock::pSetMapped( char *data, int element, int count ){
 	if( pMapped || pBufferSize == 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	if( ! data || element < 0 || element >= pElementCount ){
+	if( ! data || element < 0 || count < 1 || element + count > pElementCount ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	pMapped = data;
 	pElementLower = element;
-	pElementUpper = element;
+	pElementUpper = element + count - 1;
 }
 
 void deoglShaderParameterBlock::pClearMapped(){
