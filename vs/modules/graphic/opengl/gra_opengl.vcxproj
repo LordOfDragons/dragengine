@@ -416,10 +416,13 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPBElement.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPB.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElement.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElementMapBuffer.h" />
@@ -469,6 +472,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableValue.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableVideoFrame.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelineMap.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelines.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelinesList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesBillboard.h" />
@@ -626,6 +630,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCompute.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldComputeElement.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.h" />
@@ -1013,10 +1018,13 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPBElement.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPB.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElement.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElementMapBuffer.cpp" />
@@ -1066,6 +1074,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableValue.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableVideoFrame.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelineMap.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelines.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelinesList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesBillboard.cpp" />
@@ -1223,6 +1232,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCompute.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldComputeElement.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.cpp" />
