@@ -122,11 +122,11 @@ deoglRenderPlanCompute::~deoglRenderPlanCompute(){
 ///////////////
 
 void deoglRenderPlanCompute::PrepareWorldCompute(){
-	decTimer timer;
+	// decTimer timer;
 	
 	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
 	compute.Prepare();
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
 	
 	
@@ -147,7 +147,7 @@ void deoglRenderPlanCompute::PrepareWorldCompute(){
 }
 
 void deoglRenderPlanCompute::PrepareBuffers(){
-	decTimer timer;
+	// decTimer timer;
 	
 	pPrepareFindConfig();
 	
@@ -159,7 +159,7 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
 	
 	pClearCounters();
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareBuffers: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareBuffers: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 }
 
 void deoglRenderPlanCompute::ReadVisibleElements(){
