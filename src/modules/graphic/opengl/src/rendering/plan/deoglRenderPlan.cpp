@@ -767,16 +767,18 @@ void deoglRenderPlan::pPlanShadowCasting(){
 void deoglRenderPlan::pStartFindContent(){
 	INIT_SPECIAL_TIMING
 	
-	pCompute.PrepareWorldCompute();
-	pCompute.PrepareBuffers();
-	
-	deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
-	
-	if( pWorld->GetCompute().GetUpdateElementCount() > 0 ){
-		renderCompute.UpdateElements( *this );
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute.PrepareWorldCompute();
+		pCompute.PrepareBuffers();
+		
+		deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
+		
+		if( pWorld->GetCompute().GetUpdateElementCount() > 0 ){
+			renderCompute.UpdateElements( *this );
+		}
+		
+		renderCompute.FindContent( *this );
 	}
-	
-	renderCompute.FindContent( *this );
 	
 	// sky lights
 	int i;
@@ -792,28 +794,31 @@ void deoglRenderPlan::pStartFindContent(){
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
 	
-	// pTaskFindContent = new deoglRPTFindContent( *this );
-	// pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pTaskFindContent = new deoglRPTFindContent( *this );
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	}
 }
 
 void deoglRenderPlan::pWaitFinishedFindContent(){
-	/*
-	if( ! pTaskFindContent ){
-		return;
+	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pCompute.ReadVisibleElements();
+		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
+		
+	}else{
+		if( ! pTaskFindContent ){
+			return;
+		}
+		
+	// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
+		pTaskFindContent->GetSemaphore().Wait();
+		
+		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
+			*this, pTaskFindContent->GetElapsedTime() );
+		
+		pTaskFindContent->FreeReference();
+		pTaskFindContent = NULL;
 	}
-	
-// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
-	pTaskFindContent->GetSemaphore().Wait();
-	
-	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
-		*this, pTaskFindContent->GetElapsedTime() );
-	
-	pTaskFindContent->FreeReference();
-	pTaskFindContent = NULL;
-	*/
-	
-	pCompute.ReadVisibleElements();
-	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
 }
 
 void deoglRenderPlan::pPlanGI(){
@@ -1454,7 +1459,9 @@ void deoglRenderPlan::CleanUp(){
 	}
 	
 	pTasks.CleanUp();
-	// pWaitFinishedFindContent();
+	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+		pWaitFinishedFindContent();
+	}
 	
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();

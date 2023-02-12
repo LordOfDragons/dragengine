@@ -57,6 +57,7 @@ private:
 	GLenum pDepthCompareFuncReversed;
 	GLfloat pClearDepthValueRegular;
 	GLfloat pClearDepthValueReversed;
+	bool pUseComputeRenderTask;
 	
 	
 	
@@ -129,6 +130,9 @@ public:
 	
 	/** Reversed clear depth value. */
 	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
+	
+	/** Use compute shader render task. */
+	inline bool GetUseComputeRenderTask() const{ return pUseComputeRenderTask; }
 	/*@}*/
 };
 

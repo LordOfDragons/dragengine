@@ -51,6 +51,7 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../sky/deoglRSkyInstance.h"
@@ -230,23 +231,28 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	// deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	SetOcclusionTest( pPlan.GetRenderThread().GetOcclusionTestPool().Get() );
 	
 	pOcclusionTest->RemoveAllInputData();
 	
-	// pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
-	// pp.AddTaskAsync( pTaskFindContent );
-	
-	// if( pPlan.GetUpdateGIState() ){
-		// pTaskGIFindContent = new deoglRPTSkyLightGIFindContent( *this );
-		// pp.AddTaskAsync( pTaskGIFindContent );
-	// }
-	
-	PrepareBuffers();
-	pPlan.GetRenderThread().GetRenderers().GetCompute().FindContentSkyLight( *this );
-	if( pPlan.GetUpdateGIState() ){
-		pPlan.GetRenderThread().GetRenderers().GetCompute().FindContentSkyLightGI( *this );
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
+		PrepareBuffers();
+		renderCompute.FindContentSkyLight( *this );
+		if( pPlan.GetUpdateGIState() ){
+			renderCompute.FindContentSkyLightGI( *this );
+		}
+		
+	}else{
+		deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
+		
+		pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
+		pp.AddTaskAsync( pTaskFindContent );
+		
+		if( pPlan.GetUpdateGIState() ){
+			pTaskGIFindContent = new deoglRPTSkyLightGIFindContent( *this );
+			pp.AddTaskAsync( pTaskGIFindContent );
+		}
 	}
 }
 
@@ -1027,42 +1033,44 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
-	/*
-	if( ! pTaskFindContent ){
-		return;
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		ReadVisibleElements();
+		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent( pPlan );
+		
+	}else{
+		if( ! pTaskFindContent ){
+			return;
+		}
+		
+	// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
+		pTaskFindContent->GetSemaphore().Wait();
+		
+		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
+			pPlan, pTaskFindContent->GetElapsedTime() );
+		
+		pTaskFindContent->FreeReference();
+		pTaskFindContent = NULL;
 	}
-	
-// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
-	pTaskFindContent->GetSemaphore().Wait();
-	
-	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
-		pPlan, pTaskFindContent->GetElapsedTime() );
-	
-	pTaskFindContent->FreeReference();
-	pTaskFindContent = NULL;
-	*/
-	
-	ReadVisibleElements();
-	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent( pPlan );
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
-	/*
-	if( ! pTaskGIFindContent ){
-		return;
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		ReadVisibleElementsGI();
+		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan );
+		
+	}else{
+		if( ! pTaskGIFindContent ){
+			return;
+		}
+		
+		pTaskGIFindContent->GetSemaphore().Wait();
+		
+		deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+		rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
+		
+		pTaskGIFindContent->FreeReference();
+		pTaskGIFindContent = NULL;
 	}
-	
-	pTaskGIFindContent->GetSemaphore().Wait();
-	
-	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
-	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
-	
-	pTaskGIFindContent->FreeReference();
-	pTaskGIFindContent = NULL;
-	*/
-	
-	ReadVisibleElementsGI();
-	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan );
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){

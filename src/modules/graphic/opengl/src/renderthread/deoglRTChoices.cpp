@@ -143,6 +143,9 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		pClearDepthValueReversed = ( GLfloat )0.0f;
 	}
 	
+	// temporary until working properly
+	pUseComputeRenderTask = false;
+	
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();
 	
