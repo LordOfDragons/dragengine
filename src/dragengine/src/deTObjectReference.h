@@ -161,12 +161,12 @@ public:
 	}
 	
 	/** \brief Object is nullptr. */
-	bool operator!() const{
+	inline bool operator!() const{
 		return pObject == nullptr;
 	}
 	
 	/** \brief Test if object is not nullptr. */
-	operator bool() const{
+	inline operator bool() const{
 		return pObject != nullptr;
 	}
 	
@@ -179,10 +179,8 @@ public:
 	 * \brief C to object.
 	 * \throws deeNullPointer if object is nullptr.
 	 */
-	operator T&() const{
-		if( ! pObject ){
-			DETHROW( deeNullPointer );
-		}
+	inline operator T&() const{
+		DEASSERT_NOTNULL( pObject )
 		return *pObject;
 	}
 	
@@ -190,10 +188,8 @@ public:
 	 * \brief Pointer to object.
 	 * \throws deeNullPointer if object is nullptr.
 	 */
-	T* operator->() const{
-		if( ! pObject ){
-			DETHROW( deeNullPointer );
-		}
+	inline T* operator->() const{
+		DEASSERT_NOTNULL( pObject )
 		return pObject;
 	}
 	
@@ -227,7 +223,7 @@ public:
 	 * If an object is already held its reference is release and the new object
 	 * stored. If the new object is not nullptr a reference is added.
 	 */
-	deTObjectReference &operator=( const deTObjectReference &reference ){
+	inline deTObjectReference &operator=( const deTObjectReference &reference ){
 		return operator=( reference.pObject );
 	}
 	

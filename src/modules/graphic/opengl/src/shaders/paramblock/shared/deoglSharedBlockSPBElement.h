@@ -34,7 +34,28 @@ class deoglShaderParameterBlock;
  */
 class deoglSharedBlockSPBElement : public deObject{
 public:
-	typedef deTObjectReference<deoglSharedBlockSPBElement> Ref;
+	/**
+	 * Stores deoglSharedBlockSPBElement returning it to deoglSharedBlockSPB if out of scope.
+	 * This is a convenience class to avoid having to remember to call Return().
+	 */
+	class Ref{
+	private:
+		deoglSharedBlockSPBElement *pElement;
+		
+		Ref( const Ref &ref ); // disallow compiler auto-use
+		
+	public:
+		Ref();
+		~Ref();
+		
+		operator deoglSharedBlockSPBElement*() const;
+		operator deoglSharedBlockSPBElement&() const;
+		deoglSharedBlockSPBElement* operator->() const;
+		
+		Ref &operator=( deoglSharedBlockSPBElement *element );
+		bool operator!() const;
+		operator bool() const;
+	};
 	
 	
 	

@@ -56,6 +56,7 @@ private:
 	const deoglShaderParameterBlock::Ref pParameterBlock;
 	decObjectList pElements;
 	decPointerList pEmptyElements;
+	int pSize;
 	int pUsedElementCount;
 	int pFreeElementCount;
 	
@@ -69,7 +70,7 @@ public:
 	 * 
 	 * \warning Do not modify the parameter block after creating the shared object.
 	 */
-	deoglSharedBlockSPB( const deoglShaderParameterBlock::Ref &parameterBlock );
+	deoglSharedBlockSPB( deoglShaderParameterBlock *parameterBlock );
 	
 protected:
 	/** Clean up shared shader parameter block. */
@@ -87,7 +88,6 @@ public:
 	/**
 	 * Obtain element. Call deoglSharedBlockSPBElement::Return to return element.
 	 */
-	deoglSharedBlockSPBElement *GetElement();
 	deoglSharedBlockSPBElement *GetElement( int count );
 	
 	/**
@@ -101,6 +101,7 @@ public:
 private:
 	void pCleanUp();
 	int pIndexOfEmptyElementWithMinCount( int count );
+	void pCheckSize();
 };
 
 #endif

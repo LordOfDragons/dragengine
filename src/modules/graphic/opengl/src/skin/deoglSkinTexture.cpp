@@ -2508,4 +2508,7 @@ void deoglSkinTexture::pUpdateRenderTaskFilters(){
 	if( pReflected ){
 		pRenderTaskFilters |= ertfReflected;
 	}
+	if( pRendered ){
+		pRenderTaskFilters |= ertfRendered;
+	}
 }

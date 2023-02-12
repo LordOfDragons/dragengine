@@ -22,7 +22,9 @@
 #ifndef _DEOGLWORLDOCOMPUTE_H_
 #define _DEOGLWORLDOCOMPUTE_H_
 
+#include "deoglWorldComputeElement.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../shaders/paramblock/shared/deoglSharedBlockSPB.h"
 
 #include <stdint.h>
 #include <dragengine/deObject.h>
@@ -30,7 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRWorld;
-class decLayerMask;
+class deoglWorldComputeElement;
+
 
 
 /**
@@ -58,106 +61,23 @@ public:
 		espeMaxExtend,
 		espeUpdateIndex,
 		espeLayerMask,
-		espeTextureFirst,
-		espeTextureCount,
+		espeFirstGeometry,
+		espeGeometryCount,
 		espeLodFirst,
 		espeLodCount
 	};
 	
-	/** Data element. */
-	struct sDataElement{
-		float minExtendX, minExtendY, minExtendZ;
-		uint32_t flags;
-		
-		float maxExtendX, maxExtendY, maxExtendZ;
-		uint32_t updateIndex; // for use by updating only
-		
-		uint32_t layerMask[ 2 ]; // 0=upper 32 bits, 1=lower 32 bits
-		uint32_t textureFirst;
-		uint32_t textureCount;
-		
-		uint32_t lodFirst;
-		uint32_t lodCount;
-		uint32_t padding[ 2 ];
-		
-		void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
-		void SetLayerMask( const decLayerMask &layerMask );
-		void SetEmptyLayerMask();
-	};
-	
-	/** Shader element texture parameters. */
-	enum eShaderParamsElementTexture{
+	/** Shader element geometry parameters. */
+	enum eShaderParamsElementGeometry{
+		espetElement,
+		espetLod,
 		espetRenderFilter,
 		espetSkinTexture,
 		espetPipelineBase,
+		espetVao,
+		espetInstance,
 		espetSPBInstance,
-		espetTUCs,
-		espetTUCsOutline
-	};
-	
-	/** Data element texture. */
-	struct sDataElementTexture{
-		uint32_t renderFilter;
-		uint32_t skinTexture;
-		uint32_t pipelineBase;
-		uint32_t spbInstance;
-		
-		uint32_t tucs[ 4 ];
-		
-		uint32_t tucsOutline[ 2 ];
-		uint32_t padding[ 2 ];
-	};
-	
-	/** Compute shader element types. */
-	enum eElementTypes{
-		eetComponent,
-		eetBillboard,
-		eetParticleEmitter,
-		eetLight,
-		eetPropFieldCluster,
-		eetHeightTerrainSectorCluster
-	};
-	
-	/** Element. */
-	class Element : public deObject{
-	public:
-		typedef deTObjectReference<Element> Ref;
-		
-	private:
-		const eElementTypes pType;
-		const void * const pOwner;
-		int pIndex;
-		bool pUpdateRequired;
-		
-	public:
-		/** Create element. */
-		Element( eElementTypes type, const void *owner );
-		
-	protected:
-		/** Clean up element. */
-		virtual ~Element();
-		
-	public:
-		/** Element type. */
-		inline eElementTypes GetType() const{ return pType; }
-		
-		/** Owner. */
-		inline const void *GetOwner() const{ return pOwner; }
-		
-		/** Index. */
-		inline int GetIndex() const{ return pIndex; }
-		
-		/** Set index. For use by deoglWorldCompute only. */
-		void SetIndex( int index );
-		
-		/** Update required. For use by deoglWorldCompute only. */
-		inline bool GetUpdateRequired() const{ return pUpdateRequired; }
-		
-		/** Set if update is required. For use by deoglWorldCompute only. */
-		void SetUpdateRequired( bool updateRequired );
-		
-		/** Update data element. */
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) = 0;
+		espetTUCs
 	};
 	
 	
@@ -173,7 +93,13 @@ private:
 	float pFullUpdateFactor;
 	int pUpdateElementCount;
 	
-	deoglSPBlockSSBO::Ref pSSBOElementTextures;
+	decObjectList pUpdateElementGeometries;
+	int pFullUpdateGeometryLimit;
+	float pFullUpdateGeometryFactor;
+	int pUpdateElementGeometryCount;
+	
+	deoglSPBlockSSBO::Ref pSSBOElementGeometries;
+	deoglSharedBlockSPB::Ref pSharedSPBGeometries;
 	
 	
 	
@@ -191,7 +117,7 @@ protected:
 	
 	
 public:
-	/** \name Visiting */
+	/** \name Management */
 	/*@{*/
 	/** World. */
 	inline deoglRWorld &GetWorld() const{ return pWorld; }
@@ -200,6 +126,7 @@ public:
 	
 	/** Prepare. */
 	void Prepare();
+	void PrepareGeometries();
 	
 	
 	
@@ -210,24 +137,33 @@ public:
 	int GetElementCount() const;
 	
 	/** Element at index. */
-	Element &GetElementAt( int index ) const;
+	deoglWorldComputeElement &GetElementAt( int index ) const;
 	
 	/** Add element. */
-	void AddElement( Element *element );
+	void AddElement( deoglWorldComputeElement *element );
 	
 	/** Update element. */
-	void UpdateElement( Element *element );
+	void UpdateElement( deoglWorldComputeElement *element );
 	
 	/** Remove element. */
-	void RemoveElement( Element *element );
+	void RemoveElement( deoglWorldComputeElement *element );
 	
 	/** Update element count. */
 	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
 	
+	/** Update element geometries. */
+	void UpdateElementGeometries( deoglWorldComputeElement *element );
+	
+	/** Update element geometry count. */
+	inline int GetUpdateElementGeometryCount() const{ return pUpdateElementGeometryCount; }
 	
 	
-	/** SSBO element textures. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOElementTextures() const{ return pSSBOElementTextures; }
+	
+	/** SSBO element geometries. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElementGeometries() const{ return pSSBOElementGeometries; }
+	
+	/** Shared SPB element geometries. */
+	inline const deoglSharedBlockSPB::Ref &GetSharedSPBGeometries() const{ return pSharedSPBGeometries; }
 	/*@}*/
 	
 	
@@ -235,7 +171,14 @@ public:
 private:
 	void pUpdateSSBOElements();
 	void pFullUpdateSSBOElements();
-	void pUpdateFullUpdateLimit();
+	void pUpdateSSBOElement( deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data );
+	void pCheckElementGeometryCount( deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data );
+	
+	void pUpdateSSBOElementGeometries();
+	void pFullUpdateSSBOElementGeometries();
+	
+	void pUpdateFullUpdateLimits();
+	void pUpdateFullUpdateGeometryLimits();
 };
 
 #endif

@@ -23,7 +23,7 @@
 #define _DEOGLHTSCLUSTER_H_
 
 #include "../../deoglBasics.h"
-#include "../../world/deoglWorldCompute.h"
+#include "../../world/deoglWorldComputeElement.h"
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
@@ -60,11 +60,12 @@ struct deoglHTSClusterLOD{
 class deoglHTSCluster{
 private:
 	/** World compute element. */
-	class WorldComputeElement: public deoglWorldCompute::Element{
+	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglHTSCluster &pCluster;
 	public:
 		WorldComputeElement( deoglHTSCluster &cluster );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	
 	
@@ -73,7 +74,7 @@ private:
 	decPoint pCoordinates;
 	int pIndex;
 	
-	deoglWorldCompute::Element::Ref pWorldComputeElement;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	int pFirstPointX;
 	int pFirstPointZ;
@@ -246,6 +247,9 @@ public:
 	
 	/** Update world compute. */
 	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute textures. */
+	void UpdateWorldComputeTexturres( deoglWorldCompute &worldCompute );
 	
 	/** Remove from world compute. */
 	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );

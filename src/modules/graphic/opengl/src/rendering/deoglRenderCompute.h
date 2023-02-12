@@ -33,12 +33,15 @@ class deoglRenderPlanSkyLight;
 class deoglRenderCompute : public deoglRenderBase{
 private:
 	const deoglPipeline *pPipelineUpdateElements;
+	const deoglPipeline *pPipelineUpdateElementGeometries;
 	const deoglPipeline *pPipelineFindContentNode;
 	const deoglPipeline *pPipelineFindContentElement;
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
 	
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
+	deoglSPBlockSSBO::Ref pSSBOUpdateElementGeometries;
+	deoglSPBlockSSBO::Ref pSSBOUpdateIndices;
 	
 	
 	
@@ -59,8 +62,17 @@ public:
 	/** SSBO update elements. */
 	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElements() const{ return pSSBOUpdateElements; }
 	
+	/** SSBO update element geometries. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateElementGeometries() const{ return pSSBOUpdateElementGeometries; }
+	
+	/** SSBO update element geometry index. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOUpdateIndices() const{ return pSSBOUpdateIndices; }
+	
 	/** Update elements. */
 	void UpdateElements( const deoglRenderPlan &plan );
+	
+	/** Update element geometries. */
+	void UpdateElementGeometries( const deoglRenderPlan &plan );
 	
 	/** Find content. */
 	void FindContent( const deoglRenderPlan &plan );

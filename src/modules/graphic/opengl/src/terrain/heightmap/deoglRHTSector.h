@@ -188,6 +188,9 @@ public:
 	
 	/** List of clusters. */
 	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
+	
+	/** Clusters update world compute element textures. */
+	void ClustersUpdateWorldComputeElementTextures();
 	/*@}*/
 	
 	

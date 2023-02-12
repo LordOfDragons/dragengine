@@ -39,6 +39,7 @@ public:
 		efcpNodeCount,
 		efcpElementCount,
 		efcpUpdateElementCount,
+		efcpUpdateElementGeometryCount,
 		efcpFrustumPlanes,
 		efcpFrustumPlanesAbs,
 		efcpFrustumSelect,
@@ -109,6 +110,8 @@ public:
 	
 	void ReadVisibleElements();
 	
+	void UpdateElementGeometries();
+	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	
 	inline const deoglSPBlockSSBO::Ref &GetSSBOSearchNodes() const{ return pSSBOSearchNodes; }
@@ -122,6 +125,7 @@ public:
 	
 protected:
 	void pPrepareFindConfig();
+	void pUpdateFindConfigGeometries();
 	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
 	void pClearCounters();
 	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );

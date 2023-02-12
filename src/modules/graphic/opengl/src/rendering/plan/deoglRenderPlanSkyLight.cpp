@@ -404,29 +404,29 @@ void deoglRenderPlanSkyLight::ReadVisibleElements(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
-		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] & 0xffffff );
+		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] & 0xffffff );
 		const int cascadeMask = ( indices[ i ] >> 24 ) & 0xf;
 		
 		switch( element.GetType() ){
-		case deoglWorldCompute::eetComponent:{
+		case deoglWorldComputeElement::eetComponent:{
 			deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
 			clcomponent.SetCascadeMask( cascadeMask );
 			clcomponent.SetSpecialFlags( cascadeMask );
 			clcomponent.StartOcclusionTest( occlusionTest, referencePosition );
 			}break;
 			
-		case deoglWorldCompute::eetBillboard:{
+		case deoglWorldComputeElement::eetBillboard:{
 			deoglRBillboard * const billboard = ( deoglRBillboard* )element.GetOwner();
 			billboard->SetSkyShadowSplitMask( cascadeMask ); // TODO move this into deoglCollideListBillboard
 			pCollideList.AddBillboard( billboard );
 			}break;
 			
-		case deoglWorldCompute::eetPropFieldCluster:
+		case deoglWorldComputeElement::eetPropFieldCluster:
 			pCollideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() )
 				->SetCascadeMask( cascadeMask );
 			break;
 			
-		case deoglWorldCompute::eetHeightTerrainSectorCluster:
+		case deoglWorldComputeElement::eetHeightTerrainSectorCluster:
 			if( htview ){
 				const deoglHTSCluster &cluster = *( deoglHTSCluster* )element.GetOwner();
 				pCollideList.AddHTSCluster( &htview->GetSectorAt( cluster.GetHTSector()->GetIndex() )
@@ -462,14 +462,14 @@ void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
-		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
+		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] );
 		
 		switch( element.GetType() ){
-		case deoglWorldCompute::eetComponent:
+		case deoglWorldComputeElement::eetComponent:
 			pGICollideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
 			break;
 			
-		case deoglWorldCompute::eetBillboard:
+		case deoglWorldComputeElement::eetBillboard:
 			pGICollideList.AddBillboard( ( deoglRBillboard* )element.GetOwner() );
 			break;
 			

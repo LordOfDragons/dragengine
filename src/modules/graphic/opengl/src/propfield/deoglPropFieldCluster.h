@@ -26,7 +26,7 @@
 
 #include "../deoglBasics.h"
 #include "../skin/deoglSkinTexture.h"
-#include "../world/deoglWorldCompute.h"
+#include "../world/deoglWorldComputeElement.h"
 
 class deoglRPropFieldType;
 class deoglTexUnitsConfig;
@@ -54,11 +54,12 @@ public:
 	
 private:
 	/** World compute element. */
-	class WorldComputeElement: public deoglWorldCompute::Element{
+	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglPropFieldCluster &pCluster;
 	public:
 		WorldComputeElement( deoglPropFieldCluster &cluster );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	
 	
@@ -66,7 +67,7 @@ private:
 	deoglRPropFieldType &pPropFieldType;
 	deoglRenderThread &pRenderThread; // to avoid segfault during destructor
 	
-	deoglWorldCompute::Element::Ref pWorldComputeElement;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -213,6 +214,9 @@ public:
 	
 	/** Update world compute. */
 	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute textures. */
+	void UpdateWorldComputeTextures( deoglWorldCompute &worldCompute );
 	
 	/** Remove from world compute. */
 	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );

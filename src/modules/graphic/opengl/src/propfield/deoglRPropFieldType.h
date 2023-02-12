@@ -201,6 +201,9 @@ public:
 	/** Update world compute. */
 	void UpdateWorldCompute( deoglWorldCompute &worldCompute );
 	
+	/** Update world compute textures. */
+	void UpdateWorldComputeTextures( deoglWorldCompute &worldCompute );
+	
 	/** Remove from world compute. */
 	void RemoveFromWorldCompute( deoglWorldCompute &worldCompute );
 	/*@}*/

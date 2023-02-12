@@ -363,6 +363,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// these calls run in parallel with above started tasks
 	pWorld->PrepareForRender( *this, mask );
 	pRenderThread.GetShader().UpdateSSBOSkinTextures();
+	pCompute.UpdateElementGeometries();
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
@@ -769,11 +770,13 @@ void deoglRenderPlan::pStartFindContent(){
 	pCompute.PrepareWorldCompute();
 	pCompute.PrepareBuffers();
 	
+	deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
+	
 	if( pWorld->GetCompute().GetUpdateElementCount() > 0 ){
-		pRenderThread.GetRenderers().GetCompute().UpdateElements( *this );
+		renderCompute.UpdateElements( *this );
 	}
 	
-	pRenderThread.GetRenderers().GetCompute().FindContent( *this );
+	renderCompute.FindContent( *this );
 	
 	// sky lights
 	int i;

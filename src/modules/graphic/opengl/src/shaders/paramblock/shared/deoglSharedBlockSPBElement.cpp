@@ -31,6 +31,60 @@
 
 
 
+// Class deoglSharedBlockSPBElement::Ref
+//////////////////////////////////////////
+
+deoglSharedBlockSPBElement::Ref::Ref() :
+pElement( nullptr ){
+}
+
+deoglSharedBlockSPBElement::Ref::Ref( const Ref & ){
+	DETHROW( deeInvalidAction );
+}
+
+deoglSharedBlockSPBElement::Ref::~Ref(){
+	if( pElement ){
+		pElement->Return();
+	}
+}
+
+deoglSharedBlockSPBElement::Ref::operator deoglSharedBlockSPBElement *() const{
+	return pElement;
+}
+
+deoglSharedBlockSPBElement::Ref::operator deoglSharedBlockSPBElement &() const{
+	DEASSERT_NOTNULL( pElement );
+	return *pElement;
+}
+
+deoglSharedBlockSPBElement *deoglSharedBlockSPBElement::Ref::operator->() const{
+	DEASSERT_NOTNULL( pElement );
+	return pElement;
+}
+
+deoglSharedBlockSPBElement::Ref &deoglSharedBlockSPBElement::Ref::operator=( deoglSharedBlockSPBElement *element ){
+	if( element == pElement ){
+		return *this;
+	}
+	
+	if( pElement ){
+		pElement->Return();
+	}
+	
+	pElement = element;
+	return *this;
+}
+
+bool deoglSharedBlockSPBElement::Ref::operator!() const{
+	return pElement == nullptr;
+}
+
+deoglSharedBlockSPBElement::Ref::operator bool() const{
+	return pElement != nullptr;
+}
+
+
+
 // Class deoglSharedBlockSPBElement
 /////////////////////////////////////
 

@@ -55,22 +55,30 @@
 
 
 
-// Class deoglRParticleEmitterInstance
-////////////////////////////////////////
+// Class deoglRParticleEmitterInstance::WorldComputeElement
+/////////////////////////////////////////////////////////////
 
 deoglRParticleEmitterInstance::WorldComputeElement::WorldComputeElement( deoglRParticleEmitterInstance &emitter ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetParticleEmitter, &emitter ),
+deoglWorldComputeElement( eetParticleEmitter, &emitter ),
 pEmitter( emitter ){
 }
 
 void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
 	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
 	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
 	data.SetLayerMask( pEmitter.GetLayerMask() );
 	data.flags = ( uint32_t )deoglWorldCompute::eefParticleEmitter;
-	data.textureCount = 1;
+	data.geometryCount = 0; //1;
 }
+
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+}
+
+
+
+// Class deoglRParticleEmitterInstance
+////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -80,7 +88,7 @@ pRenderThread( renderThread ),
 pEmitter( NULL ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pBurstTime( 0.0f ),
 

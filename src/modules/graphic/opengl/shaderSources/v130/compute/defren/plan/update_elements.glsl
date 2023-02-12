@@ -30,8 +30,8 @@ void main( void ){
 	pElement[ t ].flags = pUpdateElement[ s ].flags;
 	pElement[ t ].maxExtend = pUpdateElement[ s ].maxExtend;
 	pElement[ t ].layerMask = pUpdateElement[ s ].layerMask;
-	pElement[ t ].textureFirst = pUpdateElement[ s ].textureFirst;
-	pElement[ t ].textureCount = pUpdateElement[ s ].textureCount;
+	pElement[ t ].firstGeometry = pUpdateElement[ s ].firstGeometry;
+	pElement[ t ].geometryCount = pUpdateElement[ s ].geometryCount;
 	pElement[ t ].lodFirst = pUpdateElement[ s ].lodFirst;
 	pElement[ t ].lodCount = pUpdateElement[ s ].lodCount;
 }

@@ -53,13 +53,13 @@ extended a bit like this:
 - pipeline modifiers: 5 bits
 */
 
-#ifndef SKIN_TEXTURE_BINDING_POINT
-#define SKIN_TEXTURE_BINDING_POINT 2
-#endif
 
-UBOLAYOUT_BIND(SKIN_TEXTURE_BINDING_POINT) readonly buffer SkinTexturePipelines {
+// define this somewhere. variable name pSkinTexturePipelines has to stay intact
+/*
+UBOLAYOUT_BIND(2) readonly buffer SkinTexturePipelines {
 	uvec4 pSkinTexturePipelines[];
 };
+*/
 
 
 // constants
@@ -70,21 +70,3 @@ const uint vSkinTextureModifierCount = uint( 8 );
 const uint vSkinTexturePipelinesPerType = vSkinTextureModifierCount;
 const uint vSkinTexturePipelinesPerList = vSkinTexturePipelinesPerType * vSkinTextureTypeCount;
 const uint vSkinTexturePipelinesPerTexture = vSkinTexturePipelinesPerList * vSkinTextureListCount;
-
-
-// get skin texture pipeline
-uint skinTexturePipeline( in uint skinTexture, in uint list, in uint type, int uint modifier ){
-	// absolute index
-	uint i = vSkinTexturePipelinesPerTexture * skinTexture + vSkinTexturePipelinesPerList * list
-		+ vSkinTexturePipelinesPerType * type + modifier;
-	
-	// each uvec4 stores 8 pipelines as packed 16-bit uint
-	uint arrInd1 = i / uint( 8 );
-	
-	i = i % uint( 8 );
-	uint arrInd2 = i / uint( 2 );
-	
-	uint c = pSkinTexturePipelines[ arrInd1 ][ arrInd2 ];
-	
-	return ( i % uint( 2 ) ) == uint( 0 ) ? ( c & uint( 0xffff ) ) : ( c >> uint( 16 ) );
-}

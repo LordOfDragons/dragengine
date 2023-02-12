@@ -31,6 +31,7 @@
 #include "../../gi/deoglGICascade.h"
 #include "../../gi/deoglGIState.h"
 #include "../../propfield/deoglRPropField.h"
+#include "../../rendering/deoglRenderCompute.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTRenderers.h"
@@ -59,10 +60,11 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 23 );
+	pUBOFindConfig->SetParameterCount( 24 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpUpdateElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
+	pUBOFindConfig->GetParameterAt( efcpUpdateElementGeometryCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4[6]
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanesAbs ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 6 ); // vec3[6]
 	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 3, 1, 6 ); // bvec3[6]
@@ -124,7 +126,7 @@ void deoglRenderPlanCompute::PrepareWorldCompute(){
 	
 	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
 	compute.Prepare();
-	// pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: WorldCompute.Prepare: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareWorldCompute: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
 	
 	
@@ -145,6 +147,8 @@ void deoglRenderPlanCompute::PrepareWorldCompute(){
 }
 
 void deoglRenderPlanCompute::PrepareBuffers(){
+	decTimer timer;
+	
 	pPrepareFindConfig();
 	
 	// pSSBOSearchNodes->SetElementCount( pWorldCSOctree->GetNodeCount() );
@@ -155,6 +159,7 @@ void deoglRenderPlanCompute::PrepareBuffers(){
 	pPrepareBuffer( pSSBOVisibleElements, visElCount );
 	
 	pClearCounters();
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanCompute.PrepareBuffers: %dys", ( int )( timer.GetElapsedTime() * 1e6f ) );
 }
 
 void deoglRenderPlanCompute::ReadVisibleElements(){
@@ -184,11 +189,11 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
 	
 	for( i=0; i<indexCount; i++ ){
-		const deoglWorldCompute::Element &element = wcompute.GetElementAt( indices[ i ] );
+		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] );
 		// continue;
 		
 		switch( element.GetType() ){
-		case deoglWorldCompute::eetComponent:{
+		case deoglWorldComputeElement::eetComponent:{
 			deoglRComponent * const component = ( deoglRComponent* )element.GetOwner();
 			collideList.AddComponent( component )->StartOcclusionTest( occlusionTest, cameraPosition );
 			if( component->GetOcclusionMesh() ){
@@ -196,26 +201,26 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 			}
 			}break;
 			
-		case deoglWorldCompute::eetBillboard:
+		case deoglWorldComputeElement::eetBillboard:
 			collideList.AddBillboard( ( deoglRBillboard* )element.GetOwner() );
 			break;
 			
-		case deoglWorldCompute::eetParticleEmitter:
+		case deoglWorldComputeElement::eetParticleEmitter:
 			clistParticleEmitterInstanceList.Add( ( deoglRParticleEmitterInstance* )element.GetOwner() );
 			break;
 			
-		case deoglWorldCompute::eetLight:{
+		case deoglWorldComputeElement::eetLight:{
 			deoglCollideListLight &cllight = *collideList.AddLight( ( deoglRLight* )element.GetOwner() );
 			cllight.StartOcclusionTest( occlusionTest, cameraPosition );  // if not culled by frustum
 			//cllight.SetCulled( true );  // if culled by frustum but not by GI cascade box
 			cllight.TestInside( pPlan );
 			}break;
 			
-		case deoglWorldCompute::eetPropFieldCluster:
+		case deoglWorldComputeElement::eetPropFieldCluster:
 			collideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() );
 			break;
 			
-		case deoglWorldCompute::eetHeightTerrainSectorCluster:
+		case deoglWorldComputeElement::eetHeightTerrainSectorCluster:
 			if( htview ){
 				const deoglHTSCluster &cluster = *( deoglHTSCluster* )element.GetOwner();
 				collideList.AddHTSCluster( &htview->GetSectorAt(
@@ -225,6 +230,23 @@ void deoglRenderPlanCompute::ReadVisibleElements(){
 		}
 	}
 		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
+}
+
+void deoglRenderPlanCompute::UpdateElementGeometries(){
+	// decTimer timer;
+	
+	deoglWorldCompute &compute = pPlan.GetWorld()->GetCompute();
+	
+	compute.PrepareGeometries();
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Update %dys (%d)", (int)(timer.GetElapsedTime()*1e6f), compute.GetUpdateElementGeometryCount());
+	if( compute.GetUpdateElementGeometryCount() == 0 ){
+		return;
+	}
+	
+	pUpdateFindConfigGeometries();
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: UBO %dys (%d)", (int)(timer.GetElapsedTime()*1e6f), compute.GetUpdateElementGeometryCount());
+	pPlan.GetRenderThread().GetRenderers().GetCompute().UpdateElementGeometries( pPlan );
+	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Compute %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
 
@@ -243,6 +265,7 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	ubo.SetParameterDataUInt( efcpNodeCount, 0 );
 	ubo.SetParameterDataUInt( efcpElementCount, wcompute.GetElementCount() );
 	ubo.SetParameterDataUInt( efcpUpdateElementCount, wcompute.GetUpdateElementCount() );
+	ubo.SetParameterDataUInt( efcpUpdateElementGeometryCount, 0 );
 	
 	// frustum culling
 	const deoglDCollisionFrustum &frustum = *pPlan.GetUseFrustum();
@@ -283,6 +306,12 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 		cullFlags |= deoglWorldCSOctree::ecsefComponentDynamic;
 	}
 	ubo.SetParameterDataUInt( efcpCullFlags, cullFlags );
+}
+
+void deoglRenderPlanCompute::pUpdateFindConfigGeometries(){
+	const deoglSPBMapBuffer mapped( pUBOFindConfig );
+	pUBOFindConfig->SetParameterDataUInt( efcpUpdateElementGeometryCount,
+		pPlan.GetWorld()->GetCompute().GetUpdateElementGeometryCount() );
 }
 
 void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){

@@ -34,6 +34,7 @@
 #include "../renderthread/deoglRTDefaultTextures.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
+#include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/plan/deoglRenderPlanMasked.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
@@ -69,22 +70,49 @@
 
 
 
-// Class deoglRBillboard
-//////////////////////////
+// Class deoglRBillboard::WorldComputeElement
+///////////////////////////////////////////////
 
 deoglRBillboard::WorldComputeElement::WorldComputeElement( deoglRBillboard &billboard ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetBillboard, &billboard ),
+deoglWorldComputeElement( eetBillboard, &billboard ),
 pBillboard( billboard ){
 }
 
 void deoglRBillboard::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
 	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
 	data.SetExtends( pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pBillboard.GetLayerMask() );
 	data.flags = ( uint32_t )deoglWorldCompute::eefBillboard;
-	data.textureCount = 1;
+	data.geometryCount = 1;
 }
+
+void deoglRBillboard::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+	const deoglSkinTexture * const skinTexture = pBillboard.GetUseSkinTexture();
+	if( ! skinTexture ){
+		return;
+	}
+	
+	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+	filters |= ertfDecal;
+	
+	SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptBillboard,
+		deoglSkinTexturePipelines::emDoubleSided, skinTexture,
+		pBillboard.GetRenderThread().GetDeferredRendering().GetVAOBillboard(),
+		pBillboard.GetSharedSPBRTIGroup().GetRTSInstance(), pBillboard.GetSharedSPBElement()->GetIndex() );
+	
+	sInfoTUC info;
+	info.geometry = pBillboard.GetTUCGeometry();
+	info.depth = pBillboard.GetTUCDepth();
+	info.counter = pBillboard.GetTUCCounter();
+	info.envMap = pBillboard.GetTUCEnvMap();
+	SetDataGeometryTUCs( *data, info );
+}
+
+
+
+// Class deoglRBillboard
+//////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -94,7 +122,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pSkin( NULL ),
 pUseSkinTexture( NULL ),
@@ -239,6 +267,11 @@ void deoglRBillboard::SetSkin( deoglRSkin *skin ){
 	pRequiresPrepareForRender();
 	
 	pSkinRendered.SetDirty();
+	
+	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
+	}
 }
 
 void deoglRBillboard::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -468,6 +501,10 @@ void deoglRBillboard::MarkParamBlocksDirty(){
 void deoglRBillboard::MarkTUCsDirty(){
 	pDirtyTUCs = true;
 	pRequiresPrepareForRender();
+	
+	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
+	}
 }
 
 

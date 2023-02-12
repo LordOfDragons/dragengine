@@ -1045,7 +1045,7 @@ void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 	}
 	
 	if( pUseSkinTexture ){
-		pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters();
+		pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters() & ~ertfRendered;
 	}
 	if( pIsRendered ){
 		pRenderTaskFilters |= ertfRendered;

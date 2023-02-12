@@ -25,7 +25,7 @@
 #include "pipeline/deoglLightPipelines.h"
 #include "../component/deoglComponentSet.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../world/deoglWorldCompute.h"
+#include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -65,11 +65,11 @@ class decShapeBox;
 class deoglRLight : public deObject{
 private:
 	/** World compute element. */
-	class WorldComputeElement: public deoglWorldCompute::Element{
+	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRLight &pLight;
 	public:
 		WorldComputeElement( deoglRLight &light );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
 	};
 	
 	
@@ -78,7 +78,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldCompute::Element::Ref pWorldComputeElement;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	bool pActive;
 	deLight::eLightTypes pLightType;

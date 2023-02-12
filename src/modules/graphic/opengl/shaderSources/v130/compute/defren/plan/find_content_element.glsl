@@ -15,7 +15,7 @@ precision highp int;
 #endif
 
 
-UBOLAYOUT_BIND(0) readonly buffer Element {
+UBOLAYOUT_BIND(0) buffer Element {
 	sElement pElement[];
 };
 
@@ -33,6 +33,11 @@ UBOLAYOUT_BIND(3) readonly buffer Counters {
 	uint pNodeIndexCount; // from previous run atomic counter pNextNodeIndex
 };
 #endif
+
+#include "v130/shared/defren/plan/world_element_geometry.glsl"
+UBOLAYOUT_BIND(3) readonly buffer ElementGeometry {
+	sElementGeometry pElementGeometries[];
+};
 
 
 layout( local_size_x=64 ) in;
@@ -166,8 +171,10 @@ void main( void ){
 		uint visInd1 = visibleIndex / uint( 4 );
 		uint visInd2 = visibleIndex % uint( 4 );
 		
+		uint resultFlags = uint( 0 );
 		#ifdef CULL_SKY_LIGHT_FRUSTUM
-		index |= calcSplitMask( npos, nhe ) << uint( 24 );
+		resultFlags = calcSplitMask( npos, nhe );
+		index |= resultFlags << uint( 24 );
 		#endif
 		
 		pVisibleElement[ visInd1 ][ visInd2 ] = index;
@@ -178,6 +185,9 @@ void main( void ){
 		if( visibleIndex % dispatchWorkGroupSize == uint( 0 ) ){
 			atomicCounterIncrement( pDispatchWorkGroupCount );
 		}
+		
+		// update element with result
+		pElement[ index ].cullResult = resultFlags | ecrVisible;
 		
 	#ifndef DIRECT_ELEMENTS
 	}

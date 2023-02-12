@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Update Element Geometries</name>
+	
+	<uniformBlock name='PlanConfig' target='0'/>
+	
+	<shaderStorageBlock name='UpdateElementGeometry' target='1'/>
+	<shaderStorageBlock name='UpdateIndex' target='2'/>
+	<shaderStorageBlock name='ElementGeometry' target='3'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/update_element_geometries.glsl</sourceCode>
+</shader>

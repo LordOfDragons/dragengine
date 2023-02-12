@@ -72,3 +72,7 @@ const uint ettShadowCube = uint( 4 );
 const uint ettEnvMap = uint( 5 );
 const uint ettLuminance = uint( 6 );
 const uint ettGIMaterial = uint( 7 );
+
+
+// cull result
+const uint ecrVisible = uint( 0x100 );

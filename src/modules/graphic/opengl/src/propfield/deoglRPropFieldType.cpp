@@ -157,6 +157,10 @@ void deoglRPropFieldType::SetSkin( deoglRSkin *skin ){
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
+	
+	if( pPropField.GetParentWorld() ){
+		UpdateWorldComputeTextures( pPropField.GetParentWorld()->GetCompute() );
+	}
 }
 
 
@@ -628,6 +632,13 @@ void deoglRPropFieldType::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
 	}
 }
 
+void deoglRPropFieldType::UpdateWorldComputeTextures( deoglWorldCompute &worldCompute ){
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldComputeTextures( worldCompute );
+	}
+}
 
 void deoglRPropFieldType::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
 	const int clusterCount = pClusters.GetCount();

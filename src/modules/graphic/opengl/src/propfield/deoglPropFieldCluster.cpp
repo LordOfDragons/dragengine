@@ -55,6 +55,7 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../utils/deoglConvertFloatHalf.h"
+#include "../vbo/deoglSharedVBO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
 
@@ -64,27 +65,70 @@
 
 
 
-// Class deoglPropFieldCluster
-////////////////////////////////
-
-#define CONVERT_FLOAT_TO_HALF convertFloatToHalf
-//#define CONVERT_FLOAT_TO_HALF quickConvertFloatToHalf
+// Class deoglPropFieldCluster::WorldComputeElement
+/////////////////////////////////////////////////////
 
 deoglPropFieldCluster::WorldComputeElement::WorldComputeElement( deoglPropFieldCluster &cluster ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetPropFieldCluster, &cluster ),
+deoglWorldComputeElement( eetPropFieldCluster, &cluster ),
 pCluster( cluster ){
 }
 
 void deoglPropFieldCluster::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
 	const decDVector position( pCluster.GetPropFieldType().GetPropField().GetPosition()
 		- worldCompute.GetWorld().GetReferencePosition() );
 	
 	data.SetExtends( position + pCluster.GetMinimumExtend(), position + pCluster.GetMaximumExtend() );
 	data.SetEmptyLayerMask();
 	data.flags = ( uint32_t )deoglWorldCompute::eefPropFieldCluster;
-	data.textureCount = 1;
+	data.geometryCount = 1;
 }
+
+void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+	deoglSkinTexture * const skinTexture = pCluster.GetPropFieldType().GetUseSkinTexture();
+	if( ! skinTexture ){
+		return;
+	}
+	
+	const deoglRModel * const model = pCluster.GetPropFieldType().GetModel();
+	if( ! model ){
+		return;
+	}
+	
+	const deoglModelLOD &modelLOD = model->GetLODAt( 0 );
+	if( ! modelLOD.GetVBOBlock() ){
+		return;
+	}
+	
+	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
+	
+	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+	if( modelTex.GetDecal() ){
+		filters |= ertfDecal;
+	}
+	
+	SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptPropField,
+		modelTex.GetDoubleSided() ? deoglSkinTexturePipelines::emDoubleSided : 0, skinTexture,
+		modelLOD.GetVBOBlock()->GetVBO()->GetVAO(), pCluster.GetRTSInstance(), -1 );
+	
+	sInfoTUC info;
+	info.geometry = pCluster.GetTUCGeometry();
+	info.depth = pCluster.GetTUCDepth();
+	info.counter = pCluster.GetTUCDepth();
+	info.shadow = pCluster.GetTUCShadow();
+	info.shadowCube = pCluster.GetTUCShadow();
+	info.envMap = pCluster.GetTUCEnvMap();
+	// info.giMaterial = pCluster.GetTUCGIMaterial(); // missing
+	SetDataGeometryTUCs( *data, info );
+}
+
+
+
+// Class deoglPropFieldCluster
+////////////////////////////////
+
+#define CONVERT_FLOAT_TO_HALF convertFloatToHalf
+//#define CONVERT_FLOAT_TO_HALF quickConvertFloatToHalf
 
 // Constructor, destructor
 ////////////////////////////
@@ -92,7 +136,7 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 deoglPropFieldCluster::deoglPropFieldCluster( deoglRPropFieldType &propFieldType ) :
 pPropFieldType( propFieldType ),
 pRenderThread( propFieldType.GetPropField().GetRenderThread() ),
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pInstances( NULL ),
 pInstanceCount( 0 ),
@@ -266,12 +310,14 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCForPipelineType( deoglSkinText
 	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
 	case deoglSkinTexturePipelines::etCounter:
 	case deoglSkinTexturePipelines::etCounterClipPlane:
+	case deoglSkinTexturePipelines::etMask:
+		return GetTUCDepth();
+		
 	case deoglSkinTexturePipelines::etShadowProjection:
 	case deoglSkinTexturePipelines::etShadowProjectionCube:
 	case deoglSkinTexturePipelines::etShadowOrthogonal:
 	case deoglSkinTexturePipelines::etShadowDistance:
 	case deoglSkinTexturePipelines::etShadowDistanceCube:
-	case deoglSkinTexturePipelines::etMask:
 		return GetTUCShadow();
 		
 	case deoglSkinTexturePipelines::etEnvMap:
@@ -330,10 +376,18 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 void deoglPropFieldCluster::MarkTUCsDirty(){
 	pDirtyTUCs = true;
 	pPropFieldType.ClusterRequiresPrepareForRender();
+	
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		UpdateWorldComputeTextures( pPropFieldType.GetPropField().GetParentWorld()->GetCompute() );
+	}
 }
 
 void deoglPropFieldCluster::DirtyRTSInstance(){
 	pDirtyRTSInstance = true;
+	
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		UpdateWorldComputeTextures( pPropFieldType.GetPropField().GetParentWorld()->GetCompute() );
+	}
 }
 
 
@@ -345,6 +399,12 @@ void deoglPropFieldCluster::AddToWorldCompute( deoglWorldCompute &worldCompute )
 void deoglPropFieldCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
 	if( pWorldComputeElement->GetIndex() != -1 ){
 		worldCompute.UpdateElement( pWorldComputeElement );
+	}
+}
+
+void deoglPropFieldCluster::UpdateWorldComputeTextures( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElementGeometries( pWorldComputeElement );
 	}
 }
 

@@ -120,6 +120,7 @@ void deoglHTSTexture::SetSkin( deoglRSkin *skin ){
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
+	pSector.ClustersUpdateWorldComputeElementTextures();
 }
 
 

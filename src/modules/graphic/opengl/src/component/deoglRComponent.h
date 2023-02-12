@@ -26,7 +26,7 @@
 #include "../light/deoglLightList.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
-#include "../world/deoglWorldCompute.h"
+#include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -81,11 +81,12 @@ public:
 	
 private:
 	/** World compute element. */
-	class WorldComputeElement: public deoglWorldCompute::Element{
+	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRComponent &pComponent;
 	public:
 		WorldComputeElement( deoglRComponent &component );
-		virtual void UpdateData( const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
 	};
 	
 	
@@ -94,7 +95,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldCompute::Element::Ref pWorldComputeElement;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	
 	bool pVisible;
@@ -155,6 +156,7 @@ private:
 	decObjectList pTextures;
 	bool pDirtyTextureTUCs;
 	bool pDirtyTextureParamBlocks;
+	int pOutlineTextureCount;
 	
 	decObjectList pDecals;
 	bool pDirtyDecals;
@@ -594,6 +596,9 @@ public:
 	void UpdateTexturesUseSkin();
 	void DirtyTextureTUCs();
 	void DirtyTextureParamBlocks();
+	
+	/** Count of textures with outline properties. */
+	inline int GetOutlineTextureCount() const{ return pOutlineTextureCount; }
 	
 	/** Textures are static. */
 	inline bool GetStaticTextures() const{ return pStaticTextures; }

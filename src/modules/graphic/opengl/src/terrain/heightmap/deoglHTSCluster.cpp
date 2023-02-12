@@ -48,24 +48,85 @@
 
 
 
-// Class deoglHTSCluster
-//////////////////////////
+// Class deoglHTSCluster::WorldComputeElement
+///////////////////////////////////////////////
 
 deoglHTSCluster::WorldComputeElement::WorldComputeElement( deoglHTSCluster &cluster ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetHeightTerrainSectorCluster, &cluster ),
+deoglWorldComputeElement( eetHeightTerrainSectorCluster, &cluster ),
 pCluster( cluster ){
 }
 
 void deoglHTSCluster::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
 	const decDVector center( decDVector( pCluster.GetCenter() ) - worldCompute.GetWorld().GetReferencePosition() );
 	const decDVector halfSize( pCluster.GetHalfExtends() );
 	
 	data.SetExtends( center - halfSize, center + halfSize );
 	data.SetEmptyLayerMask();
 	data.flags = ( uint32_t )deoglWorldCompute::eefHeightTerrainSectorCluster;
-	data.textureCount = ( uint32_t )pCluster.GetHTSector()->GetTextureCount();
+	data.geometryCount = 0; //( uint32_t )pCluster.GetHTSector()->GetTextureCount() * 2;
 }
+
+void deoglHTSCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+#if 0
+	const deoglRHTSector &sector = *pCluster.GetHTSector();
+	const deoglHTSCluster &htcluster = sector.GetClusters()[ pCluster.GetIndex() ];
+	const bool valid = sector.GetValid() && sector.GetValidTextures();
+	const int count = pCluster.GetHTSector()->GetTextureCount();
+	const deoglVAO * const vao = htcluster.GetVAO();
+	const deoglHTViewSectorCluster &htvscluster = *clhtscluster.GetCluster();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const deoglHTSTexture &texture = sector.GetTextureAt( i );
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! valid || ! skinTexture ){
+			continue;
+		}
+		
+		sInfoTUC info;
+		info.geometry = texture.GetTUCGeometry();
+		info.depth = texture.GetTUCDepth();
+		info.counter = texture.GetTUCDepth();
+		info.shadow = texture.GetTUCShadow();
+		info.shadowCube = texture.GetTUCShadow();
+		info.envMap = texture.GetTUCEnvMap();
+		info.luminance = texture.GetTUCLuminance();
+		// info.giMaterial = texture.GetTUCGIMaterial(); // missing
+		
+		const int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+		
+		SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap1, 0,
+			skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+		SetDataGeometryTUCs( *data, info );
+		data++;
+		
+		SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap2, 0,
+			skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+		SetDataGeometryTUCs( *data, info );
+		data++;
+		
+		if( htvscluster.GetLodLevel() > 0 ){
+			for( j=1; j<5; j++ ){
+				SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap1,
+					0, skinTexture, vao, htvscluster.GetRTSInstanceAt( i, j ), -1 );
+				SetDataGeometryTUCs( *data, info );
+				data++;
+				
+				SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap2,
+					0, skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+				SetDataGeometryTUCs( *data, info );
+				data++;
+			}
+		}
+	}
+#endif
+}
+
+
+
+// Class deoglHTSCluster
+//////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -73,7 +134,7 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 deoglHTSCluster::deoglHTSCluster() :
 pIndex( -1 ),
 
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) )
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) )
 {
 	pHTSector = NULL;
 	
@@ -423,6 +484,12 @@ void deoglHTSCluster::AddToWorldCompute( deoglWorldCompute &worldCompute ){
 void deoglHTSCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
 	if( pWorldComputeElement->GetIndex() != -1 ){
 		worldCompute.UpdateElement( pWorldComputeElement );
+	}
+}
+
+void deoglHTSCluster::UpdateWorldComputeTexturres( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElementGeometries( pWorldComputeElement );
 	}
 }
 

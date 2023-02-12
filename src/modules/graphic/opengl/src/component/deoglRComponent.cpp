@@ -78,6 +78,7 @@
 #include "../vbo/deoglSharedVBOList.h"
 #include "../vbo/deoglVBOAttribute.h"
 #include "../vbo/deoglVBOLayout.h"
+#include "../vao/deoglVAO.h"
 #include "../visitors/deoglFindBestEnvMap.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
@@ -102,20 +103,20 @@
 
 
 
-// Class deoglRComponent
-/////////////////////////
+// Class deoglRComponent::deoglWorldComputeElement
+////////////////////////////////////////////////////
 
 deoglRComponent::WorldComputeElement::WorldComputeElement( deoglRComponent &component ) :
-deoglWorldCompute::Element( deoglWorldCompute::eetComponent, &component ),
+deoglWorldComputeElement( eetComponent, &component ),
 pComponent( component ){
 }
 
 void deoglRComponent::WorldComputeElement::UpdateData(
-const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
 	const decDVector &refpos = worldCompute.GetWorld().GetReferencePosition();
 	data.SetExtends( pComponent.GetMinimumExtend() - refpos, pComponent.GetMaximumExtend() - refpos );
 	data.SetLayerMask( pComponent.GetLayerMask() );
-	data.textureCount = pComponent.GetTextureCount();
+	data.geometryCount = ( pComponent.GetTextureCount() + pComponent.GetOutlineTextureCount() ) * pComponent.GetLODCount();
 	data.lodCount = pComponent.GetLODCount();
 	
 	data.flags = ( uint32_t )deoglWorldCompute::eefComponent;
@@ -123,6 +124,68 @@ const deoglWorldCompute &worldCompute, deoglWorldCompute::sDataElement &data ){
 		data.flags |= deoglWorldCompute::eefComponentDynamic;
 	}
 }
+
+void deoglRComponent::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+	const int textureCount = pComponent.GetTextureCount();
+	const int lodCount = pComponent.GetLODCount();
+	int i, j;
+	
+	for( i=0; i<lodCount; i++ ){
+		const deoglRComponentLOD &lod = pComponent.GetLODAt( i );
+		const deoglVAO * const vao = lod.GetUseVAO();
+		
+		if( ! vao || ! vao->GetRTSVAO() || lod.GetModelLODRef().GetFaceCount() == 0 ){
+			continue;
+		}
+		
+		for( j=0; j<textureCount; j++ ){
+			const deoglRComponentTexture &texture = pComponent.GetTextureAt( j );
+			deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+			
+			if( ! skinTexture ){
+				continue;
+			}
+			
+			const deoglRenderTaskSharedInstance * const rtsi = texture.GetSharedSPBRTIGroup( i ).GetRTSInstance();
+			const int spbi = texture.GetSharedSPBElement()->GetIndex();
+			
+			SetDataGeometry( *data, i, texture.GetRenderTaskFilters() & ~RenderFilterOutline,
+				texture.GetUseDecal() ? deoglSkinTexturePipelinesList::eptDecal
+					: deoglSkinTexturePipelinesList::eptComponent,
+				texture.GetUseDoubleSided() ? deoglSkinTexturePipelines::emDoubleSided : 0,
+				skinTexture, vao, rtsi, spbi );
+			
+			sInfoTUC info;
+			info.geometry = texture.GetTUCGeometry();
+			info.depth = texture.GetTUCDepth();
+			info.counter = texture.GetTUCCounter();
+			info.shadow = texture.GetTUCShadow();
+			info.shadowCube = texture.GetTUCShadowCube();
+			info.envMap = texture.GetTUCEnvMap();
+			info.luminance = texture.GetTUCLuminance();
+			info.giMaterial = texture.GetTUCGIMaterial();
+			SetDataGeometryTUCs( *data, info );
+			data++;
+			
+			if( skinTexture->GetHasOutline() ){
+				SetDataGeometry( *data, i, texture.GetRenderTaskFilters(),
+					deoglSkinTexturePipelinesList::eptOutline, 0, skinTexture, vao, rtsi, spbi );
+				
+				sInfoTUC info2;
+				info2.geometry = texture.GetTUCOutlineGeometry();
+				info2.depth = texture.GetTUCOutlineDepth();
+				info2.counter = texture.GetTUCOutlineCounter();
+				SetDataGeometryTUCs( *data, info2 );
+				data++;
+			}
+		}
+	}
+}
+
+
+
+// Class deoglRComponent
+/////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -132,7 +195,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldCompute::Element::Ref::New( new WorldComputeElement( *this ) ) ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pVisible( true ),
 pMovementHint( deComponent::emhStationary ),
@@ -151,6 +214,7 @@ pSkinRendered( renderThread, *this ),
 
 pDirtyTextureTUCs( true ),
 pDirtyTextureParamBlocks( true ),
+pOutlineTextureCount( 0 ),
 pDirtyDecals( true ),
 pDirtyDecalsRenderRenderables( true ),
 
@@ -741,6 +805,11 @@ void deoglRComponent::InvalidateVAO(){
 	for( i=0; i<count; i++ ){
 		( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->InvalidateVAO();
 	}
+	
+	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
+	}
 }
 
 
@@ -1285,6 +1354,7 @@ deoglRComponentTexture &deoglRComponent::GetTextureAt( int index ) const{
 
 void deoglRComponent::RemoveAllTextures(){
 	pTextures.RemoveAll();
+	pOutlineTextureCount = 0;
 }
 
 void deoglRComponent::AddTexture( deoglRComponentTexture *texture ){
@@ -1414,8 +1484,19 @@ void deoglRComponent::UpdateTexturesUseSkin(){
 	const int count = pTextures.GetCount();
 	int i;
 	
+	pOutlineTextureCount = 0;
+	
 	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->UpdateUseSkin();
+		deoglRComponentTexture &texture = *( deoglRComponentTexture* )pTextures.GetAt( i );
+		texture.UpdateUseSkin();
+		if( texture.GetUseSkinTexture() && texture.GetUseSkinTexture()->GetHasOutline() ){
+			pOutlineTextureCount++;
+		}
+	}
+	
+	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().UpdateElement( pWorldComputeElement );
+		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
 	}
 }
 
@@ -1426,6 +1507,10 @@ void deoglRComponent::DirtyTextureTUCs(){
 	
 	pDirtyTextureTUCs = true;
 	pRequiresPrepareForRender();
+	
+	if( pWorldComputeElement && pWorldComputeElement->GetIndex() != -1 ){
+		pParentWorld->GetCompute().UpdateElementGeometries( pWorldComputeElement );
+	}
 }
 
 void deoglRComponent::DirtyTextureParamBlocks(){
