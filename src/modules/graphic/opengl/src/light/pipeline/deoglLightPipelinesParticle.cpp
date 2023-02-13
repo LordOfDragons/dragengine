@@ -105,7 +105,7 @@ deoglLightShaderConfig &baseShaderConfig ){
 	// shaconf.SetAmbientLighting( true );
 	
 	pCreatePipelines( pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig, shaconf,
-		etNoShadow, emStereo | emTransparent );
+		etNoShadow, emStereo | emTransparent | emFlipCullFace );
 }
 
 
