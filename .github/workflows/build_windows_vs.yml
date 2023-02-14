@@ -73,7 +73,7 @@ jobs:
         run: (git lfs ls-files -l) | ForEach-Object { $_.Split(" ")[0] } | sort | Out-File -FilePath ".lfs-objects-id"
 
       - name: Restore LFS Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: lfs-vs-cache
         if: ${{ inputs.lfscache }}
         with:
