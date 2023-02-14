@@ -33,10 +33,10 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 layout( local_size_x=64 ) in;
 
 
-layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+// layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
 layout( binding=0, offset=12 ) uniform atomic_uint pNextIndex;
 
-const uint dispatchWorkGroupSize = uint( 64 );
+// const uint dispatchWorkGroupSize = uint( 64 );
 
 
 void main( void ){
@@ -46,13 +46,10 @@ void main( void ){
 	
 	uint index = gl_GlobalInvocationID.x;
 	uint elementIndex = pElementGeometries[ index ].element;
-	bvec4 cond;
+	bvec3 cond;
+	
 	
 	uint cullResult = pElement[ elementIndex ].cullResult;
-	
-	uint pipelineBase = pElementGeometries[ index ].pipelineBase;
-	uint pipelineList = pipelineBase & uint( 0xff );
-	uint pipelineModifier = pipelineBase >> uint( 8 );
 	
 	// check if element is visible. cullResult is actually composed of the visibility (bit 8)
 	// and the cull result flags (bit 0-7). since though the cull result flags are not
@@ -60,8 +57,20 @@ void main( void ){
 	// element is invisible and not 0 if visible
 	cond.x = cullResult == uint( 0 );
 	
+	// check geometry matches the lod level selected for the element
+	cond.y = pElementGeometries[ index ].lod != pElement[ elementIndex ].lodIndex;
+	
+	if( any( cond.xy ) ){
+		return;
+	}
+	
+	
+	uint pipelineBase = pElementGeometries[ index ].pipelineBase;
+	uint pipelineList = pipelineBase & uint( 0xff );
+	uint pipelineModifier = pipelineBase >> uint( 8 );
+	
 	// filter by pipeline list
-	cond.y = ( pFilterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
+	cond.x = ( pFilterPipelineLists & ( uint( 1 ) << pipelineList ) ) == uint( 0 );
 	
 	// filter cube face. we are using here the fact that if element is visible the bit 8
 	// in the cull mask is set. the same bit is used to indicate if filter cube face has
@@ -70,10 +79,10 @@ void main( void ){
 	// 
 	//   ((filter & 0x100) == 0x100) && ((cullResult & 0x3f) & (filter & 0x3f)) == 0
 	// 
-	cond.z = ( cullResult & pFilterCubeFace ) == uint( 0x100 );
+	cond.y = ( cullResult & pFilterCubeFace ) == uint( 0x100 );
 	
 	// filter by render task filters. pRenderTaskFilters contains pRenderTaskFilterMask
-	cond.w = ( pElementGeometries[ index ].renderFilter & pRenderTaskFilterMask ) != pRenderTaskFilters;
+	cond.z = ( pElementGeometries[ index ].renderFilter & pRenderTaskFilterMask ) != pRenderTaskFilters;
 	
 	if( any( cond ) ){
 		return;
@@ -95,7 +104,7 @@ void main( void ){
 	// if the count of steps increases by the dispatch workgroup size increment also the
 	// work group count. this way the upcoming dispatch indirect calls know the count
 	// of workgroups to run
-	if( nextIndex % dispatchWorkGroupSize == uint( 0 ) ){
-		atomicCounterIncrement( pDispatchWorkGroupCount );
-	}
+// 	if( nextIndex % dispatchWorkGroupSize == uint( 0 ) ){
+// 		atomicCounterIncrement( pDispatchWorkGroupCount );
+// 	}
 }
