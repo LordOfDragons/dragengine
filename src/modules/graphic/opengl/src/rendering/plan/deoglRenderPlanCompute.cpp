@@ -245,6 +245,61 @@ void deoglRenderPlanCompute::UpdateElementGeometries(){
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Compute %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
 
+/*
+	deoglRPTBuildRTsGeometry.pSolid:
+	// same for with-xray but then "renderFilters |= ertfXRay"
+	
+	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptComponent
+		| 1 << deoglSkinTexturePipelinesList::eptBillboard
+		| 1 << deoglSkinTexturePipelinesList::eptPropField;
+		// | 1 << deoglSkinTexturePipelinesList::eptPropFieldImposter
+		// if realTransparentParticles:
+		//    | 1 << deoglSkinTexturePipelinesList::eptParticle
+		//    | 1 << deoglSkinTexturePipelinesList::eptParticleBeam
+		//    | 1 << deoglSkinTexturePipelinesList::eptParticleRibbon
+	
+	int pipelineType = deoglSkinTexturePipelines::etGeometry;
+	
+	int pipelineModifier = 0;
+	if( pPlan.GetFlipCulling() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
+	}
+	if( pPlan.GetRenderStereo() ){
+		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
+	}
+	
+	int renderFilters = ertfRender | ertfSolid;
+	int renderFilterMask = ertfRender | ertfSolid | ertfRendered | ertfXRay | ertfDecal;
+	
+	if( pPlan.GetNoReflections() ){
+		renderFilters |= ertfReflected;
+		renderFilterMask |= ertfReflected;
+	}
+	
+	
+	deoglRPTBuildRTsGeometry.pSolidTerrain:
+	// same for with-xray but then "renderFilters |= ertfXRay"
+	
+	// pass 1. same as pSolid except...
+	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptHeightMap1
+	
+	// pass 2. same as pSolid except...
+	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptHeightMap2
+	
+	
+	deoglRPTBuildRTsGeometry.pSolidOutline:
+	// same for with-xray but then "renderFilters |= ertfXRay"
+	
+	// same as pSolid except...
+	renderFilters &= ~ertfSolid;
+	renderFilterMask &= ~ertfSolid;
+	
+	renderFilters |= ertfOutline;
+	renderFilterMask |= ertfOutline | ertfOutlineSolid;
+	
+	int pipelineLists = 1 << deoglSkinTexturePipelinesList::eptComponent
+	
+*/
 
 
 // Protected
