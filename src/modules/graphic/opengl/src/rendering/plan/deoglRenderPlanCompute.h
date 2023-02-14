@@ -38,8 +38,6 @@ public:
 	enum eFindConfigParameters{
 		efcpNodeCount,
 		efcpElementCount,
-		efcpUpdateElementCount,
-		efcpUpdateElementGeometryCount,
 		efcpFrustumPlanes,
 		efcpFrustumPlanesAbs,
 		efcpFrustumSelect,
@@ -125,7 +123,6 @@ public:
 	
 protected:
 	void pPrepareFindConfig();
-	void pUpdateFindConfigGeometries();
 	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
 	void pClearCounters();
 	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );

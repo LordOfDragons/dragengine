@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Plan Update Element Geometries</name>
 	
-	<uniformBlock name='PlanConfig' target='0'/>
+	<parameter name='pUpdateElementGeometryCount'/>
 	
 	<shaderStorageBlock name='UpdateElementGeometry' target='1'/>
 	<shaderStorageBlock name='UpdateIndex' target='2'/>

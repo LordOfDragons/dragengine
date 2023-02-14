@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Plan Update Elements</name>
 	
-	<uniformBlock name='PlanConfig' target='0'/>
+	<parameter name='pUpdateElementCount'/>
 	
 	<shaderStorageBlock name='Element' target='0'/>
 	<shaderStorageBlock name='UpdateElement' target='1'/>

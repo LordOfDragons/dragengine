@@ -20,8 +20,8 @@ struct sElement{
 	
 	// results
 	uint cullResult; // result of culling. written by find_content* shaders.
-	                 // bit 0-8: flags (like cascade or cube face)
-	                 // bit 9: visible (or culled, ecrVisible)
+	                 // bit 0-7: flags (like cascade or cube face)
+	                 // bit 8: visible (or culled, ecrVisible)
 	
 	uint lodIndex; // 8-bit: output of calc_lod_level* shaderrs
 };

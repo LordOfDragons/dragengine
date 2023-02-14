@@ -2,7 +2,6 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/plan/find_config.glsl"
 #include "v130/shared/defren/plan/world_element.glsl"
 
 
@@ -13,6 +12,8 @@ UBOLAYOUT_BIND(0) writeonly buffer Element {
 UBOLAYOUT_BIND(1) readonly buffer UpdateElement {
 	sElement pUpdateElement[];
 };
+
+uniform uint pUpdateElementCount;
 
 
 layout( local_size_x=64 ) in;

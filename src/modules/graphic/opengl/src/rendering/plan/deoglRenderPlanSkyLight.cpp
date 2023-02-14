@@ -674,7 +674,6 @@ void deoglRenderPlanSkyLight::pSetWorldComputeParams( deoglSPBlockUBO &ubo ){
 	
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpNodeCount, 0 );
 	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpElementCount, wcompute.GetElementCount() );
-	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpUpdateElementCount, 0 );
 }
 
 void deoglRenderPlanSkyLight::pSetFrustumPlane( deoglSPBlockUBO &ubo, int i, const decDVector& n, double d ){

@@ -38,6 +38,7 @@ private:
 	const deoglPipeline *pPipelineFindContentElement;
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;
+	const deoglPipeline *pPipelineBuildRenderTask;
 	
 	deoglSPBlockSSBO::Ref pSSBOUpdateElements;
 	deoglSPBlockSSBO::Ref pSSBOUpdateElementGeometries;

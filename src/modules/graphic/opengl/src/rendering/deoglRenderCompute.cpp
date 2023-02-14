@@ -141,6 +141,12 @@ deoglRenderBase( renderThread )
 	defines.SetDefines( "CULL_SKY_LIGHT_GIBOX" );
 	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
 	pPipelineFindContentSkyLightGI = pipelineManager.GetWith( pipconf );
+	
+	
+	// build render task
+	defines = commonDefines;
+	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task", defines );
+	pPipelineBuildRenderTask = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderCompute::~deoglRenderCompute(){
@@ -162,10 +168,10 @@ void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
 	
 	pPipelineUpdateElements->Activate();
 	
-	plan.GetCompute().GetUBOFindConfig()->Activate();
 	wcompute.GetSSBOElements()->Activate();
 	pSSBOUpdateElements->Activate();
 	
+	pPipelineUpdateElements->GetGlShader().SetParameterUInt( 0, wcompute.GetUpdateElementCount() );
 	OGL_CHECK( renderThread, pglDispatchCompute(
 		( wcompute.GetUpdateElementCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
@@ -182,11 +188,11 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 	
 	pPipelineUpdateElementGeometries->Activate();
 	
-	plan.GetCompute().GetUBOFindConfig()->Activate();
 	wcompute.GetSSBOElementGeometries()->Activate();
 	pSSBOUpdateElementGeometries->Activate();
 	pSSBOUpdateIndices->Activate();
 	
+	pPipelineUpdateElementGeometries->GetGlShader().SetParameterUInt( 0, wcompute.GetUpdateElementCount() );
 	OGL_CHECK( renderThread, pglDispatchCompute(
 		( wcompute.GetUpdateElementGeometryCount() - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );

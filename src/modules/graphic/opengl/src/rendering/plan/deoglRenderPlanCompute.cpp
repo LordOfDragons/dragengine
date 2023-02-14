@@ -60,11 +60,9 @@ pPlan( plan )
 	
 	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( plan.GetRenderThread() ) );
 	pUBOFindConfig->SetRowMajor( rowMajor );
-	pUBOFindConfig->SetParameterCount( 24 );
+	pUBOFindConfig->SetParameterCount( 22 );
 	pUBOFindConfig->GetParameterAt( efcpNodeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pUBOFindConfig->GetParameterAt( efcpUpdateElementCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
-	pUBOFindConfig->GetParameterAt( efcpUpdateElementGeometryCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanes ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4[6]
 	pUBOFindConfig->GetParameterAt( efcpFrustumPlanesAbs ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 6 ); // vec3[6]
 	pUBOFindConfig->GetParameterAt( efcpFrustumSelect ).SetAll( deoglSPBParameter::evtBool, 3, 1, 6 ); // bvec3[6]
@@ -243,8 +241,6 @@ void deoglRenderPlanCompute::UpdateElementGeometries(){
 		return;
 	}
 	
-	pUpdateFindConfigGeometries();
-	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: UBO %dys (%d)", (int)(timer.GetElapsedTime()*1e6f), compute.GetUpdateElementGeometryCount());
 	pPlan.GetRenderThread().GetRenderers().GetCompute().UpdateElementGeometries( pPlan );
 	// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanCompute.UpdateElementGeometries: Compute %dys", (int)(timer.GetElapsedTime()*1e6f));
 }
@@ -264,8 +260,6 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 	
 	ubo.SetParameterDataUInt( efcpNodeCount, 0 );
 	ubo.SetParameterDataUInt( efcpElementCount, wcompute.GetElementCount() );
-	ubo.SetParameterDataUInt( efcpUpdateElementCount, wcompute.GetUpdateElementCount() );
-	ubo.SetParameterDataUInt( efcpUpdateElementGeometryCount, 0 );
 	
 	// frustum culling
 	const deoglDCollisionFrustum &frustum = *pPlan.GetUseFrustum();
@@ -306,12 +300,6 @@ void deoglRenderPlanCompute::pPrepareFindConfig(){
 		cullFlags |= deoglWorldCSOctree::ecsefComponentDynamic;
 	}
 	ubo.SetParameterDataUInt( efcpCullFlags, cullFlags );
-}
-
-void deoglRenderPlanCompute::pUpdateFindConfigGeometries(){
-	const deoglSPBMapBuffer mapped( pUBOFindConfig );
-	pUBOFindConfig->SetParameterDataUInt( efcpUpdateElementGeometryCount,
-		pPlan.GetWorld()->GetCompute().GetUpdateElementGeometryCount() );
 }
 
 void deoglRenderPlanCompute::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){

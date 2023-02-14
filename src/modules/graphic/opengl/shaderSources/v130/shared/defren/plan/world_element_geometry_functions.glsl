@@ -2,7 +2,7 @@
 // constants
 const uint vElementGeometryTucMap[ 18 ] = uint[18](
 	ettGeometry, // deoglSkinTexturePipelines::etGeometry
-	0, // deoglSkinTexturePipelines::etGeometryDepthTest
+	uint( 0 ), // deoglSkinTexturePipelines::etGeometryDepthTest
 	ettDepth, // deoglSkinTexturePipelines::etDepth
 	ettDepth, // deoglSkinTexturePipelines::etDepthClipPlane
 	ettDepth, // deoglSkinTexturePipelines::etDepthReversed

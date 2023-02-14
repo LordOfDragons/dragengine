@@ -1,6 +1,6 @@
 
 // get skin texture pipeline
-uint skinTexturePipeline( in uint skinTexture, in uint list, in uint type, int uint modifier ){
+uint skinTexturePipeline( in uint skinTexture, in uint list, in uint type, in uint modifier ){
 	// absolute index
 	uint i = vSkinTexturePipelinesPerTexture * skinTexture + vSkinTexturePipelinesPerList * list
 		+ vSkinTexturePipelinesPerType * type + modifier;

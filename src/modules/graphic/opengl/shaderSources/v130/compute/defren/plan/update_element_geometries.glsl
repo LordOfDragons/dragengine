@@ -2,8 +2,6 @@ precision highp float;
 precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/plan/find_config.glsl"
-#include "v130/shared/defren/plan/world_element_constants.glsl"
 #include "v130/shared/defren/plan/world_element_geometry.glsl"
 
 
@@ -18,6 +16,8 @@ UBOLAYOUT_BIND(2) readonly buffer UpdateIndex {
 UBOLAYOUT_BIND(3) writeonly buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
+
+uniform uint pUpdateElementGeometryCount;
 
 
 layout( local_size_x=64 ) in;

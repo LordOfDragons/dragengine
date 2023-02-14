@@ -2,8 +2,6 @@
 UBOLAYOUT uniform FindConfig{
 	uint pNodeCount;
 	uint pElementCount;
-	uint pUpdateElementCount;
-	uint pUpdateElementGeometryCount;
 	
 	// camera frustum
 	vec4 pFrustumPlanes[ 6 ]; // xyz=normal, w=distance
