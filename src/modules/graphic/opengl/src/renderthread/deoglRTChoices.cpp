@@ -117,8 +117,6 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		pGPUTransformVertices = egputvApproximate;
 	#endif
 	
-	#undef HASEXT
-	
 	// inverse depth
 	pUseInverseDepth = conf.GetUseInverseDepth();
 	
@@ -144,7 +142,14 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	}
 	
 	// temporary until working properly
-	pUseComputeRenderTask = false;
+	if( HASEXT( ext_ARB_shader_atomic_counter_ops ) ){
+		pUseComputeRenderTask = false;
+		
+	}else{
+		pUseComputeRenderTask = false;
+	}
+	
+	#undef HASEXT
 	
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();

@@ -224,7 +224,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						
 						if( targetSPBInstanceIndexBase != -1 ){
 							shader.SetParameterInt( targetSPBInstanceIndexBase,
-							rtinstance.GetSIIndexInstanceFirst() );
+								rtinstance.GetSIIndexInstanceFirst() );
 						}
 						
 						GLenum primitiveType = instance.GetPrimitiveType();

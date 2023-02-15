@@ -332,6 +332,7 @@ public:
 		ext_ARB_depth_clamp,
 		ext_ARB_shading_language_420pack,
 		ext_ARB_shader_atomic_counters,
+		ext_ARB_shader_atomic_counter_ops,
 		ext_ARB_gpu_shader_fp64,
 		
 		ext_EXT_bindable_uniform,

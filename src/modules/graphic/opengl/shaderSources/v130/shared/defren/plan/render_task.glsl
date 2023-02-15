@@ -16,7 +16,10 @@ struct sRenderTask{
 	// render task shared instance index
 	uint instance;
 	
-	// shared parameter block instance index starting at index 1. 0 means no spb instance is used.
+	// shared parameter block instance index starting at index 1. 0 means no spb
+	// instance is used. if present a sub instance is added to the instance for
+	// rendering using either (spbIndex) or (spbIndex, specialFlags) depending
+	// if special flags are used or not
 	uint spbInstance;
 	
 	// special flags. will be written to intance data for special uses if required

@@ -147,6 +147,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_depth_clamp",
 	"GL_ARB_shading_language_420pack",
 	"GL_ARB_shader_atomic_counters",
+	"GL_ARB_shader_atomic_counter_ops",
 	"GL_ARB_gpu_shader_fp64",
 	
 	"GL_EXT_bindable_uniform",
