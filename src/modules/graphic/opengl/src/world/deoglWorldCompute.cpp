@@ -200,6 +200,10 @@ void deoglWorldCompute::RemoveElement( deoglWorldComputeElement *element ){
 	pElements.RemoveFrom( last );
 }
 
+int deoglWorldCompute::GetElementGeometryCount() const{
+	return GetElementCount() > 0 ? pSSBOElementGeometries->GetElementCount() : 0;
+}
+
 void deoglWorldCompute::UpdateElementGeometries( deoglWorldComputeElement *element ){
 	DEASSERT_NOTNULL( element );
 	DEASSERT_TRUE( element->GetIndex() != -1 )

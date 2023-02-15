@@ -1,6 +1,5 @@
 
 // render task step.
-
 struct sRenderTask{
 	// pipeline index
 	// NOTE fits into 16-bit
@@ -25,10 +24,8 @@ struct sRenderTask{
 	uint specialFlags;
 };
 
-
-// define this somewhere. variable name pRenderTask has to stay intact
 /*
-UBOLAYOUT_BIND(2) readonly buffer RenderTask {
+UBOLAYOUT_BIND(4) buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 */

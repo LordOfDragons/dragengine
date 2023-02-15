@@ -26,8 +26,10 @@ UBOLAYOUT_BIND(4) writeonly buffer RenderTask {
 	sRenderTask pRenderTask[];
 };
 
-#include "v130/shared/defren/plan/world_element_geometry_functions.glsl"
-#include "v130/shared/defren/plan/skin_texture_functions.glsl"
+#include "v130/shared/defren/plan/world_element_geometry_tuc.glsl"
+#include "v130/shared/defren/plan/skin_texture_pipeline.glsl"
+#include "v130/shared/defren/plan/render_task_set.glsl"
+#include "v130/shared/defren/plan/render_task_set_geometry.glsl"
 
 
 layout( local_size_x=64 ) in;
@@ -82,7 +84,7 @@ void main( void ){
 	cond.y = ( cullResult & pFilterCubeFace ) == uint( 0x100 );
 	
 	// filter by render task filters. pRenderTaskFilters contains pRenderTaskFilterMask
-	cond.z = ( pElementGeometries[ index ].renderFilter & pRenderTaskFilterMask ) != pRenderTaskFilters;
+	cond.z = ( pElementGeometries[ index ].renderFilter & pRenderTaskFilterMask ) != pRenderTaskFilter;
 	
 	if( any( cond ) ){
 		return;
@@ -92,14 +94,9 @@ void main( void ){
 	// add to render task
 	uint nextIndex = atomicCounterIncrement( pNextIndex );
 	
-	pRenderTask[ nextIndex ].pipeline = skinTexturePipeline( pElementGeometries[ index ].skinTexture,
-		pipelineList, pPipelineType, pPipelineModifiers | pipelineModifier );
-	
-	pRenderTask[ nextIndex ].tuc = elementGeometryTUC( index, pPipelineType );
-	pRenderTask[ nextIndex ].vao = pElementGeometries[ index ].vao;
-	pRenderTask[ nextIndex ].instance = pElementGeometries[ index ].instance;
-	pRenderTask[ nextIndex ].spbInstance = pElementGeometries[ index ].spbInstance;
-	pRenderTask[ nextIndex ].specialFlags = cullResult & uint( 0xff ); // NOTE masking not necessarily required
+	setRenderTaskStepGeometry( nextIndex, index,
+		pipelineList, pPipelineType, pPipelineModifier | pipelineModifier,
+		cullResult & uint( 0xff ) ); // NOTE masking not necessarily required
 	
 	// if the count of steps increases by the dispatch workgroup size increment also the
 	// work group count. this way the upcoming dispatch indirect calls know the count

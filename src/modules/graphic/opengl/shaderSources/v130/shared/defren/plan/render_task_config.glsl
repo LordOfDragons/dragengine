@@ -9,7 +9,7 @@ UBOLAYOUT uniform RenderTaskConfig{
 	uint pFilterCubeFace;
 	
 	// filter by render task filters.
-	uint pRenderTaskFilters; // filters & filterMask
+	uint pRenderTaskFilter; // filter & filterMask
 	uint pRenderTaskFilterMask;
 	
 	// filter by pipeline list. mask of bits representing epl* values (1 << epl*)
@@ -19,5 +19,5 @@ UBOLAYOUT uniform RenderTaskConfig{
 	uint pPipelineType;
 	
 	// pipeline modifiers
-	uint pPipelineModifiers;
+	uint pPipelineModifier;
 };

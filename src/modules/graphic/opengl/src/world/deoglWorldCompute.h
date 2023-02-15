@@ -151,6 +151,9 @@ public:
 	/** Update element count. */
 	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
 	
+	/** Count of element geometries. */
+	int GetElementGeometryCount() const;
+	
 	/** Update element geometries. */
 	void UpdateElementGeometries( deoglWorldComputeElement *element );
 	
