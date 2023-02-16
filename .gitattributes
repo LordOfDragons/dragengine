@@ -20,3 +20,4 @@
 *.zip binary
 *.tar.bz2 binary
 *.ogv binary
+*.ies eol=crlf
