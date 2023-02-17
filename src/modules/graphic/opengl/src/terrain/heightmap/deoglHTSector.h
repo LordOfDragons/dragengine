@@ -22,24 +22,30 @@
 #ifndef _DEOGLHTSECTOR_H_
 #define _DEOGLHTSECTOR_H_
 
+#include "deoglRHTSector.h"
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHeightTerrain;
-class deoglRHTSector;
 
 class deHeightTerrainSector;
 
 
 
 /**
- * \brief Height terrain sector.
+ * Height terrain sector.
  */
-class deoglHTSector{
+class deoglHTSector : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglHTSector> Ref;
+	
 private:
 	deoglHeightTerrain &pHeightTerrain;
 	const deHeightTerrainSector &pSector;
 	
-	deoglRHTSector *pRSector;
+	deoglRHTSector::Ref pRSector;
 	
 	bool pSectorChanged;
 	
@@ -50,27 +56,29 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create height terrain sector. */
+	/** Create height terrain sector. */
 	deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
 	
-	/** \brief Clean up height terrain sector. */
-	~deoglHTSector();
+protected:
+	/** Clean up height terrain sector. */
+	virtual ~deoglHTSector();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Render height terrain sector. */
-	inline deoglRHTSector *GetRSector() const{ return pRSector; }
+	/** Render height terrain sector. */
+	inline const deoglRHTSector::Ref &GetRSector() const{ return pRSector; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Sector changed. */
+	/** Sector changed. */
 	void SectorChanged();
 	
-	/** \brief Heights changed. */
+	/** Heights changed. */
 	void HeightChanged( const decPoint &from, const decPoint &to );
 	/*@}*/
 };

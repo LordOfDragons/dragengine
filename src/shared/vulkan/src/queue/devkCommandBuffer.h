@@ -136,6 +136,18 @@ public:
 	void BeginRenderPass( const devkRenderPass &renderPass, const devkFramebuffer &framebuffer,
 		const decPoint &position, const decPoint &size );
 	
+	/** Set stencil compare mask. */
+	void SetStencilCompareMask( uint32_t front );
+	void SetStencilCompareMask( uint32_t front, uint32_t back );
+	
+	/** Set stencil write mask. */
+	void SetStencilWriteMask( uint32_t front );
+	void SetStencilWriteMask( uint32_t front, uint32_t back );
+	
+	/** Set stencil reference. */
+	void SetStencilReference( uint32_t front );
+	void SetStencilReference( uint32_t front, uint32_t back );
+	
 	/** Draw. */
 	void Draw( int vertexCount, int instanceCount, int firstVertex = 0, int firstInstance = 0 );
 	

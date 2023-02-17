@@ -33,7 +33,7 @@ class dePropFieldType;
 
 
 /**
- * \brief Prop Field Type.
+ * Prop Field Type.
  * <date 2015
  */
 class deoglPropFieldType{
@@ -50,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create prop field type. */
+	/** Create prop field type. */
 	deoglPropFieldType( deoglPropField &propField, const dePropFieldType &type );
 	
-	/** \brief Clean up prop field type. */
+	/** Clean up prop field type. */
 	~deoglPropFieldType();
 	/*@}*/
 	
@@ -61,33 +61,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Prop field. */
+	/** Prop field. */
 	inline deoglPropField &GetPropField() const{ return pPropField; }
 	
-	/** \brief Prop field type. */
+	/** Prop field type. */
 	inline const dePropFieldType &GetType() const{ return pType; }
 	
-	/** \brief Render prop field type. */
+	/** Render prop field type. */
 	inline deoglRPropFieldType *GetRType() const{ return pRType; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	void TypeChanged();
 	
-	/** \brief Instances changed. */
+	/** Instances changed. */
 	void InstancesChanged();
 	
-	/** \brief Instances to Bend States assignments changed. */
+	/** Instances to Bend States assignments changed. */
 	void AssignmentsChanged();
 	
-	/** \brief Bend States changed. */
+	/** Bend States changed. */
 	void BendStatesChanged();
 	
-	/** \brief Instance count changed. */
+	/** Instance count changed. */
 	void InstanceCountChanged();
 	/*@}*/
 	

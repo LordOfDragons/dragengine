@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Sphere collision volume.
+ * Sphere collision volume.
  * Defines a collision volume in the shape of a sphere. The
  * sphere is defined by a center point and a radius. The
  * surface of the sphere is considered to be part of the
@@ -38,7 +38,7 @@ private:
 	decVector pCenter;
 	float pRadius, pSquareRadius;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision sphere with no radius located at the origin. */
 	deoglCollisionSphere();
@@ -52,13 +52,13 @@ public:
 	~deoglCollisionSphere();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder );
@@ -75,13 +75,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -108,12 +108,12 @@ public:
 	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere collides with this sphere. */
 	bool SphereHitsSphere( deoglCollisionSphere *sphere );
@@ -124,7 +124,7 @@ public:
 	float SphereMoveHitsSphere( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Parameters */
+	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the center point of the sphere. */
 	inline const decVector &GetCenter() const{ return pCenter; }

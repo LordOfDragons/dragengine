@@ -24,20 +24,21 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 
+#include "../deoglShaderParameterBlock.h"
+
 class deoglRenderThread;
 class deoglSharedSPB;
 class deoglSharedSPBElement;
-class deoglShaderParameterBlock;
 
 
 
 /**
- * \brief OpenGL shared shader parameter block List.
+ * OpenGL shared shader parameter block List.
  */
 class deoglSharedSPBList{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglShaderParameterBlock *pLayout;
+	const deoglShaderParameterBlock::Ref pLayout;
 	int pSize;
 	decObjectList pSPBs;
 	
@@ -46,11 +47,11 @@ private:
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared shader parameter block list. */
+	/** Create shared shader parameter block list. */
 	deoglSharedSPBList( deoglRenderThread &renderThread, deoglShaderParameterBlock *layout );
 	
 public:
-	/** \brief Clean up shared shader parameter block list. */
+	/** Clean up shared shader parameter block list. */
 	virtual ~deoglSharedSPBList();
 	/*@}*/
 	
@@ -58,23 +59,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Layout reference. */
-	inline const deoglShaderParameterBlock &GetLayout() const{ return *pLayout; }
+	/** Layout reference. */
+	inline const deoglShaderParameterBlock::Ref &GetLayout() const{ return pLayout; }
 	
-	/** \brief Maximum number of elements per block. */
+	/** Maximum number of elements per block. */
 	int GetSize() const;
 	
-	/** \brief Number of blocks. */
+	/** Number of blocks. */
 	int GetCount() const;
 	
-	/** \brief Block at index. */
+	/** Block at index. */
 	deoglSharedSPB *GetAt( int index ) const;
 	
 	/**
-	 * \brief Add element.
+	 * Add element.
 	 * 
 	 * Caller obtains reference to the element. Release reference if not used anymore.
 	 * Element is removed from the shared parameter block once all references are released.
@@ -85,7 +86,7 @@ public:
 	
 	
 protected:
-	virtual deoglShaderParameterBlock *pCreateBlock() const = 0;
+	virtual deoglShaderParameterBlock::Ref pCreateBlock() const = 0;
 };
 
 #endif

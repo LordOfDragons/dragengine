@@ -98,26 +98,9 @@ pOGLObjectCount( 0 ),
 pOGLObjectSize( 0 ),
 pHasSynchronizeOperations( false )
 {
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
-	
-	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		defines.SetDefine( "WITH_LAYER", "1" );
-		pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	// do not create any kind of resources here which access this object to clean up.
+	// this is going to segfault since the object instance has not been assigned yet
+	// in the caller to the globally used variable
 }
 
 deoglDelayedOperations::~deoglDelayedOperations(){
@@ -163,12 +146,9 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 
 
 void deoglDelayedOperations::AddAsyncResInitSkin( deoglRSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( skin )
 	
 	const deMutexGuard guard( pMutexAsyncResInit );
-	
 	pAsyncResInitSkinList.AddIfAbsent( skin );
 	pHasAsyncResInitOperations = true;
 }
@@ -182,12 +162,9 @@ void deoglDelayedOperations::RemoveAsyncResInitSkin( deoglRSkin *skin ){
 
 
 void deoglDelayedOperations::AddAsyncResInitFont( deoglRFont *font ){
-	if( ! font ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( font )
 	
 	const deMutexGuard guard( pMutexAsyncResInit );
-	
 	pAsyncResInitFontList.AddIfAbsent( font );
 	pHasAsyncResInitOperations = true;
 }
@@ -240,31 +217,24 @@ void deoglDelayedOperations::ProcessInitOperations(){
 
 
 void deoglDelayedOperations::AddInitImage( deoglRImage *image ){
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( image )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitImageList.AddIfAbsent( image );
 	pHasInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveInitImage( deoglRImage *image ){
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitImageList.RemoveIfPresent( image );
 }
 
 
 
 void deoglDelayedOperations::AddInitSkin( deoglRSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( skin )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitSkinList.AddIfAbsent( skin );
 	pHasInitOperations = true;
 }
@@ -278,12 +248,9 @@ void deoglDelayedOperations::RemoveInitSkin( deoglRSkin *skin ){
 
 
 void deoglDelayedOperations::AddInitModel( deoglRModel *model ){
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( model )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitModelList.AddIfAbsent( model );
 	pHasInitOperations = true;
 }
@@ -324,6 +291,23 @@ void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
 		}
 		pCleanUpCameraList.RemoveAll();
 	// 	const float accumCamera = timer.GetElapsedTime();
+	}
+	
+	while( true ){
+		decObjectList list;
+		{
+		const deMutexGuard guard( pMutexReleaseObjects );
+		const int count = pReleaseObjects.GetCount();
+		if( count == 0 ){
+			break;
+		}
+		
+		int i;
+		for( i=0; i<count; i++ ){
+			list.Add( pReleaseObjects.GetAt( i ) );
+		}
+		pReleaseObjects.RemoveAll();
+		}
 	}
 	
 	// delete opengl objects
@@ -396,34 +380,33 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 
 
 void deoglDelayedOperations::AddFileWrite( deoglDelayedFileWrite *fileWrite ){
-	if( ! fileWrite ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( fileWrite )
 	
 	const deMutexGuard guard( pMutexSynchronize );
-	
 	pFileWriteList.Add( fileWrite );
 	pHasSynchronizeOperations = true;
 }
 
 void deoglDelayedOperations::AddSaveImage( deoglDelayedSaveImage *saveImage ){
-	if( ! saveImage ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( saveImage )
 	
 	const deMutexGuard guard( pMutexSynchronize );
-	
 	pSaveImageList.Add( saveImage );
 	pHasSynchronizeOperations = true;
 }
 
 void deoglDelayedOperations::AddCleanUpCamera( deoglRCamera *camera ){
-	if( ! camera ){
-		return;
+	if( camera ){
+		const deMutexGuard guard( pMutexCameras );
+		pCleanUpCameraList.AddIfAbsent( camera );
 	}
-	
-	const deMutexGuard guard( pMutexCameras );
-	pCleanUpCameraList.AddIfAbsent( camera );
+}
+
+void deoglDelayedOperations::AddReleaseObject( deObject *object ){
+	if( object ){
+		const deMutexGuard guard( pMutexReleaseObjects );
+		pReleaseObjects.Add( object );
+	}
 }
 
 
@@ -438,6 +421,8 @@ void deoglDelayedOperations::Clear(){
 //////////////////////
 
 void deoglDelayedOperations::pCleanUp(){
+	ProcessFreeOperations( true );
+	
 	// drop shaders to avoid cleanup finding them as leaking
 	pShaderGenConeMap = nullptr;
 	pShaderGenConeMapLayer = nullptr;
@@ -477,12 +462,12 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 				continue;
 			}
 			
-			deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
+			const deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
 			if( ! pixelBufferMipMap ){
 				continue;
 			}
 			
-			deoglPixelBuffer &basePixelBuffer = *pixelBufferMipMap->GetPixelBuffer( 0 );
+			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffer( 0 );
 			const int pixelBufferCount = pixelBufferMipMap->GetPixelBufferCount();
 			deoglArrayTexture * const arrayTexture = skinChannel->GetArrayTexture();
 			deoglCubeMap * const cubemap = skinChannel->GetCubeMap();
@@ -667,7 +652,7 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 	for( t=0; t<textureCount; t++ ){
 		deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
 		skinTexture.PrepareParamBlock();
-		skinTexture.PrepareShaders();
+		skinTexture.GetPipelines().Prepare();
 	}
 }
 
@@ -704,8 +689,9 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		return; // should not happen
 	}
 	
-	deoglPixelBuffer pbConeMap( deoglPixelBuffer::epfByte1, size.x, size.y, size.z );
-	pbConeMap.SetToIntColor( 255, 255, 255, 255 );
+	const deoglPixelBuffer::Ref pbConeMap( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfByte1, size.x, size.y, size.z ) ) );
+	pbConeMap->SetToIntColor( 255, 255, 255, 255 );
 	
 	stepCount = 128;
 	
@@ -761,14 +747,32 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		OGL_CHECK( pRenderThread, glViewport( 0, 0, size.x, size.y ) );
 		
 		// set up shader
+		const deoglShaderProgram *program = nullptr;
+
 		if( channelTexture ){
-			pRenderThread.GetShader().ActivateShader( pShaderGenConeMap );
-			shader = pShaderGenConeMap->GetCompiled();
+			if( ! pShaderGenConeMap ){
+				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
+				DEASSERT_NOTNULL( sources )
+				deoglShaderDefines defines;
+				pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
+			}
+			program = pShaderGenConeMap;
 			
 		}else{
-			pRenderThread.GetShader().ActivateShader( pShaderGenConeMapLayer );
-			shader = pShaderGenConeMapLayer->GetCompiled();
+			if( ! pShaderGenConeMapLayer ){
+				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
+				DEASSERT_NOTNULL( sources )
+				deoglShaderDefines defines;
+				defines.SetDefines( "WITH_LAYER" );
+				pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
+			}
+			program = pShaderGenConeMapLayer;
 		}
+
+		pRenderThread.GetShader().ActivateShader( program );
+		shader = program->GetCompiled();
 		
 		shader->SetParameterInt( spgcmWidth, size.x );
 		shader->SetParameterFloat( spgcmSrcTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -780,7 +784,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 			//1.0f / ( float )width, 1.0f / ( float )height,
 			//0.5f / ( float )width, 0.5f / ( float )height );
 		shader->SetParameterInt( spgcmStepCount, stepCount );
-		shader->SetParameterFloat( spgcmStepFactor, 1.0 / ( float )stepCount );
+		shader->SetParameterFloat( spgcmStepFactor, 1.0f / ( float )stepCount );
 		
 		if( channelTexture ){
 			tsmgr.EnableTexture( 0, *channelTexture, *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
@@ -877,10 +881,6 @@ void deoglDelayedOperations::pDeleteOpenGLObjects(){
 			
 		case eoglotSampler:
 			pglDeleteSamplers( 1, &entry.name );
-			break;
-			
-		case eoglotRenderBuffer:
-			pglDeleteRenderbuffers( 1, &entry.name );
 			break;
 			
 		case eoglotProgram:

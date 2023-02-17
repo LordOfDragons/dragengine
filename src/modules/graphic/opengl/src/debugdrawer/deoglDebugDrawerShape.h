@@ -33,7 +33,7 @@ class deDebugDrawerShape;
 
 
 /**
- * \brief Debug drawer peer shape.
+ * Debug drawer peer shape.
  */
 class deoglDebugDrawerShape{
 private:
@@ -59,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create debug drawer shape. */
+	/** Create debug drawer shape. */
 	deoglDebugDrawerShape();
 	
-	/** \brief Clean up debug drawer shape. */
+	/** Clean up debug drawer shape. */
 	~deoglDebugDrawerShape();
 	/*@}*/
 	
@@ -70,66 +70,66 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Matrix. */
+	/** Matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Set matrix. */
+	/** Set matrix. */
 	void SetMatrix( const decMatrix &matrix );
 	
 	
 	
-	/** \brief Edge color. */
+	/** Edge color. */
 	inline const decColor &GetEdgeColor() const{ return pEdgeColor; }
 	
-	/** \brief Set edge color. */
+	/** Set edge color. */
 	void SetEdgeColor( const decColor &color );
 	
-	/** \brief Fill color. */
+	/** Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
-	/** \brief Set fill color. */
+	/** Set fill color. */
 	void SetFillColor( const decColor &color );
 	
 	
 	
-	/** \brief Shape list. */
+	/** Shape list. */
 	inline const decShapeList &GetShapeList() const{ return pShapeList; }
 	
-	/** \brief Set shape list. */
+	/** Set shape list. */
 	void SetShapeList( const decShapeList &shapes );
 	
 	
 	
-	/** \brief First point for rendering fill triangles. */
+	/** First point for rendering fill triangles. */
 	inline int GetFillFirstPoint() const{ return pFillFirstPoint; }
 	
-	/** \brief Set first point for rendering fill triangles. */
+	/** Set first point for rendering fill triangles. */
 	void SetFillFirstPoint( int firstPoint );
 	
-	/** \brief Point count for rendering fill triangles. */
+	/** Point count for rendering fill triangles. */
 	inline int GetFillPointCount() const{ return pFillPointCount; }
 	
-	/** \brief Set point count for rendering fill triangles. */
+	/** Set point count for rendering fill triangles. */
 	void SetFillPointCount( int pointCount );
 	
-	/** \brief First point for rendering lines. */
+	/** First point for rendering lines. */
 	inline int GetLineFirstPoint() const{ return pLineFirstPoint; }
 	
-	/** \brief Set first point for rendering lines. */
+	/** Set first point for rendering lines. */
 	void SetLineFirstPoint( int firstPoint );
 	
-	/** \brief Point count for rendering lines. */
+	/** Point count for rendering lines. */
 	inline int GetLinePointCount() const{ return pLinePointCount; }
 	
-	/** \brief Set point count for rendering lines. */
+	/** Set point count for rendering lines. */
 	void SetLinePointCount( int pointCount );
 	
 	
 	
-	/** \brief Calculate the number of points required and stores them. */
+	/** Calculate the number of points required and stores them. */
 	int CalcRequiredPoints( const deDebugDrawerShape &ddshape, int firstPoint );
 	
-	/** \brief Write points to VBO data. */
+	/** Write points to VBO data. */
 	void WriteVBOData( const deDebugDrawerShape &ddshape, oglVector3 *vboData );
 	/*@}*/
 	

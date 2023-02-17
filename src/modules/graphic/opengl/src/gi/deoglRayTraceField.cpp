@@ -37,6 +37,7 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
@@ -59,7 +60,8 @@ pFBORays( NULL )
 {
 	try{
 		pUBO.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		deoglSPBlockUBO &ubo = GetUBO();
+		deoglSPBlockUBO &ubo = pUBO;
+		
 		ubo.SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		ubo.SetParameterCount( eupSize + 1 );
 		ubo.GetParameterAt( eupProbeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
@@ -185,24 +187,17 @@ void deoglRayTraceField::pCleanUp(){
 
 void deoglRayTraceField::pPrepareUBOState(){
 	deoglSPBlockUBO &ubo = GetUBO();
+	const deoglSPBMapBuffer mapped( ubo );
 	
-	ubo.MapBuffer();
-	try{
-		ubo.SetParameterDataInt( eupProbeCount, pProbeCount );
-		ubo.SetParameterDataInt( eupProbesPerLine, pProbesPerLine );
-		ubo.SetParameterDataInt( eupProbeSize, pProbeSize );
-		ubo.SetParameterDataInt( eupProbeStride, pResolution.x * pResolution.z );
-		ubo.SetParameterDataIVec3( eupResolution, pResolution );
-		ubo.SetParameterDataIVec3( eupClamp, pResolution - decPoint3( 1, 1, 1 ) );
-		ubo.SetParameterDataVec3( eupSpacing, pSpacing );
-		ubo.SetParameterDataVec3( eupOrigin, pOrigin );
-		ubo.SetParameterDataVec3( eupSize, pSize );
-		
-	}catch( const deException & ){
-		ubo.UnmapBuffer();
-		throw;
-	}
-	ubo.UnmapBuffer();
+	ubo.SetParameterDataInt( eupProbeCount, pProbeCount );
+	ubo.SetParameterDataInt( eupProbesPerLine, pProbesPerLine );
+	ubo.SetParameterDataInt( eupProbeSize, pProbeSize );
+	ubo.SetParameterDataInt( eupProbeStride, pResolution.x * pResolution.z );
+	ubo.SetParameterDataIVec3( eupResolution, pResolution );
+	ubo.SetParameterDataIVec3( eupClamp, pResolution - decPoint3( 1, 1, 1 ) );
+	ubo.SetParameterDataVec3( eupSpacing, pSpacing );
+	ubo.SetParameterDataVec3( eupOrigin, pOrigin );
+	ubo.SetParameterDataVec3( eupSize, pSize );
 }
 
 void deoglRayTraceField::pPrepareRayTexFBO(){
@@ -236,8 +231,7 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 		pFBORays->Verify();
 	}
 	
-	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	pRenderThread.GetRenderers().GetLight().GetRenderGI().GetPipelineClearBuffers()->Activate();
 	
 	const GLfloat clear[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 1.0f };
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clear[ 0 ] ) );

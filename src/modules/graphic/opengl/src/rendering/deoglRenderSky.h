@@ -29,10 +29,10 @@
 
 class deoglRSkyInstance;
 class deoglRenderPlan;
+class deoglRenderPlanMasked;
 class deoglEnvironmentMap;
 class deoglRWorld;
 class decLayerMask;
-class deoglSPBlockUBO;
 
 
 
@@ -41,16 +41,16 @@ class deoglSPBlockUBO;
  */
 class deoglRenderSky : public deoglRenderBase{
 private:
-	deoglSPBlockUBO *pRenderSkyIntoEnvMapPB;
+	deoglSPBlockUBO::Ref pRenderSkyIntoEnvMapPB;
 	
-	deoglShaderProgramUsage pShaderSkySphere;
-	deoglShaderProgramUsage pShaderSkySphereStereo;
+	const deoglPipeline *pPipelineSkySphere;
+	const deoglPipeline *pPipelineSkySphereStereo;
 	
-	deoglShaderProgramUsage pShaderSkyBox;
-	deoglShaderProgramUsage pShaderSkyBoxStereo;
+	const deoglPipeline *pPipelineSkyBox;
+	const deoglPipeline *pPipelineSkyBoxStereo;
 	
-	deoglShaderProgramUsage pShaderBody;
-	deoglShaderProgramUsage pShaderBodyStereo;
+	const deoglPipeline *pPipelineBody;
+	const deoglPipeline *pPipelineBodyStereo;
 	
 	decPointerList pSkyInstances;
 	
@@ -78,7 +78,7 @@ public:
 	 * - RenderSkySphere
 	 * Invalidates no attachments.
 	 */
-	void RenderSky( deoglRenderPlan &plan );
+	void RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Render sky. */
 	//void RenderSkyOld( deoglRenderPlan &plan );
@@ -108,11 +108,6 @@ public:
 	/** Prepare render sky into env map parameter block. */
 	void PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan );
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -27,16 +27,16 @@
 
 
 /**
- * \brief Module parameter transparency layer limit.
+ * Module parameter transparency layer limit.
  */
 class deoglPTranspLayerLimit : public deoglParameterInt{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
+	/** Create parameter. */
 	deoglPTranspLayerLimit( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deoglPTranspLayerLimit();
 	/*@}*/
 	
@@ -44,10 +44,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Current value. */
+	/** Current value. */
 	virtual int GetParameterInt();
 	
-	/** \brief Set current value. */
+	/** Set current value. */
 	virtual void SetParameterInt( int value );
 	/*@}*/
 };

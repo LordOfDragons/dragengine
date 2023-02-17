@@ -58,23 +58,51 @@ deoglRenderVR::deoglRenderVR( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines defines, commonDefines;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
+		// hidden area
+		pipconf.Reset();
+		pipconf.SetMasks( false, false, false, false, false );
+		pipconf.EnableDepthTestAlways();
+		pipconf.SetEnableScissorTest( true );
+		pipconf.SetEnableStencilTest( true );
+		pipconf.SetStencil( GL_ALWAYS, 0x0, 0x01, 0x01 );
+		pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+		
+		pipconf2 = pipconf;
+		pipconf2.SetDepthMask( true );
+		pipconf2.SetDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+		pipconf2.SetEnableStencilTest( false );
+		pipconf2.SetClipControl( useInverseDepth );
+		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "VR Hidden Area" );
-		pShaderHiddenArea = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pipconf2.SetShader( renderThread, sources, defines );
+		pPipelineHiddenAreaClearMask = pipelineManager.GetWith( pipconf );
+		pPipelineHiddenAreaDepth = pipelineManager.GetWith( pipconf2 );
 		
-		
+		// hidden area stereo left
 		sources = shaderManager.GetSourcesNamed( "VR Hidden Area Stereo" );
 		defines.SetDefine( "RENDER_TO_LAYER", 0 );
-		pShaderHiddenAreaStereoLeft = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pipconf2.SetShader( renderThread, sources, defines );
+		pPipelineHiddenAreaClearMaskStereoLeft = pipelineManager.GetWith( pipconf );
+		pPipelineHiddenAreaDepthStereoLeft = pipelineManager.GetWith( pipconf2 );
 		
+		// hidden area stereo right
 		defines.SetDefine( "RENDER_TO_LAYER", 1 );
-		pShaderHiddenAreaStereoRight = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pipconf2.SetShader( renderThread, sources, defines );
+		pPipelineHiddenAreaClearMaskStereoRight = pipelineManager.GetWith( pipconf );
+		pPipelineHiddenAreaDepthStereoRight = pipelineManager.GetWith( pipconf2 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -91,7 +119,7 @@ deoglRenderVR::~deoglRenderVR(){
 // Rendering
 //////////////
 
-void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
+void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan, bool clearMask ){
 	if( ! plan.GetCamera() || ! plan.GetCamera()->GetVR() ){
 		return;
 	}
@@ -123,14 +151,13 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	OGL_CHECK( GetRenderThread(), glDisable( GL_CULL_FACE ) );
-	
 	if( model ){
 		deoglModelLOD &lod = model->GetLODAt( 0 );
 		lod.PrepareVBOBlock();
 		const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
 		if( vboBlock ){
-			pRenderHiddenArea( *vboBlock, pShaderHiddenArea );
+			( clearMask ? pPipelineHiddenAreaClearMask : pPipelineHiddenAreaDepth )->Activate();
+			pRenderHiddenArea( *vboBlock );
 		}
 		
 	}else{
@@ -139,7 +166,8 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 			lod.PrepareVBOBlock();
 			const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
 			if( vboBlock ){
-				pRenderHiddenArea( *vboBlock, pShaderHiddenAreaStereoLeft );
+				( clearMask ? pPipelineHiddenAreaClearMaskStereoLeft : pPipelineHiddenAreaDepthStereoLeft )->Activate();
+				pRenderHiddenArea( *vboBlock );
 			}
 		}
 		
@@ -148,13 +176,13 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 			lod.PrepareVBOBlock();
 			const deoglSharedVBOBlock * const vboBlock = lod.GetVBOBlock();
 			if( vboBlock ){
-				pRenderHiddenArea( *vboBlock, pShaderHiddenAreaStereoRight );
+				( clearMask ? pPipelineHiddenAreaClearMaskStereoRight : pPipelineHiddenAreaDepthStereoRight )->Activate();
+				pRenderHiddenArea( *vboBlock );
 			}
 		}
 	}
 	
 	pglBindVertexArray( 0 );
-	OGL_CHECK( GetRenderThread(), glEnable( GL_CULL_FACE ) );
 }
 
 
@@ -165,9 +193,8 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 void deoglRenderVR::pCleanUp(){
 }
 
-void deoglRenderVR::pRenderHiddenArea( const deoglSharedVBOBlock &vboBlock,deoglShaderProgram &shader ){
+void deoglRenderVR::pRenderHiddenArea( const deoglSharedVBOBlock &vboBlock ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	renderThread.GetShader().ActivateShader( &shader );
 	
 	const deoglVAO &vao = *vboBlock.GetVBO()->GetVAO();
 	pglBindVertexArray( vao.GetVAO() );

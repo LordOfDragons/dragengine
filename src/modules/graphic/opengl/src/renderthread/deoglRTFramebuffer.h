@@ -25,7 +25,6 @@
 #include "../deoglBasics.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
-#include "../texture/deoglRenderbuffer.h"
 
 class deoglFramebuffer;
 class deoglFramebufferManager;
@@ -43,9 +42,6 @@ private:
 	deoglFramebuffer *pActive;
 	
 	deoglFramebuffer pPrimary;
-	
-	deoglRenderbuffer pDummyRenderBuffer;
-	deoglFramebuffer pDummy;
 	
 	deoglFramebuffer pEnvMap;
 	deoglFramebuffer pEnvMapMaterial;
@@ -79,12 +75,6 @@ public:
 	
 	/** Activate framebuffer or \em NULL to activate the primary framebuffer. */
 	void Activate( deoglFramebuffer *framebuffer );
-	
-	/** Dummy framebuffer for use by transform feedback with discard enabled. */
-	inline const deoglFramebuffer &GetDummy() const{ return pDummy; }
-	
-	/** Activate dummy framebuffer for use by transform feedback with discard enabled. */
-	void ActivateDummy();
 	
 	/** Environment map framebuffer. */
 	inline deoglFramebuffer &GetEnvMap(){ return pEnvMap; }

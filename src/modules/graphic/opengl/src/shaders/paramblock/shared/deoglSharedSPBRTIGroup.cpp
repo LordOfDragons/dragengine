@@ -43,9 +43,7 @@ pSharedSPB( sharedSPB ),
 pTextureCount( textureCount ),
 pRTSInstance( NULL )
 {
-	if( ! parent ){
-		DETHROW_INFO( deeNullPointer, "parent" );
-	}
+	DEASSERT_NOTNULL( parent )
 	
 	pRTSInstance = parent->GetRenderThread().GetRenderTaskSharedPool().GetInstance();
 	pUniqueKey = parent->GetRenderThread().GetUniqueKey().Get();

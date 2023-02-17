@@ -186,7 +186,7 @@ void deoglVideoPlayer::SyncToRender(){
 			
 			//printf( "CachedFrameTexture %i %p\n", pCurFrame, pRVideoPlayer->GetCachedFrameTexture() );
 			if( ! pRVideoPlayer->GetCachedFrameTexture() && pVideo->CanCacheFrame( pCurFrame ) ){
-				deoglPixelBuffer * const pixelBuffer = pDecodeThread->GetTexturePixelBuffer();
+				const deoglPixelBuffer::Ref pixelBuffer( pDecodeThread->GetTexturePixelBuffer() );
 				if( pixelBuffer ){
 					pDecodeThread->SetTexturePixelBuffer( pVideo->CacheFrame( pCurFrame, pixelBuffer ) );
 					pRVideoPlayer->SetUpdateCachedFrameTexture( pCurFrame );
@@ -196,7 +196,7 @@ void deoglVideoPlayer::SyncToRender(){
 		
 		if( ! pRVideoPlayer->HasCachedFrameTexture() ){
 			//vTimer.Reset();
-			deoglPixelBuffer * const pixelBuffer = pDecodeThread->GetTexturePixelBuffer();
+			const deoglPixelBuffer::Ref pixelBuffer( pDecodeThread->GetTexturePixelBuffer() );
 			//printf( "deoglVideoPlayer.UpdateTexture: Get decoded frame in %iys\n", ( int )( vTimer.GetElapsedTime() * 1e6f ) );
 			
 			// swap pixel buffers. the video player takes ownership of the pixel buffer until the next

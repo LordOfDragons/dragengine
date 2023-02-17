@@ -23,9 +23,11 @@
 #define _DEOGLRENDERERPLAN_H_
 
 #include "deoglRenderPlanTasks.h"
+#include "deoglRenderPlanCompute.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../component/deoglComponentList.h"
 #include "../../envmap/deoglEnvMapFader.h"
+#include "../../terrain/heightmap/deoglHTView.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
 
 #include <dragengine/common/collection/decPointerList.h>
@@ -40,7 +42,6 @@ class deoglRenderThread;
 class deoglRCamera;
 class deoglFramebuffer;
 class deoglGraphicContext;
-class deoglHTView;
 class deoglOcclusionMap;
 class deoglOcclusionTest;
 class deoglGIState;
@@ -178,7 +179,7 @@ private:
 	decPointerList pSkyInstances;
 	decColor pSkyBgColor;
 	
-	deoglHTView *pHTView;
+	deoglHTView::Ref pHTView;
 	
 	bool pEmptyPass;
 	bool pSkyVisible;
@@ -203,6 +204,7 @@ private:
 	decMatrix pOcclusionTestMatrix;
 	decMatrix pOcclusionTestMatrixStereo;
 	deoglGIState *pGIState;
+	deoglRenderPlanCompute pCompute;
 	
 	deoglRenderPlanTasks pTasks;
 	
@@ -534,7 +536,7 @@ public:
 	
 	
 	/** Height terrain view. */
-	inline deoglHTView *GetHeightTerrainView() const{ return pHTView; }
+	inline const deoglHTView::Ref &GetHeightTerrainView() const{ return pHTView; }
 	
 	/** Collider list. */
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
@@ -678,6 +680,10 @@ public:
 	
 	/** Drop GI state if present. */
 	void DropGIState();
+	
+	/** Compute. */
+	inline deoglRenderPlanCompute &GetCompute(){ return pCompute; }
+	inline const deoglRenderPlanCompute &GetCompute() const{ return pCompute; }
 	
 	
 	

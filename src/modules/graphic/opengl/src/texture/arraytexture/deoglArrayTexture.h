@@ -37,7 +37,7 @@ class deoglTexture;
 
 
 /**
- * @brief OpenGL Array Texture.
+ * OpenGL Array Texture.
  * Manages an OpenGL array texture. The texture is resizable and can be created
  * once required. By default the texture is not created. After changing
  * the size the texture is destroyed too. The property flags like mipmapped
@@ -64,7 +64,7 @@ public:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl array texture. */
 	deoglArrayTexture( deoglRenderThread &renderThread );
@@ -72,7 +72,7 @@ public:
 	~deoglArrayTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
@@ -139,10 +139,10 @@ public:
 	/** Sets texture level pixels from a pixel buffer. */
 	void SetPixelsLevel( int level, const deoglPixelBuffer &pixels );
 	
-	/** \brief Copy pixels from first level into pixel buffer. */
+	/** Copy pixels from first level into pixel buffer. */
 	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Copy pixels from level into pixel buffer. */
+	/** Copy pixels from level into pixel buffer. */
 	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
 	
 	/** Retrieves the size of a mip map level. */
@@ -152,12 +152,18 @@ public:
 	void CreateMipMaps();
 	
 	/** Copy from another array texture to this texture. */
+	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps );
+	
+	/** Copy from another array texture to this texture. */
 	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer );
+	
 	/** Copy area from another array texture to this texture. */
 	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer,
 		int width, int height, int layerCount, int srcX, int srcY, int destX, int destY );
+	
 	/** Copy from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer );
+	
 	/** Copy area from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer,
 		int width, int height, int srcX, int srcY, int destX, int destY );

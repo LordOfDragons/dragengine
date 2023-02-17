@@ -27,6 +27,7 @@
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
+#include "../pipeline/deoglPipelineManager.h"
 
 #include <deSharedVulkan.h>
 #include <devkDevice.h>
@@ -73,9 +74,7 @@ class deoglRTChoices;
 class deRenderWindow;
 
 // deprecated
-class deoglEdgeFinder;
 class deoglOptimizerManager;
-class deoglPreloader;
 class deoglQuickSorter;
 
 
@@ -125,6 +124,7 @@ private:
 	deoglRTRenderers *pRenderers;
 	deoglRTShader *pShader;
 	deoglRTTexture *pTexture;
+	deoglPipelineManager::Ref pPipelineManager;
 	
 	deoglCapabilities *pCapabilities;
 	deoglDeferredRendering *pDeferredRendering;
@@ -164,13 +164,14 @@ private:
 	deoglDebugInformation::Ref pDebugInfoThreadMainSynchronize;
 	
 	deoglDebugInformation::Ref pDebugInfoThreadRender;
-	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderSyncGpu;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderBegin;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderWindows;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsPrepare;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsRender;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderCapture;
 	deoglDebugInformation::Ref pDebugInfoThreadRenderEnd;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
 	
 	deoglDebugInformation::Ref pDebugInfoFrameLimiter;
 	deoglDebugInformation::Ref pDebugInfoFLEstimMain;
@@ -189,18 +190,17 @@ private:
 	
 	float pDebugTimeThreadMainWaitFinish;
 	
-	float pDebugTimeThreadRenderSwap;
+	float pDebugTimeThreadRenderSyncGpu;
 	float pDebugTimeThreadRenderBegin;
 	float pDebugTimeThreadRenderWindows;
 	float pDebugTimeThreadRenderWindowsPrepare;
 	float pDebugTimeThreadRenderWindowsRender;
 	float pDebugTimeThreadRenderCapture;
+	float pDebugTimeThreadRenderSwap;
 	int pDebugCountThreadWindows;
 	
 	// deprecated
 	deoglQuickSorter *pQuickSorter;
-	deoglPreloader *pPreloader;
-	deoglEdgeFinder *pEdgeFinder;
 	deoglOptimizerManager *pOptimizerManager;
 	
 	// thread control
@@ -303,6 +303,9 @@ public:
 	/** Texture related. */
 	inline deoglRTTexture &GetTexture() const{ return *pTexture; }
 	
+	/** Pipeline manager. */
+	inline deoglPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
+	
 	
 	
 	/** Memory  manager. */
@@ -356,7 +359,7 @@ public:
 	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
 	
 	/** Vulkan device if present. */
-	inline devkDevice *GetVulkanDevice() const{ return pVulkanDevice; }
+	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }
 	
 	
 	
@@ -469,12 +472,6 @@ public:
 	/*@{*/
 	/** Quick sorter. */
 	inline deoglQuickSorter &GetQuickSorter() const{ return *pQuickSorter; }
-	
-	/** Preloader. */
-	inline deoglPreloader &GetPreloader() const{ return *pPreloader; }
-	
-	/** Edge finder. */
-	inline deoglEdgeFinder &GetEdgeFinder() const{ return *pEdgeFinder; }
 	
 	/** Optimizer. */
 	inline deoglOptimizerManager &GetOptimizerManager() const{ return *pOptimizerManager; }

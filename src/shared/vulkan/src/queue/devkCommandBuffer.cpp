@@ -86,9 +86,7 @@ devkCommandBuffer::~devkCommandBuffer(){
 ///////////////
 
 void devkCommandBuffer::Begin(){
-	if( pRecording ){
-		DETHROW_INFO( deeInvalidAction, "recording" );
-	}
+	DEASSERT_FALSE( pRecording )
 	
 	Wait( true );
 	
@@ -107,9 +105,7 @@ void devkCommandBuffer::Begin(){
 void devkCommandBuffer::Barrier( const devkBuffer &buffer, bool useDeviceBuffer,
 VkAccessFlags sourceAccessMask, VkAccessFlags destAccessMask,
 VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
+	DEASSERT_TRUE( pRecording )
 	
 	VkBufferMemoryBarrier barrier;
 	memset( &barrier, 0, sizeof( barrier ) );
@@ -142,9 +138,7 @@ void devkCommandBuffer::BarrierTransferHost( const devkBuffer &buffer ){
 
 void devkCommandBuffer::Barrier( const devkImage &image, VkAccessFlags sourceAccessMask,
 VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
+	DEASSERT_TRUE( pRecording )
 	
 	VkImageMemoryBarrier barrier;
 	memset( &barrier, 0, sizeof( barrier ) );
@@ -192,25 +186,20 @@ void devkCommandBuffer::BarrierTransferHost( const devkImage &image ){
 }
 
 void devkCommandBuffer::BindPipeline( const devkPipeline &pipeline ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
+	DEASSERT_TRUE( pRecording )
+	
+	if( &pipeline == pBoundPipeline ){
+		return;
 	}
 	
 	pPool.GetDevice().vkCmdBindPipeline( pBuffer, pipeline.GetBindPoint(), pipeline.GetPipeline() );
-	
 	pBoundPipeline = &pipeline;
 }
 
 void devkCommandBuffer::BindDescriptorSet( int bindPoint, const devkDescriptorSet &descriptorSet ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
-	if( ! pBoundPipeline ){
-		DETHROW_INFO( deeInvalidAction, "no pipeline bound" );
-	}
-	if( bindPoint < 0 ){
-		DETHROW_INFO( deeInvalidParam, "bindPoint < 0" );
-	}
+	DEASSERT_TRUE( pRecording )
+	DEASSERT_NOTNULL( pBoundPipeline )
+	DEASSERT_TRUE( bindPoint >= 0 )
 	
 	const VkDescriptorSet dset = descriptorSet.GetSet();
 	pPool.GetDevice().vkCmdBindDescriptorSets( pBuffer, pBoundPipeline->GetBindPoint(),
@@ -218,18 +207,10 @@ void devkCommandBuffer::BindDescriptorSet( int bindPoint, const devkDescriptorSe
 }
 
 void devkCommandBuffer::BindVertexBuffer( int bindPoint, const devkBuffer &buffer, int offset ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
-	if( ! pActiveRenderPass ){
-		DETHROW_INFO( deeInvalidAction, "no active render pass" );
-	}
-	if( bindPoint < 0 ){
-		DETHROW_INFO( deeInvalidParam, "bindPoint < 0" );
-	}
-	if( offset < 0 ){
-		DETHROW_INFO( deeInvalidParam, "offset < 0" );
-	}
+	DEASSERT_TRUE( pRecording )
+	DEASSERT_NOTNULL( pActiveRenderPass )
+	DEASSERT_TRUE( bindPoint >= 0 )
+	DEASSERT_TRUE( offset >= 0 )
 	
 	const VkDeviceSize vulkanOffset = ( VkDeviceSize )offset;
 	const VkBuffer vulkanBuffer = buffer.GetBuffer();
@@ -242,12 +223,8 @@ void devkCommandBuffer::DispatchCompute( const decPoint3 &group ){
 }
 
 void devkCommandBuffer::DispatchCompute( int groupX, int groupY, int groupZ ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
-	if( ! pBoundPipeline ){
-		DETHROW_INFO( deeInvalidAction, "no pipeline bound" );
-	}
+	DEASSERT_TRUE( pRecording )
+	DEASSERT_NOTNULL( pBoundPipeline )
 	
 	pPool.GetDevice().vkCmdDispatch( pBuffer, groupX, groupY, groupZ );
 }
@@ -258,12 +235,8 @@ void devkCommandBuffer::BeginRenderPass( const devkRenderPass &renderPass, const
 
 void devkCommandBuffer::BeginRenderPass( const devkRenderPass &renderPass, const devkFramebuffer &framebuffer,
 const decPoint &position, const decPoint &size ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
-	if( pActiveRenderPass ){
-		DETHROW_INFO( deeInvalidAction, "another render pass is active" );
-	}
+	DEASSERT_TRUE( pRecording )
+	DEASSERT_NULL( pActiveRenderPass )
 	
 	VkRenderPassBeginInfo beginInfo;
 	memset( &beginInfo, 0, sizeof( beginInfo ) );
@@ -295,27 +268,50 @@ const decPoint &position, const decPoint &size ){
 	pPool.GetDevice().vkCmdSetScissor( pBuffer, 0, 1, &scissor );
 }
 
+void devkCommandBuffer::SetStencilCompareMask( uint32_t front ){
+	DEASSERT_TRUE( pRecording )
+	pPool.GetDevice().vkCmdSetStencilCompareMask( pBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, front );
+}
+
+void devkCommandBuffer::SetStencilCompareMask( uint32_t front, uint32_t back ){
+	DEASSERT_TRUE( pRecording )
+	pPool.GetDevice().vkCmdSetStencilCompareMask( pBuffer, VK_STENCIL_FACE_FRONT_BIT, front );
+	pPool.GetDevice().vkCmdSetStencilCompareMask( pBuffer, VK_STENCIL_FACE_BACK_BIT, back );
+}
+
+void devkCommandBuffer::SetStencilWriteMask( uint32_t front ){
+	DEASSERT_TRUE( pRecording )
+	pPool.GetDevice().vkCmdSetStencilWriteMask( pBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, front );
+}
+
+void devkCommandBuffer::SetStencilWriteMask( uint32_t front, uint32_t back ){
+	DEASSERT_TRUE( pRecording )
+	pPool.GetDevice().vkCmdSetStencilWriteMask( pBuffer, VK_STENCIL_FACE_FRONT_BIT, front );
+	pPool.GetDevice().vkCmdSetStencilWriteMask( pBuffer, VK_STENCIL_FACE_BACK_BIT, back );
+}
+
+void devkCommandBuffer::SetStencilReference( uint32_t front ){
+	DEASSERT_TRUE( pRecording )
+	pPool.GetDevice().vkCmdSetStencilReference( pBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, front );
+}
+
+void devkCommandBuffer::SetStencilReference( uint32_t front, uint32_t back ){
+	DEASSERT_TRUE( pRecording )
+	pPool.GetDevice().vkCmdSetStencilReference( pBuffer, VK_STENCIL_FACE_FRONT_BIT, front );
+	pPool.GetDevice().vkCmdSetStencilReference( pBuffer, VK_STENCIL_FACE_BACK_BIT, back );
+}
+
 void devkCommandBuffer::Draw( int vertexCount, int instanceCount, int firstVertex, int firstInstance ){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
-	if( ! pBoundPipeline ){
-		DETHROW_INFO( deeInvalidAction, "no pipeline bound" );
-	}
-	if( ! pActiveRenderPass ){
-		DETHROW_INFO( deeInvalidAction, "no active render pass" );
-	}
+	DEASSERT_TRUE( pRecording )
+	DEASSERT_NOTNULL( pBoundPipeline )
+	DEASSERT_NOTNULL( pActiveRenderPass )
 	
 	pPool.GetDevice().vkCmdDraw( pBuffer, vertexCount, instanceCount, firstVertex, firstInstance );
 }
 
 void devkCommandBuffer::EndRenderPass(){
-	if( ! pActiveRenderPass ){
-		DETHROW_INFO( deeInvalidAction, "no active render pass" );
-	}
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
+	DEASSERT_NOTNULL( pActiveRenderPass )
+	DEASSERT_TRUE( pRecording )
 	
 	pPool.GetDevice().vkCmdEndRenderPass( pBuffer );
 	
@@ -371,9 +367,7 @@ void devkCommandBuffer::ReadImage( devkImage &image ){
 }
 
 void devkCommandBuffer::End(){
-	if( ! pRecording ){
-		DETHROW_INFO( deeInvalidAction, "not recording" );
-	}
+	DEASSERT_TRUE( pRecording )
 	
 	if( pActiveRenderPass ){
 		EndRenderPass();
@@ -386,9 +380,7 @@ void devkCommandBuffer::End(){
 }
 
 void devkCommandBuffer::Submit( devkQueue &queue ){
-	if( pRecording ){
-		DETHROW_INFO( deeInvalidAction, "recording" );
-	}
+	DEASSERT_FALSE( pRecording )
 	
 	Wait( true );
 	

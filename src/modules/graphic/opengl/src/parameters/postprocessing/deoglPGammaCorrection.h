@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Gamma Correction Parameter.
+ * Gamma Correction Parameter.
  */
 class deoglPGammaCorrection : public deoglParameterFloat{
 public:

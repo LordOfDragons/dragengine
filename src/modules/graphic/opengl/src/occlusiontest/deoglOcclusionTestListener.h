@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Occlusion Test Listener.
+ * Occlusion Test Listener.
  * Listener for occlusion testing called during evaluation of test results. This listener might
  * look strange as it contains only one function. This is due to speed reasons. Occlusion testing
  * is used to flag elements as invisible. Hence elements are considered visible unless proven
@@ -37,7 +37,7 @@
  */
 class deoglOcclusionTestListener{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new occlusion test listener. */
 	deoglOcclusionTestListener();
@@ -45,7 +45,7 @@ public:
 	virtual ~deoglOcclusionTestListener();
 	/*@}*/
 	
-	/** @name Listening */
+	/** \name Listening */
 	/*@{*/
 	/** The occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible() = 0;

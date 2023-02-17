@@ -31,7 +31,7 @@ class delEMParameter;
 /**
  * \brief Engine Parameter Parameter List.
  */
-class delEMParameterList{
+class DE_DLL_EXPORT delEMParameterList{
 private:
 	decObjectList pParameters;
 	

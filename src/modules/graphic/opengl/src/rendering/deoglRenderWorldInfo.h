@@ -29,7 +29,7 @@ class deoglDebugInformation;
 
 
 /**
- * \brief World renderer information for debugging purpose.
+ * World renderer information for debugging purpose.
  */
 class deoglRenderWorldInfo : public deoglRenderBase{
 public:
@@ -76,10 +76,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create info. */
+	/** Create info. */
 	deoglRenderWorldInfo( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up info. */
+	/** Clean up info. */
 	virtual ~deoglRenderWorldInfo();
 	/*@}*/
 	
@@ -87,13 +87,13 @@ public:
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Clear all. */
+	/** Clear all. */
 	void ClearAll();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

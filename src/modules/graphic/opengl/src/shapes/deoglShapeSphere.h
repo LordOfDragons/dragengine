@@ -29,11 +29,11 @@
 
 
 /**
- * @brief Sphere Shape.
+ * Sphere Shape.
  */
 class deoglShapeSphere : public deoglShape{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
 	deoglShapeSphere( deoglRenderThread &renderThread );
@@ -41,7 +41,7 @@ public:
 	virtual ~deoglShapeSphere();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Calculate matrix for box parameters. */
 	void CalcMatrix( decMatrix &matrix, const decVector &position, float radius );

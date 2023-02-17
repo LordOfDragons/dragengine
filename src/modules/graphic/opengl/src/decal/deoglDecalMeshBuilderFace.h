@@ -27,7 +27,7 @@
 
 
 /**
- * \brief OpenGL decal mesh builder face.
+ * OpenGL decal mesh builder face.
  */
 class deoglDecalMeshBuilderFace{
 public:
@@ -39,10 +39,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create decal mesh builder face. */
+	/** Create decal mesh builder face. */
 	deoglDecalMeshBuilderFace();
 	
-	/** \brief Clean up decal mesh builder face. */
+	/** Clean up decal mesh builder face. */
 	~deoglDecalMeshBuilderFace();
 	/*@}*/
 	
@@ -50,31 +50,31 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Point by index. */
+	/** Point by index. */
 	int GetPointAt( int index ) const;
 	
-	/** \brief First point. */
+	/** First point. */
 	inline int GetPoint1() const{ return pPoints[ 0 ]; }
 	
-	/** \brief Set first point. */
+	/** Set first point. */
 	void SetPoint1( int point );
 	
-	/** \brief Second point. */
+	/** Second point. */
 	inline int GetPoint2() const{ return pPoints[ 1 ]; }
 	
-	/** \brief Set second point. */
+	/** Set second point. */
 	void SetPoint2( int point );
 	
-	/** \brief Third point. */
+	/** Third point. */
 	inline int GetPoint3() const{ return pPoints[ 2 ]; }
 	
-	/** \brief Set third point. */
+	/** Set third point. */
 	void SetPoint3( int point );
 	
-	/** \brief Face normal. */
+	/** Face normal. */
 	inline const decVector &GetFaceNormal() const{ return pNormal; }
 	
-	/** \brief Set face normal. */
+	/** Set face normal. */
 	void SetFaceNormal( const decVector &normal );
 	/*@}*/
 };

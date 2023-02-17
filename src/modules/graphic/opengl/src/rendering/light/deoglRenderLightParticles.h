@@ -34,7 +34,7 @@ class deoglSPBlockUBO;
 
 
 /**
- * @brief Render Particle Lights.
+ * Render Particle Lights.
  * Renders small lights around emissive particles. Particle lights do not cast
  * shadows nor do they affect transparent materials. This way the emissive
  * light of particles is visible without reducing performance too much.
@@ -43,7 +43,7 @@ class deoglRenderLightParticles : public deoglRenderLightBase{
 private:
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderLightParticles( deoglRenderThread &renderThread );
@@ -51,7 +51,7 @@ public:
 	~deoglRenderLightParticles();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan );

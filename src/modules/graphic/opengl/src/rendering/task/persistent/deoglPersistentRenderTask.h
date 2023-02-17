@@ -31,13 +31,13 @@
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
-class deoglPersistentRenderTaskShader;
+class deoglPersistentRenderTaskPipeline;
 class deoglPersistentRenderTaskTexture;
 class deoglPersistentRenderTaskVAO;
 class deoglPersistentRenderTaskOwner;
 class deoglRenderThread;
 class deoglRTLogger;
-class deoglShaderProgram;
+class deoglPipeline;
 class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
 class deoglSPBlockUBO;
@@ -60,8 +60,8 @@ private:
 	bool pUseSPBInstanceFlags;
 	decPointerLinkedList pOwners;
 	decPointerDictionaryExt pOwnersMap;
-	decPointerLinkedList pShaders;
-	decPointerDictionaryExt pShadersMap;
+	decPointerLinkedList pPipelines;
+	decPointerDictionaryExt pPipelinesMap;
 	
 	
 	
@@ -122,39 +122,39 @@ public:
 	
 	
 	
-	/** Number of shaders. */
-	int GetShaderCount() const;
+	/** Number of pipelines. */
+	int GetPipelineCount() const;
 	
-	/** Root shader. */
-	decPointerLinkedList::cListEntry *GetRootShader() const;
+	/** Root pipeline. */
+	decPointerLinkedList::cListEntry *GetRootPipeline() const;
 	
-	/** Shader with shader or NULL. */
-	deoglPersistentRenderTaskShader *GetShaderWith( const deoglShaderProgram *shader ) const;
+	/** Pipeline with pipeline or nullptr. */
+	deoglPersistentRenderTaskPipeline *GetPipelineWith( const deoglPipeline *pipeline ) const;
 	
-	/** Add shader. */
-	deoglPersistentRenderTaskShader *AddShader( const deoglShaderProgram *shader );
+	/** Add pipeline. */
+	deoglPersistentRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
 	
-	/** Remove shader. */
-	void RemoveShader( deoglPersistentRenderTaskShader *shader );
+	/** Remove pipeline. */
+	void RemovePipeline( deoglPersistentRenderTaskPipeline *pipeline );
 	
-	/** Remove all shaders. */
-	void RemoveAllShaders();
+	/** Remove all pipelines. */
+	void RemoveAllPipelines();
 	
 	
 	
 	/** Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
-	/** Total amount of textures in this shader. */
+	/** Total amount of textures in this pipeline. */
 	int GetTotalTextureCount() const;
 	
-	/** Total amount of vaos in this shader. */
+	/** Total amount of vaos in this pipeline. */
 	int GetTotalVAOCount() const;
 	
-	/** Total amount of instances in this shader. */
+	/** Total amount of instances in this pipeline. */
 	int GetTotalInstanceCount() const;
 	
-	/** Total amount of subinstances in this shader. */
+	/** Total amount of subinstances in this pipeline. */
 	int GetTotalSubInstanceCount() const;
 	
 	/** Clear. */

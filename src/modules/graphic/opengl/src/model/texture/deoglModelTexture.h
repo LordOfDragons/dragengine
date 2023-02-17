@@ -30,7 +30,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Model texture.
+ * Model texture.
  */
 class deoglModelTexture{
 private:
@@ -46,10 +46,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create texture. */
+	/** Create texture. */
 	deoglModelTexture( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up texture. */
+	/** Clean up texture. */
 	~deoglModelTexture();
 	/*@}*/
 	
@@ -57,37 +57,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief First face index. */
+	/** First face index. */
 	inline int GetFirstFace() const{ return pFirstFace; }
 	
-	/** \brief Set first face index. */
+	/** Set first face index. */
 	void SetFirstFace( int faceIndex );
 	
-	/** \brief Face count. */
+	/** Face count. */
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
-	/** \brief Set face count. */
+	/** Set face count. */
 	void SetFaceCount( int faceCount );
 	
-	/** \brief Texture is double sided. */
+	/** Texture is double sided. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Set texture is double sided. */
+	/** Set texture is double sided. */
 	void SetDoubleSided( bool doubleSided );
 	
-	/** \brief Texture is rendered as decal. */
+	/** Texture is rendered as decal. */
 	inline bool GetDecal() const{ return pDecal; }
 	
-	/** \brief Set if texture is rendered as decal. */
+	/** Set if texture is rendered as decal. */
 	void SetDecal( bool decal );
 	
-	/** \brief Decal offset. */
+	/** Decal offset. */
 	inline int GetDecalOffset() const{ return pDecalOffset; }
 	
-	/** \brief Set decal offset. */
+	/** Set decal offset. */
 	void SetDecalOffset( int offset );
 	
-	/** \brief Render task instance groups. */
+	/** Render task instance groups. */
 	inline deoglSharedSPBRTIGroupList &GetRTIGroups(){ return pRTIGroups; }
 	/*@}*/
 };

@@ -34,7 +34,7 @@
 
 
 // Safe distance margin
-#define SAFE_DISTANCE_MARGIN 1e-5
+#define SAFE_DISTANCE_MARGIN 1e-5f
 
 
 

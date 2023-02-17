@@ -36,6 +36,10 @@
 // class deoxrInstance
 ////////////////////////
 
+#ifndef OXR_MODULE_VERSION
+#include "module_version.h"
+#endif
+
 void deoxrInstance::sSuggestBinding::Set( deoxrAction *paction, const deoxrPath &pbinding ){
 	action = paction;
 	binding = pbinding;
@@ -360,7 +364,7 @@ void deoxrInstance::pDetectLayers(){
 		for( i=0; i<count; i++ ){
 			for( j=0; j<LayerCount; j++ ){
 				if( strcmp( pSupportsLayer[ j ].name, layers[ i ].layerName ) == 0 ){
-					pSupportsLayer[ j ].version = layers[ i ].specVersion;
+					pSupportsLayer[ j ].version = ( uint32_t )layers[ i ].specVersion;
 					pSupportsLayer[ j ].layerVersion = layers[ i ].layerVersion;
 					break;
 				}
@@ -415,12 +419,19 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 		moduleVersion.Add( "0" );
 	}
 	
-	strcpy( instanceCreateInfo.applicationInfo.applicationName, "Drag[en]gine" );
+	#ifdef OS_W32_VS
+		strcpy_s( instanceCreateInfo.applicationInfo.applicationName,
+			sizeof( instanceCreateInfo.applicationInfo ), "Drag[en]gine" );
+		strcpy_s( instanceCreateInfo.applicationInfo.engineName,
+			sizeof( instanceCreateInfo.applicationInfo.engineName ), "Drag[en]gine" );
+	#else
+		strcpy( instanceCreateInfo.applicationInfo.applicationName, "Drag[en]gine" );
+		strcpy( instanceCreateInfo.applicationInfo.engineName, "Drag[en]gine" );
+	#endif
 	instanceCreateInfo.applicationInfo.applicationVersion = 
 		( ( moduleVersion.GetAt( 0 ).ToInt() & 0xffff ) << 16 )
 		| ( ( moduleVersion.GetAt( 1 ).ToInt() & 0xff ) << 8 )
 		| ( moduleVersion.GetAt( 2 ).ToInt() & 0xff );
-	strcpy( instanceCreateInfo.applicationInfo.engineName, "Drag[en]gine" );
 	instanceCreateInfo.applicationInfo.engineVersion =
 		instanceCreateInfo.applicationInfo.applicationVersion;
 	instanceCreateInfo.applicationInfo.apiVersion = XR_CURRENT_API_VERSION;

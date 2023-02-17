@@ -59,7 +59,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render thread leak tracker.
+ * Render thread leak tracker.
  */
 class deoglRTLeakTracker{
 private:
@@ -69,10 +69,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread texture related object. */
+	/** Create render thread texture related object. */
 	deoglRTLeakTracker( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread texture related object. */
+	/** Clean up render thread texture related object. */
 	virtual ~deoglRTLeakTracker();
 	/*@}*/
 	
@@ -80,7 +80,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Report leaks. */
+	/** Report leaks. */
 	void ReportLeaks( const char *name, const decPointerSet &tracker );
 	/*@}*/
 	

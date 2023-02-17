@@ -273,7 +273,7 @@ dsFunction( init.clsNavBlocker, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 void deClassNavigationBlocker::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNavigationBlocker * const blocker = ( ( const sNavBlockerNatDat * )p_GetNativeData( myself ) )->blocker;
 	
-	rt->PushInt( ( intptr_t )blocker );
+	rt->PushInt( ( int )( intptr_t )blocker );
 }
 
 // public func bool equals( Object object )

@@ -176,7 +176,7 @@ void deoalATContext::pScanForDevices(){
 		logger.LogInfo( "devices:" );
 		position = 0;
 		while( devices[ position ] ){
-			len = strlen( devices + position );
+			len = ( int )strlen( devices + position );
 			if( len > 0 ){
 				logger.LogInfoFormat( "- %s", devices + position );
 				position += len + 1;

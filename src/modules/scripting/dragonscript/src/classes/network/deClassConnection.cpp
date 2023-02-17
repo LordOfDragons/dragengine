@@ -253,7 +253,7 @@ dsFunction( init.clsCon, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassConnection::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deConnection *connection = ( ( sConNatDat* )p_GetNativeData( myself ) )->connection;
 	
-	rt->PushInt( ( intptr_t )connection );
+	rt->PushInt( ( int )( intptr_t )connection );
 }
 
 // public func bool equals( Object object )

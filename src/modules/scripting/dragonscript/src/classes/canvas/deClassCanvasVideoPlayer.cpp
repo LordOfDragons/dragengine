@@ -162,7 +162,7 @@ dsFunction( init.clsCVidP, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 void deClassCanvasVideoPlayer::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCanvasVideoPlayer * const canvas = ( ( sCVidPNatDat* )p_GetNativeData( myself ) )->canvas;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )canvas );
+	rt->PushInt( ( int )( intptr_t )canvas );
 }
 
 // public func bool equals( Object obj )

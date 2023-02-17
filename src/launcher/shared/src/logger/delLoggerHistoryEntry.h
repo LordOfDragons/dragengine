@@ -29,7 +29,7 @@
 /**
  * \brief Logger History Entry.
  */
-class delLoggerHistoryEntry{
+class DE_DLL_EXPORT delLoggerHistoryEntry{
 public:
 	/** \brief Message types. */
 	enum eMessageTypes{

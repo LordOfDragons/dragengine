@@ -100,7 +100,7 @@ void debnVisitorValueType::VisitFloat( deNetworkValueFloat *value ){
 	pWriter->SetPosition( 0 );
 	pMessage->Clear();
 	
-	pWriter->WriteFloat( value->GetFloat() );
+	pWriter->WriteFloat( ( float )value->GetFloat() );
 }
 
 void debnVisitorValueType::VisitString( deNetworkValueString *value ){

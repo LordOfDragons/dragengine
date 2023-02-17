@@ -59,6 +59,10 @@
 // Outputs
 ////////////
 
+#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
+	#define REQUIRES_NORMAL
+#endif
+
 #ifdef HAS_TESSELLATION_SHADER
 	#define PASS_ON_NEXT_STAGE 1
 	#ifdef REQUIRES_TEX_COLOR
@@ -121,9 +125,6 @@
 	#ifdef CLIP_PLANE
 		out vec3 vClipCoord;
 	#endif
-	#ifdef DEPTH_ORTHOGONAL
-		out float vZCoord;
-	#endif
 	#ifdef DEPTH_DISTANCE
 		out vec3 vPosition;
 	#endif
@@ -170,15 +171,19 @@
 	#include "v130/shared/defren/skin/transform_normal.glsl"
 #endif
 
+#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
+	#include "v130/shared/defren/skin/depth_offset.glsl"
+#endif
+
 void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
 	// transform the texture coordinates
 	#ifdef REQUIRES_TEX_COLOR
 		#ifdef HEIGHT_MAP
-			vec2 tc = pMatrixTexCoord * vec3( inPosition, 1.0 );
+			vec2 tc = pMatrixTexCoord * vec3( inPosition, 1 );
 		#else
-			vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1.0 );
+			vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1 );
 		#endif
 		vTCColor = tc; // * pTCTransformColor.xy + pTCTransformColor.zw;
 	#endif
@@ -207,17 +212,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vReflectDir = position;
 			#else
-				vReflectDir = pMatrixV[ inLayer ] * vec4( position, 1.0 );
-			#endif
-		#endif
-		
-		// non-perspective depth values if required
-		#ifdef DEPTH_ORTHOGONAL
-			#ifdef NO_ZCLIP
-				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-				gl_Position.z = 0.0;
-			#else
-				vZCoord = gl_Position.z;
+				vReflectDir = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
 		#endif
 		
@@ -226,7 +221,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vPosition = position;
 			#else
-				vPosition = pMatrixV[ inLayer ] * vec4( position, 1.0 );
+				vPosition = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
 		#endif
 		
@@ -235,7 +230,7 @@ void main( void ){
 			#ifdef BILLBOARD
 				vClipCoord = position;
 			#else
-				vClipCoord = pMatrixV[ inLayer ] * vec4( position, 1.0 );
+				vClipCoord = pMatrixV[ inLayer ] * vec4( position, 1 );
 			#endif
 		#endif
 		
@@ -244,8 +239,13 @@ void main( void ){
 			#ifdef BILLBOARD
 				vFadeZ = position.z;
 			#else
-				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1.0 ) ).z;
+				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z;
 			#endif
+		#endif
+		
+		// depth offset
+		#ifdef DEPTH_OFFSET
+			applyDepthOffset( inLayer, vNormal, pDoubleSided );
 		#endif
 	#endif
 	

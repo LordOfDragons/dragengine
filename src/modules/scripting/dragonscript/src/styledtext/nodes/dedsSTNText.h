@@ -19,45 +19,49 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEDSSTNTEXT_H_
 #define _DEDSSTNTEXT_H_
 
-// includes
 #include "dedsStyledTextNode.h"
 
-// predefinitions
-
+#include <dragengine/common/string/decString.h>
 
 
 /**
- * @brief Styled Text Node Text.
  * Text node in a styled text object storing a single text string.
  * Line breaks are honored.
  */
 class dedsSTNText : public dedsStyledTextNode{
 private:
-	char *pText;
+	decString pText;
 	
+
+
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new text node. */
+	/** Create text node. */
 	dedsSTNText();
-	/** Creates a new text node with the given text. */
+
+	/** Create text node with text. */
 	dedsSTNText( const char *text );
+	
+protected:
 	/** Cleans up the text node. */
 	virtual ~dedsSTNText();
 	/*@}*/
 	
-	/** @name Management */
+
+
+public:
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the text. */
-	inline const char *GetText() const{ return ( const char * )pText; }
-	/** Sets the text. */
+	/** Text. */
+	inline const decString &GetText() const{ return pText; }
+
+	/** Set text. */
 	void SetText( const char *text );
 	/*@}*/
 };
 
-// end of include only once
 #endif

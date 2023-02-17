@@ -43,6 +43,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -482,20 +483,13 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
-			const deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estComponentGeometry );
+			const deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptComponent ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
 			
 			// update parameter block area belonging to this element
-			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
+			UpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
+				pSharedSPBElement->GetIndex(), skinShader );
 		}
 		
 		// done
@@ -519,7 +513,6 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 		rtsi.SetFirstPoint( pComponent.GetPointOffset( i ) );
 		rtsi.SetFirstIndex( pComponent.GetIndexOffset( i ) + modelTexture.GetFirstFace() * 3 );
 		rtsi.SetIndexCount( modelTexture.GetFaceCount() * 3 );
-		rtsi.SetDoubleSided( pUseDoubleSided );
 	}
 	
 	// shadow combine groups
@@ -531,7 +524,6 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 		
 		const deoglModelLOD &modelLod = model.GetLODAt( i );
 		deoglRenderTaskSharedInstance &rtsi = *group->GetRTSInstance();
-		rtsi.SetDoubleSided( pUseDoubleSided );
 		rtsi.SetFirstPoint( pComponent.GetPointOffset( i ) );
 		rtsi.SetFirstIndex( pComponent.GetIndexOffset( i ) + modelLod.GetTextureAt( pIndex ).GetFirstFace() * 3 );
 		
@@ -546,9 +538,7 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup( int lodLevel ) const{
 	deoglSharedSPBRTIGroup * const group = ( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt(
 		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount() ) );
-	if( ! group ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( group )
 	return *group;
 }
 
@@ -559,68 +549,61 @@ deoglSharedSPBRTIGroup *deoglRComponentTexture::GetSharedSPBRTIGroupShadow( int 
 
 
 
-deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForShaderType(
-deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estComponentGeometry:
-	case deoglSkinTexture::estDecalGeometry:
-	case deoglSkinTexture::estStereoComponentGeometry:
-	case deoglSkinTexture::estStereoDecalGeometry:
+deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
-	case deoglSkinTexture::estComponentDepth:
-	case deoglSkinTexture::estComponentDepthClipPlane:
-	case deoglSkinTexture::estComponentDepthReversed:
-	case deoglSkinTexture::estComponentDepthClipPlaneReversed:
-	case deoglSkinTexture::estStereoComponentDepth:
-	case deoglSkinTexture::estStereoComponentDepthClipPlane:
-	case deoglSkinTexture::estStereoComponentDepthReversed:
-	case deoglSkinTexture::estStereoComponentDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+	case deoglSkinTexturePipelines::etMask:
 		return GetTUCDepth();
 		
-	case deoglSkinTexture::estComponentCounter:
-	case deoglSkinTexture::estComponentCounterClipPlane:
-	case deoglSkinTexture::estStereoComponentCounter:
-	case deoglSkinTexture::estStereoComponentCounterClipPlane:
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
 		return GetTUCCounter();
 		
-	case deoglSkinTexture::estComponentShadowProjection:
-	case deoglSkinTexture::estComponentShadowOrthogonal:
-	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
-	case deoglSkinTexture::estComponentShadowDistance:
+	case deoglSkinTexturePipelines::etShadowProjection:
+	case deoglSkinTexturePipelines::etShadowProjectionCube:
+	case deoglSkinTexturePipelines::etShadowOrthogonal:
+	case deoglSkinTexturePipelines::etShadowOrthogonalCascaded:
+	case deoglSkinTexturePipelines::etShadowDistance:
 		return GetTUCShadow();
 		
-	case deoglSkinTexture::estComponentShadowDistanceCube:
+	case deoglSkinTexturePipelines::etShadowDistanceCube:
 		return GetTUCShadowCube();
 		
-	case deoglSkinTexture::estComponentEnvMap:
+	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
 		
-	case deoglSkinTexture::estOutlineGeometry:
-	case deoglSkinTexture::estStereoOutlineGeometry:
-		return GetTUCOutlineGeometry();
-		
-	case deoglSkinTexture::estOutlineDepth:
-	case deoglSkinTexture::estOutlineDepthClipPlane:
-	case deoglSkinTexture::estOutlineDepthReversed:
-	case deoglSkinTexture::estOutlineDepthClipPlaneReversed:
-	case deoglSkinTexture::estStereoOutlineDepth:
-	case deoglSkinTexture::estStereoOutlineDepthClipPlane:
-	case deoglSkinTexture::estStereoOutlineDepthReversed:
-	case deoglSkinTexture::estStereoOutlineDepthClipPlaneReversed:
-		return GetTUCOutlineDepth();
-		
-	case deoglSkinTexture::estOutlineCounter:
-	case deoglSkinTexture::estOutlineCounterClipPlane:
-	case deoglSkinTexture::estStereoOutlineCounter:
-	case deoglSkinTexture::estStereoOutlineCounterClipPlane:
-		return GetTUCOutlineCounter();
-		
-	case deoglSkinTexture::estComponentLuminance:
+	case deoglSkinTexturePipelines::etLuminance:
 		return GetTUCLuminance();
 		
-	case deoglSkinTexture::estComponentGIMaterial:
+	case deoglSkinTexturePipelines::etGIMaterial:
 		return GetTUCGIMaterial();
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+deoglTexUnitsConfig *deoglRComponentTexture::GetTUCForOutlinePipelineType(
+deoglSkinTexturePipelines::eTypes type ) const{
+	switch( type ){
+	case deoglSkinTexturePipelines::etGeometry:
+		return GetTUCOutlineGeometry();
+		
+	case deoglSkinTexturePipelines::etDepth:
+	case deoglSkinTexturePipelines::etDepthClipPlane:
+	case deoglSkinTexturePipelines::etDepthReversed:
+	case deoglSkinTexturePipelines::etDepthClipPlaneReversed:
+		return GetTUCOutlineDepth();
+		
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
+		return GetTUCOutlineCounter();
 		
 	default:
 		DETHROW( deeInvalidParam );
@@ -638,28 +621,28 @@ void deoglRComponentTexture::PrepareTUCs(){
 			pTUCDepth->RemoveUsage();
 			pTUCDepth = NULL;
 		}
-		pTUCDepth = BareGetTUCFor( deoglSkinTexture::estComponentDepth );
+		pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
 		
 		// counter
 		if( pTUCCounter ){
 			pTUCCounter->RemoveUsage();
 			pTUCCounter = NULL;
 		}
-		pTUCCounter = BareGetTUCFor( deoglSkinTexture::estComponentCounter );
+		pTUCCounter = BareGetTUCFor( deoglSkinTexturePipelines::etCounter );
 		
 		// shadow
 		if( pTUCShadow ){
 			pTUCShadow->RemoveUsage();
 			pTUCShadow = NULL;
 		}
-		pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
+		pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
 		
 		// shadow cube
 		if( pTUCShadowCube ){
 			pTUCShadowCube->RemoveUsage();
 			pTUCShadowCube = NULL;
 		}
-		pTUCShadowCube = BareGetTUCFor( deoglSkinTexture::estComponentShadowDistanceCube );
+		pTUCShadowCube = BareGetTUCFor( deoglSkinTexturePipelines::etShadowDistanceCube );
 		
 		// environment map
 		if( pTUCEnvMap ){
@@ -718,28 +701,28 @@ void deoglRComponentTexture::PrepareTUCs(){
 			pTUCOutlineDepth->RemoveUsage();
 			pTUCOutlineDepth = NULL;
 		}
-		pTUCOutlineDepth = BareGetTUCFor( deoglSkinTexture::estOutlineDepth );
+		pTUCOutlineDepth = BareGetOutlineTUCFor( deoglSkinTexturePipelines::etDepth );
 		
 		// outline geometry
 		if( pTUCOutlineGeometry ){
 			pTUCOutlineGeometry->RemoveUsage();
 			pTUCOutlineGeometry = NULL;
 		}
-		pTUCOutlineGeometry = BareGetTUCFor( deoglSkinTexture::estOutlineGeometry );
+		pTUCOutlineGeometry = BareGetOutlineTUCFor( deoglSkinTexturePipelines::etGeometry );
 		
 		// outline counter
 		if( pTUCOutlineCounter ){
 			pTUCOutlineCounter->RemoveUsage();
 			pTUCOutlineCounter = NULL;
 		}
-		pTUCOutlineCounter = BareGetTUCFor( deoglSkinTexture::estOutlineCounter );
+		pTUCOutlineCounter = BareGetOutlineTUCFor( deoglSkinTexturePipelines::etCounter );
 		
 		// global illumination material
 		if( pTUCGIMaterial ){
 			pTUCGIMaterial->RemoveUsage();
 			pTUCGIMaterial = NULL;
 		}
-		pTUCGIMaterial = BareGetTUCFor( deoglSkinTexture::estComponentGIMaterial );
+		pTUCGIMaterial = BareGetTUCFor( deoglSkinTexturePipelines::etGIMaterial );
 	}
 	
 	if( pDirtyTUCsAll || pDirtyTUCsEnvMapUse ){
@@ -748,14 +731,14 @@ void deoglRComponentTexture::PrepareTUCs(){
 			pTUCGeometry->RemoveUsage();
 			pTUCGeometry = NULL;
 		}
-		pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estComponentGeometry );
+		pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
 		
 		// luminance
 		if( pTUCLuminance ){
 			pTUCLuminance->RemoveUsage();
 			pTUCLuminance = NULL;
 		}
-		pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estComponentLuminance );
+		// pTUCLuminance = BareGetTUCFor( deoglSkinTexturePipelines::etLuminance );
 	}
 	
 	// finished
@@ -764,8 +747,7 @@ void deoglRComponentTexture::PrepareTUCs(){
 	pDirtyTUCsEnvMapUse = false;
 }
 
-deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(
-deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
@@ -791,7 +773,57 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 		dynamicSkin = pComponent.GetDynamicSkin();
 	}
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptComponent ).GetWithRef( type ).GetShader();
+	
+	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
+		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
+			pComponent.GetParentWorld()->GetSkyEnvironmentMap(),
+			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	}
+	
+	if( ! tuc ){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	}
+	tuc->EnsureRTSTexture();
+	
+	return tuc;
+}
+
+deoglTexUnitsConfig *deoglRComponentTexture::BareGetOutlineTUCFor(
+deoglSkinTexturePipelines::eTypes type ) const{
+	if( ! pUseSkinTexture ){
+		return NULL;
+	}
+	
+	deoglRenderThread &renderThread = pComponent.GetRenderThread();
+	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglSkinState *skinState = NULL;
+	deoglTexUnitsConfig *tuc = NULL;
+	
+	if( pSkinState ){
+		skinState = pSkinState;
+		if( pDynamicSkin ){
+			dynamicSkin = pDynamicSkin;
+			
+		}else{
+			dynamicSkin = pComponent.GetDynamicSkin();
+		}
+		
+	}else{
+		// for texture with no own skin
+		skinState = pComponent.GetSkinState();
+		dynamicSkin = pComponent.GetDynamicSkin();
+	}
+	
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
+		GetAt( deoglSkinTexturePipelinesList::eptOutline ).GetWithRef( type ).GetShader();
 	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
@@ -938,6 +970,19 @@ void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanM
 	pUpdateIsRendered();
 }
 
+void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	if( pDynamicSkin ){
+		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
+		
+	}else{
+		pSkinState->RenderRenderables( pSkin, pComponent.GetDynamicSkin(), renderPlanMask );
+	}
+}
+
 void deoglRComponentTexture::UpdateRenderableMapping(){
 	if( ! pSkinState ){
 		return;
@@ -1000,7 +1045,7 @@ void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 	}
 	
 	if( pUseSkinTexture ){
-		pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters();
+		pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters() & ~ertfRendered;
 	}
 	if( pIsRendered ){
 		pRenderTaskFilters |= ertfRendered;

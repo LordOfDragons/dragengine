@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\soundtouch\extern_soundtouch.vcxproj">
+      <Project>{96f6e551-7e2b-4a33-b210-3e19b9080fa3}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\synthesizer\desynthesizer\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBufferList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deDESynthesizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynBasics.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCaches.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCommandExecuter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerSource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerCurve.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffectStretch.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceChain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceGroup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSound.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSynthesizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceWave.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\buffer\desynSharedBufferList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\deDESynthesizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCaches.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynCommandExecuter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\desynConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerSource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynSynthesizerTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\effect\desynSynthesizerEffectStretch.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceChain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceSynthesizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\source\desynSynthesizerSourceWave.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\module.xml" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{827D0AA6-4692-4B33-BDE4-17F8D57DD631}</ProjectGuid>
+    <RootNamespace>desynthesizer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>module synthesizer desynthesizer</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardesynthesizer>true</UseDebugLibrardesynthesizer>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardesynthesizer>false</UseDebugLibrardesynthesizer>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardesynthesizer>true</UseDebugLibrardesynthesizer>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrardesynthesizer>false</UseDebugLibrardesynthesizer>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>imgdesynthesizer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>synthdesynthesizer</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;SYNTHDESYNTH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;SYNTHDESYNTH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;SYNTHDESYNTH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\synthesizer\desynthesizer\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;SYNTHDESYNTH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\synthesizer\desynthesizer\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

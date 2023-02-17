@@ -35,7 +35,7 @@ class decCurveBezierEvaluator;
 
 
 /**
- * \brief Skin calculated property.
+ * Skin calculated property.
  */
 class deoglSkinCalculatedProperty : public deObject{
 private:
@@ -48,11 +48,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new skin calculated property. */
+	/** Creates a new skin calculated property. */
 	deoglSkinCalculatedProperty();
 	
 protected:
-	/** \brief Cleans up the skin calculated property. */
+	/** Cleans up the skin calculated property. */
 	virtual ~deoglSkinCalculatedProperty();
 	/*@}*/
 	
@@ -61,20 +61,20 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Mapped component. */
+	/** Mapped component. */
 	deSkinPropertyMapped::cComponent &GetMappedComponent( int index );
 	const deSkinPropertyMapped::cComponent &GetMappedComponent( int index ) const;
 	
-	/** \brief Requires texture. */
+	/** Requires texture. */
 	inline bool GetRequiresTexture() const{ return pRequiresTexture; }
 	
-	/** \brief Set if texture is required. */
+	/** Set if texture is required. */
 	void SetRequiresTexture( bool requiresTexture );
 	
-	/** \brief Prepare. */
+	/** Prepare. */
 	void Prepare();
 	
-	/** \brief Calculated value. */
+	/** Calculated value. */
 	decColor Calculate( const deoglSkinState &skinState, const deoglSkinStateCalculated &calculated );
 	/*@}*/
 	

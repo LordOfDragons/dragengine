@@ -35,7 +35,7 @@ class deoglTexUnitsConfig;
 
 
 /**
- * \brief Add elements to render task.
+ * Add elements to render task.
  * 
  * Provides support for filtering the elements using texture properties.
  */
@@ -44,17 +44,17 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglRenderTask &pRenderTask;
-	deoglSkinTexture::eShaderTypes pSkinShaderType;
+	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new add to render task. */
+	/** Create new add to render task. */
 	deoglAddToRenderTaskGIMaterial( deoglRenderThread &renderThread, deoglRenderTask &renderTask );
 	
-	/** \brief Clean up add to render task . */
+	/** Clean up add to render task . */
 	~deoglAddToRenderTaskGIMaterial();
 	/*@}*/
 	
@@ -62,21 +62,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Shader type to be used for skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
+	/** Pipeline type. */
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
-	/** \brief Set shader type to be used for skin shaders. */
-	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline type. */
+	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
 	
 	
-	/** \brief Reset render task parameters. */
+	/** Reset render task parameters. */
 	void Reset();
 	
 	
 	
 	/**
-	 * \brief Add component texture.
+	 * Add component texture.
 	 * 
 	 * Component is supposed to be updated, and model, skin and parent world exist.
 	 */

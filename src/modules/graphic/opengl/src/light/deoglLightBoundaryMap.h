@@ -22,17 +22,18 @@
 #ifndef _DEOGLLIGHTBOUNDARYMAP_H_
 #define _DEOGLLIGHTBOUNDARYMAP_H_
 
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglFramebuffer;
 class deoglRenderThread;
 class deoglTexture;
-class deoglPixelBuffer;
 
 
 
 /**
- * @brief Light Boundary Map.
+ * Light Boundary Map.
  * Boundary map used for light boundary box calculation from a shadow map. The boundary map
  * stores a Z-Pyramid of the minimum and maximum boundary of a shadow map. For each lod level
  * in the boundary map an own framebuffer is used.
@@ -45,14 +46,14 @@ private:
 	deoglTexture *pTextureMax;
 	deoglFramebuffer **pFBOs;
 	
-	deoglPixelBuffer *pPixBufBoundaryMin;
-	deoglPixelBuffer *pPixBufBoundaryMax;
+	const deoglPixelBuffer::Ref pPixBufBoundaryMin;
+	const deoglPixelBuffer::Ref pPixBufBoundaryMax;
 	
 	int pSize;
 	int pLevelCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new boundary map. */
 	deoglLightBoundaryMap( deoglRenderThread &renderThread, int size );
@@ -60,7 +61,7 @@ public:
 	~deoglLightBoundaryMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the size of the base level. */
 	inline int GetSize() const{ return pSize; }

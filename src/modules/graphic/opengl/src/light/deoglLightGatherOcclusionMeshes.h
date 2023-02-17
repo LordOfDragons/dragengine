@@ -31,7 +31,7 @@ class deoglRComponent;
 
 
 /**
- * @brief Light Gather Occlusion Meshes Visitor.
+ * Light Gather Occlusion Meshes Visitor.
  * Visits components in the world containing occlusion meshes adding them to a triangle sorter
  * for later cropping light volumes with it.
  */
@@ -41,7 +41,7 @@ private:
 	deoglTriangleSorter pTriangleSorter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
 	deoglLightGatherOcclusionMeshes( deoglRLight &light );
@@ -49,7 +49,7 @@ public:
 	virtual ~deoglLightGatherOcclusionMeshes();
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/** Retrieves the triangle sorter. */
 	inline deoglTriangleSorter &GetTriangleSorter(){ return pTriangleSorter; }

@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Ambient Occlusion Turn Count.
+ * Module Parameter Screen Space Ambient Occlusion Turn Count.
  */
 class deoglPSSAOTurnCount : public deoglParameterFloat{
 public:

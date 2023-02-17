@@ -29,11 +29,10 @@
 #include "../../shaders/paramblock/deoglShaderParameterBlockList.h"
 
 class deoglQuickSorter;
+class deoglRenderTaskPipeline;
 class deoglRenderTaskInstance;
-class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedInstance;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
@@ -42,8 +41,8 @@ class deoglRenderThread;
 class deoglRTLogger;
 class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
-class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
+class deoglPipeline;
 
 
 /**
@@ -57,15 +56,15 @@ class deoglTexUnitsConfig;
 class deoglRenderTask{
 private:
 	struct sConfigTexture{
-		const deoglRenderTaskSharedShader *shader;
+		const deoglPipeline *pipeline;
 		const deoglRenderTaskSharedTexture *texture;
 		const deoglRenderTaskSharedVAO *vao;
 		const deoglRenderTaskSharedInstance *instance;
-		deoglRenderTaskShader *rtshader;
+		deoglRenderTaskPipeline *rtpipeline;
 		deoglRenderTaskTexture *rttexture;
 		deoglRenderTaskVAO *rtvao;
 		deoglRenderTaskInstance *rtinstance;
-// 		int shaderIndex;
+// 		int pipelineIndex;
 // 		int textureIndex;
 // 		int vaoIndex;
 // 		int instanceIndex;
@@ -80,16 +79,15 @@ private:
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
-	bool pForceDoubleSided;
 	bool pRenderVSStereo;
 	GLuint pVBODrawIndirect;
 	int pVBODrawIndirectSize;
 	
-	decPointerList pShaders;
-	int pShaderCount;
-	deoglRenderTaskShader **pHasShader;
-	int pHasShaderCount;
-	int pHasShaderSize;
+	decPointerList pPipelines;
+	int pPipelineCount;
+	deoglRenderTaskPipeline **pHasPipeline;
+	int pHasPipelineCount;
+	int pHasPipelineSize;
 	
 	sConfigTexture *pConfigTextures;
 	int pConfigTextureCount;
@@ -142,12 +140,6 @@ public:
 	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags( bool useFlags );
 	
-	/** Force double sided rendering. */
-	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
-	
-	/** Set force double sided rendering. */
-	void SetForceDoubleSided( bool forceDoubleSided );
-	
 	/** Use vertex shader stereo rendering. */
 	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
@@ -163,15 +155,15 @@ public:
 	
 	
 	
-	/** Number of shaders. */
-	inline int GetShaderCount() const{ return pShaderCount; }
+	/** Number of pipelines. */
+	inline int GetPipelineCount() const{ return pPipelineCount; }
 	
-	/** Shader at index. */
-	deoglRenderTaskShader *GetShaderAt( int index ) const;
+	/** Pipeline at index. */
+	deoglRenderTaskPipeline *GetPipelineAt( int index ) const;
 	
-	/** Add shader. */
-	deoglRenderTaskShader *AddShader( const deoglRenderTaskSharedShader *shader );
-	deoglRenderTaskShader *AddShaderDirect( const deoglRenderTaskSharedShader *shader );
+	/** Add pipeline. */
+	deoglRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
+	deoglRenderTaskPipeline *AddPipelineDirect( const deoglPipeline *pipeline );
 	
 	
 	
@@ -189,16 +181,16 @@ public:
 	/** Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
-	/** Total amount of textures in this shader. */
+	/** Total amount of textures. */
 	int GetTotalTextureCount() const;
 	
-	/** Total amount of vaos in this shader. */
+	/** Total amount of vaos. */
 	int GetTotalVAOCount() const;
 	
-	/** Total amount of instances in this shader. */
+	/** Total amount of instances. */
 	int GetTotalInstanceCount() const;
 	
-	/** Total amount of subinstances in this shader. */
+	/** Total amount of subinstances. */
 	int GetTotalSubInstanceCount() const;
 	/*@}*/
 	

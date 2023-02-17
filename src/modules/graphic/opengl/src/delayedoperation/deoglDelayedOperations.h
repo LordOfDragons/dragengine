@@ -23,7 +23,6 @@
 #define _DEOGLDELAYEDOPERATIONS_H_
 
 #include "../deoglBasics.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
@@ -38,6 +37,7 @@ class deoglRSkin;
 class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
+class deoglShaderProgram;
 
 
 
@@ -60,7 +60,6 @@ public:
 		eoglotFramebuffer,
 		eoglotQuery,
 		eoglotSampler,
-		eoglotRenderBuffer,
 		eoglotProgram,
 		eoglotShader
 	};
@@ -99,13 +98,16 @@ private:
 	deMutex pMutexCameras;
 	decObjectOrderedSet pCleanUpCameraList;
 	
+	deMutex pMutexReleaseObjects;
+	decObjectOrderedSet pReleaseObjects;
+	
 	deMutex pMutexSynchronize;
 	bool pHasSynchronizeOperations;
 	decPointerOrderedSet pFileWriteList;
 	decPointerOrderedSet pSaveImageList;
 	
-	deoglShaderProgramUsage pShaderGenConeMap;
-	deoglShaderProgramUsage pShaderGenConeMapLayer;
+	const deoglShaderProgram *pShaderGenConeMap;
+	const deoglShaderProgram *pShaderGenConeMapLayer;
 	
 	
 	
@@ -234,7 +236,6 @@ public:
 	inline void DeleteOpenGLFramebuffer( GLuint name ){ DeleteOpenGLObject( eoglotFramebuffer, name ); }
 	inline void DeleteOpenGLQuery( GLuint name ){ DeleteOpenGLObject( eoglotQuery, name ); }
 	inline void DeleteOpenGLSampler( GLuint name ){ DeleteOpenGLObject( eoglotSampler, name ); }
-	inline void DeleteOpenGLRenderBuffer( GLuint name ){ DeleteOpenGLObject( eoglotRenderBuffer, name ); }
 	inline void DeleteOpenGLProgram( GLuint name ){ DeleteOpenGLObject( eoglotProgram, name ); }
 	inline void DeleteOpenGLShader( GLuint name ){ DeleteOpenGLObject( eoglotShader, name ); }
 	/*@}*/
@@ -275,6 +276,14 @@ public:
 	
 	/** Add clean up camera (thread-safe). */
 	void AddCleanUpCamera( deoglRCamera *camera );
+	
+	
+	
+	/** Release objects list (not thread-safe). */
+	inline const decObjectOrderedSet &GetReleaseObjects() const{ return pReleaseObjects; }
+	
+	/** Add release object (thread-safe). */
+	void AddReleaseObject( deObject *object );
 	
 	
 	

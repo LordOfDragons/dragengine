@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Screen Space Reflection Coverage Power Edge.
+ * Module Parameter Screen Space Reflection Coverage Power Edge.
  */
 class deoglPSSRCoveragePowerEdge : public deoglParameterFloat{
 public:

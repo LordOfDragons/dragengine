@@ -125,7 +125,7 @@ void deoxrDeviceFeedback::GetInfo( deInputDeviceFeedback &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
-	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
+	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID().GetString() : "" );
 	
 	info.SetDisplayImage( pDisplayImage );
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){

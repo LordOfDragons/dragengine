@@ -26,7 +26,6 @@
 #include "deoglSharedSPB.h"
 #include "deoglSharedSPBList.h"
 #include "deoglSharedSPBElement.h"
-#include "../deoglShaderParameterBlock.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
@@ -39,27 +38,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBList::deoglSharedSPBList( deoglRenderThread &renderThread,
-deoglShaderParameterBlock *layout ) :
+deoglSharedSPBList::deoglSharedSPBList( deoglRenderThread &renderThread, deoglShaderParameterBlock *layout ) :
 pRenderThread( renderThread ),
-pLayout( NULL )
+pLayout( layout )
 {
-	if( ! layout || layout->GetElementCount() < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( layout )
+	DEASSERT_TRUE( layout->GetElementCount() >= 1 )
 	
 	pSize = layout->GetElementCount();
-	
-	pLayout = layout;
-	layout->AddReference();
 }
 
 deoglSharedSPBList::~deoglSharedSPBList(){
 	pSPBs.RemoveAll();
-	
-	if( pLayout ){
-		pLayout->FreeReference();
-	}
 }
 
 
@@ -90,10 +80,8 @@ deoglSharedSPBElement *deoglSharedSPBList::AddElement(){
 		}
 	}
 	
-	deObjectReference spb, paramBlock;
-	paramBlock.TakeOver( pCreateBlock() );
-	spb.TakeOver( new deoglSharedSPB( ( deoglShaderParameterBlock* )( deObject* )paramBlock ) );
+	const deoglSharedSPB::Ref spb( deoglSharedSPB::Ref::New( new deoglSharedSPB( pCreateBlock() ) ) );
 	pSPBs.Add( spb );
 	
-	return ( ( deoglSharedSPB& )( deObject& )spb ).AddElement();
+	return spb->AddElement();
 }

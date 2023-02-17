@@ -30,13 +30,16 @@
 class deoglCollideList;
 class deoglCollideListComponent;
 class deoglCollideListHTSector;
+class deoglCollideListHTSCluster;
 class deoglCollideListPropField;
 class deoglCollideListPropFieldType;
+class deoglCollideListPropFieldCluster;
 class deoglComponentList;
 class deoglCubeMap;
 class deoglHTViewSector;
 class deoglParticleEmitterInstanceList;
 class deoglModelLOD;
+class deoglPipeline;
 class deoglRBillboard;
 class deoglRComponent;
 class deoglRComponentLOD;
@@ -49,12 +52,9 @@ class deoglRenderTaskConfig;
 class deoglRenderTaskStep;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
-class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedVAO;
 class deoglRenderThread;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
-class deoglSkinShader;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
@@ -72,15 +72,15 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglRenderTask &pRenderTask;
-	deoglSkinTexture::eShaderTypes pSkinShaderType;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeRibbon;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeBeam;
+	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
 	bool pSolid;
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
 	bool pOutline;
+	bool pForceDoubleSided;
 	
 	bool pFilterXRay;
 	bool pXRay;
@@ -98,8 +98,6 @@ private:
 	int pFiltersMasked;
 	
 	bool pUseSpecialParamBlock;
-	
-	deoglRenderTaskSharedShader *pEnforceShader;
 	
 	
 	
@@ -120,23 +118,17 @@ public:
 	/** Render task. */
 	inline deoglRenderTask &GetRenderTask() const{ return pRenderTask; }
 	
-	/** Shader type to be used for skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
+	/** Pipeline type. */
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
-	/** Set shader type to be used for skin shaders. */
-	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline type. */
+	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
-	/** Shader type to be used for ribbon skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeRibbon() const{ return pSkinShaderTypeRibbon; }
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
 	
-	/** Set shader type to be used for ribbon skin shaders. */
-	void SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/** Shader type to be used for beam skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeBeam() const{ return pSkinShaderTypeBeam; }
-	
-	/** Set shader type to be used for beam skin shaders. */
-	void SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
 	
 	
 	
@@ -169,6 +161,12 @@ public:
 	
 	/** Set if outline transparent texture are added. */
 	void SetOutline( bool outline );
+	
+	/** Force double sided. */
+	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
+	
+	/** Set to force double sided. */
+	void SetForceDoubleSided( bool forceDoubleSided );
 	
 	
 	
@@ -230,14 +228,6 @@ public:
 	
 	
 	
-	/** Shader to enforce or NULL if free. */
-	inline deoglRenderTaskSharedShader *GetEnforcedShader() const{ return pEnforceShader; }
-	
-	/** Set shader to enforce or NULL if free. */
-	void SetEnforceShader( deoglRenderTaskSharedShader *shader );
-	
-	
-	
 	/** Reset render task parameters. */
 	void Reset();
 	
@@ -279,6 +269,12 @@ public:
 	
 	
 	
+	/** Add prop field cluster. */
+	void AddPropFieldCluster( const deoglCollideListPropFieldCluster &clPropFieldCluster, bool imposters );
+	
+	/** Add all prop fields of a collide list. */
+	void AddPropFieldClusters( const deoglCollideList &clist, bool imposters );
+	
 	/** Add all clusters of a collide list prop field type. */
 	void AddPropFieldType( const deoglCollideListPropFieldType &clPropFieldType,
 		const deoglRPropFieldType &propFieldType, bool imposters );
@@ -291,8 +287,17 @@ public:
 	
 	
 	
+	/** Add all height terrain sector cluster texture. */
+	void AddHeightTerrainSectorCluster( const deoglCollideListHTSCluster &clhtscluster, int texture, bool firstMask );
+	
 	/** Add all clusters of height terrain sector texture. */
-	void AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture );
+	void AddHeightTerrainSectorCluster( const deoglCollideListHTSCluster &clhtscluster, bool firstMask );
+	
+	/** Add all clusters of height terrain sector texture. */
+	void AddHeightTerrainSectorClusters( const deoglCollideList &clist, bool firstMask );
+	
+	/** Add all clusters of height terrain sector texture. */
+	void AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture, bool firstMask );
 	
 	/** Add a height terrain sector. */
 	void AddHeightTerrainSector( const deoglCollideListHTSector &clhtsector, bool firstMask );
@@ -304,24 +309,18 @@ public:
 	
 	/** Add an occlusion mesh from a component. */
 	void AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	void AddOcclusionMesh( deoglRComponent &component,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
-	
-	/** Add occlusion meshes for all components in a collide list. */
-	void AddOcclusionMeshes( const deoglCollideList &clist, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
-	
-	/** Add occlusion meshes for all components from list. */
-	void AddOcclusionMeshes( const deoglComponentList &list, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add occlusion meshes for all components from list. */
 	void AddOcclusionMeshes( const deoglComponentList &list,
-		deoglRenderTaskTexture *taskTexture, bool withSingleSided );
+		const deoglPipeline *pipelineSingle, const deoglPipeline *pipelineDouble );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,
@@ -355,8 +354,11 @@ private:
 	bool pFilterReject( const deoglSkinTexture &skinTexture ) const;
 	bool pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const;
 	
-	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
+	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
+		deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
 		const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;
+	
+	deoglRenderTaskTexture *pGetEmptyTexture( const deoglPipeline *pipeline ) const;
 };
 
 #endif

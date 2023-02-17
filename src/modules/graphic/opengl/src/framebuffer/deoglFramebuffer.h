@@ -26,7 +26,6 @@
 
 class deoglArrayTexture;
 class deoglCubeMap;
-class deoglRenderbuffer;
 class deoglRenderThread;
 class deoglTexture;
 class deoglTexture1D;
@@ -38,7 +37,7 @@ class deErrorTracePoint;
 
 
 /**
- * @brief Framebuffer Object.
+ * Framebuffer Object.
  */
 class deoglFramebuffer{
 private:
@@ -54,8 +53,7 @@ private:
 		eatCubeMapPosZ,
 		eatCubeMapNegZ,
 		eatArrayTexture,
-		eatArrayTextureLayer,
-		eatRenderbuffer
+		eatArrayTextureLayer
 	};
 	
 	struct sAttachement{
@@ -119,7 +117,7 @@ private:
 	int pUsageCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new framebuffer object either as primary or offscreen. */
 	deoglFramebuffer( deoglRenderThread &renderThread, bool primary );
@@ -127,7 +125,7 @@ public:
 	~deoglFramebuffer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Determines if the framebuffer is a primary framebuffer. */
 	inline bool GetIsPrimary() const{ return pPrimary; }
@@ -180,8 +178,6 @@ public:
 	void AttachColorArrayTextureLayer( int index, deoglArrayTexture *texture, int layer );
 	/** Attach a color array texture layer level. */
 	void AttachColorArrayTextureLayerLevel( int index, deoglArrayTexture *texture, int layer, int level );
-	/** Attach a color render buffer. */
-	void AttachColorRenderbuffer( int index, const deoglRenderbuffer &renderbuffer );
 	
 	/** Attach color texture. */
 	void AttachColorTextureLevel( int index, GLuint texture, int level );
@@ -224,8 +220,6 @@ public:
 	void AttachDepthArrayTextureLayer( deoglArrayTexture *texture, int layer );
 	/** Attach a depth array texture layer level. */
 	void AttachDepthArrayTextureLayerLevel( deoglArrayTexture *texture, int layer, int level );
-	/** Attach a depth render buffer. */
-	void AttachDepthRenderbuffer( deoglRenderbuffer *renderbuffer );
 	/** Detach depth image if attached. */
 	void DetachDepthImage();
 	
@@ -254,8 +248,6 @@ public:
 	void AttachStencilArrayTextureLayer( deoglArrayTexture *texture, int layer );
 	/** Attach a stencil array texture layer level. */
 	void AttachStencilArrayTextureLayerLevel( deoglArrayTexture *texture, int layer, int level );
-	/** Attach a stencil renderbuffer. */
-	void AttachStencilRenderbuffer( deoglRenderbuffer *renderBuffer );
 	/** Detach stencil image if attached. */
 	void DetachStencilImage();
 	

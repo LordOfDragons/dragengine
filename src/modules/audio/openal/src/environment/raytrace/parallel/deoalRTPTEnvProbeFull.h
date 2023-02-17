@@ -95,9 +95,9 @@ private:
 	deoalRayTraceResult pRTResult;
 	deoalWOVRayHitsElement pWOVRayHitsElement;
 	bool pFirstHit;
-	double pBackStepDistance;
+	float pBackStepDistance;
 	int pRayIndex;
-	double pRayGaussWidthFactor;
+	float pRayGaussWidthFactor;
 	
 	
 	

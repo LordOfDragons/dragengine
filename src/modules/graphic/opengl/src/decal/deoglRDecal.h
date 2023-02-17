@@ -23,6 +23,7 @@
 #define _DEOGLRDECAL_H_
 
 #include "../skin/deoglSkinTexture.h"
+#include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -75,6 +76,7 @@ public:
 	deoglSkinState *pUseSkinState;
 	
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	deoglSharedVBOBlock *pVBOBlock;
 	int pPointCount;
@@ -248,7 +250,7 @@ public:
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	/**
 	 * Texture units configuration for geometry type shaders or NULL if empty.
@@ -273,7 +275,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	/** Mark parameter blocks dirty. */
@@ -285,6 +287,9 @@ public:
 	
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
@@ -344,6 +349,7 @@ private:
 	void pPrepareTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void pUpdateRTSInstance();
 	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
 		int element, deoglSkinShader &skinShader );

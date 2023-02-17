@@ -36,7 +36,7 @@ class deDecal;
 
 
 /**
- * \brief Decal peer.
+ * Decal peer.
  */
 class deoglDecal : public deBaseGraphicDecal, deoglDynamicSkinListener{
 public:
@@ -69,10 +69,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglDecal( deGraphicOpenGl &ogl, const deDecal &decal );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDecal();
 	/*@}*/
 	
@@ -80,26 +80,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Decal engine resource. */
+	/** Decal engine resource. */
 	inline const deDecal &GetDecal() const{ return pDecal; }
 	
 	
 	
-	/** \brief Render decal. */
+	/** Render decal. */
 	inline deoglRDecal *GetRDecal() const{ return pRDecal; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Parent component or \em NULL. */
+	/** Parent component or \em NULL. */
 	inline deoglComponent *GetParentComponent() const{ return pParentComponent; }
 	
-	/** \brief Set parent component or \em NULL. */
+	/** Set parent component or \em NULL. */
 	void SetParentComponent( deoglComponent *component );
 	/*@}*/
 	
@@ -117,19 +117,19 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position, orientation or size changed. */
+	/** Position, orientation or size changed. */
 	virtual void GeometryChanged();
 	
-	/** \brief Texture coordinates transformation changed. */
+	/** Texture coordinates transformation changed. */
 	virtual void TransformChanged();
 	
-	/** \brief Skin changed. */
+	/** Skin changed. */
 	virtual void SkinChanged();
 	
-	/** \brief Dynamic skin changed. */
+	/** Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
 	
-	/** \brief Visible changed. */
+	/** Visible changed. */
 	virtual void VisibleChanged();
 	/*@}*/
 	

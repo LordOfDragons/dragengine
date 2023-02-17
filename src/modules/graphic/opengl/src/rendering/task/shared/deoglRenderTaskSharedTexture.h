@@ -22,6 +22,8 @@
 #ifndef _DEOGLRENDERTASKSHAREDTEXTURE_H_
 #define _DEOGLRENDERTASKSHAREDTEXTURE_H_
 
+#include <dragengine/deObject.h>
+
 class deoglRenderTaskSharedPool;
 class deoglTexUnitsConfig;
 
@@ -29,7 +31,12 @@ class deoglTexUnitsConfig;
 /**
  * Shared render task shader.
  */
-class deoglRenderTaskSharedTexture{
+class deoglRenderTaskSharedTexture : public deObject{
+public:
+	typedef deTObjectReference<deoglRenderTaskSharedTexture> Ref;
+	
+	
+	
 private:
 	deoglRenderTaskSharedPool &pPool;
 	const int pIndex;
@@ -44,12 +51,14 @@ public:
 	/** Create shared render task shader. */
 	deoglRenderTaskSharedTexture( deoglRenderTaskSharedPool &pool, int index );
 	
+protected:
 	/** Clean up shared render task shader. */
-	~deoglRenderTaskSharedTexture();
+	virtual ~deoglRenderTaskSharedTexture();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */

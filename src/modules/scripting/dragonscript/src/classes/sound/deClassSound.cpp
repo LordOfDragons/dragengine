@@ -195,7 +195,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 void deClassSound::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deSound * const sound = ( ( sSndNatDat* )p_GetNativeData( myself ) )->sound;
 	
-	rt->PushInt( ( intptr_t )sound );
+	rt->PushInt( ( int )( intptr_t )sound );
 }
 
 // public func bool equals( Object object )

@@ -24,7 +24,7 @@
 #ifndef _MACOSFIX_H_
 #define _MACOSFIX_H_
 
-/** \brief MacOS get OpenGL address. */
+/** MacOS get OpenGL address. */
 void *macosGetProcAddress( const char *name );
 
 #endif // _MACOSFIX_H_

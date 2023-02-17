@@ -29,7 +29,6 @@
 
 class deoglRenderThread;
 class deoglFramebuffer;
-class deoglRenderbuffer;
 class deoglDRDepthMinMax;
 class deoglShaderCompiled;
 class deoglSPBlockUBO;
@@ -39,7 +38,7 @@ class deoglVAO;
 
 
 /**
- * @brief OpenGL Deferred Rendering.
+ * OpenGL Deferred Rendering.
  * Manages the framebuffers and render buffers required for deferred rendering.
  */
 class deoglDeferredRendering{
@@ -63,13 +62,6 @@ private:
 	
 	bool pUseFadeOutRange;
 	
-	bool pUseInverseDepth;
-	GLenum pDepthCompareFuncRegular;
-	GLenum pDepthCompareFuncReversed;
-	GLfloat pClearDepthValueRegular;
-	GLfloat pClearDepthValueReversed;
-	
-	deoglRenderbuffer *pRenderbuffer;
 	deoglArrayTexture *pTextureDepth1;
 	deoglArrayTexture *pTextureDepth2;
 	deoglArrayTexture *pTextureDepth3;
@@ -114,7 +106,7 @@ private:
 	deoglVAO *pVAOBillboard;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl deferred rendering object. */
 	deoglDeferredRendering( deoglRenderThread &renderThread );
@@ -122,7 +114,7 @@ public:
 	~deoglDeferredRendering();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Width of buffers. */
 	inline int GetWidth() const{ return pWidth; }
@@ -160,21 +152,6 @@ public:
 	
 	
 	
-	/** Enable inverse depth using floating point depth buffer if supported. */
-	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
-	
-	/** Regular depth compare function. */
-	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
-	
-	/** Reversed depth compare function. */
-	inline GLenum GetDepthCompareFuncReversed() const{ return pDepthCompareFuncReversed; }
-	
-	/** Regular clear depth value. */
-	inline GLfloat GetClearDepthValueRegular() const{ return pClearDepthValueRegular; }
-	
-	/** Reversed clear depth value. */
-	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
-	
 	/**
 	 * Create projection matrix matching depth usage mode.
 	 * \details Depending on the inverse depth mode used the projection matrix is either
@@ -190,9 +167,6 @@ public:
 	decDMatrix CreateFrustumDMatrix( int width, int height, float fov, float fovRatio, float znear, float zfar ) const;
 	
 	
-	
-	/** Render buffer. */
-	inline deoglRenderbuffer *GetRenderbuffer() const{ return pRenderbuffer; }
 	
 	/** First depth texture. */
 	deoglArrayTexture *GetDepthTexture1() const;
@@ -329,12 +303,8 @@ public:
 	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{ return pMemUse; }
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
-	/** Renders a full screen quad using VAO. */
-	void RenderFSQuadVAO();
-	void RenderFSQuadVAOStereo();
-	
 	/**
 	 * Fills the viewport parameters into the given shader parameter. The first parameter is
 	 * set to the left boundary, the second to the top boundary, the third to the right

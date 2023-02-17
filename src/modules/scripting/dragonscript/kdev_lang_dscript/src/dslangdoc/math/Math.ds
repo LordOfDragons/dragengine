@@ -11,7 +11,10 @@
  * 
  * Use \code{.ds} requires Math \endcode in your script files to load the introspection package.
  * 
- * This is a native class. This class is for static use only and can not instantiated but subclassed.
+ * This is a native class. This class is for static use only and can not instanciated but subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 class Math
 	/** \brief e. */

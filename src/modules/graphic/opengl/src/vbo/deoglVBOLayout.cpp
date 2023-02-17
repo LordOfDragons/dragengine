@@ -41,7 +41,7 @@
 deoglVBOLayout::deoglVBOLayout() :
 pSize( 0 ),
 pStride( 0 ),
-pAttributes( NULL ),
+pAttributes( nullptr ),
 pAttributeCount( 0 ),
 pIndexType( eitNone ),
 pIndexSize( 0 ),
@@ -51,13 +51,14 @@ pIndexGLType( GL_NONE ){
 deoglVBOLayout::deoglVBOLayout( const deoglVBOLayout &layout ) :
 pSize( layout.pSize ),
 pStride( layout.pStride ),
-pAttributes( NULL ),
+pAttributes( nullptr ),
 pAttributeCount( 0 ),
 pIndexType( layout.pIndexType ),
 pIndexSize( layout.pIndexSize ),
 pIndexGLType( layout.pIndexGLType )
 {
 	SetAttributeCount( layout.pAttributeCount );
+	
 	int i;
 	for( i=0; i<layout.pAttributeCount; i++ ){
 		pAttributes[ i ] = layout.pAttributes[ i ];
@@ -76,16 +77,12 @@ deoglVBOLayout::~deoglVBOLayout(){
 ///////////////
 
 void deoglVBOLayout::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( size >= 0 )
 	pSize = size;
 }
 
 void deoglVBOLayout::SetStride( int stride ){
-	if( stride < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( stride >= 0 )
 	pStride = stride;
 }
 
@@ -124,15 +121,13 @@ void deoglVBOLayout::SetIndexType( eIndexTypes indexType ){
 ///////////////
 
 void deoglVBOLayout::SetAttributeCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( count >= 0 )
 	
 	if( count == pAttributeCount ){
 		return;
 	}
 	
-	deoglVBOAttribute * const newArray = count > 0 ? new deoglVBOAttribute[ count ] : NULL;
+	deoglVBOAttribute * const newArray = count > 0 ? new deoglVBOAttribute[ count ] : nullptr;
 	
 	if( pAttributes ){
 		const int copyCount = decMath::min( pAttributeCount, count );
@@ -142,7 +137,7 @@ void deoglVBOLayout::SetAttributeCount( int count ){
 		}
 		
 		delete [] pAttributes;
-		pAttributes = NULL;
+		pAttributes = nullptr;
 		pAttributeCount = 0;
 	}
 	
@@ -151,9 +146,9 @@ void deoglVBOLayout::SetAttributeCount( int count ){
 }
 
 deoglVBOAttribute& deoglVBOLayout::GetAttributeAt( int index ) const{
-	if( index < 0 || index >= pAttributeCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pAttributeCount )
+	
 	return pAttributes[ index ];
 }
 

@@ -100,7 +100,7 @@ void deClassCanvasText::nfGetFont::RunFunction( dsRunTime *rt, dsValue *myself )
 	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
 	const deScriptingDragonScript &ds = ( ( deClassCanvasText* )GetOwnerClass() )->GetDS();
 	
-	ds.GetClassFont()->PushFont( rt, nd.canvas->GetFont(), nd.canvas->GetFontSize() );
+	ds.GetClassFont()->PushFont( rt, nd.canvas->GetFont(), ( int )( nd.canvas->GetFontSize() + 0.5f ) );
 }
 
 // public func void setFont( Font font )
@@ -117,7 +117,7 @@ void deClassCanvasText::nfSetFont::RunFunction( dsRunTime *rt, dsValue *myself )
 	const int fontSize = ds.GetClassFont()->GetFontSize( objFont );
 	
 	nd.canvas->SetFont( font );
-	nd.canvas->SetFontSize( fontSize );
+	nd.canvas->SetFontSize( ( float )fontSize );
 }
 
 // public func String getText()
@@ -173,7 +173,7 @@ dsFunction( init.clsCText, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 void deClassCanvasText::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCanvasText * const canvas = ( ( sCTextNatDat* )p_GetNativeData( myself ) )->canvas;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )canvas );
+	rt->PushInt( ( int )( intptr_t )canvas );
 }
 
 // public func bool equals( Object obj )

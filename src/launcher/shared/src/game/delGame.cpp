@@ -396,7 +396,7 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 		delGameIcon * const icon = pIcons.GetLargest();
 		
 		pEngineInstance->CreateRenderWindow( runParams.GetWidth(), runParams.GetHeight(),
-			runParams.GetFullScreen(), pTitle.ToUTF8(), icon ? icon->GetPath() : "" );
+			runParams.GetFullScreen(), pTitle.ToUTF8(), icon ? icon->GetPath().GetString() : "" );
 		
 		// store information for handling parameter changes during runtime
 		pCollectChangedParams.RemoveAll();

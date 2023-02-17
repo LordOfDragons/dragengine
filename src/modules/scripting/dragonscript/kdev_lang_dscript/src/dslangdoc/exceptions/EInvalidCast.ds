@@ -19,5 +19,9 @@ class EInvalidCast extends Exception
 	/** \brief Create empty exception. */
 	public func new()
 	end
+	
+	/** \brief Create exception with custom message. */
+	public func new( String message )
+	end
 	/*@}*/
 end

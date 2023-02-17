@@ -32,6 +32,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -197,7 +198,7 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 	if( pEnableDepth || pEnableDepth2 || pEnableDepth3 ){
 		deoglDebugSaveTexture::eDepthTypes depthType;
 		
-		if( defren.GetUseInverseDepth() ){
+		if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 			depthType = deoglDebugSaveTexture::edtDepthInverse;
 			
 		}else{
@@ -511,7 +512,7 @@ void deoglDebugSnapshot::pTakeSnapshotStates() const{
 }
 
 void deoglDebugSnapshot::pWriteLine( decBaseFileWriter &writer, const char *text ) const{
-	writer.Write( text, strlen( text ) );
+	writer.Write( text, ( int )strlen( text ) );
 	writer.WriteByte( '\n' );
 }
 

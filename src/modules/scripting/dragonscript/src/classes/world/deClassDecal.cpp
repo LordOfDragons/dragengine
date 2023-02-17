@@ -334,7 +334,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 }
 
 void deClassDecal::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	rt->PushInt( ( intptr_t )( ( ( sDecalNatDat* )p_GetNativeData( myself ) )->decal ) );
+	rt->PushInt( ( int )( intptr_t )( ( ( sDecalNatDat* )p_GetNativeData( myself ) )->decal ) );
 }
 
 // public func bool equals( Object obj )

@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Render Plan Debug.
+ * Render Plan Debug.
  * Stores debug information for a render plan.
  */
 class deoglRenderPlanDebug{
@@ -62,7 +62,7 @@ private:
 	int pTransparentTriangles;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render plan debug. */
 	deoglRenderPlanDebug();
@@ -70,7 +70,7 @@ public:
 	~deoglRenderPlanDebug();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of objects in the view frustum. */
 	inline int GetViewObjects() const{ return pViewObjects; }

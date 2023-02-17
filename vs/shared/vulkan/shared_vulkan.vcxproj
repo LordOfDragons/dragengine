@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\buffer\devkBuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\buffer\devkGuardUnmapBuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPool.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolPool.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolSlot.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSet.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayout.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutManager.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\deSharedVulkan.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkBasics.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDebug.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDevice.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkInstance.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkLoader.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImage.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImageConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\image\devkImageView.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkDynamicState.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipeline.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineCompute.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineGraphic.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineManager.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\pipeline\devkSpecialization.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkCommandBuffer.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkCommandPool.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\queue\devkQueue.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPass.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPassConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModule.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModuleManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\buffer\devkBuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\buffer\devkGuardUnmapBuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPool.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolPool.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorPoolSlot.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSet.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayout.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\descriptor\devkDescriptorSetLayoutManager.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\deSharedVulkan.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkBasics.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDebug.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDevice.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFunctionNames.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkInstance.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkLoader.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTPoolReference.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImage.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImageConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\image\devkImageView.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkDynamicState.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipeline.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineCompute.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineGraphic.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkPipelineManager.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\pipeline\devkSpecialization.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkCommandBuffer.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkCommandPool.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\queue\devkQueue.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPass.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\renderpass\devkRenderPassConfiguration.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModule.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\shader\devkShaderModuleManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e216d6e2-75aa-4b2f-b712-fcab026eb21b}</ProjectGuid>
+    <RootNamespace>vulkan</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>shared vulkan</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>sharedvulkan</TargetName>
+    <PublicIncludeDirectories>$(SolutionDir)..\src\shared\vulkan\extern\include;$(SolutionDir)$(Platform)\$(Configuration)\include\shared</PublicIncludeDirectories>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>sharedvulkan</TargetName>
+    <PublicIncludeDirectories>$(SolutionDir)..\src\shared\vulkan\extern\include;$(SolutionDir)$(Platform)\$(Configuration)\include\shared</PublicIncludeDirectories>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;VK_NO_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\shared\vulkan\extern\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\shared\vulkan\src -TargetDir $(SolutionDir)$(Platform)\$(Configuration)\include\shared\vulkan</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;VK_NO_PROTOTYPES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\shared\vulkan\extern\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\shared\vulkan\src -TargetDir $(SolutionDir)$(Platform)\$(Configuration)\include\shared\vulkan</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

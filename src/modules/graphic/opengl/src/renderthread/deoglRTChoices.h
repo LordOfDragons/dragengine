@@ -42,6 +42,7 @@ public:
 	
 private:
 	bool pSharedVBOUseBaseVertex;
+	bool pUseSSBORender;
 	bool pSharedSPBUseSSBO;
 	bool pGlobalSharedSPBLists;
 	bool pRealTransparentParticles;
@@ -50,6 +51,13 @@ private:
 	bool pVRRenderStereo;
 	bool pRenderStereoVSLayer;
 	bool pRenderFSQuadStereoVSLayer;
+	bool pUseInverseDepth;
+	bool pRenderCubeGS;
+	GLenum pDepthCompareFuncRegular;
+	GLenum pDepthCompareFuncReversed;
+	GLfloat pClearDepthValueRegular;
+	GLfloat pClearDepthValueReversed;
+	bool pUseComputeRenderTask;
 	
 	
 	
@@ -73,6 +81,9 @@ public:
 	 * Requires gl*BaseVertex to be usable and rendering does not required pre-shifted points.
 	 */
 	inline bool GetSharedVBOUseBaseVertex() const{ return pSharedVBOUseBaseVertex; }
+	
+	/** Use SSBO for rendering. */
+	inline bool GetUseSSBORender() const{ return pUseSSBORender; }
 	
 	/**
 	 * Use SSBO for shared SPB.
@@ -101,6 +112,27 @@ public:
 	
 	/** Use layer in vertex shaders for fullscreen quad stereo rendering. */
 	inline bool GetRenderFSQuadStereoVSLayer() const{ return pRenderFSQuadStereoVSLayer; }
+	
+	/** Use inverse depth. */
+	inline bool GetUseInverseDepth() const{ return pUseInverseDepth; }
+	
+	/** Use render cube using geomtry shader. */
+	inline bool GetRenderCubeGS() const{ return pRenderCubeGS; }
+	
+	/** Regular depth compare function. */
+	inline GLenum GetDepthCompareFuncRegular() const{ return pDepthCompareFuncRegular; }
+	
+	/** Reversed depth compare function. */
+	inline GLenum GetDepthCompareFuncReversed() const{ return pDepthCompareFuncReversed; }
+	
+	/** Regular clear depth value. */
+	inline GLfloat GetClearDepthValueRegular() const{ return pClearDepthValueRegular; }
+	
+	/** Reversed clear depth value. */
+	inline GLfloat GetClearDepthValueReversed() const{ return pClearDepthValueReversed; }
+	
+	/** Use compute shader render task. */
+	inline bool GetUseComputeRenderTask() const{ return pUseComputeRenderTask; }
 	/*@}*/
 };
 

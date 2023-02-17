@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Build Render Task</name>
+	
+	<uniformBlock name='RenderTaskConfig' target='0'/>
+	
+	<shaderStorageBlock name='Element' target='0'/>
+	<shaderStorageBlock name='ElementGeometry' target='3'/>
+	<shaderStorageBlock name='SkinTexturePipelines' target='2'/>
+	<shaderStorageBlock name='RenderTask' target='4'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/build_render_task.glsl</sourceCode>
+</shader>

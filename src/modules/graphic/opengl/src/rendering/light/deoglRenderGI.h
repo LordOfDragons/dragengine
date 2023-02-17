@@ -29,7 +29,6 @@
 class deoglGIState;
 class deoglGIBVH;
 class deoglRenderTask;
-class deoglSPBlockUBO;
 class deoglTexture;
 
 
@@ -38,30 +37,33 @@ class deoglTexture;
  */
 class deoglRenderGI : public deoglRenderLightBase{
 private:
-	deoglShaderProgramUsage pShaderResizeMaterials;
-	deoglShaderProgramUsage pShaderTraceRays;
-	deoglShaderProgramUsage pShaderTraceRaysCache;
-	deoglShaderProgramUsage pShaderCopyRayCache;
-	deoglShaderProgramUsage pShaderInitFromRayCache;
-	deoglShaderProgramUsage pShaderCopyProbeIrradiance;
-	deoglShaderProgramUsage pShaderUpdateProbeIrradiance;
-	deoglShaderProgramUsage pShaderUpdateProbeDistance;
-	deoglShaderProgramUsage pShaderClearProbeIrradiance;
-	deoglShaderProgramUsage pShaderClearProbeDistance;
-	deoglShaderProgramUsage pShaderMoveProbes;
-	deoglShaderProgramUsage pShaderDynamicState;
-	deoglShaderProgramUsage pShaderProbeOffset;
-	deoglShaderProgramUsage pShaderProbeExtends;
-	deoglShaderProgramUsage pShaderLight;
-	deoglShaderProgramUsage pShaderLightStereo;
-	deoglShaderProgramUsage pShaderLightGIRay;
-	deoglShaderProgramUsage pShaderDebugProbe;
-	deoglShaderProgramUsage pShaderDebugProbeOffset;
-	deoglShaderProgramUsage pShaderDebugProbeUpdatePass1;
-	deoglShaderProgramUsage pShaderDebugProbeUpdatePass2;
+	const deoglPipeline *pPipelineResizeMaterials;
+	const deoglPipeline *pPipelineClearTraceRays;
+	const deoglPipeline *pPipelineTraceRays;
+	const deoglPipeline *pPipelineTraceRaysCache;
+	const deoglPipeline *pPipelineCopyRayCache;
+	const deoglPipeline *pPipelineInitFromRayCache;
+	const deoglPipeline *pPipelineUpdateProbeIrradiance;
+	const deoglPipeline *pPipelineUpdateProbeDistance;
+	const deoglPipeline *pPipelineClearProbeIrradiance;
+	const deoglPipeline *pPipelineClearProbeDistance;
+	const deoglPipeline *pPipelineProbeDynamicStates;
+	const deoglPipeline *pPipelineProbeOffset;
+	const deoglPipeline *pPipelineProbeExtends;
+	const deoglPipeline *pPipelineLight;
+	const deoglPipeline *pPipelineLightStereo;
+	const deoglPipeline *pPipelineLightTransp;
+	const deoglPipeline *pPipelineLightTranspStereo;
+	const deoglPipeline *pPipelineLightGIRay;
+	const deoglPipeline *pPipelineDebugProbe;
+	const deoglPipeline *pPipelineDebugProbeXRay;
+	const deoglPipeline *pPipelineDebugProbeOffset;
+	const deoglPipeline *pPipelineDebugProbeOffsetXRay;
+	const deoglPipeline *pPipelineDebugProbeUpdatePass1;
+	const deoglPipeline *pPipelineDebugProbeUpdatePass2;
 	
-	deObjectReference pUBORenderLight;
-	deObjectReference pUBORenderLightSSS;
+	deoglSPBlockUBO::Ref pUBORenderLight;
+	deoglSPBlockUBO::Ref pUBORenderLightSSS;
 	
 	
 	
@@ -91,7 +93,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render light UBO. */
-	inline deoglSPBlockUBO &GetUBORenderLight() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORenderLight; }
+	inline deoglSPBlockUBO &GetUBORenderLight() const{ return pUBORenderLight; }
 	
 	
 	
@@ -114,9 +116,6 @@ public:
 	
 	/** Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );
-	
-	/** Move probes. */
-	void MoveProbes( deoglRenderPlan &plan );
 	
 	/** Probe offset. */
 	void ProbeOffset( deoglRenderPlan &plan );
@@ -150,8 +149,7 @@ public:
 private:
 	void pCleanUp();
 	void pCreateUBORenderLight();
-	void pSharedTraceRays( deoglRenderPlan &plan );
-	void pClearTraceRays();
+	void pClearTraceRays( const decPoint &size );
 	void pInitTraceTextures( deoglGIBVH &bvh);
 	void pActivateGIUBOs();
 };

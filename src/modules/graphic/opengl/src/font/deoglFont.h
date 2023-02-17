@@ -33,7 +33,7 @@ class deoglRFont;
 
 
 /**
- * \brief Font peer.
+ * Font peer.
  */
 class deoglFont : public deBaseGraphicFont{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create font. */
+	/** Create font. */
 	deoglFont( deGraphicOpenGl &ogl, const deFont &font );
 	
-	/** \brief Clean up font. */
+	/** Clean up font. */
 	virtual ~deoglFont();
 	/*@}*/
 	
@@ -55,10 +55,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Font resource. */
+	/** Font resource. */
 	inline const deFont &GetFont() const{ return pFont; }
 	
-	/** \brief Render font. */
+	/** Render font. */
 	inline deoglRFont *GetRFont() const{ return pRFont; }
 	/*@}*/
 	
@@ -66,7 +66,7 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Update font. */
+	/** Update font. */
 	virtual void Update( float elapsed );
 	/*@}*/
 };

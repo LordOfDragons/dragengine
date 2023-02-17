@@ -35,9 +35,6 @@
 #endif
 
 #ifdef OS_W32
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0502
-#endif
 #include "../../app/include_windows.h"
 #endif
 

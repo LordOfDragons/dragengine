@@ -172,17 +172,17 @@ fixed class VRSystem
 	end
 	
 	/** \brief Value of axis at index on device at index. */
-	public static func int getAxisValue( int device, int axis )
+	public static func float getAxisValue( int device, int axis )
 		return 0
 	end
 	
 	/** \brief Value of feedback at index on device at index. */
-	public static func int getFeedbackValue( int device, int feedback )
+	public static func float getFeedbackValue( int device, int feedback )
 		return 0
 	end
 	
 	/** \brief Set value of feedback at index on device at index. */
-	public static func void setFeedbackValue( int device, int feedback, int value )
+	public static func void setFeedbackValue( int device, int feedback, float value )
 	end
 	/*@}*/
 	

@@ -22,6 +22,7 @@
 #ifndef _DEOGLRWORLD_H_
 #define _DEOGLRWORLD_H_
 
+#include "deoglWorldCompute.h"
 #include "../envmap/deoglEnvironmentMapList.h"
 
 #include <dragengine/deObject.h>
@@ -100,11 +101,17 @@ private:
 	decPointerSet pGIStates;
 	
 	deoglWorldOctree *pOctree;
+	deoglWorldCompute::Ref pCompute;
 	
 	decPointerLinkedList pListPrepareForRenderComponents;
 	decPointerLinkedList pListPrepareForRenderBillboards;
 	decPointerLinkedList pListPrepareForRenderLights;
 	decPointerLinkedList pListPrepareForRenderPropFields;
+	
+	decPointerList pListPrepareRenderComponents;
+	decPointerList pListPrepareRenderBillboards;
+	decPointerList pListPrepareRenderLights;
+	decPointerList pListPrepareRenderPropFields;
 	
 	
 	
@@ -183,11 +190,21 @@ public:
 	
 	
 	
+	/** Compute. */
+	inline deoglWorldCompute &GetCompute() const{ return pCompute; }
+	
+	
+	
 	/** Early prepare for rendering. */
 	void EarlyPrepareForRender( deoglRenderPlan &plan );
 	
 	/** Prepare for rendering. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for rendering render. */
+protected:
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+public:
 	
 	void AddPrepareForRenderComponent( deoglRComponent *component );
 	void RemovePrepareForRenderComponent( deoglRComponent *component );

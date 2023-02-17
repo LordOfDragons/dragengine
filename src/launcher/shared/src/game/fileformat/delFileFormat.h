@@ -31,7 +31,7 @@
 /**
  * \brief File Format.
  */
-class delFileFormat : public deObject{
+class DE_DLL_EXPORT delFileFormat : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delFileFormat> Ref;

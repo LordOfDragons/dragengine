@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\fbxConnection.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\fbxConnectionMap.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\fbxNode.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\fbxObjectMap.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\fbxProperty.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\fbxScene.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimation.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationCurve.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationEvaluateCurve.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationMove.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationMoveCurves.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxMaterial.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxModel.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxModelCluster.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxRig.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxRigBone.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxTexture.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayBool.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayDouble.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayFloat.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayInteger.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayLong.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyBinary.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyBool.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyDouble.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyFloat.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyInteger.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyLong.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyShort.cpp" />
+    <ClCompile Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyString.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\fbxConnection.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\fbxConnectionMap.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\fbxNode.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\fbxObjectMap.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\fbxProperty.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\fbxScene.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimation.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationCurve.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationEvaluateCurve.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationMove.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxAnimationMoveCurves.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxMaterial.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxModel.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxModelCluster.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxRig.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxRigBone.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\managed\fbxTexture.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayBool.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayDouble.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayFloat.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayInteger.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyArrayLong.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyBinary.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyBool.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyDouble.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyFloat.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyInteger.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyLong.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyShort.h" />
+    <ClInclude Include="..\..\..\src\modules\combined\fbx\src\shared\property\fbxPropertyString.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{9d6e0946-6752-41f3-b478-09515cdef244}</ProjectGuid>
+    <RootNamespace>fbx</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>shared fbx</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>sharedfbx</TargetName>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>sharedfbx</TargetName>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

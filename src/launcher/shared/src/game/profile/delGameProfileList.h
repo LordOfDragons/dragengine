@@ -31,7 +31,7 @@ class delLauncher;
 /**
  * \brief Game profile list.
  */
-class delGameProfileList{
+class DE_DLL_EXPORT delGameProfileList{
 private:
 	decObjectList pProfiles;
 	

@@ -64,6 +64,7 @@ pLLPrepareForRenderWorld( this )
 
 deoglRPropField::~deoglRPropField(){
 	LEAK_CHECK_FREE( pRenderThread, PropField );
+	SetParentWorld( nullptr );
 }
 
 
@@ -72,7 +73,28 @@ deoglRPropField::~deoglRPropField(){
 ///////////////
 
 void deoglRPropField::SetParentWorld( deoglRWorld *world ){
+	if( world == pParentWorld ){
+		return;
+	}
+	
+	const int count = pTypes.GetCount();
+	int i;
+	
+	if( pParentWorld ){
+		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+		}
+	}
+	
 	pParentWorld = world;
+	
+	if( world ){
+		deoglWorldCompute &worldCompute = world->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		}
+	}
 }
 
 
@@ -133,6 +155,13 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 	pMaxExtend.y = pPosition.y + ( double )maxExtend.y + 0.01;
 	pMaxExtend.z = pPosition.z + ( double )maxExtend.z + 0.01;
 	
+	if( pParentWorld ){
+		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+		for( i=0; i<typeCount; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->UpdateWorldCompute( worldCompute );
+		}
+	}
+	
 	//pOgl->LogInfoFormat( "PropField.pUpdateExtends: p=(%.3f,%.3f,%.3f) e=(%.3f,%.3f,%.3f)->(%.3f,%.3f,%.3f)",
 	//	fieldPosition.x, fieldPosition.y, fieldPosition.z,
 	//	pMinExtend.x, pMinExtend.y, pMinExtend.z, pMaxExtend.x, pMaxExtend.y, pMaxExtend.z );
@@ -151,6 +180,9 @@ void deoglRPropField::PrepareForRender(){
 			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->PrepareForRender();
 		}
 	}
+}
+
+void deoglRPropField::PrepareForRenderRender(){
 }
 
 void deoglRPropField::PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix ){

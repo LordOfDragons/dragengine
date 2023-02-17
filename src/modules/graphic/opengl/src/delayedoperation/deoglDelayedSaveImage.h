@@ -30,7 +30,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Delayed save image.
+ * Delayed save image.
  */
 class deoglDelayedSaveImage{
 private:
@@ -45,11 +45,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create delayed save image object. */
+	/** Create delayed save image object. */
 	deoglDelayedSaveImage( const decPath &path, int width, int height, int depth,
 		int componentCount, int bitCount, char *data );
 	
-	/** \brief Clean up delayed save image object. */
+	/** Clean up delayed save image object. */
 	~deoglDelayedSaveImage();
 	/*@}*/
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Save image to virtual file system.
+	 * Save image to virtual file system.
 	 * \details This has to be called during main thread.
 	 */
 	void SaveImage( deGraphicOpenGl &ogl, deVirtualFileSystem &vfs );

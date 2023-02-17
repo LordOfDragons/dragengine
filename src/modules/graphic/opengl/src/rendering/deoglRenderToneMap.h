@@ -33,7 +33,7 @@ class deoglTexture;
 
 
 /**
- * @brief OpenGL ToneMap Renderer.
+ * OpenGL ToneMap Renderer.
  * Renderer for tone mapping related passes.
  */
 class deoglRenderToneMap : public deoglRenderBase{
@@ -41,29 +41,29 @@ private:
 	deoglFramebuffer *pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
-	deoglShaderProgramUsage pShaderColor2LogLum;
-	deoglShaderProgramUsage pShaderColor2LogLumStereo;
-	deoglShaderProgramUsage pShaderAvgLogLum;
-	deoglShaderProgramUsage pShaderAvgLogLumStereo;
-	deoglShaderProgramUsage pShaderParameters;
-	deoglShaderProgramUsage pShaderParametersStereo;
-	deoglShaderProgramUsage pShaderBrightPass;
-	deoglShaderProgramUsage pShaderBrightPassStereo;
-	deoglShaderProgramUsage pShaderBloomReduce;
-	deoglShaderProgramUsage pShaderBloomBlur;
-	deoglShaderProgramUsage pShaderBloomBlurStereo;
-	deoglShaderProgramUsage pShaderBloomAdd;
-	deoglShaderProgramUsage pShaderToneMap;
-	deoglShaderProgramUsage pShaderToneMapStereo;
-	deoglShaderProgramUsage pShaderFinalize;
-	deoglShaderProgramUsage pShaderFinalizeStereo;
+	const deoglPipeline *pPipelineColor2LogLum;
+	const deoglPipeline *pPipelineColor2LogLumStereo;
+	const deoglPipeline *pPipelineAvgLogLum;
+	const deoglPipeline *pPipelineAvgLogLumStereo;
+	const deoglPipeline *pPipelineParameters;
+	const deoglPipeline *pPipelineParametersStereo;
+	const deoglPipeline *pPipelineBrightPass;
+	const deoglPipeline *pPipelineBrightPassStereo;
+	const deoglPipeline *pPipelineBloomReduce;
+	const deoglPipeline *pPipelineBloomBlur;
+	const deoglPipeline *pPipelineBloomBlurStereo;
+	const deoglPipeline *pPipelineBloomAdd;
+	const deoglPipeline *pPipelineToneMap;
+	const deoglPipeline *pPipelineToneMapStereo;
+	const deoglPipeline *pPipelineLdr;
+	const deoglPipeline *pPipelineLdrStereo;
 	
-	deoglShaderProgramUsage pShaderLumPrepare;
-	deoglShaderProgramUsage pShaderLumPrepareStereo;
+	const deoglPipeline *pPipelineLumPrepare;
+	const deoglPipeline *pPipelineLumPrepareStereo;
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderToneMap( deoglRenderThread &renderThread );
@@ -71,7 +71,7 @@ public:
 	virtual ~deoglRenderToneMap();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Prepare luminance texture from solid color and depth texture. */
 	void LuminancePrepare( deoglRenderPlan &plan );

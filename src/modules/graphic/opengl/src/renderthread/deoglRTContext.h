@@ -87,7 +87,7 @@ class deoglRRenderWindow;
 
 
 /**
- * \brief Render thread context.
+ * Render thread context.
  * 
  * Operating system specific objects and context.
  */
@@ -150,10 +150,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread context. */
+	/** Create render thread context. */
 	deoglRTContext( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread context. */
+	/** Clean up render thread context. */
 	~deoglRTContext();
 	/*@}*/
 	
@@ -161,137 +161,137 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Initialize phase 1 called in main thread. */
+	/** Initialize phase 1 called in main thread. */
 	void InitPhase1( deRenderWindow *renderWindow );
 	
-	/** \brief Initialize phase 2 called in render thread. */
+	/** Initialize phase 2 called in render thread. */
 	void InitPhase2( deRenderWindow *renderWindow );
 	
-	/** \brief Initialize phase 3 called in main thread. */
+	/** Initialize phase 3 called in main thread. */
 	void InitPhase3( deRenderWindow *renderWindow );
 	
-	/** \brief Initialize phase 4 called in render thread. */
+	/** Initialize phase 4 called in render thread. */
 	void InitPhase4( deRenderWindow *renderWindow );
 	
-	/** \brief Clean up. Separate call to make sure everything is fine before deleting. */
+	/** Clean up. Separate call to make sure everything is fine before deleting. */
 	void CleanUp();
 	
 	
 	
-	/** \brief Active render window. */
+	/** Active render window. */
 	inline deoglRRenderWindow *GetActiveRRenderWindow() const{ return pActiveRRenderWindow; }
 	
-	/** \brief Active render render window current. */
+	/** Active render render window current. */
 	void ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, bool forceIfNull = false );
 	
 	/**
-	 * \brief User requests quit.
+	 * User requests quit.
 	 * 
 	 * Value is cleared after queried so this can be called only once.
 	 */
 	bool GetUserRequestedQuit();
 	
-	/** \brief Application is activated. */
+	/** Application is activated. */
 	inline bool GetAppActivated() const{ return pAppActivated; }
 	
-	/** \brief Special call for module to get a function pointer before extensions can be properly initialized. */
+	/** Special call for module to get a function pointer before extensions can be properly initialized. */
 	void *GetFunctionPointer( const char *funcName );
 	
 	
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-	/** \brief OS Unix. */
+	/** OS Unix. */
 	inline deOSUnix *GetOSUnix(){ return pOSUnix; }
 	
-	/** \brief Unix visual. */
+	/** Unix visual. */
 	inline XVisualInfo *GetVisualInfo() const{ return pVisInfo; }
 	
-	/** \brief Render thread display. */
+	/** Render thread display. */
 	inline Display *GetDisplay() const{ return pDisplay; }
 	
-	/** \brief Main thread display. */
+	/** Main thread display. */
 	Display *GetMainThreadDisplay() const;
 	
-	/** \brief Unix best framebuffer configuration. */
+	/** Unix best framebuffer configuration. */
 	inline GLXFBConfig &GetBestFBConfig(){ return pBestFBConfig; }
 	inline const GLXFBConfig &GetBestFBConfig() const{ return pBestFBConfig; }
 	
-	/** \brief Context. */
+	/** Context. */
 	inline GLXContext GetContext() const{ return pContext; }
 	
-	/** \brief Atoms. */
+	/** Atoms. */
 	inline Atom GetAtomProtocols() const{ return pAtomProtocols; }
 	inline Atom GetAtomDeleteWindow() const{ return pAtomDeleteWindow; }
 	
-	/** \brief Process event loop. */
+	/** Process event loop. */
 	void ProcessEventLoop();
 #endif
 
 #ifdef ANDROID
-	/** \brief OS Android. */
+	/** OS Android. */
 	inline deOSAndroid *GetOSAndroid(){ return pOSAndroid; }
 	
-	/** \brief Display. */
+	/** Display. */
 	inline EGLDisplay GetDisplay() const{ return pDisplay; }
 	
-	/** \brief Surface. */
+	/** Surface. */
 	inline EGLSurface GetSurface() const{ return pSurface; }
 	
-	/** \brief Context. */
+	/** Context. */
 	inline EGLContext GetContext() const{ return pContext; }
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline const EGLConfig& GetConfig() const{ return pConfig; }
 	
-	/** \brief Application window has been created. */
+	/** Application window has been created. */
 	void InitAppWindow();
 	
-	/** \brief Application window has been closed. */
+	/** Application window has been closed. */
 	void TerminateAppWindow();
 	
-	/** \brief Check if screen configuration changed. */
+	/** Check if screen configuration changed. */
 	void CheckConfigurationChanged();
 	
-	/** \brief Screen size changed. */
+	/** Screen size changed. */
 	inline bool GetScreenResized() const{ return pScreenResized; }
 	
-	/** \brief Clear screen size changed. */
+	/** Clear screen size changed. */
 	void ClearScreenResized();
 	
-	/** \brief Current screen width. */
+	/** Current screen width. */
 	inline int GetScreenWidth() const{ return pScreenWidth; }
 	
-	/** \brief Current screen height. */
+	/** Current screen height. */
 	inline int GetScreenHeight() const{ return pScreenHeight; }
 #endif
 	
 #ifdef OS_BEOS
-	/** \brief OS BeOS. */
+	/** OS BeOS. */
 	inline deOSBeOS *GetOSBeOS() const{ return pOSBeOS; }
 	
-	/** \brief Context. */
+	/** Context. */
 //	inline GLXContext getContext() const{ return pContext; }   ???
 #endif
 	
 #ifdef OS_MACOS
-	/** \brief OS MacOS. */
+	/** OS MacOS. */
 	inline deOSMacOS *GetOSMacOS() const{ return pOSMacOS; }
 	
-	/** \brief Pixel format. */
+	/** Pixel format. */
 	inline NSOpenGLPixelFormat *GetPixelFormat() const{ return pPixelFormat; }
 	
-	/** \brief Context. */
+	/** Context. */
 	inline NSOpenGLContext *GetContext() const{ return pContext; }
 #endif
 
 #ifdef OS_W32
-	/** \brief Registered window class name. */
+	/** Registered window class name. */
 	inline const decString &GetWindowClassname() const{ return pWindowClassname; }
 	
-	/** \brief OS Windows. */
+	/** OS Windows. */
 	inline deOSWindows *GetOSWindow() const{ return pOSWindows; }
 	
-	/** \brief Context. */
+	/** Context. */
 	inline HGLRC GetContext() const{ return pContext; }
 	
 	LRESULT ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );

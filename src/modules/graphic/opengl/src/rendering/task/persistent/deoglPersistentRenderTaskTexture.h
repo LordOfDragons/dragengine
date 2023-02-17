@@ -26,7 +26,7 @@
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
 
 class deoglPersistentRenderTaskPool;
-class deoglPersistentRenderTaskShader;
+class deoglPersistentRenderTaskPipeline;
 class deoglTexUnitsConfig;
 class deoglPersistentRenderTaskVAO;
 class deoglShaderParameterBlock;
@@ -39,9 +39,9 @@ class deoglVAO;
 class deoglPersistentRenderTaskTexture{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLShader;
+	decPointerLinkedList::cListEntry pLLTexture;
 	
-	deoglPersistentRenderTaskShader *pParentShader;
+	deoglPersistentRenderTaskPipeline *pParentPipeline;
 	const deoglTexUnitsConfig *pTUC;
 	const deoglShaderParameterBlock *pParamBlock;
 	decPointerLinkedList pVAOs;
@@ -52,10 +52,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new render task shader. */
+	/** Creates a new render task pipeline. */
 	deoglPersistentRenderTaskTexture( deoglPersistentRenderTaskPool &pool );
 	
-	/** Cleans up the render task shader. */
+	/** Cleans up the render task pipeline. */
 	~deoglPersistentRenderTaskTexture();
 	/*@}*/
 	
@@ -70,11 +70,11 @@ public:
 	/** Retrieves the total amount of subinstances in this texture. */
 	int GetTotalSubInstanceCount() const;
 	
-	/** Parent shader. */
-	inline deoglPersistentRenderTaskShader *GetParentShader() const{ return pParentShader; }
+	/** Parent pipeline. */
+	inline deoglPersistentRenderTaskPipeline *GetParentPipeline() const{ return pParentPipeline; }
 	
-	/** Set parent shader. */
-	void SetParentShader( deoglPersistentRenderTaskShader *shader );
+	/** Set parent pipeline. */
+	void SetParentPipeline( deoglPersistentRenderTaskPipeline *pipeline );
 	
 	/** Texture units configuration. */
 	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
@@ -119,8 +119,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLShader(){ return pLLShader; }
-	inline const decPointerLinkedList::cListEntry &GetLLShader() const{ return pLLShader; }
+	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
+	inline const decPointerLinkedList::cListEntry &GetLLShader() const{ return pLLTexture; }
 	/*@}*/
 };
 

@@ -30,7 +30,7 @@ class deoglRenderableDepthCubeMap;
 
 
 /**
- * @brief Renderable CubeMap Manager.
+ * Renderable CubeMap Manager.
  *
  * Manages renderable cubemaps. Maintains a list of renderable cubemaps build
  * upon demand. Renderable cubemaps once created stay around and can be reused.
@@ -47,7 +47,7 @@ private:
 	int pCubeMapSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap manager. */
 	deoglRenderableDepthCubeMapManager( deoglRenderThread &renderThread );
@@ -55,7 +55,7 @@ public:
 	~deoglRenderableDepthCubeMapManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable cubemaps. */
 	inline int GetCubeMapCount() const{ return pCubeMapCount; }
@@ -63,7 +63,7 @@ public:
 	const deoglRenderableDepthCubeMap *GetCubeMapAt( int index ) const;
 	
 	/** Retrieves the renderable cubemap for the given format. */
-	deoglRenderableDepthCubeMap *GetCubeMapWith( int size );
+	deoglRenderableDepthCubeMap *GetCubeMapWith( int size, bool useFloat );
 	/*@}*/
 };
 

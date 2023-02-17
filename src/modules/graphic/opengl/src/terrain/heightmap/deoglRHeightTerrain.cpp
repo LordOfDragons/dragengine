@@ -65,7 +65,28 @@ deoglRHeightTerrain::~deoglRHeightTerrain(){
 ///////////////
 
 void deoglRHeightTerrain::SetParentWorld( deoglRWorld *world ){
+	if( world == pParentWorld ){
+		return;
+	}
+	
+	const int count = pSectors.GetCount();
+	int i;
+	
+	if( pParentWorld ){
+		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+		}
+	}
+	
 	pParentWorld = world;
+	
+	if( world ){
+		deoglWorldCompute &worldCompute = world->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		}
+	}
 }
 
 void deoglRHeightTerrain::PrepareForRender(){
@@ -91,12 +112,27 @@ deoglRHTSector &deoglRHeightTerrain::GetSectorAt( int index ) const{
 }
 
 void deoglRHeightTerrain::AddSector( deoglRHTSector *htsector ){
+	htsector->SetIndex( pSectors.GetCount() );
 	pSectors.Add( htsector );
+	if( pParentWorld ){
+		htsector->AddToWorldCompute( pParentWorld->GetCompute() );
+	}
+	
 	SectorRequirePrepareForRender();
 	NotifySectorsChanged();
 }
 
 void deoglRHeightTerrain::RemoveAllSectors(){
+	if( pParentWorld ){
+		deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
+		const int count = pSectors.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->RemoveFromWorldCompute( worldCompute );
+		}
+	}
+	
 	pSectors.RemoveAll();
 	SectorRequirePrepareForRender();
 	NotifySectorsChanged();

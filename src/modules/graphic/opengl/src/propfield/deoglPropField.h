@@ -36,7 +36,7 @@ class dePropFieldType;
 
 
 /**
- * \brief Prop field peer.
+ * Prop field peer.
  */
 class deoglPropField : public deBaseGraphicPropField{
 private:
@@ -59,10 +59,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
+	/** Create new peer. */
 	deoglPropField( deGraphicOpenGl &ogl, dePropField &propField );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglPropField();
 	/*@}*/
 	
@@ -70,45 +70,45 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Prop field. */
+	/** Prop field. */
 	inline const dePropField &GetPropField() const{ return pPropField; }
 	
 	
 	
-	/** \brief Render prop field. */
+	/** Render prop field. */
 	inline deoglRPropField *GetRPropField() const{ return pRPropField; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief LOD level. */
+	/** LOD level. */
 	inline int GetLODLevel() const{ return pLODLevel; }
 	
-	/** \brief Set lod level not doing the updates yet. */
+	/** Set lod level not doing the updates yet. */
 	void SetLODLevel( int level );
 	
-	/** \brief Test lod level against the given camera point. */
+	/** Test lod level against the given camera point. */
 	void TestLODLevel( const decDVector &camera );
 	
-	/** \brief Update instance counts. */
+	/** Update instance counts. */
 	void UpdateInstanceCounts();
 	
 	
 	
-	/** \brief Update prop field if required. */
+	/** Update prop field if required. */
 	void Update();
 	
 	
 	
-	/** \brief Number of types. */
+	/** Number of types. */
 	int GetTypeCount() const;
 	
-	/** \brief Type at index. */
+	/** Type at index. */
 	deoglPropFieldType &GetTypeAt( int index ) const;
 	/*@}*/
 	
@@ -116,37 +116,37 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Ground changed. */
+	/** Ground changed. */
 	virtual void GroundChanged();
 	
 	
 	
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
 	
 	
-	/** \brief Type has been added. */
+	/** Type has been added. */
 	virtual void TypeAdded( int index, dePropFieldType *type );
 	
-	/** \brief Type has been removed. */
+	/** Type has been removed. */
 	virtual void TypeRemoved( int index, dePropFieldType *type );
 	
-	/** \brief All types have been removed. */
+	/** All types have been removed. */
 	virtual void AllTypesRemoved();
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	virtual void TypeChanged( int index, dePropFieldType *type );
 	
 	
 	
-	/** \brief Instances changed. */
+	/** Instances changed. */
 	virtual void InstancesChanged( int index, dePropFieldType *type );
 	
-	/** \brief Instances to Bend States assignments changed. */
+	/** Instances to Bend States assignments changed. */
 	virtual void AssignmentsChanged( int index, dePropFieldType *type );
 	
-	/** \brief Bend States changed. */
+	/** Bend States changed. */
 	virtual void BendStatesChanged( int index, dePropFieldType *type );
 	/*@}*/
 	

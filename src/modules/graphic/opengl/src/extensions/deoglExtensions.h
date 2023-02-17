@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief OpenGL Extensions.
+ * OpenGL Extensions.
  * Manages everything related to opengl extensions. Determines which
  * extensions exist on the system as well as fetching functions.
  */
@@ -329,6 +329,11 @@ public:
 		ext_ARB_fragment_layer_viewport,
 		ext_ARB_shader_draw_parameters,
 		ext_ARB_shader_viewport_layer_array,
+		ext_ARB_depth_clamp,
+		ext_ARB_shading_language_420pack,
+		ext_ARB_shader_atomic_counters,
+		ext_ARB_shader_atomic_counter_ops,
+		ext_ARB_gpu_shader_fp64,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,
@@ -399,7 +404,7 @@ private:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new object. */
 	deoglExtensions( deoglRenderThread &renderThread );
@@ -407,7 +412,7 @@ public:
 	~deoglExtensions();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Initializes the extensions. Determines existing extensions and
@@ -456,14 +461,14 @@ public:
 	/** Determines if copy image is supported. */
 	inline bool GetHasCopyImage() const{ return pHasCopyImage; }
 	
-	/** Geometry shader is supported. */
-	inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
+	/** Geometry shader is supported. Required so always true. */
+	// inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
 	
 	/** Geometry shader instancing is supported. */
 	inline bool SupportsGSInstancing() const{ return pSupportsGSInstancing; }
 	
-	/** Compute shader is supported. */
-	inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
+	/** Compute shader is supported. Required so always true. */
+	// inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
 	
 	/** Layer ID output is supported in vertex shaders. */
 	inline bool SupportsVSLayer() const{ return pSupportsVSLayer; }

@@ -23,6 +23,10 @@
 #define _DEOGLSKINSHADER_H_
 
 #include "deoglSkinShaderConfig.h"
+#include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/deObject.h>
 
@@ -30,10 +34,6 @@ class deoglEnvironmentMap;
 class deoglRDynamicSkin;
 class deoglRenderThread;
 class deoglShaderDefines;
-class deoglSPBlockUBO;
-class deoglSPBlockSSBO;
-class deoglShaderProgram;
-class deoglShaderSources;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitConfig;
@@ -42,7 +42,7 @@ class deoglShaderParameterBlock;
 
 
 /**
- * @brief Skin Shader.
+ * Skin Shader.
  */
 class deoglSkinShader : public deObject{
 public:
@@ -79,7 +79,6 @@ public:
 		ettSubInstance1,
 		ettSubInstance2,
 		ettHeightMapMask,
-		ettXRayDepth,
 		ETT_COUNT
 	};
 	
@@ -289,11 +288,11 @@ private:
 	int pTargetSPBInstanceIndexBase;
 	int pTargetDrawIDOffset;
 	
-	deoglShaderSources *pSources;
-	deoglShaderProgram *pShader;
+	deoglShaderSources::Ref pSources;
+	deoglShaderProgram::Ref pShader;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin shader. */
 	deoglSkinShader( deoglRenderThread &renderThread, const deoglSkinShaderConfig &config );
@@ -301,7 +300,7 @@ public:
 	virtual ~deoglSkinShader();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
@@ -336,31 +335,31 @@ public:
 	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
 	/** Create render skin shader shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBRender( deoglRenderThread &renderThread );
 	
 	/** Create occlusion map shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBOccMap( deoglRenderThread &renderThread );
 	
 	/** Create special shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBSpecial( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBSpecial( deoglRenderThread &renderThread );
 	
 	/** Create texture parameter shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBTexParam( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBTexParam( deoglRenderThread &renderThread );
 	
 	/** Create instance parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBInstParam() const;
+	deoglSPBlockUBO::Ref CreateSPBInstParam() const;
 	
 	/** Create shared instance parameter shader storage buffer. */
-	static deoglSPBlockUBO *CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread );
 	
 	/** Create shared instance parameter shader storage buffer. */
-	static deoglSPBlockSSBO *CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread );
+	static deoglSPBlockSSBO::Ref CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread );
 	
 	/** Create shared texture parameter shader storage buffer. */
-	static deoglSPBlockUBO *CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread );
 	
 	/** Create shared texture parameter shader storage buffer. */
-	static deoglSPBlockSSBO *CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread );
+	static deoglSPBlockSSBO::Ref CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread );
 	
 	/** Set texture parameters in instance parameter shader block. */
 	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
@@ -408,7 +407,7 @@ public:
 	
 	
 	
-	/** @name Shader Generation */
+	/** \name Shader Generation */
 	/*@{*/
 	/** Generate shader. */
 	void GenerateShader();

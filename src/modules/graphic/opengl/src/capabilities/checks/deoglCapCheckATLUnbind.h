@@ -29,7 +29,7 @@ class deoglCapabilities;
 
 
 /**
- * \brief Capability check ATL unbind.
+ * Capability check ATL unbind.
  */
 class deoglCapCheckATLUnbind{
 private:
@@ -41,7 +41,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capability check. */
+	/** Create capability check. */
 	deoglCapCheckATLUnbind( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -49,10 +49,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Result. */
+	/** Result. */
 	inline int GetResult() const{ return pResult; }
 	
-	/** \brief Run check. */
+	/** Run check. */
 	void Check( GLuint fbo );
 	/*@}*/
 };

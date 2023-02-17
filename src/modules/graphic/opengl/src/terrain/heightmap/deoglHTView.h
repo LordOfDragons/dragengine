@@ -23,10 +23,10 @@
 #define _DEOGLHTVIEW_H_
 
 #include "deoglHeightTerrainListener.h"
+#include "deoglRHeightTerrain.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRHeightTerrain;
 class deoglHTViewSector;
 class deoglCollisionVolume;
 
@@ -36,8 +36,24 @@ class deoglCollisionVolume;
  * Height Terrain View.
  */
 class deoglHTView : public deoglHeightTerrainListener{
+public:
+	typedef deTObjectReference<deoglHTView> Ref;
+	
+	
+	
 private:
-	deoglRHeightTerrain *pHeightTerrain;
+	class HTListener : public deoglHeightTerrainListener{
+		deoglHTView &pHTView;
+		
+	public:
+		HTListener( deoglHTView &htview );
+		virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+	};
+	
+	
+	
+	const deoglRHeightTerrain::Ref pHeightTerrain;
+	deoglHeightTerrainListener::Ref pHTListener;
 	
 	deoglHTViewSector **pSectors;
 	int pSectorCount;
@@ -53,16 +69,18 @@ public:
 	/** Create view. */
 	deoglHTView( deoglRHeightTerrain *heightTerrain );
 	
+protected:
 	/** Clean up view. */
-	~deoglHTView();
+	virtual ~deoglHTView();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
-	inline deoglRHeightTerrain &GetHeightTerrain() const{ return *pHeightTerrain; }
+	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Count of sectors. */
 	inline int GetSectorCount() const{ return pSectorCount; }
@@ -86,6 +104,9 @@ public:
 	 */
 	void UpdateLODLevels( const decVector &camera );
 	
+	/** Prepate. */
+	void Prepare();
+	
 	/** Prepate for rendering. */
 	void PrepareForRendering();
 	
@@ -94,17 +115,13 @@ public:
 	
 	
 	
-	/** Height terrain has been destroyed. */
-	virtual void HeightTerrainDestroyed( deoglRHeightTerrain &heightTerrain );
-	
 	/** Sectors changed. */
-	virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+	void SectorsChanged();
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
 	void pRebuildSectors();
 };
 

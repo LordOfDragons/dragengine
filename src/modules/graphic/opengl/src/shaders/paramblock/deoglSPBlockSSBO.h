@@ -30,8 +30,16 @@
  */
 class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
+	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
+	
+	
+	
+private:
 	GLuint pSSBO;
 	int pBindingPoint;
+	int pBindingPointUBO;
+	int pBindingPointAtomic;
+	bool pCompact;
 	bool pAllocateBuffer;
 	
 	char *pWriteBuffer;
@@ -70,6 +78,24 @@ public:
 	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
+	/** UBO Binding point. */
+	inline int GetBindingPointUBO() const{ return pBindingPointUBO; }
+	
+	/** Set UBO binding point. */
+	void SetBindingPointUBO( int bindingPoint );
+	
+	/** Atmomic counter binding point. */
+	inline int GetBindingPointAtomic() const{ return pBindingPointAtomic; }
+	
+	/** Set atomic counter binding point. */
+	void SetBindingPointAtomic( int bindingPoint );
+	
+	/** Compact elements. If true mapping individual elements is prohibited. */
+	inline bool GetCompact() const{ return pCompact; }
+	
+	/** Set if elements are compact. If true mapping individual elements is prohibited. */
+	void SetCompact( bool compact );
+	
 	/** Activate buffer. */
 	virtual void Activate() const;
 	
@@ -82,6 +108,24 @@ public:
 	/** Deactivate buffer overriding binding point. */
 	virtual void Deactivate( int bindingPoint ) const;
 	
+	/** Activate buffer as UBO. */
+	void ActivateUBO() const;
+	
+	/** Deactivate buffer as UBO. */
+	void DeactivateUBO() const;
+	
+	/** Activate buffer as atomic buffer. */
+	void ActivateAtomic() const;
+	
+	/** Deactivate buffer as atomic buffer. */
+	void DeactivateAtomic() const;
+	
+	/** Activate buffer as dispatch indirect. */
+	void ActivateDispatchIndirect() const;
+	
+	/** Deactivate buffer as dispatch indirect. */
+	void DeactivateDispatchIndirect() const;
+	
 	/** Map buffer discarding content. */
 	virtual void MapBuffer();
 	
@@ -93,6 +137,14 @@ public:
 	 */
 	virtual void MapBuffer( int element );
 	
+	/**
+	 * Map buffer for specific elements discarding content.
+	 * 
+	 * Data outside the element range is retained. Any attempt to call SetParameter* with
+	 * an element index other than the one used for mapping throws an exception.
+	 */
+	virtual void MapBuffer( int element, int count );
+	
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
@@ -101,6 +153,15 @@ public:
 	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();
+	
+	/** Read data from SSBO into write buffer. Returns write buffer memory pointer. */
+	char *ReadBuffer();
+	
+	/** Read partial data from SSBO into write buffer. Returns write buffer memory pointer. */
+	char *ReadBuffer( int elementCount );
+	
+	/** Direct access to write buffer. Use with care. Can be nullptr. */
+	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
 	
 	
 	

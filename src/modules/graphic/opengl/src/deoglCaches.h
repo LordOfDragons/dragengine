@@ -30,7 +30,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Caches.
+ * Caches.
  */
 class deoglCaches{
 private:
@@ -45,10 +45,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create caches. */
+	/** Create caches. */
 	deoglCaches( deGraphicOpenGl &ogl );
 	
-	/** \brief Cleans up caches. */
+	/** Cleans up caches. */
 	~deoglCaches();
 	/*@}*/
 	
@@ -56,16 +56,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Lock caches. */
+	/** Lock caches. */
 	void Lock();
 	
-	/** \brief Unlock caches. */
+	/** Unlock caches. */
 	void Unlock();
 	
-	/** \brief Skin textures cache. */
+	/** Skin textures cache. */
 	inline deCacheHelper &GetSkinTextures() const{ return *pSkinTextures; }
 	
-	/** \brief Model cache. */
+	/** Model cache. */
 	inline deCacheHelper &GetModels() const{ return *pModels; }
 	
 	

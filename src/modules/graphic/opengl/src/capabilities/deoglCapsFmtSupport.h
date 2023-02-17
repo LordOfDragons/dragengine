@@ -31,12 +31,12 @@ class deoglCapsTextureFormat;
 
 
 /**
- * \brief OpenGL capabilities texture format support.
+ * OpenGL capabilities texture format support.
  */
 class deoglCapsFmtSupport{
 public:
 	/**
-	 * \brief 2D-Texture format configuration.
+	 * 2D-Texture format configuration.
 	 * 
 	 * The constants are encoded like this: eutfR{G{B{A}}}{8,16,32}{I}{UI}{_C}.
 	 * R{G{B{A}}} stands for the number of components, {8,16,32} for the bit depth,
@@ -120,7 +120,6 @@ private:
 	deoglCapsTextureFormatList pFoundFBOTex2DFormats;
 	deoglCapsTextureFormatList pFoundFBOTexCubeFormats;
 	deoglCapsTextureFormatList pFoundFBOArrTexFormats;
-	deoglCapsTextureFormatList pFoundRenBufFormats;
 	
 	const deoglCapsTextureFormat *pUseTex2DFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseTexCubeFormats[ UseTextureFormatCount ];
@@ -128,14 +127,13 @@ private:
 	const deoglCapsTextureFormat *pUseFBOTex2DFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseFBOTexCubeFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseFBOArrTexFormats[ UseTextureFormatCount ];
-	const deoglCapsTextureFormat *pUseRenBufFormats[ UseTextureFormatCount ];
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capabilities format support. */
+	/** Create capabilities format support. */
 	deoglCapsFmtSupport( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -143,60 +141,53 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief List of found texture 2d formats. */
+	/** List of found texture 2d formats. */
 	const deoglCapsTextureFormatList &GetFoundTex2DFormats() const{ return pFoundTex2DFormats; }
 	deoglCapsTextureFormatList &GetFoundTex2DFormats(){ return pFoundTex2DFormats; }
 	
-	/** \brief List of found texture cube formats. */
+	/** List of found texture cube formats. */
 	const deoglCapsTextureFormatList &GetFoundTexCubeFormats() const{ return pFoundTexCubeFormats; }
 	deoglCapsTextureFormatList &GetFoundTexCubeFormats(){ return pFoundTexCubeFormats; }
 	
-	/** \brief List of found array texture formats. */
+	/** List of found array texture formats. */
 	const deoglCapsTextureFormatList &GetFoundArrayTexFormats() const{ return pFoundArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundArrayTexFormats(){ return pFoundArrTexFormats; }
 	
-	/** \brief List of found fbo texture 2d formats. */
+	/** List of found fbo texture 2d formats. */
 	const deoglCapsTextureFormatList &GetFoundFBOTex2DFormats() const{ return pFoundFBOTex2DFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOTex2DFormats(){ return pFoundFBOTex2DFormats; }
 	
-	/** \brief List of found fbo texture cube formats. */
+	/** List of found fbo texture cube formats. */
 	const deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats() const{ return pFoundFBOTexCubeFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats(){ return pFoundFBOTexCubeFormats; }
 	
-	/** \brief List of found fbo array texture formats. */
+	/** List of found fbo array texture formats. */
 	const deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats(){ return pFoundFBOArrTexFormats; }
 	
-	/** \brief List of found render buffer formats. */
-	const deoglCapsTextureFormatList &GetFoundRenBufFormats() const{ return pFoundRenBufFormats; }
-	deoglCapsTextureFormatList &GetFoundRenBufFormats(){ return pFoundRenBufFormats; }
 	
 	
-	
-	/** \brief Format to use for texture 2d type or \em NULL if not supported. */
+	/** Format to use for texture 2d type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseTex2DFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for texture cube type or \em NULL if not supported. */
+	/** Format to use for texture cube type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseTexCubeFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for array texture type or \em NULL if not supported. */
+	/** Format to use for array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseArrayTexFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for fbo texture 2d type or \em NULL if not supported. */
+	/** Format to use for fbo texture 2d type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOTex2DFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for fbo texture cube type or \em NULL if not supported. */
+	/** Format to use for fbo texture cube type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOTexCubeFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for fbo array texture type or \em NULL if not supported. */
+	/** Format to use for fbo array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOArrayTexFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for render buffer texture type or \em NULL if not supported. */
-	const deoglCapsTextureFormat *GetUseRenBufFormatFor( eUseTextureFormats type ) const;
 	
 	
-	
-	/** \brief Detect format support. */
+	/** Detect format support. */
 	void DetectFormats( GLuint fbo );
 	/*@}*/
 	
@@ -209,7 +200,6 @@ private:
 	void pDetectFBOTex2DFormats( GLuint fbo );
 	void pDetectFBOTexCubeFormats( GLuint fbo );
 	void pDetectFBOArrayTexFormats( GLuint fbo );
-	void pDetectRenBufFormats( GLuint fbo );
 	
 	bool pTestTex2DFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, int flags, const char *name );
@@ -223,8 +213,6 @@ private:
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
 	bool pTestFBOArrayTexFormat( GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
-	bool pTestRenBufFormat( GLuint fbo, GLint format, int bitsPerPixel, int flags,
-		const char *name, int what );
 };
 
 #endif

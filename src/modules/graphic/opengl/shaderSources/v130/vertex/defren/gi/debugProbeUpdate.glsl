@@ -2,7 +2,6 @@ uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 uniform vec4 pTCTransform;
 
 #ifdef PASS2
-	#include "v130/shared/uniform_const.glsl"
 	#include "v130/shared/ubo_defines.glsl"
 	#include "v130/shared/defren/gi/constants.glsl"
 	#include "v130/shared/defren/gi/trace_probe.glsl"

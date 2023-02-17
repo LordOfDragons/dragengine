@@ -32,7 +32,7 @@ class decUuid;
 /**
  * \brief Game patch list.
  */
-class delPatchList{
+class DE_DLL_EXPORT delPatchList{
 private:
 	decObjectList pPatches;
 	

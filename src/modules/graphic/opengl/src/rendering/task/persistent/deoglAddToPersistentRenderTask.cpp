@@ -26,7 +26,7 @@
 #include "deoglAddToPersistentRenderTask.h"
 #include "deoglPersistentRenderTask.h"
 #include "deoglPersistentRenderTaskInstance.h"
-#include "deoglPersistentRenderTaskShader.h"
+#include "deoglPersistentRenderTaskPipeline.h"
 #include "deoglPersistentRenderTaskTexture.h"
 #include "deoglPersistentRenderTaskVAO.h"
 #include "deoglPersistentRenderTaskSubInstance.h"
@@ -65,7 +65,7 @@ deoglAddToPersistentRenderTask::deoglAddToPersistentRenderTask(
 pRenderThread( renderThread  ),
 pRenderTask( renderTask  ),
 
-pSkinShaderType( deoglSkinTexture::estComponentGeometry ),
+pSkinPipelineType( deoglSkinTexturePipelines::etGeometry ),
 
 pSolid( false ),
 pNoShadowNone( false ),
@@ -90,8 +90,8 @@ pFilterCubeFace( -1 ),
 
 pUseSpecialParamBlock( false ),
 
-pEnforceShader( NULL ),
-pEnforceParamBlock( NULL ){
+pEnforcePipeline( nullptr ),
+pEnforceParamBlock( nullptr ){
 }
 
 deoglAddToPersistentRenderTask::~deoglAddToPersistentRenderTask(){
@@ -102,8 +102,12 @@ deoglAddToPersistentRenderTask::~deoglAddToPersistentRenderTask(){
 // Management
 ///////////////
 
-void deoglAddToPersistentRenderTask::SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	pSkinShaderType = shaderType;
+void deoglAddToPersistentRenderTask::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+	pSkinPipelineType = type;
+}
+
+void deoglAddToPersistentRenderTask::SetSkinPipelineModifier( int modifier ){
+	pSkinPipelineModifier = modifier;
 }
 
 void deoglAddToPersistentRenderTask::SetSolid( bool solid ){
@@ -169,8 +173,8 @@ void deoglAddToPersistentRenderTask::SetUseSpecialParamBlock( bool use ){
 	pUseSpecialParamBlock = use;
 }
 
-void deoglAddToPersistentRenderTask::SetEnforceShader( const deoglShaderProgram *shader ){
-	pEnforceShader = shader;
+void deoglAddToPersistentRenderTask::SetEnforcePipeline( const deoglPipeline *pipeline ){
+	pEnforcePipeline = pipeline;
 }
 
 void deoglAddToPersistentRenderTask::SetEnforceParamBlock( const deoglSPBlockUBO *block ){
@@ -243,8 +247,23 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 		return;
 	}
 	
-	deoglPersistentRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, *skinTexture,
-		componentTexture.GetTUCForShaderType( pSkinShaderType ), vao );
+	deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
+	
+	if( componentTexture.GetUseDecal() ){
+		pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
+		
+	}else{
+		pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
+	}
+	
+	int pipelineModifier = pSkinPipelineModifier;
+	if( doubleSided || pForceDoubleSided ){
+		pipelineModifier |= deoglSkinTexturePipelines::emDoubleSided;
+	}
+	
+	deoglPersistentRenderTaskVAO * const rtvao = pGetTaskVAO(
+		pipelinesType, pSkinPipelineType, pipelineModifier,
+		*skinTexture, componentTexture.GetTUCForPipelineType ( pSkinPipelineType ), vao );
 	
 	const deoglSharedSPBElement &spbElement = *componentTexture.GetSharedSPBElement();
 	const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );
@@ -255,7 +274,6 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 		rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
 		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
-		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 	}
 	
 	owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), specialFlags ) );
@@ -313,40 +331,40 @@ bool deoglAddToPersistentRenderTask::pFilterRejectNoSolid( const deoglSkinTextur
 }
 
 deoglPersistentRenderTaskVAO *deoglAddToPersistentRenderTask::pGetTaskVAO(
-deoglSkinTexture::eShaderTypes shaderType, const deoglSkinTexture &skinTexture,
-const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
+deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
+deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,
+const deoglSkinTexture &skinTexture, const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
 	// retrieve the shader and texture units configuration to use
-	const deoglShaderProgram *shader = pEnforceShader;
+	const deoglPipeline *pipeline = pEnforcePipeline;
 	int spbInstanceIndexBase = -1, drawIDOffset = -1;
 	
-	if( ! shader ){
-		const deoglSkinShader * const skinShader = skinTexture.GetShaderFor( shaderType );
-		if( skinShader ){
-			shader = skinShader->GetShader();
-			spbInstanceIndexBase = skinShader->GetTargetSPBInstanceIndexBase();
-			drawIDOffset = skinShader->GetTargetDrawIDOffset();
+	if( ! pipeline ){
+		const deoglSkinTexturePipeline * const skinPipeline = skinTexture.GetPipelines().
+			GetAt( pipelinesType ).GetWith( pipelineType, pipelineModifier );
+		if( skinPipeline ){
+			pipeline = skinPipeline->GetPipeline();
+			spbInstanceIndexBase = skinPipeline->GetShader()->GetTargetSPBInstanceIndexBase();
+			drawIDOffset = skinPipeline->GetShader()->GetTargetDrawIDOffset();
 		}
 	}
 	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pipeline )
 	
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	deoglPersistentRenderTaskShader *rtshader = pRenderTask.GetShaderWith( shader );
-	if( ! rtshader ){
-		rtshader = pRenderTask.AddShader( shader );
-		rtshader->SetParameterBlock( NULL );
-		rtshader->SetSPBInstanceIndexBase( spbInstanceIndexBase );
-		rtshader->SetDrawIDOffset( drawIDOffset );
+	deoglPersistentRenderTaskPipeline *rtpipeline = pRenderTask.GetPipelineWith( pipeline );
+	if( ! rtpipeline ){
+		rtpipeline = pRenderTask.AddPipeline( pipeline );
+		rtpipeline->SetParameterBlock( NULL );
+		rtpipeline->SetSPBInstanceIndexBase( spbInstanceIndexBase );
+		rtpipeline->SetDrawIDOffset( drawIDOffset );
 	}
 	
-	deoglPersistentRenderTaskTexture *rttexture = rtshader->GetTextureWith( tuc );
+	deoglPersistentRenderTaskTexture *rttexture = rtpipeline->GetTextureWith( tuc );
 	if( ! rttexture ){
-		rttexture = rtshader->AddTexture( tuc );
+		rttexture = rtpipeline->AddTexture( tuc );
 		rttexture->SetParameterBlock( skinTexture.GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	

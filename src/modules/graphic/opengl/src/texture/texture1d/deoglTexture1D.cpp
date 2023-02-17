@@ -154,7 +154,7 @@ void deoglTexture1D::CreateTexture(){
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( size ) ) );
+			count = ( int )( floorf( log2f( ( float )size ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){

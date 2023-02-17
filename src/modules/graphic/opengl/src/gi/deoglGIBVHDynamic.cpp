@@ -102,7 +102,7 @@ void deoglGIBVHDynamic::UpdateVertices( const oglModelPosition *positions, int c
 	}
 }
 
-void deoglGIBVHDynamic::UpdateVertices( const oglVector *positions, int count ){
+void deoglGIBVHDynamic::UpdateVertices( const oglVector3 *positions, int count ){
 	if( count != pTBOVertex->GetPixelCount() ){
 		DETHROW( deeInvalidParam );
 	}
@@ -110,7 +110,7 @@ void deoglGIBVHDynamic::UpdateVertices( const oglVector *positions, int count ){
 	float *data = pTBOVertex->GetDataFloat();
 	int i;
 	for( i=0; i<count; i++, data+=4 ){
-		const oglVector &position = positions[ i ];
+		const oglVector3 &position = positions[ i ];
 		data[ 0 ] = position.x;
 		data[ 1 ] = position.y;
 		data[ 2 ] = position.z;

@@ -29,7 +29,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Light weight wrapper around a timer query.
+ * Light weight wrapper around a timer query.
  * 
  * This implementation does not care which query is active nor if they are
  * correctly stopped before a new one starts.
@@ -42,10 +42,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create timer query. */
+	/** Create timer query. */
 	deoglTimerQuery( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up timer query. */
+	/** Clean up timer query. */
 	~deoglTimerQuery();
 	/*@}*/
 	
@@ -53,19 +53,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Begin query. */
+	/** Begin query. */
 	void BeginQuery();
 	
-	/** \brief End active query. */
+	/** End active query. */
 	void EndQuery();
 	
-	/** \brief Result of the query is present. */
+	/** Result of the query is present. */
 	bool HasResult() const;
 	
-	/** \brief Result of the query as nano-seconds. */
+	/** Result of the query as nano-seconds. */
 	unsigned int GetResult() const;
 	/*@}*/
 };

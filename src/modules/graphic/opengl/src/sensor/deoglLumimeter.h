@@ -33,7 +33,7 @@ class deLumimeter;
 
 
 /**
- * \brief Lumimeter peer.
+ * Lumimeter peer.
  */
 class deoglLumimeter : public deBaseGraphicLumimeter{
 public:
@@ -51,10 +51,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create lumimeter peer. */
+	/** Create lumimeter peer. */
 	deoglLumimeter( deGraphicOpenGl &ogl, const deLumimeter &lumimeter );
 	
-	/** \brief Clean up lumimeter peer. */
+	/** Clean up lumimeter peer. */
 	virtual ~deoglLumimeter();
 	/*@}*/
 	
@@ -62,15 +62,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Lumimeter. */
+	/** Lumimeter. */
 	inline const deLumimeter &GetLumimeter() const{ return pLumimeter; }
 	
 	
 	
-	/** \brief Render lumimter. */
+	/** Render lumimter. */
 	inline deoglRLumimeter *GetRLumimeter() const{ return pRLumimeter; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -78,13 +78,13 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Direction changed. */
+	/** Direction changed. */
 	virtual void DirectionChanged();
 	
-	/** \brief Cone parameter changed. */
+	/** Cone parameter changed. */
 	virtual void ConeParameterChanged();
 	/*@}*/
 	
@@ -92,10 +92,10 @@ public:
 	
 	/** \name Measuring */
 	/*@{*/
-	/** \brief Measures the luminance. */
+	/** Measures the luminance. */
 	virtual float MeasureLuminance();
 	
-	/** \brief Measures the color. */
+	/** Measures the color. */
 	virtual decColor MeasureColor();
 	/*@}*/
 	

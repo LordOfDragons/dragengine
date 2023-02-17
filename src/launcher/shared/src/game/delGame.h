@@ -61,7 +61,7 @@ class delSharedIcon;
  * separate child process and does not take down the entire launcher in case of an
  * unexpected failure.
  */
-class delGame : public deObject{
+class DE_DLL_EXPORT delGame : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<delGame> Ref;

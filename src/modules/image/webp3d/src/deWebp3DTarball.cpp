@@ -19,10 +19,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
+
+#ifdef OS_W32
+	#include <dragengine/app/deOSWindows.h>
+#else
+	#include <sys/time.h>
+#endif
 
 #include "deWebp3DTarball.h"
 #include "deWebp3DImageInfo.h"
@@ -140,39 +147,33 @@ void deWebp3DTarball::Get3DImageInfos( deWebp3DImageInfo &info, decBaseFileReade
 		// only files are accepted
 		if( header.typeflag == REGTYPE || header.typeflag == AREGTYPE ){
 			// retrieve the z-coordinate
-			if( sscanf( header.name, "z%hu.webp", &z ) == 1 ){
-				// if the z coordinate is larger than the depth of the image found so far bump it up
-				if( ( int )z >= info.depth ){
-					info.depth = ( int )z + 1;
-				}
+			z = decString( header.name ).GetMiddle( 1, -5 ).ToInt();
+
+			// if the z coordinate is larger than the depth of the image found so far bump it up
+			if( ( int )z >= info.depth ){
+				info.depth = ( int )z + 1;
+			}
 				
-				// retrieve the image properties
-				Get2DImageInfos( info2D, file, filesize );
+			// retrieve the image properties
+			Get2DImageInfos( info2D, file, filesize );
 				
-				// if this is the first image store them away
-				if( firstImage ){
-					info.width = info2D.width;
-					info.height = info2D.height;
-					info.hasAlpha = info2D.hasAlpha;
-					firstImage = false;
+			// if this is the first image store them away
+			if( firstImage ){
+				info.width = info2D.width;
+				info.height = info2D.height;
+				info.hasAlpha = info2D.hasAlpha;
+				firstImage = false;
 					
-				// otherwise check if the properties match
-				}else{
-					if( info2D.width != info.width
-					|| info2D.height != info.height
-					|| info2D.hasAlpha != info.hasAlpha ){
-						pModule.LogErrorFormat(
-							"the files in the archive '%s' do not match in size or format.",
-							info.GetFilename().GetString() );
-						DETHROW_INFO( deeInvalidFileFormat, info.GetFilename() );
-					}
-				}
-				
+			// otherwise check if the properties match
 			}else{
-				pModule.LogErrorFormat(
-					"invalid file name '%s' in the archive '%s'. has to be z<num>.webp with num=[0..depth-1].",
-					header.name, info.GetFilename().GetString() );
-				DETHROW_INFO( deeInvalidFileFormat, info.GetFilename() );
+				if( info2D.width != info.width
+				|| info2D.height != info.height
+				|| info2D.hasAlpha != info.hasAlpha ){
+					pModule.LogErrorFormat(
+						"the files in the archive '%s' do not match in size or format.",
+						info.GetFilename().GetString() );
+					DETHROW_INFO( deeInvalidFileFormat, info.GetFilename() );
+				}
 			}
 		}
 		
@@ -243,17 +244,8 @@ void deWebp3DTarball::Load3DImage( deWebp3DImageInfo &infos, decBaseFileReader &
 		
 		// only files are accepted
 		if( header.typeflag == REGTYPE || header.typeflag == AREGTYPE ){
-			// retrieve the z-coordinate
-			if( sscanf( header.name, "z%hu.webp", &z ) == 1 ){
-				// load image slice
-				Load2DImage( infos, file, filesize, imageData + strideImage * ( int )z );
-				
-			}else{
-				pModule.LogErrorFormat(
-					"invalid file name '%s' in the archive '%s'. has to be z<num>.webp with num=[0..depth-1].",
-					header.name, infos.GetFilename().GetString() );
-				DETHROW_INFO( deeInvalidFileFormat, infos.GetFilename() );
-			}
+			z = decString( header.name ).GetMiddle( 1, -5 ).ToInt();
+			Load2DImage( infos, file, filesize, imageData + strideImage * ( int )z );
 		}
 		
 		// skip to the end of the file
@@ -270,6 +262,7 @@ void deWebp3DTarball::Save3DImage( decBaseFileWriter &file, const deImage &image
 	const int strideImage = strideLine * image.GetHeight();
 	const bool hasAlpha = image.GetComponentCount() == 4;
 	char paddingBytes[ 512 ];
+	struct timeval curtime;
 	unsigned int checksum;
 	int z, r;
 	
@@ -278,12 +271,35 @@ void deWebp3DTarball::Save3DImage( decBaseFileWriter &file, const deImage &image
 	sTarballHeader header;
 	memset( &header, '\0', 512 );
 	
-	strcpy( &header.mode[ 0 ], "100600 " );
-	strcpy( &header.uid[ 0 ],  "  1750 " );
-	strcpy( &header.gid[ 0 ],  "   144 " );
+	#ifdef OS_W32
+		strcpy_s( &header.mode[ 0 ], sizeof( header.mode ), "100600 " );
+		strcpy_s( &header.uid[ 0 ], sizeof( header.uid ),   "  1750 " );
+		strcpy_s( &header.gid[ 0 ], sizeof( header.gid ),   "   144 " );
+	#else
+		strcpy( &header.mode[ 0 ], "100600 " );
+		strcpy( &header.uid[ 0 ],  "  1750 " );
+		strcpy( &header.gid[ 0 ],  "   144 " );
+	#endif
 	
-	struct timeval curtime;
-	gettimeofday( &curtime, nullptr );
+	#ifdef OS_W32
+		{
+		ULARGE_INTEGER x;
+        ULONGLONG usec;
+        static const ULONGLONG epoch_offset_us = 11644473600000000ULL;
+
+		FILETIME filetime;
+		GetSystemTimeAsFileTime( &filetime );
+
+		x.LowPart = filetime.dwLowDateTime;
+        x.HighPart = filetime.dwHighDateTime;
+        usec = x.QuadPart / 10  -  epoch_offset_us;
+        curtime.tv_sec  = ( long )( usec / 1000000ULL );
+        curtime.tv_usec = ( long )( usec % 1000000ULL );
+		}
+	#else
+		gettimeofday( &curtime, nullptr );
+	#endif
+
 	header.mtime[ 11 ] = ' ';
 	for( r=10; r>=0; r-- ){
 		if( curtime.tv_sec ){
@@ -322,7 +338,11 @@ void deWebp3DTarball::Save3DImage( decBaseFileWriter &file, const deImage &image
 		}
 		
 		// update header
-		sprintf( &header.name[ 0 ], "z%hu.webp", ( unsigned short )z );
+		#ifdef OS_W32
+			sprintf_s( &header.name[ 0 ], sizeof( header.name ), "z%hu.webp", ( unsigned short )z );
+		#else
+			sprintf( &header.name[ 0 ], "z%hu.webp", ( unsigned short )z );
+		#endif
 		
 		header.size[ 11 ] = ' ';
 		for( r=10; r>=0; r-- ){
@@ -427,7 +447,7 @@ decBaseFileWriter &file, const void *imagedata ){
 			DETHROW( deeWriteFile );
 		}
 		
-		file.Write( output, size );
+		file.Write( output, ( int )size );
 		
 		WebPFree( output );
 		

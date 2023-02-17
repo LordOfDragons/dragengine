@@ -63,7 +63,7 @@
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
-#include <GL/wglext.h>
+#include "../extensions/wglext.h"
 #endif
 
 

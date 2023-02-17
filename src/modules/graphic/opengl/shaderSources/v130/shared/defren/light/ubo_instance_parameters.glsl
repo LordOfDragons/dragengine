@@ -12,7 +12,14 @@ UBOLAYOUT uniform InstanceParameters{
 		vec3 pLightView[ 2 ];
 		//vec3 pLightUp[ 2 ]; // not used
 		//vec3 pLightRight[ 2 ]; // not used
-		float pDepthCompare; // 0=disable, 1=greater, -1=less
+		
+		vec4 pLightParams; // x=depthCompare, y=shadow.znear, z=n/a, w=n/a
+		
+		// 0=disable, 1=greater, -1=less
+		#define pDepthCompare pLightParams.x
+		
+		// near shadow clamp distance
+		#define pLightShadowClamp pLightParams.y
 		
 		mat4 pShadowMatrix1[ 2 ];
 		mat4 pShadowMatrix2[ 2 ];
@@ -30,9 +37,9 @@ UBOLAYOUT uniform InstanceParameters{
 		vec3 pShadow2Solid; // x=pixelSizeU, y=pixelSizeV, z=noiseScale
 		vec3 pShadow2Transparent; // x=pixelSizeU, y=pixelSizeV, z=noiseScale
 		
-		vec2 pShadowDepthTransform;
+		vec4 pShadowDepthTransform; // x=z2depth.scale, y=z2depth.offset, z=depth2z.scale, w=depth2z.offset
 		#ifdef SKY_LIGHT
-			vec2 pShadowDepthTransform2;
+			vec4 pShadowDepthTransform2; // x=z2depth.scale, y=z2depth.offset, z=depth2z.scale, w=depth2z.offset
 		#endif
 		
 		#ifdef SKY_LIGHT

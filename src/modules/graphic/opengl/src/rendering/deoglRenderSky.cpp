@@ -48,6 +48,7 @@
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -204,71 +205,76 @@ enum eSPBody{
 ////////////////////////////
 
 deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread ),
-pRenderSkyIntoEnvMapPB( nullptr )
+deoglRenderBase( renderThread )
 {
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
-	deoglShaderSources *sources;
+	deoglPipelineConfiguration pipconf;
+	const deoglShaderSources *sources;
 	
-	try{
-		pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
-		
-		
-		renderThread.GetShader().SetCommonDefines( commonDefines );
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
-		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
-			sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
-		}
-		
-		pShaderSkySphereStereo = shaderManager.GetProgramWith( sources, defines );
-		
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
-		pShaderSkyBox = shaderManager.GetProgramWith( sources, defines );
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
-			
-		}else{
-			sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
-			pShaderSkyBoxStereo = shaderManager.GetProgramWith( sources, defines );
-		}
-		
-		
-		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Sky Body" );
-		pShaderBody = shaderManager.GetProgramWith( sources, defines );
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
-			
-		}else{
-			sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
-			pShaderBodyStereo = shaderManager.GetProgramWith( sources, defines );
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	pRenderSkyIntoEnvMapPB = deoglSkinShader::CreateSPBRender( renderThread );
+	
+	
+	renderThread.GetShader().SetCommonDefines( commonDefines );
+	
+	pipconf.Reset();
+	pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written
+	pipconf.EnableBlendBlend();
+	pipconf.SetEnableScissorTest( true );
+	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+	pipconf.EnableDynamicStencilTest();
+	
+	
+	// sky sphere
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkySphere = pipelineManager.GetWith( pipconf );
+	
+	// sky sphere stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
 	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkySphereStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// sky box
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkyBox = pipelineManager.GetWith( pipconf );
+	
+	// sky box stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineSkyBoxStereo = pipelineManager.GetWith( pipconf );
+	
+	
+	
+	// sky body
+	defines = commonDefines;
+	sources = shaderManager.GetSourcesNamed( "Sky Body" );
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineBody = pipelineManager.GetWith( pipconf );
+	
+	// sky body stereo
+	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	if( ! renderFSQuadStereoVSLayer ){
+		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
+	}
+	pipconf.SetShader( renderThread, sources, defines );
+	pPipelineBodyStereo = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderSky::~deoglRenderSky(){
-	pCleanUp();
 }
 
 
@@ -292,21 +298,20 @@ static decTimer timer;
 #define DEBUG_PRINT_TIMER_TOTAL(what)
 #endif
 
-void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
-	// NOTE always switch FBO and clear the color attachment. if no sky is present use
-	//      black as clear color
+void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	// NOTE always switch FBO and clear the color attachment.
+	//      if no sky is present use black as clear color
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSky" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	
 	DEBUG_RESET_TIMERS;
 	defren.ActivateFBOColor( true, false );
 		// change the skin shader so the color texture is the first one.
 		// would not require this switch here anymore
 	
-	// clear color buffer
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	pPipelineClearBuffers->Activate();
 	
 	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const int skyCount = plan.GetSkyInstanceCount();
@@ -318,28 +323,27 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 		clearColor[ 3 ] = ( GLfloat )bgColor.a;
 	}
 	
-	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	
 	if( plan.GetClearColor() ){
 		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		plan.SetClearColor( false );
 	}
-	
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	// render sky if present
 	if( skyCount == 0 ){
 		return;
 	}
 	
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-		// alpha=false required to avoid blended alpha to be written
-	
 	// render sky
+	state.StencilMask( 0x0 );
+	state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	
+	if( mask ){
+		state.StencilFunc( GL_EQUAL, 0x1, 0x1 );
+		
+	}else{
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
+	}
+	
 	bool first = true;
 	int i, j;
 	
@@ -387,180 +391,6 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	DEBUG_PRINT_TIMER( "RenderSky: unbind vao" );
 }
 
-#if 0
-void deoglRenderSky::RenderSkyOld( deoglRenderPlan &plan ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglRSkyInstance *instance = plan.GetWorld()->GetSky();
-	if( ! instance ){
-		return;
-	}
-	deoglRSky *sky = instance->GetRSky();
-	if( ! sky ){
-		return;
-	}
-	
-DEBUG_RESET_TIMERS;
-	// attach color buffer, depth buffer and stencil buffer
-	defren.ActivateFBOColor( true, false );
-DEBUG_PRINT_TIMER( "RenderSky: attach color/depth/stencil" );
-	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
-	// set stencil parameters
-	if( plan.GetLevel() == 0 ){
-		// if we have no mask clear the stencil buffer with 0
-		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x00, 0x00 ) );
-		OGL_CHECK( renderThread, glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE ) );
-		OGL_CHECK( renderThread, glStencilMask( 0xff ) );
-		OGL_CHECK( renderThread, glClearStencil( 0x00 ) );
-		
-	}else{
-		// if we have a mask leave the stencil mask untouched but test against the mask bit
-		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
-		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-		OGL_CHECK( renderThread, glStencilMask( 0x00 ) );
-	}
-DEBUG_PRINT_TIMER( "RenderSky: set states" );
-	
-	// if there is no sky visible clear the stencil buffer
-	if( ! plan.GetSkyVisible() ){
-		// no need to clear if we have a mask as the content inside the mask stays untouched
-		if( plan.GetLevel() == 0 ){
-			OGL_CHECK( renderThread, glClear( /*GL_DEPTH_BUFFER_BIT | */ GL_STENCIL_BUFFER_BIT ) );
-DEBUG_PRINT_TIMER( "RenderSky: clear stencil (sky invisible)" );
-		}
-		
-		return;
-	}
-	
-	// if there is no sky clear the stencil buffer and clear the color buffer with black
-	if( ! sky ){
-		// no need to clear if we have a mask as the content inside the mask stays untouched
-		// and a single color looks the same no matter where you look at
-		if( plan.GetLevel() == 0 ){
-			OGL_CHECK( renderThread, glClearColor( 0.0f, 0.0f, 0.0f, 1.0f ) );
-			OGL_CHECK( renderThread, glClear( /*GL_DEPTH_BUFFER_BIT | */ GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT ) );
-DEBUG_PRINT_TIMER( "RenderSky: clear color/stencil (sky visible but not set)" );
-		}
-		
-		return;
-	}
-	
-	// otherwise render using the sky object
-	const int layerCount = sky->GetLayerCount();
-	
-	if( plan.GetLevel() == 0 && renderThread.GetConfiguration().GetDebugSnapshot() == 2 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMap(
-			*instance->GetEnvironmentMap()->GetEnvironmentMap(),
-			"environment_cubemap", false );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	
-	// if there are no layers use the background color
-	if( layerCount == 0 ){
-		// no need to clear if we have a mask as the content inside the mask stays untouched
-		// and a single color sky looks the same no matter where you look at
-		if( plan.GetLevel() == 0 ){
-			decColor engSkyColor = sky->GetBgColor();
-			
-			engSkyColor.r = powf( engSkyColor.r, OGL_RENDER_GAMMA );
-			engSkyColor.g = powf( engSkyColor.g, OGL_RENDER_GAMMA );
-			engSkyColor.b = powf( engSkyColor.b, OGL_RENDER_GAMMA );
-			
-			OGL_CHECK( renderThread, glClearColor( engSkyColor.r, engSkyColor.g, engSkyColor.b, engSkyColor.a ) );
-			OGL_CHECK( renderThread, glClear( /*GL_DEPTH_BUFFER_BIT | */ GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT ) );
-DEBUG_PRINT_TIMER( "RenderSky: clear color/stencil with background color" );
-		}
-		
-	// otherwise render all layers
-	}else{
-		bool first = true;
-		int l, layerType;
-		
-		// render all layers
-		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
-DEBUG_PRINT_TIMER( "RenderSky: bind vao" );
-		
-		for( l=0; l<layerCount; l++ ){
-			deoglRSkyLayer &layer = sky->GetLayerAt( l );
-			
-			if( layer.GetVisible() ){
-				layerType = layer.GetLayerType();
-				
-				if( layerType == deoglRSkyLayer::eltSkyBox ){
-					RenderSkyBox( plan, *sky, layer, false );
-					
-				}else if( layerType == deoglRSkyLayer::eltSkySphere ){
-					RenderSkySphere( plan, *sky, layer, false );
-					
-				}else{
-					// this one is a bit tricky. if the layer type is not set to a usable one there
-					// is usually not a skin attached or the skin does not define a valid sky layer.
-					// there are now two cases. in the first case the layer has no bodies and the
-					// layer can be considered invisible. otherwise if there are bodies we have to
-					// first clear the background
-					if( first ){
-						if( layer.GetBodyCount() == 0 ){
-							continue;
-						}
-						
-						decColor engSkyColor = sky->GetBgColor();
-						engSkyColor.r = powf( engSkyColor.r, OGL_RENDER_GAMMA );
-						engSkyColor.g = powf( engSkyColor.g, OGL_RENDER_GAMMA );
-						engSkyColor.b = powf( engSkyColor.b, OGL_RENDER_GAMMA );
-						
-						OGL_CHECK( renderThread, glClearColor( engSkyColor.r, engSkyColor.g, engSkyColor.b, engSkyColor.a ) );
-						OGL_CHECK( renderThread, glClear( /*GL_DEPTH_BUFFER_BIT | */ GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT ) );
-					}
-				}
-				
-				if( first ){
-					// for everything beyond the first layer use blending and disable
-					// writing to the stencil buffer. the first layer is supposed to
-					// cover the entire screen so after this is done no stencil operation
-					// is required anymore and transparency can occur
-					OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-					OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-					OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
-					OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-					
-					first = false;
-				}
-				
-				if( layer.GetBodyCount() > 0 ){
-					RenderSkyLayerBodies( plan, *sky, layer );
-				}
-DEBUG_PRINT_TIMER( "RenderSky: render sky layer" );
-			}
-		}
-		
-		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-DEBUG_PRINT_TIMER( "RenderSky: unbind vao" );
-		
-		// if there is no visible layer clear with the background color
-		if( first ){
-			decColor engSkyColor = sky->GetBgColor();
-			
-			engSkyColor.r = powf( engSkyColor.r, OGL_RENDER_GAMMA );
-			engSkyColor.g = powf( engSkyColor.g, OGL_RENDER_GAMMA );
-			engSkyColor.b = powf( engSkyColor.b, OGL_RENDER_GAMMA );
-			
-			OGL_CHECK( renderThread, glClearColor( engSkyColor.r, engSkyColor.g, engSkyColor.b, engSkyColor.a ) );
-			OGL_CHECK( renderThread, glClear( /*GL_DEPTH_BUFFER_BIT | */ GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT ) );
-		}
-	}
-}
-#endif
-
 bool deoglRenderSky::RenderSkyBox( deoglRenderPlan &plan, deoglRSkyInstance &instance,
 int layerIndex, bool first, bool renderIntoEnvMap ){
 	return false;
@@ -605,9 +435,8 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 	// set the shaders
 	const float matGamma = oglSkinTexture->GetColorGamma();
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderSkySphereStereo : pShaderSkySphere;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled * const shader = program->GetCompiled();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineSkySphereStereo : *pPipelineSkySphere;
+	pipeline.Activate();
 	
 	if( renderIntoEnvMap ){
 		pRenderSkyIntoEnvMapPB->Activate();
@@ -616,13 +445,13 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	}
 	
-	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
-	shader->SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
-	shader->SetParameterColor4( spsphLayerColor, layerColor );
-	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
-	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	shader.SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
+	shader.SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
+	shader.SetParameterColor4( spsphLayerColor, layerColor );
+	shader.SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
+	shader.SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
 	
-	// set texture
 	if( textures[ deoglRSkyLayer::eiSphere ] == -1 ){
 		tsmgr.EnableTexture( 0, *renderThread.GetDefaultTextures().GetColor(), GetSamplerClampLinear() );
 		
@@ -632,7 +461,6 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 			*renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	}
 	
-	// render layer
 	RenderFullScreenQuad( plan );
 	
 	return true;
@@ -671,9 +499,8 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	}
 	
 	// set the shaders
-	const deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderBodyStereo : pShaderBody;
-	renderThread.GetShader().ActivateShader( program );
-	deoglShaderCompiled * const shader = program->GetCompiled();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineBodyStereo : *pPipelineBody;
+	pipeline.Activate();
 	
 	if( renderIntoEnvMap ){
 		pRenderSkyIntoEnvMapPB->Activate();
@@ -683,6 +510,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	}
 	
 	// render bodies
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	deoglTexture * const defTexColor = renderThread.GetDefaultTextures().GetColor();
 	deoglTexture * const defTexTransparency = renderThread.GetDefaultTextures().GetTransparency();
 	deoglTexSamplerConfig &tscClampLinear = *renderThread.GetShader()
@@ -693,8 +521,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 			continue;
 		}
 		
-		deoglRSkin &skin = *bodies[ b ].skin;
-		
+		const deoglRSkin &skin = *bodies[ b ].skin;
 		if( skin.GetTextureCount() == 0 ){
 			continue;
 		}
@@ -715,9 +542,9 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 		tsmgr.EnableSkin( 0, skin, 0, deoglSkinChannel::ectColor, defTexColor, tscClampLinear );
 		tsmgr.EnableSkin( 1, skin, 0, deoglSkinChannel::ectTransparency, defTexTransparency, tscClampLinear );
 		
-		shader->SetParameterMatrix4x3( spbodyMatrixBody, matrixBody );
-		shader->SetParameterColor4( spbodyColor, bodyColor );
-		shader->SetParameterFloat( spbodyMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
+		shader.SetParameterMatrix4x3( spbodyMatrixBody, matrixBody );
+		shader.SetParameterColor4( spbodyColor, bodyColor );
+		shader.SetParameterFloat( spbodyMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 		
 		RenderFullScreenQuad( plan );
 	}
@@ -749,6 +576,7 @@ deoglEnvironmentMap &envmap ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderSkyIntoEnvMap" );
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglFramebuffer *oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap *cubemap = envmap.GetEnvironmentMap();
@@ -784,20 +612,15 @@ deoglEnvironmentMap &envmap ){
 		
 		fbo->DetachAllImages();
 		
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+		state.StencilMask( 0x0 );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
 		
 		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, size, size ) );
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+		SetViewport( plan );
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
@@ -808,11 +631,8 @@ deoglEnvironmentMap &envmap ){
 			fbo->AttachColorCubeMapFace( 0, cubemap, cubeFaces[ cmf ] );
 			fbo->Verify();
 			
-			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+			pPipelineClearBuffers->Activate();
 			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-			
-			OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
-				// alpha=false required to avoid blended alpha to be written
 			
 			if( cmf == 0 ){ // positive x
 				matrixCamera.a11 = 0.0; matrixCamera.a12 =  0.0; matrixCamera.a13 = -1.0;
@@ -902,6 +722,7 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "Sky.RenderEmptySkyIntoEnvMap" );
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
+	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglCubeMap * const cubemap = envmap.GetEnvironmentMap();
 	deoglFramebuffer *fbo = NULL;
 	const int size = envmap.GetSize();
@@ -924,10 +745,11 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, size, size ) );
-		OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+		SetViewport( size, size );
 		
-		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+		state.StencilMask( 0x0 );
+		state.StencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+		state.StencilFunc( GL_ALWAYS, 0x1, 0x0 );
 		
 		const GLfloat clearColor[ 4 ] = { skyColor.r, skyColor.g, skyColor.b, 1.0f };
 		
@@ -972,33 +794,14 @@ decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool 
 }
 
 void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan ){
-	const deoglDeferredRendering &defren = GetRenderThread().GetDeferredRendering();
 	const decDMatrix &matrixProjection = plan.GetProjectionMatrix();
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	const decMatrix matrixSkyBody( matrixCamera.GetRotationMatrix() * matrixProjection );
+	const deoglSPBMapBuffer mapped( pRenderSkyIntoEnvMapPB );
 	
-	pRenderSkyIntoEnvMapPB->MapBuffer();
-	try{
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
-		pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, defren.GetClearDepthValueRegular() );
-		
-	}catch( const deException & ){
-		pRenderSkyIntoEnvMapPB->UnmapBuffer();
-		throw;
-	}
-	pRenderSkyIntoEnvMapPB->UnmapBuffer();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglRenderSky::pCleanUp(){
-	if( pRenderSkyIntoEnvMapPB ){
-		pRenderSkyIntoEnvMapPB->FreeReference();
-	}
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.Invert() );
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixSkyBody, 0, matrixSkyBody );
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec4( deoglSkinShader::erutDepthToPosition, 0, plan.GetDepthToPosition() );
+	pRenderSkyIntoEnvMapPB->SetParameterDataArrayVec2( deoglSkinShader::erutDepthToPosition2, 0, plan.GetDepthToPosition2() );
+	pRenderSkyIntoEnvMapPB->SetParameterDataFloat( deoglSkinShader::erutClearDepthValue, GetRenderThread().GetChoices().GetClearDepthValueRegular() );
 }

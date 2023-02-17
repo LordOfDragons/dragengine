@@ -29,7 +29,7 @@ class deoglCapabilities;
 
 
 /**
- * \brief Capability check geometry shader layer.
+ * Capability check geometry shader layer.
  */
 class deoglCapCheckGeometryShaderLayer{
 private:
@@ -41,7 +41,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capability check. */
+	/** Create capability check. */
 	deoglCapCheckGeometryShaderLayer( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -49,13 +49,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Geometry shader layer is working correctly. */
+	/** Geometry shader layer is working correctly. */
 	inline bool Working() const{ return pWorking; }
 	
-	/** \brief Geometry shader layer is not working correctly. */
+	/** Geometry shader layer is not working correctly. */
 	inline bool Broken() const{ return ! pWorking; }
 	
-	/** \brief Run check. */
+	/** Run check. */
 	void Check( GLuint fbo );
 	/*@}*/
 };

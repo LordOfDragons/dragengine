@@ -28,7 +28,7 @@ class deoglCubeMap;
 
 
 /**
- * @brief Renderable Depth CubeMap.
+ * Renderable Depth CubeMap.
  * Stores a renderable cubemap of any kind. Renderable cubemaps can not be
  * used by more than one entity at the same time. They can also not change
  * the size of format once created. They can though be reused if the entity
@@ -37,6 +37,7 @@ class deoglCubeMap;
 class deoglRenderableDepthCubeMap{
 private:
 	int pSize;
+	bool pUseFloat;
 	bool pInUse;
 	
 	deoglCubeMap *pCubeMap;
@@ -44,21 +45,24 @@ private:
 	int pMemoryUsageGPU;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
-	deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size );
+	deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size, bool useFloat );
 	/** Cleans up the renderable cubemap. */
 	~deoglRenderableDepthCubeMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the size. */
 	inline int GetSize() const{ return pSize; }
 	
+	/** Use float depth. */
+	inline bool GetUseFloat() const{ return pUseFloat; }
+	
 	/** Determines if the format matches the given format. */
-	bool Matches( int size ) const;
+	bool Matches( int size, bool useFloat ) const;
 	
 	/** Determines if the shadow map is in use. */
 	inline bool GetInUse() const{ return pInUse; }

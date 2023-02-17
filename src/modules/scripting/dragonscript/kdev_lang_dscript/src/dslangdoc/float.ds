@@ -20,6 +20,9 @@
  * | \b not float | true if float value is not 0 |
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class float
 	/** \name Constructors */
@@ -137,11 +140,6 @@ fixed class float
 	
 	
 	
-	/** \brief Negative value. */
-	public func float -()
-		return 0.0
-	end
-	
 	/** \brief Increment float value by one. */
 	public func float ++()
 		return 0.0
@@ -149,6 +147,11 @@ fixed class float
 	
 	/** \brief Decrement float value by one. */
 	public func float --()
+		return 0.0
+	end
+	
+	/** \brief Negated value. */
+	public func float -()
 		return 0.0
 	end
 end

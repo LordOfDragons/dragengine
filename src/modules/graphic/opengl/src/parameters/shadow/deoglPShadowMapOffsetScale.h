@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Shadow Map Offset Scale Parameter.
+ * Shadow Map Offset Scale Parameter.
  */
 class deoglPShadowMapOffsetScale : public deoglParameterFloat{
 public:

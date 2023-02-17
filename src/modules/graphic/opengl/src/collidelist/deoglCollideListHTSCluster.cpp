@@ -28,6 +28,7 @@
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../terrain/heightmap/deoglHTView.h"
 #include "../terrain/heightmap/deoglHTViewSector.h"
+#include "../terrain/heightmap/deoglHTViewSectorCluster.h"
 #include "../terrain/heightmap/deoglHTSCluster.h"
 #include "../terrain/heightmap/deoglRHeightTerrain.h"
 #include "../terrain/heightmap/deoglRHTSector.h"
@@ -42,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCollideListHTSCluster::deoglCollideListHTSCluster( deoglCollideListHTSector &sector ) :
-pSector( sector ),
+deoglCollideListHTSCluster::deoglCollideListHTSCluster() :
+pCluster( nullptr ),
 pIndex( 0 ),
 pCulled( false ),
 pCascadeMask( 0 ){
@@ -57,16 +58,19 @@ deoglCollideListHTSCluster::~deoglCollideListHTSCluster(){
 // Management
 ///////////////
 
+void deoglCollideListHTSCluster::SetCluster( deoglHTViewSectorCluster *cluster ){
+	DEASSERT_NOTNULL( cluster )
+	pCluster = cluster;
+	pCoordinates = cluster->GetCoordinate();
+	pIndex = pCoordinates.y * cluster->GetSector().GetSector().GetClusterCount() + pCoordinates.x;
+}
+
 void deoglCollideListHTSCluster::Clear(){
 	pCoordinates.SetZero();
 	pIndex = 0;
 	pCulled = false;
 	pCascadeMask = 0;
-}
-
-void deoglCollideListHTSCluster::SetCoordinates( const decPoint &coordinates ){
-	pCoordinates = coordinates;
-	pIndex = coordinates.y * pSector.GetSector()->GetSector().GetClusterCount() + coordinates.x;
+	pCluster = nullptr;
 }
 
 void deoglCollideListHTSCluster::SetCulled( bool culled ){
@@ -79,8 +83,7 @@ void deoglCollideListHTSCluster::SetCascadeMask( int mask ){
 
 void deoglCollideListHTSCluster::StartOcclusionTest(
 deoglOcclusionTest &occlusionTest, const decVector &offset ){
-	const deoglHTSCluster &cluster = pSector.GetSector()->GetSector().
-		GetClusterAt( pCoordinates.x, pCoordinates.y );
+	const deoglHTSCluster &cluster = pCluster->GetSector().GetSector().GetClusterAt( pCoordinates.x, pCoordinates.y );
 	const decVector realOffset( cluster.GetCenter() + offset );
 	
 	pCulled = false;

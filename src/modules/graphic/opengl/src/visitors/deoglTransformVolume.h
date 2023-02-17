@@ -38,7 +38,7 @@ class deoglDCollisionFrustum;
 
 
 /**
- * @brief Visitor for transforming a collision volume.
+ * Visitor for transforming a collision volume.
  * Provides support for transforming arbitrary collision volumes using
  * a transformation that can compose of translations, rotations
  * and scaling. The class is written to reuse transformed collision

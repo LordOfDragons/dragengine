@@ -31,7 +31,7 @@ class decBaseFileReader;
 /**
  * \brief Load Game XML.
  */
-class delGameXML : public delBaseXML{
+class DE_DLL_EXPORT delGameXML : public delBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

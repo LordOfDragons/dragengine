@@ -305,7 +305,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 
 void deClassFont::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	rt->PushInt( ( intptr_t )nd.font );
+	rt->PushInt( ( int )( intptr_t )nd.font );
 }
 
 // public func bool equals( Object obj )

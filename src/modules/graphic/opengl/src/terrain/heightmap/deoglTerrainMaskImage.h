@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Mask Image Wrapper.
+ * Mask Image Wrapper.
  *
  * Wraps a mask image delivering the mask value without having to worry about the underlaying
  * bit count of the mask image. The image is not held so you have to hold the image yourself.
@@ -49,10 +49,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create terrain mask image wrapper. */
+	/** Create terrain mask image wrapper. */
 	deoglTerrainMaskImage( deImage &image );
 	
-	/** \brief Clean up terrain mask image wrapper. */
+	/** Clean up terrain mask image wrapper. */
 	~deoglTerrainMaskImage();
 	/*@}*/
 	
@@ -60,21 +60,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Width. */
+	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height. */
+	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
 	
 	/**
-	 * \brief Mask value at position.
+	 * Mask value at position.
 	 * 
 	 * No checking is done on the parameters so make sure they are inside the boundaries.
 	 */
 	float GetMaskValueAt( int x, int y ) const;
 	
 	/**
-	 * \brief Mask value at position.
+	 * Mask value at position.
 	 * 
 	 * No checking is done on the parameters so make sure they are inside the boundaries.
 	 */

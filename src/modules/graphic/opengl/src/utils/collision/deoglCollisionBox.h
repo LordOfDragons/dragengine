@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Box Collision Volume.
+ * Box Collision Volume.
  * Defines a collision volume in the shape of a box. The box is defined
  * by a position, the length of the extends in each direction ( half-size )
  * and an optional orientation. A box without a rotation is called axis
@@ -44,7 +44,7 @@ private:
 	decVector pAxisX, pAxisY, pAxisZ;
 	bool pOriented;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision box of 0 size. */
 	deoglCollisionBox();
@@ -60,13 +60,13 @@ public:
 	virtual ~deoglCollisionBox();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
 	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder );
@@ -83,13 +83,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -116,12 +116,12 @@ public:
 	virtual bool RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this box. */
 	bool SphereHitsBox( deoglCollisionSphere *sphere );
@@ -157,7 +157,7 @@ public:
 	float BoxMoveHitsBox( deoglCollisionBox *box, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Parameters */
+	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the center. */
 	inline const decVector &GetCenter() const{ return pCenter; }

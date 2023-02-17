@@ -28,6 +28,7 @@
 #include "deoglWorldOctreeVisitor.h"
 #include "../billboard/deoglRBillboard.h"
 #include "../component/deoglRComponent.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../debugdrawer/deoglRDebugDrawer.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../envmap/deoglREnvMapProbe.h"
@@ -84,7 +85,8 @@ pEnvMapUpdateCount( 0 ),
 pEnvMapRenderPlan( NULL ),
 pDirtyEnvMapLayout( false ),
 
-pOctree( NULL )
+pOctree( NULL ),
+pCompute( deoglWorldCompute::Ref::New( new deoglWorldCompute( *this ) ) )
 {
 	try{
 		const decDVector octreeSize( pSanitizeOctreeSize( size ) );
@@ -284,6 +286,112 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 	}
 	pDirtyPrepareForRender = false;
 	
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "World.PrepareForRender" );
+	INIT_SPECIAL_TIMING
+	int i, count;
+	
+	// prepare components
+	{
+		const deoglDebugTraceGroup debugTrace2( pRenderThread, "Components" );
+		pListPrepareRenderComponents.RemoveAll();
+		decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
+		while( pListPrepareForRenderComponents.GetRoot() ){
+			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderComponents.GetRoot();
+			deoglRComponent &component = *( ( deoglRComponent* )entry->GetOwner() );
+			pListPrepareForRenderComponents.Remove( entry );
+			
+			if( component.GetParentWorld() ){ // sanity check
+				component.PrepareForRender( plan, mask ); // can potentially re-add the component
+				pListPrepareRenderComponents.Add( &component );
+			}
+			
+			if( entry == tailComponent ){
+				break; // processed last component. re-added component will come next
+			}
+		}
+		SPECIAL_TIMER_PRINT("Components")
+	}
+	
+	// prepare billboards
+	{
+		const deoglDebugTraceGroup debugTrace2( pRenderThread, "Billboards" );
+		pListPrepareRenderBillboards.RemoveAll();
+		decPointerLinkedList::cListEntry * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
+		while( pListPrepareForRenderBillboards.GetRoot() ){
+			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderBillboards.GetRoot();
+			deoglRBillboard &billboard = *( ( deoglRBillboard* )entry->GetOwner() );
+			pListPrepareForRenderBillboards.Remove( entry );
+			
+			if( billboard.GetParentWorld() ){ // sanity check
+				billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
+				pListPrepareRenderBillboards.Add( &billboard );
+			}
+			
+			if( entry == tailBillboard ){
+				break; // processed last billboard. re-added billboard will come next
+			}
+		}
+		SPECIAL_TIMER_PRINT("Billboards")
+	}
+	
+	// prepare lights
+	{
+		const deoglDebugTraceGroup debugTrace2( pRenderThread, "Lights" );
+		pListPrepareRenderLights.RemoveAll();
+		decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
+		while( pListPrepareForRenderLights.GetRoot() ){
+			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderLights.GetRoot();
+			deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
+			pListPrepareForRenderLights.Remove( entry );
+			
+			if( light.GetParentWorld() ){ // sanity check
+				light.PrepareForRender( mask ); // can potentially re-add the light
+				pListPrepareRenderLights.Add( &light );
+			}
+			
+			if( entry == tailLight ){
+				break; // processed last light. re-added light will come next
+			}
+		}
+		SPECIAL_TIMER_PRINT("Lights")
+	}
+	
+	// prepare prop fields
+	{
+		const deoglDebugTraceGroup debugTrace2( pRenderThread, "PropFields" );
+		pListPrepareRenderPropFields.RemoveAll();
+		decPointerLinkedList::cListEntry * const tailPropField = pListPrepareForRenderPropFields.GetTail();
+		while( pListPrepareForRenderPropFields.GetRoot() ){
+			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderPropFields.GetRoot();
+			deoglRPropField &propField = *( ( deoglRPropField* )entry->GetOwner() );
+			pListPrepareForRenderPropFields.Remove( entry );
+			
+			if( propField.GetParentWorld() ){ // sanity check
+				propField.PrepareForRender(); // can potentially re-add the prop field
+				pListPrepareRenderPropFields.Add( &propField );
+			}
+			
+			if( entry == tailPropField ){
+				break; // processed last prop field. re-added prop field will come next
+			}
+		}
+		SPECIAL_TIMER_PRINT("PropFields")
+	}
+	
+	
+	
+	// prepare debug drawers
+	count = pDebugDrawers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i ) )->UpdateVBO();
+	}
+		SPECIAL_TIMER_PRINT("DebugDrawers")
+	
+	// render what has to be delayed until all is prepared
+	PrepareForRenderRender( plan, mask );
+}
+
+void deoglRWorld::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	INIT_SPECIAL_TIMING
 	int i, count;
 	
@@ -328,82 +436,37 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 		pHeightTerrain->PrepareForRender();
 	}
 	
-	// prepare components
-	decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
-	while( pListPrepareForRenderComponents.GetRoot() ){
-		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderComponents.GetRoot();
-		deoglRComponent &component = *( ( deoglRComponent* )entry->GetOwner() );
-		pListPrepareForRenderComponents.Remove( entry );
-		
-		if( component.GetParentWorld() ){ // sanity check
-			component.PrepareForRender( plan, mask ); // can potentially re-add the component
-		}
-		
-		if( entry == tailComponent ){
-			break; // processed last component. re-added component will come next
-		}
+	// prepare render components
+	count = pListPrepareRenderComponents.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponent* )pListPrepareRenderComponents.GetAt( i ) )->PrepareForRenderRender( plan, mask );
 	}
-		SPECIAL_TIMER_PRINT("Components")
+	pListPrepareRenderComponents.RemoveAll();
+		SPECIAL_TIMER_PRINT("Components2")
 	
-	// prepare billboards
-	decPointerLinkedList::cListEntry * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
-	while( pListPrepareForRenderBillboards.GetRoot() ){
-		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderBillboards.GetRoot();
-		deoglRBillboard &billboard = *( ( deoglRBillboard* )entry->GetOwner() );
-		pListPrepareForRenderBillboards.Remove( entry );
-		
-		if( billboard.GetParentWorld() ){ // sanity check
-			billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
-		}
-		
-		if( entry == tailBillboard ){
-			break; // processed last billboard. re-added billboard will come next
-		}
+	// prepare render billboards
+	count = pListPrepareRenderBillboards.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRBillboard* )pListPrepareRenderBillboards.GetAt( i ) )->PrepareForRenderRender( plan, mask );
 	}
+	pListPrepareRenderBillboards.RemoveAll();
 		SPECIAL_TIMER_PRINT("Billboards")
 	
-	// prepare lights
-	decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
-	while( pListPrepareForRenderLights.GetRoot() ){
-		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderLights.GetRoot();
-		deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
-		pListPrepareForRenderLights.Remove( entry );
-		
-		if( light.GetParentWorld() ){ // sanity check
-			light.PrepareForRender( mask ); // can potentially re-add the light
-		}
-		
-		if( entry == tailLight ){
-			break; // processed last light. re-added light will come next
-		}
+	// prepare render lights
+	count = pListPrepareRenderLights.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRLight* )pListPrepareRenderLights.GetAt( i ) )->PrepareForRenderRender( mask );
 	}
+	pListPrepareRenderLights.RemoveAll();
 		SPECIAL_TIMER_PRINT("Lights")
 	
-	// prepare prop fields
-	decPointerLinkedList::cListEntry * const tailPropField = pListPrepareForRenderPropFields.GetTail();
-	while( pListPrepareForRenderPropFields.GetRoot() ){
-		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderPropFields.GetRoot();
-		deoglRPropField &propField = *( ( deoglRPropField* )entry->GetOwner() );
-		pListPrepareForRenderPropFields.Remove( entry );
-		
-		if( propField.GetParentWorld() ){ // sanity check
-			propField.PrepareForRender(); // can potentially re-add the prop field
-		}
-		
-		if( entry == tailPropField ){
-			break; // processed last prop field. re-added prop field will come next
-		}
-	}
-		SPECIAL_TIMER_PRINT("PropFields")
-	
-	
-	
-	// prepare debug drawers
-	count = pDebugDrawers.GetCount();
+	// prepare render prop fields
+	count = pListPrepareRenderPropFields.GetCount();
 	for( i=0; i<count; i++ ){
-		( ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i ) )->UpdateVBO();
+		( ( deoglRPropField* )pListPrepareRenderPropFields.GetAt( i ) )->PrepareForRenderRender();
 	}
-		SPECIAL_TIMER_PRINT("DebugDrawers")
+	pListPrepareRenderPropFields.RemoveAll();
+		SPECIAL_TIMER_PRINT("PropFields")
 }
 
 void deoglRWorld::AddPrepareForRenderComponent( deoglRComponent *component ){
@@ -1470,7 +1533,7 @@ int deoglRWorld::pCalcOctreeInsertDepth( const decDVector &size ) const{
 	// is increased by one. this can be done using a logarithm calculation. the log2
 	// of 1000 is roughly 9.96 . hence ceil(log2(max(size)))-2 is reasonable but not
 	// less than 4
-	return decMath::max( ( int )ceilf( log2( decMath::max( size.x, size.y, size.z ) ) ) - 2, 4 );
+	return decMath::max( ( int )ceilf( log2f( ( float )decMath::max( size.x, size.y, size.z ) ) ) - 2, 4 );
 }
 
 void deoglRWorld::pReorderSkies(){

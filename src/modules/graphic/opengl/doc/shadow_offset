@@ -1,0 +1,15 @@
+https://gamedev.stackexchange.com/questions/113795/little-question-about-glpolygonoffset
+
+Using a mixture here.
+
+glPolygonOffset is used with 0 bias to apply scaling. This works better in the hardware
+and is well defined.
+
+Bias is applied in the vertex shader. This works better since in hardware the bias is
+not well defined and can be anything the driver likes.
+
+For sky shadows fragment shader is used since double-sided rendering is used with one
+set of offset parameters for the front and back face. It would be possible to use inNormal
+to replace this. The simple approach would be to look at the inNormal.z value. A value of
+0 is full offset while a value of abs(1) is 0 offset (according to scaling). Right now
+this is not used.

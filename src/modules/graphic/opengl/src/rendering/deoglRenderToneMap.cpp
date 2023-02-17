@@ -180,10 +180,11 @@ static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRenderi
 	const int texHeight = texture.GetHeight();
 	const int texWidth = texture.GetWidth();
 	
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 );
+	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
 	
 	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer.GetPointer();
+	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
 	
 	int nanCulprits = 0;
 	int nanCulpritsR = 0;
@@ -250,10 +251,11 @@ static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArra
 	const int texWidth = texture.GetWidth();
 	int totallyBlack = 0;
 	
-	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 );
+	const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, texWidth, texHeight, 1 ) ) );
 	
 	texture.GetPixelsLevel( 0, pixelBuffer );
-	decColor * const dummy = ( decColor* )pixelBuffer.GetPointer();
+	decColor * const dummy = ( decColor* )pixelBuffer->GetPointer();
 	
 	const int count = width * height;
 	float avg = 0.0f;
@@ -288,9 +290,12 @@ static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArra
 ////////////////////////////
 
 deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
+	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
-	deoglShaderSources *sources;
+	deoglPipelineConfiguration pipconf;
+	const deoglShaderSources *sources;
 	
 	pFBOToneMapParams = NULL;
 	pTextureToneMapParams = NULL;
@@ -298,131 +303,155 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
+		
+		pipconf.Reset();
+		pipconf.SetMasks( true, false, false, false, false );
+		pipconf.SetEnableScissorTest( true );
+		
+		// color to loglum
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineColor2LogLum = pipelineManager.GetWith( pipconf );
 		
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		// color to loglum stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderColor2LogLumStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineColor2LogLumStereo = pipelineManager.GetWith( pipconf );
 		
 		
+		// average loglum
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
 		defines.SetDefines( "NO_POSTRANSFORM" );
-		pShaderAvgLogLum = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineAvgLogLum = pipelineManager.GetWith( pipconf );
 		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		// average loglum stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderAvgLogLumStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineAvgLogLumStereo = pipelineManager.GetWith( pipconf );
 		
+		
+		// parameters
+		pipconf.SetColorMask( true, true, true, true );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
-		pShaderParameters = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineParameters = pipelineManager.GetWith( pipconf );
 		
 		defines.SetDefines( "SAMPLE_STEREO" );
-		pShaderParametersStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineParametersStereo = pipelineManager.GetWith( pipconf );
 		
+		
+		// bright pass
+		pipconf.SetColorMask( true, true, true, false );
+		pipconf.SetEnableBlend( false );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pShaderBrightPass = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBrightPass = pipelineManager.GetWith( pipconf );
 		
 		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderBrightPassStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBrightPassStereo = pipelineManager.GetWith( pipconf );
 		
 		
+		// bloom reduce/add
+		// defines = commonDefines;
+		// pipconf2.SetShader( renderThread, "ToneMap Bloom Reduce", defines );
+		// pPipelineBloomReduce = pipelineManager.GetWith( pipconf2 ); // not used
+		//
+		// pipconf2.SetShader( renderThread, "ToneMap Bloom Add", defines );
+		// pPipelineBloomAdd = pipelineManager.GetWith( pipconf2 ); // not used
+		
+		
+		// bloom blur
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Reduce" );
-		pShaderBloomReduce = shaderManager.GetProgramWith( sources, defines ); // not used
-		
-		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add" );
-		pShaderBloomAdd = shaderManager.GetProgramWith( sources, defines ); // not used
-		
-		
+		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur" );
-		defines.SetDefines( "NO_POSTRANSFORM" );
-		pShaderBloomBlur = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBloomBlur = pipelineManager.GetWith( pipconf );
 		
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		// bloom blur stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderBloomBlurStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineBloomBlurStereo = pipelineManager.GetWith( pipconf );
 		
 		
+		// tone map
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
-		pShaderToneMap = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineToneMap = pipelineManager.GetWith( pipconf );
 		
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		// tone map stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderToneMapStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineToneMapStereo = pipelineManager.GetWith( pipconf );
 		
+		
+		// ldr
+		pipconf.Reset();
+		pipconf.SetMasks( true, true, true, true, false );
+		pipconf.SetEnableScissorTest( true );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		defines.SetDefines( "NO_POSTRANSFORM" );
-		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLdr = pipelineManager.GetWith( pipconf );
 		
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		// ldr stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderFinalizeStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLdrStereo = pipelineManager.GetWith( pipconf );
 		
+		
+		// lum prepare
+		pipconf.Reset();
+		pipconf.SetMasks( true, false, false, false, false );
+		pipconf.SetEnableScissorTest( true );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
-		pShaderLumPrepare = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLumPrepare = pipelineManager.GetWith( pipconf );
 		
-		
-		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
-			
-		}else{
+		// lum prepare stereo
+		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pShaderLumPrepareStereo = shaderManager.GetProgramWith( sources, defines );
+		pipconf.SetShader( renderThread, sources, defines );
+		pPipelineLumPrepareStereo = pipelineManager.GetWith( pipconf );
 		
 		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );
@@ -452,32 +481,18 @@ DEBUG_RESET_TIMERS;
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.LuminancePrepare" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const int height = defren.GetHeight();
-	const int width = defren.GetWidth();
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	defren.ActivateFBOLuminance();
 	
-	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	SetViewport( plan );
+	renderThread.GetTexture().GetStages().EnableArrayTexture(
+		0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderLumPrepareStereo : pShaderLumPrepare );
+	( plan.GetRenderStereo() ? pPipelineLumPrepareStereo : pPipelineLumPrepare )->Activate();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	RenderFullScreenQuad( plan );
-	
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	RenderFullScreenQuadVAO( plan );
 DEBUG_PRINT_TIMER_TOTAL( "LuminancePrepare" );
 }
 
@@ -487,13 +502,6 @@ DEBUG_RESET_TIMERS;
 	const deoglDebugTraceGroup debugTrace( renderThread, "ToneMap.ToneMap" );
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -576,17 +584,15 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	clampU = pixelSizeU * ( ( float )realWidth - 0.5f );
 	clampV = pixelSizeV * ( ( float )realHeight - 0.5f );
 	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-	
 	defren.ActivateFBOTemporary1( false );
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
 // 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
-	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderColor2LogLumStereo : pShaderColor2LogLum;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineColor2LogLumStereo : pPipelineColor2LogLum;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -602,9 +608,9 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	
 	// average the log luminances
-	program = plan.GetRenderStereo() ? pShaderAvgLogLumStereo : pShaderAvgLogLum;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	pipeline = plan.GetRenderStereo() ? pPipelineAvgLogLumStereo : pPipelineAvgLogLum;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -706,9 +712,9 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	oglCamera.SetForceToneMapAdaption( false );
 	
-	program = plan.GetRenderStereo() ? pShaderParametersStereo : pShaderParameters;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	pipeline = plan.GetRenderStereo() ? pPipelineParametersStereo : pPipelineParameters;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
 	
 	// WARNING we have to use the non-stereo version always even if we sample stereo. the reason
 	//         is that to use the stereo render param block we have to use the GS_RENDER_STEREO
@@ -757,7 +763,6 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, 1, 1 ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, 1, 1 ) );
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	
 	if( modeTarget && ! useTextureBarrier ){
 		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
@@ -779,9 +784,10 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 DEBUG_PRINT_TIMER( "ToneMap: Determine Parameters" );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
+		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
 		oglCamera.GetToneMapParamsTexture()->GetPixelsLevel( 0, pixelBuffer );
-		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer.GetPointerFloat4();
+		const deoglPixelBuffer::sFloat4 avgSceneColor = *pixelBuffer->GetPointerFloat4();
 		renderThread.GetLogger().LogInfoFormat( "tone map params: %g %g %g %g", avgSceneColor.r, avgSceneColor.g, avgSceneColor.b, avgSceneColor.a );
 	}
 }
@@ -813,10 +819,6 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	//float g = 1.0f / sqrtf( 2.0f * D3DX_PI * rho * rho ); // rho = 1.0
 	//g *= expf( -(x*x + y*y)/(2*rho*rho) );
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_ONE, GL_ONE ) );
-	
 	// convert color to bright values. to allow for proper bluring the output image is reduced
 	// to the largest power of two size fitting inside
 	for( curWidth=1; (curWidth<<1)<realWidth; curWidth<<= 1 );
@@ -833,7 +835,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	bloomWidth = curWidth;
 	bloomHeight = curHeight;
 	
-	renderThread.GetShader().ActivateShader( plan.GetRenderStereo() ? pShaderBrightPassStereo : pShaderBrightPass );
+	const deoglPipeline *pipeline = plan.GetRenderStereo() ? pPipelineBrightPassStereo : pPipelineBrightPass;
+	pipeline->Activate();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -877,9 +880,9 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	const float blurTCOffsets[ 5 ] = { 1.354203f, 3.343485f, 5.329522f, 7.304296f, 9.266765f };
 	const float blurWeights[ 6 ] = { 2.050781e-1f, 1.171875e-1f, 4.394531e-2f, 9.765625e-3f, 9.765625e-4f };
 	
-	deoglShaderProgram *program = plan.GetRenderStereo() ? pShaderBloomBlurStereo : pShaderBloomBlur;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	pipeline = plan.GetRenderStereo() ? pPipelineBloomBlurStereo : pPipelineBloomBlur;
+	pipeline->Activate();
+	shader = &pipeline->GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -959,8 +962,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 				tcOffsetT = 1;
 			}
 			
-			renderThread.GetShader().ActivateShader( pShaderBloomReduce );
-			shader = pShaderBloomReduce->GetCompiled();
+			renderThread.GetShader().ActivateShader( pPipelineBloomReduce );
+			shader = &pPipelineBloomReduce;
 			shader->SetParameterInt( spbrParam1, tcScaleS, tcScaleT, tcOffsetS, 0 );
 			shader->SetParameterInt( spbrParam2, 0, tcOffsetT, tcOffsetS, tcOffsetT );
 			
@@ -990,8 +993,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		}
 		
 		// blur filter in x direction
-		renderThread.GetShader().ActivateShader( pShaderBloomBlur );
-		shader = pShaderBloomBlur->GetCompiled();
+		renderThread.GetShader().ActivateShader( pPipelineBloomBlur );
+		shader = &pPipelineBloomBlur;
 		
 		defren.SetShaderParamFSQuad( *shader, spbbPosToTC, curWidth, curHeight );
 		shader->SetParameterFloat( spbbOffsets, offsetS, 0.0f, -offsetS, 0.0f );
@@ -1046,8 +1049,8 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		}
 		
 		// add to bloom texture
-		renderThread.GetShader().ActivateShader( pShaderBloomAdd );
-		shader = pShaderBloomAdd->GetCompiled();
+		renderThread.GetShader().ActivateShader( pPipelineBloomAdd );
+		shader = &pPipelineBloomAdd;
 		defren.SetShaderParamFSQuad( *shader, spbaPosToTC, curWidth, curHeight );
 		
 		defren.ActivateFBOTemporary( false );
@@ -1095,9 +1098,9 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderToneMapStereo : pShaderToneMap;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap;
+	pipeline.Activate();
+	shader = &pipeline.GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
@@ -1125,9 +1128,9 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
-	deoglShaderProgram * const program = plan.GetRenderStereo() ? pShaderFinalizeStereo : pShaderFinalize;
-	renderThread.GetShader().ActivateShader( program );
-	shader = program->GetCompiled();
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr;
+	pipeline.Activate();
+	shader = &pipeline.GetGlShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	

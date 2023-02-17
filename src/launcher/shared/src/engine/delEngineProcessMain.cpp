@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 #include <stdint.h>
 
@@ -127,7 +126,7 @@ int delEngineProcessMain::RunMain( int argc, char **args ){
 		
 		process.Run();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 //		e.PrintError();
 //		printf( "GetLastError %x\n", ( unsigned int )GetLastError() );
 		if( pipeIn != INVALID_HANDLE_VALUE ){

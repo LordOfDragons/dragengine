@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\physics\bullet\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvhBroadphase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3OverlappingPairCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3ConvexUtility.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3CpuNarrowPhase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3AlignedAllocator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Logging.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Vector3.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\b3CpuRigidBodyPipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3FixedConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3Generic6DofConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3PgsJacobiSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3Point2PointConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3TypedConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Geometry\b3ConvexHullComputer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Geometry\b3GeometryUtil.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3BulletFile.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3Chunk.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3DNA.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3File.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3Serializer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btDbvt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btDbvtBroadphase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btDispatcher.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionDispatcherMt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvexPlaneCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btGhostObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btInternalEdgeUtility.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btManifoldResult.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSimulationIslandManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSphereBoxCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSphereSphereCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSphereTriangleCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btUnionFind.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btBox2dShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btBoxShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btBvhTriangleMeshShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCapsuleShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCollisionShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCompoundShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConcaveShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConeShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvex2dShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexHullShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexInternalShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexPointCloudShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexPolyhedron.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexTriangleMeshShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCylinderShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btEmptyShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btHeightfieldTerrainShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMiniSDF.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMinkowskiSumShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMultimaterialTriangleMeshShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMultiSphereShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btOptimizedBvh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btPolyhedralConvexShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btScaledBvhTriangleMeshShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btSdfCollisionShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btShapeHull.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btSphereShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btStaticPlaneShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btStridingMeshInterface.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTetrahedronShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexArray.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexMaterialArray.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleMeshShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btUniformScalingShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btContactProcessing.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGenericPoolAllocator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactBvh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactQuantizedBvh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btTriangleShapeEx.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_box_set.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_contact.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_memory.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_tri_collision.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btContinuousConvexCollision.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btConvexCast.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkConvexCast.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkEpaPenetrationDepthSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkPairDetector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btMinkowskiPenetrationDepthSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btPersistentManifold.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btPolyhedralContactClipping.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btRaycastCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btSubSimplexConvexCast.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btVoronoiSimplexSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Character\btKinematicCharacterController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btBatchedConstraints.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btContactConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btHinge2Constraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btHingeConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btPoint2PointConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolverMt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSliderConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSolve2LinearConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btTypedConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyGearConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyMLCPConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointMotor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDefaultSoftBodySolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableBackwardEulerObjective.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableBodySolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableContactConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableContactProjection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableMultiBodyConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBody.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyHelpers.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftRigidDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\poly34.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btAlignedAllocator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btConvexHull.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btConvexHullComputer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btGeometryUtil.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btPolarDecomposition.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btQuickprof.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btReducedVector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btSerializer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btSerializer64.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btThreads.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btVector3.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btTaskScheduler.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportPosix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportWin32.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionFrustum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionTriangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionVolumeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionFrustum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionTriangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionVolumeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDECollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpBulletShapeCollision.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpCDVHitModelFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpCDVMoveHitModelFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpCollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpContactResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpConvexResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpPointContactCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpRayResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpSweepCollisionTest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDefaultDOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDefaultOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\coldet\unstuck\debpUnstuckCollider.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraint6Dof.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraint6DofSpring.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintBase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintConeTwist.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintHinge.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintPoint2Point.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintShared.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintSlider.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpCollider.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderAttachment.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderBones.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderCollisionTest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletCompoundShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpCollisionObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpGhostObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpMotionState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpPhysicsBody.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debpSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugDrawerColors.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformationList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpConvexFaceClipper.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecal.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecalFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecalMeshBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecalMeshBuilderFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\dePhysicsBullet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\devmode\debpDeveloperMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\forcefield\debpFFVortex.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\forcefield\debpForceField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\forcefield\debpForceFieldFluctuation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpPSimulatePropFields.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstanceType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPointSieve.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPointSieveBucket.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPropFieldType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpCreateShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHackBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeTransform.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\skin\debpSkinPropertyMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\smoke\debpSmokeEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\terrain\heightmap\debpHeightTerrain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\terrain\heightmap\debpHTSector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTouchSensor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTSContactResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTSConvexResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTSRayResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpClosestConvexResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpClosestRayResultCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpCreateBulletShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeGroupExtends.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeSurface.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeToVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionDispatcher.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpDelayedOperation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpGhostPairCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpHeightTerrainShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpOverlapFilterCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpSharedCollisionFiltering.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\world\debpWorld.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletCollisionCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\btBulletDynamicsCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3BroadphaseCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3DynamicBvhBroadphase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3OverlappingPair.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\b3OverlappingPairCache.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\BroadPhaseCollision\shared\b3Aabb.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3Config.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3Contact4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3ConvexUtility.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3CpuNarrowPhase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3RaycastInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\b3RigidBodyCL.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3BvhSubtreeInfoData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3BvhTraversal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3ClipFaces.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3Collidable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3Contact4Data.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3ContactConvexConvexSAT.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3ContactSphereSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3ConvexPolyhedronData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3FindConcaveSatAxis.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3FindSeparatingAxis.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3MprPenetration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3NewContactReduction.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3QuantizedBvhNodeData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3ReduceContacts.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3RigidBodyData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Collision\NarrowPhaseCollision\shared\b3UpdateAabbs.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3AlignedAllocator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3AlignedObjectArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3CommandLineArgs.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3FileUtils.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3HashMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Logging.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Matrix3x3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3MinMax.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3PoolAllocator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3QuadWord.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Quaternion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Random.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3ResizablePool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Scalar.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3StackAlloc.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Transform.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3TransformUtil.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\b3Vector3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\shared\b3Float4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\shared\b3Int2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\shared\b3Int4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\shared\b3Mat3x3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\shared\b3PlatformDefinitions.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Common\shared\b3Quat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\b3CpuRigidBodyPipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3ContactSolverInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3FixedConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3Generic6DofConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3JacobianEntry.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3PgsJacobiSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3Point2PointConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3SolverBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3SolverConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\ConstraintSolver\b3TypedConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\shared\b3ContactConstraint4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\shared\b3ConvertConstraint4.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\shared\b3Inertia.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Dynamics\shared\b3IntegrateTransforms.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Geometry\b3AabbUtil.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Geometry\b3ConvexHullComputer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Geometry\b3GeometryUtil.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Geometry\b3GrahamScan2dConvexHull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\autogenerated\bullet2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3BulletFile.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3Chunk.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3Common.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3Defines.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3DNA.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3File.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\Bullet3Serialize\Bullet2FileLoader\b3Serializer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btAxisSweep3Internal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btBroadphaseInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btDbvt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btDbvtBroadphase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btDispatcher.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCache.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btOverlappingPairCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btQuantizedBvh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionCreateFunc.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionDispatcherMt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionObjectWrapper.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCollisionWorldImporter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btConvexPlaneCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btGhostObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btInternalEdgeUtility.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btManifoldResult.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSimulationIslandManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSphereBoxCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSphereSphereCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btSphereTriangleCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\btUnionFind.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btBox2dShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btBoxShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btBvhTriangleMeshShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCapsuleShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCollisionMargin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCollisionShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCompoundShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConcaveShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConeShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvex2dShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexHullShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexInternalShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexPointCloudShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexPolyhedron.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btConvexTriangleMeshShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btCylinderShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btEmptyShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btHeightfieldTerrainShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMaterial.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMiniSDF.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMinkowskiSumShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMultimaterialTriangleMeshShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btMultiSphereShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btOptimizedBvh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btPolyhedralConvexShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btScaledBvhTriangleMeshShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btSdfCollisionShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btShapeHull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btSphereShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btStaticPlaneShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btStridingMeshInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTetrahedronShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexMaterialArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleInfoMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleMeshShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btTriangleShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\CollisionShapes\btUniformScalingShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btBoxCollision.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btClipPolygon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btCompoundFromGimpact.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btContactProcessing.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btContactProcessingStructs.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGenericPoolAllocator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGeometryOperations.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactBvh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactBvhStructs.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactMassUtil.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactQuantizedBvh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactQuantizedBvhStructs.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btGImpactShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btQuantization.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\btTriangleShapeEx.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_array.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_basic_geometry_operations.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_bitset.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_box_collision.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_box_set.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_clip_polygon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_contact.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_geometry.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_geom_types.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_hash_table.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_linear_math.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_math.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_memory.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_pair.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_radixsort.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\Gimpact\gim_tri_collision.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btComputeGjkEpaPenetration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btContinuousConvexCollision.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btConvexCast.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btConvexPenetrationDepthSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btDiscreteCollisionDetectorInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkCollisionDescription.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkConvexCast.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkEpaPenetrationDepthSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btGjkPairDetector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btManifoldPoint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btMinkowskiPenetrationDepthSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btMprPenetration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btPersistentManifold.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btPointCollector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btPolyhedralContactClipping.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btRaycastCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btSimplexSolverInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btSubSimplexConvexCast.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletCollision\NarrowPhaseCollision\btVoronoiSimplexSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Character\btCharacterControllerInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Character\btKinematicCharacterController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btBatchedConstraints.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btContactConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btContactSolverInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGearConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpring2Constraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btHinge2Constraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btHingeConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btJacobianEntry.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btNNCGConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btPoint2PointConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolverMt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSliderConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSolve2LinearConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSolverBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btSolverConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btTypedConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\ConstraintSolver\btUniversalConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btActionInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorldMt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btRigidBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Dynamics\btSimulationIslandManagerMt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyFixedConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyGearConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyInplaceSolverIslandCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyJointFeedback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyLinkCollider.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyMLCPConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySliderConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySolverConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Featherstone\btMultiBodySphericalJointMotor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btDantzigSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btLemkeSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btMLCPSolverInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btPATHSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\MLCPSolvers\btSolveProjectedGaussSeidel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Vehicle\btRaycastVehicle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Vehicle\btVehicleRaycaster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletDynamics\Vehicle\btWheelInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDEigenInterface.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDLinearMathInterface.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\IDMatVec.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeImpl.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\details\MultiBodyTreeInitCache.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfig.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigBuiltin.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDConfigEigen.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDErrorMessages.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\IDMath.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletInverseDynamics\MultiBodyTree.hpp" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btCGProjection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btConjugateGradient.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btConjugateResidual.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDefaultSoftBodySolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableBackwardEulerObjective.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableBodySolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableContactConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableContactProjection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableCorotatedForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableGravityForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableLagrangianForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableLinearElasticityForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableMassSpringForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableMousePickingForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableMultiBodyConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableMultiBodyDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btDeformableNeoHookeanForce.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btKrylovSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btPreconditioner.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyHelpers.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyInternals.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodySolvers.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftBodySolverVertexBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftMultiBodyDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftRigidCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftRigidDynamicsWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\btSparseSDF.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\DeformableBodyInplaceSolverIslandCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\BulletSoftBody\poly34.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btAabbUtil2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btAlignedAllocator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btAlignedObjectArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btConvexHull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btConvexHullComputer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btCpuFeatureUtility.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btDefaultMotionState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btGeometryUtil.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btGrahamScan2dConvexHull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btHashMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btIDebugDraw.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btImplicitQRSVD.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btMatrix3x3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btMatrixX.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btMinMax.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btModifiedGramSchmidt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btMotionState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btPolarDecomposition.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btPoolAllocator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btQuadWord.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btQuaternion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btQuickprof.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btRandom.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btReducedVector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btScalar.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btSerializer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btSpatialAlgebra.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btStackAlloc.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btThreads.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btTransform.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btTransformUtil.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\btVector3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\Bullet\LinearMath\TaskScheduler\btThreadSupportInterface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionFrustum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionTriangle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpCollisionVolumeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionFrustum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionTriangle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDCollisionVolumeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\collision\debpDECollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpBulletShapeCollision.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpCDVHitModelFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpCDVMoveHitModelFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpCollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpContactResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpConvexResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpPointContactCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpRayResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\debpSweepCollisionTest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDefaultDOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDefaultOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpDOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\octree\debpOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\coldet\unstuck\debpUnstuckCollider.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraint6Dof.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraint6DofSpring.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintBase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintConeTwist.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintHinge.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintPoint2Point.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintShared.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\bpconstraint\debpBPConstraintSlider.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpCollider.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderAttachment.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderBone.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderBones.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderCollisionTest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderRig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletCompoundShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpBulletShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpCollisionObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpGhostObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpMotionState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpPhysicsBody.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpRig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debpSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugDrawerColors.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\debug\debpDebugInformationList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpConvexFaceClipper.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecalFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecalMeshBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDecalMeshBuilderFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\decal\debpDMBConvexVolumeList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\dePhysicsBullet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\devmode\debpDeveloperMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\forcefield\debpFFVortex.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\forcefield\debpForceField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\forcefield\debpForceFieldFluctuation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpParameterList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\parameters\debpPSimulatePropFields.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterInstanceType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\particle\debpParticleEmitterType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPointSieve.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPointSieveBucket.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\propfield\debpPropFieldType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpCreateShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeHackBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\shape\debpShapeTransform.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\skin\debpSkinPropertyMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\smoke\debpSmokeEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\terrain\heightmap\debpHeightTerrain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\terrain\heightmap\debpHTSector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTouchSensor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTSContactResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTSConvexResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\touchsensor\debpTSRayResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpClosestConvexResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpClosestRayResultCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpCreateBulletShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeGroupExtends.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeSurface.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\visitors\debpShapeToVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionDispatcher.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpCollisionWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpConstraintSolver.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpDelayedOperation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpGhostPairCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpHeightTerrainShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpOverlapFilterCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpSharedCollisionFiltering.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\world\debpWorld.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\physics\bullet\src\module.xml" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{145CEA09-1F9C-4C78-A137-7173625D8490}</ProjectGuid>
+    <RootNamespace>bullet</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>module physics bullet</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrarbullet>true</UseDebugLibrarbullet>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrarbullet>false</UseDebugLibrarbullet>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrarbullet>true</UseDebugLibrarbullet>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibrarbullet>false</UseDebugLibrarbullet>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>phybullet</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>phybullet</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;PHYBULLET_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;PHYBULLET_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;PHYBULLET_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\physics\bullet\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;PHYBULLET_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\physics\bullet\Bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\physics\bullet\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

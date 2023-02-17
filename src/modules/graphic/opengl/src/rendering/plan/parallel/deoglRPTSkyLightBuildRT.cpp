@@ -36,9 +36,10 @@
 #include "../../../collidelist/deoglCollideListPropField.h"
 #include "../../../collidelist/deoglCollideListPropFieldType.h"
 #include "../../../collidelist/deoglCollideListPropFieldCluster.h"
+#include "../../../rendering/lod/deoglLODCalculator.h"
 #include "../../../rendering/task/deoglRenderTask.h"
 #include "../../../rendering/task/deoglAddToRenderTask.h"
-#include "../../../rendering/task/deoglRenderTaskShader.h"
+#include "../../../rendering/task/deoglRenderTaskPipeline.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
 #include "../../../renderthread/deoglRTRenderers.h"
@@ -84,40 +85,45 @@ void deoglRPTSkyLightBuildRT::Run(){
 		return;
 	}
 	
+	const int shadowMapSize = pPlan.GetPlan().GetShadowSkySize();
+	
+	deoglLODCalculator lodCalculator;
+	lodCalculator.SetMaxPixelError( 2 );
+	
 	try{
-		const deoglShaderProgramUsage &shaderOccMesh = pPlan.GetPlan().GetRenderThread().
-			GetRenderers().GetLight().GetRenderLightSky().GetShaderOccMesh();
-		deoglRenderTaskSharedTexture * const sharedTexOccMesh = pPlan.GetPlan().GetRenderThread().
-			GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture();
+		const deoglPipeline * const pipeline = pPlan.GetPlan().GetRenderThread().
+			GetRenderers().GetLight().GetRenderLightSky().GetPipelineOccMesh();
 		decTimer timer;
 		int i;
 		
 		for( i=pFromLayer; i<=pToLayer; i++ ){
-			deoglRenderPlanSkyLight::sShadowLayer &layer = pPlan.GetShadowLayerAt( i );
+			const deoglRenderPlanSkyLight::sShadowLayer &layer = pPlan.GetShadowLayerAt( i );
 			deoglAddToRenderTask &addToRenderTask = *layer.addToRenderTask;
 			
 			pFilter( i );
+			
+			lodCalculator.SetComponentLODOrtho( pTempCollideList,
+				layer.maxExtend.x - layer.minExtend.x, layer.maxExtend.y - layer.minExtend.y,
+				shadowMapSize, shadowMapSize );
 			
 			layer.renderTask->Clear();
 			
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetNoShadowNone( true );
+			addToRenderTask.SetForceDoubleSided( true );
+			addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowOrthogonal );
 			
 			// we render only double sided occlusion meshes here since for single sided
 			// we can not be sure from what side the camera sees them in the shadow map.
 			// only double sided occlusion meshes are guaranteed to work correctly.
 			// this allows to speed up rendering in the majority of situations
-			addToRenderTask.AddOcclusionMeshes( pTempCollideList, addToRenderTask.GetRenderTask().
-				AddShader( shaderOccMesh->GetRTSShader() )->AddTexture( sharedTexOccMesh ), false );
+			addToRenderTask.AddOcclusionMeshes( pTempCollideList, nullptr, pipeline );
 			
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 			addToRenderTask.AddComponents( pTempCollideList );
-			
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
 			addToRenderTask.AddPropFields( pTempCollideList, false );
-			
-			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
+			addToRenderTask.AddPropFieldClusters( pTempCollideList, false );
 			addToRenderTask.AddHeightTerrains( pTempCollideList, true );
+			addToRenderTask.AddHeightTerrainSectorClusters( pTempCollideList, true );
 		}
 		
 		pElapsedTime = timer.GetElapsedTime();
@@ -179,6 +185,14 @@ void deoglRPTSkyLightBuildRT::pFilter( int layerIndex ){
 		}
 	}
 	
+	const int htsclusterCount = collideList.GetHTSClusterCount();
+	for( i=0; i<htsclusterCount; i++ ){
+		const deoglCollideListHTSCluster &cluster = *collideList.GetHTSClusterAt( i );
+		if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+			pTempCollideList.AddHTSCluster( cluster.GetCluster() );
+		}
+	}
+	
 	// prop fields
 	const int propfieldCount = collideList.GetPropFieldCount();
 	for( i=0; i<propfieldCount; i++ ){
@@ -203,6 +217,14 @@ void deoglRPTSkyLightBuildRT::pFilter( int layerIndex ){
 					addType->AddCluster( cluster.GetCluster() );
 				}
 			}
+		}
+	}
+	
+	const int propfieldClusterCount = collideList.GetPropFieldClusterCount();
+	for( i=0; i<propfieldClusterCount; i++ ){
+		const deoglCollideListPropFieldCluster &cluster = *collideList.GetPropFieldClusterAt( i );
+		if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+			pTempCollideList.AddPropFieldCluster( cluster.GetCluster() );
 		}
 	}
 }

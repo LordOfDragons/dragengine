@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\launcher\shared\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\delLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngine.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameManager.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\delLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngine.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameManager.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\deglGameProfile.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{C2341C17-6C77-47A7-A40F-9D3FFA5B3860}</ProjectGuid>
+    <RootNamespace>launchershared</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>launcher shared</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>delauncher</TargetName>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
+    <AllProjectBMIsArePublic />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>delauncher</TargetName>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
+    <AllProjectBMIsArePublic />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;VK_NO_PROTOTYPES;DE_COMPILE_DLL;LAUNCHER_SHARE_PATH="@ProgramFiles\\Dragengine\\Launchers\\Share";LAUNCHER_GAMES_PATH="@Public\\DELaunchers\\Games";LAUNCHER_CONFIG_PATH="@RoamingAppData\\DELaunchers\\Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\launcher\shared\extern\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\launcher\shared\src -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;VK_NO_PROTOTYPES;DE_COMPILE_DLL;LAUNCHER_SHARE_PATH="@ProgramFiles\\Dragengine\\Launchers\\Share";LAUNCHER_GAMES_PATH="@Public\\DELaunchers\\Games";LAUNCHER_CONFIG_PATH="@RoamingAppData\\DELaunchers\\Config";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\launcher\shared\extern\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File $(ProjectDir)post_build.ps1 -SourceDir $(SolutionDir)..\src\launcher\shared\src -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

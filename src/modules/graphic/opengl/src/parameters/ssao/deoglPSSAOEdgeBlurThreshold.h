@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter screen space ambient occlusion edge blur threshold.
+ * Module parameter screen space ambient occlusion edge blur threshold.
  */
 class deoglPSSAOEdgeBlurThreshold : public deoglParameterFloat{
 public:

@@ -321,15 +321,15 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	const float rtfactor = 13.8f * pRoomParameters->meanFreePath * -INV_SOUND_SPEED;
 	if( pRoomParameters->avgAbsorptionLow > FLOAT_SAFE_EPSILON ){
 		pRoomParameters->reverberationTimeLow = rtfactor
-			/ log( 1.0f - decMath::min( pRoomParameters->avgAbsorptionLow, 0.99f ) );
+			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionLow, 0.99f ) );
 	}
 	if( pRoomParameters->avgAbsorptionMedium > FLOAT_SAFE_EPSILON ){
 		pRoomParameters->reverberationTimeMedium = rtfactor
-			/ log( 1.0f - decMath::min( pRoomParameters->avgAbsorptionMedium, 0.99f ) );
+			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionMedium, 0.99f ) );
 	}
 	if( pRoomParameters->avgAbsorptionHigh > FLOAT_SAFE_EPSILON ){
 		pRoomParameters->reverberationTimeHigh = rtfactor
-			/ log( 1.0f - decMath::min( pRoomParameters->avgAbsorptionHigh, 0.99f ) );
+			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionHigh, 0.99f ) );
 	}
 	
 	/*

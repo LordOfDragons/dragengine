@@ -47,9 +47,16 @@ pAction( XR_NULL_HANDLE )
 		XrActionCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
 		createInfo.type = XR_TYPE_ACTION_CREATE_INFO;
+		#ifdef OS_W32_VS
+		strncpy_s( createInfo.actionName, sizeof( createInfo.actionName ),
+			name, sizeof( createInfo.actionName ) - 1 );
+		strncpy_s( createInfo.localizedActionName, sizeof( createInfo.localizedActionName ),
+			localizedName, sizeof( createInfo.localizedActionName ) - 1 );
+		#else
 		strncpy( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
 		strncpy( createInfo.localizedActionName, localizedName,
 			sizeof( createInfo.localizedActionName ) - 1 );
+		#endif
 		
 		switch( type ){
 		case etInputBool:
@@ -104,9 +111,15 @@ pAction( XR_NULL_HANDLE )
 		XrActionCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
 		createInfo.type = XR_TYPE_ACTION_CREATE_INFO;
+		#ifdef OS_W32_VS
+		strncpy_s( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
+		strncpy_s( createInfo.localizedActionName, localizedName,
+			sizeof( createInfo.localizedActionName ) - 1 );
+		#else
 		strncpy( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
 		strncpy( createInfo.localizedActionName, localizedName,
 			sizeof( createInfo.localizedActionName ) - 1 );
+		#endif
 		
 		switch( type ){
 		case etInputBool:

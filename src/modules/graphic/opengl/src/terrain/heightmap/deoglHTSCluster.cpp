@@ -33,6 +33,7 @@
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglVBOLayout.h"
+#include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
@@ -47,13 +48,94 @@
 
 
 
+// Class deoglHTSCluster::WorldComputeElement
+///////////////////////////////////////////////
+
+deoglHTSCluster::WorldComputeElement::WorldComputeElement( deoglHTSCluster &cluster ) :
+deoglWorldComputeElement( eetHeightTerrainSectorCluster, &cluster ),
+pCluster( cluster ){
+}
+
+void deoglHTSCluster::WorldComputeElement::UpdateData(
+const deoglWorldCompute &worldCompute, sDataElement &data ) const{
+	const decDVector center( decDVector( pCluster.GetCenter() ) - worldCompute.GetWorld().GetReferencePosition() );
+	const decDVector halfSize( pCluster.GetHalfExtends() );
+	
+	data.SetExtends( center - halfSize, center + halfSize );
+	data.SetEmptyLayerMask();
+	data.flags = ( uint32_t )deoglWorldCompute::eefHeightTerrainSectorCluster;
+	data.geometryCount = 0; //( uint32_t )pCluster.GetHTSector()->GetTextureCount() * 2;
+}
+
+void deoglHTSCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+#if 0
+	const deoglRHTSector &sector = *pCluster.GetHTSector();
+	const deoglHTSCluster &htcluster = sector.GetClusters()[ pCluster.GetIndex() ];
+	const bool valid = sector.GetValid() && sector.GetValidTextures();
+	const int count = pCluster.GetHTSector()->GetTextureCount();
+	const deoglVAO * const vao = htcluster.GetVAO();
+	const deoglHTViewSectorCluster &htvscluster = *clhtscluster.GetCluster();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const deoglHTSTexture &texture = sector.GetTextureAt( i );
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! valid || ! skinTexture ){
+			continue;
+		}
+		
+		sInfoTUC info;
+		info.geometry = texture.GetTUCGeometry();
+		info.depth = texture.GetTUCDepth();
+		info.counter = texture.GetTUCDepth();
+		info.shadow = texture.GetTUCShadow();
+		info.shadowCube = texture.GetTUCShadow();
+		info.envMap = texture.GetTUCEnvMap();
+		info.luminance = texture.GetTUCLuminance();
+		// info.giMaterial = texture.GetTUCGIMaterial(); // missing
+		
+		const int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+		
+		SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap1, 0,
+			skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+		SetDataGeometryTUCs( *data, info );
+		data++;
+		
+		SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap2, 0,
+			skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+		SetDataGeometryTUCs( *data, info );
+		data++;
+		
+		if( htvscluster.GetLodLevel() > 0 ){
+			for( j=1; j<5; j++ ){
+				SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap1,
+					0, skinTexture, vao, htvscluster.GetRTSInstanceAt( i, j ), -1 );
+				SetDataGeometryTUCs( *data, info );
+				data++;
+				
+				SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap2,
+					0, skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+				SetDataGeometryTUCs( *data, info );
+				data++;
+			}
+		}
+	}
+#endif
+}
+
+
+
 // Class deoglHTSCluster
 //////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTSCluster::deoglHTSCluster(){
+deoglHTSCluster::deoglHTSCluster() :
+pIndex( -1 ),
+
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) )
+{
 	pHTSector = NULL;
 	
 	pPointCountX = 0;
@@ -104,6 +186,14 @@ deoglHTSCluster::~deoglHTSCluster(){
 
 void deoglHTSCluster::SetHTSector( deoglRHTSector *htsector ){
 	pHTSector = htsector;
+}
+
+void deoglHTSCluster::SetCoordinates( const decPoint &coordinates ){
+	pCoordinates = coordinates;
+}
+
+void deoglHTSCluster::SetIndex( int index ){
+	pIndex = index;
 }
 
 void deoglHTSCluster::SetSize( int firstPointX, int firstPointZ, int pointCountX, int pointCountZ ){
@@ -191,6 +281,10 @@ const deoglHTSClusterLOD & deoglHTSCluster::GetLODAt( int level ) const{
 void deoglHTSCluster::UpdateHeightExtends( float minHeight, float maxHeight ){
 	pCenter.y = ( minHeight + maxHeight ) * 0.5f;
 	pHalfExtends.y = ( maxHeight - minHeight ) * 0.5f;
+	
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		pHTSector->GetHeightTerrain().GetParentWorld()->GetCompute().UpdateElement( pWorldComputeElement );
+	}
 }
 
 
@@ -378,6 +472,30 @@ void deoglHTSCluster::UpdateVAO(){
 			delete pVAO;
 			pVAO = NULL;
 		}
+	}
+}
+
+
+
+void deoglHTSCluster::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.AddElement( pWorldComputeElement );
+}
+
+void deoglHTSCluster::UpdateWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElement( pWorldComputeElement );
+	}
+}
+
+void deoglHTSCluster::UpdateWorldComputeTexturres( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.UpdateElementGeometries( pWorldComputeElement );
+	}
+}
+
+void deoglHTSCluster::RemoveFromWorldCompute( deoglWorldCompute &worldCompute ){
+	if( pWorldComputeElement->GetIndex() != -1 ){
+		worldCompute.RemoveElement( pWorldComputeElement );
 	}
 }
 

@@ -22,9 +22,16 @@
 #ifndef _FOXTOOLKIT_H_
 #define _FOXTOOLKIT_H_
 
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef PI
 #define FIX_FOX_BROKEN_PI
 #undef PI
+#endif
+
+#ifdef OS_W32_VS
+	// disable warning about "class X needs to have dll-interface to be used by clients of class Y"
+	#pragma warning( disable: 4251 )
 #endif
 
 #include <fox-1.7/fx.h>

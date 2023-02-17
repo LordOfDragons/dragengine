@@ -32,7 +32,7 @@ class decUuid;
 /**
  * \brief Game List.
  */
-class delGameList{
+class DE_DLL_EXPORT delGameList{
 private:
 	decObjectList pGames;
 	

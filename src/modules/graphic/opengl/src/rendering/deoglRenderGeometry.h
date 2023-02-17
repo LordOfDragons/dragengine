@@ -28,7 +28,6 @@
 
 class deoglCollideList;
 class deoglComponentLOD;
-class deoglDepthTriangleList;
 class deoglFramebuffer;
 class deoglPersistentRenderTask;
 class deoglRComponent;
@@ -44,20 +43,16 @@ class deoglVAO;
 
 
 /**
- * \brief OpenGL Geometry Renderer.
+ * OpenGL Geometry Renderer.
  * Renderer for 3D geometry.
  */
 class deoglRenderGeometry : public deoglRenderBase{
 private:
 	decColor pAmbient;
 	
-	deoglShaderProgramUsage pShaderParticle;
+	const deoglPipeline *pPipelineApproxTransformVNT;
 	
-	deoglShaderProgramUsage pShaderTransformPositions;
-	deoglShaderProgramUsage pShaderCalcNormalsTangents;
-	deoglShaderProgramUsage pShaderWriteSkinnedVBO;
 	
-	deoglShaderProgramUsage pShaderApproxTransformVNT;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -84,24 +79,8 @@ public:
 	/** Render a persistent render task. */
 	void RenderTask( const deoglPersistentRenderTask &renderTask );
 	
-	/** Transform model posititions using component weight matrices using transform feedback. */
-	void TransformPositions( const deoglVAO &vao, GLuint tboWeightMatrices,
-		GLuint vboTransformed, int firstPoint, int pointCount );
-	
-	/** Calculate normals and tangents for a component. */
-	void CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions, deoglFramebuffer *fbo,
-		int outputWidth, int outputHeight, int positionCount, int normalCount,
-		int tangentCount, int firstPoint, int pointCount );
-	
-	/** Write skinned vbo using transform feedback. */
-	void WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions, deoglTexture &texNorTan,
-		GLuint vboSkinned, int positionCount, int normalCount, int firstPoint, int pointCount );
-	/**
-	 * Approximately transform model posititions, normals and tangents
-	 *        using component weight matrices using transform feedback.
-	 */
-	void ApproxTransformVNT( const deoglVAO &vao, GLuint tboWeightMatrices,
-		GLuint vboTransformed, int firstPoint, int pointCount );
+	void ApproxTransformVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
+		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount );
 	/*@}*/
 	
 private:

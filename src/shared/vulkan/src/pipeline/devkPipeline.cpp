@@ -102,7 +102,7 @@ pSaveCache( false )
 				cacheInfo.initialDataSize = reader->GetLength();
 				if( cacheInfo.initialDataSize > 0 ){
 					cacheInfo.pInitialData = new char[ cacheInfo.initialDataSize ];
-					reader->Read( ( char* )cacheInfo.pInitialData, cacheInfo.initialDataSize );
+					reader->Read( ( char* )cacheInfo.pInitialData, ( int )cacheInfo.initialDataSize );
 				}
 			}
 			

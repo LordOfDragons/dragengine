@@ -30,7 +30,7 @@ class deEffectOverlayImage;
 
 
 /**
- * \brief Effect distort image.
+ * Effect distort image.
  */
 class deoglEffectOverlayImage : public deoglEffect{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create effect peer. */
+	/** Create effect peer. */
 	deoglEffectOverlayImage( deGraphicOpenGl &ogl, const deEffectOverlayImage &effect );
 	
-	/** \brief Clean up effect. */
+	/** Clean up effect. */
 	virtual ~deoglEffectOverlayImage();
 	/*@}*/
 	
@@ -55,23 +55,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Effect color matrix engine resource. */
+	/** Effect color matrix engine resource. */
 	inline const deEffectOverlayImage &GetEffectOverlayImage() const{ return pEffectOverlayImage; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Image changed. */
+	/** Image changed. */
 	virtual void ImageChanged();
 	
-	/** \brief Transparency changed. */
+	/** Transparency changed. */
 	virtual void TransparencyChanged();
 	/*@}*/
 };

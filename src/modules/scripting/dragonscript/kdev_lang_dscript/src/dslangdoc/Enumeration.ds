@@ -1,0 +1,110 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Enumeration.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Enumeration
+	/** \name Management */
+	/*@{*/
+	/** \brief Name of constant. */
+	public func String name()
+		return null
+	end
+	
+	/** \brief Order of constant. */
+	public func int order()
+		return 0
+	end
+	
+	/** \brief Set with only this constant. */
+	public func Set set()
+		return null
+	end
+	
+	/** \brief Set with all constants except this constant. */
+	public func Set setWithout()
+		return null
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of the form "Enumeration.ConstantName". */
+	public func String toString()
+		return null
+	end
+	
+	/**
+	 * \brief Compare constant to another object.
+	 * 
+	 * \throws EInvalidParam Other object is not of type EnumConstant.
+	 * \throws EInvalidParam Other object is not part of the same enumeration.
+	 * \retval 0 Order of object is the same.
+	 * \retval <0 Order of object is larger.
+	 * \retval >0 Order og object is smaller.
+	 */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/** \brief Constant order is less than order of other constant. */
+	public func bool <( Enumeration other )
+		return false
+	end
+	
+	/** \brief Constant order is less than or equal to order of other constant. */
+	public func bool <=( Enumeration other )
+		return false
+	end
+	
+	/** \brief Constant order is larger than order of other constant. */
+	public func bool >( Enumeration other )
+		return false
+	end
+	
+	/** \brief Constant order is larger than or equal to order of other constant. */
+	public func bool >=( Enumeration other )
+		return false
+	end
+	
+	
+	
+	/** \brief Set with all elements of enumeration. */
+	static public func Set all()
+		return null
+	end
+	
+	/** \brief Set with no element of enumeration. */
+	static public func Set none()
+		return null
+	end
+	
+	/**
+	 * \brief Apply block to each element of enumeration.
+	 * 
+	 * Block receives \ref Enumeration as argument.
+	 */
+	static public func void forEach( Block ablock )
+	end
+	
+	/** \brief Enumeration element with matching name or null if not found. */
+	static public func Enumeration named( String name )
+		return null
+	end
+	
+	/** \brief Enumeration element with matching order or null if not found. */
+	static public func Enumeration withOrder( int order )
+		return null
+	end
+	/*@}*/
+end

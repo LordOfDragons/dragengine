@@ -31,7 +31,10 @@
 #include "../light/deoglRenderGI.h"
 #include "../light/deoglRenderLight.h"
 #include "../../deGraphicOpenGl.h"
+#include "../../billboard/deoglRBillboard.h"
 #include "../../collidelist/deoglCollideListComponent.h"
+#include "../../collidelist/deoglCollideListHTSCluster.h"
+#include "../../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
 #include "../../debug/deoglDebugInformation.h"
@@ -42,16 +45,24 @@
 #include "../../occlusiontest/deoglOcclusionTest.h"
 #include "../../occlusiontest/deoglOcclusionTestPool.h"
 #include "../../rendering/deoglRenderCanvas.h"
+#include "../../rendering/deoglRenderCompute.h"
 #include "../../rendering/deoglRenderOcclusion.h"
 #include "../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shadow/deoglShadowCaster.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
 #include "../../sky/deoglSkyLayerGICascade.h"
+#include "../../terrain/heightmap/deoglHTSCluster.h"
+#include "../../terrain/heightmap/deoglHTViewSector.h"
+#include "../../terrain/heightmap/deoglRHTSector.h"
+#include "../../utils/convexhull/deoglConvexHull2D.h"
 #include "../../utils/collision/deoglCollisionBox.h"
+#include "../../utils/collision/deoglDCollisionBox.h"
 #include "../../world/deoglRWorld.h"
 
 #include <dragengine/deEngine.h>
@@ -95,6 +106,16 @@ pTaskGIUpdateRT( NULL )
 		pShadowLayers[ i ].addToRenderTask = new deoglAddToRenderTask( 
 			plan.GetRenderThread(), *pShadowLayers[ i ].renderTask );
 	}
+	
+	const deoglRenderPlanCompute &compute = plan.GetCompute();
+	
+	pUBOFindConfig.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
+	pSSBOCounters.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
+	pSSBOVisibleElements.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
+	
+	pUBOFindConfigGI.TakeOver( new deoglSPBlockUBO( compute.GetUBOFindConfig() ) );
+	pSSBOCountersGI.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOCounters() ) );
+	pSSBOVisibleElementsGI.TakeOver( new deoglSPBlockSSBO( compute.GetSSBOVisibleElements() ) );
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
@@ -210,17 +231,28 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	SetOcclusionTest( pPlan.GetRenderThread().GetOcclusionTestPool().Get() );
 	
 	pOcclusionTest->RemoveAllInputData();
 	
-	pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
-	pp.AddTaskAsync( pTaskFindContent );
-	
-	if( pPlan.GetUpdateGIState() ){
-		pTaskGIFindContent = new deoglRPTSkyLightGIFindContent( *this );
-		pp.AddTaskAsync( pTaskGIFindContent );
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		deoglRenderCompute &renderCompute = pPlan.GetRenderThread().GetRenderers().GetCompute();
+		PrepareBuffers();
+		renderCompute.FindContentSkyLight( *this );
+		if( pPlan.GetUpdateGIState() ){
+			renderCompute.FindContentSkyLightGI( *this );
+		}
+		
+	}else{
+		deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
+		
+		pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
+		pp.AddTaskAsync( pTaskFindContent );
+		
+		if( pPlan.GetUpdateGIState() ){
+			pTaskGIFindContent = new deoglRPTSkyLightGIFindContent( *this );
+			pp.AddTaskAsync( pTaskGIFindContent );
+		}
 	}
 }
 
@@ -242,7 +274,7 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	// is delayed until used in the sky light renderer. this avoids stalling
 	if( pOcclusionTest->GetInputDataCount() > 0
 	&& pPlan.GetRenderThread().GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
-		pOcclusionTest->UpdateVBO();
+		pOcclusionTest->UpdateSSBO();
 		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
 	}
 }
@@ -342,9 +374,121 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
 	pShadowLayers[ 3 ].renderTask->PrepareForRender();
 }
 
+void deoglRenderPlanSkyLight::PrepareBuffers(){
+	pPrepareFindConfig();
+	pPrepareFindConfigGI();
+	
+	const int visElCount = ( ( pPlan.GetWorld()->GetCompute().GetElementCount() - 1 ) / 4 ) + 1;
+	pPrepareBuffer( pSSBOVisibleElements, visElCount );
+	pPrepareBuffer( pSSBOVisibleElementsGI, visElCount );
+	
+	pClearCounters();
+}
+
+void deoglRenderPlanSkyLight::ReadVisibleElements(){
+	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
+	if( wcompute.GetElementCount() == 0 ){
+		return;
+	}
+	
+		// decTimer timer;
+	const sCounters * const counters = ( sCounters* )pSSBOCounters->ReadBuffer();
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
+	const int indexCount = counters[ 0 ].counter;
+	if( indexCount == 0 ){
+		return;
+	}
+	
+	// read written visible element indices
+	const decDVector &referencePosition = pPlan.GetWorld()->GetReferencePosition();
+	deoglHTView * const htview = pPlan.GetHeightTerrainView();
+	deoglOcclusionTest &occlusionTest = *pOcclusionTest;
+	
+	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
+	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElements->ReadBuffer( ecount );
+	int i;
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: read %dys", (int)(timer.GetElapsedTime()*1e6f));
+	
+	for( i=0; i<indexCount; i++ ){
+		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] & 0xffffff );
+		const int cascadeMask = ( indices[ i ] >> 24 ) & 0xf;
+		
+		switch( element.GetType() ){
+		case deoglWorldComputeElement::eetComponent:{
+			deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
+			clcomponent.SetCascadeMask( cascadeMask );
+			clcomponent.SetSpecialFlags( cascadeMask );
+			clcomponent.StartOcclusionTest( occlusionTest, referencePosition );
+			}break;
+			
+		case deoglWorldComputeElement::eetBillboard:{
+			deoglRBillboard * const billboard = ( deoglRBillboard* )element.GetOwner();
+			billboard->SetSkyShadowSplitMask( cascadeMask ); // TODO move this into deoglCollideListBillboard
+			pCollideList.AddBillboard( billboard );
+			}break;
+			
+		case deoglWorldComputeElement::eetPropFieldCluster:
+			pCollideList.AddPropFieldCluster( ( deoglPropFieldCluster* )element.GetOwner() )
+				->SetCascadeMask( cascadeMask );
+			break;
+			
+		case deoglWorldComputeElement::eetHeightTerrainSectorCluster:
+			if( htview ){
+				const deoglHTSCluster &cluster = *( deoglHTSCluster* )element.GetOwner();
+				pCollideList.AddHTSCluster( &htview->GetSectorAt( cluster.GetHTSector()->GetIndex() )
+					->GetClusterAt( cluster.GetIndex() ) )->SetCascadeMask( cascadeMask );
+			}
+			break;
+			
+		default:
+			break;
+		}
+	}
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElements: list %dys", (int)(timer.GetElapsedTime()*1e6f));
+}
+
+void deoglRenderPlanSkyLight::ReadVisibleElementsGI(){
+	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
+	if( wcompute.GetElementCount() == 0 ){
+		return;
+	}
+	
+		// decTimer timer;
+	const sCounters * const counters = ( sCounters* )pSSBOCountersGI->ReadBuffer();
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: counter %dys", (int)(timer.GetElapsedTime()*1e6f));
+	const int indexCount = counters[ 0 ].counter;
+	if( indexCount == 0 ){
+		return;
+	}
+	
+	// read written visible element indices
+	const int ecount = ( ( indexCount - 1 ) / 4 ) + 1;
+	const uint32_t * const indices = ( const uint32_t * )pSSBOVisibleElementsGI->ReadBuffer( ecount );
+	int i;
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: read %dys", (int)(timer.GetElapsedTime()*1e6f));
+	
+	for( i=0; i<indexCount; i++ ){
+		const deoglWorldComputeElement &element = wcompute.GetElementAt( indices[ i ] );
+		
+		switch( element.GetType() ){
+		case deoglWorldComputeElement::eetComponent:
+			pGICollideList.AddComponent( ( deoglRComponent* )element.GetOwner() );
+			break;
+			
+		case deoglWorldComputeElement::eetBillboard:
+			pGICollideList.AddBillboard( ( deoglRBillboard* )element.GetOwner() );
+			break;
+			
+		default:
+			break;
+		}
+	}
+		// pPlan.GetRenderThread().GetLogger().LogInfoFormat("RenderPlanSkyLight.ReadVisibleElementsGI: list %dys", (int)(timer.GetElapsedTime()*1e6f));
+}
+
 void deoglRenderPlanSkyLight::CleanUp(){
-	pWaitFinishedFindContent();
-	pWaitFinishedGIFindContent();
+	// pWaitFinishedFindContent();
+	// pWaitFinishedGIFindContent();
 	WaitFinishedGIUpdateRT();
 	WaitFinishedBuildRT1();
 	WaitFinishedBuildRT2();
@@ -368,6 +512,290 @@ void deoglRenderPlanSkyLight::CleanUp(){
 
 // Private Functions
 //////////////////////
+
+void deoglRenderPlanSkyLight::pPrepareFindConfig(){
+	if( ! pLayer ){
+		return;
+	}
+	
+	deoglSPBlockUBO &ubo = pUBOFindConfig;
+	const deoglSPBMapBuffer mapped( ubo );
+	ubo.Clear();
+	
+	pSetWorldComputeParams( ubo );
+	
+	// camera parameters
+	const decDVector camPos( pPlan.GetCameraPosition() - pPlan.GetWorld()->GetReferencePosition() );
+	const decDMatrix &matCamInv = pPlan.GetInverseCameraMatrix();
+	
+	ubo.SetParameterDataVec3( deoglRenderPlanCompute::efcpCameraPosition, camPos );
+	ubo.SetParameterDataVec3( deoglRenderPlanCompute::efcpCameraView, matCamInv.TransformView() );
+	
+	// light space
+	const float backtrack = 2000.0f;
+	const decDMatrix matLig( decDMatrix::CreateRotation( 0.0, PI, 0.0 ) * decDMatrix( pLayer->GetMatrix() ) );
+	const decDMatrix matLigInv( matLig.Invert() );
+	const decDMatrix matCL( matCamInv.GetRotationMatrix() * matLigInv );
+	const decQuaternion quatLig( matLig.ToQuaternion() );
+	const decDMatrix matLS( decDMatrix::CreateTranslation( -camPos ) * matLigInv );
+	
+	ubo.SetParameterDataMat4x3( deoglRenderPlanCompute::efcpMatrixLightSpace, matLS );
+	
+	// frustum culling
+	decDVector frustumPoints[ 5 ];
+	pCalcLightFrustum( matCL, frustumPoints );
+	
+	decDVector frustumBoxMinExtend, frustumBoxMaxExtend;
+	pLightFrustumBox( frustumPoints, frustumBoxMinExtend, frustumBoxMaxExtend );
+	SetFrustumBoxExtend( frustumBoxMinExtend, frustumBoxMaxExtend );
+	
+	frustumBoxMinExtend.z -= backtrack; // to catch shadow casters outside the view
+	
+	deoglDCollisionBox volumeShadowBox;
+	volumeShadowBox.SetFromExtends( frustumBoxMinExtend, frustumBoxMaxExtend );
+	volumeShadowBox.SetCenter( camPos + matLig * volumeShadowBox.GetCenter() );
+	volumeShadowBox.SetOrientation( quatLig );
+	
+	ubo.SetParameterDataFloat( deoglRenderPlanCompute::efcpLightShaftFar, ( float )frustumBoxMaxExtend.z );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 0, volumeShadowBox.GetAxisX().Absolute() );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 1, volumeShadowBox.GetAxisY().Absolute() );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 2, volumeShadowBox.GetAxisZ().Absolute() );
+	
+	pSetLightFrustumPlanes( ubo, pPlan.GetCameraMatrix() * pPlan.GetFrustumMatrix(), matLS );
+	pFrustumHull( ubo, frustumPoints );
+	pCullLayerMask( ubo );
+	
+	// cull by flags. component, billboards, prop fields and height terrains yes, the rest no
+	uint32_t cullFlags = ~( deoglWorldCompute::eefComponent | deoglWorldCompute::eefComponentDynamic
+		| deoglWorldCompute::eefBillboard | deoglWorldCompute::eefPropFieldCluster
+		| deoglWorldCompute::eefHeightTerrainSectorCluster );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
+	
+	pSetSplits( ubo, backtrack );
+}
+
+void deoglRenderPlanSkyLight::pPrepareFindConfigGI(){
+	const deoglGIState * const giState = pPlan.GetUpdateGIState();
+	if( ! pLayer || ! giState ){
+		return;
+	}
+	
+	// collect elements. we have to calculate the gi position ourself since the real
+	// position update happens in parallel. the detection box though is static so
+	// we do not have to calculate it on our own
+	const deoglGICascade &cascade = giState->GetSkyShadowCascade();
+	const deoglSkyLayerGICascade * const slgc = pLayer->GetGICascade( cascade );
+	DEASSERT_NOTNULL( slgc )
+	
+	deoglSPBlockUBO &ubo = pUBOFindConfigGI;
+	const deoglSPBMapBuffer mapped( ubo );
+	ubo.Clear();
+	
+	pSetWorldComputeParams( ubo );
+	
+	// camera parameters
+	const decDMatrix &matCamInv = pPlan.GetInverseCameraMatrix();
+	const decDVector &refpos = pPlan.GetWorld()->GetReferencePosition();
+	
+	ubo.SetParameterDataVec3( deoglRenderPlanCompute::efcpCameraPosition, pPlan.GetCameraPosition() - refpos );
+	ubo.SetParameterDataVec3( deoglRenderPlanCompute::efcpCameraView, matCamInv.TransformView() );
+	
+	// light space
+	const decDVector &position = slgc->GetPosition();
+	const float backtrack = 2000.0f;
+	
+	const decDMatrix matLig( decDMatrix::CreateRotation( 0.0, PI, 0.0 ) * decDMatrix( pLayer->GetMatrix() ) );
+	const decDMatrix matLigInv( matLig.Invert() );
+	const decQuaternion quatLig( matLig.ToQuaternion() );
+	const decDMatrix matLS( decDMatrix::CreateTranslation( -position ) * matLigInv );
+	
+	ubo.SetParameterDataMat4x3( deoglRenderPlanCompute::efcpMatrixLightSpace, matLS );
+	
+	// gi box
+	deoglCollisionBox giBox( decVector(), cascade.GetDetectionBox(), matLigInv.ToQuaternion() );
+	deoglCollisionBox giBoxAABB;
+	giBox.GetEnclosingBox( &giBoxAABB );
+	
+	decDVector frustumBoxMinExtend( giBoxAABB.GetCenter() - giBoxAABB.GetHalfSize() );
+	decDVector frustumBoxMaxExtend( giBoxAABB.GetCenter() + giBoxAABB.GetHalfSize() );
+	SetFrustumBoxExtend( frustumBoxMinExtend, frustumBoxMaxExtend );
+	
+	// frustum culling
+	deoglDCollisionBox volumeShadowBox;
+	volumeShadowBox.SetFromExtends( decDVector( frustumBoxMinExtend )
+		- decDVector( 0.0, 0.0, ( double )backtrack ), decDVector( frustumBoxMaxExtend ) );
+	volumeShadowBox.SetCenter( position + matLig * volumeShadowBox.GetCenter() );
+	volumeShadowBox.SetOrientation( quatLig );
+	
+	deoglDCollisionBox aabb;
+	volumeShadowBox.GetEnclosingBox( &aabb );
+	ubo.SetParameterDataVec3( deoglRenderPlanCompute::efcpGIMinExtend, aabb.GetCenter() - aabb.GetHalfSize() );
+	ubo.SetParameterDataVec3( deoglRenderPlanCompute::efcpGIMaxExtend, aabb.GetCenter() + aabb.GetHalfSize() );
+	
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 0, volumeShadowBox.GetAxisX().Absolute() );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 1, volumeShadowBox.GetAxisY().Absolute() );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpShadowAxis, 2, volumeShadowBox.GetAxisZ().Absolute() );
+	
+	pCullLayerMask( ubo );
+	
+	// cull by flags. component and billboards yes, the rest no
+	uint32_t cullFlags = ~( deoglWorldCompute::eefComponent
+		| deoglWorldCompute::eefComponentDynamic | deoglWorldCompute::eefBillboard );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpCullFlags, cullFlags );
+	
+	// splits are not used for GI shadows but the minimum size restriction is.
+	// to avoid creating another method the AddSplit method is used for this
+	pSetGISplits( ubo );
+}
+
+void deoglRenderPlanSkyLight::pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count ){
+	if( count > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( count );
+	}
+	ssbo.EnsureBuffer();
+}
+
+void deoglRenderPlanSkyLight::pClearCounters(){
+	deoglSPBlockSSBO * const ssbos[ 2 ] = { pSSBOCounters, pSSBOCountersGI };
+	int i, j;
+	
+	for( i=0; i<2; i++ ){
+		deoglSPBlockSSBO &ssbo = *ssbos[ i ];
+		const deoglSPBMapBuffer mapped( ssbo );
+		for( j=0; j<ssbo.GetElementCount(); j++ ){
+			ssbo.SetParameterDataUVec3( 0, j, 0, 1, 1 ); // work group size (x=0)
+			ssbo.SetParameterDataUInt( 1, j, 0 ); // count
+		}
+	}
+}
+
+void deoglRenderPlanSkyLight::pSetWorldComputeParams( deoglSPBlockUBO &ubo ){
+	const deoglWorldCompute &wcompute = pPlan.GetWorld()->GetCompute();
+	
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpNodeCount, 0 );
+	ubo.SetParameterDataUInt( deoglRenderPlanCompute::efcpElementCount, wcompute.GetElementCount() );
+}
+
+void deoglRenderPlanSkyLight::pSetFrustumPlane( deoglSPBlockUBO &ubo, int i, const decDVector& n, double d ){
+	ubo.SetParameterDataArrayVec4( deoglRenderPlanCompute::efcpFrustumPlanes, i, n, d );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpFrustumPlanesAbs, i, n.Absolute() );
+	ubo.SetParameterDataArrayBVec3( deoglRenderPlanCompute::efcpFrustumSelect, i, n.x > 0.0, n.y > 0.0, n.z > 0.0 );
+}
+
+void deoglRenderPlanSkyLight::pSetLightFrustumPlanes( deoglSPBlockUBO &ubo,
+const decDMatrix &matFr, const decDMatrix &matLS ){
+	deoglDCollisionFrustum frustum;
+	frustum.SetFrustum( matFr );
+	
+	int planeCount = 0;
+	pSetLightFrustumPlane( ubo, matLS, planeCount, frustum.GetLeftNormal(), frustum.GetLeftDistance() );
+	pSetLightFrustumPlane( ubo, matLS, planeCount, frustum.GetRightNormal(), frustum.GetRightDistance() );
+	pSetLightFrustumPlane( ubo, matLS, planeCount, frustum.GetTopNormal(), frustum.GetTopDistance() );
+	pSetLightFrustumPlane( ubo, matLS, planeCount, frustum.GetBottomNormal(), frustum.GetBottomDistance() );
+	pSetLightFrustumPlane( ubo, matLS, planeCount, frustum.GetNearNormal(), frustum.GetNearDistance() );
+	pSetLightFrustumPlane( ubo, matLS, planeCount, frustum.GetFarNormal(), frustum.GetFarDistance() );
+}
+
+void deoglRenderPlanSkyLight::pSetLightFrustumPlane( deoglSPBlockUBO &ubo,
+const decDMatrix &matrix, int &index, const decDVector &normal, double distance ){
+	const decDVector pn( matrix.TransformNormal( normal ) );
+	if( pn.z < 0.0 ){
+		pSetFrustumPlane( ubo, index++, pn, pn * ( matrix * ( normal * distance ) ) );
+	}
+}
+
+void deoglRenderPlanSkyLight::pCalcLightFrustum( const decDMatrix &matrix, decDVector (&frustumPoints)[ 5 ] ){
+	const double fov = ( double )pPlan.GetCameraFov();
+	const double fovRatio = ( double )pPlan.GetCameraFovRatio();
+	const double zfar = ( double )pPlan.GetCameraViewDistance();
+	const double xfar = tan( fov * 0.5 ) * zfar; // * znear, dropped since we calc x'=z'*(xnear/znear)
+	const double yfar = tan( fov * 0.5 * fovRatio ) * zfar; // * znear, dropped since we calc y'=z'*(ynear/znear)
+	
+	frustumPoints[ 0 ] = matrix.GetPosition();
+	matrix.Transform( frustumPoints[ 1 ], -xfar, yfar, zfar );
+	matrix.Transform( frustumPoints[ 2 ], xfar, yfar, zfar );
+	matrix.Transform( frustumPoints[ 3 ], xfar, -yfar, zfar );
+	matrix.Transform( frustumPoints[ 4 ], -xfar, -yfar, zfar );
+}
+
+void deoglRenderPlanSkyLight::pLightFrustumBox( const decDVector (&frustumPoints)[ 5 ],
+decDVector &minExtend, decDVector &maxExtend ){
+	maxExtend = minExtend = frustumPoints[ 0 ];
+	int i;
+	
+	for( i=1; i<5; i++ ){
+		minExtend.SetSmallest( frustumPoints[ i ] );
+		maxExtend.SetLargest( frustumPoints[ i ] );
+	}
+}
+
+void deoglRenderPlanSkyLight::pFrustumHull( deoglSPBlockUBO &ubo, const decDVector (&frustumPoints)[ 5 ] ){
+	// calculate the convex hull of the frustum projected to the shadow map plane. each edge
+	// in the hull becomes a plane to test components against. the planes are oriented
+	// perpendicular to the light direction. this way a simple 2d convex hull test can be used.
+	// there will be between 3 to 5 planes to test
+	deoglConvexHull2D hull;
+	int i;
+	
+	for( i=0; i<5; i++ ){
+		hull.AddPoint( ( float )frustumPoints[ i ].x, ( float )frustumPoints[ i ].y );
+	}
+	hull.CalculateHull();
+	
+	const int count = hull.GetHullPointCount();
+	
+	for( i=0; i<count; i++ ){
+		const decVector2 &edgeStart = hull.GetHullPointVectorAt( i );
+		const decVector2 edge( ( hull.GetHullPointVectorAt( ( i + 1 ) % count ) - edgeStart ).Normalized() );
+		const decVector2 edgeNormal( -edge.y, edge.x );
+		const decVector2 edgeNormalAbs( edgeNormal.Absolute() );
+		
+		ubo.SetParameterDataArrayVec4( deoglRenderPlanCompute::efcpHullEdgeNormal, i,
+			edgeNormal.x, edgeNormal.y, edgeNormalAbs.x, edgeNormalAbs.y );
+		ubo.SetParameterDataArrayFloat( deoglRenderPlanCompute::efcpHullEdgeDistance, i, edgeNormal * edgeStart );
+	}
+}
+
+void deoglRenderPlanSkyLight::pCullLayerMask( deoglSPBlockUBO &ubo ){
+	ubo.SetParameterDataBool( deoglRenderPlanCompute::efcpCullLayerMask, pPlan.GetUseLayerMask() );
+	
+	const uint64_t layerMask = pPlan.GetLayerMask().GetMask();
+	ubo.SetParameterDataUVec2( deoglRenderPlanCompute::efcpLayerMask,
+		( uint32_t )( layerMask >> 32 ), ( uint32_t )layerMask );
+}
+
+void deoglRenderPlanSkyLight::pSetSplits( deoglSPBlockUBO &ubo, float backtrack ){
+	const float splitSizeLimitPixels = 1.0f;
+	const float splitFactor = ( 1.0f / ( float )pPlan.GetShadowSkySize() ) * splitSizeLimitPixels;
+	int i;
+	
+	ubo.SetParameterDataInt( deoglRenderPlanCompute::efcpSplitCount, pShadowLayerCount );
+	
+	for( i=0; i<pShadowLayerCount; i++ ){
+		const sShadowLayer &sl = pShadowLayers[ i ];
+		
+		ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMinExtend, i,
+			decVector( sl.minExtend.x, sl.minExtend.y, sl.minExtend.z - backtrack ) );
+		ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMaxExtend, i, sl.maxExtend );
+		ubo.SetParameterDataArrayVec2( deoglRenderPlanCompute::efcpSplitSizeThreshold, i,
+			( sl.maxExtend.x - sl.minExtend.x ) * splitFactor,
+			( sl.maxExtend.y - sl.minExtend.y ) * splitFactor );
+	}
+}
+
+void deoglRenderPlanSkyLight::pSetGISplits( deoglSPBlockUBO &ubo ){
+	const float splitSizeLimitPixels = 0.5f; //1.0f; // smaller to avoid problems
+	
+	const decVector boxSize( pFrustumBoxMaxExtend - pFrustumBoxMinExtend );
+	const float sizeThresholdX = ( boxSize.x / ( float )pGIShadowSize ) * splitSizeLimitPixels;
+	const float sizeThresholdY = ( boxSize.y / ( float )pGIShadowSize ) * splitSizeLimitPixels;
+	
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMinExtend, 0, pFrustumBoxMinExtend );
+	ubo.SetParameterDataArrayVec3( deoglRenderPlanCompute::efcpSplitMaxExtend, 0, pFrustumBoxMaxExtend );
+	ubo.SetParameterDataArrayVec2( deoglRenderPlanCompute::efcpSplitSizeThreshold, 0, sizeThresholdX, sizeThresholdY );
+}
+
+
 
 void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
@@ -410,12 +838,6 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 }
 
 void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
-// 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
-// 	const float smOffsetScale = config.GetDistShadowScale();
-	//const float smOffsetBias = config.GetDistShadowBias() / ( float )( ( 1 << 24 ) - 1 ); // config.GetShadowMapOffsetBias();
-	//const float smOffsetBias = 0.001f; //config.GetDistShadowBias() / ( float )( ( 1 << 16 ) - 1 ); // config.GetShadowMapOffsetBias();
-// 	const float smOffsetBias = config.GetDistShadowBias();
-	
 //	const deSkyLayer &engSkyLayer = *pLayer->GetLayer();
 	const decDMatrix &matCamInv = pPlan.GetInverseCameraMatrix();
 	float znear = pPlan.GetCameraImageDistance();
@@ -492,22 +914,6 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		}
 	}
 	
-	//const float baseDistFactor = 1.0f / ( pShadowLayers[ 0 ].frustumFar - pShadowLayers[ 0 ].frustumNear );
-	pShadowLayers[ 0 ].zscale = 1.0f; //smOffsetScale;
-	pShadowLayers[ 0 ].zoffset = 0.01f; // smOffsetBias;
-	
-	//const float distScale1 = baseDistFactor * ( pShadowLayers[ 1 ].frustumFar - pShadowLayers[ 1 ].frustumNear );
-	pShadowLayers[ 1 ].zscale = 1.5f; //smOffsetScale;
-	pShadowLayers[ 1 ].zoffset = 0.01f; // smOffsetBias;
-	
-	//const float distScale2 = baseDistFactor * ( pShadowLayers[ 2 ].frustumFar - pShadowLayers[ 2 ].frustumNear );
-	pShadowLayers[ 2 ].zscale = 2.0f; //smOffsetScale;
-	pShadowLayers[ 2 ].zoffset = 0.01f; // smOffsetBias;
-	
-	//const float distScale3 = baseDistFactor * ( pShadowLayers[ 3 ].frustumFar - pShadowLayers[ 3 ].frustumNear );
-	pShadowLayers[ 3 ].zscale = 2.5f; //smOffsetScale;
-	pShadowLayers[ 3 ].zoffset = 0.01f; // smOffsetBias;
-	
 	/*
 	float / * lambda = 0.5f, * / N = ( float )layerCount;
 	ogl.LogInfoFormat( "RenderSkyLight: znear=%f zfar=%f", znear, zfar );
@@ -525,6 +931,9 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 	*/
 	
 	// calculate layer parameters
+	// const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
+	const float smDepthScaleFactor = 1.2f; // TODO add config option
+	
 	for( p=0; p<pShadowLayerCount; p++ ){
 		sShadowLayer &sl = pShadowLayers[ p ];
 		
@@ -553,6 +962,15 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 			sl.minExtend.SetSmallest( frustumCorners[ c ] );
 			sl.maxExtend.SetLargest( frustumCorners[ c ] );
 		}
+		
+		// depth offset requires extends to be known
+		const float smSize = sl.maxExtend.x - sl.minExtend.x;
+		const float smDepthScale = sl.scale.z * 2.0f;
+		const float smOffsetScale = smSize / pPlan.GetShadowSkySize();
+		const float smOffsetBias = smOffsetScale; // * 0.5f;
+		
+		sl.zscale = smOffsetScale * smDepthScaleFactor * smDepthScale;
+		sl.zoffset = smOffsetBias * smDepthScaleFactor * smDepthScale;
 		
 		if( pPlan.GetRenderThread().GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
 			const float zf = sl.frustumFar;
@@ -598,35 +1016,60 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 		//ogl.LogInfoFormat( "RenderSkyLight: box min=(%f,%f,%f) max=(%f,%f,%f)", minExtend.x, minExtend.y, minExtend.z,
 		//	maxExtend.x, maxExtend.y, maxExtend.z );
 	}
+	
+	// adjust shadow depth offsets
+	pShadowLayers[ 0 ].zscale *= 1.0f;
+	pShadowLayers[ 0 ].zoffset *= 1.0f;
+	
+	pShadowLayers[ 1 ].zscale *= 1.5f;
+	pShadowLayers[ 1 ].zoffset *= 1.5f;
+	
+	pShadowLayers[ 2 ].zscale *= 2.0f;
+	pShadowLayers[ 2 ].zoffset *= 2.0f;
+	
+	pShadowLayers[ 3 ].zscale *= 2.5f;
+	pShadowLayers[ 3 ].zoffset *= 2.5f;
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
-	if( ! pTaskFindContent ){
-		return;
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		ReadVisibleElements();
+		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent( pPlan );
+		
+	}else{
+		if( ! pTaskFindContent ){
+			return;
+		}
+		
+	// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
+		pTaskFindContent->GetSemaphore().Wait();
+		
+		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
+			pPlan, pTaskFindContent->GetElapsedTime() );
+		
+		pTaskFindContent->FreeReference();
+		pTaskFindContent = NULL;
 	}
-	
-// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
-	pTaskFindContent->GetSemaphore().Wait();
-	
-	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
-		pPlan, pTaskFindContent->GetElapsedTime() );
-	
-	pTaskFindContent->FreeReference();
-	pTaskFindContent = NULL;
 }
 
 void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
-	if( ! pTaskGIFindContent ){
-		return;
+	if( pPlan.GetRenderThread().GetChoices().GetUseComputeRenderTask() ){
+		ReadVisibleElementsGI();
+		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan );
+		
+	}else{
+		if( ! pTaskGIFindContent ){
+			return;
+		}
+		
+		pTaskGIFindContent->GetSemaphore().Wait();
+		
+		deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+		rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
+		
+		pTaskGIFindContent->FreeReference();
+		pTaskGIFindContent = NULL;
 	}
-	
-	pTaskGIFindContent->GetSemaphore().Wait();
-	
-	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
-	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
-	
-	pTaskGIFindContent->FreeReference();
-	pTaskGIFindContent = NULL;
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){

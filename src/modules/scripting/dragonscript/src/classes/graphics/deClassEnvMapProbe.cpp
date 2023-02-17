@@ -332,7 +332,7 @@ void deClassEnvMapProbe::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself
 	const deEnvMapProbe * const envMapProbe = ( ( sEmpNatDat* )p_GetNativeData( myself ) )->envMapProbe;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )envMapProbe );
+	rt->PushInt( ( int )( intptr_t )envMapProbe );
 }
 
 // public func bool equals( Object obj )

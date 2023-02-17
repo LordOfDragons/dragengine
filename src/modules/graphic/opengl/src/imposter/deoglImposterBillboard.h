@@ -30,7 +30,7 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Imposter Billboard.
+ * Imposter Billboard.
  * Stores the textures and other information required for an imposter billboard.
  * Imposter billboards are typically created from skin shader driven objects but
  * can be possibly created from others. An imposter billboard composes of one or
@@ -50,7 +50,7 @@ private:
 	decVector2 pMaxExtend;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new imposter billboard. */
 	deoglImposterBillboard( deoglRenderThread &renderThread );
@@ -58,9 +58,9 @@ public:
 	~deoglImposterBillboard();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the array texture for a skin texture channel. */

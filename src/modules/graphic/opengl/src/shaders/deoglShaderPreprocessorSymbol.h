@@ -28,7 +28,7 @@
 
 
 /**
- * \brief GLSL shader preprocessor symbol.
+ * GLSL shader preprocessor symbol.
  */
 class deoglShaderPreprocessorSymbol : public deObject{
 private:
@@ -40,13 +40,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader preprocessor symbol. */
+	/** Create shader preprocessor symbol. */
 	deoglShaderPreprocessorSymbol();
 	
-	/** \brief Create shader preprocessor symbol. */
+	/** Create shader preprocessor symbol. */
 	deoglShaderPreprocessorSymbol( const char *name, const char *value );
 	
-	/** \brief Clean up shader preprocessor. */
+	/** Clean up shader preprocessor. */
 	virtual ~deoglShaderPreprocessorSymbol();
 	/*@}*/
 	
@@ -54,10 +54,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Value. */
+	/** Value. */
 	inline const decString &GetValue() const{ return pValue; }
 	/*@}*/
 };

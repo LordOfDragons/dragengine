@@ -22,6 +22,13 @@ jobs:
       buildVersion: 9999
       artifactArchive: archives-windows
   
+  build_windows_vs:
+    uses: ./.github/workflows/build_windows_vs.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactArchive: archives-windows-vs
+  
   build_windows_installer:
     needs: [build_windows]
     uses: ./.github/workflows/build_windows_installer.yml

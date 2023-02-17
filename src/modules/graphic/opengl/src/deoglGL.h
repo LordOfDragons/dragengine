@@ -24,6 +24,11 @@
 
 #include <dragengine/dragengine_configuration.h>
 
+#ifdef OS_W32
+	// required by visual studio
+	#include "include_windows.h"
+#endif
+
 #ifdef ANDROID
 	#undef __glext_h_
 	#define __glext_h_ 1

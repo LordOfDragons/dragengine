@@ -31,7 +31,7 @@ class deCanvasRenderWorld;
 
 
 /**
- * \brief Canvas peer.
+ * Canvas peer.
  */
 class deoglCanvasRenderWorld : public deoglCanvas{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCanvasRenderWorld( deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCanvasRenderWorld();
 	/*@}*/
 	
@@ -55,19 +55,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Drop render canvas if not \em NULL. */
+	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
 	
 	/**
-	 * \brief Prepare content for render thread counterpart.
+	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
 	
-	/** \brief Camera requires sync. */
+	/** Camera requires sync. */
 	void CameraRequiresSync();
 	
-	/** \brief Drop camera. */
+	/** Drop camera. */
 	void DropCamera();
 	/*@}*/
 	
@@ -75,14 +75,14 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Content changed. */
+	/** Content changed. */
 	virtual void ContentChanged();
 	/*@}*/
 	
 	
 	
 protected:
-	/** \brief Create render canvas. Subclass responsibility. */
+	/** Create render canvas. Subclass responsibility. */
 	virtual deoglRCanvas *CreateRCanvas();
 };
 

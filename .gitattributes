@@ -1,0 +1,23 @@
+# lfs parameters
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.tar.bz2 filter=lfs diff=lfs merge=lfs -text
+
+# prevent problems with non-linux git auto-converting line endings
+* text=auto
+
+*.c text
+*.cpp text
+*.h text
+*.py text
+*.ds text
+*.xml text
+
+*.glsl eol=lf
+
+*.png binary
+*.jpg binary
+*.webp binary
+*.zip binary
+*.tar.bz2 binary
+*.ogv binary
+*.ies eol=crlf

@@ -224,7 +224,7 @@ dsFunction(init.clsAnim, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassAnimation::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
 	sAnimNatDat *nd = (sAnimNatDat*)p_GetNativeData(This);
 	// hash code = memory location
-	RT->PushInt( ( intptr_t )nd->anim );
+	RT->PushInt( ( int )( intptr_t )nd->anim );
 }
 
 // public func bool equals(Object obj)

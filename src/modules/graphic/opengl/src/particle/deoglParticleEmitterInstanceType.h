@@ -29,7 +29,7 @@ class deoglParticleEmitterInstance;
 
 
 /**
- * \brief Particle emitter instance type.
+ * Particle emitter instance type.
  */
 class deoglParticleEmitterInstanceType{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new type. */
+	/** Create new type. */
 	deoglParticleEmitterInstanceType( deoglParticleEmitterInstance &instance, int index );
 	
-	/** \brief Clean up type. */
+	/** Clean up type. */
 	~deoglParticleEmitterInstanceType();
 	/*@}*/
 	
@@ -55,26 +55,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent emitter instance. */
+	/** Parent emitter instance. */
 	inline deoglParticleEmitterInstance &GetEmitterInstance(){ return pEmitterInstance; }
 	
-	/** \brief Render type. */
+	/** Render type. */
 	inline deoglRParticleEmitterInstanceType *GetRType() const{ return pRType; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Update texture parameters to use. */
+	/** Update texture parameters to use. */
 	void UpdateUseSkin();
 	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
 	
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	void TypeChanged();
 	/*@}*/
 	

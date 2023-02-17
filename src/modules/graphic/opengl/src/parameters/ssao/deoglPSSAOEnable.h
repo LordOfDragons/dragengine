@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module Parameter Enable Screen Space Ambient Occlusion.
+ * Module Parameter Enable Screen Space Ambient Occlusion.
  */
 class deoglPSSAOEnable : public deoglParameterBool{
 public:

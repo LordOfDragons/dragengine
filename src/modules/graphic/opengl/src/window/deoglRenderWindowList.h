@@ -30,7 +30,7 @@ class deoglRenderWindow;
 
 
 /**
- * \brief Render window list.
+ * Render window list.
  */
 class deoglRenderWindowList{
 private:
@@ -41,10 +41,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create list. */
+	/** Create list. */
 	deoglRenderWindowList( deGraphicOpenGl &ogl );
 	
-	/** \brief Clean up list. */
+	/** Clean up list. */
 	~deoglRenderWindowList();
 	/*@}*/
 	
@@ -52,24 +52,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of windows. */
+	/** Number of windows. */
 	int GetCount() const;
 	
-	/** \brief Window at index. */
+	/** Window at index. */
 	deoglRenderWindow *GetAt( int index ) const;
 	
-	/** \brief Add window. */
+	/** Add window. */
 	void Add( deoglRenderWindow *window );
 	
-	/** \brief Remove window. */
+	/** Remove window. */
 	void Remove( deoglRenderWindow *window );
 	
-	/** \brief Removes all windows. */
+	/** Removes all windows. */
 	void RemoveAll();
 	
 	
 	
-	/** \brief Update render thread windows including content if required. */
+	/** Update render thread windows including content if required. */
 	void SyncToRender();
 	/*@}*/
 };

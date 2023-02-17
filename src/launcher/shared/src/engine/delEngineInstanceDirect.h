@@ -33,10 +33,10 @@ class deEngine;
  * \brief Instance of game engine running in the same process.
  * \version 1.10
  */
-class delEngineInstanceDirect : public delEngineInstance{
+class DE_DLL_EXPORT delEngineInstanceDirect : public delEngineInstance{
 public:
 	/** \brief Factory creating engine instances. */
-	class Factory : public delEngineInstance::Factory{
+	class DE_DLL_EXPORT Factory : public delEngineInstance::Factory{
 	private:
 		deLogger::Ref pEngineLogger;
 		bool pUseConsole;

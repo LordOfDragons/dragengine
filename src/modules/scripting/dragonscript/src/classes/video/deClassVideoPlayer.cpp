@@ -300,7 +300,7 @@ dsFunction( init.clsVP, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassVideoPlayer::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deVideoPlayer *videoPlayer = ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer;
 	
-	rt->PushInt( ( intptr_t )videoPlayer );
+	rt->PushInt( ( int )( intptr_t )videoPlayer );
 }
 
 // public func bool equals( Object object )

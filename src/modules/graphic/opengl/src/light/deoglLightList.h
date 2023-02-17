@@ -29,7 +29,7 @@ class deoglRLight;
 
 
 /**
- * \brief Light list.
+ * Light list.
  * 
  * List of pointers to lights. The ordering of the lights in the list is
  * not defined and can change when lights are removed. This allows to
@@ -44,13 +44,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create light list. */
+	/** Create light list. */
 	deoglLightList();
 	
-	/** \brief Create copy of light list. */
+	/** Create copy of light list. */
 	deoglLightList( const deoglLightList &copy );
 	
-	/** \brief Clean up light list. */
+	/** Clean up light list. */
 	~deoglLightList();
 	/*@}*/
 	
@@ -58,36 +58,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of lights. */
+	/** Number of lights. */
 	int GetCount() const;
 	
-	/** \brief Light is present. */
+	/** Light is present. */
 	bool Has( deoglRLight *light ) const;
 	
-	/** \brief Light at index. */
+	/** Light at index. */
 	deoglRLight *GetAt( int index ) const;
 	
-	/** \brief Add light. */
+	/** Add light. */
 	void Add( deoglRLight *light );
 	
 	/**
-	 * \brief Add light if absent.
+	 * Add light if absent.
 	 * 
 	 * \returns \em true if added otherwise \em false.
 	 */
 	bool AddIfMissing( deoglRLight *light );
 	
-	/** \brief Remove light. */
+	/** Remove light. */
 	void Remove( deoglRLight *light );
 	
 	/**
-	 * \brief Remove light if present.
+	 * Remove light if present.
 	 * 
 	 * \returns \em true if removed otherwise \em false.
 	 */
 	bool RemoveIfExisting( deoglRLight *light );
 	
-	/** \brief Remove all lights. */
+	/** Remove all lights. */
 	void RemoveAll();
 	/*@}*/
 };

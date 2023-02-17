@@ -383,7 +383,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 }
 
 void deClassBillboard::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	rt->PushInt( ( intptr_t )( ( ( sBillboardNatDat* )p_GetNativeData( myself ) )->billboard ) );
+	rt->PushInt( ( int )( intptr_t )( ( ( sBillboardNatDat* )p_GetNativeData( myself ) )->billboard ) );
 }
 
 // public func bool equals( Object obj )

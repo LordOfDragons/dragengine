@@ -57,7 +57,7 @@ pCmdLineQuitNow( false )
 		DETHROW( deeInvalidParam );
 	}
 	
-	// also log to "/logs/delauncher-gui.log"
+	// also log to "/logs/delauncher-gui"
 	AddFileLogger( "delauncher-gui" );
 	
 	// set default engine instance executable (windows only)

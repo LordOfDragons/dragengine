@@ -31,7 +31,7 @@ class deoglModelLOD;
 
 
 /**
- * @brief Model LOD Visitor.
+ * Model LOD Visitor.
  * Model visitor calculating the minimum distance of a vertex faces in a model. Only faces
  * inside a small box around the vertex are tested for speed reasons.
  */
@@ -45,7 +45,7 @@ private:
 	float pMinLODDistance;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model octree visitor. */
 	deoglModelLODVisitor( deoglModelLOD &modelLOD );
@@ -53,7 +53,7 @@ public:
 	virtual ~deoglModelLODVisitor();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the box minimum extend. */
 	inline const decVector &GetBoxMinExtend() const{ return pBoxMinExtend; }
@@ -72,7 +72,7 @@ public:
 	void SetMinLODDistance( float distance );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*@{*/
 	/**
 	 * Visits an octree node. The default implementation is to visit all

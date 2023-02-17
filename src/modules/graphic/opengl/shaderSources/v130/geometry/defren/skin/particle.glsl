@@ -74,9 +74,6 @@ out vec2 vTCColor;
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	out float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -166,16 +163,6 @@ void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent
 		#endif
 		#ifdef CLIP_PLANE
 			vClipCoord = position.xyz;
-		#endif
-		#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
-			#ifdef DEPTH_ORTHOGONAL
-				#ifdef NO_ZCLIP
-					vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-					gl_Position.z = 0.0;
-				#else
-					vZCoord = gl_Position.z;
-				#endif
-			#endif
 		#endif
 		#ifdef DEPTH_DISTANCE
 			vPosition = position.xyz;

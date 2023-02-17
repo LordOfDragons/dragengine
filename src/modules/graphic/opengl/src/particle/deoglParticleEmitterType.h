@@ -31,7 +31,7 @@ class deParticleEmitterType;
 
 
 /**
- * \brief Particle Emitter Peer Type.
+ * Particle Emitter Peer Type.
  */
 class deoglParticleEmitterType{
 private:
@@ -44,10 +44,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create type. */
+	/** Create type. */
 	deoglParticleEmitterType( deoglParticleEmitter &emitter, const deParticleEmitterType &type );
 	
-	/** \brief Clean up type. */
+	/** Clean up type. */
 	~deoglParticleEmitterType();
 	/*@}*/
 	
@@ -55,13 +55,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render type. */
+	/** Render type. */
 	inline deoglRParticleEmitterType *GetRType() const{ return pRType; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	void TypeChanged();
 	/*@}*/
 };

@@ -29,7 +29,7 @@ class deoglRenderableTexture1D;
 
 
 /**
- * \brief Renderable 1D Texture Manager.
+ * Renderable 1D Texture Manager.
  * \details Manages renderable 1d textures. Maintains a list of renderable 1d textures
  *          build upon demand. Renderable 1d textures once created stay around and can
  *          be reused. A renderable 1d texture is only handed out if the format matches
@@ -44,20 +44,20 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new renderable texture manager. */
+	/** Creates a new renderable texture manager. */
 	deoglRenderableTexture1DManager( deoglRenderThread &renderThread );
-	/** \brief Cleans up the renderable texture manager. */
+	/** Cleans up the renderable texture manager. */
 	~deoglRenderableTexture1DManager();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the number of renderable textures. */
+	/** Retrieves the number of renderable textures. */
 	int GetTextureCount() const;
-	/** \brief Retrieves the renderable texture for reading only at the given location. */
+	/** Retrieves the renderable texture for reading only at the given location. */
 	const deoglRenderableTexture1D *GetTextureAt( int index ) const;
 	
-	/** \brief Retrieves the renderable texture for the given format. */
+	/** Retrieves the renderable texture for the given format. */
 	deoglRenderableTexture1D *GetTextureWith( int size, int format );
 	/*@}*/
 };

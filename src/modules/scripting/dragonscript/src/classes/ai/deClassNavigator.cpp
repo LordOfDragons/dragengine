@@ -630,7 +630,7 @@ dsFunction( init.clsNavigator, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 void deClassNavigator::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNavigator * const navigator = ( ( const sNavNatDat * )p_GetNativeData( myself ) )->navigator;
 	
-	rt->PushInt( ( intptr_t )navigator );
+	rt->PushInt( ( int )( intptr_t )navigator );
 }
 
 // public func bool equals( Object object )

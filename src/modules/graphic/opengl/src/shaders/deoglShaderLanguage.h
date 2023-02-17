@@ -40,7 +40,7 @@ class deoglShaderBindingList;
 
 
 /**
- * @brief Shader Language.
+ * Shader Language.
  *
  * A shader language object is responsible for storing all information required
  * for compiling shaders using a specific language as well as handling activation
@@ -59,7 +59,7 @@ private:
 	deoglShaderPreprocessor pPreprocessor;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader language object. */
 	deoglShaderLanguage( deoglRenderThread &renderThread );
@@ -67,7 +67,7 @@ public:
 	~deoglShaderLanguage();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Compieles a shader from the given sources using the specified defines. */
 	deoglShaderCompiled *CompileShader( deoglShaderProgram &program );

@@ -23,12 +23,12 @@
 #define _DEOGLRPARTICLEEMITTERINSTANCETYPE_H_
 
 #include "../skin/deoglSkinTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
 
 class deoglRDynamicSkin;
 class deoglRParticleEmitterInstance;
-class deoglSPBlockUBO;
 class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
@@ -55,7 +55,7 @@ private:
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	
-	deoglSPBlockUBO *pParamBlock;
+	deoglSPBlockUBO::Ref pParamBlock;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCCounter;
@@ -70,7 +70,7 @@ private:
 	bool pDirtyTUCGeometry;
 	bool pDirtyTUCGeometryDepthTest;
 	
-	deoglSPBlockUBO *pParamBlockLightInstance;
+	deoglSPBlockUBO::Ref pParamBlockLightInstance;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	
@@ -142,11 +142,17 @@ public:
 	
 	
 	
+	/** Skin pipelines type. */
+	deoglSkinTexturePipelinesList::ePipelineTypes GetSkinPipelinesType() const;
+	
+	/** Skin shader pipelines for emitter type. */
+	const deoglSkinTexturePipelines &GetUseSkinPipelines() const;
+	
 	/** Shader parameter block or NULL if there is no valid skin texture. */
-	deoglSPBlockUBO *GetParamBlock();
+	const deoglSPBlockUBO::Ref &GetParamBlock();
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type );
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -176,7 +182,7 @@ public:
 	 * Texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	
 	
@@ -193,7 +199,7 @@ public:
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
 	
 	/** Light instance parameter block. */
-	deoglSPBlockUBO *GetLightInstanceParameterBlock();
+	const deoglSPBlockUBO::Ref &GetLightInstanceParameterBlock();
 	
 	/** Drop light parameter block. */
 	void DropLightBlocks();

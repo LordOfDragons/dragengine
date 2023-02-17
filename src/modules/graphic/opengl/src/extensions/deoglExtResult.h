@@ -23,7 +23,7 @@
 #define _DEOGLEXTRESULT_H_
 
 /**
- * @brief OpenGL Extensions Result.
+ * OpenGL Extensions Result.
  *
  * Header file containing the result of the opengl extensions. This
  * file has to be included in any source file requiring opengl
@@ -577,14 +577,14 @@ extern GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying
 // extern GLAPI PFNGLGETUNIFORMUIVEXTPROC pglGetUniformuiv;
 extern GLAPI PFNGLBINDFRAGDATALOCATIONEXTPROC pglBindFragDataLocation;
 // extern GLAPI PFNGLGETFRAGDATALOCATIONEXTPROC pglGetFragDataLocation;
-// extern GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui;
-// extern GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui;
-// extern GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui;
-// extern GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui;
-// extern GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv;
-// extern GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv;
-// extern GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv;
-// extern GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv;
+extern GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui;
+extern GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui;
+extern GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui;
+extern GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui;
+extern GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv;
+extern GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv;
+extern GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv;
+extern GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv;
 
 
 
@@ -818,7 +818,7 @@ extern GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding;
 // GL_ARB_copy_buffer : no opengl version
 ///////////////////////////////////////////
 
-// extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
+extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 
 
 

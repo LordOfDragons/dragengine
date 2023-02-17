@@ -515,7 +515,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 void deClassAnimatorInstance::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deAnimatorInstance *instance = ( ( sArINatDat* )p_GetNativeData( myself ) )->instance;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )instance );
+	rt->PushInt( ( int )( intptr_t )instance );
 }
 
 // public func bool equals( Object obj )

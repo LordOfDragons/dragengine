@@ -114,9 +114,6 @@ out vec2 vTCColor;
 #ifdef CLIP_PLANE
 	out vec3 vClipCoord;
 #endif
-#ifdef DEPTH_ORTHOGONAL
-	out float vZCoord;
-#endif
 #ifdef DEPTH_DISTANCE
 	out vec3 vPosition;
 #endif
@@ -214,16 +211,6 @@ void emitCorner( in int corner, in vec4 position, in vec3 offset, in vec2 tc, in
 	#endif
 	#ifdef CLIP_PLANE
 		vClipCoord = position.xyz;
-	#endif
-	#ifndef GS_RENDER_STEREO
-		#ifdef DEPTH_ORTHOGONAL
-			#ifdef NO_ZCLIP
-				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself
-				gl_Position.z = 0;
-			#else
-				vZCoord = gl_Position.z;
-			#endif
-		#endif
 	#endif
 	#ifdef DEPTH_DISTANCE
 		vPosition = position.xyz;

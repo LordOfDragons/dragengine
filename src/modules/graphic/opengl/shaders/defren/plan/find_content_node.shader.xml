@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan FindContent Node</name>
+	
+	<uniformBlock name='PlanConfig' target='0'/>
+	
+	<shaderStorageBlock name='WorldOctreeNode' target='0'/>
+	<shaderStorageBlock name='Element' target='1'/>
+	<shaderStorageBlock name='SearchNodes' target='2'/>
+	
+	<sourceCode unit='compute'>v130/compute/defren/plan/find_content_node.glsl</sourceCode>
+</shader>

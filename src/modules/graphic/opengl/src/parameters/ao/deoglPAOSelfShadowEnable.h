@@ -29,7 +29,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Module parameter enable ambient occlusion self shadowing.
+ * Module parameter enable ambient occlusion self shadowing.
  */
 class deoglPAOSelfShadowEnable : public deoglParameterBool{
 public:

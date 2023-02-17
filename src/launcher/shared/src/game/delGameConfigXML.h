@@ -33,7 +33,7 @@ class delLauncher;
 /**
  * \brief Load/Save Game Config XML.
  */
-class delGameConfigXML : public delSharedConfigXML{
+class DE_DLL_EXPORT delGameConfigXML : public delSharedConfigXML{
 private:
 	delLauncher &pLauncher;
 	

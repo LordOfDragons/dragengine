@@ -32,6 +32,10 @@ class deoglRHeightTerrain;
  */
 class deoglHeightTerrainListener : public deObject{
 public:
+	typedef deTObjectReference<deoglHeightTerrainListener> Ref;
+	
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain listener. */

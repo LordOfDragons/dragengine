@@ -30,7 +30,7 @@ class delGPModule;
 /**
  * \brief Game Profile Module List.
  */
-class delGPModuleList{
+class DE_DLL_EXPORT delGPModuleList{
 private:
 	decObjectList pModules;
 	

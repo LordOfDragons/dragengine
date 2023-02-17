@@ -27,7 +27,7 @@
 
 
 /**
- * \brief OpenGL decal mesh builder convex volume list.
+ * OpenGL decal mesh builder convex volume list.
  * 
  * Specialized version of the convex volume list used by the decal mesh builder.
  */
@@ -35,10 +35,10 @@ class deoglDMBConvexVolumeList : public decConvexVolumeList{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create decal mesh builder convex volume list. */
+	/** Create decal mesh builder convex volume list. */
 	deoglDMBConvexVolumeList();
 	
-	/** \brief Clean up decal mesh builder convex volume list. */
+	/** Clean up decal mesh builder convex volume list. */
 	virtual ~deoglDMBConvexVolumeList();
 	/*@}*/
 	

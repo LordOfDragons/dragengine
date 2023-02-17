@@ -227,9 +227,6 @@ int level, int layer, eAccess access, bool layered, GLenum format ){
 	if( stage < 0 || stage >= OGL_MAX_IMAGE_STAGES ){
 		DETHROW( deeInvalidParam );
 	}
-	if( ! pglBindImageTexture ){
-		DETHROW_INFO( deeNullPointer, "pglBindImageTexture" );
-	}
 	
 	if( pStages[ stage ].texture == texture
 	&& pStages[ stage ].type == type

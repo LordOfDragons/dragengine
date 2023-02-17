@@ -52,7 +52,6 @@ private:
 	int pPointCount;
 	int pFirstIndex;
 	int pIndexCount;
-	bool pDoubleSided;
 	GLenum pPrimitiveType;
 	int pTessPatchVertexCount;
 	
@@ -121,12 +120,6 @@ public:
 	
 	/** Set number of indices in VAO index buffer. */
 	void SetIndexCount( int indexCount );
-	
-	/** Double sided. */
-	inline bool GetDoubleSided() const{ return pDoubleSided; }
-	
-	/** Set double sided. */
-	void SetDoubleSided( bool doubleSided );
 	
 	/** Primitive type. */
 	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }

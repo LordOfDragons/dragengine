@@ -13,6 +13,9 @@
  * are created during script compilation using the block keyword.
  * 
  * This is a native class. It can not be subclassed.
+ * \author Roland Plüss
+ * \version 1.0
+ * \date 2015
  */
 fixed class Block
 	/** \name Management */

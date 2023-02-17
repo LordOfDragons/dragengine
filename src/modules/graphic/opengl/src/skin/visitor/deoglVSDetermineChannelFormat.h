@@ -39,7 +39,7 @@ class deSkinTexture;
 
 
 /**
- * \brief Required channel format visitor.
+ * Required channel format visitor.
  */
 class deoglVSDetermineChannelFormat{
 public:
@@ -63,11 +63,11 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglVSDetermineChannelFormat( deoglRenderThread &renderThread, const deoglRSkin &skin,
 		const deoglSkinTexture &oglTex, const deSkinTexture &tex );
 	
-	/** \brief Clean up visitor. */
+	/** Clean up visitor. */
 	virtual ~deoglVSDetermineChannelFormat();
 	/*@}*/
 	
@@ -75,65 +75,65 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Process channel to determine required channel format. */
+	/** Process channel to determine required channel format. */
 	void ProcessChannel( deoglSkinChannel::eChannelTypes channel );
 	
 	
 	
-	/** \brief Channel has defined format. */
+	/** Channel has defined format. */
 	inline bool GetIsDefined() const{ return pIsDefined; }
 	
-	/** \brief Required texture size. */
+	/** Required texture size. */
 	inline const decPoint3 &GetRequiredSize() const{ return pRequiredSize; }
 	
-	/** \brief Required component count. */
+	/** Required component count. */
 	inline int GetRequiredComponentCount() const{ return pRequiredComponentCount; }
 	
-	/** \brief Float format is required. */
+	/** Float format is required. */
 	inline bool GetRequiresFloat() const{ return pRequiresFloat; }
 	
-	/** \brief Channel is uniform. */
+	/** Channel is uniform. */
 	inline bool GetIsUniform() const{ return pIsUniform; }
 	
-	/** \brief Channel is dynamic. */
+	/** Channel is dynamic. */
 	inline bool GetIsDynamic() const{ return pIsDynamic; }
 	
-	/** \brief Mip mapping is allowed. */
+	/** Mip mapping is allowed. */
 	inline bool GetAllowMipMap() const{ return pAllowMipMap; }
 	
-	/** \brief Shared image. */
+	/** Shared image. */
 	inline deoglRImage *GetSharedImage() const{ return pSharedImage; }
 	
 	
 	
-	/** \brief Visit property. */
+	/** Visit property. */
 	void VisitProperty( deSkinProperty &property );
 	
-	/** \brief Set required size. */
+	/** Set required size. */
 	bool SetRequiredSize( const decPoint3 &size );
 	
-	/** \brief Set use image if possible. */
+	/** Set use image if possible. */
 	void SetSharedImage( deoglRImage *image );
 	
-	/** \brief Log warning for an image not having square size. */
+	/** Log warning for an image not having square size. */
 	void WarnImageNotSquareSize( const deSkinPropertyImage &property ) const;
 	
-	/** \brief Log warning for an image not support for omnidirection mapping. */
+	/** Log warning for an image not support for omnidirection mapping. */
 	void WarnImageNotOmnidirectional( const deSkinPropertyImage &property ) const;
 	
-	/** \brief Log warning for an image with a size not matching the other images in a combined channel. */
+	/** Log warning for an image with a size not matching the other images in a combined channel. */
 	void WarnImageIncompatibleSize( const deSkinPropertyImage &property ) const;
 	
-	/** \brief Log warning for an image with an unsupported number of components. */
+	/** Log warning for an image with an unsupported number of components. */
 	void WarnImageIncompatibleComponentCount( const deSkinPropertyImage &property, int componentCount ) const;
 	
-	/** \brief Log warning for an image with a size not matching the other images in a combined channel. */
+	/** Log warning for an image with a size not matching the other images in a combined channel. */
 	void WarnImageIncompatibleSize( const deSkinPropertyConstructed &property ) const;
 	
-	/** \brief Log warning for an image not having square size. */
+	/** Log warning for an image not having square size. */
 	void WarnImageNotSquareSize( const deSkinPropertyConstructed &property ) const;
 	
-	/** \brief Log warning for an image not support for omnidirection mapping. */
+	/** Log warning for an image not support for omnidirection mapping. */
 	void WarnImageNotOmnidirectional( const deSkinPropertyConstructed &property ) const;
 	/*@}*/
 	

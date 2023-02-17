@@ -43,9 +43,9 @@ class deoglSkyLayerGICascade;
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
-	deoglShaderProgramUsage pShaderAO;
-	deoglShaderProgramUsage pShaderClearDepth;
-	deoglShaderProgramUsage pShaderOccMesh;
+	const deoglPipeline *pPipelineAO;
+	const deoglPipeline *pPipelineClearDepth;
+	const deoglPipeline *pPipelineOccMesh;
 	
 	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	
@@ -86,7 +86,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Occlusion mesh shader. */
-	inline const deoglShaderProgramUsage &GetShaderOccMesh() const{ return pShaderOccMesh; }
+	inline const deoglPipeline *GetPipelineOccMesh() const{ return pPipelineOccMesh; }
 	
 	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
@@ -111,11 +111,11 @@ public:
 		int shadowMapSize, bool clearBackFaceFragments );
 	
 	/** Update light shader parameter block. */
-	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+	void UpdateLightParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanSkyLight &plan );
 	
 	/** Updates instance shader parameter block. */
-	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+	void UpdateInstanceParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount );
 	
 	

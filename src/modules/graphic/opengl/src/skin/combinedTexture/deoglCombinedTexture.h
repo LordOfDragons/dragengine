@@ -22,17 +22,18 @@
 #ifndef _DEOGLCOMBINEDTEXTURE_H_
 #define _DEOGLCOMBINEDTEXTURE_H_
 
+#include "../../texture/deoglRImage.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglPixelBuffer;
 class deoglRenderThread;
-class deoglRImage;
 class deoglTexture;
 
 
 
 /**
- * \brief Combined texture.
+ * Combined texture.
  * 
  * Stores a texture composed of 2 or more static colors or images.
  */
@@ -41,7 +42,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	decColor pColor;
-	deoglRImage *pImages[ 4 ];
+	deoglRImage::Ref pImages[ 4 ];
 	
 	deoglTexture *pTexture;
 	
@@ -53,10 +54,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create combined texture. */
+	/** Create combined texture. */
 	deoglCombinedTexture( deoglRenderThread &renderThread, const decColor &color, deoglRImage *images[ 4 ] );
 	
-	/** \brief Clean up combined texture. */
+	/** Clean up combined texture. */
 	~deoglCombinedTexture();
 	/*@}*/
 	
@@ -64,43 +65,43 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Static color. */
+	/** Static color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Image for component or \em NULL to use the static color component. */
-	deoglRImage *GetImageAt( int component ) const;
+	/** Image for component or nullptr to use the static color component. */
+	const deoglRImage::Ref &GetImageAt( int component ) const;
 	
 	
 	
-	/** \brief Texture or \em NULL if not existing. */
+	/** Texture or nullptr if not existing. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Set texture or \em NULL if not existing. */
+	/** Set texture or nullptr if not existing. */
 	void SetTexture( deoglTexture *texture );
 	
 	
 	
-	/** \brief Combined texture matches another combined texture. */
+	/** Combined texture matches another combined texture. */
 	bool Equals( const deoglCombinedTexture &combinedTexture ) const;
 	
-	/** \brief Combined texture matches another combined texture. */
+	/** Combined texture matches another combined texture. */
 	bool Equals( const decColor &color, deoglRImage *images[ 4 ] ) const;
 	
 	
 	
-	/** \brief Usage count. */
+	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }
 	
-	/** \brief Increment usage count by one. */
+	/** Increment usage count by one. */
 	void AddUsage();
 	
 	/**
-	 * \brief Decrement usage count by one.
+	 * Decrement usage count by one.
 	 * \details If usage count reaches 0 the combined texture is removed from the
 	 *          combined texture manager and deleted.
 	 */
@@ -108,27 +109,27 @@ public:
 	
 	
 	
-	/** \brief Hash code. */
+	/** Hash code. */
 	inline unsigned int GetHashCode() const{ return pHashCode; }
 	
-	/** \brief Calculate hash code. */
+	/** Calculate hash code. */
 	void CalcHashCode();
 	
-	/** \brief Calculate hash code for combination. */
-	static unsigned int CalcHashCodeFor( const decColor &color, deoglRImage *images[ 4 ] );
+	/** Calculate hash code for combination. */
+	static unsigned int CalcHashCodeFor( const decColor &color, const deoglRImage::Ref *images );
 	
 	
 	
-	/** \brief Previous entry in the linked list. */
+	/** Previous entry in the linked list. */
 	inline deoglCombinedTexture *GetLLPrev() const{ return pLLPrev; }
 	
-	/** \brief Set previous entry in the linked list. */
+	/** Set previous entry in the linked list. */
 	void SetLLPrev( deoglCombinedTexture *entry );
 	
-	/** \brief Next entry in the linked list. */
+	/** Next entry in the linked list. */
 	inline deoglCombinedTexture *GetLLNext() const{ return pLLNext; }
 	
-	/** \brief Set next entry in the linked list. */
+	/** Set next entry in the linked list. */
 	void SetLLNext( deoglCombinedTexture *entry );
 	/*@}*/
 };

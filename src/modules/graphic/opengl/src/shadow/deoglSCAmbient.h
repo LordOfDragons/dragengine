@@ -90,7 +90,7 @@ public:
 	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
 	
 	/** Request static cube map with size if absent. */
-	deoglCubeMap *ObtainStaticCubeMapWithSize( int size );
+	deoglCubeMap *ObtainStaticCubeMapWithSize( int size, bool useFloat );
 	
 	/** Drop static maps if present. */
 	void DropStatic();
@@ -117,7 +117,7 @@ public:
 	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size );
+	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size, bool useFloat );
 	
 	/** Drop dynamic map if present. */
 	void DropDynamic();
@@ -149,7 +149,7 @@ public:
 	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }
 	
 	/** Obtain temporary shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size );
+	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size, bool useFloat );
 	
 	/** Drop temporary map if present. */
 	void DropTemporary();

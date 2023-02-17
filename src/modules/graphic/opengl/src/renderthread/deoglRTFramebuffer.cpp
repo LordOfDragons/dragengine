@@ -42,20 +42,10 @@ deoglRTFramebuffer::deoglRTFramebuffer( deoglRenderThread &renderThread ) :
 pManager( renderThread ),
 pActive( NULL ),
 pPrimary( renderThread, true ),
-pDummyRenderBuffer( renderThread ),
-pDummy( renderThread, false ),
 pEnvMap( renderThread, false ),
 pEnvMapMaterial( renderThread, false )
 {
 	try{
-		// empty framebuffer
-		pDummyRenderBuffer.SetSize( 1, 1 );
-		pDummyRenderBuffer.CreateBuffer();
-
-		pDummy.SetAsCurrent();
-		pDummy.AttachColorRenderbuffer( 0, pDummyRenderBuffer );
-		pPrimary.SetAsCurrent();
-		
 		// primary framebuffer is the active one by default
 		pActive = &pPrimary;
 		
@@ -85,10 +75,6 @@ void deoglRTFramebuffer::Activate( deoglFramebuffer *framebuffer ){
 	
 	framebuffer->SetAsCurrent();
 	pActive = framebuffer;
-}
-
-void deoglRTFramebuffer::ActivateDummy(){
-	Activate( &pDummy );
 }
 
 

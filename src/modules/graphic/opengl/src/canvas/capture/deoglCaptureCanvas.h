@@ -32,7 +32,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Capture canvas peer.
+ * Capture canvas peer.
  */
 class deoglCaptureCanvas : public deBaseGraphicCaptureCanvas{
 private:
@@ -47,10 +47,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglCaptureCanvas( deGraphicOpenGl &ogl, deCaptureCanvas &captureCanvas );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglCaptureCanvas();
 	/*@}*/
 	
@@ -58,21 +58,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGL module. */
+	/** OpenGL module. */
 	inline deGraphicOpenGl &GetOgl(){ return pOgl; }
 	inline const deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Capture canvas engine resource. */
+	/** Capture canvas engine resource. */
 	inline deCaptureCanvas &GetCaptureCanvas(){ return pCaptureCanvas; }
 	inline const deCaptureCanvas &GetCaptureCanvas() const{ return pCaptureCanvas; }
 	
-	/** \brief Render capture canvas or \em NULL if not set. */
+	/** Render capture canvas or \em NULL if not set. */
 	inline deoglRCaptureCanvas *GetRCaptureCanvas() const{ return pRCaptureCanvas; }
 	
 	
 	
 	/**
-	 * \brief Update render thread counterpart if required.
+	 * Update render thread counterpart if required.
 	 * \details For finished captures the image is created from the pixel buffer and
 	 *          stored for the game scripts to retrieve. For pending captures the
 	 *          capture process is started.
@@ -84,13 +84,13 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Canvas view changed. */
+	/** Canvas view changed. */
 	virtual void CanvasViewChanged();
 	
-	/** \brief Image changed. */
+	/** Image changed. */
 	virtual void ImageChanged();
 	
-	/** \brief Capture changed. */
+	/** Capture changed. */
 	virtual void CaptureChanged();
 	/*@}*/
 };

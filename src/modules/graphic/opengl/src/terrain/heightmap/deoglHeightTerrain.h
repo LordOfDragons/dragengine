@@ -22,10 +22,11 @@
 #ifndef _DEOGLHEIGHTTERRAIN_H_
 #define _DEOGLHEIGHTTERRAIN_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include "deoglRHeightTerrain.h"
 
-class deoglRHeightTerrain;
+#include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
+#include <dragengine/common/collection/decObjectList.h>
+
 class deoglWorld;
 class deoglHTSector;
 class deGraphicOpenGl;
@@ -35,25 +36,25 @@ class deHeightTerrain;
 
 
 /**
- * \brief Height terrain peer.
+ * Height terrain peer.
  */
 class deoglHeightTerrain : public deBaseGraphicHeightTerrain{
 private:
 	deGraphicOpenGl &pOgl;
 	const deHeightTerrain &pHeightTerrain;
 	
-	deoglRHeightTerrain *pRHeightTerrain;
+	deoglRHeightTerrain::Ref pRHeightTerrain;
 	
-	decPointerList pSectors;
+	decObjectList pSectors;
 	bool pDirtySectors;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglHeightTerrain( deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglHeightTerrain();
 	/*@}*/
 	
@@ -61,19 +62,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Height terrain. */
+	/** Height terrain. */
 	inline const deHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Render height terrain. */
-	inline deoglRHeightTerrain *GetRHeightTerrain() const{ return pRHeightTerrain; }
+	/** Render height terrain. */
+	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{ return pRHeightTerrain; }
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -81,36 +82,36 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Parameter changes. */
+	/** Parameter changes. */
 	virtual void ParametersChanged();
 	
-	/** \brief Sector heights changed. */
+	/** Sector heights changed. */
 	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
 		const decPoint &toSector, const decPoint &toCoordinates );
 	
 	
 	
-	/** \brief Sector has been added. */
+	/** Sector has been added. */
 	virtual void SectorAdded( deHeightTerrainSector *sector );
 	
-	/** \brief Sector has been removed. */
+	/** Sector has been removed. */
 	virtual void SectorRemoved( int index );
 	
-	/** \brief All sectors have been removed. */
+	/** All sectors have been removed. */
 	virtual void AllSectorsRemoved();
 	
-	/** \brief Sector changed. */
+	/** Sector changed. */
 	virtual void SectorChanged( int index );
 	
 	
 	
-	/** \brief Decal has been added. */
+	/** Decal has been added. */
 	virtual void DecalAdded( int sector, deDecal *decal );
 	
-	/** \brief Decal has been removed. */
+	/** Decal has been removed. */
 	virtual void DecalRemoved( int sector, deDecal *decal );
 	
-	/** \brief All decals have been removed. */
+	/** All decals have been removed. */
 	virtual void AllDecalsRemoved( int sector );
 	/*@}*/
 	

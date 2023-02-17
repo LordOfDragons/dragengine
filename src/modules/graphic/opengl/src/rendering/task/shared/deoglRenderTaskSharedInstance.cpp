@@ -53,7 +53,6 @@ pFirstIndex( 0 ),
 pIndexCount( 0 ),
 pSubInstanceCount( 0 ),
 pSubInstanceSPB( NULL ),
-pDoubleSided( false ),
 pPrimitiveType( GL_TRIANGLES ),
 pTessPatchVertexCount( 3 ){
 }
@@ -98,10 +97,6 @@ void deoglRenderTaskSharedInstance::SetSubInstanceSPB( deoglSharedSPB *spb ){
 	pSubInstanceSPB = spb;
 }
 
-void deoglRenderTaskSharedInstance::SetDoubleSided( bool doubleSided ){
-	pDoubleSided = doubleSided;
-}
-
 void deoglRenderTaskSharedInstance::SetPrimitiveType( GLenum primitiveType ){
 	pPrimitiveType = primitiveType;
 }
@@ -122,7 +117,6 @@ void deoglRenderTaskSharedInstance::Clear(){
 	pIndexCount = 0;
 	pSubInstanceCount = 0;
 	pSubInstanceSPB = NULL;
-	pDoubleSided = false;
 	pPrimitiveType = GL_TRIANGLES;
 	pTessPatchVertexCount = 3;
 }

@@ -27,7 +27,7 @@
 
 
 /**
- * \brief Render down scale parameter.
+ * Render down scale parameter.
  */
 class deoglPRenderDownScale : public deoglParameterInt{
 public:

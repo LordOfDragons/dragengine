@@ -28,9 +28,12 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
 #include "../light/shader/deoglLightShaderManager.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../skin/deoglSkinTexture.h"
 #include "../skin/shader/deoglSkinShaderManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texsamplerconfig/deoglTexSamplerConfig.h"
@@ -54,7 +57,8 @@ pTexUnitsConfigList( NULL ),
 pShaderManager( NULL ),
 pSkinShaderManager( NULL ),
 pLightShaderManager( NULL ),
-pCurShaderProg( NULL )
+pCurShaderProg( NULL ),
+pDirtySSBOSkinTextures( true )
 {
 	int i;
 	for( i=0; i<ETSC_COUNT; i++ ){
@@ -71,6 +75,8 @@ pCurShaderProg( NULL )
 		
 		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
 		pLightShaderManager = new deoglLightShaderManager( renderThread );
+		
+		// NOTE we can not create here SSBOs or alike due to the initialization order
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -102,10 +108,7 @@ void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	
 	if( shader ){
 		deoglShaderCompiled * const compiled = shader->GetCompiled();
-		if( ! compiled ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_NOTNULL( compiled )
 		compiled->Activate();
 		
 	}else{
@@ -146,6 +149,75 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 	
 	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
 		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	}
+}
+
+
+
+void deoglRTShader::InvalidateSSBOSkinTextures(){
+	pDirtySSBOSkinTextures = true;
+}
+
+void deoglRTShader::UpdateSSBOSkinTextures(){
+	if( ! pDirtySSBOSkinTextures ){
+		return;
+	}
+	
+	pDirtySSBOSkinTextures = false;
+	
+	if( ! pSSBOSkinTextures ){
+		pSSBOSkinTextures.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
+		pSSBOSkinTextures->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		pSSBOSkinTextures->SetParameterCount( 1 );
+		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+		pSSBOSkinTextures->MapToStd140();
+		pSSBOSkinTextures->SetBindingPoint( 2 );
+		pSSBOSkinTextures->SetElementCount( 1 );
+	}
+	
+	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
+	const int pipelinesPerTexture = deoglSkinTexturePipelinesList::PipelineTypesCount
+		* deoglSkinTexturePipelines::TypeCount * deoglSkinTexturePipelines::ModifiersPerType;
+	const int count = pool.GetSkinTextureCount();
+	const int pipelineCount = count * pipelinesPerTexture;
+	const int pipelinesPerElement = 8;
+	const int elementCount = ( ( pipelineCount - 1 ) / pipelinesPerElement ) + 1;
+	deoglSPBlockSSBO &ssbo = pSSBOSkinTextures;
+	int i, j, k, l;
+	
+	if( elementCount > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( elementCount );
+	}
+	
+	const deoglSPBMapBuffer mapped( ssbo );
+	uint16_t *values = ( uint16_t* )ssbo.GetWriteBuffer();
+	
+	for( i=0; i<count; i++ ){
+		const deoglSkinTexture * const texture = pool.GetSkinTextureAt( i );
+		if( ! texture ){
+			for( j=0; j<pipelinesPerTexture; j++ ){
+				*( values++ ) = 0;
+			}
+			continue;
+		}
+		
+		const deoglSkinTexturePipelinesList &stpsl = texture->GetPipelines();
+		for( j=0; j<deoglSkinTexturePipelinesList::PipelineTypesCount; j++ ){
+			const deoglSkinTexturePipelines &stps = stpsl.GetAt( ( deoglSkinTexturePipelinesList::ePipelineTypes )j );
+			
+			for( k=0; k<deoglSkinTexturePipelines::TypeCount; k++ ){
+				for( l=0; l<deoglSkinTexturePipelines::ModifiersPerType; l++ ){
+					const deoglSkinTexturePipeline * const stp = stps.GetWith( ( deoglSkinTexturePipelines::eTypes )k, l );
+					
+					if( stp ){
+						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSPipelineIndex(), 0 );
+						
+					}else{
+						*( values++ ) = 0;
+					}
+				}
+			}
+		}
 	}
 }
 

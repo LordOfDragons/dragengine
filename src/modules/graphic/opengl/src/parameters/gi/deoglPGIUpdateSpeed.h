@@ -27,7 +27,7 @@
 
 
 /**
- * \brief GI Update Speed Parameter.
+ * GI Update Speed Parameter.
  */
 class deoglPGIUpdateSpeed : public deoglParameter{
 public:

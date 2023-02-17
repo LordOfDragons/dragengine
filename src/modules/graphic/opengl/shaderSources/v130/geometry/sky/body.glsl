@@ -33,6 +33,9 @@ void main( void ){
 		for( corner=0; corner<3; corner++ ){
 			gl_Position = pMatrixSkyBody[ eye ] * gl_in[ corner ].gl_Position;
 			
+			// make sure Z is exactly -1 after transformation for depth test to work correctly
+			gl_Position.z = -gl_Position.w;
+			
 			vTexCoord = vGSTexCoord[ corner ];
 			vLayer = eye;
 			

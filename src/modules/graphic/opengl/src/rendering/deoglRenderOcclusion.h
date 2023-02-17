@@ -36,38 +36,33 @@ class deoglRenderPlanMasked;
 class deoglRenderTask;
 class deoglRSkyInstanceLayer;
 class deoglRSkyLayer;
-class deoglSPBlockUBO;
-class deoglRenderTaskSharedShader;
+class deoglPipeline;
 
 
 /**
- * @brief Occlusion Renderer.
+ * Occlusion Renderer.
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderOccMap;
-	deoglShaderProgramUsage pShaderOccMapStereo;
-	deoglShaderProgramUsage pShaderOccMapClipPlane;
-	deoglShaderProgramUsage pShaderOccMapClipPlaneStereo;
-	deoglShaderProgramUsage pShaderOccMapOrtho;
-	deoglShaderProgramUsage pShaderOccMapOrthoStereo;
-	deoglShaderProgramUsage pShaderOccMapOrthoClipPlane;
-	deoglShaderProgramUsage pShaderOccMapOrthoClipPlaneStereo;
-	deoglShaderProgramUsage pShaderOccMapDownSample;
-	deoglShaderProgramUsage pShaderOccMapDownSampleStereo;
-	deoglShaderProgramUsage pShaderOccTest;
-	deoglShaderProgramUsage pShaderOccTestDual;
-	deoglShaderProgramUsage pShaderOccTestSun;
-	deoglShaderProgramUsage pShaderOccTestStereo;
-	deoglShaderProgramUsage pShaderOccTestDualStereo;
-	deoglShaderProgramUsage pShaderOccTestSunStereo;
-	deoglShaderProgramUsage pShaderOccTestTFB;
-	deoglShaderProgramUsage pShaderOccTestTFBDual;
-	deoglShaderProgramUsage pShaderOccTestTFBSun;
-	deoglShaderProgramUsage pShaderOccMapCube;
+	enum ePipelineModifiers{
+		epmStereo = 0x1,
+		epmClipPlane = 0x2,
+		epmOrtho = 0x4,
+		epmSingle = 0x8
+	};
 	
-	deoglSPBlockUBO *pRenderParamBlock;
-	deoglSPBlockUBO *pOccMapFrustumParamBlock;
+	const deoglPipeline *pPipelinesOccMap[ epmSingle << 1 ];
+	const deoglPipeline *pPipelinesOccQuery[ epmOrtho << 1 ];
+	
+	const deoglPipeline *pPipelineOccMapDownSample;
+	const deoglPipeline *pPipelineOccMapDownSampleStereo;
+	const deoglPipeline *pPipelineOccTest;
+	const deoglPipeline *pPipelineOccTestDual;
+	const deoglPipeline *pPipelineOccTestSun;
+	const deoglPipeline *pPipelineOccMapCube;
+	
+	deoglSPBlockUBO::Ref pRenderParamBlock;
+	deoglSPBlockUBO::Ref pOccMapFrustumParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
@@ -75,7 +70,7 @@ private:
 	GLuint pVAOFrustumPlanes;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderOcclusion( deoglRenderThread &renderThread );
@@ -83,9 +78,9 @@ public:
 	virtual ~deoglRenderOcclusion();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
-	/** \brief Add basic defines for occlusion map shaders. */
+	/** Add basic defines for occlusion map shaders. */
 	void AddOccMapDefines( deoglShaderDefines &defines );
 	
 	/** Render occlusion tests. */
@@ -95,12 +90,15 @@ public:
 	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
 	
 	/** Shader to use for occlusion map rendering. */
-	deoglRenderTaskSharedShader *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
-		const deoglRenderPlanMasked *mask, bool perspective ) const;
+	const deoglPipeline *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
+		const deoglRenderPlanMasked *mask, bool perspective, bool singleSided ) const;
 	
 	/** Render occlusion meshes into the occlusion map. */
 	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
+	
+	/** Render occlusion queries using active occlusion map. */
+	void RenderOcclusionQueries( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective );
 	
 	/** Render occlusion tests. */
 	void RenderOcclusionTests( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,

@@ -24,7 +24,7 @@
 
 
 /**
- * @brief Convert Float to Half and vice verse.
+ * Convert Float to Half and vice verse.
  */
 typedef unsigned short HALF_FLOAT;
 

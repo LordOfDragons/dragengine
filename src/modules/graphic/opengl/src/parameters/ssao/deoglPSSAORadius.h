@@ -26,7 +26,7 @@
 
 
 /**
- * \brief Module parameter screen space ambient occlusion radius.
+ * Module parameter screen space ambient occlusion radius.
  */
 class deoglPSSAORadius : public deoglParameterFloat{
 public:

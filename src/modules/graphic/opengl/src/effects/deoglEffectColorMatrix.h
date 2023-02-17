@@ -30,7 +30,7 @@ class deEffectColorMatrix;
 
 
 /**
- * \brief Effect color matrix.
+ * Effect color matrix.
  */
 class deoglEffectColorMatrix : public deoglEffect{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create effect peer. */
+	/** Create effect peer. */
 	deoglEffectColorMatrix( deGraphicOpenGl &ogl, const deEffectColorMatrix &effect );
 	
-	/** \brief Clean up effect. */
+	/** Clean up effect. */
 	virtual ~deoglEffectColorMatrix();
 	/*@}*/
 	
@@ -54,20 +54,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Effect color matrix engine resource. */
+	/** Effect color matrix engine resource. */
 	inline const deEffectColorMatrix &GetEffectColorMatrix() const{ return pEffectColorMatrix; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Color matrix changed. */
+	/** Color matrix changed. */
 	virtual void ColorMatrixChanged();
 	/*@}*/
 };

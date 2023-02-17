@@ -248,7 +248,7 @@ dsFunction( init.clsPF, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassPropField::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
 	
-	rt->PushInt( ( intptr_t )propfield );
+	rt->PushInt( ( int )( intptr_t )propfield );
 }
 
 // public func bool equals( Object obj )

@@ -37,7 +37,7 @@
 
 static void deapngRead( png_structp readStruct, png_bytep data, png_size_t length ){
 	const deapngReader &reader = *( ( deapngReader* )png_get_io_ptr( readStruct ) );
-	reader.GetReader()->Read( data, length );
+	reader.GetReader()->Read( data, ( int )length );
 }
 
 static void deapngError( png_structp errorStruct, png_const_charp message ){
@@ -194,7 +194,7 @@ void deapngReader::ReadImage(){
 	try{
 		pReadImage();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pEnterErrorState();
 	}
 }

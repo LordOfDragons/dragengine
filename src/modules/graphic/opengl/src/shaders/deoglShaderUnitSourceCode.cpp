@@ -36,40 +36,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderUnitSourceCode::deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader ){
-	if( ! filePath ) DETHROW( deeInvalidParam );
+deoglShaderUnitSourceCode::deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader ) :
+pFilePath( filePath )
+{
+	const int fileLength = fileReader.GetLength();
 	
-	int fileLength = fileReader.GetLength();
-	
-	pFilePath = NULL;
-	pSourceCode = NULL;
-	
-	try{
-		pFilePath = new char[ strlen( filePath ) + 1 ];
-		if( ! pFilePath ) DETHROW( deeOutOfMemory );
-		strcpy( pFilePath, filePath );
-		
-		pSourceCode = new char[ fileLength + 1 ];
-		if( ! pSourceCode ) DETHROW( deeOutOfMemory );
-		fileReader.Read( pSourceCode, fileLength );
-		pSourceCode[ fileLength ] = '\0';
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pSourceCode.Set( ' ', fileLength );
+	fileReader.Read( ( char* )pSourceCode.GetString(), fileLength );
 }
 
 deoglShaderUnitSourceCode::~deoglShaderUnitSourceCode(){
-	pCleanUp();
-}
-
-
-
-// Private functions
-//////////////////////
-
-void deoglShaderUnitSourceCode::pCleanUp(){
-	if( pSourceCode ) delete [] pSourceCode;
-	if( pFilePath ) delete [] pFilePath;
 }

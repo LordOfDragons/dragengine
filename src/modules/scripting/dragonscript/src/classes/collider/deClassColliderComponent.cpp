@@ -177,7 +177,7 @@ dsFunction( init.clsColComp, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 void deClassColliderComponent::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deColliderComponent *collider = ( ( sColCompNatDat* )p_GetNativeData( myself ) )->collider;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )collider );
+	rt->PushInt( ( int )( intptr_t )collider );
 }
 
 // public func bool equals( Object obj )

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\extern\fox\extern_fox.vcxproj">
+      <Project>{9541cccd-8b54-4632-954d-48531d5935f4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\shared\launcher_shared.vcxproj">
+      <Project>{c2341c17-6c77-47a7-a40f-9d3ffa5b3860}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\launcher\gui\SConscript" />
+    <None Include="..\..\..\src\launcher\gui\src\.gitignore" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\deglLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\deglSignalHandler.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\engine\deglEngineProcessHelper.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\guilaunch.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfiguration.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigWindow.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\config\deglConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\deglLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\deglSignalHandler.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\guilaunch.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglInstallDelga.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglSharedIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglUninstall.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglWindowMain.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogEngineProps.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglDialogModuleProps.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPanelEngine.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\engine\deglPEListItemModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\foxtoolkit.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileList.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDialogProfileListParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglDPLListItemParam.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPanelGames.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\deglPGListItemGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelFileFormats.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDGPPanelSystem.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\problems\deglDialogGameProblems.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglCalculateDirectorySize.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\properties\deglDialogGameProperties.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\games\runwith\deglDialogRunGameWith.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLogger.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerListener.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTable.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\logger\deglWindowLoggerTableItem.h" />
+    <ClInclude Include="..\..\..\src\launcher\gui\src\gui\style\deglStyle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{20980f68-5ae9-4041-b156-dcedc26a89a7}</ProjectGuid>
+    <RootNamespace>launchergui</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>launcher gui</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>delauncher-gui</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>delauncher-gui</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\launcher\gui\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\launcher\gui\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

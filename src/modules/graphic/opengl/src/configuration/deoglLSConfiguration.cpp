@@ -233,9 +233,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "disableStencil" ) == 0 ){
 					configuration.SetDisableStencil( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
-				}else if( strcmp( name, "stencilOnlyOnRenderbuffer" ) == 0 ){
-					configuration.SetStencilOnlyOnRB( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "lightCutOffIntensity" ) == 0 ){
 					configuration.SetLightCutOffIntensity( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					

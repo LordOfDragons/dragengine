@@ -1,0 +1,1387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\shared\vulkan\shared_vulkan.vcxproj">
+      <Project>{e216d6e2-75aa-4b2f-b712-fcab026eb21b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\convexhull3d\convhull_3d.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\alpha.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\clusterfit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\colourblock.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\colourfit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\colourset.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\config.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\maths.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\rangefit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\simd.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\simd_float.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\simd_sse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\simd_ve.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\singlecolourfit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\squish\squish.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboardList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglRBillboard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvasList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglRCaptureCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasCanvasView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasPaint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasRenderWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasText.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasCanvasView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasPaint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasRenderWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasText.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckATLUnbind.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBOIndirectMatrixAccess.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsFmtSupport.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsFmtSupportSetup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormatList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSCluster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldCluster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\commands\deoglCommandExecuter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentLOD.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTestForTouch.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglMeshData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentLOD.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debugdrawer\deoglDebugDrawer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debugdrawer\deoglDebugDrawerShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debugdrawer\deoglRDebugDrawer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\debugSnapshot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformationList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugMemoryConsumption.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugOverlay.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugSaveTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugSnapshot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugStateSnapshot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugTraceGroup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecalListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecalMeshBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecalMeshBuilderFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDMBConvexVolumeFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDMBConvexVolumeList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglMOVDecalCollect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglRDecal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedFileWrite.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedOperations.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedSaveImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglBasics.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglCaches.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglDebugFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglGL.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\deoglShadowVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\devmode\deoglDeveloperMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\devmode\deoglDeveloperModeStats.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\devmode\deoglDeveloperModeTests.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectColorMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectDistortImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectFilterKernel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectOverlayImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectColorMatrix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectDistortImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectFilterKernel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectOverlayImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMapList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapFader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapProbe.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlotManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglREnvMapProbe.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\androidfix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtensions.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl2ext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl32.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglRestoreFramebuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGI.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIAreaTracker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVH.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVHDynamic.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVHLocal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVHShared.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGICascade.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIInstances.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIMaterials.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIRayCache.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGITraceRays.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglRayTraceField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\imposter\deoglImposterBillboard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\include_windows.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightBoundaryMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightGatherOcclusionMeshes.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightTestForTouch.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglNotifyEnvMapLightChanged.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglRLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelines.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesParticle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesPoint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesRanged.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesSky.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesSpot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\shader\deoglLightShader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\shader\deoglLightShaderConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\shader\deoglLightShaderManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\volume\deoglLightVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\light\volume\deoglLightVolumeBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumption.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionBufferObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionDeferredRendering.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionDeferredRenderingUse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionGPU.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionGPUUse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionShadow.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionSkinUse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionTextureUse.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\memory\deoglMemoryManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLOD.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglRModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFaceList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\visitors\deoglMOVClosestFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\model\texture\deoglModelTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionMapPool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTestListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTestPool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglDynamicOcclusionMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMeshList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglROcclusionMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQuery.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQueryManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\optimizer\deoglOptimizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\optimizer\deoglOptimizerLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\optimizer\deoglOptimizerManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ao\deoglPAOSelfShadowEnable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ao\deoglPAOSelfShadowSmoothAngle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugContext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugNoCulling.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugNoMessages.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugShowCB.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOccTestMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPWireframeMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPAsyncRenderSkipSyncTimeRatio.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPDefRenSizeLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPFrameRateLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPHDRRMaximumIntensity.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPRenderDownScale.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPTranspLayerLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPLogLevel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIQuality.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIUpdateSpeed.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\light\deoglPLightCutOffIntensity.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\lod\deoglPLODMaxPixelError.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\norRoughCorr\deoglPNorRougCorrStrength.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPBrightness.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPContrast.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPGammaCorrection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowCubePCFSize.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowMapOffsetBias.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowMapOffsetScale.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowQuality.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOEdgeBlurThreshold.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOEnable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOMipMapBase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAORadius.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAORadiusLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOSelfOcclusionAngle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTapCount.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTurnCount.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoverageEdgeSize.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerEdge.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerRayLength.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSREnable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRMaxRayLength.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRReduction.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRStepCount.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleSorter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitterInstanceType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitterType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\performance\timerquery\deoglTimerQuery.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\performance\timerquery\deoglTimerQuerySet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipelineConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipelineManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipelineState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPFClusterGenerator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPointSieve.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPointSieveBucket.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPropFieldCluster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPropFieldType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglRPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglRPropFieldType.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\debug\deoglRenderDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\debug\deoglRenderDebugDrawer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\defren\deoglDeferredRendering.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\defren\deoglDRDepthMinMax.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderBase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDevMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometry.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometryPass.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderOcclusion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderParticles.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderReflection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderSky.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderToneMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderTransparentPasses.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderTranspCounting.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderVR.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderWorldInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderGI.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightBase.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightParticles.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightPoint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightSky.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightSpot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\lod\deoglLODCalculator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglPlanVisitorCullElements.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlan.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanCompute.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanEnvMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanMasked.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanSkyLight.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanTasks.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRLSVisitorCollectElements.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTBuildRTsDepth.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTBuildRTsGeometry.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTFindContent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightBuildRT.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightFindContent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightGIFindContent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightGIUpdateRT.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPVisitorFindContent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\config\deoglRenderTaskConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\config\deoglRenderTaskConfigTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskGIMaterial.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskParticles.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskParticlesStep.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskPipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskVAO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglAddToPersistentRenderTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskOwner.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskPipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskPool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskSubInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskVAO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedPool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTBufferObject.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTChoices.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTContext.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTDefaultTextures.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTFramebuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTFrameCounterTracker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTLeakTracker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTLogger.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTRenderers.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTShader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTUniqueKey.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglLumimeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglRLumimeter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderDefines.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLanguage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderPreprocessor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderPreprocessorSymbol.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderProgram.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPBElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPB.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElementMapBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBListSSBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBListUBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroupList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCAmbient.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCSolid.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCTransparent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglShadowCaster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglShadowMapper.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCBuildConstructed.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSkinChannel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTextureList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglRSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinCalculatedProperty.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinPropertyMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTextureProperty.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkinListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglRDynamicSkin.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableCamera.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableColor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableValue.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableVideoFrame.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableCamera.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableCanvas.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableColor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableValue.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableVideoFrame.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipeline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelineMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelines.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelinesList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesBillboard.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesDecal.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesOutline.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\heightmap\deoglSTPipelinesHeightMap1.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\heightmap\deoglSTPipelinesHeightMap2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\particle\deoglSTPipelinesParticle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\particle\deoglSTPipelinesParticleBeam.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\particle\deoglSTPipelinesParticleRibbon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\propfield\deoglSTPipelinesPropField.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\propfield\deoglSTPipelinesPropFieldImposter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\rendered\deoglSkinRendered.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\rendered\deoglSkinRenderedTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShader.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShaderConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShaderManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCalculated.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSRetainImageData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSky.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyControllerTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyInstanceLayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyLayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSky.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSkyInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSkyLayerGICascade.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSkyLayerTracker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\smoke\deoglSmokeEmitter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTreeNode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\target\deoglRenderTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOBlock.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat16.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat32.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat8.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOShared.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOUInt16.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOUInt32.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOUInt8.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHeightTerrain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHeightTerrainListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTSCluster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTSector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTSTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTView.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTViewSector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTViewSectorCluster.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglRHeightTerrain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglRHTSector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainHeightImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainMaskImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglArrayTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTextureManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableDepthArrayTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableDepthArrayTextureManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\compression\deoglTextureCompression.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglCubeMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableColorCubeMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableColorCubeMapManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableDepthCubeMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableDepthCubeMapManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglImageStageManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglRImage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglTextureStageManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBufferMipMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texsamplerconfig\deoglTexSamplerConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1D.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1DManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglTexture1D.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTextureManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableDepthTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableDepthTextureManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglTexture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texunitsconfig\deoglTexUnitConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texunitsconfig\deoglTexUnitsConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texunitsconfig\deoglTexUnitsConfigList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\triangles\deoglTriangleSorter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\bvh\deoglBVH.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\bvh\deoglBVHNode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\bvh\deoglBVHRayCast.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionFrustum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionTriangle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionVolumeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionBox.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionDetection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionFrustum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionSphere.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionTriangle.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionVolumeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\convexhull\deoglConvexHull2D.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\convexhull\deoglConvexHull3D.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglConvertFloatHalf.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglConvexFaceClipper.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglCubeHelper.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnum.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnumSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\vcoptimizer\deoglVCOptimizer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\utils\vcoptimizer\deoglVCSimulator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vao\deoglVAO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBO.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBOBlock.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBOList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBOListList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglVBOAttribute.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglVBOLayout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\writer\deoglVBOWriterCanvasPaint.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\writer\deoglVBOWriterModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglRVideo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglRVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglSharedVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglSharedVideoPlayerList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglVideo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglVideoDecodeThread.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglVideoPlayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\visibility\convexhull\deoglConvexVisHull.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\visibility\convexhull\deoglConvexVisHullBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\visibility\visitor\deoglVisCollectOccMeshes.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\visitors\deoglFindBestEnvMap.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\visitors\deoglTransformVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\visitors\deoglVolumeShape.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vr\deoglVR.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\vr\deoglVREye.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\window\deoglRenderWindow.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\window\deoglRenderWindowList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\window\deoglRRenderWindow.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglCamera.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglDefaultWorldOctreeVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRCamera.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCompute.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldComputeElement.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\modules\graphic\opengl\SConscript" />
+    <None Include="..\..\..\..\src\modules\graphic\opengl\squish\ChangeLog" />
+    <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README" />
+    <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README_DE" />
+    <None Include="..\..\..\..\src\modules\graphic\opengl\squish\singlecolourlookup.inl" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\alpha.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\clusterfit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\colourblock.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\colourfit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\colourset.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\maths.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\rangefit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\singlecolourfit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\squish\squish.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglBillboardList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\billboard\deoglRBillboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglCaptureCanvasList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\capture\deoglRCaptureCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasCanvasView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasPaint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasRenderWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasText.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\deoglCanvasViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasCanvasView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasPaint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasRenderWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasText.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\canvas\render\deoglRCanvasView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckATLUnbind.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireArrayTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckClearEntireCubeMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckFramebufferTextureSingle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckGeometryShaderLayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckRasterizerDiscard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBODirectLinkDeadloop.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\checks\deoglCapCheckUBOIndirectMatrixAccess.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapabilities.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsFmtSupport.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\capabilities\deoglCapsTextureFormatList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCLVisitorElements.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSCluster.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListHTSector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldCluster.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\collidelist\deoglCollideListPropFieldType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\commands\deoglCommandExecuter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentLOD.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTestForTouch.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglComponentTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglMeshData.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentLOD.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\component\deoglRComponentTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\configuration\deoglLSConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debugdrawer\deoglDebugDrawer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debugdrawer\deoglDebugDrawerShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debugdrawer\deoglRDebugDrawer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugInformationList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugMemoryConsumption.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugOverlay.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugSaveTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugSnapshot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugStateSnapshot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\debug\deoglDebugTraceGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecal.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecalListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecalMeshBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDecalMeshBuilderFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDMBConvexVolumeFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglDMBConvexVolumeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglMOVDecalCollect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\decal\deoglRDecal.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deGraphicOpenGl.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedFileWrite.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedOperations.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\delayedoperation\deoglDelayedSaveImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglBasics.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglCaches.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglDebugFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\deoglShadowVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\devmode\deoglDeveloperMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\devmode\deoglDeveloperModeStats.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\devmode\deoglDeveloperModeTests.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectColorMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectDistortImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectFilterKernel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\deoglEffectOverlayImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectColorMatrix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectDistortImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectFilterKernel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\effects\render\deoglREffectOverlayImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvironmentMapList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapFader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapProbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglEnvMapSlotManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\envmap\deoglREnvMapProbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\androidfix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtensions.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglExtResult.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglRestoreFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGI.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIAreaTracker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVH.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVHDynamic.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVHLocal.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIBVHShared.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGICascade.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIInstances.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIMaterials.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIRayCache.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGIState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGITraceRays.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglRayTraceField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\imposter\deoglImposterBillboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightBoundaryMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightGatherOcclusionMeshes.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglLightTestForTouch.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglNotifyEnvMapLightChanged.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\deoglRLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelines.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesParticle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesRanged.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesSky.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\pipeline\deoglLightPipelinesSpot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\shader\deoglLightShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\shader\deoglLightShaderConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\shader\deoglLightShaderManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\volume\deoglLightVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\light\volume\deoglLightVolumeBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumption.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionBufferObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionDeferredRendering.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionDeferredRenderingUse.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionGPU.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionGPUUse.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionShadow.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionSkinUse.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\consumption\deoglMemoryConsumptionTextureUse.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\memory\deoglMemoryManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLOD.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODTexCoordSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglModelLODVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\deoglRModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\face\deoglModelFaceList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\deoglModelOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\octree\visitors\deoglMOVClosestFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\model\texture\deoglModelTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionMapPool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTestListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\deoglOcclusionTestPool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglDynamicOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglOcclusionMeshList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occlusiontest\mesh\deoglROcclusionMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQuery.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\occquery\deoglOcclusionQueryManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\optimizer\deoglOptimizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\optimizer\deoglOptimizerLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\optimizer\deoglOptimizerManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ao\deoglPAOSelfShadowEnable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ao\deoglPAOSelfShadowSmoothAngle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugContext.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugNoCulling.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugNoMessages.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPDebugShowCB.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOcclusionReduction.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPOccTestMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPQuickDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPShowLightCB.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\debug\deoglPWireframeMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPAsyncRenderSkipSyncTimeRatio.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPDefRenSizeLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPFrameRateLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPHDRRMaximumIntensity.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPRenderDownScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPTranspLayerLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameterList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPLogLevel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIQuality.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\gi\deoglPGIUpdateSpeed.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\light\deoglPLightCutOffIntensity.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\lod\deoglPLODMaxPixelError.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\norRoughCorr\deoglPNorRougCorrStrength.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPBrightness.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPContrast.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\postprocessing\deoglPGammaCorrection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowCubePCFSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowMapOffsetBias.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowMapOffsetScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\shadow\deoglPShadowQuality.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOEdgeBlurThreshold.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOEnable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOMipMapBase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAORadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAORadiusLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOSelfOcclusionAngle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTapCount.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssao\deoglPSSAOTurnCount.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoverageEdgeSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerEdge.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRCoveragePowerRayLength.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSREnable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRMaxRayLength.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRReduction.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\ssr\deoglPSSRStepCount.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRForceFrameRate.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\vr\deoglPVRRenderScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterInstanceType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleEmitterType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglParticleSorter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitterInstanceType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\particle\deoglRParticleEmitterType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\performance\timerquery\deoglTimerQuery.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\performance\timerquery\deoglTimerQuerySet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipelineConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipelineManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\pipeline\deoglPipelineState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPFClusterGenerator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPointSieve.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPointSieveBucket.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPropFieldCluster.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglPropFieldType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglRPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\propfield\deoglRPropFieldType.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\debug\deoglRenderDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\debug\deoglRenderDebugDrawer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\defren\deoglDeferredRendering.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\defren\deoglDRDepthMinMax.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderBase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCanvasContext.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderCompute.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDepthPass.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderDevMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometry.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderGeometryPass.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderOcclusion.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderParticles.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderReflection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderSky.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderToneMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderTransparentPasses.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderTranspCounting.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderVR.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\deoglRenderWorldInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderGI.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightBase.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightParticles.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightSky.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\light\deoglRenderLightSpot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\lod\deoglLODCalculator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlan.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanCompute.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanEnvMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanMasked.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanSkyLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\deoglRenderPlanTasks.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRLSVisitorCollectElements.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTBuildRTsDepth.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTBuildRTsGeometry.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTFindContent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightBuildRT.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightFindContent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightGIFindContent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPTSkyLightGIUpdateRT.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\plan\parallel\deoglRPVisitorFindContent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\config\deoglRenderTaskConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\config\deoglRenderTaskConfigTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskGIMaterial.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskParticles.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskParticlesStep.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskPipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskVAO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglAddToPersistentRenderTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskOwner.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskPipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskPool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskSubInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\persistent\deoglPersistentRenderTaskVAO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedPool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRenderThread.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTBufferObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTChoices.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTContext.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTDefaultTextures.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTFrameCounterTracker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTLeakTracker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTRenderers.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\deoglRTUniqueKey.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglLumimeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglRLumimeter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderDefines.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLanguage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderPreprocessor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderPreprocessorSymbol.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderProgram.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockReadBackSSBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockSSBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockUBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBMapBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPB.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedBlockSPBElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPB.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBElementMapBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBListSSBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBListUBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\shared\deoglSharedSPBRTIGroupList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCAmbient.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCSolid.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglSCTransparent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglShadowCaster.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shadow\deoglShadowMapper.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shapes\deoglShapeSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCBuildConstructed.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSCConstructedDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\channel\deoglSkinChannel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\combinedTexture\deoglCombinedTextureList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglRSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinCalculatedProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinPropertyMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\deoglSkinTextureProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglDynamicSkinListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\deoglRDynamicSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\deoglDSRenderableVideoFrame.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableCanvas.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\dynamic\renderables\render\deoglRDSRenderableVideoFrame.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipeline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelineMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelines.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSkinTexturePipelinesList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesBillboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesDecal.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\deoglSTPipelinesOutline.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\heightmap\deoglSTPipelinesHeightMap1.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\heightmap\deoglSTPipelinesHeightMap2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\particle\deoglSTPipelinesParticle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\particle\deoglSTPipelinesParticleBeam.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\particle\deoglSTPipelinesParticleRibbon.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\propfield\deoglSTPipelinesPropField.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\pipeline\propfield\deoglSTPipelinesPropFieldImposter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\rendered\deoglSkinRendered.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\rendered\deoglSkinRenderedTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShaderConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\shader\deoglSkinShaderManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateCalculated.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\state\deoglSkinStateRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSDetermineChannelFormat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\skin\visitor\deoglVSRetainImageData.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSky.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyControllerTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyInstanceLayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyLayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglRSkyLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSky.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSkyInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSkyLayerGICascade.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sky\deoglSkyLayerTracker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\smoke\deoglSmokeEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTreeNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\target\deoglRenderTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOBlock.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat16.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat32.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat8.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOShared.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOUInt16.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOUInt32.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOUInt8.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHeightTerrain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHeightTerrainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTSCluster.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTSector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTSTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTView.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTViewSector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglHTViewSectorCluster.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglRHeightTerrain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglRHTSector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainHeightImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\terrain\heightmap\deoglTerrainMaskImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglArrayTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableColorArrayTextureManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableDepthArrayTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\arraytexture\deoglRenderableDepthArrayTextureManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\compression\deoglTextureCompression.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglCubeMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableColorCubeMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableColorCubeMapManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableDepthCubeMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\cubemap\deoglRenderableDepthCubeMapManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglImageStageManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglRImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\deoglTextureStageManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\pixelbuffer\deoglPixelBufferMipMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texsamplerconfig\deoglTexSamplerConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1D.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglRenderableTexture1DManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture1d\deoglTexture1D.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableColorTextureManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableDepthTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglRenderableDepthTextureManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texture2d\deoglTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texunitsconfig\deoglTexUnitConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texunitsconfig\deoglTexUnitsConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\texture\texunitsconfig\deoglTexUnitsConfigList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\triangles\deoglTriangleSorter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\bvh\deoglBVH.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\bvh\deoglBVHNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\bvh\deoglBVHRayCast.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionFrustum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionTriangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglCollisionVolumeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionDetection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionFrustum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionTriangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\collision\deoglDCollisionVolumeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\convexhull\deoglConvexHull2D.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\convexhull\deoglConvexHull3D.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglConvertFloatHalf.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglConvexFaceClipper.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglCubeHelper.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnum.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglDebugNamesEnumSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\deoglQuickSorter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglDOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\octree\deoglOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\vcoptimizer\deoglVCOptimizer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\utils\vcoptimizer\deoglVCSimulator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vao\deoglVAO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBO.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBOBlock.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBOList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglSharedVBOListList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglVBOAttribute.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\deoglVBOLayout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\writer\deoglVBOWriterCanvasPaint.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vbo\writer\deoglVBOWriterModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglRVideo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglRVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglSharedVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglSharedVideoPlayerList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglVideo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglVideoDecodeThread.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\video\deoglVideoPlayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\visibility\convexhull\deoglConvexVisHull.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\visibility\convexhull\deoglConvexVisHullBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\visibility\visitor\deoglVisCollectOccMeshes.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\visitors\deoglFindBestEnvMap.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\visitors\deoglTransformVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\visitors\deoglVolumeShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vr\deoglVR.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\vr\deoglVREye.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\window\deoglRenderWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\window\deoglRenderWindowList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\window\deoglRRenderWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglDefaultWorldOctreeVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglRWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCompute.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldComputeElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldCSOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\world\deoglWorldOctreeVisitor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\..\src\modules\graphic\opengl\squish\texture_compression_s3tc.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{2255235a-4b02-4ae8-b4a1-ff52803da68f}</ProjectGuid>
+    <RootNamespace>granull</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>module graphic opengl</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>graopengl</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>graopengl</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\graphic\opengl\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\graphic\opengl\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

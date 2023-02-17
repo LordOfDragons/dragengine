@@ -19,10 +19,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
+
+#ifdef OS_W32
+	#include <dragengine/app/deOSWindows.h>
+#else
+	#include <sys/time.h>
+#endif
 
 #include "dePng3DTarball.h"
 #include "dePng3DImageInfos.h"
@@ -76,13 +83,13 @@ struct sFeedback{
 static void depng3dRead( png_structp readStruct, png_bytep data, png_size_t length ){
 	decBaseFileReader &reader = *( ( decBaseFileReader* )png_get_io_ptr( readStruct ) );
 	
-	reader.Read( data, length );
+	reader.Read( data, ( int )length );
 }
 
 static void depng3dWrite( png_structp writeStruct, png_bytep data, png_size_t length ){
 	decBaseFileWriter &writer = *( ( decBaseFileWriter* )png_get_io_ptr( writeStruct ) );
 	
-	writer.Write( data, length );
+	writer.Write( data, ( int )length );
 }
 
 static void depng3dWriteStatus( png_structp writeStruct, png_uint_32 row, int pass ){
@@ -186,37 +193,32 @@ void dePng3DTarball::Get3DImageInfos( dePng3DImageInfo &infos, decBaseFileReader
 		// only files are accepted
 		if( header.typeflag == REGTYPE || header.typeflag == AREGTYPE ){
 			// retrieve the z-coordinate
-			if( sscanf( header.name, "z%hu.png", &z ) == 1 ){
-				// if the z coordinate is larger than the depth of the image found so far bump it up
-				if( ( int )z >= infos.depth ){
-					infos.depth = ( int )z + 1;
-				}
+			z = decString( header.name ).GetMiddle( 1, -4 ).ToInt();
+
+			// if the z coordinate is larger than the depth of the image found so far bump it up
+			if( ( int )z >= infos.depth ){
+				infos.depth = ( int )z + 1;
+			}
 				
-				// retrieve the image properties
-				Get2DImageInfos( infos, infos2D, file );
+			// retrieve the image properties
+			Get2DImageInfos( infos, infos2D, file );
 				
-				// if this is the first image store them away
-				if( firstImage ){
-					infos.width = infos2D.width;
-					infos.height = infos2D.height;
-					infos.bitCount = infos2D.bitCount;
-					infos.componentCount = infos2D.componentCount;
+			// if this is the first image store them away
+			if( firstImage ){
+				infos.width = infos2D.width;
+				infos.height = infos2D.height;
+				infos.bitCount = infos2D.bitCount;
+				infos.componentCount = infos2D.componentCount;
 					
-					firstImage = false;
+				firstImage = false;
 					
-				// otherwise check if the properties match
-				}else{
-					if( infos2D.width != infos.width || infos2D.height != infos.height
-					|| infos2D.bitCount != infos.bitCount || infos2D.componentCount != infos.componentCount ){
-						pModule->LogErrorFormat( "the files in the archive '%s' do not match in size or format.", infos.filename.GetString() );
-						DETHROW_INFO( deeInvalidFileFormat, infos.filename.GetString() );
-					}
-				}
-				
+			// otherwise check if the properties match
 			}else{
-				pModule->LogErrorFormat( "invalid file name '%s' in the archive '%s'. has to be z<num>.png with num=[0..depth-1].",
-					header.name, infos.filename.GetString() );
-				DETHROW_INFO( deeInvalidFileFormat, infos.filename.GetString() );
+				if( infos2D.width != infos.width || infos2D.height != infos.height
+				|| infos2D.bitCount != infos.bitCount || infos2D.componentCount != infos.componentCount ){
+					pModule->LogErrorFormat( "the files in the archive '%s' do not match in size or format.", infos.filename.GetString() );
+					DETHROW_INFO( deeInvalidFileFormat, infos.filename.GetString() );
+				}
 			}
 		}
 		
@@ -302,22 +304,17 @@ void dePng3DTarball::Load3DImage( dePng3DImageInfo &infos, decBaseFileReader &fi
 			// only files are accepted
 			if( header.typeflag == REGTYPE || header.typeflag == AREGTYPE ){
 				// retrieve the z-coordinate
-				if( sscanf( header.name, "z%hu.png", &z ) == 1 ){
-					// populate the rows array
-					sliceImageData = imageData + ( strideImage * ( int )z );
+				z = decString( header.name ).GetMiddle( 1, -4 ).ToInt();
+
+				// populate the rows array
+				sliceImageData = imageData + ( strideImage * ( int )z );
 					
-					for( r=0; r<image.GetHeight(); r++ ){
-						rows[ r ] = ( png_bytep )( sliceImageData + strideLine * r );
-					}
-					
-					// now we can load the image using these information
-					Load2DImage( infos, file, rows );
-					
-				}else{
-					pModule->LogErrorFormat( "invalid file name '%s' in the archive '%s'. has to be z<num>.png with num=[0..depth-1].",
-						header.name, infos.filename.GetString() );
-					DETHROW_INFO( deeInvalidFileFormat, infos.filename.GetString() );
+				for( r=0; r<image.GetHeight(); r++ ){
+					rows[ r ] = ( png_bytep )( sliceImageData + strideLine * r );
 				}
+					
+				// now we can load the image using these information
+				Load2DImage( infos, file, rows );
 			}
 			
 			// skip to the end of the file
@@ -387,11 +384,35 @@ void dePng3DTarball::Save3DImage( decBaseFileWriter &file, const deImage &image 
 	// the name, file size and checksum later on and the rest stays the same
 	memset( &header, '\0', 512 );
 	
-	strcpy( &header.mode[ 0 ], "100600 " );
-	strcpy( &header.uid[ 0 ],  "  1750 " );
-	strcpy( &header.gid[ 0 ],  "   144 " );
-	
-	gettimeofday( &curtime, NULL );
+	#ifdef OS_W32
+		strcpy_s( &header.mode[ 0 ], sizeof( header.mode ), "100600 " );
+		strcpy_s( &header.uid[ 0 ], sizeof( header.uid ),   "  1750 " );
+		strcpy_s( &header.gid[ 0 ], sizeof( header.gid ),   "   144 " );
+	#else
+		strcpy( &header.mode[ 0 ], "100600 " );
+		strcpy( &header.uid[ 0 ],  "  1750 " );
+		strcpy( &header.gid[ 0 ],  "   144 " );
+	#endif
+
+	#ifdef OS_W32
+		{
+		ULARGE_INTEGER x;
+        ULONGLONG usec;
+        static const ULONGLONG epoch_offset_us = 11644473600000000ULL;
+
+		FILETIME filetime;
+		GetSystemTimeAsFileTime( &filetime );
+
+		x.LowPart = filetime.dwLowDateTime;
+        x.HighPart = filetime.dwHighDateTime;
+        usec = x.QuadPart / 10  -  epoch_offset_us;
+        curtime.tv_sec  = ( long )( usec / 1000000ULL );
+        curtime.tv_usec = ( long )( usec % 1000000ULL );
+		}
+	#else
+		gettimeofday( &curtime, NULL );
+	#endif
+
 	header.mtime[ 11 ] = ' ';
 	for( r=10; r>=0; r-- ){
 		if( curtime.tv_sec ){
@@ -447,8 +468,12 @@ void dePng3DTarball::Save3DImage( decBaseFileWriter &file, const deImage &image 
 			}
 			
 			// update header
-			sprintf( &header.name[ 0 ], "z%hu.png", ( unsigned short )z );
-			
+			#ifdef OS_W32
+				sprintf_s( &header.name[ 0 ], sizeof( header.name ), "z%hu.png", ( unsigned short )z );
+			#else
+				sprintf( &header.name[ 0 ], "z%hu.png", ( unsigned short )z );
+			#endif
+
 			header.size[ 11 ] = ' ';
 			for( r=10; r>=0; r-- ){
 				if( filesize ){

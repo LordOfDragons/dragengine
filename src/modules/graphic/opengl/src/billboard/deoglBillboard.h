@@ -38,7 +38,7 @@ class deBillboard;
 
 
 /**
- * \brief Billboard peer.
+ * Billboard peer.
  */
 class deoglBillboard : public deBaseGraphicBillboard, deoglDynamicSkinListener{
 public:
@@ -77,10 +77,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglBillboard( deGraphicOpenGl &ogl, const deBillboard &billboard );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglBillboard();
 	/*@}*/
 	
@@ -88,34 +88,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Billboard. */
+	/** Billboard. */
 	inline const deBillboard &GetBillboard() const{ return pBillboard; }
 	
 	
 	
-	/** \brief Render billboard. */
+	/** Render billboard. */
 	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
 	
 	
 	
-	/** \brief Parent world or \em NULL if not in a world. */
+	/** Parent world or \em NULL if not in a world. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
-	 * \brief Set parent world or \em NULL if not in a world.
+	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
 	void SetParentWorld( deoglWorld *world );
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
 	
@@ -124,7 +124,7 @@ public:
 	
 	
 	
-	/** \brief World syncing linked list. */
+	/** World syncing linked list. */
 	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
 	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
@@ -143,31 +143,31 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Axis changed. */
+	/** Axis changed. */
 	virtual void AxisChanged();
 	
-	/** \brief Size changed. */
+	/** Size changed. */
 	virtual void SizeChanged();
 	
-	/** \brief Offset changed. */
+	/** Offset changed. */
 	virtual void OffsetChanged();
 	
-	/** \brief Skin changed. */
+	/** Skin changed. */
 	virtual void SkinChanged();
 	
-	/** \brief Dynamic skin changed. */
+	/** Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
 	
-	/** \brief Locked or spherical changed. */
+	/** Locked or spherical changed. */
 	virtual void ParametersChanged();
 	
-	/** \brief Visibility changed. */
+	/** Visibility changed. */
 	virtual void VisibilityChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	/*@}*/
 	

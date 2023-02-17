@@ -1016,7 +1016,7 @@ void deClassMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *my
 	
 	const unsigned short p = ( unsigned short )precision;
 	char format[ 90 ];
-	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+	snprintf( format, sizeof( format ), "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",

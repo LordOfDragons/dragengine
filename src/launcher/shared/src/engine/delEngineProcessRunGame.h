@@ -36,7 +36,7 @@ class delEngineProcess;
  * for a command on the pipe consuming no CPU time while the game runs in
  * the main thread of the process.
  */
-class delEngineProcessRunGame : public deThread{
+class DE_DLL_EXPORT delEngineProcessRunGame : public deThread{
 private:
 	delEngineProcess &pProcess;
 	

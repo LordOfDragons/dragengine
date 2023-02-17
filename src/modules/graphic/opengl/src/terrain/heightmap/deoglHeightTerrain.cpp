@@ -50,14 +50,13 @@
 deoglHeightTerrain::deoglHeightTerrain( deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain ) :
 pOgl( ogl ),
 pHeightTerrain( heightTerrain ),
-pRHeightTerrain( NULL ),
 pDirtySectors( true )
 {
 	const int sectorCount = heightTerrain.GetSectorCount();
 	int i;
 	
 	try{
-		pRHeightTerrain = new deoglRHeightTerrain( ogl.GetRenderThread(), pHeightTerrain );
+		pRHeightTerrain.TakeOver( new deoglRHeightTerrain( ogl.GetRenderThread(), heightTerrain ) );
 		
 		for( i=0; i<sectorCount; i++ ){
 			SectorAdded( heightTerrain.GetSectorAt( i ) );
@@ -186,46 +185,22 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 
 
 void deoglHeightTerrain::SectorAdded( deHeightTerrainSector *sector ){
-	deoglHTSector *htsector = NULL;
-	
-	try{
-		htsector = new deoglHTSector( *this, *sector );
-		pSectors.Add( htsector );
-		
-	}catch( const deException & ){
-		if( htsector ){
-			delete htsector;
-		}
-		throw;
-	}
-	
+	pSectors.Add( deoglHTSector::Ref::New( new deoglHTSector( *this, *sector ) ) );
 	pDirtySectors = true;
 }
 
 void deoglHeightTerrain::SectorRemoved( int index ){
-	deoglHTSector * const htsector = ( deoglHTSector* )pSectors.GetAt( index );
 	pSectors.RemoveFrom( index );
-	delete htsector;
-	
 	pDirtySectors = true;
 }
 
 void deoglHeightTerrain::AllSectorsRemoved(){
-	int count = pSectors.GetCount();
-	while( count > 0 ){
-		count--;
-		deoglHTSector * const htsector = ( deoglHTSector* )pSectors.GetAt( count );
-		pSectors.RemoveFrom( count );
-		delete htsector;
-	}
-	
+	pSectors.RemoveAll();
 	pDirtySectors = true;
 }
 
 void deoglHeightTerrain::SectorChanged( int index ){
-	deoglHTSector &htsector = *( ( deoglHTSector* )pSectors.GetAt( index ) );
-	
-	htsector.SectorChanged();
+	( ( deoglHTSector* )pSectors.GetAt( index ) )->SectorChanged();
 	pDirtySectors = true;
 }
 
@@ -247,8 +222,4 @@ void deoglHeightTerrain::AllDecalsRemoved( int sector ){
 
 void deoglHeightTerrain::pCleanUp(){
 	AllSectorsRemoved();
-	
-	if( pRHeightTerrain ){
-		pRHeightTerrain->FreeReference();
-	}
 }

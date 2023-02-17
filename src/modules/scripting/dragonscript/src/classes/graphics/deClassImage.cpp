@@ -197,7 +197,7 @@ dsFunction(init.clsImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassImage::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
 	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(This);
 	// hash code = memory location
-	RT->PushInt( ( intptr_t )nd->image );
+	RT->PushInt( ( int )( intptr_t )nd->image );
 }
 
 // public func bool equals(Object obj)

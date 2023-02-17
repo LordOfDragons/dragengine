@@ -31,7 +31,7 @@ class deSkin;
 
 
 /**
- * \brief Skin Peer.
+ * Skin Peer.
  */
 class deoglSkin : public deBaseGraphicSkin{
 private:
@@ -43,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin. */
+	/** Create skin. */
 	deoglSkin( deGraphicOpenGl &ogl, const deSkin &skin );
 	
-	/** \brief Clean up skin. */
+	/** Clean up skin. */
 	virtual ~deoglSkin();
 	/*@}*/
 	
@@ -54,15 +54,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Skin resource. */
+	/** Skin resource. */
 	inline const deSkin &GetSkin() const{ return pSkin; }
 	
 	
 	
-	/** \brief Render skin. */
+	/** Render skin. */
 	inline deoglRSkin *GetRSkin() const{ return pRSkin; }
 	/*@}*/
 	

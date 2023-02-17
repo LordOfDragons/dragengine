@@ -241,7 +241,7 @@ void deClassModel::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sMdlNatDat &nd = *( ( sMdlNatDat* )p_GetNativeData( myself ) );
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )nd.model );
+	rt->PushInt( ( int )( intptr_t )nd.model );
 }
 
 // public func bool equals( Object obj )

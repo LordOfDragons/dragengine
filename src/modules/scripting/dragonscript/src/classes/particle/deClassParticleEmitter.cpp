@@ -891,7 +891,7 @@ dsFunction( init.clsPE, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassParticleEmitter::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deParticleEmitter *emitter = ( ( sPENatDat* )p_GetNativeData( myself ) )->emitter;
 	
-	rt->PushInt( ( intptr_t )emitter );
+	rt->PushInt( ( int )( intptr_t )emitter );
 }
 
 // public func bool equals( Object obj )

@@ -242,7 +242,7 @@ float deoalCollisionSphere::SphereMoveHitsSphere( deoalCollisionSphere *sphere, 
 	disc = b * b - a * ( factor - rr ) * 4.0f;
 	if( disc < 0.0f ) return 1.0f;
 	// determine the closer of the two points
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	factor = 1.0f / ( a * 2.0f );
 	lambda = ( -b - disc ) * factor;
 	if( lambda < 0.0f ) lambda = ( -b + disc ) * factor;

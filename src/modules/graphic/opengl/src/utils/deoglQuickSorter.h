@@ -25,7 +25,7 @@
 
 
 /**
- * @brief Quick Sorter.
+ * Quick Sorter.
  */
 class deoglQuickSorter{
 private:
@@ -35,7 +35,7 @@ private:
 	int pSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new quick sorter. */
 	deoglQuickSorter();
@@ -43,7 +43,7 @@ public:
 	~deoglQuickSorter();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of elements. */
 	inline int GetElementCount() const{ return pCount; }

@@ -24,6 +24,8 @@
 
 #include "../../../deoglBasics.h"
 
+#include <dragengine/deObject.h>
+
 class deoglInstanceProgram;
 class deoglRenderTaskSharedPool;
 class deoglShaderParameterBlock;
@@ -34,7 +36,12 @@ class deoglSharedSPB;
 /**
  * Shared render task instance.
  */
-class deoglRenderTaskSharedInstance{
+class deoglRenderTaskSharedInstance : public deObject{
+public:
+	typedef deTObjectReference<deoglRenderTaskSharedInstance> Ref;
+	
+	
+	
 private:
 	deoglRenderTaskSharedPool &pPool;
 	const int pIndex;
@@ -48,7 +55,6 @@ private:
 	int pIndexCount;
 	int pSubInstanceCount;
 	deoglSharedSPB *pSubInstanceSPB;
-	bool pDoubleSided;
 	GLenum pPrimitiveType;
 	int pTessPatchVertexCount;
 	
@@ -60,12 +66,14 @@ public:
 	/** Create shared render task instance. */
 	deoglRenderTaskSharedInstance( deoglRenderTaskSharedPool &pool, int index );
 	
+protected:
 	/** Clean up shared render task instance. */
-	~deoglRenderTaskSharedInstance();
+	virtual ~deoglRenderTaskSharedInstance();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
@@ -125,12 +133,6 @@ public:
 	
 	/** Set sub instances SPB or NULL. */
 	void SetSubInstanceSPB( deoglSharedSPB *element );
-	
-	/** Double sided. */
-	inline bool GetDoubleSided() const{ return pDoubleSided; }
-	
-	/** Set double sided. */
-	void SetDoubleSided( bool doubleSided );
 	
 	/** Primitive type. */
 	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }

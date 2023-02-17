@@ -29,7 +29,7 @@ class deoglCapabilities;
 
 
 /**
- * \brief Capability check rasterizer discard.
+ * Capability check rasterizer discard.
  */
 class deoglCapCheckRasterizerDiscard{
 private:
@@ -41,7 +41,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capability check. */
+	/** Create capability check. */
 	deoglCapCheckRasterizerDiscard( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -49,13 +49,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Rasterizer discard is working correctly. */
+	/** Rasterizer discard is working correctly. */
 	inline bool Working() const{ return pWorking; }
 	
-	/** \brief Rasterizer discard is not working correctly. */
+	/** Rasterizer discard is not working correctly. */
 	inline bool Broken() const{ return ! pWorking; }
 	
-	/** \brief Run check. */
+	/** Run check. */
 	void Check( GLuint fbo );
 	/*@}*/
 };

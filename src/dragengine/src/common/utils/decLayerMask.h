@@ -138,6 +138,12 @@ public:
 	
 	/** \brief Write layer mask to file writer. */
 	void WriteToFile( decBaseFileWriter &writer ) const;
+	
+	/** \brief Mask value. */
+	inline uint64_t GetMask() const{ return pMask; }
+	
+	/** \brief Set mask value. */
+	void SetMask( uint64_t mask );
 	/*@}*/
 	
 	

@@ -718,7 +718,7 @@ dsFunction( init.clsTS, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassTouchSensor::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deTouchSensor *touchSensor = ( ( sTSNatDat* )p_GetNativeData( myself ) )->touchSensor;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )touchSensor );
+	rt->PushInt( ( int )( intptr_t )touchSensor );
 }
 
 // public func bool equals( Object obj )

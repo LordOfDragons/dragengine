@@ -138,7 +138,6 @@ public:
 	bool pInverseDepth;
 	bool pMaskedSolidity;
 	bool pClipPlane;
-	bool pNoZClip;
 	bool pOutputConstant;
 	bool pOutputColor;
 	bool pAmbientLightProbe;
@@ -223,6 +222,9 @@ public:
 	/*@{*/
 	/** Create skin shader configuration. */
 	deoglSkinShaderConfig();
+	
+	/** Create copy of skin shader configuration. */
+	deoglSkinShaderConfig( const deoglSkinShaderConfig &copy );
 	
 	/** Clean up skin shader configuration. */
 	~deoglSkinShaderConfig();
@@ -318,12 +320,6 @@ public:
 	
 	/** Set if fragments are clipped against a clipping plane. */
 	void SetClipPlane( bool clipPlane );
-	
-	/** No z coordinate clipping has to be done. */
-	inline bool GetNoZClip() const{ return pNoZClip; }
-	
-	/** Set if no z coordinate clipping has to be done. */
-	void SetNoZClip( bool noZClip );
 	
 	/** Constant value is required as output (not set in the shader). */
 	inline bool GetOutputConstant() const{ return pOutputConstant; }

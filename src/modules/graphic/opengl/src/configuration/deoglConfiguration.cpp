@@ -59,8 +59,8 @@ pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
 pOcclusionReduction( 1 ),
 
-pDistShadowScale( 1.0f ),
-pDistShadowBias( 0.001f ), //4.0f ), // 24-bit: 1 step is 1.192093e-7
+pDistShadowScale( 0.05f ), // old: 1
+pDistShadowBias( 0.01f ), // old: 0.001
 
 pTextOffsetU( 0.0f ),
 pTextOffsetV( 0.0f ),
@@ -72,7 +72,6 @@ pTranspLayerLimit( 4 ),
 pUseOneFBO( false ),
 pUseEncodeDepth( false ),
 pDisableStencil( false ),
-pStencilOnlyOnRB( false ),
 
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
@@ -201,6 +200,12 @@ pVRForceFrameRate( 0 )
 	
 	// disable asynchronous rendering for debug purpose
 	//pAsyncRendering = false;
+	#endif
+	
+	// rendeerdoc
+	#if 0
+	pDebugContext = true;
+	pDebugNoMessages = true;
 	#endif
 }
 
@@ -429,14 +434,6 @@ void deoglConfiguration::SetDisableStencil( bool disableStencil ){
 		return;
 	}
 	pDisableStencil = disableStencil;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
-	if( stencilOnlyOnRB == pStencilOnlyOnRB ){
-		return;
-	}
-	pStencilOnlyOnRB = stencilOnlyOnRB;
 	pDirty = true;
 }
 

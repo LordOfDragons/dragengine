@@ -551,7 +551,7 @@ void deClassRig::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deRig * const rig = ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )rig );
+	rt->PushInt( ( int )( intptr_t )rig );
 }
 
 // public func bool equals( Object obj )

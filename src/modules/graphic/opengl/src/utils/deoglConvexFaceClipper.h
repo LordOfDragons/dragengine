@@ -29,7 +29,7 @@
 
 
 /**
- * @brief Convex Face Clipper.
+ * Convex Face Clipper.
  *
  * Stores a convex face and allows to clip it with various planes.
  */
@@ -40,7 +40,7 @@ private:
 	decDVector pNormal;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates an empty convex volume face. */
 	deoglConvexFaceClipper();
@@ -48,7 +48,7 @@ public:
 	~deoglConvexFaceClipper();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the face normal. */
 	inline const decDVector &GetNormal() const{ return pNormal; }

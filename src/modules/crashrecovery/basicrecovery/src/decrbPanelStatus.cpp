@@ -33,8 +33,9 @@
 
 // Events
 ///////////
-FXDEFMAP( decrbPanelStatus ) decrbPanelStatusMap[] = {
-};
+
+//FXDEFMAP( decrbPanelStatus ) decrbPanelStatusMap[] = {
+//};
 
 
 
@@ -50,7 +51,8 @@ static FXint fSortByName( const FXIconItem *item1, const FXIconItem *item2 ){
 // Class decrbPanelStatus
 ///////////////////////////
 	
-FXIMPLEMENT( decrbPanelStatus, FXVerticalFrame, decrbPanelStatusMap, ARRAYNUMBER( decrbPanelStatusMap ) )
+//FXIMPLEMENT( decrbPanelStatus, FXVerticalFrame, decrbPanelStatusMap, ARRAYNUMBER( decrbPanelStatusMap ) )
+FXIMPLEMENT( decrbPanelStatus, FXVerticalFrame, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

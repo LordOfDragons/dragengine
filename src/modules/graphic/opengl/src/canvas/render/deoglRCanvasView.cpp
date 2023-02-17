@@ -119,6 +119,7 @@ int componentCount, int bitCount ){
 	&& pRenderTarget->GetBitCount() == bitCount ){
 		if( pResizeRenderTarget ){
 			pRenderTarget->SetSize( decVector2( GetSize() ).Round() );
+			pRenderTarget->PrepareTexture();
 			pResizeRenderTarget = false;
 		}
 		
@@ -130,41 +131,49 @@ int componentCount, int bitCount ){
 		
 		pRenderTarget = new deoglRenderTarget( GetRenderThread(),
 			decVector2( GetSize() ).Round(), componentCount, bitCount );
+		pRenderTarget->PrepareTexture();
 		pResizeRenderTarget = false;
 	}
+}
+
+void deoglRCanvasView::RenderRenderTarget( const deoglRenderPlanMasked *renderPlanMask ){
+	PrepareForRenderRender( renderPlanMask );
 	
-	if( pRenderTarget->GetTextureDirty() ){
-		// mark texture no more dirty although not updated yet. this prevents re-entrant loops
-		// due to the canvas being used in a dynamic skin in the same world it is rendering
-		pRenderTarget->SetTextureDirty( false );
-		
-		// prepare and activate framebuffer
-		pRenderTarget->PrepareFramebuffer();
-		GetRenderThread().GetFramebuffer().Activate( pRenderTarget->GetFBO() );
-		
-		// render content
-		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),
-			decPoint(), pRenderTarget->GetSize(), false, renderPlanMask );
-		// for rendering into the render target the canvas position and transform has to be negated.
-		// this way rendering with the position and transform as used for regular rendering cancels
-		// each other out resulting in an identity transformation. this way no second code path is
-		// required.
-		context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
-		context.UpdateTransformMask();
-		
-		GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
-		
-		// clear the render target. this is required for situations where transparent overlays
-		// are rendered with children canvas not covering all pixels
-		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, componentCount == 4 ? 0.0f : 1.0f };
-		OGL_CHECK( GetRenderThread(), pglClearBufferfv( GL_COLOR, 0, clearColor ) );
-		
-		// render content
-		Render( context );
-		
-		// release framebuffer
-		pRenderTarget->ReleaseFramebuffer(); // temporary
+	if( ! pRenderTarget->GetTextureDirty() ){
+		return;
 	}
+	
+	// mark texture no more dirty although not updated yet. this prevents re-entrant loops
+	// due to the canvas being used in a dynamic skin in the same world it is rendering
+	pRenderTarget->SetTextureDirty( false );
+	
+	// prepare and activate framebuffer
+	pRenderTarget->PrepareFramebuffer();
+	GetRenderThread().GetFramebuffer().Activate( pRenderTarget->GetFBO() );
+	
+	// render content
+	deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),
+		decPoint(), pRenderTarget->GetSize(), false, renderPlanMask );
+	// for rendering into the render target the canvas position and transform has to be negated.
+	// this way rendering with the position and transform as used for regular rendering cancels
+	// each other out resulting in an identity transformation. this way no second code path is
+	// required.
+	context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
+	context.UpdateTransformMask();
+	
+	GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
+	
+	// clear the render target. this is required for situations where transparent overlays
+	// are rendered with children canvas not covering all pixels
+	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f,
+		pRenderTarget->GetComponentCount() == 4 ? 0.0f : 1.0f };
+	OGL_CHECK( GetRenderThread(), pglClearBufferfv( GL_COLOR, 0, clearColor ) );
+	
+	// render content
+	Render( context );
+	
+	// release framebuffer
+	pRenderTarget->ReleaseFramebuffer(); // temporary
 }
 
 
@@ -182,6 +191,23 @@ void deoglRCanvasView::PrepareForRender( const deoglRenderPlanMasked *renderPlan
 		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
 		if( child.GetVisible() ){
 			child.PrepareForRender( renderPlanMask );
+		}
+	}
+}
+
+void deoglRCanvasView::PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask ){
+	const int count = pChildren.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRCanvas::PrepareForRenderRender( renderPlanMask );
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
+		if( child.GetVisible() ){
+			child.PrepareForRenderRender( renderPlanMask );
 		}
 	}
 }

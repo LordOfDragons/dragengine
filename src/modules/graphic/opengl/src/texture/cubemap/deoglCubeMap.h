@@ -36,7 +36,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * @brief Cube Map.
+ * Cube Map.
  */
 class deoglCubeMap{
 public:
@@ -67,7 +67,7 @@ public:
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new cube map. */
 	deoglCubeMap( deoglRenderThread &renderThread );
@@ -75,7 +75,7 @@ public:
 	~deoglCubeMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
@@ -111,10 +111,10 @@ public:
 	/** Sets texture level pixels from a pixel buffer without touching other mip map levels. */
 	void SetPixelsLevel( int level, const deoglPixelBuffer &pixels );
 	
-	/** \brief Copy pixels from first level into pixel buffer. */
+	/** Copy pixels from first level into pixel buffer. */
 	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Copy pixels from level into pixel buffer. */
+	/** Copy pixels from level into pixel buffer. */
 	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
 	
 	/** Retrieves the size of a mip map level. */
@@ -135,7 +135,7 @@ public:
 	void UpdateMemoryUsage();
 	/*@}*/
 	
-	/** @name Helper Functions */
+	/** \name Helper Functions */
 	/*@{*/
 	/** Sets the texture format suitable for texture mapping according to the provided texture description. */
 	void SetMapingFormat( int channels, bool useFloat, bool compressed );
@@ -143,16 +143,7 @@ public:
 	void SetFBOFormat( int channels, bool useFloat );
 	
 	/** Sets the suitable depth texture format. */
-	void SetDepthFormat();
-	
-	/** Sets the suitable depth texture format for rendering using an FBO. */
-	void SetFBODepthFormat();
-	
-	/** Sets the suitable depth16 texture format for rendering using an FBO. */
-	void SetFBODepth16Format();
-	
-	/** \brief Set floating point depth texture format suitable for rendering using an FBO. */
-	void SetDepthFormatFloat();
+	void SetDepthFormat( bool useFloat );
 	
 	/** Creates a camera matrix for a cube map face. */
 	static void CreateMatrixForFace( decMatrix &matrix, const decVector &position, int face );

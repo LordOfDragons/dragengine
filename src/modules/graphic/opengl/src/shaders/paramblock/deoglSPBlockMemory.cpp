@@ -92,12 +92,17 @@ void deoglSPBlockMemory::MapBuffer(){
 }
 
 void deoglSPBlockMemory::MapBuffer( int element ){
-	if( IsBufferMapped() || GetBufferSize() == 0 || element < 0 || element >= GetElementCount() ){
+	MapBuffer( element, 1 );
+}
+
+void deoglSPBlockMemory::MapBuffer ( int element, int count ){
+	if( IsBufferMapped() || GetBufferSize() == 0 || element < 0 || count < 1
+	|| element + count > GetElementCount() ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	pGrowBuffer();
-	pSetMapped( pBuffer, element );
+	pSetMapped( pBuffer, element, count );
 }
 
 void deoglSPBlockMemory::UnmapBuffer(){

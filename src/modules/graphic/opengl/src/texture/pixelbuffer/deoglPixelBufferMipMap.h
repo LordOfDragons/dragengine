@@ -27,29 +27,42 @@
 
 
 /**
- * \brief Pixel Buffer Mip Map.
+ * Pixel Buffer Mip Map.
  * Mip map chain of pixel buffers.
  */
-class deoglPixelBufferMipMap{
+class deoglPixelBufferMipMap : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglPixelBufferMipMap> Ref;
+	
+	
+	
 private:
-	deoglPixelBuffer **pPixelBuffers;
+	deoglPixelBuffer::Ref *pPixelBuffers;
 	int pPixelBufferCount;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer mip map. */
 	deoglPixelBufferMipMap( deoglPixelBuffer::ePixelFormats format, int width, int height, int depth, int maxLevel );
+	
+protected:
 	/** Cleans up the opengl array texture. */
-	~deoglPixelBufferMipMap();
+	virtual ~deoglPixelBufferMipMap();
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of pixel buffers which is the mip map level count. */
 	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
 	/** Retrieves the pixel buffer for a mip map level. */
-	deoglPixelBuffer *GetPixelBuffer( int level ) const;
+	const deoglPixelBuffer::Ref &GetPixelBuffer( int level ) const;
 	
 	/** Reduce maximum mip map level count. */
 	void ReducePixelBufferCount( int reduceByCount );

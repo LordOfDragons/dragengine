@@ -121,7 +121,11 @@ void decDateTime::SetFrom( const TIME_SYSTEM systemTime ){
 	tm tmval;
 	
 #ifdef OS_W32
-	tmval = *localtime( &stime );
+	#ifdef OS_W32_VS
+		localtime_s( &tmval, &stime );
+	#else
+		tmval = *localtime( &stime );
+	#endif
 #else
 	if( ! localtime_r( &stime, &tmval ) ){
 		DETHROW( deeInvalidParam );

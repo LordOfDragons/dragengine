@@ -252,7 +252,7 @@ void deoglROcclusionMesh::pCleanUp(){
 		delete pSharedSPBListUBO;
 	}
 	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
 }

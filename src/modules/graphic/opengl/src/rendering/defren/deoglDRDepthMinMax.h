@@ -29,7 +29,7 @@ class deoglFramebuffer;
 
 
 /**
- * @brief Deferred Rendering Depth Min-Max.
+ * Deferred Rendering Depth Min-Max.
  * Stores a mip-mapped view of the minimum and maximum depth values inside a depth texture.
  * The maximum number of mipmap levels is limited. For each lod level an own framebuffer
  * is used.

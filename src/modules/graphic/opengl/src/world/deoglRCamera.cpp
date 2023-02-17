@@ -214,9 +214,10 @@ float deoglRCamera::GetLastAverageLuminance(){
 			pLastAverageLuminance = pLowestIntensity * pRenderThread.GetConfiguration().GetHDRRSceneKey();
 			
 		}else{
-			deoglPixelBuffer pbToneMapParams( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
+			const deoglPixelBuffer::Ref pbToneMapParams( deoglPixelBuffer::Ref::New(
+				new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
 			pTextureToneMapParams->GetPixels( pbToneMapParams );
-			pLastAverageLuminance = pbToneMapParams.GetPointerFloat4()->r;
+			pLastAverageLuminance = pbToneMapParams->GetPointerFloat4()->r;
 		}
 	}
 	
@@ -250,8 +251,9 @@ void deoglRCamera::Update( float elapsed ){
 
 void deoglRCamera::PrepareForRender(){
 	if( pInitTexture ){
-		deoglPixelBuffer pbToneMapParams( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
-		deoglPixelBuffer::sFloat4 &dataToneMapParams = *pbToneMapParams.GetPointerFloat4();
+		const deoglPixelBuffer::Ref pbToneMapParams( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 ) ) );
+		deoglPixelBuffer::sFloat4 &dataToneMapParams = *pbToneMapParams->GetPointerFloat4();
 		dataToneMapParams.r = pRenderThread.GetConfiguration().GetHDRRSceneKey(); // averageLuminance
 		dataToneMapParams.g = 0.0f; // scaleLum
 		dataToneMapParams.b = 0.0f; // lwhite

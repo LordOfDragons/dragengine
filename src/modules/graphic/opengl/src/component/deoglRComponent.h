@@ -26,6 +26,7 @@
 #include "../light/deoglLightList.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -78,11 +79,24 @@ public:
 		ermDynamic
 	};
 	
-public:
+private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglRComponent &pComponent;
+	public:
+		WorldComputeElement( deoglRComponent &component );
+		virtual void UpdateData( const deoglWorldCompute &worldCompute, sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
+	
 	
 	bool pVisible;
 	deComponent::eMovementHints pMovementHint;
@@ -137,13 +151,16 @@ public:
 	deoglSkinState *pSkinState;
 	deoglSkinRendered pSkinRendered;
 	bool pDirtyPrepareSkinStateRenderables;
+	bool pDirtyRenderSkinStateRenderables;
 	
 	decObjectList pTextures;
 	bool pDirtyTextureTUCs;
 	bool pDirtyTextureParamBlocks;
+	int pOutlineTextureCount;
 	
 	decObjectList pDecals;
 	bool pDirtyDecals;
+	bool pDirtyDecalsRenderRenderables;
 	
 	decDMatrix pMatrix;
 	decDMatrix pInverseMatrix;
@@ -171,6 +188,8 @@ public:
 	bool pDirtyRenderEnvMap;
 	
 	deoglEnvironmentMap *pEnvMap;
+	
+	uint32_t pCSOctreeIndex;
 	
 	bool pWorldMarkedRemove;
 	
@@ -452,6 +471,10 @@ public:
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
+	
 	
 	
 	/** Render environment map or NULL if not used. */
@@ -494,6 +517,9 @@ public:
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	
+	/** Prepare for render render. Called by deoglRWorld if registered previously. */
+	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
@@ -570,6 +596,9 @@ public:
 	void UpdateTexturesUseSkin();
 	void DirtyTextureTUCs();
 	void DirtyTextureParamBlocks();
+	
+	/** Count of textures with outline properties. */
+	inline int GetOutlineTextureCount() const{ return pOutlineTextureCount; }
 	
 	/** Textures are static. */
 	inline bool GetStaticTextures() const{ return pStaticTextures; }
@@ -720,10 +749,12 @@ private:
 	void pPrepareLODRenderTaskConfigs();
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
+	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
 	void pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	void pPrepareOccMeshVBO();
 	void pPrepareOccMeshRTSInstances();
 	void pPrepareDynOccMesh();
