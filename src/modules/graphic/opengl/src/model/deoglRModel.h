@@ -156,7 +156,7 @@ private:
 	void pInitTextureNames( const deModel &engModel );
 	void pInitBoneNames( const deModel &engModel );
 	void pInitLODs( const deModel &engModel );
-	void pInitExtends( const deModel &engModel );
+	void pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod );
 	
 	void pLoadCached( int lodCount, int boneCount );
 	void pSaveCached();

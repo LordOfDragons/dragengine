@@ -543,6 +543,12 @@ void deoglModelLOD::pCalcErrorMetrics( const deModel &engModel ){
 	// drop octree. saves CPU memory. will be created and kept if somebody really needs it
 	delete pOctree;
 	pOctree = NULL;
+	
+	// sanity check
+	if( pMaxError == initLODDistance ){
+		pModel.GetRenderThread().GetLogger().LogWarnFormat(
+			"Model(%s,%d): Max error matches init LOD distance!", pModel.GetFilename().GetString(), pLODIndex );
+	}
 }
 
 
