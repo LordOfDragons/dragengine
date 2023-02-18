@@ -11,7 +11,7 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=0, rgba16f) uniform readonly image2DArray texPosition;
+	layout(binding=0, r16f) uniform readonly image2DArray texCacheDistance;
 #else
 	layout(binding=0, rgba16f) uniform readonly image2D texPosition;
 #endif
@@ -67,7 +67,7 @@ void main( void ){
 		if( rayIndex < pGIRaysPerProbe ){
 			#ifdef WITH_RAY_CACHE
 				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
-				vec3 position = probePosition + pGIRayDirection[ rayIndex ] * imageLoad( texPosition, rayTC ).r;
+				vec3 position = probePosition + pGIRayDirection[ rayIndex ] * imageLoad( texCacheDistance, rayTC ).r;
 			#else
 				vec3 position = vec3( imageLoad( texPosition, rayOffset + ivec2( rayIndex, 0 ) ) );
 			#endif
@@ -92,6 +92,21 @@ void main( void ){
 	
 	// write probe parameters. this has to be done by exactly one invocation
 	if( gl_LocalInvocationIndex == uint( 0 ) ){
+		/* ground truth
+		minExtend = pGIDetectionBox;
+		maxExtend = -pGIDetectionBox;
+		for(i=0; i<pGIRaysPerProbe; i++){
+			#ifdef WITH_RAY_CACHE
+				ivec3 rayTC = ivec3(rayOffset + ivec2(i,0), pGICascade);
+				vec3 position = probePosition + pGIRayDirection[i] * imageLoad(texCacheDistance, rayTC).r;
+			#else
+				vec3 position = vec3(imageLoad(texPosition, rayOffset + ivec2(i,0)));
+			#endif
+			minExtend = min(minExtend, position);
+			maxExtend = max(maxExtend, position);
+		}
+		*/
+		
 		pProbeExtends[ index ].minExtend = max( minExtend, -pGIDetectionBox );
 		pProbeExtends[ index ].maxExtend = min( maxExtend, pGIDetectionBox );
 	}

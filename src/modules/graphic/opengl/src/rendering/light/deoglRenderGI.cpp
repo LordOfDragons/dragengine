@@ -150,6 +150,7 @@ deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread )
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf, pipconf2;
@@ -254,8 +255,8 @@ deoglRenderLightBase( renderThread )
 		pipconf.Reset();
 		
 		pipconf2 = pipconf;
-		pipconf2.SetEnableDepthTest( true );
-		pipconf2.SetDepthFunc( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+		pipconf2.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
+		pipconf2.SetClipControl( useInverseDepth );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
 		pipconf2.SetShader( renderThread, sources, defines );
@@ -1020,8 +1021,8 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	const decPoint3 &probeCount = giState->GetProbeCount();
 	const decDMatrix matrixC( decDMatrix::CreateTranslation( cascade.GetPosition()
 		+ decDVector( cascade.GetFieldOrigin() ) ) * plan.GetCameraMatrix() );
-	const decMatrix &matrixP = plan.GetProjectionMatrix();
-	const decDMatrix matrixCP( matrixC * decDMatrix( matrixP ) );
+	const decDMatrix &matrixP = plan.GetProjectionMatrix();
+	const decDMatrix matrixCP( matrixC * matrixP );
 	const decDMatrix matrixNormal( matrixC.GetRotationMatrix() ); // transposed to simplify shader
 	const bool xray = false;
 	
@@ -1056,7 +1057,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	// offset
 	if( devmode.GetGIShowProbes() && devmode.GetGIShowProbeOffsets() ){
-		const deoglPipeline &pipeline = xray ? *pPipelineDebugProbeXRay : *pPipelineDebugProbe;
+		const deoglPipeline &pipeline = xray ? *pPipelineDebugProbeOffsetXRay : *pPipelineDebugProbeOffset;
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		

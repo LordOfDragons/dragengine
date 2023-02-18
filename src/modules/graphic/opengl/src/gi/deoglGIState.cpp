@@ -754,9 +754,11 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 }
 
 void deoglGIState::pPrepareProbeVBO(){
+	const bool rowMajor = pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
+	
 	// parameter block probe dynamic states
 	pPBProbeDynamicStates.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
-	pPBProbeDynamicStates->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	pPBProbeDynamicStates->SetRowMajor( rowMajor );
 	pPBProbeDynamicStates->SetParameterCount( 1 );
 	pPBProbeDynamicStates->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint state
 	pPBProbeDynamicStates->SetElementCount( GI_MAX_PROBE_COUNT );
@@ -765,7 +767,7 @@ void deoglGIState::pPrepareProbeVBO(){
 	
 	// parameter block probe offset
 	pPBProbeOffsets.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
-	pPBProbeOffsets->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	pPBProbeOffsets->SetRowMajor( rowMajor );
 	pPBProbeOffsets->SetParameterCount( 2 );
 	pPBProbeOffsets->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 offset
 	pPBProbeOffsets->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // uint flags
@@ -778,10 +780,10 @@ void deoglGIState::pPrepareProbeVBO(){
 	
 	// parameter block probe extends
 	pPBProbeExtends.TakeOver( new deoglSPBlockSSBO( pRenderThread ) );
-	pPBProbeExtends->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	pPBProbeExtends->SetRowMajor( rowMajor );
 	pPBProbeExtends->SetParameterCount( 2 );
 	pPBProbeExtends->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 minExtend
-	pPBProbeExtends->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec3 maxExtend
+	pPBProbeExtends->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 maxExtend
 	pPBProbeExtends->SetElementCount( GI_MAX_PROBE_COUNT );
 	pPBProbeExtends->MapToStd140();
 	pPBProbeExtends->EnsureBuffer();

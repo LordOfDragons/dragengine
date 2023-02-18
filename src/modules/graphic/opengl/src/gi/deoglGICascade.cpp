@@ -667,8 +667,8 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const char *data ){
 
 void deoglGICascade::UpdateProbeExtendsFromShader( const char *data ){
 	struct sProbeExtend{
-		decVector minExtend;
-		decVector maxExtend;
+		decVector minExtend; float padding1;
+		decVector maxExtend; float padding2;
 	};
 	
 	INIT_SPECIAL_TIMING
