@@ -854,7 +854,7 @@ const deoglRenderPlanMasked *mask, bool perspective ){
 	pRenderParamBlock->Activate();
 	
 	for( i=0; i<lightCount; i++ ){
-		const deoglCollideListLight &cllight = *clist.GetLightAt( i );
+		deoglCollideListLight &cllight = *clist.GetLightAt( i );
 		if( cllight.GetCameraInside() ){
 			continue;
 		}
@@ -866,7 +866,7 @@ const deoglRenderPlanMasked *mask, bool perspective ){
 		const deoglLightVolume &lvolume = *light.GetLightVolume();
 		pglBindVertexArray( lvolume.GetVAO() );
 		
-		deoglOcclusionQuery &query = light.GetOcclusionQuery();
+		deoglOcclusionQuery &query = cllight.GetOcclusionQuery();
 		query.BeginQuery( deoglOcclusionQuery::eqtAny );
 		
 		if( renderVSStereo ){

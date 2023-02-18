@@ -166,8 +166,6 @@ pLLPrepareForRenderWorld( this )
 	pLightVolume = NULL;
 	pLightVolumeCropBox = NULL;
 	
-	pOcclusionQuery = NULL;
-	
 	pDirtyTouching = true;
 	pMarked = false;
 	pUpdateOnRemoveComponent = true;
@@ -995,18 +993,6 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 
 
 
-// Culling
-////////////
-
-deoglOcclusionQuery &deoglRLight::GetOcclusionQuery(){
-	if( ! pOcclusionQuery ){
-		pOcclusionQuery = new deoglOcclusionQuery( pRenderThread );
-	}
-	return *pOcclusionQuery;
-}
-
-
-
 // Optimizations
 //////////////////
 
@@ -1107,9 +1093,6 @@ void deoglRLight::pCleanUp(){
 	}
 	if( pShadowCaster ){
 		delete pShadowCaster;
-	}
-	if( pOcclusionQuery ){
-		delete pOcclusionQuery;
 	}
 	if( pSkinState ){
 		delete pSkinState;
