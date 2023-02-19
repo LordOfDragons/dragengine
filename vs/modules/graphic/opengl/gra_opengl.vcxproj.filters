@@ -1041,6 +1041,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglComputeRenderTask.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2833,6 +2836,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglComputeRenderTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.cpp">

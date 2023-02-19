@@ -366,6 +366,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTask.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskGIMaterial.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglComputeRenderTask.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskInstance.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskParticles.h" />
@@ -968,6 +969,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTask.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskGIMaterial.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglAddToRenderTaskParticles.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglComputeRenderTask.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTask.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskInstance.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\deoglRenderTaskParticles.cpp" />
