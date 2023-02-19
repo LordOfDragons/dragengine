@@ -22,6 +22,7 @@
 #ifndef _DEOGLSHADERMANAGER_H_
 #define _DEOGLSHADERMANAGER_H_
 
+#include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 
@@ -45,11 +46,8 @@ private:
 	
 	deoglShaderLanguage *pLanguage;
 	
-	deoglShaderUnitSourceCode **pUnitSourceCodes;
-	int pUnitSourceCodeCount;
-	int pUnitSourceCodeSize;
-	
-	decObjectList pSources;
+	decObjectDictionary pUnitSourceCodes;
+	decObjectDictionary pSources;
 	decObjectList pPrograms;
 	
 	decString pPathShaderSources;
@@ -73,15 +71,17 @@ public:
 	/** \name Unit Source Codes */
 	/*@{*/
 	/** Retrieves the number of shader unit source codes. */
-	inline int GetUnitSourceCodeCount() const{ return pUnitSourceCodeCount; }
-	/** Retrieves the shader unit source code at the given index. */
-	deoglShaderUnitSourceCode *GetUnitSourceCodeAt( int index ) const;
+	int GetUnitSourceCodeCount() const;
+	
 	/** Determines if a shader unit source code with the given file path exists. */
 	bool HasUnitSourceCodeWithPath( const char *filePath ) const;
+	
 	/** Retrieves the shader unit source code with the given name or NULL if not found. */
 	deoglShaderUnitSourceCode *GetUnitSourceCodeWithPath( const char *filePath );
+	
 	/** Adds a shader unit source code. */
 	void AddUnitSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Removes all shader unit source codes. */
 	void RemoveAllUnitSourceCodes();
 	
@@ -97,14 +97,14 @@ public:
 	/** Count of shader sources. */
 	int GetSourcesCount() const;
 	
-	/** Shader sources at index. */
-	const deoglShaderSources *GetSourcesAt( int index ) const;
-	
 	/** Named shader sources is exists. */
 	bool HasSourcesNamed( const char *name ) const;
 	
 	/** Named shader sources or nullptr. */
 	const deoglShaderSources *GetSourcesNamed( const char *name );
+	
+	/** Shader sources as list for debugging. */
+	decObjectList GetSourcesAsList() const;
 	
 	/**
 	 * Scan shader directory for shader files and loads them.
