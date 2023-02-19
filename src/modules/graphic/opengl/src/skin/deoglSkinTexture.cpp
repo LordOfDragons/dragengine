@@ -261,9 +261,6 @@ pSharedSPBElement( nullptr )
 	}
 	
 	pUpdateRenderTaskFilters();
-	
-	pRTSIndex = renderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
-	renderThread.GetShader().InvalidateSSBOSkinTextures();
 }
 
 deoglSkinTexture::~deoglSkinTexture(){
@@ -274,6 +271,15 @@ deoglSkinTexture::~deoglSkinTexture(){
 
 // Management
 ///////////////
+
+void deoglSkinTexture::AssignRTSIndex(){
+	if( pRTSIndex != -1 ){
+		return;
+	}
+	
+	pRTSIndex = pRenderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
+	pRenderThread.GetShader().InvalidateSSBOSkinTextures();
+}
 
 void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &texture ){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects

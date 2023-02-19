@@ -249,6 +249,9 @@ public:
 	/** Render task shared index. */
 	inline int GetRTSIndex() const{ return pRTSIndex; }
 	
+	/** Assign render task shared index. Called by deoglDelayedOperations only. */
+	void AssignRTSIndex();
+	
 	
 	
 	/**

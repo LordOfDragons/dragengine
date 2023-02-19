@@ -651,6 +651,11 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 	
 	for( t=0; t<textureCount; t++ ){
 		deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
+		
+		// assign render task shared index. has to be done here since during constructor
+		// time this would cause concurrent access to the global pool
+		skinTexture.AssignRTSIndex();
+		
 		skinTexture.PrepareParamBlock();
 		skinTexture.GetPipelines().Prepare();
 	}
