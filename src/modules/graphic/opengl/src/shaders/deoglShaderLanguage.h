@@ -74,6 +74,10 @@ public:
 	/*@}*/
 	
 private:
+	deoglShaderCompiled *pCompileShader( deoglShaderProgram &program );
+	void pAfterLinkShader( const deoglShaderProgram &program, deoglShaderCompiled &compiled );
+	deoglShaderCompiled *pCacheLoadShader( deoglShaderProgram &program );
+	void pCacheSaveShader( const deoglShaderProgram &program, const deoglShaderCompiled &compiled );
 	void pPreparePreprocessor( const deoglShaderDefines &defines );
 	
 	#ifdef ANDROID

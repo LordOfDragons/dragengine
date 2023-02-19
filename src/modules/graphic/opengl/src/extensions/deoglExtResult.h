@@ -835,9 +835,9 @@ extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 // GL_ARB_get_program_binary : no opengl version
 //////////////////////////////////////////////////
 
-// extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
-// extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
-// extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
+extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
+extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
+extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
 
 
 

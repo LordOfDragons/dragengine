@@ -982,6 +982,13 @@ void deoglExtensions::pFetchOptionalFunctions(){
 // 		pGetOptionalFunctionArbExt( (void**)&pglGetIntegerIndexedv, "glGetIntegerIndexedv", ext_ARB_viewport_array );
 	}
 	
+	// GL_ARB_get_program_binar : opengl version 4.1
+	if( pHasExtension[ ext_ARB_get_program_binary ] ){
+		pGetOptionalFunctionArbExt( (void**)&pglGetProgramBinary, "glGetProgramBinary", ext_ARB_get_program_binary );
+		pGetOptionalFunctionArbExt( (void**)&pglProgramBinary, "glProgramBinary", ext_ARB_get_program_binary );
+		pGetOptionalFunctionArbExt( (void**)&pglProgramParameteri, "glProgramParameteri", ext_ARB_get_program_binary );
+	}
+	
 	// GL_EXT_transform_feedback_instanced : opengl version 4.2
 	if( pHasExtension[ ext_ARB_transform_feedback_instanced ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglDrawTransformFeedbackInstanced,

@@ -205,6 +205,24 @@ bool deoglShaderDefines::Equals( const deoglShaderDefines &defines ) const{
 	return *this == defines;
 }
 
+decString deoglShaderDefines::CalcCacheId() const{
+	decStringList defineNames;
+	int i;
+	for( i=0; i<pDefineCount; i++ ){
+		defineNames.Add( pDefines[ i ].name );
+	}
+	defineNames.SortAscending();
+	
+	decStringList parts;
+	for( i=0; i<pDefineCount; i++ ){
+		const decString &name = defineNames.GetAt( i );
+		parts.Add( name );
+		parts.Add( GetDefineValueFor( name, "" ) );
+	}
+	
+	return parts.Join( "," );
+}
+
 
 
 // Operators

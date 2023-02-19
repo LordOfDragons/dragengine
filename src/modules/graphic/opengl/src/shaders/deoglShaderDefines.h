@@ -99,6 +99,9 @@ public:
 	
 	/** Defines are equal. */
 	bool Equals( const deoglShaderDefines &defines ) const;
+	
+	/** Calculate cache id. */
+	decString CalcCacheId() const;
 	/*@}*/
 	
 	

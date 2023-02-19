@@ -543,6 +543,9 @@ GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData = nullptr;
 // GL_ARB_get_program_binary : no opengl version
 //////////////////////////////////////////////////
 
+GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary = nullptr;
+GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary = nullptr;
+GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri = nullptr;
 
 
 // GL_ARB_separate_shader_objects : no opengl version

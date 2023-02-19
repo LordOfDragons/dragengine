@@ -72,6 +72,7 @@ pDirtySSBOSkinTextures( true )
 		pShaderManager = new deoglShaderManager( renderThread );
 		pShaderManager->LoadUnitSourceCodes();
 		pShaderManager->LoadSources();
+		pShaderManager->ValidateCaches();
 		
 		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
 		pLightShaderManager = new deoglLightShaderManager( renderThread );

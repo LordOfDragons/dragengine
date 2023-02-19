@@ -24,6 +24,7 @@
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decString.h>
 
 class deoglRenderThread;
@@ -53,6 +54,10 @@ private:
 	decString pPathShaderSources;
 	decString pPathShaders;
 	
+	decStringList pCacheValidationString;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -66,7 +71,12 @@ public:
 	/*@{*/
 	/** Retrieves the language used to compiled and drive shaders. */
 	inline deoglShaderLanguage *GetLanguage() const{ return pLanguage; }
+	
+	/** Validate caches. */
+	void ValidateCaches();
 	/*@}*/
+	
+	
 	
 	/** \name Unit Source Codes */
 	/*@{*/
@@ -91,6 +101,8 @@ public:
 	 */
 	void LoadUnitSourceCodes();
 	/*@}*/
+	
+	
 	
 	/** \name Sources */
 	/*@{*/
@@ -130,10 +142,11 @@ public:
 	const deoglShaderProgram *GetProgramWith( const deoglShaderSources *sources, const deoglShaderDefines &defines );
 	/*@}*/
 	
+	
+	
 private:
 	void pLoadUnitSourceCodesIn( const char *directory );
 	void pLoadSourcesIn( const char *directory );
 };
 
-// end of include only once
 #endif

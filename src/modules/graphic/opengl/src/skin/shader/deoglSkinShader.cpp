@@ -44,6 +44,7 @@
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/deoglShaderUnitSourceCode.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
@@ -395,6 +396,12 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	deoglSkinShader::eiutInstOutlineEmissivity, // eiutInstOutlineEmissivity ( vec3 )
 	deoglSkinShader::eiutInstOutlineEmissivityTint // eiutInstOutlineEmissivityTint ( vec3 )
 };
+
+// cache revision. if skin config or skin unit sources change in any way increment this
+// value to make sure existing caches are invalidate
+#define SHADER_CACHE_REVISION 1
+
+int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
 
 
 
@@ -1357,7 +1364,6 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 	}
 }
 
-int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
 
 void deoglSkinShader::SetTUCPerObjectEnvMap( deoglTexUnitConfig *units,
 deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap *envmapFade ){
@@ -1584,8 +1590,48 @@ void deoglSkinShader::GenerateShader(){
 			}
 		}
 		
+		// cache id
+		decStringList cacheIdParts, cacheIdComponents;
+		decString cacheIdFormat;
+		
+		cacheIdFormat.Format( "skin%d", SHADER_CACHE_REVISION );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdFormat.Format( "%x,%x,%lx,%x", pConfig.GetKey1(),
+			pConfig.GetKey2(), pConfig.GetKey3(), pConfig.GetKey4() );
+		cacheIdParts.Add( cacheIdFormat );
+		
+		cacheIdComponents.Add( pSources->GetPathVertexSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathGeometrySourceCode() );
+		cacheIdComponents.Add( pSources->GetPathFragmentSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathTessellationControlSourceCode() );
+		cacheIdComponents.Add( pSources->GetPathTessellationEvaluationSourceCode() );
+		cacheIdParts.Add( cacheIdComponents.Join( "," ) );
+		cacheIdComponents.RemoveAll();
+		
+		cacheIdParts.Add( defines.CalcCacheId() );
+		
+		int i;
+		char cacheIdBuffer[ EIUT_COUNT * 2 + 1 ];
+		for( i=0; i<ETT_COUNT; i++ ){
+			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pTextureTargets[ i ] + 1 ) );
+		}
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		for( i=0; i<EIUT_COUNT; i++ ){
+			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pInstanceUniformTargets[ i ] + 1 ) );
+		}
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		snprintf( cacheIdBuffer, sizeof( cacheIdBuffer ), "%x", 0
+			| ( pRenderThread.GetChoices().GetRealTransparentParticles() ? 0x1 : 0 )
+			| ( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ? 0x2 : 0 ) );
+		cacheIdParts.Add( cacheIdBuffer );
+		
+		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
+		
 		// compile shader
-		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
+		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();

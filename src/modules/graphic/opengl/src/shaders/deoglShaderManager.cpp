@@ -30,6 +30,7 @@
 #include "deoglShaderLanguage.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "../deGraphicOpenGl.h"
+#include "../deoglCaches.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -37,12 +38,22 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/filesystem/deCacheHelper.h>
+#include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deCollectFileSearchVisitor.h>
+
+
+
+// Definitions
+////////////////
+
+// cache revision. if anything except *.glsl or *.shader.xml changes increment this
+// value to make sure existing caches are invalidate
+#define SHADER_CACHE_REVISION 1
 
 
 
@@ -71,6 +82,59 @@ deoglShaderManager::~deoglShaderManager(){
 
 // Management
 ///////////////
+
+void deoglShaderManager::ValidateCaches(){
+	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
+	deCacheHelper &cache = ogl.GetCaches().GetShaders();
+	
+	// validation string composes of the path and modification times of all shader sources (*.glsl)
+	// and shaders (*.shader.xml) in the order they have been loaded. we could also sort the list
+	// but running on the same machine with the same operating system and the same file system
+	// usually returns identical file listings. in the worst case the cache is invalidate when
+	// it could be kept valid
+	const decString validationString( pCacheValidationString.Join( "\n" ) );
+	
+	// if the validation string differs from the cached validation string drop all
+	// cached shaders
+	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
+	const decPath pathValidationString( decPath::CreatePathUnix( "/cache/global/shaderValidation" ) );
+	
+	if( vfs.ExistsFile( pathValidationString ) ){
+		decString oldValidationString;
+		try{
+			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
+					vfs.OpenFileForReading( pathValidationString ) ) );
+			const int size = reader->GetLength();
+			oldValidationString.Set( ' ', size );
+			reader->Read( ( void* )oldValidationString.GetString(), size );
+			
+			if( validationString == oldValidationString ){
+				ogl.LogInfo( "ShaderManager Cache: Validated" );
+				
+			}else{
+				ogl.LogInfo( "ShaderManager Cache: Validation failed. Invalidate caches" );
+				cache.DeleteAll();
+			}
+			
+		}catch( const deException & ){
+			ogl.LogInfo( "ShaderManager Cache: Validation file failed reading. Invalidate caches" );
+			cache.DeleteAll();
+		}
+		
+	}else{
+		ogl.LogInfo( "ShaderManager Cache: Validation file missing. Invalidate caches" );
+		cache.DeleteAll();
+	}
+	
+	// write validation string
+	try{
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathValidationString ) )
+			->WriteString( validationString );
+		
+	}catch( const deException & ){
+		ogl.LogInfo( "ShaderManager Cache: Writing validation failed" );
+	}
+}
 
 
 
@@ -262,6 +326,11 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines ){
 		}
 	}
 	
+	decString cacheId;
+	cacheId.Format( "shader%d;%s;%s", SHADER_CACHE_REVISION,
+		sources->GetFilename().GetString(), defines.CalcCacheId().GetString() );
+	program->SetCacheId( cacheId );
+	
 	pPrograms.Add( program );
 	
 	if( pLanguage ){
@@ -306,6 +375,8 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 		
 		const dePathList &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
+		decString validationString;
+		
 		for( i=0; i<count; i++ ){
 			const decPath &path = pathList.GetAt( i );
 			filename = path.GetPathUnix().GetMiddle( basePathLen );
@@ -313,8 +384,14 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 				ogl.LogInfoFormat( "Loading shader unit source code %s...", filename );
 			}*/
 			
-			AddUnitSourceCode( deoglShaderUnitSourceCode::Ref::New( new deoglShaderUnitSourceCode(
-				filename, decBaseFileReader::Ref::New( vfs.OpenFileForReading( path ) ) ) ) );
+			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
+				vfs.OpenFileForReading( path ) ) );
+			
+			AddUnitSourceCode( deoglShaderUnitSourceCode::Ref::New(
+				new deoglShaderUnitSourceCode( filename, reader ) ) );
+			
+			validationString.Format( "%s: %lld", filename.GetString(), reader->GetModificationTime() );
+			pCacheValidationString.Add( validationString );
 		}
 		
 	}catch( const deException & ){
@@ -344,6 +421,8 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 		
 		const dePathList &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
+		decString validationString;
+		
 		for( i=0; i<count; i++ ){
 			const decPath &path = pathList.GetAt( i );
 			filename = path.GetPathUnix().GetMiddle( basePathLen );
@@ -351,9 +430,11 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 				ogl.LogInfoFormat( "Loading shader %s...", filename );
 			}*/
 			
+			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
+					vfs.OpenFileForReading( path ) ) );
+			
 			const deoglShaderSources::Ref sources( deoglShaderSources::Ref::New(
-				new deoglShaderSources( logger, decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading( path ) ) ) ) );
+				new deoglShaderSources( logger, reader ) ) );
 			
 			if( pSources.Has( sources->GetName() ) ){
 				ogl.LogErrorFormat( "Shader file '%s' defines a shader named '%s' but"
@@ -363,6 +444,9 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 			}
 			
 			pSources.SetAt( sources->GetName(), sources );
+			
+			validationString.Format( "%s: %lld", filename.GetString(), reader->GetModificationTime() );
+			pCacheValidationString.Add( validationString );
 		}
 		
 	}catch( const deException & ){

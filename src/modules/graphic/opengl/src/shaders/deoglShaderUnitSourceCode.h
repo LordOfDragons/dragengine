@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	decString pFilePath;
+	const decString pFilePath;
 	decString pSourceCode;
 	
 	

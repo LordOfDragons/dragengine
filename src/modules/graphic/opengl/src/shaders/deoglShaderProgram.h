@@ -47,6 +47,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	const deoglShaderSources *pSources;
 	deoglShaderDefines pDefines;
+	decString pCacheId;
 	
 	deoglShaderUnitSourceCode *pSCCompute;
 	deoglShaderUnitSourceCode *pSCTessellationControl;
@@ -58,6 +59,8 @@ private:
 	deoglShaderCompiled *pCompiled;
 	
 	unsigned int pUniqueKey;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -76,13 +79,21 @@ protected:
 	
 	
 	
+	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the sources. */
 	inline const deoglShaderSources *GetSources() const{ return pSources; }
+	
 	/** Retrieves the defines. */
 	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
+	
+	/** Cache identifier. */
+	inline const decString &GetCacheId() const{ return pCacheId; }
+	
+	/** Set cache identifier. */
+	void SetCacheId( const decString &id );
 	
 	/** Compute source code or NULL. */
 	inline deoglShaderUnitSourceCode *GetComputeSourceCode() const{ return pSCCompute; }
@@ -98,23 +109,31 @@ public:
 	
 	/** Retrieves the tessellation evaluation source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationEvaluationSourceCode() const{ return pSCTessellationEvaluation; }
+	
 	/** Sets the tessellation evaluation source code or NULL if not used. */
 	void SetTessellationEvaluationSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Retrieves the geometry source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetGeometrySourceCode() const{ return pSCGeometry; }
+	
 	/** Sets the geometry source code or NULL if not used. */
 	void SetGeometrySourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Retrieves the vertex source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetVertexSourceCode() const{ return pSCVertex; }
+	
 	/** Sets the vertex source code or NULL if not used. */
 	void SetVertexSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	
 	/** Retrieves the fragment source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetFragmentSourceCode() const{ return pSCFragment; }
+	
 	/** Sets the fragment source code or NULL if not used. */
 	void SetFragmentSourceCode( deoglShaderUnitSourceCode *sourceCode );
 	
 	/** Retrieves the compiled shader. */
 	inline deoglShaderCompiled *GetCompiled() const{ return pCompiled; }
+	
 	/** Sets the compiled shader. */
 	void SetCompiled( deoglShaderCompiled *compiled );
 	

@@ -127,6 +127,8 @@ bool deoglLightShaderManager::HasShaderWith( deoglLightShaderConfig &configurati
 	const int count = pShaderList.GetCount();
 	int i;
 	
+	configuration.UpdateKey();
+	
 	for( i=0; i<count; i++ ){
 		const deoglLightShader &shader = *( ( deoglLightShader* )pShaderList.GetAt( i ) );
 		
@@ -142,6 +144,8 @@ deoglLightShader *deoglLightShaderManager::GetShaderWith( deoglLightShaderConfig
 	const int count = pShaderList.GetCount();
 	deoglLightShader *shader = NULL;
 	int i;
+	
+	configuration.UpdateKey();
 	
 	for( i=0; i<count; i++ ){
 		shader = ( deoglLightShader* )pShaderList.GetAt( i );

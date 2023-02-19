@@ -151,6 +151,8 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	#undef HASEXT
 	
+	
+	
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();
 	

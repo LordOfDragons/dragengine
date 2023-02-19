@@ -70,6 +70,7 @@ private:
 	int pUBOOffsetAlignment;
 	int pGeometryShaderMaxVertices;
 	int pGeometryShaderMaxComponents;
+	int pNumProgramBinaryFormats;
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
@@ -155,6 +156,9 @@ public:
 	 * OpenGL Spec requires a minimum value of \em 1024.
 	 */
 	inline int GetGeometryShaderMaxComponents() const{ return pGeometryShaderMaxComponents; }
+	
+	/** Count of binary shader formats the driver supports. */
+	inline int GetNumProgramBinaryFormats() const{ return pNumProgramBinaryFormats; }
 	
 	
 	

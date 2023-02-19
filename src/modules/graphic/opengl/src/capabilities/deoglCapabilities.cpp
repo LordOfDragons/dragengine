@@ -62,6 +62,7 @@ pSSBOMaxBlocksCompute( 0 ),
 pUBOOffsetAlignment( 4 ),
 pGeometryShaderMaxVertices( 0 ),
 pGeometryShaderMaxComponents( 0 ),
+pNumProgramBinaryFormats( 0 ),
 
 pATLUnbind( *this ),
 pUBOIndirectMatrixAccess( *this ),
@@ -200,6 +201,11 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[ 0 ] ) );
 		pGeometryShaderMaxComponents = ( int )resultsInt[ 0 ];
+			
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_get_program_binary ) ){
+			OGL_CHECK( pRenderThread, glGetIntegerv( GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[ 0 ] ) );
+			pNumProgramBinaryFormats = ( int )resultsInt[ 0 ];
+		}
 		
 		// report capabilities
 		if( true ){
@@ -212,6 +218,7 @@ void deoglCapabilities::DetectCapabilities(){
 			logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
 			logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
 			logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
+			logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
 			logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
 			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
 			logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
