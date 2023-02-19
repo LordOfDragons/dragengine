@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "deoglSkinShader.h"
 #include "deoglSkinShaderManager.h"
@@ -403,6 +404,11 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 
 int deoglSkinShader::REFLECTION_TEST_MODE = 2; // 0=oldVersion 1=ownPassReflection 2=singleBlenderEnvMap
 
+// MinGW bug workaround
+#if defined OS_W32 && defined __MINGW64__
+#undef PRIx64
+#define PRIx64 "I64x"
+#endif
 
 
 // Class deoglSkinShader
@@ -1597,7 +1603,7 @@ void deoglSkinShader::GenerateShader(){
 		cacheIdFormat.Format( "skin%d", SHADER_CACHE_REVISION );
 		cacheIdParts.Add( cacheIdFormat );
 		
-		cacheIdFormat.Format( "%x,%x,%lx,%x", pConfig.GetKey1(),
+		cacheIdFormat.Format( "%x,%x,%" PRIx64 ",%x", pConfig.GetKey1(),
 			pConfig.GetKey2(), pConfig.GetKey3(), pConfig.GetKey4() );
 		cacheIdParts.Add( cacheIdFormat );
 		

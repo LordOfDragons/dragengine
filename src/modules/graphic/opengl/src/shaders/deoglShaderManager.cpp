@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "deoglShaderManager.h"
 #include "deoglShaderProgram.h"
@@ -55,6 +56,11 @@
 // value to make sure existing caches are invalidate
 #define SHADER_CACHE_REVISION 1
 
+// MinGW bug workaround
+#if defined OS_W32 && defined __MINGW64__
+#undef PRIu64
+#define PRIu64 "I64u"
+#endif
 
 
 // Class deoglShaderManager
@@ -390,7 +396,7 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 			AddUnitSourceCode( deoglShaderUnitSourceCode::Ref::New(
 				new deoglShaderUnitSourceCode( filename, reader ) ) );
 			
-			validationString.Format( "%s: %lld", filename.GetString(), reader->GetModificationTime() );
+			validationString.Format( "%s: %" PRIu64, filename.GetString(), reader->GetModificationTime() );
 			pCacheValidationString.Add( validationString );
 		}
 		
@@ -445,7 +451,7 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 			
 			pSources.SetAt( sources->GetName(), sources );
 			
-			validationString.Format( "%s: %lld", filename.GetString(), reader->GetModificationTime() );
+			validationString.Format( "%s: %" PRIu64, filename.GetString(), reader->GetModificationTime() );
 			pCacheValidationString.Add( validationString );
 		}
 		
