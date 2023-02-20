@@ -1,5 +1,7 @@
 from SConsCommon import *
 from SConsPlatformAndroid import androidUpdateEnv
+import shlex
+
 
 # create environment
 tools = ARGUMENTS.get( 'tools', '' )
@@ -125,10 +127,10 @@ parent_env.Replace( MODULE_CPPFLAGS = [] )
 parent_env.Replace( MODULE_LINKFLAGS = [] )
 
 if 'CPPFLAGS' in os.environ:
-	parent_env.Append( CPPFLAGS = os.environ[ 'CPPFLAGS' ] )
+	parent_env.Append(CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
 
 if 'LDFLAGS' in os.environ:
-	parent_env.Append( LINKFLAGS = os.environ[ 'LDFLAGS' ] )
+	parent_env.Append(LINKFLAGS = shlex.split(os.environ['LDFLAGS']))
 
 if parent_env['OSPosix']:
 	parent_env.Append( CPPFLAGS = [ '-DOS_UNIX' ] )
