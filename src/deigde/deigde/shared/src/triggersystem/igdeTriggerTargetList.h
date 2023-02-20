@@ -31,7 +31,7 @@ class igdeTriggerTarget;
 /**
  * \brief Trigger Target List.
  */
-class igdeTriggerTargetList{
+class DE_DLL_EXPORT igdeTriggerTargetList{
 private:
 	decObjectOrderedSet pTargets;
 	

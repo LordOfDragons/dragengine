@@ -39,7 +39,7 @@ class deLogger;
  * a task all of which are notified once the loading of the resource
  * finished successfully or with a failure.
  */
-class igdeResourceLoaderTask : public deObject{
+class DE_DLL_EXPORT igdeResourceLoaderTask : public deObject{
 private:
 	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;

@@ -32,7 +32,7 @@ class igdeComboBox;
 /**
  * \brief IGDE UI ComboBox Listener.
  */
-class igdeComboBoxListener : public deObject{
+class DE_DLL_EXPORT igdeComboBoxListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

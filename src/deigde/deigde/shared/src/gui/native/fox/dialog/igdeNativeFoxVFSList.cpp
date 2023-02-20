@@ -134,7 +134,7 @@ public:
 				path, "", pOwner.GetIconFileBig(), pOwner.GetIconFileSmall() );
 			item->SetFileName( path.GetLastComponent() );
 			item->SetFileType( deVFSContainer::eftRegularFile );
-			item->SetFileSize( fileSize );
+			item->SetFileSize( ( int )fileSize );
 			item->SetFileModificationTime( fileMTime );
 			item->UpdateText( pColumnPattern );
 			pOwner.appendItem( item );
@@ -172,7 +172,7 @@ public:
 				path, "", pOwner.GetIconFileBig(), pOwner.GetIconFileSmall() );
 			item->SetFileName( path.GetLastComponent() );
 			item->SetFileType( deVFSContainer::eftSpecial );
-			item->SetFileSize( fileSize );
+			item->SetFileSize( ( int )fileSize );
 			item->SetFileModificationTime( fileMTime );
 			item->UpdateText( pColumnPattern );
 			pOwner.appendItem( item );

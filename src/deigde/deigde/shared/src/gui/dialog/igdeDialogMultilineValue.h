@@ -30,7 +30,7 @@
 /**
  * \brief IGDE dialog supporting input of multiline values.
  */
-class igdeDialogMultilineValue : public igdeDialog{
+class DE_DLL_EXPORT igdeDialogMultilineValue : public igdeDialog{
 private:
 	igdeTextAreaReference pEditValue;
 	

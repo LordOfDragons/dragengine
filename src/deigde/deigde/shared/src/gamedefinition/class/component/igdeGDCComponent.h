@@ -36,7 +36,7 @@
  * Contains information about a component used to display the element
  * inside the editor.
  */
-class igdeGDCComponent : public deObject{
+class DE_DLL_EXPORT igdeGDCComponent : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

@@ -33,7 +33,7 @@ class igdeMenuCascade;
 /**
  * \brief IGDE UI ViewCurveBezier Listener.
  */
-class igdeViewCurveBezierListener : public deObject{
+class DE_DLL_EXPORT igdeViewCurveBezierListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

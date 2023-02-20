@@ -31,7 +31,7 @@
 /**
  * \brief IGDE UI Container Widget grouping widgets.
  */
-class igdeContainer : public igdeWidget{
+class DE_DLL_EXPORT igdeContainer : public igdeWidget{
 private:
 	decObjectOrderedSet pChildren;
 	

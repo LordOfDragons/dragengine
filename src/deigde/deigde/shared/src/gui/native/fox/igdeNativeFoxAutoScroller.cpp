@@ -35,12 +35,7 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxAutoScroller ) igdeNativeFoxAutoScrollerMap[] = {
-};
-
-
-FXIMPLEMENT( igdeNativeFoxAutoScroller, FXComposite,
-	igdeNativeFoxAutoScrollerMap, ARRAYNUMBER( igdeNativeFoxAutoScrollerMap ) )
+FXIMPLEMENT( igdeNativeFoxAutoScroller, FXComposite, nullptr, 0 )
 
 
 

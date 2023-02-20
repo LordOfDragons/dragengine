@@ -41,7 +41,7 @@ class igdeLoggerHistoryListener;
  * mutex while your listener is invoked. To access the history outside a listener
  * notification lock the mutex yourself.
  */
-class igdeLoggerHistory : public deLogger{
+class DE_DLL_EXPORT igdeLoggerHistory : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeLoggerHistory> Ref;

@@ -41,7 +41,7 @@ class igdeEnvironment;
  * \warning If you make changes to a game definition in use by the editors you are responsible
  *          to call the appropriate notification method in \ref igdeEnvironment.
  */
-class igdeGameProject : public deObject{
+class DE_DLL_EXPORT igdeGameProject : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
 	

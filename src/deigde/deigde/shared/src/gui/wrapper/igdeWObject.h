@@ -61,7 +61,7 @@ class deBaseScriptingCollider;
  * - Render Environment Map Mask: 2 (Bit 1 set)
  * - Audio: 4 (Bit 2 set)
  */
-class igdeWObject{
+class DE_DLL_EXPORT igdeWObject{
 public:
 	/** \brief Asynchronous loading finished. */
 	class cAsyncLoadFinished{

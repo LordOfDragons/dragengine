@@ -183,7 +183,7 @@ decVector igdeWOSubObject::GetVectorProperty( const decString &name, const decVe
 			codec.DecodeVector( value, vector );
 			return vector;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -200,7 +200,7 @@ decVector2 igdeWOSubObject::GetVector2Property( const decString &name, const dec
 			codec.DecodeVector2( value, vector );
 			return vector;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid vector2 property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -217,7 +217,7 @@ decQuaternion igdeWOSubObject::GetRotationProperty( const decString &name, const
 			codec.DecodeVector( value, vector );
 			return decQuaternion::CreateFromEuler( vector * DEG2RAD );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -234,7 +234,7 @@ decColor igdeWOSubObject::GetColor3Property( const decString &name, const decCol
 			codec.DecodeColor3( value, color );
 			return color;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid color3 property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -251,7 +251,7 @@ decColor igdeWOSubObject::GetColor4Property( const decString &name, const decCol
 			codec.DecodeColor4( value, color );
 			return color;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid color4 property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -297,7 +297,7 @@ void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, con
 			const igdeTriggerExpressionParser parser;
 			trigger.TakeOver( parser.StringToExpression( value ) );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid trigger expression '%s'", value.GetString() );
 		}

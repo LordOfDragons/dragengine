@@ -31,7 +31,7 @@
 /**
  * \brief Create preview listener updating an liste item once finished.
  */
-class igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
+class DE_DLL_EXPORT igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
 private:
 	igdeIconListBoxReference pIconListBox;
 	igdeListItemReference pListItem;

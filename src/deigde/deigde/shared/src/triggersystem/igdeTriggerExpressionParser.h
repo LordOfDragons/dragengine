@@ -33,7 +33,7 @@ class igdeTriggerExpressionParserState;
 /**
  * \brief Trigger Expression Parser.
  */
-class igdeTriggerExpressionParser{
+class DE_DLL_EXPORT igdeTriggerExpressionParser{
 private:
 	char pSymbolNegate;
 	char pSymbolCurState;

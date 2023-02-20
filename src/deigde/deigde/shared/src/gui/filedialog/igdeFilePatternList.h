@@ -22,6 +22,8 @@
 #ifndef _IGDEFILEPATTERNLIST_H_
 #define _IGDEFILEPATTERNLIST_H_
 
+#include <dragengine/dragengine_export.h>
+
 class igdeFilePattern;
 
 
@@ -29,7 +31,7 @@ class igdeFilePattern;
 /**
  * \brief File Pattern List.
  */
-class igdeFilePatternList{
+class DE_DLL_EXPORT igdeFilePatternList{
 private:
 	igdeFilePattern **pFilePatterns;
 	int pFilePatternCount;

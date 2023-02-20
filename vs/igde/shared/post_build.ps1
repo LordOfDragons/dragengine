@@ -1,27 +1,67 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
-    [Parameter(Mandatory=$true)][string]$OutputDir
+    [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$FoxDir
 )
 
-Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
+Import-Module "$PSScriptRoot\..\..\shared.psm1"
+
+# build
+$TargetDir = "$OutputDir\include\deigde"
+if (Test-Path $TargetDir) {
+    Remove-Item $TargetDir -Force -Recurse
+}
+
+Write-Host "Igde Shared: Copy Headers to '$TargetDir'"
+Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
+
+$TargetDir = "$OutputDir\include\deigde\gui\native"
+if (Test-Path $TargetDir) {
+    Remove-Item $TargetDir -Force -Recurse
+}
+
 
 # application
-$Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
+$TargetDir = "$OutputDir\$PathDistIGDESystem"
 
-$TargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistIGDEDataModules\ai\deai\$Version"
+Write-Host "Igde Shared App: Copy Library to '$TargetDir'"
+Install-Files -Path "$OutputDir\deigdeshared.dll" -Destination $TargetDir
 
-Write-Host "IGDEShared Module: Copy Module to '$TargetDir'"
+$DataTargetDir = "$OutputDir\$PathDistIGDEShares"
+Write-Host "Igde Shared App: Copy Data to '$DataTargetDir'"
 
-$Library = Join-Path -Path $OutputDir -ChildPath "deigdeshared.dll"
-Install-Files -Path $Library -Destination $TargetDir
+Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*"
 
-Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
-    -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
-    -Library $Library -Version $Version
+
+# sdk
+$TargetDir = "$OutputDir\$PathDistIGDESdkInc\deigde"
+if (Test-Path $TargetDir) {
+    Remove-Item $TargetDir -Force -Recurse
+}
+
+Write-Host "Igde Shared SDK: Copy Headers to '$TargetDir'"
+Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
+
+$TargetDir = "$OutputDir\$PathDistIGDESdkInc\deigde\gui\native"
+if (Test-Path $TargetDir) {
+    Remove-Item $TargetDir -Force -Recurse
+}
+
+$TargetDir = "$OutputDir\$PathDistIGDESdkLib"
+Write-Host "Igde Shared SDK: Copy Libraries to '$TargetDir'"
+
+Install-Files -Path "$OutputDir\deigdeshared.lib" -Destination $TargetDir
+Install-Files -Path "$OutputDir\deigdeshared.exp" -Destination $TargetDir
+
+
+# dependencies
+Write-Host "Igde Shared: Copy Dependencies to '$TargetDir'"
+
+Copy-Files -SourceDir $FoxDir -TargetDir "$OutputDir\$PathDistIGDEBin" -Pattern "*.dll"
 
 
 # debug
-$TargetDir = Join-Path -Path $OutputDir -ChildPath $PathDistDEPdbModules
-Write-Host "IGDEShared Module: Copy PDBs to '$TargetDir'"
+$TargetDir = "$OutputDir\$PathDistIGDEPdbSystem"
+Write-Host "Igde Shared Debug: Copy PDBs to '$TargetDir'"
 
-Install-Files -Path (Join-Path -Path $OutputDir -ChildPath "deigdeshared.pdb") -Destination $TargetDir
+Install-Files -Path "$OutputDir\deigdeshared.pdb" -Destination $TargetDir

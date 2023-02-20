@@ -138,6 +138,12 @@ void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
 // Sorting
 ////////////
 
+#ifdef OLD_STRING_COMPARE_NS
+	#define FOX_STRING_COMPARE compare
+#else
+	#define FOX_STRING_COMPARE FXString::compare
+#endif
+
 FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXIconItem *item2 ){
 	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
 	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
@@ -145,7 +151,7 @@ FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXI
 	const bool isDir2 = file2.IsDirectory();
 	
 	if( isDir1 == isDir2 ){
-		return compare( file1.GetFileName(), file2.GetFileName() );
+		return FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
 		
 	}else{
 		if( isDir1 && ! isDir2 ){
@@ -164,7 +170,7 @@ FXint igdeNativeFoxVFSListItem::fSortNameDesc( const FXIconItem *item1, const FX
 	const bool isDir2 = file2.IsDirectory();
 	
 	if( isDir1 == isDir2 ){
-		return compare( file2.GetFileName(), file1.GetFileName() );
+		return FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
 		
 	}else{
 		if( isDir1 && ! isDir2 ){
@@ -185,7 +191,7 @@ FXint igdeNativeFoxVFSListItem::fSortSizeAsc( const FXIconItem *item1, const FXI
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file1.GetFileSize() - file2.GetFileSize() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file1.GetFileName(), file2.GetFileName() );
+			result = FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
 		}
 		return result;
 		
@@ -208,7 +214,7 @@ FXint igdeNativeFoxVFSListItem::fSortSizeDesc( const FXIconItem *item1, const FX
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file2.GetFileSize() - file1.GetFileSize() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file2.GetFileName(), file1.GetFileName() );
+			result = FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
 		}
 		return result;
 		
@@ -231,7 +237,7 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeAsc( const FXIconItem *item1, const 
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file2.GetFileModificationTime() - file1.GetFileModificationTime() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file1.GetFileName(), file2.GetFileName() );
+			result = FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
 		}
 		return result;
 		
@@ -254,7 +260,7 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeDesc( const FXIconItem *item1, const
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file1.GetFileModificationTime() - file2.GetFileModificationTime() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file2.GetFileName(), file1.GetFileName() );
+			result = FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
 		}
 		return result;
 		

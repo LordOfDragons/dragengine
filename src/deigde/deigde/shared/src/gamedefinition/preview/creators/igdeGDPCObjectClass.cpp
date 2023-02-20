@@ -101,7 +101,7 @@ igdeGDPCObjectClass::~igdeGDPCObjectClass(){
 ///////////////
 
 decString igdeGDPCObjectClass::DebugPrefix(){
-	return decString( "GDPCObjectClass(" ) + ( pGDClass ? pGDClass->GetName() : "?" ) + ")";
+	return decString( "GDPCObjectClass(" ) + ( pGDClass ? pGDClass->GetName() : decString( "?" ) ) + ")";
 }
 
 void igdeGDPCObjectClass::PrepareCanvasForRender(){

@@ -31,7 +31,7 @@ class decStringSet;
 /**
  * \brief List of string tags.
  */
-class igdeTagManager{
+class DE_DLL_EXPORT igdeTagManager{
 private:
 	decStringList pTags;
 	

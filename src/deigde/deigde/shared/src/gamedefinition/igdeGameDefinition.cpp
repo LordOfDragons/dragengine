@@ -73,7 +73,7 @@ pDefaultSkin( NULL )
 		pClassManager = new igdeGDClassManager;
 		pSkyManager = new igdeGDSkyManager;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}

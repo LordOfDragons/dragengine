@@ -33,7 +33,7 @@ class igdeNVBoard;
 /**
  * \brief IGDE UI NodeView Link.
  */
-class igdeNVLink : public deObject{
+class DE_DLL_EXPORT igdeNVLink : public deObject{
 private:
 	igdeNVSlotReference pSource;
 	igdeNVSlotReference pTarget;

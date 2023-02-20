@@ -570,7 +570,7 @@ void igdeCodecPropertyString::DecodeShapeList( const char *string, decShapeList 
 void igdeCodecPropertyString::EncodeStringList( const decStringList &list, decString &string ) const{
 	const int count = list.GetCount();
 	const char *separators = " \t\n\r";
-	const int separatorCount = strlen( separators );
+	const int separatorCount = ( int )strlen( separators );
 	const char *lstring;
 	int i, j, subcount;
 	bool quoteString;
@@ -596,7 +596,7 @@ void igdeCodecPropertyString::EncodeStringList( const decStringList &list, decSt
 			string.AppendCharacter( '"' );
 		}
 		
-		subcount = strlen( lstring );
+		subcount = ( int )strlen( lstring );
 		for( j=0; j<subcount; j++ ){
 			if( lstring[ j ] == '"' ){
 				string.Append( "\\\"" );

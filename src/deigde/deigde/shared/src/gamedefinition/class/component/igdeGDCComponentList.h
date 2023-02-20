@@ -31,7 +31,7 @@ class igdeGDCComponent;
 /**
  * \brief Game Definition Class Component List.
  */
-class igdeGDCComponentList{
+class DE_DLL_EXPORT igdeGDCComponentList{
 private:
 	decObjectOrderedSet pComponents;
 	

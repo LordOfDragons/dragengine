@@ -50,7 +50,7 @@ class igdeWObject;
  * object is not held in any way. The application is responsible to ensure the wrapper
  * object exists as long as it is assigned to this widget.
  */
-class igdeWPWObject : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeWPWObject : public igdeContainerFlow, igdeActionListener{
 private:
 	igdeWObject *pObject;
 	

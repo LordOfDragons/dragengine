@@ -31,7 +31,7 @@
  * 
  * Message entry in a logger history.
  */
-class igdeLoggerHistoryEntry{
+class DE_DLL_EXPORT igdeLoggerHistoryEntry{
 public:
 	/** \brief Message types. */
 	enum eMessageTypes{

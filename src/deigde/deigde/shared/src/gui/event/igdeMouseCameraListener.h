@@ -37,7 +37,7 @@ class igdeCamera;
  * right button. Shift and control modifier keys determine if the interaction is to
  * rotate, pan, view or zoom the camera.
  */
-class igdeMouseCameraListener : public igdeMouseDragListener{
+class DE_DLL_EXPORT igdeMouseCameraListener : public igdeMouseDragListener{
 public:
 	/** \brief Interaction. */
 	enum eInteraction{

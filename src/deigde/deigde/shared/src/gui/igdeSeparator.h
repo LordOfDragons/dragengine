@@ -31,7 +31,7 @@
  * 
  * Shows a separation between UI widgets.
  */
-class igdeSeparator : public igdeWidget{
+class DE_DLL_EXPORT igdeSeparator : public igdeWidget{
 public:
 	/** \brief Orientation. */
 	enum eOrientation{

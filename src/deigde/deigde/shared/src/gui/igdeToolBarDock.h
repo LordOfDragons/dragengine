@@ -30,7 +30,7 @@
  * 
  * ToolBars can be added to the docking area by the user any place he likes.
  */
-class igdeToolBarDock : public igdeContainer{
+class DE_DLL_EXPORT igdeToolBarDock : public igdeContainer{
 public:
 	/** \brief Dock side. */
 	enum eSide{

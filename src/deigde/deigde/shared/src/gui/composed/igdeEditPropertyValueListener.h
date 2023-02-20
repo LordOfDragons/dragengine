@@ -32,7 +32,7 @@ class igdeEditPropertyValue;
 /**
  * \brief IGDE UI EditPropertyValue Listener.
  */
-class igdeEditPropertyValueListener : public deObject{
+class DE_DLL_EXPORT igdeEditPropertyValueListener : public deObject{
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

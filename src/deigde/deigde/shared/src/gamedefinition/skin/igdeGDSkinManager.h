@@ -41,7 +41,7 @@ class decPath;
  * Game skins only contain the path of skin file and some classification
  * information useful searching for the right skin to use.
  */
-class igdeGDSkinManager{
+class DE_DLL_EXPORT igdeGDSkinManager{
 private:
 	decObjectOrderedSet pSkins;
 	igdeGDCategoryReference pCategories;

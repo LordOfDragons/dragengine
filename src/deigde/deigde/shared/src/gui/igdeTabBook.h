@@ -33,7 +33,7 @@
 /**
  * \brief IGDE UI Tab book.
  */
-class igdeTabBook : public igdeContainer{
+class DE_DLL_EXPORT igdeTabBook : public igdeContainer{
 private:
 	decObjectList pHeaders;
 	int pActivePanel;

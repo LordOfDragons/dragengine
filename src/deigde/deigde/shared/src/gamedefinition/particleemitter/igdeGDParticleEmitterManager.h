@@ -34,7 +34,7 @@ class igdeGameDefinition;
 /**
  * \brief Game definition particle emitter manager.
  */
-class igdeGDParticleEmitterManager{
+class DE_DLL_EXPORT igdeGDParticleEmitterManager{
 private:
 	igdeGDParticleEmitterList pEmitterList;
 	igdeGDCategoryReference pCategories;

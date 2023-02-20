@@ -59,7 +59,7 @@ class decString;
  * <br/>
  * Parameters with default values are not written to not blow up the string size.
  */
-class igdePropertyStringEncodeShapeList : public decShapeVisitor{
+class DE_DLL_EXPORT igdePropertyStringEncodeShapeList : public decShapeVisitor{
 private:
 	decString  *pString;
 	bool pRequiresSeparator;

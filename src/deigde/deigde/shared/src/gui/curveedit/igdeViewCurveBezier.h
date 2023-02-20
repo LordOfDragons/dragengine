@@ -37,7 +37,7 @@ class igdeViewCurveBezierListener;
 /**
  * \brief View and edit decCurveBezier.
  */
-class igdeViewCurveBezier : public igdeWidget{
+class DE_DLL_EXPORT igdeViewCurveBezier : public igdeWidget{
 public:
 	class cActionResetView : public igdeAction{
 		igdeViewCurveBezier &pView;

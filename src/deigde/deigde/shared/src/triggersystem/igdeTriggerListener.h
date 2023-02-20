@@ -31,7 +31,7 @@ class igdeTriggerTarget;
 /**
  * \brief Trigger Listener.
  */
-class igdeTriggerListener : public deObject{
+class DE_DLL_EXPORT igdeTriggerListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

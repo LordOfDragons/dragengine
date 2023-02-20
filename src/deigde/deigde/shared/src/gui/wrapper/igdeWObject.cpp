@@ -598,7 +598,7 @@ void igdeWObject::AttachColliderRig( deColliderComponent *parentCollider ){
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		parentCollider->AddAttachment( attachment );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}
@@ -636,7 +636,7 @@ const decVector &position, const decQuaternion &orientation ){
 			attachment->SetOrientation( orientation );
 			parentCollider->AddAttachment( attachment );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( attachment ){
 				delete attachment;
 			}

@@ -31,7 +31,7 @@ class igdeGDCForceField;
 /**
  * \brief Game Definition Class Force Field List.
  */
-class igdeGDCForceFieldList{
+class DE_DLL_EXPORT igdeGDCForceFieldList{
 private:
 	decObjectOrderedSet pFields;
 	

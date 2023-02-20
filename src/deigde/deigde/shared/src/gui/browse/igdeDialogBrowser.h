@@ -45,7 +45,7 @@ class igdeGDPreviewListener;
 /**
  * \brief Base class for dialogs for user to browse for an object of specific type.
  */
-class igdeDialogBrowser : public igdeDialog{
+class DE_DLL_EXPORT igdeDialogBrowser : public igdeDialog{
 public:
 	enum ePreviewSize{
 		epsLarge,

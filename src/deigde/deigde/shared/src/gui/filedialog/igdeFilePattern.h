@@ -29,7 +29,7 @@
 /**
  * \brief File pattern defining a display name and file pattern.
  */
-class igdeFilePattern{
+class DE_DLL_EXPORT igdeFilePattern{
 private:
 	decString pName;
 	decString pPattern;

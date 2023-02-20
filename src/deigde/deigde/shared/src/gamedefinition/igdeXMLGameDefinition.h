@@ -61,7 +61,7 @@ class decXmlAttValue;
 /**
  * \brief Loads dragengine game definition xml files.
  */
-class igdeXMLGameDefinition : public igdeBaseXML{
+class DE_DLL_EXPORT igdeXMLGameDefinition : public igdeBaseXML{
 private:
 	igdeEnvironment &pEnvironment;
 	

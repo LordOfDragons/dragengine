@@ -35,7 +35,7 @@ class deBaseSystem;
  * Panel showing the status of the game engine. Can also start and stop
  * the engine.
  */
-class igdeDEStatus : public igdeContainerFlow{
+class DE_DLL_EXPORT igdeDEStatus : public igdeContainerFlow{
 private:
 	igdeDialogEngine &pDialogEngine;
 	

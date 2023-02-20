@@ -38,18 +38,10 @@
 
 
 
-// Events
-///////////
-
-FXDEFMAP( igdeNativeFoxLabel ) igdeNativeFoxLabelMap[] = {
-};
-
-
-
 // Class igdeNativeFoxLabel
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxLabel, FXLabel, igdeNativeFoxLabelMap, ARRAYNUMBER( igdeNativeFoxLabelMap ) )
+FXIMPLEMENT( igdeNativeFoxLabel, FXLabel, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
@@ -163,7 +155,7 @@ igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &powner, const igdeGuiT
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::labelFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSize ) ){
@@ -171,7 +163,7 @@ igdeFont *igdeNativeFoxLabel::LabelFont( const igdeLabel &powner, const igdeGuiT
 			igdeGuiThemePropertyNames::labelFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

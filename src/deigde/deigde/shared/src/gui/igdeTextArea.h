@@ -45,7 +45,7 @@ class igdeAction;
  * optionally an action. If SetText() is called all segment information is discarded.
  * AppendText() is safe to be used.
  */
-class igdeTextArea : public igdeWidget{
+class DE_DLL_EXPORT igdeTextArea : public igdeWidget{
 private:
 	bool pEnabled;
 	decString pText;

@@ -32,7 +32,7 @@
 /**
  * \brief Game Definition Class Force Field.
  */
-class igdeGDCForceField : public deObject{
+class DE_DLL_EXPORT igdeGDCForceField : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

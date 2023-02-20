@@ -37,7 +37,7 @@ class igdeNVNode;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeNVNodeReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeNVNodeReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

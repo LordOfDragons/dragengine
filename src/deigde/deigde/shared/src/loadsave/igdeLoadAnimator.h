@@ -38,7 +38,7 @@ class decBaseFileReader;
 /**
  * \brief Load animator file in the Drag[en]gine Animator format.
  */
-class igdeLoadAnimator : public igdeBaseXML{
+class DE_DLL_EXPORT igdeLoadAnimator : public igdeBaseXML{
 private:
 	igdeEnvironment &pEnvironment;
 	

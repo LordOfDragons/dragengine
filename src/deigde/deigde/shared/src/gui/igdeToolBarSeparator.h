@@ -31,7 +31,7 @@
  * 
  * Shows a separation between toolbar widgets.
  */
-class igdeToolBarSeparator : public igdeWidget{
+class DE_DLL_EXPORT igdeToolBarSeparator : public igdeWidget{
 public:
 	/** \text Constructors and Destructors */
 	/*@{*/

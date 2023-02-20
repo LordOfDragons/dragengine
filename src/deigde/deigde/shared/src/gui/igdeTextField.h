@@ -36,7 +36,7 @@ class igdeTextFieldListener;
 /**
  * \brief IGDE UI TextField.
  */
-class igdeTextField : public igdeWidget{
+class DE_DLL_EXPORT igdeTextField : public igdeWidget{
 private:
 	bool pEnabled;
 	decString pText;

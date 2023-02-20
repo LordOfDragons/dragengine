@@ -29,7 +29,7 @@
 /**
  * \brief Trigger Expression Parser State.
  */
-class igdeTriggerExpressionParserState{
+class DE_DLL_EXPORT igdeTriggerExpressionParserState{
 private:
 	decString pString;
 	int pPosition;

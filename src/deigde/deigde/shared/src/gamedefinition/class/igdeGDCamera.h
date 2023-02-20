@@ -32,7 +32,7 @@
  *
  * Contains information about a camera attached to an object.
  */
-class igdeGDCamera{
+class DE_DLL_EXPORT igdeGDCamera{
 private:
 	float pFov;
 	float pFovRatio;

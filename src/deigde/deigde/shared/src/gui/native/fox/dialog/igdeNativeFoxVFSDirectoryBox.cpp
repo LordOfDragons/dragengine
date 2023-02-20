@@ -31,18 +31,10 @@
 
 
 
-// Events
-///////////
-
-FXDEFMAP( igdeNativeFoxVFSDirectoryBox ) igdeNativeFoxVFSDirectoryBoxMap[] = {
-};
-
-
-
 // Class igdeNativeFoxVFSDirectoryBox
 ////////////////////
 
-FXIMPLEMENT( igdeNativeFoxVFSDirectoryBox, FXTreeListBox, igdeNativeFoxVFSDirectoryBoxMap, ARRAYNUMBER( igdeNativeFoxVFSDirectoryBoxMap ) )
+FXIMPLEMENT( igdeNativeFoxVFSDirectoryBox, FXTreeListBox, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

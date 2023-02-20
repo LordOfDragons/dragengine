@@ -304,7 +304,7 @@ igdeGDProperty *igdeGDClass::GetPropertyNamed( const char *name ) const{
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -346,7 +346,7 @@ bool igdeGDClass::GetDefaultPropertyValue( const char *name, decString &value) c
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -423,7 +423,7 @@ igdeGDProperty *igdeGDClass::GetTexturePropertyNamed( const char *name ) const{
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -459,7 +459,7 @@ bool igdeGDClass::GetDefaultTexturePropertyValue( const char *name, decString &v
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){

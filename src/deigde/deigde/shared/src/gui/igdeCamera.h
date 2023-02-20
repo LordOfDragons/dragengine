@@ -41,7 +41,7 @@ class deWorld;
  * as seen by this camera. The camera is managed in a lazy way. Hence
  * the engine is not create or updated until it is acquired by the user.
  */
-class igdeCamera{
+class DE_DLL_EXPORT igdeCamera{
 private:
 	deEngine *pEngine;
 	deCameraReference pEngCamera;

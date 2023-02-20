@@ -30,7 +30,7 @@
 /**
  * \brief Null CrashRecovery Module.
  */
-class igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModule{
+class DE_DLL_EXPORT igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModule{
 public:
 	class cModule : public deInternalModule{
 	public:

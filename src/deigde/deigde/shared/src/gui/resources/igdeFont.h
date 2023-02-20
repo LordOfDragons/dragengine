@@ -36,7 +36,7 @@ class igdeEnvironment;
  * 
  * Fonts are immutable.
  */
-class igdeFont : public deObject{
+class DE_DLL_EXPORT igdeFont : public deObject{
 public:
 	/** \brief Font configuration. */
 	struct sConfiguration{

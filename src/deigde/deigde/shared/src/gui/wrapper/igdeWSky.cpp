@@ -229,7 +229,7 @@ void igdeWSky::OnGameDefinitionChanged(){
 			delete [] values;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( values ){
 			delete [] values;
 		}
@@ -265,7 +265,7 @@ void igdeWSky::pLoadSky( const char *path ){
 		
 		SetSky( sky );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCheckAsyncLoadFinished();
 		throw;
 	}

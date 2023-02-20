@@ -37,7 +37,7 @@ class igdeEnvironment;
 /**
  * \brief Base class for creating previews for game definition element asynchronously.
  */
-class igdeGDPreviewCreator : public deObject{
+class DE_DLL_EXPORT igdeGDPreviewCreator : public deObject{
 private:
 	enum eStates{
 		esInitial,

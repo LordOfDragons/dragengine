@@ -33,7 +33,7 @@
 /**
  * \brief IGDE UI Button with text and icon.
  */
-class igdeButton : public igdeWidget, igdeActionListener{
+class DE_DLL_EXPORT igdeButton : public igdeWidget, igdeActionListener{
 public:
 	/** \brief Button style. */
 	enum eButtonStyle{

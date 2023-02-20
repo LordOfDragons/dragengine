@@ -31,7 +31,7 @@ class igdeWDebugDrawerShape;
 /**
  * \brief Debug drawer shape wrapper List.
  */
-class igdeWDebugDrawerShapeList{
+class DE_DLL_EXPORT igdeWDebugDrawerShapeList{
 private:
 	decPointerSet pList;
 	

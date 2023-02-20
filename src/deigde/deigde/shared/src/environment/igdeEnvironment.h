@@ -60,7 +60,7 @@ class decStringList;
  * 
  * Provides access for editor modules to the editing environment.
  */
-class igdeEnvironment{
+class DE_DLL_EXPORT igdeEnvironment{
 public:
 	/** \brief File Pattern List Types. */
 	enum eFilePatternListTypes{

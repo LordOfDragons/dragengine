@@ -31,7 +31,7 @@ class igdeEnvironment;
 /**
  * \brief IGDE UI Timer.
  */
-class igdeTimer : public deObject{
+class DE_DLL_EXPORT igdeTimer : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeTimer;

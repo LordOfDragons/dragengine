@@ -31,7 +31,7 @@
 /**
  * \brief IGDE UI Label with text and icon.
  */
-class igdeLabel : public igdeWidget{
+class DE_DLL_EXPORT igdeLabel : public igdeWidget{
 public:
 	/** \brief Alignment. */
 	enum eAlignment{

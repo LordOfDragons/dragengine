@@ -33,7 +33,7 @@
  * are equally sized relative to their desired size to fill all the available space.
  * The widget sizes along the other axis is set to fill the available space.
  */
-class igdeContainerBox : public igdeContainer{
+class DE_DLL_EXPORT igdeContainerBox : public igdeContainer{
 public:
 	/** \brief Layout axis for subclasses. */
 	enum eAxis{

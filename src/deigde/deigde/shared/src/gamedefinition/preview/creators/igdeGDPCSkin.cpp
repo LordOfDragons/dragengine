@@ -64,7 +64,7 @@
 // Resource loader listener
 /////////////////////////////
 
-class igdeGDPCSkinResLoader : public igdeResourceLoaderListener{
+class DE_DLL_EXPORT igdeGDPCSkinResLoader : public igdeResourceLoaderListener{
 private:
 	igdeGDPCSkin *pOwner;
 	decString pPathModel;
@@ -229,7 +229,7 @@ igdeGDPCSkin::~igdeGDPCSkin(){
 ///////////////
 
 decString igdeGDPCSkin::DebugPrefix(){
-	return decString( "GDPCSkin(" ) + ( pGDSkin ? pGDSkin->GetPath() : "?" ) + ")";
+	return decString( "GDPCSkin(" ) + ( pGDSkin ? pGDSkin->GetPath() : decString( "?" ) ) + ")";
 }
 
 void igdeGDPCSkin::PrepareCanvasForRender(){

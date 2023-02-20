@@ -36,7 +36,7 @@ class decPath;
 /**
  * \brief Game definition sky manager.
  */
-class igdeGDSkyManager{
+class DE_DLL_EXPORT igdeGDSkyManager{
 private:
 	igdeGDSkyList pSkyList;
 	igdeGDCategoryReference pCategories;

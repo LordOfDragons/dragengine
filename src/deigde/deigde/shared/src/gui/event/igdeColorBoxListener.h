@@ -32,7 +32,7 @@ class igdeColorBox;
 /**
  * \brief IGDE UI ColorBox Listener.
  */
-class igdeColorBoxListener : public deObject{
+class DE_DLL_EXPORT igdeColorBoxListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

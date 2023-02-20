@@ -37,7 +37,7 @@ class igdeActionContextMenu;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class igdeActionContextMenuReference : protected deObjectReference{
+class DE_DLL_EXPORT igdeActionContextMenuReference : protected deObjectReference{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

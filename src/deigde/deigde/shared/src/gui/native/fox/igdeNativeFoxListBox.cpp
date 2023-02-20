@@ -89,10 +89,12 @@ pFont( ListBoxFont( powner, guitheme ) ),
 pListBox( new FXList( this, this, ID_LISTBOX, LAYOUT_FILL | ListBoxFlags( powner ) ) ),
 pResizer( NULL )
 {
+	#ifndef OS_W32_VS
 	(void)ListBoxPadLeft;
 	(void)ListBoxPadRight;
 	(void)ListBoxPadTop;
 	(void)ListBoxPadBottom;
+	#endif
 	
 	if( ! pOwner->GetVisible() ){
 		hide();
@@ -285,7 +287,7 @@ igdeFont *igdeNativeFoxListBox::ListBoxFont( const igdeListBox &powner, const ig
 	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::listBoxFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::listBoxFontSize ) ){
@@ -293,7 +295,7 @@ igdeFont *igdeNativeFoxListBox::ListBoxFont( const igdeListBox &powner, const ig
 			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){

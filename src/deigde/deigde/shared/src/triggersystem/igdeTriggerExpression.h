@@ -33,7 +33,7 @@ class igdeTriggerListener;
 /**
  * \brief Trigger Expression.
  */
-class igdeTriggerExpression : public deObject{
+class DE_DLL_EXPORT igdeTriggerExpression : public deObject{
 private:
 	igdeTriggerExpressionComponent *pRootComponent;
 	bool pResult;

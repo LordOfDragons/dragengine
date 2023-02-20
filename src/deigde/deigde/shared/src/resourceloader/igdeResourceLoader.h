@@ -41,7 +41,7 @@ class igdeResourceLoaderListener;
  * use dead time optimally. Best way is to use a timer or calling the update
  * function right before updating the screen.
  */
-class igdeResourceLoader{
+class DE_DLL_EXPORT igdeResourceLoader{
 	igdeEnvironment &pEnvironment;
 	decObjectOrderedSet pTasks;
 	

@@ -32,7 +32,7 @@ class igdeTextField;
 /**
  * \brief IGDE UI TextField Listener.
  */
-class igdeTextFieldListener : public deObject{
+class DE_DLL_EXPORT igdeTextFieldListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

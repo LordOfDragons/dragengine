@@ -39,7 +39,7 @@ class igdeUIHelper;
  * 
  * Composed widget to edit decDVector.
  */
-class igdeEditDVector : public igdeContainerBoxAlternate{
+class DE_DLL_EXPORT igdeEditDVector : public igdeContainerBoxAlternate{
 protected:
 	/** \brief Text field listener. */
 	class cListener : public igdeTextFieldListener{

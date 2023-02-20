@@ -41,7 +41,7 @@ class igdeMouseKeyListener;
 /**
  * \brief IGD UI Widget using Game Engine Render Window.
  */
-class igdeViewRenderWindow : public igdeWidget{
+class DE_DLL_EXPORT igdeViewRenderWindow : public igdeWidget{
 private:
 	deRenderWindowReference pRenderWindow;
 	deCanvasReference pCanvasRenderWorld;

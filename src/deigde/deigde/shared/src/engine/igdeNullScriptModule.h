@@ -32,7 +32,7 @@
 /**
  * \brief Null Script Module.
  */
-class igdeNullScriptModule : public deBaseScriptingModule{
+class DE_DLL_EXPORT igdeNullScriptModule : public deBaseScriptingModule{
 public:
 	class cModule : public deInternalModule{
 	public:

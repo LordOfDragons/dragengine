@@ -32,7 +32,7 @@ targetInstall = envAddon.Alias('blender-addon', install)
 filename = os.path.join(pathShare, 'tools', filename)
 
 archiveDevelop = {}
-archiveDevelop[os.path.join(pathShare, 'tools', filename)] = targetBuild[0]
+archiveDevelop[filename] = targetBuild[0]
 
 parent_targets['blender-addon'] = {
 	'name' : 'Drag[en]gine Blender AddOn',

@@ -32,7 +32,7 @@
  * 
  * Supports Undo/Redo operations.
  */
-class igdeUndo : public deObject{
+class DE_DLL_EXPORT igdeUndo : public deObject{
 private:
 	decString pShortInfo;
 	decString pLongInfo;

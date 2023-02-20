@@ -40,7 +40,7 @@ class deAnimatorController;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOComponent : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
 private:
 	const igdeGDCComponent &pGDComponent;
 	deComponentReference pComponent;

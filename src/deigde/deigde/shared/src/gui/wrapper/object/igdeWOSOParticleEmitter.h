@@ -37,7 +37,7 @@ class igdeGDCParticleEmitter;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOParticleEmitter : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOParticleEmitter : public igdeWOSubObject{
 private:
 	const igdeGDCParticleEmitter &pGDParticleEmitter;
 	deParticleEmitterInstanceReference pParticleEmitter;

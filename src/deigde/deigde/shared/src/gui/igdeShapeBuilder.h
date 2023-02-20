@@ -36,7 +36,7 @@ class igdeWDebugDrawerShape;
  * \brief Builds convex volumes.
  * Helper class to build various convex volumes.
  */
-class igdeShapeBuilder{
+class DE_DLL_EXPORT igdeShapeBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

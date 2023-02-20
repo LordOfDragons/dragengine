@@ -38,17 +38,10 @@
 
 
 
-// Events
-///////////
-
-FXDEFMAP( igdeNativeFoxToolBar ) igdeNativeFoxToolBarMap[] = { };
-
-
-
 // Class igdeNativeFoxToolBar
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxToolBar, FXToolBar, igdeNativeFoxToolBarMap, ARRAYNUMBER( igdeNativeFoxToolBarMap ) )
+FXIMPLEMENT( igdeNativeFoxToolBar, FXToolBar, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

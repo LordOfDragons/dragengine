@@ -31,7 +31,7 @@ class igdeGDCNavigationSpace;
 /**
  * \brief Game definition class navigation space list.
  */
-class igdeGDCNavigationSpaceList{
+class DE_DLL_EXPORT igdeGDCNavigationSpaceList{
 private:
 	decObjectOrderedSet pNavigationSpaces;
 	

@@ -31,7 +31,7 @@ class igdeGDCEnvMapProbe;
 /**
  * \brief Game Definition Class Environment Map Probe List.
  */
-class igdeGDCEnvMapProbeList{
+class DE_DLL_EXPORT igdeGDCEnvMapProbeList{
 private:
 	decObjectOrderedSet pProbes;
 	

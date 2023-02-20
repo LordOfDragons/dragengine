@@ -46,7 +46,7 @@ class deVirtualFileSystem;
  * world properties, sector properties and default engine objects for the
  * case of broken links.
  */
-class igdeGameDefinition : public deObject{
+class DE_DLL_EXPORT igdeGameDefinition : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
 	

@@ -47,7 +47,7 @@ class deVirtualFileSystem;
  * 
  * Imports possible and understood data. Unsupported data is ignored.
  */
-class igdeXMLElementClass : public igdeBaseXML{
+class DE_DLL_EXPORT igdeXMLElementClass : public igdeBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

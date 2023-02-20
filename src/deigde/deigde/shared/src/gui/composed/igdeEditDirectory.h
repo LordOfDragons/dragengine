@@ -44,7 +44,7 @@ class igdeUIHelper;
  * Composed widget to edit directory using text field and button. The main widget is the text
  * widget. The button is used to bring up directory dialogs to select directory.
  */
-class igdeEditDirectory : public igdeContainerFlow{
+class DE_DLL_EXPORT igdeEditDirectory : public igdeContainerFlow{
 protected:
 	/** \brief Text field listener. */
 	class cListenerTextField : public igdeTextFieldListener{

@@ -35,7 +35,7 @@ class decBaseFileWriter;
 /**
  * \brief Load and save navigation space file in the Drag[en]gine Navigation Space format.
  */
-class igdeLoadSaveNavSpace{
+class DE_DLL_EXPORT igdeLoadSaveNavSpace{
 private:
 	igdeEnvironment *pEnvironment;
 	decString pLoggingSource;

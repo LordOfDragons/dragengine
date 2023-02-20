@@ -35,7 +35,7 @@
  * by a  start and end offset. The end offset is inclusive hence the length of the
  * segment is "end - start + 1". Thus text segments can not be empty.
  */
-class igdeTextSegment : public deObject{
+class DE_DLL_EXPORT igdeTextSegment : public deObject{
 private:
 	int pBegin;
 	int pEnd;

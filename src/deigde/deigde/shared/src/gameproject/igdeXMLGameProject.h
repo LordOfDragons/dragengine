@@ -38,7 +38,7 @@ class decXmlWriter;
 /**
  * \brief Load and save XML game project files.
  */
-class igdeXMLGameProject : public igdeBaseXML{
+class DE_DLL_EXPORT igdeXMLGameProject : public igdeBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

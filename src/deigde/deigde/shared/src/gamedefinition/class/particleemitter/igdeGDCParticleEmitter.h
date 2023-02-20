@@ -31,7 +31,7 @@
 /**
  * \brief Game Definition Class Particle Emitter.
  */
-class igdeGDCParticleEmitter : public deObject{
+class DE_DLL_EXPORT igdeGDCParticleEmitter : public deObject{
 public:
 	/** \brief Properties. */
 	enum eProperties{

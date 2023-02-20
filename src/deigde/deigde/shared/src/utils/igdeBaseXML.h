@@ -41,7 +41,7 @@ class deLogger;
  * function required by all xml load/save classes.
  * 
  */
-class igdeBaseXML{
+class DE_DLL_EXPORT igdeBaseXML{
 private:
 	deLogger *pLogger;
 	decString pLoggerSource;

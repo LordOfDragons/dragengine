@@ -37,7 +37,7 @@ class igdeWidget;
  * \brief Engine Controller.
  * Handles a game engine instance.
  */
-class igdeEngineController{
+class DE_DLL_EXPORT igdeEngineController{
 public:
 	/** \brief List of systems. */
 	enum eSystems{

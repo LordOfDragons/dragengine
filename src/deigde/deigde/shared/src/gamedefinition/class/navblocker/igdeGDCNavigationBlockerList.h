@@ -31,7 +31,7 @@ class igdeGDCNavigationBlocker;
 /**
  * \brief Game definition class navigation blocker list.
  */
-class igdeGDCNavigationBlockerList{
+class DE_DLL_EXPORT igdeGDCNavigationBlockerList{
 private:
 	decObjectOrderedSet pNavigationBlockers;
 	

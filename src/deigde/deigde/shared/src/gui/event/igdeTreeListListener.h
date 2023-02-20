@@ -34,7 +34,7 @@ class igdeMenuCascade;
 /**
  * \brief IGDE UI TreeList Listener.
  */
-class igdeTreeListListener : public deObject{
+class DE_DLL_EXPORT igdeTreeListListener : public deObject{
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

@@ -31,7 +31,7 @@
  * 
  * Shows a separation between menu entries.
  */
-class igdeMenuSeparator : public igdeWidget{
+class DE_DLL_EXPORT igdeMenuSeparator : public igdeWidget{
 public:
 	/** \text Constructors and Destructors */
 	/*@{*/
