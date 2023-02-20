@@ -238,6 +238,7 @@ parent_targets['deigde_shared'] = {
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,
+	'install-igde-runtime' : targetInstallLibRuntime,
 	'archive-igde' : archiveLib,
 	'archive-igde-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen}
@@ -294,6 +295,9 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archiveApp[os.path.join(pathBin, l.name)] = l
 
+envIGDEApp.Depends(installApp, targetInstallLibRuntime)
+
+
 if envIGDEApp['OSPosix']:
 	pathDataDir = envIGDEApp.subst('${datadir}')
 	
@@ -335,7 +339,7 @@ if envIGDEApp['OSWindows'] and envIGDEApp['CROSSCOMPILE_CLANG'] and envIGDEApp['
 	archive['{}/deigde.pdb'.format(pathModule)] = envIGDEApp.File('deigde.pdb')
 
 targetInstallApp = envIGDEApp.Alias('install_deigde', installApp)
-targetInstall = envIGDEApp.Alias('deigde', [targetInstallApp, targetInstallLibRuntime])
+targetInstall = envIGDEApp.Alias('deigde', targetInstallApp)
 
 # source directory required for special commands
 srcdir = Dir('.').srcnode().abspath

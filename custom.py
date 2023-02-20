@@ -9,6 +9,7 @@ with_verbose = 'no'
 ##################################
 with_system_zlib = 'yes'
 with_system_libpng = 'yes'
+with_system_sndio = 'yes'
 with_system_libapng ='yes'
 with_system_libjpeg ='yes'
 with_system_libwebp = 'yes'
@@ -28,6 +29,7 @@ with_system_libusb = 'auto'         # not used
 with_system_libhidapi = 'yes'
 with_system_libopenhmd = 'yes'
 with_system_fftw = 'no'             # not used right now
+with_system_soundtouch = 'yes'
 with_opengl = 'yes'
 with_python = 'no'
 with_npapisdk = 'no'
@@ -61,6 +63,22 @@ build_guilauncher = 'yes'
 build_plugin_npapi = 'no'
 build_launcher_android = 'no'
 build_archive_delga = 'yes'
+
+build_igde = 'yes'
+igde_program_name = 'deigde'
+igde_toolkit = 'fox'
+build_editor_animator = 'yes'
+build_editor_conversation = 'yes'
+build_editor_font = 'yes'
+build_editor_gamedefinition = 'yes'
+build_editor_langpack = 'yes'
+build_editor_particleemitter = 'yes'
+build_editor_rig = 'yes'
+build_editor_skin = 'yes'
+build_editor_sky = 'yes'
+build_editor_speechanimation = 'yes'
+build_editor_synthesizer = 'yes'
+build_editor_world = 'yes'
 
 # archiving
 #############

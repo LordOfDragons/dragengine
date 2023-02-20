@@ -166,5 +166,5 @@ New-Variable -Name PathDistIGDEDebug -Value "Distribute\Igde\Debug" -Scope Globa
 New-Variable -Name PathDistIGDEPdbBase -Value "$PathDistIGDEDebug\@ProgramFiles\DEIGDE" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbData -Value "$PathDistIGDEPdbBase\Data" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbDataModules -Value "$PathDistIGDEPdbData\modules" -Scope Global -Option ReadOnly -Force
-New-Variable -Name PathDistIGDEPdbSystem -Value "$PathDistDEDebug\@System" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEPdbSystem -Value "$PathDistIGDEDebug\@System" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbBin -Value "$PathDistIGDEPdbBase\Bin" -Scope Global -Option ReadOnly -Force
