@@ -396,7 +396,8 @@ void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
 			AddUnitSourceCode( deoglShaderUnitSourceCode::Ref::New(
 				new deoglShaderUnitSourceCode( filename, reader ) ) );
 			
-			validationString.Format( "%s: %" PRIu64, filename.GetString(), reader->GetModificationTime() );
+			validationString.Format( "%s: %" PRIu64, filename.GetString(),
+				( uint64_t )reader->GetModificationTime() );
 			pCacheValidationString.Add( validationString );
 		}
 		
@@ -451,7 +452,8 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 			
 			pSources.SetAt( sources->GetName(), sources );
 			
-			validationString.Format( "%s: %" PRIu64, filename.GetString(), reader->GetModificationTime() );
+			validationString.Format( "%s: %" PRIu64, filename.GetString(),
+				( uint64_t )reader->GetModificationTime() );
 			pCacheValidationString.Add( validationString );
 		}
 		
