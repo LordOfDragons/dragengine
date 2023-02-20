@@ -338,7 +338,7 @@ if envIGDEApp['OSWindows'] and envIGDEApp['CROSSCOMPILE_CLANG'] and envIGDEApp['
 	install.append(envIGDEApp.Install(pathModule, 'deigde.pdb'))
 	archive['{}/deigde.pdb'.format(pathModule)] = envIGDEApp.File('deigde.pdb')
 
-targetInstallApp = envIGDEApp.Alias('install_deigde', installApp)
+targetInstallApp = envIGDEApp.Alias('install_deigde_runtime', installApp)
 targetInstall = envIGDEApp.Alias('deigde', targetInstallApp)
 
 # source directory required for special commands
